@@ -17,6 +17,7 @@
  /* $Id$ */
 #include <cfloat>
 #include <iostream>
+#include <qapplication.h>
 #include <qdatetime.h>
 #include <qpopupmenu.h>
 #include <qlistview.h>
@@ -40,8 +41,7 @@ m_legendItem(0)
   ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
 
 #ifdef WIN32
-  //TODO Fix this to use the right path
-  //  const char *PKGDATAPATH = "foo";
+QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
 #endif
   mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
 
