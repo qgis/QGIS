@@ -49,7 +49,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
   //downcast the maplayer to rasterlayer
   rasterLayer = (QgsRasterLayer *) lyr;
 
-#ifdef DEBUG
+#ifdef QGISDEBUG
   //populate the metadata tab's text browser widget with gdal metadata info
   txtbMetadata->setText(rasterLayer->getMetadata());
 #else
@@ -234,14 +234,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
 
   else                          //all other layer types use band name entries only
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       std::cout << "Populating combos for non paletted layer" << std::endl;
 #endif
       int myBandCountInt = 1;
       for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); myIterator != myBandNameQStringList.end(); ++myIterator)
         {
           QString myQString = *myIterator;
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Inserting : " << myQString << std::endl;
 #endif
           cboGray->insertItem(myQString);
@@ -305,13 +305,13 @@ void QgsRasterLayerProperties::apply()
 
           if (cboColorMap->currentText() == tr("Pseudocolor"))
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Setting Raster Drawing Style to :: SINGLE_BAND_PSEUDO_COLOR" << std::endl;
 #endif
               rasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
           } else
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Setting Raster Drawing Style to :: SINGLE_BAND_GRAY" << std::endl;
 #endif
               rasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_GRAY);
@@ -324,16 +324,16 @@ void QgsRasterLayerProperties::apply()
         {
           if (cboColorMap->currentText() == tr("Pseudocolor"))
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" << std::endl;
 #endif
               rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR);
           } else
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_GRAY" << std::endl;
 #endif
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
                 getGrayBandName() << std::endl;
 #endif
@@ -349,13 +349,13 @@ void QgsRasterLayerProperties::apply()
         {
           if (cboColorMap->currentText() == tr("Pseudocolor"))
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Setting Raster Drawing Style to ::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR " << std::endl;
 #endif
               rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR);
           } else
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
               std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
                 getGrayBandName() << std::endl;
@@ -370,14 +370,14 @@ void QgsRasterLayerProperties::apply()
 
       if (rasterLayer->rasterLayerType == QgsRasterLayer::PALETTE)
         {
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Setting Raster Drawing Style to :: PALETTED_MULTI_BAND_COLOR" << std::endl;
 #endif
           rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_MULTI_BAND_COLOR);
       } else if (rasterLayer->rasterLayerType == QgsRasterLayer::MULTIBAND)
         {
 
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_COLOR" << std::endl;
 #endif
           rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_COLOR);
@@ -674,13 +674,13 @@ void QgsRasterLayerProperties::fillStatsTable()
   myQHeader->setLabel(1, "Value");
   for (int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt)
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       std::cout << "Raster properties : checking if band " << myIteratorInt << " has stats? ";
 #endif
       //check if full stats for this layer have already been collected
       if (!rasterLayer->hasStats(myIteratorInt))  //not collected
         {
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << ".....no" << std::endl;
 #endif
           tblStats->setText(myRowInt, 0, "Band");
@@ -695,7 +695,7 @@ void QgsRasterLayerProperties::fillStatsTable()
           ++myRowInt;
       } else                    // collected - show full detail
         {
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << ".....yes" << std::endl;
 #endif
           RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);

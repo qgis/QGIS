@@ -36,7 +36,7 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 m_vectorlayer
 (vlayer)
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsGraSyExtensionWidget");
 #endif
 
@@ -207,14 +207,14 @@ m_vectorlayer
 
 QgsGraSyExtensionWidget::QgsGraSyExtensionWidget()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsGraSyExtensionWidget");
 #endif
 }
 
 QgsGraSyExtensionWidget::~QgsGraSyExtensionWidget()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("destructor QgsGraSyExtensionWidget");
 #endif
 }

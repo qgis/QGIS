@@ -149,7 +149,7 @@ void QgsDbSourceSelect::dbConnect()
       //  allow null password entry in case its valid for the database
     }
   connString += " password=" + password;
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
   std::cout << "Connection info: " << connString << std::endl;
   #endif
   if (makeConnection)

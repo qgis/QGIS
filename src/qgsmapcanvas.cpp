@@ -90,7 +90,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
   if (lyr->type() != QgsMapLayer::RASTER)
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       std::cout << "Layer name is " << lyr->name() << std::endl;
 #endif
       // give the layer a default symbol
@@ -243,7 +243,7 @@ void QgsMapCanvas::render2()
               if (ml)
                 {
                   //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-#ifdef DEBUG
+#ifdef QGISDEBUG
                   std::cout << "Rendering " << ml->name() << std::endl;
 #endif
                   if (ml->visible())
@@ -252,7 +252,7 @@ void QgsMapCanvas::render2()
                   //  mi.draw(p, &fullExtent);
                 }
             }
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Done rendering map layers\n";
 #endif
           paint->end();
@@ -485,7 +485,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               //center = new QgsPoint(zoomRect->center());
               //  delete zoomRect;
               currentExtent.expand(sf);
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Extent scaled by " << sf << " to " << currentExtent << std::endl;
               std::cout << "Center of currentExtent after scaling is " << currentExtent.center() << std::endl;
 #endif

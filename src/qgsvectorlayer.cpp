@@ -65,7 +65,7 @@ m_rendererDialog(0)
   // initialize the identify results pointer
   ir = 0;
   
-#ifdef DEBUG
+#ifdef QGISDEBUG
   std::cerr << "VECTORLAYERPATH: " << vectorLayerPath << std::endl;
   std::cerr << "BASENAME: " << baseName << std::endl;
 #endif
@@ -90,13 +90,13 @@ m_rendererDialog(0)
 #endif
   // load the data provider
  myLib = new QLibrary((const char *) ogrlib);
-#ifdef DEBUG
+#ifdef QGISDEBUG
   std::cout << "Library name is " << myLib->library() << std::endl;
 #endif
   bool loaded = myLib->load();
   if (loaded)
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       std::cout << "Loaded data provider library" << std::endl;
       std::cout << "Attempting to resolve the classFactory function" << std::endl;
 #endif
@@ -104,13 +104,13 @@ m_rendererDialog(0)
       valid = false;            // assume the layer is invalid until we determine otherwise
       if (cf)
         {
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Getting pointer to a dataProvider object from the library\n";
 #endif
           dataProvider = cf(vectorLayerPath);
           if (dataProvider)
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Instantiated the data provider plugin\n";
 #endif
 
@@ -121,7 +121,7 @@ m_rendererDialog(0)
                   QgsRect *mbr = dataProvider->extent();
                   // show the extent
                   QString s = mbr->stringRep();
-#ifdef DEBUG
+#ifdef QGISDEBUG
                   std::cout << "Extent of layer: " << s << std::endl;
 #endif
                   // store the extent
@@ -138,13 +138,13 @@ m_rendererDialog(0)
 
                   if (providerKey == "postgres")
                     {
-                      #ifdef DEBUG
+                      #ifdef QGISDEBUG
                        std::cout << "Beautifying layer name " << layerTitle << std::endl;
                       #endif
                       // adjust the display name for postgres layers
                       layerTitle = layerTitle.mid(layerTitle.find(".") + 1);
                       layerTitle = layerTitle.left(layerTitle.find("("));
-                      #ifdef DEBUG
+                      #ifdef QGISDEBUG
                        std::cout << "Beautified name is " << layerTitle << std::endl;
                       #endif
                     }
@@ -154,7 +154,7 @@ m_rendererDialog(0)
                 }
           } else
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "Unable to instantiate the data provider plugin\n";
 #endif
               valid = false;
@@ -163,7 +163,7 @@ m_rendererDialog(0)
   } else
     {
       valid = false;
-#ifdef DEBUG
+#ifdef QGISDEBUG
       std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
 #endif
     }
@@ -179,7 +179,7 @@ m_rendererDialog(0)
 
 QgsVectorLayer::~QgsVectorLayer()
 {
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
   std::cerr << "In QgsVectorLayer destructor" << std::endl;
   #endif
   if (tabledisplay)
@@ -228,7 +228,7 @@ void QgsVectorLayer::setDisplayField()
     {
 
       QString fldName = fields[j].getName();
-#ifdef DEBUG
+#ifdef QGISDEBUG
       std::cout << "Checking field " << fldName << std::endl;
 #endif
       if (fldName.find("name", false) > -1)
@@ -303,14 +303,14 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
-#ifdef DEBUG
+#ifdef QGISDEBUG
       qWarning("Selecting features based on view extent");
 #endif
       dataProvider->reset();
       dataProvider->select(viewExtent);
       int featureCount = 0;
       //  QgsFeature *ftest = dataProvider->getFirstFeature();
-#ifdef DEBUG
+#ifdef QGISDEBUG
       qWarning("Starting draw of features");
 #endif
       QgsFeature *fet;
@@ -335,12 +335,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
           if (fet == 0)
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cerr << "get next feature returned null\n";
 #endif
           } else
             {
-               #ifdef DEBUG
+               #ifdef QGISDEBUG
                   std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!Feature geometry: " << fet->wellKnownText() << std::endl;
                #endif
               //if feature is selected, change the color of the painter
@@ -513,7 +513,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                         break;
 
                       default:
-#ifdef DEBUG
+#ifdef QGISDEBUG
                         std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
 #endif
                         break;
@@ -528,21 +528,21 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
               //std::cout << "deleting feature[]\n";
               //      std::cout << geom->getGeometryName() << std::endl;
               featureCount++;
-              #ifdef DEBUG
+              #ifdef QGISDEBUG
               std::cout << "Feature count: " << featureCount << std::endl;
               #endif
               //delete[]feature;
             }
            // delete fet;
         }
-        #ifdef DEBUG
+        #ifdef QGISDEBUG
         std::cerr << "Total features processed is " << featureCount << std::endl;
         #endif
         delete brush;
       qApp->processEvents();
   } else
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
 #endif
     }
@@ -589,7 +589,7 @@ void QgsVectorLayer::identify(QgsRect * r)
       std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
       for (int i = 0; i < attr.size(); i++)
         {
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
 #endif
           if (attr[i].fieldName().lower() == fieldIndex)
@@ -601,7 +601,7 @@ void QgsVectorLayer::identify(QgsRect * r)
 
     }
 
-#ifdef DEBUG
+#ifdef QGISDEBUG
   std::cout << "Feature count on identify: " << featureCount << std::endl;
 #endif
   if (ir)
@@ -676,7 +676,7 @@ void QgsVectorLayer::table()
       for (std::map < int, bool >::iterator it = selected.begin(); it != selected.end(); ++it)
         {
           tabledisplay->table()->selectRowWithId(it->first);
-#ifdef DEBUG
+#ifdef QGISDEBUG
           qWarning("selecting row with id " + QString::number(it->first));
 #endif
         }
@@ -827,7 +827,7 @@ QGis::VectorType QgsVectorLayer::vectorType()
         }
   } else
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       qWarning("warning, pointer to dataProvider is null in QgsVectorLayer::vectorType()");
 #endif
     }
@@ -1055,7 +1055,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
                 break;
 
               default:
-#ifdef DEBUG
+#ifdef QGISDEBUG
                 std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
 #endif
                 break;
