@@ -476,9 +476,15 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
   // we're only interested in positive offsets where the origin of the raster
   // is northwest of the origin of the view
   myRasterViewPort->rectXOffsetInt = static_cast < int >((theViewExtent->xMin() - layerExtent.xMin()) / fabs(adfGeoTransform[1]));
-  myRasterViewPort->rectXOffsetInt = myRasterViewPort->rectXOffsetInt >? 0;
+  if (myRasterViewPort->rectXOffsetInt < 0 )
+  {
+    myRasterViewPort->rectXOffsetInt = 0;
+  }
   myRasterViewPort->rectYOffsetInt = static_cast < int >((layerExtent.yMax() - theViewExtent->yMax()) / fabs(adfGeoTransform[5]));
-  myRasterViewPort->rectYOffsetInt = myRasterViewPort->rectYOffsetInt >? 0;
+  if (myRasterViewPort->rectYOffsetInt < 0)
+  {
+     myRasterViewPort->rectYOffsetInt = 0;
+  }
 
   //std::cout << "Nodata value for band " << i << " is " << noDataDouble << "\n" << std::endl;
   //std::cout << "myGdalBand->GetOverviewCount(): " << myGdalBand->GetOverviewCount() <<std::endl;
@@ -496,8 +502,14 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
   myRasterViewPort->clippedHeightInt =
       abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
   // make sure we don't exceed size of raster
-  myRasterViewPort->clippedWidthInt = myRasterViewPort->clippedWidthInt <? rasterXDimInt;
-  myRasterViewPort->clippedHeightInt = myRasterViewPort->clippedHeightInt <? rasterYDimInt;
+  if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
+  {
+     myRasterViewPort->clippedWidthInt = rasterXDimInt;
+  }
+  if (myRasterViewPort->clippedHeightInt > rasterYDimInt) 
+  {
+    myRasterViewPort->clippedHeightInt = rasterYDimInt;
+  }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
   myRasterViewPort->topLeftPoint = theQgsCoordinateTransform->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
