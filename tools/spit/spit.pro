@@ -16,6 +16,6 @@ FORMS	= qgsconnectiondialogbase.ui \
 TEMPLATE	=app
 CONFIG	+= qt warn_on release
 DEFINES	+= POSTGRESQL HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
-INCLUDEPATH += $(PGSQL)/include 
-LIBS	+= -L$(PGSQL)/lib -lpq++
+LIBS	+= -L$(PGSQL)/lib -lpq++  -L/usr/local/lib -lgdal.1.1
 LANGUAGE	= C++
+INCLUDEPATH += -I/usr/local/include $(PGSQL)/include

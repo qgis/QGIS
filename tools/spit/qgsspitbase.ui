@@ -324,46 +324,10 @@
 </widget>
 <connections>
     <connection>
-        <sender>btnNew</sender>
+        <sender>chkUseDefault</sender>
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
-        <slot>newConnection()</slot>
-    </connection>
-    <connection>
-        <sender>btnImport</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>import()</slot>
-    </connection>
-    <connection>
-        <sender>btnCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>close()</slot>
-    </connection>
-    <connection>
-        <sender>btnEdit</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>editConnection()</slot>
-    </connection>
-    <connection>
-        <sender>btnRemoveFile</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>removeFile()</slot>
-    </connection>
-    <connection>
-        <sender>btnAddFile</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>addFile()</slot>
-    </connection>
-    <connection>
-        <sender>btnRemove</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>removeConnection()</slot>
+        <slot>useDefault()</slot>
     </connection>
     <connection>
         <sender>btnRemoveAll</sender>
@@ -372,22 +336,58 @@
         <slot>removeAllFiles()</slot>
     </connection>
     <connection>
-        <sender>chkUseDefault</sender>
+        <sender>btnRemove</sender>
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
-        <slot>useDefault()</slot>
+        <slot>removeConnection()</slot>
     </connection>
     <connection>
-        <sender>btnHelp</sender>
+        <sender>btnAddFile</sender>
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
-        <slot>help()</slot>
+        <slot>addFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnRemoveFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>removeFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>editConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>btnImport</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>import()</slot>
+    </connection>
+    <connection>
+        <sender>btnNew</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>newConnection()</slot>
     </connection>
     <connection>
         <sender>btnAbout</sender>
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
-        <slot>about()</slot>
+        <slot>aboutInfo()</slot>
+    </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>helpInfo()</slot>
     </connection>
 </connections>
 <slots>
@@ -399,8 +399,8 @@
     <slot>removeFile()</slot>
     <slot>removeAllFiles()</slot>
     <slot>useDefault()</slot>
-    <slot>help()</slot>
-    <slot>about()</slot>
+    <slot>helpInfo()</slot>
+    <slot>aboutInfo()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

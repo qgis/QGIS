@@ -1,6 +1,8 @@
 
 #include <qlistview.h>
+#include <vector>
 #include "qgsspitbase.h"
+#include "qgsshapefile.h"
 
 class QgsSpit :public QgsSpitBase{
   public:
@@ -21,4 +23,5 @@ class QgsSpit :public QgsSpitBase{
 
   private:
   int default_value;
+  std::vector <QgsShapeFile> fileList;
 };

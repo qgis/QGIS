@@ -15,19 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSSHAPEFILE_H
+#define QGSSHAPEFILE_H
+
 #include<qstring.h>
- 
-//#include "qva	OGRDataSource *ogrDataSource;luevector.h"
+#include <ogrsf_frmts.h>
+
+class OGRLayer;
+class OGRDataSource;
  
 class QgsShapeFile
 {
-  public:
-  
+  public:  
   QgsShapeFile(QString filename);
   ~QgsShapeFile();
 
+  const char * getFeatureCount();
+  const char * QgsShapeFile::getFeatureClass();
+
 
   private:
-  //OGRDataSource *ogrDataSource;
+  OGRDataSource *ogrDataSource;
+  OGRLayer * ogrLayer;
+  bool valid;
+  //const char *featureType = {"null", "Point", "Line", "Polygon", "MultiPoint", "MultiLine", "MultiPolygon"};
 
 };
+
+#endif

@@ -1,6 +1,5 @@
 
 #include<qmessagebox.h>
-
 #include <libpq++.h>
 #include <iostream>
 #include <qsettings.h>
@@ -90,9 +89,10 @@ void QgsSpit::addFile()
           break;
         }
     if(!exist){
+      QgsShapeFile * file = new QgsShapeFile(*it);
       QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
-      lvi->setText(1, "Polygon");
-      lvi->setText(2, "lots");
+      lvi->setText(1, file->getFeatureClass());
+      lvi->setText(2, file->getFeatureCount());
     }
   }
 }
