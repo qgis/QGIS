@@ -62,7 +62,14 @@
 QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
     : QgsProjectPropertiesBase(parent, name)
 {
-  //    out with the old
+
+    //for now we are disabling the use of projection related widgets until they are
+    //ready for production use
+    cbxProjectionEnabled->setEnabled(false);
+    lstCoordinateSystems->setEnabled(false);
+    teProjection->setEnabled(false);
+    
+    //    out with the old
     //    QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
     //    in with the new...
     QgsScaleCalculator::units myUnit = QgsProject::instance()->mapUnits();
