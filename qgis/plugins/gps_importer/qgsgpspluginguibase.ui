@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>PluginGuiBase</class>
+<class>QgsGPSPluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>PluginGuiBase</cstring>
+        <cstring>QgsGPSPluginGuiBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -622,97 +622,97 @@ to transfer the data. If you don't have GPSBabel installed where QGIS can find i
     <connection>
         <sender>pbnOK</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>pbnOK_clicked()</slot>
     </connection>
     <connection>
         <sender>pbnCancel</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
     <connection>
         <sender>tabWidget</sender>
         <signal>currentChanged(QWidget*)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>leDLBasename</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>leDLOutput</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>pbDLOutput</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>pbnDLOutput_clicked()</slot>
     </connection>
     <connection>
         <sender>leIMPLayer</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>pbIMPOutput</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>pbnIMPOutput_clicked()</slot>
     </connection>
     <connection>
         <sender>pbIMPInput</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>pbnIMPInput_clicked()</slot>
     </connection>
     <connection>
         <sender>leIMPOutput</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>leIMPOutput</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>leIMPInput</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>leIMPInput</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
         <sender>pbnGPXSelectFile</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>pbnGPXSelectFile_clicked()</slot>
     </connection>
     <connection>
         <sender>leGPXFile</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>leGPXFile_textChanged(const QString&amp;)</slot>
     </connection>
     <connection>
         <sender>leGPXFile</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
 </connections>

@@ -14,11 +14,8 @@ PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 
 plugindir = ${pkglibdir}
 
-#for plugin so
 plugin_LTLIBRARIES = gpsimporterplugin.la
 
-#for standalon executable
-#bin_PROGRAMS = gpsimporter 
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -29,40 +26,35 @@ plugin_LTLIBRARIES = gpsimporterplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-##
-##  For plugin lib
-##
 
-gpsimporterplugin_la_SOURCES = plugin.cpp \
-	waypointtoshape.cpp \
-	waypointtoshape.h \
-	utils.c \
-	shpopen.c \
-	dbfopen.c \
-	shapefile.h \
+gpsimporterplugin_la_SOURCES = \
+	qgsgpsplugin.cpp \
 	qgsbabelformat.h \
 	qgsbabelformat.cpp \
-	plugingui.cpp \
+	qgsgpsplugingui.cpp \
 	qgsgpsdevicedialog.cpp \
 	$(plugin_UI)\
 	$(plugin_MOC)
 
-plugin_MOC = plugin.moc.cpp \
-	plugingui.moc.cpp \
-	pluginguibase.moc.cpp \
+plugin_MOC = \
+	qgsgpsplugin.moc.cpp \
+	qgsgpsplugingui.moc.cpp \
+	qgsgpspluginguibase.moc.cpp \
 	qgsgpsdevicedialogbase.moc.cpp \
 	qgsgpsdevicedialog.moc.cpp
 
-plugin_UI = pluginguibase.h \
-	pluginguibase.cpp \
+plugin_UI = \
+	qgsgpspluginguibase.h \
+	qgsgpspluginguibase.cpp \
 	qgsgpsdevicedialogbase.h \
 	qgsgpsdevicedialogbase.cpp
 
-plugin_UIC = pluginguibase.ui \
-             qgsgpsdevicedialogbase.ui
+plugin_UIC = \
+	qgsgpspluginguibase.ui \
+	qgsgpsdevicedialogbase.ui
 
 # UI dependencies      
-pluginguibase.cpp: pluginguibase.h pluginguibase.ui
+qgsgpspluginguibase.cpp: qgsgpspluginguibase.h qgsgpspluginguibase.ui
 qgsgpsdevicedialogbase.cpp: qgsgpsdevicedialogbase.h qgsgpsdevicedialogbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
@@ -72,41 +64,16 @@ gpsimporterplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 gpsimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 gpsimporterplugin_la_LDFLAGS = -avoid-version -module 
 
-##
-##  For standalone executable
-##
-
-#gpsimporter_SOURCES = main.cpp \
-#	waypointtoshape.cpp \
-#	waypointtoshape.h \
-#	utils.c \
-#	shpopen.c \
-#	dbfopen.c \
-#	shapefile.h \
-#	plugingui.cpp \
-#	pluginguibase.cpp \
-#	$(standalone_MOC) 
-
-#gpsimporter_LDADD = $(QT_LDADD)  $(GDAL_LDADD)
-#gpsimporter_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-#gpsimporter_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH) $(DEBUG_QGIS) -I../../src 
-
-standalone_MOC = plugingui.moc.cpp \
-	     pluginguibase.moc.cpp 
-
-standalone_UI = pluginguibase.h \
-	    pluginguibase.cpp 
 
 ## 
 ## Anything that must go in the tarball gets added here
 ##
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
-	pluginguibase.h \
-	pluginguibase.ui.h \
+	qgsgpspluginguibase.h \
+	qgsgpspluginguibase.ui.h \
 	qgsgpsdevicedialogbase.h \
 	qgsgpsdevicedialogbase.ui.h \
-	plugingui.h \
-	plugin.h \
-	qgsgpsdevicedialog.h \
-	utils.h
+	qgsgpsplugingui.h \
+	qgsgpsplugin.h \
+	qgsgpsdevicedialog.h

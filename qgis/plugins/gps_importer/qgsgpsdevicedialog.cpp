@@ -95,12 +95,10 @@ void QgsGPSDeviceDialog::slotSelectionChanged() {
   QString devName = lbDeviceList->selectedItem()->text();
   leDeviceName->setText(devName);
   QgsBabelFormat* device = dynamic_cast<QgsBabelCommand*>(mDevices[devName]);
-  leDownloadCmd->setText(device->getImportCommand("%babel", "%type", 
-						  "%in", "%out").
-			 join(" "));
-  leUploadCmd->setText(device->getExportCommand("%babel", "%type", 
-						"%in", "%out").
-		       join(" "));
+  leDownloadCmd->setText(device->importCommand("%babel", "%type", 
+					       "%in", "%out").join(" "));
+  leUploadCmd->setText(device->exportCommand("%babel", "%type", 
+					     "%in", "%out").join(" "));
 }
 
 
@@ -112,9 +110,9 @@ void QgsGPSDeviceDialog::writeDeviceSettings() {
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
     deviceNames.append(iter->first);
     QString download = 
-      iter->second->getImportCommand("%babel","%type","%in","%out").join(" ");
+      iter->second->importCommand("%babel","%type","%in","%out").join(" ");
     QString upload = 
-      iter->second->getExportCommand("%babel","%type","%in","%out").join(" ");
+      iter->second->exportCommand("%babel","%type","%in","%out").join(" ");
     settings.writeEntry(devPath.arg(iter->first) + "/download", download);
     settings.writeEntry(devPath.arg(iter->first) + "/upload", upload);
   }

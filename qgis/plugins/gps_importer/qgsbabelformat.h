@@ -1,13 +1,9 @@
 /***************************************************************************
   qgsbabelformat.h - import/export formats for GPSBabel
-Functions:
-
--------------------
-begin                : Oct 20, 2004
-copyright            : (C) 2004 by Lars Luthman
-email                : larsl@users.sourceforge.net
-
- ***************************************************************************/
+   -------------------
+  begin                : Oct 20, 2004
+  copyright            : (C) 2004 by Lars Luthman
+  email                : larsl@users.sourceforge.net
 
 /***************************************************************************
  *                                                                         *
@@ -33,15 +29,15 @@ public:
   QgsBabelFormat();
   virtual ~QgsBabelFormat() { }
   
-  const QString& getName() const;
-  virtual QStringList getImportCommand(const QString& babel,
-				       const QString& featuretype,
-				       const QString& input,
-				       const QString& output) const;
-  virtual QStringList getExportCommand(const QString& babel,
-				       const QString& featuretype,
-				       const QString& input,
-				       const QString& output) const;
+  const QString& name() const;
+  virtual QStringList importCommand(const QString& babel,
+				    const QString& featuretype,
+				    const QString& input,
+				    const QString& output) const;
+  virtual QStringList exportCommand(const QString& babel,
+				    const QString& featuretype,
+				    const QString& input,
+				    const QString& output) const;
   
   bool supportsImport() const;
   bool supportsExport() const;
@@ -56,30 +52,32 @@ protected:
 };
 
 
+
 class QgsSimpleBabelFormat : public QgsBabelFormat {
 public:
   QgsSimpleBabelFormat(const QString& format, bool hasWaypoints, 
 		       bool hasRoutes, bool hasTracks);
-  QStringList getImportCommand(const QString& babel, 
-			       const QString& featuretype,
-			       const QString& input,
-			       const QString& output) const;
+  QStringList importCommand(const QString& babel, 
+			    const QString& featuretype,
+			    const QString& input,
+			    const QString& output) const;
 protected:
   QString mFormat;
 };
 
 
+
 class QgsBabelCommand : public QgsBabelFormat {
 public:
   QgsBabelCommand(const QString& importCmd, const QString& exportCmd);
-  QStringList getImportCommand(const QString& babel,
-			       const QString& featuretype,
-			       const QString& input,
-			       const QString& output) const;
-  QStringList getExportCommand(const QString& babel,
-			       const QString& featuretype,
-			       const QString& input,
-			       const QString& output) const;
+  QStringList importCommand(const QString& babel,
+			    const QString& featuretype,
+			    const QString& input,
+			    const QString& output) const;
+  QStringList exportCommand(const QString& babel,
+			    const QString& featuretype,
+			    const QString& input,
+			    const QString& output) const;
 protected:
   QStringList mImportCmd;
   QStringList mExportCmd;
