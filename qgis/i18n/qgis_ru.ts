@@ -10,16 +10,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select the GPS dowload file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
-&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
-&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Input File:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -69,6 +59,16 @@
     </message>
     <message>
         <source>This is a template for your plugin gui. Please modify this as needed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -323,7 +323,7 @@
     </message>
     <message>
         <source>QGIS - Changes in CVS</source>
-        <translation>QGIS - Изменения в CVS</translation>
+        <translation type="obsolete">QGIS - Изменения в CVS</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
@@ -371,6 +371,14 @@
     </message>
     <message>
         <source>There was an error loading %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in CVS Since Last Release</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1080,10 +1088,6 @@ Apologies to anyone not included. Please let the project admin at qgis.sourcefor
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add layer using the deimiter, file, and x/y fields specifed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1183,6 +1187,10 @@ Apologies to anyone not included. Please let the project admin at qgis.sourcefor
     </message>
     <message>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add layer using the delimiter, file, and x/y fields specified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1581,9 +1589,6 @@ Pattern</source>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsLayerPropertiesBase</name>
 </context>
 <context>
     <name>QgsLegendItemBase</name>

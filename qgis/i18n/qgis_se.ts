@@ -17,7 +17,7 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Välj GPS-dumpfilen som du vill konvertera till en shapefile så gör detta plugin jobbet åt dig! &lt;/p&gt;
 &lt;p&gt;Använd det minsta tidsgapet för att ange vilket tidsintervall som ska användas innan en ny detalj påbörjas. &lt;/p&gt;
@@ -80,6 +80,16 @@
     <message>
         <source>This is a template for your plugin gui. Please modify this as needed.</source>
         <translation>Detta är en mall för ditt plugin-gui. Ändra det du behöver.</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -333,7 +343,7 @@
     </message>
     <message>
         <source>QGIS - Changes in CVS</source>
-        <translation>QGIS - Ändringar i CVS</translation>
+        <translation type="obsolete">QGIS - Ändringar i CVS</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
@@ -386,6 +396,14 @@
     <message>
         <source>open files dialog</source>
         <translation type="obsolete">öppna filer-dialog</translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in CVS Since Last Release</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

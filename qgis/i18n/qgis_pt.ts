@@ -3,11 +3,11 @@
     <name>PluginGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelo de Plugin para o QGIS</translation>
     </message>
     <message>
         <source>GPS Download File Importer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importação de arquivos de GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -17,39 +17,44 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"> &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Selecione o arquivo de download do GPS que você deseja converter para um shapefile e este plugin cuidará da tarefa! &lt;/p&gt;
+&lt;p&gt;Utilize o intervalo mínimo de tempo para permitir que se saiba qual intervalo de tempo de ser considerado antes de iniciar um novo padrão. &lt;/p&gt;
+&lt;p&gt;Utilize o intervalo mínimo de distância para definir qual distância entre duas leituras deve ser considerada para iniciar um novo padrão.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Input File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo de entrada:</translation>
     </message>
     <message>
         <source>Output (Shape) File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo de saída:</translation>
     </message>
     <message>
         <source>Minimum time gap (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo mínimo de tempo (s):</translation>
     </message>
     <message>
         <source>Minimum distance gap (dd):</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo mínimo de distância (dd):</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Graticule Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrutor de shapefiles quadriculados (graticule)</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
@@ -57,18 +62,31 @@
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Este plugin irá auxiliar na preparação de um shapefile quadriculado (graticule) que você poderá usar como um overlay dentro do visualizador de mapas do qgis.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo de latitude:</translation>
     </message>
     <message>
         <source>Longitude Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo de longitude:</translation>
     </message>
     <message>
         <source>This is a template for your plugin gui. Please modify this as needed.</source>
+        <translation>Este é um modelo para a interface gráfica do seu plugin. Modifique de acordo com suas necessidades.</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -76,7 +94,7 @@
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
-        <translation type="unfinished">janela de abrir arquivos</translation>
+        <translation>janela para abrir arquivos</translation>
     </message>
 </context>
 <context>
@@ -327,7 +345,7 @@
     </message>
     <message>
         <source>QGIS - Changes in CVS</source>
-        <translation>QGIS - Mudanças no CVS</translation>
+        <translation type="obsolete">QGIS - Mudanças no CVS</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
@@ -348,6 +366,14 @@
     <message>
         <source>Unable to connect to the QGIS Version server</source>
         <translation>Impossível conectar ao servidor de Versões do QGIS</translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in CVS Since Last Release</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -554,27 +580,27 @@
     </message>
     <message>
         <source>Help Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de ferramentas de ajuda</translation>
     </message>
     <message>
         <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir um arquivo de projeto QGIS previamente salvo. Os layers (raster e vetor) armazenados no projeto serão carregados e exibidos nas opções de mapas</translation>
     </message>
     <message>
         <source>Close all layers and exit QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Fechar todos os layers e sair do QGIS</translation>
     </message>
     <message>
         <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar um layer do PostgreSQL ao mapa. Isto requer um banco de dados PostgreSQL devidamente configurado e fucionando, bem como as extensões PostGIS.</translation>
     </message>
     <message>
         <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizar o mapa limpando as opções de mapas e redesenhando todos os layers visíveis</translation>
     </message>
     <message>
         <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom máximo em todos os layers do mapa. Isto mostra com o máximo de detalhes tudo que está no mapa</translation>
     </message>
     <message>
         <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
@@ -662,19 +688,19 @@
     </message>
     <message>
         <source>Save Map As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar mapa como imagem</translation>
     </message>
     <message>
         <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar a visão do mapa atual como imagem PNG. O tamanho da imagem será exatamente o mesmo que está sendo visto.</translation>
     </message>
     <message>
         <source>Whats this?</source>
-        <translation type="unfinished"></translation>
+        <translation>O que é isso?</translation>
     </message>
     <message>
         <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
-        <translation type="unfinished"></translation>
+        <translation>O que é isso? - Clique aqui e depois clique num botão da barra de ferramentas para obter mais informações</translation>
     </message>
 </context>
 <context>
@@ -773,7 +799,7 @@
     </message>
     <message>
         <source>Peter Brewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Peter Brewer</translation>
     </message>
 </context>
 <context>
@@ -847,15 +873,15 @@
     </message>
     <message>
         <source>Create a New PostGIS connection</source>
-        <translation type="unfinished">Criar nova conexão PostGIS</translation>
+        <translation>Criar nova conexão PostGIS</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Porta</translation>
     </message>
     <message>
         <source>5432</source>
-        <translation type="unfinished"></translation>
+        <translation>5432</translation>
     </message>
 </context>
 <context>
@@ -878,7 +904,7 @@
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Espessura da borda:</translation>
     </message>
 </context>
 <context>
@@ -979,83 +1005,83 @@
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
         <source>Create a Layer from a Delimited Text File</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar layer a partir de arquivo texto delimitado</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda</translation>
     </message>
     <message>
         <source>Help on using the plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda sobre a utilização do plugin</translation>
     </message>
     <message>
         <source>Opens the Delimited Text Plugin help in your configured browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Abre a ajuda do plugin de arquivo texto delimitado no seu browser</translation>
     </message>
     <message>
         <source>Parse</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisar</translation>
     </message>
     <message>
         <source>Parse the header row and update the X and Y field lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisar a linha do cabeçalho a atualizar as listas de X e Y</translation>
     </message>
     <message>
         <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisa a linha de cabeçalho do arquivo de entrada e atualiza as listas dos campos X e Y. Utilize este botão para atualizar as listas caso o delimitator tenha sido modificado depois da seleção do arquivo.</translation>
     </message>
     <message>
         <source>Add Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar layer</translation>
     </message>
     <message>
         <source>Add layer using the deimiter, file, and x/y fields specifed</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Adicionar layer usando o delimitador, arquivo e campos x/y especificados</translation>
     </message>
     <message>
         <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cria um layer usando os parâmetros especificados adicionando-o ao mapa. A janela permanece aberta permitindo adição de mais layers.</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Fechar</translation>
+        <translation>Fechar</translation>
     </message>
     <message>
         <source>Close the dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Fechar a janela</translation>
     </message>
     <message>
         <source>Close the dialog without adding anything to the map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fecha a janela sem adicionar nada ao mapa.</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;campo X&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name of the field containing x values</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do campo contendo valores de X</translation>
     </message>
     <message>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do campo contendo valores de x. Escolha um campo da lista. A lista é gerada a partir da linha de cabeçalho do arquivo.</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Campo Y&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name of the field containing y values</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do campo contendo valores de y</translation>
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do campo contendo valores de y. Escolha um campo da lista. A lista é gerada a partir da linha de cabeçalho do arquivo.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -1065,58 +1091,67 @@
 &lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Selecione o arquivo contendo texto delimitado com coordenadas lat/long que você deseja usar como um layer de pontos e este plugin se encarregará do serviço! &lt;/p&gt;
+&lt;p&gt;Use o campo nome do layer para especificar uma legenda para o novo layer. Use o campo delimitador para especificar qual o delimitador de valores usado no arquivo (por exemplo espaço, vírgula ou tabulação). Observe que este campo aceita expressões regulares portanto use \t para tabulação e assim por diante. Depois de escolher um delimitador, pressione o botão analisar para ver quais nomes de campos foram encontrados no arquivo.&lt;/p&gt;
+&lt;p&gt;Use os campos X e Y para especificar quais colunas representam latitude e longitude..&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do layer</translation>
     </message>
     <message>
         <source>Name to display in the map legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome para exibir na legenda do mapa</translation>
     </message>
     <message>
         <source>Name displayed in the map legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome exibido na legenda do mapa</translation>
     </message>
     <message>
         <source>Delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador usado ao separar os campos do arquivo texto. O delimitador pode possuir mais de um caracter.</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador usado ao separar os campos do arquivo texto. O delimitador pode possuir um ou mais caracteres.</translation>
     </message>
     <message>
         <source>Delimited Text Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer textual delimitado</translation>
     </message>
     <message>
         <source>Delimited text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo texto delimitado</translation>
     </message>
     <message>
         <source>Full path to the delimited text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Caminho completo para o arquivo texto delimitado</translation>
     </message>
     <message>
         <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Caminho completo para o arquivo texto delimitado. Para analisar apropriadamente os campos do arquivo, o delimitador deve ser escolhido antes do arquivo. Use o botão procurar ao lado deste campo para escolher um arquivo de entrada.</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Browse to find the delimited text file to be processed</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar arquivo texto delimitado para processamento</translation>
     </message>
     <message>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
+        <translation>Utilize este botão para procurar o arquivo texto delimitado. O botão não será habilitado enquanto um delimitador não houver sido escolhido no campo &lt;i&gt;Delimitador&lt;/i&gt;. Depois de escolhido um arquivo, as caixas de seleção X e Y serão preenchidas com os campos do arquivo texto.</translation>
+    </message>
+    <message>
+        <source>Add layer using the delimiter, file, and x/y fields specified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1203,11 +1238,11 @@
     </message>
     <message>
         <source>Single Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador único</translation>
     </message>
     <message>
         <source>Graduated Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador gradual</translation>
     </message>
 </context>
 <context>
@@ -1309,43 +1344,44 @@
     <name>QgsGraMaDialogBase</name>
     <message>
         <source>graduated Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador gradual</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation type="unfinished">Modo:</translation>
+        <translation>Modo:</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo de classificação:</translation>
     </message>
     <message>
         <source>Number of Classes:</source>
-        <translation type="unfinished">Número de Classes:</translation>
+        <translation>Número de Classes:</translation>
     </message>
 </context>
 <context>
     <name>QgsGraMaExtensionWidget</name>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Limite inferior</translation>
+        <translation>Limite inferior</translation>
     </message>
     <message>
         <source>Upper</source>
-        <translation type="unfinished">Limite superior</translation>
+        <translation>Limite superior</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Identificação</translation>
+        <translation>Identificação</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagem</translation>
     </message>
     <message>
         <source>Scale
 Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Fator
+de Escala</translation>
     </message>
 </context>
 <context>
@@ -1416,7 +1452,7 @@ preenchimento</translation>
     <name>QgsGrassSelectBase</name>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Layer vetorial GRASS</translation>
     </message>
     <message>
         <source>Gisdbase</source>
@@ -1424,31 +1460,31 @@ preenchimento</translation>
     </message>
     <message>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Localização</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir</translation>
     </message>
     <message>
         <source>Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Conjunto de mapas</translation>
     </message>
     <message>
         <source>Map name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do mapa</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Select or type map name (wildcards &apos;*&apos; and &apos;?&apos; accepted for rasters)</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecione ou digite o nome do mapa (caracteres &apos;*&apos; e &apos;?&apos;  são aceitos para rasters)</translation>
     </message>
 </context>
 <context>
@@ -1773,27 +1809,27 @@ Ajuda do QGIS</translation>
     <name>QgsMarkerDialogBase</name>
     <message>
         <source>Choose a marker symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha um símbolo marcador</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Diretório</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished">Ok</translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo Item</translation>
     </message>
 </context>
 <context>
@@ -1889,15 +1925,15 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Porta</translation>
     </message>
     <message>
         <source>5432</source>
-        <translation type="unfinished"></translation>
+        <translation>5432</translation>
     </message>
 </context>
 <context>
@@ -1956,15 +1992,15 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished">Mapa</translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <source>Search Radius for Identifying Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Raio de busca para identificação de padrões</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>&lt;html&gt;Specify the value in thousandths.  
@@ -1974,11 +2010,17 @@ The search radius is calculated as:
 By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Especifique o valor em milhares.
+O raio de busca é calculado assim:
+&lt;ul&gt; &lt;i&gt;(Largura de visualização do mapa) * ( Valor/1000.0)&lt;/i&gt;
+&lt;/ul&gt;
+Por default o QGIS usa o valor 5. Aumente o valor caso tenha problemas 
+na identificação de padrões sem ter que usar muito o zoom.
+&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Hide splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Não exibir a tela inicial (splash screen)</translation>
     </message>
 </context>
 <context>
@@ -2117,23 +2159,23 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished">Vermelho</translation>
+        <translation>Vermelho</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished">Verde</translation>
+        <translation>Verde</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished">Azul</translation>
+        <translation>Azul</translation>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation type="unfinished"></translation>
+        <translation>Extensão do Raster:</translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation type="unfinished"></translation>
+        <translation>Area clipada:</translation>
     </message>
 </context>
 <context>
@@ -2172,7 +2214,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Freak Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Barbarizar</translation>
     </message>
 </context>
 <context>
@@ -2375,11 +2417,11 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagem</translation>
     </message>
     <message>
         <source>Scale Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Fator de Escala</translation>
     </message>
 </context>
 <context>
@@ -2493,7 +2535,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Global Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquema global</translation>
     </message>
 </context>
 <context>
