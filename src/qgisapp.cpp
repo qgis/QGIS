@@ -584,7 +584,7 @@ void QgisApp::fileNew(){
 }
 void QgisApp::fileOpen(){
 	mapCanvas->freeze(true);
-	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN);
+	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN, this);
 	
 	if(pio->read()){
 		setCaption(tr("Quantum GIS --") +" " + pio->baseName());

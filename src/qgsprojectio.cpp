@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.18 2004/01/26 17:25:22 mhugent Exp */
+/* qgsprojectio.cpp,v 1.19 2004/01/27 03:01:11 gsherman Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -34,9 +34,10 @@
 #include "qgssisydialog.h"
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
- 
+#include "qgisapp.h"
 
-QgsProjectIo::QgsProjectIo(QgsMapCanvas *_map, int _action) : map(_map), action(_action)
+QgsProjectIo::QgsProjectIo(QgsMapCanvas *_map, int _action, QgisApp *qgis) 
+  : map(_map), action(_action), qgisApp(qgis)
 
 {
 }
@@ -408,12 +409,13 @@ bool QgsProjectIo::read(){
 			    //dbl->setSymbol(sym);
 			    dbl->setVisible(visible == "1");
 			    qWarning("adde den Layer");
+          dbl->initContextMenu(qgisApp);
 			    map->addLayer(dbl);
 			} 
 			else if ( type == "raster" ) 
 			{
 				QgsRasterLayer *myRasterLayer = new QgsRasterLayer(dataSource, layerName);
-				
+				myRasterLayer->initContextMenu(qgisApp);
 				map->addLayer(myRasterLayer);
                                 
 				myRasterLayer->setVisible(visible == "1");
