@@ -24,11 +24,15 @@
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qmainwindow.h>
-
+extern "C"
+{
+#include <libpq-fe.h>
+}
 class QMessageBox;
 class QToolBar;
 class QMenuBar;
 class QPopupMenu;
+
 //#include "qgsworkerclass.h"
 #include "../../src/qgisapp.h"
 
@@ -74,6 +78,19 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
     //! unload the plugin
     void unload();
   private:
+  //! get postgis version string
+   QString postgisVersion(PGconn *);
+  //! get status of GEOS capability
+  bool hasGEOS(PGconn *);
+  //! get status of GIST capability
+  bool hasGIST(PGconn *);
+  //! get status of PROJ4 capability
+  bool hasPROJ(PGconn *);
+  QString postgisVersionInfo;
+  bool geosAvailable;
+  bool gistAvailable;
+  bool projAvailable;
+  
 //! Name of the plugin
       QString pName;
     //! Version
