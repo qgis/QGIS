@@ -11,6 +11,7 @@
 # $Id$
 
 plugindir = ${pkglibdir}
+PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 #NorthArrow below to be replaced with the name of the plugin
 plugin_LTLIBRARIES = libNorthArrowplugin.la
 
@@ -47,7 +48,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 libNorthArrowplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
 libNorthArrowplugin_la_LDFLAGS = -avoid-version -module
-libNorthArrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+libNorthArrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm
 
