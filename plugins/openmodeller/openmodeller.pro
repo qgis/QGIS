@@ -14,12 +14,17 @@ INCLUDEPATH += . %GDAL%\include ..\..\qgis_win32\plugins ..\..\qgis_win32\src
 
 
 #libs for dll
-LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib libopenmodeller_static.lib
-#LIBS += libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
+LIBS += $(GDAL)\lib\gdal_i.lib 
+LIBS += ..\..\qgis_win32\src\libqgis.lib 
+LIBS += libopenmodeller.lib
+LIBS += libexpatMT.lib 
 
 # config for dll
-CONFIG += qt dll thread rtti 
+#CONFIG += qt dll thread rtti #release version without debug symbols
+CONFIG += qt dll thread rtti debug console #debug version
 
+DEFINES+=_WINDOWS
+DEFINES+=CORE_DLL_IMPORT 
 
 #qgis plugin mode
 HEADERS += plugin.h 
@@ -51,4 +56,5 @@ SOURCES += plugin.cpp
 SOURCES += list.cpp \
            occurrences_file.cpp \
            openmodellergui.cpp \
+           file_parser.cpp \
            request_file.cpp 
