@@ -89,7 +89,7 @@ void QgsContColDialog::apply()
     QgsSymbol minsymbol;
     if(m_vectorlayer->vectorType()==QGis::Line)
     {
-	minsymbol.setPen(QPen(mincolorbutton->paletteBackgroundColor()));  
+	minsymbol.setPen(QPen(mincolorbutton->paletteBackgroundColor()));
     }
     else
     {
@@ -123,35 +123,55 @@ void QgsContColDialog::apply()
 	qWarning("Warning, typecast failed in QgsContColDialog::apply()");
 	return;
     }
-	
+
+    //add a pixmap to the legend item
+
+    //font tor the legend text
+    //TODO Make the font a user option
+    QFont f( "times", 12, QFont::Normal );
+    QFontMetrics fm(f);
+
+    //spaces in pixel
+    int topspace=5;//space between top of pixmap and first row
+    int leftspace=10;//space between left side and text/graphics
+    int rightspace=5;//space betwee text/graphics and right side
+    int bottomspace=5;//space between last row and bottom of the pixmap
+    int gradientwidth=40;//widht of the gradient
+    int gradientheight=100;//height of the gradient
+    int wordspace=10;//space between graphics/word
+
     //add a pixmap to the QgsLegendItem
     QPixmap* pix=m_vectorlayer->legendPixmap();
-    //use the name and the maximum value to estimate the necessary width of the pixmap (12 pixel width per letter seems to be appropriate)
+    //use the name and the maximum value to estimate the necessary width of the pixmap
     QString name=displaynamefield->text();
-    int namewidth=45+name.length()*12;
-    int numberlength=(int)(60+QString::number(maximum,'f',2).length()*12);
+    int namewidth=fm.width(name);
+    int numberlength=gradientwidth+wordspace+fm.width(QString::number(maximum,'f',2));
     int pixwidth=(numberlength > namewidth) ? numberlength : namewidth;
-    pix->resize(pixwidth,200);
+    pix->resize(leftspace+pixwidth+rightspace,topspace+2*fm.height()+gradientheight+bottomspace);
     pix->fill();
     QPainter p(pix);
 
     p.setPen(QPen(QColor(0,0,0),1));
+    p.setFont(f);
     //draw the layer name and the name of the classification field into the pixmap
-    p.drawText(45,35,name);
+    p.drawText(leftspace,topspace+fm.height(),name);
     m_vectorlayer->setlayerName(name);
-    p.drawText(45,70,classificationComboBox->currentText());
-	
+    p.drawText(leftspace,topspace+fm.height()*2,classificationComboBox->currentText());
+
+    int rangeoffset=topspace+fm.height()*2;
+
     //draw the color range line by line
-    for(int i=0;i<100;i++)
+    for(int i=0;i<gradientheight;i++)
     {
-	p.setPen(QColor(mincolorbutton->paletteBackgroundColor().red()+(maxcolorbutton->paletteBackgroundColor().red()-mincolorbutton->paletteBackgroundColor().red())/100*i,mincolorbutton->paletteBackgroundColor().green()+(maxcolorbutton->paletteBackgroundColor().green()-mincolorbutton->paletteBackgroundColor().green())/100*i,mincolorbutton->paletteBackgroundColor().blue()+(maxcolorbutton->paletteBackgroundColor().blue()-mincolorbutton->paletteBackgroundColor().blue())/100*i));//use the appropriate color
-	p.drawLine(10,90+i,50,90+i);
+	p.setPen(QColor(mincolorbutton->paletteBackgroundColor().red()+(maxcolorbutton->paletteBackgroundColor().red()-mincolorbutton->paletteBackgroundColor().red())/gradientheight*i,mincolorbutton->paletteBackgroundColor().green()+(maxcolorbutton->paletteBackgroundColor().green()-mincolorbutton->paletteBackgroundColor().green())/gradientheight*i,mincolorbutton->paletteBackgroundColor().blue()+(maxcolorbutton->paletteBackgroundColor().blue()-mincolorbutton->paletteBackgroundColor().blue())/gradientheight*i));//use the appropriate color
+	p.drawLine(leftspace,rangeoffset+i,leftspace+gradientwidth,rangeoffset+i);
     }
 
     //draw the minimum and maximum values beside the color range
-    p.setPen(QPen(QColor(0,0,0),1));
-    p.drawText(60,105,QString::number(minimum,'f',2));
-    p.drawText(60,190,QString::number(maximum,'f',2));
+    p.setPen(QPen(QColor(0,0,0)));
+    p.setFont(f);
+    p.drawText(leftspace+gradientwidth+wordspace,rangeoffset+fm.height(),QString::number(minimum,'f',2));
+    p.drawText(leftspace+gradientwidth+wordspace,rangeoffset+gradientheight,QString::number(maximum,'f',2));
 
     m_vectorlayer->triggerRepaint();
     m_vectorlayer->legendItem()->setPixmap(0,(*pix));
