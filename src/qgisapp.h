@@ -28,6 +28,7 @@ class QVBox;
 class QCursor;
 class QListView;
 class QListViewItem;
+class QgsMapLayer;
 #include "qgisappbase.h"
 
 class QgsMapCanvas;
@@ -69,6 +70,7 @@ public:
 	void testButton();
 	//! About QGis
 	void about();
+  
 public slots:
 //! Slot to show the map coordinate position of the mouse cursor
 	void showMouseCoordinate(QgsPoint &);

@@ -44,6 +44,8 @@ public:
     QgsMapCanvas(QWidget *parent=0, const char *name=0);
     //! Destructor
     ~QgsMapCanvas();
+    //! Set the legend control to be used with this canvas
+    void setLegend(QgsLegend *legend);
     /*! Adds a layer to the map canvas.
      * @param lyr Pointer to a layer derived from QgsMapLayer
      */
@@ -98,6 +100,7 @@ public slots:
     //! Previous view extent
     QgsRect previousExtent;
     QRect *mapWindow;
+    QgsLegend *mapLegend;
     QgsCoordinateTransform *coordXForm;
   /**  */
   int mapTool;
