@@ -67,6 +67,7 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
 	    }else
 	    {
 		qWarning("Warning, typecast failed in qgssimadialog.cpp on line 51");
+		mScaleEdit->setText("1.0");
 	    }
 	}else
 	{
