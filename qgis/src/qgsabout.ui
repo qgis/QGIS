@@ -142,6 +142,7 @@
                         </property>
                         <property name="text">
                             <string>&lt;p align="center"&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
+
 &lt;p align="center"&gt;http://www.gnu.org/licenses&lt;/p&gt;</string>
                         </property>
                         <property name="wordWrap">
@@ -338,7 +339,7 @@
                                         <pixmap>image0</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -362,7 +363,7 @@
                                         <pixmap>image1</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -386,7 +387,7 @@
                                         <pixmap>image2</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -410,7 +411,7 @@
                                         <pixmap>image3</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -434,7 +435,7 @@
                                         <pixmap>image4</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -458,7 +459,7 @@
                                         <pixmap>image5</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -482,7 +483,7 @@
                                         <pixmap>image6</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -541,7 +542,7 @@
                                         <pixmap>image8</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -592,7 +593,7 @@
                                         <pixmap>image10</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
@@ -637,7 +638,7 @@
                                         <pixmap>image11</pixmap>
                                     </property>
                                     <property name="scaledContents">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                             </grid>
