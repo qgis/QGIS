@@ -113,6 +113,8 @@ const char * QgsShapeFile::getName(){
 }
 
 bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, int tot=0){
+  bool result = true;
+  char * geo_temp;
   QString table(filename);
   table = table.section('/', -1);
   table = table.section('.', 0, 0);
@@ -121,17 +123,17 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
     query += QString(column_names[n]).lower() + " " + QString(column_types[n]) + ",";
   query += "the_geom geometry)";
 
-  //conn->ExecTuplesOk((const char *)query);
+  conn->ExecTuplesOk((const char *)query);
   
-  query = QString("SELECT AddGeometryColumn(\'") + dbname + "\', \'" + table + "\', \'the_geom\', " + srid +
+  query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table + "\', \'the_geom\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";
-  //conn->ExecTuplesOk((const char *)query);
+  conn->ExecTuplesOk((const char *)query);
 
   //adding the data into the table
   for(int m=0;OGRFeature *feat = ogrLayer->GetNextFeature(); m++){
     std::stringstream out;
     out << m;
-    query = QString("INSERT INTO ")+table+QString("values( "+out.str());
+    query = "INSERT INTO "+table+"values( "+out.str()+", ";
     OGRGeometry *geom = feat->GetGeometryRef();
     
     int num = geom->WkbSize();
@@ -142,12 +144,12 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
     int numFields = feat->GetFieldCount();
     for(int n=0; n<numFields; n++)
       query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
-    query += QString("GeometryFromText(\'")+QString(geom_type)+QString("(")+geometry+
-      QString(")\', ")+srid+QString("))");
+    query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
 
-    std::cout << (const char *)query << std::endl;
+    conn->ExecTuplesOk((const char *)query);
+
     delete[] geo_temp;
   }   
 
-  return true;
+  return result;
 }

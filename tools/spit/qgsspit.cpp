@@ -198,7 +198,7 @@ void QgsSpit::import(){
     PgDatabase *pd = new PgDatabase((const char *) connInfo);
 
   	if (pd->Status() == CONNECTION_OK) {     
-      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 100, this, "Progress");
+      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 10000, this, "Progress");
       pro->setAutoClose(true);
       pro->exec();
 
