@@ -190,6 +190,12 @@ bool QgsShapeFileProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
       geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
       f.setFeatureId(fet->GetFID());
       f.setGeometry(feature, geom->WkbSize());
+
+      OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
+      QString featureTypeName =   
+          featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+      f.typeName( featureTypeName );
+
       if(fetchAttributes){
         getFeatureAttributes(fet, &f);
       }
@@ -236,8 +242,14 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
       // get the wkb representation
       unsigned char *feature = new unsigned char[geom->WkbSize()];
       geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
-      f = new QgsFeature(fet->GetFID());
+
+      OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
+      QString featureTypeName =   
+          featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+
+      f = new QgsFeature(fet->GetFID(), featureTypeName);
       f->setGeometry(feature, geom->WkbSize());
+
       if(fetchAttributes){
         getFeatureAttributes(fet, f);
       }
@@ -275,7 +287,11 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
          // get the wkb representation
 	 unsigned char *feature = new unsigned char[geom->WkbSize()];
 	 geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
-	 f = new QgsFeature(fet->GetFID());
+         OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
+         QString featureTypeName =   
+             featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+
+	 f = new QgsFeature(fet->GetFID(), featureTypeName);
 	 f->setGeometry(feature, geom->WkbSize());
 	 for(std::list<int>::iterator it=attlist.begin();it!=attlist.end();++it)
 	 {
