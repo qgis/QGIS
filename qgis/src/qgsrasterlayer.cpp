@@ -61,7 +61,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     redBandNameQString="Red"; // sensible default
     greenBandNameQString="Green"; // sensible default
     blueBandNameQString="Blue"; // sensible default
-    blueBandNameQString="Gray"; // sensible default
+    grayBandNameQString="Gray"; // sensible default
     showGrayAsColorFlag=false; // sensible default
     invertHistogramFlag=false; // sensible default
     stdDevsToPlotDouble = 0; // sensible default
