@@ -8,6 +8,6 @@ enum MapTools {
 	Distance,
 	Identify
 };
-
+static const char *qgisVersion = "0.0.3-alpha";
 }
 #endif

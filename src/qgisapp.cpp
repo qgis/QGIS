@@ -76,8 +76,9 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   mapLegend->setBackgroundColor (QColor (192, 192, 192));
   mapLegend->setMapCanvas(mapCanvas);
   lv->setResizeMode(QListView::AllColumns);
- 
-
+  QString caption = "Quantum GIS - ";
+  caption += QGis::qgisVersion; 
+  setCaption(caption);
   connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
 	   SLOT (showMouseCoordinate (QgsPoint &)));
 
