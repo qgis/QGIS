@@ -22,32 +22,36 @@
 #include "qgslegenditem.h"
 
 
-QgsLegendItem::QgsLegendItem (QgsMapLayer *lyr, QListView * parent)
-	: QCheckListItem(parent, lyr->name(), QCheckListItem::CheckBox), m_layer(lyr)
+QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent)
+:QCheckListItem(parent, lyr->name(), QCheckListItem::CheckBox), m_layer(lyr)
 {
-  setOn(lyr->visible());
- 
-  
+	setOn(lyr->visible());
+
+
 }
 
-QgsLegendItem::~QgsLegendItem ()
+QgsLegendItem::~QgsLegendItem()
 {
 }
 
 /** Write property of QString layerName. */
-void QgsLegendItem::setLayerName (const QString & _newVal)
+void QgsLegendItem::setLayerName(const QString & _newVal)
 {
-  layerName = _newVal;
+	layerName = _newVal;
 }
 
 /** Write property of QString displayName. */
-void QgsLegendItem::setDisplayName (const QString & _newVal)
+void QgsLegendItem::setDisplayName(const QString & _newVal)
 {
-  displayName = _newVal;
+	displayName = _newVal;
 }
-void QgsLegendItem::stateChange(bool vis){
+
+void QgsLegendItem::stateChange(bool vis)
+{
 	m_layer->setVisible(vis);
 }
-QgsMapLayer * QgsLegendItem::layer(){
+
+QgsMapLayer *QgsLegendItem::layer()
+{
 	return m_layer;
 }

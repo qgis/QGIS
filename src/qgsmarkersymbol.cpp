@@ -16,7 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmarkersymbol.h"
-QgsMarkerSymbol::QgsMarkerSymbol(){
+QgsMarkerSymbol::QgsMarkerSymbol()
+{
 }
-QgsMarkerSymbol::~QgsMarkerSymbol(){
+
+QgsMarkerSymbol::~QgsMarkerSymbol()
+{
 }

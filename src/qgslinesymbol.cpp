@@ -16,7 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslinesymbol.h"
-QgsLineSymbol::QgsLineSymbol(){
+QgsLineSymbol::QgsLineSymbol()
+{
 }
-QgsLineSymbol::~QgsLineSymbol(){
+
+QgsLineSymbol::~QgsLineSymbol()
+{
 }
