@@ -2328,54 +2328,60 @@ QString QgisApp::activeLayerSource()
   return source;
 }
 
-/** Add a vector layer directly without prompting user for location */
+/** Add a vector layer directly without prompting user for location 
+The caller must provide information compatible with the provider plugin
+using the vectorLayerPath and baseName. The provider can use these
+parameters in any way necessary to initialize the layer. The baseName
+parameter is used in the Map Legend so it should be formed in a meaningful
+way.
+*/
 void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
 {
-  // check to see if the appropriate provider is available
-  QString providerName;
+	// check to see if the appropriate provider is available
+	QString providerName;
 
-  QString pProvider = providerRegistry->library(providerKey);
-  if (pProvider.length() > 0)
-    {
-      mapCanvas->freeze();
-      QApplication::setOverrideCursor(Qt::WaitCursor);
-      // create the layer
-      QgsVectorLayer *lyr;
-      if (providerKey == "postgres")
-        {
-          lyr = new QgsVectorLayer(vectorLayerPath + " table=" + baseName, baseName, "postgres");
-      } else
-        {
-          if (providerKey == "ogr")
-            {
-              lyr = new QgsVectorLayer(vectorLayerPath, baseName, "ogr");
-            }
-        }
+	QString pProvider = providerRegistry->library(providerKey);
+	if (pProvider.length() > 0)
+	{
+		mapCanvas->freeze();
+		QApplication::setOverrideCursor(Qt::WaitCursor);
+		// create the layer
+		QgsVectorLayer *lyr;
+		/* Eliminate the need to instantiate the layer based on provider type.
+			 The caller is responsible for cobbling together the needed information to
+			 open the layer
+		 */
+#ifdef QGISDEBUG
+		std::cout << "Creating new vector layer using " <<
+			vectorLayerPath << " with baseName of " << baseName <<
+			" and providerKey of " << providerKey << std::endl;
+#endif
+		lyr = new QgsVectorLayer(vectorLayerPath, baseName, providerKey);
 
-      // init the context menu so it can connect to slots in main app
-      lyr->initContextMenu(this);
+		// init the context menu so it can connect to slots in main app
+		lyr->initContextMenu(this);
 
-      // give it a random color
-      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
-      lyr->setRenderer(renderer);
-      renderer->initializeSymbology(lyr);
-      // add it to the mapcanvas collection
-      mapCanvas->addLayer(lyr);
-      projectIsDirty = true;
-      //qWarning("incrementing iterator");
-      /*! \todo Need legend scrollview and legenditem classes */
-      mapLegend->update();
+		// give it a random color
+		QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
+		lyr->setRenderer(renderer);
+		renderer->initializeSymbology(lyr);
+		// add it to the mapcanvas collection
+		mapCanvas->addLayer(lyr);
+		projectIsDirty = true;
+		//qWarning("incrementing iterator");
+		/*! \todo Need legend scrollview and legenditem classes */
+		mapLegend->update();
 
-      // draw the map
-      //mapCanvas->render2();
-      statusBar()->message(mapCanvas->extent().stringRep());
+		// draw the map
+		//mapCanvas->render2();
+		statusBar()->message(mapCanvas->extent().stringRep());
 
-    }
-  qApp->processEvents();
+	}
+	qApp->processEvents();
 
-  mapCanvas->freeze(false);
-  mapCanvas->render2();
-  QApplication::restoreOverrideCursor();
+	mapCanvas->freeze(false);
+	mapCanvas->render2();
+	QApplication::restoreOverrideCursor();
 }
 
 int QgisApp::saveDirty()
