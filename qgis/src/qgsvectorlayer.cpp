@@ -270,7 +270,7 @@ void QgsVectorLayer::setDisplayField()
   }
 }
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* src, QPaintDevice* dst)
+void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -323,7 +323,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     {
       if(featureCount%1000==0)//copy the drawing buffer every 1000 elements
       {
-        bitBlt(dst,0,0,src,0,0,-1,-1,Qt::CopyROP,false);
+        bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
       }
 
       //true is necessary for graduated symbol
