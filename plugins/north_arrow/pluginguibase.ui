@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>PluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -138,6 +138,12 @@
             <property name="name">
                 <cstring>tabNorthArrowOptions</cstring>
             </property>
+            <property name="enabled">
+                <bool>true</bool>
+            </property>
+            <property name="tabShape">
+                <enum>Rounded</enum>
+            </property>
             <widget class="QWidget">
                 <property name="name">
                     <cstring>TabPage</cstring>
@@ -151,7 +157,7 @@
                     </property>
                     <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
                         <property name="name">
-                            <cstring>pixmapLabel2_2</cstring>
+                            <cstring>pixmapLabel</cstring>
                         </property>
                         <property name="frameShape">
                             <enum>Box</enum>
@@ -165,7 +171,10 @@
                     </widget>
                     <widget class="QSpinBox" row="2" column="1">
                         <property name="name">
-                            <cstring>spinBox4</cstring>
+                            <cstring>spinRotation</cstring>
+                        </property>
+                        <property name="maxValue">
+                            <number>360</number>
                         </property>
                     </widget>
                     <widget class="QLabel" row="3" column="0">
@@ -214,7 +223,7 @@
                             </property>
                         </item>
                         <property name="name">
-                            <cstring>comboBox33</cstring>
+                            <cstring>cboPlacement</cstring>
                         </property>
                         <property name="toolTip" stdset="0">
                             <string>Placement on screen</string>
@@ -222,7 +231,7 @@
                     </widget>
                     <widget class="QSlider" row="1" column="1">
                         <property name="name">
-                            <cstring>slider39</cstring>
+                            <cstring>sliderRotation</cstring>
                         </property>
                         <property name="maxValue">
                             <number>360</number>
@@ -311,6 +320,36 @@
         <receiver>PluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
+    <connection>
+        <sender>spinRotation</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>sliderRotation</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>sliderRotation</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>spinRotation</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>spinRotation</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>spinRotation_valueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>sliderRotation</sender>
+        <signal>sliderMoved(int)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>sliderRotation_sliderMoved(int)</slot>
+    </connection>
+    <connection>
+        <sender>sliderRotation</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>sliderRotation_valueChanged(int)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">pluginguibase.ui.h</include>
@@ -318,6 +357,9 @@
 <slots>
     <slot>pbnOK_clicked()</slot>
     <slot>pbnCancel_clicked()</slot>
+    <slot>spinRotation_valueChanged( int )</slot>
+    <slot>sliderRotation_valueChanged( int )</slot>
+    <slot>sliderRotation_sliderMoved( int )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
