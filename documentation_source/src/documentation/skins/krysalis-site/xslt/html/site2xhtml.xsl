@@ -136,7 +136,7 @@ $Id$
                <img src="{$spacer}" alt="" height="10" width="1" />
                <span class="datenote"><script language="JavaScript" type="text/javascript"><![CDATA[<!--
                   //document.write("Published: " + document.lastModified);
-		  document.write("-- QGIS Version 0.0.13  --");
+		  document.write("-- QGIS Version 0.1pre1 Moroz  --");
                   //  -->]]></script></span>
             </td>
           </tr>

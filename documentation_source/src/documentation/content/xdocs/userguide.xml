@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" 
 "../../resources/schema/dtd/document-v12.dtd">
+<!-- $Id$ -->
 <document>
 	<header>
 		<title>QGIS User Guide</title>
@@ -11,12 +12,15 @@
 		</authors>
 		<notice>This document is under development</notice>
 	</header>
+  
 	<body>
 		<section>
 			<title>Introduction</title>
 		
 			<p>Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
 built for Linux/Unix. QGIS currently offers basic support for vector, raster, and database formats.</p>
+<note>The latest version of this document can always be found at <link href="http://qgis.sourceforge.net/docs/userguide.html">http://qgis.sourceforge.net/docs/userguide.html
+</link></note>
 		</section>
 		<section>
 			<title>Current Features</title>
@@ -340,8 +344,9 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 			because it allows you to click on a shapefile (for example) in konqueror and the file will be loaded in a 
 			new instance of QGIS.
 			</p>
+      
 			<p>
-			<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>
+			
 			</p>
 		</section>		
 		<section>
@@ -355,6 +360,6 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 		</section>		
 	</body>
 	<footer>
-		<legal>Â© 2003 Gary Sherman</legal>
+		<legal>&copy;2003,2004 Gary Sherman</legal>
 	</footer>
 </document>

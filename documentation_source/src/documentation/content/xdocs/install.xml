@@ -16,8 +16,11 @@
 			<p>
     
    This document briefly describes how to build QGIS from the source distribution. 
-   The information below is for <strong>version 0.1 Pre1 <em>Moroz</em></strong> of QGIS.
-   </p>
+   The information below is for <strong>version 0.1 Pre1 <em>Moroz</em></strong> of QGIS.  </p>
+   <note>The latest version of this document can always be found at <link href="http://qgis.sourceforge.net/docs/install.html">
+   http://qgis.sourceforge.net/docs/install.html
+</link></note>
+ 
 			<p>
 QGIS requires that a number of libraries be installed on your system:
 </p>
