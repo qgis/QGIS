@@ -5,7 +5,7 @@
 # sanity check to insure that the user invoked this from somewhere within
 # the qgis source hieararchy
 
-if [ ! -f CVS/Repository -a ! grep qgis CVS/Root ]; then
+if [ ! -f CVS/Repository -a ! `grep qgis CVS/Root` ]; then
         echo "You are not in a qgis source directory!"
         exit -1
 fi
