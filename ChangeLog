@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.106 2004/06/02 14:05:44 timlinux Exp
+ChangeLog,v 1.107 2004/06/03 14:05:00 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-03 [jobi] 0.3.0devel12
+** fixed bug #965720 by adding math.h for gcc 3.4 problems
 
 2004-06-02 [ts] 0.3.0devel11
 ** Changed maplayer draw() and its subclasses vectorlayer and rasterlayer to

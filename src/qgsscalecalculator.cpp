@@ -16,7 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
 #include <assert.h>
+#include <math.h>
 #include <qstring.h>
 #include "qgsrect.h"
 #include "qgsscalecalculator.h"

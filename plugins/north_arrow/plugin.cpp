@@ -45,6 +45,7 @@ email                : tim@linfiniti.com
 
 //non qt includes
 #include <iostream>
+#include <math.h>
 
 //the gui subclass
 #include "plugingui.h"
