@@ -61,8 +61,10 @@ class Plugin:public QObject, public QgisPlugin
   void unload();
   //! show the help document
   void help();
-  //! set copyright label placement
+  //! set north arrow placement
   void setPlacement(QString);
+  //! enable or disable north arrow
+  void setEnable(bool);
 
     private:
 
@@ -70,6 +72,8 @@ class Plugin:public QObject, public QgisPlugin
   // The amount of rotation for the north arrow
   int mRotationInt;
   int pluginType;
+  // enable or disable north arrow
+  bool mEnable;
   // The placement string
   QString mPlacement;
   //! Id of the plugin's menu. Used for unloading
