@@ -288,6 +288,7 @@ libqgis_la_SOURCES = qgsmapcanvas.cpp \
 										 qgsfield.cpp \
 										 qgsfeature.cpp \
 										 qgsfeatureattribute.cpp \
+										 qgspoint.cpp \
 										 qgsrect.cpp \
 										 qgscoordinatetransform.cpp \
 										 qgsscalecalculator.cpp \
