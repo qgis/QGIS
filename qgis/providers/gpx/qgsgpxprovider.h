@@ -150,9 +150,15 @@ public:
    */
   bool boundsCheck(double x, double y);
 
-  bool supportsFeatureAddition(){return true;}
+  bool supportsFeatureAddition() const 
+  { 
+      return true;
+  }
 
-  QgsDataSourceURI *getURI(){return 0;};
+  QgsDataSourceURI *getURI()
+  {
+      return 0;
+  }
   
  private:
   
