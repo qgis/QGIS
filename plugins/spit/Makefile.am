@@ -37,7 +37,7 @@ spit_MOC = 	qgsspit.moc.cpp \
 				qgsmessageviewer.moc.cpp \
 				qgsconnectiondialogbase.moc.cpp \
 				qgsspitbase.moc.cpp \
-				qgsmessageviewerbase.moc.cpp \
+				qgsmessageviewerbase.moc.cpp
 
 spit_UI = qgsconnectiondialogbase.h \
 	qgsconnectiondialogbase.cpp \
