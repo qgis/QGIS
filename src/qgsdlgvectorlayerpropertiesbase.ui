@@ -108,23 +108,6 @@
                             <string>Legend type:</string>
                         </property>
                     </widget>
-                    <widget class="QComboBox" row="1" column="2">
-                        <property name="name">
-                            <cstring>legendtypecombobox</cstring>
-                        </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>270</width>
-                                <height>24</height>
-                            </size>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>32767</width>
-                                <height>22</height>
-                            </size>
-                        </property>
-                    </widget>
                     <widget class="QLabel" row="0" column="0">
                         <property name="name">
                             <cstring>textLabel3</cstring>
@@ -138,7 +121,7 @@
                             <cstring>txtDisplayName</cstring>
                         </property>
                     </widget>
-                    <widget class="QWidgetStack" row="2" column="0" rowspan="1" colspan="3">
+                    <widget class="QWidgetStack" row="3" column="0" rowspan="1" colspan="3">
                         <property name="name">
                             <cstring>widgetStackRenderers</cstring>
                         </property>
@@ -184,6 +167,48 @@
                                 <number>2</number>
                             </attribute>
                         </widget>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Display/label field</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="1" column="2">
+                        <property name="name">
+                            <cstring>legendtypecombobox</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>270</width>
+                                <height>24</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>22</height>
+                            </size>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="2" column="2">
+                        <property name="name">
+                            <cstring>cmbDisplayLabelField</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>270</width>
+                                <height>24</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>22</height>
+                            </size>
+                        </property>
                     </widget>
                 </grid>
             </widget>

@@ -68,14 +68,17 @@ bufferRenderer(layer->
 //  QTextOStream (&ur) << extent->xMax() << ", " << extent->yMax(); 
   lblUpperRight->setText(ur.sprintf("%16f, %16f", extent->xMax(), extent->yMax()));
   std::vector < QgsField > fields = dp->fields();
-  // populate the table with the field information
+  // populate the table and the display field drop-down with the field information
   for (int i = 0; i < fields.size(); i++)
     {
       QgsField fld = fields[i];
       QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
                                              fld.type(), QString("%1").arg(fld.length()),
                                              QString("%1").arg(fld.precision()));
+      cmbDisplayLabelField->insertItem(fld.name());
     }
+  // set the current display/label field name in use
+  cmbDisplayLabelField->setCurrentText(lyr->labelField());
   // symbology initialization
   legendtypecombobox->insertItem(tr("Single Symbol"));
   legendtypecombobox->insertItem(tr("Graduated Symbol"));
@@ -177,6 +180,8 @@ void QgsDlgVectorLayerProperties::apply()
   }
 
   rendererDirty = false;
+  // set the display field
+  layer->setDisplayField(cmbDisplayLabelField->currentText());
 }
 
 void QgsDlgVectorLayerProperties::closeEvent(QCloseEvent* e)

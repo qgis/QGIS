@@ -113,7 +113,7 @@ const QString & QgsMapLayer::labelField()
 }
 
 /** Write property of QString labelField. */
-void QgsMapLayer::setlabelField(const QString & _newVal)
+void QgsMapLayer::setLabelField(const QString & _newVal)
 {
   m_labelField = _newVal;
 }
