@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>OpenModellerGuiBase</class>
 <author>Tim Sutton</author>
 <widget class="QWizard">
@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>672</width>
-            <height>480</height>
+            <width>600</width>
+            <height>512</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -119,13 +119,7 @@
                     <enum>Sunken</enum>
                 </property>
                 <property name="text">
-                    <string>&lt;h3&gt;Description:&lt;/h3&gt;
-
-
-
-
-
-The openModeller wizard will assist you in carrying out a species distribution model using the openModeller toolkit developed by CRIA, Brazil. Select an option from the picklist below to determine which type of model you wish to carry out. Details of the selected algorithm will be displayed below.</string>
+                    <string>&lt;h3&gt;Description:&lt;/h3&gt;&lt;p&gt;The openModeller wizard will assist you in carrying out a species distribution model using the openModeller toolkit developed by CRIA, Brazil. Select an option from the picklist below to determine which type of model you wish to carry out. Details of the selected algorithm will be displayed below.&lt;/p&gt;</string>
                 </property>
             </widget>
             <widget class="QComboBox" row="2" column="1">
@@ -454,15 +448,8 @@ The openModeller wizard will assist you in carrying out a species distribution m
                 <property name="text">
                     <string>&lt;h3&gt;Coordinate System:&lt;/h3&gt;
 
-
-
-
-
 &lt;p&gt;You need to specify how the locality data should be transformed to the same coordinate system as the independent variable landscape and climate layers so that the two datasets can be overlayed properly.
-
-
 &lt;/p&gt;
-
 
 &lt;p&gt;Specify the coordinate system using the WKT format (more information on the WKT format is available at the Open Gis Consortium &lt;a href="http://www.opengis.org/docs/01-009.pdf"&gt;Website&lt;/a&gt;).&lt;/p&gt;</string>
                 </property>
@@ -774,7 +761,7 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="5">
+            <widget class="QTextBrowser" row="0" column="1">
                 <property name="name">
                     <cstring>tbrAlgorithmDescription_2_2_2</cstring>
                 </property>
@@ -807,105 +794,6 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
 &lt;p&gt;Select the maps to be used as environmental continuous variables. Examples of this type of data could be average rainfall, average temperature, altitude etc. &lt;/p&gt;
 
 &lt;p&gt;The "Add Layer" button adds layers one-by-one whilst the "Add Folder" button selects all valid layers in the selected directory and sub-directories.&lt;/p&gt;</string>
-                </property>
-            </widget>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>lblSelectLocalitiesFile_6</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>160</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Environmental layers:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" row="1" column="5">
-                <property name="name">
-                    <cstring>pbnRemoveLayerFile</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>30</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>X</string>
-                </property>
-            </widget>
-            <spacer row="1" column="2">
-                <property name="name">
-                    <cstring>spacer29</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>60</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton" row="1" column="4">
-                <property name="name">
-                    <cstring>pbnSelectLayerFolder</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="text">
-                    <string>Add Folder</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" row="1" column="3">
-                <property name="name">
-                    <cstring>pbnSelectLayerFile</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>32767</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Add Layer</string>
-                </property>
-            </widget>
-            <widget class="QListBox" row="2" column="1" rowspan="2" colspan="5">
-                <property name="name">
-                    <cstring>lstLayers</cstring>
-                </property>
-                <property name="selectionMode">
-                    <enum>Extended</enum>
                 </property>
             </widget>
             <spacer row="3" column="0">
@@ -947,6 +835,107 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                     <bool>true</bool>
                 </property>
             </widget>
+            <widget class="QListBox" row="2" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>lstLayers</cstring>
+                </property>
+                <property name="selectionMode">
+                    <enum>Extended</enum>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget" row="1" column="1">
+                <property name="name">
+                    <cstring>layout13</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>lblInputLayers</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>170</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>&lt;b&gt;Environmental layers:&lt;/b&gt;</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>lblInputLayerCount</cstring>
+                        </property>
+                        <property name="text">
+                            <string>(0)</string>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer29</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>90</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnSelectLayerFile</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>32767</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>Add Layer</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnRemoveLayerFile</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>30</width>
+                                <height>32767</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>X</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -960,138 +949,6 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>lblSelectLocalitiesFile_6_2</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>160</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Environmental layers:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QListBox" row="2" column="1" rowspan="2" colspan="5">
-                <property name="name">
-                    <cstring>lstProjLayers</cstring>
-                </property>
-                <property name="selectionMode">
-                    <enum>Extended</enum>
-                </property>
-            </widget>
-            <spacer row="1" column="2">
-                <property name="name">
-                    <cstring>spacer29_2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>60</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton" row="1" column="5">
-                <property name="name">
-                    <cstring>pbnRemoveLayerFileProj</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>30</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>X</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" row="1" column="3">
-                <property name="name">
-                    <cstring>pbnSelectLayerFileProj</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>32767</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Add Layer</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" row="1" column="4">
-                <property name="name">
-                    <cstring>pbnSelectLayerFolderProj</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="text">
-                    <string>Add Folder</string>
-                </property>
-            </widget>
-            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="5">
-                <property name="name">
-                    <cstring>tbrAlgorithmDescription_2_2_2_3</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>7</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>175</height>
-                    </size>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>32767</width>
-                        <height>175</height>
-                    </size>
-                </property>
-                <property name="frameShape">
-                    <enum>Box</enum>
-                </property>
-                <property name="text">
-                    <string>&lt;h3&gt;Environmental and Landscape Layers for Model Projection:&lt;/h3&gt;
-
-&lt;p&gt;Use the form below to define the layerset into which you would like to project your model.  This can be the same as the model creation layerset or perhaps a different time period (for climate change impact assessment).  The number of layers must be the same as the creation layerset and the filenames must also match.&lt;/p&gt;</string>
-                </property>
-            </widget>
             <spacer row="3" column="0">
                 <property name="name">
                     <cstring>spacer15_3</cstring>
@@ -1131,6 +988,158 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                     <bool>true</bool>
                 </property>
             </widget>
+            <widget class="QListBox" row="2" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>lstProjLayers</cstring>
+                </property>
+                <property name="selectionMode">
+                    <enum>Extended</enum>
+                </property>
+            </widget>
+            <widget class="QTextBrowser" row="0" column="1">
+                <property name="name">
+                    <cstring>tbrAlgorithmDescription_2_2_2_3</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>0</width>
+                        <height>175</height>
+                    </size>
+                </property>
+                <property name="maximumSize">
+                    <size>
+                        <width>32767</width>
+                        <height>175</height>
+                    </size>
+                </property>
+                <property name="frameShape">
+                    <enum>Box</enum>
+                </property>
+                <property name="text">
+                    <string>&lt;h3&gt;Environmental and Landscape Layers for Model Projection:&lt;/h3&gt;
+
+&lt;p&gt;Use the form below to define the layerset into which you would like to project your model.  This can be set to the same as the model creation layerset by pressing the 'Same Layers' button. &lt;/p&gt;
+
+&lt;p&gt;Alternatively you can define a different layerset, perhaps for a different time period (for climate change impact assessment).  The number of layers, however, must be the same as the creation layerset and the filenames must also match.&lt;/p&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget" row="1" column="1">
+                <property name="name">
+                    <cstring>layout12</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>lblOutputLayers</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>170</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>&lt;b&gt;Environmental layers:&lt;/b&gt;</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>lblOutputLayerCount</cstring>
+                        </property>
+                        <property name="text">
+                            <string>(0)</string>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer29_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnCopyLayers</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Same Layers</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnSelectLayerFileProj</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>32767</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>Add Layer</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnRemoveLayerFileProj</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>30</width>
+                                <height>32767</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>X</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -1144,7 +1153,7 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QLabel" row="0" column="0" rowspan="4" colspan="1">
+            <widget class="QLabel" row="0" column="0" rowspan="5" colspan="1">
                 <property name="name">
                     <cstring>pmAcmeLogo_12</cstring>
                 </property>
@@ -1164,66 +1173,6 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                 </property>
                 <property name="scaledContents">
                     <bool>true</bool>
-                </property>
-            </widget>
-            <spacer row="4" column="0" rowspan="2" colspan="1">
-                <property name="name">
-                    <cstring>spacer17_2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>21</width>
-                        <height>81</height>
-                    </size>
-                </property>
-            </spacer>
-            <spacer row="5" column="1">
-                <property name="name">
-                    <cstring>spacer17</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>21</width>
-                        <height>70</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>lblSelectLocalitiesFile_5</cstring>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Select input mask:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QLabel" row="3" column="1">
-                <property name="name">
-                    <cstring>lblSelectLocalitiesFile_5_2</cstring>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Select output mask:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QComboBox" row="2" column="1">
-                <property name="name">
-                    <cstring>cboMaskLayer</cstring>
-                </property>
-            </widget>
-            <widget class="QComboBox" row="4" column="1">
-                <property name="name">
-                    <cstring>cboOutputMaskLayer</cstring>
                 </property>
             </widget>
             <widget class="QTextBrowser" row="0" column="1">
@@ -1254,13 +1203,267 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                     <enum>Box</enum>
                 </property>
                 <property name="text">
-                    <string>&lt;h3&gt;Select Mask Layer:&lt;/h3&gt;
+                    <string>&lt;h3&gt;Mask and Format Layers:&lt;/h3&gt;
 
-
-
-Select the files that will be used to mask areas from the model.  The input mask is used during the model creation phase and the output mask is used for the model projection.</string>
+&lt;p&gt;Select the files that will be used to mask areas from the model building and projection.  The masks defined areas that are not desired in the model building and projection phases (perhaps areas of sea or areas outside the country or state of interest).  You can use the '...' button to select a layer other than the ones you have previously defined.&lt;/p&gt;
+&lt;p&gt;
+The third box allows you to pick a layer that matches the desired cell size and extent for the model projection.  This is typically the input environmental layer with the highest resolution.
+&lt;/p&gt;</string>
                 </property>
             </widget>
+            <widget class="QLayoutWidget" row="2" column="1">
+                <property name="name">
+                    <cstring>layout10</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QComboBox">
+                        <property name="name">
+                            <cstring>cboMaskLayer</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnOtherInputMask</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>30</width>
+                                <height>25</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>30</width>
+                                <height>25</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>...</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget" row="4" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>layout9</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QComboBox">
+                        <property name="name">
+                            <cstring>cboOutputMaskLayer</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnOtherOutputMask</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>30</width>
+                                <height>25</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>30</width>
+                                <height>25</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>...</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget" row="7" column="1">
+                <property name="name">
+                    <cstring>layout8</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QComboBox">
+                        <property name="name">
+                            <cstring>cboOutputFormat</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>pbnOtherOutputFormat</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>30</width>
+                                <height>25</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>30</width>
+                                <height>25</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>...</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLabel" row="6" column="1">
+                <property name="name">
+                    <cstring>lblSelectLocalitiesFile_5_2_2</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>160</width>
+                        <height>22</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>&lt;b&gt;Layer to define output cell size and extent:&lt;/b&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLabel" row="1" column="1">
+                <property name="name">
+                    <cstring>lblSelectLocalitiesFile_5</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>160</width>
+                        <height>22</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>&lt;b&gt;Layer to mask model building:&lt;/b&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLabel" row="3" column="1">
+                <property name="name">
+                    <cstring>lblSelectLocalitiesFile_5_2</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>160</width>
+                        <height>22</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>&lt;b&gt;Layer to mask model projection:&lt;/b&gt;</string>
+                </property>
+            </widget>
+            <spacer row="5" column="0" rowspan="3" colspan="1">
+                <property name="name">
+                    <cstring>spacer17_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>81</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="8" column="1">
+                <property name="name">
+                    <cstring>spacer17_2_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>72</height>
+                    </size>
+                </property>
+            </spacer>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -1864,12 +2067,6 @@ If you would like to specify any special parameters for the algorithm you have s
         <slot>leOutputDirectory_textChanged(const QString&amp;)</slot>
     </connection>
     <connection>
-        <sender>pbnSelectLayerFolder</sender>
-        <signal>clicked()</signal>
-        <receiver>OpenModellerGuiBase</receiver>
-        <slot>pbnSelectLayerFolder_clicked()</slot>
-    </connection>
-    <connection>
         <sender>pbnDefaultParameters</sender>
         <signal>clicked()</signal>
         <receiver>OpenModellerGuiBase</receiver>
@@ -1882,7 +2079,7 @@ If you would like to specify any special parameters for the algorithm you have s
         <slot>pbnSelectLayerFileProj_clicked()</slot>
     </connection>
     <connection>
-        <sender>pbnSelectLayerFolderProj</sender>
+        <sender>pbnCopyLayers</sender>
         <signal>clicked()</signal>
         <receiver>OpenModellerGuiBase</receiver>
         <slot>pbnSelectLayerFolderProj_clicked()</slot>
