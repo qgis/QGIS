@@ -46,10 +46,6 @@
                     <property name="name">
                         <cstring>btnOk</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
                     <property name="text">
                         <string>OK</string>
                     </property>
@@ -67,10 +63,6 @@
                     <property name="name">
                         <cstring>btnCancel</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
                     <property name="text">
                         <string>Cancel</string>
                     </property>
@@ -84,10 +76,6 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>btnHelp</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                        </font>
                     </property>
                     <property name="text">
                         <string>Help</string>
@@ -121,11 +109,6 @@
         <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>GroupBox1</cstring>
-            </property>
-            <property name="font">
-                <font>
-                    <family>Helvetica [Urw]</family>
-                </font>
             </property>
             <property name="title">
                 <string>Connection Information</string>
@@ -162,7 +145,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <family>Helvetica</family>
                                             <pointsize>11</pointsize>
                                         </font>
                                     </property>
@@ -176,7 +158,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <family>Helvetica</family>
                                             <pointsize>11</pointsize>
                                         </font>
                                     </property>
@@ -190,7 +171,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <family>helvetica</family>
                                             <pointsize>11</pointsize>
                                         </font>
                                     </property>
@@ -204,7 +184,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <family>helvetica</family>
                                             <pointsize>11</pointsize>
                                         </font>
                                     </property>
@@ -218,7 +197,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <family>Helvetica</family>
                                             <pointsize>11</pointsize>
                                         </font>
                                     </property>
@@ -232,7 +210,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <family>helvetica</family>
                                             <pointsize>11</pointsize>
                                         </font>
                                     </property>
@@ -305,10 +282,6 @@
                             <property name="name">
                                 <cstring>chkStorePassword</cstring>
                             </property>
-                            <property name="font">
-                                <font>
-                                </font>
-                            </property>
                             <property name="text">
                                 <string>Save Password</string>
                             </property>
@@ -316,10 +289,6 @@
                         <widget class="QPushButton">
                             <property name="name">
                                 <cstring>btnConnect</cstring>
-                            </property>
-                            <property name="font">
-                                <font>
-                                </font>
                             </property>
                             <property name="text">
                                 <string>Test Connect</string>
