@@ -28,6 +28,7 @@ INCLUDEPATH += $(OM_HOME)\console
 #libs for standalone mode
 LIBS += $(GDAL)\lib\gdal_i.lib
 
+DESTDIR = c:\dev\cpp\qgis_win32\win_build
 contains( CONFIG, debug ) { 
   LIBS += $(OM_HOME)\lib\debug\libopenmodeller.lib 
   TARGET = omgui_debug 

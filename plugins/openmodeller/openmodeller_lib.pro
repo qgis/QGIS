@@ -27,10 +27,11 @@ LIBS += $(GDAL)\lib\gdal_i.lib
 LIBS += libexpatMT.lib 
 
 
-contains( CONFIG, debug ) { 
+DESTDIR = c:\dev\cpp\qgis_win32\win_build\lib\qgis
+contains( CONFIG, debug ){ 
   LIBS += $(OM_HOME)\lib\debug\libopenmodeller.lib 
   TARGET = omgui_debug #will produce omgui_debug.dll 
-} else {
+}else{
   LIBS += $(OM_HOME)\lib\libopenmodeller.lib 
   TARGET = omgui #will produce omgui.dll 
 }

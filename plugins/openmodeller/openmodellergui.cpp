@@ -1280,20 +1280,21 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
   if (myFileNameQString==NULL || myFileNameQString=="") return;
  
   //Check selected file is a valid gdal file with projection info
-  if ((LayerSelector::isValidGdalFile(myFileNameQString)) && ((LayerSelector::isValidGdalProj(myFileNameQString))))
-  {
-	//store directory where localities file is for next time
-	QSettings settings;
-	settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
-	
-	cboInputMaskLayer->insertItem(myFileNameQString);
-	cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
-  }
-  else
+  if (!LayerSelector::isValidGdalFile(myFileNameQString))
   {
 	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
 	return;
   }
+  else if (LayerSelector::isValidGdalProj(myFileNameQString))
+  {
+    QMessageBox::warning(this,"Error opening file!","The specified layer is does not appear to have projection information.\n Model may produce unexpected results.");
+  }
+  //store directory where localities file is for next time
+  QSettings settings;
+  settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
+  cboInputMaskLayer->insertItem(myFileNameQString);
+  cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
+  
 } 
 
 void OpenModellerGui::pbnOtherOutputMask_clicked()
@@ -1313,20 +1314,22 @@ void OpenModellerGui::pbnOtherOutputMask_clicked()
   if (myFileNameQString==NULL || myFileNameQString=="") return;
  
   //Check selected file is a valid gdal file with projection info  
-  if ((LayerSelector::isValidGdalFile(myFileNameQString)) && ((LayerSelector::isValidGdalProj(myFileNameQString))))
-  {
-	//store directory where localities file is for next time
-	QSettings settings;
-	settings.writeEntry("/openmodeller/otherOutputMaskDirectory", myFileNameQString );
-	
-	cboOutputMaskLayer->insertItem(myFileNameQString);
-	cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
-  }
-  else
+  if (!LayerSelector::isValidGdalFile(myFileNameQString))
   {
 	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
 	return;
   }
+  else if (LayerSelector::isValidGdalProj(myFileNameQString))
+  {
+    QMessageBox::warning(this,"Error opening file!","The specified layer is does not appear to have projection information.\n Model may produce unexpected results.");
+  }
+  //store directory where localities file is for next time
+  QSettings settings;
+  settings.writeEntry("/openmodeller/otherOutputMaskDirectory", myFileNameQString );
+
+  cboOutputMaskLayer->insertItem(myFileNameQString);
+  cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
+
 } 
 
 void OpenModellerGui::pbnOtherOutputFormat_clicked()
@@ -1346,18 +1349,21 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
   if (myFileNameQString==NULL || myFileNameQString=="") return;
   
   //Check selected file is a valid gdal file with projection info  
-  if ((LayerSelector::isValidGdalFile(myFileNameQString)) && ((LayerSelector::isValidGdalProj(myFileNameQString))))
-  {
-	//store directory where localities file is for next time
-	QSettings settings;
-	settings.writeEntry("/openmodeller/otherOutputFormatDirectory", myFileNameQString );
-	
-	cboOutputFormatLayer->insertItem(myFileNameQString);
-	cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
-  }
-  else
+  if (!LayerSelector::isValidGdalFile(myFileNameQString))
   {
 	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
 	return;
-  }  
+  }
+  else if (LayerSelector::isValidGdalProj(myFileNameQString))
+  {
+    QMessageBox::warning(this,"Error opening file!","The specified layer is does not appear to have projection information.\n Model may produce unexpected results.");
+  }
+
+  //store directory where localities file is for next time
+  QSettings settings;
+  settings.writeEntry("/openmodeller/otherOutputFormatDirectory", myFileNameQString );
+ 
+  cboOutputFormatLayer->insertItem(myFileNameQString);
+  cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
+
 } 
