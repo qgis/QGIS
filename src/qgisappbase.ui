@@ -86,6 +86,7 @@
         <action name="actionZoomIn"/>
         <action name="actionZoomOut"/>
         <action name="actionPan"/>
+        <action name="actionZoomFullExtent"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -185,6 +186,17 @@
             <string>Refresh </string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionZoomFullExtent</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image6</iconset>
+        </property>
+        <property name="text">
+            <string>Zoom to full extent</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -204,6 +216,9 @@
     </image>
     <image name="image5">
         <data format="XPM.GZ" length="3390">789c759649531c490c85effc8a0e74734cc85595595b4cccc1066f98d52bf6c41cb23668f6a5b10d13f3df27f55e81a11bfae1083ea4cc94944ab59f3f9bec6e6f4c9e3d5fba9c85d9b49db4fbe162f2acbb3a3ebefefb9fbffe5d5aceb249fc49bd9b64cb7f2c2defcc26ed64f3f4a437d03a8224f818cb17706a02ef809d095c824b9371507065827d1b1c4cb00bb831810fc09d09e7af1ac7c32a9eaf3fc169e6931cfe87e0cc04fbaf918bd17f00fbd48ff1d7b79c7ad8b7c959cdf8f466e486f1c9393837c1be0b2eeef6afc82e4d5af823dfb434c1fe96ecb2d13e05d726d8bf92b396f94b060e26d87bb273633d184fe3fa6440fe01dc9a606fc86e48195f4bf629391c833b13ec7b645fa4b83f3d03f7be66fc81e70f26d8af8daddc4901fbd12d67e807edc8ae19eb2be43ce17e82fbccf0813d90f334657f7c067b13f83b38378107729170bda0be5965c27e3b643fd6575e816b13ecebe4a2cd18cf7b7030c1fe8e5c0c19ee43f7c9f10291bf6c815b13ecdfc8e5e0b87f49ae52c7fe9981bb2a73bcdf0d706f02339ec184f53fc89573ec97cb911bcffe3d1879f0a8bf7e24872467bf7d3076499e64bc7fe4e7d2ca3b9ed792eb3e67fdf19e5d2c98637e811c8a9cf95d8c5ce5ec97376017f3657e87e4c615bc2ff49ff38d1f79059c9bc0e8075714dd98af0797550c0076bc6f5799c0e82717eaccb31e29b8318191bf6b4dd80ffdedba581fda0b639f98c017e4d28ffbe33d631cb07f4fc965e2585f47ae0bd64bf0ded19ee41cec4c60bc1f9f9bc0a8572c4631ded716b94e3df3bf223745c9f8d06fbe34c17e422e3bc6af2fc9d19ff317f3ce5726bc47bc8f58fe66cc1ff3ccb726f06b7067823fea9b2726ecbf42ae72cffbfd04c600841def33cf9baea41dfd9f9726ec87f996f726f8e3bcc2b5b1c3c09b23bb8af5c17c297cb4f37cac8fcd37facb1ab83281d12f4530818fc86d31faa35e456702e33d15bd098cfa158309e765e4180fee47101fc637eb8bf784f4f87d83fe2e6b13d6e3fecbae6d2ace63ccd32a3581f1de309ef8de8ec86d57737ff41bae8ff1e3fba0aa4d60ccdbaa3381319feac604c679f83a65ff246067c2796be42e04e41fd05f2137c11ffd1d0613fc316f9ba44f1b7edfbd00677dd2b0fee4dc04c67b6b2a13fc67e43e6b78ff980f4dddfb86f303fdd4f47dde327ff43f9e2fe3c5bc6e9bbe6e397ff17edbbe6f5bee87f7dff921363018f3303ef7a4e3fb42fedd30b88ee761dec62fcb5bc63c1df031de993d948a066db4d54e7b1d1edae6fd754ff775aa077aa8477aac277aaa677afe947ff4bed04b9de995fe88bfffd45f7aad435c71f384ff7ef47ea12f75257add45127fbfd1d545ffb8e3545fe96b7da36f1772bae1fa07feefe2ee6bfa7e3ec7db5316fcd7754337754bb71ff3ff1d4f8cef5c77f4837ed44ffa59bfe857ddbd1fff23fedff4bb269a6aa64ebde65a68a9d5786a2d3a5f4f1d44244823ad74d26b2977bb47ef3dd997e97c3db1e2400ee568cefb584ee454cee47cbe9e71c5855ccaec81f795fc909ff24baee586673ca88f9d71dffb85bc9415599557f23aae786367ccddef9db7bc9577b216e33893f7b22e1bd17b53b664fbb1fee4ee71ff9df8ef837c944ff259bed85fb47ecaff2ea6afb22bdfe4fb427dea27fc1349e3fed9a2ffe28ae8edc44b2e8594f3fe5cf17b0de277b1f255ace6bd9deec71f5456838460bea189ff01684317ba5895f2717fdb35f461101ff6c27e984a15fd0f1ec6b9581fd90e87328deb8ec2f1624ecbfffdb9f43f0b1c269c</data>
+    </image>
+    <image name="image6">
+        <data format="XPM.GZ" length="3550">789c8d96db521c390c86ef798a297497da52667abadbeddada8b104242c2100810205b7ba1b6bb399f860142b6f6dd57fe6526a9307b981f427d23d9966559cecb178383adc9e0c5cba5db99cc4ec2201ccb74f022de5d5c3cfefec76f7f2e2d17c5407f46d578502cffb2b4bc3d1b84c1e6d5659780260a34c427b13c80db24d84fc02129315f261ec524d8d364548c9360ff04f62ac17cb789c7a324f01d38b9c35fcec1b5ca81cfc04ed580afc05e85f9e89b71537a9bef1a2ce3be44fc2ce05665f1067050215e41bce3a8b2fddf1837ded7f06fc19daa07c7c4e55085f56825735d225eda058f942d5ec9ec3213b8283560f83f1afb46309eb19f729c04fbe99c4bf091b1f782f9f83d181ff0f59c2bf867bbafc538dbbd88ad6ff15449188ffc6ab42eefe735b84902bf32f69d58fe7ab04fc2f8a339db7977604982ddc60795d5cb57e3d605abaf0a1c55761e164f6c2580c5f2df27c1fe21713594716bf13799ebd6f6b70e2ec4b596cf637029c1ec8cf8aa4665fe35d827c14e73b67afb0c6e93c0bd713b0a96ff1d704882fd63e668cce61f55b6bf7789eba196a7c55f808b24d84bf0b8f205ea99a6c66d65eb09f25d3749b03f18b73158bd7ab0a8bfeddfe66f5de1ac9e70ffea9004decf1c8df98bb1e61ffb6567acd7c7f283faadfbba77d62f38b11baaec3ee2beb95112e6f773c6fe04f74da3299cc587f9d375b7f804fd06e568f5db1987265afde0bc5da5c27d15dc1757abac7f5c80d3c7f2730f6e347e5b6f15ec9d383bff4363df78cbc75be3b60f960f9b4f54960f8bbf754d1e7f903964fbd058cbddea03fdc245d739bb3f164feffac6fa15eaa519051fadffa05ef5707501706d1c479de513fdb57141b2ff61e6182dfe11b891c6ee2b6f8245ed16ef46e63ecf67f62e09f1617d5f3485f56342bff7b596af9d47ccac1b026f83bd5e5fdbcf41e6a6b3f850efbe8d7587f367c4e7a31482f579621c7df6473f55abb3fe486b606d089dd51fce47aa183abb9f782f440b5e8c517fd274a3ceee2bea597c70d64f08ef91b4b1cfe3f7c0c1fbdceff78dbba18d67d4a3f46dd9da796e19ebfc966fd4473bd2f8ccbe61dc156667bc6f6dd16a89c09f8dc353ff43bd68379068f91b83459f5b3b9f2de3aeec2c3ed47babf5152c5f6799abccebc69debec3cf19eb551cad2e2dd31eeeaded65bcbec32a3df8571e733a3dfeaec7db4fed41aebfcb6bf37e0ba8bbdf533f4f3a0a7d5db79a33f85d0f5bddd4ff4b3d025c1be6d1c7dee2f66efa3443b1fcc1f35badef27b9f79dcdbfd467eb5da626ff584f745abc3e57a9919f7458e0ffd2f467d4e6c7ee43b6a34deee27ea5d4ff7e9bee13dd7ff0c14797dd44f57693cb6bfbdcca5c5c3e8df5d8acfce03efa966a3b1f518fda7c727f1f6ec494c2cdc72e0c8ddf76f7fd4777feef9888ff9844ff98ccff9822ff9ea9ffdf99a6f78cab73ce33bbee707fdf72b3ff2b7c5fefc8a57d4fe9a57f5f70daff15b7ec7ebfacd0abf5fe87fc41fe0bd8a111b3ce14dfec85bbccd9f9efbf30eefea5c33de83f767dee7033ee42f3cd411232e9ef91ff1984bae54c97b4bbd6b76dcb0e70d62a205fea724d46ac41b1428724d1df57444c74a4c273ffbd3299dd1395de81e0fe812de57744d3734a55bdea567f1d39de661aa71e81ee99e1ee82b3dd2377aa563a7b4b2283ff49a56e90dadd15b7a47ebf45ee7fe401b74ce239a2cf4dfa48fbca2316dd1367da27b3ea41df55ea15d9ad0dea2f3a5cfb44f0774485fa8550d694445f2e6551a53b9b07e76a8a29a1c35e485854468222d8d7584e3f6b97f9204aaf45276d2cb91ae59cab18e3be1553995b345fe3f4b479ceb880bb9e40bb99ae773625978fafba3d4ff5caee546a6fc28b74ffef3f99ef9a7efb006cb547fff239ebcc65d1e71cff1fff8cfd77830ff7f8fe7c9a26711ff7bbf3f6bf9af5f97fe06b3c5625f</data>
     </image>
 </images>
 <connections>
@@ -243,6 +258,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>drawLayers()</slot>
     </connection>
+    <connection>
+        <sender>actionZoomFullExtent</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomFull()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
@@ -255,6 +276,7 @@
     <slot>zoomOut()</slot>
     <slot>init()</slot>
     <slot>drawLayers()</slot>
+    <slot>zoomFull()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
