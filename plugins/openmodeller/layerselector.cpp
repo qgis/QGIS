@@ -86,7 +86,7 @@ void LayerSelector::pbnOK_clicked()
     }
     ++myIterator;
   }
-  close();
+  accept();
 
 }
 
@@ -94,7 +94,7 @@ void LayerSelector::pbnOK_clicked()
 void LayerSelector::pbnCancel_clicked()
 {
   selectedLayersList.clear();
-  close();
+  accept();
 }
 
 
