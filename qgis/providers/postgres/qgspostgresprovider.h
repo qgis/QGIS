@@ -21,6 +21,7 @@ extern "C"
 }
 #include "../../src/qgsvectordataprovider.h"
 #include <list>
+#include<qstring.h>
 
 class QgsFeature;
 class QgsField;
@@ -187,7 +188,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   //! Get the table name associated with this provider instance
   QString getTableName() {return tableName;};
   /** mutator for sql where clause used to limit dataset size */
-  void setSubsetString(QString theSQL) {sqlWhereClause=theSQL;};
+  void setSubsetString(QString theSQL); //{sqlWhereClause = theSQL;};
 private:
       std::vector < QgsFeature > features;
       std::vector < bool > *selected;
@@ -290,4 +291,8 @@ private:
   bool addFeature(QgsFeature* f);
   /**Deletes a feature*/
   bool deleteFeature(int id);
+  //! Get the feature count based on the where clause 
+  long getFeatureCount();
+  //! Calculate the extents of the layer
+  void calculateExtents();
 };
