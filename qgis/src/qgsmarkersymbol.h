@@ -46,7 +46,8 @@ class QgsMarkerSymbol : public QgsSymbol
     double mScaleFactor;
 };
 
-inline QgsMarkerSymbol::QgsMarkerSymbol(): QgsSymbol(), mScaleFactor(1)
+inline QgsMarkerSymbol::QgsMarkerSymbol(): QgsSymbol(), mScaleFactor(1), 
+     mSvgPath("")
 {
 
 }
