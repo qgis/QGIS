@@ -242,6 +242,58 @@ the vector layer properties dialog will be shown.\index{symbology!changing}
 \end{center}  
 \end{figure}
 %force all figures to be printed
-\section{Attribute Actions}
+\section{Attribute Actions}\index{actions}
+A new tool in QGIS 0.6 provides the ability to perform an action based on the
+attributes of a feature. This can be used to perform any number of actions, for
+example, running a program with arguments built from the attributes of a
+feature or passing parameters to a web reporting tool.
+
+Actions are useful when you frequently want to run an external application or
+view a web page based on one or more values in your vector layer. An example is
+performing a search based on an attribute value. This concept is used in the
+following discussion.
+
+\subsection{Defining Actions}\index{actions!defining}
+Attribute actions are defined from the vector layer properties dialog. To define
+an action, open the vector layer properties dialog and click on the
+\textit{Actions} tab. Provide a descriptive name for the action. The action
+itself must contain the name of the application that will be executed when the
+action is invoked. You can add one or more attribute field values as arguments
+to the application. When the action is invoked any set of characters that start
+with a \% followed by the name of a field will be replaced by the value of that
+field.  The special characters \%\% \index{\%\%}will be replaced by the value of
+the field that was selected from the identify results or attribute table (see
+Using Actions below).  Double quote marks can be used to group text into a
+single argument to the program, script or command. Double quotes will be ignored
+if preceeded by a backslash.  
+
+Two example actions are shown below:\index{actions!examples}
+\begin{compactenum}
+  \item \texttt{konqueror http://www.google.com/search?q=\%nam}
+  \item \texttt{konqueror http://www.google.com/search?q=\%\%}
+\end{compactenum}
+In the first example, the web browser konqueror is invoked and passed a URL to
+open. The URL performs a Google search on the value of the \textit{nam} field
+from our vector layer. Note that the application or script called by the action
+must be in the path or you must provided the full path. To be sure, we could
+rewrite the first example as: \texttt{/opt/kde3/bin/konqueror
+http://www.google.com/search?q=\%nam}. This will ensure that the konqueror
+application will be executed when the action is envoked.
+
+The second example uses the \%\% notation which does not rely on a particular
+field for its value. When the action is invoked, the \%\% will be replaced by
+the value of the selected field in the identify results or attribute table.
+
+\subsection{Using Actions}\index{actions!using}
+Actions can be invoked from either the \textit{Identify Results} dialog or the
+\textit{Attribute table} dialog. To invoke an action, right click on the record
+and choose the action from the popup menu. Actions are listed in the popup menu
+by the name you assigned when defining the actions. Click on the action you wish
+to invoke.
+
+If you are invoking an action that uses the \%\% notation, right-click on the
+field value in the \textit{Identify Results} dialog or the
+\textit{Attribute table} that you wish to pass to the application or script.
+
 \section{Editing}
 

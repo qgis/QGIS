@@ -360,7 +360,7 @@
                       \@afterheading
                     \fi}
 \def\@makechapterhead#1{%
-  \vspace*{50\p@}%
+  \vspace*{2\p@}%
   {\parindent \z@ \raggedright \normalfont
     % Added centering, changed font to Large (14pt) and stripped out newline 
     % beween chapter label and chapter name and use a colon : rather
@@ -382,7 +382,7 @@
                    \@afterheading
                  \fi}
 \def\@makeschapterhead#1{%
-  \vspace*{50\p@}%
+  \vspace*{2\p@}%
   {\parindent \z@ \raggedright
     \normalfont
     \interlinepenalty\@M
