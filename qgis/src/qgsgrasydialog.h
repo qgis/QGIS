@@ -23,6 +23,8 @@
 #else
 #include "qgsgrasydialogbase.uic.h"
 #endif
+#include "qgsrangerenderitem.h"
+#include "qgssisydialog.h"
 #include <map>
 
 class QgsGraSyExtensionWidget;
@@ -40,17 +42,26 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
  public slots:
      void apply();
  protected slots:
-     /**Creates a new extension widget*/
+     /**Changes only the number of classes*/
      void adjustNumberOfClasses();
-     /**Tells the extensionwidget to change the values of the lower and upper text fields*/
+     /**Sets a new classification field and a new classification mode*/
      void adjustClassification();
+     /**Changes the display of the single symbol dialog*/
+     void changeCurrentValue();
+     /**Writes changes in the single symbol dialog to the corresponding QgsRangeRenderItem*/
+     void applySymbologyChanges();
+     /**Shows a dialog to modify lower and upper values*/
+     void changeClass(QListBoxItem* item);
  protected:
-     /**Pointer to the curret extension widget*/
-     QgsGraSyExtensionWidget* ext;
      /**Pointer to the associated vector layer*/
      QgsVectorLayer* mVectorLayer;
      /**Stores the names and numbers of the fields with numeric values*/
      std::map<QString,int> mFieldMap;
+     /**Stores the classes*/
+     std::map<QString,QgsRangeRenderItem*> mEntries;
+     /**Dialog which shows the settings of the activated class*/
+     QgsSiSyDialog sydialog;
+     int mClassificationField;
  private:
      /**Default constructor is privat to not use is*/
      QgsGraSyDialog();
