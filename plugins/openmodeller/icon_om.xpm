@@ -1,5 +1,5 @@
 /* XPM */
-static char *icon_om[]={
+static const char *icon_om[]={
 "22 22 278 2",
 "Qt c None",
 ".Z c #3e629e",
