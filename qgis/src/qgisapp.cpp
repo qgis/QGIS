@@ -1413,11 +1413,19 @@ void QgisApp::fileNew()
 
         QgsProject::instance()->title( QString::null );
         QgsProject::instance()->filename( QString::null );
+
+#ifdef QGISDEBUG
+        std::cout << "Clearing project properties" << std::endl;
+#endif
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
 
         setTitleBarText_( *this );
-
+#ifdef QGISDEBUG
+        std::cout << "emiting new project signal" << std::endl ;
+#endif
+        //note by Tim: I did some casual egrepping and this signal doesnt actually
+        //seem to be connected to anything....why is it here? Just for future needs?
         emit newProject();
 
         mMapCanvas->freeze(false);
@@ -1590,7 +1598,7 @@ void QgisApp::fileOpen()
         if ( QgsProject::instance()->read() )
         {
             setTitleBarText_( *this );
-
+            mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
             emit projectRead();     // let plug-ins know that we've read in a new
             // project so that they can check any project
             // specific plug-in state
@@ -1681,10 +1689,10 @@ void QgisApp::fileSave()
     }
     catch ( std::exception & e )
     {
-        QMessageBox::critical( 0x0, 
-                               "Unable to save project " + QgsProject::instance()->filename(), 
-                               e.what(), 
-                               QMessageBox::Ok, 
+        QMessageBox::critical( 0x0,
+                               "Unable to save project " + QgsProject::instance()->filename(),
+                               e.what(),
+                               QMessageBox::Ok,
                                QMessageBox::NoButton );
 
     }
@@ -3487,9 +3495,6 @@ void QgisApp::showStatusMessage(QString theMessage)
 void QgisApp::projectProperties()
 {
     QgsProjectProperties *pp = new QgsProjectProperties(this);
-
-    pp->setMapUnits(mMapCanvas->mapUnits());
-    pp->title( QgsProject::instance()->title() );
 
     if(pp->exec())
     {
