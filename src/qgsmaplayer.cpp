@@ -102,3 +102,6 @@ void QgsMapLayer::setZ (int zorder)
 {
   zpos = zorder;
 }
+bool QgsMapLayer::isValid(){
+	return valid;
+	}

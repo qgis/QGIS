@@ -92,8 +92,14 @@ void QgisApp::addLayer ()
       QgsShapeFileLayer *lyr = new QgsShapeFileLayer (*it, base);
       // give it a random color
 
-      // add it to the mapcanvas collection
-      mapCanvas->addLayer (lyr);
+      if(lyr->isValid()){
+	      // add it to the mapcanvas collection
+	      mapCanvas->addLayer (lyr);
+	      }else{
+	        QString msg = *it;
+	        msg += " is not a valid or recognized data source";
+	      	QMessageBox::critical(this,"Invalid Data Source",msg);
+	      }
 
       ++it;
     }
