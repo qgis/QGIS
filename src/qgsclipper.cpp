@@ -19,6 +19,7 @@
 
 #include "qgsclipper.h"
 
+#include <cmath>
 #include <iostream>
 
 bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to, 
@@ -79,7 +80,7 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
     double dTB = - (to.y() - from.y())  * (maxX - minX);
     double s_n;
 
-    if (fabs(dTB) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
+    if (std::fabs(dTB) > SMALL_NUM && std::fabs(r_n) > SMALL_NUM)
     {
       s_n = (from.y() -     minY)  * (to.x() - from.x()) 
           - (from.x() -     minX)  * (to.y() - from.y());
