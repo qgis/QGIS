@@ -66,8 +66,8 @@ QString QgisIface::activeLayerSource()
 {
   return qgis->activeLayerSource();
 }
-
-int QgisIface::addMenu(QString menuText, QPopupMenu * menu)
+/*
+int QgisIface::oldAddMenu(QString menuText, QPopupMenu * menu)
 {
   QMenuBar *mainMenu = qgis->menuBar();
   // get the index of the help menu 
@@ -76,7 +76,13 @@ int QgisIface::addMenu(QString menuText, QPopupMenu * menu)
 #endif
   return mainMenu->insertItem(menuText, menu, -1, mainMenu->count() - 1);
 }
+*/
 
+int QgisIface::addMenu(QString menuText, QPopupMenu * menu)
+{
+  // add the menu to the master Plugins menu
+  return qgis->addPluginMenu(menuText, menu);
+}
 void QgisIface::openURL(QString url, bool useQgisDocDirectory)
 {
   qgis->openURL(url, useQgisDocDirectory);

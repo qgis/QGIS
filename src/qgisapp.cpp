@@ -282,6 +282,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // add the whats this toolbar button
   //TODO Fix this ToolBar pointer to be named consistently
   QWhatsThis::whatsThisButton(helpToolbar);
+  // add the empty plugin menu
+  pluginMenu = new QPopupMenu(this);  
+  menuBar()->insertItem("&Plugins", pluginMenu, -1, menuBar()->count() - 1);
   // create the layer popup menu
   mapCursor = 0;
   // create the interfce
@@ -2299,7 +2302,7 @@ void QgisApp::socketConnectionClosed()
             {
               // show more info
               QgsMessageViewer *mv = new QgsMessageViewer(this);
-              mv->setCaption(tr("QGIS - Changes in CVS"));
+              mv->setCaption(tr("QGIS - Changes in CVS Since Last Release"));
               mv->setMessage(parts[2]);
               mv->exec();
             }
@@ -2573,3 +2576,8 @@ void QgisApp::populateMenuMaps()
     mMenuMapById[menuId] = menubar->text(menuId);
   }while(menuId != -1);
 }
+int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
+{
+  pluginMenu->insertItem(menuText, menu);
+}
+
