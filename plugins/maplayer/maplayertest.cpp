@@ -13,9 +13,6 @@ void MapLayerTest::setQgisMainWindow(QMainWindow *app){
 void MapLayerTest::setCoordinateTransform(QgsCoordinateTransform *xform){
 	coordTransform = xform;
 }
-int MapLayerTest::getInt(){
-	return 999;
-}
 void MapLayerTest::initGui(){
 	// setup the menu
 	 QPopupMenu *mapLayerPluginMenu = new QPopupMenu( qgisApp );
