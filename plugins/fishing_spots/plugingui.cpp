@@ -21,6 +21,7 @@
 #include <qwidget.h>
 #include <qstring.h>
 #include <qfiledialog.h>
+#include <qfileinfo.h>
 //standard includes
 #include <iostream>
 #include <assert.h>
@@ -404,7 +405,8 @@ void PluginGui::createShapefile(QString theShapefileName)
   delete myShapefileMaker;
   //clear the spots list
   mFishingSpotsVector.clear(); 
-  emit drawVectorLayer(QString("./"),QString(theShapefileName),QString("ogr"));
+  QFileInfo myFileInfo( theShapefileName );
+  emit drawVectorLayer(myFileInfo.dirPath(),myFileInfo.baseName(),QString("ogr"));
 }
 
 void PluginGui::pbnSelectFileName_clicked()
