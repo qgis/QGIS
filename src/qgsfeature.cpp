@@ -13,22 +13,83 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
-#include <qstring.h>
+
 #include "qgsfeature.h"
+
+#include <iostream>
+
+#include <cstring>
+
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
  */
 //! Constructor
-QgsFeature::QgsFeature():mFid(0), geometry(0), mWKT(0)
+QgsFeature::QgsFeature()
+    : mFid(0), geometry(0), geometrySize(0)
 {
-
 }
 
-QgsFeature::QgsFeature(int id):mFid(id), geometry(0), mWKT(0)
-{
 
+QgsFeature::QgsFeature(int id)
+    : mFid(id), geometry(0), geometrySize(0)
+{
 }
+
+
+QgsFeature::QgsFeature( QgsFeature const & feature )
+    : mFid( feature.mFid ), 
+      attributes( feature.attributes ),
+      fieldNames( feature.fieldNames ),
+      mWKT( feature.mWKT ),
+      mValid( feature.mValid ),
+      geometrySize( feature.geometrySize )
+{
+    if ( geometry )
+    {
+        delete [] geometry;
+    }
+
+    geometry = 0;
+
+    if ( geometrySize && feature.geometry )
+    {
+        geometry = new unsigned char[geometrySize];
+
+        memcpy( geometry, feature.geometry, geometrySize );
+    }
+}
+
+
+QgsFeature & QgsFeature::operator=( QgsFeature const & feature )
+{
+    if ( &feature == this )
+    { return *this; }
+
+    mFid =  feature.mFid ; 
+    attributes =  feature.attributes ;
+    fieldNames =  feature.fieldNames ;
+    mWKT =  feature.mWKT ;
+    mValid =  feature.mValid ;
+    geometrySize =  feature.geometrySize;
+
+    if ( geometry )
+    {
+        delete [] geometry;
+    }
+
+    geometry = 0;
+
+    if ( geometrySize && feature.geometry )
+    {
+        geometry = new unsigned char[geometrySize];
+
+        memcpy( geometry, feature.geometry, geometrySize );
+    }
+
+    return *this;
+} // QgsFeature::operator=( QgsFeature const & rhs )
+
+
 
 //! Destructor
 QgsFeature::~QgsFeature()
@@ -36,16 +97,17 @@ QgsFeature::~QgsFeature()
 #ifdef QGISDEBUG
   std::cerr << "In QgsFeature destructor" << std::endl;
 #endif
-
-  delete[]geometry;
-  delete[]mWKT;
+  if (geometry)
+  {
+      delete [] geometry;
+  }
 }
 
 /**
  * Get the feature id for this feature
  * @return Feature id
  */
-int QgsFeature::featureId()
+int QgsFeature::featureId() const
 {
   return mFid;
 }
@@ -62,7 +124,7 @@ const std::vector < QgsFeatureAttribute > &QgsFeature::attributeMap()
 /**
  * Add an attribute to the map
  */
-void QgsFeature::addAttribute(QString field, QString value)
+void QgsFeature::addAttribute(QString const&  field, QString const & value)
 {
   attributes.push_back(QgsFeatureAttribute(field, value));
 }
@@ -79,7 +141,7 @@ const std::map < int, QString > &QgsFeature::fields()
 /**
  * Get the pointer to the feature geometry
  */
-unsigned char *QgsFeature::getGeometry()
+unsigned char * QgsFeature::getGeometry() const
 {
   return geometry;
 }
@@ -87,7 +149,7 @@ unsigned char *QgsFeature::getGeometry()
 /**
  * Return well known text representation of this feature
  */
-char *QgsFeature::wellKnownText()
+QString const & QgsFeature::wellKnownText() const
 {
   return mWKT;
 }
@@ -99,21 +161,31 @@ void QgsFeature::setFeatureId(int id)
   mFid = id;
 
 }
+
 /** Set the pointer to the feature geometry
 */
-void QgsFeature::setGeometry(unsigned char *geom)
+void QgsFeature::setGeometry(unsigned char *geom, size_t size)
 {
-  geometry = geom;
+    // delete any existing binary WKT geometry before assigning new one
+    if ( geometry )
+    {
+        delete [] geometry;
+    }
 
+    geometry = geom;
+    geometrySize = size;
 }
-void QgsFeature::setWellKnownText(char *wkText)
+
+void QgsFeature::setWellKnownText(QString const & wkt)
 {
-  mWKT = wkText;
+  mWKT = wkt;
 }
-bool QgsFeature::isValid()
+
+bool QgsFeature::isValid() const
 {
   return mValid;
 }
+
 void QgsFeature::setValid(bool validity)
 {
   mValid = validity;

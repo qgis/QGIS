@@ -16,12 +16,13 @@ email                : sherman at mrcc.com
 
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
+
 #include <qstring.h>
 #include <map>
 #include <vector>
+
 #include "qgsfeatureattribute.h"
 
-class QString;
 
 /** \class QgsFeature - Feature attribute class.
  * Encapsulates a single feature including id and field/value.
@@ -31,61 +32,100 @@ class QString;
 class QgsFeature {
 
   public:
+
     //! Constructor
     QgsFeature();
     QgsFeature(int id);
+
+
+    /** copy ctor needed due to internal pointer */
+    QgsFeature( QgsFeature const & );
+
+    /** assignment operator needed due to internal pointer */
+    QgsFeature & operator=( QgsFeature const & rhs );
+
     //! Destructor
     ~QgsFeature();
+
     /**
      * Get the feature id for this feature
      * @return Feature id
      */
-    int featureId();
+    int featureId() const;
+
     /**
      * Set the feature id for this feature
      * @param id Feature id
      */
      void setFeatureId(int id);
+
     /**
      * Get the attributes for this feature.
      * @return A std::map containing the field name/value mapping
      */
     const std::vector<QgsFeatureAttribute>& attributeMap();
+
     /** 
      * Add an attribute to the map
      */
-    void addAttribute(QString field, QString value);
+    void addAttribute(QString const & field, QString const & value);
+
     /**
      * Get the fields for this feature
      * @return A std::map containing field position (index) and field name
      */
     const std::map<int, QString>& fields();
+
     /**
      * Return the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
      * invalid or to indicate a null feature.
      */
-    bool isValid();
+    bool isValid() const;
+
     /** 
      * Set the validity of the feature.
      */
     void setValid(bool validity);
 
-    unsigned char * getGeometry();
-    char * wellKnownText(); 
-    void setGeometry(unsigned char *);
-    void setWellKnownText(char *);
+    unsigned char * getGeometry() const;
+
+    QString const & wellKnownText() const; 
+
+    /** Set geometry to given Well Known Text string 
+
+    @note
+
+    This object takes responsibility for managing geometry.
+
+    */
+    void setGeometry(unsigned char * geometry, size_t length);
+
+    void setWellKnownText(QString const & wkt);
+
   private:
+
     //! feature id
     int mFid;
+
     //! std::map containing field name/value pairs
     std::vector<QgsFeatureAttribute> attributes;
+
     //! std::map containing the field index and name
     std::map<int, QString> fieldNames;
-    //! pointer to gemetry in WKB format
-    unsigned char *geometry;
+
+    /** pointer to geometry in binary WKB format
+
+       This is usually set by a call to OGRGeometry::exportToWkb()
+     */
+    unsigned char * geometry;
+
+    /** size of geometry */
+    size_t geometrySize;
+
     //! Well Known Text representation of the geometry
-    char * mWKT;
+    QString mWKT;
+
     //! Flag to indicate if this feature is valid
     bool mValid;
 };
