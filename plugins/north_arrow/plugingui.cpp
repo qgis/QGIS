@@ -21,6 +21,7 @@
 #include <qcombobox.h>
 #include <qcheckbox.h>
 //standard includes
+#include <math.h>
 
 PluginGui::PluginGui() : PluginGuiBase()
 {

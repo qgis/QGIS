@@ -20,6 +20,7 @@
 #include <cfloat>
 #include <iostream>
 #include <limits>
+#include <math.h>
 
 #include <qapp.h>
 #include <qfile.h>
