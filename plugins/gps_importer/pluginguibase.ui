@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>PluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -129,12 +129,13 @@
             </rect>
         </property>
         <property name="text">
-            <string>&lt;h2&gt;Description&lt;/h2&gt;
+            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:18pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Select the GPS dowload file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
-
 &lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
-
-&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;</string>
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
         </property>
         <property name="wordWrap">
             <enum>WidgetWidth</enum>
@@ -296,6 +297,25 @@
             <string>Cancel</string>
         </property>
     </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pbnOK</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>534</x>
+                <y>398</y>
+                <width>48</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>OK</string>
+        </property>
+    </widget>
     <widget class="QLineEdit">
         <property name="name">
             <cstring>leInputFile</cstring>
@@ -320,25 +340,6 @@
                 <width>350</width>
                 <height>21</height>
             </rect>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>pbnOK</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>534</x>
-                <y>398</y>
-                <width>48</width>
-                <height>23</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>OK</string>
         </property>
     </widget>
 </widget>
@@ -375,6 +376,18 @@
         <receiver>PluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
+    <connection>
+        <sender>leInputFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>leInputFile_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leOutputShapeFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>leOutputShapeFile_textChanged(const QString&amp;)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">pluginguibase.ui.h</include>
@@ -384,6 +397,8 @@
     <slot>pbnSelectInputFile_clicked()</slot>
     <slot>pbnSelectOutputFile_clicked()</slot>
     <slot>pbnCancel_clicked()</slot>
+    <slot>leInputFile_textChanged( const QString &amp; theQString )</slot>
+    <slot>leOutputShapeFile_textChanged( const QString &amp; theQString )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
