@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>391</width>
-            <height>231</height>
+            <width>382</width>
+            <height>332</height>
         </rect>
     </property>
     <property name="caption">
@@ -18,182 +18,176 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
+        <widget class="QGroupBox" row="0" column="0">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>titleBox</cstring>
+            </property>
+            <property name="title">
+                <string>Title</string>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QGroupBox" row="0" column="0">
+                <widget class="QLineEdit" row="0" column="0">
                     <property name="name">
-                        <cstring>titleBox</cstring>
+                        <cstring>titleEdit</cstring>
                     </property>
-                    <property name="title">
-                        <string>Title</string>
+                    <property name="text">
+                        <string>Default project title</string>
                     </property>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>titleEdit</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>11</x>
-                                <y>20</y>
-                                <width>340</width>
-                                <height>41</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Default project title</string>
-                        </property>
-                    </widget>
-                </widget>
-                <widget class="QLayoutWidget" row="2" column="0">
-                    <property name="name">
-                        <cstring>layout3</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonHelp</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Help</string>
-                            </property>
-                            <property name="accel">
-                                <string>F1</string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Horizontal Spacing2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>138</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonOk</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;OK</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                            <property name="default">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonCancel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Cancel</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QButtonGroup" row="1" column="0">
-                    <property name="name">
-                        <cstring>btnGrpMapUnits</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Map Units</string>
-                    </property>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>radioButton4</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>11</x>
-                                <y>29</y>
-                                <width>88</width>
-                                <height>28</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Meters</string>
-                        </property>
-                        <property name="checked">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>radioButton4_2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>105</x>
-                                <y>29</y>
-                                <width>66</width>
-                                <height>28</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Feet</string>
-                        </property>
-                        <property name="buttonGroupId">
-                            <number>1</number>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>radioButton4_3</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>177</x>
-                                <y>29</y>
-                                <width>177</width>
-                                <height>28</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Decimal degrees</string>
-                        </property>
-                        <property name="buttonGroupId">
-                            <number>2</number>
-                        </property>
-                    </widget>
                 </widget>
             </grid>
         </widget>
-    </vbox>
+        <widget class="QLayoutWidget" row="3" column="0">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="accel">
+                        <string>F1</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>138</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QButtonGroup" row="2" column="0">
+            <property name="name">
+                <cstring>btnGrpMapUnits</cstring>
+            </property>
+            <property name="title">
+                <string>Map Units</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>radioButton4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Meters</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>radioButton4_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Feet</string>
+                    </property>
+                    <property name="buttonGroupId">
+                        <number>1</number>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>radioButton4_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Decimal degrees</string>
+                    </property>
+                    <property name="buttonGroupId">
+                        <number>2</number>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QButtonGroup" row="1" column="0">
+            <property name="name">
+                <cstring>buttonGroup2</cstring>
+            </property>
+            <property name="title">
+                <string>Projection</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>cboProjection</cstring>
+                    </property>
+                </widget>
+                <widget class="QTextEdit" row="1" column="0">
+                    <property name="name">
+                        <cstring>teProjection</cstring>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -214,12 +208,19 @@
         <receiver>QgsProjectPropertiesBase</receiver>
         <slot>mapUnitChange(int)</slot>
     </connection>
+    <connection>
+        <sender>cboProjection</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>QgsProjectPropertiesBase</receiver>
+        <slot>projectionChanged(const QString&amp;)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsprojectpropertiesbase.ui.h</include>
 </includes>
 <slots>
     <slot>mapUnitChange( int )</slot>
+    <slot>projectionChanged( const QString &amp; )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

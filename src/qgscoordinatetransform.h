@@ -18,11 +18,18 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
+
+//qgis includes
 #include "qgspoint.h"
 #include "qgscsexception.h"
+
+//gdal and ogr includes
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
 #include <cpl_error.h>
+
+//non qt includes
+#include <iostream>
 
 class QgsPoint;
 class QString;
@@ -93,6 +100,9 @@ inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint)
   }
   else
   {
+#ifdef QGISDEBUG 
+    std::cout << "Point projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
+#endif        
     return QgsPoint(x, y);
   } 
 }
@@ -109,6 +119,9 @@ inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
   }
   else
   {
+#ifdef QGISDEBUG 
+    std::cout << "Point projection...X : " << theX << "-->" << x << ", Y: " << theY << " -->" << y << std::endl;
+#endif    
     return QgsPoint(x, y);
   } 
 }
