@@ -174,7 +174,7 @@ class GPSData {
   void removeTrack(int index);
   
   
-  /** This function tries to parse a QDomDocument as a GPX or LOC tree. If it
+  /** This function tries to parse a QDomDocument as a GPX tree. If it
       succeeds it will fill this GPSData object with the data from the
       QDomDocument and return true, otherwise it will return false. */
   bool parseDom(QDomDocument& qdd);
@@ -213,17 +213,6 @@ class GPSData {
       @param node The <gpx> node from a QDomDocument
   */
   bool parseGPX(QDomNode& node);
-  
-  /** Geocaching.com uses their own XML format with the file extension .loc
-      to send geocache data to their users. This format is very simple,
-      basically just a list of waypoints with some attributes, so since we're
-      already doing the whole XML dance to parse GPX we might as well parse
-      this format too. Geocaching.com have on some occasions used the wrong
-      charset encoding in these files, so if you get funny characters in the
-      waypoint names it's probably their fault.
-      @param node The <loc> node from a QDomDocument
-  */
-  bool parseLOC(QDomNode& node);
   
   std::vector<Waypoint> waypoints;
   std::vector<Route> routes;

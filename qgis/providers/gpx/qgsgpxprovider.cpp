@@ -799,7 +799,7 @@ QGISEXTERN QString providerKey(){
  * Required description function 
  */
 QGISEXTERN QString description(){
-  return QString("GPS eXchange format and LOC provider");
+  return QString("GPS eXchange format provider");
 } 
 
 
