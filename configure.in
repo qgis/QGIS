@@ -12,10 +12,16 @@ AC_PROG_CXX
 
 AC_LANG([C++])
 
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
 
 gw_CHECK_QT
+
 
 
 dnl ---------------------------------------------------------------------------
@@ -23,7 +29,7 @@ dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
 AC_ARG_WITH(gdal,
   AC_HELP_STRING([--with-gdal=path],
-                 [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config' ]),
+                 [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config']),
   [if test -x "$with_gdal/gdal-config" ; then
        GDAL_CONFIG="$with_gdal/gdal-config"
    else
@@ -57,22 +63,25 @@ AC_ARG_WITH(pg,
 
 AC_MSG_CHECKING([for PostgreSQL])
 if test x"$with_pg" = "xyes" -o x"$with_pg" = "x" ; then
+  AC_MSG_RESULT([yes])
   AC_PATH_PROG([PG_CONFIG], [pg_config], [no])
 elif test x"$with_pg" = "xno" ; then
+  AC_MSG_RESULT([no])
   PG_CONFIG=no
 else
+  AC_MSG_RESULT([yes])
   PG_CONFIG="$with_pg/pg_config"
 fi
 
-if test x"$PG_CONFIG" = "xno" ; then
-  AC_MSG_RESULT([no])
-else
+if test x"$PG_CONFIG" != "xno" ; then
   HAVE_PG=1
   PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
   PG_INC="`$PG_CONFIG --includedir`"
-  AC_MSG_RESULT([yes])
   AC_MSG_CHECKING([for postgreSQL libs])
   AC_MSG_RESULT([$PG_LIB])
+	ac_postgresql="yes"
+else
+	ac_postgresql="no"
 fi
 
 AC_SUBST(HAVE_PG)
@@ -81,32 +90,30 @@ AC_SUBST(PG_LIB)
 
 AM_CONDITIONAL(POSTGRESDB, test x$HAVE_PG = x1)
 
+
+
 dnl ---------------------------------------------------------------------------
 dnl SPIT plugin
 dnl ---------------------------------------------------------------------------
-AC_ARG_WITH(spit,
-  AC_HELP_STRING([--with-spit],
-                 [Shapefile to PostgreSQL (PostGIS) import plugin (built by default with PostgreSQL support)]))
+AC_ARG_ENABLE(spit,
+  AC_HELP_STRING([--disable-spit],
+                 [disable Shapefile to PostgreSQL (PostGIS) import plugin (built by default with PostgreSQL support)]),
+	[ac_spit=$enableval], [ac_spit=yes])
                  
-AC_MSG_CHECKING([SPIT option])
-if test x"$with_spit" = "xno" ; then
-  WANT_SPIT=0
-else
- if test x"$with_pg" = "xyes" -o x"$with_pg" = "x" ; then
-    WANT_SPIT=1
- else
-    WANT_SPIT=0
- fi
-fi
-
-if test x"$WANT_SPIT" = "x1" ; then
-  AC_MSG_RESULT([yes])
+AC_MSG_CHECKING([for SPIT])
+if test x"$ac_spit" = "xyes"; then
+	if test x"$with_pg" = "xyes" -o x"$with_pg" = "x" ; then
+		AC_MSG_RESULT([yes])
+	else
+		ac_spit="no"
+		AC_MSG_RESULT([no (no PostgreSQL available)])
+	fi
 else
   AC_MSG_RESULT([no])
 fi
-AC_SUBST(WANT_SPIT)
 
-AM_CONDITIONAL(SPIT, test x$WANT_SPIT = x1)
+AM_CONDITIONAL(HAVE_SPIT, test x$ac_spit = xyes)
+AC_SUBST(HAVE_SPIT)
 
 
 dnl ---------------------------------------------------------------------------
@@ -151,22 +158,32 @@ dnl ---------------------------------------------------------------------------
 # AC_SUBST(GRASS_LIB)
 # AC_SUBST(GRASS_INC)
 
-dnl Debug messages to stdout
+
+dnl ---------------------------------------------------------------------------
+dnl Debugging
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(debug,
+	AC_HELP_STRING([--enable-debug],
+								 [Enable debuging messages [[default=no]]]),
+        [ac_debug=$enableval], [ac_debug=no])
+
 AC_MSG_CHECKING([if debug statements should be sent to stdout/stderr])
-if test x"$QGISDEBUG" = "x" ; then
- DEBUG_QGIS=-DNO_DEBUG
- AC_MSG_RESULT([no])
+if test x"$ac_debug" = "xno" ; then
+	DEBUG_QGIS=
+	AC_MSG_RESULT([no])
 else
- DEBUG_QGIS=-DDEBUG
- AC_MSG_RESULT([yes])
+	DEBUG_QGIS=-DDEBUG
+	AC_MSG_RESULT([yes])
 fi
 AC_SUBST(DEBUG_QGIS)
 
+
 #echo ${prefix}/lib
-libdir=${prefix}/lib
+ac_libdir=${prefix}/lib
 AC_MSG_CHECKING([plugin install directory])
 AC_MSG_RESULT([$libdir])
 #echo Plugins will be installed in $libdir
+
 AC_CONFIG_FILES([
 	Makefile 
 	src/Makefile 
@@ -181,3 +198,19 @@ AC_CONFIG_FILES([
 ])
 
 AC_OUTPUT
+
+dnl Output the configuration summary
+echo ""
+echo "=========================================="
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------"
+echo "GDAL/OGR      : yes"
+echo "PostgreSQL    : $ac_postgresql"
+echo "SPIT          : $ac_spit"
+echo ""
+echo "Debug         : $ac_debug"
+echo "Plugin dir    : $ac_libdir"
+echo ""
+echo "The binary will be installed in $prefix/bin"
+echo "------------------------------------------"
+echo "Configure finished, type 'make' to build."
