@@ -30,11 +30,13 @@
 #include <qmemarray.h>
 #include <qapplication.h>
 #include <qfile.h>
+#include <qpixmap.h>
 #include <iostream>
 
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
+#include "spiticon.xpm"
 
 // Qt implementation of alignment() + changed the numeric types to be shown on the left as well
 int QTableItem::alignment() const
@@ -50,6 +52,10 @@ int QTableItem::alignment() const
 }
 
 QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
+  QPixmap icon;
+  icon = QPixmap(spitIcon);
+  setIcon(icon);
+
   populateConnectionList();
   defSrid = -1;
   defGeom = "the_geom";
