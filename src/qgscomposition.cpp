@@ -498,6 +498,16 @@ void QgsComposition::setPlotStyle (  PlotStyle p )
     for (std::list < QgsComposerItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it) {
 	(*it)->setPlotStyle( p ) ;
     }
+
+    // Remove paper if Print, reset if Preview
+    if ( mPlotStyle == Print ) {
+	mPaperItem->setCanvas(0);
+        mCanvas->setBackgroundColor( Qt::white );
+    } else { 
+	mPaperItem->setCanvas(mCanvas);
+        mCanvas->setBackgroundColor( QColor(180,180,180) );
+
+    }
 }
 
 double QgsComposition::viewScale ( void ) 
