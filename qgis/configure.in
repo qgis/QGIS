@@ -157,6 +157,7 @@ AC_CONFIG_FILES([
   plugins/Makefile
   plugins/spit/Makefile
   plugins/example/Makefile
+  plugins/maplayer/Makefile
 ])
 
 AC_OUTPUT
