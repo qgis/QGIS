@@ -61,10 +61,14 @@ void QgsOptionsBase::findBrowser()
 #else
     filter = "All Files (*)";
 #endif
-cmbBrowser->setCurrentText(QFileDialog::getOpenFileName(
+    QString browser = QFileDialog::getOpenFileName(
                     "./",
                     filter, 
                     this,
                     "open file dialog",
-                    "Choose a browser" ));
+                    "Choose a browser" );
+    if(browser.length() > 0)
+    {
+      cmbBrowser->setCurrentText(browser);
+    }
 }
