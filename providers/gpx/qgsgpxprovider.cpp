@@ -18,6 +18,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <algorithm>
 #include <cfloat>
 #include <iostream>
 #include <limits>
@@ -704,6 +705,24 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
   }
     
   return success;
+}
+
+
+bool QgsGPXProvider::deleteFeatures(std::list<int> id) {
+  id.sort();
+  for (std::list<int>::reverse_iterator iter = id.rbegin(); 
+       iter != id.rend(); ++iter) {
+    if (*iter < featureCount()) {
+      std::cerr<<"REMOVING FEATURE "<<(*iter)<<std::endl;
+      if (mFeatureType == WaypointType)
+	data->removeWaypoint(*iter);
+      else if (mFeatureType == RouteType)
+	data->removeRoute(*iter);
+      else if (mFeatureType == TrackType)
+	data->removeTrack(*iter);
+    }
+  }
+  return true;
 }
 
 
