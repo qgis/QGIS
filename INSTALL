@@ -1,4 +1,4 @@
-/* INSTALL,v 1.14 2003/09/01 00:40:14 gsherman Exp */
+/* INSTALL,v 1.15 2003/09/19 03:28:49 gsherman Exp */
 QGis can be built with or without PostgreSQL/PostGIS support.
 Requirements common to either build:
 1. Qt 3.0.x built with thread support
@@ -12,20 +12,19 @@ Additional requirements for building with PostgreSQL/PostGIS support:
    (http://www.postgresql.org)
 2. PostGIS support in PostgreSQL  (http://postgis.refractions.net)
 
+Running ./configure in the qgis directory will give a list of options.
+
 To build QGIS without PostgreSQL/PostGIS support:
   1. Make sure your QTDIR environment variable is set to your Qt directory
-  2. Change to the qgis/src directory
-  3. qmake src.pro
-  4. make clean
-  5. make
+  2. Change to the qgis directory
+  3. ./configure
+  4. make
 
 To build QGIS with PostgreSQL/PostGIS support:
    1. Make sure your QTDIR environment variable is set to your Qt directory
-   2. Set PGSQL environment variable to point to your PostgreSQL installation
-   3. Change to the qgis/src directory 
-   4. qmake "DEFINES+=POSTGRESQL" src.pro
-   5. make clean
-   6. make
+   3. Change to the qgis directory 
+   4. ./configure --with-pg=<full path to pg_config>
+   5. make
 
 The QGIS executable (qgis) will be built in the ./qgis/src directory
 
