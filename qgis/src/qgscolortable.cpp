@@ -71,6 +71,18 @@ void QgsColorTable::add ( int index, unsigned char c1, unsigned char c2, unsigne
     mDiscrete[index].c4 = c4;
 }
 
+void QgsColorTable::clear()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsColorTable::clear() called " << std::endl;
+    #endif
+    mDiscrete.clear();
+    mRamp.clear();
+    mMax=0;
+    mMin=0;
+}
+
+
 void QgsColorTable::add ( double min,  double max,
                   unsigned char min_c1, unsigned char min_c2, unsigned char min_c3, unsigned char min_c4,
 		  unsigned char max_c1, unsigned char max_c2, unsigned char max_c3, unsigned char max_c4 )
