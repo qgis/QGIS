@@ -37,14 +37,19 @@ HEADERS += list.hh \
            occurrences_file.hh \
            openmodellergui.h \
            openmodellerguibase.ui.h \
+           omguimain.h \
+           omguimainbase.ui.h \
+           imagewriter.h \
            request_file.hh
 
-INTERFACES += openmodellerguibase.ui
+INTERFACES += openmodellerguibase.ui omguimainbase.ui
 
 SOURCES += main.cpp \ 
            list.cpp \
            occurrences_file.cpp \
            openmodellergui.cpp \
+           omguimain.cpp \
+           imagewriter.cpp \
            request_file.cpp
 
 # -------------------------------------------
