@@ -69,6 +69,8 @@ class Plugin:public QObject, public QgisPlugin
   void setColor(QColor);
   //! set copyright label placement
   void setPlacement(QString);
+  //! set copyright label enabled
+  void setEnable(bool);
 
   
     private:
@@ -80,6 +82,8 @@ class Plugin:public QObject, public QgisPlugin
   QColor mLabelQColor;
   //! Placement of the copyright label
   QString mPlacement;
+  //! Copyright label enabled
+  bool mEnable;
   
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
