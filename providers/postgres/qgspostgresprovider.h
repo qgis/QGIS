@@ -141,7 +141,9 @@ class QgsPostgresProvider:public QgsDataProvider
 /**Returns the maximum value of an attributs
      @param position the number of the attribute*/
   QString maxValue(int position);
-  
+/**Returns true if layer is valid
+*/
+  bool isValid();
   private:
       std::vector < QgsFeature > features;
       std::vector < bool > *selected;
