@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   // 
   for (int myIteratorInt = 1; myIteratorInt < argc; myIteratorInt++)
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       printf("%d: %s\n", myIteratorInt, argv[myIteratorInt]);
 #endif
       myQFile.setName(argv[myIteratorInt]);
@@ -69,23 +69,23 @@ int main(int argc, char *argv[])
       myQFile.close();
       if (myFileExistsFlag)
         {
-#ifdef DEBUG
+#ifdef QGISDEBUG
           printf("OK\n");
 #endif
           myArgString = argv[myIteratorInt];
-#ifdef DEBUG
+#ifdef QGISDEBUG
           printf("Layer count: %d\n", myFileStringList.count());
 #endif
           myFileStringList.append(myArgString);
 
         }
     }
-#ifdef DEBUG
+#ifdef QGISDEBUG
   printf("rCount: %d\n", myFileStringList.count());
 #endif
   if (!myFileStringList.isEmpty())
     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
       printf("Loading vector files...\n");
 #endif
       //try to add all these layers - any unsupported file types will be refected automatically

@@ -54,14 +54,14 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     geometryColumn.truncate(geometryColumn.length() - 1);
     tableName = tableName.mid(tableName.find(".") + 1, tableName.find(" (") - (tableName.find(".") + 1));
 
-    #ifdef DEBUG
+    #ifdef QGISDEBUG
     std::cerr << "Geometry column is: " << geometryColumn << std::endl;
     std::cerr << "Schema is: " + schema << std::endl;
     std::cerr << "Table name is: " + tableName << std::endl;
     #endif
     //QString logFile = "./pg_provider_" + tableName + ".log";
     //pLog.open((const char *)logFile);
-    #ifdef DEBUG
+    #ifdef QGISDEBUG
     std::cerr << "Opened log file for " << tableName << std::endl;
     #endif
     PGconn *pd = PQconnectdb((const char *) connInfo);
@@ -69,7 +69,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     if (PQstatus(pd) == CONNECTION_OK) {
       /* Check to see if we have GEOS support and if not, warn the user about
       the problems they will see :) */
-      #ifdef DEBUG
+      #ifdef QGISDEBUG
       std::cerr << "Checking for GEOS support" << std::endl;
       #endif
       if(!hasGEOS(pd)){
@@ -89,7 +89,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
         // check the geometry column
         QString sql = "select f_geometry_column,type,srid from geometry_columns where f_table_name='"
           + tableName + "' and f_geometry_column = '" + geometryColumn + "' and f_table_schema = '" + schema + "'";
-        #ifdef DEBUG
+        #ifdef QGISDEBUG
           std::cerr << "Getting geometry column: " + sql << std::endl;
           #endif
         PGresult *result = PQexec(pd, (const char *) sql);
@@ -111,7 +111,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             PGresult * oidResult = PQexec(pd, firstOid);
             // get the int value from a "normal" select
             QString oidValue = PQgetvalue(oidResult,0,0);
-            #ifdef DEBUG
+            #ifdef QGISDEBUG
             std::cerr << "Creating binary cursor" << std::endl;
             #endif
             // get the same value using a binary cursor
@@ -120,7 +120,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             // set up the cursor
             PQexec(pd, (const char *)oidDeclare);
              QString fetch = "fetch forward 1 from oidcursor";
-             #ifdef DEBUG
+             #ifdef QGISDEBUG
              std::cerr << "Fecthing a record and attempting to get check endian-ness" << std::endl;
              #endif
             PGresult *fResult = PQexec(pd, (const char *)fetch);
@@ -138,7 +138,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             }
             // end the cursor transaction
             PQexec(pd, "end work");
-            #ifdef DEBUG
+            #ifdef QGISDEBUG
             std::cerr << "Setting layer type" << std::endl;
             #endif
             // set the type
@@ -159,7 +159,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
               "xmin(extent(" + geometryColumn + ")) as xmin,"
               "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
-              #ifdef DEBUG 
+              #ifdef QGISDEBUG 
               std::cerr << "Getting extents using schema.table: " + sql << std::endl;
               #endif
             result = PQexec(pd, (const char *) sql);
@@ -172,7 +172,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             QTextOStream(&xMsg).width(18);
             QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
               xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
-            #ifdef DEBUG
+            #ifdef QGISDEBUG
               std::cerr << xMsg << std::endl;
               #endif
             // clear query result
@@ -232,7 +232,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             sql = "select count(*) from " + tableName;
             result = PQexec(pd, (const char *) sql);
             numberFeatures = QString(PQgetvalue(result, 0, 0)).toLong();
-            #ifdef DEBUG
+            #ifdef QGISDEBUG
             std::cerr << "Number of features: " << numberFeatures << std::endl;
             #endif
            
@@ -243,7 +243,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
         } else {
             // the table is not a geometry table
             valid = false;
-            #ifdef DEBUG
+            #ifdef QGISDEBUG
             std::cerr << "Invalid Postgres layer" << std::endl;
             #endif
         }
@@ -386,7 +386,11 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 {
     // spatial query to select features
-    //--std::cout << "Selection rectangle is " << *rect << std::endl;
+    
+    #ifdef QGISDEBUG
+    std::cerr << "Selection rectangle is " << *rect << std::endl;
+    std::cerr << "Selection polygon is " << rect->asPolygon() << std::endl;
+    #endif
     QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
       + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
@@ -403,7 +407,9 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
         declare += srid;
         declare += ")";
       }
-    //--std::cout << "Selecting features using: " << declare << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "Selecting features using: " << declare << std::endl;
+#endif
     // set up the cursor
     if(ready){
       PQexec(connection, "end work");
@@ -535,7 +541,7 @@ void QgsPostgresProvider::reset()
     primaryKey + 
     ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
         //--std::cout << "Selecting features using: " << declare << std::endl;
-        #ifdef DEBUG
+        #ifdef QGISDEBUG
         std::cerr << "Setting up binary cursor: " << declare << std::endl;
         #endif
         // set up the cursor
@@ -577,12 +583,12 @@ QString QgsPostgresProvider::endianString()
 }
 QString QgsPostgresProvider::getPrimaryKey(){
   QString sql = "select oid from pg_class where relname = '" + tableName + "'";
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
   std::cerr << "Getting primary key" << std::endl;
   std::cerr << sql << std::endl;
   #endif
   PGresult *pk = PQexec(connection,(const char *)sql);
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
   std::cerr << "Got " << PQntuples(pk) << " rows " << std::endl;
   #endif
   // get the oid for the table
@@ -590,7 +596,7 @@ QString QgsPostgresProvider::getPrimaryKey(){
   // check to see if there is a primary key
   sql = "select indkey from pg_index where indrelid = " +
     oid + " and indisprimary = 't'";
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
     std::cerr << sql << std::endl;
     #endif
   PQclear(pk);
@@ -598,7 +604,7 @@ QString QgsPostgresProvider::getPrimaryKey(){
   // if we got no tuples we ain't go no pk :)
   if(PQntuples(pk) == 0){
     // no key - should we warn the user that performance will suffer
-    #ifdef DEBUG
+    #ifdef QGISDEBUG
     std::cerr << "Table has no primary key -- using oid to fetch records" << std::endl;
     #endif
     primaryKey = "oid";
@@ -608,14 +614,14 @@ QString QgsPostgresProvider::getPrimaryKey(){
     QStringList columns = QStringList::split(" ", keyString);
     if(columns.count() > 1){
       //TODO concatenated key -- can we use this?
-      #ifdef DEBUG
+      #ifdef QGISDEBUG
       std::cerr << "Table has a concatenated primary key" << std::endl;
       #endif
     }
     primaryKeyIndex = columns[0].toInt()-1;
     QgsField fld = attributeFields[primaryKeyIndex];
      primaryKey = fld.getName();
-     #ifdef DEBUG
+     #ifdef QGISDEBUG
      std::cerr << "Primary key is " << primaryKey << std::endl;//);// +<< " at column " << primaryKeyIndex << std::endl;
      #endif
    //  pLog.flush();
@@ -679,7 +685,7 @@ bool QgsPostgresProvider::hasGEOS(PGconn *connection){
 QString QgsPostgresProvider::postgisVersion(PGconn *connection){
   PGresult *result = PQexec(connection, "select postgis_version()");
   postgisVersionInfo = PQgetvalue(result,0,0);
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
   std::cerr << "PostGIS version info: " << postgisVersionInfo << std::endl;
   #endif
   // assume no capabilities

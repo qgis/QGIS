@@ -16,29 +16,29 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minm
 	OGRRegisterAll();
 		
 	// make connection to the data source
-	#ifdef DEBUG
+	#ifdef QGISDEBUG
   std::cerr << "Data source uri is " << uri << std::endl;
   #endif
 	ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri);
 	if (ogrDataSource != NULL) {
-		#ifdef DEBUG
+		#ifdef QGISDEBUG
     std::cerr << "Data source is valid" << std::endl;
     #endif
 		valid = true;
 		ogrLayer = ogrDataSource->GetLayer(0);
 		// get the extent_ (envelope) of the layer
-    #ifdef DEBUG
+    #ifdef QGISDEBUG
     std::cerr << "Starting get extent\n";
     #endif
 		extent_ = new OGREnvelope();
 		ogrLayer->GetExtent(extent_);
-    #ifdef DEBUG
+    #ifdef QGISDEBUG
     std::cerr << "Finished get extent\n";
     #endif
     // getting the total number of features in the layer
     numberFeatures = ogrLayer->GetFeatureCount();
 		// check the validity of the layer
-    #ifdef DEBUG
+    #ifdef QGISDEBUG
     std::cerr << "checking validity\n";
     #endif
 		OGRFeature *feat = ogrLayer->GetNextFeature();
@@ -67,13 +67,13 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minm
 		}
     
         ogrLayer->ResetReading();
-        #ifdef DEBUG
+        #ifdef QGISDEBUG
         std::cerr << "Done checking validity\n";
         #endif
 	} else {
 		std::cerr << "Data source is invalid" << std::endl;
 		const char *er = CPLGetLastErrorMsg();
-		#ifdef DEBUG
+		#ifdef QGISDEBUG
     std::cerr << er << std::endl;
     #endif
 		valid = false;
@@ -105,17 +105,17 @@ QgsFeature *QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
 {
 	QgsFeature *f = 0;
 	if(valid){
-		#ifdef DEBUG
+		#ifdef QGISDEBUG
     std::cerr << "getting first feature\n";
     #endif
 		ogrLayer->ResetReading();
 		OGRFeature *feat = ogrLayer->GetNextFeature();
 		if(feat){
-			#ifdef DEBUG
+			#ifdef QGISDEBUG
       std::cerr << "First feature is not null\n";
       #endif
 		}else{
-			#ifdef DEBUG
+			#ifdef QGISDEBUG
       std::cerr << "First feature is null\n";
       #endif
 		}
@@ -157,7 +157,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
             delete[] wkt;  */
             delete fet;
 		}else{
-			#ifdef DEBUG
+			#ifdef QGISDEBUG
       std::cerr << "Feature is null\n";
       #endif
             // probably should reset reading here
@@ -166,7 +166,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     
 		
 	}else{
-    #ifdef DEBUG    
+    #ifdef QGISDEBUG    
     std::cerr << "Read attempt on an invalid shapefile data source\n";
     #endif
     }
@@ -206,7 +206,7 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
 		}
 		ogrLayer->ResetReading();*/
 	}else{
-    #ifdef DEBUG    
+    #ifdef QGISDEBUG    
     std::cerr << "Setting spatial filter failed!" << std::endl;
     #endif
     }

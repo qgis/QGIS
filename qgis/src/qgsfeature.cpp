@@ -33,7 +33,7 @@ QgsFeature::QgsFeature(int id):fId(id), geometry(0), wkt(0)
 //! Destructor
 QgsFeature::~QgsFeature()
 {
-  #ifdef DEBUG
+  #ifdef QGISDEBUG
   std::cerr << "In QgsFeature destructor" << std::endl;
   #endif
   
