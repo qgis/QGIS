@@ -763,6 +763,13 @@ bool QgsGPXProvider::deleteFeature(int id) {
 }
 
 
+QString QgsGPXProvider::getDefaultValue(const QString& attr, QgsFeature* f) {
+  if (attr == "source")
+    return "Digitized in QGIS";
+  return "";
+}
+
+
 /** 
  * Check to see if the point is within the selection rectangle
  */

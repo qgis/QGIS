@@ -166,7 +166,10 @@ public:
    @param id the number of the feature
    @return true in case of success and false in case of failure*/
   bool deleteFeature(int id);
-
+  
+  /**Returns the default value for attribute @c attr for feature @c f. */
+  QString getDefaultValue(const QString& attr, QgsFeature* f);
+  
   /**
    * Check to see if the point is withn the selection
    * rectangle

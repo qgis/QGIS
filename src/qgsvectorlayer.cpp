@@ -1246,6 +1246,12 @@ void QgsVectorLayer::select(int number)
       return false;
     }
 
+
+    QString QgsVectorLayer::getDefaultValue(const QString& attr, 
+					    QgsFeature* f) {
+      return dataProvider->getDefaultValue(attr, f);
+    }
+
     bool QgsVectorLayer::deleteSelectedFeatures()
     {
 #ifdef QGISDEBUG

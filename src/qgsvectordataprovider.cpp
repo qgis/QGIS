@@ -94,6 +94,13 @@ bool QgsVectorDataProvider::deleteFeature(int id)
     return false;
 }
 
+
+QString QgsVectorDataProvider::getDefaultValue(const QString& attr, 
+					       QgsFeature* f) {
+  return "";
+}
+
+
 bool QgsVectorDataProvider::commitFeature(QgsFeature* f)
 {
     //needs to be done by subclasses

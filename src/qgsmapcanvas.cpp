@@ -1211,7 +1211,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	std::vector<QgsField> fields=vlayer->fields();
 	for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
 	{
-	    f->addAttribute((*it).name(),"");
+	  f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
 	}
 	
 	//show the dialog to enter attribute values
@@ -1331,7 +1331,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       std::vector<QgsField> fields=vlayer->fields();
       for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
       {
-	  f->addAttribute((*it).name(),"");
+	f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
       }
 
       //show the dialog to enter attribute values
