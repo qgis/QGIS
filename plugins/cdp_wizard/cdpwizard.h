@@ -164,12 +164,6 @@ public:
 
     /**
     * Reimplements method by the same name in parent class
-    * @return void
-    */
-    void pushButton9_clicked();
-
-    /**
-    * Reimplements method by the same name in parent class
     * @param theQString - new selected file type - will be converted to FileReader::FileTypeEnum
     * @return void
     * @see FileReader::FileTypeEnum
@@ -244,6 +238,13 @@ public:
     * @return void - No return.
     */
     void run();
+    
+   /**
+    * Reimplements method by the same name in parent class
+    * @param theYearType - format for dates either AD or BP
+    * @return void
+    */
+    void cbxYearType_highlighted( const QString & theYearType );
 
 private:
     /**

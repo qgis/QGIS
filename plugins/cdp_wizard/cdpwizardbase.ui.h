@@ -161,3 +161,10 @@ void CDPWizardBase::leOutputPath_textChanged( const QString & )
 {
 
 }
+
+
+void CDPWizardBase::cbxYearType_highlighted( const QString & )
+{
+
+}
+

@@ -294,6 +294,13 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         }
     } //end of test for page 3
 
+    if (thePageNameQString==tr("Output destination")) //we do this after leaving the file type and variables page
+    {
+       
+    }    
+    
+    
+    
     if (thePageNameQString==tr("Summary of processing to be performed")) //we do this when  we arrive at the summary of variables to be calculated
     {
         //update the summary of vars to calculate
@@ -427,7 +434,7 @@ void CDPWizard::accept()
     //LOGIC REQUIRED TO CHECK THE USER IS ON THE LAST PAGE
     //Save default settings
     saveDefaults();
-
+    
 }
 
 void CDPWizard::checkInputFilenames()
@@ -505,53 +512,180 @@ void CDPWizard::pbtnOutputPath_clicked()
 }
 
 
-void CDPWizard::spinFirstYearToCalc_valueChanged( int theInt)
-{
-    //make sure the number is valid
-    if (theInt < spinFirstYearInFile->value())
-    {
-        spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-    }
-    if (spinFirstYearToCalc->value() > spinLastYearToCalc->value())
-    {
-        spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-        leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
-    }
-    leStartYearSummary->setText(QString::number(theInt));
-}
-
-
 void CDPWizard::spinFirstYearInFile_valueChanged( int theInt)
 {
-   //make sure the number is valid
-    if (theInt > spinFirstYearToCalc->value())
-    {
-            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-            leStartYearSummary->setText(QString::number(spinFirstYearToCalc->value()));
+   if (cbxYearType->currentText()=="AD")
+   {
+      //
+      //Year type is AD
+      //
+          
+      //check firstyeartocalc is not lower then firstyearinfile
+      if (theInt > spinFirstYearToCalc->value())
+      {
+        spinFirstYearToCalc->setValue(spinFirstYearInFile->value());    
+      }
+      
+      //check lastyeartocalc is not lower then firstyearinfile
+      if (theInt > spinLastYearToCalc->value())
+      {
+        spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+      }
+      
+      //set lower bounds of first and last year spin boxes to first year in file
+      spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
+      spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
+      spinFirstYearToCalc->setMaxValue(3000);
+      spinLastYearToCalc->setMaxValue(3000); 
     }
-    if (theInt > spinLastYearToCalc->value())
-    {
-            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-            leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
-    }
-    if (spinFirstYearToCalc->value() > spinLastYearToCalc->value())
-    {
-            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-            leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
-    }
+    
+   else
+   {
+      //
+      //Year type is BP
+      //
+      
+      //check firstyeartocalc is not higher then firstyearinfile
+      if (theInt < spinFirstYearToCalc->value())
+      {
+        spinFirstYearToCalc->setValue(spinFirstYearInFile->value());    
+      }
+      
+      //check lastyeartocalc is not lower then firstyearinfile
+      if (theInt < spinLastYearToCalc->value())
+      {
+        spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+      }
+      
+      //set lower and upper bounds
+      spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
+      spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
+      spinFirstYearToCalc->setMinValue(0);
+      spinLastYearToCalc->setMinValue(0); 
+   }
 }
 
+void CDPWizard::spinFirstYearToCalc_valueChanged( int theInt)
+{
+   if (cbxYearType->currentText()=="AD")
+   {
+      //
+      //Year type is AD
+      //    
+    
+      if (theInt > spinLastYearToCalc->value())
+      {
+        spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+      }
+   }
+      
+   else
+   {
+      //
+      //Year type is BP
+      //
+      
+      if (theInt < spinLastYearToCalc->value())
+      {
+        spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+      }
+    
+   }      
+      
+}
 
 void CDPWizard::spinLastYearToCalc_valueChanged( int theInt)
 {
-    //make sure the number is valid
-    if (theInt < spinFirstYearToCalc->value())
-    {
-            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-    }
-
-    leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+   if (cbxYearType->currentText()=="AD")
+   {
+      //
+      //Year type is AD
+      //    
+      
+      if (theInt < spinFirstYearToCalc->value())
+      {
+        spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
+      }    
+   }
+   
+   else
+   {
+      //
+      //Year type is BP
+      //
+      
+      if (theInt > spinFirstYearToCalc->value())
+      {
+        spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
+      } 
+    
+   }    
 }
+
+void CDPWizard::cbxYearType_highlighted( const QString & theYearType )
+{
+  std::cout << "Setting year type to " << theYearType << std::endl;
+  spinFirstYearToCalc->setSuffix(theYearType);
+  spinLastYearToCalc->setSuffix(theYearType);
+  
+  if (theYearType=="AD")
+  {
+      //
+      //Year type is AD
+      //   
+      
+      if (spinFirstYearInFile->value()>3000)
+      {
+         spinFirstYearInFile->setValue(2000);
+      }
+      
+      if (spinFirstYearToCalc->value() < spinFirstYearInFile->value())
+      {
+         spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+      }
+      
+      if (spinLastYearToCalc->value() < spinFirstYearInFile->value())
+      {
+         spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+      }     
+  
+      spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
+      spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
+      spinFirstYearToCalc->setMaxValue(3000);
+      spinLastYearToCalc->setMaxValue(3000);       
+
+
+  }
+  
+  else
+  {
+  
+      //
+      //Year type is BP
+      //
+      
+      if (spinFirstYearToCalc->value() > spinFirstYearInFile->value())
+      {
+         spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+      }
+      
+      if (spinLastYearToCalc->value() > spinFirstYearInFile->value())
+      {
+         spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+      }     
+  
+      spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
+      spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
+      spinFirstYearToCalc->setMinValue(0);
+      spinLastYearToCalc->setMinValue(0);     
+  
+  
+  }
+}
+
+
+
+
 
 void CDPWizard::lstVariablesToCalc_selectionChanged()
 {
@@ -572,20 +706,12 @@ void CDPWizard::lstVariablesToCalc_selectionChanged()
 
     if (selectionSizeInt==0)
     {
-        std::cout << "No variables selected so disabling next" << std::endl;
         setNextEnabled(currentPage(), false); 
     }
     else
     {
-        std::cout << selectionSizeInt << " variables selected enabling next button" << std::endl;
         setNextEnabled(currentPage(), true); 
     }
-
-}
-
-
-void CDPWizard::pushButton9_clicked()
-{
 
 }
 
@@ -659,16 +785,3 @@ void CDPWizard::leOutputPath_textChanged( const QString & theOutputPath)
   }
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
