@@ -415,26 +415,24 @@ Load Data
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="block" valignment="top" width="2in">
+<column alignment="right" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="2in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Use Case:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Load Data
 \end_inset 
 </cell>
@@ -444,19 +442,17 @@ Load Data
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Goal in Context:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Load a data set from a data store and display it
 \end_inset 
 </cell>
@@ -466,19 +462,17 @@ Load a data set from a data store and display it
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Scope & Level:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Primary task
 \end_inset 
 </cell>
@@ -488,19 +482,17 @@ Primary task
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Preconditions:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Application is running
 \end_inset 
 </cell>
@@ -510,19 +502,17 @@ Application is running
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Success End Condition:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Data set is loaded and displayed
 \end_inset 
 </cell>
@@ -532,19 +522,17 @@ Data set is loaded and displayed
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Failed End Condition:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Application is in pre-load state 
 \end_inset 
 </cell>
@@ -554,19 +542,17 @@ Application is in pre-load state
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Primary Actor(s):
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 Casual, Professional user
 \end_inset 
 </cell>
@@ -576,19 +562,17 @@ Casual, Professional user
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Trigger:
-\newline 
-
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 User wants to view data
 \end_inset 
 </cell>
@@ -598,7 +582,7 @@ User wants to view data
 \begin_inset Text
 
 \layout Standard
-
+\added_space_top smallskip 
 
 \series bold 
 Description of Steps:
