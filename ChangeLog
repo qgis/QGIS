@@ -1,7 +1,17 @@
 QGIS Change Log
-ChangeLog,v 1.191 2004/09/23 09:07:48 larsl Exp
+ChangeLog,v 1.192 2004/10/09 16:14:40 gsherman Exp
 ------------------------------------------------------------------------------
-Version 0.5 'Bandit' .... development version
+Version 0.6 'Simon' .... development version
+
+2004-10-09 [gsherman] 0.5.0devel1
+** Changed name to Simon
+** Added Simon splash screen
+** Fixed command line loading bug to eliminate bogus warning for vector layers
+** Modified splashscreen.cpp to allow specification of x,y for text drawing on
+   the splash image
+** Imperfectly fixed problem where postgis attributes aren't displayed if the
+   primary key is not of type int4 (bug 1042706).
+** Added Latvian translation file (untranslated at present)
 
 2004-09-23 [larsl] 0.4.0devel38
 ** Removed support for loading Geocaching.com LOC files
