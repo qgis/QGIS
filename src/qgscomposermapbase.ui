@@ -54,7 +54,7 @@
                 <cstring>textLabel1_3</cstring>
             </property>
             <property name="text">
-                <string>Calculate</string>
+                <string>Set</string>
             </property>
         </widget>
         <widget class="QComboBox">
@@ -62,7 +62,7 @@
                 <cstring>mCalculateComboBox</cstring>
             </property>
             <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -314,6 +314,18 @@
         <receiver>QgsComposerMapBase</receiver>
         <slot>frameChanged()</slot>
     </connection>
+    <connection>
+        <sender>mCalculateComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsComposerMapBase</receiver>
+        <slot>calculateChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mScaleLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerMapBase</receiver>
+        <slot>mapScaleChanged()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>sizeChanged()</slot>
@@ -321,6 +333,8 @@
     <slot>scaleChanged()</slot>
     <slot>previewModeChanged(int)</slot>
     <slot>frameChanged()</slot>
+    <slot>mapScaleChanged()</slot>
+    <slot>calculateChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
