@@ -70,6 +70,13 @@ void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, d
     {
 	pic->load(ms->picture(),"svg");
 	(*scalefactor)=ms->scaleFactor();
+	if(selected)
+	{
+	    QRect bound=pic->boundingRect();
+	    QPainter painter(pic);
+	    painter.setBrush(QColor(255,255,0));
+	    painter.drawRect(0,0,bound.width(),bound.height());
+	}
     }
 }
 
