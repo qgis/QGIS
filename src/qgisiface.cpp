@@ -102,3 +102,4 @@ QgsMapCanvas * QgisIface::getMapCanvas()
 {
   return qgis->getMapCanvas();
 }
+

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.36 2004/04/19 05:28:50 mhugent Exp */
+/* qgsprojectio.cpp,v 1.37 2004/05/06 19:39:46 mcoletti Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -41,14 +41,15 @@
 #include "qgisapp.h"
 #include "qgsmarkersymbol.h"
 
-QgsProjectIo::QgsProjectIo(QgsMapCanvas * _map, int _action, QgisApp * qgis):map(_map), action(_action), qgisApp(qgis)
-{
-}
+QgsProjectIo::QgsProjectIo(QgsMapCanvas * _map, int _action, QgisApp * qgis)
+    : map(_map), action(_action), qgisApp(qgis)
+{}
 
 
 QgsProjectIo::~QgsProjectIo()
-{
-}
+{}
+
+
 QString QgsProjectIo::baseName()
 {
   QFileInfo fi(fullPath);
