@@ -18,9 +18,7 @@
 #include <qstring.h>
 #include "qgspoint.h"
 #include "qgsrect.h"
-QgsRect::QgsRect(double minX, double minY, double maxX, double maxY):xmin(minX), ymin(minY), xmax(maxX), ymax(maxY)
-{
-}
+
 QgsRect::QgsRect(QgsPoint p1, QgsPoint p2){
   xmin = p1.x();
   xmax = p2.x();
@@ -28,62 +26,7 @@ QgsRect::QgsRect(QgsPoint p1, QgsPoint p2){
   ymax = p2.y();
   normalize();
 }
-QgsRect::~QgsRect()
-{
-}
-void QgsRect::setXmin(double x)
-{
-	xmin = x;
-}
 
-void QgsRect::setXmax(double x)
-{
-	xmax = x;
-}
-
-void QgsRect::setYmin(double y)
-{
-	ymin = y;
-}
-
-void QgsRect::setYmax(double y)
-{
-	ymax = y;
-}
-
-double QgsRect::xMax() const
-{
-	return xmax;
-}
-
-double QgsRect::xMin() const
-{
-	return xmin;
-}
-
-double QgsRect::yMax() const
-{
-	return ymax;
-}
-
-double QgsRect::yMin() const
-{
-	return ymin;
-}
-
-double QgsRect::width() const
-{
-	return xmax - xmin;
-}
-
-double QgsRect::height() const
-{
-	return ymax - ymin;
-}
-QgsPoint QgsRect::center() const
-{
-  return QgsPoint(xmin + width() / 2 ,  ymin + height() / 2);
-}
 void QgsRect::normalize()
 {
 	double temp;
