@@ -73,6 +73,24 @@ bool QgsProjectIo::read(){
     file.close();
 	// clear the map canvas
 	map->removeAll();
+	// get the extent
+	QDomNodeList extents = doc->elementsByTagName("extent");
+	QDomNode extentNode = extents.item(0);
+	QDomNode xminNode = extentNode.namedItem("xmin");
+	QDomNode yminNode = extentNode.namedItem("ymin");
+	QDomNode xmaxNode = extentNode.namedItem("xmax");
+	QDomNode ymaxNode = extentNode.namedItem("ymax");
+	QDomElement exElement = xminNode.toElement();
+	double xmin = exElement.text().toDouble();
+	exElement = yminNode.toElement();
+	double ymin = exElement.text().toDouble();
+	exElement = xmaxNode.toElement();
+	double xmax = exElement.text().toDouble();
+	exElement = ymaxNode.toElement();
+	double ymax = exElement.text().toDouble();
+	QgsRect savedExtent(xmin,ymin,xmax,ymax);
+	
+	
 	QDomNodeList nl = doc->elementsByTagName("maplayer");
 	QString layerCount;
 	layerCount = layerCount.setNum(nl.count());
@@ -159,7 +177,7 @@ bool QgsProjectIo::read(){
 			
 	
 	}
-	
+	map->setExtent(savedExtent);
 	}
 	return true;
 }
