@@ -268,5 +268,5 @@ QgisApp::drawPoint (double x, double y)
 
 void QgisApp::drawLayers(){
   cout << "In  QgisApp::drawLayers()" << endl;
-  mapCanvas->render();
+  mapCanvas->render2();
 }
