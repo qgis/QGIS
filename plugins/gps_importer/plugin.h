@@ -23,6 +23,8 @@
 #include <qwidget.h>
 #include <qgisapp.h>
 
+class QgsVectorLayer;
+
 /**
 * \class Plugin
 * \brief OpenModeller plugin for QGIS
@@ -70,6 +72,20 @@ class Plugin:public QObject, public QgisPlugin
   void unload();
   //! show the help document
   void help();
+  
+  //! load a GPX or LOC file
+  void loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
+		   bool loadTracks);
+  void importGPSFile(QString inputFilename, QString inputFormat, 
+		     bool importWaypoints, bool importRoutes, 
+		     bool importTracks, QString outputFilename, 
+		     QString layerName);
+  void downloadFromGPS(QString protocol, QString deviceFilename,
+		       bool downloadWaypoints, bool downloadRoutes,
+		       bool downloadTracks, QString outputFilename,
+		       QString layerName);
+  void uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
+		   QString deviceFilename);
     private:
 
 
