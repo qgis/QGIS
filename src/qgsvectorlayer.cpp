@@ -245,7 +245,8 @@ void QgsVectorLayer::setDisplayField(QString fldName)
   if(!fldName.isEmpty())
   {
     // find the index for this field
-    //
+    fieldIndex = fldName;
+    /*
     for(int i = 0; i < fields.size(); i++)
     {
       if(QString(fields[i].name()) == fldName)
@@ -254,6 +255,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
         break;
       }
     }
+    */
   }else{
   int j = 0;
   for (int j = 0; j < fields.size(); j++)
@@ -306,6 +308,9 @@ void QgsVectorLayer::setDisplayField(QString fldName)
       fieldIndex = fields[0].name();
     }
   }
+
+    // set this to be the label field as well
+    setLabelField(fieldIndex);
   }
 }
 
