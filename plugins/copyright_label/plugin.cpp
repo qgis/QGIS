@@ -43,7 +43,7 @@ email                : tim@linfiniti.com
 #include <qbrush.h>
 #include <qbutton.h>
 #include <qcheckbox.h>
-
+#include <qpaintdevicemetrics.h>
 
 //non qt includes
 #include <iostream>
@@ -153,17 +153,20 @@ void Plugin::renderLabel(QPainter * theQPainter)
   {
     //@todo softcode this!myQSimpleText.height()
     int myRotationInt = 90;
-
+    // need width/height of paint device
+    QPaintDeviceMetrics myMetrics( theQPainter->device() );
+    int myHeight = myMetrics.height();
+    int myWidth = myMetrics.width();
     //hard coded cludge for getting a colorgroup.  Needs to be replaced
     QButton * myQButton =new QButton();
     QColorGroup myQColorGroup = myQButton->colorGroup();
 
     QSimpleRichText myQSimpleText(mLabelQString, mQFont);
-    myQSimpleText.setWidth( theQPainter, (theQPainter->viewport().width()-10) );
+    myQSimpleText.setWidth( theQPainter, myWidth-10 );
 
     //Get canvas dimensions
-    int myYOffset = theQPainter->viewport().height();
-    int myXOffset = theQPainter->viewport().width();
+    int myYOffset = myHeight;
+    int myXOffset = myWidth;
 
 
     //Determine placement of label from form combo box
@@ -196,11 +199,6 @@ void Plugin::renderLabel(QPainter * theQPainter)
     QRect myRect(myXOffset,myYOffset,myQSimpleText.widthUsed(),myQSimpleText.height());
     myQSimpleText.draw (theQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
 
-    //myQPainter.setFont(mQFont);
-    //myQPainter.setPen(mLabelQColor);
-    //myQPainter.drawText(10, myQPixmap->height()-10, mLabelQString);
-
-    //myQPainter.rotate(myRotationInt);
   }
 }
 // Unload the plugin by cleaning up the GUI
