@@ -131,19 +131,25 @@ void QgsComposition::createDefault(void)
     setOptions();
 
     // Add the map to coposition
+    /*
     QgsComposerMap *m = new QgsComposerMap ( this, mNextItemId++, 
 	                          mScale*15, mScale*15, mScale*180, mScale*180 );
     mItems.push_back(m);
+    */
 
     // Add vector legend
+    /*
     QgsComposerVectorLegend *vl = new QgsComposerVectorLegend ( this, mNextItemId++, 
 	                       mScale*210, mScale*100, 10 );
     mItems.push_back(vl);
+    */
 
     // Title
+    /*
     QgsComposerLabel *tit = new QgsComposerLabel ( this, mNextItemId++, 
 	                                           mScale*238, mScale*40, "Map", 24 );
     mItems.push_back(tit);
+    */
 
     // Tool
     mRectangleItem = 0;
