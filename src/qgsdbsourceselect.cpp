@@ -29,11 +29,13 @@
 #include "xpm/polygon_layer.xpm"
 #include "qgsdbsourceselect.h"
 #include "qgsnewconnection.h"
+#include "qgisapp.h"
 extern "C"
 {
 #include <libpq-fe.h>
 }
-QgsDbSourceSelect::QgsDbSourceSelect(QWidget *parent, const char *name):QgsDbSourceSelectBase()
+QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, QWidget *parent, const char *name)
+  :QgsDbSourceSelectBase(parent, name), qgisApp(app)
 {
     btnAdd->setEnabled(false);
 	populateConnectionList();
@@ -211,4 +213,8 @@ QStringList QgsDbSourceSelect::selectedTables()
 QString QgsDbSourceSelect::connInfo()
 {
 	return m_connInfo;
+}
+void QgsDbSourceSelect::addLayer(QListBoxItem *item){
+  qgisApp->addVectorLayer(m_connInfo, item->text(), "postgres");
+  lstTables->setSelected(item, false);
 }
