@@ -248,7 +248,7 @@ void QgsPgQueryBuilder::testSql()
 // XXX This should really throw an exception
 long QgsPgQueryBuilder::countRecords(QString where) 
 {
-  QString sql = "select count(*) from " + mUri->table
+  QString sql = "select count(*) from " + mUri->schema + "." + mUri->table
     + " where " + where;
 
   long numRows;
