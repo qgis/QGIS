@@ -43,6 +43,8 @@ class QgsSiMaRenderer: public QgsRenderer
     /**Returns an empty list, since no classification attributes are used*/
     virtual std::list<int> classificationAttributes();
     QgsRenderItem* item();
+    /**Returns the renderers name*/
+    QString name();
  protected:
     QgsRenderItem* mItem;
 };

@@ -265,3 +265,8 @@ std::list<int> QgsGraduatedMaRenderer::classificationAttributes()
     list.push_back(mClassificationField);
     return list;
 }
+
+QString QgsGraduatedMaRenderer::name()
+{
+    return "Graduated Marker";
+}

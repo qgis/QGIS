@@ -284,3 +284,8 @@ std::list<int> QgsGraduatedSymRenderer::classificationAttributes()
     list.push_back(mClassificationField);
     return list;
 }
+
+QString QgsGraduatedSymRenderer::name()
+{
+    return "Graduated Symbol";
+}

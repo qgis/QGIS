@@ -179,6 +179,10 @@ void QgsDlgVectorLayerProperties::apply()
   rendererDirty = false;
 }
 
+void QgsDlgVectorLayerProperties::closeEvent(QCloseEvent* e)
+{
+    close();
+}
 
 void QgsDlgVectorLayerProperties::close()
 {
@@ -192,7 +196,11 @@ void QgsDlgVectorLayerProperties::close()
       widgetStackRenderers->addWidget(bufferDialog);
       widgetStackRenderers->raiseWidget(bufferDialog);
       rendererDirty = false;
-      //todo:restore the right name in the combo box
+      //restore the right name in the combobox
+      if(bufferRenderer)
+      {
+	  legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
+      }
     }
   reject();
 }

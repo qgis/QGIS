@@ -65,6 +65,7 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   QgsRenderer* bufferRenderer;
   /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
   QPixmap bufferPixmap;
+  void closeEvent(QCloseEvent* e);
 };
 
 inline void QgsDlgVectorLayerProperties::setBufferDialog(QDialog* dialog)

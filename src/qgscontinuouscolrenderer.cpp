@@ -387,3 +387,8 @@ std::list<int> QgsContinuousColRenderer::classificationAttributes()
     list.push_back(mClassificationField);
     return list;
 }
+
+QString QgsContinuousColRenderer::name()
+{
+    return "Continuous Color";
+}
