@@ -15,6 +15,7 @@
 #include <qtimer.h>
 #include <qregexp.h>
 #include <qlineedit.h>
+#include <qmessagebox.h>
 //standard includes
 #include <iostream>
 #include <assert.h>
@@ -183,6 +184,7 @@ void PluginGui::requestHeadFinished(int id)
 
 void PluginGui::requestGetFinished(int id)
 {
+  std::cerr << "************************************* " << std::endl;
   std::cerr << "requestGetFinished: " << id << std::endl;
 
   assert(id == mGetIdInt);
@@ -193,7 +195,23 @@ void PluginGui::requestGetFinished(int id)
   assert(!myPageQString.isEmpty());
 
   //now we parse the file looking for lat long occurrences
-  QRegExp myQRegExp( leRecordRegex->text() ); // match using regex in our dialog
+  QRegExp myQRegExp( leRecordRegex->text(),false,false ); // match using regex in our dialog
+  //check if valid and not bail out
+  if (!myQRegExp.isValid()) 
+  {
+    QMessageBox::warning( this, "Fishing spots",
+                "The regex " + leRecordRegex->text() + " is invalid.\n"
+                    "Fix it and try again" );
+  }
+  else
+  {
+    //make sure greedy matches are off so id you have a string like
+    // <b>blah</b><b>blahblah</b>
+    // and your regex is <b>.*</b>
+    // non greedy match will return <b>blah</b>
+    myQRegExp.setMinimal(true);
+    std::cerr << "Using regex : " << leRecordRegex->text() << std::endl;
+  }
   int myPosInt = 0;    // where we are in the string
   int myCountInt = 0;  // how many matches we find
   while ( myPosInt >= 0 ) 
@@ -202,9 +220,10 @@ void PluginGui::requestGetFinished(int id)
     if ( myPosInt >= 0 ) 
     {
       std::cerr << "************************************* " << std::endl;
+      std::cerr << "Match found from pos " << myPosInt << " to " << myPosInt + myQRegExp.matchedLength() << std::endl;
+      std::cerr << myPageQString.mid(myPosInt,myQRegExp.matchedLength()) << std::endl;
       myPosInt += myQRegExp.matchedLength(); //skip the length of the matched string
       myCountInt++;    // count the number of matches
-      std::cerr << myPageQString.mid(myPosInt,myQRegExp.matchedLength()) << std::endl;
     }
   }
   std::cerr << "************************************* " << std::endl;
