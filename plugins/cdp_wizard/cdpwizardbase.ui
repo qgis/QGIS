@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>594</width>
-            <height>593</height>
+            <height>595</height>
         </rect>
     </property>
     <property name="caption">
@@ -1575,7 +1575,51 @@ Please wait while the climate variables are calculated. The top progress bar sho
         <receiver>CDPWizardBase</receiver>
         <slot>cboFileType_activated(const QString&amp;)</slot>
     </connection>
+    <connection>
+        <sender>CDPWizardBase</sender>
+        <signal>selected(const QString&amp;)</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>accept()</slot>
+    </connection>
 </connections>
+<tabstops>
+    <tabstop>textEdit5</tabstop>
+    <tabstop>textEdit5_2</tabstop>
+    <tabstop>cboFileType</tabstop>
+    <tabstop>leMeanTemp</tabstop>
+    <tabstop>pbtnMeanTemp</tabstop>
+    <tabstop>leMinTemp</tabstop>
+    <tabstop>pbtnMinTemp</tabstop>
+    <tabstop>leMaxTemp</tabstop>
+    <tabstop>pbtnMaxTemp</tabstop>
+    <tabstop>leDiurnalTemp</tabstop>
+    <tabstop>pbtnDiurnalTemp</tabstop>
+    <tabstop>leMeanPrecipitation</tabstop>
+    <tabstop>pbtnMeanPrecipitation</tabstop>
+    <tabstop>leFrostDays</tabstop>
+    <tabstop>pbtnFrostDays</tabstop>
+    <tabstop>leTotalSolarRadiation</tabstop>
+    <tabstop>pbtnTotalSolarRad</tabstop>
+    <tabstop>leWindSpeed</tabstop>
+    <tabstop>textEdit5_2_2</tabstop>
+    <tabstop>lstVariablesToCalc</tabstop>
+    <tabstop>cbxSelectAllVars</tabstop>
+    <tabstop>spinFirstYearInFile</tabstop>
+    <tabstop>spinFirstYearToCalc</tabstop>
+    <tabstop>spinLastYearToCalc</tabstop>
+    <tabstop>textEdit5_2_2_2</tabstop>
+    <tabstop>cboOutputFormat</tabstop>
+    <tabstop>leOutputPath</tabstop>
+    <tabstop>pbtnOutputPath</tabstop>
+    <tabstop>textEdit5_2_2_2_2</tabstop>
+    <tabstop>txtVariableSummary</tabstop>
+    <tabstop>txtInputFileSummary</tabstop>
+    <tabstop>leInputFormatSummary</tabstop>
+    <tabstop>leStartYearSummary</tabstop>
+    <tabstop>leEndYearSummary</tabstop>
+    <tabstop>leOutputPathSummary</tabstop>
+    <tabstop>textEdit5_2_2_2_2_2</tabstop>
+</tabstops>
 <includes>
     <include location="local" impldecl="in implementation">cdpwizardbase.ui.h</include>
 </includes>

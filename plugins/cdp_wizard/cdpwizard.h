@@ -51,6 +51,12 @@ class CDPWizard : public CDPWizardBase
       CDPWizard();
       CDPWizard( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
       ~CDPWizard();
+      
+      
+    void saveDefaults();
+    void loadDefaults();
+    void accept();
+      
     private:
       bool initialise();
 

@@ -23,6 +23,7 @@ email                : t.sutton@reading.ac.uk
 #include <string.h>
 #include <qlabel.h>
 #include <qlabel.h>
+#include <qsettings.h> 
 
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -116,8 +117,59 @@ bool CDPWizard::initialise()
   //
   climateDataProcessor = new ClimateDataProcessor();
 
+  //Load default settings
+  loadDefaults();
+  
   //presume all went ok
   return true;
+}
+
+
+void CDPWizard::saveDefaults()
+{
+  QSettings myQSettings; 
+  
+  //Page 2 
+  myQSettings.writeEntry("/qgis/cdpwizard/meanTemp",leMeanTemp->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/minTemp",leMinTemp->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/maxTemp",leMaxTemp->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/diurnalTemp",leDiurnalTemp->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/meanPrecip",leMeanPrecipitation->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/frostDays",leFrostDays->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/totalSolarRadiation",leTotalSolarRadiation->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/windSpeed",leWindSpeed->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/fileType",cboFileType->currentItem());
+  
+  //Page 3
+  myQSettings.writeEntry("/qgis/cdpwizard/firstYearInFile",spinFirstYearInFile->value());
+  myQSettings.writeEntry("/qgis/cdpwizard/firstYearToCalc",spinFirstYearToCalc->value());
+  myQSettings.writeEntry("/qgis/cdpwizard/lastYearToCalc",spinLastYearToCalc->value());
+  
+  //Page 4
+  myQSettings.writeEntry("/qgis/cdpwizard/outputPath",leOutputPath->text());
+  myQSettings.writeEntry("/qgis/cdpwizard/outputFormat",cboOutputFormat->currentItem());
+  
+}
+  
+void CDPWizard::loadDefaults()
+{
+  QSettings myQSettings;  
+  leMeanTemp->setText(myQSettings.readEntry("/qgis/cdpwizard/meanTemp"));
+  leMinTemp->setText(myQSettings.readEntry("/qgis/cdpwizard/minTemp"));
+  leMaxTemp->setText(myQSettings.readEntry("/qgis/cdpwizard/maxTemp"));  
+  leDiurnalTemp->setText(myQSettings.readEntry("/qgis/cdpwizard/diurnalTemp"));  
+  leMeanPrecipitation->setText(myQSettings.readEntry("/qgis/cdpwizard/meanPrecip"));
+  leFrostDays->setText(myQSettings.readEntry("/qgis/cdpwizard/frostDays"));
+  leTotalSolarRadiation->setText(myQSettings.readEntry("/qgis/cdpwizard/totalSolarRadiation"));
+  leWindSpeed->setText(myQSettings.readEntry("/qgis/cdpwizard/windSpeed"));
+  cboFileType->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/fileType"));
+  
+  spinFirstYearInFile->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/firstYearInFile"));
+  spinFirstYearToCalc->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/firstYearToCalc"));
+  spinLastYearToCalc->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/lastYearToCalc"));
+  
+  leOutputPath->setText(myQSettings.readEntry("/qgis/cdpwizard/outputPath"));
+  cboOutputFormat->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/outputFormat"));
 }
 
 
@@ -311,8 +363,16 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     //now we let the climatedataprocessor run!
     //
     climateDataProcessor->run();
-
+    setFinishEnabled( step_6, TRUE );
 
   }
 }               //end of formSelected
 
+void CDPWizard::accept()
+{
+
+//LOGIC REQUIRED TO CHECK THE USER IS ON THE LAST PAGE
+//Save default settings
+saveDefaults();
+
+}
