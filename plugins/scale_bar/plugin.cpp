@@ -29,7 +29,6 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
-#include <qgsrasterlayer.h>
 #include "plugin.h"
 
 

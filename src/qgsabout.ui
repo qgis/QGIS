@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsAbout</class>
 <widget class="QDialog">
     <property name="name">
@@ -79,6 +79,16 @@
             <property name="name">
                 <cstring>tabWidget</cstring>
             </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>235</red>
+                    <green>235</green>
+                    <blue>235</blue>
+                </color>
+            </property>
+            <property name="backgroundOrigin">
+                <enum>ParentOrigin</enum>
+            </property>
             <widget class="QWidget">
                 <property name="name">
                     <cstring>Widget2</cstring>
@@ -90,29 +100,18 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="1" column="0">
-                        <property name="name">
-                            <cstring>lblVersion</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Version</string>
-                        </property>
-                        <property name="alignment">
-                            <set>AlignCenter</set>
-                        </property>
-                    </widget>
                     <widget class="QLabel" row="0" column="0">
                         <property name="name">
                             <cstring>TextLabel4</cstring>
                         </property>
                         <property name="text">
-                            <string>Quantum GIS (qgis)</string>
+                            <string>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</string>
                         </property>
                         <property name="alignment">
-                            <set>AlignCenter</set>
+                            <set>WordBreak|AlignCenter</set>
                         </property>
                     </widget>
-                    <widget class="QTextEdit" row="2" column="0">
+                    <widget class="QTextEdit" row="4" column="0">
                         <property name="name">
                             <cstring>lblUrls</cstring>
                         </property>
@@ -127,13 +126,13 @@
                         </property>
                         <property name="paletteBackgroundColor">
                             <color>
-                                <red>192</red>
-                                <green>192</green>
-                                <blue>192</blue>
+                                <red>255</red>
+                                <green>255</green>
+                                <blue>255</blue>
                             </color>
                         </property>
                         <property name="backgroundOrigin">
-                            <enum>WidgetOrigin</enum>
+                            <enum>WindowOrigin</enum>
                         </property>
                         <property name="frameShape">
                             <enum>PopupPanel</enum>
@@ -141,8 +140,48 @@
                         <property name="frameShadow">
                             <enum>Sunken</enum>
                         </property>
+                        <property name="text">
+                            <string>&lt;p align="center"&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
+&lt;p align="center"&gt;http://www.gnu.org/licenses&lt;/p&gt;</string>
+                        </property>
+                        <property name="wordWrap">
+                            <enum>WidgetWidth</enum>
+                        </property>
                         <property name="readOnly">
                             <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="3" column="0">
+                        <property name="name">
+                            <cstring>btnQgisHome</cstring>
+                        </property>
+                        <property name="text">
+                            <string>QGIS Home Page</string>
+                        </property>
+                        <property name="flat">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="2" column="0">
+                        <property name="name">
+                            <cstring>btnQgisUser</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Subscribe to the QGIS-User mailing list</string>
+                        </property>
+                        <property name="flat">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>lblVersion</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Version</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
                         </property>
                     </widget>
                 </grid>
@@ -172,89 +211,6 @@
                             <bool>true</bool>
                         </property>
                     </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tabLicense</cstring>
-                </property>
-                <attribute name="title">
-                    <string>License</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <property name="margin">
-                        <number>11</number>
-                    </property>
-                    <property name="spacing">
-                        <number>6</number>
-                    </property>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>TextLabel2</cstring>
-                        </property>
-                        <property name="font">
-                            <font>
-                            </font>
-                        </property>
-                        <property name="text">
-                            <string>http://www.gnu.org/licenses</string>
-                        </property>
-                        <property name="alignment">
-                            <set>AlignCenter</set>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="0">
-                        <property name="name">
-                            <cstring>TextLabel1</cstring>
-                        </property>
-                        <property name="font">
-                            <font>
-                            </font>
-                        </property>
-                        <property name="text">
-                            <string>Quantum GIS is licensed under the GNU General Public License</string>
-                        </property>
-                        <property name="alignment">
-                            <set>AlignCenter</set>
-                        </property>
-                    </widget>
-                    <spacer row="3" column="0">
-                        <property name="name">
-                            <cstring>Spacer2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>0</width>
-                                <height>40</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="0" column="0">
-                        <property name="name">
-                            <cstring>Spacer3</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>0</width>
-                                <height>16</height>
-                            </size>
-                        </property>
-                    </spacer>
                 </grid>
             </widget>
             <widget class="QWidget">
@@ -710,6 +666,18 @@
         <receiver>widgetStack1</receiver>
         <slot>raiseWidget(int)</slot>
     </connection>
+    <connection>
+        <sender>btnQgisUser</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAbout</receiver>
+        <slot>qgisUserMailingList()</slot>
+    </connection>
+    <connection>
+        <sender>btnQgisHome</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAbout</receiver>
+        <slot>qgisHomePage()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsabout.ui.h</include>
@@ -720,6 +688,9 @@
     <slot>setWhatsNew( QString txt )</slot>
     <slot>setPluginInfo( QString txt )</slot>
     <slot>showAuthorPic( QListBoxItem * )</slot>
+    <slot>qgisUserMailingList()</slot>
+    <slot>qgisHomePage()</slot>
+    <slot>openUrl( QString url )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

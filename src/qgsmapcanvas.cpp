@@ -486,7 +486,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
       while (li != mCanvasProperties->zOrder.end())
       {
-        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size()*2);
+        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
         QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
         if (ml)
@@ -512,7 +512,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
       while (li != mCanvasProperties->zOrder.end())
       {
-        emit setProgress((myRenderCounter++)*2,mCanvasProperties->zOrder.size()*2);
+        emit setProgress((myRenderCounter++),mCanvasProperties->zOrder.size());
         QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
         if (ml)
@@ -530,8 +530,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       }
 
       //make verys sure progress bar arrives at 100%!
-      emit setProgress(1,1);
-                   
+       emit setProgress(1,1);
 #ifdef QGISDEBUG
       std::cout << "Done rendering map labels...emitting renderComplete(paint)\n";
 #endif

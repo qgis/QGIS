@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.53 2004/09/30 01:05:33 timlinux Exp 
+# src.pro,v 1.54 2004/10/04 00:53:49 gsherman Exp 
 ######################################################################
 #
 # For a WIN32 release build do the following:

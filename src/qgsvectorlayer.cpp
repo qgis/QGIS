@@ -84,7 +84,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
   const char *cOgrLib = (const char *) ogrlib;
 #ifdef TESTPROVIDERLIB
   // test code to help debug provider loading problems
-//  void *handle = dlopen(cOgrLib, RTLD_LAZY);
+  //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
   void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
   if (!handle)
   {
@@ -160,10 +160,10 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
           // upper case the first letter of the layer name
           layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
           setLayerName(layerTitle);
-  
-	  // label
+
+          // label
           mLabel = new QgsLabel ( dataProvider->fields() ); 
-	  mLabelOn = false;
+          mLabelOn = false;
         }
       } else
       {
@@ -180,7 +180,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
     std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
 #endif
   }
-  
+
   //TODO - fix selection code that formerly used
   //       a boolean vector and set every entry to false
 
@@ -189,7 +189,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
 
   // Default for the popup menu
   popMenu = 0;
-  
+
   // Get the update threshold from user settings. We
   // do this only on construction to avoid the penality of
   // fetching this each time the layer is drawn. If the user
@@ -253,67 +253,67 @@ void QgsVectorLayer::setDisplayField(QString fldName)
     // find the index for this field
     fieldIndex = fldName;
     /*
-    for(int i = 0; i < fields.size(); i++)
-    {
-      if(QString(fields[i].name()) == fldName)
-      {
-        fieldIndex = i;
-        break;
-      }
-    }
-    */
+       for(int i = 0; i < fields.size(); i++)
+       {
+       if(QString(fields[i].name()) == fldName)
+       {
+       fieldIndex = i;
+       break;
+       }
+       }
+       */
   }else{
-  int j = 0;
-  for (int j = 0; j < fields.size(); j++)
-  {
+    int j = 0;
+    for (int j = 0; j < fields.size(); j++)
+    {
 
-    QString fldName = fields[j].name();
+      QString fldName = fields[j].name();
 #ifdef QGISDEBUG
-    std::cerr << "Checking field " << fldName << std::endl;
+      std::cerr << "Checking field " << fldName << std::endl;
 #endif
-    // Check the fields and keep the first one that matches.
-    // We assume that the user has organized the data with the
-    // more "interesting" field names first. As such, name should
-    // be selected before oldname, othername, etc.
-    if (fldName.find("name", false) > -1)
-    {
-      if(idxName.isEmpty())
+      // Check the fields and keep the first one that matches.
+      // We assume that the user has organized the data with the
+      // more "interesting" field names first. As such, name should
+      // be selected before oldname, othername, etc.
+      if (fldName.find("name", false) > -1)
       {
-        idxName = fldName;
+        if(idxName.isEmpty())
+        {
+          idxName = fldName;
+        }
+      }
+      if (fldName.find("descrip", false) > -1)
+      {
+        if(idxName.isEmpty())
+        {
+          idxName = fldName;
+        }
+      }
+      if (fldName.find("id", false) > -1)
+      {
+        if(idxId.isEmpty())
+        {
+          idxId = fldName;
+        }
       }
     }
-    if (fldName.find("descrip", false) > -1)
-    {
-      if(idxName.isEmpty())
-      {
-        idxName = fldName;
-      }
-    }
-    if (fldName.find("id", false) > -1)
-    {
-      if(idxId.isEmpty())
-      {
-        idxId = fldName;
-      }
-    }
-  }
 
-  //if there were no fields in the dbf just return - otherwise qgis segfaults!
-  if (fields.size() == 0) return;
+    //if there were no fields in the dbf just return - otherwise qgis segfaults!
+    if (fields.size() == 0) return;
 
-  if (idxName.length() > 0)
-  {
-    fieldIndex = idxName;
-  } else
-  {
-    if (idxId.length() > 0)
+    if (idxName.length() > 0)
     {
-      fieldIndex = idxId;
+      fieldIndex = idxName;
     } else
     {
-      fieldIndex = fields[0].name();
+      if (idxId.length() > 0)
+      {
+        fieldIndex = idxId;
+      } else
+      {
+        fieldIndex = fields[0].name();
+      }
     }
-  }
 
     // set this to be the label field as well
     setLabelField(fieldIndex);
@@ -341,7 +341,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinat
     QgsFeature *fet;
     std::list<int> attributes=m_renderer->classificationAttributes();
     if ( mLabelOn ) { // Add fields required for labels
-	mLabel->addRequiredFields ( &attributes );
+      mLabel->addRequiredFields ( &attributes );
     }
     else
     {
@@ -350,23 +350,23 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinat
     //main render loop
     while((fet = dataProvider->getNextFeature(attributes)))
     {
-	// Render label
-	if ( mLabelOn && (fet != 0)) {
-	    bool sel=selected.find(fet->featureId()) != selected.end();
-	    mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
-	}
-	delete fet;
-        featureCount++;
+      // Render label
+      if ( mLabelOn && (fet != 0)) {
+        bool sel=selected.find(fet->featureId()) != selected.end();
+        mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
       }
-      
+      delete fet;
+      featureCount++;
+    }
+
 #ifdef QGISDEBUG
-      std::cerr << "Total features processed is " << featureCount << std::endl;
+    std::cerr << "Total features processed is " << featureCount << std::endl;
 #endif
-      qApp->processEvents();
-    
+    qApp->processEvents();
+
   }
 }
-  
+
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
 {
   if ( /*1 == 1 */ m_renderer)
@@ -414,9 +414,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     QgsPoint pt;
     QPointArray *pa;
     int wkbType;
-    
+
     std::list<int> attributes=m_renderer->classificationAttributes();
-    
+
     while((fet = dataProvider->getNextFeature(attributes)))
     {
       // If update threshold is greater than 0, check to see if
@@ -437,8 +437,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
       } else
       {
-	  bool sel=selected.find(fet->featureId()) != selected.end();
-	  m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
+        bool sel=selected.find(fet->featureId()) != selected.end();
+        m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
 
         // get the wkb representation
         feature = fet->getGeometry();
@@ -562,15 +562,15 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 x = (double *) ptr;
                 ptr += sizeof(double);
                 y = (double *) ptr;
-#ifdef QGISDEBUG
-                   std::cout << "Transforming " << *x << "," << *y << " to ";
+#ifdef QGISX11DEBUG
+                std::cout << "Transforming " << *x << "," << *y << " to ";
 #endif
                 ptr += sizeof(double);
                 pt.setX(*x);
                 pt.setY(*y);
                 cXf->transform(&pt);
-#ifdef QGISDEBUG
-                  std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
+#ifdef QGISX11DEBUG
+                std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
 #endif
                 pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
               }
@@ -625,13 +625,13 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                   ptr += sizeof(double);
                   y = (double *) ptr;
                   ptr += sizeof(double);
-#ifdef QGISDEBUG
-                   std::cout << "Transforming " << *x << "," << *y << " to ";
+#ifdef QGISX11DEBUG
+                  std::cout << "Transforming " << *x << "," << *y << " to ";
 #endif
                   pt.setX(*x);
                   pt.setY(*y);
                   cXf->transform(&pt);
-#ifdef QGISDEBUG
+#ifdef QGISX11DEBUG
                   std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
 #endif
                   pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
@@ -652,7 +652,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         }
 
 
-	delete fet;
+        delete fet;
 
         //std::cout << "deleting feature[]\n";
         //      std::cout << geom->getGeometryName() << std::endl;
@@ -671,8 +671,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
     }
   }
-  
-  
+
+
   int QgsVectorLayer::endian()
   {
     char *chkEndian = new char[4];
@@ -888,13 +888,13 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
     {
       if (m_propertiesDialog)
       {
-	m_propertiesDialog->reset();
+        m_propertiesDialog->reset();
         m_propertiesDialog->raise();
         m_propertiesDialog->show();
       } else
       {
         m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
-	m_propertiesDialog->reset();
+        m_propertiesDialog->reset();
         m_propertiesDialog->show();
       }
     }
@@ -1299,116 +1299,116 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
     } // QgsVectorLayer::fields()
 
 
-bool QgsVectorLayer::addFeature(QgsFeature* f)
-{
-    if(dataProvider)
+    bool QgsVectorLayer::addFeature(QgsFeature* f)
     {
-	int end=endian();
-	memcpy(f->getGeometry(),&end,1);
-	if(dataProvider->addFeature(f))
-	{
-	    if (tabledisplay)
-	    {
-		tabledisplay->close();
-		delete tabledisplay;
-		tabledisplay=0;
-	    }
-	    return true;
-	}
+      if(dataProvider)
+      {
+        int end=endian();
+        memcpy(f->getGeometry(),&end,1);
+        if(dataProvider->addFeature(f))
+        {
+          if (tabledisplay)
+          {
+            tabledisplay->close();
+            delete tabledisplay;
+            tabledisplay=0;
+          }
+          return true;
+        }
+      }
+      return false;
     }
-    return false;
-}
 
-bool QgsVectorLayer::deleteSelectedFeatures()
-{
+    bool QgsVectorLayer::deleteSelectedFeatures()
+    {
 #ifdef QGISDEBUG
-    qWarning("entering QgsVectorLayer::deleteSelectedFeatures");
+      qWarning("entering QgsVectorLayer::deleteSelectedFeatures");
 #endif 
-    bool resvalue=true;
-    for(std::map<int,bool>::iterator it=selected.begin();it!=selected.end();++it)
-    {
-	if(it->second==true)
-	{
+      bool resvalue=true;
+      for(std::map<int,bool>::iterator it=selected.begin();it!=selected.end();++it)
+      {
+        if(it->second==true)
+        {
 #ifdef QGISDEBUG
-    qWarning("selected feature detected");
-#endif	    
-	    if(!dataProvider->deleteFeature(it->first))
-	    {
-		resvalue=false;
-	    }
-	}
+          qWarning("selected feature detected");
+#endif      
+          if(!dataProvider->deleteFeature(it->first))
+          {
+            resvalue=false;
+          }
+        }
+      }
+      triggerRepaint();
+      return resvalue;
     }
-    triggerRepaint();
-    return resvalue;
-}
 
-QgsLabel * QgsVectorLayer::label()
-{
-    return mLabel;
-}
-
-void QgsVectorLayer::setLabelOn ( bool on )
-{
-    mLabelOn = on;
-}
-
-bool QgsVectorLayer::labelOn ( void )
-{
-    return mLabelOn;
-}
-
-void QgsVectorLayer::startEditing()
-{
-    if(dataProvider)
+    QgsLabel * QgsVectorLayer::label()
     {
-	if(!dataProvider->startEditing())
-	{
-	    QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
-	}
-	else
-	{
-	    updateItemPixmap();
-	}
+      return mLabel;
     }
-}
 
-void QgsVectorLayer::stopEditing()
-{
-    if(dataProvider)
+    void QgsVectorLayer::setLabelOn ( bool on )
     {
-	if(dataProvider->isModified())
-	{
-	    //commit or roll back?
-	    int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
-	    if(commit==QMessageBox::Yes)
-	    {
-		if(!dataProvider->commitChanges())
-		{
-		    QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok); 
-		}
-	    }
-	    else if(commit==QMessageBox::No)
-	    {
-		if(!dataProvider->rollBack())
-		{
-		    QMessageBox::information(0,"Error","Problems during roll back",QMessageBox::Ok);   
-		}
-	    }
-	    triggerRepaint();
-	}
-	dataProvider->stopEditing();
-	updateItemPixmap();
+      mLabelOn = on;
     }
-}
 
-bool QgsVectorLayer::isEditable()
-{
-    if(dataProvider)
+    bool QgsVectorLayer::labelOn ( void )
     {
-	return dataProvider->isEditable();
+      return mLabelOn;
     }
-    else
+
+    void QgsVectorLayer::startEditing()
     {
-	return false;
+      if(dataProvider)
+      {
+        if(!dataProvider->startEditing())
+        {
+          QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
+        }
+        else
+        {
+          updateItemPixmap();
+        }
+      }
     }
-}
+
+    void QgsVectorLayer::stopEditing()
+    {
+      if(dataProvider)
+      {
+        if(dataProvider->isModified())
+        {
+          //commit or roll back?
+          int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
+          if(commit==QMessageBox::Yes)
+          {
+            if(!dataProvider->commitChanges())
+            {
+              QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok); 
+            }
+          }
+          else if(commit==QMessageBox::No)
+          {
+            if(!dataProvider->rollBack())
+            {
+              QMessageBox::information(0,"Error","Problems during roll back",QMessageBox::Ok);   
+            }
+          }
+          triggerRepaint();
+        }
+        dataProvider->stopEditing();
+        updateItemPixmap();
+      }
+    }
+
+    bool QgsVectorLayer::isEditable()
+    {
+      if(dataProvider)
+      {
+        return dataProvider->isEditable();
+      }
+      else
+      {
+        return false;
+      }
+    }

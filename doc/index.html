@@ -1,358 +1,57 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Quantum GIS Documentation</title>
-<link type="text/css" href="skin/page.css" rel="stylesheet">
-<script src="skin/fontsize.js" language="javascript" type="text/javascript"></script><script src="skin/menu.js" language="javascript" type="text/javascript"></script>
-</head>
-<body onload="init()" text="#000000" bgcolor="#FFFFFF">
-<script type="text/javascript">ndeSetTextSize();</script>
-<!--================= start Banner ==================-->
-<table summary="header with logos" width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<!--================= start Group Logo ==================-->
-<td bgcolor="#FFFFFF"></td>
-<!--================= end Group Logo ==================-->
-<!--================= start Project Logo ==================--><td align="center" bgcolor="#FFFFFF">
-<div class="headerlogo">
-<a href="http://qgis.org/"><img border="0" class="logoImage" alt="QGIS" src="images/project.png"></a>
-</div>
-</td>
-<!--================= end Project Logo ==================-->
-<!--================= start Search ==================--><td valign="top" rowspan="2" bgcolor="#FFFFFF" align="right" class="search"></td>
-<!--================= end Search ==================--><td bgcolor="#FFFFFF" align="right"><img height="10" width="10" alt="" src="skin/images/spacer.gif" class="spacer"><span class="textheader">QGIS</span></td>
-</tr>
-<tr>
-<td valign="bottom" bgcolor="#FFFFFF" colspan="2">
-<!--================= start Tabs ==================-->
-<div class="tab">
-<table summary="tab bar" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td width="8"><img alt="" height="8" width="8" src="skin/images/spacer.gif"></td><td valign="bottom">
-<table summary="selected tab" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td height="22" class="top-left"></td><td height="22" valign="middle" bgcolor="#a5b6c6"><span class="tab"><b><a class="base-selected" href="index.html">Documentation</a></b></span></td><td height="22" class="top-right"></td>
+  <head>
+    <LINK REL="STYLESHEET" HREF="qgisdoc.css">
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <a href="http://qgis.org"><img src="images/qgis_new_80pct.png" border=0></a>
+  </td>
+  <td valign="center">
+    <span class="header">Quantum GIS Documentation</span><br>
+    <span class="subheader">Version 0.5 <i>Bandit</i></span>
+  </td>
 </tr>
 </table>
-</td>
-</tr>
-</table>
-</div>
-<!--================= end Tabs ==================-->
-</td><td bgcolor="#FFFFFF"><img alt="" width="1" height="1" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td align="right" bgcolor="#a5b6c6" colspan="4"><img width="1" height="10" alt="" src="skin/images/spacer.gif"><span class="datenote"><script type="text/javascript" language="JavaScript"><!--
-                  //document.write("Published: " + document.lastModified);
-		  document.write("-- QGIS Version 0.4 Baby  --");
-                  //  --></script></span></td>
-</tr>
-</table>
-<!--================= end Banner ==================-->
-<!--================= start Menu, NavBar, Content ==================-->
-<table summary="page content" bgcolor="#ffffff" width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td valign="top">
-<table summary="menu" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<!--================= start left top NavBar ==================-->
-<td rowspan="3" valign="top">
-<table summary="blue line" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td bgcolor="#CFDCED"><font color="#F7F7F7" size="4" face="Arial, Helvetica, Sans-serif">&nbsp;</font></td>
-</tr>
-<tr>
-<td bgcolor="#FFFFFF"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-</table>
-</td>
-<!--================= end left top NavBar ==================--><td bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td valign="bottom" bgcolor="#F7F7F7"><img width="10" height="10" alt="" src="skin/images/spacer.gif" class="spacer"></td><td nowrap="nowrap" valign="top" bgcolor="#F7F7F7">
-<!--================= start Menu items ==================-->
-<div class="menu">
-<div onclick="SwitchMenu('_selected_1B')" id="_selected_1BTitle" class="menutitle">About</div>
-<div id="_selected_1B" class="selectedmenuitemgroup">
-<div class="menupage">
-<div class="menupagetitle">QGIS</div>
-<div class="menupageitemgroup">
-<div class="menupageitem">
-<a href="#Introduction">Introduction</a>
-</div>
-<div class="menupageitem">
-<a title="Whats new in Version 0.4" href="#Whats+new+in+Version+0.2">Whats new in Versio...</a>
-</div>
-<div class="menupageitem">
-<a title="Available Documents" href="#Available+Documents">Available Documents...</a>
-</div>
-</div>
-</div>
-</div>
-<div onclick="SwitchMenu('Documentation2B')" id="Documentation2BTitle" class="menutitle">Documentation</div>
-<div id="Documentation2B" class="menuitemgroup">
-<div class="menuitem">
-<a href="install.html">Installation</a>
-</div>
-<div class="menuitem">
-<a href="userguide.html">User Guide</a>
-</div>
-</div>
-</div>
-<!--================= end Menu items ==================-->
-</td><td valign="bottom" bgcolor="#F7F7F7"><img width="10" height="10" alt="" src="skin/images/spacer.gif" class="spacer"></td><td bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td colspan="2" rowspan="2" class="bottom-left-thick"></td><td bgcolor="#a5b6c6"><img height="10" width="10" border="0" alt="" src="skin/images/spacer.gif" class="spacer"></td><td colspan="2" rowspan="2" class="bottom-right-thick"></td>
-</tr>
-<tr>
-<td height="1" bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td height="5"><img width="1" height="5" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td height="5"><img width="1" height="5" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td class="logos" height="5" colspan="4"><a href="http://xml.apache.org/forrest/"><img border="0" alt="Built with Apache Forrest logo" src="images/built-with-forrest-button.png" width="88" height="31"><img height="1" width="5" alt="" border="0" src="skin/images/spacer.gif" class="spacer"></a></td>
-</tr>
-<tr>
-<td height="5"><img width="1" height="5" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td class="logos" height="5" colspan="4"><a href="http://sourceforge.net"><img border="0" alt="Sourceforge logo" src="http://sourceforge.net/sflogo.php?group_id=55820&type=1" width="88" height="31"><img height="1" width="5" alt="" border="0" src="skin/images/spacer.gif" class="spacer"></a></td>
-</tr>
-</table>
-</td><td valign="top" width="100%">
-<table summary="content" width="100%" border="0" cellpadding="0" cellspacing="0">
-<!--================= start middle NavBar ==================-->
-<tr>
-<td colspan="3" bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td align="left" width="10" bgcolor="#CFDCED"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td bgcolor="#CFDCED" width="100%">
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td align="left" width="50%" bgcolor="#CFDCED"><span class="trail">
-                      &nbsp;
-                      <script src="skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script></span><img width="10" height="8" alt="" src="skin/images/spacer.gif" class="spacer"></td><td align="right" width="50%" bgcolor="#CFDCED"><span class="trail">Font size: 
-                        &nbsp;<input value="-a" class="smallerfont" title="Shrink text" onclick="ndeSetTextSize('decr'); return false;" type="button">
-                        &nbsp;<input value="+a" class="biggerfont" title="Enlarge text" onclick="ndeSetTextSize('incr'); return false;" type="button">
-                        &nbsp;<input value="Reset" class="resetfont" title="Reset text" onclick="ndeSetTextSize('reset'); return false;" type="button"></span><img width="10" height="8" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-</table>
-</td><td width="10" bgcolor="#CFDCED"><font color="#F7F7F7" size="4" face="Arial, Helvetica, Sans-serif">&nbsp;</font><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td colspan="4" bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<!--================= end middle NavBar ==================-->
-<!--================= start Content==================-->
-<tr>
-<td align="left" width="10"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td align="left" width="100%">
-<div class="content">
-<table class="title">
-<tr>
-<td valign="middle">
-<h1>Quantum GIS Documentation</h1>
-  </td><td nowrap="nowrap" width="40" align="center"><!--<a class="dida" href="index.pdf"><img alt="PDF" src="skin/images/pdfdoc.gif" class="skin"><br>
-  PDF</a>--></td>
-</tr>
-</table> 
-    
-<a name="N1000C"></a><a name="Introduction"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>Introduction</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-<p>This documentation describes the Quantum GIS (QGIS) application.
-        Further information on QGIS is available at <a href="http://qgis.org">
-          http://qgis.org</a>.
-      </p>
-    
-</div>
-    
-<a name="N1001A"></a><a name="Whats+new+in+Version+0.2"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>Whats new in Version 0.4</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-<a name="N10020"></a><a name="New+features"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>New features</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-<ol>
-          <li>Map Overview</li>
-          <li>Preliminary printing support</li>
-          <li>Menu cleanups</li>
-          <li>User interface improvements</li>
-          <li>Icon Themes (only default theme currently available)</li>
-          <li>Capture point to clipboard</li>
-        
-</ol>
-      
-<a name="N10053"></a><a name="New+Core+Plugins"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>Core Plugins</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-<ol>
-        <li>Scale bar plugin</li>
-        <li>Improved GPS tools plugin</li>
-      
-</ol>
-<!--    
-<a name="N10069"></a><a name="New+Contributed+Plugins"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>New Contributed Plugins</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-  <i>These plugins are available from community.qgis.org or CVS (module plugins)</i>
-<ol>
-
-        <li>HTTP server</li>
-</ol>
--->
-<a name="N1007F"></a><a name="Known+Issues"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>Known Issues</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-<ol>
-        
-  <li>Map units are not stored when a QGIS project is saved</li>
-
-      
-</ol>
-  
-</div>
-  
-<a name="N1008D"></a><a name="Available+Documents"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>Available Documents</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-    
-    
-<p>The following documents are available:</p>
-    
-<ul>
-      
-<li>
-<a href="install.html">Installation Guide</a> - How to build and install QGIS</li>
-      
-<li>
-<a href="userguide.html">User Guide</a> - A brief guide to using QGIS</li>
-    
-</ul> 
-    
-<p>All documents are available in PDF format in the qgis share/doc subdirectory. If
-      you have the Adobe PDF plugin for your browser, you can display the PDF version by
-      clicking on the PDF link in the upper
-      right corner of each document.</p>
-    
-<div class="frame note">
-<div class="label">Note</div>
-<div class="content">This documentation is based on QGIS 0.4 (Baby)</div>
-</div>
-  
-</div>
-
-</div>
-</td><td width="10"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<!--================= end Content==================-->
-</table>
-</td>
-</tr>
-<tr>
+<a href="install.pdf" class="bar">Installation Guide</a>&nbsp;&nbsp;
+<a href="userguide.pdf" class="bar">User Guide</a><br>
+<!-- This documentation describes the Quantum GIS (QGIS) application. More
+information on QGIS is available on the web page at http://qgis.org. -->
+<h2>Whats new in Version 0.5</h2> 
+Version 0.5 of QGIS contains a number of new features:
+<table>
+  <tr>
+    <td>
+  <ul class="small">
+  <li>Windows version
+  <li>Feature labeling with optional buffering
+  <li>Preliminary digitizing support for shapefiles
+  <li>GRASS digitizing support
+  <li>GPS SVG icons
+</ul>
 <td>
-<br>
-<br>
-</td>
+<td valign="top">
+    <ul class="small">
+  <li>Unique value renderers
+  <li>User interface improvements
+  <li>Specify a query when loading a PostGIS layer
+  <li>Italian translation
+</ul>
+  </td>
 </tr>
 </table>
-<!--================= end Menu, NavBar, Content ==================-->
-<!--================= start Footer ==================-->
-<table summary="footer" cellspacing="0" cellpadding="0" width="100%" border="0">
-<tr>
-<td colspan="2" height="1" bgcolor="#F7F7F7"><img height="1" width="1" alt="" src="skin/images/spacer.gif" class="spacer"><a href="skin/images/label.gif"></a><a href="skin/images/page.gif"></a><a href="skin/images/chapter.gif"></a><a href="skin/images/chapter_open.gif"></a><a href="skin/images/current.gif"></a><a href="/favicon.ico"></a></td>
-</tr>
-<tr>
-<td colspan="2" bgcolor="#a5b6c6" class="copyright" align="center" width="90%"><span class="footnote">Copyright &copy;
-                2004&nbsp;Micro Resources. All rights reserved.
-                <br>
-<script type="text/javascript" language="JavaScript"><!--
-                // document.write(" - "+"Last Published: " + document.lastModified);
-                  //  --></script></span></td><td nowrap="nowrap" align="right" bgcolor="#a5b6c6" class="logos"></td>
-</tr>
-</table>
-<!--================= end Footer ==================-->
-</body>
+      <dl><dt><span class="subheader">Installation Guide
+          <dd>How to build and install QGIS. The guide is available in both 
+          <a href="install.pdf">pdf</a> and 
+          <a href="install_guide/index.html">HTML</a> format.</dd>
+        </dt>
+      </dl> 
+      <dl><dt><span class="subheader">User Guide
+          <dd>A brief guide to using QGIS. The User Guide is available in 
+          <a href="userguide.pdf">pdf</a> format.</dd>
+          </dt>
+        </dl> 
+        All documents are installed in the qgis share/doc subdirectory. 
+  </body>
 </html>

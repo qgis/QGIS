@@ -81,8 +81,6 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
   
     //! Id of the plugin's menu. Used for unloading
     int menuId;
-    //! Pointer to our toolbar
-    QToolBar *toolBar;
     //! Pointer to our menu
     QMenuBar *menu;
     //! Pionter to QGIS main application object
