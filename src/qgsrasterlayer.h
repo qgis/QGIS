@@ -18,6 +18,7 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+class QgsRect;
 #include "qgsmaplayer.h"
 /*! \class QgsRasterLayer
  * \brief Raster layer class
@@ -31,6 +32,7 @@ Q_OBJECT
     //! Destructor
     ~QgsRasterLayer();
     void draw(QPainter *p, QRect *viewExtent);
+    void identify(QgsRect *r);
 };
 
 #endif

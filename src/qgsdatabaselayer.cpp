@@ -416,7 +416,8 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 
 }
 
-
+void QgsDatabaseLayer::identify(QgsRect *r){
+}
 int QgsDatabaseLayer::endian()
 {
 	char *chkEndian = new char[4];
