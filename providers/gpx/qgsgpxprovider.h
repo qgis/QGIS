@@ -116,7 +116,7 @@ public:
      of the file.
   */
   void reset();
-  
+    
   /**Returns the minimum value of an attribute
      @param position the number of the attribute*/
   QString minValue(int position);

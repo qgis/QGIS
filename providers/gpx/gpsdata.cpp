@@ -281,6 +281,11 @@ bool GPSData::parseGPX(QDomNode& node) {
       if (!node2.isNull())
 	rte.name = (const char*)node2.firstChild().nodeValue();
       
+      // url is optional
+      node2 = node.namedItem("url");
+      if (!node2.isNull())
+	rte.url = (const char*)node2.firstChild().nodeValue();
+      
       routes.push_back(rte);
     }
     
@@ -353,6 +358,12 @@ bool GPSData::parseGPX(QDomNode& node) {
       node2 = node.namedItem("name");
       if (!node2.isNull())
 	trk.name = (const char*)node2.firstChild().nodeValue();
+      
+      // url is optional
+      node2 = node.namedItem("url");
+      if (!node2.isNull())
+	trk.url = (const char*)node2.firstChild().nodeValue();
+
       tracks.push_back(trk);
     }
       

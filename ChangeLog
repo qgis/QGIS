@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.80 2004/05/17 09:27:27 timlinux Exp
+ChangeLog,v 1.81 2004/05/17 10:32:19 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-17 [larsl] 0.2.0devel23
+** Added URL parsing and attribute fields for route and track GPX layers
 
 2004-05-17 [ts] 0.2.0devel22
 ** Added support to Save As Image to save in any QImageIO supported format.
