@@ -73,9 +73,6 @@
 #include <vector>
 
 
-#ifndef GDAL_PRIV_H_INCLUDED
-#include <gdal_priv.h>
-#endif
 
 
 #include "qgsrect.h"
@@ -100,7 +97,6 @@
 #endif
 #include "qgshelpviewer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayer.h"
 #include "qgspluginmanager.h"
@@ -273,7 +269,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   }
 
   // register all GDAL and OGR plug-ins
-  GDALAllRegister();           
   OGRRegisterAll();
 
   QPixmap icon;
@@ -1036,518 +1031,6 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
 } // QgisApp::addLayer()
 
 
-
-
-/**
-   The subset of GDAL formats that we currently support.
-   
-   @note
-   
-   Some day this won't be necessary as there'll be a time when
-   theoretically we'll support everything that GDAL can throw at us.
-   
-   These are GDAL driver description strings.
-*/
-static const char *const supportedRasterFormats_[] = {
-  "SDTS",
-  "AIG",
-  "AAIGrid",
-  "GTiff",
-  "USGSDEM",
-  "HFA",
-  "GRASS",
-  "DTED",
-  ""                            // used to indicate end of list
-};
-
-
-
-/**
-   returns true if the given raster driver name is one currently
-   supported, otherwise it returns false
-   
-   @param driverName GDAL driver description string
-*/
-static bool isSupportedRasterDriver_(QString const &driverName)
-{
-  size_t i = 0;
-
-  while (supportedRasterFormats_[i][0]) // while not end of string list
-    {
-      // If we've got a case-insensitive match for a GDAL aware driver
-      // description, then we've got a match.  Why case-insensitive?
-      // I'm just being paranoid in that I can envision a situation
-      // whereby GDAL slightly changes driver description string case,
-      // in which case we'd catch it here.  Not that that would likely
-      // happen, but if it does, we'll already compensate.
-      // GS - At Qt 3.1.2, the case sensitive argument. So we change the
-      // driverName to lower case before testing
-      QString format = supportedRasterFormats_[i];
-      if (driverName.lower().startsWith(format.lower()))
-        {
-          return true;
-        }
-
-      i++;
-    }
-
-  return false;
-}                               // isSupportedRasterDriver_
-
-
-
-
-/**
-   Builds the list of file filter strings to later be used by
-   QgisApp::addRasterLayer()
-   
-   We query GDAL for a list of supported raster formats; we then build
-   a list of file filter strings from that list.  We return a string
-   that contains this list that is suitable for use in a a
-   QFileDialog::getOpenFileNames() call.
-   
- */
-static void buildSupportedRasterFileFilter_(QString & fileFilters)
-{
-  // first get the GDAL driver manager
-
-  GDALDriverManager *driverManager = GetGDALDriverManager();
-
-  if (!driverManager)
-    {
-      std::cerr << "unable to get GDALDriverManager\n";
-      return;                   // XXX good place to throw exception if we 
-    }                           // XXX decide to do exceptions
-
-  // then iterate through all of the supported drivers, adding the
-  // corresponding file filter
-
-  GDALDriver *driver;           // current driver
-
-  char **driverMetadata;        // driver metadata strings
-
-  QString driverLongName("");   // long name for the given driver
-  QString driverExtension("");  // file name extension for given driver
-  QString driverDescription;    // QString wrapper of GDAL driver description
-
-  QStringList metadataTokens;   // essentially the metadata string delimited by '='
-
-  QString catchallFilter;       // for Any file(*.*), but also for those
-  // drivers with no specific file
-  // filter
-
-  // Grind through all the drivers and their respective metadata.
-  // We'll add a file filter for those drivers that have a file
-  // extension defined for them; the others, welll, even though
-  // theoreticaly we can open those files because there exists a
-  // driver for them, the user will have to use the "All Files" to
-  // open datasets with no explicitly defined file name extension.
-  // Note that file name extension strings are of the form
-  // "DMD_EXTENSION=.*".  We'll also store the long name of the
-  // driver, which will be found in DMD_LONGNAME, which will have the
-  // same form.
-
-  for (int i = 0; i < driverManager->GetDriverCount(); ++i)
-    {
-      driver = driverManager->GetDriver(i);
-
-      Q_CHECK_PTR(driver);
-
-      if (!driver)
-        {
-          qWarning("unable to get driver %d", i);
-          continue;
-        }
-      // now we need to see if the driver is for something currently
-      // supported; if not, we give it a miss for the next driver
-
-      driverDescription = driver->GetDescription();
-
-      if (!isSupportedRasterDriver_(driverDescription))
-        {
-          // not supported, therefore skip
-#ifdef QGISDEBUG
-          qWarning("skipping unsupported driver %s", driver->GetDescription());
-#endif
-          continue;
-        }
-      // std::cerr << "got driver string " << driver->GetDescription() << "\n";
-
-      driverMetadata = driver->GetMetadata();
-
-      // presumably we know we've run out of metadta if either the
-      // address is 0, or the first character is null
-      while (driverMetadata && '\0' != driverMetadata[0])
-        {
-          metadataTokens = QStringList::split("=", *driverMetadata);
-          // std::cerr << "\t" << *driverMetadata << "\n";
-
-          // XXX add check for malformed metadataTokens
-
-          // Note that it's oddly possible for there to be a
-          // DMD_EXTENSION with no corresponding defined extension
-          // string; so we check that there're more than two tokens.
-
-          if (metadataTokens.count() > 1)
-            {
-              if ("DMD_EXTENSION" == metadataTokens[0])
-                {
-                  driverExtension = metadataTokens[1];
-
-              } else if ("DMD_LONGNAME" == metadataTokens[0])
-                {
-                  driverLongName = metadataTokens[1];
-
-                  // remove any superfluous (.*) strings at the end as
-                  // they'll confuse QFileDialog::getOpenFileNames()
-
-                  driverLongName.remove(QRegExp("\\(.*\\)$"));
-                }
-            }
-          // if we have both the file name extension and the long name,
-          // then we've all the information we need for the current
-          // driver; therefore emit a file filter string and move to
-          // the next driver
-          if (!(driverExtension.isEmpty() || driverLongName.isEmpty()))
-            {
-              // XXX add check for SDTS; in that case we want (*CATD.DDF)
-              fileFilters += createFileFilter_(driverLongName, "*." + driverExtension);
-
-              break;            // ... to next driver, if any.
-            }
-
-          ++driverMetadata;
-
-        }                       // each metadata item
-
-      if (driverExtension.isEmpty() && !driverLongName.isEmpty())
-        {
-          // Then what we have here is a driver with no corresponding
-          // file extension; e.g., GRASS.  In which case we append the
-          // string to the "catch-all" which will match all file types.
-          // (I.e., "*.*") We use the driver description intead of the
-          // long time to prevent the catch-all line from getting too
-          // large.
-
-          // ... OTOH, there are some drivers with missing
-          // DMD_EXTENSION; so let's check for them here and handle
-          // them appropriately
-
-          // USGS DEMs use "*.dem"
-          if (driverDescription.startsWith("USGSDEM"))
-            {
-              fileFilters += createFileFilter_(driverLongName, "*.dem");
-            } else if (driverDescription.startsWith("DTED"))
-            {
-              // DTED use "*.dt0"
-              fileFilters += createFileFilter_(driverLongName, "*.dt0");
-            } else
-            {
-              catchallFilter += QString(driver->GetDescription()) + " ";
-            }
-        }
-
-      driverExtension = driverLongName = "";  // reset for next driver
-
-    }                           // each loaded GDAL driver
-
-  // can't forget the default case
-  fileFilters += catchallFilter + "All other files (*)";
-
-}                               // buildSupportedRasterFileFilter_()
-
-
-
-
-/** @todo XXX I'd *really* like to return, ya know, _false_.
- */
-void QgisApp::addRasterLayer()
-{
-  mMapCanvas->freeze();
-  QString fileFilters;
-
-  // build the file filters based on the loaded GDAL drivers
-  buildSupportedRasterFileFilter_(fileFilters);
-
-  QStringList selectedFiles;
-
-  openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles);
-
-  if (selectedFiles.isEmpty())
-    {
-      // no files were selected, so just bail		
-       return;
-    }
- 
-   addRasterLayer(selectedFiles);
-}// QgisApp::addRasterLayer()
-
-
-
-
-
-bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
-{	
-   // let the user know we're going to possibly be taking a while
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-
-   mMapCanvas->freeze();         // XXX why do we do this?
-
-   // XXX ya know QgsRasterLayer can snip out the basename on its own;
-   // XXX why do we have to pass it in for it?
-   QgsRasterLayer *layer = 
-      new QgsRasterLayer(rasterFile.filePath(), rasterFile.baseName());
-
-   Q_CHECK_PTR( layer );
-
-   if ( ! layer )
-   {
-      mMapCanvas->freeze(false);
-      QApplication::restoreOverrideCursor();
-
-      // XXX insert meaningful whine to the user here; although be
-      // XXX mindful that a null layer may mean exhausted memory resources
-      return false; 
-   }
-
-   if (layer->isValid())
-   {
-     // register this layer with the central layers registry
-     mMapLayerRegistry->addMapLayer(layer);
-     // XXX doesn't the mMapCanvas->addLayer() do this?
-     QObject::connect(layer, 
-             SIGNAL(repaintRequested()), 
-             mMapCanvas, 
-             SLOT(refresh()));
-
-     // connect up any request the raster may make to update the app progress
-     QObject::connect(layer, 
-             SIGNAL(setProgress(int,int)), 
-             this, 
-             SLOT(showProgress(int,int)));  
-     // connect up any request the raster may make to update the statusbar message
-     QObject::connect(layer, 
-             SIGNAL(setStatus(QString)), 
-             this, 
-             SLOT(showStatusMessage(QString)));            
-     // add it to the mapcanvas collection
-     mMapCanvas->addLayer(layer);
-     
-     //connect up a request from the raster layer to show in overview map
-     QObject::connect(layer, 
-             SIGNAL(showInOverview(QString,bool)), 
-             this, 
-             SLOT(setLayerOverviewStatus(QString,bool)));           
-         
-     mProjectIsDirtyFlag = true;
-
-     // init the context menu so it can connect to slots in main app
-     layer->initContextMenu(this);
-   } else
-   {
-      QString msg(rasterFile.baseName() + " is not a valid or recognized raster data source");
-      QMessageBox::critical(this, "Invalid Data Source", msg);
-
-      delete layer;
-
-      mMapCanvas->freeze(false);
-      QApplication::restoreOverrideCursor();
-
-      return false;
-   }
-
-
-   // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
-  qApp->processEvents();
-  mMapCanvas->freeze(false);
-  mMapCanvas->render();
-  QApplication::restoreOverrideCursor();
-  statusBar()->message(mMapCanvas->extent().stringRep(2));
-
-   return true;
-   
-} // QgisApp::addRasterLayer
-
-
-
-/**
-   @todo XXX ya know, this could be changed to iteratively call the above
-*/
-bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
-{
-  if (theFileNameQStringList.empty())
-  {
-    // no files selected so bail out, but
-    // allow mMapCanvas to handle events
-    // first
-    mMapCanvas->freeze(false);
-    return false;
-  } else
-  {
-    mMapCanvas->freeze();
-  }
-
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-  // this is messy since some files in the list may be rasters and others may
-  // be ogr layers. We'll set returnValue to false if one or more layers fail
-  // to load.
-  bool returnValue = true;
-  for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); 
-          myIterator != theFileNameQStringList.end();
-          ++myIterator)
-  {
-    if (isValidRasterFileName(*myIterator))
-    {
-      QFileInfo myFileInfo(*myIterator);
-      // get the directory the .adf file was in
-      QString myDirNameQString = myFileInfo.dirPath();
-      QString myBaseNameQString = myFileInfo.baseName();
-      //only allow one copy of a ai grid file to be loaded at a
-      //time to prevent the user selecting all adfs in 1 dir which
-      //actually represent 1 coverate,
-
-      // create the layer
-      QgsRasterLayer *layer = new QgsRasterLayer(*myIterator, myBaseNameQString);
-      Q_CHECK_PTR( layer );
-
-      if ( ! layer )
-      {
-        mMapCanvas->freeze(false);
-        QApplication::restoreOverrideCursor();
-
-        // XXX insert meaningful whine to the user here
-        return false; 
-      }
-      if (layer->isValid())
-      {
-        // register this layer with the central layers registry
-        mMapLayerRegistry->addMapLayer(layer);
-      
-        QObject::connect(layer, 
-                SIGNAL(repaintRequested()), 
-                mMapCanvas, 
-                SLOT(refresh()));
-        // connect up any request the raster may make to update the app statusbar
-        QObject::connect(layer, 
-                SIGNAL(setProgress(int,int)), 
-                this, 
-                SLOT(showProgress(int,int))); 
-        // connect up any request the raster may make to update the statusbar message
-        QObject::connect(layer, 
-                SIGNAL(setStatus(QString)), 
-                this, 
-                SLOT(showStatusMessage(QString)));                
-        // add it to the mapcanvas collection
-        mMapCanvas->addLayer(layer);
-     //connect up a request from the raster layer to show in overview map
-     QObject::connect(layer, 
-             SIGNAL(showInOverview(QString,bool)), 
-             this, 
-             SLOT(setLayerOverviewStatus(QString,bool)));           
-
-
-        mProjectIsDirtyFlag = true;
-        // init the context menu so it can connect to slots in main app
-        // XXX Yes, but what if the layer is invalid?  Should we still be doing this?
-        layer->initContextMenu(this);
-      }
-      else
-      {
-        QString msg(*myIterator + " is not a valid or recognized raster data source");
-        QMessageBox::critical(this, "Invalid Data Source", msg);
-
-        delete layer;
-
-        // XXX should we return false here, or just grind through
-        // XXX the remaining arguments?
-        returnValue = false;
-      }
-
-      //only allow one copy of a ai grid file to be loaded at a
-      //time to prevent the user selecting all adfs in 1 dir which
-      //actually represent 1 coverate,
-
-      if (myBaseNameQString.lower().endsWith(".adf"))
-      {
-
-        break;
-      }
-    }else
-    {
-      QString msg(*myIterator + " is not a supported raster data source");
-      QMessageBox::critical(this, "Unsupported Data Source", msg);
-      returnValue = false;
-    }
-  }
-
-  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
-
-  qApp->processEvents();
-
-  mMapCanvas->freeze(false);
-
-  mMapCanvas->render();
-
-  QApplication::restoreOverrideCursor();
-
-  statusBar()->message(mMapCanvas->extent().stringRep(2));
-
-  return returnValue;
-
-}                               // QgisApp::addRasterLayer()
-
-
-
-
-
-
-/** This helper checks to see whether the filename appears to be a valid raster file name */
-bool QgisApp::isValidRasterFileName(QString theFileNameQString)
-{
-
-  GDALDatasetH myDataset;
-  GDALAllRegister();
-
-
-  myDataset = GDALOpen( theFileNameQString, GA_ReadOnly );
-
-  if( myDataset == NULL )
-  {
-    
-    return false;
-  }
-  else
-  {
-    GDALClose(myDataset);
-    return true;
-  }
-
-  /*
-   * This way is no longer a good idea because it does not
-   * cater for filetypes such as grass rasters that dont
-   * have a predictable file extension.
-   * 
-   QString name = theFileNameQString.lower();
-   return (name.endsWith(".adf") ||
-   name.endsWith(".asc") ||
-   name.endsWith(".grd") ||
-   name.endsWith(".img") ||
-   name.endsWith(".tif") || 
-   name.endsWith(".png") || 
-   name.endsWith(".jpg") || 
-   name.endsWith(".dem") || 
-   name.endsWith(".ddf")) ||
-   name.endsWith(".dt0");
-
-*/
-}
-
-/** Overloaded of the above function provided for convenience that takes a qstring pointer */
-bool QgisApp::isValidRasterFileName(QString * theFileNameQString)
-{
-  //dereference and delegate
-  return isValidRasterFileName(*theFileNameQString);
-}
 
 /** This helper checks to see whether the filename appears to be a valid vector file name */
 bool QgisApp::isValidVectorFileName(QString theFileNameQString)
@@ -3225,3 +2708,224 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
   QString myMessage = "Clipboard contents set to: ";
   statusBar()->message(myMessage + myClipboard->text());
 }
+
+
+
+/////////////////////////////////////////////////////////////////
+//
+//
+// Only functions relating to raster layer management in this
+// section (look for a similar comment block to this to find
+// the end of this section). I am hoping to move many of the
+// raster layer loading fn's below into QgsRasterLayer
+// Only ones that require a gui or are particularly wired in
+// to the mapCanvas instance etc will remain here.
+//
+// Tim Sutton
+//
+//
+/////////////////////////////////////////////////////////////////
+
+
+/** @todo XXX I'd *really* like to return, ya know, _false_.
+ */
+void QgisApp::addRasterLayer()
+{
+  mMapCanvas->freeze();
+  QString fileFilters;
+
+  // build the file filters based on the loaded GDAL drivers
+  QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
+
+  QStringList selectedFiles;
+
+  openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles);
+
+  if (selectedFiles.isEmpty())
+    {
+      // no files were selected, so just bail		
+       return;
+    }
+ 
+   addRasterLayer(selectedFiles);
+}// QgisApp::addRasterLayer()
+
+bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
+{
+
+  Q_CHECK_PTR( theRasterLayer );
+
+  if ( ! theRasterLayer )
+  {
+    mMapCanvas->freeze(false);
+    QApplication::restoreOverrideCursor();
+
+    // XXX insert meaningful whine to the user here; although be
+    // XXX mindful that a null layer may mean exhausted memory resources
+    return false; 
+  }
+
+  if (theRasterLayer->isValid())
+  {
+    // register this layer with the central layers registry
+    mMapLayerRegistry->addMapLayer(theRasterLayer);
+    // XXX doesn't the mMapCanvas->addLayer() do this?
+    QObject::connect(theRasterLayer, 
+            SIGNAL(repaintRequested()), 
+            mMapCanvas, 
+            SLOT(refresh()));
+
+    // connect up any request the raster may make to update the app progress
+    QObject::connect(theRasterLayer, 
+            SIGNAL(setProgress(int,int)), 
+            this, 
+            SLOT(showProgress(int,int)));  
+    // connect up any request the raster may make to update the statusbar message
+    QObject::connect(theRasterLayer, 
+            SIGNAL(setStatus(QString)), 
+            this, 
+            SLOT(showStatusMessage(QString)));            
+    // add it to the mapcanvas collection
+    mMapCanvas->addLayer(theRasterLayer);
+
+    //connect up a request from the raster layer to show in overview map
+    QObject::connect(theRasterLayer, 
+            SIGNAL(showInOverview(QString,bool)), 
+            this, 
+            SLOT(setLayerOverviewStatus(QString,bool)));           
+
+    mProjectIsDirtyFlag = true;
+
+    // init the context menu so it can connect to slots in main app
+    theRasterLayer->initContextMenu(this);
+  } 
+  else
+  {
+
+    delete theRasterLayer;
+
+    mMapCanvas->freeze(false);
+    QApplication::restoreOverrideCursor();
+
+    return false;
+  }
+
+
+  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
+  qApp->processEvents();
+  mMapCanvas->freeze(false);
+  mMapCanvas->render();
+  QApplication::restoreOverrideCursor();
+  statusBar()->message(mMapCanvas->extent().stringRep(2));
+
+  return true;
+
+
+
+}
+
+bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
+{
+  // let the user know we're going to possibly be taking a while
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  mMapCanvas->freeze();         // XXX why do we do this?
+
+  // XXX ya know QgsRasterLayer can snip out the basename on its own;
+  // XXX why do we have to pass it in for it?
+  QgsRasterLayer *layer = 
+      new QgsRasterLayer(rasterFile.filePath(), rasterFile.baseName());
+  
+  if (!addRasterLayer(layer))
+  {
+    QString msg(rasterFile.baseName() + " is not a valid or recognized raster data source");
+    QMessageBox::critical(this, "Invalid Data Source", msg);
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+
+} // QgisApp::addRasterLayer
+
+
+
+bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
+{
+  if (theFileNameQStringList.empty())
+  {
+    // no files selected so bail out, but
+    // allow mMapCanvas to handle events
+    // first
+    mMapCanvas->freeze(false);
+    return false;
+  } 
+  else
+  {
+    mMapCanvas->freeze();
+  }
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  // this is messy since some files in the list may be rasters and others may
+  // be ogr layers. We'll set returnValue to false if one or more layers fail
+  // to load.
+  bool returnValue = true;
+  for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); 
+          myIterator != theFileNameQStringList.end();
+          ++myIterator)
+  {
+    if (QgsRasterLayer::isValidRasterFileName(*myIterator))
+    {
+      QFileInfo myFileInfo(*myIterator);
+      // get the directory the .adf file was in
+      QString myDirNameQString = myFileInfo.dirPath();
+      QString myBaseNameQString = myFileInfo.baseName();
+      //only allow one copy of a ai grid file to be loaded at a
+      //time to prevent the user selecting all adfs in 1 dir which
+      //actually represent 1 coverate,
+
+      // create the layer
+      QgsRasterLayer *layer = new QgsRasterLayer(*myIterator, myBaseNameQString);
+
+      addRasterLayer(layer);
+
+      //only allow one copy of a ai grid file to be loaded at a
+      //time to prevent the user selecting all adfs in 1 dir which
+      //actually represent 1 coverate,
+
+      if (myBaseNameQString.lower().endsWith(".adf"))
+      {
+        break;
+      }
+    }else
+    {
+      QApplication::restoreOverrideCursor();
+      QString msg(*myIterator + " is not a supported raster data source");
+      QMessageBox::critical(this, "Unsupported Data Source", msg);
+      returnValue = false;
+    }
+  }
+
+  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
+
+  return returnValue;
+
+}                               // QgisApp::addRasterLayer()
+
+
+
+
+///////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//    RASTER ONLY RELATED FUNCTIONS BLOCK ENDS....
+//
+//
+//
+//
+///////////////////////////////////////////////////////////////////
+
+

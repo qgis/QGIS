@@ -314,6 +314,21 @@ class QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
 public:
+    //
+    // Static methods:
+    //
+        
+    static void buildSupportedRasterFileFilter(QString & fileFilters);
+    static bool isSupportedRasterDriver(QString const &driverName);
+    /** This helper checks to see whether the filename appears to be a valid raster file name */
+    static bool isValidRasterFileName(QString theFileNameQString);
+    /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
+    static bool isValidRasterFileName(QString * theFileNameQString);
+
+    //
+    // Non Static methods:
+    //
+        
     /** \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
