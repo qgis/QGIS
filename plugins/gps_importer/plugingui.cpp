@@ -110,7 +110,61 @@ void PluginGui::pbnOK_clicked()
   
   // or import other file?
   else if (tabWidget->currentPageIndex() == 1) {
+    
+    // what format does the user want to import?
+    const QString& formatArg(babelFormats.find(impFormat)->second.formatName);
+    
+    // what features does the user want to import?
+    QString typeArg;
+    if (cmbDLFeatureType->currentText() == "Waypoints")
+      typeArg = "-w";
+    else if (cmbDLFeatureType->currentText() == "Routes")
+      typeArg = "-r";
+    else if (cmbDLFeatureType->currentText() == "Tracks")
+      typeArg = "-t";
 
+    // try to start the gpsbabel process
+    QStringList babelArgs;
+    babelArgs<<"gpsbabel"<<typeArg<<"-i"<<formatArg<<"-o"<<"gpx"
+	     <<leIMPInput->text()<<leIMPOutput->text();
+    QProcess babelProcess(babelArgs);
+    if (!babelProcess.start()) {
+      QMessageBox::warning(this, "Could not start process",
+			   "Could not start GPSBabel!");
+      return;
+    }
+    
+    // wait for gpsbabel to finish (or the user to cancel)
+    QProgressDialog progressDialog("Importing data...", "Cancel", 0,
+				   this, 0, true);
+    progressDialog.show();
+    for (int i = 0; babelProcess.isRunning(); ++i) {
+      QApplication::eventLoop()->processEvents(0);
+      progressDialog.setProgress(i/64);
+      if (progressDialog.wasCancelled())
+	return;
+    }
+    
+    // did we get any data?
+    if (babelProcess.exitStatus() != 0) {
+      QString babelError(babelProcess.readStderr());
+      QString errorMsg(QString("Could not import data from %1!\n\n")
+		       .arg(leIMPInput->text()));
+      errorMsg += babelError;
+      QMessageBox::warning(this, "Error importing data", errorMsg);
+      return;
+    }
+    
+    // add the layer
+    if (cmbIMPFeature->currentItem() == 0)
+      emit drawVectorLayer(leIMPOutput->text() + "?type=waypoint", 
+			   leIMPLayer->text(), "gpx");
+    else if (cmbIMPFeature->currentItem() == 1)
+      emit drawVectorLayer(leIMPOutput->text() + "?type=route", 
+			   leIMPLayer->text(), "gpx");
+    else if (cmbIMPFeature->currentItem() == 2)
+      emit drawVectorLayer(leIMPOutput->text() + "?type=track", 
+			   leIMPLayer->text(), "gpx");
   }
   
   // or download GPS data from a device?
@@ -269,7 +323,9 @@ void PluginGui::enableRelevantControls()
   
   // import other file
   else if (tabWidget->currentPageIndex() == 1) {
-    if ((leIMPInput->text() == "") || (leIMPOutput->text() == ""))
+    
+    if ((leIMPInput->text() == "") || (leIMPOutput->text() == "") ||
+	(leIMPLayer->text() == ""))
       pbnOK->setEnabled(false);
     else
       pbnOK->setEnabled(true);
@@ -329,15 +385,23 @@ void PluginGui::pbnIMPInput_clicked() {
           "Select file and format to import" , //caption
           &myFileType //the pointer to store selected filter
           );
+  impFormat = myFileType.left(myFileType.length() - 6);
   std::map<QString, BabelFormatInfo>::const_iterator iter;
-  iter = babelFormats.find(myFileType.left(myFileType.length() - 6));
+  iter = babelFormats.find(impFormat);
   if (iter == babelFormats.end()) {
-    std::cerr<<"ERROR ERROR! Unknown file format selected: "
+    std::cerr<<"Unknown file format selected: "
 	     <<myFileType.left(myFileType.length() - 6)<<std::endl;
   }
   else {
     std::cerr<<iter->first<<" selected"<<std::endl;
     leIMPInput->setText(myFileName);
+    cmbIMPFeature->clear();
+    if (iter->second.hasWaypoints)
+      cmbIMPFeature->insertItem("Waypoints");
+    if (iter->second.hasRoutes)
+      cmbIMPFeature->insertItem("Routes");    
+    if (iter->second.hasTracks)
+      cmbIMPFeature->insertItem("Tracks");
   }
 }
 
