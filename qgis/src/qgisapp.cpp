@@ -685,76 +685,76 @@ void QgisApp::about()
 
 void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
-
-    QSettings mySettings;
-#ifdef QGISDEBUG
-
-    std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString << std::endl;
-#endif
-    // check all libs in the current plugin directory and get name and descriptions
-#ifdef WIN32
-
-    QDir myPluginDir(thePluginDirString, "*.dll", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
-#else
-
-    QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
-#endif
-
-    if (myPluginDir.count() == 0)
+  
+  QSettings mySettings;
+  #ifdef QGISDEBUG
+  
+  std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString << std::endl;
+  #endif
+  // check all libs in the current plugin directory and get name and descriptions
+  #ifdef WIN32
+  
+QDir myPluginDir(thePluginDirString, "*.dll", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+  #else
+  
+QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+  #endif
+  
+  if (myPluginDir.count() == 0)
+  {
+    //erk! do nothing
+    return;
+  }
+  else
+  {
+    for (unsigned i = 0; i < myPluginDir.count(); i++)
     {
-        //erk! do nothing
-        return;
-    }
-    else
-    {
-        for (unsigned i = 0; i < myPluginDir.count(); i++)
+      QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
+      #ifdef QGISDEBUG
+      
+      std::cerr << "Examining " << myFullPath << std::endl;
+      #endif
+      
+      QLibrary *myLib = new QLibrary(myFullPath);
+      bool loaded = myLib->load();
+      if (loaded)
+      {
+        //purposely leaving this one to stdout!
+        std::cout << "Loaded " << myLib->library() << std::endl;
+        name_t * myName =(name_t *) myLib->resolve("name");
+        description_t *  myDescription = (description_t *)  myLib->resolve("description");
+        version_t *  myVersion =  (version_t *) myLib->resolve("version");
+        if (myName && myDescription  && myVersion )
         {
-            QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
-#ifdef QGISDEBUG
-
-            std::cerr << "Examining " << myFullPath << std::endl;
-#endif
-
-            QLibrary *myLib = new QLibrary(myFullPath);
-            bool loaded = myLib->load();
-            if (loaded)
-            {
-                //purposely leaving this one to stdout!
-                std::cout << "Loaded " << myLib->library() << std::endl;
-                name_t * myName =(name_t *) myLib->resolve("name");
-                description_t *  myDescription = (description_t *)  myLib->resolve("description");
-                version_t *  myVersion =  (version_t *) myLib->resolve("version");
-                if (myName && myDescription  && myVersion )
-                {
-                    //check if the plugin was active on last session
-                    QString myEntryName = myName();
-                    // Windows stores a "true" value as a 1 in the registry so we
-                    // have to use readBoolEntry in this function
-
-                    if (mySettings.readBoolEntry("/qgis/Plugins/" + myEntryName))
-                    {
-#ifdef QGISDEBUG
-                        std::cerr << " -------------------- loading " << myEntryName << std::endl;
-#endif
-
-                        loadPlugin(myName(), myDescription(), myFullPath);
-                    }
-                }
-                else
-                {
-#ifdef QGISDEBUG
-                    std::cerr << "Failed to get name, description, or type for " << myLib->library() << std::endl;
-#endif
-
-                }
-            }
-            else
-            {
-                std::cerr << "Failed to load " << myLib->library() << std::endl;
-            }
+          //check if the plugin was active on last session
+          QString myEntryName = myName();
+          // Windows stores a "true" value as a 1 in the registry so we
+          // have to use readBoolEntry in this function
+          
+          if (mySettings.readBoolEntry("/qgis/Plugins/" + myEntryName))
+          {
+            #ifdef QGISDEBUG
+            std::cerr << " -------------------- loading " << myEntryName << std::endl;
+            #endif
+            
+            loadPlugin(myName(), myDescription(), myFullPath);
+          }
         }
+        else
+        {
+          #ifdef QGISDEBUG
+          std::cerr << "Failed to get name, description, or type for " << myLib->library() << std::endl;
+          #endif
+          
+        }
+      }
+      else
+      {
+        std::cerr << "Failed to load " << myLib->library() << std::endl;
+      }
     }
-
+  }
+  
 }
 
 
@@ -2573,15 +2573,22 @@ void QgisApp::menubar_highlighted( int i )
 
 void QgisApp::inOverview( bool in_overview )
 {
-#ifdef QGISDEBUG
-    std::cout << "QGisApp::inOverview(" << in_overview << ")" << std::endl;
-#endif
-
-    QListViewItem *lvi = mMapLegend->currentItem();
+  #ifdef QGISDEBUG
+  std::cout << "QGisApp::inOverview(" << in_overview << ")" << std::endl;
+  #endif
+  
+  QListViewItem *lvi = mMapLegend->currentItem();
+  
+  // check to make sure there is a current layer
+  // TODO: We really need to set disable/enable all menu options based on a logical scheme. 
+  //       This is just a hack...
+  if(lvi)
+  {
     QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
-
+    
     layer->inOverview( in_overview );
     mOverviewCanvas->render();
+  }
 } // QgisApp::inOverview(bool)
 
 
