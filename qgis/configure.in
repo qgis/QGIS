@@ -24,13 +24,13 @@ dnl ---------------------------------------------------------------------------
 dnl version number
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
-MINOR_VERSION=5
+MINOR_VERSION=6
 MICRO_VERSION=0
-EXTRA_VERSION=30
+EXTRA_VERSION=1
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
-   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${EXTRA_VERSION}
+   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}rc${EXTRA_VERSION}
 fi
 
 dnl ---------------------------------------------------------------------------

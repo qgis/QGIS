@@ -3,6 +3,28 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-12-03 [gsherman] 0.6.0rc1
+** Changing the SQL query for a PostgreSQL layer using the query builder 
+   from the vector layer properties dialog now properly updates the mapcanvas
+   extents and feature count.
+** Fix for crash in pg buffer plugin (bug 1077412). Crash is due to the
+   addition of sql where clause support in the postgres provider. The provider
+   was not checking to see if a sql key was included in the datasource uri and
+   thus copying the entire URI as the where clause.
+** The .shp extension is now added the new vector layer name (if not specified
+   by the user).  The .qgs extension is now added to a project file when using
+   save or save as (if not specified by the user). 
+
+2004-12-01 [gsherman] 0.5.0devel30
+** Added functions to qgsdataprovider.h to support updating the feature count
+   and extents. To be supported, these functions must be implemented in the data
+   provider implementation. The default implementations don't do anything useful.
+** QgsVectorLayer now has functions for requesting feature count, extent
+   update, and the subset defintiion string (usually sql) from the underlying
+   data provider. Providers do not need to implement these functions unless they
+   want to support subsetting the layer via a layer definition query or other
+   means.
+
 2004-11-27 [larsl] 0.5.0devel30
 ** Fixed feature addition in GPX layers, it now works again
 
