@@ -20,7 +20,7 @@
 #include "qgsgramaextensionwidget.h"
 #include "qgsmarkersymbol.h"
 #include "qgsvectorlayer.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsgraduatedmarenderer.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgslegenditem.h"
@@ -41,7 +41,7 @@ QgsGraMaDialog::QgsGraMaDialog(QgsVectorLayer* layer): QgsGraMaDialogBase(), ext
     setSizeGripEnabled(true);
 
     //find out the numerical fields of mVectorLayer
-    QgsDataProvider *provider;
+    QgsVectorDataProvider *provider;
     if (provider = mVectorLayer->getDataProvider())
     {
 	std::vector < QgsField > &fields = provider->fields();

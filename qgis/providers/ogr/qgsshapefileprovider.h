@@ -16,7 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
-#include "../../src/qgsdataprovider.h"
+#include "../../src/qgsvectordataprovider.h"
 
 class QgsFeature;
 class QgsField;
@@ -29,7 +29,7 @@ class OGREnvelope;
   \class QgsShapeFileProvider
   \brief Data provider for ESRI shapefiles
   */
-class QgsShapeFileProvider:public QgsDataProvider
+class QgsShapeFileProvider:public QgsVectorDataProvider
 {
   public:
     QgsShapeFileProvider(QString uri = 0);
@@ -145,6 +145,47 @@ class QgsShapeFileProvider:public QgsDataProvider
        @return true in case of success and false in case of failure*/
     bool deleteFeature(int id);
 
+    /**
+     Enables editing capabilities of the provider (if supported)
+     @return false in case of error or if the provider does not support editing
+    */
+    virtual bool startEditing();
+
+    /**
+       Disables the editing capabilities of the provider
+    */
+    virtual void stopEditing();
+
+    /**
+       Commits changes
+       @return false in case of problems
+    */
+    virtual bool commitChanges();
+
+    /**
+     Discards changes
+     @return false in case of problems
+    */
+    virtual bool rollBack();
+
+    /**Returns true if the provider is in editing mode*/
+    virtual bool isEditable() const {return mEditable;}
+
+    /**Returns true if the provider has been modified since the last commit*/
+    virtual bool isModified() const {return mModified;}
+
+ protected:
+    
+     /**Commits a feature
+       @return true in case of success and false in case of failure*/
+    virtual bool commitFeature(QgsFeature* f);
+    /**Features which are added but not yet commited*/
+    std::list<QgsFeature*> mAddedFeatures;
+    /**Flag indicating wheter the provider is in editing mode or not*/
+    bool mEditable;
+    /**Flag indicating wheter the provider has been modified since the last commit*/
+    bool mModified;
+
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
     std::vector < QgsField > attributeFields;
@@ -160,6 +201,9 @@ class QgsShapeFileProvider:public QgsDataProvider
       NDR = 1,
       XDR = 0
     };
+    /**If getNextFeature needs to returns pointers to not commited features, 
+    this member points to the latest feature*/
+    std::list<QgsFeature*>::iterator mAddedFeaturesIt;
     /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
     bool minmaxcachedirty;
     /**Matrix storing the minimum and maximum values*/

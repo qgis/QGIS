@@ -24,7 +24,7 @@
 #include <qpainter.h>
 #include <qpushbutton.h>
 #include "qgsmarkerdialog.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgssvgcache.h"
 #include "qgsvectorlayer.h"
 
@@ -57,7 +57,7 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
        //find the minimum and maximum of the classification variable
        double minimum, maximum;
 
-       QgsDataProvider *provider = mVectorLayer->getDataProvider();
+       QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
        if (provider)
        {
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
@@ -213,7 +213,7 @@ void QgsGraMaExtensionWidget::setClassification(QgsGraSyDialog::mode mode, int f
     mClassField=field;
     mMode=mode;
 
-    QgsDataProvider *provider=mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider=mVectorLayer->getDataProvider();
 
     if (provider)
     {

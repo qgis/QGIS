@@ -635,6 +635,25 @@ bool QgsGPXProvider::isValid(){
   return mValid;
 }
 
+bool QgsGPXProvider::startEditing()
+{
+    return false;
+}
+
+void QgsGPXProvider::stopEditing()
+{
+}
+
+bool QgsGPXProvider::commitChanges()
+{
+    return false;
+}
+
+bool QgsGPXProvider::rollBack()
+{
+    return false;
+}
+
 bool QgsGPXProvider::addFeature(QgsFeature* f) {
   unsigned char* geo = f->getGeometry();
   int id;

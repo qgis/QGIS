@@ -30,7 +30,7 @@
 #include "qgsrect.h"
 #include "qgsfield.h"
 #include "qgsdlgvectorlayerproperties.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsgraduatedmarenderer.h"
@@ -67,7 +67,7 @@ bufferRenderer(layer->
   txtDisplayName->setText(layer->name());
   // display type and feature count
   lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
-  QgsDataProvider *dp = layer->getDataProvider();
+  QgsVectorDataProvider *dp = layer->getDataProvider();
   QString numFeatures;
   numFeatures = numFeatures.setNum(dp->featureCount());
   lblFeatureCount->setText(numFeatures);
