@@ -93,23 +93,52 @@ typedef QString description_t();
 typedef int type_t();
 
 // cursors
-static unsigned char zoom_in_bits[] = {
-	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
-	0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
-	0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0
-};
+static char *zoom_in[]={
+"16 16 3 1",
+". c None",
+"a c #000000",
+"# c #ffffff",
+".....#####......",
+"...##aaaaa##....",
+"..#.a.....a.#...",
+".#.a...a...a.#..",
+".#a....a....a#..",
+"#a.....a.....a#.",
+"#a.....a.....a#.",
+"#a.aaaa#aaaa.a#.",
+"#a.....a.....a#.",
+"#a.....a.....a#.",
+".#a....a....a#..",
+".#.a...a...aaa#.",
+"..#.a.....a#aaa#",
+"...##aaaaa###aa#",
+".....#####...###",
+"..............#."};
 
-static unsigned char zoom_in_mask_bits[] = {
-	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
-	0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
-	0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0
-};
+static char *zoom_out[]={
+"16 16 4 1",
+"b c None",
+". c None",
+"a c #000000",
+"# c #ffffff",
+".....#####......",
+"...##aaaaa##....",
+"..#.a.....a.#...",
+".#.a.......a.#..",
+".#a.........a#..",
+"#a...........a#.",
+"#a...........a#.",
+"#a.aaaa#aaaa.a#.",
+"#a...........a#.",
+"#a...........a#.",
+".#a.........a#..",
+".#.a.......aaa#.",
+"..#.a.....a#aaa#",
+"...##aaaaa###aa#",
+".....#####...###",
+"..............#."};
 
-static unsigned char zoom_out_bits[] = {
-	0xf8, 0x00, 0x06, 0x03, 0x02, 0x02, 0x01, 0x04, 0x01, 0x04, 0xfd, 0x05,
-	0x01, 0x04, 0x01, 0x04, 0x02, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
-	0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0
-};
+
 
 static unsigned char pan_bits[] = {
 	0xf0, 0x00, 0xf8, 0x01, 0x28, 0x07, 0x28, 0x05, 0x28, 0x1d, 0x28, 0x15,
@@ -123,31 +152,52 @@ static unsigned char pan_mask_bits[] = {
 	0xfc, 0x0f, 0xf8, 0x07, 0xf0, 0x07, 0xe0, 0x07
 };
 
-static unsigned char identify_bits[] = {
-	0x00, 0x00, 0x06, 0x00, 0x1e, 0x00, 0x3c, 0x00, 0xfc, 0x00, 0xf8, 0x01,
-	0x78, 0x00, 0xd8, 0x1c, 0x88, 0x37, 0x80, 0x7f, 0x80, 0xf7, 0x80, 0xf7,
-	0x80, 0xf7, 0x00, 0x63, 0x00, 0x3e, 0x00, 0x1c
-};
 
-static unsigned char identify_mask_bits[] = {
-	0x00, 0x00, 0x06, 0x00, 0x1e, 0x00, 0x3c, 0x00, 0xfc, 0x00, 0xf8, 0x01,
-	0x78, 0x00, 0xd8, 0x1c, 0x88, 0x3f, 0x80, 0x7f, 0x80, 0xff, 0x80, 0xff,
-	0x80, 0xff, 0x00, 0x7f, 0x00, 0x3e, 0x00, 0x1c
-};
+static char *identify_cursor[]={
+"16 16 3 1",
+"# c None",
+"a c #000000",
+". c #ffffff",
+".###############",
+"...##########.##",
+".aa..#######.a.#",
+"#.aaa..######.##",
+"#.aaaaa..#######",
+"##.aaaaaa..#...#",
+"##.aaaaaa....a.#",
+"##.aaaaa.###.a.#",
+"###.aaaaa.##.a.#",
+"###.aa.aaa.#.a.#",
+"####..#..aa..a.#",
+"####.####.aa.a.#",
+"##########.aa..#",
+"###########.aa..",
+"############.a.#",
+"#############.##"};
 
-static unsigned char select_cursor_bits[] = {
-  0x00, 0x00, 0xfe, 0x00, 0x7e, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x76, 0x00,
-  0xf6, 0x55, 0xc2, 0x01, 0x90, 0x43, 0x00, 0x07, 0x10, 0x4e, 0x00, 0x0c,
-  0x50, 0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+static char *select_cursor[]={
+"16 16 3 1",
+"# c None",
+"a c #000000",
+". c #ffffff",
+".###############",
+"...#############",
+".aa..###########",
+"#.aaa..a.a.a.a.#",
+"#.aaaaa..#####a#",
+"#a.aaaaaa..###.#",
+"#..aaaaaa...##a#",
+"#a.aaaaa.#####.#",
+"#.#.aaaaa.####a#",
+"#a#.aa.aaa.###.#",
+"#.##..#..aa.##a#",
+"#a##.####.aa.#.#",
+"#.########.aa.a#",
+"#a#########.aa..",
+"#.a.a.a.a.a..a.#",
+"#############.##"};
 
 
-static unsigned char select_cursor_mask_bits[] = {
-      0x00, 0x00, 0xfe, 0x00, 0x7e, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x76, 0x00,
-   0xf6, 0x7f, 0xf2, 0x7f, 0xf0, 0x7f, 0xf0, 0x7f, 0xf0, 0x7f, 0xf0, 0x7f,
-   0xf0, 0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-
-};
 
 // constructor starts here   
 
@@ -332,17 +382,19 @@ void QgisApp::addRasterLayer()
   QString myFileTypeQString;
   QString myArcInfoBinaryGridFilterString="Arc Info Binary Grid (*.adf)";
   QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
+  QString myErdasFilterString="Erdas Imagine (*.img)";
   QString myGeoTiffFilterString="Geo tiff (*.tif)";
   QString myUsgsAsciiDemFilterString="Usgs Ascii DEM (*.dem)";
   QString myGrassFilterString="Grass raster (*.*)";
   QString mySdtsFilterString="Sdts (*CATD*.DDF)";
-  QString myAllRasterFormats = "All Rasters (*.asc;*.grd;*.tif;*.png;*.jpg;*.dem;*.DDF)";
+  QString myAllRasterFormats = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DDF)";
   //QString myBilFilterString="Band Interleaved by Line (*.bil)";
   //QString myJpgFilterString="Geo jpg (*.jpg)";
   QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
           myAllRasterFormats + ";;" +
           myArcInfoBinaryGridFilterString + ";;" +
           myArcInfoAsciiGridFilterString + ";;" +
+          myErdasFilterString + ";;" +
           //myBilFilterString + ";;" +
           //myJpgFilterString + ";;" +  
           myGeoTiffFilterString + ";;" +
@@ -546,10 +598,11 @@ void QgisApp::zoomIn()
 	mapTool = QGis::ZoomIn;
 	mapCanvas->setMapTool(mapTool);
 	// set the cursor
-	QBitmap zoomInBmp(16, 16, zoom_in_bits, true);
-	QBitmap zoomInBmpMask(16, 16, zoom_in_mask_bits, true);
+        
+ 
+        QPixmap myZoomInQPixmap=QPixmap((const char **) zoom_in);
 	delete mapCursor;
-	mapCursor = new QCursor(zoomInBmp, zoomInBmpMask, 5, 5);
+	mapCursor = new QCursor(myZoomInQPixmap, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
 	// scale the extent
 	/* QgsRect ext = mapCanvas->extent();
@@ -566,9 +619,9 @@ void QgisApp::zoomOut()
 	mapTool = QGis::ZoomOut;
 	mapCanvas->setMapTool(mapTool);
 
-	QBitmap zoomOutBmp(16, 16, zoom_out_bits, true);
+        QPixmap myZoomOutQPixmap=QPixmap((const char **) zoom_out);
 	delete mapCursor;
-	mapCursor = new QCursor(zoomOutBmp, zoomOutBmp, 5, 5);
+	mapCursor = new QCursor(myZoomOutQPixmap, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
 
 	/*    QWMatrix m = mapCanvas->worldMatrix();
@@ -607,10 +660,10 @@ void QgisApp::identify()
 {
 	mapTool = QGis::Identify;
 	mapCanvas->setMapTool(mapTool);
-	QBitmap idenitfyBmp(16, 16, identify_bits, true);
-	QBitmap identifyBmpMask(16, 16, identify_mask_bits, true);
+        
+        QPixmap myIdentifyQPixmap=QPixmap((const char **) identify_cursor);
 	delete mapCursor;
-	mapCursor = new QCursor(idenitfyBmp, identifyBmpMask, 1, 1);
+	mapCursor = new QCursor(myIdentifyQPixmap, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
 }
 
@@ -630,14 +683,15 @@ void QgisApp::attributeTable()
 
 void QgisApp::select()
 {
-	// set the select cursor
-	QBitmap selectBmp(16, 16, select_cursor_bits, true);
-	QBitmap selectBmpMask(16, 16, select_cursor_mask_bits, true);
+
+       // set current map tool to select
+       mapCanvas->setMapTool(QGis::Select);
+    
+            
+        QPixmap mySelectQPixmap=QPixmap((const char **) select_cursor);
 	delete mapCursor;
-	mapCursor = new QCursor(selectBmpMask, selectBmp, 1, 1);
+	mapCursor = new QCursor(mySelectQPixmap, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
-	// set current map tool to select
-    mapCanvas->setMapTool(QGis::Select);
 }
 
 //void QgisApp::readWKB (const char *connInfo, QStringList tables)
@@ -822,6 +876,13 @@ void QgisApp::layerProperties(QListViewItem * lvi)
         }else{
           lyr->showLayerProperties();
         }
+        
+        //TODO Fix this area below and above
+        //this is a very hacky way to force the legend entry to refresh - the call above does ne happen for some reason
+        mapCanvas->render2();
+        mapLegend->update();
+        
+        
         /* else if ((lyr->type()==QgsMapLayer::VECTOR) || (lyr->type()==QgsMapLayer::DATABASE))
         {
           QgsLayerProperties *lp = new QgsLayerProperties(lyr);
