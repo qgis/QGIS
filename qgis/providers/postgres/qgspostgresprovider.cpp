@@ -150,26 +150,51 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 #endif
   PGconn *pd = PQconnectdb((const char *) connInfo);
   // check the connection status
-  if (PQstatus(pd) == CONNECTION_OK) {
+  if (PQstatus(pd) == CONNECTION_OK)
+  {
+    // store the connection for future use
+    connection = pd;
+
+#ifdef QGISDEBUG
+    std::cerr << "Checking for select permission on the relation\n";
+#endif
+
+    // Check that we can read from the table (i.e., we have
+    // select permission).
+    QString sql = "select * from \"" + tableName + "\" limit 1";
+    PGresult* testAccess = PQexec(pd, (const char*)sql);
+    if (PQresultStatus(testAccess) != PGRES_TUPLES_OK)
+    {
+      QApplication::restoreOverrideCursor();
+      QMessageBox::warning(0, tr("Unable to access relation"),
+			   tr("Unable to access the ") + tableName + 
+			   tr(" relation.\nThe error message from the database was:\n") +
+			   PQresultErrorMessage(testAccess) + ".\n");
+      QApplication::setOverrideCursor(Qt::waitCursor);
+      PQclear(testAccess);
+      valid = false;
+      return;
+    }
+    PQclear(testAccess);
+
     /* Check to see if we have GEOS support and if not, warn the user about
        the problems they will see :) */
 #ifdef QGISDEBUG
     std::cerr << "Checking for GEOS support" << std::endl;
 #endif
-    if(!hasGEOS(pd)){
+    if(!hasGEOS(pd))
+    {
       QApplication::restoreOverrideCursor();
-      QMessageBox::warning(0, "No GEOS Support!",
-       "Your PostGIS installation has no GEOS support.\nFeature selection and "
+      QMessageBox::warning(0, tr("No GEOS Support!"),
+       tr("Your PostGIS installation has no GEOS support.\nFeature selection and "
        "identification will not work properly.\nPlease install PostGIS with " 
-       "GEOS support (http://geos.refractions.net)");
+       "GEOS support (http://geos.refractions.net)"));
       QApplication::setOverrideCursor(Qt::waitCursor);
     }
     //--std::cout << "Connection to the database was successful\n";
     // set the schema
 
     PQexec(pd,(const char *)QString("set search_path = '%1','public'").arg(mSchema));
-    // store the connection for future use
-    connection = pd;
 
     if (getGeometryDetails()) // gets srid and geometry type
     {
@@ -182,7 +207,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       selectSQL = "select ";
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
-      QString sql = "select * from \"" + tableName + "\" limit 1";
+      sql = "select * from \"" + tableName + "\" limit 1";
       PGresult* result = PQexec(pd, (const char *) sql);
       //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
       for (int i = 0; i < PQnfields(result); i++)
