@@ -36,7 +36,7 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-
+#include <qfileinfo.h>
 //non qt includes
 #include <iostream>
 #include <openmodellergui.h>
@@ -115,8 +115,13 @@ void Plugin::run()
 //layer
 void Plugin::drawRasterLayer(QString theQString)
 {
-  std::cout << "DrawLayer slot called with " << theQString << std::endl;
-  qGisInterface->addRasterLayer(theQString);
+  QFileInfo myFileInfo(theQString);
+  QString myDirNameQString = myFileInfo.dirPath();
+  QString myBaseNameQString = myFileInfo.baseName();
+  QgsRasterLayer *layer = new QgsRasterLayer(theQString, myBaseNameQString);
+  layer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);
+  layer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
+  qGisInterface->addRasterLayer(layer);
 }
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()

@@ -51,6 +51,7 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	openmodellergui.cpp \
 	openmodellergui.h \
 	request_file.cpp \
+	occurrences_file.cpp \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)

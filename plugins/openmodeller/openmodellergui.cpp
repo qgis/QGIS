@@ -33,8 +33,7 @@
 #include <openmodeller/om_control.hh>
 #include <openmodeller/om.hh>
 #include <om_alg_parameter.hh>
-//local in this plugin dir
-#include "file_parser.hh"
+#include <request_file.hh>
 
 //standard includes
 #include <stdlib.h>
@@ -245,26 +244,31 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
      @see pbnRun method which is run when model inputs have been obtained via the wizard. */
 void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 {
-  
-  //strdup is used to convert the qstring to a non const char *
-  FileParser myFileParser( strdup(theParametersFileNameQString));
-  //
-  //
-  // Run the model
-  //
-  /*
+
+  OpenModeller  myOpenModeller;
+  RequestFile myRequestFile;
+  int myResult = myRequestFile.configure( &myOpenModeller, strdup(theParametersFileNameQString));
+
+  if ( myResult < 0 )
+  {
+    //notify user of eror here!
+    QMessageBox::warning( this,"openModeller Wizard Error","Error reading request file!");
+    return;
+  }
+
   if ( ! myOpenModeller.run() )
   {
-    QString myErrorQString;
-    QMessageBox::warning( this,"openModeller Wizard Error",myErrorQString.sprintf("Error: %s\nModel aborted.", myOpenModeller.error()));
+    QMessageBox::warning( this,
+            "openModeller Wizard Error","Error running model!",
+            myOpenModeller.error()
+            );
+    return;
   }
-  else
-  {
-    //if all went ok, send notification to the parent app that we are finished
-    emit drawRasterLayer(QString( myOutputFleNameCharArray ));
-  }
-  */
- //end of parseAndRun
+
+  // Prepare the output map
+  myOpenModeller.createMap( myOpenModeller.getEnvironment() );
+  //if all went ok, send notification to the parent app that we are finished
+  emit drawRasterLayer(outputFileNameQString+QString(".tif"));
 }
 void OpenModellerGui::makeConfigFile()
 {
@@ -312,7 +316,7 @@ void OpenModellerGui::makeConfigFile()
         myQTextStream << tr("# File to be used as the output format.\n") ;
         myQTextStream << tr("Output format = ") << layerNamesQStringList.front() << "\n";
         myQTextStream << tr("# Output file name (should end in .tif)\n");
-        myQTextStream << tr("Output = ") << outputFileNameQString << ".tif\n";
+        myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
         myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
         //NOTE I am hard coding the output scaling variable for now!
         myQTextStream << tr("Scale = 240.0\n");                
