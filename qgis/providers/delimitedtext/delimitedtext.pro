@@ -8,7 +8,7 @@
 
 TEMPLATE = lib
 INCLUDEPATH += .
-LIBS += 
+LIBS += ..\..\src\libqgis.lib
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis
 
