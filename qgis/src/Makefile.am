@@ -91,6 +91,7 @@ headers =		qgis.h					\
 			qgssvgcache.h				\
 			qgssymbol.h				\
 			qgssymbologyutils.h			\
+			qgsuniquevalrenderer.h			\
 			qgsvectorlayer.h			\
 			qgsvectorlayerproperties.h		\
 			splashscreen.h				\
@@ -236,6 +237,7 @@ qgis_SOURCES =  main.cpp			\
 		qgssvgcache.cpp			\
 		qgssymbol.cpp			\
 		qgssymbologyutils.cpp		\
+		qgsuniquevalrenderer.cpp	\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayerproperties.cpp	\
 		splashscreen.cpp \
