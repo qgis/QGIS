@@ -22,7 +22,8 @@ email                : sherman at mrcc.com
 #include <vector>
 
 #include "qgsfeatureattribute.h"
-
+#include "qgis.h"
+class QgsRect;
 
 /** \class QgsFeature - Feature attribute class.
  * Encapsulates a single feature including id and field/value.
@@ -102,21 +103,16 @@ class QgsFeature {
 
     size_t getGeometrySize() const;
 
-    QString const & wellKnownText() const; 
+    QString const& wellKnownText() const; 
 
-    /** Set geometry to given Well Known Text string 
-
-    @note
-
-    This object takes responsibility for managing geometry.
-
-    */
+    /** Set WKB geometry*/
     void setGeometry(unsigned char * geometry, size_t length);
-
-    void setWellKnownText(QString const & wkt);
 
     /**Shows a popup dialog to change attribute values*/
     void attributeDialog();
+
+    /**Test for intersection with a rectangle (uses GEOS)*/
+    bool intersects(QgsRect* r);
 
   private:
 
@@ -138,14 +134,18 @@ class QgsFeature {
     /** size of geometry */
     size_t geometrySize;
 
-    //! Well Known Text representation of the geometry
-    QString mWKT;
-
     //! Flag to indicate if this feature is valid
     bool mValid;
 
     /// feature type name
     QString mTypeName;
+
+    /**WKT representation of the geometry*/
+    mutable QString mWKT;
+
+    /**Exports the current WKB to mWKT
+     @return true in case of success and false else*/
+    bool exportToWKT() const;
 
 }; // class QgsFeature
 
