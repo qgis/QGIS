@@ -94,7 +94,19 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 	classificationComboBox->setCurrentItem(renderer->classificationField());
 	QGis::VectorType m_type = mVectorLayer->vectorType();
 	numberofclassesspinbox->setValue(list.size());
-	//todo: fill mValue with the setting of the (single) renderitem and apply to the sisydialog
+	//fill the items of the renderer into mValues
+	for(std::list<QgsRangeRenderItem*>::iterator it=list.begin();it!=list.end();++it)
+	{
+		QgsRangeRenderItem* item=(*it);
+		QString classbreak=item->value()+" - "+item->upper_value();
+		QgsSymbol* sym=new QgsSymbol();
+		QgsRangeRenderItem* rritem=new QgsRangeRenderItem(sym,item->value(),item->upper_value(),item->label());
+		sym->setPen(item->getSymbol()->pen());
+		sym->setBrush(item->getSymbol()->brush());
+		mEntries.insert(std::make_pair(classbreak,rritem));
+		mClassBreakBox->insertItem(classbreak);
+	}
+	
     }
     
     //do the necessary signal/slot connections
