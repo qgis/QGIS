@@ -23,6 +23,15 @@ plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = grassplugin.la
 
+plugin_MOC = qgsgrassplugin.moc.cpp \
+	     qgsgrassselectbase.moc.cpp
+
+plugin_UI = qgsgrassselectbase.h \
+	     qgsgrassselectbase.cpp
+
+plugin_UIC = qgsgrassselectbase.ui \
+       qgsgrassselectbase.ui.h
+
 grassplugin_la_SOURCES =  qgsgrassplugin.cpp \
 			      qgsgrassplugin.h \
 			      qgsgrassselect.cpp \
@@ -30,16 +39,9 @@ grassplugin_la_SOURCES =  qgsgrassplugin.cpp \
 			      ../../providers/grass/qgsgrass.cpp \
 			      ../../providers/grass/qgsgrass.h \
 			      $(plugin_UI)\
-			      $(plugin_MOC) \
             ../../src/qgssymbol.cpp
-            
-plugin_MOC = qgsgrassplugin.moc.cpp \
-	     qgsgrassselectbase.moc.cpp
 
-plugin_UI = qgsgrassselectbase.h \
-	    qgsgrassselectbase.cpp
-
-plugin_UIC = qgsgrassselectbase.ui
+nodist_grassplugin_la_SOURCES = $(plugin_MOC)
 
 # UI dependencies      
 qgsgrassselectbase.cpp: qgsgrassselectbase.h qgsgrassselectbase.ui
