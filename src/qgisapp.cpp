@@ -851,7 +851,7 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
          // them appropriately
 
          // USGS DEMs use "*.dem"
-         if ( driverDescription.startsWith("USGSDEM", false) )
+         if ( driverDescription.startsWith("USGSDEM") )
          {
             fileFilters += createFileFilter_(driverLongName, "*.dem");
          }
