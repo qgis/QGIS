@@ -47,14 +47,21 @@ class QgisApp:public QgisAppBase
 	QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
 
 	 ~QgisApp();
-	public:
+public:
 	 QgisIface *getInterface();
 	 int getInt();
-     void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
-	  private:
+         void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
+         /** \brief overloaded vesion of the privat addLayer method that takes a list of
+         * filenames instead of prompting user with a dialog. */
+         void addLayer(QStringList theLayerQStringList);
+         /** \brief overloaded vesion of the privat addLRasterayer method that takes a list of
+         * filenames instead of prompting user with a dialog. */
+      	void addRasterLayer(QStringList theLayerQStringList);
+        
+private:
 	 //private:
 	//public slots:
-	//! Add a layer to the map
+	//! Add a vector layer to the map
 	void addLayer();
 	//! Add a raster layer to the map
 	void addRasterLayer();

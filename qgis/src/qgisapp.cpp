@@ -334,56 +334,67 @@ void QgisApp::about()
 
 }
 
+/** \brief This method prompts the user for a list of vector filenames with a dialog. */
 void QgisApp::addLayer()
+{
+  QString pOgr = providerRegistry->library("ogr");
+  if(pOgr.length() > 0){
+    mapCanvas->freeze();
+    QStringList files = QFileDialog::getOpenFileNames(tr("Shapefiles (*.shp);;All files (*.*)"), 0, this, "open files dialog",
+            tr("Select one or more layers to add"));
+    addLayer(files);
+  }
+}
+/** \brief overloaded vesion of the above method that takes a list of
+ * filenames instead of prompting user with a dialog. */
+void QgisApp::addLayer(QStringList theLayerQStringList)
 {
   // check to see if we have an ogr provider available
   QString pOgr = providerRegistry->library("ogr");
   if(pOgr.length() > 0){
-	mapCanvas->freeze();
-	QStringList files = QFileDialog::getOpenFileNames(tr("Shapefiles (*.shp);;All files (*.*)"), 0, this, "open files dialog",
-													  tr("Select one or more layers to add"));
-	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QStringList::Iterator it = files.begin();
-	while (it != files.end()) {
+    mapCanvas->freeze();
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QStringList::Iterator it = theLayerQStringList.begin();
+    while (it != theLayerQStringList.end()) {
 
 
-		QFileInfo fi(*it);
-		QString base = fi.baseName();
+      QFileInfo fi(*it);
+      QString base = fi.baseName();
 
 
-		// create the layer
+      // create the layer
 
-	//dp	QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
-    	QgsVectorLayer *lyr = new QgsVectorLayer(*it, base, "ogr");
+      //dp	QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
+      QgsVectorLayer *lyr = new QgsVectorLayer(*it, base, "ogr");
 
-		if (lyr->isValid()) {
-       // init the context menu so it can connect to slots in main app
-       lyr->initContextMenu(this);
-       //add single symbol renderer as default
-		    QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();
-		    lyr->setRenderer(renderer);
-		    renderer->initializeSymbology(lyr);
-		    mapCanvas->addLayer(lyr);
+      if (lyr->isValid()) {
+        // init the context menu so it can connect to slots in main app
+        lyr->initContextMenu(this);
+        //add single symbol renderer as default
+        QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();
+        lyr->setRenderer(renderer);
+        renderer->initializeSymbology(lyr);
+        mapCanvas->addLayer(lyr);
         projectIsDirty = true;
-		} else {
-			QString msg = *it + " ";
-			msg += tr("is not a valid or recognized data source");
-			QMessageBox::critical(this, tr("Invalid Data Source"), msg);
-		}
+      } else {
+        QString msg = *it + " ";
+        msg += tr("is not a valid or recognized data source");
+        QMessageBox::critical(this, tr("Invalid Data Source"), msg);
+      }
 
-		++it;
-	}
-	//qApp->processEvents();
-	// update legend
-	/*! \todo Need legend scrollview and legenditem classes */
-	// draw the map
+      ++it;
+    }
+    //qApp->processEvents();
+    // update legend
+    /*! \todo Need legend scrollview and legenditem classes */
+    // draw the map
 
-	mapLegend->update();
-	qApp->processEvents();
-	mapCanvas->freeze(false);
-	mapCanvas->render2();
-	QApplication::restoreOverrideCursor();
-	statusBar()->message(mapCanvas->extent().stringRep());
+    mapLegend->update();
+    qApp->processEvents();
+    mapCanvas->freeze(false);
+    mapCanvas->render2();
+    QApplication::restoreOverrideCursor();
+    statusBar()->message(mapCanvas->extent().stringRep());
 
   }else{
     QMessageBox::critical(this, tr("No OGR Provider"),tr("No OGR data provider was found in the QGIS lib directory"));    
@@ -392,10 +403,9 @@ void QgisApp::addLayer()
 }
 
 
-void
-QgisApp::addRasterLayer()
+void QgisApp::addRasterLayer()
 {
-   // insure that the map canvas temporarily suspends event processing
+   // ensure that the map canvas temporarily suspends event processing
    // until we've loaded the raster
 
   mapCanvas->freeze();
