@@ -29,7 +29,8 @@ SOURCES += main.cpp \
            qgsrenderitem.cpp \
            qgsprojectio.cpp \
            qgisiface.cpp \
-	   qgspluginmanager.cpp
+	   qgspluginmanager.cpp \
+	   qgspluginitem.cpp
 HEADERS += qgisapp.h \
            qgisinterface.h \
            qgisappbase.ui.h \
@@ -56,7 +57,8 @@ HEADERS += qgisapp.h \
            qgsrenderitem.h \
            qgsprojectio.h \
            qgisiface.h \
-	   qgspluginmanager.h
+	   qgspluginmanager.h \
+	   qgspluginitem.h
 FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
