@@ -55,10 +55,6 @@ class Plugin:public QObject, public QgisPlugin
   void renderScaleBar(QPainter *);
   //! Show the dialog box
   void run();
-  //!draw a raster layer in the qui
-  void drawRasterLayer(QString);
-  //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-  void drawVectorLayer(QString,QString,QString);
   //! Refresh the map display using the mapcanvas exported via the plugin interface
   void refreshCanvas();
   //! unload the plugin
@@ -73,6 +69,8 @@ class Plugin:public QObject, public QgisPlugin
   void setEnabled(bool);
   //! set the scale bar style
   void setStyle(QString);
+  //! set the scale bar colour
+  void setColour(QColor);
   
     private:
     
@@ -89,6 +87,8 @@ class Plugin:public QObject, public QgisPlugin
   bool mEnabled;
   //! Style of scale bar
   QString mStyle;
+  //! The scale bar colour
+  QColor mColour;
 
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
