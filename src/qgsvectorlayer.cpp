@@ -632,7 +632,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       featureCount++;
       if (featureCount == 1)
       {
-        ir = new QgsIdentifyResults();
+        ir = new QgsIdentifyResults(mActions);
       }
 
       QListViewItem *featureNode = ir->addNode("foo");
@@ -1372,6 +1372,9 @@ void QgsVectorLayer::select(int number)
 
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
+  // process the attribute actions
+  mActions.readXML(layer_node);
+
     //process provider key
     QDomNode pkeyNode = layer_node.namedItem("provider");
 
@@ -1635,6 +1638,9 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 
     layer_node.appendChild( label );
 
+    // add attribute actions
+
+    mActions.writeXML(layer_node, document);
 
     // renderer specific settings
 

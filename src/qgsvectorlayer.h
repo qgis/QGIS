@@ -40,7 +40,7 @@ class QgsLabel;
 #include "qvaluevector.h"
 #include "qgsattributetabledisplay.h"
 #include "qgsvectordataprovider.h"
-
+#include "qgsattributeaction.h"
 
 /*! \class QgsVectorLayer
  * \brief Vector layer backed by a data source provider
@@ -92,6 +92,8 @@ class QgsVectorLayer : public QgsMapLayer
 
 
   QgsLabel *label();
+
+  QgsAttributeAction* actions() { return &mActions; }
 
   public slots:
 
@@ -303,6 +305,10 @@ private:                       // Private methods
 
   /// vector layers are not copyable
   QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
+
+  // The user-defined actions that are accessed from the
+  // Identify Results dialog box
+  QgsAttributeAction mActions;
 
 };
 
