@@ -534,6 +534,7 @@ identifying features without zooming in very close.
     <slot>addTheme( QString item )</slot>
     <slot>themeChanged( const QString &amp; )</slot>
     <slot>findBrowser()</slot>
+    <slot>setCurrentTheme()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
