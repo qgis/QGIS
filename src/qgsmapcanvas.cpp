@@ -47,11 +47,24 @@ void QgsMapCanvas::render2(){
   currentExtent = fullExtent;
   QRect v = paint->viewport();
   // calculate the translation and scaling parameters
-  if(currentExtent.height() > currentExtent.width())
-    m_mupp = currentExtent.height()/v.height();
-  else
-    m_mupp = currentExtent.width()/v.width();
-  coordXForm->
+  double muppX, muppY;
+      muppY = currentExtent.height()/height();
+      muppX = currentExtent.width()/width();
+      cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << endl;
+      m_mupp = muppY > muppX?muppY:muppX;
+      m_mupp *= 1.20;
+  coordXForm->setParameters(m_mupp, currentExtent.xMin(), 
+			    currentExtent.yMin(), currentExtent.yMax());
+  // render all layers in the stack, starting at the base
+  map<QString,QgsMapLayer *>::iterator mi = layers.begin();
+  while(mi != layers.end()){
+    QgsMapLayer *ml = (*mi).second;
+    //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+    ml->draw(paint, &currentExtent, coordXForm);
+    mi++;
+    //  mi.draw(p, &fullExtent);
+  }
+  paint->end();
 
 }
 void QgsMapCanvas::render(){
@@ -94,5 +107,5 @@ void QgsMapCanvas::render(){
   paint->end();
 }
 void QgsMapCanvas::paintEvent(QPaintEvent *pe){
-  render();
+  render2();
 }
