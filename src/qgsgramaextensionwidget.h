@@ -57,6 +57,8 @@ class QgsGraMaExtensionWidget: public QScrollView
     QgsVectorLayer* mVectorLayer;
     /**Pointers to the widgets are stored so that they are accessible for other classes*/
     std::vector<QWidget*> mWidgetVector;
+    virtual void resizeEvent (QResizeEvent* e);
+
 protected slots:
      void selectMarker();
 

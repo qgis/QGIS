@@ -23,8 +23,10 @@
 #include "qgsdataprovider.h"
 #include "qgsgraduatedmarenderer.h"
 #include "qgsdlgvectorlayerproperties.h"
+#include "qgslegenditem.h"
 #include <qcombobox.h>
 #include <qlayout.h>
+#include <qpainter.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 
@@ -117,14 +119,94 @@ QgsGraMaDialog::~QgsGraMaDialog()
 
 void QgsGraMaDialog::apply()
 {
-    qWarning("entering QgsGraMaDialog::apply()");
     if (ext)
     {
-	qWarning("1");
 	if (mClassificationComboBox->currentText().isEmpty())  //don't do anything, it there is no classification field
         {
 	    return;
         }
+
+	//font tor the legend text
+	QFont f("times", 12, QFont::Normal);
+	QFontMetrics fm(f);
+	
+	//spaces
+	int topspace = 5;
+	int bottomspace = 5;
+	int leftspace = 10;       //space between left side of the pixmap and the text/graphics
+	int rightspace = 5;       //space between text/graphics and right side of the pixmap
+	int wordspace = 5;        //space between graphics/word
+	int markerheight;    //height of a marker (is different for every row)
+	int markerwidth;     //width of the broadest marker
+	int lowerupperwidth; // widht of the broadest lower-upper pair
+	int rowspace = 5;         //spaces between rows of symbols
+	int rowheight = fm.height();  //height of a text row
+	int classesheight; //height of the classes section
+	
+        //find out the width of the widest label and the widest lower - upper pair
+	QString widestlabel = "";
+	QString widestlu = "";
+	for (int i = 0; i < mNumberOfClassesSpinbox->value(); i++)
+        {
+	    QString string = ((QLineEdit *) (ext->getWidget(2, i)))->text();
+	    if (string.length() > widestlabel.length())
+            {
+		widestlabel = string;
+            }
+	    QString string2 = ((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text();
+	    if (string2.length() > widestlu.length())
+	    {
+		widestlu = string2;
+	    }
+        }
+	int labelwidth = fm.width(widestlabel);
+	//with of the values of the largest class
+	lowerupperwidth=fm.width(widestlu);
+
+	//find out the width of the broadest marker and the total height of the class section
+	markerwidth=0;
+	classesheight=rowspace*(mNumberOfClassesSpinbox->value()-1);
+	for (int i = 0; i < mNumberOfClassesSpinbox->value(); i++)
+        {
+	    QPicture p;
+	    p.load(((QPushButton*)(ext->getWidget(3,i)))->name(),"svg");
+	    int width=(int)(p.boundingRect().width()*((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
+	    if(width>markerwidth)
+	    {
+		markerwidth=width;
+		qWarning("markerwidth: "+QString::number(markerwidth));
+	    }
+	    int height= (int)(p.boundingRect().height()*((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
+	    height = (height>rowheight) ? height : rowheight;
+	    qWarning("height: " + QString::number(height));
+	    classesheight+=height;
+	}
+
+	//create the pixmap for the render item
+	QPixmap *pix = mVectorLayer->legendPixmap();
+	QString name;
+	if (mVectorLayer->propertiesDialog())
+        {
+	    name = mVectorLayer->propertiesDialog()->displayName();
+	} 
+	else
+        {
+	    name = "";
+        }
+
+	//query the name and the maximum upper value to estimate the necessary width of the pixmap
+	int pixwidth = leftspace + rightspace + markerwidth + 2 * wordspace + labelwidth + lowerupperwidth; //width of the pixmap with symbol and values
+	//consider 240 pixel for labels
+	int namewidth = leftspace + fm.width(name) + rightspace;
+	int width = (pixwidth > namewidth) ? pixwidth : namewidth;
+	pix->resize(width, topspace + 2 * fm.height() + bottomspace + classesheight);
+	pix->fill();
+
+	QPainter p(pix);
+	p.setFont(f);
+	//draw the layer name and the name of the classification field into the pixmap
+	p.drawText(leftspace, topspace + fm.height(), name);
+	p.drawText(leftspace, topspace + 2 * fm.height(), mClassificationComboBox->currentText());
 	
 	QgsGraduatedMaRenderer *renderer = dynamic_cast < QgsGraduatedMaRenderer * >(mVectorLayer->renderer());
 	
@@ -135,17 +217,15 @@ void QgsGraMaDialog::apply()
         }
 
 	renderer->removeItems();
-	qWarning("2");
+      
+	int offset = topspace + 2 * fm.height();
 	for (int i = 0; i < mNumberOfClassesSpinbox->value(); i++)
         {
 	    QgsMarkerSymbol* sy = new QgsMarkerSymbol();
-	    qWarning("2.1");
 	    sy->setPicture(((QPushButton*)(ext->getWidget(3,i)))->name());
-	    qWarning("2.2");
 	    qWarning("SVG file: " + QString::fromAscii(((QPushButton*)(ext->getWidget(3,i)))->name()));
-	    qWarning("2.3");
 	    sy->setScaleFactor(((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
-	    qWarning("2.4");
+	    
 	    QString lower_bound = ((QLineEdit *) (ext->getWidget(0, i)))->text();
 	    QString upper_bound = ((QLineEdit *) (ext->getWidget(1, i)))->text();
 	    QString label = ((QLineEdit *) (ext->getWidget(2, i)))->text();
@@ -169,7 +249,7 @@ void QgsGraMaDialog::apply()
 		    ubcontainsletter = true;
                 }
             }
-	    qWarning("3");
+	    
 	    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
             {
 		QgsRangeRenderItem *item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, label);
@@ -177,15 +257,35 @@ void QgsGraMaDialog::apply()
 		qWarning("upper_bound: " +upper_bound);
 		qWarning("label: " +label);
 		renderer->addItem(item);
-		//to do: add the symbol to the picture
+		
+                //add the symbol to the picture
+		QString legendstring = lower_bound + " - " + upper_bound;
+		//todo: paint the picture
+		QPicture pic;
+		pic.load(((QPushButton*)(ext->getWidget(3,i)))->name(),"svg");
+		double scalefactor=((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble();
+		int actrowheight=(int)(pic.boundingRect().height()*scalefactor);
+		actrowheight= (actrowheight > rowheight) ? actrowheight : rowheight;
+		qWarning("offset: "+QString::number(offset));
+		qWarning("row: "+QString::number(i));
+		qWarning("scalefactor: "+QString::number(scalefactor));
+		qWarning("actrowheight: "+QString::number(actrowheight));
+		qWarning("rowheight: " +QString::number(rowheight));
+		p.scale(scalefactor,scalefactor);
+		p.drawPicture((int)(leftspace/scalefactor),(int)(offset/scalefactor),pic);
+		p.resetXForm();
+		p.setPen(Qt::black);
+		p.drawText(leftspace+markerwidth + wordspace, offset + actrowheight, legendstring);
+		p.drawText(leftspace+markerwidth+2*wordspace+lowerupperwidth, offset + actrowheight, label);
+		offset+=(rowspace+actrowheight);
 	    }
 	}
-	qWarning("4");
+	
 	renderer->setClassificationField(ext->classfield());
 
 	if (mVectorLayer->legendItem())
         {
-	    //mVectorLayer->legendItem()->setPixmap(0, (*pix));
+	    mVectorLayer->legendItem()->setPixmap(0, (*pix));
         }
 	
 
