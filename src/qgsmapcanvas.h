@@ -31,6 +31,7 @@ class QgsMapLayer;
 class QgsMapLayerInterface;
 class QMouseEvent;
 class QgsLegend;
+class QgsLegendView;
 class QColor;
 class QgsPoint;
 
@@ -89,6 +90,8 @@ public slots:
 	void render2();
 	//! This slot is connected to the visibility change of one or more layers
 	void layerStateChange();
+	//! sets z order based on order of layers in the legend
+	void setZOrderFromLegend(QgsLegendView *lv);
  
  signals:
  	void xyCoordinates(QgsPoint &p);

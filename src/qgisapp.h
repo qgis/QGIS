@@ -25,6 +25,7 @@ class QStringList;
 class QScrollView;
 class QgsPoint;
 class QgsLegend;
+class QgsLegendView;
 class QVBox;
 class QCursor;
 class QListView;
@@ -88,8 +89,8 @@ class QgisApp:public QgisAppBase
 	//! activates the selection tool
 	void select();
 
-	private slots:
-//! Slot to show the map coordinate position of the mouse cursor
+	private slots:				
+		//! Slot to show the map coordinate position of the mouse cursor
 	void showMouseCoordinate(QgsPoint &);
 	//! Show layer properties for the selected layer
 	void layerProperties(QListViewItem *);
@@ -132,7 +133,7 @@ class QgisApp:public QgisAppBase
 //! Popup menu
 	  QPopupMenu * popMenu;
 //! Legend list view control
-	QListView *legendView;
+	QgsLegendView *legendView;
 	//! Map canvas
 	QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map

@@ -1,6 +1,7 @@
 /***************************************************************************
                           qgisapp.cpp  -  description
                              -------------------
+							 
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc.com
@@ -58,6 +59,7 @@
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
+#include "qgslegendview.h"
 #include "qgsprojectio.h"
 #ifdef POSTGRESQL
 #include <libpq++.h>
@@ -159,7 +161,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
 	QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
 	QSplitter *split = new QSplitter(frameMain);
-	legendView = new QListView(split);
+	legendView = new QgsLegendView(split);
 	legendView->addColumn("Layers");
 	legendView->setSorting(-1);
 
@@ -184,6 +186,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
 	connect(legendView, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
 			this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
+	connect(legendView, SIGNAL(zOrderChanged(QgsLegendView *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegendView *)));
 
 	// create the layer popup menu
 	popMenu = new QPopupMenu();
