@@ -1345,63 +1345,58 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         QgsVectorLayer* vlayer=
           dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
 
-        QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-        emit xyClickCoordinates(idPoint);
-        // grass editing doesn't use any of the code below
-        // XXX This is kind of a mess since we are testing for a
-        //     specific provider type
-        if(vlayer->providerType().lower() != "grass")
+        if(vlayer)
         {
 
+	    QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+	    emit xyClickCoordinates(idPoint);
+	    
+	    //only do the rest for provider with feature addition support
+	    //note that for the grass provider, this will return false since
+	    //grass provider has its own mechanism of feature addition
+	    if(vlayer->getDataProvider()->supportsFeatureAddition())
+	    {
+		if(!vlayer->isEditable() )
+		{
+		    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+		    break;
+		}
 
-          if(vlayer)
-          {
-            if(!vlayer->isEditable() )
-            {
-              QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-              break;
-            }
+		//snap point to points within the vector layer snapping tolerance
+		vlayer->snapPoint(idPoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
 
-            //snap point to points within the vector layer snapping tolerance
-            vlayer->snapPoint(idPoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
+		QgsFeature* f = new QgsFeature(0,"WKBPoint");
+		int size=5+2*sizeof(double);
+		unsigned char *wkb = new unsigned char[size];
+		int wkbtype=QGis::WKBPoint;
+		double x=idPoint.x();
+		double y=idPoint.y();
+		memcpy(&wkb[1],&wkbtype, sizeof(int));
+		memcpy(&wkb[5], &x, sizeof(double));
+		memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+		f->setGeometry(&wkb[0],size);
 
-            QgsFeature* f = new QgsFeature(0,"WKBPoint");
-            int size=5+2*sizeof(double);
-            unsigned char *wkb = new unsigned char[size];
-            int wkbtype=QGis::WKBPoint;
-            double x=idPoint.x();
-            double y=idPoint.y();
-            memcpy(&wkb[1],&wkbtype, sizeof(int));
-            memcpy(&wkb[5], &x, sizeof(double));
-            memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
-            f->setGeometry(&wkb[0],size);
+		//add the fields to the QgsFeature
+		std::vector<QgsField> fields=vlayer->fields();
+		for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
+		{
+		    f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
+		}
 
-            //add the fields to the QgsFeature
-            std::vector<QgsField> fields=vlayer->fields();
-            for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
-            {
-              f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
-            }
+		//show the dialog to enter attribute values
+		f->attributeDialog();
 
-            //show the dialog to enter attribute values
-            f->attributeDialog();
+		vlayer->addFeature(f);
+		refresh();
+	    }
+	}
+	else
+	{
+	    QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+	}
 
-            vlayer->addFeature(f);
-            refresh();
-          }
-          else
-          {
-            QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
-          }
-
-          //add the feature to the active layer
-#ifdef QGISDEBUG
-          std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
-#endif
-
-        }
-      }
       break;
+      }
 
     case QGis::CaptureLine:
     case QGis::CapturePolygon:
@@ -1419,6 +1414,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       else
       {
         QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+	return;
       }
 
       QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
