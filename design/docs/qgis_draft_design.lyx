@@ -438,7 +438,7 @@ Install plugin
 Find feature
 \layout Itemize
 
-Identify feature
+dislayFeatureAttributes
 \layout Itemize
 
 Get help
@@ -1047,18 +1047,105 @@ Description of Steps:
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
-\layout Enumerate
+\layout Standard
 
-User decides to view the features and other info
-\layout Enumerate
 
-User sees a list of available items in the data set
-\layout Enumerate
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0in">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-User chooses the desired item in the browse set
-\layout Enumerate
+\layout Standard
 
-The details about the item are displayed
+User
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Change View
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Redisplay View
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+<<extension point>>
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+[continue until done]
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \end_inset 
 </cell>
 </row>
@@ -1256,18 +1343,105 @@ Description of Steps:
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
-\layout Enumerate
+\layout Standard
 
-User decides to load a new plugin
-\layout Enumerate
 
-User inspects all the installed plugins
-\layout Enumerate
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0in">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-User selects a plugin
-\layout Enumerate
+\layout Standard
 
-A plugin is loaded and new functionality added
+User
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Ask for list of available plugins
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Shows plug-ins
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Selects one
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System loads that plug-in
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \end_inset 
 </cell>
 </row>
@@ -1464,15 +1638,71 @@ Description of Steps:
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
-\layout Enumerate
+\layout Standard
 
-User decides to find a feature in a loaded data set
-\layout Enumerate
 
-User submits a search query that would identify somehow the feature
-\layout Enumerate
+\begin_inset  Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0in">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-A feature is displayed if found or a message notifying that it was not found
+\layout Standard
+
+User
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select feature
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Show feature
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \end_inset 
 </cell>
 </row>
@@ -1485,7 +1715,77 @@ A feature is displayed if found or a message notifying that it was not found
 
 \layout Subsubsection
 
+displayFeatureAttributes
+\layout Comment
+
+This was 
+\begin_inset Quotes eld
+\end_inset 
+
 Identify Feature
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ Feature information in inplicitly shown after it has been selected, so
+ we don't need a separate use case for that.
+ The hint for effecting this change was in the 
+\begin_inset Quotes eld
+\end_inset 
+
+goal in context
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ Think 
+\begin_inset Quotes eld
+\end_inset 
+
+findFeature
+\begin_inset Quotes erd
+\end_inset 
+
+ as highlighting a feature on the map and 
+\begin_inset Quotes eld
+\end_inset 
+
+displayFeatureAttributes
+\begin_inset Quotes erd
+\end_inset 
+
+ as giving the detailed attribute values hanging off it.
+\layout Comment
+
+This can actually get a bit complicated as we still need to work out how
+ attributes are rendered.
+ Not only are there myriad attribute types (e.g., ints, floats, strings, dates,
+ raster images, etc.), but each type might have more than one means of rendering.
+ We might take a page from vtk and have a variety of 
+\begin_inset Quotes eld
+\end_inset 
+
+filters
+\begin_inset Quotes erd
+\end_inset 
+
+ and 
+\begin_inset Quotes eld
+\end_inset 
+
+renderers
+\begin_inset Quotes erd
+\end_inset 
+
+ that can be plugging together like tinker toys.
+ Think STL iterators and algorithms where certain algorithms and container
+ types only work with certain iterators, thus insuring correctness and maximum
+ flexibility and scalability.
+ So a 2D renderer will accept vector and image data and render it as a map-like
+ entity; 3D data could be rendered as a grayscale or color shade depending
+ on an intervening filter a la vtk.
+ A 3D renderer would accept the same kind of data, but drape vector and
+ raster data over a tessellated plane corresponding to elevation data.
 \layout Standard
 
 
@@ -1510,7 +1810,7 @@ Use Case:
 
 \layout Standard
 \added_space_top smallskip 
-Identify Feature
+displayFeatureAttributes
 \end_inset 
 </cell>
 </row>
@@ -1668,18 +1968,117 @@ Description of Steps:
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
-\layout Enumerate
+\layout Standard
 
 User decides to view attributes of a particular feature
-\layout Enumerate
+\layout Standard
 
 User chooses a feature on the map
-\layout Enumerate
+\layout Standard
 
 User selects a feature
-\layout Enumerate
+\layout Standard
 
 Attributes are displayed
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0in">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+<select feature>
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+feature shown to be selected
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+ask for attributes
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+display attributes attached to feature
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \end_inset 
 </cell>
 </row>
@@ -2519,6 +2918,20 @@ Project is restored
 \layout Subsubsection
 
 Navigate
+\layout Comment
+
+In my design document I had this broken down into pan and zoom use cases.
+ I can see where these still might be necessary for completeness; they could
+ then be associated with this use case as 
+\begin_inset Quotes eld
+\end_inset 
+
+extensions
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ What do you think?
 \layout Standard
 
 
