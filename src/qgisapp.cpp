@@ -2657,7 +2657,7 @@ void QgisApp::zoomToLayerExtent()
 
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 {
-    if (lvi)
+    if (!mMapCanvas->isDrawing()&&lvi)
     {
         // get the context menu from the layer and display it
         QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
