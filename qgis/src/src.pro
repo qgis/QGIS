@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.49 2004/09/08 23:38:47 timlinux Exp 
+# src.pro,v 1.50 2004/09/11 01:55:18 mhugent Exp 
 ######################################################################
 #
 # For a WIN32 release build do the following:
@@ -56,7 +56,6 @@ HEADERS += qgis.h \
            qgsgramadialog.h \
            qgsgramaextensionwidget.h \
            qgsgrasydialog.h \
-           qgsgrasyextensionwidget.h \
            qgshelpviewer.h \
            qgshelpviewerbase.ui.h \
            qgsidentifyresults.h \
@@ -161,7 +160,6 @@ SOURCES += main.cpp \
            qgsgramadialog.cpp \
            qgsgramaextensionwidget.cpp \
            qgsgrasydialog.cpp \
-           qgsgrasyextensionwidget.cpp \
            qgshelpviewer.cpp \
            qgsidentifyresults.cpp \
            qgslegend.cpp \
