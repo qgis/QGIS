@@ -24,4 +24,10 @@ QgsMapCanvas::~QgsMapCanvas(){
 }
 void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
   layers[lyr->name()] = *lyr;
+  // set zpos to something...
+  //lyr->zpos = 0;
+}
+void QgsMapCanvas::render(){
+  // render all layers in the stack, starting at the base
+
 }
