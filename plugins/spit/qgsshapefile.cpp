@@ -23,10 +23,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-extern "C"
-{
-  #include <libpq-fe.h>
-}
 
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
@@ -125,6 +121,8 @@ QString QgsShapeFile::getTable(){
 }
 
 void QgsShapeFile::setTable(QString new_table){
+  new_table.replace("\'","\\'");
+  new_table.replace("\\","\\\\");
   table_name = new_table;
 }
 
@@ -141,14 +139,17 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
   QString message;
 
   QString query = "CREATE TABLE "+table_name+"(gid int4, ";
-  for(int n=0; n<column_names.size(); n++){
+  for(int n=0; n<column_names.size() && result; n++){
+    if(!column_names[n][0].isLetter())
+      result = false;
     query += column_names[n].lower();
     query += " ";
     query += column_types[n];
     if(n < column_names.size() -1)
       query += ", ";
   }
-  query += ")";  
+  query += " PRIMARY KEY (gid))";
+  
   PGresult *res = PQexec(conn, (const char *)query);
   message = PQresultErrorMessage(res);  
   if(message != ""){
@@ -192,8 +193,9 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
           
           // escape single quotes to prevent sql syntax error (no effect for numerics)
           QString val = feat->GetFieldAsString(n);
-          val.replace("\'","\\\'");
-          val.replace("\'","\\\'");
+          val.replace("\'","\\'");
+          val.replace("\\","\\\\");
+          
           // add escaped value to the query 
           query += val;
           query += QString(quotes + ", ");

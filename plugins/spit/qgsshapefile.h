@@ -24,15 +24,15 @@
 #include <qobject.h>
 #include <ogrsf_frmts.h>
 #include <qprogressdialog.h>
+
+class OGRLayer;
+class OGRDataSource;
 extern "C"
 {
   #include <libpq-fe.h>
 }
 
 
-class OGRLayer;
-class OGRDataSource;
- 
 class QgsShapeFile : public QObject
 {
   Q_OBJECT
@@ -42,7 +42,7 @@ class QgsShapeFile : public QObject
   ~QgsShapeFile();
   int getFeatureCount();
   QString getFeatureClass();
-  bool insertLayer(QString dbname, QString geom_col, QString srid, struct pg_conn* conn, QProgressDialog * pro, bool &fin);
+  bool insertLayer(QString dbname, QString geom_col, QString srid, PGconn * conn, QProgressDialog * pro, bool &fin);
     
   bool is_valid();
   QString getName();
