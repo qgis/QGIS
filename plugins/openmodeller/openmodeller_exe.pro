@@ -10,18 +10,17 @@ TARGET = omgui
 #inc path for standalone app:
 INCLUDEPATH += . %GDAL%\include 
 
-
 #libs for standalone mode
-LIBS += $(GDAL)\lib\gdal_i.lib \
-       libopenmodeller_static.lib \
-       libexpatMT.lib \
-       libcmt.lib \
-       libcpmt.lib
+LIBS += $(GDAL)\lib\gdal_i.lib 
+LIBS += libopenmodeller.lib 
+LIBS += libexpatMT.lib 
 
 # config for standalone mode
-CONFIG += qt rtti thread release 
-#debug console
+#CONFIG += qt rtti thread release
+CONFIG += qt rtti thread debug console
 
+DEFINES+=_WINDOWS
+DEFINES+=CORE_DLL_IMPORT 
 
 #used by both plugin and exe
 HEADERS += algorithm_factory.hh \
@@ -51,4 +50,5 @@ SOURCES += main.cpp
 SOURCES += list.cpp \
            occurrences_file.cpp \
            openmodellergui.cpp \
+           file_parser.cpp \
            request_file.cpp 
