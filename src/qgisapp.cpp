@@ -266,11 +266,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   //
   QSettings settings;
   bool myHideSplashFlag = false;
-  if (settings.readEntry("/qgis/hideSplash")=="true") { myHideSplashFlag=true; }
+  myHideSplashFlag = settings.readBoolEntry("/qgis/hideSplash");
+
   if (!myHideSplashFlag)
   {
     gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
     gSplashScreen->setStatus(tr("Loading QGIS..."));
+    qApp->processEvents();
   }
 
   // register all GDAL and OGR plug-ins
