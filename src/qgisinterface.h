@@ -24,6 +24,7 @@
 class QgisApp;
 class QgsMapLayer;
 class QPopupMenu;
+class QgsMapCanvas;
 
 /** 
  * \class QgisInterface
@@ -76,6 +77,8 @@ class QgisInterface : public QWidget{
      * Get the menu info mapped by menu id (key is menu id, value is name)
      */
     virtual std::map<int,QString> menuMapById()=0;
+    /** Return a pointer to the map canvas used by qgisapp */
+    virtual QgsMapCanvas * getMapCanvas()=0;
 
   private:
     //QgisApp *qgis;
