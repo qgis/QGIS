@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.186 2004/09/13 19:34:05 larsl Exp
+dnl configure.in,v 1.187 2004/09/14 07:08:45 larsl Exp
 
 
 
@@ -26,7 +26,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=4
 MICRO_VERSION=0
-EXTRA_VERSION=31
+EXTRA_VERSION=32
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -224,6 +224,7 @@ AC_CONFIG_FILES([
   src/svg/Makefile
   src/svg/biology/Makefile
   src/svg/geometric/Makefile
+  src/svg/gpsicons/Makefile
   src/svg/icon/Makefile
   src/svg/north_arrows/Makefile
   src/svg/symbol/Makefile
