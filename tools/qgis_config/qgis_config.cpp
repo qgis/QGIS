@@ -33,12 +33,17 @@ void usage()
     "Usage:\n " <<
     "  qgis_config OPTION...\n\n" <<
     "Options:\n" <<
+    "   --prefix              print the prefix used by qgis\n" <<
     "   --bindir              print destination of executable(s)\n" <<
     "   --cflags              print the compiler flags that are necessary to\n" <<
     "                         compile a plug-inshow location of C++ header files\n" << 
     "   --libs                print the linker flags that are necessary to link a\n" <<
     "                         plug-in\n" <<
     "   --plugindir           print the path where the plugins are installed\n" <<
+    "   --major_version       print major version of qgis\n" <<
+    "   --minor_version       print minor version of qgis\n" <<
+    "   --micro_version       print micro version of qgis\n" <<
+    "   --extra_version       print extra version of qgis\n" <<
     "   --help                show this help, then exit\n"
     << std::endl; 
 }
@@ -59,10 +64,14 @@ int main(int argc, char **argv)
     /* These options don't set a flag.
      *  We distinguish them by their indices. */
     {"prefix", no_argument, 0, 'p'},
-    {"bindir",     no_argument, 0, 'b'},
-    {"cflags",  no_argument, 0, 'c'},
-    {"libs",  no_argument, 0, 'l'},
-    {"plugindir",  no_argument, 0, 'w'},
+    {"bindir", no_argument, 0, 'b'},
+    {"cflags", no_argument, 0, 'c'},
+    {"libs", no_argument, 0, 'l'},
+    {"plugindir", no_argument, 0, 'w'},
+    {"major_version", no_argument, 0, 'v1'},
+    {"minor_version", no_argument, 0, 'v2'},
+    {"micro_version", no_argument, 0, 'v3'},
+    {"extra_version", no_argument, 0, 'v4'},
     {0, 0, 0, 0}
   };
   // If no argument is given, show hint
@@ -107,6 +116,22 @@ int main(int argc, char **argv)
 
         case 'w':
           std::cout << PLUGIN_DIR << std::endl; 
+          break;
+
+        case 'v1':
+          std::cout << MAJOR_VERSION << std::endl; 
+          break;
+
+        case 'v2':
+          std::cout << MINOR_VERSION << std::endl; 
+          break;
+
+        case 'v3':
+          std::cout << MICRO_VERSION << std::endl; 
+          break;
+
+        case 'v4':
+          std::cout << EXTRA_VERSION << std::endl; 
           break;
 
         case 'h':
