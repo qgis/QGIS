@@ -232,7 +232,7 @@ bool QgsFeature::intersects(QgsRect* r)
 
     geos::GeometryFactory *gf = new geos::GeometryFactory();
     geos::WKTReader *wktReader = new geos::WKTReader(gf);
-    geos::Geometry *geosGeom = wktReader->read(wellKnownText());
+    geos::Geometry *geosGeom = wktReader->read( qstrdup(wellKnownText()) );
 
     //write the selection rectangle to wkt by hand
     QString rectwkt="POLYGON((";
@@ -257,7 +257,7 @@ bool QgsFeature::intersects(QgsRect* r)
     rectwkt+=QString::number(r->yMin(),'f',3);
     rectwkt+="))";
     
-    geos::Geometry *geosRect = wktReader->read(rectwkt);
+    geos::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
     if(geosGeom->intersects(geosRect))
     {
 	returnval=true;
