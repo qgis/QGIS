@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.89 2004/05/21 11:25:39 timlinux Exp
+ChangeLog,v 1.90 2004/05/25 09:40:33 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-25 [larsl] 0.2.0devel32
+** Resaved plugins/copyright_label/pluginguibase.ui with designer 3.1 to fix
+   const problem
 
 2004-05-20 [ts] 0.2.0devel31
 ** First working version for gui pyramid manager (implemented as tab in raster
