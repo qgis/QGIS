@@ -1,6 +1,6 @@
-TODO,v 1.13 2004/02/04 19:40:47 stevehalasz Exp
+TODO,v 1.14 2004/02/06 06:55:14 timlinux Exp
 TODO List for getting to version 0.1 (in no order of importance)
- 1. Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
+ 1. [Raster Done TS] Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
     needing attention are customized raster settings and symbology for vector
     layers.
  2. Plugin manager needs to track which plugins are already loaded and allow
