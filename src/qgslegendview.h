@@ -20,9 +20,7 @@ public:
 	QgsLegendView( QWidget *parent=0, const char *name=0 );
 	
 protected:
-	// override these to provide drag-n-drop
-	void contentsDragEnterEvent( QDragEnterEvent *e );
-	void contentsDropEvent( QDropEvent *e );
+	// override these to handle layer order manipulation
 	void contentsMouseMoveEvent( QMouseEvent *e );
 	void contentsMousePressEvent( QMouseEvent *e );
 	void contentsMouseReleaseEvent( QMouseEvent *e );
