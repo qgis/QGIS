@@ -16,50 +16,50 @@
 #include <qstring.h>
 #include "qgsfield.h"
 
-QgsField::QgsField(QString nam, QString typ, int len, int prec):name(nam), type(typ), length(len), precision(prec)
+QgsField::QgsField(QString nam, QString typ, int len, int prec):mName(nam), mType(typ), mLength(len), mPrecision(prec)
 {
   // lower case the field name since some stores use upper case 
   // (eg. shapefiles)
-  name = name.lower();
+  mName = mName.lower();
 }
 
 QgsField::~QgsField()
 {
 }
-QString QgsField::getName()
+QString QgsField::name()
 {
-  return name;
+  return mName;
 }
 
-QString QgsField::getType()
+QString QgsField::type()
 {
-  return type;
+  return mType;
 }
 
-int QgsField::getLength()
+int QgsField::length()
 {
-  return length;
+  return mLength;
 }
 
-int QgsField::getPrecision()
+int QgsField::precision()
 {
-  return precision;
+  return mPrecision;
 }
 
 void QgsField::setName(QString nam)
 {
-  name = nam;
+  mName = nam;
 }
 
 void QgsField::setType(QString typ)
 {
-  type = typ;
+  mType = typ;
 }
 void QgsField::setLength(int len)
 {
-  length = len;
+  mLength = len;
 }
 void QgsField::setPrecision(int prec)
 {
-  precision = prec;
+  mPrecision = prec;
 }
