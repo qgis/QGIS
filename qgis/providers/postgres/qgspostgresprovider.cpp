@@ -258,11 +258,11 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     }
     //create a boolean vector and set every entry to false
 
-/* 	if (valid) {
-		selected = new std::vector < bool > (ogrLayer->GetFeatureCount(), false);
-	} else {
-		selected = 0;
-	} */
+/*  if (valid) {
+    selected = new std::vector < bool > (ogrLayer->GetFeatureCount(), false);
+  } else {
+    selected = 0;
+  } */
 //  tabledisplay=0;
     //draw the selected features in yellow
 //  selectionColor.setRgb(255,255,0);
@@ -277,9 +277,9 @@ QgsPostgresProvider::~QgsPostgresProvider()
 //TODO - we may not need this function - consider removing it from
 //       the dataprovider.h interface
 /**
-	* Get the first feature resutling from a select operation
-	* @return QgsFeature
-	*/
+  * Get the first feature resutling from a select operation
+  * @return QgsFeature
+  */
   //TODO - this function is a stub and always returns 0
 QgsFeature *QgsPostgresProvider::getFirstFeature(bool fetchAttributes)
 {
@@ -296,11 +296,16 @@ QgsFeature *QgsPostgresProvider::getFirstFeature(bool fetchAttributes)
     return f;
 }
 
+bool QgsPostgresProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
+{
+  return true;
+}
+
     /**
-	* Get the next feature resutling from a select operation
+  * Get the next feature resutling from a select operation
     * Return 0 if there are no features in the selection set
-	* @return QgsFeature
-	*/
+  * @return QgsFeature
+  */
 QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 {
 
@@ -379,10 +384,10 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 }
 
     /**
-	* Select features based on a bounding rectangle. Features can be retrieved
-	* with calls to getFirstFeature and getNextFeature.
-	* @param mbr QgsRect containing the extent to use in selecting features
-	*/
+  * Select features based on a bounding rectangle. Features can be retrieved
+  * with calls to getFirstFeature and getNextFeature.
+  * @param mbr QgsRect containing the extent to use in selecting features
+  */
 void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 {
     // spatial query to select features
@@ -419,30 +424,30 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 }
 
     /**
-		* Set the data source specification. This may be a path or database
-	* connection string
-	* @uri data source specification
-	*/
+    * Set the data source specification. This may be a path or database
+  * connection string
+  * @uri data source specification
+  */
 void QgsPostgresProvider::setDataSourceUri(QString uri)
 {
     dataSourceUri = uri;
 }
 
         /**
-	* Get the data source specification. This may be a path or database
-	* connection string
-	* @return data source specification
-	*/
+  * Get the data source specification. This may be a path or database
+  * connection string
+  * @return data source specification
+  */
 QString QgsPostgresProvider::getDataSourceUri()
 {
     return dataSourceUri;
 }
 
     /**
-	* Identify features within the search radius specified by rect
-	* @param rect Bounding rectangle of search radius
-	* @return std::vector containing QgsFeature objects that intersect rect
-	*/
+  * Identify features within the search radius specified by rect
+  * @param rect Bounding rectangle of search radius
+  * @return std::vector containing QgsFeature objects that intersect rect
+  */
 std::vector<QgsFeature>& QgsPostgresProvider::identify(QgsRect * rect)
 {
     features.clear();
@@ -453,13 +458,13 @@ std::vector<QgsFeature>& QgsPostgresProvider::identify(QgsRect * rect)
 }
 
 /* unsigned char * QgsPostgresProvider::getGeometryPointer(OGRFeature *fet){
-//	OGRGeometry *geom = fet->GetGeometryRef();
-	unsigned char *gPtr=0;
-		// get the wkb representation
-	 	gPtr = new unsigned char[geom->WkbSize()];
+//  OGRGeometry *geom = fet->GetGeometryRef();
+  unsigned char *gPtr=0;
+    // get the wkb representation
+    gPtr = new unsigned char[geom->WkbSize()];
       
-		geom->exportToWkb((OGRwkbByteOrder) endian(), gPtr);
-	return gPtr;
+    geom->exportToWkb((OGRwkbByteOrder) endian(), gPtr);
+  return gPtr;
 
 } */
 
@@ -572,14 +577,14 @@ void QgsPostgresProvider::reset()
 } */
 QString QgsPostgresProvider::endianString()
 {
-	char *chkEndian = new char[4];
-	memset(chkEndian, '\0', 4);
-	chkEndian[0] = 0xE8;
-	int *ce = (int *) chkEndian;
-	if (232 == *ce)
-		return QString("NDR");
-	else
-		return QString("XDR");
+  char *chkEndian = new char[4];
+  memset(chkEndian, '\0', 4);
+  chkEndian[0] = 0xE8;
+  int *ce = (int *) chkEndian;
+  if (232 == *ce)
+    return QString("NDR");
+  else
+    return QString("XDR");
 }
 QString QgsPostgresProvider::getPrimaryKey(){
   QString sql = "select oid from pg_class where relname = '" + tableName + "'";
@@ -720,13 +725,13 @@ extern "C" QgsPostgresProvider * classFactory(const char *uri)
 /** Required key function (used to map the plugin to a data store type)
 */
 extern "C" QString providerKey(){
-	return QString("postgres");
+  return QString("postgres");
 }
 /**
 * Required description function 
 */
 extern "C" QString description(){
-	return QString("PostgreSQL/PostGIS data provider");
+  return QString("PostgreSQL/PostGIS data provider");
 } 
 /**
 * Required isProvider function. Used to determine if this shared library
