@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.38 2004/03/26 13:30:49 jobi Exp
+ChangeLog,v 1.39 2004/03/26 13:48:56 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-26 [jobi] 0.1.0devel13
+** forgot to remove tempfile
 
 2004-03-26 [jobi] 0.1.0devel12
 Removed Newline after statusline
