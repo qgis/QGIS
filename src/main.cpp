@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     QString path = argv[i];
       // try to add all these layers - any unsupported file types will
       // be rejected automatically
-      // They funky bool ok is so this can be debugged a bit easier...
+      // The funky bool ok is so this can be debugged a bit easier...
       
       // First try and load it as a project file
       if(!qgis->addProject(path)){
