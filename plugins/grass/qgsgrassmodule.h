@@ -20,15 +20,18 @@ class QCloseEvent;
 class QString;
 class QStringList;
 class QGroupBox;
+class QVGroupBox;
 class QFrame;
 class QListView;
 class QDomNode;
 class QDomElement;
 class QComboBox;
 class QLineEdit;
+class QPixmap;
 
 #include <vector>
 #include <qgroupbox.h>
+#include <qvgroupbox.h>
 #include <qcheckbox.h>
 #include <qprocess.h>
 
@@ -59,6 +62,11 @@ public:
 
     //! Returns module label for module description path
     static QString label ( QString path );
+
+    /** \brief Returns pixmap representing the module 
+     * \param path module path without .qgm extension
+     */
+    static QPixmap pixmap ( QString path, int height );
 
     //! Find element in GRASS module description by key, if not found, returned element is null
     static QDomNode nodeByKey ( QDomElement gDocElem, QString key );
@@ -129,11 +137,21 @@ public:
     /*! \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
+     * \param gnode option node in GRASS module XML description file
      */
-    QgsGrassModuleItem ();
+    QgsGrassModuleItem ( QgsGrassModule *module, QString key, 
+	                 QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode );
 
     //! Destructor
     virtual ~QgsGrassModuleItem();
+
+    //! Is the item hidden
+    bool hidden();
+
+    //! Retruns list of options which will be passed to module
+    virtual QStringList options(); 
+
+protected:
 
     //! Pointer to GRASS module
     QgsGrassModule *mModule;
@@ -147,11 +165,8 @@ public:
     //! Hidden option or displayed
     bool mHidden;
 
-    //! Is the item hidden
-    bool hidden();
-
-    //! Retruns list of options which will be passed to module
-    virtual QStringList options(); 
+    //! Predefined answer from config
+    QString mAnswer;
 private:
 
 };
@@ -159,7 +174,7 @@ private:
 /*! \class QgsGrassModuleOption
  *  \brief  GRASS option 
  */
-class QgsGrassModuleOption: public QFrame, public QgsGrassModuleItem
+class QgsGrassModuleOption: public QVGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -168,15 +183,15 @@ public:
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleOption ( QgsGrassModule *module, 
-	                  QDomElement &qdesc, QDomElement &gdesc,
+    QgsGrassModuleOption ( QgsGrassModule *module, QString key,
+	                  QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                           QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleOption();
 
     //! Control option
-    enum ControlType { LineEdit, ComboBox, SpinBox, CheckBox };
+    enum ControlType { LineEdit, ComboBox, SpinBox, CheckBoxes };
     
     //! Retruns list of options which will be passed to module
     virtual QStringList options(); 
@@ -188,12 +203,15 @@ private:
     
     //! Combobox
     QComboBox *mComboBox;
+
+    //! Vector of values for combobox
+    std::vector<QString> mValues;
+
+    //! Check boxes
+    std::vector<QCheckBox*> mCheckBoxes;
     
     //! Combobox
     QLineEdit *mLineEdit;
-
-    //! Predefined answer from config
-    QString mAnswer;
 };
 
 /*! \class QgsGrassModuleFlag
@@ -208,8 +226,8 @@ public:
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleFlag ( QgsGrassModule *module, 
-	                  QDomElement &qdesc, QDomElement &gdesc,
+    QgsGrassModuleFlag ( QgsGrassModule *module, QString key,
+	                  QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                           QWidget * parent = 0 );
 
     //! Destructor
@@ -217,14 +235,12 @@ public:
     //! Retruns list of options which will be passed to module
     virtual QStringList options(); 
 private:
-    //! Predefined answer from config
-    bool mAnswer;
 };
 
 /*! \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
-class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleInput: public QVGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -233,8 +249,8 @@ public:
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleInput ( QgsGrassModule *module, 
-	                  QDomElement &qdesc, QDomElement &gdesc,
+    QgsGrassModuleInput ( QgsGrassModule *module, QString key,
+	                  QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                           QWidget * parent = 0 );
 
     //! Destructor
@@ -258,5 +274,8 @@ private:
 
     //! Vector of map@mapset in the combobox
     std::vector<QString> mMaps;
+
+    //! The imput map will be updated -> must be from current mapset
+    bool mUpdate;
 };
 #endif // QGSGRASSMODULE_H
