@@ -234,9 +234,9 @@ public slots:
     bool isUserInteractionAllowed();
 
     //! Whether to suppress rendering or not
-    void setRenderSuppresionFlag(bool theFlag) {mRenderSuppresionFlag = theFlag;};
+    void setRenderFlag(bool theFlag);
     //! State of render suppression flag
-    bool renderSuppresionFlag() {return mRenderSuppresionFlag;};
+    bool renderFlag() {return mRenderFlag;};
 
     /** possibly add or remove the given layer from the overview map canvas
 
@@ -355,7 +355,7 @@ private:
     bool mUserInteractionAllowed;
 
     //! determines whether user has requested to suppress rendering
-    bool mRenderSuppresionFlag;
+    bool mRenderFlag;
 
   /** debugging member
       invoked when a connect() is made to this object

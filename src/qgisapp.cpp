@@ -395,13 +395,15 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
   mCoordsLabel = new QLabel(QString("Coordinates:"), this);
   mCoordsLabel->setMinimumWidth(200);
   statusBar()->addWidget(mCoordsLabel, 0, true);
-  mRenderSuppresionCBox = new QCheckBox(tr("Suppress Rendering"),this);
+  mRenderSuppresionCBox = new QCheckBox(tr("Render"),this);
+  mRenderSuppresionCBox->setChecked(true);
   statusBar()->addWidget(mRenderSuppresionCBox,0,true);
 
   connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
-     mMapCanvas, SLOT(setRenderSuppresionFlag(bool)));
+     mMapCanvas, SLOT(setRenderFlag(bool)));
   connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
-     mOverviewCanvas, SLOT(setRenderSuppresionFlag(bool)));
+     mOverviewCanvas, SLOT(setRenderFlag(bool)));
+
 
   //
   // Create the plugin registry and load plugins
