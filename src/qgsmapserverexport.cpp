@@ -238,7 +238,7 @@ void QgsMapserverExport::writeMapFile(){
 void QgsMapserverExport::showHelp(){
 	//QMessageBox::information(this, "Help","Help");
 	QgsHelpViewer *hv = new QgsHelpViewer(this);
-	hv->setModal(false);
+// causes problems in qt3.1.x:	hv->setModal(false);
 	hv->setCaption("QGIS Help - Mapserver Export");
 	hv->show();
 }

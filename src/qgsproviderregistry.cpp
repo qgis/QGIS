@@ -44,7 +44,8 @@ QgsProviderRegistry::QgsProviderRegistry(){
 // check all libs in the current plugin directory and get name and descriptions
 //TODO figure out how to register and identify data source plugin for a specific
 //TODO layer type
-QString appDir = qApp->applicationDirPath();
+char **argv = qApp->argv();
+QString appDir = argv[0];
 int bin = appDir.findRev("/bin", -1, false);
 QString baseDir = appDir.left(bin);
 QString libDir = baseDir + "/lib";
