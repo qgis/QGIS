@@ -1,0 +1,137 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsGrassToolsBase</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>QgsGrassToolsBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>446</width>
+            <height>321</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>GRASS Tools</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QTabWidget">
+            <property name="name">
+                <cstring>mTabWidget</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>modules</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Modules</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QListView">
+                        <column>
+                            <property name="text">
+                                <string>Column 1</string>
+                            </property>
+                            <property name="clickable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="resizable">
+                                <bool>true</bool>
+                            </property>
+                        </column>
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap></pixmap>
+                        </property>
+                    </item>
+                        <property name="name">
+                            <cstring>mModulesListView</cstring>
+                        </property>
+                        <property name="resizeMode">
+                            <enum>AllColumns</enum>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+        </widget>
+    </vbox>
+</widget>
+<menubar>
+    <property name="name">
+        <cstring>menubar</cstring>
+    </property>
+    <item text="&amp;Mapset" name="fileMenu">
+        <action name="mapsetNewAction"/>
+        <action name="mapsetOpenAction"/>
+    </item>
+</menubar>
+<toolbars>
+</toolbars>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>mapsetNewAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image0</iconset>
+        </property>
+        <property name="text">
+            <string>New Mapset</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;New</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+N</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mapsetOpenAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image1</iconset>
+        </property>
+        <property name="text">
+            <string>Open Mapset</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Open...</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+O</string>
+        </property>
+    </action>
+</actions>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="721">789cedd2b10ac2301405d03d5ff148b62056035241fc04c5511087f425a2432b681d44fc777ba329d6b47fe07d19dee50cc9904cd376b3229d896b6deb13131fed85b4bb95e57db75f3e8434869a93d3548e841c13d3fa5c79ecaad9d52404b540351e83caa833c6a03ad4798e41f5a86c30a816f510126ee94d14d52611fb8e2ad49070a4445ca4447ca4446ca444da07fecac7ffd2956ebe64f81ff4c873215e0583a9b0</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="691">789cad914d0ac2301085f739c5d0d915b11a140ae211149782b898448b2e5a41eb42c4bb9b9fa6a67644045f0299978f37134896c27ab5803413979aeaa3067da033a4bb6b59de36dbf95d245282d953182703910c41c3f254ed6d8da6c69193b5dada7c924b6fc9dac2c85b156c51b83eacfe41d0c89defc4dfa2dd7c37fc44b025a179043c4152a4b055f4365414ad0e8901fd94c1ae5e19441da9211c68e7f44098d3074d86019e70a0210c089958df7ffb31134fa13797a8</data>
+    </image>
+</images>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,0 +1,168 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsGrassModuleBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QgsGrassModuleBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>430</width>
+            <height>367</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>GRASS Module</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QTabWidget">
+            <property name="name">
+                <cstring>mTabWidget</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>options</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Options</string>
+                </attribute>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>output</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Output</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextBrowser">
+                        <property name="name">
+                            <cstring>mOutputTextBrowser</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+        </widget>
+        <widget class="QProgressBar">
+            <property name="name">
+                <cstring>mProgressBar</cstring>
+            </property>
+            <property name="indicatorFollowsStyle">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QFrame">
+            <property name="name">
+                <cstring>frame4</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Plain</enum>
+            </property>
+            <property name="lineWidth">
+                <number>0</number>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mRunButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Run</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>135</width>
+                            <height>26</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mCloseButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>26</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mRunButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassModuleBase</receiver>
+        <slot>run()</slot>
+    </connection>
+    <connection>
+        <sender>mCloseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassModuleBase</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>run()</slot>
+    <slot>close()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -54,11 +54,13 @@ extern "C" {
 #include "qgsgrassattributes.h"
 #include "qgsgrassselect.h"
 #include "qgsgrassedit.h"
+#include "qgsgrasstools.h"
 #include "qgsgrassregion.h"
 
 // xpm for creating the toolbar icon
 #include "add_vector.xpm"
 #include "add_raster.xpm"
+#include "grass_tools.xpm"
 #include "grass_edit.xpm"
 #include "grass_region.xpm"
 #include "grass_region_edit.xpm"
@@ -119,6 +121,7 @@ void QgsGrassPlugin::initGui()
 {
     menuBarPointer = 0;
     toolBarPointer = 0;
+    mTools = 0;
     
     QSettings settings;
     
@@ -186,6 +189,16 @@ void QgsGrassPlugin::initGui()
     pluginMenu->setWhatsThis(menuId, "Add a GRASS vector layer to the map canvas.");
     menuId = pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
     pluginMenu->setWhatsThis(menuId, "Add a GRASS raster layer to the map canvas.");
+
+    menuId = pluginMenu->insertItem(QIconSet(icon_grass_tools),"GRASS &Tools", this, SLOT(openTools()));
+    pluginMenu->setWhatsThis(menuId, "Open GRASS tools.");
+
+    menuId = pluginMenu->insertItem(QIconSet(icon_grass_region),"Display Current Grass Region", this, SLOT(switchRegion(bool)));
+    pluginMenu->setWhatsThis(menuId, "Display Current Grass Region");
+    menuId = pluginMenu->insertItem(QIconSet(icon_grass_region_edit),"Edit Current Grass Region", this, SLOT(changeRegion()));
+    pluginMenu->setWhatsThis(menuId, "Edit Current Grass Region");
+
+
     menuId = pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
     pluginMenu->setWhatsThis(menuId, "Edit a GRASS vector layer");
 
@@ -200,6 +213,12 @@ void QgsGrassPlugin::initGui()
     QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
                                      "Add GRASS raster layer",0, this, "addRaster");
     addRasterAction->setWhatsThis("Adds a GRASS raster layer to the map canvas");
+
+    QAction *openToolsAction = new QAction("Open GRASS tools", QIconSet(icon_grass_tools), 
+                                     "Open GRASS tools",0, this, "openTools");
+    addRasterAction->setWhatsThis("Open GRASS tools");
+
+    
     mRegionAction = new QAction("Display Current Grass Region", QIconSet(icon_grass_region), 
                           "Display Current Grass Region",0, this, "region", true);
     mRegionAction->setWhatsThis("Displays the current GRASS region as a rectangle on the map canvas");
@@ -210,9 +229,11 @@ void QgsGrassPlugin::initGui()
                           "Edit Grass Vector layer",0, this, "edit");
     editAction->setWhatsThis("Edit the currently selected GRASS vector layer.");
     if ( !QgsGrass::activeMode() )  {
+        openToolsAction->setEnabled(false);
         mRegionAction->setEnabled(false);
         editRegionAction->setEnabled(false);
     } else {
+        openToolsAction->setEnabled(true);
         mRegionAction->setEnabled(true);
 	editRegionAction->setEnabled(true);
 	bool on = settings.readBoolEntry ("/qgis/grass/region/on", true );
@@ -222,6 +243,7 @@ void QgsGrassPlugin::initGui()
     // Connect the action 
     connect(addVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
     connect(addRasterAction, SIGNAL(activated()), this, SLOT(addRaster()));
+    connect(openToolsAction, SIGNAL(activated()), this, SLOT(openTools()));
     connect(editAction, SIGNAL(activated()), this, SLOT(edit()));
     connect(mRegionAction, SIGNAL(toggled(bool)), this, SLOT(switchRegion(bool)));
     connect(editRegionAction, SIGNAL(activated()), this, SLOT(changeRegion()));
@@ -233,6 +255,7 @@ void QgsGrassPlugin::initGui()
     // Add to the toolbar
     addVectorAction->addTo(toolBarPointer);
     addRasterAction->addTo(toolBarPointer);
+    openToolsAction->addTo(toolBarPointer);
     mRegionAction->addTo(toolBarPointer);
     editRegionAction->addTo(toolBarPointer);
     editAction->addTo(toolBarPointer);
@@ -243,6 +266,8 @@ void QgsGrassPlugin::initGui()
     // Init Region symbology
     mRegionPen.setColor( QColor ( settings.readEntry ("/qgis/grass/region/color", "#ff0000" ) ) );
     mRegionPen.setWidth( settings.readNumEntry ("/qgis/grass/region/width", 0 ) );
+
+    //openTools(); // debug only
 }
 
 /*
@@ -329,6 +354,16 @@ void QgsGrassPlugin::addRaster()
         qGisInterface->addRasterLayer( uri );
     }
 }
+
+// Open tools
+void QgsGrassPlugin::openTools()
+{
+    if ( !mTools ) 
+        mTools = new QgsGrassTools ( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, Qt::WType_Dialog );
+
+    mTools->show();
+}
+
 
 // Start vector editing
 void QgsGrassPlugin::edit()
