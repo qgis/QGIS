@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.38 2004/06/23 02:15:34 gsherman Exp 
+# src.pro,v 1.39 2004/06/23 04:15:55 gsherman Exp 
 ######################################################################
 
 TEMPLATE = app
@@ -14,6 +14,7 @@ INCLUDEPATH += . $(GDAL)\include \
 LIBS += $(GDAL)\lib\gdal_i.lib \
         $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib
 #DEFINES+= QGISDEBUG
+DESTDIR = ../win_build
 CONFIG += qt thread rtti debug
 # Input
 HEADERS += qgis.h \

@@ -5,8 +5,8 @@
 # When building on Windows, the QGIS source should reside in a 
 # directory named qgis_win32
 #
-# $Id
-#
+# qgis_win32.pro,v 1.2 2004/06/23 04:15:54 gsherman Exp
+####################################################################
 
 TEMPLATE = subdirs
 SUBDIRS =  src \
