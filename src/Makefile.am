@@ -41,7 +41,6 @@ headers =  qgis.h				\
 		qgshelpviewer.cpp		\
 		qgshelpviewer.h			\
 		qgsidentifyresults.h		\
-		qgslayerproperties.h		\
 		qgslegend.h			\
 		qgslegenditem.h			\
 		qgslinestyledialog.h		\
@@ -97,7 +96,6 @@ qgis_SOURCES =  main.cpp			\
 		qgsgrasyextensionwidget.cpp	\
 		qgshelpviewer.cpp		\
 		qgsidentifyresults.cpp		\
-		qgslayerproperties.cpp		\
 		qgslegend.cpp			\
 		qgslegenditem.cpp		\
 		qgslinestyledialog.cpp		\
@@ -148,7 +146,6 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgshelpviewer.moc.cpp			\
 		qgshelpviewerbase.moc.cpp		\
 		qgsidentifyresultsbase.moc.cpp		\
-		qgslayerpropertiesbase.moc.cpp		\
 		qgslegend.moc.cpp			\
 		qgslegenditem.moc.cpp			\
 		qgslegenditembase.moc.cpp		\
@@ -184,7 +181,6 @@ qgis_UIHEADERS = \
           qgshelpviewerbase.cpp			\
           qgshelpviewerbase.h			\
           qgsidentifyresultsbase.h		\
-          qgslayerpropertiesbase.h		\
           qgslegenditembase.h			\
           qgslinestyledialogbase.h		\
           qgsmapserverexportbase.h		\
@@ -204,7 +200,6 @@ qgis_UI = qgisappbase.cpp			\
           qgsgrasydialogbase.cpp		\
           qgshelpviewerbase.cpp			\
           qgsidentifyresultsbase.cpp		\
-          qgslayerpropertiesbase.cpp		\
           qgslegenditembase.cpp			\
           qgslinestyledialogbase.cpp		\
           qgsmapserverexportbase.cpp		\
@@ -231,7 +226,6 @@ qgis_UIC = 	qgisappbase.ui					\
 		qgshelpviewerbase.ui				\
 		qgshelpviewerbase.ui.h				\
 		qgsidentifyresultsbase.ui			\
-		qgslayerpropertiesbase.ui			\
 		qgslegenditembase.ui				\
 		qgslinestyledialogbase.ui			\
 		qgsmapserverexportbase.ui			\
@@ -263,8 +257,6 @@ qgshelpviewerbase.cpp: qgshelpviewerbase.h qgshelpviewerbase.ui
 qgshelpviewerbase.h: qgshelpviewerbase.ui
 qgsidentifyresultsbase.cpp: qgsidentifyresultsbase.h qgsidentifyresultsbase.ui
 qgsidentifyresultsbase.h: qgsidentifyresultsbase.ui
-qgslayerpropertiesbase.cpp: qgslayerpropertiesbase.h qgslayerpropertiesbase.ui
-qgslayerpropertiesbase.h: qgslayerpropertiesbase.ui
 qgslegenditembase.cpp: qgslegenditembase.h qgslegenditembase.ui
 qgslegenditembase.h: qgslegenditembase.ui
 qgslinestyledialogbase.cpp: qgslinestyledialogbase.h qgslinestyledialogbase.ui

@@ -25,7 +25,6 @@
 #include <cfloat>
 #include "qgscontinuouscolrenderer.h"
 #include <iostream>
-#include "qgslayerproperties.h"
 #include "qgslegenditem.h"
 #include <qlineedit.h>
 #include "qgsdlgvectorlayerproperties.h"
