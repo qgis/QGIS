@@ -140,28 +140,28 @@ void QgsContColDialog::apply()
 
 
     //create the render items for minimum and maximum value
-    QgsSymbol minsymbol;
+    QgsSymbol* minsymbol = new QgsSymbol();
     if (mVectorLayer->vectorType() == QGis::Line)
     {
-	minsymbol.setPen(QPen(mincolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
+	minsymbol->setPen(QPen(mincolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
     } 
     else
     {
-	minsymbol.setBrush(QBrush(mincolorbutton->paletteBackgroundColor()));
-	minsymbol.setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
+	minsymbol->setBrush(QBrush(mincolorbutton->paletteBackgroundColor()));
+	minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
     QgsRenderItem *minimumitem = new QgsRenderItem(minsymbol, QString::number(minimum, 'f'), " ");
     
     
-    QgsSymbol maxsymbol;
+    QgsSymbol* maxsymbol = new QgsSymbol();
     if (mVectorLayer->vectorType() == QGis::Line)
     {
-	maxsymbol.setPen(QPen(maxcolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
+	maxsymbol->setPen(QPen(maxcolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
     } 
     else
     {
-	maxsymbol.setBrush(QBrush(maxcolorbutton->paletteBackgroundColor()));
-	maxsymbol.setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
+	maxsymbol->setBrush(QBrush(maxcolorbutton->paletteBackgroundColor()));
+	maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
     QgsRenderItem *maximumitem = new QgsRenderItem(maxsymbol, QString::number(maximum, 'f'), " ");
     

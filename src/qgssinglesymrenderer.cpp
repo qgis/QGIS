@@ -55,10 +55,10 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
 
     if (layer)
     {
-	QgsSymbol sy;
-	sy.brush().setStyle(Qt::SolidPattern);
-	sy.pen().setStyle(Qt::SolidLine);
-	sy.pen().setWidth(1);//set width 1 as default instead of width 0
+	QgsSymbol* sy = new QgsSymbol();
+	sy->brush().setStyle(Qt::SolidPattern);
+	sy->pen().setStyle(Qt::SolidLine);
+	sy->pen().setWidth(1);//set width 1 as default instead of width 0
 
 	//random fill colors for points and polygons and pen colors for lines
 	int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
@@ -86,22 +86,22 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
 	pixmap->resize(width, height);
 	pixmap->fill();
 	QPainter p(pixmap);
-	p.setPen(sy.pen());
+	p.setPen(sy->pen());
 	
 	if (layer->vectorType() == QGis::Line)
         {
-	    sy.pen().setColor(QColor(red, green, blue));
+	    sy->pen().setColor(QColor(red, green, blue));
 	    //paint the pixmap for the legend
-	    p.setPen(sy.pen());
+	    p.setPen(sy->pen());
 	    p.drawLine(10, pixmap->height() - 25, 25, pixmap->height() - 10);
 	} 
 	else
         {
-	    sy.brush().setColor(QColor(red, green, blue));
-	    sy.pen().setColor(QColor(0, 0, 0));
+	    sy->brush().setColor(QColor(red, green, blue));
+	    sy->pen().setColor(QColor(0, 0, 0));
 	    //paint the pixmap for the legend
-	    p.setPen(sy.pen());
-	    p.setBrush(sy.brush());
+	    p.setPen(sy->pen());
+	    p.setBrush(sy->brush());
 	    if (layer->vectorType() == QGis::Point)
             {
 		p.drawRect(20, pixmap->height() - 17, 5, 5);

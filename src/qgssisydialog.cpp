@@ -68,7 +68,10 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 	    stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
 	    stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
 	    outlinecolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
-        }
+        }else
+	{
+	    qWarning("Warning, typecast failed in qgssisydialog.cpp, line 54 or 58");
+	}
 
 	if (mVectorLayer && mVectorLayer->vectorType() == QGis::Line)
         {
@@ -137,12 +140,12 @@ void QgsSiSyDialog::selectFillPattern()
 void QgsSiSyDialog::apply()
 {
     //query the values of the widgets and set the symbology of the vector layer
-    QgsSymbol sy(QColor(255, 0, 0));
-    sy.brush().setColor(fillcolorbutton->paletteBackgroundColor());
-    sy.brush().setStyle(QgsSymbologyUtils::char2BrushStyle(patternbutton->name()));
-    sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
-    sy.pen().setWidth(outlinewidthspinbox->value());
-    sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
+    QgsSymbol* sy = new QgsSymbol();
+    sy->brush().setColor(fillcolorbutton->paletteBackgroundColor());
+    sy->brush().setStyle(QgsSymbologyUtils::char2BrushStyle(patternbutton->name()));
+    sy->pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
+    sy->pen().setWidth(outlinewidthspinbox->value());
+    sy->pen().setColor(outlinecolorbutton->paletteBackgroundColor());
     QgsRenderItem* ri = new QgsRenderItem(sy, "blabla", "blabla");
     
     QgsSingleSymRenderer *renderer = dynamic_cast < QgsSingleSymRenderer * >(mVectorLayer->renderer());
@@ -181,8 +184,8 @@ void QgsSiSyDialog::apply()
     pix->fill();
 
     QPainter p(pix);
-    p.setPen(sy.pen());
-    p.setBrush(sy.brush());
+    p.setPen(sy->pen());
+    p.setBrush(sy->brush());
     //paint differently in case of point, lines, polygones
     switch (mVectorLayer->vectorType())
     {
