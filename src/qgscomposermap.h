@@ -143,6 +143,9 @@ public slots:
     
     // Called by GUI if preview style was changed
     void previewModeChanged ( int i );
+    
+    // Called if map canvas has changed
+    void mapCanvasChanged ( );
 
 private:
     // Pointer to composition
