@@ -16,22 +16,23 @@
  ***************************************************************************/
 
 
-#include <qmessagebox.h>
 #include <libpq++.h>
 #include <iostream>
 #include <sstream>
 #include <qsettings.h>
 #include <qlistbox.h>
-#include <qlistview.h>
+#include <qtable.h>
 #include <qstringlist.h>
+#include <qmessagebox.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
-#include <qmessagebox.h>
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qinputdialog.h>
 #include <qfiledialog.h>
 #include <qprogressdialog.h>
+#include <qmemarray.h>
+
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
@@ -41,6 +42,10 @@ QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   default_value = -1;
   total_features = 0;
   setFixedSize(QSize(579, 504));
+  tblShapefiles->setColumnStretchable(2, true);
+  tblShapefiles->setColumnStretchable(3, true);
+  tblShapefiles->verticalHeader()->hide();
+  tblShapefiles->setLeftMargin(0);      
 }
 
 QgsSpit::~QgsSpit(){  
@@ -96,7 +101,6 @@ void QgsSpit::removeConnection()
 
 void QgsSpit::addFile()
 {
-  QListViewItemIterator n(lstShapefiles);
   QString error = "";
   bool exist;
   bool is_error = false;
@@ -106,19 +110,23 @@ void QgsSpit::addFile()
   
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it){
     exist = false;
-    if(lstShapefiles->findItem(*it, 0)!=0)
-      exist = true;
+    for(int n=0; n<tblShapefiles->numRows(); n++)
+      if(tblShapefiles->text(n,0)==*it){
+        exist = true;
+        break;
+      }
     if(!exist){
       QgsShapeFile * file = new QgsShapeFile(*it);
       if(file->is_valid()){
         fileList.push_back(file);
-        QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
-        lvi->setText(1, file->getFeatureClass());
+        tblShapefiles->insertRows(0);
+        tblShapefiles->setText(0, 0, *it);
+        tblShapefiles->setText(0, 1, file->getFeatureClass());
         std::stringstream temp;
         int count = file->getFeatureCount();
         temp << count;
-        lvi->setText(2, temp.str());
-        lvi->setText(3, fileList.back()->getTable());
+        tblShapefiles->setText(0, 2, temp.str());
+        tblShapefiles->setText(0, 3, fileList.back()->getTable());
         total_features += count;
       }
       else{
@@ -134,29 +142,36 @@ void QgsSpit::addFile()
     e->setMessage(error);
     e->exec();
   }
+  
+  tblShapefiles->repaintSelections();
 }
 
 void QgsSpit::removeFile()
 {
-  QListViewItemIterator it(lstShapefiles);
-  while(it.current())
-    if ( it.current()->isSelected() ){
+  std::vector <int> temp;
+  for(int n=0; n<tblShapefiles->numRows(); n++)
+    if (tblShapefiles->isRowSelected(n)){
       for(std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit!=fileList.end(); vit++){
-        if((*vit)->getName()==(const char *)it.current()->text(0)){
+        if((*vit)->getName()==(const char *)tblShapefiles->text(n,0)){
           total_features -= (*vit)->getFeatureCount();
           fileList.erase(vit);
           break;
         }
       }  
-      delete it.current();
-      it = lstShapefiles->firstChild();
+      temp.push_back(n);
     }
-    else ++it;
+  QMemArray<int> array(temp.size());
+  for(int i=0; i<temp.size(); i++)
+    array[i] = temp[i];
+  tblShapefiles->removeRows(array);
 }
 
 void QgsSpit::removeAllFiles(){
-  lstShapefiles->selectAll(true);
-  removeFile();
+  QMemArray<int> array(tblShapefiles->numRows());
+  for(int n=0; n<tblShapefiles->numRows(); n++)
+    array[n] = n;
+
+  tblShapefiles->removeRows(array);
 }
 
 void QgsSpit::useDefault(){
@@ -207,29 +222,54 @@ void QgsSpit::import(){
       pro->show();
 
       pd->ExecTuplesOk("BEGIN");
-
-      Q
+      
       for(int i=0; i<fileList.size() ; i++){
-        std::stringstream temp;
-        temp << spinSrid->value();
-        if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, finished)){
-          if(!finished){
-            pro->close();
-            QMessageBox::warning(this, "Import Shapefiles",
-            "Problem inserting features\nOne or more of your shapefiles may be corrupted");
-          }
-          finished = true;
-          break;
+        int rel_exists = false;
+        QMessageBox *del_confirm;
+        QString query = "select f_table_name from geometry_columns where f_table_name=\'"+QString(fileList[i]->getTable())+"\'";
+        rel_exists = pd->ExecTuplesOk(query);
+        
+        if(rel_exists){
+          del_confirm = new QMessageBox( "Import Shapefiles - Relation Exists",
+            "The Shapefile:\n"+QString(fileList[i]->getName())+"\nwill use ["+
+            QString(fileList[i]->getTable())+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
+            "To avoid data loss change the \"Table Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
+            "Do you want to overwrite the ["+QString(fileList[i]->getTable())+"] relation?",
+          QMessageBox::Warning,
+          QMessageBox::Yes | QMessageBox::Default,
+          QMessageBox::No  | QMessageBox::Escape,
+          QMessageBox::NoButton );
         }
-        else if(finished)
-          break;
+        if (!rel_exists || del_confirm->exec() == QMessageBox::Yes ){        
+          std::stringstream temp;
+          temp << spinSrid->value();
+          if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, finished)){
+            if(!finished){
+              pro->close();
+              QMessageBox::warning(this, "Import Shapefiles",
+              "Problem inserting features\nOne or more of your shapefiles may be corrupted");
+            }
+            finished = true;
+            break;
+          }
+          else if(finished)
+            break;
+          else{
+            for(int i=0; i<tblShapefiles->numRows(); i++)
+              if(tblShapefiles->text(i,0)==QString(fileList[i]->getName())){
+                tblShapefiles->removeRow(i);
+                break;
+              }
+          }
+        }
+        else if(fileList[i]==fileList.back())
+          pro->setProgress(pro->totalSteps());
       }
       
       if(finished)
         pd->ExecCommandOk("ROLLBACK");
       else{
         pd->ExecCommandOk("COMMIT");
-        removeAllFiles();
       }
     }
     else 

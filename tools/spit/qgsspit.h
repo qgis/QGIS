@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlistview.h>
 #include <vector>
 #include "qgsspitbase.h"
 #include "qgsshapefile.h"

@@ -22,7 +22,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="7">
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="6">
             <property name="name">
                 <cstring>groupBox8</cstring>
             </property>
@@ -33,15 +33,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Connection</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="3">
+                <widget class="QComboBox" row="0" column="2" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>cmbConnections</cstring>
                     </property>
@@ -52,7 +44,24 @@
                         </size>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="3">
+                <spacer row="0" column="1">
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>90</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton" row="1" column="4">
                     <property name="name">
                         <cstring>btnRemove</cstring>
                     </property>
@@ -60,7 +69,7 @@
                         <string>Remove</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="2">
+                <widget class="QPushButton" row="1" column="3">
                     <property name="name">
                         <cstring>btnEdit</cstring>
                     </property>
@@ -68,7 +77,7 @@
                         <string>Edit ...</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="1">
+                <widget class="QPushButton" row="1" column="2">
                     <property name="name">
                         <cstring>btnNew</cstring>
                     </property>
@@ -76,183 +85,32 @@
                         <string>New ...</string>
                     </property>
                 </widget>
+                <spacer row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>spacer5</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>231</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Connection</string>
+                    </property>
+                </widget>
             </grid>
-        </widget>
-        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="7">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Shapefile List</string>
-            </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnRemoveFile</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>140</x>
-                        <y>30</y>
-                        <width>118</width>
-                        <height>29</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Remove</string>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnRemoveAll</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>270</x>
-                        <y>30</y>
-                        <width>111</width>
-                        <height>29</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Remove All</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>chkUseDefault</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>270</x>
-                        <y>70</y>
-                        <width>100</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Use Default</string>
-                </property>
-            </widget>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel1_2</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>70</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>SRID</string>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnAddFile</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>30</y>
-                        <width>118</width>
-                        <height>29</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Add ...</string>
-                </property>
-            </widget>
-            <widget class="QSpinBox">
-                <property name="name">
-                    <cstring>spinSrid</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>140</x>
-                        <y>70</y>
-                        <width>110</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="maxValue">
-                    <number>1000000</number>
-                </property>
-                <property name="minValue">
-                    <number>-1</number>
-                </property>
-                <property name="value">
-                    <number>-1</number>
-                </property>
-            </widget>
-            <widget class="QListView">
-                <column>
-                    <property name="text">
-                        <string>File Name</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <column>
-                    <property name="text">
-                        <string>Feature Class</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <column>
-                    <property name="text">
-                        <string>Features</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <column>
-                    <property name="text">
-                        <string>Table Name</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <property name="name">
-                    <cstring>lstShapefiles</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>110</y>
-                        <width>535</width>
-                        <height>220</height>
-                    </rect>
-                </property>
-                <property name="selectionMode">
-                    <enum>Extended</enum>
-                </property>
-                <property name="allColumnsShowFocus">
-                    <bool>true</bool>
-                </property>
-                <property name="showSortIndicator">
-                    <bool>true</bool>
-                </property>
-            </widget>
         </widget>
         <widget class="QPushButton" row="2" column="1">
             <property name="name">
@@ -278,7 +136,7 @@
                 <string>Help</string>
             </property>
         </widget>
-        <spacer row="2" column="6">
+        <spacer row="2" column="5">
             <property name="name">
                 <cstring>spacer1_2_2</cstring>
             </property>
@@ -329,6 +187,188 @@
                 </size>
             </property>
         </spacer>
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="6">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Shapefile List</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>btnAddFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add ...</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="1">
+                    <property name="name">
+                        <cstring>spinSrid</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>-1</number>
+                    </property>
+                    <property name="value">
+                        <number>-1</number>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>btnRemoveFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>btnRemoveAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove All</string>
+                    </property>
+                </widget>
+                <widget class="QTable" row="2" column="0" rowspan="1" colspan="4">
+                    <column>
+                        <property name="text">
+                            <string>File Name</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap></pixmap>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Feature Class</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap></pixmap>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Features</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap></pixmap>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>DB Relation Name</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap></pixmap>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>tblShapefiles</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>2</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>NoFocus</enum>
+                    </property>
+                    <property name="frameShape">
+                        <enum>Panel</enum>
+                    </property>
+                    <property name="lineWidth">
+                        <number>1</number>
+                    </property>
+                    <property name="midLineWidth">
+                        <number>0</number>
+                    </property>
+                    <property name="resizePolicy">
+                        <enum>AutoOne</enum>
+                    </property>
+                    <property name="numRows">
+                        <number>0</number>
+                    </property>
+                    <property name="numCols">
+                        <number>4</number>
+                    </property>
+                    <property name="showGrid">
+                        <bool>false</bool>
+                    </property>
+                    <property name="columnMovingEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sorting">
+                        <bool>true</bool>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>MultiRow</enum>
+                    </property>
+                    <property name="focusStyle">
+                        <enum>FollowStyle</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SRID</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="3">
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>151</width>
+                            <height>31</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="1" column="3">
+                    <property name="name">
+                        <cstring>spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>151</width>
+                            <height>31</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="1" column="2">
+                    <property name="name">
+                        <cstring>chkUseDefault</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Use Default</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
     </grid>
 </widget>
 <connections>

@@ -1,29 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <LastCompileConfig>(Default)</LastCompileConfig>
  <Mainframe MaximizeMode="1" />
- <DocsAndViews NumberOfDocuments="7" >
-  <Doc0 CursorPosLine="17" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/sav/downloads/qgis/tools/spit/qgsspit.cpp" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="1" Type="KWriteView" MinMaxMode="0" />
+ <DocsAndViews NumberOfDocuments="5" >
+  <Doc0 CursorPosLine="107" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/sav/downloads/qgis/tools/spit/qgsspit.cpp" >
+   <View0 Top="0" Width="406" Attach="1" Height="328" Left="0" Focus="1" Type="KWriteView" MinMaxMode="2" />
   </Doc0>
-  <Doc1 CursorPosLine="8" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="47" FileName="/sav/downloads/qgis/tools/spit/qgsspit.h" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  <Doc1 CursorPosLine="41" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="10" FileName="/sav/downloads/qgis/tools/spit/qgsspit.h" >
+   <View0 Top="48" Width="1122" Attach="1" Height="561" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />
   </Doc1>
-  <Doc2 CursorPosLine="5" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="28" FileName="/sav/downloads/qgis/tools/spit/qgsconnectiondialog.cpp" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  <Doc2 CursorPosLine="187" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="8" FileName="/sav/downloads/qgis/tools/spit/qgsshapefile.cpp" >
+   <View0 Top="71" Width="1122" Attach="1" Height="561" Left="49" Focus="0" Type="KWriteView" MinMaxMode="0" />
   </Doc2>
-  <Doc3 CursorPosLine="57" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="56" FileName="/sav/downloads/qgis/tools/spit/qgsshapefile.cpp" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  <Doc3 CursorPosLine="26" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="33" FileName="/sav/downloads/qgis/tools/spit/qgsshapefile.h" >
+   <View0 Top="94" Width="1122" Attach="1" Height="561" Left="72" Focus="0" Type="KWriteView" MinMaxMode="0" />
   </Doc3>
-  <Doc4 CursorPosLine="35" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="25" FileName="/sav/downloads/qgis/tools/spit/qgsshapefile.h" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  <Doc4 CursorPosLine="24" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/sav/downloads/qgis/tools/spit/qgsspitbase.h" >
+   <View0 Top="117" Width="1122" Attach="1" Height="541" Left="95" Focus="0" Type="KWriteView" MinMaxMode="0" />
   </Doc4>
-  <Doc5 CursorPosLine="23" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="31" FileName="/sav/downloads/qgis/tools/spit/qgsmessageviewer.cpp" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc5>
-  <Doc6 CursorPosLine="23" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="21" FileName="/sav/downloads/qgis/tools/spit/qgsmessageviewer.h" >
-   <View0 Top="0" Width="1153" Attach="1" Height="502" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc6>
  </DocsAndViews>
 </KDevPrjSession>
