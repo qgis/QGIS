@@ -40,6 +40,7 @@ email                : tim@linfiniti.com
 #include <qpainter.h>
 #include <qfont.h>
 #include <qpicture.h>
+#include <qpointarray.h>
 
 //non qt includes
 #include <iostream>
@@ -143,25 +144,33 @@ void Plugin::renderNorthArrow()
   //how much should the north arrow be rotated by?
   int myRotationInt = 0;
   //dir where north arrows live
-  //QString myDirString = QString(PKGDATAPATH)+"/svg/north_arrows/";
+  QString myDirString = QString(PKGDATAPATH)+"/svg/north_arrows/";
   //pixmap containing map
   QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
   //paint device that we can draw our pixmap onto
   QPainter myQPainter(myQPixmap);
-  //rotate the canvas
-  //myQPainter.rotate(-myRotationInt);
+  QPointArray myPointArray;
+  //save the current canvas rotation
+  myQPainter.save();
+  //rotate the canvas  
+  myQPainter.rotate( myRotationInt );
+  myPointArray.setPoints( 30,10, -10,-10 , 20,0 );
+  //myQPainter.drawPolygon( myPointArray );
   
-  QPicture myQPicture;
-  myQPicture.load(QString("/home/aps02ts/share/qgis/svg/north_arrows/Default.svg"));
-  myQPainter.drawPicture(140,140,myQPicture);
+  //QPicture myQPicture;
+  //myQPicture.load(myDirString+QString("/default.svg"));
+  //myQPainter.drawPicture(140,140,myQPicture);  
+  
+
+
   
   /* This is how you write some text to the qpainter */
   QFont myQFont("time", 24, QFont::Bold);
   myQPainter.setFont(myQFont);
-  myQPainter.setPen(Qt::white);
+  myQPainter.setPen(Qt::black);
   myQPainter.drawText(15, 50, QString("N"));
-  /* */
-  //myQPainter.rotate(myRotationInt);
+  //unrotate the canvase again
+  myQPainter.restore();
 }
 
 // Unload the plugin by cleaning up the GUI
