@@ -184,7 +184,13 @@ private:
 
     //! Exit Qgis
     void fileExit();
-
+    
+    //! add this file to the recently opened/saved projects list
+    //  pass settings by reference since creating more than one
+    //! instance simultaneously results in data loss.
+    void saveRecentProjectPath(QString projectPath, QSettings & settings);
+    //! Update file menu with the current list of recently accessed projects
+    void updateRecentProjectPaths();
     //! Set map tool to Zoom out
     void zoomOut();
     //! Set map tool to Zoom in
@@ -223,10 +229,6 @@ private:
     void select();
     //! check to see if file is dirty and if so, prompt the user th save it
     int saveDirty();
-    //! add this file to the recently opened/saved projects list
-    //  pass settings by reference since creating more than one
-    //! instance simultaneously results in data loss.
-    void saveRecentProjectPath(QString projectPath, QSettings & settings);
 
 private slots:
 
@@ -283,6 +285,9 @@ private slots:
     void fileSave();
     //! Save project as
     void fileSaveAs();
+    //! Open the project file corresponding to the
+    //! path at the given index in mRecentProjectPaths
+    void openProject(int pathIndex);
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();
     //! Open a project
@@ -303,12 +308,6 @@ private slots:
     void hideAllLayers();
     //reimplements method from base (gui) class
     void showAllLayers();
-    //! Open the project file corresponding to the
-    //! path at the given index in mRecentProjectPaths
-    void openProject(int pathIndex);
-
-
-
     //! Export current view as a mapserver map file
     void exportMapServer();
     //! Return pointer to the active layer
