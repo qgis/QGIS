@@ -164,7 +164,8 @@ void Plugin::run()
 				     QString, QString)));
   connect(myPluginGui, SIGNAL(uploadToGPS(QgsVectorLayer*, QString, QString)),
 	  this, SLOT(uploadToGPS(QgsVectorLayer*, QString, QString)));
-  
+  connect(this, SIGNAL(closeGui()), myPluginGui, SLOT(close()));
+
   myPluginGui->show();
 }
 
@@ -211,6 +212,8 @@ void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
   if (loadWaypoints)
     emit drawVectorLayer(filename + "?type=waypoint", 
 			 fileInfo.baseName() + ", waypoints", "gpx");
+  
+  emit closeGui();
 }
 
 
@@ -270,6 +273,8 @@ void Plugin::importGPSFile(QString inputFilename, QString inputFormat,
   if (importWaypoints)
     emit drawVectorLayer(outputFilename + "?type=waypoint", 
 			 layerName, "gpx");
+  
+  emit closeGui();
 }
 
 
@@ -328,6 +333,8 @@ void Plugin::downloadFromGPS(QString protocol, QString deviceFilename,
   if (downloadTracks)
     emit drawVectorLayer(outputFilename + "?type=track", 
 			 layerName, "gpx");
+  
+  emit closeGui();
 }
 
 
@@ -380,6 +387,8 @@ void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
     QMessageBox::warning(NULL, "Error uploading data", errorMsg);
     return;
   }
+  
+  emit closeGui();
 }
 
 
