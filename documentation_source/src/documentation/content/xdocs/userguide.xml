@@ -113,11 +113,7 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 			</section>
 			<section>
 				<title>Identifying a Feature</title>
-				<p>
-				</p>
-				<p>
-				<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>
-				</p>
+
 			</section>
 		</section>
 		<section>
@@ -157,28 +153,69 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				by holding down the Control key and clicking on multiple items in the file dialog.</p>
 			</section>
 			<section>
-				<title>Symbolisation of raster layers</title>
-				<p>QGIS supports three forms of raster layer:</p>
-				<ul>
-					<li>Single Band Grayscale Rasters</li>
-					<li>Palette Based RGB Rasters</li>
-					<li>Multiband RGB Rasters</li>
-				</ul>
-				<p>From these three basic layer types, eight forms of symbolised raster display can be used:</p>
-				<ol>
-				<li>Single Band Grayscale</li>
-				<li>Single Band Pseudocolor</li>
-				<li>Paletted Grayscale (where only the red, green or blue component of the image is displayed)</li>
-				<li>Paletted Pseudocolor (where only the red, green or blue component of the image is displayed, but using a pseudocolor algorithm)</li>
-				<li>Paletted RGB</li>
-				<li>Multiband Grayscale (using only one of the bands to display the image)</li>
-				<li>Mulitiband Pseudocolor (using only one of the bands shown in pseudocolor)</li>
-				<li>Multiband RGB (using any combination of three bands)</li>
-				</ol>
+				<title>Symbolisation and properties for raster layers</title>
+				<p>Symbolisation of raster layers is achieved by right clicking on a raster layer legend entry and choosing 'properties':
+				on the popup menu that appears:</p>
+				<p>
+				<img alt="Raster Properties Popup" src="images/qgis_raster_popup_properties_selected.png"/>
+				</p>
+				<p>On the properties dialog for rasters you will see there are three tabs:</p>
+				<section>
+					<title>The general properties tab</title>
+					<p>
+					<img alt="Raster Properties Popup" src="images/qgis_raster_properties_general_tab.png"/>
+					</p>	
+				</section>			
+				<section>
+					<title>The symbology properties tab</title>
+					<p>
+					<img alt="Raster Properties Popup" src="images/qgis_raster_properties_symbology_tab.png"/>
+					</p>	
+					
+					
+					<p>QGIS supports three forms of raster layer:</p>
+					<ul>
+						<li>Single Band Grayscale Rasters</li>
+						<li>Palette Based RGB Rasters</li>
+						<li>Multiband RGB Rasters</li>
+					</ul>
+					<p>From these three basic layer types, eight forms of symbolised raster display can be used:</p>
+					<ol>
+						<li>Single Band Grayscale</li>
+						<li>Single Band Pseudocolor</li>
+						<li>Paletted Grayscale (where only the red, green or blue component of the image is displayed)</li>
+						<li>Paletted Pseudocolor (where only the red, green or blue component of the image is displayed, but using a pseudocolor algorithm)</li>
+						<li>Paletted RGB</li>
+						<li>Multiband Grayscale (using only one of the bands to display the image)</li>
+						<li>Mulitiband Pseudocolor (using only one of the bands shown in pseudocolor)</li>
+						<li>Multiband RGB (using any combination of three bands)</li>
+					</ol>
+					<p>QGIS has the capability to invert the colours in a given layer so that light 
+					colors become dark (and dark colors become light).</p>
 				
+					<p>QGIS has the capability to invert the colours in a given layer so that light 
+					colors become dark (and dark colors become light).</p>
+				
+					<p>QGIS has the capability to invert the colours in a given layer so that light 
+					colors become dark (and dark colors become light).</p>
+				</section>
+				<section>
+					<title>The raster statistics properties tab</title>
+					<p>
+					<img alt="Raster Properties Popup" src="images/qgis_raster_properties_statistics_tab.png"/>
+					</p>	
+				</section>
 			</section>
 				
 		</section>
+		<section>
+			<title>Identifying a Feature</title>
+			<p>
+			</p>
+			<p>
+			<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>
+			</p>
+		</section>		
 	</body>
 	<footer>
 		<legal>© 2003 Gary Sherman</legal>
