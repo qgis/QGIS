@@ -448,7 +448,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
           lstProjLayers->insertItem(myProjFileNameQString);
 	  //also add the layer to the mask combo
           cboOutputMaskLayer->insertItem(myProjFileNameQString);
-		  cboOutputFormatLayer->insertItem(myProjFileNameQString);
+	  cboOutputFormatLayer->insertItem(myProjFileNameQString);
         }
         myProjLastFileNameQString=*myProjIterator;
         ++myProjIterator;
@@ -472,18 +472,26 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   {
     //MASK AND FORMAT LAYERS 
     cboInputMaskLayer->setDuplicatesEnabled(false);
-	cboOutputMaskLayer->setDuplicatesEnabled(false);
-	cboOutputFormatLayer->setDuplicatesEnabled(false);
-	QString myInputMask = settings.readEntry("/openmodeller/inputMaskFile");
+    cboOutputMaskLayer->setDuplicatesEnabled(false);
+    cboOutputFormatLayer->setDuplicatesEnabled(false);
+    QString myInputMask = settings.readEntry("/openmodeller/inputMaskFile");
     QString myOutputMask = settings.readEntry("/openmodeller/outputMaskFile");
     QString myOutputFormat = settings.readEntry("/openmodeller/outputFormatFile");
-    cboInputMaskLayer->insertItem(myInputMask);
-	cboOutputMaskLayer->insertItem(myOutputMask);
-	cboOutputFormatLayer->insertItem(myOutputFormat);
-    cboInputMaskLayer->setCurrentText(myInputMask);
-	cboOutputMaskLayer->setCurrentText(myOutputMask);
-	cboOutputFormatLayer->setCurrentText(myOutputFormat);    
-  
+    if (!myInputMask.isEmpty())
+    {
+      cboInputMaskLayer->insertItem(myInputMask);
+      cboInputMaskLayer->setCurrentText(myInputMask);
+    }
+    if (!myOutputMask.isEmpty())
+    {
+      cboOutputMaskLayer->insertItem(myOutputMask);
+      cboOutputMaskLayer->setCurrentText(myOutputMask);
+    }
+    if (!myOutputFormat.isEmpty())
+    {
+      cboOutputFormatLayer->insertItem(myOutputFormat);
+      cboOutputFormatLayer->setCurrentText(myOutputFormat);    
+    }
   }
 
   if (thePageNameQString==tr("Step 8 of 9")) 
@@ -839,6 +847,7 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
 
     mySettings.writeEntry("/openmodeller/layersDirectory",myLayerSelector->getBaseDir());
     lstLayers->insertStringList( myQStringList ,0 );
+    cboInputMaskLayer->insertStringList(myQStringList);
 
     lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
     if (lstLayers->count() > 0) 
@@ -1127,6 +1136,10 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
     myQStringList=myLayerSelector->getSelectedLayers();
 
     lstProjLayers->insertStringList( myQStringList ,0 );
+
+    cboOutputMaskLayer->insertStringList(myQStringList);
+    cboOutputFormatLayer->insertStringList(myQStringList);
+
     mySettings.writeEntry("/openmodeller/projectionLayersDirectory",myLayerSelector->getBaseDir());
     lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
     if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
@@ -1156,7 +1169,7 @@ void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
       lstProjLayers->removeItem(myInt);
       //also remove the item from the mask layer combo
       cboOutputMaskLayer->removeItem(myInt);
-	  cboOutputFormatLayer->removeItem(myInt);
+      cboOutputFormatLayer->removeItem(myInt);
       myInt--;
       myLayersCount--;
     }
@@ -1212,6 +1225,7 @@ for ( unsigned int i = 0; i < lstLayers->count(); i++ )
 	QListBoxItem *item = lstLayers->item( i );
 	lstProjLayers->insertItem(item->text());
 	cboOutputMaskLayer->insertItem(item->text());
+        cboOutputFormatLayer->insertItem(item->text());
 }
           
 //enable the user to carry on to the next page...
