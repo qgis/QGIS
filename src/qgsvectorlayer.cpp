@@ -263,12 +263,16 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
 		// select the records in the extent. The provider sets a spatial filter
 		// and sets up the selection set for retrieval
+#ifdef DEBUG
 		qWarning("Selecting features based on view extent");
+#endif
 		dataProvider->reset();
 		dataProvider->select(viewExtent);
 		int featureCount = 0;
 		//  QgsFeature *ftest = dataProvider->getFirstFeature();
+#ifdef DEBUG
 		qWarning("Starting draw of features");
+#endif
 		QgsFeature *fet;
 		unsigned char *feature;
 		bool attributesneeded = m_renderer->needsAttributes();
@@ -477,7 +481,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	}
 	else
 	{
+#ifdef DEBUG
 	    qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
+#endif
 	}
 }
 
@@ -596,7 +602,9 @@ void QgsVectorLayer::table()
 		for(std::map<int,bool>::iterator it=selected.begin();it!=selected.end();++it)
 		{
 			tabledisplay->table()->selectRowWithId(it->first);
+#ifdef DEBUG
 			qWarning("selecting row with id " +QString::number(it->first));
+#endif
 		}
 
 		QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
@@ -747,7 +755,9 @@ QGis::VectorType QgsVectorLayer::vectorType()
     }
     else
     {
+#ifdef DEBUG
 	qWarning("warning, pointer to dataProvider is null in QgsVectorLayer::vectorType()");
+#endif
     }
 }
 
