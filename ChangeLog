@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.91 2004/05/25 15:08:15 larsl Exp
+ChangeLog,v 1.92 2004/05/25 15:33:07 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-25 [larsl] 0.2.0devel34
+** Updated all ts files and translated new messages in the swedish file
 
 2004-05-25 [larsl] 0.2.0devel33
 ** Updated the swedish translation
