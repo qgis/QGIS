@@ -139,10 +139,20 @@ void QgsSiSyDialog::apply()
     sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
     QgsRenderItem ri(sy,"blabla", "blabla");
     
-    QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+    QgsSingleSymRenderer* renderer;
+    
+    if(m_vectorlayer->propertiesDialog())
+    {
+	renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+    }
+    else
+    {
+	renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->renderer());
+    }     
 
     if(renderer)
     {
+	qWarning("3");
 	renderer->addItem(ri);
     }
     else
@@ -193,7 +203,11 @@ void QgsSiSyDialog::apply()
 
   m_vectorlayer->setRenderer(renderer);
   m_vectorlayer->setRendererDialog(this);
-  m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+
+  if(m_vectorlayer->propertiesDialog())
+  {
+      m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+  }
 
   //repaint the map canvas
   m_vectorlayer->triggerRepaint();
