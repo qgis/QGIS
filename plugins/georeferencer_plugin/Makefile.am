@@ -62,12 +62,9 @@ georefplugin_la_SOURCES = plugin.cpp \
 	qgsgeorefwarpoptionsdialog.h \
 	qgsgeorefwarpoptionsdialog.cpp \
 	mapcoordsdialog.h \
-	mapcoordsdialog.cpp \
-	$(plugin_UISOURCES) \
-	$(plugin_UIHEADERS) \
-	$(plugin_UIMOC)
+	mapcoordsdialog.cpp
 
-nodist_georefplugin_la_SOURCES =	$(plugin_MOC)
+nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC)
 
 georefplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(GSL_CFLAGS)
 georefplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) $(GSL_LIBS)

@@ -112,6 +112,12 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>leXCoord</tabstop>
+    <tabstop>leYCoord</tabstop>
+    <tabstop>buttonCancel</tabstop>
+    <tabstop>buttonOk</tabstop>
+</tabstops>
 <slots>
     <slot>pbnOK_clicked()</slot>
 </slots>
