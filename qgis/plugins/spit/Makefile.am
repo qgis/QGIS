@@ -20,13 +20,16 @@ lib_LTLIBRARIES = libspitplugin.la
 	$(UIC) -o $@ -impl $*.h $<
 	
 libspitplugin_la_SOURCES =  qgsspit.cpp \
+	qgsspitplugin.cpp \
+	qgsspitplugin.h \
 	qgsconnectiondialog.cpp \
 	qgsshapefile.cpp \
 	qgsmessageviewer.cpp \
-				$(spit_UI)\
-				$(spit_MOC)
+	$(spit_UI)\
+	$(spit_MOC)
         
 spit_MOC = 	qgsconnectiondialogbase.moc.cpp \
+  qgsspitplugin.moc.cpp \
   qgsshapefile.moc.cpp \
   qgsmessageviewerbase.moc.cpp \
   qgsspitbase.moc.cpp
