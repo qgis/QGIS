@@ -48,6 +48,8 @@ class QgsGraSyExtensionWidget: public QScrollView
  protected:
     /**Number of the field to classify*/
     int m_classfield;
+    /**Resizing works properly if the layout is put into a widget*/
+    QWidget* mWidget;
     /**Layout object for the widget*/
     QGridLayout* mGridLayout;
     /**Stores the classification mode*/
@@ -58,7 +60,6 @@ class QgsGraSyExtensionWidget: public QScrollView
     QgsVectorLayer* mVectorLayer;
     /**Pointers to the widgets are stored so that they are accessible for other classes*/
     std::vector<QWidget*> m_widgetvector;
-    virtual void resizeEvent (QResizeEvent* e);
  protected slots:
      void selectColor();
      void selectFillPattern();

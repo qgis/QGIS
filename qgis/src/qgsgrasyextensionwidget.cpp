@@ -32,7 +32,7 @@ email                : mhugent@geo.unizh.ch
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 
-QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer * vlayer):QScrollView(parent), m_classfield(classfield), mGridLayout(new QGridLayout(viewport(), 1, 8)), mMode(mode), mNumberOfClasses(nofclasses), mVectorLayer(vlayer)
+QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer * vlayer):QScrollView(parent), m_classfield(classfield), mWidget(new QWidget(viewport())), mGridLayout(new QGridLayout(mWidget, 1, 8)), mMode(mode), mNumberOfClasses(nofclasses), mVectorLayer(vlayer)
 {
 #ifdef QGISDEBUG
     qWarning("constructor QgsGraSyExtensionWidget");
@@ -42,28 +42,28 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
     mGridLayout->setSpacing(5);
 
     //fill the title line into the grid layout
-    QLabel *lvaluelabel = new QLabel(tr("Lower"),viewport());
+    QLabel *lvaluelabel = new QLabel(tr("Lower"),mWidget);
     lvaluelabel->setMaximumHeight(50);
     mGridLayout->addWidget(lvaluelabel, 0, 0);
-    QLabel *uvaluelabel = new QLabel(tr("Upper"),viewport());
+    QLabel *uvaluelabel = new QLabel(tr("Upper"),mWidget);
     uvaluelabel->setMaximumHeight(50);
     mGridLayout->addWidget(uvaluelabel, 0, 1);
-    QLabel *labellabel = new QLabel(tr("Label"),viewport());
+    QLabel *labellabel = new QLabel(tr("Label"),mWidget);
     labellabel->setMaximumHeight(50);
     mGridLayout->addWidget(labellabel, 0, 2);
-    QLabel *outlinecolorlabel = new QLabel(tr("Outline\nColor"),viewport());
+    QLabel *outlinecolorlabel = new QLabel(tr("Outline\nColor"),mWidget);
     outlinecolorlabel->setMaximumHeight(50);
     mGridLayout->addWidget(outlinecolorlabel, 0, 3);
-    QLabel *outlinestylelabel = new QLabel(tr("Outline\nStyle"),viewport());
+    QLabel *outlinestylelabel = new QLabel(tr("Outline\nStyle"),mWidget);
     outlinestylelabel->setMaximumHeight(50);
     mGridLayout->addWidget(outlinestylelabel, 0, 4);
-    QLabel *outlinewidthlabel = new QLabel(tr("Outline\nWidth"),viewport());
+    QLabel *outlinewidthlabel = new QLabel(tr("Outline\nWidth"),mWidget);
     outlinewidthlabel->setMaximumHeight(50);
     mGridLayout->addWidget(outlinewidthlabel, 0, 5);
-    QLabel *fillcolorlabel = new QLabel(tr("Fill\nColor"),viewport());
+    QLabel *fillcolorlabel = new QLabel(tr("Fill\nColor"),mWidget);
     fillcolorlabel->setMaximumHeight(50);
     mGridLayout->addWidget(fillcolorlabel, 0, 6);
-    QLabel *fillpatternlabel = new QLabel(tr("Fill\nPattern"),viewport());
+    QLabel *fillpatternlabel = new QLabel(tr("Fill\nPattern"),mWidget);
     fillpatternlabel->setMaximumHeight(50);
     mGridLayout->addWidget(fillpatternlabel, 0, 7);
 
@@ -97,29 +97,29 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
     for (int i = 1; i <= mNumberOfClasses; i++)
     {
 
-	QLineEdit *ltextfield = new QLineEdit(viewport());
+	QLineEdit *ltextfield = new QLineEdit(mWidget);
 	mGridLayout->addWidget(ltextfield, i, 0);
 	m_widgetvector[8 * (i - 1)] = ltextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
-	QLineEdit *utextfield = new QLineEdit(viewport());
+	QLineEdit *utextfield = new QLineEdit(mWidget);
 	mGridLayout->addWidget(utextfield, i, 1);
 	m_widgetvector[8 * (i - 1) + 1] = utextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
-	QLineEdit *labeltextfield = new QLineEdit(viewport());
+	QLineEdit *labeltextfield = new QLineEdit(mWidget);
 	mGridLayout->addWidget(labeltextfield, i, 2);
 	m_widgetvector[8 * (i - 1) + 2] = labeltextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
-	QPushButton *outlinecolorbutton = new QPushButton(viewport());
+	QPushButton *outlinecolorbutton = new QPushButton(mWidget);
 	outlinecolorbutton->setMinimumWidth(20);
 	outlinecolorbutton->setPaletteBackgroundColor(QColor(0, 0, 0));
 	mGridLayout->addWidget(outlinecolorbutton, i, 3);
 	m_widgetvector[8 * (i - 1) + 3] = outlinecolorbutton;
 	QObject::connect(outlinecolorbutton, SIGNAL(clicked()), this, SLOT(selectColor()));
 
-	QPushButton *outlinestylebutton = new QPushButton(viewport());
+	QPushButton *outlinestylebutton = new QPushButton(mWidget);
 	outlinestylebutton->setMinimumWidth(20);
 	outlinestylebutton->setName("SolidLine");
 	outlinestylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
@@ -127,18 +127,18 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 	m_widgetvector[8 * (i - 1) + 4] = outlinestylebutton;
 	QObject::connect(outlinestylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
 
-	QSpinBox *outlinewidthspinbox = new QSpinBox(viewport());
+	QSpinBox *outlinewidthspinbox = new QSpinBox(mWidget);
 	outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
 	mGridLayout->addWidget(outlinewidthspinbox, i, 5);
 	m_widgetvector[8 * (i - 1) + 5] = outlinewidthspinbox;
 
-	QPushButton *fillcolorbutton = new QPushButton(viewport());
+	QPushButton *fillcolorbutton = new QPushButton(mWidget);
 	fillcolorbutton->setMinimumWidth(20);
 	mGridLayout->addWidget(fillcolorbutton, i, 6);
 	m_widgetvector[8 * (i - 1) + 6] = fillcolorbutton;
 	QObject::connect(fillcolorbutton, SIGNAL(clicked()), this, SLOT(selectColor()));
 
-	QPushButton *fillpatternbutton = new QPushButton(viewport());
+	QPushButton *fillpatternbutton = new QPushButton(mWidget);
 	fillpatternbutton->setMinimumWidth(20);
 	fillpatternbutton->setName("SolidPattern");
 	fillpatternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
@@ -207,8 +207,10 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
         }
     }
 
-    resizeContents(200,50*(mNumberOfClasses+1));
-    updateContents();
+    mWidget->resize(150,mWidget->height());
+    addChild(mWidget);
+    //resizeContents(150,50*(mNumberOfClasses+1));
+    //updateContents();
   
 }
 
@@ -234,7 +236,6 @@ QWidget *QgsGraSyExtensionWidget::getWidget(int column, int row)
 void QgsGraSyExtensionWidget::selectColor()
 {
     ((QPushButton *) sender())->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
-    setActiveWindow();
 }
 
 void QgsGraSyExtensionWidget::selectFillPattern()
@@ -245,7 +246,6 @@ void QgsGraSyExtensionWidget::selectFillPattern()
 	((QPushButton *) sender())->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
 	((QPushButton *) sender())->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
     }
-    setActiveWindow();
 }
 
 void QgsGraSyExtensionWidget::selectOutlineStyle()
@@ -256,11 +256,4 @@ void QgsGraSyExtensionWidget::selectOutlineStyle()
 	((QPushButton *) sender())->setName(QgsSymbologyUtils::penStyle2Char(linestyledialog.style()));
 	((QPushButton *) sender())->setPixmap(QgsSymbologyUtils::penStyle2Pixmap(linestyledialog.style()));
     }
-    setActiveWindow();
-}
-
-void QgsGraSyExtensionWidget::resizeEvent(QResizeEvent* e)
-{
-    setContentsPos (0,0);
-    QScrollView::resizeEvent(e);
 }
