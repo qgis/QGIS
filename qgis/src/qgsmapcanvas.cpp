@@ -750,7 +750,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             std::cout << "Rendering " << ml->name() << std::endl;
             std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
             std::cout << "Input extent: " << ml->extent().stringRep() << std::endl;
-            std::cout << "Transformed extent" << ml->coordinateTransform()->transform(ml->extent()) << std::endl;
+            std::cout << "Transformed extent" << ml->coordinateTransform()->transform(ml->extent()).stringRep() << std::endl;
 #endif
 
             if (ml->visible())

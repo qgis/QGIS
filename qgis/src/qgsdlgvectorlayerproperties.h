@@ -58,7 +58,10 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   void alterLayerDialog(const QString& string);
   /** Reset to original (vector layer) values */
   void reset();
-
+  /** Get metadata about the layer in nice formatted html */
+  QString getMetadata();
+  
+  
   //
   //methods reimplemented from qt designer base class
   //
