@@ -19,9 +19,7 @@ AC_PROG_INSTALL
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
-
 gw_CHECK_QT
-
 
 
 dnl ---------------------------------------------------------------------------

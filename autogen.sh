@@ -4,4 +4,5 @@ aclocal  \
   && libtoolize --force --copy \
   && automake --add-missing --foreign --copy \
   && autoconf --force \
-  && echo Now run configure to configure QGIS
+  && echo Now running configure to configure QGIS \
+	&& ./configure
