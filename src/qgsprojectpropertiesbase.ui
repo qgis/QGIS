@@ -100,17 +100,25 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QComboBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>cboProjection</cstring>
-                    </property>
-                </widget>
-                <widget class="QTextEdit" row="1" column="0">
+                <widget class="QTextEdit" row="2" column="0">
                     <property name="name">
                         <cstring>teProjection</cstring>
                     </property>
                     <property name="readOnly">
                         <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="0">
+                    <property name="name">
+                        <cstring>cboProjection</cstring>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>cbxProjectionEnabled</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enable on the fly projection</string>
                     </property>
                 </widget>
             </grid>

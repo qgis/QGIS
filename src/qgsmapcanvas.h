@@ -318,7 +318,9 @@ signals:
     void removedAll();
 
 private:
-
+    /** A simple helper method to find out if on the fly projections are enabled or not */
+    bool projectionsEnabled();
+    
     /// this class is non-copyable
     /**
        @note
