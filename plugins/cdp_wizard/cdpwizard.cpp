@@ -180,17 +180,19 @@ void CDPWizard::loadDefaults()
 
     leOutputPath->setText(myQSettings.readEntry("/qgis/cdpwizard/outputPath"));
     cboOutputFormat->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/outputFormat"));
+    
+    cboFileType_activated(cboFileType->currentText());
+    
 }
 
 
-/** This method overrides the virtual CDPWizardBase method of the same name. */
 void CDPWizard::cboFileType_activated( const QString &myQString )
 {
 #ifdef QGISDEBUG
     std::cout << "cboFileType text changed" << std::endl;
 #endif
 
-    if (myQString==tr("CRES African climate data") || myQString==tr("University of Reading Palaeoclimate data"))
+    if (myQString==tr("CRES African climate data") || myQString==tr("University of Reading Palaeoclimate data") || myQString==tr("ESRI & ASCII raster"))
     {
         //show the user some instructions about how the files must be on disk
         lblFileSeriesNote->show();
@@ -214,11 +216,20 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 {
     QString myQString;
     QLineEdit *myLineEdit;
+    
+    if (thePageNameQString==tr("Raw data file selection"))
+    {              
+#ifdef QGISDEBUG
+    std::cout << "Opening Raw Data File Selection page" << std::endl;
+#endif   
+    checkInputFilenames();
+    }   
+    
     if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
     {
-#ifdef QGISDEBUG
+//#ifdef QGISDEBUG
         std::cout << "Leaving file selection page" << std::endl;
-#endif
+//#endif
 
         climateDataProcessor->setMeanTempFileName(leMeanTemp->text());
         climateDataProcessor->setMinTempFileName(leMinTemp->text());
@@ -241,10 +252,10 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         climateDataProcessor->setInputFileType(cboFileType->currentText().latin1());
         //Should not need to have the next line here - it slows everythinf down!
         //climateDataProcessor->makeFileGroups(0);
-#ifdef QGISDEBUG
+//#ifdef QGISDEBUG
 
         std::cout << "Getting available calculations list" << std::endl;
-#endif
+//#endif
 
         climateDataProcessor->makeAvailableCalculationsMap();
         // and then update the list box
@@ -252,20 +263,20 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         //List the calculations in  availableCalculationsMap  using an iterator
         QMap<QString, bool> myAvailableCalculationsMap = climateDataProcessor->getAvailableCalculationsMap();
         QMap<QString, bool>::const_iterator myIter;
-#ifdef QGISDEBUG
+//#ifdef QGISDEBUG
 
         std::cout << myAvailableCalculationsMap.size() << " available calculations in list which are:" << std::endl;
         std::cout << climateDataProcessor->getDescription() << std::endl;
-#endif
+//#endif
         //clear the current entries from the box
         lstVariablesToCalc->clear();
         for (myIter=myAvailableCalculationsMap.begin(); myIter != myAvailableCalculationsMap.end(); myIter++)
         {
             if (myIter.data())
             {
-#ifdef QGISDEBUG
+//#ifdef QGISDEBUG
                 std::cout << myIter.key() << QString(": true\n");
-#endif
+//#endif
 
                 //need to add some logic here to select the inserted item
                 lstVariablesToCalc->insertItem(myIter.key());
@@ -274,14 +285,12 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
             {
 #ifdef QGISDEBUG
                 std::cout << myIter->first <<  QString(": false\n");
-#endif
+\#endif
 
                 //need to add some logic here to select the inserted item
                 lstVariablesToCalc->insertItem(myIter.key());
             }
         }
-
-
     } //end of test for page 3
 
     if (thePageNameQString==tr("Summary of processing to be performed")) //we do this when  we arrive at the summary of variables to be calculated
@@ -420,3 +429,230 @@ void CDPWizard::accept()
     saveDefaults();
 
 }
+
+void CDPWizard::checkInputFilenames()
+{
+    if (leMeanTemp->text() =="" && leMinTemp->text() =="" && leMaxTemp->text() ==""  && leDiurnalTemp->text()=="" && leMeanPrecipitation->text()=="" && leFrostDays->text()=="" && leFrostDays->text()=="" && leTotalSolarRadiation->text()=="" && leWindSpeed->text() =="" )
+    {
+      setNextEnabled(currentPage(),false);    
+    }
+    else
+    {
+      setNextEnabled(currentPage(),true);
+    }
+
+}
+
+void CDPWizard::pbtnMeanTemp_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Mean Temperature","Select Mean Temperature");
+  leMeanTemp->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+
+void CDPWizard::pbtnMinTemp_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Minimum Temperature","Select Minumum Temperature");
+  leMinTemp->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+
+void CDPWizard::pbtnMaxTemp_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Max Temperature","Select Max Temperature");
+  leMaxTemp->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+
+void CDPWizard::pbtnDiurnalTemp_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Diurnal Temperature","Select Diurnal Temperature");
+  leDiurnalTemp->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+
+void CDPWizard::pbtnMeanPrecipitation_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Mean Precipitation","Select Mean Precipitation");
+  leMeanPrecipitation->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+
+void CDPWizard::pbtnFrostDays_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Frost Days","Select Frost Days");
+  leFrostDays->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+
+void CDPWizard::pbtnTotalSolarRad_clicked()
+{
+  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Total Solar Radiation","Select Total Solar Radiation");
+  leTotalSolarRadiation->setText(myFileNameQString);
+  checkInputFilenames();
+}
+
+void CDPWizard::pbtnOutputPath_clicked()
+{
+  QString myFileNameQString = QFileDialog::getExistingDirectory(QString::null,0, QString("select dir"), QString("select dir"), true, true);
+  leOutputPath->setText(myFileNameQString);
+}
+
+
+void CDPWizard::spinFirstYearToCalc_valueChanged( int theInt)
+{
+    //make sure the number is valid
+    if (theInt < spinFirstYearInFile->value())
+    {
+	spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+    }
+    if (spinFirstYearToCalc->value() > spinLastYearToCalc->value())
+    {
+	spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+	leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+    }
+    leStartYearSummary->setText(QString::number(theInt));
+}
+
+
+void CDPWizard::spinFirstYearInFile_valueChanged( int theInt)
+{
+   //make sure the number is valid
+    if (theInt > spinFirstYearToCalc->value())
+    {
+	    spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+	    leStartYearSummary->setText(QString::number(spinFirstYearToCalc->value()));
+    }
+    if (theInt > spinLastYearToCalc->value())
+    {
+	    spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+	    leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+    }
+    if (spinFirstYearToCalc->value() > spinLastYearToCalc->value())
+    {
+	    spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+	    leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+    }
+}
+
+
+void CDPWizard::spinLastYearToCalc_valueChanged( int theInt)
+{
+    //make sure the number is valid
+    if (theInt < spinFirstYearToCalc->value())
+    {
+	    spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+    }
+
+    leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+}
+
+void CDPWizard::lstVariablesToCalc_selectionChanged()
+{
+    QString myQString;
+    int selectionSizeInt=0;
+    for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
+    {
+        QListBoxItem *item = lstVariablesToCalc->item( i );
+        // if the item is selected...
+        if ( item->isSelected() )
+        {
+            // increment the count of selected items
+           selectionSizeInt++;
+        }
+    }
+    myQString.sprintf("<p align=\"right\">(%i) Variables selected </p>",selectionSizeInt);
+    lblVariableCount->setText(myQString);
+
+    if (!selectionSizeInt)
+    {
+	    //setNextEnabled(false); //doesnt work :-(
+    }
+    else
+    {
+    	//setNextEnabled(true);  //doesnt work :-(
+    }
+
+}
+
+
+void CDPWizard::pushButton9_clicked()
+{
+
+}
+
+
+void CDPWizard::cboFileType_textChanged( const QString & )
+{
+
+}
+
+
+void CDPWizard::leMeanTemp_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leMinTemp_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leMaxTemp_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leDiurnalTemp_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leMeanPrecipitation_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leFrostDays_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leTotalSolarRadiation_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+void CDPWizard::leWindSpeed_textChanged( const QString & )
+{
+checkInputFilenames();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
