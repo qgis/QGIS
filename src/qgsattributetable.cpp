@@ -316,10 +316,27 @@ void QgsAttributeTable::popupItemSelected(int id)
   mActions.doAction(id, mActionValues, mClickedOnValue);
 }
 
-void QgsAttributeTable::addAttribute(const QString& name, const QString& type)
+bool QgsAttributeTable::addAttribute(const QString& name, const QString& type)
 {
+    //first test if an attribute with the same name is already in the table
+    for(int i=0;i<horizontalHeader()->count();++i)
+    {
+	if(horizontalHeader()->label(i)==name)
+	{
+	    //name conflict
+	    return false;
+	}
+    }
     mAddedAttributes.insert(std::make_pair(name,type));
+#ifdef QGISDEBUG
+    qWarning("inserting attribute "+name+" of type "+type);
+    //add a new column at the end of the table
+    qWarning("numCols: "+QString::number(numCols()));
+#endif
+    insertColumns(numCols());
+    horizontalHeader()->setLabel(numCols()-1,name);
     mEdited=true;
+    return true;
 }
 
 void QgsAttributeTable::deleteAttribute(const QString& name)
@@ -329,6 +346,7 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
     if(iter!=mAddedAttributes.end())
     {
 	mAddedAttributes.erase(iter);
+	removeAttrColumn(name);
     }
     else
     {
@@ -336,16 +354,7 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
 	qWarning("QgsAttributeTable: deleteAttribute "+name);
 #endif
 	mDeletedAttributes.insert(name);
-	//hide the column in the table
-	QHeader* header=horizontalHeader();
-	for(int i=0;i<header->count();++i)
-	{
-	    if(header->label(i)==name)
-	    {
-		removeColumn(i);
-		break;
-	    }
-	}
+	removeAttrColumn(name);
     }
     mEdited=true;
 }
@@ -356,13 +365,17 @@ bool QgsAttributeTable::commitChanges(QgsVectorDataProvider* provider)
 
     if(provider)
     {
-	//change values
-	if(!provider->changeAttributeValues(mChangedValues))
+	//delete columns
+	if(!provider->deleteAttributes(mDeletedAttributes))
 	{
 	    returnvalue=false;
 	}
-	//delete columns
-	if(!provider->deleteAttributes(mDeletedAttributes))
+	if(!provider->addAttributes(mAddedAttributes))
+	{
+	    returnvalue=false;
+	}
+	//change values
+	if(!provider->changeAttributeValues(mChangedValues))
 	{
 	    returnvalue=false;
 	}
@@ -461,4 +474,17 @@ void QgsAttributeTable::clearEditingStructures()
 	iter->second.clear();
     }
     mChangedValues.clear();
+}
+
+void QgsAttributeTable::removeAttrColumn(const QString& name)
+{
+    QHeader* header=horizontalHeader();
+    for(int i=0;i<header->count();++i)
+    {
+	if(header->label(i)==name)
+	{
+	    removeColumn(i);
+	    break;
+	}
+    }
 }

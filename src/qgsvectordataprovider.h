@@ -24,6 +24,12 @@
  */
 class QgsVectorDataProvider : public QgsDataProvider
 {
+ protected:
+    /**List of type names for non-numerical types*/
+    std::list<QString> mNonNumericalTypes;
+    /**List of type names for numerical types*/
+    std::list<QString> mNumericalTypes;
+
  public:
 
     QgsVectorDataProvider();
@@ -167,6 +173,9 @@ class QgsVectorDataProvider : public QgsDataProvider
   {
         // NOP by default
   }
+
+  const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
+  const std::list<QString>& numericalTypes(){return mNumericalTypes;}
 
 
 };
