@@ -117,7 +117,7 @@ void QgsPgGeoprocessing::buffer()
 
             // create the connection string
             QString connInfo = dataSource.left(dataSource.find("table="));
-            QMessageBox::information(0, "Data source", QString("Datasource:%1\n\nConnectionInfo:%2").arg(dataSource).arg(connInfo));
+            std::cerr << "Data source = " << QString("Datasource:%1\n\nConnectionInfo:%2").arg(dataSource).arg(connInfo) << std::endl;
             // get the table name
             QStringList connStrings = QStringList::split(" ", dataSource);
             QStringList tables = connStrings.grep("table=");
@@ -133,113 +133,162 @@ void QgsPgGeoprocessing::buffer()
             QStringList userNames = connStrings.grep("user=");
             QString user = userNames[0];
             user = user.mid(user.find("=") + 1);
-            
+
             // show dialog to fetch buffer distrance, new layer name, and option to
             QgsDlgPgBuffer *bb = new QgsDlgPgBuffer();
             // set the label
             QString lbl = tr("Buffer features in layer %1").arg(tableName);
             bb->setBufferLabel(lbl);
             // set a default output table name
-            bb->setBufferLayerName(tableName.mid(tableName.find(".")+1) + "_buffer");
+            bb->setBufferLayerName(tableName.mid(tableName.find(".") + 1) + "_buffer");
             // set the fields on the dialog box drop-down
             QgsDataProvider *dp = lyr->getDataProvider();
-            std::vector<QgsField> flds = dp->fields();
-            for(int i=0; i < flds.size(); i++){
-              // check the field type -- if its int we can use it
-              if(flds[i].getType().find("int") > -1){
-                bb->addFieldItem(flds[i].getName());
-              }
+            std::vector < QgsField > flds = dp->fields();
+            for (int i = 0; i < flds.size(); i++) {
+                // check the field type -- if its int we can use it
+                if (flds[i].getType().find("int") > -1) {
+                    bb->addFieldItem(flds[i].getName());
+                }
             }
-              // connect to the database
-                PGconn *conn = PQconnectdb((const char *) connInfo);
-                if (PQstatus(conn) == CONNECTION_OK) {
-            // populate the schema drop-down
-            QString schemaSql = QString("select nspname from pg_namespace,pg_user where nspowner = usesysid and usename = '%1'").arg(user);
-            PGresult *schemas = PQexec(conn, (const char *) schemaSql);
-            if(PQresultStatus(schemas) == PGRES_TUPLES_OK){
-              // add the schemas to the drop-down, otherwise just public (the
-              // default) will show up
-              for(int i=0; i < PQntuples(schemas); i++){
-                bb->addSchema(PQgetvalue(schemas,i,0));
-              }
-            }
-            PQclear(schemas);
-            // query the geometry_columns table to get the srid and use it as default
-            QString sridSql = QString("select srid,f_geometry_column from geometry_columns where f_table_schema='%1' and f_table_name='%2'")
-            .arg(schema)
-            .arg(tableName.mid(tableName.find(".")+1));
-            QMessageBox::information(0,"SRID SQL",sridSql);
-            QString geometryCol;
-            PGresult *sridq = PQexec(conn,(const char *)sridSql);
-            if(PQresultStatus(sridq) == PGRES_TUPLES_OK){
-              bb->setSrid(PQgetvalue(sridq,0,0));
-              geometryCol = PQgetvalue(sridq,0,1);
-              bb->setGeometryColumn(geometryCol);
-            }else{
-              bb->setSrid("-1");
-            }
-            PQclear(sridq);
-            // exec the dialog and process if user selects ok
-            if (bb->exec()) {
+            // connect to the database
+            PGconn *conn = PQconnectdb((const char *) connInfo);
+            if (PQstatus(conn) == CONNECTION_OK) {
+                // populate the schema drop-down
+                QString schemaSql =
+                  QString("select nspname from pg_namespace,pg_user where nspowner = usesysid and usename = '%1'").arg(user);
+                PGresult *schemas = PQexec(conn, (const char *) schemaSql);
+                if (PQresultStatus(schemas) == PGRES_TUPLES_OK) {
+                    // add the schemas to the drop-down, otherwise just public (the
+                    // default) will show up
+                    for (int i = 0; i < PQntuples(schemas); i++) {
+                        bb->addSchema(PQgetvalue(schemas, i, 0));
+                    }
+                }
+                PQclear(schemas);
+                // query the geometry_columns table to get the srid and use it as default
+                QString sridSql =
+                  QString("select srid,f_geometry_column from geometry_columns where f_table_schema='%1' and f_table_name='%2'")
+                  .arg(schema)
+                  .arg(tableName.mid(tableName.find(".") + 1));
+                std::cerr << "SRID SQL" << sridSql << std::endl;
+                QString geometryCol;
+                PGresult *sridq = PQexec(conn, (const char *) sridSql);
+                if (PQresultStatus(sridq) == PGRES_TUPLES_OK) {
+                    bb->setSrid(PQgetvalue(sridq, 0, 0));
+                    geometryCol = PQgetvalue(sridq, 0, 1);
+                    bb->setGeometryColumn(geometryCol);
+                } else {
+                    bb->setSrid("-1");
+                }
+                PQclear(sridq);
+                // exec the dialog and process if user selects ok
+                if (bb->exec()) {
                     // determine what column to use as the obj id
                     QString objId = bb->objectIdColumn();
                     QString objIdType = "int";
                     QString objIdValue;
-                    if(objId == "Create unique object id"){
-                      objId = "objectid";
-                      objIdType = "serial";
-                      objIdValue = "0";
-                    }else{
-                      objIdValue = objId;
+                    if (objId == "Create unique object id") {
+                        objId = "objectid";
+                        objIdType = "serial";
+                        objIdValue = "DEFAULT";
+                    } else {
+                        objIdValue = objId;
                     }
+                    // set the schema path (need public to find the postgis
+                    // functions)
+                    PGresult *result = PQexec(conn, "begin work");
+                    PQclear(result);
+                    QString sql = QString("set search_path = '%1','public'").arg(bb->schema());
+                    result = PQexec(conn, (const char *) sql);
+                    PQclear(result);
+                    std::cerr << sql << std::endl;
                     // first create the new table
-                    
-                   QString sql = QString("create table %1.%2 (%3 %4)")
+
+                    sql = QString("create table %1.%2 (%3 %4)")
                       .arg(bb->schema())
                       .arg(bb->bufferLayerName())
                       .arg(objId)
                       .arg(objIdType);
-                      
-                    PGresult *result = PQexec(conn, (const char *) sql);
+                    std::cerr << sql << std::endl;
+                    result = PQexec(conn, (const char *) sql);
+                    std::cerr << "Status from create table is " << PQresultStatus(result) << std::endl;
                     if (PQresultStatus(result) == PGRES_COMMAND_OK) {
+                        PQclear(result);
                         // add the geometry column
                         //<db_name>, <table_name>, <column_name>, <srid>, <type>, <dimension>
-                        sql = QString("select addgeometrycolumn('%1','%2.%4','%4',%5,'%6',%7)")
+                        sql = QString("select addgeometrycolumn('%1','%2','%3',%4,'%5',%6)")
                           .arg(dbname)
-                          .arg(bb->schema())
                           .arg(bb->bufferLayerName())
                           .arg(bb->geometryColumn())
                           .arg(bb->srid())
                           .arg("POLYGON")
                           .arg("2");
-                          QMessageBox::information(0,"AddGeomCol",sql);
-                          PGresult *geoCol = PQexec(conn, (const char *)sql);
-                          if(PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
-                            // do the buffer and insert the features
+                        std::cerr << sql << std::endl;
+                        PGresult *geoCol = PQexec(conn, (const char *) sql);
+                        PQclear(geoCol);
+                        // drop the check constraint based on geometry type
+                        sql = QString("alter table %1.%2 drop constraint \"$2\"")
+                          .arg(bb->schema())
+                          .arg(bb->bufferLayerName());
+                        std::cerr << sql << std::endl;
+                        result = PQexec(conn, (const char *) sql);
+                        PQclear(result);
+                        //   if(PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
+                        // do the buffer and insert the features
+                        if (objId == "objectid") {
+                            sql = QString("insert into %1 (%2) select buffer(%3,%4) from %5")
+                              .arg(bb->bufferLayerName())
+                              .arg(bb->geometryColumn())
+                              .arg(geometryCol)
+                              .arg(bb->bufferDistance().toDouble())
+                              .arg(tableName);
+                        } else {
                             sql = QString("insert into %1 select %2, buffer(%3,%4) from %5")
                               .arg(bb->bufferLayerName())
                               .arg(objIdValue)
                               .arg(geometryCol)
                               .arg(bb->bufferDistance().toDouble())
                               .arg(tableName);
-                              PQexec(conn, (const char *)sql);
-                          }
-                         // add new layer to the map
-                         if(bb->addLayerToMap()){
-                           // create the connection string
-                           QString conn = "dbname=%1 host";
-                         }
+                            std::cerr << sql << std::endl;
+
+                        }
+                        result = PQexec(conn, (const char *) sql);
+                        PQclear(result);
+                        // }
+                        std::cerr << sql << std::endl;
+                        result = PQexec(conn, "end work");
+                        PQclear(result);
+                        result = PQexec(conn, "commit;vacuum");
+                        PQclear(result);
+                        PQfinish(conn);
+                        QMessageBox::information(0, "Add to Map?", "Do you want to add the layer to the map?");
+                        // add new layer to the map
+                        if (bb->addLayerToMap()) {
+                            // create the connection string
+                            QString newLayerSource = dataSource.left(dataSource.find("table="));
+                            std::cerr << "newLayerSource: " << newLayerSource << std::endl;
+                            // add the schema.table and geometry column
+                            /*  newLayerSource += "table=" + bb->schema() + "." + bb->bufferLayerName()  
+                               + " (" + bb->geometryColumn() + ")"; */
+                            std::cerr << "newLayerSource: " << newLayerSource << std::endl;
+                            std::cerr << "Adding new layer using\n\t" << newLayerSource << std::endl;
+                            // host=localhost dbname=gis_data user=gsherman password= table=public.alaska (the_geom)
+                            qI->addVectorLayer(newLayerSource, bb->schema() + "." + bb->bufferLayerName()
+                                               + " (" + bb->geometryColumn() + ")", "postgres");
+
+                        }
                     } else {
                         QMessageBox::critical(0, "Unable to create table",
                                               QString("Failed to create the output table %1").arg(bb->bufferLayerName()));
                     }
-               
-            }
-             } else {
-                    // connection error
-                    QString err = tr("Error connecting to the database");
-                    QMessageBox::critical(0, err, PQerrorMessage(conn));
+
                 }
+                delete bb;
+            } else {
+                // connection error
+                QString err = tr("Error connecting to the database");
+                QMessageBox::critical(0, err, PQerrorMessage(conn));
+            }
         } else {
             QMessageBox::critical(0, "Not a PostgreSQL/PosGIS Layer",
                                   QString

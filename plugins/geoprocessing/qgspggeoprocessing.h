@@ -37,61 +37,61 @@ class QPopupMenu;
 * \brief PostgreSQL/PostGIS plugin for QGIS
 *
 */
-class QgsPgGeoprocessing : public QObject, public QgisPlugin{
-Q_OBJECT
-public:
+class QgsPgGeoprocessing:public QObject, public QgisPlugin
+{
+  Q_OBJECT public:
 /** 
 * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
 * QGIS when it attempts to instantiate the plugin.
 * @param qgis Pointer to the QgisApp object
 * @param qI Pointer to the QgisIface object. 
 */
-	QgsPgGeoprocessing(QgisApp *qgis, QgisIface *qI);
-	/**
+    QgsPgGeoprocessing(QgisApp * qgis, QgisIface * qI);
+    /**
 	* Virtual function to return the name of the plugin. The name will be used when presenting a list 
 	* of installable plugins to the user
 	*/
-	virtual QString name();
-	/**
+    virtual QString name();
+    /**
 	* Virtual function to return the version of the plugin. 
 	*/
-	virtual QString version();
-	/**
+    virtual QString version();
+    /**
 	* Virtual function to return a description of the plugins functions 
 	*/
-	virtual QString description();
-	/**
+    virtual QString description();
+    /**
   * Return the plugin type
   */
-  virtual int type();
-  //! init the gui
-  virtual void initGui();
-  //! Destructor
-	virtual ~QgsPgGeoprocessing();
-public slots:
-  //! buffer features in a layer
-	void buffer();
-  //! unload the plugin
-  void unload();
-private:
+    virtual int type();
+    //! init the gui
+    virtual void initGui();
+    //! Destructor
+      virtual ~ QgsPgGeoprocessing();
+    public slots:
+      //! buffer features in a layer
+    void buffer();
+    //! unload the plugin
+    void unload();
+  private:
 //! Name of the plugin
-	QString pName;
-  //! Version
-	QString pVersion;
-  //! Descrption of the plugin
-	QString pDescription;
-  //! Plugin type as defined in QgisPlugin::PLUGINTYPE
-	int ptype;
-  //! Id of the plugin's menu. Used for unloading
-  int menuId;
-  //! Pointer to our toolbar
-  QToolBar *toolBar;
-  //! Pointer to our menu
-  QMenuBar *menu; 
-  //! Pionter to QGIS main application object
-	QgisApp *qgisMainWindow;
-  //! Pointer to the QGIS interface object
-	QgisIface *qI;
+      QString pName;
+    //! Version
+    QString pVersion;
+    //! Descrption of the plugin
+    QString pDescription;
+    //! Plugin type as defined in QgisPlugin::PLUGINTYPE
+    int ptype;
+    //! Id of the plugin's menu. Used for unloading
+    int menuId;
+    //! Pointer to our toolbar
+    QToolBar *toolBar;
+    //! Pointer to our menu
+    QMenuBar *menu;
+    //! Pionter to QGIS main application object
+    QgisApp *qgisMainWindow;
+    //! Pointer to the QGIS interface object
+    QgisIface *qI;
 };
 
 #endif
