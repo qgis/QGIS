@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>460</width>
-            <height>543</height>
+            <width>466</width>
+            <height>545</height>
         </rect>
     </property>
     <property name="caption">
@@ -47,79 +47,146 @@
                 <attribute name="title">
                     <string>General</string>
                 </attribute>
-                <grid>
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>unnamed</cstring>
+                        <cstring>lblLayerSource</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0">
-                        <property name="name">
-                            <cstring>lblLayerSource</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Layer Source:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>leDisplayName</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>leLayerSource</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>false</bool>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>lblDisplayName</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Display Name:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="4" column="0">
-                        <property name="name">
-                            <cstring>lblDisplayName_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Legend:</string>
-                        </property>
-                    </widget>
-                    <spacer row="6" column="1">
-                        <property name="name">
-                            <cstring>spacer2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>21</width>
-                                <height>270</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>pixmapLegend</cstring>
-                        </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>0</width>
-                                <height>10</height>
-                            </size>
-                        </property>
-                        <property name="scaledContents">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                </grid>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>11</y>
+                            <width>206</width>
+                            <height>16</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Layer Source:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>leDisplayName</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>81</y>
+                            <width>418</width>
+                            <height>22</height>
+                        </rect>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>leLayerSource</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>32</y>
+                            <width>418</width>
+                            <height>22</height>
+                        </rect>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>lblDisplayName</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>60</y>
+                            <width>206</width>
+                            <height>16</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Display Name:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>lblDisplayName_2</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>109</y>
+                            <width>206</width>
+                            <height>16</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Legend:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>pixmapLegend</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>130</y>
+                            <width>418</width>
+                            <height>16</height>
+                        </rect>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>10</height>
+                        </size>
+                    </property>
+                    <property name="scaledContents">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>21</width>
+                            <height>200</height>
+                        </size>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>315</x>
+                            <y>251</y>
+                            <width>21</width>
+                            <height>200</height>
+                        </rect>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>cboxShowDebugInfo</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>7</x>
+                            <y>152</y>
+                            <width>421</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Show debug info as overlay on raster?</string>
+                    </property>
+                </widget>
             </widget>
             <widget class="QWidget">
                 <property name="name">
@@ -344,8 +411,8 @@
                                     <bool>true</bool>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
-&lt;p style="margin-top:14px"&gt;&lt;span style="font-size:14pt;font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:10pt;font-family:Arial"&gt;
+&lt;p style="margin-top:14px"&gt;&lt;span style="font-size:11pt;font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
                                 </property>
@@ -875,6 +942,12 @@
         <receiver>QgsRasterLayerPropertiesBase</receiver>
         <slot>apply()</slot>
     </connection>
+    <connection>
+        <sender>cboxShowDebugInfo</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>QgsRasterLayerPropertiesBase</receiver>
+        <slot>cboxShowDebugInfo_toggled(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsrasterlayerpropertiesbase.ui.h</include>
@@ -892,6 +965,7 @@
     <slot>rbtnSingleBand_toggled( bool )</slot>
     <slot>rbtnThreeBand_toggled( bool )</slot>
     <slot>apply()</slot>
+    <slot>cboxShowDebugInfo_toggled( bool )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
