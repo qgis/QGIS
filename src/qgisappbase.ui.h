@@ -110,3 +110,15 @@ void QgisAppBase::options()
 {
 
 }
+
+
+void QgisAppBase::fileSave()
+{
+
+}
+
+
+void QgisAppBase::fileSaveAs()
+{
+
+}

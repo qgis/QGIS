@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgisAppBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -63,6 +63,10 @@
     </property>
     <item text="File" name="PopupMenu">
         <action name="actionFileOpen"/>
+        <separator/>
+        <action name="actionFileSave"/>
+        <action name="actionFileSaveAs"/>
+        <separator/>
         <action name="actionFileExit"/>
     </item>
     <item text="View" name="PopupMenu_2">
@@ -86,6 +90,8 @@
             <string>File Management Toolbar</string>
         </property>
         <action name="actionFileOpen"/>
+        <action name="actionFileSave"/>
+        <action name="actionFileSaveAs"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -344,6 +350,28 @@
             <string>QGis options</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionFileSave</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image12</iconset>
+        </property>
+        <property name="text">
+            <string>Save Project</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionFileSaveAs</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image13</iconset>
+        </property>
+        <property name="text">
+            <string>Save Project As...</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -381,6 +409,12 @@
     </image>
     <image name="image11">
         <data format="XPM.GZ" length="812">789cbd91cf4ac4301087ef7d8ad0b915d9ed1f160ab28fa07814c44392497692b20aba1e447c773399445ad093e0af2de4cb97992474dfa9fbbb1bd5ed9bd78bbe04ab2ce917d5e1dbf9fcfef078fc68da7154e91d2635b4574dbb5356dd3e3f391e8734863e659e184f15ed81d157f49e510bce43df33a2a0f782c0384fbc9c3132da831d05ada0f7d29918b952ac11b4a3d845b0767615e518bb1ff3ff067e37a037591903f63ba8dddab0c234ed594837c831499df2f55914636a808bb22886728c21de4aeb90e256dda80a440c659f7cca5428e7a6b884ba8f732e1010e012317d59d49b86b80020254124a2982410629ac48548849840a9373f88311651cc266be3b6f9c39ffbbc6ebe00e2c3c340</data>
+    </image>
+    <image name="image12">
+        <data format="XPM.GZ" length="2766">789c8dd4db5222491006e07b9f8230ef8c8d1c68ba1b3a36e6025410f0383a8ecec65e549f0411e424a78d7df7cdaecc2cc5d1dd8d96303ef2afaaacea6ebe1c94ee2ecf4a075ff6e60bb31824a5a46f66a583f46534dafcf1e7d7bff6f63daf447f95b25ff2f67fdbdbbf5a9492d2f9f3382b005302542b553f34d6b97554add7aad65de7d87a59d8aff865f1a9bacef9b6d86763686dd4d073e6f189b82ef58db3ade3bd38115f160e3ce72e3b28cb7ccfeac8b74ec581d48fd5521f581b356ec491d43bce89f5a338957ac399eb59e1d073f5adb3ada3c70e2bb29eefccf59e3810cfad8d1ad66ac3e37f8aa53fdcaaa51e8953b1bd3fb5aa1a56ce3cfe985dd37e4ed4525f8b03f193755c937e60e6ccfd4ed431afbf14475247b5d4c762ede79b5aeaa3c2f5aaabafd4524fd975edb7a396fab9736a9d89b5bf8633d763ebd8d517ce5c3762ed7fe2ccf5a13865c351e1c8afa74960eb0376a4fdd4d5526f8a03b17dfea2c4f9461cb1c138f37ab158d683be33af67df77e33b03db54c435ebc40432df509df2fa15b1917c59cd75381167927f281cfbb1273e14879267a7b149f9f7a925ced8785d3809d400ea2cb4f52b76e249fe4ecd75688a43a97fb74e9350c65f888d3810ebfcf6f72e0d52990f8f9c79be441c8aedef519a39f7c5860d6375cef3550b6761e6895be2507c2636796ec7dbe731cb5c7d26d6f95e9c39afceb80e7367aedbfb9387ce2376eeb1f1561c4addbeff79aec61f62590fa7e29c7db5d00b01cdab3ebadee5634c30c50cf3ff93a7d91fb08f037cc4213ee1081fff233fc6679a7f82539cd11a035a694ed7e7f911a50d65a772bde01257b8c60d6eb1f13e8f4d3cc4233c7669bd5ad8c613ec60177b3bf925a54fe9fbf7f9299e610fcff1022f77f26dbca21db43ec8f77081dff01abbaf79dae50d7ea7caed2fe91fd44907eff0fe6dfff813cb58418fcee57dbe8a3ee5030c77f23e9d7e8d3e758ce83c6edee47d3c070428bad73c9d5a060662ccf1c6fecfa8b32e9d5831fb3d9dc435246fcf13529a77001965b674771f494d1c02d2a84bdae90a03c8dfe62997d1f71d78803e0ca89f36753ca44f87e65ed2e9df1567a379fa664dd94718e2149e6004639cc033cdb1c2254c287dcd7bd53c4c61866d4adcc21cfbb08017eaba811b5852ef3eace84eede6d7b0811524f044e931dde30bdadf96eec80296b0c61e0034769f375af31e36345b199a943d842348ec0e36700c2d687ff27cda51749dd0d809a543ca77f002ba9fbd5f3c8ae60ea93b03390cecfcc9bfe5f9b2fbe9d991a79fbfbf1f8c3a7dddabcdfffdfbde3fce62b2de</data>
+    </image>
+    <image name="image13">
+        <data format="XPM.GZ" length="3598">789cb597496fe3461085effe15c2d46d10d488149b2211e430de3df2a6f1ee20871249495e246f5a2c0ff2df53ec7acdb11320c825d343c09febf5ebaa6ab2497ff9dcba3c3e687dfeb2f63293d94dd12ac6f2dcfa5cce2793d5ef7ffcf663ed531cb7f47fe4d256fce997b54ffd59ab681d3e4cab1aa854a0288bdb71ee39ab5929eb189f79ce3b6d27354b1138f566b45f7327ea64a98fd3025c743b35f38371d23696b1e73cc465651ce2948213c4df1a1ef8b8ab3989920cfa5363d7b638b73d4b922596efc0d8b9ccfc5ec1655ef8f9d39a5d9c2449e4e77f3776ceeaa59e711a995e4660077e0c2c899fbfed5952ac475be01cf139b834a64ecd699c64e8ffa6b16b5b3e34073be7fbcd7bc6a9b37ef3109ce7e65f824b70d5b0d57b60dc8d2c4e55c33eceb3c0627adf8f54fbd7b1fe14c68d9ec0e807fb7e773bddd00f01a37e61cf03e7da99f7cf03a3de6fc66969fbc7afc65dd4234fc6593930ffad864bcf7e7ed649da71dbfb25c619facd53e33c323d8dc10ef397810be7f9daf320dc1f42c6c18f6e8c839e5ec139fcf2c0888fc025d8f7536f6fe42b62acf32ddf0c0cbd2c1bb6fcc112c1efbc618b0fc1a19eb461cbcf3f5f9a5c69cf3b3f1aa711f663659cbbcc3f5fb23096a834bf2e187e320f6c7162b060bd045c213fbf9e24b9c379d1371687fbef045ca1be8786cdcf05463ec7c68318fdef04b6b860bede60e6e7f753b43e3bcf6466ac7a7f3e7204869e4fc0028e1bf67a9982910ff9f903ad07e7c58b71a37f0e5ca5deaf07aeb0fe8671817c6418d8f434f15ca6919d1f7c689ce379e22363b5b7f363653c10dc0febc6c19f6fc129f825b0ad2758af08f9df0546fefe79285c60a9c0a8476e03237fdfefa24c1df2bf3016b1f34d4ae332d4db06231ff2fd295d982ff7c64dfc1a8c7ce8d2b36603be6ad8de8747c6556ccce7e074687a7f7f56699ae3bcde0b6ce723ed180f62f01b58c04fc6458ae7eb162ce00be366fd03b0607d7f3e545519e37cbc04a7783f9c1937fa2e18f5c94d608bf37dc343afdf361ec688ef36ece3eccfcb61da49504f6c5c56763ed0a1f110fbc593c098bf03463f79d1b0c54fc102f6e7e570a8eb59bfd78df57eb7f3fd1eecc02f0ddbfdf404c67ef17360bccfbe1a7783feca3877586f602c95f597ee8c0729be0fe037a8c0f02b04df47bbc6658cefa363e3aac2f7cabe7153ff2638d48ff5ea7f35f7674c2c7a0df4222efc5570e9afca5fc3fe4c55231edbfb996ff896eff89e273aeefe31a63a1ef8919ff8d9ded7aa7ed1dfcf78aed7dfd50b5eaafe9557fcc65fe1bfce1b1a99ebac8d0fda4dbfe2166ff30eeff21e7fb3ef03ee79dd0ceb04edbe6a77f9800ff9888fb9cfdffb33fbde50fd89c637df399f6a1e675ad1395ff0255ff135b7eb9a914fc431777424ec38e52e673a72629e1291d0809fa8a032e8a952bdaaeb66d290531ae918d38d57dfd21dddd384a6b53af8d343edad7e5d75f7de3aa6f4484ff44c2f34a3392d7eead53f81ba4b4bcee8557319d38adee82badd3066dd2d67bbdfa6b26bedabae6052f689b27b443bbeabd47df54dda3fd77fe079af35295a7501ff23d1dd1b17af7e93b9dd0a98eb377fe052de99c37e9822ee98aae75b429a258d51d4a74384a3fe82bcd7904efaedfa103ca281716d2cf68a153d157c9077fad50b5f0163d7875a74f746897652823eac9f89dbed46e8c6b775ec84d9dbbdcca9dde193d1db10c553dfad09f42d5cbda5feed57ba2de3d998aee89ee8bd39f1fb53feff5254fe5499ee54587fe7da41ac75d99d3b92c64a9e3957afcf053df9fc94adefefd3275d0fff7f1bfebfffc75ed2f4cf55fda</data>
     </image>
 </images>
 <connections>
@@ -480,6 +514,18 @@
         <receiver>QgisAppBase</receiver>
         <slot>options()</slot>
     </connection>
+    <connection>
+        <sender>actionFileSave</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>fileSave()</slot>
+    </connection>
+    <connection>
+        <sender>actionFileSaveAs</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>fileSaveAs()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
@@ -503,6 +549,8 @@
     <slot>testPluginFunctions()</slot>
     <slot>actionOptions_activated()</slot>
     <slot>options()</slot>
+    <slot>fileSave()</slot>
+    <slot>fileSaveAs()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

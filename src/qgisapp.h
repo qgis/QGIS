@@ -51,6 +51,7 @@ class QgisApp:public QgisAppBase
 	#endif
 	//! Exit Qgis
 	void fileExit();
+	
 	//! Set map tool to Zoom out
 	void zoomOut();
 	//! Set map tool to Zoom in
@@ -95,6 +96,10 @@ class QgisApp:public QgisAppBase
 	void saveWindowState();
 	//! Restore the window and toolbar state
 	void restoreWindowState();
+	//! Save project
+	void fileSave();
+	//! Save project as
+	void fileSaveAs();
   private:
 //! Popup menu
 	  QPopupMenu * popMenu;

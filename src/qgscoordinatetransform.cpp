@@ -22,7 +22,7 @@
 #include "qgscoordinatetransform.h"
 
 QgsCoordinateTransform::QgsCoordinateTransform(double mupp, double ymax,
-											   double ymin, double xmin):mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin)
+	   double ymin, double xmin):mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin)
 {
 }
 

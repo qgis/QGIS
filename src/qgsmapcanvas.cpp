@@ -118,10 +118,16 @@ void QgsMapCanvas::incrementZpos()
 void QgsMapCanvas::updateZpos()
 {
 }
-QgsMapLayer *QgsMapCanvas::getZpos(int)
+QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 {
-//  QString name = zOrder[index];
-//  return layers[name];
+//  iterate over the layers and return the layer at postion idx
+std::map<QString,QgsMapLayer *>::iterator mi = layers.begin();
+while (mi != layers.end()) {
+	QgsMapLayer *ml = (*mi).second;
+	if (ml->z() == idx)
+		return ml;
+	mi++;
+}
 	return 0;
 }
 
