@@ -1,6 +1,6 @@
 /***************************************************************************
-                          qgssimadialog.h 
- Single marker renderer dialog
+                          qgssimarenderer.cpp 
+ Single marker renderer
                              -------------------
     begin                : March 2004
     copyright            : (C) 2004 by Marco Hugentobler
@@ -17,23 +17,14 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include "qgssimadialogbase.h"
+#include "qgssimarenderer.h"
 
-class QgsVectorLayer;
-
-class QgsSiMaDialog: public QgsSiMaDialogBase
+void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties*)
 {
-    Q_OBJECT
- public:
-    QgsSiMaDialog(QgsVectorLayer* vectorlayer);
-    ~QgsSiMaDialog();
- public slots:
-     void apply();
- protected:
-    QgsVectorLayer* mVectorLayer;
- protected slots:
-     void selectMarker();
- private:
-    /**Default constructor is privat to not use is*/
-     QgsSiMaDialog();
-};
+    
+}
+
+void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f)
+{
+
+}
