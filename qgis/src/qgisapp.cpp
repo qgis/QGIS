@@ -46,6 +46,7 @@
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
 #include "qgsshapefilelayer.h"
+#include "qgslayerproperties.h"
 #include "qgsabout.h"
 #include "qgis.h"
 #include "qgisapp.h"
@@ -396,11 +397,16 @@ else{
 		
 		lyr = ((QgsLegendItem *)li)->layer();
 }
-		QMessageBox::information(this,"Layer Properties",lyr->name());
+		QgsLayerProperties *lp = new QgsLayerProperties(lyr);
+		if(	lp->exec()){
+			// apply changes
+			mapCanvas->render2();
+			}
 }
 void QgisApp::removeLayer(){
 }
 void QgisApp::rightClickLegendMenu(QListViewItem *lvi, const QPoint &pt, int i){
+if(lvi)
 	popMenu->exec(pt);
 }
 
