@@ -143,7 +143,10 @@ void QgsAttributeTableDisplay::stopEditing()
 	int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
 	if(commit==QMessageBox::Yes)
 	{
-	    table()->commitChanges(mLayer);
+	    if(!table()->commitChanges(mLayer))
+	    {
+		QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok);
+	    }
 	}
 	else
 	{
