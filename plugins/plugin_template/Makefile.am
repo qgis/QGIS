@@ -10,9 +10,10 @@
 #
 # $Id$
 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS)
 
-libdir    = ${prefix}/lib/qgis
-pkglibdir = ${libdir}
+plugindir    = ${prefix}/lib/qgis
+pkgplguindir = ${plugindir}
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -27,7 +28,7 @@ pkglibdir = ${libdir}
 	$(UIC) -o $@ -impl $*.uic.h $<
 
 ## target plug-in 
-lib_LTLIBRARIES = [pluginname].la
+plugin_LTLIBRARIES = [pluginname].la
 
 ## qt designer user-interface files
 plugin_UI = pluginguibase.ui
