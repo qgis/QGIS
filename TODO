@@ -1,1 +1,10 @@
-
+TODO,v 1.2 2003/09/07 03:26:15 gsherman Exp
+Planned Changes for 0.0.13
+1. Change z-order of layers in the legend
+2. Symbology in legend
+3. Marker symbols
+4. Select features function for all supported layer types
+5. Raster support
+6. Toolbar reorganization
+7. Architecture change to data provider rather than distinct
+   classes for each data type (e.g. shapefiles, postgres)
