@@ -46,6 +46,7 @@ email                : sherman at mrcc.com
 #include <qlistview.h>
 #include <qlibrary.h>
 #include <qpicture.h>
+#include <qsettings.h>
 #include "qgsrenderer.h"
 #include "qgslegenditem.h"
 #include "qgsdlgvectorlayerproperties.h"
@@ -179,6 +180,14 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
 
   // Default for the popup menu
   popMenu = 0;
+  
+  // Get the update threshold from user settings. We
+  // do this only on construction to avoid the penality of
+  // fetching this each time the layer is drawn. If the user
+  // changes the threshold from the preferences dialog, it will
+  // have no effect on existing layers
+  QSettings settings;
+  updateThreshold = settings.readNumEntry("qgis/map/updateThreshold", 1000);
 }
 
 QgsVectorLayer::~QgsVectorLayer()
@@ -321,9 +330,15 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     while ((fet = dataProvider->getNextFeature(attributesneeded)))
       //while((fet = dataProvider->getNextFeature(attributes)))
     {
-      if(featureCount%1000==0)//copy the drawing buffer every 1000 elements
+      // If update threshold is greater than 0, check to see if
+      // the threshold has been exceeded
+      if(updateThreshold > 0)
       {
-        bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+        //copy the drawing buffer every updateThreshold elements
+        if(featureCount%updateThreshold==0)
+        {
+          bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+        }
       }
 
       //true is necessary for graduated symbol

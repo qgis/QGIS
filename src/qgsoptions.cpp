@@ -44,6 +44,9 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
     cbxHideSplash->setChecked(hideSplashFlag);
     // set the current theme
     cmbTheme->setCurrentText(settings.readEntry("/qgis/theme"));
+    // set the display update threshold
+    spinBoxUpdateThreshold->setValue(settings.readNumEntry("/qgis/map/updateThreshold"));
+        
 }
 //! Destructor
 QgsOptions::~QgsOptions(){}
