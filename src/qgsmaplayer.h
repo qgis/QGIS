@@ -207,6 +207,9 @@ public  slots:
 
   //! set visibility
   void setVisible(bool vis);
+  /*! Slot connected to popup menus of derived classes. Used to indicate whether this layer
+   * should be shown or hidden in the map overview. */
+  void showInOverview(bool);
 
 signals:
 
