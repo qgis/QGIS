@@ -50,6 +50,8 @@ class Plugin:public QObject, public QgisPlugin
   void drawRasterLayer(QString);
   //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
   void drawVectorLayer(QString,QString,QString);
+  // draw some arbitary text to the screen
+  void renderCopyRight();
   //! Refresh the map display using the mapcanvas exported via the plugin interface
   void refreshCanvas();
   //! unload the plugin

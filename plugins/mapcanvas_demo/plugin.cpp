@@ -25,6 +25,7 @@ email                : tim@linfiniti.com
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
+#include <qgsmapcanvas.h>
 #include "plugin.h"
 
 
@@ -36,6 +37,7 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qpixmap.h>
 
 //non qt includes
 #include <iostream>
@@ -89,6 +91,8 @@ void Plugin::initGui()
   QAction *myQActionPointer = new QAction("Mapcanvas Test", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  // This deomstrates how to perform an action everytime the cnavas has drawn itself
+  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete()), this, SLOT(renderCopyRight()));
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Demo");
   toolBarPointer->setLabel("Mapcanvas Test");
@@ -130,6 +134,14 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
 void Plugin::refreshCanvas()
 {
  qGisInterface->getMapCanvas()->refresh();
+}
+
+void Plugin::renderCopyRight()
+{
+ QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
+ //change this!
+ myQPixmap->fill();
+ 
 }
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
