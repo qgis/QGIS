@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include "qgsmarkersymbol.h"
 QgsMarkerSymbol::QgsMarkerSymbol()
 {

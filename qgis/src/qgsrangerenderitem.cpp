@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgsrangerenderitem.h"
 
 QgsRangeRenderItem::QgsRangeRenderItem():QgsRenderItem()
