@@ -4,7 +4,20 @@ AC_INIT
 
 #AC_CONFIG_SRCDIR([libtool])
  
-AM_INIT_AUTOMAKE(qgis, 0.1)
+dnl ---------------------------------------------------------------------------
+dnl version number
+dnl ---------------------------------------------------------------------------
+MAJOR_VERSION=0
+MINOR_VERSION=1
+MICRO_VERSION=0
+EXTRA_VERSION=3
+if test $EXTRA_VERSION -eq 0; then
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel
+else
+   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${EXTRA_VERSION}
+fi
+
+AM_INIT_AUTOMAKE(qgis, ${VERSION})
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -19,6 +32,10 @@ AC_PROG_INSTALL
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
+
+dnl ---------------------------------------------------------------------------
+dnl Qt check
+dnl ---------------------------------------------------------------------------
 gw_CHECK_QT
 
 
