@@ -39,6 +39,17 @@
 /**************************************************************/
 /************************ Request File ************************/
 
+RequestFile::RequestFile()  
+{ 
+  _occurrences = 0; 
+}
+
+RequestFile::~RequestFile() 
+{
+  if (_occurrences)
+    { delete _occurrences; }
+}
+
 /*****************/
 /*** configure ***/
 int
@@ -48,12 +59,13 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 
   _occurrences_set = setOccurrences( om, fp );
   _environment_set = setEnvironment( om, fp );
+  _projection_set  = setProjection ( om, fp );
   _outputmap_set   = setOutputMap  ( om, fp );
   _algorithm_set   = setAlgorithm  ( om, fp );
 
   // Returns ZERO if all was set correctly.
-  return 4 - _occurrences_set - _environment_set -
-    _outputmap_set - _algorithm_set;
+  return 5 - _occurrences_set - _environment_set -
+    _projection_set - _outputmap_set - _algorithm_set;
 }
 
 
@@ -72,10 +84,10 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
   // Get the name of the taxon being modelled!
   char *oc_name = fp.get( "Species" );
 
-  Occurrences *oc = readOccurrences( oc_file, oc_name, oc_cs );
+  _occurrences = readOccurrences( oc_file, oc_name, oc_cs );
 
   // Populate the occurences list from the localities file
-  return om->setOccurrences( oc );
+  return om->setOccurrences( _occurrences );
 }
 
 
@@ -109,6 +121,41 @@ RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
 }
 
 
+/**********************/
+/*** set Projection ***/
+int
+RequestFile::setProjection( OpenModeller *om, FileParser &fp )
+{
+  // Categorical environmental maps and the number of these maps.
+  char *cat_label = "Categorical output map";
+  int  ncat  = fp.count( cat_label );
+  char **cat = 0;
+  if ( ncat )
+    cat = new char *[ncat];
+
+  // Continuous environmental maps and the number of these maps.
+  char *map_label = "Output Map";
+  int  nmap  = fp.count( map_label );
+  char **map = 0;
+  if ( nmap )
+    map = new char *[nmap];
+
+  // It is ok to not set the projection.
+  if ( ! (ncat + nmap) )
+    return 1;
+
+  // Initiate the environment with all maps.
+  fp.getAll( cat_label, cat );
+  fp.getAll( map_label, map );
+  int resp = om->setProjection( ncat, cat, nmap, map );
+
+  delete cat;
+  delete map;
+
+  return resp;
+}
+
+
 /***********************/
 /*** set OutputMap ***/
 int
@@ -127,7 +174,7 @@ RequestFile::setOutputMap( OpenModeller *om, FileParser &fp )
   // parameter file...
   if ( ! file )
     {
-      g_log( "The 'Output file' file name was not speciefied!\n" );
+      g_log( "The 'Output file' file name was not specified!\n" );
       return 0;
     }
   if ( ! format )
@@ -148,7 +195,6 @@ int
 RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
 {
   // Find out which model algorithm is to be used.
-  AlgMetadata **availables = om->availableAlgorithms();
   AlgMetadata *metadata;
   char *alg_id = fp.get( "Algorithm" );
 

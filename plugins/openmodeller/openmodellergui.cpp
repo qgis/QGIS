@@ -542,7 +542,17 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   }
 
   // Prepare the output map
-  mOpenModeller->createMap( mOpenModeller->getEnvironment() );
+  //if ( ! mOpenModeller->createMap( mOpenModeller->getEnvironment() ) )
+  //when projecting model into a different dataset there should be no parameter passed
+  if ( ! mOpenModeller->createMap( ) )
+  {
+    QMessageBox::warning( this,
+            "openModeller Wizard Error","Error projecting model!",
+            mOpenModeller->error()
+            );
+    return;
+  }
+  
   //if all went ok, send notification to the parent app that we are finished
   emit drawRasterLayer(outputFileNameQString+QString(".tif"));
 }

@@ -44,7 +44,8 @@ class RequestFile
 {
 public:
 
-  RequestFile()  {}
+  RequestFile();
+  ~RequestFile();
 
   /** Loads parameters from the request file.
    * 
@@ -55,16 +56,20 @@ public:
    */
   int configure( OpenModeller *om, char *request_file );
 
-  int occurrencesSet()  { return _occurrences_set; }
-  int environmentSet()  { return _environment_set; }
-  int outputMapSet()    { return _outputmap_set; }
-  int algorithmSet()    { return _algorithm_set; }
+  int occurrencesSet() { return _occurrences_set; }
+  int environmentSet() { return _environment_set; }
+  int projectionSet()  { return _projection_set; }
+  int outputMapSet()   { return _outputmap_set; }
+  int algorithmSet()   { return _algorithm_set; }
+
+  Occurrences * getOccurrences() { return _occurrences; }
 
 
 private:
 
   int setOccurrences( OpenModeller *om, FileParser &fp );
   int setEnvironment( OpenModeller *om, FileParser &fp );
+  int setProjection ( OpenModeller *om, FileParser &fp );
   int setOutputMap  ( OpenModeller *om, FileParser &fp );
   int setAlgorithm  ( OpenModeller *om, FileParser &fp );
 
@@ -79,8 +84,11 @@ private:
 
   int _occurrences_set;
   int _environment_set;
+  int _projection_set;
   int _outputmap_set;
   int _algorithm_set;
+
+  Occurrences * _occurrences;
 };
 
 
