@@ -97,6 +97,8 @@ class QgisApp:public QgisAppBase
 	void zoomToLayerExtent();
 	//! test plugin functionality
 	void testPluginFunctions();
+	//! plugin manager
+	void actionPluginManager_activated();
 	//! Save window state
 	void saveWindowState();
 	//! Restore the window and toolbar state
