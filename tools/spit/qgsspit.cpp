@@ -59,10 +59,11 @@ void QgsSpit::removeConnection()
 	QString msg = "Are you sure you want to remove the [" + cmbConnections->currentText() + "] connection and all associated settings?";
 	int result = QMessageBox::information(this, "Confirm Delete", msg, "Yes", "No");
 	if(result == 0){
-		if(settings.removeEntry(key + "/host")) qWarning("/host removed");
+		settings.removeEntry(key + "/host");
 		settings.removeEntry(key + "/database");
 		settings.removeEntry(key + "/username");
 		settings.removeEntry(key + "/password");
+		settings.removeEntry(key + "/save");
 		//if(!success){
 		//	QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
 		//}
