@@ -1,8 +1,16 @@
 QGIS Change Log
-ChangeLog,v 1.33 2004/03/10 23:28:57 gsherman Exp
+ChangeLog,v 1.34 2004/03/22 20:04:56 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
 
+2004-03-22 [mac] 0.1.0devel8
+** s/config.h/qgsconfig.h/
+** qgsconfig.h now has header sentinals
+** now will install headers in $(prefix)/qgis/include and libqis.* library in
+  $(prefix)/lib
+** "src/Makefile" no longer relies on explicit dependencies and uses better
+  naming scheme for created source files
+	
 2004-03-10 [gs] 0.1.0devel7
 ** Added delimited text plugin which provides gui to add delimited text
    layers using the delimited_text data provider
