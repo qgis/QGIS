@@ -447,20 +447,24 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
   }
   
     
-    
+    f = new QgsFeature(*noid);    
+    if(!attlist.empty())
+    {
+      getFeatureAttributes(*noid, f, attlist);
+    } 
+
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry")); 
     if(returnedLength > 0)
     {
       unsigned char *feature = new unsigned char[returnedLength + 1];
       memset(feature, '\0', returnedLength + 1);
       memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
+#ifdef QGSIDEBUG
       int wkbType = *((int *) (feature + 1));
-      f = new QgsFeature(*noid);
+      std::cout << "WKBtype is: " << wkbType << std::endl;
+#endif
+
       f->setGeometry(feature, returnedLength + 1);
-      if(!attlist.empty())
-      {
-        getFeatureAttributes(*noid, f, attlist);
-      } 
 
     }
     else
