@@ -17,11 +17,13 @@
 
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer( ) : QgsDataSource() {
+QgsMapLayer::QgsMapLayer(int type, QString lyrname ) 
+  : QgsDataSource(), layerType(type), layerName(lyrname)
+{
 }
 QgsMapLayer::~QgsMapLayer(){
 } 
-const int QgsMapLayer::getlayerType(){
+const int QgsMapLayer::type(){
   return layerType;
 }
 /** Write property of QString layerName. */
@@ -29,7 +31,7 @@ void QgsMapLayer::setlayerName( const QString& _newVal){
   layerName = _newVal;
 }
 /** Read property of QString layerName. */
-const QString QgsMapLayer::getlayerName(){
+const QString QgsMapLayer::name(){
   return layerName;
 }
 

@@ -27,20 +27,21 @@
 class QgsMapLayer : public QgsDataSource  {
 
 	public: 
-    QgsMapLayer();
+    QgsMapLayer(int type=0, QString lyrname=QString::null );
     virtual ~QgsMapLayer();
   /** Read property of int layerType. */
-  const int getlayerType();
+  const int type();
   /** Write property of QString layerName. */
   void setlayerName( const QString& _newVal);
   /** Read property of QString layerName. */
-  const QString getlayerName();
+  const QString name();
 
 
 public: // Public attributes
 enum LAYERS {
 	VECTOR,
-	RASTER
+	RASTER,
+DATABASE
 }  ;
 
 private: // Private attributes

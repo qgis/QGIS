@@ -22,3 +22,6 @@ QgsMapCanvas::QgsMapCanvas(QWidget *parent, const char *name ) : QWidget(parent,
 }
 QgsMapCanvas::~QgsMapCanvas(){
 }
+void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
+  layers[lyr->name()] = *lyr;
+}

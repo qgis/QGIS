@@ -33,6 +33,7 @@
 #include <iomanip>
 #include "qgsmapcanvas.h"
 #include "qgsdbsourceselect.h"
+#include "qgsdatabaselayer.h"
 #include "qgisapp.h"
 #include "qgisicons.h"
 
@@ -74,11 +75,15 @@ void QgisApp::addLayer(){
     QString connInfo = dbs->connInfo();
     // for each selected table, connect to the datbase, parse the WKT geometry,
     // and build a cavnasitem for it
-    readWKB(connInfo);
+    // readWKB(connInfo,tables);
     QStringList::Iterator it = tables.begin();
     while( it != tables.end() ) {
-    
-    
+      
+      // create the layer
+      QgsDatabaseLayer *lyr = new QgsDatabaseLayer(connInfo, *it);
+      // add it to the mapcanvas collection
+      mapCanvas->addLayer(lyr);
+  
       ++it;
     }
     
@@ -114,7 +119,7 @@ void QgisApp::zoomOut()
   
 
 }
-void QgisApp::readWKB(const char *connInfo){
+void QgisApp::readWKB(const char *connInfo, QStringList tables){
   PgCursor pgc(connInfo, "testcursor");
   // get "endianness"
   char *chkEndian = new char[4];
@@ -127,8 +132,11 @@ void QgisApp::readWKB(const char *connInfo){
 	 else
 	 cout << "Little endian" << endl;
   */
+   QStringList::Iterator it = tables.begin();
+  while( it != tables.end() ) {
+  
   // get the extent of the layer
-  QString esql = "select extent(the_geom) from towns";
+  QString esql = "select extent(the_geom) from " + *it;
   PgDatabase *pd = new PgDatabase(connInfo);
   int result = pd->ExecTuplesOk((const char *)esql);
   QString extent = pd->GetValue(0,0);
@@ -163,7 +171,8 @@ void QgisApp::readWKB(const char *connInfo){
     sql += "'NDR'";
   else
     sql += "'XDR'";
-  sql += ") as features from towns";
+  sql += ") as features from ";
+  sql += *it++;
   cout << sql.c_str() << endl;
   pgc.Declare(sql.c_str(), true);
   int res = pgc.Fetch();
@@ -188,11 +197,7 @@ void QgisApp::readWKB(const char *connInfo){
     char *feature = new char[pgc.GetLength(idx,0) +1]; 
     memset(feature,'\0',pgc.GetLength(idx,0) +1);
     memcpy(feature,pgc.GetValue(idx,0),pgc.GetLength(idx,0) );
-    char endian;
-    endian = *feature;
-    int *geotype;
-    geotype =(int *) (feature + 1);
-   
+  
 
     cout << "Endian is: " << (int)feature[0] << endl;
     cout << "Geometry type is: " << (int)feature[1] << endl;
@@ -207,6 +212,7 @@ void QgisApp::readWKB(const char *connInfo){
     delete[] feature;
   }
   paint.end();
+  }
 }
 
 
