@@ -2881,7 +2881,8 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 {
 #ifdef QGISDEBUG    
   std::cout << "Capture point (clicked on map) at position " << theQgsPoint.stringRep(2) << std::endl;
-#endif      
+#endif  
+
   QClipboard *myClipboard = QApplication::clipboard();
   //if we are on x11 system put text into selection ready for middle button pasting
   if (myClipboard->supportsSelection())

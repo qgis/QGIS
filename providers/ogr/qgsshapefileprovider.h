@@ -136,6 +136,15 @@ class QgsShapeFileProvider:public QgsDataProvider
     */
     bool isValid();
 
+    /**Adds a feature
+       @return true in case of success and false in case of failure*/
+    bool addFeature(QgsFeature* f);
+
+    /**Deletes a feature
+       @param id the number of the feature
+       @return true in case of success and false in case of failure*/
+    bool deleteFeature(int id);
+
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
     std::vector < QgsField > attributeFields;

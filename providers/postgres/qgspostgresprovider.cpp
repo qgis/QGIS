@@ -827,6 +827,17 @@ QString QgsPostgresProvider::maxValue(int position){
 bool QgsPostgresProvider::isValid(){
     return valid;
 }
+
+bool QgsPostgresProvider::addFeature(QgsFeature* f)
+{
+    return false;
+}
+
+bool QgsPostgresProvider::deleteFeature(int id)
+{
+    return false;
+}
+
 /**
 * Check to see if GEOS is available
 */

@@ -1233,3 +1233,14 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       return dataProvider->fields();
     } // QgsVectorLayer::fields()
 
+
+bool QgsVectorLayer::addFeature(QgsFeature* f)
+{
+    if(dataProvider)
+    {
+	int end=endian();
+	memcpy(f->getGeometry(),&end,1);
+	return dataProvider->addFeature(f);
+    }
+    return false;
+}

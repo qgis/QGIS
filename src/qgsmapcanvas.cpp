@@ -48,6 +48,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsscalecalculator.h"
 #include "qgsacetaterectangle.h"
+#include "qgsfeature.h"
 
 /**
    Implementation struct for QgsMapCanvas
@@ -962,7 +963,32 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
         case QGis::CapturePoint:
             QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-            emit xyClickCoordinates(idPoint);
+	    emit xyClickCoordinates(idPoint);
+	    
+	    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+	    
+	    if(vlayer)
+	    {
+		QgsFeature f(0,"WKBPoint");
+		int size=5+2*sizeof(double);
+		unsigned char wkb[size];
+		int wkbtype=QGis::WKBPoint;
+		double x=idPoint.x();
+		double y=idPoint.y();
+		memcpy(&wkb[1],&wkbtype, sizeof(int));
+		memcpy(&wkb[5], &x, sizeof(double));
+		memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+		f.setGeometry(&wkb[0],size);
+
+		vlayer->addFeature(&f);
+		refresh();
+	    }
+	    else
+	    {
+		//not a vectorlayer
+	    }
+
+	    //add the feature to the active layer
 #ifdef QGISDEBUG
             std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
 #endif
