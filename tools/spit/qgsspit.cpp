@@ -45,7 +45,6 @@ int QTableItem::alignment() const
     if ( !ok1 )
         (void)txt.toDouble( &ok2 );
     num = ok1 || ok2;
-
     return ( num ? AlignLeft : AlignLeft ) | AlignVCenter;
 }
 
