@@ -6,6 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
+#include <qcolordialog.h> 
 
 void PluginGuiBase::pbnOK_clicked()
 {
@@ -71,4 +72,10 @@ void PluginGuiBase::btnBottomMiddle_toggled( bool )
 void PluginGuiBase::btnBottomRight_toggled( bool )
 {
 
+}
+
+
+void PluginGuiBase::pbnChangeColour_clicked()
+{
+ frameColour->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
 }

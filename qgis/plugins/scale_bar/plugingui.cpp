@@ -14,10 +14,6 @@
 #include <qspinbox.h> 
 #include <qcheckbox.h> 
 
-//qt includes
-
-//standard includes
-
 PluginGui::PluginGui() : PluginGuiBase()
 {
   
@@ -34,19 +30,13 @@ PluginGui::~PluginGui()
 
 void PluginGui::pbnOK_clicked()
 {
-  //
-  // If you have a produced a raster layer using your plugin, you can ask qgis to 
-  // add it to the view using:
-  // emit drawRasterLayer(QString("layername"));
-  // or for a vector layer
-  // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
-  //
-  //close the dialog
   hide();
   emit changePlacement(cboPlacement->currentText());
   emit changePreferredSize(spnSize->value());
   emit changeEnabled(chkEnable->isChecked());
   emit changeStyle(cboStyle->currentText());
+  emit changeColour(frameColour->paletteBackgroundColor());
+  emit refreshCanvas();
   done(1);
 } 
 void PluginGui::pbnCancel_clicked()
@@ -71,5 +61,25 @@ void PluginGui::setEnabled(bool theBool)
 
 void PluginGui::setStyle(QString theStyleQString)
 {
-  cboStyle->setCurrentText(tr(theStyleQString));
+  if ((tr(theStyleQString))=="Tick Down")
+  {
+    cboStyle->setCurrentItem(0);
+  }
+  else if ((tr(theStyleQString))=="Tick Up")
+  {
+    cboStyle->setCurrentItem(1);
+  }
+  else if ((tr(theStyleQString))=="Box")
+  {
+    cboStyle->setCurrentItem(2);
+  }
+  else if ((tr(theStyleQString))=="Bar")
+  {
+    cboStyle->setCurrentItem(3);
+  }
+}
+
+void PluginGui::setColour(QColor theQColor)
+{
+  frameColour->setPaletteBackgroundColor(theQColor);
 }
