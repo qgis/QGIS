@@ -785,7 +785,14 @@ void QgsGrassModuleInput::updateQgisLayers()
 QStringList QgsGrassModuleInput::options()
 {
     QStringList list;
-    list.push_back( mKey + "=" + mMaps[mLayerComboBox->currentItem()] );
+
+    QString opt(mKey + "=");
+
+    if ( mLayerComboBox->currentItem() <  mMaps.size() ) {
+	opt.append ( mMaps[mLayerComboBox->currentItem()] );
+    }
+    
+    list.push_back( opt );
     return list;
 }
 
