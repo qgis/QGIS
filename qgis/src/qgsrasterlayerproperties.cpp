@@ -933,17 +933,31 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
 #ifdef QGISDEBUG
     std::cout << "Computing histogram minima and maxima" << std::endl;
 #endif
-
+  //somtimes there are more bins than needed
+  //we find out the last on that actully has data in it
+  //so we can discard the rest adn the x-axis scales correctly
+  int myLastBinWithData=0;
   //
   // First scan through to get max and min cell counts from among selected layers' histograms
   //
-  double myMaxVal=0;
-  double myMinVal=0;
+  double myYAxisMax=0;
+  double myYAxisMin=0;
+  int myXAxisMin=0;
+  int myXAxisMax=0;
   for (int myIteratorInt = 1;
             myIteratorInt <= myBandCountInt;
             ++myIteratorInt)
   {
     RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    //calculate the x axis min max
+    if (myRasterBandStats.minValDouble < myXAxisMin || myIteratorInt==1)
+    {
+      myXAxisMin=static_cast < unsigned int >(myRasterBandStats.minValDouble);
+    }
+    if (myRasterBandStats.maxValDouble < myXAxisMax || myIteratorInt==1)
+    {
+      myXAxisMax=static_cast < unsigned int >(myRasterBandStats.maxValDouble);
+    }
     QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
@@ -958,30 +972,34 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       for (int myBin = 0; myBin <BINCOUNT; myBin++)
       {
         int myBinValue = myRasterBandStats.histogramVector->at(myBin);
+        if (myBinValue > 0 && myBin > myLastBinWithData)
+        {
+          myLastBinWithData = myBin;
+        }
 #ifdef QGISDEBUG
-        std::cout << "Testing if " << myBinValue << " is less than " << myMinVal  << "or greater then " <<myMaxVal  <<  std::endl;
+        std::cout << "Testing if " << myBinValue << " is less than " << myYAxisMin  << "or greater then " <<myYAxisMax  <<  std::endl;
 #endif
         if ( myBin==0)
         {
-          myMinVal = myBinValue;
-          myMaxVal = myBinValue;
+          myYAxisMin = myBinValue;
+          myYAxisMax = myBinValue;
         }
 
-        if (myBinValue  > myMaxVal)
+        if (myBinValue  > myYAxisMax)
         {
-          myMaxVal = myBinValue;
+          myYAxisMax = myBinValue;
         }
-        if ( myBinValue < myMinVal)
+        if ( myBinValue < myYAxisMin)
         {
-          myMinVal = myBinValue;
+          myYAxisMin = myBinValue;
         }
       }
     }
   }
 
 #ifdef QGISDEBUG
-          std::cout << "max " << myMaxVal << std::endl;
-          std::cout << "min " << myMinVal << std::endl;
+          std::cout << "max " << myYAxisMax << std::endl;
+          std::cout << "min " << myYAxisMin << std::endl;
 #endif
   
 
@@ -996,10 +1014,19 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   QFontMetrics myFontMetrics( myQFont );
   myPainter.setFont(myQFont);
   myPainter.setPen(Qt::black);
-  QString myYMaxLabel= QString::number(static_cast < unsigned int >(myMaxVal));
-  QString myXMaxLabel= QString::number(BINCOUNT);
+  QString myYMaxLabel= QString::number(static_cast < unsigned int >(myYAxisMax));
+  QString myXMinLabel= QString::number(myXAxisMin);
+  QString myXMaxLabel= QString::number(myXAxisMax);
   //calculate the gutters
-  int myYGutterWidth = myFontMetrics.width(myYMaxLabel )+2; //add 2 so we can have 1 pix whitespace either side of label
+  int myYGutterWidth=0;
+  if (myFontMetrics.width(myXMinLabel) < myFontMetrics.width(myYMaxLabel))
+  {
+    myYGutterWidth = myFontMetrics.width(myYMaxLabel )+2; //add 2 so we can have 1 pix whitespace either side of label
+  }
+  else
+  {
+    myYGutterWidth = myFontMetrics.width(myXMinLabel )+2; //add 2 so we can have 1 pix whitespace either side of label
+  }
   int myXGutterHeight = myFontMetrics.height()+2;
   int myXGutterWidth = myFontMetrics.width(myXMaxLabel)+1;//1 pix whtispace from right edge of image
   
@@ -1020,21 +1047,21 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   if (rasterLayer->getRasterLayerType()
           == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    QPointArray myPointArray(BINCOUNT);
+    QPointArray myPointArray(myLastBinWithData);
     QgsColorTable *myColorTable=rasterLayer->colorTable(1);
 #ifdef QGISDEBUG
     std::cout << "Making paletted image histogram....computing band stats" << std::endl;
 #endif
 
     RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(1);
-    for (int myBin = 0; myBin <BINCOUNT; myBin++)
+    for (int myBin = 0; myBin < myLastBinWithData; myBin++)
     {
       double myBinValue = myRasterBandStats.histogramVector->at(myBin);
       //NOTE: Int division is 0 if the numerator is smaller than the denominator.
       //hence the casts
-      int myX = static_cast<int>((((double)myGraphImageWidth)/((double)BINCOUNT))*myBin);
+      int myX = static_cast<int>((((double)myGraphImageWidth)/((double)myLastBinWithData))*myBin);
       //height varies according to freq. and scaled to greatet value in all layers
-      int myY = static_cast<int>(((double)myBinValue/(double)myMaxVal)*myGraphImageHeight);
+      int myY = static_cast<int>(((double)myBinValue/(double)myYAxisMax)*myGraphImageHeight);
       //determin which color to draw the bar
       int c1, c2, c3;
       bool found = myColorTable->color ( myBinValue, &c1, &c2, &c3 );
@@ -1072,15 +1099,15 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       if ( myItem->isSelected() )
       {
 
-        QPointArray myPointArray(BINCOUNT);
-        for (int myBin = 0; myBin <BINCOUNT; myBin++)
+        QPointArray myPointArray(myLastBinWithData);
+        for (int myBin = 0; myBin <myLastBinWithData; myBin++)
         {
           double myBinValue = myRasterBandStats.histogramVector->at(myBin);
           //NOTE: Int division is 0 if the numerator is smaller than the denominator.
           //hence the casts
-          int myX = static_cast<int>((((double)myGraphImageWidth)/((double)BINCOUNT))*myBin);
+          int myX = static_cast<int>((((double)myGraphImageWidth)/((double)myLastBinWithData))*myBin);
           //height varies according to freq. and scaled to greatet value in all layers
-          int myY = static_cast<int>(((double)myBinValue/(double)myMaxVal)*myGraphImageHeight);
+          int myY = static_cast<int>(((double)myBinValue/(double)myYAxisMax)*myGraphImageHeight);
           //adjust for image origin being top left
 #ifdef QGISDEBUG
           std::cout << "-------------" << std::endl;
@@ -1217,8 +1244,8 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
 
   //now draw the axis labels onto the graph
   myPainter.drawText(1, 12, myYMaxLabel);
-  myPainter.drawText(1, myImageHeight-myXGutterHeight, QString::number(static_cast < unsigned int >(myMinVal)));
-  myPainter.drawText(myYGutterWidth,myImageHeight-1 , "0");
+  myPainter.drawText(1, myImageHeight-myXGutterHeight, QString::number(static_cast < unsigned int >(myYAxisMin)));
+  myPainter.drawText(myYGutterWidth,myImageHeight-1 , myXMinLabel);
   myPainter.drawText( myImageWidth-myXGutterWidth,myImageHeight-1, myXMaxLabel );
 
   //
