@@ -1637,6 +1637,34 @@ void QgisApp::attributeTable()
         }
     }
 }
+
+void QgisApp::deleteSelected()
+{
+   QListViewItem *li = mMapLegend->currentItem();
+   if (li)
+   {
+       QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) li)->layer());
+       if(vlayer)
+       {
+	   if(!vlayer->deleteSelectedFeatures())
+	   {
+	       QMessageBox::information(this, tr("Problem deleting features"),
+				    tr("A problem occured during deletion of features"));
+	   }
+       }
+       else
+       {
+	   QMessageBox::information(this, tr("No Vector Layer Selected"),
+				    tr("Deleting features only works on vector layers")); 
+       }
+   }
+   else
+   {
+      QMessageBox::information(this, tr("No Layer Selected"),
+                                   tr("To delete features, you must select a vector layer in the legend")); 
+   }
+}
+
 void QgisApp::capturePoint()
 {
 
