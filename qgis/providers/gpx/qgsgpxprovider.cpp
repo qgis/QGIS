@@ -624,6 +624,13 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 	Routepoint rpt;
 	std::memcpy(&rpt.lon, geo + 9 + 16 * i, sizeof(double));
 	std::memcpy(&rpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
+
+	// update the route bounds
+	rte.xMin = (rte.xMin < rpt.lon ? rte.xMin : rpt.lon);
+	rte.xMax = (rte.xMax > rpt.lon ? rte.xMax : rpt.lon);
+	rte.yMin = (rte.yMin < rpt.lat ? rte.yMin : rpt.lat);
+	rte.yMax = (rte.yMax > rpt.lat ? rte.yMax : rpt.lat);
+
 	rte.points.push_back(rpt);
       }
     }
@@ -637,6 +644,13 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 	Trackpoint tpt;
 	std::memcpy(&tpt.lon, geo + 9 + 16 * i, sizeof(double));
 	std::memcpy(&tpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
+	
+	// update the track bounds
+	trk.xMin = (trk.xMin < tpt.lon ? trk.xMin : tpt.lon);
+	trk.xMax = (trk.xMax > tpt.lon ? trk.xMax : tpt.lon);
+	trk.yMin = (trk.yMin < tpt.lat ? trk.yMin : tpt.lat);
+	trk.yMax = (trk.yMax > tpt.lat ? trk.yMax : tpt.lat);
+
 	trkSeg.points.push_back(tpt);
       }
       trk.segments.push_back(trkSeg);

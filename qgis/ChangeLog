@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.169 2004/08/19 05:49:30 gsherman Exp
+ChangeLog,v 1.170 2004/08/20 12:29:06 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-20 [larsl] 0.4.0devel14
+** Forgot to calculate bounds for user-added routes and tracks in the GPX
+   provider, which caused unpredictable drawing bugs since selection wouldn't
+   work. Fixed.
 
 2004-08-14 [gsherman] 0.4.0devel13
 ** Moved common toobar icons to drop-down tool menus. This includes the
