@@ -38,45 +38,46 @@ QgsLegend::~QgsLegend()
 
 void QgsLegend::setMapCanvas(QgsMapCanvas * canvas)
 {
-	map = canvas;
+  map = canvas;
 }
 
 QgsMapLayer *QgsLegend::currentLayer()
 {
-	QgsLegendItem *li = (QgsLegendItem *) listView->currentItem();
+  QgsLegendItem *li = (QgsLegendItem *) listView->currentItem();
 
-	if (li)
-		return li->layer();
-	else
-		return 0;
+  if (li)
+    return li->layer();
+  else
+    return 0;
 
 
 }
 
 QString QgsLegend::currentLayerName()
 {
-	QListViewItem *li = listView->currentItem();
-	if (li)
-		return li->text(0);
+  QListViewItem *li = listView->currentItem();
+  if (li)
+    return li->text(0);
 
-	else
-		return 0;
+  else
+    return 0;
 }
 
 void QgsLegend::update()
 {
 // clear the legend
-	listView->clear();
+  listView->clear();
 
 
-	std::list < QString >::iterator zi = map->zOrder.begin();
-	while (zi != map->zOrder.end()) {
-		QgsMapLayer *lyr = map->layerByName(*zi);
-		QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);	// lyr->name(), QCheckListItem::CheckBox );
-		lyr->setLegendItem(lvi);
-		lvi->setPixmap(0,*lyr->legendPixmap());
-		zi++;
-	}
+  std::list < QString >::iterator zi = map->zOrder.begin();
+  while (zi != map->zOrder.end())
+    {
+      QgsMapLayer *lyr = map->layerByName(*zi);
+      QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);  // lyr->name(), QCheckListItem::CheckBox );
+      lyr->setLegendItem(lvi);
+      lvi->setPixmap(0, *lyr->legendPixmap());
+      zi++;
+    }
 
 
 // Get the list of layers in order from the

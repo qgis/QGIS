@@ -16,25 +16,27 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
- 
- #include <qstring.h>
- #include "../plugins/qgisplugin.h"
- #include "qgspluginmetadata.h"
- QgsPluginMetadata::QgsPluginMetadata(QString _libraryPath, QString _name,
-  QgisPlugin *_plugin) : libraryPath(_libraryPath), m_name(_name), m_plugin(_plugin)
-  {
-  
-  }
-  QString QgsPluginMetadata::name()
-  {
-    return m_name;
-  }
-  QString QgsPluginMetadata::library()
-  {
-    return libraryPath;
-  }
-  QgisPlugin * QgsPluginMetadata::plugin()
-  {
-    return m_plugin;
-  }
-  
+
+#include <qstring.h>
+#include "../plugins/qgisplugin.h"
+#include "qgspluginmetadata.h"
+QgsPluginMetadata::QgsPluginMetadata(QString _libraryPath, QString _name, QgisPlugin * _plugin):libraryPath(_libraryPath), m_name(_name),
+m_plugin(_plugin)
+{
+
+}
+
+QString QgsPluginMetadata::name()
+{
+  return m_name;
+}
+
+QString QgsPluginMetadata::library()
+{
+  return libraryPath;
+}
+
+QgisPlugin *QgsPluginMetadata::plugin()
+{
+  return m_plugin;
+}

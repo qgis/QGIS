@@ -31,60 +31,59 @@ QgsPoint::~QgsPoint()
 {
 }
 
-double QgsPoint::x() const
+double QgsPoint::x() const const
 {
-	return m_x;
+  return m_x;
 }
 
-double QgsPoint::y() const
+double QgsPoint::y() const const
 {
-	return m_y;
+  return m_y;
 }
 
 int QgsPoint::xToInt()
 {
-	return (int) m_x;
+  return (int) m_x;
 }
 
 int QgsPoint::yToInt()
 {
-	return (int) m_y;
+  return (int) m_y;
 }
 
-QString QgsPoint::stringRep()  const
+QString QgsPoint::stringRep() const const
 {
-	QString rep;
-	QTextOStream ot(&rep);
-	ot.precision(12);
-	ot << m_x << ", " << m_y;
-	return rep;
+  QString rep;
+  QTextOStream ot(&rep);
+  ot.precision(12);
+  ot << m_x << ", " << m_y;
+  return rep;
 }
 
 // operators
 bool QgsPoint::operator==(const QgsPoint & other)
 {
-	if ((m_x == other.x()) && (m_y == other.y()))
-		return true;
-	else
-		return false;
+  if ((m_x == other.x()) && (m_y == other.y()))
+    return true;
+  else
+    return false;
 }
 
 bool QgsPoint::operator!=(const QgsPoint & other)
 {
-	if ((m_x == other.x()) && (m_y == other.y()))
-		return false;
-	else
-		return true;
+  if ((m_x == other.x()) && (m_y == other.y()))
+    return false;
+  else
+    return true;
 }
 
 QgsPoint & QgsPoint::operator=(const QgsPoint & other)
 {
-	if (&other != this) {
-		m_x = other.x();
-		m_y = other.y();
-	}
+  if (&other != this)
+    {
+      m_x = other.x();
+      m_y = other.y();
+    }
 
-	return *this;
+  return *this;
 }
-
-

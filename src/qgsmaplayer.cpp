@@ -23,19 +23,19 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source)
-  :internalName(lyrname), layerType(type), dataSource(source), m_legendItem(0)
+QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):internalName(lyrname), layerType(type), dataSource(source),
+m_legendItem(0)
 {
-	// assume the layer is valid (data source exists and can be used)
-	// until we learn otherwise
-	valid = true;
-	m_visible = true;
-	// Set the display name = internal name
+  // assume the layer is valid (data source exists and can be used)
+  // until we learn otherwise
+  valid = true;
+  m_visible = true;
+  // Set the display name = internal name
   layerName = internalName;
 
-	// Generate the unique ID of this layer
-	QDateTime dt = QDateTime::currentDateTime();
-	ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
+  // Generate the unique ID of this layer
+  QDateTime dt = QDateTime::currentDateTime();
+  ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -43,45 +43,46 @@ QgsMapLayer::~QgsMapLayer()
 }
 const int QgsMapLayer::type()
 {
-	return layerType;
+  return layerType;
 }
 
 /** Get this layer's unique ID */
 QString QgsMapLayer::getLayerID()
 {
-	return ID;
+  return ID;
 }
 
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
-	layerName = _newVal;
+  layerName = _newVal;
 }
 
 /** Read property of QString layerName. */
 const QString QgsMapLayer::name()
 {
-	return layerName;
+  return layerName;
 }
 
 QString QgsMapLayer::source()
 {
-	return dataSource;
+  return dataSource;
 }
+
 QString QgsMapLayer::sourceName()
 {
   return internalName;
 }
 const QgsRect QgsMapLayer::extent()
 {
-	return layerExtent;
+  return layerExtent;
 }
 
 QgsRect QgsMapLayer::calculateExtent()
 {
-    //just to prevent any crashes
-    QgsRect rect(DBL_MAX,DBL_MAX,DBL_MIN,DBL_MIN);
-    return rect;
+  //just to prevent any crashes
+  QgsRect rect(DBL_MAX, DBL_MAX, DBL_MIN, DBL_MIN);
+  return rect;
 }
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
@@ -97,68 +98,69 @@ void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *)
 /** Read property of QgsSymbol * m_symbol. */
 QgsSymbol *QgsMapLayer::symbol()
 {
-	return m_symbol;
+  return m_symbol;
 }
 
 /** Write property of QgsSymbol * m_symbol. */
 void QgsMapLayer::setSymbol(QgsSymbol * _newVal)
 {
-	m_symbol = _newVal;
+  m_symbol = _newVal;
 }
 
 /** Read property of QString labelField. */
 const QString & QgsMapLayer::labelField()
 {
-	return m_labelField;
+  return m_labelField;
 }
 
 /** Write property of QString labelField. */
 void QgsMapLayer::setlabelField(const QString & _newVal)
 {
-	m_labelField = _newVal;
+  m_labelField = _newVal;
 }
 
 bool QgsMapLayer::isValid()
 {
-	return valid;
+  return valid;
 }
 
 bool QgsMapLayer::visible()
 {
-	return m_visible;
+  return m_visible;
 }
 
 void QgsMapLayer::setVisible(bool vis)
 {
-	m_visible = vis;
-	emit visibilityChanged();
-}	 /** Read property of int featureType. */
+  m_visible = vis;
+  emit visibilityChanged();
+}  /** Read property of int featureType. */
 const int &QgsMapLayer::featureType()
 {
-	return geometryType;
+  return geometryType;
 }
 
 /** Write property of int featureType. */
 void QgsMapLayer::setFeatureType(const int &_newVal)
 {
-	geometryType = _newVal;
+  geometryType = _newVal;
 }
 
-QPixmap* QgsMapLayer::legendPixmap()
+QPixmap *QgsMapLayer::legendPixmap()
 {
-    return &m_legendPixmap;
+  return &m_legendPixmap;
 }
 
-QgsLegendItem* QgsMapLayer::legendItem()
+QgsLegendItem *QgsMapLayer::legendItem()
 {
-    return m_legendItem;
+  return m_legendItem;
 }
 
-void QgsMapLayer::setLegendItem(QgsLegendItem* li)
+void QgsMapLayer::setLegendItem(QgsLegendItem * li)
 {
-    m_legendItem=li;
+  m_legendItem = li;
 }
-QPopupMenu * QgsMapLayer::contextMenu(){
+
+QPopupMenu *QgsMapLayer::contextMenu()
+{
   return 0;
 }
-

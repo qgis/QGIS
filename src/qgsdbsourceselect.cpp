@@ -34,12 +34,12 @@ extern "C"
 {
 #include <libpq-fe.h>
 }
-QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, QWidget *parent, const char *name)
-  :QgsDbSourceSelectBase(parent, name), qgisApp(app)
+QgsDbSourceSelect::QgsDbSourceSelect(QgisApp * app, QWidget * parent, const char *name):QgsDbSourceSelectBase(parent, name),
+qgisApp(app)
 {
-    btnAdd->setEnabled(false);
-	populateConnectionList();
-	// connect the double-click signal to the addSingleLayer slot in the parent
+  btnAdd->setEnabled(false);
+  populateConnectionList();
+  // connect the double-click signal to the addSingleLayer slot in the parent
 
 
 }
@@ -47,174 +47,195 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, QWidget *parent, const char *
 QgsDbSourceSelect::~QgsDbSourceSelect()
 {
 }
-void QgsDbSourceSelect::populateConnectionList(){
-	QSettings settings;
-	QStringList keys = settings.subkeyList("/Qgis/connections");
-	QStringList::Iterator it = keys.begin();
-	cmbConnections->clear();
-	while (it != keys.end()) {
-		cmbConnections->insertItem(*it);
-		++it;
-	}
+void QgsDbSourceSelect::populateConnectionList()
+{
+  QSettings settings;
+  QStringList keys = settings.subkeyList("/Qgis/connections");
+  QStringList::Iterator it = keys.begin();
+  cmbConnections->clear();
+  while (it != keys.end())
+    {
+      cmbConnections->insertItem(*it);
+      ++it;
+    }
 }
 void QgsDbSourceSelect::addNewConnection()
 {
 
-	QgsNewConnection *nc = new QgsNewConnection();
+  QgsNewConnection *nc = new QgsNewConnection();
 
-	if (nc->exec()) {
-		populateConnectionList();
-	}
+  if (nc->exec())
+    {
+      populateConnectionList();
+    }
 }
 void QgsDbSourceSelect::editConnection()
 {
 
-	QgsNewConnection *nc = new QgsNewConnection(cmbConnections->currentText());
+  QgsNewConnection *nc = new QgsNewConnection(cmbConnections->currentText());
 
-	if (nc->exec()) {
-		nc->saveConnection();
-	}
+  if (nc->exec())
+    {
+      nc->saveConnection();
+    }
 }
 
-void QgsDbSourceSelect::deleteConnection(){
-	QSettings settings;
-	QString key = "/Qgis/connections/" + cmbConnections->currentText();
-	QString msg = tr("Are you sure you want to remove the ") + cmbConnections->currentText() + tr(" connection and all associated settings?");
-	int result = QMessageBox::information(this, tr("Confirm Delete"), msg, tr("Yes"), tr("No"));
-	if(result == 0){
-		settings.removeEntry(key + "/host");
-		settings.removeEntry(key + "/database");
-		settings.removeEntry(key + "/username");
-		settings.removeEntry(key + "/password");
-		//if(!success){
-		//	QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
-		//}
-		cmbConnections->removeItem(cmbConnections->currentItem());// populateConnectionList();
-	}
+void QgsDbSourceSelect::deleteConnection()
+{
+  QSettings settings;
+  QString key = "/Qgis/connections/" + cmbConnections->currentText();
+  QString msg =
+    tr("Are you sure you want to remove the ") + cmbConnections->currentText() + tr(" connection and all associated settings?");
+  int result = QMessageBox::information(this, tr("Confirm Delete"), msg, tr("Yes"), tr("No"));
+  if (result == 0)
+    {
+      settings.removeEntry(key + "/host");
+      settings.removeEntry(key + "/database");
+      settings.removeEntry(key + "/username");
+      settings.removeEntry(key + "/password");
+      //if(!success){
+      //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
+      //}
+      cmbConnections->removeItem(cmbConnections->currentItem());  // populateConnectionList();
+    }
 }
 
 void QgsDbSourceSelect::addTables()
 {
-	//store the table info
-	for (int idx = 0; idx < lstTables->numRows(); idx++) {
-		if (lstTables->isSelected(idx))
-			m_selectedTables += lstTables->text(idx);
-	}
+  //store the table info
+  for (int idx = 0; idx < lstTables->numRows(); idx++)
+    {
+      if (lstTables->isSelected(idx))
+        m_selectedTables += lstTables->text(idx);
+    }
 
 // BEGIN CHANGES ECOS
-    if( m_selectedTables.empty() == true )
-        QMessageBox::information(this, tr("Select Table"),tr("You must select a table in order to add a Layer."));
-    else
-	    accept();
+  if (m_selectedTables.empty() == true)
+    QMessageBox::information(this, tr("Select Table"), tr("You must select a table in order to add a Layer."));
+  else
+    accept();
 // END CHANGES ECOS
 }
 
 void QgsDbSourceSelect::dbConnect()
 {
-	// populate the table list
-	QSettings settings;
+  // populate the table list
+  QSettings settings;
 
-	QString key = "/Qgis/connections/" + cmbConnections->currentText();
-	QString connString = "host=";
-	QString host = settings.readEntry(key + "/host");
-	connString += host;
-	connString += " dbname=";
-	QString database = settings.readEntry(key + "/database");
-	connString += database + " user=";
-	QString username = settings.readEntry(key + "/username");
-	connString += username;
-	QString password = settings.readEntry(key + "/password");
+  QString key = "/Qgis/connections/" + cmbConnections->currentText();
+  QString connString = "host=";
+  QString host = settings.readEntry(key + "/host");
+  connString += host;
+  connString += " dbname=";
+  QString database = settings.readEntry(key + "/database");
+  connString += database + " user=";
+  QString username = settings.readEntry(key + "/username");
+  connString += username;
+  QString password = settings.readEntry(key + "/password");
   bool makeConnection = true;
-	if (password == QString::null) {
-		// get password from user
-	    makeConnection = false;
-		QString password = QInputDialog::getText(tr("Password for ") + database + "@" + host,
-													 tr("Please enter your password:"),
-													 QLineEdit::Password, QString::null, &makeConnection, this);
-		
-		//  allow null password entry in case its valid for the database
-    }
-		connString += " password=" + password;
-	  if(makeConnection){
-	m_connInfo = connString;	//host + " " + database + " " + username + " " + password;
-	//qDebug(m_connInfo);
-	PGconn *pd = PQconnectdb((const char *) m_connInfo);
-//  std::cout << pd->ErrorMessage();
-	if (PQstatus(pd) == CONNECTION_OK) {
-		// clear the existing entries
-		lstTables->clear();
-		// create the pixmaps for the layer types
-		QPixmap pxPoint;
-		pxPoint = QPixmap(point_layer_xpm);
-		QPixmap pxLine;
-		pxLine = QPixmap(line_layer_xpm);
-		QPixmap pxPoly;
-		pxPoly = QPixmap(polygon_layer_xpm);
-		//qDebug("Connection succeeded");
-		// get the list of tables
-		QString sql = "select * from geometry_columns";
-// where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
-		sql += " order by f_table_name";
-		//qDebug("Fetching tables using: " + sql);
-		PGresult *result = PQexec(pd,(const char *) sql);
-		if (result) {
-			QString msg;
-			QTextOStream(&msg) << "Fetched " << PQntuples(result) << " tables from database";
-			//qDebug(msg);
-			for (int idx = 0; idx < PQntuples(result); idx++) {
-				QString v = "";
-				if ( strlen(PQgetvalue(result, idx,PQfnumber(result,"f_table_catalog")) )) {
-					v +=  PQgetvalue(result, idx,PQfnumber(result, "f_table_catalog"));
-					v +=  ".";
-				}
-				if ( strlen(PQgetvalue(result,idx,PQfnumber(result, "f_table_schema") ))) {
-					v += 	PQgetvalue(result,idx, PQfnumber(result,"f_table_schema"));
-					v +=  ".";
-				}
-				v +=	PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
-				v +=  " (";
-				v += 	PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-				v +=  ")";
+  if (password == QString::null)
+    {
+      // get password from user
+      makeConnection = false;
+      QString password = QInputDialog::getText(tr("Password for ") + database + "@" + host,
+                                               tr("Please enter your password:"),
+                                               QLineEdit::Password, QString::null, &makeConnection, this);
 
-				QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
-				QPixmap *p;
-				if (type == "POINT" || type == "MULTIPOINT")
-					p = &pxPoint;
-				else if (type == "MULTIPOLYGON" || type == "POLYGON")
-					p = &pxPoly;
-				else if (type == "LINESTRING" || type == "MULTILINESTRING")
-					p = &pxLine;
-				else
-					p = 0;
-                                if ( p != 0 )
-					lstTables->insertItem(*p, v);
-			}
+      //  allow null password entry in case its valid for the database
+    }
+  connString += " password=" + password;
+  if (makeConnection)
+    {
+      m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
+      //qDebug(m_connInfo);
+      PGconn *pd = PQconnectdb((const char *) m_connInfo);
+//  std::cout << pd->ErrorMessage();
+      if (PQstatus(pd) == CONNECTION_OK)
+        {
+          // clear the existing entries
+          lstTables->clear();
+          // create the pixmaps for the layer types
+          QPixmap pxPoint;
+          pxPoint = QPixmap(point_layer_xpm);
+          QPixmap pxLine;
+          pxLine = QPixmap(line_layer_xpm);
+          QPixmap pxPoly;
+          pxPoly = QPixmap(polygon_layer_xpm);
+          //qDebug("Connection succeeded");
+          // get the list of tables
+          QString sql = "select * from geometry_columns";
+// where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
+          sql += " order by f_table_name";
+          //qDebug("Fetching tables using: " + sql);
+          PGresult *result = PQexec(pd, (const char *) sql);
+          if (result)
+            {
+              QString msg;
+              QTextOStream(&msg) << "Fetched " << PQntuples(result) << " tables from database";
+              //qDebug(msg);
+              for (int idx = 0; idx < PQntuples(result); idx++)
+                {
+                  QString v = "";
+                  if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
+                    {
+                      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
+                      v += ".";
+                    }
+                  if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
+                    {
+                      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+                      v += ".";
+                    }
+                  v += PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
+                  v += " (";
+                  v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
+                  v += ")";
+
+                  QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+                  QPixmap *p;
+                  if (type == "POINT" || type == "MULTIPOINT")
+                    p = &pxPoint;
+                  else if (type == "MULTIPOLYGON" || type == "POLYGON")
+                    p = &pxPoly;
+                  else if (type == "LINESTRING" || type == "MULTILINESTRING")
+                    p = &pxLine;
+                  else
+                    p = 0;
+                  if (p != 0)
+                    lstTables->insertItem(*p, v);
+                }
 // BEGIN CHANGES ECOS
-            if( cmbConnections->count() > 0 )
+              if (cmbConnections->count() > 0)
                 btnAdd->setEnabled(true);
 // END CHANGES ECOS
-		} else {
-			qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
-			qDebug(PQerrorMessage(pd));
-		}
-	} else {
-		QMessageBox::warning(this, tr("Connection failed"),
-							 tr("Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.").arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n"));
-	}
-  PQfinish(pd);
-  }
+          } else
+            {
+              qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
+              qDebug(PQerrorMessage(pd));
+            }
+      } else
+        {
+          QMessageBox::warning(this, tr("Connection failed"),
+                               tr
+                               ("Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.").
+                               arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n"));
+        }
+      PQfinish(pd);
+    }
 }
 
 QStringList QgsDbSourceSelect::selectedTables()
 {
-	return m_selectedTables;
+  return m_selectedTables;
 }
 
 QString QgsDbSourceSelect::connInfo()
 {
-	return m_connInfo;
+  return m_connInfo;
 }
-void QgsDbSourceSelect::addLayer(QListBoxItem *item){
+
+void QgsDbSourceSelect::addLayer(QListBoxItem * item)
+{
   qgisApp->addVectorLayer(m_connInfo, item->text(), "postgres");
   lstTables->setSelected(item, false);
 }
