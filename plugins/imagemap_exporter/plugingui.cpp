@@ -195,19 +195,23 @@ bool PluginGui::polygonIsHole(double* points, int nPoints)
   
   // find the leftmost point
   int leftmost = 0;
-  for (int i = 0; i < nPoints; ++i) {
+  for (int i = 1; i < nPoints - 1; ++i) {
     if (points[i*2] < points[leftmost*2])
       leftmost = i;
   }
   
   // calculate the angles for the two rays and compare
-  int h = (leftmost == 0 ? nPoints - 1 : leftmost - 1);
-  int j = (leftmost == nPoints - 1 ? 0 : leftmost + 1);
+  int h = (leftmost == 0 ? nPoints - 2 : leftmost - 1);
+  int j = (leftmost == nPoints - 2 ? 0 : leftmost + 1);
   double a1 = std::atan((points[j*2+1] - points[leftmost*2+1]) /
 			(points[j*2] - points[leftmost*2]));
   double a2 = std::atan((points[h*2+1] - points[leftmost*2+1]) /
 			(points[h*2] - points[leftmost*2]));
   if (a1 > a2)
     return false;
-  return true;
+  if (a1 < a2)
+    return true;
+  // angles are equal - probably two vertical lines - check points instead
+  else
+    return (points[h*2] < points[j*2]);
 }
