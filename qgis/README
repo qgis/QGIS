@@ -1,9 +1,8 @@
 Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
-built for Linux/Unix. QGIS will offer support for vector and raster formats 
-and provide a comprehensive GIS. 
+built for Linux/Unix. QGIS will offer support for vector and raster formats. 
+Currently QGIS supports shapefiles and PostgreSQL/PostGIS layers.  
 
-While planning is still underway, some of the initial ideas for 
-features include:
+Planned features include:
 
     * Read and edit shapefiles
     * Display georeferenced rasters (tiff, png, geotiff)
