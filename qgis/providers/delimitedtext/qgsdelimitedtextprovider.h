@@ -172,6 +172,6 @@ struct wkbPoint{
   double x;
   double y;
 };
-wkbPoint wkbPt;
+wkbPoint mWKBpt;
   
 };
