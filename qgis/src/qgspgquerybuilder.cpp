@@ -69,6 +69,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
 : QgsPgQueryBuilderBase(parent, name), mPgConnection(con)
 {
   mOwnConnection = false; // we don't own this conneciton since it was passed to us
+  mUri = new QgsDataSourceURI();
   QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
     .arg(tableName)
     .arg(PQdb(mPgConnection))
