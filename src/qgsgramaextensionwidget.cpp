@@ -36,27 +36,29 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
     setResizePolicy(QScrollView::AutoOneFit);
     mGridLayout->setSpacing(5);
 
-    //fill the title line into the grid layout
-    QLabel *lvaluelabel = new QLabel(tr("Lower"),mWidget);
-    lvaluelabel->setMaximumHeight(50);
-    mGridLayout->addWidget(lvaluelabel, 0, 0);
-    QLabel *uvaluelabel = new QLabel(tr("Upper"),mWidget);
-    uvaluelabel->setMaximumHeight(50);
-    mGridLayout->addWidget(uvaluelabel, 0, 1);
-    QLabel *labellabel = new QLabel(tr("Label"),mWidget);
-    labellabel->setMaximumHeight(50);
-    mGridLayout->addWidget(labellabel, 0, 2);
-    QLabel *imagelabel = new QLabel(tr("Image"),mWidget);
-    mGridLayout->addWidget(imagelabel,0,3);
-    QLabel *scalelabel = new QLabel(tr("Scale\nFactor"),mWidget);
-    mGridLayout->addWidget(scalelabel,0,4);
-
-    //find the minimum and maximum of the classification variable
-    double minimum, maximum;
-
-    QgsDataProvider *provider = mVectorLayer->getDataProvider();
-    if (provider)
+    if(mNumberOfClasses>0)
     {
+	//fill the title line into the grid layout
+	QLabel *lvaluelabel = new QLabel(tr("Lower"),mWidget);
+	lvaluelabel->setMaximumHeight(50);
+	mGridLayout->addWidget(lvaluelabel, 0, 0);
+	QLabel *uvaluelabel = new QLabel(tr("Upper"),mWidget);
+	uvaluelabel->setMaximumHeight(50);
+	mGridLayout->addWidget(uvaluelabel, 0, 1);
+	QLabel *labellabel = new QLabel(tr("Label"),mWidget);
+	labellabel->setMaximumHeight(50);
+	mGridLayout->addWidget(labellabel, 0, 2);
+	QLabel *imagelabel = new QLabel(tr("Image"),mWidget);
+	mGridLayout->addWidget(imagelabel,0,3);
+	QLabel *scalelabel = new QLabel(tr("Scale\nFactor"),mWidget);
+	mGridLayout->addWidget(scalelabel,0,4);
+    }
+       //find the minimum and maximum of the classification variable
+       double minimum, maximum;
+
+       QgsDataProvider *provider = mVectorLayer->getDataProvider();
+       if (provider)
+       {
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
 	{
 	    minimum = provider->minValue(mClassField).toDouble();
