@@ -25,6 +25,7 @@
 #include "qgsrenderitem.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgslegenditem.h"
+#include <qapplication.h>
 #include <qfiledialog.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
@@ -42,7 +43,7 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
         //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
         if (mVectorLayer->propertiesDialog())
         {
-            renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+             renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
         }
         else
         {
@@ -79,7 +80,7 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
                 p.scale(scalefactor,scalefactor);
                 p.drawPicture(0,0,pic);
                 pmPreview->setPixmap(pixmap);
-		pmPreview->setName(svgfile);
+    pmPreview->setName(svgfile);
 
             }
             else
@@ -92,11 +93,14 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
         {
             qWarning("Warning, typecast failed in qgssimadialog.cpp on line 42 or 46");
         }
-	
-	//set the dir to the default svg dir
+  
+  //set the dir to the default svg dir
+#ifdef WIN32
+       QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
         mCurrentDir=QString(PKGDATAPATH)+"/svg/";
 #ifdef QGISDEBUG
-	qWarning("mCurrentDir in constructor: "+mCurrentDir);
+  qWarning("mCurrentDir in constructor: "+mCurrentDir);
 #endif
         visualizeMarkers(mCurrentDir);
         mDirectoryEdit->setText(mCurrentDir);
@@ -256,9 +260,9 @@ void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
         pic.load(svgfile,"svg");
 
         int width=pic.boundingRect().width();
-	width=static_cast<int>(static_cast<double>(width)*scalefactor);
+  width=static_cast<int>(static_cast<double>(width)*scalefactor);
         int height=pic.boundingRect().height();
-	height=static_cast<int>(static_cast<double>(height)*scalefactor);
+  height=static_cast<int>(static_cast<double>(height)*scalefactor);
         //prevent 0 width or height, which would cause a crash
         if(width==0)
         {
@@ -318,6 +322,9 @@ void QgsSiMaDialog::visualizeMarkers(QString directory)
 
 QString QgsSiMaDialog::defaultDir()
 {
+#ifdef WIN32
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
     QString dir = QString(PKGDATAPATH)+"/svg";
     return dir;
 }

@@ -20,7 +20,11 @@
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
 #include <vector>
+#ifdef WIN32
+#include "qgspluginmanagerbase.h"
+#else
 #include "qgspluginmanagerbase.uic.h"
+#endif
 
 class QgsPluginItem;
 /**

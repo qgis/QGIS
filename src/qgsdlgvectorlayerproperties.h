@@ -18,8 +18,11 @@
  /* $Id$ */
 #ifndef QGSDLGVECTORLAYERPROPERTIES
 #define QGSDLGVECTORLAYERPROPERTIES
-
+#ifdef WIN32
+#include "qgsdlgvectorlayerpropertiesbase.h"
+#else
 #include "qgsdlgvectorlayerpropertiesbase.uic.h"
+#endif
 #include "qgsrenderer.h"
 #include "qpixmap.h"
 #include "qlineedit.h"

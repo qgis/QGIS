@@ -68,7 +68,9 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 
 QgsSymbol *QgsVectorLayerProperties::getSymbol()
 {
-
+	//TODO Added return statement during win32 port
+	//TODO Check on this and remove or fix
+ return 0;
 }
 
 void QgsVectorLayerProperties::alterLayerDialog(const QString & string)

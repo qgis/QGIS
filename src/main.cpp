@@ -20,8 +20,9 @@ email                : sherman at mrcc.com
 
 #include <iostream>
 #include <cstdio>
-
+#ifndef WIN32
 #include <getopt.h>
+#endif
 
 #include <qapplication.h>
 #include <qfont.h>
@@ -35,7 +36,10 @@ email                : sherman at mrcc.com
 #include <qstringlist.h> 
 
 #include <splashscreen.h>
-
+#ifdef WIN32
+//TODO - fix this to use the appdir for setting path to i18ln and other resources
+#define PKGDATAPATH "/home"
+#endif
 
 static const char * const ident_ = "$Id$";
 
@@ -91,7 +95,7 @@ int main(int argc, char *argv[])
 
   // This is the 'leftover' arguments collection
   QStringList * myFileList=new QStringList();
-
+#ifndef WIN32
 
   //////////////////////////////////////////////////////////////// 
   // USe the GNU Getopts utility to parse cli arguments
@@ -175,6 +179,7 @@ int main(int argc, char *argv[])
     }
   }
 
+#endif //WIN32
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviours...
   ////////////////////////////////////////////////////////////////////

@@ -16,7 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+#ifdef WIN32
+#include "qgsprojectpropertiesbase.h"
+#else
 #include "qgsprojectpropertiesbase.uic.h"
+#endif
 /**
  * \class QgsProjectProperties
  * \brief Dialog to set project level properties

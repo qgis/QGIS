@@ -18,8 +18,11 @@
 
 #ifndef QGSGRASYDIALOG_H
 #define QGSGRASYDIALOG_H
-
+#ifdef WIN32
+#include "qgsgrasydialogbase.h"
+#else
 #include "qgsgrasydialogbase.uic.h"
+#endif
 #include <map>
 
 class QgsGraSyExtensionWidget;

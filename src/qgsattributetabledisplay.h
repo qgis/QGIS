@@ -19,8 +19,11 @@
 
 #ifndef QGSATTRIBUTETABLEDISPLAY_H
 #define QGSATTRIBUTETABLEDISPLAY_H
-
+#ifdef WIN32
+#include "qgsattributetablebase.h"
+#else
 #include "qgsattributetablebase.uic.h"
+#endif
 class QgsAttributeTable;
 /**
   *@author Gary E.Sherman

@@ -20,8 +20,11 @@
 #define QGSLINESTYLEDIALOG_H
 
 class qnamespace;
+#ifdef WIN32
+#include "qgslinestyledialogbase.h"
+#else
 #include "qgslinestyledialogbase.uic.h"
-
+#endif
 /**Dialog class to query line styles*/
 class QgsLineStyleDialog: public QgsLineStyleDialogBase
 {

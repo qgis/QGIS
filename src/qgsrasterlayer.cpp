@@ -121,6 +121,10 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName):QgsMapLayer(RASTE
   //populate the list of what pyramids exist
   buildRasterPyramidList(); 
   //load  up the pyramid icons
+#ifdef WIN32
+  //TODO Fix this to use the right path
+  const char *PKGDATAPATH = "foo";
+#endif
   mPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   mNoPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
   //just testing remove this later
