@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.94 2004/05/25 17:54:10 larsl Exp
+ChangeLog,v 1.95 2004/05/25 18:21:54 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-25 [larsl] 0.2.0devel37
+** Show the legend widgets in debug mode too
 
 2004-05-25 [larsl] 0.2.0devel36
 ** Fixed some more instances of the same bug in raster layer
