@@ -5,9 +5,9 @@
 class QgisTestPlugin : public QgisPlugin{
 public:
 	QgisTestPlugin();
-	virtual QString pluginName();
+	/* virtual QString pluginName();
 	virtual QString pluginVersion();
-	virtual QString pluginDescription();
+	virtual QString pluginDescription(); */
 	virtual ~QgisTestPlugin();
 private:
 	QString name;

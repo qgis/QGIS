@@ -1,6 +1,6 @@
 #ifndef QGISPLUGINGUIELEMENT_H
 #define QGISPLUGINGUIELEMENT_H
-
+#include "qgispluginns.h"
 /*! \class QgisPluginGuiElement
 * \brief Base class for a GUI element (menu, toolbar, etc) of a plugin
 *
