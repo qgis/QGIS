@@ -1,3 +1,4 @@
+
 /* QGIS data provider for ESRI Shapefile format */
 /* $Id$ */
 
@@ -540,7 +541,8 @@ void QgsShapeFileProvider::fillMinMaxCash()
         minmaxcache[i][1]=value;  
       }
     }
-    delete[] f->getGeometry();
+    //delete[] f->getGeometry();
+    delete f;
    
   }while(f=getNextFeature(true));
 
