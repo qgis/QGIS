@@ -36,7 +36,7 @@ FileGroup::~FileGroup()
   }
   //delete thee vector which will in turn autodelete its filereaders
   delete fileReaderVector;
-  
+
 }
 
 bool FileGroup::addFileReader(FileReader* theFileReader,
@@ -79,13 +79,13 @@ QValueVector<float> FileGroup::getElementVector()
     for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
     {
         FileReader * myCurrentFileReader = fileReaderVector->at(myIteratorInt);
+        float myFloat = myCurrentFileReader->getElement();
         //test if we are at the end of the matrix
         if ( myIteratorInt==0)
         {
             endOfMatrixFlag=myCurrentFileReader->getEndOfMatrixFlag();
         }
 
-        float myFloat = myCurrentFileReader->getElement();
         myFloatVector.push_back(myFloat);
         myCurrentFileReader = fileReaderVector->at(myIteratorInt);
     }

@@ -305,6 +305,12 @@ class ClimateDataProcessor {
         /**
         * Start the data analysis process.
         * When everything else is set up, this is the method to call!
+        * @todo If there ever was a good place to optimise performance,
+        * this is it!For starters this method can be refactored so that the
+        * vector from each active filegroup is retrieved first, and then
+        * passed to any calculation that needs it, looping through all the filegroups
+        * simultaneously. This will prevent multiple reads of the same file for
+        * different calculations. RTFS for more info.
         * @return bool - A boolean indicating success or failure of the operation.
         */
         bool run();

@@ -1120,7 +1120,7 @@ bool ClimateDataProcessor::run()
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
 
-
+            bool myFirstIterationFlag=true;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1128,8 +1128,12 @@ bool ClimateDataProcessor::run()
                 myFloatVector = meanTempFileGroup->getElementVector();
                 //we are using mean over year summary
                 float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                //this next bit is just for debugging purposes"
-                printVectorAndResult(myFloatVector,myFloat);
+                if (myFirstIterationFlag || meanTempFileGroup->getEndOfMatrixFlag())
+                {
+                  //this next bit is just for debugging purposes"
+                  printVectorAndResult(myFloatVector,myFloat);
+                  myFirstIterationFlag=false;
+                }
                 //write the result to our output file
                 bool myResultFlag = myFileWriter->writeElement(myFloat);
                 if (!myResultFlag)

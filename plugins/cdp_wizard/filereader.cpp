@@ -66,13 +66,7 @@ float FileReader::getElement()
         //read a float from the file - this will advance the file pointer
         *textStream >> myElementFloat;
         currentElementLong++;
-#ifdef QGISDEBUG
-        //print out the last entries for debuggging
-        if (currentElementLong > 0)
-        {
-            // if (debugModeFlag) std::cout << "FileReader::getElement() retrieved value : " << myElementFloat << " for element no " << currentElementLong << std::endl;
-        }
-#endif
+
         //check if we have now run to the end of the matrix
         if (currentElementLong == ((xDimLong*yDimLong)))
         {
@@ -82,6 +76,17 @@ float FileReader::getElement()
         {
             endOfMatrixFlag=false;
         }
+    }
+    else
+    {
+      //you should not reach this code because you should stop any reading
+      //when end of block has been detected.
+      std::cout << " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << std::endl;
+      std::cout << " FileReader Notice:                   " << std::endl;
+      std::cout << " Error trying to get element beyond   " << std::endl;
+      std::cout << " end of block! A vector of zeros will " << std::endl;
+      std::cout << " be returned!                         " << std::endl;
+      std::cout << " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << std::endl;
     }
     //increment the column and row counter and wrap them if needed
     if ((currentColLong ) == xDimLong)
@@ -873,7 +878,9 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
     if (myBmrExistsFlag)
     {
         //for debugging purposes only!
+#ifdef QGISDEBUG
         printFirstCellInEachBlock();
+#endif
         //no need to do any further parsing because we were able to
         // get the cached bmrs from file
 
