@@ -241,6 +241,8 @@ private slots:
     void fileNew(bool thePromptToSaveFlag);
     //! Print the current map view frame
     void filePrint();
+    //! Add all loaded layers into the overview
+    void addAllToOverview();
     //! Export current view as a mapserver map file
     void exportMapServer();
     //! Return pointer to the active layer

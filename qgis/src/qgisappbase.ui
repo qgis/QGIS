@@ -81,6 +81,7 @@
         <action name="actionAddRasterLayer"/>
         <action name="actionAddLayer"/>
         <separator/>
+        <action name="actionAddAllToOverview"/>
         <action name="actionOpenTable"/>
         <action name="actionLayerProperties"/>
     </item>
@@ -143,6 +144,7 @@
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddRasterLayer"/>
         <action name="drawAction"/>
+        <action name="actionAddAllToOverview"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -858,6 +860,23 @@
             <string>Capture Point</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionAddAllToOverview</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image32</iconset>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="menuText">
+            <string>Add All To Overview</string>
+        </property>
+        <property name="toolTip">
+            <string>Add All To Overview</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -955,6 +974,9 @@
     </image>
     <image name="image31">
         <data format="XPM.GZ" length="409">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523234530022630543251d2e253d856405bffcbc54103b11c856360003105719c44d0303b04a10500601304b0f2aa6ac9c080210518898b25e225845a29e324c0c2604158488c184808250312421b0201e31b0a52082803a0c316cf622bb2f11a60ee10f903dcae8fe55468821c20548c2c5e000685ead35170080485310</data>
+    </image>
+    <image name="image32">
+        <data format="XPM.GZ" length="2221">789ccdd3c952dc301006e0fb3c850bdfa8d48fb7f152a91cd897b00d3ba47290658b7d1fd654de3d52770b8630241c3880b87cd26f59eed68c8d063bab4bc1e858e7baaffa873ad007ea2a186d6e4e4f1f7efcfcf6ab33922481fd2fa22019f9d219e9f5031d2c9f9fb50e082dc2c8fe9511799e1dc76d4e9e23c771620c7983dc6df388f3ebe4dc18f1ac73ac1225f935b23126aec833ce6996f9fd7ae4d29834254f3b674dd73fbfeadcb51b640d79ca392f8a58d657c8369df379279dcba8ac647d996cdf26df37e15c29e59f5f22d7c6547cbeda59456e90c79debb42e25bf48ce8ca9a9987874d64d13c9fa77b6315a93ef9ded7224f5cc9cdbf4a97ea7e4dc75c0396cd85521eb0fecd6bf7f815c1823fbdd399b3cf2df734b2e625fbf1b729966e23eb9ca1af13559e585f88a5c97fe7b2ed995dfef82aceb549cb26dff6372e21d2bf239b9d1fe7d31dbf63b2347ded2df3defbc209f91db3697e777d94ffddcf1aef87ddbde35dfa72d6fcdfb9f908daf378ed97125f7f3889da6721f0fd95923e73b60e7b9dcb77d76e97f3f865d557c9f42cd5625d727acd9752cf569c509dfa7508915d7270cd93ae1f78710d7529f46ace5be55ec2693f394622df529d86d57ea23e7b3378cbf2717b752af2edbf8f54db1bf7fca9bfbd3ebbf7f7c641ea11dea33e4293938d4c7e607cfc3e353d4e7c549fe9f1f3686e551bf3586e5edbc46831606fb38c0218e708c139cda79f53a6f67cf708e0b5ce20ad7e8e306b7b8c33da7ffcedbd9073c621c1398c414a6318359cc61dea75fe6edec02be63114b58c60a56d1c31ad6b1f19c1eccdbd94d6c611b3bd8c51e22c44890221b4c3fe7ed6c17390a94a86c9bc2508575a8c3e665dae7dfaee0f07ef95bf57abca75fffecefefaf9d3f6ae35eac</data>
     </image>
 </images>
 <connections>
@@ -1156,6 +1178,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>capturePoint()</slot>
     </connection>
+    <connection>
+        <sender>actionAddAllToOverview</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>addAllToOverview()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
@@ -1197,6 +1225,7 @@
     <slot>projectProperties()</slot>
     <slot>filePrint()</slot>
     <slot>capturePoint()</slot>
+    <slot>addAllToOverview()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
