@@ -663,7 +663,10 @@ int QgisApp::getInt(){
 }
 void QgisApp::actionPluginManager_activated(){
 	QgsPluginManager *pm = new QgsPluginManager(this);
-	pm->show();
+	if(pm->exec()){
+		// load selected plugins
+		
+	}
 	
 
 }

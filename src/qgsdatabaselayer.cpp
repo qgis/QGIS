@@ -42,10 +42,13 @@ tableName(table)
 	PgDatabase *pd = new PgDatabase(conninfo);
 	if (pd->Status() == CONNECTION_OK) {
 		// get the geometry column
-		QString sql = "select f_geometry_column,type from geometry_columns where f_table_name='" + tableName + "'";
+		QString sql = "select f_geometry_column,type,srid from geometry_columns where f_table_name='" + tableName + "'";
      // qWarning("Getting geometry column: " + sql);
 		int result = pd->ExecTuplesOk((const char *) sql);
 		if (result) {
+			// store the srid 
+			 srid = pd->GetValue(0, "srid");
+			
 			// set the simple type for use with symbology operations
 			QString fType = pd->GetValue(0, "type");
 			if (fType == "POINT" || fType == "MULTIPOINT")
@@ -119,7 +122,9 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, int yTransform)
 	sql += "') as features from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
-	sql += ")'::box3d,-1)";
+	sql += ")'::box3d,";
+	sql += srid;
+	sql += ")";
 //  qWarning(sql);
 	pgs.Declare((const char *) sql, true);
 	//! \todo Check return from Fecth();
@@ -272,7 +277,9 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 	sql += "') as features from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
-	sql += ")'::box3d,-1)";
+	sql += ")'::box3d,";
+	sql += srid;
+	sql += ")";
 //  qWarning(sql);
 	pgs.Declare((const char *) sql, true);
 	int res = pgs.Fetch();
@@ -429,7 +436,9 @@ void QgsDatabaseLayer::identify(QgsRect * r)
 	QString sql = "select * from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + r->stringRep();
-	sql += ")'::box3d,-1)";
+	sql += ")'::box3d,";
+	sql += srid;
+	sql += ")";
 	//qWarning(sql);
 	// select the features
 	PgCursor pgs(dataSource, "identifyCursor");
