@@ -34,7 +34,7 @@
 #include "qgsspitplugin.h"
 #include "qgsspit.h"
 // xpm for creating the toolbar icon
-#include "icon_spit.xpm"
+#include "spiticon.xpm"
 
 static const char *pluginVersion = "0.1";
 /**
@@ -96,7 +96,7 @@ void QgsSpitPlugin::initGui()
     //menuId = menu->insertItem("&Spit", pluginMenu);
     menuId = qI->addMenu("&Spit", pluginMenu);
      // Create the action for tool
-    QAction *spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(icon_spit), "&SPIT",
+    QAction *spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(spitIcon), "&SPIT",
                                               0, this, "spit");
     // Connect the action to the zoomPrevous slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
