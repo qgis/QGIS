@@ -52,6 +52,8 @@ void QgsLauncherPluginGui::runProgram()
                 this, SLOT(readFromStdout()) );
     connect( proc, SIGNAL(readyReadStderr()),
                 this, SLOT(readFromStderr()) );
+    connect( proc, SIGNAL(processExited()),
+                this, SLOT(processFinished()) );
     for(int i=0; i < args.size(); i++)
     {
       proc->addArgument(args[i]);
@@ -80,7 +82,7 @@ void QgsLauncherPluginGui::readFromStdout()
     QString line;
     while((line = proc->readLineStdout()) != QString::null)
     {
-      txtOutput->setText(txtOutput->text() + line + "\n");
+      txtOutput->append(line);
     }
   }
 }
@@ -91,7 +93,12 @@ void QgsLauncherPluginGui::readFromStderr()
     QString line;
     while((line = proc->readLineStderr()) != QString::null)
     {
-      txtOutput->setText(txtOutput->text() + line + "\n");
+      txtOutput->append(line);
     }
   }
 }
+void QgsLauncherPluginGui::processFinished()
+{
+  delete proc;
+}
+
