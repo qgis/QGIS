@@ -56,13 +56,11 @@ GPSPoint::GPSPoint() {
 
 
 void GPSPoint::writeXML(QTextStream& stream) {
-  stream<<"<wpt lat=\""<<lat<<"\" lon=\""<<lon<<"\">\n";
   GPSObject::writeXML(stream);
   if (ele != -std::numeric_limits<double>::max())
     stream<<"<ele>"<<ele<<"</ele>\n";
   if (!sym.isEmpty())
     stream<<"<sym>"<<xmlify(sym)<<"</sym>\n";
-  stream<<"</wpt>\n";
 }
 
 
@@ -83,12 +81,23 @@ void GPSExtended::writeXML(QTextStream& stream) {
 }
 
 
+void Waypoint::writeXML(QTextStream& stream) {
+  stream<<"<wpt lat=\""<<lat<<"\" lon=\""<<lon<<"\">\n";
+  GPSPoint::writeXML(stream);
+  stream<<"</wpt>\n";
+}
+
+
 void Route::writeXML(QTextStream& stream) {
   stream<<"<rte>\n";
   GPSExtended::writeXML(stream);
   for (int i = 0; i < points.size(); ++i) {
+    stream<<"<rtept lat=\""<<points[i].lat
+	  <<"\" lon=\""<<points[i].lon<<"\">\n";
     points[i].writeXML(stream);
+    stream<<"</rtept>\n";
   }
+  stream<<"</rte>\n";
 }
 
 
@@ -97,8 +106,12 @@ void Track::writeXML(QTextStream& stream) {
   GPSExtended::writeXML(stream);
   for (int i = 0; i < segments.size(); ++i) {
     stream<<"<trkseg>\n";
-    for (int j = 0; j < segments[i].points.size(); ++j)
+    for (int j = 0; j < segments[i].points.size(); ++j) {
+      stream<<"<trkpt lat=\""<<segments[i].points[j].lat
+	    <<"\" lon=\""<<segments[i].points[j].lon<<"\">\n";
       segments[i].points[j].writeXML(stream);
+      stream<<"</trkpt>\n";
+    }
     stream<<"</trkseg>\n";
   }
   stream<<"</trk>\n";
