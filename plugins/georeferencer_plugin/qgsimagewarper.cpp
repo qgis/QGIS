@@ -15,7 +15,8 @@ using namespace std;
 
 
 void QgsImageWarper::warp(const QString& input, const QString& output,
-			  double& xOffset, double& yOffset) {
+			  double& xOffset, double& yOffset, 
+			  ResamplingMethod resampling, bool useZeroAsTrans) {
   // Open input file
   GDALAllRegister();
   GDALDataset* hSrcDS = static_cast<GDALDataset*>(GDALOpen((const char*)input, 
@@ -34,7 +35,7 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   }    
   psWarpOptions->pfnProgress = GDALTermProgress;   
   psWarpOptions->pfnTransformer = &QgsImageWarper::transform;
-  psWarpOptions->eResampleAlg = GRA_Bilinear;
+  psWarpOptions->eResampleAlg = GDALResampleAlg(resampling);
   
   // check the bounds for the warped raster
   // order: upper right, lower right, lower left (y points down)
@@ -61,12 +62,25 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   // create the output file
   GDALDriver* driver = static_cast<GDALDriver*>(GDALGetDriverByName("GTiff"));
   char **papszOptions = NULL;
-  //papszOptions = CSLSetNameValue(papszOptions, "INIT_DEST", "NO_DATA");
+  papszOptions = CSLSetNameValue(papszOptions, "INIT_DEST", "NO_DATA");
   GDALDataset* hDstDS = 
     driver->Create((const char*)output, newXSize, newYSize, 
 		   hSrcDS->GetRasterCount(),
 		   hSrcDS->GetRasterBand(1)->GetRasterDataType(),
 		   papszOptions);
+  for (int i = 0; i < hSrcDS->GetRasterCount(); ++i) {
+    GDALColorTable* cTable = hSrcDS->GetRasterBand(i+1)->GetColorTable();
+    if (cTable)
+      hDstDS->GetRasterBand(i+1)->SetColorTable(cTable);
+    double noData = hSrcDS->GetRasterBand(i+1)->GetNoDataValue();
+    if (noData != -1e10)
+      hDstDS->GetRasterBand(i+1)->SetNoDataValue(noData);
+    else if (useZeroAsTrans) {
+      std::cerr<<"***** Source raster has no NODATA value, using 0"<<std::endl;
+      hDstDS->GetRasterBand(i+1)->SetNoDataValue(0);
+    }
+  }
+
   psWarpOptions->hDstDS = hDstDS;
 
   // Initialize and execute the warp operation. 

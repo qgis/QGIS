@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(plugin, 0.1, tim@linfiniti.com)
+AC_INIT(qgis_georef_plugin, 0.1, tim@linfiniti.com)
 
 AC_CONFIG_SRCDIR([plugingui.h])
 

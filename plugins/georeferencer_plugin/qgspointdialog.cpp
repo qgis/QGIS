@@ -14,6 +14,7 @@
 #include "mapcoordsdialog.h"
 #include "qgsleastsquares.h"
 #include "qgsimagewarper.h"
+#include "qgsgeorefwarpoptionsdialog.h"
 
 #include "zoom_in.xpm"
 #include "zoom_out.xpm"
@@ -179,12 +180,17 @@ bool QgsPointDialog::generateWorldFile() {
     return false;
   }
 
-  // warp the raster
+  // warp the raster if needed
   double xOffset, yOffset;
   if (rotation != 0) {
+    QgsGeorefWarpOptionsDialog d(this);
+    d.exec();
+    bool useZeroForTrans;
+    QgsImageWarper::ResamplingMethod resampling;
     QgsImageWarper warper(-rotation);
+    d.getWarpOptions(resampling, useZeroForTrans);
     warper.warp(mLayer->source(), leSelectModifiedRaster->text(), 
-		xOffset, yOffset);
+		xOffset, yOffset, resampling, useZeroForTrans);
   }
   
   // write the world file

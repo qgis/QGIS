@@ -31,7 +31,7 @@ pkgplguindir = ${plugindir}
 plugin_LTLIBRARIES = georefplugin.la
 
 ## qt designer user-interface files
-plugin_UI = pluginguibase.ui qgspointdialogbase.ui mapcoordsdialogbase.ui
+plugin_UI = pluginguibase.ui qgspointdialogbase.ui mapcoordsdialogbase.ui qgsgeorefwarpoptionsdialogbase.ui
 
 ## uic created headers
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
@@ -43,7 +43,7 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp plugingui.moc.cpp qgspointdialog.moc.cpp mapcoordsdialog.moc.cpp
+plugin_MOC = plugin.moc.cpp plugingui.moc.cpp qgspointdialog.moc.cpp mapcoordsdialog.moc.cpp qgsgeorefwarpoptionsdialog.moc.cpp
 
 
 georefplugin_la_SOURCES = plugin.cpp \
@@ -59,6 +59,8 @@ georefplugin_la_SOURCES = plugin.cpp \
 	qgsleastsquares.cpp \
 	qgspointdialog.h \
 	qgspointdialog.cpp \
+	qgsgeorefwarpoptionsdialog.h \
+	qgsgeorefwarpoptionsdialog.cpp \
 	mapcoordsdialog.h \
 	mapcoordsdialog.cpp \
 	$(plugin_UISOURCES) \
