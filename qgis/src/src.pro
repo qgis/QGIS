@@ -93,6 +93,7 @@ HEADERS += qgis.h \
             qgsoptions.h \
             qgsoptionsbase.ui.h \
             qgspatterndialog.h \
+            qgspgquerybuilder.h \
             qgspluginitem.h \
             qgspluginmanager.h \
             qgspluginmetadata.h \
@@ -156,6 +157,7 @@ INTERFACES += qgisappbase.ui \
             qgsnewconnectionbase.ui \
             qgsoptionsbase.ui \
             qgspatterndialogbase.ui \
+            qgspgquerybuilderbase.ui \
             qgspluginmanagerbase.ui \
             qgsprojectpropertiesbase.ui \
             qgsrasterlayerpropertiesbase.ui \
@@ -205,6 +207,7 @@ SOURCES += main.cpp \
             qgsnewconnection.cpp \
             qgsoptions.cpp \
             qgspatterndialog.cpp \
+            qgspgquerybuilder.cpp \
             qgspluginitem.cpp \
             qgspluginmanager.cpp \
             qgspluginmetadata.cpp \
