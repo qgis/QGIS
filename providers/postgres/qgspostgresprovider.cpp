@@ -139,6 +139,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   std::cerr << "Opened log file for " << tableName << std::endl;
 #endif
   PGconn *pd = PQconnectdb((const char *) connInfo);
+
   // check the connection status
   if (PQstatus(pd) == CONNECTION_OK) {
     /* Check to see if we have GEOS support and if not, warn the user about
@@ -1212,11 +1213,18 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
 	for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
 	{
 	    //TODO: collect several attribute changes for a feature in one statement (possibly more efficient)
-	    QString sql="UPDATE "+tableName+" SET "+(*siter).first+" = "+(*siter).second+" WHERE " +primaryKey+" = "+QString::number((*iter).first);
+	    QString sql="UPDATE "+tableName+" SET "+(*siter).first+"="+(*siter).second+" WHERE " +primaryKey+"="+QString::number((*iter).first);
+#ifdef QGISDEBUG
+	    qWarning(sql);
+#endif
+
             //send sql statement and do error handling
 	    PGresult* result=PQexec(connection, (const char *)sql);
 	    if(result==0)
 	    {
+#ifdef QGISDEBUG
+	    qWarning("result is 0");
+#endif
 		returnvalue=false;
 		ExecStatusType message=PQresultStatus(result);
 		if(message==PGRES_FATAL_ERROR)
