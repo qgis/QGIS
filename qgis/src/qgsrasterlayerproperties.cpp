@@ -706,7 +706,7 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
   myQPainter.rotate(-45);
   myQPainter.drawImage(-70, 0, myQImage.scale(140, 140));
   myQPainter.rotate(45);
-  QFont myQFont("time", 18, QFont::Bold);
+  QFont myQFont("arial", 18, QFont::Bold);
   myQPainter.setFont(myQFont);
   myQPainter.setPen(Qt::white);
   myQPainter.drawText(15, 50, QString::number(static_cast < unsigned int >(myMinDouble)) + " - " + QString::number(static_cast

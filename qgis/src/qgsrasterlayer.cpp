@@ -2100,7 +2100,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
   //see if the caller wants the name of the layer in the pixmap (used for legend bar
   if (theWithNameFlag)
   {
-    QFont myQFont("times", 12, QFont::Normal);
+    QFont myQFont("arial", 10, QFont::Normal);
     QFontMetrics myQFontMetrics(myQFont);
 
     int myWidthInt = 40 + myQFontMetrics.width(this->name());
