@@ -2798,9 +2798,10 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 
 /** @todo XXX I'd *really* like to return, ya know, _false_.
  */
+//create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
 void QgisApp::addRasterLayer()
 {
-  mMapCanvas->freeze();
+  mMapCanvas->freeze(true);
   QString fileFilters;
 
   // build the file filters based on the loaded GDAL drivers
@@ -2819,6 +2820,12 @@ void QgisApp::addRasterLayer()
    addRasterLayer(selectedFiles);
 }// QgisApp::addRasterLayer()
 
+//
+// This is the method that does the actual work of adding a raster layer - the others
+// here simply create a raster layer object and delegate here. It is the responsibility 
+// of the calling method to manage things such as the frozen state of the mapcanvas and
+// using waitcursors etc. - this method wont and SHOULDNT do it
+//
 bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
 {
 
@@ -2826,9 +2833,6 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
 
   if ( ! theRasterLayer )
   {
-    mMapCanvas->freeze(false);
-    QApplication::restoreOverrideCursor();
-
     // XXX insert meaningful whine to the user here; although be
     // XXX mindful that a null layer may mean exhausted memory resources
     return false; 
@@ -2870,56 +2874,53 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
   } 
   else
   {
-
     delete theRasterLayer;
-
-    mMapCanvas->freeze(false);
-    QApplication::restoreOverrideCursor();
-
     return false;
   }
 
-
-  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
-  qApp->processEvents();
-  mMapCanvas->freeze(false);
-  mMapCanvas->render();
-  QApplication::restoreOverrideCursor();
-  statusBar()->message(mMapCanvas->extent().stringRep(2));
-
+  //these must go!
+  //qApp->processEvents();
+  //mMapCanvas->freeze(false);
+  //mMapCanvas->render();
   return true;
 
-
-
 }
+
+
+//create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
 
 bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
 {
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  mMapCanvas->freeze();         // XXX why do we do this?
+  mMapCanvas->freeze(true);
 
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
   // XXX why do we have to pass it in for it?
   QgsRasterLayer *layer = 
       new QgsRasterLayer(rasterFile.filePath(), rasterFile.baseName());
-  
+
   if (!addRasterLayer(layer))
   {
+    mMapCanvas->freeze(false);
+    QApplication::restoreOverrideCursor();
     QString msg(rasterFile.baseName() + " is not a valid or recognized raster data source");
     QMessageBox::critical(this, "Invalid Data Source", msg);
     return false;
   }
   else
   {
+    statusBar()->message(mMapCanvas->extent().stringRep(2));
+    mMapCanvas->freeze(false);
+    QApplication::restoreOverrideCursor();
     return true;
   }
 
 } // QgisApp::addRasterLayer
 
 
-
+//create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
 bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 {
   if (theFileNameQStringList.empty())
@@ -2930,10 +2931,8 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
     mMapCanvas->freeze(false);
     return false;
   } 
-  else
-  {
-    mMapCanvas->freeze();
-  }
+
+  mMapCanvas->freeze(true);
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
   // this is messy since some files in the list may be rasters and others may
@@ -2952,7 +2951,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
       QString myBaseNameQString = myFileInfo.baseName();
       //only allow one copy of a ai grid file to be loaded at a
       //time to prevent the user selecting all adfs in 1 dir which
-      //actually represent 1 coverate,
+      //actually represent 1 coverage,
 
       // create the layer
       QgsRasterLayer *layer = new QgsRasterLayer(*myIterator, myBaseNameQString);
@@ -2967,20 +2966,22 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
       {
         break;
       }
-    }else
+    }
+    else
     {
-      QApplication::restoreOverrideCursor();
       QString msg(*myIterator + " is not a supported raster data source");
       QMessageBox::critical(this, "Unsupported Data Source", msg);
       returnValue = false;
     }
   }
 
-  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
+  statusBar()->message(mMapCanvas->extent().stringRep(2));
+  mMapCanvas->freeze(false);
+  QApplication::restoreOverrideCursor();
 
   return returnValue;
 
-}                               // QgisApp::addRasterLayer()
+}// QgisApp::addRasterLayer()
 
 
 
