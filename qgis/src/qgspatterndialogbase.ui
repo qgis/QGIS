@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>328</width>
-            <height>322</height>
+            <width>344</width>
+            <height>323</height>
         </rect>
     </property>
     <property name="caption">
@@ -50,9 +50,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image0</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -74,9 +71,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image1</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -94,9 +88,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image2</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -116,9 +107,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image3</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -136,9 +124,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image4</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -158,9 +143,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image5</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -178,9 +160,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image6</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -200,9 +179,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image7</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -220,9 +196,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image8</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -242,9 +215,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image9</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -262,9 +232,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image10</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -284,9 +251,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image11</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -305,9 +269,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image12</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -325,9 +286,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image13</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -390,50 +348,6 @@
         </spacer>
     </grid>
 </widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="1860">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030b25430543054d2e152d253485650363634354d360573c906a3ba47758fea1ed53daa7b54f790d65d6bcd050063744bb9</data>
-    </image>
-    <image name="image1">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc343000734140594f8f741aae9b2ced08dde46807fb8b6ced60bbc9d60e7139b9daa1fe26533b2cd4c8d33e1adfe4681f8defd1f81e8d6f42f4888def5a6b2e00370b5101</data>
-    </image>
-    <image name="image2">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc3430007395c98560b3c9d63e6af7a8dda3768fda3d6af7a8dd43daee5a6b2e000e9534fd</data>
-    </image>
-    <image name="image3">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc34300073c90694eb56261b0cb4cb87aeeed130a7bfeed130a7bfeed130a7bfee1119e6b5d65c0059284de9</data>
-    </image>
-    <image name="image4">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e152d253485650363634354d3605719541dc343000cb2a930bc186e9292b9387a9603799362b2b8ffa7bd4dfa3fe1ef5f7a8bf47fd4db1bf6badb9003c2c2baa</data>
-    </image>
-    <image name="image5">
-        <data format="XPM.GZ" length="1907">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232355730365030523054d2e1525256485650363634354d360571f540dc343000734140190849a5c14683d96460b0cde4d80a02106743d824d314db4c999f29096db2fc0ba247e379349e89b279349e47e379349ed1fd5c6bcd0500f44744b1</data>
-    </image>
-    <image name="image6">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e152d253485650363634354d3605719541dc343000cb920d065eb7b21e7978e05d4e99ee517f8ffa7bd4dfa3fe1ef5f720f077ad3517006b865629</data>
-    </image>
-    <image name="image7">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc34300073c90610ddca7ae461caed26d766652ad83deaef517f8ffa7bd4dfa3fe1ef1feaeb5e6020065a5510c</data>
-    </image>
-    <image name="image8">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc3430007395f540800c7254f7a8ee51dda3ba47758fea1ec1ba6badb90044514d7b</data>
-    </image>
-    <image name="image9">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e152d253485650363634354d3605719541dc343000cb2a2b2b9387c186910d065af7a8bf47fd3deaef517f8ffa7bd4df14d95d6bcd0500478614c3</data>
-    </image>
-    <image name="image10">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc3430007395f540800c126c36d98072bb47aaeed130a7bfeed130a7bfeed130a7bfeed130275977ad351700f376432b</data>
-    </image>
-    <image name="image11">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e152d253485650363634354d3605719541dc343000cb920dc0ba95810cb23015ec26d366b86e4aec1ef5f7a8bf47fd3deaef517f8f747fd75a73010048e65101</data>
-    </image>
-    <image name="image12">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc34300073f5f494f52080441aa29b4ccd10dde46a5606fb8b5ccd509793a9194937392e80eb26cbf930dde4f97d34be47e39b787a34be47e37b34be09d14ab5d65c0021215101</data>
-    </image>
-    <image name="image13">
-        <data format="XPM.GZ" length="1937">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232b55030365030523054d2e1525256485650363634354d360571f540dc3430007395c98560b395810cb23015ec26d36665bd517f8ffa7bd4dfa3fe1ef5f7a8bf29f677ad35170014d02b9f</data>
-    </image>
-</images>
 <tabstops>
     <tabstop>solid</tabstop>
     <tabstop>fdiag</tabstop>

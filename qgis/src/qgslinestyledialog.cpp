@@ -1,9 +1,17 @@
 #include "qgslinestyledialog.h"
 #include "qpushbutton.h"
 #include <iostream>
+#include "qgssymbologyutils.h"
 
 QgsLineStyleDialog::QgsLineStyleDialog(QWidget* parent, const char* name, bool modal, WFlags fl): QgsLineStyleDialogBase(parent,name,modal,fl)
 {
+    //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
+    solid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
+    dash->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashLine"));
+    dot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DotLine"));
+    dashdot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotLine"));
+    dashdotdot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine"));
+
     QObject::connect(okbutton,SIGNAL(clicked()),this,SLOT(queryStyle()));
     QObject::connect(cancelbutton,SIGNAL(clicked()),this,SLOT(reject()));
     solid->toggle();//solid style is the default
