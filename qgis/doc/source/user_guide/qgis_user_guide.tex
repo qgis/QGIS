@@ -46,7 +46,7 @@ Quantum GIS User Guide\\
 
 
 \begin{document}
-
+\pagenumbering{roman}
 
 % To disable first line indents of paragraphs after the first one
 \setlength{\parindent}{0in}
@@ -65,7 +65,7 @@ Quantum GIS User Guide\\
 \fancyhead[L]{QGIS User Guide}
 \fancyhead[R]{\textsl{Version 0.6}}
 
-
+\pagenumbering{arabic}
 \begin{onehalfspace}
 \reversemarginpar
 \input{introduction.tex}
@@ -77,9 +77,18 @@ Quantum GIS User Guide\\
 \input{help_and_support.tex}
 
 \appendix
+
+
+
 \input{appendices/supported_data_formats.tex}
 \input{appendices/gpl.tex}
 \input{appendices/qgis_qt_gpl_exception.tex}
+%install guide is a special case because we are snarfing it
+%out of a separate document, we need to add the chapter here
+\chapter{QGIS Installation Guide}
+\label{install_guide}
+\input{../install_guide/install.tex}
+
 
 \end{onehalfspace}
 \index{PostgreSQL!layer defintion| \see{query builder}}
