@@ -1,8 +1,1 @@
-TODO,v 1.3 2003/12/09 06:16:41 gsherman Exp
-Planned Changes for 0.0.14
-1. Symbology in legend
-2. Marker symbols
-3. Select features function for all supported layer types
-4. Raster support
-5. Architecture change to data provider rather than distinct
-   classes for each data type (e.g. shapefiles, postgres)
+TODO for version 0.1
