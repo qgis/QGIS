@@ -10,6 +10,8 @@
 #
 # $Id$
 
+PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+
 plugindir = ${pkglibdir}
 
 #for plugin so
@@ -79,7 +81,7 @@ gridmaker_SOURCES = main.cpp \
 
 gridmaker_LDADD = $(QT_LDADD) 
 gridmaker_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
+gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH) $(DEBUG_QGIS) -I../../src 
 
 standalone_MOC = plugingui.moc.cpp \
 	     pluginguibase.moc.cpp 

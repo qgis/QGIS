@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.113 2004/06/08 04:08:47 gsherman Exp
+ChangeLog,v 1.114 2004/06/08 13:28:34 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-08 [jobi] 0.3.0devel18
+** updated ts files
+** fixed German translation
+** added translation support to external help applications (grid_maker and gpsimporter)
 
 2004-06-07 [gsherman] 0.3.0devel17
 ** Added update threshold to user options. Update threshold defines the number
