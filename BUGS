@@ -1,6 +1,7 @@
-BUGS,v 1.2 2004/02/13 16:22:46 gsherman Exp
+BUGS,v 1.3 2004/02/13 16:52:25 stevehalasz Exp
 Known issues and bugs in this release (QGIS 0.1pre1 'Moroz')
 RASTER:
+1. Canvas repaints multiple times when adding multiple rasters.[Bug 891870]
 
 VECTOR:
 1. OGR layers (for example shapefiles) do not reliably select or identify
