@@ -107,6 +107,8 @@ headers =	qgisapp.h					\
 		qgsproject.h					\
 		qgsprojectproperty.h				\
 		qgsprojectproperties.h				\
+		qgsprovidercountcalcevent.h			\
+		qgsproviderextentcalcevent.h			\
 		qgsprovidermetadata.h				\
 		qgsproviderregistry.h				\
 		qgsrangerenderitem.h				\
@@ -211,6 +213,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributetabledisplay.moc.cpp		\
 		qgscoordinatetransform.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
+		qgsdataprovider.moc.cpp		\
 		qgsdelattrdialog.moc.cpp			\
 		qgsdlgvectorlayerproperties.moc.cpp	\
 		qgsencodingfiledialog.moc.cpp		\
@@ -244,6 +247,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsuvaldialog.moc.cpp			\
 		qgsuvalmadialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp			\
+		qgsvectordataprovider.moc.cpp		\
 		splashscreen.moc.cpp 
 
 
@@ -316,6 +320,8 @@ qgis_SOURCES =	main.cpp			\
 		qgsproject.cpp			\
 		qgsprojectproperties.cpp	\
 		qgsprojectproperty.cpp		\
+ 		qgsprovidercountcalcevent.cpp	\
+ 		qgsproviderextentcalcevent.cpp	\
 		qgsprovidermetadata.cpp		\
 		qgsproviderregistry.cpp		\
 		qgsrangerenderitem.cpp		\
@@ -416,6 +422,8 @@ libqgis_la_SOURCES =				\
 		qgsmarkersymbol.cpp		\
 		qgspoint.cpp			\
 		qgspoint.moc.cpp		\
+		qgsprovidercountcalcevent.cpp	\
+		qgsproviderextentcalcevent.cpp	\
 		qgsproviderregistry.cpp		\
 		qgsprojectproperty.cpp		\
 		qgsrangerenderitem.cpp		\
@@ -433,6 +441,7 @@ libqgis_la_SOURCES =				\
 		qgsuvalmarenderer.cpp		\
 		qgsvectorfilewriter.cpp		\
 		qgsvectordataprovider.cpp	\
+		qgsvectordataprovider.moc.cpp	\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayer.moc.cpp 
 

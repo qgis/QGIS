@@ -235,6 +235,8 @@ private:
     //! check to see if file is dirty and if so, prompt the user th save it
     int saveDirty();
 
+
+    
 private slots:
 
     //! reimplements widget keyPress event so we can check if cancel was pressed
@@ -395,7 +397,7 @@ private:
 
     /// QgisApp aren't copyable
     QgisApp & operator=( QgisApp const & );
-
+    
     //! A central registry that keeps track of all loaded layers.
     // prefer QgsMapLayerRegistry::instance() to emphasize Singleton
     ///QgsMapLayerRegistry * mMapLayerRegistry;
@@ -469,6 +471,7 @@ private:
     bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
+    
 };
 
 #endif
