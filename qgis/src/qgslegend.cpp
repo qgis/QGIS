@@ -369,8 +369,19 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
         }
   } else if (movingItem)
     {
+       // scroll view if we're near the edge
+       QPoint p(contentsToViewport(e->pos()));
+       if (p.y() < 15)
+         {
+           scrollBy(0, -(15 - p.y()));
+       } else if (p.y() > visibleHeight() - 15)
+		  {
+		    scrollBy(0, p.y() - visibleHeight() - 15)
+		  }
+      
+		
       // move item in list if we're dragging over another item
-      QListViewItem *item = itemAt(e->pos());
+      QListViewItem *item = itemAt(p);
       if (item && (item != movingItem))
         {
           // find if we're over the top or bottom half of the item
@@ -394,7 +405,7 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
                 {
                   movingItem->moveItem(item);
                 }
-            }
+            }					
         }
     }
 }
