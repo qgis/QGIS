@@ -1,0 +1,270 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsGrassSelectBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsGrassSelectBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>606</width>
+            <height>175</height>
+        </rect>
+    </property>
+    <property name="font">
+        <font>
+            <family>Helvetica [Urw]</family>
+            <pointsize>10</pointsize>
+        </font>
+    </property>
+    <property name="caption">
+        <string>Add GRASS Vector Layer</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>Gisdbase</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>70</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Gisdbase</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>Location</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>40</y>
+                <width>70</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Plain</enum>
+        </property>
+        <property name="text">
+            <string>Location</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>GisdbaseBrowse</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>500</x>
+                <y>10</y>
+                <width>90</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Browse</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>Mapset</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>70</y>
+                <width>70</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Mapset</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>MapName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>100</y>
+                <width>70</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Map name</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>Layer</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>130</y>
+                <width>50</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Layer</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>ok</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>500</x>
+                <y>110</y>
+                <width>90</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>OK</string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>egisdbase</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>90</x>
+                <y>10</y>
+                <width>400</width>
+                <height>24</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>elocation</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>90</x>
+                <y>40</y>
+                <width>400</width>
+                <height>21</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>emap</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>90</x>
+                <y>100</y>
+                <width>401</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="editable">
+            <bool>true</bool>
+        </property>
+        <property name="toolTip" stdset="0">
+            <string>Select or type map name (wildcards '*' and '?' accepted for rasters)</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>emapset</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>90</x>
+                <y>70</y>
+                <width>401</width>
+                <height>21</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>elayer</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>90</x>
+                <y>130</y>
+                <width>401</width>
+                <height>20</height>
+            </rect>
+        </property>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>ok</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>GisdbaseBrowse</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>getGisdbase()</slot>
+    </connection>
+    <connection>
+        <sender>egisdbase</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>setLocations()</slot>
+    </connection>
+    <connection>
+        <sender>elocation</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>setMapsets()</slot>
+    </connection>
+    <connection>
+        <sender>emapset</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>setMaps()</slot>
+    </connection>
+    <connection>
+        <sender>emap</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>setLayers()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgsgrassselectbase.ui.h</include>
+</includes>
+<slots>
+    <slot>SetGisdbase()</slot>
+    <slot>getGisdbase()</slot>
+    <slot>setLocations()</slot>
+    <slot>setMaps()</slot>
+    <slot>setMapsets()</slot>
+    <slot>setLayers()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
