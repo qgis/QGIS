@@ -413,187 +413,223 @@
 <actions>
     <action>
         <property name="name">
-            <cstring>newLineAction</cstring>
+            <cstring>closeEditAction</cstring>
         </property>
         <property name="iconSet">
             <iconset>image0</iconset>
         </property>
         <property name="text">
-            <string>New line</string>
-        </property>
-        <property name="menuText">
-            <string>New line</string>
-        </property>
-        <property name="accel">
-            <string>F2</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>closeEditAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image1</iconset>
-        </property>
-        <property name="text">
             <string>Close</string>
         </property>
         <property name="menuText">
             <string>Close</string>
         </property>
     </action>
-    <action>
+    <actiongroup>
         <property name="name">
-            <cstring>newPointAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image2</iconset>
+            <cstring>actionToolsGroup</cstring>
         </property>
         <property name="text">
-            <string>New point</string>
+            <string>ActionGroup</string>
         </property>
-        <property name="accel">
-            <string>F1</string>
+        <property name="usesDropDown">
+            <bool>false</bool>
         </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>newBoundaryAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image3</iconset>
-        </property>
-        <property name="text">
-            <string>New boundary</string>
-        </property>
-        <property name="accel">
-            <string>F3</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>newCentroidAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image4</iconset>
-        </property>
-        <property name="text">
-            <string>New centroid</string>
-        </property>
-        <property name="accel">
-            <string>F4</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>moveVertexAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image5</iconset>
-        </property>
-        <property name="text">
-            <string>Move vertex</string>
-        </property>
-        <property name="accel">
-            <string>F5</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>addVertexAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image6</iconset>
-        </property>
-        <property name="text">
-            <string>Add vertex</string>
-        </property>
-        <property name="accel">
-            <string>F6</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>deleteVertexAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image7</iconset>
-        </property>
-        <property name="text">
-            <string>Delete vertex</string>
-        </property>
-        <property name="accel">
-            <string>F7</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>splitLineAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image8</iconset>
-        </property>
-        <property name="text">
-            <string>Split line</string>
-        </property>
-        <property name="accel">
-            <string>F10</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>moveLineAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image9</iconset>
-        </property>
-        <property name="text">
-            <string>Move line</string>
-        </property>
-        <property name="accel">
-            <string>F9</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>deleteLineAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image10</iconset>
-        </property>
-        <property name="text">
-            <string>Delete line</string>
-        </property>
-        <property name="accel">
-            <string>F11</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>editCatsAction</cstring>
-        </property>
-        <property name="text">
-            <string>Edit categories</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>editAttributesAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image11</iconset>
-        </property>
-        <property name="text">
-            <string>Edit attributes</string>
-        </property>
-    </action>
+        <action>
+            <property name="name">
+                <cstring>newLineAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image1</iconset>
+            </property>
+            <property name="text">
+                <string>New line</string>
+            </property>
+            <property name="menuText">
+                <string>New line</string>
+            </property>
+            <property name="accel">
+                <string>F2</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>newPointAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image2</iconset>
+            </property>
+            <property name="text">
+                <string>New point</string>
+            </property>
+            <property name="accel">
+                <string>F1</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>newBoundaryAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image3</iconset>
+            </property>
+            <property name="text">
+                <string>New boundary</string>
+            </property>
+            <property name="accel">
+                <string>F3</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>newCentroidAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image4</iconset>
+            </property>
+            <property name="text">
+                <string>New centroid</string>
+            </property>
+            <property name="accel">
+                <string>F4</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>moveVertexAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image5</iconset>
+            </property>
+            <property name="text">
+                <string>Move vertex</string>
+            </property>
+            <property name="accel">
+                <string>F5</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>addVertexAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image6</iconset>
+            </property>
+            <property name="text">
+                <string>Add vertex</string>
+            </property>
+            <property name="accel">
+                <string>F6</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>deleteVertexAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image7</iconset>
+            </property>
+            <property name="text">
+                <string>Delete vertex</string>
+            </property>
+            <property name="accel">
+                <string>F7</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>splitLineAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image8</iconset>
+            </property>
+            <property name="text">
+                <string>Split line</string>
+            </property>
+            <property name="accel">
+                <string>F10</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>moveLineAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image9</iconset>
+            </property>
+            <property name="text">
+                <string>Move line</string>
+            </property>
+            <property name="accel">
+                <string>F9</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>deleteLineAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image10</iconset>
+            </property>
+            <property name="text">
+                <string>Delete line</string>
+            </property>
+            <property name="accel">
+                <string>F11</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>editAttributesAction</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image11</iconset>
+            </property>
+            <property name="text">
+                <string>Edit attributes</string>
+            </property>
+        </action>
+    </actiongroup>
 </actions>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b014563014659471c92823eb5156c621a30c460809b88c329c4093514688c028423228c640796832480e01cba0b817c6c1908103bac542ad351700afdf726b</data>
+        <data format="XPM.GZ" length="676">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022130543251d2e253d856405bffcbc54103b09c8564e340041103711c44d4b4b4c3535077195215c10006bc40a6827a30c0258649461005d4659194d8a0819dca6e925c2001e99a4a424ec32204d49483289b4934171016e191457a38535aa475162014582bc38adb5e6020039de90ca</data>
     </image>
     <image name="image1">
-        <data format="XPM.GZ" length="676">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022130543251d2e253d856405bffcbc54103b09c8564e340041103711c44d4b4b4c3535077195215c10006bc40a6827a30c0258649461005d4659194d8a0819dca6e925c2001e99a4a424ec32204d49483289b4934171016e191457a38535aa475162014582bc38adb5e6020039de90ca</data>
+        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b014563014659471c92823eb5156c621a30c460809b88c329c4093514688c028423228c640796832480e01cba0b817c6c1908103bac542ad351700afdf726b</data>
     </image>
     <image name="image2">
         <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b0145630846494e920a30c0303e602343008646aadb900ffaa72d9</data>
