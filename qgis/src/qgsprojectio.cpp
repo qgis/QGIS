@@ -14,6 +14,7 @@
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
+ #include <qfileinfo.h>
  #include <qdom.h>
  #include <qmessagebox.h>
  #include <qcolor.h>
@@ -23,6 +24,7 @@
  #endif
  #include "qgsshapefilelayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsrect.h"
 #include "qgsprojectio.h"
  
 
@@ -35,32 +37,42 @@ QgsProjectIo::QgsProjectIo(QgsMapCanvas *_map, int _action) : map(_map), action(
 QgsProjectIo::~QgsProjectIo()
 {
 }
-void QgsProjectIo::write(){
-	selectFileName();
+QString QgsProjectIo::baseName(){
+QFileInfo fi(fullPath);
+return fi.baseName(true);
+}
+bool QgsProjectIo::write(){
+	if(fullPath.isEmpty()){
+		selectFileName();
+	}
 	//QMessageBox::information(0,"Full Path",fullPath);
 	int okToSave = 0;
-	if(QFile::exists(fullPath)){
+	if(QFile::exists(fullPath) && (action == SAVEAS)){
 		okToSave = QMessageBox::warning(0,"Overwrite File?",fullPath + " exists. \nDo you want to overwrite it?", "Yes", "No");
 	}
 	if(okToSave == 0){
 	// write the project information to the selected file
-	writeXML();
-	}
+		writeXML();
+		return true;
+	}else{
+		return false;
+		}
 }
-void QgsProjectIo::read(){
+bool QgsProjectIo::read(){
 	QString path = selectFileName();
 	QDomDocument *doc;
 	if(!path.isEmpty()){
 	doc = new QDomDocument( "qgisdocument" );
     QFile file( path );
     if ( !file.open( IO_ReadOnly ) )
-        return;
+        return false;
     if ( !doc->setContent( &file ) ) {
         file.close();
-        return;
+        return false;
     }
     file.close();
-	
+	// clear the map canvas
+	map->removeAll();
 	QDomNodeList nl = doc->elementsByTagName("maplayer");
 	QString layerCount;
 	layerCount = layerCount.setNum(nl.count());
@@ -149,6 +161,7 @@ void QgsProjectIo::read(){
 	}
 	
 	}
+	return true;
 }
 QString QgsProjectIo::selectFileName(){
 if(action == SAVE && fullPath.isEmpty()){
@@ -165,6 +178,12 @@ switch(action){
 	}
 	return fullPath;
 }
+void QgsProjectIo::setFileName(QString fn){
+	fullPath = fn;
+	}
+QString QgsProjectIo::fullPathName(){
+	return fullPath;
+	}
 void QgsProjectIo::writeXML(){
 	std::ofstream xml(fullPath);
 	if(!xml.fail()){
@@ -172,6 +191,16 @@ void QgsProjectIo::writeXML(){
 		xml << "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">" << std::endl;
 		xml << "<qgis projectname=\"default project\">\n";
 		xml << "<title>QGis Project File</title>\n";
+		
+		xml << "<extent>\n";
+		QgsRect extent = map->extent();
+		
+		xml << "\t<xmin>" << extent.xMin() << "</xmin>\n";
+		xml << "\t<ymin>" << extent.yMin() << "</ymin>\n";
+		xml << "\t<xmax>" << extent.xMax() << "</xmax>\n";
+		xml << "\t<ymax>" << extent.yMax() << "</ymax>\n";
+		xml << "</extent>\n";
+		
 		xml << "<projectlayers layercount=\"" << map->layerCount() << "\"> \n";
 		// write the layers
 		for(int i = 0; i < map->layerCount(); i++){

@@ -102,6 +102,8 @@ class QgisApp:public QgisAppBase
 	void fileSaveAs();
 	//! Open a project
 	void fileOpen();
+	//! Create a new project
+	void fileNew();
   private:
 //! Popup menu
 	  QPopupMenu * popMenu;
@@ -120,6 +122,8 @@ class QgisApp:public QgisAppBase
 	int mapTool;
 	QCursor *cursorZoomIn;
 	QString startupPath;
+	//! full path name of the current map file (if it has been saved or loaded)
+	QString fullPath;
 };
 
 #endif
