@@ -133,3 +133,10 @@ QgsMapLayerRegistry * QgisIface::getLayerRegistry()
 {
   return qgis->getLayerRegistry();
 }
+
+
+QgisApp * 
+QgisIface::app()
+{
+    return qgis;
+} // QgisIface::app()
