@@ -151,52 +151,14 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
   QLineEdit *myLineEdit;
   if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
   {
-
-    //
-    // get the mean temp file name
-    //
-    std::string myFileNameString = leMeanTemp->text().latin1();
-    climateDataProcessor->setMeanTempFileName(myFileNameString);
-    //
-    // get the min temp file name
-    //
-    std::string myFileNameString = leMinTemp->text().latin1();
-    climateDataProcessor->setMinTempFileName(myFileNameString);
-
-    //
-    // get the max temp file name
-    //
-    std::string myFileNameString = leMaxTemp->text().latin1();
-    climateDataProcessor->setMaxTempFileName(myFileNameString);
-
-    //
-    // get the diurnal temp file name
-    //
-    std::string myFileNameString = leDiurnalTemp->text().latin1();
-    climateDataProcessor->setDiurnalTempFileName(myFileNameString);
-    //
-    // get the Mean Precipitation  file name
-    //
-    std::string myFileNameString = leMeanPrecipitation->text().latin1();
-    climateDataProcessor->setMeanPrecipFileName(myFileNameString);
-
-    //
-    // get the Frost Days   file name
-    //
-    std::string myFileNameString = leFrostDays->text().latin1();
-    climateDataProcessor->setFrostDaysFileName(myFileNameString);
-
-    //
-    // get the Total Solar Radiation   file name
-    //
-    std::string myFileNameString = leTotalSolarRadiation->text().latin1();
-    climateDataProcessor->setTotalSolarRadFileName(myFileNameString);
-
-    //
-    // get the Wind Speed file name
-    //
-    std::string myFileNameString = leWindSpeed-text().latin1();
-    climateDataProcessor->setWindSpeedFileName(myFileNameString);
+    climateDataProcessor->setMeanTempFileName(leMeanTemp->text());
+    climateDataProcessor->setMinTempFileName(leMinTemp->text());
+    climateDataProcessor->setMaxTempFileName(leMaxTemp->text());
+    climateDataProcessor->setDiurnalTempFileName(leDiurnalTemp->text());
+    climateDataProcessor->setMeanPrecipFileName(leMeanPrecipitation->text());
+    climateDataProcessor->setFrostDaysFileName(leFrostDays->text());
+    climateDataProcessor->setTotalSolarRadFileName(leTotalSolarRadiation->text());
+    climateDataProcessor->setWindSpeedFileName(leWindSpeed->text());
 
     /////////////////////////////////////////////////////////////////////
     //
