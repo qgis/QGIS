@@ -19,7 +19,7 @@
 SHELL = /bin/sh
 
 srcdir = .
-top_srcdir = .
+top_srcdir = ../..
 
 prefix = /usr/local
 exec_prefix = ${prefix}
@@ -39,7 +39,7 @@ oldincludedir = /usr/include
 pkgdatadir = $(datadir)/qgis
 pkglibdir = $(libdir)/qgis
 pkgincludedir = $(includedir)/qgis
-top_builddir = .
+top_builddir = ../..
 
 ACLOCAL = ${SHELL} /home/sherman/development/qgis/admin/missing --run aclocal
 AUTOCONF = ${SHELL} /home/sherman/development/qgis/admin/missing --run autoconf
@@ -235,20 +235,10 @@ qt_libraries = /opt/qt3.0.5/lib
 x_includes = /usr/X11R6/include
 x_libraries = /usr/X11R6/lib
 
-SUBDIRS = qgis 
-
-EXTRA_DIST = qgis.kdevprj admin AUTHORS COPYING ChangeLog INSTALL README TODO qgis.lsm 
-
-####### kdevelop will overwrite this part!!! (end)############
-# not a GNU package. You can remove this line, if 
-# have all needed files, that a GNU package needs
-AUTOMAKE_OPTIONS = foreign 
-
-MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files 
-subdir = .
-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+SUBDIRS = en 
+subdir = qgis/docs
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
-CONFIG_HEADER = config.h
+CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 
@@ -256,17 +246,11 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
-	Makefile.am Makefile.in TODO acinclude.m4 aclocal.m4 \
-	admin/ChangeLog admin/config.guess admin/config.sub \
-	admin/depcomp admin/install-sh admin/ltmain.sh admin/missing \
-	admin/mkinstalldirs admin/ylwrap config.h.in configure \
-	configure.in
+DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-#>- all: config.h
+#>- all: all-recursive
 #>+ 1
-all: docs-am  config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+all: docs-am  all-recursive
 
 .SUFFIXES:
 
@@ -280,48 +264,15 @@ distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 #>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --foreign  Makefile
+#>- $(AUTOMAKE) --gnu  qgis/docs/Makefile
 #>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --foreign  Makefile
-	cd $(top_srcdir) && perl admin/am_edit Makefile.in
+	$(AUTOMAKE) --gnu  qgis/docs/Makefile
+	cd $(top_srcdir) && perl admin/am_edit qgis/docs/Makefile.in
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
 	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$@ $(SHELL) ./config.status
-
-$(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
-	$(SHELL) ./config.status --recheck
-$(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	cd $(srcdir) && $(AUTOCONF)
-
-$(ACLOCAL_M4):  configure.in acinclude.m4
-	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-config.h: stamp-h
-	@if test ! -f $@; then \
-	rm -f stamp-h; \
-	$(MAKE) stamp-h; \
-	else :; fi
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
-	@rm -f stamp-h stamp-hT
-	@echo timestamp > stamp-hT 2> /dev/null
-	cd $(top_builddir) \
-	&& CONFIG_FILES= CONFIG_HEADERS=config.h \
-	$(SHELL) ./config.status
-	@mv stamp-hT stamp-h
-$(srcdir)/config.h.in:  $(srcdir)/./stamp-h.in
-	@if test ! -f $@; then \
-	rm -f $(srcdir)/./stamp-h.in; \
-	$(MAKE) $(srcdir)/./stamp-h.in; \
-	else :; fi
-$(srcdir)/./stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	@rm -f $(srcdir)/./stamp-h.in $(srcdir)/./stamp-h.inT
-	@echo timestamp > $(srcdir)/./stamp-h.inT 2> /dev/null
-	cd $(top_srcdir) && $(AUTOHEADER)
-	@mv $(srcdir)/./stamp-h.inT $(srcdir)/./stamp-h.in
-
-distclean-hdr:
-	-rm -f config.h
+	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -390,7 +341,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
@@ -405,8 +356,8 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 	done | \
 	$(AWK) '    { files[$$0] = 1; } \
 	END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	|| etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP)
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	|| etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
@@ -416,23 +367,12 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=Makefile.dist subdirs 
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
-
-top_distdir = .
-# Avoid unsightly `./'.
-distdir = $(PACKAGE)-$(VERSION)
-
-GZIP_ENV = --best
+top_distdir = ../..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
-	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/admin
 	@for file in $(DISTFILES); do \
 	if test -f $$file; then d=.; else d=$(srcdir); fi; \
 	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -461,52 +401,9 @@ distdir: $(DISTFILES)
 	|| exit 1; \
 	fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) \
-	top_distdir="${top_distdir}" distdir="$(distdir)" \
-	dist-hook
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
-	! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
-	|| chmod -R a+r $(distdir)
-dist: distdir
-	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
-	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
-
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-distcheck: dist
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-	GZIP=$(GZIP_ENV) gunzip -c $(distdir).tar.gz | $(AMTAR) xf -
-	chmod -R a-w $(distdir); chmod a+w $(distdir)
-	mkdir $(distdir)/=build
-	mkdir $(distdir)/=inst
-	chmod a-w $(distdir)
-	dc_install_base=`CDPATH=: && cd $(distdir)/=inst && pwd` \
-	&& cd $(distdir)/=build \
-	&& ../configure --srcdir=.. --prefix=$$dc_install_base \
-	&& $(MAKE) $(AM_MAKEFLAGS) \
-	&& $(MAKE) $(AM_MAKEFLAGS) dvi \
-	&& $(MAKE) $(AM_MAKEFLAGS) check \
-	&& $(MAKE) $(AM_MAKEFLAGS) install \
-	&& $(MAKE) $(AM_MAKEFLAGS) installcheck \
-	&& $(MAKE) $(AM_MAKEFLAGS) uninstall \
-	&& (test `find $$dc_install_base -type f -print | wc -l` -le 1 \
-	|| (echo "Error: files left after uninstall" 1>&2; \
-	exit 1) ) \
-	&& $(MAKE) $(AM_MAKEFLAGS) dist \
-	&& $(MAKE) $(AM_MAKEFLAGS) distclean \
-	&& rm -f $(distdir).tar.gz \
-	&& (test `find . -type f -print | wc -l` -eq 0 \
-	|| (echo "Error: files left after distclean" 1>&2; \
-	exit 1) )
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-	@echo "$(distdir).tar.gz is ready for distribution" | \
-	sed 'h;s/./=/g;p;x;p;x'
 check-am: all-am
 check: check-recursive
-all-am: Makefile config.h
+all-am: Makefile
 installdirs: installdirs-recursive
 installdirs-am:
 
@@ -533,19 +430,15 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 #>- clean: clean-recursive
 #>+ 1
 clean: kde-rpo-clean  clean-recursive
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
-dist-all: distdir
-	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
-	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
 distclean: distclean-recursive
-	-rm -f config.status config.cache config.log
-distclean-am: clean-am distclean-generic distclean-hdr distclean-libtool \
+
+distclean-am: clean-am distclean-generic distclean-libtool \
 	distclean-tags
 
 dvi: dvi-recursive
@@ -579,38 +472,22 @@ uninstall-am: uninstall-info-am
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
-	clean-generic clean-libtool clean-recursive dist dist-all \
-	distcheck distclean distclean-generic distclean-hdr \
-	distclean-libtool distclean-recursive distclean-tags distdir \
-	dvi dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-recursive \
-	install-exec install-exec-am install-exec-recursive \
-	install-info install-info-am install-info-recursive install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-libtool mostlyclean-recursive tags tags-recursive \
-	uninstall uninstall-am uninstall-info-am \
+	clean-generic clean-libtool clean-recursive distclean \
+	distclean-generic distclean-libtool distclean-recursive \
+	distclean-tags distdir dvi dvi-am dvi-recursive info info-am \
+	info-recursive install install-am install-data install-data-am \
+	install-data-recursive install-exec install-exec-am \
+	install-exec-recursive install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
+	tags tags-recursive uninstall uninstall-am uninstall-info-am \
 	uninstall-info-recursive uninstall-recursive
 
 
-#$(top_srcdir)/configure.in: configure.in.in $(top_srcdir)/subdirs
-#	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common configure.in ;
-
-$(top_srcdir)/subdirs:
-	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common subdirs
-
-$(top_srcdir)/acinclude.m4: $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in
-	@cd $(top_srcdir) && cat admin/acinclude.m4.in admin/libtool.m4.in > acinclude.m4
-
-package-messages:
-	$(MAKE) -f admin/Makefile.common package-messages
-	$(MAKE) -C po merge
-
-dist-hook:
-	cd $(top_distdir) && perl admin/am_edit -padmin
-	cd $(top_distdir) && $(MAKE) -f admin/Makefile.common subdirs
+####### kdevelop will overwrite this part!!! (end)############
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
@@ -621,8 +498,8 @@ docs-am:
 #>+ 6
 force-reedit:
 		cd $(top_srcdir) && \
-	$(AUTOMAKE) --foreign  Makefile
-	cd $(top_srcdir) && perl admin/am_edit Makefile.in
+	$(AUTOMAKE) --gnu  qgis/docs/Makefile
+	cd $(top_srcdir) && perl admin/am_edit qgis/docs/Makefile.in
 
 
 #>+ 2
