@@ -13,7 +13,6 @@
 # Ganked from qgis/plugins/plugin_template/Makefile.am
 
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS)
 
 libdir    = ${prefix}/lib/qgis
 pkglibdir = ${libdir}
@@ -59,7 +58,8 @@ libqgsworldmapimporter_la_SOURCES = qgsworldmapimporter.cpp \
 	
 nodist_libqgsworldmapimporter_la_SOURCES =	$(plugin_MOC)
 
-libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
+libqgsworldmapimporter_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
+libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)

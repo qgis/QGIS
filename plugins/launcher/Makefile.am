@@ -12,11 +12,7 @@
 
 # Ganked from qgis/plugins/plugin_template/Makefile.am
 
-
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS)
-
-libdir    = ${prefix}/lib/qgis
-pkglibdir = ${libdir}
+plugindir = ${pkglibdir}
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -59,14 +55,10 @@ libQgsLauncherPlugin_la_SOURCES = qgslauncherplugin.cpp \
 	
 nodist_libQgsLauncherPlugin_la_SOURCES =	$(plugin_MOC)
 
-libQgsLauncherPlugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
+libQgsLauncherPlugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(GDAL_CFLAGS) $(QGIS_CXXFLAGS)
+libQgsLauncherPlugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) -lqgis
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(plugin_UI) icon_wmi.xpm
-
-
-
-
-

@@ -12,9 +12,6 @@
 
 # Ganked from qgis/plugins/plugin_template/Makefile.am
 
-
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS) -I/usr/local/include -I/usr/local/include/openmodeller
-
 libdir    = ${prefix}/lib/qgis
 pkglibdir = ${libdir}
 
@@ -61,7 +58,8 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	
 nodist_libopenmodellerplugin_la_SOURCES =	$(plugin_MOC)
 
-libopenmodellerplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis -L/usr/lib -lopenmodeller
+libopenmodellerplugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) -I/usr/local/include -I/usr/local/include/openmodeller
+libopenmodellerplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) -lqgis -L/usr/lib -lopenmodeller
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)

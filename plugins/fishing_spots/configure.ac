@@ -20,45 +20,19 @@ AC_LANG([C++])
 # Checks for libraries.
 
 dnl ---------------------------------------------------------------------------
+dnl GDAL check
+dnl ---------------------------------------------------------------------------
+AQ_CHECK_GDAL
+
+dnl ---------------------------------------------------------------------------
 dnl Qt check
 dnl ---------------------------------------------------------------------------
-gw_CHECK_QT
+AQ_CHECK_QT
 
-
-dnl
-dnl Look for qgis headers
-dnl
-dnl XXX -DQGISDEBUG should be added iff --enable-debug is true
-dnl
-AC_CHECK_PROG( QGIS_CONFIG, qgis-config, yes,
-               AC_MSG_ERROR([No Qgis C++ library -- get from http://qgis.sf.net/]) )
-
-QGIS_CFLAGS="`qgis-config --cflags`"
-QGIS_LDFLAGS="`qgis-config --libs`"
-
-dnl must add Qt header search path as qgis headers, in turn, include Qt stuff
-saved_CPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $QT_CXXFLAGS $QGIS_CFLAGS"
-
-AC_CHECK_HEADER([qgis/qgsfeature.h],,
-                 AC_MSG_ERROR([No Qgis C++ library -- get from http://qgis.sf.net/]))
-
-CPPFLAGS=$saved_CPPFLAGS
-dnl XXX add check for successful link against library
-
-
-dnl
-dnl Look for Frank Warmerdam's GDAL library
-dnl
-
-AC_CHECK_PROG( GDAL_CONFIG, gdal-config, yes,
-               AC_MSG_ERROR([No GDAL library.  Get from http://remotesensing.org/gdal/]) )
-
-
-if test $GDAL_CONFIG = "yes"; then
-  GDAL_CFLAGS=`gdal-config --cflags`
-  GDAL_LIBS=`gdal-config --libs`
-fi
+dnl ---------------------------------------------------------------------------
+dnl QGIS check
+dnl ---------------------------------------------------------------------------
+AQ_CHECK_QGIS
 
 # Checks for header files.
 
@@ -68,11 +42,7 @@ AC_C_CONST
 
 # Checks for library functions.
 
-AC_SUBST(QGIS_CFLAGS)
-AC_SUBST(QGIS_LDFLAGS)
 AC_SUBST(BOOST_PATH)
-AC_SUBST(GDAL_CFLAGS)
-AC_SUBST(GDAL_LIBS)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
