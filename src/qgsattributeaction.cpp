@@ -61,13 +61,7 @@ void QgsAttributeAction::doAction(unsigned int index, QString value)
 
     // This is beginning to duplicate the functionality in the
     // Launcher plugin - perhaps that should be used instead?
-
-    // Creating QProcess instances like this is a memory leak. If the
-    // user runs more than one action from this instance, a leak will
-    // occur. A solution would be to have a handle class for the
-    // QProcess instance and store them in a container. A slot in the
-    // handle class could then be connected to an appropriate QProcess
-    // signal, and the container of handles deleted when appropriate.
+    
     process = new QProcess();
     process->setArguments(args);
     if (!process->start())
@@ -76,6 +70,7 @@ void QgsAttributeAction::doAction(unsigned int index, QString value)
 			    "Unable to run the command \n" + expanded_action +
 			    "\n", QMessageBox::Ok, QMessageBox::NoButton);
     }
+    delete process;
   }
 }
 
@@ -144,4 +139,3 @@ bool QgsAttributeAction::readXML(QDomNode& layer_node)
   }
   return true;
 }
-
