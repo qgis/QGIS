@@ -36,6 +36,7 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qwhatsthis.h>
 
 //non qt includes
 #include <iostream>
@@ -99,18 +100,20 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-  pluginMenu->insertItem(QIconSet(icon),"&Add Layer", this, SLOT(run()));
+  int menuId = pluginMenu->insertItem(QIconSet(icon),"&Add Delimited Text Layer", this, SLOT(run()));
+  pluginMenu->setWhatsThis(menuId, "Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.");
 
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Delimited Text", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Add Layer", QIconSet(icon), "&Wmi",0, this, "run");
+  QAction *myQActionPointer = new QAction("Add Delimited Text Layer", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Delimited Text");
-  toolBarPointer->setLabel("Add Layer");
+  toolBarPointer->setLabel("Add Delimited Text Layer");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
 
@@ -120,7 +123,7 @@ void Plugin::initGui()
 // Slot called when the buffer menu item is activated
 void Plugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Add Layer",true,0);
+  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Add Delimited Text Layer",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
