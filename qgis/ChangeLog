@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.41 2004/03/28 00:05:12 timlinux Exp
+ChangeLog,v 1.42 2004/03/30 22:23:04 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-31 [jobi] 0.1.0devel19
+A lot of small changes to make release work again
+Probably more cleaning in the Makefiles needed
 
 2004-03-27 [ts] 0.1.0devel18
 ** Fix for cl parameter "snapshot" to ensure events are process (ie canvas is

@@ -31,23 +31,23 @@ bin_PROGRAMS = gpsimporter
 ##  For plugin lib
 ##
 
-libgpsimporterplugin_la_SOURCES =  plugin.cpp \
-»       »       »             waypointtoshape.cpp \
-                              waypointtoshape.h \
-»       »       »             utils.c \
-                              shpopen.c \
-			      dbfopen.c \
-			      shapefile.h \
-			      plugingui.cpp \
-			      $(plugin_UI)\
-			      $(plugin_MOC)
+libgpsimporterplugin_la_SOURCES = plugin.cpp \
+	waypointtoshape.cpp \
+	waypointtoshape.h \
+	utils.c \
+	shpopen.c \
+	dbfopen.c \
+	shapefile.h \
+	plugingui.cpp \
+	$(plugin_UI)\
+	$(plugin_MOC)
 
 	     
 plugin_MOC = plugin.moc.cpp \
-             plugingui.moc.cpp \
-	     pluginguibase.moc.cpp \
-	     ../../src/qgsmaplayer.moc.cpp \
-	     ../../src/qgsvectorlayer.moc.cpp 
+	plugingui.moc.cpp \
+	pluginguibase.moc.cpp \
+	../../src/qgsmaplayer.moc.cpp \
+	../../src/qgsvectorlayer.moc.cpp 
 
 plugin_UI = pluginguibase.h \
 	    pluginguibase.cpp 
@@ -69,16 +69,16 @@ libgpsimporterplugin_la_LDFLAGS = -avoid-version -module
 ##  For standalone executable
 ##
 
-gpsimporter_SOURCES =         main.cpp \
-»       »       »             waypointtoshape.cpp \
-                              waypointtoshape.h \
-»       »       »             utils.c \
-                              shpopen.c \
-			      dbfopen.c \
-			      shapefile.h \
-			      plugingui.cpp \
-			      pluginguibase.cpp \
-			      $(standalone_MOC) 
+gpsimporter_SOURCES = main.cpp \
+	waypointtoshape.cpp \
+	waypointtoshape.h \
+	utils.c \
+	shpopen.c \
+	dbfopen.c \
+	shapefile.h \
+	plugingui.cpp \
+	pluginguibase.cpp \
+	$(standalone_MOC) 
 
 gpsimporter_LDADD = $(QT_LDADD) 
 
@@ -87,7 +87,6 @@ standalone_MOC = plugingui.moc.cpp \
 
 standalone_UI = pluginguibase.h \
 	    pluginguibase.cpp 
-
 
 ## 
 ## Anything that must go in the tarball gets added here
@@ -98,6 +97,5 @@ pluginguibase.h \
 pluginguibase.ui.h \
 plugingui.h \
 plugin.h \
-shapefil.h \
 utils.h \
 waypointtoshape.h

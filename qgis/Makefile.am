@@ -18,9 +18,9 @@ EXTRA_DIST = doc \
 	COPYING \
 	NEWS \
 	qgis.spec \
-	config.h.in
+	qgsconfig.h.in
 
-SUBDIRS = src providers plugins doc
+SUBDIRS = src providers plugins doc tools
 
 pkginclude_HEADERS = qgsconfig.h
 
