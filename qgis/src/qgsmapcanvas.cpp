@@ -258,7 +258,7 @@ void QgsMapCanvas::render2()
           paint->end();
           drawing = false;
         }
-
+      
       dirty = false;
       repaint();
     }
@@ -342,7 +342,6 @@ void QgsMapCanvas::zoomFullExtent()
   currentExtent = fullExtent;
   clear();
   render2();
-  dirty = true;
 }
 
 void QgsMapCanvas::zoomPreviousExtent()
@@ -354,7 +353,6 @@ void QgsMapCanvas::zoomPreviousExtent()
       previousExtent = tempRect;
       clear();
       render2();
-      dirty = true;
     }
 }
 
@@ -396,7 +394,6 @@ void QgsMapCanvas::zoomToSelected()
           return;
         }
     }
-  dirty = true;
 }
 
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
@@ -448,7 +445,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             currentExtent.normalize();
             clear();
             render2();
-            dirty = true;
+            
             break;
           case QGis::ZoomOut:
             {
@@ -492,9 +489,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               std::cout << "Extent scaled by " << sf << " to " << currentExtent << std::endl;
               std::cout << "Center of currentExtent after scaling is " << currentExtent.center() << std::endl;
 #endif
-              clear();
+              clear();	
               render2();
-              dirty = true;
             }
             break;
 
@@ -528,9 +524,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                   currentExtent.setYmin(currentExtent.yMin() - dy);
 
                 }
-              clear();
+              clear();	
               render2();
-              dirty = true;
             }
             break;
 
