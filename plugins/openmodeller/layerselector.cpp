@@ -27,6 +27,10 @@
 //standard includes
 #include <iostream>
 
+#ifndef WIN32
+  //gdal includes
+  #include "gdal_priv.h"
+#endif
 
 
 LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -162,7 +166,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
         //set the parent item as the layer because this is a coverage
         theParentListViewItem->setText(1,"AIG");
 
-        if (OpenModellerGui::isValidGdalProj(myFileInfo->absFilePath()))
+        if (isValidGdalProj(myFileInfo->absFilePath()))
         {
           theParentListViewItem->setText(2,"Valid");
         }
@@ -183,7 +187,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
     {      
 
       //test whether the file is GDAL compatible
-      if (OpenModellerGui::isValidGdalFile(myFileInfo->absFilePath()) && OpenModellerGui::isValidGdalProj(myFileInfo->absFilePath()))
+      if (isValidGdalFile(myFileInfo->absFilePath()) && isValidGdalProj(myFileInfo->absFilePath()))
       {
         //GOOD FILE AND GOOD PROJ
         std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file and contains projection info" << std::endl;
@@ -191,7 +195,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
         myItem->setText(1,myFileInfo->extension(false));
         myItem->setText(2,"Valid");
       }
-      else if (OpenModellerGui::isValidGdalFile(myFileInfo->absFilePath()) && !OpenModellerGui::isValidGdalProj(myFileInfo->absFilePath()))
+      else if (isValidGdalFile(myFileInfo->absFilePath()) && !isValidGdalProj(myFileInfo->absFilePath()))
       {
         //GOOD FILE AND BAD PROJ
         std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file but contains no projection info" << std::endl;
@@ -213,3 +217,46 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
 
 
 }   
+
+
+bool LayerSelector::isValidGdalFile(const QString theFilename)
+{
+      //test whether the file is GDAL compatible
+      GDALAllRegister();
+      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( theFilename, GA_ReadOnly );
+
+      if( myTestFile == NULL )
+      {
+        //not GDAL compatible
+        GDALClose(myTestFile);
+	return false;
+      }
+      else
+      {
+        //is GDAL compatible
+	GDALClose(myTestFile);
+	return true;  
+      }
+}
+
+bool LayerSelector::isValidGdalProj(const QString theFilename)
+{
+      //test whether the file has GDAL projection info
+      GDALAllRegister();
+      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( theFilename, GA_ReadOnly );
+      
+      QString myProjectionString = myTestFile->GetProjectionRef();
+      
+      if(myProjectionString.isEmpty())
+      {
+        //does not have projection info
+        GDALClose(myTestFile);
+	return false;
+      }
+      else
+      {
+        //does have projection info
+	GDALClose(myTestFile);
+	return true;
+      }
+}

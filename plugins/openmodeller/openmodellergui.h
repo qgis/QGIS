@@ -78,8 +78,6 @@ public:
   void pbnOtherInputMask_clicked();
   void pbnOtherOutputMask_clicked();
   void pbnOtherOutputFormat_clicked();
-  static bool isValidGdalFile(const QString theFilename);
-  static bool isValidGdalProj(const QString theFilename); 
     
 private:
     OpenModeller * mOpenModeller;

@@ -1062,176 +1062,6 @@ void OpenModellerGui::leOutputDirectory_textChanged( const QString &theOutputDir
   }
 }
 
-/*void OpenModellerGui::pbnSelectLayerFolder_clicked()
-{
-  QSettings settings;
-
-  QString myLayersDirectoryQString = QFileDialog::getExistingDirectory(
-          settings.readEntry("/openmodeller/layersDirectory"), //initial dir
-          this,
-          "get existing directory",
-          "Choose a directory",
-          TRUE );
-
-  if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
-
-  settings.writeEntry("/openmodeller/layersDirectory",myLayersDirectoryQString);
-  traverseDirectories(myLayersDirectoryQString, lstLayers, cboMaskLayer);
-
-  LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
-  myLayerSelector->show();
-
-
-  //lstLayers->insertItem(myFileNameQString);
-  //also add the layer to the mask combo
-  //cboMaskLayer->insertItem(myFileNameQString);
-  //enable the user to carry on to the next page...
-  setNextEnabled(currentPage(),true);	    
-}
-*/
-void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theListBox, QComboBox* theComboBox)
-{
-  QDir dir(dirname);
-  dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
-  std::cout << "Current directory is: " << dirname.ascii() << std::endl;
-
-  const QFileInfoList* fileinfolist = dir.entryInfoList();
-  QFileInfoListIterator it(*fileinfolist);
-  QFileInfo* fi;
-
-  bool myInvalidFileFlag = false;
-  bool myInvalidFileProjFlag = false;
-  QString myInvalidFileList;
-  QString myInvalidFileProjList;
-
-  while( (fi = it.current() ) )
-  {
-    //Ignore directories
-    if( fi->fileName() == "." || fi->fileName() == ".." ) 
-    {
-      ++it;
-      continue;
-    }
-
-    //check to see if entry is a directory - if so iterate through it
-    if(fi->isDir() && fi->isReadable() )
-    {
-      traverseDirectories(fi->absFilePath(), theListBox, theComboBox);
-    }
-
-    //check to see if its an adf file type
-    //only add the hdr.adf files to ensure multiple adf files from one directory aren't added
-    else if (fi->extension(false)=="adf")
-    {
-      if (fi->fileName()=="hdr.adf")
-      {
-        std::cout << "Current filename is: " << fi->dirPath(true).ascii() << std::endl;
-        theListBox->insertItem(fi->dirPath(true));
-        theComboBox->insertItem(fi->dirPath(true)); 
-      }
-    }
-
-    //check to see if entry is of the other required file types
-    else if ((fi->extension(false)=="tif") ||
-            (fi->extension(false)=="asc") ||
-            (fi->extension(false)=="bil") ||
-            (fi->extension(false)=="jpg")   )
-    {      
-
-      //test whether the file is GDAL compatible
-      if (isValidGdalFile(fi->absFilePath()) && isValidGdalProj(fi->absFilePath()))
-      {
-        //GOOD FILE AND GOOD PROJ
-	std::cout << fi->absFilePath().ascii() << " is a valid GDAL file and contains projection info" << std::endl;
-	theListBox->insertItem(fi->absFilePath());
-        theComboBox->insertItem(fi->absFilePath());
-        theComboBox->setCurrentItem(0);	  
-      }
-      else if (isValidGdalFile(fi->absFilePath()) && !isValidGdalProj(fi->absFilePath()))
-      {
-        //GOOD FILE AND BAD PROJ
-	std::cout << fi->absFilePath().ascii() << " is a valid GDAL file but contains no projection info" << std::endl;
-	theListBox->insertItem(fi->absFilePath());
-        theComboBox->insertItem(fi->absFilePath());
-        theComboBox->setCurrentItem(0);
-	myInvalidFileProjFlag = true;	  
-	myInvalidFileProjList += fi->absFilePath()+"\n"; 	
-      }
-      else 
-      {
-        //BAD FILE AND/OR BAD PROJ
-        myInvalidFileFlag = true;
-        myInvalidFileList += fi->absFilePath()+"\n";         
-      } 
-    }  
-  ++it;
-  }
-  
-  if (myInvalidFileFlag)
-  {
-     //BAD FILE WARNING
-     QMessageBox::critical( this,QString("openModeller Wizard Error"),QString("The following are not valid GDAL files.  Please check and try again:\n\n "+myInvalidFileList));
-  }
-  else
-  {
-    if (myInvalidFileProjFlag)
-    {
-      //BAD PROJ WARNING 
-      QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("Warning!! The following files do not have any projection information associated.\n\n "+myInvalidFileProjList));
-    }
-   
-  }
-
-}   
-
-
-bool OpenModellerGui::checkLocalitiesFileFormat(const QString)
-{
- //@todo DO ME!!
- return false;
-}
-
-bool OpenModellerGui::isValidGdalFile(const QString theFilename)
-{
-      //test whether the file is GDAL compatible
-      GDALAllRegister();
-      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( theFilename, GA_ReadOnly );
-
-      if( myTestFile == NULL )
-      {
-        //not GDAL compatible
-        GDALClose(myTestFile);
-	return false;
-      }
-      else
-      {
-        //is GDAL compatible
-	GDALClose(myTestFile);
-	return true;  
-      }
-}
-
-bool OpenModellerGui::isValidGdalProj(const QString theFilename)
-{
-      //test whether the file has GDAL projection info
-      GDALAllRegister();
-      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( theFilename, GA_ReadOnly );
-      
-      QString myProjectionString = myTestFile->GetProjectionRef();
-      
-      if(myProjectionString.isEmpty())
-      {
-        //does not have projection info
-        GDALClose(myTestFile);
-	return false;
-      }
-      else
-      {
-        //does have projection info
-	GDALClose(myTestFile);
-	return true;
-      }
-}
 
 void OpenModellerGui::mapCallback( float progress, void *extra_param )
 {
@@ -1418,7 +1248,7 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
   if (myFileNameQString==NULL || myFileNameQString=="") return;
  
   //Check selected file is a valid gdal file with projection info
-  if ((isValidGdalFile(myFileNameQString)) && ((isValidGdalProj(myFileNameQString))))
+  if ((LayerSelector::isValidGdalFile(myFileNameQString)) && ((LayerSelector::isValidGdalProj(myFileNameQString))))
   {
 	//store directory where localities file is for next time
 	QSettings settings;
@@ -1451,7 +1281,7 @@ void OpenModellerGui::pbnOtherOutputMask_clicked()
   if (myFileNameQString==NULL || myFileNameQString=="") return;
  
   //Check selected file is a valid gdal file with projection info  
-  if ((isValidGdalFile(myFileNameQString)) && ((isValidGdalProj(myFileNameQString))))
+  if ((LayerSelector::isValidGdalFile(myFileNameQString)) && ((LayerSelector::isValidGdalProj(myFileNameQString))))
   {
 	//store directory where localities file is for next time
 	QSettings settings;
@@ -1484,7 +1314,7 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
   if (myFileNameQString==NULL || myFileNameQString=="") return;
   
   //Check selected file is a valid gdal file with projection info  
-  if ((isValidGdalFile(myFileNameQString)) && ((isValidGdalProj(myFileNameQString))))
+  if ((LayerSelector::isValidGdalFile(myFileNameQString)) && ((LayerSelector::isValidGdalProj(myFileNameQString))))
   {
 	//store directory where localities file is for next time
 	QSettings settings;
