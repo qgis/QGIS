@@ -161,6 +161,9 @@ public slots:
 
     void changeSymbology( QListViewItem * item, const QPoint & pnt, int col );
 
+    // The type of column was changed
+    void columnTypeChanged ( int row, int col );
+
 private:
     //! Editing is already running
     static bool mRunning;
@@ -340,6 +343,19 @@ private:
     void restorePosition(void);
 
     void saveWindowLocation(void);
+
+    // Set attribute table
+    void setAttributeTable(int field);
+
+    // Change attribute table
+    void attributeTableFieldChanged(void);
+
+    // Add column
+    void addColumn(void);
+
+    // Alter table
+    void alterTable(void);
+
 };
 
 #endif // QGSGRASSEDIT_H

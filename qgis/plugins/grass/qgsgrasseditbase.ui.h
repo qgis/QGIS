@@ -95,3 +95,21 @@ void QgsGrassEditBase::fieldChanged( )
 {
 
 }
+
+
+void QgsGrassEditBase::addColumn()
+{
+
+}
+
+
+void QgsGrassEditBase::alterTable()
+{
+
+}
+
+
+void QgsGrassEditBase::attributeTableFieldChanged()
+{
+
+}

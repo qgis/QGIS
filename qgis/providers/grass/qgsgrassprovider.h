@@ -341,7 +341,7 @@ public:
 	*   @param cat
 	*   @return vector of attributes
 	*/
-	std::vector<QgsField> *columns ( int field, int cat );
+	std::vector<QgsField> *columns ( int field );
 
 	/** Read attributes from DB
 	*   @param field
@@ -355,6 +355,17 @@ public:
 	*   @return Key column name or empty string 
 	*/
 	QString *key ( int field );
+
+	/** Get number of db links 
+	*   @return number of links 
+	*/
+	int numDbLinks ( void );
+
+	/** Get db link field
+	 *  @param link
+	*   @return field number or 0 
+	*/
+	int dbLinkField ( int link );
 
 	/** Update attributes 
 	*   @param field
@@ -370,6 +381,20 @@ public:
 	*   @return empty string or error message 
 	*/
 	QString *insertAttributes ( int field, int cat );
+
+	/** Create table and link vector to this table
+	*   @param field
+	*   @param columns SQL definition for columns, e.g. cat integer, label varchar(10) 
+	*   @return empty string or error message
+	*/
+	QString *createTable ( int field, const QString &key, const QString &columns );
+
+	/** Add column to table
+	*   @param field
+	*   @param column SQL definition for columns, e.g. label varchar(10) 
+	*   @return empty string or error message
+	*/
+	QString *addColumn ( int field, const QString &column );
 
 	/* Following functions work only until first edit operation! (category index used) */
 	
