@@ -36,6 +36,10 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     void addNewConnection();
     //! Opens a dialog to edit an existing connection
     void editConnection();
+	//! Deletes the selected connection
+	void deleteConnection();
+	//! Populate the connection list combo box
+	void populateConnectionList();
     //! Determines the tables the user selected and closes the dialog
     void addTables();
     /*! Connects to the database using the stored connection parameters. 

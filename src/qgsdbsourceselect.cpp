@@ -31,14 +31,7 @@
 
 QgsDbSourceSelect::QgsDbSourceSelect(QWidget *parent, const char *name):QgsDbSourceSelectBase()
 {
-	QSettings settings;
-	QStringList keys = settings.subkeyList("/Qgis/connections");
-	QStringList::Iterator it = keys.begin();
-	while (it != keys.end()) {
-		cmbConnections->insertItem(*it);
-
-		++it;
-	}
+	populateConnectionList();
 	// connect the double-click signal to the addSingleLayer slot in the parent
 
 
@@ -47,12 +40,25 @@ QgsDbSourceSelect::QgsDbSourceSelect(QWidget *parent, const char *name):QgsDbSou
 QgsDbSourceSelect::~QgsDbSourceSelect()
 {
 }
+void QgsDbSourceSelect::populateConnectionList(){
+	QSettings settings;
+	QStringList keys = settings.subkeyList("/Qgis/connections");
+	QStringList::Iterator it = keys.begin();
+	cmbConnections->clear();
+	while (it != keys.end()) {
+		cmbConnections->insertItem(*it);
+
+		++it;
+	}
+
+}
 void QgsDbSourceSelect::addNewConnection()
 {
 
 	QgsNewConnection *nc = new QgsNewConnection();
 
 	if (nc->exec()) {
+		populateConnectionList();
 	}
 }
 void QgsDbSourceSelect::editConnection()
@@ -64,6 +70,24 @@ void QgsDbSourceSelect::editConnection()
 		nc->saveConnection();
 	}
 }
+
+void QgsDbSourceSelect::deleteConnection(){
+	QSettings settings;
+	QString key = "/Qgis/connections/" + cmbConnections->currentText();
+	QString msg = "Are you sure you want to remove the " + cmbConnections->currentText() + " connection and all associated settings?";
+	int result = QMessageBox::information(this, "Confirm Delete", msg, "Yes", "No");
+	if(result == 0){
+		settings.removeEntry(key + "/host");
+		settings.removeEntry(key + "/database");
+		settings.removeEntry(key + "/username");
+		settings.removeEntry(key + "/password");
+		//if(!success){
+		//	QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
+		//}
+		cmbConnections->removeItem(cmbConnections->currentItem());// populateConnectionList();
+	}
+}
+
 void QgsDbSourceSelect::addTables()
 {
 	//store the table info

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsDbSourceSelectBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>305</width>
+            <width>327</width>
             <height>338</height>
         </rect>
     </property>
@@ -56,7 +56,7 @@
                         <string>Add</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -73,7 +73,7 @@
                         <string>Cancel</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -87,7 +87,7 @@
                         <string>Help</string>
                     </property>
                     <property name="accel">
-                        <number>4144</number>
+                        <string>F1</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -112,54 +112,6 @@
                 </spacer>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>GroupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Connection Information</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="3">
-                    <property name="name">
-                        <cstring>cmbConnections</cstring>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>btnConnect</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Connect</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="2">
-                    <property name="name">
-                        <cstring>btnEdit</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Edit</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>btnNew</cstring>
-                    </property>
-                    <property name="text">
-                        <string>New</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
         <widget class="QLabel" row="1" column="0">
             <property name="name">
                 <cstring>TextLabel3_2_2</cstring>
@@ -180,6 +132,62 @@
             <property name="selectionMode">
                 <enum>Extended</enum>
             </property>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>GroupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Connection Information</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>cmbConnections</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>btnConnect</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Connect</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>btnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>btnEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Edit</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="3">
+                    <property name="name">
+                        <cstring>btnDelete</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Delete</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
@@ -214,6 +222,12 @@
         <receiver>QgsDbSourceSelectBase</receiver>
         <slot>editConnection()</slot>
     </connection>
+    <connection>
+        <sender>btnDelete</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>deleteConnection()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>cmbConnections</tabstop>
@@ -229,11 +243,12 @@
     <include location="local" impldecl="in implementation">qgsdbsourceselectbase.ui.h</include>
 </includes>
 <slots>
-    <slot>addNewConnection()</slot>
-    <slot>addTables()</slot>
-    <slot>dbConnect()</slot>
     <slot>init()</slot>
+    <slot>dbConnect()</slot>
+    <slot>addTables()</slot>
+    <slot>addNewConnection()</slot>
     <slot>editConnection()</slot>
+    <slot>deleteConnection()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
