@@ -44,18 +44,10 @@ tableName(table)
     geometryColumn = tableName.mid(tableName.find(" (") +2);
     geometryColumn.truncate(geometryColumn.length()-1);
     tableName = tableName.mid(tableName.find(".")+1, tableName.find(" (") - (tableName.find(".")+1));
-  //  geometryColumn = tableName.copy();
-  //  geometryColumn.remove((int) 0,(int) tableName.find(" (",0)+2);
-    
-   // geometryColumn.remove(geometryColumn.length()-1,1);
+ 
     qWarning("Geometry column is: " + geometryColumn);
-  //  tableName.remove((int) tableName.find(" (",0),geometryColumn.length()+2);
-
-   // schema = tableName.copy();
-  //  schema.remove(schema.find(".",0),80);
-  //  tableName.remove(0,(int) tableName.find(".",0)+1);
-  qWarning("Schema is: " + schema);
-   qWarning("Table name is: " + tableName);
+    qWarning("Schema is: " + schema);
+    qWarning("Table name is: " + tableName);
 
 	PgDatabase *pd = new PgDatabase(conninfo);
 	if (pd->Status() == CONNECTION_OK) {
