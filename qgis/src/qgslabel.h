@@ -69,9 +69,12 @@ public:
 
     void dialog( QWidget * parent = 0 );
 
+    /** \brief render label
+     *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
+     */
     void renderLabel ( QPainter* painter, QgsRect* viewExtent, 
 	               QgsMapToPixel *transform, QPaintDevice *device,
-		       QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes=0);
+		       QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
     
     /** Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
