@@ -32,6 +32,7 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer* layer): QgsContColDialogBase(
 	    if(type!="String"&&type!="varchar"&&type!="geometry")
 	    {
 		str=(*it).getName();
+		str=str.left(1).upper()+str.right(str.length()-1);//make the first letter uppercase
 		classificationComboBox->insertItem(str);
 		m_fieldmap.insert(std::make_pair(str,fieldnumber));	
 	    }

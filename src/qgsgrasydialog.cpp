@@ -50,6 +50,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 	    if(type!="String"&&type!="varchar"&&type!="geometry")
 	    {
 		str=(*it).getName();
+		str=str.left(1).upper()+str.right(str.length()-1);//make the first letter uppercase
 		classificationComboBox->insertItem(str);
 		m_fieldmap.insert(std::make_pair(str,fieldnumber));	
 	    }
@@ -62,8 +63,8 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 	return;
     }
     
-    modeComboBox->insertItem("empty");
-    modeComboBox->insertItem("equal interval");
+    modeComboBox->insertItem("Empty");
+    modeComboBox->insertItem("Equal Interval");
 
     setSizeGripEnabled(true);
     
@@ -166,11 +167,11 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     int field=iter->second;
 
     //create a new extension dialog
-    if (modeComboBox->currentText()=="empty")
+    if (modeComboBox->currentText()=="Empty")
     {
 	ext=new QgsGraSyExtensionWidget(this,field,QgsGraSyDialog::EMPTY,numberofclassesspinbox->value(),m_vectorlayer);
     }
-    else if(modeComboBox->currentText()=="equal interval")
+    else if(modeComboBox->currentText()=="Equal Interval")
     {
 	ext=new QgsGraSyExtensionWidget(this,field,QgsGraSyDialog::EQUAL_INTERVAL,numberofclassesspinbox->value(),m_vectorlayer);
     }
