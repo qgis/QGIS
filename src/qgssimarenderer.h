@@ -33,6 +33,10 @@ class QgsSiMaRenderer: public QgsRenderer
     void addItem(QgsRenderItem* ri);
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
+    /**Reads the renderer configuration from an XML file
+     @param rnode the DOM node to read 
+     @param vl the vector layer which will be associated with the renderer*/
+    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ofstream& xml);
     bool needsAttributes();

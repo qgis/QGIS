@@ -42,6 +42,10 @@ class QgsGraduatedMaRenderer: public QgsRenderer
     void setClassificationField(int field);
     /**Returns the list with the render items*/
     std::list<QgsRangeRenderItem*>& items();
+    /**Reads the renderer configuration from an XML file
+     @param rnode the DOM node to read 
+     @param vl the vector layer which will be associated with the renderer*/
+    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ofstream& xml);
     virtual bool needsAttributes();

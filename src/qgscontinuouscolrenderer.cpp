@@ -22,6 +22,7 @@
 #include "qgslegenditem.h"
 #include "qgscontcoldialog.h"
 #include "qgssymbologyutils.h"
+#include <qdom.h>
 
 QgsContinuousColRenderer::~QgsContinuousColRenderer()
 {
@@ -213,6 +214,102 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 	    p->setBrush(QColor(red, green, blue));
         }
     }
+}
+
+void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+{
+    QgsSymbol* lsy = new QgsSymbol(); 
+    QgsSymbol* usy = new QgsSymbol();
+    QPen lpen, upen;
+    QBrush lbrush, ubrush;
+
+    QDomNode classnode = rnode.namedItem("classificationfield");
+    int classificationfield = classnode.toElement().text().toInt();
+    this->setClassificationField(classificationfield);
+
+    //read the settings for the renderitem of the minimum value
+    QDomNode lowernode = rnode.namedItem("lowestitem");
+    QDomNode litemnode = lowernode.namedItem("renderitem");
+    QString lvalue = litemnode.namedItem("value").toElement().text();
+
+    QDomNode lsymbol = litemnode.namedItem("symbol");
+
+    QDomElement loulcelement = lsymbol.namedItem("outlinecolor").toElement();
+    int red = loulcelement.attribute("red").toInt();
+    int green = loulcelement.attribute("green").toInt();
+    int blue = loulcelement.attribute("blue").toInt();
+    lpen.setColor(QColor(red, green, blue));
+
+    QDomElement loustelement = lsymbol.namedItem("outlinestyle").toElement();
+    lpen.setStyle(QgsSymbologyUtils::qString2PenStyle(loustelement.text()));
+
+    QDomElement loulwelement = lsymbol.namedItem("outlinewidth").toElement();
+    lpen.setWidth(loulwelement.text().toInt());
+
+    QDomElement lfillcelement = lsymbol.namedItem("fillcolor").toElement();
+    red = lfillcelement.attribute("red").toInt();
+    green = lfillcelement.attribute("green").toInt();
+    blue = lfillcelement.attribute("blue").toInt();
+    lbrush.setColor(QColor(red, green, blue));
+
+    QDomElement lfillpelement = lsymbol.namedItem("fillpattern").toElement();
+    lbrush.setStyle(QgsSymbologyUtils::qString2BrushStyle(lfillpelement.text()));
+
+    QString llabel = litemnode.namedItem("label").toElement().text();
+
+    QDomNode uppernode = rnode.namedItem("highestitem");
+    QDomNode uitemnode = uppernode.namedItem("renderitem");
+    QString uvalue = uitemnode.namedItem("value").toElement().text();
+
+    QDomNode usymbol = uitemnode.namedItem("symbol");
+
+    QDomElement uoulcelement = usymbol.namedItem("outlinecolor").toElement();
+    red = uoulcelement.attribute("red").toInt();
+    green = uoulcelement.attribute("green").toInt();
+    blue = uoulcelement.attribute("blue").toInt();
+    upen.setColor(QColor(red, green, blue));
+
+    QDomElement uoustelement = usymbol.namedItem("outlinestyle").toElement();
+    upen.setStyle(QgsSymbologyUtils::qString2PenStyle(uoustelement.text()));
+
+    QDomElement uoulwelement = usymbol.namedItem("outlinewidth").toElement();
+    upen.setWidth(uoulwelement.text().toInt());
+
+    QDomElement ufillcelement = usymbol.namedItem("fillcolor").toElement();
+    red = ufillcelement.attribute("red").toInt();
+    qWarning("red: " + QString::number(red));
+    green = ufillcelement.attribute("green").toInt();
+    qWarning("green: " + QString::number(green));
+    blue = ufillcelement.attribute("blue").toInt();
+    qWarning("blue: " + QString::number(blue));
+    ubrush.setColor(QColor(red, green, blue));
+
+    QDomElement ufillpelement = usymbol.namedItem("fillpattern").toElement();
+    ubrush.setStyle(QgsSymbologyUtils::qString2BrushStyle(ufillpelement.text()));
+
+    QString ulabel = uitemnode.namedItem("label").toElement().text();
+
+    //add all together
+    lsy->setPen(lpen);
+    lsy->setBrush(lbrush);
+    usy->setPen(upen);
+    usy->setBrush(ubrush);
+
+    QgsRenderItem *litem = new QgsRenderItem(lsy, lvalue, llabel);
+    QgsRenderItem *uitem = new QgsRenderItem(usy, uvalue, ulabel);
+
+    this->setMinimumItem(litem);
+    this->setMaximumItem(uitem);
+
+    vl.setRenderer(this);
+    QgsContColDialog *cdialog = new QgsContColDialog(&vl);
+    vl.setRendererDialog(cdialog);
+
+    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(&vl);
+    vl.setLayerProperties(properties);
+    properties->setLegendType("Continuous Color");
+
+    cdialog->apply();
 }
 
 void QgsContinuousColRenderer::writeXML(std::ofstream& xml)

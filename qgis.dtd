@@ -22,7 +22,7 @@
   --  General Map Layer Properties
   --  (apply to both vector and raster)
   -->
-<!ELEMENT maplayer (layername, datasource, zorder, (singlesymbol|graduatedsymbol|continuoussymbol|rasterproperties) >
+<!ELEMENT maplayer (layername, datasource, zorder, (singlesymbol|singlemarker|graduatedsymbol|continuoussymbol|graduatedmarker|rasterproperties) >
 <!ELEMENT layername (#PCDATA) >
 <!ELEMENT datasource (#PCDATA) >
 <!ELEMENT zorder (#PCDATA) >
@@ -71,7 +71,7 @@ markersymbol(svgpath,scalefactor,outlinecolor,outlinestyle,outlinewidth,fillcolo
 <!ELEMENT value (#PCDATA) >
 <!ELEMENT label (#PCDATA) >
 
-<!ELEMENT rangerenderitem (lowervalue,uppervalue,symbol,label) >
+<!ELEMENT rangerenderitem (lowervalue,uppervalue,(symbol | markersymbol),label) >
 <!ELEMENT lowervalue (#PCDATA) >
 <!ELEMENT uppervalue (#PCDATA) >
 
@@ -83,6 +83,7 @@ markersymbol(svgpath,scalefactor,outlinecolor,outlinestyle,outlinewidth,fillcolo
 <!ELEMENT singlesymbol (renderitem) >
 <!ELEMENT singlemarker (renderitem) >
 <!ELEMENT graduatedsymbol (classificationfield,rangerenderitem+) >
+<!ELEMENT graduatedmarker (classificationfield,rangerenderitem+) >
 <!ELEMENT classificationfield (#PCDATA) >
 <!ELEMENT continuoussymbol (classificationfield,lowestitem,highestitem) >
 <!ELEMENT lowestitem (renderitem) >
