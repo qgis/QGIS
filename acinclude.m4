@@ -28,6 +28,9 @@ QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 AC_MSG_CHECKING([Qt version])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTDIR/include/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
+    33*)
+        QT_MAJOR="3"
+    ;;
     32*)
         QT_MAJOR="3"
     ;;
