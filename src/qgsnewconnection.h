@@ -9,7 +9,7 @@ class QgsNewConnection : public QgsNewConnectionBase
 {
  public:
     //! Constructor
-    QgsNewConnection();
+    QgsNewConnection(QString connName= QString::null);
     //! Destructor
     ~QgsNewConnection();
     //! Tests the connection using the parameters supplied
