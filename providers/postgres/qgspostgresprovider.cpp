@@ -39,12 +39,13 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   valid = true;
   /* OPEN LOG FILE */
 
-  // make connection to the data source
-  // for postgres, the connection information is passed as a space delimited
+  // Make connection to the data source
+  // For postgres, the connection information is passed as a space delimited
   // string:
   //  host=192.168.1.5 dbname=test user=gsherman password=xxx table=tablename
   //--std::cout << "Data source uri is " << uri << std::endl;
-  // strip the table and sql statement name off and store them
+  
+  // Strip the table and sql statement name off and store them
   int sqlStart = uri.find(" sql");
   int tableStart = uri.find("table=");
 #ifdef QGISDEBUG
