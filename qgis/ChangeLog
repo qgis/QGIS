@@ -1,7 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.79 2004/05/16 21:23:27 larsl Exp
+ChangeLog,v 1.80 2004/05/17 09:27:27 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-17 [ts] 0.2.0devel22
+** Added support to Save As Image to save in any QImageIO supported format.
+File->SaveAsImage dialog filter list now generated automagically by
+interrogating QImageIO for its supportted formats. File->SaveAsImage remembers
+last dir used (stored in qsettings). Its supposed to remember last filter used
+but there is an issue with that that needs to be resolved.
 
 2004-05-16 [larsl] 0.2.0devel21
 ** Added url/link parsing to the GPX provider
