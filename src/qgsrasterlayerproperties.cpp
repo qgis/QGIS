@@ -996,7 +996,6 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       }
     }
   }
-
 #ifdef QGISDEBUG
           std::cout << "max " << myYAxisMax << std::endl;
           std::cout << "min " << myYAxisMin << std::endl;
@@ -1061,7 +1060,11 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       //hence the casts
       int myX = static_cast<int>((((double)myGraphImageWidth)/((double)myLastBinWithData))*myBin);
       //height varies according to freq. and scaled to greatet value in all layers
-      int myY = static_cast<int>(((double)myBinValue/(double)myYAxisMax)*myGraphImageHeight);
+      int myY=0;
+      if (myBinValue==0)
+      {  
+        myY=static_cast<int>(((double)myBinValue/(double)myYAxisMax)*myGraphImageHeight);
+      }
       //determin which color to draw the bar
       int c1, c2, c3;
       bool found = myColorTable->color ( myBinValue, &c1, &c2, &c3 );
