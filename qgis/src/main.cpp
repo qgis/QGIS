@@ -15,7 +15,12 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
 #include <iostream>
+#include <cstdio>
+
+#include <getopt.h>
+
 #include <qapplication.h>
 #include <qfont.h>
 #include <qfile.h>
@@ -26,8 +31,37 @@ email                : sherman at mrcc.com
 #include <qpixmap.h>
 #include "qgisapp.h"
 #include <qstringlist.h> 
-#include <stdio.h>
-#include <getopt.h>
+
+
+
+static const char * const ident_ = "$Id$";
+
+
+/** print usage text
+ */
+void usage( std::string const & appName )
+{
+  std::cerr << "Quantum GIS - " << VERSION << " 'Pumpkin'\n" 
+	    << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n" 
+	    << "raster and vector data.\n"  
+	    << "Usage: " << appName <<  " [options] [FILES]\n"  
+	    << "  options:\n"
+	    << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
+	    << "\t[--lang language]\tuse language for interface text\n"
+	    << "\t[--project projectfile]\tload the given QGIS project\n"
+	    << "\t[--help]\t\tthis text\n\n"
+	    << "  FILES:\n"  
+	    << "    Files specified on the command line can include rasters,\n"  
+	    << "    vectors, and QGIS project files (.qgs): \n"  
+	    << "     1. Rasters - Supported formats include GeoTiff, DEM \n"  
+	    << "        and others supported by GDAL\n"  
+	    << "     2. Vectors - Supported formats include ESRI Shapefiles\n"  
+	    << "        and others supported by OGR and PostgreSQL layers using\n"  
+            << "        the PostGIS extension\n"  ;
+
+} // usage()
+
+
 
 int main(int argc, char *argv[])
 {
@@ -45,14 +79,14 @@ int main(int argc, char *argv[])
   // This behaviour is used to load the app, snapshot the map,
   // save the image to disk and then exit
   QString mySnapshotFileName="";
-  // This behaviour will print some help text to console and exit
-  // without doing anything further
-  int myHelpFlag=false;
+
   // This behaviour will cause QGIS to autoload a project
   QString myProjectFileName="";
+
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
   QString myTranslationFileName="";
+
   // This is the 'leftover' arguments collection
   QStringList * myFileList=new QStringList();
 
@@ -67,7 +101,7 @@ int main(int argc, char *argv[])
     static struct option long_options[] =
     {
       /* These options set a flag. */
-      {"help", no_argument, &myHelpFlag, 1},
+      {"help", no_argument, 0, 'h'},
       /* These options don't set a flag.
        *  We distinguish them by their indices. */
       {"snapshot", required_argument, 0, 's'},
@@ -109,12 +143,15 @@ int main(int argc, char *argv[])
             myProjectFileName=optarg;
             break;
 
+        case 'h':
         case '?':
-            myHelpFlag=1;
+	    usage( argv[0] );
+	    return 2;		// XXX need standard exit codes
             break;
 
         default:
-            abort ();
+	    std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
+            return 1;		// XXX need standard exit codes
     }
   }
 
@@ -170,30 +207,6 @@ int main(int argc, char *argv[])
   QgisApp *qgis = new QgisApp();
   a.setMainWidget(qgis);
 
-
-  
-  /////////////////////////////////////////////////////////////////////
-  // Print help text and exit if so required - program will terminate afterwards
-  /////////////////////////////////////////////////////////////////////
-  
-  if (myHelpFlag)
-  {
-    std::cout << "Quantum GIS - Version 0.2 'Pumpkin'" << std::endl;
-    std::cout << "Quantum GIS (QGIS) is a viewer for spatial data sets, including" << std::endl;
-    std::cout << "raster and vector data." << std::endl << std::endl;
-    std::cout << "Usage: qgis --help | --snapshot filename | [--project filename.qgs] [--lang iso-language-name] [FILES]" << std::endl ;
-    std::cout << "  --help - Display help (this information)" << std::endl ;
-    std::cout << "  FILES:" << std::endl ;
-    std::cout << "    Files specified on the command line can include rasters, " << std::endl ;
-    std::cout << "    vectors, and QGIS project files (.qgs): " << std::endl ;
-    std::cout << "     1. Rasters - Supported formats include GeoTiff, DEM " << std::endl ;
-    std::cout << "        and others supported by GDAL" << std::endl ;
-    std::cout << "     2. Vectors - Supported formats include ESRI Shapefiles " << std::endl ;
-    std::cout << "        and others supported by OGR and PostgreSQL layers using" << std::endl ;
-    std::cout << "        the PostGIS extension" << std::endl ;
-    return 0;
-  }
-
   
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
@@ -247,12 +260,9 @@ int main(int argc, char *argv[])
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
+
   a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 
-  //
-  //turn control over to the main application loop...
-  //
-  int result = a.exec();
+  return a.exec();
 
-  return result;
 }
