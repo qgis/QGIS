@@ -10,4 +10,8 @@
 #
 # $Id$
 
-SUBDIRS = north_arrows splash
+imagedir = ${pkgdatadir}/images/splash
+
+image_DATA = *.png
+
+EXTRA_DIST = $(image_DATA)
