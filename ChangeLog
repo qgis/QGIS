@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.189 2004/09/20 18:00:11 larsl Exp
+ChangeLog,v 1.190 2004/09/21 12:55:51 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-20 [tim] 0.4.0devel37
+** Shameless acknowledge not keeping this file up to date!
+** Sort out clipping problems with labeller
 
 2004-09-20 [larsl] 0.4.0devel36
 ** Added the element definition of uniquevaluemarker to qgis.dtd
