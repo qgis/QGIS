@@ -293,7 +293,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapCanvas->setLegend(mapLegend);
   // disable functions based on build type
 #ifndef HAVE_POSTGRESQL
-  actionAddLayer->removeFrom(PopupMenu_2);
+  actionAddLayer->removeFrom(popupMenuLayers);
   actionAddLayer->removeFrom(DataToolbar);
 #endif
   if (!myHideSplashFlag)
