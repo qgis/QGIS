@@ -1,5 +1,5 @@
 /***************************************************************************
-                          QgsAttributeTableDisplay.h  -  description
+                          qgsattributetabledisplay.h  -  description
                              -------------------
     begin                : Sat Nov 23 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSATTRIBUTETABLEDISPLAY_H
 #define QGSATTRIBUTETABLEDISPLAY_H

@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSGEOMTYPEDIALOG_H
 #define QGSGEOMTYPEDIALOG_H
 

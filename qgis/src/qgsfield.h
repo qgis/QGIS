@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsfield.h - Describes a field in a layer or table
-  --------------------------------------
-Date                 : 01-Jan-2004
-Copyright            : (C) 2004 by Gary E.Sherman
-email                : sherman at mrcc.com
+               qgsfield.h - Describes a field in a layer or table
+                     --------------------------------------
+               Date                 : 01-Jan-2004
+               Copyright            : (C) 2004 by Gary E.Sherman
+               email                : sherman at mrcc.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

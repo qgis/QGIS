@@ -1,6 +1,3 @@
-#ifndef QGSVECTORDATAPROVIDER_H
-#define QGSVECTORDATAPROVIDER_H
-
 /***************************************************************************
     qgsvectordataprovider.h - DataProvider Interface for vector layers
      --------------------------------------
@@ -15,7 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
+#ifndef QGSVECTORDATAPROVIDER_H
+#define QGSVECTORDATAPROVIDER_H
 #include "qgsdataprovider.h"
 
 /**Interface class for vector data providers*/

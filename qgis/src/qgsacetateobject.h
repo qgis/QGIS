@@ -1,7 +1,7 @@
 /***************************************************************************
-  qgsacetateobject.h
+                               qgsacetateobject.h
   An object that can be drawn on the acetate layer of a QgsMapCanvas
-            -------------------
+                              -------------------
   begin                : June 10, 2004
   copyright            : (C) 2004 by Gary E.Sherman
   email                : sherman at mrcc.com

@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgslinestyledialog.h 
- Dialog for selecting line style for vector layers
+               Dialog for selecting line style for vector layers
                              -------------------
     begin                : 2004-02-12
     copyright            : (C) 2004 by Gary E.Sherman

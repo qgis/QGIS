@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsproject.h
+                                  qgsproject.h
 
-  Implements persistent project state.
+                      Implements persistent project state.
  
-            -------------------
+                              -------------------
   begin                : July 23, 2004
   copyright            : (C) 2004 by Mark Coletti
   email                : mcoletti at gmail.com

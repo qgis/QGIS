@@ -1,5 +1,5 @@
 /***************************************************************************
-                          gstable.h  -  description
+                          qgstable.h  -  description
                              -------------------
     begin                : Sun Jun 30 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSTABLE_H
 #define QGSTABLE_H

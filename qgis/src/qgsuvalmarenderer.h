@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsuvalmarenderer.h  -  unique value marker renderer
+              qgsuvalmarenderer.h  -  unique value marker renderer
                              -------------------
     begin                : September 2004
     copyright            : (C) 2004 by Lars Luthman
@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSUVALMARENDERER_H
 #define QGSUVALMARENDERER_H
 

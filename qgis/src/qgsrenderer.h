@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 #ifndef QGSRENDERER_H
 #define QGSRENDERER_H
 
