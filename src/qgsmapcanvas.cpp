@@ -65,6 +65,9 @@ void QgsMapCanvas::setLegend(QgsLegend * legend)
 {
 	mapLegend = legend;
 }
+QgsLegend * QgsMapCanvas::getLegend(){
+	return mapLegend;
+}
 void QgsMapCanvas::setDirty(bool _dirty){
 	dirty = _dirty;
 }

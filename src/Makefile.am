@@ -46,6 +46,7 @@ qgis_SOURCES =  qgisapp.cpp \
 				qgsrenderitem.cpp \
 				qgsshapefilelayer.cpp \
 				qgssymbol.cpp\
+				qgsmapserverexport.cpp \
 				$(qgis_UI)\
 				$(qgis_MOC)
 qgis_MOC = 	qgisappbase.moc.cpp \
