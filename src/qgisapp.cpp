@@ -402,41 +402,30 @@ void QgisApp::about()
   versionString += tr(" (no PostgreSQL support)");
 #endif
   abt->setVersion(versionString);
-  QString urls = tr("Web Page: http://qgis.sourceforge.net") +
+  QString urls = tr("Web Page: http://qgis.org") +
     "\n" + tr("Sourceforge Project Page: http://sourceforge.net/projects/qgis");
   abt->setURLs(urls);
   QString watsNew = "<html><body>" + tr("Version") + " ";
   watsNew += QGis::qgisVersion;
   watsNew += "<h3>New features</h3>";
   watsNew += "<ul>"
-          "<li>Simple and graduated SVG marker symbols </li>"
-          "<li>SVG Marker library</li>"
-          "<li>Mapcanvas is updated as features are drawn (every 1,000 features) </li>"
-          "<li>WhatsThis? help for menus and toolbar buttons </li>"
-          "<li>Save map canvas as an image (.png) </li>"
-          "<li>Search radius for identifying features can be specified in the preferences dialog </li>"
-          "<li>Splashscreen can be disabled in user preferences</li>"
-          "<li>Raster statistics</li>"
-          "<li>Thumbnail preview in raster properties dialog</li>"
-          "<li>Metadata tab in raster properties dialog</li>"
-          "<li>Internationalization for several languages</li>"
-          "<li>Snapshot mode (invoked from command line)</li>"
-          "<li>Command line options for loading project files/layers</li>"
-          "<li>Currently loaded plugins are restored each time QGIS is started</li>"
+          "<li>Raster pyramids</li>"
+          "<li>Scale display</li>"
+          "<li>Map units can be specified (meters, feet, decimal degrees)</li>"
+          "<li>Desktop icons (installed in share/qgis/images/icons)</li>"
+          "<li>Mac OS X vector support now works</li>"
         "</ul>"
-        "<h3>New Core Plugins</h3>"
+        "<h3>Core Plugins</h3>"
         "<ul>"
-        "<li>Delimited text plugin for creating a map layer from a set of x, y coordinates</li>"
-        "<li>GPS importer plugin</li>"
-        "<li>Grid/graticule maker plugin</li>"
-        "<li>Grass plugin</li>"
+        "<li>New North Arrow plugin</li>"
+        "<li>Improved GPS tools plugin</li>"
+        "<li>New Copyright plugin</li>"
+        "<li>Improved Grass plugin with raster and vector loaders</li>"
       "</ul>"
       "<h3>New Contributed Plugins</h3>"
+      "These plugins are available from community.qgis.org or CVS (module plugins)"
       "<ul>"
-        "<li>Launcher plugin runs a system script or program</li>"
-        "<li>Worldmap</li>"
-        "<li>Fishing_spots tutorial plugin</li>"
-        "<li>Open modeller</li>"
+        "<li>HTTP server</li>"
       "</ul>"
 "</body></html>";
 
