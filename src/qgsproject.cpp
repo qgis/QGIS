@@ -20,6 +20,8 @@
 #include <memory>
 #include <iostream>
 
+using namespace std;
+
 #include "qgisapp.h"
 #include "qgsrect.h"
 #include "qgsvectorlayer.h"
@@ -35,6 +37,7 @@
 #include <qapplication.h>
 #include <qfileinfo.h>
 #include <qdom.h>
+#include <qdict.h>
 #include <qmessagebox.h>
 #include <qwidgetlist.h>
 
@@ -49,6 +52,376 @@ static const char * const ident_ = "$Id$";
 QgsProject * QgsProject::theProject_;
 
 
+/**
+   ABC for property hierarchies
+
+   Each sub-class is either a PropertyKey or PropertyValue.  PropertyKeys can
+   container either PropertyKeys or PropertyValues, thus describing an
+   hierarchy.  PropertyValues are always graph leaves.
+
+ */
+class Property
+{
+public:
+
+    Property()
+    {}
+
+    virtual ~Property()
+    {}
+
+    /// return the QVariant value for the given key
+    /**
+        keyName will be a QStringList that's been tokened by the caller from '/' delimiters
+        @note will be QVariant::Invalid if no value
+    */
+    virtual QVariant value( QStringList & keyName ) const = 0;
+
+    /// set value for the given key
+    /**
+        keyName will be a QStringList that's been tokened by the caller from '/' delimiters
+    */
+    virtual bool setValue( QStringList & keyName, QVariant const & value ) = 0;
+
+    /** dumps out the keys and values 
+
+       @note used for debugging
+    */
+    virtual void dump( ostream & os ) const = 0;
+
+    /**
+       restores property hierarchy to given DOM node
+
+       Used for restoring properties from project file
+     */
+    virtual bool readXML( QDomNode & layer_node ) = 0;
+
+    /**
+       adds property hierarchy to given DOM node
+
+       Used for saving properties to project file.
+
+       @param nodeName the tag name associated with this element
+       @param node     the parent (or encompassing) property node
+       @param documetn the overall project file DOM document
+     */
+    virtual bool writeXML( QString const & nodeName, QDomNode & node, QDomDocument & document ) = 0;
+
+    /// how many elements are contained within this one?
+    virtual size_t count() const = 0;
+
+}; // class Property
+
+
+
+
+/**
+   PropertyValue node
+
+   Contains a PropertyKey's value
+
+ */
+class PropertyValue : public Property
+{
+public:
+
+    PropertyValue( )
+    {}
+
+    PropertyValue( QVariant const & value )
+        : value_(value)
+    {}
+
+    virtual ~PropertyValue() 
+    {}
+
+    /// just returns the value
+    virtual QVariant value( QStringList & keyName ) const
+    {
+        // if keyName isn't empty, then something went wrong in the recursion
+        if ( ! keyName.empty() )
+        {
+            qDebug( "%s:%d PropertyValue given a non-empty keyName", __FILE__, __LINE__ );
+        }
+
+        // we ignore keyName since we're a leaf node and don't have one
+        return value_;
+    }
+
+    /**
+       sets the PropertyValue value
+    */
+    virtual bool setValue( QStringList & keyName, QVariant const & value )
+    {
+        value_ = value;
+
+        if ( ! keyName.empty() )
+        {
+            qDebug( "%s:%d PropertyValue given a non-empty keyName", __FILE__, __LINE__ );
+
+            return false;
+        }
+
+        if ( ! value_.isValid() )
+        {
+            qDebug( "%s:%d PropertyValue given an invaild value", __FILE__, __LINE__ );
+
+            return false;
+        }
+
+        if ( value_.isNull() )
+        {
+            qDebug( "%s:%d PropertyValue given a null value", __FILE__, __LINE__ );
+
+            // XXX return false; I guess this might be ok?
+        }
+
+        return true;
+    }
+
+    virtual void dump( ostream & os ) const
+    {
+        if ( QVariant::StringList == value_.type() )
+        {
+            QStringList sl = value_.toStringList();
+
+            for ( QStringList::const_iterator i = sl.begin();
+                  i != sl.end();
+                  ++i )
+            {
+                os << "[" << *i << "] ";
+            }
+        }
+        else
+        {
+            os << value_.toString() << "\n";
+        }
+    }
+
+    /* virtual */ bool readXML( QDomNode & layer_node )
+    {
+        return true;
+    }
+
+    /* virtual */ bool writeXML( QString const & nodeName, QDomNode & node, QDomDocument & document )
+    {
+        QDomElement valueElement = document.createElement( nodeName );
+
+        // remember the type so that we can rebuild it when the project is read in
+        valueElement.setAttribute( "type", value_.typeName() );
+
+
+        // we handle string lists differently from other types in that we
+        // create a sequence of repeated elements to cover all the string list
+        // members; each value will be in a <value></value> tag.
+        // XXX Not the most elegant way to handle string lists?
+        if ( QVariant::StringList == value_.type() )
+        {
+            QStringList sl = value_.asStringList();
+
+            for ( QStringList::iterator i = sl.begin();
+                  i != sl.end();
+                  ++i )
+            {
+                QDomElement stringListElement = document.createElement( "value" );
+                QDomText valueText = document.createTextNode( *i );
+                stringListElement.appendChild( valueText );
+
+                valueElement.appendChild( stringListElement );
+            }
+        }
+        else                    // we just plop the value in as plain ole text
+        {
+            QDomText valueText = document.createTextNode( value_.toString() );
+            valueElement.appendChild( valueText );
+        }
+
+        node.appendChild( valueElement );
+
+        return true;
+    }
+
+    /// how many elements are contained within this one?
+    size_t count() const
+    {
+            return 0;
+    }
+
+private:
+
+    /** We use QVariant as it's very handy to keep multiple types and provides
+        type conversions  
+    */
+    QVariant value_;
+
+}; // class PropertyValue
+
+
+
+
+
+/**
+   PropertyKey node
+
+   Can container either other PropertyKeys or a PropertyValue
+
+ */
+class PropertyKey : public Property
+{
+public:
+
+    PropertyKey( )
+    {
+        // since we own our properties, we responsible for deleting the
+        // contents
+        properties_.setAutoDelete( true );
+    }
+
+
+    /** construct new property key with given subkey name and value
+
+      Called by setValue().  May possibly recurse to create more sub-keys.
+
+    */
+    PropertyKey( QStringList & keyName, QVariant const & value )
+    {
+        // since we own our properties, we responsible for deleting the
+        // contents
+        properties_.setAutoDelete( true );
+
+        // save the current free, which should be the front of the key list
+        QString const currentKey = keyName.front();
+
+        // now pop it off
+        keyName.pop_front();
+
+        if ( keyName.empty() )  // then we have a leaf node
+        {
+            properties_.insert( currentKey, new PropertyValue(value) );
+        }
+        else
+        {
+            properties_.insert( currentKey, new PropertyKey(keyName, value) );
+        }
+    }
+
+
+
+    virtual ~PropertyKey() 
+    {}
+
+
+
+    /** Give keyName string of the "/key1/key2/key3", return value associated with key3.
+
+        keyName will be a QStringList that's been tokenized by the caller from '/' delimiters
+
+       @note
+
+       This recurses through property hierarchy until it gets to the
+       leaf with the given name, which should be a PropertyValue, which then
+       has its value returned.
+
+    */
+    /* virtual */ QVariant value( QStringList & keyName ) const
+    {
+        // save the current free, which should be the front of the key list
+        QString currentKey = keyName.front();
+
+        // now pop it off
+        keyName.pop_front();
+
+        if ( properties_.find( currentKey ) )
+        {   // recurse down to next key
+            return properties_[currentKey]->value( keyName );
+        }
+        else
+        {
+            qDebug( "%s:%d PropertyKey has null child", __FILE__, __LINE__ );
+
+            return QVariant();  // just return an QVariant::Invalid
+        }
+    }
+
+    /* virtual */ bool setValue( QStringList & keyName, QVariant const & value )
+    {
+        // save the current free, which should be the front of the key list
+        QString const currentKey = keyName.front();
+
+        // now pop it off
+        keyName.pop_front();
+
+        if ( keyName.empty() )  // then we have a leaf node
+        {
+            properties_.insert( currentKey, new PropertyValue );
+
+            return properties_[currentKey]->setValue( keyName, value );
+        }
+        else if ( properties_.find( currentKey ) )
+        {   // recurse down to next key
+            return properties_[currentKey]->setValue( keyName, value );
+        }
+        else
+        {
+            properties_.insert( currentKey, new PropertyKey );
+
+            return properties_[currentKey]->setValue( keyName, value );
+        }
+
+        return true;
+    }
+
+    virtual void dump( ostream & os ) const
+    {
+        for ( QDictIterator<Property> i(properties_); i.current(); ++i )
+        {
+            os << "<" << i.currentKey() << ">\n";
+            i.current()->dump( os );
+            os << "</" << i.currentKey() << ">\n";
+        }
+    }
+
+    /* virtual */ bool readXML( QDomNode & layer_node )
+    {
+        return true;
+    }
+
+
+    /* virtual */ bool writeXML( QString const & nodeName, QDomNode & node, QDomDocument & document )
+    {
+        QDomElement keyElement = document.createElement( nodeName );
+
+        for ( QDictIterator<Property> i(properties_); i.current(); ++i )
+        {
+            if ( ! i.current()->writeXML( i.currentKey(), keyElement, document ) )
+            {
+                return false;
+            }
+        }
+
+        node.appendChild( keyElement );
+
+        return true;
+    }
+
+    /// how many elements are contained within this one?
+    size_t count() const
+    {
+        return properties_.count();
+    }
+
+
+
+private:
+
+    /// sub-keys
+    QDict<Property> properties_;
+
+}; // class PropertyKey
+
+
+
+
 struct QgsProject::Imp
 {
     /// current physical project file
@@ -56,9 +429,10 @@ struct QgsProject::Imp
 
     /** set of plug-in (and possibly qgis) related properties
 
-        String key is scope; i.e., QMap<Scope,Properties>
+        String key is scope; i.e., QMap<Scope,PropertyKey>
      */
-    QMap< QString, QgsProject::Properties > properties_;
+    QMap< QString, PropertyKey > properties_;
+    // DEPRECATED QMap< QString, QgsProject::Properties > properties_;
 
     /// project title
     QString title;
@@ -169,28 +543,18 @@ QString QgsProject::filename() const
 /// basically a debugging tool to dump property list values
 static
 void
-_dump( QMap< QString, QgsProject::Properties > const & property_list )
+dump_( QMap< QString, PropertyKey > const & property_list )
 {
-    for ( QMap< QString, QgsProject::Properties >::const_iterator curr_scope =
+    for ( QMap< QString, PropertyKey >::const_iterator curr_scope =
               property_list.begin();
           curr_scope != property_list.end();
           curr_scope++ )
     {
-        qDebug( "<%s>", curr_scope.key().ascii() );
-
-        for ( QgsProject::Properties::const_iterator curr_property = curr_scope.data().begin();
-              curr_property != curr_scope.data().end();
-              curr_property ++ )
-        {
-            qDebug( "\t<%s>%s</%s>", 
-                    (*curr_property).first.ascii(),
-                    (*curr_property).second.toString().ascii(),
-                    (*curr_property).first.ascii() );
-        }
-
-        qDebug( "</%s>", curr_scope.key().ascii() );
+        cerr << "<" << curr_scope.key().ascii() << ">\n";
+        curr_scope.data().dump( cerr );
+        cerr << "</" << curr_scope.key().ascii() << ">\n";
     }
-} // _dump
+} // dump_
 
 
 
@@ -255,6 +619,7 @@ _getExtents( QDomDocument const & doc, QgsRect & aoi )
   Used by _getProperties() to fetch individual properties for the given scope
 
 */
+#ifdef DEPRECATED
 static
 void
 _getScopeProperties( QDomNode const & scopeNode,
@@ -457,6 +822,7 @@ _getScopeProperties( QDomNode const & scopeNode,
 
 } // _getScopeProperties()
 
+#endif
 
 
 
@@ -475,45 +841,45 @@ _getScopeProperties( QDomNode const & scopeNode,
         </fsplugin>
     </properties>
  */
-static
-void
-_getProperties( QDomDocument const & doc, QMap< QString, QgsProject::Properties > & project_properties )
-{
-    QDomNodeList properties = doc.elementsByTagName("properties");
+// static
+// void
+// _getProperties( QDomDocument const & doc, QMap< QString, QgsProject::Properties > & project_properties )
+// {
+//     QDomNodeList properties = doc.elementsByTagName("properties");
 
-    if ( properties.count() > 1 )
-    {
-        qDebug( "there appears to be more than one ``properties'' XML tag ... bailing" );
-        return;
-    }
-    else if ( properties.count() < 1 ) // no properties found, so we're done
-    {
-        return;
-    }
+//     if ( properties.count() > 1 )
+//     {
+//         qDebug( "there appears to be more than one ``properties'' XML tag ... bailing" );
+//         return;
+//     }
+//     else if ( properties.count() < 1 ) // no properties found, so we're done
+//     {
+//         return;
+//     }
 
-    size_t i = 0;
-    QDomNodeList scopes = properties.item(0).childNodes(); // item(0) because there should only be ONE
-                                                           // "properties" node
-    if ( scopes.count() < 1 )
-    {
-        qDebug( "empty ``properties'' XML tag ... bailing" );
-        return;
-    }
+//     size_t i = 0;
+//     QDomNodeList scopes = properties.item(0).childNodes(); // item(0) because there should only be ONE
+//                                                            // "properties" node
+//     if ( scopes.count() < 1 )
+//     {
+//         qDebug( "empty ``properties'' XML tag ... bailing" );
+//         return;
+//     }
 
-    while ( i < scopes.count() )
-    {
-        QDomNode curr_scope_node = scopes.item( i );
+//     while ( i < scopes.count() )
+//     {
+//         QDomNode curr_scope_node = scopes.item( i );
 
-        qDebug( "found %d property node(s) for scope %s", 
-                curr_scope_node.childNodes().count(),
-                curr_scope_node.nodeName().ascii() );
+//         qDebug( "found %d property node(s) for scope %s", 
+//                 curr_scope_node.childNodes().count(),
+//                 curr_scope_node.nodeName().ascii() );
 
-        _getScopeProperties( curr_scope_node, project_properties );
+//         _getScopeProperties( curr_scope_node, project_properties );
 
-        ++i;
-    }
+//         ++i;
+//     }
 
-} // _getProperties
+// } // _getProperties
 
 
 
@@ -1036,7 +1402,7 @@ QgsProject::read( )
 
 
     // now get any properties
-    _getProperties( *doc, imp_->properties_ );
+    //_getProperties( *doc, imp_->properties_ );
 
     // can't be dirty since we're allegedly in pristine state
     dirty( false );
@@ -1132,6 +1498,8 @@ QgsProject::write( )
 
     // now add the optional extra properties
 
+    dump_( imp_->properties_ );
+
     qDebug( "there are %d property scopes", imp_->properties_.count() );
 
     if ( ! imp_->properties_.empty() ) // only worry about properties if we
@@ -1141,7 +1509,7 @@ QgsProject::write( )
         QDomElement propertiesElement = doc->createElement( "properties" );
         qgisNode.appendChild( propertiesElement );
 
-        for ( QMap< QString, QgsProject::Properties >::iterator curr_scope =
+        for ( QMap< QString, PropertyKey >::iterator curr_scope =
                   imp_->properties_.begin();
               curr_scope != imp_->properties_.end();
               curr_scope++ )
@@ -1149,34 +1517,12 @@ QgsProject::write( )
             qDebug( "scope ``%s'' has %d entries", curr_scope.key().ascii(), curr_scope.data().count() );
 
             // <$scope>
-
-            QDomElement scopeElement = doc->createElement( curr_scope.key() );
-            propertiesElement.appendChild( scopeElement );
-
-            for ( Properties::iterator curr_property = curr_scope.data().begin();
-                  curr_property != curr_scope.data().end();
-                  curr_property ++ )
+            if ( ! curr_scope.data().writeXML( curr_scope.key(), propertiesElement, *doc ) )
             {
-                qDebug( "storing %s -> %s: %s", 
-                        curr_scope.key().ascii(), 
-                        (*curr_property).first.ascii(),
-                        (*curr_property).second.toString().ascii() );
-
-                // <property type="$type">
-                QDomElement propertyElement = doc->createElement( (*curr_property).first );
-
-                // we store the QVariant type so that we can properly decode it later in read()
-                propertyElement.setAttribute( "type", (*curr_property).second.typeName() );
-                scopeElement.appendChild( propertyElement );
-
-                // XXX Of course this assumes that the true underlying value of QVariant can be
-                // XXX converted to string form; should add QVariant::canCast(T) sanity checks
-                QDomText propertyText = doc->createTextNode( (*curr_property).second.toString() );
-                propertyElement.appendChild( propertyText );
-
-                // </property>
-
-            } // </$scope>
+                qDebug ( "%s:%d error create property %s's DOM objects", 
+                         __FILE__, __LINE__, curr_scope.key().ascii() );
+            }
+            // </$scope>
 
         } // </properties>
 
@@ -1207,11 +1553,11 @@ QgsProject::write( )
 
 
 
-QgsProject::Properties & 
-QgsProject::properties( QString const & scope )
-{
-    return imp_->properties_[scope];
-} // QgsProject::properties
+// QgsProject::Properties & 
+// QgsProject::properties( QString const & scope )
+// {
+//     return imp_->properties_[scope];
+// } // QgsProject::properties
 
 
 
@@ -1220,3 +1566,187 @@ QgsProject::clearProperties()
 {
     imp_->properties_.clear();
 } // QgsProject::clearProperties()
+
+
+
+
+bool
+QgsProject::writeEntry ( QString const & scope, const QString & key, bool value )
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    return imp_->properties_[scope].setValue( keyTokens , value );
+} // QgsProject::writeEntry ( ..., bool value )
+
+
+bool
+QgsProject::writeEntry ( QString const & scope, const QString & key, double value )
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    return imp_->properties_[scope].setValue( keyTokens, value );
+} // QgsProject::writeEntry ( ..., double value )
+
+
+bool
+QgsProject::writeEntry ( QString const & scope, const QString & key, int value )
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    return imp_->properties_[scope].setValue( keyTokens , value );
+} // QgsProject::writeEntry ( ..., int value )
+
+
+bool
+QgsProject::writeEntry ( QString const & scope, const QString & key, const QString & value )
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    return imp_->properties_[scope].setValue( keyTokens , value );
+} // QgsProject::writeEntry ( ..., const QString & value )
+
+
+bool
+QgsProject::writeEntry ( QString const & scope, const QString & key, const QStringList & value )
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    return imp_->properties_[scope].setValue( keyTokens , value );
+} // QgsProject::writeEntry ( ..., const QStringList & value )
+
+
+
+
+QStringList 
+QgsProject::readListEntry ( QString const & scope, const QString & key, bool * ok ) const
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    QVariant value = imp_->properties_[scope].value( keyTokens );
+
+    bool valid = QVariant::StringList == value.type();
+
+    if ( ok )
+    {
+        *ok = valid;
+    }
+
+    if ( valid )
+    {
+        return value.asStringList();
+    }
+
+    return QStringList();
+} // QgsProject::readListEntry
+
+
+QString
+QgsProject::readEntry ( QString const & scope, 
+                        const QString & key, 
+                        const QString & def,
+                        bool * ok ) const
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    QVariant value = imp_->properties_[scope].value( keyTokens );
+
+    bool valid = value.canCast( QVariant::String );
+
+    if ( ok )
+    {
+        *ok = valid;
+    }
+
+    if ( valid )
+    {
+        return value.toString();
+    }
+
+    return QString( def );
+} // QgsProject::readEntry
+
+
+int
+QgsProject::readNumEntry ( QString const & scope, 
+                           const QString & key, 
+                           int def, 
+                           bool * ok ) const
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    QVariant value = imp_->properties_[scope].value( keyTokens );
+
+    bool valid = value.canCast( QVariant::String );
+
+    if ( ok )
+    {
+        *ok = valid;
+    }
+
+    if ( valid )
+    {
+        return value.toInt();
+    }
+
+    return def;
+} // QgsProject::readNumEntry
+
+
+double
+QgsProject::readDoubleEntry ( QString const & scope, 
+                              const QString & key, 
+                              double def, 
+                              bool * ok ) const
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    QVariant value = imp_->properties_[scope].value( keyTokens );
+
+    bool valid = value.canCast( QVariant::Double );
+
+    if ( ok )
+    {
+        *ok = valid;
+    }
+
+    if ( valid )
+    {
+        return value.toDouble();
+    }
+
+    return def;
+} // QgsProject::readDoubleEntry
+
+
+bool
+QgsProject::readBoolEntry ( QString const & scope, 
+                            const QString & key, 
+                            bool def,
+                            bool * ok ) const
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    QVariant value = imp_->properties_[scope].value( keyTokens );
+
+    bool valid = value.canCast( QVariant::Bool );
+
+    if ( ok )
+    {
+        *ok = valid;
+    }
+
+    if ( valid )
+    {
+        return value.toBool();
+    }
+
+    return def;
+} // QgsProject::readBoolEntry
+
+
+bool
+QgsProject::removeEntry ( QString const & scope, const QString & key )
+{
+    qDebug( "%s:%d not implemented yet", __FILE__, __LINE__ );
+    return false;
+} // QgsProject::removeEntry
