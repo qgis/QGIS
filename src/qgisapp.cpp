@@ -260,7 +260,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapLegend->setMapCanvas(mapCanvas);
   mapLegend->setResizeMode(QListView::AllColumns);
   QString caption = tr("Quantum GIS - ");
-  caption += QGis::qgisVersion;
+  caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+
   setCaption(caption);
   connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
   connect(mapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
