@@ -47,7 +47,7 @@ class QgsGraduatedSymRenderer: public QgsRenderer
      \param p a painter (usually the one from the current map canvas)
      \param f a pointer to a feature to render
      \param t the transform object containing the information how to transform the map coordinates to screen coordinates*/
-    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
+    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected);
     /**Sets the number of the classicifation field
     \param field the number of the field to classify*/
     void setClassificationField(int field);
@@ -72,10 +72,12 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     int mClassificationField;
     /**List holding the render items for the individual classes*/
     std::list<QgsRangeRenderItem*> mItems;
+    /**Color to draw selected features*/
+    QColor mSelectionColor;
     
 };
 
-inline QgsGraduatedSymRenderer::QgsGraduatedSymRenderer()
+inline QgsGraduatedSymRenderer::QgsGraduatedSymRenderer(): mSelectionColor(QColor(255,255,0))
 {
 
 }

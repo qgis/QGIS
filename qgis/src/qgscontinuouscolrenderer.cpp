@@ -156,7 +156,7 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
     }
 }
 
-void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor)
+void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor, bool selected)
 {
     if ((mMinimumItem && mMaximumItem))
     {
@@ -215,7 +215,18 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
         {
       p->setBrush(QColor(red, green, blue));
         }
+  if(selected)
+  {
+       QPen pen=mMinimumItem->getSymbol()->pen();
+       pen.setColor(mSelectionColor);
+       QBrush brush=mMinimumItem->getSymbol()->brush();
+       brush.setColor(mSelectionColor);
+       p->setPen(pen);
+       p->setBrush(brush);
+  }
     }
+    
+    
 }
 
 void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)

@@ -81,7 +81,7 @@ void QgsGraduatedMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVe
     }
 }
     
-void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor)
+void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected)
 {
     p->setPen(Qt::NoPen);
     p->setBrush(Qt::NoBrush);

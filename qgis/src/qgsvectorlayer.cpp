@@ -358,7 +358,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       } else
       {
         //if feature is selected, change the color of the painter
-        if (selected.find(fet->featureId()) != selected.end())
+	  bool sel=selected.find(fet->featureId()) != selected.end();
+	  /*if (selected.find(fet->featureId()) != selected.end())
         {
           // must change color of pen since it holds not only color
           // but line width
@@ -378,7 +379,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
           //pass the feature to the renderer
           m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor);
-        }
+	  }*/
+
+	 m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
 
         /* OGRGeometry *geom = fet->GetGeometryRef();
            if (!geom) {
