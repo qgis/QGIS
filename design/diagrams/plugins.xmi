@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="org.omg/standards/UML" verified="false" timestamp="" xmi.version="1.2" >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
+   <XMI.exporterVersion>1.1</XMI.exporterVersion>
+  </XMI.documentation>
+  <XMI.model xmi.name="plugins" href="/home/gsherman/plugins.xmi" />
+  <XMI.metamodel xmi.name="UML" href="UML.xml" xmi.version="1.3" />
+ </XMI.header>
+ <XMI.content>
+  <docsettings viewid="788" documentation="" uniqueid="870" />
+  <umlobjects>
+   <UML:Class stereotype="" package="" xmi.id="789" abstract="1" documentation="" name="QgisPlugin" static="0" scope="200" >
+    <UML:Operation stereotype="" package="" xmi.id="790" type="virtual QString" abstract="0" documentation="" name="description" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="791" type="virtual QString" abstract="0" documentation="" name="name" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="792" type="virtual QString" abstract="0" documentation="" name="version" static="0" scope="200" />
+   </UML:Class>
+   <UML:Class stereotype="" package="" xmi.id="804" abstract="0" documentation="" name="QgisApp" static="0" scope="200" />
+   <UML:Class stereotype="" package="" xmi.id="838" abstract="0" documentation="" name="QgisTestPlugin" static="0" scope="200" >
+    <UML:Operation stereotype="" package="" xmi.id="844" type="" abstract="0" documentation="" name="QgisTestPlugin" static="0" scope="200" >
+     <UML:Parameter stereotype="" package="" xmi.id="845" value="" type="QgisApp *" abstract="0" documentation="" name="qgis" static="0" scope="200" />
+     <UML:Parameter stereotype="" package="" xmi.id="846" value="" type="QgisIface *" abstract="0" documentation="" name="qI" static="0" scope="200" />
+    </UML:Operation>
+    <UML:Operation stereotype="" package="" xmi.id="847" type="virtual QString" abstract="0" documentation="" name="description" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="848" type="virtual QString" abstract="0" documentation="" name="name" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="849" type="virtual QString" abstract="0" documentation="" name="version" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="850" type="virtual " abstract="0" documentation="" name="~QgisTestPlugin" static="0" scope="200" />
+    <UML:Attribute stereotype="" package="" xmi.id="839" value="" type="QString" abstract="0" documentation="" name="pDescription" static="0" scope="201" />
+    <UML:Attribute stereotype="" package="" xmi.id="840" value="" type="QString" abstract="0" documentation="" name="pName" static="0" scope="201" />
+    <UML:Attribute stereotype="" package="" xmi.id="841" value="" type="QString" abstract="0" documentation="" name="pVersion" static="0" scope="201" />
+    <UML:Attribute stereotype="" package="" xmi.id="842" value="" type="QgisIface *" abstract="0" documentation="" name="qI" static="0" scope="201" />
+    <UML:Attribute stereotype="" package="" xmi.id="843" value="" type="QgisApp *" abstract="0" documentation="" name="qgisMainWindow" static="0" scope="201" />
+   </UML:Class>
+   <UML:Class stereotype="" package="" xmi.id="851" abstract="0" documentation="" name="QgisInterface" static="0" scope="200" >
+    <UML:Operation stereotype="" package="" xmi.id="852" type="" abstract="0" documentation="" name="QgisInterface" static="0" scope="200" >
+     <UML:Parameter stereotype="" package="" xmi.id="853" value="" type="QgisApp *" abstract="0" documentation="" name="qgis" static="0" scope="200" />
+     <UML:Parameter stereotype="" package="" xmi.id="854" value="" type="const char *" abstract="0" documentation="" name="name" static="0" scope="200" />
+    </UML:Operation>
+    <UML:Operation stereotype="" package="" xmi.id="855" type="virtual int" abstract="0" documentation="" name="getInt" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="856" type="virtual void" abstract="0" documentation="" name="zoomActiveLayer" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="857" type="virtual void" abstract="0" documentation="" name="zoomFull" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="858" type="virtual void" abstract="0" documentation="" name="zoomPrevious" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="859" type="virtual " abstract="0" documentation="" name="~QgisInterface" static="0" scope="200" />
+   </UML:Class>
+   <UML:Class stereotype="" package="" xmi.id="860" abstract="0" documentation="" name="QgisIface" static="0" scope="200" >
+    <UML:Operation stereotype="" package="" xmi.id="862" type="" abstract="0" documentation="" name="QgisIface" static="0" scope="200" >
+     <UML:Parameter stereotype="" package="" xmi.id="863" value="" type="QgisApp *" abstract="0" documentation="" name="qgis" static="0" scope="200" />
+     <UML:Parameter stereotype="" package="" xmi.id="864" value="" type="const char *" abstract="0" documentation="" name="name" static="0" scope="200" />
+    </UML:Operation>
+    <UML:Operation stereotype="" package="" xmi.id="865" type="int" abstract="0" documentation="" name="getInt" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="866" type="void" abstract="0" documentation="" name="zoomActiveLayer" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="867" type="void" abstract="0" documentation="" name="zoomFull" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="868" type="void" abstract="0" documentation="" name="zoomPrevious" static="0" scope="200" />
+    <UML:Operation stereotype="" package="" xmi.id="869" type="" abstract="0" documentation="" name="~QgisIface" static="0" scope="200" />
+    <UML:Attribute stereotype="" package="" xmi.id="861" value="" type="QgisApp *" abstract="0" documentation="" name="qgis" static="0" scope="201" />
+   </UML:Class>
+   <UML:Class stereotype="" package="" xmi.id="870" abstract="0" documentation="" name="QMainWindow" static="0" scope="200" />
+  </umlobjects>
+  <diagrams>
+   <diagram snapgrid="0" showattsig="0" fillcolor="#ffffc0" showgrid="0" showopsig="0" usefillcolor="1" snapx="10" snapy="10" showatts="0" xmi.id="788" documentation="" type="402" showops="0" showpackage="0" name="class diagram" localid="30000" showstereotype="0" showscope="0" font="Lucida,12,-1,5,50,0,0,0,0,0" linecolor="#2119ff" >
+    <widgets>
+     <UML:ConceptWidget usesdiagramfillcolour="0" width="99" showattsigs="603" usesdiagramusefillcolour="0" x="23" linecolour="#2119ff" y="241" showopsigs="603" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="67" usefillcolor="1" showattributes="1" xmi.id="789" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:ConceptWidget usesdiagramfillcolour="1" width="69" showattsigs="603" usesdiagramusefillcolour="1" x="78" linecolour="none" y="126" showopsigs="603" usesdiagramlinecolour="1" fillcolour="none" height="25" usefillcolor="1" showattributes="0" xmi.id="804" showoperations="0" showpackage="0" showscope="0" showstereotype="0" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="1" width="224" usesdiagramusefillcolour="1" x="260" linecolour="none" y="17" usesdiagramlinecolour="1" fillcolour="none" height="60" usefillcolor="1" xmi.id="806" text="QgisIface exposes methods in QgisApp and its children that are needed by a plugin" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="1" width="155" usesdiagramusefillcolour="1" x="19" linecolour="none" y="345" usesdiagramlinecolour="1" fillcolour="none" height="72" usefillcolor="1" xmi.id="807" text="QgisPlugin is the abstract base class from which all plugins inherit" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:NoteWidget usesdiagramfillcolour="1" width="131" usesdiagramusefillcolour="1" x="253" linecolour="none" y="362" usesdiagramlinecolour="1" fillcolour="none" height="50" usefillcolor="1" xmi.id="808" text="Example plugin implementation
+" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:ConceptWidget usesdiagramfillcolour="1" width="133" showattsigs="603" usesdiagramusefillcolour="1" x="183" linecolour="none" y="229" showopsigs="603" usesdiagramlinecolour="1" fillcolour="none" height="90" usefillcolor="1" showattributes="0" xmi.id="838" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:ConceptWidget usesdiagramfillcolour="1" width="141" showattsigs="603" usesdiagramusefillcolour="1" x="322" linecolour="none" y="103" showopsigs="603" usesdiagramlinecolour="1" fillcolour="none" height="105" usefillcolor="1" showattributes="0" xmi.id="860" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:ConceptWidget usesdiagramfillcolour="1" width="141" showattsigs="603" usesdiagramusefillcolour="1" x="533" linecolour="none" y="103" showopsigs="603" usesdiagramlinecolour="1" fillcolour="none" height="105" usefillcolor="1" showattributes="0" xmi.id="851" showoperations="1" showpackage="0" showscope="0" showstereotype="0" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+     <UML:ConceptWidget usesdiagramfillcolour="1" width="108" showattsigs="603" usesdiagramusefillcolour="1" x="58" linecolour="none" y="41" showopsigs="603" usesdiagramlinecolour="1" fillcolour="none" height="25" usefillcolor="1" showattributes="0" xmi.id="870" showoperations="0" showpackage="0" showscope="0" showstereotype="0" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="789" widgetaid="807" documentation="" type="513" >
+      <linepath>
+       <startpoint startx="96" starty="345" />
+       <endpoint endx="72" endy="308" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="789" widgetaid="838" documentation="" type="500" >
+      <linepath>
+       <startpoint startx="183" starty="274" />
+       <endpoint endx="122" endy="274" />
+       <point x="170" y="274" />
+       <point x="164" y="274" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="838" widgetaid="808" documentation="" type="513" >
+      <linepath>
+       <startpoint startx="318" starty="362" />
+       <endpoint endx="249" endy="319" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="851" widgetaid="860" documentation="" type="500" >
+      <linepath>
+       <startpoint startx="463" starty="155" />
+       <endpoint endx="533" endy="155" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" widgetbid="804" widgetaid="860" documentation="" type="503" >
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="0" usesdiagramusefillcolour="1" x="304" linecolour="none" y="140" operation="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="0" usefillcolor="1" seqnum="" xmi.id="-1" text="1" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="0" usesdiagramusefillcolour="1" x="149" linecolour="none" y="140" operation="" usesdiagramlinecolour="1" role="702" fillcolour="none" height="0" usefillcolor="1" seqnum="" xmi.id="-1" text="1" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+      <linepath>
+       <startpoint startx="322" starty="138" />
+       <endpoint endx="147" endy="138" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="3" indexa="2" totalcountb="2" indexb="1" widgetbid="838" widgetaid="860" documentation="" type="503" >
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="0" usesdiagramusefillcolour="1" x="290" linecolour="none" y="175" operation="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="0" usefillcolor="1" seqnum="" xmi.id="-1" text="0..1" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+      <UML:FloatingTextWidget usesdiagramfillcolour="1" width="0" usesdiagramusefillcolour="1" x="217" linecolour="none" y="208" operation="" usesdiagramlinecolour="1" role="702" fillcolour="none" height="0" usefillcolor="1" seqnum="" xmi.id="-1" text="0..1" font="Lucida,12,-1,5,50,0,0,0,0,0" />
+      <linepath>
+       <startpoint startx="322" starty="173" />
+       <endpoint endx="249" endy="229" />
+       <point x="249" y="173" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="870" widgetaid="804" documentation="" type="500" >
+      <linepath>
+       <startpoint startx="112" starty="126" />
+       <endpoint endx="112" endy="66" />
+      </linepath>
+     </UML:AssocWidget>
+     <UML:AssocWidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="860" widgetaid="806" documentation="" type="513" >
+      <linepath>
+       <startpoint startx="372" starty="77" />
+       <endpoint endx="392" endy="103" />
+      </linepath>
+     </UML:AssocWidget>
+    </associations>
+   </diagram>
+  </diagrams>
+  <listview>
+   <listitem open="1" type="800" id="-1" label="Views" >
+    <listitem open="1" type="801" id="-1" label="Logical View" >
+     <listitem open="0" type="807" id="788" label="class diagram" />
+     <listitem open="1" type="813" id="804" label="QgisApp" />
+     <listitem open="1" type="813" id="860" label="QgisIface" >
+      <listitem open="0" type="815" id="865" label="getInt" />
+      <listitem open="0" type="814" id="861" label="qgis" />
+      <listitem open="0" type="815" id="862" label="QgisIface" />
+      <listitem open="0" type="815" id="869" label="~QgisIface" />
+      <listitem open="0" type="815" id="866" label="zoomActiveLayer" />
+      <listitem open="0" type="815" id="867" label="zoomFull" />
+      <listitem open="0" type="815" id="868" label="zoomPrevious" />
+     </listitem>
+     <listitem open="1" type="813" id="851" label="QgisInterface" >
+      <listitem open="0" type="815" id="855" label="getInt" />
+      <listitem open="0" type="815" id="852" label="QgisInterface" />
+      <listitem open="0" type="815" id="859" label="~QgisInterface" />
+      <listitem open="0" type="815" id="856" label="zoomActiveLayer" />
+      <listitem open="0" type="815" id="857" label="zoomFull" />
+      <listitem open="0" type="815" id="858" label="zoomPrevious" />
+     </listitem>
+     <listitem open="1" type="813" id="789" label="QgisPlugin" >
+      <listitem open="0" type="815" id="790" label="description" />
+      <listitem open="0" type="815" id="791" label="name" />
+      <listitem open="0" type="815" id="792" label="version" />
+     </listitem>
+     <listitem open="1" type="813" id="838" label="QgisTestPlugin" >
+      <listitem open="0" type="815" id="847" label="description" />
+      <listitem open="0" type="815" id="848" label="name" />
+      <listitem open="0" type="814" id="839" label="pDescription" />
+      <listitem open="0" type="814" id="840" label="pName" />
+      <listitem open="0" type="814" id="841" label="pVersion" />
+      <listitem open="0" type="814" id="843" label="qgisMainWindow" />
+      <listitem open="0" type="815" id="844" label="QgisTestPlugin" />
+      <listitem open="0" type="815" id="850" label="~QgisTestPlugin" />
+      <listitem open="0" type="814" id="842" label="qI" />
+      <listitem open="0" type="815" id="849" label="version" />
+     </listitem>
+     <listitem open="1" type="813" id="870" label="QMainWindow" />
+    </listitem>
+    <listitem open="1" type="802" id="-1" label="Use Case View" />
+   </listitem>
+  </listview>
+ </XMI.content>
+</XMI>
