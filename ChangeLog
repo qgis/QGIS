@@ -1,8 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.162 2004/07/20 06:33:13 gsherman Exp
+ChangeLog,v 1.163 2004/08/13 03:53:44 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
 
+2004-08-12 [gsherman] 0.4.0devel8
+** Rearranged capture icons and added them to the MapNavigation action group
+   so that the icons remain depressed while the tool is active. (bugs
+   994274 and 994272)
+ 
 2004-07-19 [gsherman] 0.4.0devel7
 ** Fixed broken setDisplayField function in qgsvectorlayer
 ** Added display/label field handling. Field is now set when the layer is
