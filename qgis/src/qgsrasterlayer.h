@@ -792,6 +792,12 @@ private:
     /** \brief Maximum gray value - used in scaling procedure.  */
     double maxGrayDouble;
 
+    //we need to do the tr() stuff outside of the loop becauses tr() is a 
+    //time consuming operation nd we dont want to do it in the loop!
+    QString redTranslatedQString;
+    QString greenTranslatedQString;
+    QString blueTranslatedQString;
+    
 };
 
 #endif
