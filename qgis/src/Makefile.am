@@ -127,6 +127,7 @@ qgis_UIC =	qgisappbase.ui					\
 		qgssimadialogbase.ui				\
 		qgssisydialogbase.ui				\
 		qgsuvaldialogbase.ui				\
+		qgslabeldialogbase.ui				\
 		qgsprojectpropertiesbase.ui
 
 ## all the ui files generate a corresponding header file
@@ -144,6 +145,7 @@ qgis_UIH =	qgisappbase.ui.h				\
 		qgsmessageviewer.ui.h				\
 		qgsoptionsbase.ui.h				\
 		qgsrasterlayerpropertiesbase.ui.h \
+		qgslabeldialogbase.ui.h \
 		qgsprojectpropertiesbase.ui.h
 
 ## these generated files need MOC files, too
