@@ -1,5 +1,5 @@
 QGIS Change Log
-ChangeLog,v 1.163 2004/08/13 03:53:44 gsherman Exp
+ChangeLog,v 1.164 2004/08/13 04:42:34 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
 
@@ -7,6 +7,8 @@ Version 0.4 'Baby' .... development version
 ** Rearranged capture icons and added them to the MapNavigation action group
    so that the icons remain depressed while the tool is active. (bugs
    994274 and 994272)
+** Fixed preferences bug (992458) that caused themes to disappear when setting
+   options.
  
 2004-07-19 [gsherman] 0.4.0devel7
 ** Fixed broken setDisplayField function in qgsvectorlayer
