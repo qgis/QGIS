@@ -70,9 +70,10 @@ class QgsRect{
      */
     QgsRect & operator=(const QgsRect &r1);
  private:
-    double xmax;
+    
     double xmin;
-    double ymax;
     double ymin;
+    double xmax;
+    double ymax;
 };
 #endif // QGSRECT_H
