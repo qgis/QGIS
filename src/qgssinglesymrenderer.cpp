@@ -55,22 +55,13 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture*
 	    QPainter painter;
 	    painter.begin(pic);
 
-	    if ( QgsSVGCache::instance().getOversampling() > 1 ) {
-	        QPixmap pm = mItem->getSymbol()->getPointSymbolAsPixmap();
-		if(selected) {
-		    painter.setBrush(QColor(255,255,0));
-		    painter.drawRect(0,0,pm.width(),pm.height());
-		}
-		painter.drawPixmap(0,0,pm);
-	    } else { 
-		QPicture pic = mItem->getSymbol()->getPointSymbolAsPicture();
-		if(selected) {
-		    painter.setBrush(QColor(255,255,0));
-		    QRect br = pic.boundingRect();
-		    painter.drawRect( 0, 0, br.width(), br.height());
-		}
-		painter.drawPicture(0,0,pic);
+	    QPicture pic = mItem->getSymbol()->getPointSymbolAsPicture();
+	    if(selected) {
+		painter.setBrush(QColor(255,255,0));
+		QRect br = pic.boundingRect();
+		painter.drawRect( 0, 0, br.width(), br.height());
 	    }
+	    painter.drawPicture(0,0,pic);
 	    
 	    if ( scalefactor ) *scalefactor = 1;
 
