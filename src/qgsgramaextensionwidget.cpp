@@ -103,6 +103,7 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
 	mGridLayout->addWidget(scaleedit,i,4);
 	mWidgetVector[ 5 * (i - 1) + 4] = scaleedit;
 	scaleedit->setText("1.0");
+	QObject::connect(scaleedit, SIGNAL(returnPressed()), this, SLOT(handleReturnPressed()));
 
         /*Set the default values of the lower and upper bounds according to the chosen mode */
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
@@ -140,7 +141,6 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget()
 
 void QgsGraMaExtensionWidget::selectMarker()
 {
-    //QgsMarkerDialog mdialog(QDir::homeDirPath());
     QgsMarkerDialog mdialog(QString(PKGDATAPATH)+"/svg");
 
     if(mdialog.exec()==QDialog::Accepted)
@@ -153,11 +153,11 @@ void QgsGraMaExtensionWidget::selectMarker()
 	int indexnumber;//index position of the sender button
 
 	//find out the row of the sender to check for the chosen scale factor
-	for(int i=1;i<=mNumberOfClasses;++i)
+	for(int i=0;i<=mNumberOfClasses;++i)
 	{
-	    if(sender()==mWidgetVector[5 * (i - 1) + 3])
+	    if(sender()==mWidgetVector[5*i+3])
 	    {
-		indexnumber=5 * (i - 1) + 3;
+		indexnumber=i;
 		break;
 	    } 
 	}
@@ -165,30 +165,7 @@ void QgsGraMaExtensionWidget::selectMarker()
 #ifdef QGISDEBUG	
 	qWarning("indexnumber: "+QString::number(indexnumber));
 #endif
-
-	double scalefactor=((QLineEdit*)mWidgetVector[indexnumber+1])->text().toDouble();
-
-	pic.load(svgfile,"svg");
-
-	int width=(int)(pic.boundingRect().width()*scalefactor);
-	int height=(int)(pic.boundingRect().height()*scalefactor);
-
-	//prevent 0 width or height, which would cause a crash
-	if(width==0)
-	{
-	    width=1;
-	}
-	if(height==0)
-	{
-	    height=1;
-	}
-
-	QPixmap pixmap(height,width);
-	pixmap.fill();
-	QPainter p(&pixmap);
-	p.scale(scalefactor,scalefactor);
-	p.drawPicture(0,0,pic);
-	((QPushButton *) sender())->setPixmap(pixmap);
+	adjustMarker(indexnumber);
     }
 
     setActiveWindow();
@@ -204,27 +181,47 @@ void QgsGraMaExtensionWidget::adjustMarkers()
 {
     for(int i=0;i<mNumberOfClasses;++i)
     {
-	double scalefactor=((QLineEdit*)mWidgetVector[i*5+4])->text().toDouble();	
-	QPicture pic;
-	pic.load(((QPushButton*)mWidgetVector[i*5+3])->name(),"svg");
-	int width=(int)(pic.boundingRect().width()*scalefactor);
-	int height=(int)(pic.boundingRect().height()*scalefactor);
-	
-	//prevent 0 width or height, which would cause a crash
-	if(width==0)
-	{
-	    width=1;
-	}
-	if(height==0)
-	{
-	    height=1;
-	}
-
-	QPixmap pixmap(height,width);
-	pixmap.fill();
-	QPainter p(&pixmap);
-	p.scale(scalefactor,scalefactor);
-	p.drawPicture(0,0,pic);
-	((QPushButton *)mWidgetVector[i*5+3])->setPixmap(pixmap);	
+	adjustMarker(i);
     }
+}
+
+void QgsGraMaExtensionWidget::adjustMarker(int row)
+{
+    double scalefactor=((QLineEdit*)mWidgetVector[row*5+4])->text().toDouble();	
+    QPicture pic;
+    pic.load(((QPushButton*)mWidgetVector[row*5+3])->name(),"svg");
+    int width=(int)(pic.boundingRect().width()*scalefactor);
+    int height=(int)(pic.boundingRect().height()*scalefactor);
+	
+    //prevent 0 width or height, which would cause a crash
+    if(width==0)
+    {
+	width=1;
+    }
+    if(height==0)
+    {
+	height=1;
+    }
+
+    QPixmap pixmap(height,width);
+    pixmap.fill();
+    QPainter p(&pixmap);
+    p.scale(scalefactor,scalefactor);
+    p.drawPicture(0,0,pic);
+    ((QPushButton *)mWidgetVector[row*5+3])->setPixmap(pixmap); 
+}
+
+void QgsGraMaExtensionWidget::handleReturnPressed()
+{
+    //find out the row of the sender
+    int indexnumber;
+    for(int i=0;i<=mNumberOfClasses;++i)
+    {
+	if(sender()==mWidgetVector[5*i+4])
+	{
+	    indexnumber=i;
+	    break;
+	} 
+    }
+    adjustMarker(indexnumber);
 }
