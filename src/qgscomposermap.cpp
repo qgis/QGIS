@@ -108,6 +108,10 @@ void QgsComposerMap::init ()
 
     QCanvasRectangle::setZ(20);
     setActive(true);
+
+    connect ( mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(mapCanvasChanged()) );
+    connect ( mMapCanvas, SIGNAL(removedLayer(QString)), this, SLOT(mapCanvasChanged()) );
+    connect ( mMapCanvas, SIGNAL(removedAll()), this, SLOT(mapCanvasChanged()) );
 }
 
 QgsComposerMap::~QgsComposerMap()
@@ -155,6 +159,7 @@ void QgsComposerMap::setUserExtent ( QgsRect const & rect )
     mUserExtent = rect;
     recalculate();
     
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
 }
@@ -285,6 +290,7 @@ void QgsComposerMap::sizeChanged ( void )
     QCanvasRectangle::setSize ( w, h);
     recalculate();
 
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
     
@@ -299,7 +305,8 @@ void QgsComposerMap::calculateChanged ( void )
 	recalculate();
 
 	mCacheUpdated = false;
-	QCanvasRectangle::canvas()->setAllChanged(); // must be setAllChanged(), not sure why
+	//QCanvasRectangle::canvas()->setAllChanged(); // must be setAllChanged(), not sure why
+    	QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
 	QCanvasRectangle::canvas()->update();
     
 	mComposition->emitMapChanged ( mId );
@@ -358,6 +365,7 @@ void QgsComposerMap::mapScaleChanged ( void )
     recalculate();
 
     mCacheUpdated = false;
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
     
@@ -372,11 +380,20 @@ void QgsComposerMap::scaleChanged ( void )
     mFontScale = mFontScaleLineEdit->text().toDouble();
 
     mCacheUpdated = false;
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
     
     writeSettings();
     mComposition->emitMapChanged ( mId );
+}
+
+void QgsComposerMap::mapCanvasChanged ( void ) 
+{
+    std::cout << "QgsComposerMap::canvasChanged" << std::endl;
+
+    mCacheUpdated = false;
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
 }
 
 void QgsComposerMap::previewModeChanged ( int i )
@@ -441,6 +458,7 @@ void QgsComposerMap::frameChanged ( )
 {
     mFrame = mFrameCheckBox->isChecked();
 
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
 
@@ -488,6 +506,7 @@ void QgsComposerMap::setCurrentExtent ( void )
 { 
     mUserExtent = mMapCanvas->extent();
     recalculate();
+    QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
     setOptions();
