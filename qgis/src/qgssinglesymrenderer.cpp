@@ -23,6 +23,7 @@
 #include "qgssisydialog.h"
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
+#include <qdom.h>
 
 QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem())
 {
@@ -138,6 +139,66 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
     {
 	qWarning("Warning, null pointer in QgsSingleSymRenderer::initializeSymbology()");
     }
+}
+
+void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+{
+    QgsSymbol* sy = new QgsSymbol();
+    QPen pen;
+    QBrush brush;
+
+    QDomNode rinode = rnode.namedItem("renderitem");
+
+    QDomNode vnode = rinode.namedItem("value");
+    QDomElement velement = vnode.toElement();
+    QString value = velement.text();
+
+    QDomNode synode = rinode.namedItem("symbol");
+
+    QDomNode outlcnode = synode.namedItem("outlinecolor");
+    QDomElement oulcelement = outlcnode.toElement();
+    int red = oulcelement.attribute("red").toInt();
+    int green = oulcelement.attribute("green").toInt();
+    int blue = oulcelement.attribute("blue").toInt();
+    pen.setColor(QColor(red, green, blue));
+
+    QDomNode outlstnode = synode.namedItem("outlinestyle");
+    QDomElement outlstelement = outlstnode.toElement();
+    pen.setStyle(QgsSymbologyUtils::qString2PenStyle(outlstelement.text()));
+
+    QDomNode outlwnode = synode.namedItem("outlinewidth");
+    QDomElement outlwelement = outlwnode.toElement();
+    pen.setWidth(outlwelement.text().toInt());
+
+    QDomNode fillcnode = synode.namedItem("fillcolor");
+    QDomElement fillcelement = fillcnode.toElement();
+    red = fillcelement.attribute("red").toInt();
+    green = fillcelement.attribute("green").toInt();
+    blue = fillcelement.attribute("blue").toInt();
+    brush.setColor(QColor(red, green, blue));
+
+    QDomNode fillpnode = synode.namedItem("fillpattern");
+    QDomElement fillpelement = fillpnode.toElement();
+    brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
+
+    QDomNode lnode = rinode.namedItem("label");
+    QDomElement lnodee = lnode.toElement();
+    QString label = lnodee.text();
+
+    //create a renderer and add it to the vector layer
+    sy->setBrush(brush);
+    sy->setPen(pen);
+    QgsRenderItem* ri = new QgsRenderItem(sy, value, label);
+    this->addItem(ri);
+    vl.setRenderer(this);
+    QgsSiSyDialog *sdialog = new QgsSiSyDialog(&vl);
+    vl.setRendererDialog(sdialog);
+
+    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(&vl);
+    vl.setLayerProperties(properties);
+    properties->setLegendType("Single Symbol");
+
+    sdialog->apply();
 }
 
 void QgsSingleSymRenderer::writeXML(std::ofstream& xml)

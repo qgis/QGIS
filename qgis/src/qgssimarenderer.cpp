@@ -24,6 +24,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgssymbologyutils.h"
 #include <qpainter.h>
+#include <qdom.h>
 
 void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
@@ -70,6 +71,85 @@ void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, d
 	pic->load(ms->picture(),"svg");
 	(*scalefactor)=ms->scaleFactor();
     }
+}
+
+void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+{
+    QgsMarkerSymbol* msy = new QgsMarkerSymbol();
+    QPen pen;
+    QBrush brush;
+    QString svgpath;
+    double scalefactor;
+    QString value, label;
+
+    QDomNode rinode = rnode.namedItem("renderitem");
+    
+    QDomNode vnode = rinode.namedItem("value");
+    QDomElement velement = vnode.toElement();
+    value = velement.text();
+
+    QDomNode synode = rinode.namedItem("markersymbol");
+		    
+
+    QDomNode svgnode = synode.namedItem("svgpath");
+    svgpath = svgnode.toElement().text();
+
+    QDomNode scalenode = synode.namedItem("scalefactor");
+    scalefactor = scalenode.toElement().text().toDouble();
+
+    QDomNode outlcnode = synode.namedItem("outlinecolor");
+    QDomElement oulcelement = outlcnode.toElement();
+    int red = oulcelement.attribute("red").toInt();
+    int green = oulcelement.attribute("green").toInt();
+    int blue = oulcelement.attribute("blue").toInt();
+    pen.setColor(QColor(red, green, blue));
+
+    QDomNode outlstnode = synode.namedItem("outlinestyle");
+    QDomElement outlstelement = outlstnode.toElement();
+    pen.setStyle(QgsSymbologyUtils::qString2PenStyle(outlstelement.text()));
+
+    QDomNode outlwnode = synode.namedItem("outlinewidth");
+    QDomElement outlwelement = outlwnode.toElement();
+    pen.setWidth(outlwelement.text().toInt());
+
+    QDomNode fillcnode = synode.namedItem("fillcolor");
+    QDomElement fillcelement = fillcnode.toElement();
+    red = fillcelement.attribute("red").toInt();
+    green = fillcelement.attribute("green").toInt();
+    blue = fillcelement.attribute("blue").toInt();
+    brush.setColor(QColor(red, green, blue));
+
+    QDomNode fillpnode = synode.namedItem("fillpattern");
+    QDomElement fillpelement = fillpnode.toElement();
+    brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
+
+    QDomNode lnode = rinode.namedItem("label");
+    QDomElement lnodee = lnode.toElement();
+    label = lnodee.text();
+
+    //create a renderer and add it to the vector layer
+    msy->setBrush(brush);
+    msy->setPen(pen);
+    msy->setPicture(svgpath);
+    qWarning("the svgpath: "+svgpath);
+    msy->setScaleFactor(scalefactor);
+    qWarning("the scalefactor: "+QString::number(scalefactor,'f',2));
+
+    QgsRenderItem* ri = new QgsRenderItem();
+    ri->setSymbol(msy);
+    ri->setLabel(label);
+    ri->setValue(value);
+
+    this->addItem(ri);
+    vl.setRenderer(this);
+    QgsSiMaDialog *smdialog = new QgsSiMaDialog(&vl);
+    vl.setRendererDialog(smdialog);
+
+    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(&vl);
+    vl.setLayerProperties(properties);
+    properties->setLegendType("Single Marker");
+
+    smdialog->apply();
 }
 
 void QgsSiMaRenderer::writeXML(std::ofstream& xml)

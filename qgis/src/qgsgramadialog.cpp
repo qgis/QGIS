@@ -82,13 +82,30 @@ QgsGraMaDialog::QgsGraMaDialog(QgsVectorLayer* layer): QgsGraMaDialogBase(), ext
 	renderer = dynamic_cast < QgsGraduatedMaRenderer * >(layer->renderer());
     }
 
+    std::list < QgsRangeRenderItem * >list;
+    
     if (renderer)
     {
-	std::list < QgsRangeRenderItem * >list = renderer->items();
+	list = renderer->items();
 	ext = new QgsGraMaExtensionWidget(this, renderer->classificationField(), QgsGraSyDialog::EMPTY, list.size(), mVectorLayer);
     }
 
-    //numberofclassesspinbox->setValue(list.size());
+    mClassificationComboBox->setCurrentItem(renderer->classificationField());
+    
+    //set the right colors and texts to the widgets
+    int number = 0;
+    for (std::list < QgsRangeRenderItem * >::iterator it = list.begin(); it != list.end(); ++it)
+    {
+	((QLineEdit *) (ext->getWidget(0, number)))->setText((*it)->value());
+	((QLineEdit *) ext->getWidget(1, number))->setText((*it)->upper_value());
+	((QLineEdit *) ext->getWidget(2, number))->setText((*it)->label());
+	((QPushButton *) ext->getWidget(3, number))->setName(((QgsMarkerSymbol*)((*it)->getSymbol()))->picture());
+	((QLineEdit *) ext->getWidget(4, number))->setText(QString::number(((QgsMarkerSymbol*)((*it)->getSymbol()))->scaleFactor(),'f',2));
+	number++;
+    }
+    
+
+    mNumberOfClassesSpinbox->setValue(list.size());
     QgsGraMaDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
     ext->show();
 

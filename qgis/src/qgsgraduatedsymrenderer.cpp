@@ -20,6 +20,7 @@
 #include "qgsgrasydialog.h"
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
+#include <qdom.h>
 
 inline QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
 {
@@ -170,6 +171,72 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlg
     {
 	qWarning("Warning, layer is null in QgsGraduatedSymRenderer::initializeSymbology(..)");
     }
+}
+
+void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+{
+    QDomNode classnode = rnode.namedItem("classificationfield");
+    int classificationfield = classnode.toElement().text().toInt();
+    this->setClassificationField(classificationfield);
+
+    QDomNode rangerendernode = rnode.namedItem("rangerenderitem");
+    while (!rangerendernode.isNull())
+    {
+	QgsSymbol* sy = new QgsSymbol();
+	QPen pen;
+	QBrush brush;
+
+	QDomNode lvnode = rangerendernode.namedItem("lowervalue");
+	QString lowervalue = lvnode.toElement().text();
+
+	QDomNode uvnode = rangerendernode.namedItem("uppervalue");
+	QString uppervalue = uvnode.toElement().text();
+
+	QDomNode synode = rangerendernode.namedItem("symbol");
+
+	QDomElement oulcelement = synode.namedItem("outlinecolor").toElement();
+	int red = oulcelement.attribute("red").toInt();
+	int green = oulcelement.attribute("green").toInt();
+	int blue = oulcelement.attribute("blue").toInt();
+	pen.setColor(QColor(red, green, blue));
+
+	QDomElement oustelement = synode.namedItem("outlinestyle").toElement();
+	pen.setStyle(QgsSymbologyUtils::qString2PenStyle(oustelement.text()));
+
+	QDomElement oulwelement = synode.namedItem("outlinewidth").toElement();
+	pen.setWidth(oulwelement.text().toInt());
+
+	QDomElement fillcelement = synode.namedItem("fillcolor").toElement();
+	red = fillcelement.attribute("red").toInt();
+	green = fillcelement.attribute("green").toInt();
+	blue = fillcelement.attribute("blue").toInt();
+	brush.setColor(QColor(red, green, blue));
+
+	QDomElement fillpelement = synode.namedItem("fillpattern").toElement();
+	brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
+
+	QDomElement labelelement = rangerendernode.namedItem("label").toElement();
+	QString label = labelelement.text();
+
+	//create a renderitem and add it to the renderer
+	sy->setBrush(brush);
+	sy->setPen(pen);
+
+	QgsRangeRenderItem *ri = new QgsRangeRenderItem(sy, lowervalue, uppervalue, label);
+	this->addItem(ri);
+
+	rangerendernode = rangerendernode.nextSibling();
+    }
+
+    vl.setRenderer(this);
+    QgsGraSyDialog *gdialog = new QgsGraSyDialog(&vl);
+    vl.setRendererDialog(gdialog);
+
+    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(&vl);
+    vl.setLayerProperties(properties);
+    properties->setLegendType("Graduated Symbol");
+
+    gdialog->apply();
 }
 
 void QgsGraduatedSymRenderer::writeXML(std::ofstream& xml)
