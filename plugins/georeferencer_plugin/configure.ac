@@ -18,6 +18,7 @@ AC_LANG([C++])
 
 
 # Checks for libraries.
+PKG_CHECK_MODULES(GSL, gsl >= 1.5)
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL check

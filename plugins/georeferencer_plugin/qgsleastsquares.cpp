@@ -1,6 +1,8 @@
 #include <cmath>
 #include <stdexcept>
 
+#include <gsl/gsl_linalg.h>
+
 #include "qgsleastsquares.h"
 
 
@@ -10,7 +12,7 @@ void QgsLeastSquares::linear(std::vector<QgsPoint> mapCoords,
   int n = mapCoords.size();
   if (n < 2) {
     throw std::domain_error("Fit to a linear transform requires at "
-			    "least 2 points");
+			    "least 2 points.");
   }
 
   double sumPx(0), sumPy(0), sumPx2(0), sumPy2(0), sumPxMx(0), sumPyMy(0),
@@ -44,5 +46,51 @@ void QgsLeastSquares::helmert(std::vector<QgsPoint> mapCoords,
 			      std::vector<QgsPoint> pixelCoords,
 			      QgsPoint& origin, double& pixelSize, 
 			      double& rotation) {
-  throw std::logic_error("The Helmert transform is not implemented");
+  int n = mapCoords.size();
+  if (n < 2) {
+    throw std::domain_error("Fit to a Helmert transform requires at "
+			    "least 2 points.");
+  }
+  
+  double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, G = 0, H = 0, I = 0, J = 0;
+  for (int i = 0; i < n; ++i) {
+    A += pixelCoords[i].x();
+    B += pixelCoords[i].y();
+    C += mapCoords[i].x();
+    D += mapCoords[i].y();
+    E += mapCoords[i].x() * pixelCoords[i].x();
+    F += mapCoords[i].y() * pixelCoords[i].y();
+    G += std::pow(pixelCoords[i].x(), 2);
+    H += std::pow(pixelCoords[i].y(), 2);
+    I += mapCoords[i].x() * pixelCoords[i].y();
+    J += pixelCoords[i].x() * mapCoords[i].y();
+  }
+  
+  /* The least squares fit for the parameters { a, b, x0, y0 } is the solution
+     to the matrix equation Mx = b, where M and b is given below. I *think*
+     that this is correct but I derived it myself late at night. Look at 
+     helmert.jpg if you suspect bugs. */
+  
+  double MData[] = { A,   -B,    n,    0,
+		     B,    A,    0,    n,
+		     G+H,  0,    A,    B,		     
+		     0,    G+H, -B,    A };
+
+  double bData[] = { C,    D,    E+F,  J-I };
+  
+  // we want to solve the equation M*x = b, where x = [a b x0 y0]
+  gsl_matrix_view M = gsl_matrix_view_array(MData, 4, 4);
+  gsl_vector_view b = gsl_vector_view_array(bData, 4);
+  gsl_vector* x = gsl_vector_alloc(4);
+  gsl_permutation* p = gsl_permutation_alloc(4);
+  int s;
+  gsl_linalg_LU_decomp(&M.matrix, p, &s);
+  gsl_linalg_LU_solve(&M.matrix, p, &b.vector, x);
+  gsl_permutation_free(p);
+  
+  origin.setX(gsl_vector_get(x, 2));
+  origin.setY(gsl_vector_get(x, 3));
+  pixelSize = std::sqrt(std::pow(gsl_vector_get(x, 0), 2) +
+			std::pow(gsl_vector_get(x, 1), 2));
+  rotation = std::atan2(gsl_vector_get(x, 1), gsl_vector_get(x, 0));    
 }

@@ -96,7 +96,7 @@
                 </property>
             </item>
             <property name="name">
-                <cstring>comboBox2</cstring>
+                <cstring>cmbTransformType</cstring>
             </property>
         </widget>
         <widget class="QLabel" row="1" column="3">

@@ -1,3 +1,4 @@
+#include <qcombobox.h>
 #include <qfiledialog.h>
 #include <qframe.h>
 #include <qlayout.h>
@@ -103,10 +104,15 @@ void QgsPointDialog::pbnSelectWorldFile_clicked() {
 
 
 bool QgsPointDialog::generateWorldFile() {
-  QgsPoint origin;
-  double pixelSize;
+  QgsPoint origin(0, 0);
+  double pixelSize = 1;
+  double rotation = 0;
   try {
-    QgsLeastSquares::linear(mMapCoords, mPixelCoords, origin, pixelSize);
+    if (cmbTransformType->currentItem() == 0)
+      QgsLeastSquares::linear(mMapCoords, mPixelCoords, origin, pixelSize);
+    else if (cmbTransformType->currentItem() == 1)
+      QgsLeastSquares::helmert(mMapCoords, mPixelCoords, 
+			       origin, pixelSize, rotation);
   }
   catch (std::domain_error& e) {
     QMessageBox::critical(this, "Error", QString(e.what()));
@@ -119,7 +125,8 @@ bool QgsPointDialog::generateWorldFile() {
 	   <<-pixelSize<<std::endl
 	   <<origin.x()<<std::endl
 	   <<origin.y()<<std::endl
-	   <<"================="<<std::endl;
+	   <<"================="<<std::endl
+	   <<"ROTATION: "<<(rotation*180/3.14159265)<<std::endl;
   
   QFile file(leSelectWorldFile->text());
   if (!file.open(IO_WriteOnly)) {
