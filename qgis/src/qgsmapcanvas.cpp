@@ -45,7 +45,6 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 	setMouseTracking(true);
 	drawing = false;
 	dirty = true;
-	ctrlPressed=false;
 	pmCanvas = new QPixmap(width(),height());
         setFocusPolicy(QWidget::StrongFocus);
 }
@@ -447,7 +446,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			    ur = coordXForm->toMapCoordinates(zoomBox.right(), zoomBox.top()); 
 
 			    QgsRect* search= new QgsRect(ll.x(),ll.y(),ur.x(),ur.y());
-			    lyr->select(search,ctrlPressed);
+			    if(e->state()==513)
+			    {
+				lyr->select(search,true);
+			    }
+			    else
+			    {
+				lyr->select(search,false);	
+			    }
 			    delete search;
 			}
 			else
@@ -489,7 +495,7 @@ void QgsMapCanvas::resizeEvent(QResizeEvent *e){
 }
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
-	if (e->state() == Qt::LeftButton) {
+	if (e->state() == Qt::LeftButton || e->state()==513) {
 		int dx, dy;
 		QPainter paint;
 		QPen pen(Qt::gray);
@@ -627,23 +633,5 @@ void QgsMapCanvas::remove(QString key)
 void QgsMapCanvas::removeAll(){
 	layers.clear();
 	zOrder.clear();
-}
-
-void QgsMapCanvas::keyPressEvent(QKeyEvent* ev)
-{
-    if(ev->key()==Qt::Key_Control)
-    {
-	std::cout << "ctrlPressed = true" << std::endl;
-	ctrlPressed=true;
-    }
-}
-
-void QgsMapCanvas::keyReleaseEvent(QKeyEvent* ev)
-{
-   if(ev->key()==Qt::Key_Control)
-    {
-	std::cout << "ctrlPressed = false" << std::endl;
-	ctrlPressed=false;
-    } 
 }
 
