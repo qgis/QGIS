@@ -65,8 +65,8 @@ climatedataprocessingwizard_la_SOURCES = plugin.cpp \
 	
 nodist_climatedataprocessingwizard_la_SOURCES =	$(plugin_MOC)
 
-climatedataprocessingwizard_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
-climatedataprocessingwizard_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD)
+climatedataprocessingwizard_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(GSL_FLAGS)
+climatedataprocessingwizard_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) $(GSL_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)

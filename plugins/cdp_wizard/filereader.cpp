@@ -22,7 +22,7 @@ FileReader::FileReader(std::string theFileNameString, const FileTypeEnum& theFil
 {
 
   debugModeFlag=false;
-  loadBlocksInMemoryFlag=true; //change this to false to make program pass-through data rather than load to an array
+  loadBlocksInMemoryFlag=false; //change this to false to make program pass-through data rather than load to an array
   if (debugModeFlag) cout << "FileReader::FileReader(std::string theFileNameString)" << endl;
   //set the class member
   fileNameString=theFileNameString;
