@@ -413,7 +413,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // menu when they are loaded by the plugin manager
     mPluginMenu->insertSeparator();
     // Add to the menubar
-    menuBar()->insertItem("&Plugins", mPluginMenu, -1, menuBar()->count() - 1);
+    menuBar()->insertItem(tr("&Plugins"), mPluginMenu, -1, menuBar()->count() - 1);
 
 
     // create the layer popup menu
