@@ -38,6 +38,7 @@ PluginGui::PluginGui() : PluginGuiBase()
 {
   populateDeviceComboBox();
   populateULLayerComboBox();
+  populateIMPBabelFormats();
   tabWidget->removePage(tabWidget->page(2));
 }
 PluginGui::PluginGui( std::vector<QgsMapLayer*> gpxMapLayers, 
@@ -47,6 +48,7 @@ PluginGui::PluginGui( std::vector<QgsMapLayer*> gpxMapLayers,
 {
   populateDeviceComboBox();
   populateULLayerComboBox();
+  populateIMPBabelFormats();
   tabWidget->removePage(tabWidget->page(2));
 } 
 PluginGui::~PluginGui()
@@ -318,19 +320,25 @@ void PluginGui::pbnGPXSelectFile_clicked()
 
 
 void PluginGui::pbnIMPInput_clicked() {
-  QString myFileTypeQString;
-  QString myFilterString = 
-    "GPS eXchange format (*.gpx);;"
-    "Geocaching waypoints (*.loc)";
-  QString myFileNameQString = QFileDialog::getOpenFileName(
+  QString myFileType;
+  QString myFileName = QFileDialog::getOpenFileName(
           "." , //initial dir
-          myFilterString,  //filters to select
+	  babelFilter,
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
-          "Select file to import" , //caption
-          &myFileTypeQString //the pointer to store selected filter
+          "Select file and format to import" , //caption
+          &myFileType //the pointer to store selected filter
           );
-  leIMPInput->setText(myFileNameQString);
+  std::map<QString, BabelFormatInfo>::const_iterator iter;
+  iter = babelFormats.find(myFileType.left(myFileType.length() - 6));
+  if (iter == babelFormats.end()) {
+    std::cerr<<"ERROR ERROR! Unknown file format selected: "
+	     <<myFileType.left(myFileType.length() - 6)<<std::endl;
+  }
+  else {
+    std::cerr<<iter->first<<" selected"<<std::endl;
+    leIMPInput->setText(myFileName);
+  }
 }
 
 
@@ -395,4 +403,67 @@ void PluginGui::populateULLayerComboBox() {
     cmbULLayer->insertItem(gpxLayers[i]->name());
     std::cerr<<gpxLayers[i]->name()<<std::endl;
   }
+}
+
+
+void PluginGui::populateIMPBabelFormats() {
+  babelFormats["Magellan Mapsend"] = 
+    BabelFormatInfo("mapsend", true, true, true);
+  babelFormats["Garmin PCX5"] = 
+    BabelFormatInfo("pcx", true, false, true);
+  babelFormats["Garmin Mapsource"] = 
+    BabelFormatInfo("mapsource", true, true, true);
+  babelFormats["GPSUtil"] = 
+    BabelFormatInfo("gpsutil", true, false, false);
+  babelFormats["PocketStreets 2002/2003 Pushpin"] = 
+    BabelFormatInfo("psp", true, false, false);
+  babelFormats["CoPilot Flight Planner"] = 
+    BabelFormatInfo("copilot", true, false, false);
+  babelFormats["Magellan Navigator Companion"] = 
+    BabelFormatInfo("magnav", true, false, false);
+  babelFormats["Holux"] = 
+    BabelFormatInfo("holux", true, false, false);
+  babelFormats["Topo by National Geographic"] = 
+    BabelFormatInfo("tpg", true, false, false);
+  babelFormats["TopoMapPro"] = 
+    BabelFormatInfo("tmpro", true, false, false);
+  babelFormats["GeocachingDB"] = 
+    BabelFormatInfo("gcdb", true, false, false);
+  babelFormats["Tiger"] = 
+    BabelFormatInfo("tiger", true, false, false);
+  babelFormats["EasyGPS Binary Format"] = 
+    BabelFormatInfo("easygps", true, false, false);
+  babelFormats["Delorme Routes"] = 
+    BabelFormatInfo("saroute", false, false, true);
+  babelFormats["Navicache"] = 
+    BabelFormatInfo("navicache", true, false, false);
+  babelFormats["PSITrex"] = 
+    BabelFormatInfo("psitrex", true, true, true);
+  babelFormats["Delorme GPS Log"] = 
+    BabelFormatInfo("gpl", false, false, true);
+  babelFormats["OziExplorer"] = 
+    BabelFormatInfo("ozi", true, false, false);
+  babelFormats["NMEA Sentences"] = 
+    BabelFormatInfo("nmea", true, false, true);
+  babelFormats["Delorme Street Atlas 2004 Plus"] = 
+    BabelFormatInfo("saplus", true, false, false);
+  babelFormats["Microsoft Streets and Trips"] = 
+    BabelFormatInfo("s_and_t", true, false, false);
+  babelFormats["NIMA/GNIS Geographic Names"] = 
+    BabelFormatInfo("nima", true, false, false);
+  babelFormats["Maptech"] = 
+    BabelFormatInfo("mxf", true, false, false);
+  babelFormats["Mapopolis.com Mapconverter Application"] = 
+    BabelFormatInfo("mapconverter", true, false, false);
+  babelFormats["GPSman"] = 
+    BabelFormatInfo("gpsman", true, false, false);
+  babelFormats["GPSDrive"] = 
+    BabelFormatInfo("gpsdrive", true, false, false);
+  babelFormats["Fugawi"] = 
+    BabelFormatInfo("fugawi", true, false, false);
+  babelFormats["DNA"] = 
+    BabelFormatInfo("dna", true, false, false);
+  std::map<QString, BabelFormatInfo>::const_iterator iter;
+  for (iter = babelFormats.begin(); iter != babelFormats.end(); ++iter)
+    babelFilter.append((const char*)iter->first).append(" (*.*);;");
 }
