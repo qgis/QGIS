@@ -663,6 +663,8 @@ int QgsVectorLayer::endian()
     if (ir)
     {
       ir->setTitle(name());
+      if (featureCount == 1)
+	ir->showAllAttributes();
       // restore the identify window position and show it
       ir->restorePosition();
     }

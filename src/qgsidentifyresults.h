@@ -54,6 +54,7 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   void close();
   void closeEvent(QCloseEvent *e);
   void popupContextMenu(QListViewItem*, const QPoint&, int);
+  void showAllAttributes();
   //void accept();
   //void reject();
 
