@@ -27,7 +27,7 @@ QgsSymbol::QgsSymbol(QColor c)
 QgsSymbol::~QgsSymbol()
 {
 }
-QColor QgsSymbol::color() const const
+QColor QgsSymbol::color() const
 {
   return m_pen.color();
 }
@@ -37,7 +37,7 @@ void QgsSymbol::setColor(QColor c)
   m_pen.setColor(c);
 }
 
-QColor QgsSymbol::fillColor() const const
+QColor QgsSymbol::fillColor() const
 {
   return m_brush.color();
 }
@@ -47,7 +47,7 @@ void QgsSymbol::setFillColor(QColor c)
   m_brush.setColor(c);
 }
 
-int QgsSymbol::lineWidth() const const
+int QgsSymbol::lineWidth() const
 {
   return m_pen.width();
 }

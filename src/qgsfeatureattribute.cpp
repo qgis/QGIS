@@ -26,12 +26,12 @@ QgsFeatureAttribute::QgsFeatureAttribute(QString fld, QString val):field(fld), v
 QgsFeatureAttribute::~QgsFeatureAttribute()
 {
 }
-QString QgsFeatureAttribute::fieldName() const const
+QString QgsFeatureAttribute::fieldName() const
 {
   return field;
 }
 
-QString QgsFeatureAttribute::fieldValue() const const
+QString QgsFeatureAttribute::fieldValue() const
 {
   return value;
 }
