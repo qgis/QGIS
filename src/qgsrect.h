@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgisapp.h  -  description
+                          qgsrect.h  -  description
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
