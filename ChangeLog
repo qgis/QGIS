@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.131 2004/06/14 00:10:28 timlinux Exp
+ChangeLog,v 1.132 2004/06/14 11:03:58 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-14 [ts] 0.3.0devel36
+** Added capability for plugins to clear the current project ignoring 
+   the project dirty flag (ie force new project).
 
 2004-06-14 [ts] 0.3.0devel35
 ** Added addRasterLayer(QgsRasterLayer *) to the plugin interface. This allows plugins 
