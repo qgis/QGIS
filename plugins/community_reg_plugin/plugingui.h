@@ -13,7 +13,8 @@
 #define PLUGINGUI_H
 
 #include <pluginguibase.h>
-
+class QUrl;
+class  QHttp;
 /**
 @author Tim Sutton
 */
@@ -24,11 +25,15 @@ public:
     PluginGui();
     PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~PluginGui();
+public slots:
     void pbnOK_clicked();
     void pbnCancel_clicked();
+    void submit();
+    void submitDone( bool error );
+    void pbnGetCoords_clicked();
 private:
-    
-    
+    QHttp * mConnection;  
+    QHttp * mHttp;
 signals:
    void drawRasterLayer(QString);
    void drawVectorrLayer(QString,QString,QString);
