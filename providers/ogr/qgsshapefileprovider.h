@@ -49,7 +49,7 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     *@param attlist a list containing the indexes of the attribute fields to copy
     *@param getnotcommited flag indicating if not commited features should be returned
     */
-    QgsFeature *getNextFeature(std::list<int>& attlist, bool getnotcommited=false);
+    QgsFeature *getNextFeature(std::list<int>& attlist);
     /** 
      * Get the next feature resutling from a select operation
      * @return True if the feature was read. This does not indicate
@@ -139,14 +139,10 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     */
     bool isValid();
 
-    /**
-     *Enables editing capabilities of the provider (if supported)
-     *@return false in case of error or if the provider does not support editing
-    */
-    virtual bool startEditing();
+    /**Writes a list of features to the file*/
+    bool addFeatures(std::list<QgsFeature*> flist);
 
- protected:
-    bool commitFeature(QgsFeature* f);
+    bool supportsFeatureAddition(){return true;}
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
@@ -173,6 +169,6 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     void fillMinMaxCash();
     //! Selection rectangle 
     OGRPolygon * mSelectionRectangle;
-
-
+    /**Adds one feature*/
+    bool addFeature(QgsFeature* f);
 };

@@ -89,7 +89,9 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       m_renderer(0), 
       m_propertiesDialog(0), 
       m_rendererDialog(0),
-      ir(0)			// initialize the identify results pointer
+      ir(0),			// initialize the identify results pointer
+      mEditable(false),
+      mModified(false)
 {
 #ifdef QGISDEBUG
   std::cerr << "VECTORLAYERPATH: " << vectorLayerPath.ascii() << std::endl;
@@ -275,12 +277,24 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinat
     {
       // Render label
       if ( mLabelOn && (fet != 0)) {
-        bool sel=selected.find(fet->featureId()) != selected.end();
-        mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
+	  if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
+	  {
+	      bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+	      mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
+	  }
       }
       delete fet;
       featureCount++;
     }
+
+    //render labels of not-commited features
+    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    {
+	bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+	mLabel->renderLabel ( p, viewExtent, cXf, dst, *it, sel);
+    }
+
+    
 
 #ifdef QGISDEBUG
     std::cerr << "Total features processed is " << featureCount << std::endl;
@@ -340,7 +354,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
         std::list<int> attributes=m_renderer->classificationAttributes();
 
-        while((fet = dataProvider->getNextFeature(attributes,true)))
+        while((fet = dataProvider->getNextFeature(attributes)))
         {
             // If update threshold is greater than 0, check to see if
             // the threshold has been exceeded
@@ -360,235 +374,25 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
             } else
             {
-                bool sel=selected.find(fet->featureId()) != selected.end();
-                m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
+		if(mDeleted.find(fet->featureId())==mDeleted.end())
+		{
+		    bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+		    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
+		
+		    drawFeature(p,fet,cXf,&marker, markerScaleFactor);
+		    ++featureCount;
+		    delete fet;
+		}
+	    }
+	}
+	//also draw the not yet commited features
+	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+	{
+	    bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
+	    drawFeature(p,*it,cXf,&marker,markerScaleFactor);
+	}
 
-                //  std::cout << "Feature type: " << wkbType << std::endl;
-                // read each feature based on its type
-
-		// get the wkb representation
-		feature = fet->getGeometry();
-		//  if (feature != 0) {
-		//    std::cout << featureCount << "'the feature is null\n";
-		//TODO - add this to the debug options -- if we decide to keep it
-		//wkbHeader header;
-		//memcpy((void *)&header,feature,sizeof(header));
-		//std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
-
-		// FIX for the endian problem on osx (possibly sparc?)
-		// TODO Restructure this whole wkb reading code to use
-		// wkb structures as defined at (among other places):
-		// http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
-		memcpy(&wkbType, (feature+1), sizeof(wkbType));
-
-                switch (wkbType)
-                {
-                    case WKBPoint:
-
-                        //  fldDef = fet->GetFieldDefnRef(1);
-                        //   fld = fldDef->GetNameRef();
-                        //NEEDTHIS?  val = fet->GetFieldAsString(1);
-                        //std::cout << val << "\n";
-
-                        x = (double *) (feature + 5);
-                        y = (double *) (feature + 5 + sizeof(double));
-                        //    std::cout << "transforming point\n";
-                        pt.setX(*x);
-                        pt.setY(*y);
-                        cXf->transform(&pt);
-                        //std::cout << "drawing marker for feature " << featureCount << "\n";
-                        p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
-                        p->scale(markerScaleFactor,markerScaleFactor);
-                        p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker.boundingRect().width() / 2), 
-                                       (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker.boundingRect().height() / 2),
-                                       marker);
-                        p->resetXForm(); 
-
-                        break;
-
-                    case WKBLineString:
-
-                        // get number of points in the line
-                        ptr = feature + 5;
-                        nPoints = (int *) ptr;
-                        ptr = feature + 1 + 2 * sizeof(int);
-                        for (idx = 0; idx < *nPoints; idx++)
-                        {
-                            x = (double *) ptr;
-                            ptr += sizeof(double);
-                            y = (double *) ptr;
-                            ptr += sizeof(double);
-                            // transform the point
-                            pt.setX(*x);
-                            pt.setY(*y);
-                            cXf->transform(&pt);
-                            if (idx == 0)
-                                p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                            else
-                                p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                        }
-                        break;
-
-                    case WKBMultiLineString:
-
-                        numLineStrings = (int) (feature[5]);
-                        ptr = feature + 9;
-                        for (jdx = 0; jdx < numLineStrings; jdx++)
-                        {
-                            // each of these is a wbklinestring so must handle as such
-                            lsb = *ptr;
-                            ptr += 5; // skip type since we know its 2
-                            nPoints = (int *) ptr;
-                            ptr += sizeof(int);
-                            for (idx = 0; idx < *nPoints; idx++)
-                            {
-                                x = (double *) ptr;
-                                ptr += sizeof(double);
-                                y = (double *) ptr;
-                                ptr += sizeof(double);
-                                // transform the point
-                                pt.setX(*x);
-                                pt.setY(*y);
-                                cXf->transform(&pt);
-                                if (idx == 0)
-                                    p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                                else
-                                    p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                            }
-                        }
-                        break;
-
-                    case WKBPolygon:
-
-                    {
-                        // get number of rings in the polygon
-                        numRings = (int *) (feature + 1 + sizeof(int));
-
-                        if ( ! *numRings )  // sanity check for zero rings in polygon
-                        {
-                            break;
-                        }
-
-                        int *ringStart; // index of first point for each ring
-                        int *ringNumPoints; // number of points in each ring
-                        ringStart = new int[*numRings];
-                        ringNumPoints = new int[*numRings];
-
-                        int x0, y0, pdx;
-                        pdx = 0;
-                        ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
-                        for (idx = 0; idx < *numRings; idx++) {
-                            // get number of points in the ring
-                            nPoints = (int *) ptr;
-                            ringStart[idx] = pdx;
-                            ringNumPoints[idx] = *nPoints;
-                            ptr += 4;
-                            if ( idx == 0 ) { 
-                                pa = new QPointArray(*nPoints);
-                            } else {
-                                pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
-                            }
-                            for (jdx = 0; jdx < *nPoints; jdx++) {
-                                // add points to a point array for drawing the polygon
-                                x = (double *) ptr;
-                                ptr += sizeof(double);
-                                y = (double *) ptr;
-#ifdef QGISX11DEBUG
-                                std::cout << "Transforming " << *x << "," << *y << " to ";
-#endif
-                                ptr += sizeof(double);
-                                pt.setX(*x);
-                                pt.setY(*y);
-                                cXf->transform(&pt);
-                                pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                            }
-                            if ( idx == 0 ) { // remember last outer ring point
-                                x0 = static_cast<int>(pt.x());
-                                y0 = static_cast<int>(pt.y());
-                            } else { // return to x0,y0 (inner rings - islands)
-                                pa->setPoint(pdx++, x0, y0);
-                            }
-                        }
-                        // draw the polygon fill
-                        pen = p->pen(); // store current pen
-                        p->setPen ( Qt::NoPen ); // no boundary
-                        p->drawPolygon(*pa);
-
-                        // draw outline
-                        p->setPen ( pen );
-                        p->setBrush ( Qt::NoBrush );
-                        for (idx = 0; idx < *numRings; idx++) {
-                            p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
-                        }
-
-                        delete pa;
-                        delete [] ringStart;
-                        delete [] ringNumPoints;
-
-                        break;
-
-                    }
-                    case WKBMultiPolygon:
-
-                        // get the number of polygons
-                        ptr = feature + 5;
-                        numPolygons = (int *) ptr;
-                        ptr = feature + 9;
-                        for (kdx = 0; kdx < *numPolygons; kdx++)
-                        {
-                            //skip the endian and feature type info and
-                            // get number of rings in the polygon
-                            ptr+=5;
-                            numRings = (int *) ptr;
-                            ptr += 4;
-                            for (idx = 0; idx < *numRings; idx++)
-                            {
-                                // get number of points in the ring
-                                nPoints = (int *) ptr;
-                                ptr += 4;
-                                pa = new QPointArray(*nPoints);
-                                for (jdx = 0; jdx < *nPoints; jdx++)
-                                {
-                                    // add points to a point array for drawing the polygon
-                                    x = (double *) ptr;
-                                    ptr += sizeof(double);
-                                    y = (double *) ptr;
-                                    ptr += sizeof(double);
-#ifdef QGISX11DEBUG
-                                    std::cout << "Transforming " << *x << "," << *y << " to ";
-#endif
-                                    pt.setX(*x);
-                                    pt.setY(*y);
-                                    cXf->transform(&pt);
-                                    pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                                }
-                                // draw the ring
-                                p->drawPolygon(*pa);
-                                delete pa;
-                            }
-                        }
-                        break;
-
-                    default:
-#ifdef QGISDEBUG
-                        std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
-#endif
-                        break;
-                }
-
-
-                // XXX should be lower down? delete fet;
-                delete fet;
-                //std::cout << "deleting feature[]\n";
-                //      std::cout << geom->getGeometryName() << std::endl;
-                featureCount++;
-
-            }
-
-            //qApp->processEvents();
-
-            //delete fet;
-        }
 #ifdef QGISDEBUG
         std::cerr << "Total features processed is " << featureCount << std::endl;
 #endif
@@ -598,6 +402,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #ifdef QGISDEBUG
         qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
 #endif
+		
     }
 }
 
@@ -692,7 +497,7 @@ void QgsVectorLayer::table()
         int numFields = dataProvider->fieldCount();
         tabledisplay = new QgsAttributeTableDisplay();
         connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
-        tabledisplay->table()->setNumRows(dataProvider->featureCount());
+        tabledisplay->table()->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
         tabledisplay->table()->setNumCols(numFields + 1); //+1 for the id-column
 
         int row = 0;
@@ -708,7 +513,11 @@ void QgsVectorLayer::table()
         QgsFeature *fet;
         while ((fet = dataProvider->getNextFeature(true)))
         {
-
+	    if(mDeleted.find(fet->featureId())!=mDeleted.end())
+	    {
+		//feature has been deleted
+		continue;
+	    }
             //id-field
             tabledisplay->table()->setText(row, 0, QString::number(fet->featureId()));
             tabledisplay->table()->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
@@ -721,6 +530,21 @@ void QgsVectorLayer::table()
             row++;
             delete fet;
         }
+
+	//also consider the not commited features
+	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+	{
+	    //id-field
+            tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
+            tabledisplay->table()->insertFeatureId((*it)->featureId(), row);  //insert the id into the search tree of qgsattributetable
+            std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
+            for (int i = 0; i < attr.size(); i++)
+            {
+                // get the field values
+                tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
+            }
+	    row++;
+	}
 
         // reset the pointer to start of fetabledisplayures so
         // subsequent reads will not fail
@@ -738,11 +562,11 @@ void QgsVectorLayer::table()
 
         QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
 
-        for (std::map < int, bool >::iterator it = selected.begin(); it != selected.end(); ++it)
+        for (std::set<int>::iterator it = mSelected.begin(); it != mSelected.end(); ++it)
         {
-            tabledisplay->table()->selectRowWithId(it->first);
+            tabledisplay->table()->selectRowWithId(*it);
 #ifdef QGISDEBUG
-            qWarning("selecting row with id " + QString::number(it->first));
+            qWarning("selecting row with id " + QString::number(*it));
 #endif
         }
 
@@ -761,7 +585,7 @@ void QgsVectorLayer::table()
 
 void QgsVectorLayer::select(int number)
     {
-      selected[number] = true;
+      mSelected.insert(number);
     }
 
     void QgsVectorLayer::select(QgsRect * rect, bool lock)
@@ -790,10 +614,26 @@ void QgsVectorLayer::select(int number)
 
       while (fet = dataProvider->getNextFeature(true))
       {
-	  select(fet->featureId());
-	  if (tabledisplay)
+	  if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
 	  {
-	      tabledisplay->table()->selectRowWithId(fet->featureId());
+	      select(fet->featureId());
+	      if (tabledisplay)
+	      {
+		  tabledisplay->table()->selectRowWithId(fet->featureId());
+	      }
+	  }
+      }
+
+      //also test the not commited features
+      for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      {
+	  if((*it)->intersects(rect))
+	  {
+	     select((*it)->featureId());
+	     if (tabledisplay)
+	     {
+		 tabledisplay->table()->selectRowWithId((*it)->featureId());
+	     } 
 	  }
       }
 
@@ -808,7 +648,7 @@ void QgsVectorLayer::select(int number)
 
     void QgsVectorLayer::removeSelection()
     {
-      selected.clear();
+      mSelected.clear();
     }
 
     void QgsVectorLayer::triggerRepaint()
@@ -976,7 +816,7 @@ void QgsVectorLayer::select(int number)
 
       while ((fet = dataProvider->getNextFeature(false)))
       {
-        if (selected.find(fet->featureId()) != selected.end())
+        if (mSelected.find(fet->featureId()) != mSelected.end())
         {
           feature = fet->getGeometry();
           wkbType = (int) feature[1];
@@ -1265,16 +1105,38 @@ void QgsVectorLayer::select(int number)
     {
       if(dataProvider)
       {
-        int end=endian();
-        memcpy(f->getGeometry(),&end,1);
+	  //set the endian properly
+	  int end=endian();
+	  memcpy(f->getGeometry(),&end,1);
 
-	//using a feature id which (hopefully) does not conflict with already commited features
-	f->setFeatureId(-1);
+	  //assign a temporary id to the feature
+	  int tempid;
+	  if(mAddedFeatures.size()==0)
+	  {
+	      tempid=findFreeId();
+	  }
+	  else
+	  {
+	      std::list<QgsFeature*>::iterator it=mAddedFeatures.end();
+	      --it;
+	      tempid=(*it)->featureId()+1;
+	  }
+#ifdef QGISDEBUG
+	  qWarning("assigned feature id "+QString::number(tempid));
+#endif
+	  f->setFeatureId(tempid);
+	  mAddedFeatures.push_back(f);
+	  mModified=true;
 
-        if(dataProvider->addFeature(f))
-        {
-          return true;
-        }
+	  //hide and delete the table because it is not up to date any more
+	  if (tabledisplay)
+	  {
+	      tabledisplay->close();
+	      delete tabledisplay;
+	      tabledisplay=0;
+	  }
+
+	  return true;
       }
       return false;
     }
@@ -1287,25 +1149,55 @@ void QgsVectorLayer::select(int number)
 
     bool QgsVectorLayer::deleteSelectedFeatures()
     {
-#ifdef QGISDEBUG
-      qWarning("entering QgsVectorLayer::deleteSelectedFeatures");
-#endif 
-      bool resvalue=true;
-      for(std::map<int,bool>::iterator it=selected.begin();it!=selected.end();++it)
-      {
-        if(it->second==true)
-        {
-#ifdef QGISDEBUG
-          qWarning("selected feature detected");
-#endif      
-          if(!dataProvider->deleteFeature(it->first))
-          {
-            resvalue=false;
-          }
-        }
-      }
-      triggerRepaint();
-      return resvalue;
+	if(!dataProvider->supportsFeatureDeletion())
+	{
+	    QMessageBox::information(0, tr("Provider does not support deletion"), tr("Data provider does not support deleting features"));
+	    return false;
+	}
+
+	if(!isEditable())
+	{
+	    QMessageBox::information(0, tr("Layer not editable"), tr("The current layer is not editable. Choose 'start editing' in the legend item right click menu"));
+	    return false;
+	}
+
+	for(std::set<int>::iterator it=mSelected.begin();it!=mSelected.end();++it)
+	{ 
+	    bool notcommitedfeature=false;
+	    //first test, if the feature with this id is a not-commited feature
+	    for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+	    {
+		if((*it)==(*iter)->featureId())
+		{
+		    mAddedFeatures.erase(iter);
+		    notcommitedfeature=true;
+		    break;
+		}
+	    }
+	    if(notcommitedfeature)
+	    {
+		break;
+	    }
+	    mDeleted.insert(*it);
+	}
+	    
+	if(mSelected.size()>0)
+	{
+	    mModified=true;
+	    mSelected.clear();
+	    triggerRepaint();
+
+            //hide and delete the table because it is not up to date any more
+	    if (tabledisplay)
+	    {
+		tabledisplay->close();
+		delete tabledisplay;
+		tabledisplay=0;
+	    }
+	    
+	}
+
+	return true;
     }
 
     QgsLabel * QgsVectorLayer::label()
@@ -1327,14 +1219,15 @@ void QgsVectorLayer::select(int number)
     {
       if(dataProvider)
       {
-        if(!dataProvider->startEditing())
-        {
+	  if(!dataProvider->supportsFeatureAddition())
+	  {
           QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
-        }
-        else
-        {
-          updateItemPixmap();
-        }
+	  }
+	  else
+	  {
+	      mEditable=true;
+	      updateItemPixmap();
+	  }
       }
     }
 
@@ -1342,18 +1235,19 @@ void QgsVectorLayer::select(int number)
     {
       if(dataProvider)
       {
-        if(dataProvider->isModified())
+        if(mModified)
         {
           //commit or roll back?
           int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
           if(commit==QMessageBox::Yes)
           {
-            if(!dataProvider->commitChanges())
+            if(!commitChanges())
             {
               QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok); 
             }
 	    else
 	    {
+		//hide and delete the table because it is not up to date any more
 		if (tabledisplay)
 		{
 		    tabledisplay->close();
@@ -1364,27 +1258,23 @@ void QgsVectorLayer::select(int number)
           }
           else if(commit==QMessageBox::No)
           {
-            if(!dataProvider->rollBack())
+            if(!rollBack())
             {
               QMessageBox::information(0,"Error","Problems during roll back",QMessageBox::Ok);   
             }
+	    //hide and delete the table because it is not up to date any more
+	    if (tabledisplay)
+	    {
+		tabledisplay->close();
+		delete tabledisplay;
+		tabledisplay=0;
+	    }
           }
           triggerRepaint();
         }
-        dataProvider->stopEditing();
+        mEditable=false;
+	mModified=false;
         updateItemPixmap();
-      }
-    }
-
-    bool QgsVectorLayer::isEditable()
-    {
-      if(dataProvider)
-      {
-        return dataProvider->isEditable();
-      }
-      else
-      {
-        return false;
       }
     }
     
@@ -1859,4 +1749,317 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 void QgsVectorLayer::inOverview( bool b )
 {
     QgsMapLayer::inOverview( b );
+}
+
+int QgsVectorLayer::findFreeId()
+{
+    int freeid=-INT_MAX;
+    int fid;
+    if(dataProvider)
+    {
+	dataProvider->reset();
+	QgsFeature *fet;
+	while ((fet = dataProvider->getNextFeature(true)))
+	{
+	    fid=fet->featureId();
+	    if(fid>freeid)
+	    {
+		freeid=fid;
+	    }
+	    delete fet;
+	}
+#ifdef QGISDEBUG
+	qWarning("freeid is: "+QString::number(freeid+1));
+#endif
+	return freeid+1;
+    }
+    else
+    {
+#ifdef QGISDEBUG
+	qWarning("Error, dataProvider is 0 in QgsVectorLayer::findFreeId");
+#endif
+	return -1;
+    }
+}
+
+bool QgsVectorLayer::commitChanges()
+{
+    if(dataProvider)
+    {
+	bool returnvalue=true;
+	std::list<QgsFeature*> addedlist;
+	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+	{
+	    addedlist.push_back(*it);
+	}
+	if(!dataProvider->addFeatures(addedlist))
+	{
+	    returnvalue=false;
+	}
+	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+	{
+	    delete *it;
+	}
+	mAddedFeatures.clear();
+
+	if(mDeleted.size()>0)
+	{
+	    std::list<int> deletelist;
+	    for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
+	    {
+		deletelist.push_back(*it);
+		mSelected.erase(*it);//just in case the feature is still selected
+	    }
+	    if(!dataProvider->deleteFeatures(deletelist))
+	    {
+		returnvalue=false;
+	    }
+	}
+	return returnvalue;
+    }
+    else
+    {
+	return false;
+    }
+}
+
+bool QgsVectorLayer::rollBack()
+{
+    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    {
+	delete *it;
+	mSelected.erase((*it)->featureId());
+    }
+    mAddedFeatures.clear();
+    for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
+    {
+	mSelected.erase(*it);
+    }
+    mDeleted.clear(); 
+    return true;
+}
+
+void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTransform * cXf, QPicture* marker, double markerScaleFactor)
+{
+  unsigned char *feature;
+  bool attributesneeded = m_renderer->needsAttributes();
+
+  double *x;
+  double *y;
+  int wkbType;  
+  QgsPoint pt;
+  
+  QPen pen;
+  feature = fet->getGeometry();
+  
+  memcpy(&wkbType, (feature+1), sizeof(wkbType));
+
+  switch (wkbType)
+  {
+      case WKBPoint:
+      {
+	  x = (double *) (feature + 5);
+	  y = (double *) (feature + 5 + sizeof(double));
+	  //    std::cout << "transforming point\n";
+	  pt.setX(*x);
+	  pt.setY(*y);
+	  cXf->transform(&pt);
+	  //std::cout << "drawing marker for feature " << featureCount << "\n";
+	  p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
+	  p->scale(markerScaleFactor,markerScaleFactor);
+	  p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker->boundingRect().width() / 2), 
+			 (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker->boundingRect().height() / 2),
+			 *marker);
+	  p->resetXForm(); 
+
+	  break;
+      }
+      case WKBLineString:
+      {
+	  unsigned char *ptr;
+	  int *nPoints;
+	  int idx;
+
+	  // get number of points in the line
+	  ptr = feature + 5;
+	  nPoints = (int *) ptr;
+	  ptr = feature + 1 + 2 * sizeof(int);
+	  for (idx = 0; idx < *nPoints; idx++)
+	  {
+	      x = (double *) ptr;
+	      ptr += sizeof(double);
+	      y = (double *) ptr;
+	      ptr += sizeof(double);
+	      // transform the point
+	      pt.setX(*x);
+	      pt.setY(*y);
+	      cXf->transform(&pt);
+	      if (idx == 0)
+		  p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+	      else
+		  p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+	  }
+	  break;
+      }
+      case WKBMultiLineString:
+      {
+	  unsigned char *ptr;
+	  int idx, jdx, numLineStrings;
+	  int *nPoints;
+	  char lsb;
+
+	  numLineStrings = (int) (feature[5]);
+	  ptr = feature + 9;
+	  for (jdx = 0; jdx < numLineStrings; jdx++)
+	  {
+	      // each of these is a wbklinestring so must handle as such
+	      lsb = *ptr;
+	      ptr += 5; // skip type since we know its 2
+	      nPoints = (int *) ptr;
+	      ptr += sizeof(int);
+	      for (idx = 0; idx < *nPoints; idx++)
+	      {
+		  x = (double *) ptr;
+		  ptr += sizeof(double);
+		  y = (double *) ptr;
+		  ptr += sizeof(double);
+		  // transform the point
+		  pt.setX(*x);
+		  pt.setY(*y);
+		  cXf->transform(&pt);
+		  if (idx == 0)
+		      p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+		  else
+		      p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+	      }
+	  }
+	  break;
+      }
+      case WKBPolygon:
+
+      {
+	  unsigned char *ptr;
+	  int idx, jdx;
+	  int *numRings, *nPoints;
+	  QPointArray *pa;
+
+	  // get number of rings in the polygon
+	  numRings = (int *) (feature + 1 + sizeof(int));
+	  
+	  if ( ! *numRings )  // sanity check for zero rings in polygon
+	  {
+	      break;
+	  }
+
+	  int *ringStart; // index of first point for each ring
+	  int *ringNumPoints; // number of points in each ring
+	  ringStart = new int[*numRings];
+	  ringNumPoints = new int[*numRings];
+
+	  int x0, y0, pdx;
+	  pdx = 0;
+	  ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
+	  for (idx = 0; idx < *numRings; idx++) {
+	      // get number of points in the ring
+	      nPoints = (int *) ptr;
+	      ringStart[idx] = pdx;
+	      ringNumPoints[idx] = *nPoints;
+	      ptr += 4;
+	      if ( idx == 0 ) { 
+		  pa = new QPointArray(*nPoints);
+	      } else {
+		  pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
+	      }
+	      for (jdx = 0; jdx < *nPoints; jdx++) {
+		  // add points to a point array for drawing the polygon
+		  x = (double *) ptr;
+		  ptr += sizeof(double);
+		  y = (double *) ptr;
+#ifdef QGISX11DEBUG
+		  std::cout << "Transforming " << *x << "," << *y << " to ";
+#endif
+		  ptr += sizeof(double);
+		  pt.setX(*x);
+		  pt.setY(*y);
+		  cXf->transform(&pt);
+		  pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+	      }
+	      if ( idx == 0 ) { // remember last outer ring point
+		  x0 = static_cast<int>(pt.x());
+		  y0 = static_cast<int>(pt.y());
+	      } else { // return to x0,y0 (inner rings - islands)
+		  pa->setPoint(pdx++, x0, y0);
+	      }
+	  }
+	  // draw the polygon fill
+	  pen = p->pen(); // store current pen
+	  p->setPen ( Qt::NoPen ); // no boundary
+	  p->drawPolygon(*pa);
+
+	  // draw outline
+	  p->setPen ( pen );
+	  p->setBrush ( Qt::NoBrush );
+	  for (idx = 0; idx < *numRings; idx++) {
+	      p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
+	  }
+
+	  delete pa;
+	  delete [] ringStart;
+	  delete [] ringNumPoints;
+
+	  break;
+
+      }
+      case WKBMultiPolygon:
+      {
+	  unsigned char *ptr;
+	  int idx, jdx, kdx;
+	  int *numPolygons, *numRings, *nPoints;
+	  QPointArray *pa;
+
+	  // get the number of polygons
+	  ptr = feature + 5;
+	  numPolygons = (int *) ptr;
+	  ptr = feature + 9;
+	  for (kdx = 0; kdx < *numPolygons; kdx++)
+	  {
+	      //skip the endian and feature type info and
+	      // get number of rings in the polygon
+	      ptr+=5;
+	      numRings = (int *) ptr;
+	      ptr += 4;
+	      for (idx = 0; idx < *numRings; idx++)
+	      {
+		  // get number of points in the ring
+		  nPoints = (int *) ptr;
+		  ptr += 4;
+		  pa = new QPointArray(*nPoints);
+		  for (jdx = 0; jdx < *nPoints; jdx++)
+		  {
+		      // add points to a point array for drawing the polygon
+		      x = (double *) ptr;
+		      ptr += sizeof(double);
+		      y = (double *) ptr;
+		      ptr += sizeof(double);
+#ifdef QGISX11DEBUG
+		      std::cout << "Transforming " << *x << "," << *y << " to ";
+#endif
+		      pt.setX(*x);
+		      pt.setY(*y);
+		      cXf->transform(&pt);
+		      pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+		  }
+		  // draw the ring
+		  p->drawPolygon(*pa);
+		  delete pa;
+	      }
+	  }
+	  break;
+      }
+      default:
+#ifdef QGISDEBUG
+	  std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+#endif
+	  break;
+  }
 }

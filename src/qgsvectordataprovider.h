@@ -43,7 +43,7 @@ class QgsVectorDataProvider: public QgsDataProvider
      *@param attlist a list containing the indexes of the attribute fields to copy
      *@param getnotcommited flag indicating if not commited features should be returned
      */
-    virtual QgsFeature * getNextFeature(std::list<int>& attlist, bool getnotcommited=false)=0;
+    virtual QgsFeature * getNextFeature(std::list<int>& attlist)=0;
 
     /**
      * Get the next feature using new method
@@ -93,14 +93,14 @@ class QgsVectorDataProvider: public QgsDataProvider
        @param position the number of the attribute*/
     virtual QString maxValue(int position)=0;
 
-    /**Adds a feature (but does not commit it)
+    /**Adds a list of features
        @return true in case of success and false in case of failure*/
-    virtual bool addFeature(QgsFeature* f);
+    virtual bool addFeatures(std::list<QgsFeature*> flist);
 
     /**Deletes a feature (but not not write it to disk yes)
-       @param id the number of the feature
+       @param id list containing feature ids to delete
        @return true in case of success and false in case of failure*/
-    virtual bool deleteFeature(int id);
+    virtual bool deleteFeatures(std::list<int> id);
 
     /**Returns the default value for attribute @c attr for feature @c f. */
     virtual QString getDefaultValue(const QString& attr, QgsFeature* f);
@@ -112,56 +112,11 @@ class QgsVectorDataProvider: public QgsDataProvider
      */
     virtual std::vector<QgsFeature>& identify(QgsRect *rect)=0;
 
-    /**
-     *Enables editing capabilities of the provider (if supported)
-     *@return false in case of error or if the provider does not support editing
-    */
-  virtual bool startEditing();
+  /**Returns true if a provider supports feature editing*/
+  virtual bool supportsFeatureAddition();
 
-  /**
-   *Disables the editing capabilities of the provider
-   */
-  virtual void stopEditing();
-
-  /**
-     Commits changes
-     @return false in case of problems
-  */
-  virtual bool commitChanges();
-
-  /**
-     Discards changes
-     @return false in case of problems
-  */
-  virtual bool rollBack();
-
-  /**Returns true if the provider is in editing mode*/
-  virtual bool isEditable() const {return mEditable;}
-
-  /**Returns true if the provider has been modified since the last commit*/
-  virtual bool isModified() const {return mModified;}
-
-  
- protected:
-
-    /**Flag indicating wheter the provider is in editing mode or not*/
-    bool mEditable;
-    /**Flag indicating wheter the provider has been modified since the last commit*/
-    bool mModified;
-    /**Features which are added but not yet commited*/
-    std::list<QgsFeature*> mAddedFeatures;
-    /**Ids of features to delete*/
-    std::set<int> mDeletedFeatures;
-    /**Commits the addition of a feature
-     @return true in case of success and false in case of failure*/
-    virtual bool commitFeature(QgsFeature* f);
-    /**Commits the deletion of a feature
-     @return true in case of success and false in case of faiure*/
-    virtual bool eraseFeature(int id);
-    
-    /**If getNextFeature needs to returns pointers to not commited features, 
-    this member points to the latest feature*/
-    std::list<QgsFeature*>::iterator mAddedFeaturesIt;
+  /**Returns true if a provider supports deleting features*/
+  virtual bool supportsFeatureDeletion();
 };
 
 #endif

@@ -3142,7 +3142,7 @@ RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
 }
 
 
-bool QgsRasterLayer::isEditable()
+bool QgsRasterLayer::isEditable() const
 {
     return false;
 }

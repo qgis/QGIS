@@ -1870,11 +1870,6 @@ void QgisApp::deleteSelected()
    if (li)
    {
        QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) li)->layer());
-       if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
-        {
-	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-	    return;
-        }
        if(vlayer)
        {
 	   if(!vlayer->deleteSelectedFeatures())

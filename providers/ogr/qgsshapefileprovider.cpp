@@ -120,13 +120,6 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
   }
   delete[] minmaxcache;
 
-  //delete not commited features
-  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-  {
-      delete *it;
-  }
-  mAddedFeatures.clear();
-
 }
 
 /**
@@ -360,7 +353,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
+QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
 {
    QgsFeature *f = 0; 
    if(valid)
@@ -408,26 +401,11 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist, bool g
        }
        else
        {
-	   if(getnotcommited&&mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
-	   {
-#ifdef QGISDEBUG
-         qWarning("accessing feature in the cache");
-#endif //QGISDEBUG
-         QgsFeature* addedfeature=*mAddedFeaturesIt;
-         ++mAddedFeaturesIt;
-         //copy the feature because it will be deleted in QgsVectorLayer::draw()
-         QgsFeature* returnf=new QgsFeature(*addedfeature);
-         return returnf;
-     }
 #ifdef QGISDEBUG
      std::cerr << "Feature is null\n";
 #endif  
            // probably should reset reading here
      ogrLayer->ResetReading();
-     if(!mAddedFeatures.empty())
-     {
-         mAddedFeaturesIt=mAddedFeatures.begin();
-     }
        }
    }
    else
@@ -616,10 +594,6 @@ void QgsShapeFileProvider::reset()
 {
   ogrLayer->SetSpatialFilter(0);
   ogrLayer->ResetReading();
-  if(!mAddedFeatures.empty())
-  {
-      mAddedFeaturesIt=mAddedFeatures.begin();
-  }
 }
 
 QString QgsShapeFileProvider::minValue(int position)
@@ -687,17 +661,11 @@ bool QgsShapeFileProvider::isValid()
   return valid;
 }
 
-bool QgsShapeFileProvider::startEditing()
-{
-    mEditable=true;
-    return true;
-}
-
-bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
+bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 {
   qWarning("try to commit a feature");
-  if(mEditable)
-  {
+  
+  
     bool returnValue = true;
     OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
     OGRFeature* feature=new OGRFeature(fdef);
@@ -839,39 +807,20 @@ bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
     ++numberFeatures;
     delete feature;
     return returnValue;
-  }
-  else//layer not editable
-  {
-    return false;
-  }
 }
 
-/*bool QgsShapeFileProvider::deleteFeature(int id)
+bool QgsShapeFileProvider::addFeatures(std::list<QgsFeature*> flist)
 {
-#ifdef QGISDEBUG
-    int test=ogrLayer->TestCapability("OLCDeleteFeature");
-    if(!test)
+    bool returnvalue=true;
+    for(std::list<QgsFeature*>::iterator it=flist.begin();it!=flist.end();++it)
     {
-      qWarning("no support for deletion of features");  
+	if(!addFeature(*it))
+	{
+	    returnvalue=false;
+	}
     }
-#endif
-    OGRErr message=ogrLayer->DeleteFeature(id);
-    switch(message)
-    {
-  case OGRERR_UNSUPPORTED_OPERATION:
-#ifdef QGISDEBUG
-      qWarning("driver does not support deletion");
-#endif
-      return false;
-  case OGRERR_NONE:
-#ifdef QGISDEBUG
-      qWarning("deletion successfull");
-#endif
-      break;
-    }
-    return true;
-    return false;
-}*/
+    return returnvalue;
+}
 
 /**
  * Class factory to return a pointer to a newly created 

@@ -210,9 +210,6 @@ class QgsVectorLayer : public QgsMapLayer
   /**Label is on */
   bool labelOn( void );
 
-  /**True if the layer can be edited*/
-  bool isEditable();
-
   /**
    * Minimum scale at which the layer is rendered
    * @return Scale as integer 
@@ -228,11 +225,20 @@ class QgsVectorLayer : public QgsMapLayer
    * @return true if so
    */
   bool scaleDependentRender();
+
+  /**Returns true if the provider is in editing mode*/
+  virtual bool isEditable() const {return (mEditable&&dataProvider);}
+
+  /**Returns true if the provider has been modified since the last commit*/
+  virtual bool isModified() const {return mModified;}
+
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
     QgsAttributeTableDisplay * tabledisplay;
   /**Vector holding the information which features are activated*/
-  std::map < int, bool > selected;
+  std::set<int> mSelected;
+  std::set<int> mDeleted;
+  std::list<QgsFeature*> mAddedFeatures;
   /**Color to and fill the selected features*/
   QColor selectionColor;
   /**Renderer object which holds the information about how to display the features*/
@@ -245,10 +251,18 @@ protected:
   QgsDlgVectorLayerProperties *m_propertiesDialog;
   /**Widget to set the symbology properties*/
   QDialog *m_rendererDialog;
+  /**Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)*/
+  int findFreeId();
+  /**Writes the changes to disk*/
+  bool commitChanges();
+  /**Discards the edits*/
+  bool rollBack();
 
   protected slots:
   void startEditing();
   void stopEditing();
+
+  void drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTransform * cXf, QPicture* marker, double markerScaleFactor);
 
 private:                       // Private attributes
 
@@ -312,6 +326,11 @@ private:                       // Private methods
   // The user-defined actions that are accessed from the
   // Identify Results dialog box
   QgsAttributeAction mActions;
+
+  /**Flag indicating wheter the layer is in editing mode or not*/
+  bool mEditable;
+  /**Flag indicating wheter the layer has been modified since the last commit*/
+  bool mModified;
 
 };
 

@@ -326,7 +326,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     return ( getNextFeature(attlist) );
 }
 
-QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
+QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
 {
     int cat, type, id, idx;
     unsigned char *wkb;
@@ -647,41 +647,6 @@ bool QgsGrassProvider::isValid(){
     std::cerr << "QgsGrassProvider::isValid() returned: " << validString << std::endl;
     #endif
     return mValid;
-}
-
-bool QgsGrassProvider::startEditing()
-{
-    return false;
-}
-
-void QgsGrassProvider::stopEditing()
-{
-}
-
-bool QgsGrassProvider::commitChanges()
-{
-    return false;
-}
-
-bool QgsGrassProvider::rollBack()
-{
-    return false;
-}
-
-bool QgsGrassProvider::addFeature(QgsFeature* f)
-{
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrassProvider::addFeature()" << std::endl;
-    #endif
-    return false;
-}
-
-bool QgsGrassProvider::deleteFeature(int id)
-{
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrassProvider::deleteFeature()" << std::endl;
-    #endif
-    return false;
 }
 
 // ------------------------------------------------------------------------------------------------------

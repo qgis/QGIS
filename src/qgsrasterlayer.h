@@ -769,7 +769,7 @@ public:
 //   RasterPyramid getRasterPyramid(int thePyramidNo);
 
     /**Currently returns always false*/
-    bool isEditable();
+    bool isEditable() const;
     
     
 public slots:    

@@ -85,35 +85,6 @@ public:
    */
   virtual bool isValid()=0;
 
-  /**
-     Enables editing capabilities of the provider (if supported)
-     @return false in case of error or if the provider does not support editing
-  */
-  virtual bool startEditing()=0;
-
-  /**
-     Disables the editing capabilities of the provider
-  */
-  virtual void stopEditing()=0;
-
-  /**
-     Commits changes
-     @return false in case of problems
-  */
-  virtual bool commitChanges()=0;
-
-  /**
-     Discards changes
-     @return false in case of problems
-  */
-  virtual bool rollBack()=0;
-
-  /**Returns true if the provider is in editing mode*/
-  virtual bool isEditable() const=0;
-
-  /**Returns true if the provider has been modified since the last commit*/
-  virtual bool isModified() const=0;
-
   /* Reset the layer - for an OGRLayer, this means clearing the
    * spatial filter and calling ResetReading
    */
