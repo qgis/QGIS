@@ -1261,21 +1261,16 @@ void QgisApp::newVectorLayer()
     QgsGeomTypeDialog geomDialog;
     if(geomDialog.exec()==QDialog::Rejected)
     {
-#ifdef QGISDEBUG
-	qWarning("dialog rejected");
-#endif
 	return;
     }
     geometrytype = geomDialog.selectedType();
 
-#ifdef QGISDEBUG
-    qWarning("dialog accepted");
-#endif
-
     QString filename=QFileDialog::getSaveFileName();
-#ifdef QGISDEBUG
-    qWarning("the filename is : "+filename);
-#endif
+    if(filename.isNull())
+    {
+	//file dialog rejected
+	return;
+    }
     
     //strange, the 'provider way' does not work...
     /*QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -1863,10 +1858,18 @@ void QgisApp::attributeTable()
 
 void QgisApp::deleteSelected()
 {
+#ifdef QGISDEBUG
+    qWarning("In slot QgisApp::deleteSelected");
+#endif
    QListViewItem *li = mMapLegend->currentItem();
    if (li)
    {
        QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) li)->layer());
+       if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
+        {
+	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+	    return;
+        }
        if(vlayer)
        {
 	   if(!vlayer->deleteSelectedFeatures())
@@ -3253,6 +3256,9 @@ void QgisApp::setupToolbarPopups(QString themeName)
   toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_general.png")),
       "Capture polygons",
       this, SLOT(capturePolygon()));
+  toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/delete_selected.png")),
+      "Delete selection",
+      this, SLOT(deleteSelected()));			       
   tbtnCaptureTools->setPopup(toolPopupCapture);
   tbtnCaptureTools->setPopupDelay(0);
   // connect the top overview tool to the appropriate slot
