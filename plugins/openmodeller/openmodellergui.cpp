@@ -739,8 +739,13 @@ void OpenModellerGui::getProjList()
   mProjectionsMap["Long/Lat - Datum: Corrego Alegre"] = "GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]]";
 
   std::cout << "Getting proj list " << std::endl;
+#ifdef WIN32
+  QString theFileNameQString = "wkt_defs.txt";
+#else
   QString theFileNameQString = QGISDATAPATH;
   theFileNameQString += "/wkt_defs.txt";
+#endif
+  
   QFile myQFile( theFileNameQString );
   if ( myQFile.open( IO_ReadOnly ) ) 
   {
