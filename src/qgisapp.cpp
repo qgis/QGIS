@@ -1421,10 +1421,12 @@ bool QgisApp::isValidRasterFileName(QString theFileNameQString)
 
   if( myDataset == NULL )
   {
+    
     return false;
   }
   else
   {
+    GDALClose(myDataset);
     return true;
   }
 
