@@ -46,8 +46,10 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   
   // if we already have the pixmap, return it
   if (iter != pixmapMap.end()) {
+#if QGISDEBUG > 2
     std::cerr<<"SVGCACHE: "<<filename<<"["<<scaleFactor
 	     <<"] is already loaded"<<std::endl;
+#endif
     return iter->second;
   }
   
