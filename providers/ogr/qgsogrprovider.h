@@ -143,6 +143,9 @@ class QgsOgrProvider:public QgsVectorDataProvider
     /**Writes a list of features to the file*/
     bool addFeatures(std::list<QgsFeature*> const flist);
 
+    /**Changes attribute values of existing features */
+    bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
+
     bool supportsFeatureAddition() const 
     { 
         return true;

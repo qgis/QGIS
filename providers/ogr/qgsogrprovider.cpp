@@ -32,6 +32,7 @@ email                : sherman at mrcc.com
 #include "ogr_api.h"//only for a test
 
 #include <qmessagebox.h>
+#include <qmap.h>
 
 //TODO Following ifndef can be removed once WIN32 GEOS support
 //    is fixed
@@ -868,6 +869,68 @@ bool QgsOgrProvider::addFeatures(std::list<QgsFeature*> const flist)
     }
   }
   return returnvalue;
+}
+
+bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
+{
+#ifdef QGISDEBUG
+  std::cerr << "QgsOgrProvider::changeAttributeValues()" << std::endl;
+#endif
+    
+  std::map<int,std::map<QString,QString> > am = attr_map; // stupid, but I don't know other way to convince gcc to compile
+  for( std::map<int,std::map<QString,QString> >::iterator it=am.begin();it!=am.end();++it)
+  {
+    long fid = (long) (*it).first;
+
+    OGRFeature *of = ogrLayer->GetFeature ( fid );
+
+    if ( !of ) {
+        QMessageBox::warning (0, "Warning", "Cannot read feature, cannot change attributes" );
+	return false;
+    }
+
+    std::map<QString,QString> attr = (*it).second;
+
+    for( std::map<QString,QString>::iterator it2 = attr.begin(); it2!=attr.end(); ++it2 )
+    {
+	QString name = (*it2).first;
+	QString value = (*it2).second;
+		
+	int fc = of->GetFieldCount();
+	for ( int f = 0; f < fc; f++ ) {
+	    OGRFieldDefn *fd = of->GetFieldDefnRef ( f );
+	    
+	    if ( name.compare( fd->GetNameRef() ) == 0 ) {
+		OGRFieldType type = fd->GetType();
+
+#ifdef QGISDEBUG
+		std::cerr << "set field " << f << " : " << name << " to " << value << std::endl;
+#endif
+		switch ( type ) {
+		    case OFTInteger:
+		        of->SetField ( f, value.toInt() );
+			break;
+		    case OFTReal:
+		        of->SetField ( f, value.toDouble() );
+			break;
+		    case OFTString:
+		        of->SetField ( f, value.ascii() );
+			break;
+		    default:
+                        QMessageBox::warning (0, "Warning", "Unknown field type, cannot change attribute" );
+			break;
+		}
+
+		continue;
+	    }	
+	}
+	ogrLayer->SetFeature ( of );
+    }
+  }
+
+  ogrLayer->SyncToDisk();
+
+  return true;
 }
 
 /**
