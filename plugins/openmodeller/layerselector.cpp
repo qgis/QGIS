@@ -30,9 +30,8 @@
 LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , WFlags fl  )
   : LayerSelectorBase( parent, name, modal, fl )
 {
-  QString myStartDirString = "/home/aps02ts/dev/cpp/sample_data/cres/";
-  QString myFileNameString = "test file";
-  listParent = new QListViewItem(listFileTree,myFileNameString);
+  QString myStartDirString = "/home/aps02ts/dev/cpp/sample_data/";
+  listParent = new QListViewItem(listFileTree,myStartDirString);
   traverseDirectories(myStartDirString,listParent);
 }
 
@@ -113,14 +112,14 @@ void LayerSelector::traverseDirectories(const QString& dirname, QListViewItem* t
   if (myInvalidFileFlag)
   {
      //BAD FILE WARNING
-     QMessageBox::critical( this,QString("openModeller Wizard Error"),QString("The following are not valid GDAL files.  Please check and try again:\n\n "+myInvalidFileList));
+     //QMessageBox::critical( this,QString("openModeller Wizard Error"),QString("The following are not valid GDAL files.  Please check and try again:\n\n "+myInvalidFileList));
   }
   else
   {
     if (myInvalidFileProjFlag)
     {
       //BAD PROJ WARNING 
-      QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("Warning!! The following files do not have any projection information associated.\n\n "+myInvalidFileProjList));
+      //QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("Warning!! The following files do not have any projection information associated.\n\n "+myInvalidFileProjList));
     }
    
   }
