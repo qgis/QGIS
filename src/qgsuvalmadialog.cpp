@@ -27,14 +27,16 @@
 #include "qgssvgcache.h"
 #include "qgsrenderitem.h"
 #include "qgsuvalmarenderer.h"
-
-#include <qapplication.h> //needed for finding qApp->qApplicationDirPath()
+#include <qapplication.h>
 #include <qwidgetstack.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
 #include <qpainter.h>
 #include <cassert>
 #include <list>
+#ifdef WIN32
+extern QString PKGDATAPATH;
+#endif
 
 QgsUValMaDialog::QgsUValMaDialog(QgsVectorLayer* vl): QgsUValMaDialogBase(), mVectorLayer(vl), madialog(vl)
 {

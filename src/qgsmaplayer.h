@@ -101,7 +101,7 @@ public:
   };
 
   /*!Select features on the map canvas by dragging a rectangle */
-  virtual void select(QgsRect *, bool lock)
+  virtual void select(QgsRect *, bool )
   {
   };
 

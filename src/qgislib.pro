@@ -164,4 +164,7 @@ qgsludialog.cpp \
 qgsvectorlayer.cpp \
 qgsuvalmadialog.cpp \
 qgsuvalmadialogbase.cpp \
-qgsuvalmarenderer.cpp
+qgsuvalmarenderer.cpp \
+qgsgeomtypedialog.cpp \
+qgsgeomtypedialogbase.cpp \
+moc_qgsgeomtypedialogbase.cpp 
