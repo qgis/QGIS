@@ -94,6 +94,9 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
 	
 	//set the dir to the default svg dir
         mCurrentDir=QString(PKGDATAPATH)+"/svg/";
+#ifdef QGISDEBUG
+	qWarning("mCurrentDir in constructor: "+mCurrentDir);
+#endif
         visualizeMarkers(mCurrentDir);
         mDirectoryEdit->setText(mCurrentDir);
         //QString(PKGDATAPATH);
@@ -116,7 +119,6 @@ void QgsSiMaDialog::apply()
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
     QString string(pmPreview->name());
 #ifdef QGISDEBUG
-
     qWarning(string);
 #endif
 
@@ -160,8 +162,15 @@ void QgsSiMaDialog::apply()
 
     QPixmap *pix = mVectorLayer->legendPixmap();
 
-    int width = (int)(pic.boundingRect().width()*ms->scaleFactor()+fm.width(name));
-    int height = (int)((pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor() +10 : fm.height()+10);
+    //spaces between legend pixmap elements
+    int leftspace=5;
+    int topspace=5;
+    int bottomspace=5;
+    int betweenspace=5;
+    int rightspace=5;
+
+    int width = (int)(pic.boundingRect().width()*ms->scaleFactor()+fm.width(name)+leftspace+betweenspace+rightspace);
+    int height = (int)((pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor()+topspace+bottomspace : fm.height()+topspace+bottomspace);
 
     //prevent 0 width or height, which would cause a crash
     if(width==0)
@@ -177,13 +186,13 @@ void QgsSiMaDialog::apply()
     pix->fill();
 
     QPainter p(pix);
-    p.scale(ms->scaleFactor()/100.0,ms->scaleFactor()/100.0);
-    p.drawPicture((int)(100.0/ms->scaleFactor()),(int)(100.0/ms->scaleFactor()),pic);
+    p.scale(ms->scaleFactor(),ms->scaleFactor());
+    p.drawPicture((int)(leftspace/ms->scaleFactor()),(int)(topspace/ms->scaleFactor()),pic);
     p.resetXForm();
 
     p.setPen(Qt::black);
     p.setFont(f);
-    p.drawText((int)(15+pic.boundingRect().width()*ms->scaleFactor()), (int)(pix->height() - 10), name);
+    p.drawText((int)(leftspace+betweenspace+pic.boundingRect().width()*ms->scaleFactor()), pix->height()-bottomspace,name);
 
     if (mVectorLayer->legendItem())
     {
@@ -202,7 +211,7 @@ void QgsSiMaDialog::apply()
 
 void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
 {
-    QString svgfile=mCurrentDir+"/"+theIconViewItem->text();
+    QString svgfile=mCurrentDir+theIconViewItem->text();
     pmPreview->setName(svgfile);
 
     //draw the SVG-Image on the button
@@ -233,7 +242,9 @@ void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
 }
 void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
 {
+#ifdef QGISDEBUG
     std::cout << "mScaleSpin_valueChanged(" << theSize << ") " << std::endl;
+#endif
     //draw the SVG-Image on the button
     QString svgfile(pmPreview->name());
     if(!svgfile.isEmpty())
@@ -287,7 +298,9 @@ void QgsSiMaDialog::visualizeMarkers(QString directory)
 
     for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
     {
+#ifdef QGISDEBUG
         qWarning(*it);
+#endif
 
         //use the QPixmap way, as the QPicture version does not seem to work properly
         QPicture pic;
