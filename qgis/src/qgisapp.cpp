@@ -1627,7 +1627,9 @@ bool QgisApp::addProject(QString projectFile)
   // specifying a project file on the command line
   bool returnValue = false;
   QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN, this);
-  
+#ifdef QGISDEBUG
+  std::cout << "Loading Project - about to call ProjectIO->read()" << std::endl;
+#endif
   if (pio->read(projectFile))
   {
     mapCanvas->freeze(true);
