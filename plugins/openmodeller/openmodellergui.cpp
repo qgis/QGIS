@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "openmodellergui.h"
-
+#include "layerselector.h"
 //qt includes
 #include <qlineedit.h>
 #include <qstring.h>
@@ -63,7 +63,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <climits>
-
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
   : OpenModellerGuiBase( parent, name, modal, fl )
@@ -1084,6 +1083,8 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   settings.writeEntry("/openmodeller/layersDirectory",myLayersDirectoryQString);
   traverseDirectories(myLayersDirectoryQString, lstLayers, cboMaskLayer);
 
+  LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
+  myLayerSelector->show();
 
 
   //lstLayers->insertItem(myFileNameQString);

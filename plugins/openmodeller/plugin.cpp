@@ -80,18 +80,19 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
 
-  pluginMenu->insertItem(QIconSet(icon_om),"&openModeller", this, SLOT(run()));
+  pluginMenu->insertItem(QIconSet(icon_om),"&openModeller Wizard Plugin", this, SLOT(run()));
 
   mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
 
   mMenuId = mQGisIface->addMenu("&Biodiversity", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("openModeller", QIconSet(icon_om), "&Wmi",0, this, "run");
+  
+  QAction *myQActionPointer = new QAction("openModeller Plugin", QIconSet(icon_om), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
   mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Biodiversity");
-  mToolBarPointer->setLabel("openModeller");
+  mToolBarPointer->setLabel("openModeller plugin");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(mToolBarPointer);
 

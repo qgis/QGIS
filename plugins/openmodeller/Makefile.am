@@ -33,7 +33,7 @@ lib_LTLIBRARIES = libopenmodellerplugin.la
 bin_PROGRAMS = omgui
 
 ## qt designer user-interface files
-plugin_UI = openmodellerguibase.ui omguimainbase.ui
+plugin_UI = openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui
 
 ## uic created headers
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
@@ -45,7 +45,7 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp openmodellergui.moc.cpp 
+plugin_MOC = plugin.moc.cpp openmodellergui.moc.cpp layerselector.moc.cpp
 
 
 libopenmodellerplugin_la_SOURCES = plugin.cpp \
@@ -55,6 +55,8 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	request_file.cpp \
 	occurrences_file.cpp \
 	imagewriter.cpp \
+	layerselector.cpp \
+	layerselector.h \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
@@ -74,13 +76,15 @@ omgui_SOURCES = 	main.cpp \
 			openmodellergui.cpp \
 			openmodellergui.h \
 			request_file.cpp \
+			layerselector.cpp \
+			layerselector.h \
 			occurrences_file.cpp \
 			imagewriter.cpp \
 			$(plugin_UISOURCES) \
 			$(plugin_UIHEADERS) \
 			$(plugin_UIMOC)
 
-nodist_omgui_SOURCES = openmodellergui.moc.cpp omguimain.moc.cpp	
+nodist_omgui_SOURCES = openmodellergui.moc.cpp omguimain.moc.cpp layerselector.moc.cpp
 
 omgui_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=\"$(QGISDATAPATH)\"
 omgui_LDADD = $(QT_LDADD) $(GDAL_LDADD) $(OM_LDADD)
@@ -91,8 +95,4 @@ coordinatedir = $(QGISDATAPATH)
 coordinate_DATA = wkt_defs.txt
 
 EXTRA_DIST = $(plugin_UI) $(coordinate_DATA) icon_om.xpm
-
-
-
-
 
