@@ -84,7 +84,7 @@ qgisMainWindowPointer(theQGisApp),
     qGisInterface(theQgisInterFace),
 QgisPlugin(name_,description_,version_,type_)
 {
-  mPreferredSize = 100;
+  mPreferredSize = 30;
   mPlacement = "Top Left";
   mStyle = "Tick Down";
   mEnabled = true;
@@ -153,7 +153,7 @@ void Plugin::run()
   int myUnits=qGisInterface->getMapCanvas()->mapUnits();
   switch (myUnits)
   {
-      case 0: myPluginGui->spnSize->setSuffix(tr(" metres")); break;
+      case 0: myPluginGui->spnSize->setSuffix(tr(" metres/km")); break;
       case 1: myPluginGui->spnSize->setSuffix(tr(" feet")); break;
       case 2: myPluginGui->spnSize->setSuffix(tr(" degrees")); break;
       default: std::cout << "Error: not picked up map units - actual value = " << myUnits << std::endl; 
@@ -205,9 +205,9 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     };
 
     //if scale bar is more than half the canvas wide keep halving until not
-    while (myScaleBarWidth > myCanvasWidth/2)
+    while (myScaleBarWidth > myCanvasWidth/3)
     {
-      myScaleBarWidth = myScaleBarWidth /2;
+      myScaleBarWidth = myScaleBarWidth /3;
     };
     myActualSize = myScaleBarWidth * myMuppDouble;
 
@@ -236,7 +236,13 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
         case 2: myScaleBarUnitLabel=tr(" degrees"); break;
         default: std::cout << "Error: not picked up map units - actual value = " << myMapUnits << std::endl; 
     };  
-
+    //use km if units are larget and scale bar width is larger then 1000
+    if (myMapUnits==0 && myActualSize > 1000) 
+    {
+      myScaleBarUnitLabel=tr(" km");
+      myActualSize = myActualSize/1000;
+      
+    }
     //Set font and calculate width of unit label
     int myFontSize = 10; //we use this later for buffering
     QFont myFont( "helvetica", myFontSize );
