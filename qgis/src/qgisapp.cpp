@@ -266,7 +266,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // Splash screen global is declared in qgisapp.h header
   //
   QSettings settings;
-  bool myHideSplashFlag = false;
+  myHideSplashFlag = false;
   myHideSplashFlag = settings.readBoolEntry("/qgis/hideSplash");
 
   if (!myHideSplashFlag)
@@ -274,6 +274,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
     gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
     gSplashScreen->setStatus(tr("Loading QGIS..."));
     qApp->processEvents();
+    // Set up the timer so the splash screen stays up for
+    // another 5 seconds, then kill it.
+    QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
+  //  gSplashScreen->setStatus(tr("QGIS ready"));
   }
 
   // register all GDAL and OGR plug-ins
@@ -453,6 +457,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mOverviewCanvas, SLOT(remove(QString)));
 
   
+  if (! myHideSplashFlag)
+  {
+    gSplashScreen->setStatus(tr("Setting theme..."));
+  }
   // get the users theme preference from the settings
   QString themeName = settings.readEntry("/qgis/theme","default");
   
@@ -460,16 +468,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   setTheme(themeName);
   setupToolbarPopups(themeName);
 
+  if (! myHideSplashFlag)
+  {
+    gSplashScreen->setStatus(tr("QGIS Ready"));
+  }
   // set the focus to the map canvase
   mMapCanvas->setFocus();
 
-  if (!myHideSplashFlag)
-  {
-    // Set up the timer so the splash screen stays up for
-    // another 5 seconds, then kill it.
-    QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
-    gSplashScreen->setStatus(tr("QGIS ready"));
-  }
  
 } // QgisApp ctor
 
@@ -493,27 +498,28 @@ void QgisApp::about()
 #endif
 #ifdef WIN32
   // special version stuff for windows (if required)
-  versionString += "\nThis is a Windows preview release - not for production use";
+//  versionString += "\nThis is a Windows preview release - not for production use";
 #endif
   abt->setVersion(versionString);
-  QString urls = tr("Web Page: http://qgis.org") +
-    "\n" + tr("Sourceforge Project Page: http://sourceforge.net/projects/qgis");
+  QString urls = "<p align=\"center\">" +
+    tr("Quantum GIS is licensed under the GNU General Public License") +
+    "</p><p align=\"center\">" +
+     tr("http://www.gnu.org/licenses") +
+    "</p>";    
   abt->setURLs(urls);
   QString watsNew = "<html><body>" + tr("Version") + " ";
   watsNew += QGis::qgisVersion;
   watsNew += "<h3>New features</h3>";
   watsNew += "<ul>"
-          "<li>Map Overview</li>"
-          "<li>Preliminary printing support</li>"
-          "<li>Menu cleanups</li>"
-          "<li>User interface improvements</li>"
-          "<li>Icon Themes (only default theme currently available)</li>"
-          "<li>Capture point to clipboard</li>"
-        "</ul>"
-        "<h3>Core Plugins</h3>"
-        "<ul>"
-        "<li>Scale bar plugin</li>"
-        "<li>Improved GPS tools plugin</li>"
+        "<li>Windows version"
+        "<li>Feature labeling with optional buffering"
+        "<li>Preliminary digitizing support for shapefiles"
+        "<li>GRASS digitizing support"
+        "<li>GPS SVG icons"
+        "<li>Unique value renderers"
+        "<li>User interface improvements"
+        "<li>Specify a query when loading a PostGIS layer"
+        "<li>Italian translation"
       "</ul>"
 "</body></html>";
 
@@ -773,6 +779,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 
   // allow for selection of more than one file
   openFileDialog->setMode(QFileDialog::ExistingFiles);
+  openFileDialog->setCaption(QFileDialog::tr("Open an OGR Supported Data Source"));
 
   if (haveLastUsedFilter)       // set the filter to the last one used
     {
@@ -3316,6 +3323,10 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
 void QgisApp::killSplashScreen()
 {
+  // Set the hide flag to true in case someone
+  // tries to set the status after we have killed the splash
+  // screen
+    myHideSplashFlag = true;   
     gSplashScreen->finish(this);
     delete gSplashScreen;
 }

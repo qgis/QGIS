@@ -82,8 +82,6 @@ class QgsDelimitedTextPlugin:public QObject, public QgisPlugin
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
-  //! Pointer to our toolbar
-  QToolBar *toolBarPointer;
   //! Pointer to our menu
   QMenuBar *menuBarPointer;
   //! Pionter to QGIS main application object
