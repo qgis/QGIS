@@ -78,7 +78,7 @@ class QgsContinuousColRenderer: public QgsRenderer
     QColor mSelectionColor;
 };
 
-inline QgsContinuousColRenderer::QgsContinuousColRenderer(): mMinimumItem(0), mMaximumItem(0), mSelectionColor(QColor(255,255,0))
+inline QgsContinuousColRenderer::QgsContinuousColRenderer(): mMinimumItem(0), mMaximumItem(0)
 {
 
 }

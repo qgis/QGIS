@@ -36,7 +36,8 @@
 #include <qspinbox.h>
 #include <qcolor.h>
 #include <qpushbutton.h>
-
+#include <qcheckbox.h>
+#include <qregexp.h>
 
 //stdc++ includes
 #include <iostream>
@@ -62,8 +63,20 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
     QgsScaleCalculator::units myUnit = QgsProject::instance()->mapUnits();
     setMapUnits(myUnit);
     title(QgsProject::instance()->title());
+    
+    //see if the user wants on the fly projection enabled
+    int myProjectionEnabledFlag = 
+       QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+    if (myProjectionEnabledFlag==0)
+    {
+      cbxProjectionEnabled->setChecked(false);
+    }
+    else
+    {
+      cbxProjectionEnabled->setChecked(true);
+    }
+    
     getProjList();
-    setProjectionWKT(projectionWKT());
     
     //if the user changes the projection for the project, we need to 
     //fire a signal to each layer telling it to change its coordinateTransform
@@ -145,22 +158,9 @@ void QgsProjectProperties::title( QString const & title )
 
 QString QgsProjectProperties::projectionWKT()
 {
-
   return QgsProject::instance()->readEntry("SpatialRefSys","/WKT",GEOWKT);
 }  
 
-/** Set the projection passing only its 'friendly name'. If it doesnt exist in the 
-  *  projections list ( as simple text file ) and error will occur */
-bool QgsProjectProperties::setProjectionWKT(QString theName)
-{
-  QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",GEOWKT);
-}
-/** Set the projection passing only its 'friendly name'. If it doesnt exist in the 
- *  projections list ( as simple text file ) it will be added to the list */
-bool QgsProjectProperties::setProjectionWKT(QString theName, QString theWKT)
-{
-  QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",theWKT);
-}
 
 //when user clicks apply button
 void QgsProjectProperties::apply()
@@ -168,6 +168,15 @@ void QgsProjectProperties::apply()
 #ifdef QGISDEBUG
   std::cout << "Projection changed, notifying all layers" << std::endl;
 #endif      
+    //tell the project if projections are to be used or not...      
+    if (cbxProjectionEnabled->isChecked())
+    {
+      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
+    }
+    else
+    {
+      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",0);
+    }
     //notify all layers the output projection has changed
     emit setDestWKT(mProjectionsMap[cboProjection->currentText()]);
     //update the project props
@@ -206,6 +215,8 @@ void QgsProjectProperties::getProjList()
   mProjectionsMap["Lat/Long 1924 Brazil"] =  "GEOGCS[\"1924 ellipsoid\", DATUM[\"Not_specified\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG","6022\"]], PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG","9108\"]], AUTHORITY[\"EPSG","4022\"]]";
   //...etc
 
+  
+  
   std::cout << "Getting proj list " << std::endl;
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
@@ -241,6 +252,13 @@ void QgsProjectProperties::getProjList()
       }
     }
     myQFile.close();
+    
+    
+    //determine the current project projection so we can select the correct entry in the combo
+    QString myProjectionName = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",GEOWKT);
+    QString mySelectedKey = getWKTShortName(myProjectionName);
+    //make sure we dont allow duplicate entries into the combo
+    cboProjection->setDuplicatesEnabled(false);
     //no add each key to our combo
     ProjectionWKTMap::Iterator myIterator;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
@@ -248,6 +266,19 @@ void QgsProjectProperties::getProjList()
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       cboProjection->insertItem(myIterator.key());
     }
+    //make sure all the loaded layer WKT's and the active project projection exist in the 
+    //combo box too....
+    std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+    std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+    for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
+    {
+      QgsMapLayer * myMapLayer = myMapIterator->second;
+      QString myWKT = myMapLayer->getProjectionWKT();
+      QString myWKTShortName = getWKTShortName(myWKT);
+    }    
+    
+    //set the combo entry to the current entry for the project
+    cboProjection->setCurrentText(mySelectedKey);
   }
   else
   {
@@ -260,4 +291,44 @@ void QgsProjectProperties::getProjList()
     }
   }   
 
+}
+
+QString QgsProjectProperties::getWKTShortName(QString theWKT)
+{
+    /* for example 
+    PROJCS["Kertau / Singapore Grid",GEOGCS["Kertau",DATUM["Kertau",SPHEROID["Everest 1830 Modified",6377304.063,300.8017]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Cassini_Soldner"],PARAMETER["latitude_of_origin",1.28764666666667],PARAMETER["central_meridian",103.853002222222],PARAMETER["false_easting",30000],PARAMETER["false_northing",30000],UNIT["metre",1]]
+    
+    We want to pull out 
+    Kertau / Singapore Grid
+    and
+    Cassini_Soldner
+    */
+    QString myCoordinateSystem, myProjection;
+    int myPos = 0;
+    QRegExp myRegExp;
+    myRegExp.setPattern( "\[\".*\"" );
+    if ( myRegExp.search( theWKT ,0) == -1 ) 
+    {
+      return NULL;
+    }
+    std::cout << "getWKTShortName part 1: " << myRegExp.cap(0) << std::endl;
+    myPos = myRegExp.matchedLength();
+    myRegExp.setPattern( "*\"," );
+    if ( myRegExp.search( theWKT ,myPos) == -1 ) 
+    {
+      return NULL;
+    }        
+    std::cout << "getWKTShortName part 2: " <<  myRegExp.cap(0) << std::endl;
+    myCoordinateSystem = myRegExp.cap( 1 );
+    myRegExp.setPattern( "(PROJECTION|projection|Projection)[\".*\"\]" );
+    if ( myRegExp.search( theWKT ) == -1 ) 
+    {
+      return NULL;
+    }        
+    //now find the projection
+    std::cout <<  "getWKTShortName part 3: " << myRegExp.cap(0) << std::endl;
+    myProjection = myRegExp.cap( 1 );
+        
+    std::cout << myProjection << " -- " << myCoordinateSystem << std::endl;
+    return myProjection + " - " + myCoordinateSystem;
 }

@@ -327,6 +327,8 @@ public  slots:
         return mScaleBasedVisibility;
     };
 
+    /** Used to ask the layer for its projection as a WKT string. Must be reimplemented by each provider. */
+    virtual QString getProjectionWKT()  = 0 ;
 signals:
 
     void visibilityChanged(void);
@@ -351,8 +353,6 @@ signals:
 
 protected:
 
-    /** Used to ask the layer for its projection as a WKT string. Must be reimplemented by each provider. */
-    virtual QString getProjectionWKT()  = 0 ;
   
     /** called by readXML(), used by children to read state specific to them from
         project files.

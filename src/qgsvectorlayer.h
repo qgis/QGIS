@@ -48,15 +48,15 @@ class QgsLabel;
 
 class QgsVectorLayer : public QgsMapLayer
 {
-    Q_OBJECT;
+  Q_OBJECT;
 
- public:
+public:
 
   //! Constructor
-    QgsVectorLayer(QString baseName = 0, QString path = 0, QString providerLib = 0);
+  QgsVectorLayer(QString baseName = 0, QString path = 0, QString providerLib = 0);
 
   //! Destructor
-   virtual ~QgsVectorLayer();
+  virtual ~QgsVectorLayer();
 
   //! Identify feature found within the search rectangle
   void identify(QgsRect *);
@@ -67,11 +67,11 @@ class QgsVectorLayer : public QgsMapLayer
   //! Display the attribute table
   void table();
 
-  //! Set the primary display field to be used in the identify results dialog 
+  //! Set the primary display field to be used in the identify results dialog
   void setDisplayField(QString fldName=0);
 
   //! Returns the primary display field name used in the identify results dialog
-  const QString displayField() const { return fieldIndex; }
+const QString displayField() const { return fieldIndex; }
 
   //! Initialize the context menu
   void initContextMenu(QgisApp * app);
@@ -94,17 +94,17 @@ class QgsVectorLayer : public QgsMapLayer
   QgsVectorDataProvider * getDataProvider();
 
   /** \brief Query data provider to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
-  QString getProjectionWKT(); 
-    
+  QString getProjectionWKT();
+
   QgsLabel *label();
 
   QgsAttributeAction* actions() { return &mActions; }
 
-  public slots:
+public slots:
 
   void inOverview( bool );
 
-   /**Sets the 'tabledisplay' to 0 again*/
+  /**Sets the 'tabledisplay' to 0 again*/
   void invalidateTableDisplay();
   void select(int number);
   void removeSelection();
@@ -122,12 +122,12 @@ class QgsVectorLayer : public QgsMapLayer
   /**Sets m_propertiesDialog*/
   void setLayerProperties(QgsDlgVectorLayerProperties * properties);
   /**Returns point, line or polygon*/
-    QGis::VectorType vectorType();
+  QGis::VectorType vectorType();
   /**Returns a pointer to the properties dialog*/
   QgsDlgVectorLayerProperties *propertiesDialog();
   /** Return the context menu for the layer */
   QPopupMenu *contextMenu();
-    /**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds -DBL_MAX*/
+  /**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds -DBL_MAX*/
   virtual QgsRect bBoxOfSelected();
   //! Return the provider type for this layer
   QString providerType();
@@ -157,13 +157,13 @@ class QgsVectorLayer : public QgsMapLayer
   /* virtual */ bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
 
 
-  /** 
+  /**
   * Get the first feature resulting from a select operation
   * @return QgsFeature
   */
   virtual QgsFeature * getFirstFeature(bool fetchAttributes=false) const;
 
-  /** 
+  /**
   * Get the next feature resulting from a select operation
   * @return QgsFeature
   */
@@ -184,7 +184,7 @@ class QgsVectorLayer : public QgsMapLayer
    * @return long containing number of features
    */
   virtual long featureCount() const;
-  
+
   /**
    * Update the feature count 
    * @return long containing the number of features in the datasource
@@ -229,11 +229,11 @@ class QgsVectorLayer : public QgsMapLayer
   /**Deletes the selected features
      @return true in case of success and false otherwise*/
   bool deleteSelectedFeatures();
-  
+
   /**Returns the default value for the attribute @c attr for the feature
      @c f. */
   QString getDefaultValue(const QString& attr, QgsFeature* f);
-  
+
   /**Set labels on */
   void setLabelOn( bool on );
 
@@ -274,7 +274,7 @@ class QgsVectorLayer : public QgsMapLayer
 
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
-    QgsAttributeTableDisplay * tabledisplay;
+  QgsAttributeTableDisplay * tabledisplay;
   /**Vector holding the information which features are activated*/
   std::set<int> mSelected;
   std::set<int> mDeleted;
@@ -285,7 +285,7 @@ protected:
   QgsRenderer *m_renderer;
   /**Label */
   QgsLabel *mLabel;
-  /**Display labels */ 
+  /**Display labels */
   bool mLabelOn;
   /**Dialog to set the properties*/
   QgsDlgVectorLayerProperties *m_propertiesDialog;
@@ -298,22 +298,23 @@ protected:
   /**Discards the edits*/
   bool rollBack();
 
-  protected slots:
+protected slots:
   void startEditing();
   void stopEditing();
 
   void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor);
 
 private:                       // Private attributes
-
+  /** A simple helper method to find out if on the fly projections are enabled or not */
+  bool projectionsEnabled();
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
 
-    /** tailor the right-click context menu with vector layer only stuff 
+  /** tailor the right-click context menu with vector layer only stuff
 
-      @note called by QgsMapLayer::initContextMenu();
-     */
-    void initContextMenu_(QgisApp *);
+    @note called by QgsMapLayer::initContextMenu();
+   */
+  void initContextMenu_(QgisApp *);
 
   //! Draws the layer using coordinate transformation
   void draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
@@ -327,7 +328,7 @@ private:                       // Private attributes
   bool valid;
   bool registered;
 
-  /** constants for endian-ness 
+  /** constants for endian-ness
     XDR is network, or big-endian, byte order
     NDR is little-endian byte order
   */
@@ -335,8 +336,9 @@ private:                       // Private attributes
   {
     XDR = 0,
     NDR = 1
-  } endian_t;
-  
+  }
+  endian_t;
+
   enum WKBTYPE
   {
     WKBPoint = 1,
@@ -361,7 +363,7 @@ private:                       // Private methods
   int mMaximumScale;
   //! Flag to indicate if scale dependent rendering is in effect
   bool mScaleDependentRender;
-  
+
   /// vector layers are not copyable
   QgsVectorLayer( QgsVectorLayer const & rhs );
 
