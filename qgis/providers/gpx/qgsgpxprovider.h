@@ -138,7 +138,7 @@ public:
   
  private:
   
-  GPSData data;
+  GPSData* data;
   void fillMinMaxCash();
   //! Fields
   std::vector<QgsField> attributeFields;
@@ -149,8 +149,6 @@ public:
   QString mFeatureType;
   //! Current selection rectangle
   QgsRect *mSelectionRectangle;
-  //! Text file
-  QFile *mFile;
   bool mValid;
   int mGeomType;
   long mNumberFeatures;
