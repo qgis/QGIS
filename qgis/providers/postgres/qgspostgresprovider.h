@@ -27,6 +27,8 @@ class QgsFeature;
 class QgsField;
 class OGRDataSource;
 class OGRLayer;
+#include "qgsdatasourceuri.h"
+
 /**
 \class QgsPostgresProvider
 \brief Data provider for PostgrSQL/PostGIS layers.
@@ -87,12 +89,23 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   * @param mbr QgsRect containing the extent to use in selecting features
   */
     void select(QgsRect * mbr, bool useIntersect=false);
+    /** 
+    * Get the data source URI structure used by this layer
+     */
+    QgsDataSourceURI & getURI();
+    
+    /**
+    * Set the data source URI used by this layer
+     */
+    void setURI(QgsDataSourceURI &uri);
+    
     /**
     * Set the data source specification. This must be a valid database
   * connection string:
   * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
   * @uri data source specification
   */
+   // TODO Deprecate this in favor of using the QgsDataSourceURI structure
     void setDataSourceUri(QString uri);
 
    /**
@@ -101,6 +114,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   * dbname, password, and table
   * @see setDataSourceUri
   */
+    // TODO Deprecate this in favor of returning the QgsDataSourceURI structure
     QString getDataSourceUri();
 
     /**
@@ -195,6 +209,8 @@ private:
       std::vector < QgsField > attributeFields;
       std::map < int, int > attributeFieldsIdMap;
     QString dataSourceUri;
+    //! Data source URI struct for this layer
+    QgsDataSourceURI mUri;
   /**
   * Pointer to the PostgreSQL query result object. If this pointer is 0,
   * there is no current selection set. Any future getNextFeature requests
@@ -254,6 +270,7 @@ private:
     * Rectangle that contains the extent (bounding box) of the layer
     */
     QgsRect layerExtent;
+    
     /**
     * Number of features in the layer
     */

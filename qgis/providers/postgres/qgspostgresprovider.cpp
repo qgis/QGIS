@@ -42,7 +42,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   // Make connection to the data source
   // For postgres, the connection information is passed as a space delimited
   // string:
-  //  host=192.168.1.5 dbname=test user=gsherman password=xxx table=tablename
+  //  host=192.168.1.5 dbname=test port=5342 user=gsherman password=xxx table=tablename
   //--std::cout << "Data source uri is " << uri << std::endl;
   
   // Strip the table and sql statement name off and store them
@@ -81,6 +81,41 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   geometryColumn = tableName.mid(tableName.find(" (") + 2);
   geometryColumn.truncate(geometryColumn.length() - 1);
   tableName = tableName.mid(tableName.find(".") + 1, tableName.find(" (") - (tableName.find(".") + 1));
+  
+  /* populate the uri structure */
+  mUri.schema = schema;
+  mUri.table = tableName;
+  mUri.geometryColumn = geometryColumn;
+  mUri.sql = sqlWhereClause;
+  // parse the connection info
+  QStringList conParts = QStringList::split(" ", connInfo);
+  QStringList parm = QStringList::split("=", conParts[0]);
+  if(parm.size() == 2)
+  {
+    mUri.host = parm[1];
+  }
+  parm = QStringList::split("=", conParts[1]);
+  if(parm.size() == 2)
+  {
+    mUri.database = parm[1];
+  }
+  parm = QStringList::split("=", conParts[2]);
+  if(parm.size() == 2)
+  {
+    mUri.port = parm[1];
+  }
+
+  parm = QStringList::split("=", conParts[3]);
+  if(parm.size() == 2)
+  {
+    mUri.username = parm[1];
+  }
+  parm = QStringList::split("=", conParts[4]);
+  if(parm.size() == 2)
+  {
+    mUri.password = parm[1];
+  }
+  /* end uri structure */
 
 #ifdef QGISDEBUG
   std::cerr << "Geometry column is: " << geometryColumn << std::endl;
@@ -615,6 +650,10 @@ QString QgsPostgresProvider::getDataSourceUri()
   return dataSourceUri;
 }
 
+QgsDataSourceURI & QgsPostgresProvider::getURI()
+{
+  return mUri;
+}
 /**
  * Identify features within the search radius specified by rect
  * @param rect Bounding rectangle of search radius

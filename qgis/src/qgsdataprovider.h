@@ -22,6 +22,7 @@
 class QgsRect;
 class QgsFeature;
 class QgsField;
+class QgsDataSourceURI;
 /** \class QgsDataProvider
 * \brief Abstract base class for spatial data provider implementations
   *@author Gary E.Sherman
@@ -60,6 +61,10 @@ public:
   */
   virtual QString getDataSourceUri() = 0;
 
+  virtual QgsDataSourceURI & getURI()
+  {
+    // NOP by default
+  }
   /**
   * Get the extent of the layer
   * @return QgsRect containing the extent of the layer

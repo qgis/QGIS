@@ -32,6 +32,7 @@
 #include <qpushbutton.h>
 #include <qwidget.h>
 #include <qgroupbox.h>
+#include <qwhatsthis.h>
 
 
 #include "qgis.h"
@@ -78,6 +79,12 @@ bufferRenderer(layer->
   source = source.left(source.find("password"));
   lblSource->setText(source);
   txtDisplayName->setText(layer->name());
+  // set whats this stuff
+  QWhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
+  QWhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
+  QWhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
+  QWhatsThis::add(lblGeometryType, tr("Geometry type of the features in this layer"));
+  QWhatsThis::add(lblFeatureCount, tr("The number of features in this layer"));
   // display type and feature count
   lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
   //we are dealing with a pg layer here so that we can enable the sql box
@@ -87,7 +94,12 @@ bufferRenderer(layer->
   {
     grpSubset->setEnabled(true);
     txtSubsetSQL->setText(layer->subsetString());
-    txtSubsetSQL->setEnabled(true);
+    // if the user is allowed to type an adhoc query, the app will crash if the query
+    // is bad. For this reason, the sql box is disabled and the query must be built
+    // using the query builder, either by typing it in by hand or using the buttons, etc
+    // on the builder. If the ability to enter a query directly into the box is required,
+    // a mechanism to check it must be implemented.
+    txtSubsetSQL->setEnabled(false); 
     pbnQueryBuilder->setEnabled(true);
   }
   else
@@ -190,12 +202,13 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
     // each case, but i'm in a hurry to get the 0.5 release
     // out - besides this will go away when the money roles in...)
 #ifdef WIN32
-    QMessageBox::warning(this, "No SVG Support",
-  "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n"
-  " using the commercial version of Qt. As this project is developed by volunteers\n"
-  " donating their time, we don't have the financial resources to purchase Qt\n"
-  " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
-  " home page to make a donation");
+    QString msg;
+    QTextOStream(&msg) << tr("In order for QGIS to support SVG markers under Windows, we need to build QGIS")
+      << "\n" << tr(" using the commercial version of Qt. As this project is developed by volunteers")
+      << "\n" << tr(" donating their time, we don't have the financial resources to purchase Qt")
+      << "\n" << tr(" commercial.  If you would like to help us, please visit the QGIS sourceforge")
+      << "\n" << tr(" home page to make a donation");
+    QMessageBox::warning(this, tr("No SVG Support"), msg);
     // use the single symbol renderer
       bufferRenderer = new QgsSingleSymRenderer();
       legendtypecombobox->setCurrentText("Single Symbol");
@@ -211,12 +224,8 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
   } else if(dialogString == tr("Unique Value Marker"))
   {
 #ifdef WIN32
-    QMessageBox::warning(this, "No SVG Support",
-  "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n"
-  " using the commercial version of Qt. As this project is developed by volunteers\n"
-  " donating their time, we don't have the financial resources to purchase Qt\n"
-  " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
-  " home page to make a donation");
+    QMessageBox::warning(this, tr("No SVG Support"), msg);
+
     // use the single symbol renderer
       bufferRenderer = new QgsSingleSymRenderer();
       legendtypecombobox->setCurrentText("Single Symbol");
@@ -388,8 +397,8 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
   // create the query builder object using the table name
   // and postgres connection from the provider
   QgsPgQueryBuilder *pqb =
-    new QgsPgQueryBuilder(myPGProvider->getTableName(),
-        myPGProvider->pgConnection());
+      new QgsPgQueryBuilder(myPGProvider->getURI());
+       
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
   pqb->setSql(txtSubsetSQL->text());

@@ -53,6 +53,7 @@ headers =							\
 		qgscustomsymbol.h \
 		qgsdataprovider.h \
 		qgsdatasource.h \
+		qgsdatasourceuri.h \
 		qgsdlgvectorlayerproperties.h \
 	  qgsexception.h \
 		qgsfeatureattribute.h \
@@ -385,3 +386,4 @@ pkginclude_dir = $(includedir)/qgis
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(postgresHEADERS) $(postgresSOURCES) $(postgresUIC) $(qgis_UIC) $(qgis_UIH) $(postgresUIH) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png
+noinst_HEADERS = qgsdatasourceuri.h

@@ -3,6 +3,19 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-12-05 [gsherman] 0.6.0rc2
+** Fixed bug 1079392 that caused QGIS to crash when a query was entered that
+   resulted in the layer being created with no records  
+** Additional validation of the SQL query was added to the query builder.
+   When Ok is clicked on the builder dialog, the query is sent to the
+   database and the result checked to ensure that it will create a valid
+   PostreSQL layer
+** Added tr to a number of strings that weren't prepared for translation in
+   the vector dialog properties code
+** Created QgsDataSourceURI structure to hold all the pertinent information
+   associated with a PostgreSQL layer connection, including host, database,
+   table, geometry column, username, password, port, and sql where clause.
+
 2004-12-03 [gsherman] 0.6.0rc1
 ** Commented out excessive debug statements in the postgres provider
 
@@ -1208,3 +1221,4 @@ July 6, 2002
 	tables that could be loaded. 
 
 	This is the initial import of the code base into CVS on Sourceforge.net.
+ vim: set shiftwidth=3 textwidth=75 autoindent:
