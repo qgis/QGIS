@@ -16,6 +16,7 @@
 //qt includes
 #include <qlineedit.h>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qtextstream.h>
@@ -1299,64 +1300,24 @@ void OpenModellerGui::pbnDefaultParameters_clicked()
 
 void OpenModellerGui::pbnSelectLayerFileProj_clicked()
 {
+  QStringList myQStringList;
   LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
-  myLayerSelector->show();
-  /*
-  std::cout << " OpenModellerGui::pbnSelectLayerFileProj_clicked() " << std::endl;
-  QString myFileTypeQString;
-  QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
-  QString myFileNameQString = QFileDialog::getOpenFileName(
-          "" , //initial dir
-          myGDALFilterString,  //filters to select
-          this , //parent dialog
-          "OpenFileDialog" , //QFileDialog qt object name
-          "Select localities text file" , //caption
-          &myFileTypeQString //the pointer to store selected filter
-          );  
-  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
-  if (myFileNameQString==NULL || myFileNameQString=="") return;
-  //check if the file is an arc/info binary grid in which case we should only use the
-  //directory name in which the adf file occurs
-  if (myFileNameQString.endsWith(".adf"))
+  if(myLayerSelector->exec())
   {
-    //try to find  unix path separater first (search backwards from end of line)
-    if (myFileNameQString.findRev('/') != -1)
-    {
-      myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('/')+1);
-    }
-    else //no forward slash found so assume dos and look for backslash
-    {
-      //try looking for dos separaters
-      myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('\\')+1);
-    }
-  }
-  
-  //test whether the file is GDAL compatible
-  if (isValidGdalFile(myFileNameQString))
-  {
-    std::cout << myFileNameQString << " is a valid GDAL file" << std::endl;
-    lstProjLayers->insertItem(myFileNameQString);
-    cboOutputMaskLayer->insertItem(myFileNameQString);
-    cboOutputMaskLayer->setCurrentItem(0);	  
-    //enable the user to carry on to the next page...
-    setNextEnabled(currentPage(),true);
-  }
-  else
-  {
-    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));
-  } 
-*/
+    std::cout << "LayerSelector ok pressed" << std::endl;
+    myQStringList=myLayerSelector->getSelectedLayers();
 
+    lstProjLayers->insertStringList( myQStringList ,0 );
 
-  
-  lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
-  if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
-  {
+    lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
+    if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
+    {
       setNextEnabled(currentPage(),true);
-  }  
-  else 
-  {
+    }  
+    else 
+    {
       setNextEnabled(currentPage(),false);
+    }
   }
 }
 
