@@ -102,9 +102,9 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
     // position display is set (manual or automatic)
     bool automaticPrecision = QgsProject::instance()->readBoolEntry("PositionPrecision","/Automatic");
     if (automaticPrecision)
-      btnGrpPrecision->setButton(1);
-    else
       btnGrpPrecision->setButton(0);
+    else
+      btnGrpPrecision->setButton(1);
 
     int dp = QgsProject::instance()->readNumEntry("PositionPrecision", "/DecimalPlaces");
     spinBoxDP->setValue(dp);
@@ -211,7 +211,7 @@ void QgsProjectProperties::apply()
     
     // set the mouse display precision method and the
     // number of decimal places for the manual option
-    if (btnGrpPrecision->selectedId() == 1)
+    if (btnGrpPrecision->selectedId() == 0)
       QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", true);
     else
       QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", false);
