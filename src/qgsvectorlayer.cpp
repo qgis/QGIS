@@ -264,22 +264,6 @@ void QgsVectorLayer::setDisplayField()
     }
 }
 
-/*
- * Draw the layer
- */
-void QgsVectorLayer::draw_old(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf)
-{
-  // set pen and fill
-  QgsSymbol *sym = symbol();
-  QPen pen;
-  pen.setColor(sym->color());
-  pen.setWidth(sym->lineWidth());
-  p->setPen(pen);
-
-
-  QBrush *brush = new QBrush(sym->fillColor());
-}
-
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf)
 {
   if ( /*1 == 1 */ m_renderer)
@@ -291,9 +275,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
          3. transform
          4. draw
        */
-      // set pen and fill
-      QgsSymbol *sym = symbol();
-      QPen pen;
+      
+	QPen pen;
 
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
