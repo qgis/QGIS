@@ -1,6 +1,6 @@
 /***************************************************************************
-  qgsshapefileprovider.h  -  Data provider for ESRI shapefile format
-  -------------------
+            qgsogrprovider.h Data provider for ESRI shapefile format
+                    Formerly known as qgsshapefileprovider.h  
 begin                : Oct 29, 2003
 copyright            : (C) 2003 by Gary E.Sherman
 email                : sherman at mrcc.com
@@ -30,18 +30,18 @@ class OGREnvelope;
 class OGRPolygon;
 
 /**
-  \class QgsShapeFileProvider
+  \class QgsOgrProvider
   \brief Data provider for ESRI shapefiles
   */
-class QgsShapeFileProvider:public QgsVectorDataProvider
+class QgsOgrProvider:public QgsVectorDataProvider
 {
   public:
-    QgsShapeFileProvider(QString uri = 0);
-    virtual ~ QgsShapeFileProvider();
+    QgsOgrProvider(QString uri = 0);
+    virtual ~ QgsOgrProvider();
     /** Used to ask the layer for its projection as a WKT string. Implements virtual method of same name in      QgsDataProvider. */
     QString getProjectionWKT()  ;    
     /**
-     * Get the first feature resutling from a select operation
+     * Get the first feature resulting from a select operation
      * @return QgsFeature
      */
     QgsFeature *getFirstFeature(bool fetchAttributes = false);

@@ -3,8 +3,8 @@ INCLUDES = -I../../src
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = ogrprovider.la 
 
-ogrprovider_la_SOURCES = qgsshapefileprovider.cpp		\
-			 qgsshapefileprovider.h			\
+ogrprovider_la_SOURCES = qgsogrprovider.cpp		\
+			 qgsogrprovider.h			\
 			 ../../src/qgsfeature.cpp		\
 			 ../../src/qgsfeatureattribute.cpp	\
 			 ../../src/qgsrect.cpp 			\
