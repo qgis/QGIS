@@ -87,7 +87,7 @@ class QgsMapCanvas : public QWidget
 
     //! Get the last reported scale of the canvas
     double getScale();
-    
+
     //! Clear the map canvas
     void clear();
 
@@ -135,7 +135,7 @@ class QgsMapCanvas : public QWidget
      * thawed (false). Default is true.
      */
     void freeze(bool frz = true);
-    
+
     /*! Accessor for frozen status of canvas */
     bool isFrozen();
 
@@ -157,7 +157,7 @@ class QgsMapCanvas : public QWidget
 
     QgsScaleCalculator::units mapUnits() const;
 
-    //! Get the current coordinate transform 
+    //! Get the current coordinate transform
     QgsCoordinateTransform * getCoordinateTransform();
     //! Declare the legend class as a friend of the map canvas
     //friend class QgsLegend;
@@ -206,7 +206,7 @@ public slots:
 
     /**Sets dirty=true and calls render()*/
     void refresh();
-    /** 
+    /**
      * Add an acetate object to the collection
      * @param key Key used to identify the object
      * @param obj Acetate object to add to the collection
@@ -233,9 +233,14 @@ public slots:
     //! accessor to flag indicating whether the user can interact with the canvase
     bool isUserInteractionAllowed();
 
+    //! Whether to suppress rendering or not
+    void setRenderSuppresionFlag(bool theFlag) {mRenderSuppresionFlag = theFlag;};
+    //! State of render suppression flag
+    bool renderSuppresionFlag() {return mRenderSuppresionFlag;};
+
     /** possibly add or remove the given layer from the overview map canvas
 
-      @note 
+      @note
 
       Yes, of the two canvas instances, this slot is relevant only to the
       overview map canvas, and thus is a hint that they should be two separate
@@ -322,7 +327,7 @@ private:
 
     //! Overridden mouse release event
     void mouseReleaseEvent(QMouseEvent * e);
-    
+
     //! Overridden mouse wheel event
     void wheelEvent(QWheelEvent * e);
 
@@ -349,8 +354,11 @@ private:
     //(useful for locking the overview canvas)
     bool mUserInteractionAllowed;
 
+    //! determines whether user has requested to suppress rendering
+    bool mRenderSuppresionFlag;
+
   /** debugging member
-      invoked when a connect() is made to this object 
+      invoked when a connect() is made to this object
   */
   void connectNotify( const char * signal );
 

@@ -41,6 +41,7 @@ class QgsHelpViewer;
 class QgsMapCanvas;
 class QgsMapLayerRegistry;
 class QgsRasterLayer;
+class QCheckBox;
 #ifdef WIN32
 #include "qgisappbase.h"
 #else
@@ -74,10 +75,10 @@ public:
      * stored project.
      */
     void setZOrder (std::list<QString>);
-    
+
     void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
     /** \brief overloaded vesion of the privat addLayer method that takes a list of
-    * filenames instead of prompting user with a dialog. 
+    * filenames instead of prompting user with a dialog.
 
     @returns true if successfully added layer
 
@@ -130,10 +131,10 @@ public:
 
     /** Add a 'pre-made' map layer to the project */
     void addMapLayer(QgsMapLayer *theMapLayer);
-   
+
     /** Set the extents of the map canvas */
     void setExtent(QgsRect theRect);
-    
+
     //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
     /** opens a qgis project file
@@ -165,7 +166,7 @@ private:
     void addLayer();
     //! Add a raster layer to the map (will prompt user for filename using dlg
     void addRasterLayer();
-    //! Add a raster layer to the map (passed in as a ptr). It waont force a refresh unless you explicitly 
+    //! Add a raster layer to the map (passed in as a ptr). It waont force a refresh unless you explicitly
     //use the force redraw flag.
     //
     bool addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedrawFlag=false);
@@ -229,7 +230,7 @@ private slots:
    */
     /* virtual */ void menubar_highlighted( int i );
 
- 
+
     /** toggles whether the current selected layer is in overview or not */
     void inOverview(bool);
     //! Slot to show the map coordinate position of the mouse cursor
@@ -296,7 +297,7 @@ private slots:
     void showAllLayers();
 
 
-    
+
     //! Export current view as a mapserver map file
     void exportMapServer();
     //! Return pointer to the active layer
@@ -332,7 +333,7 @@ private slots:
     /*  void urlData(); */
     /** Used to (re)set the zordering of the overview map*/
     void setOverviewZOrder(QgsLegend * );
-    //! Kills the splash screen 
+    //! Kills the splash screen
     void killSplashScreen();
 
 public slots:
@@ -385,6 +386,8 @@ private:
     QLabel * mCoordsLabel;
     //! Widget that will live in the statusbar to show progress of operations
     QProgressBar * mProgressBar;
+    //! Widget used to suppress rendering
+    QCheckBox * mRenderSuppresionCBox;
     //! Popup menu
     QPopupMenu * mPopupMenu;
     //! Top level plugin menu

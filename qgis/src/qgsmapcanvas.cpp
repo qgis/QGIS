@@ -22,7 +22,7 @@
 #include <cmath>
 #include <cfloat>
 
-// added double sentinals to take load off gcc 3.3.3 pre-processor, which was dying 
+// added double sentinals to take load off gcc 3.3.3 pre-processor, which was dying
 
 // XXX actually that wasn't the problem, but left double sentinals in anyway as they
 // XXX don't hurt anything
@@ -102,18 +102,18 @@ class QgsMapCanvas::CanvasProperties
 {
 public:
 
-  CanvasProperties( int width, int height )  
-    : mapWindow( 0x0 ), 
-      mapLegend( 0 ), 
-      coordXForm( 0x0 ), 
-      pmCanvas( 0x0 ), 
-      bgColor( Qt::white ), 
-      dragging( false ), 
-      drawing( false ), 
-      frozen( false ), 
-      dirty( true ), 
+  CanvasProperties( int width, int height )
+    : mapWindow( 0x0 ),
+      mapLegend( 0 ),
+      coordXForm( 0x0 ),
+      pmCanvas( 0x0 ),
+      bgColor( Qt::white ),
+      dragging( false ),
+      drawing( false ),
+      frozen( false ),
+      dirty( true ),
       scaleCalculator( 0x0 )
-  { 
+  {
       mapWindow = new QRect;
       coordXForm = new QgsCoordinateTransform;
       pmCanvas = new QPixmap(width, height);
@@ -121,17 +121,17 @@ public:
   }
 
   CanvasProperties()
-    : mapWindow( 0x0 ), 
-      mapLegend( 0 ), 
-      coordXForm( 0x0 ), 
-      pmCanvas( 0x0 ), 
-      bgColor( Qt::white ), 
-      dragging( false ), 
-      drawing( false ), 
-      frozen( false ), 
-      dirty( true ), 
+    : mapWindow( 0x0 ),
+      mapLegend( 0 ),
+      coordXForm( 0x0 ),
+      pmCanvas( 0x0 ),
+      bgColor( Qt::white ),
+      dragging( false ),
+      drawing( false ),
+      frozen( false ),
+      dirty( true ),
       scaleCalculator( 0x0 )
-  { 
+  {
       mapWindow = new QRect;
       coordXForm = new QgsCoordinateTransform;
       pmCanvas = new QPixmap;
@@ -305,7 +305,7 @@ QgsMapCanvas::QgsMapCanvas()
 
 
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
-    : QWidget(parent, name), 
+    : QWidget(parent, name),
       mCanvasProperties( new CanvasProperties(width(), height()) ),
       mUserInteractionAllowed(true) // by default we allow a user to interact with the canvas
 {
@@ -388,18 +388,18 @@ void QgsMapCanvas::showInOverview( QgsMapLayer * maplayer, bool visible )
         return;
     }
 
-    std::map < QString, QgsMapLayer * >::iterator found = 
-	mCanvasProperties->layers.find(maplayer->getLayerID());
+    std::map < QString, QgsMapLayer * >::iterator found =
+        mCanvasProperties->layers.find(maplayer->getLayerID());
 
     // if it's visible, and we already know about it, then do nothing;
     // otherwise, we need to add it if "visible" says so
-    if ( found == mCanvasProperties->layers.end() && 
+    if ( found == mCanvasProperties->layers.end() &&
          visible )
     {
         addLayer( maplayer );
     } // if we have it and it's supposed to be removed, remove it
-    else if ( found != mCanvasProperties->layers.end() && 
-	      ! visible )
+    else if ( found != mCanvasProperties->layers.end() &&
+              ! visible )
     {
         remove( maplayer->getLayerID() );
     }
@@ -436,7 +436,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   if ( 0 == strcmp(name(),"theOverviewCanvas") ) // canonical name set in qgisapp ctor
   {
       isThisOverviewCanvas = true;
-  }  
+  }
 
   if ( isThisOverviewCanvas )
   {
@@ -444,11 +444,11 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
       // layer to possibly add it to overview canvas; however, we only want to
       // make this connection once, so we first check to see if we already
       // know about the layer
-      if ( mCanvasProperties->layers.end() == 
-	   mCanvasProperties->layers.find(lyr->getLayerID() )  )
+      if ( mCanvasProperties->layers.end() ==
+           mCanvasProperties->layers.find(lyr->getLayerID() )  )
       {
-	  QObject::connect(lyr, SIGNAL(showInOverview(QgsMapLayer *, bool)), 
-			   this, SLOT(showInOverview( QgsMapLayer *, bool )));
+          QObject::connect(lyr, SIGNAL(showInOverview(QgsMapLayer *, bool)),
+                           this, SLOT(showInOverview( QgsMapLayer *, bool )));
       }
 
       if ( ! lyr->showInOverviewStatus() )
@@ -640,20 +640,20 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       currentScale(0);
 
 #ifdef QGISDEBUG
-      std::cout 
+      std::cout
         << "Paint device width : " << myWidth << std::endl
         << "Paint device height : " << myHeight << std::endl
         << "Canvas current extent height : " << mCanvasProperties->currentExtent.height()  << std::endl
         << "Canvas current extent width : " << mCanvasProperties->currentExtent.width()  << std::endl
-        << "muppY: " << muppY << std::endl 
-        << "muppX: " << muppX << std::endl 
-        << "dxmin: " << dxmin << std::endl 
-        << "dxmax: " << dxmax << std::endl 
-        << "dymin: " << dymin << std::endl 
-        << "dymax: " << dymax << std::endl 
+        << "muppY: " << muppY << std::endl
+        << "muppX: " << muppX << std::endl
+        << "dxmin: " << dxmin << std::endl
+        << "dxmax: " << dxmax << std::endl
+        << "dymin: " << dymin << std::endl
+        << "dymax: " << dymax << std::endl
         << "whitespace: " << whitespace << std::endl;
 #endif
-      mCanvasProperties->coordXForm->setParameters(mCanvasProperties->m_mupp, dxmin, dymin, myHeight);  
+      mCanvasProperties->coordXForm->setParameters(mCanvasProperties->m_mupp, dxmin, dymin, myHeight);
       //currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
       // update the currentExtent to match the device coordinates
       //GS - removed the current extent update to fix bug --
@@ -668,71 +668,78 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       mCanvasProperties->currentExtent.setYmin(dymin);
       mCanvasProperties->currentExtent.setYmax(dymax);
       int myRenderCounter=1;
-      // render all layers in the stack, starting at the base
-      std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
-      // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
-      while (li != mCanvasProperties->zOrder.end())
+      //bail out if user has requested rendering to be suppressed (usually in statusbar checkbox in gui
+      if (mRenderSuppresionFlag)
       {
-        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
-        QgsMapLayer *ml = mCanvasProperties->layers[*li];
-
-        if (ml)
+        // do nothing but continue processing after main render loop
+        // so all render complete etc events will
+        // still get fired
+      }
+      else
+      {
+        // render all layers in the stack, starting at the base
+        std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
+        // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+        while (li != mCanvasProperties->zOrder.end())
         {
-          //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-#ifdef QGISDEBUG
-          std::cout << "Rendering " << ml->name() << std::endl;
-          std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
-#endif    
-          if (ml->visible())
+          emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
+          QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+          if (ml)
           {
-            if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale) 
-                    || (!ml->scaleBasedVisibility()))
+            //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+#ifdef QGISDEBUG
+            std::cout << "Rendering " << ml->name() << std::endl;
+            std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
+#endif
+            if (ml->visible())
             {
-                ml->draw(paint, 
-                      &mCanvasProperties->currentExtent, 
+              if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale)
+                    || (!ml->scaleBasedVisibility()))
+              {
+                ml->draw(paint,
+                      &mCanvasProperties->currentExtent,
                       mCanvasProperties->coordXForm,
                       this);
-            }
+              }
 #ifdef QGISDEBUG
-            else
-            {
-              std::cout << "Layer not rendered because it is not within the defined visibility scale range" << std::endl;
+              else
+              {
+                std::cout << "Layer not rendered because it is not within the defined visibility scale range" << std::endl;
+              }
+#endif
             }
-#endif            
+            li++;
           }
-
-          li++;
         }
-      }
 #ifdef QGISDEBUG
-      std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
+        std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
 #endif
-      
-      // render all labels for vector layers in the stack, starting at the base
-      li = mCanvasProperties->zOrder.begin();
-      // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
-      while (li != mCanvasProperties->zOrder.end())
-      {
-        emit setProgress((myRenderCounter++),mCanvasProperties->zOrder.size());
-        QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
-        if (ml)
+        // render all labels for vector layers in the stack, starting at the base
+        li = mCanvasProperties->zOrder.begin();
+        // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+        while (li != mCanvasProperties->zOrder.end())
         {
-#ifdef QGISDEBUG
-          std::cout << "Rendering " << ml->name() << std::endl;
-#endif
-          if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))
+          emit setProgress((myRenderCounter++),mCanvasProperties->zOrder.size());
+          QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+          if (ml)
           {
-            ml->drawLabels(paint, 
-                           &mCanvasProperties->currentExtent, 
+#ifdef QGISDEBUG
+            std::cout << "Rendering " << ml->name() << std::endl;
+#endif
+            if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))
+            {
+              ml->drawLabels(paint,
+                           &mCanvasProperties->currentExtent,
                            mCanvasProperties->coordXForm,
                            this);
+            }
+            li++;
           }
-
-          li++;
         }
       }
-
       //make verys sure progress bar arrives at 100%!
        emit setProgress(1,1);
 #ifdef QGISDEBUG
@@ -933,9 +940,9 @@ void QgsMapCanvas::zoomToSelected()
 
     // no selected features
     // XXX where is rectange set to "empty"? Shouldn't we use QgsRect::isEmpty()?
-    if (rect.xMin() == DBL_MAX && 
-         rect.yMin() == DBL_MAX && 
-         rect.xMax() == -DBL_MAX && 
+    if (rect.xMin() == DBL_MAX &&
+         rect.yMin() == DBL_MAX &&
+         rect.xMax() == -DBL_MAX &&
          rect.yMax() == -DBL_MAX)
     {
       return;
@@ -1204,8 +1211,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           {
         if(!vlayer->isEditable())
         {
-	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-	    break;
+            QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+            break;
         }
 
         QgsFeature* f = new QgsFeature(0,"WKBPoint");
@@ -1220,14 +1227,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         f->setGeometry(&wkb[0],size);
 
         //add the fields to the QgsFeature
-	std::vector<QgsField> fields=vlayer->fields();
-	for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
-	{
-	  f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
-	}
-	
-	//show the dialog to enter attribute values
-	f->attributeDialog();
+        std::vector<QgsField> fields=vlayer->fields();
+        for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
+        {
+          f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
+        }
+
+        //show the dialog to enter attribute values
+        f->attributeDialog();
 
         vlayer->addFeature(f);
         refresh();
@@ -1252,8 +1259,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     {
         if(!vlayer->isEditable())
         {
-	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-	    break;
+            QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+            break;
         }
     }
     else
@@ -1311,23 +1318,23 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           memcpy(&wkb[9],&length, sizeof(int));
           int position=1+3*sizeof(int);
           double x,y;
-	  std::list<QgsPoint>::iterator it;
+          std::list<QgsPoint>::iterator it;
           for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
           {
-	      x=it->x();
-	      memcpy(&wkb[position],&x,sizeof(double));
-	      position+=sizeof(double);
-	      y=it->y();	       
-	      memcpy(&wkb[position],&y,sizeof(double));
-	      position+=sizeof(double);
+              x=it->x();
+              memcpy(&wkb[position],&x,sizeof(double));
+              position+=sizeof(double);
+              y=it->y();
+              memcpy(&wkb[position],&y,sizeof(double));
+              position+=sizeof(double);
           }
-	  //close the polygon
-	  it=mCaptureList.begin();
-	  x=it->x();
-	  memcpy(&wkb[position],&x,sizeof(double));
-	  position+=sizeof(double);
-	  y=it->y();
-	  memcpy(&wkb[position],&y,sizeof(double));
+          //close the polygon
+          it=mCaptureList.begin();
+          x=it->x();
+          memcpy(&wkb[position],&x,sizeof(double));
+          position+=sizeof(double);
+          y=it->y();
+          memcpy(&wkb[position],&y,sizeof(double));
       }
       f->setGeometry(&wkb[0],size);
 
@@ -1335,12 +1342,12 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       std::vector<QgsField> fields=vlayer->fields();
       for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
       {
-	f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
+        f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
       }
 
       //show the dialog to enter attribute values
       f->attributeDialog();
-      
+
       vlayer->addFeature(f);
       mCaptureList.clear();
       refresh();
@@ -1362,7 +1369,7 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 void QgsMapCanvas::wheelEvent(QWheelEvent *e)
 {
   // Zoom the map canvas in response to a mouse wheel event. Moving the
-  // wheel forward (away) from the user zooms in by a factor of 2. 
+  // wheel forward (away) from the user zooms in by a factor of 2.
   // TODO The scale factor needs to be customizable by the user.
 #ifdef QGISDEBUG
   std::cout << "Wheel event delta " << e->delta() << std::endl;
@@ -1542,7 +1549,7 @@ void QgsMapCanvas::remove(QString key)
 
   // We no longer delete the layer here - deleting of layers is now managed
   // by the MapLayerRegistry. All we do now is remove any local reference to this layer.
-  // delete mCanvasProperties->layers[key];   
+  // delete mCanvasProperties->layers[key];
 
   // first delete the map layer itself
 
@@ -1558,7 +1565,7 @@ void QgsMapCanvas::remove(QString key)
 // we DO NOT disconnect this as this is currently the only means for overview
 // canvases to add layers; natch this is irrelevent if this is NOT the overview canvas
 
-  // QObject::disconnect(lyr, SIGNAL(showInOverView(QgsMapLayer *, bool)), 
+  // QObject::disconnect(lyr, SIGNAL(showInOverView(QgsMapLayer *, bool)),
   //                     this, SLOT(showInOverView(QgsMapLayer *, bool )));
 
   mCanvasProperties->layers[key] = 0;
@@ -1679,9 +1686,9 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
   //
   // We need to evaluate each layer in the zOrder and see
   // if it is actually a member of this mapCanvas
-  // 
+  //
   std::list < QString >::iterator li = theZOrder.begin();
-  mCanvasProperties->zOrder.clear(); 
+  mCanvasProperties->zOrder.clear();
   while (li != theZOrder.end())
   {
     QgsMapLayer *ml = mCanvasProperties->layers[*li];
