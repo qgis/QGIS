@@ -560,6 +560,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 
 		// apply changes
 		mapCanvas->freeze(false);
+		mapCanvas->setDirty(true);
 		mapCanvas->render2();
 	}
 
