@@ -25,6 +25,7 @@
 #include "qgsproviderregistry.h"
 #include "qgspluginregistry.h"
 
+
 #define TESTLIB
 #ifdef TESTLIB
 #ifndef WIN32
@@ -60,8 +61,15 @@ void QgsPluginManager::browseFiles()
 
 void QgsPluginManager::getPluginDescriptions()
 {
+QString sharedLibExtension;
+#ifdef WIN32
+sharedLibExtension = "*.dll";
+#else
+sharedLibExtension = "*.so*";
+#endif
+
 // check all libs in the current plugin directory and get name and descriptions
-  QDir pluginDir(txtPluginDir->text(), "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+  QDir pluginDir(txtPluginDir->text(), sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
 
   if (pluginDir.count() == 0)
     {

@@ -12,6 +12,7 @@
 #include "plugingui.h"
 
 //qt includes
+#include <qapplication.h>
 #include <qpainter.h>
 #include <qlabel.h>
 #include <iostream>
@@ -88,8 +89,9 @@ void PluginGui::sliderRotation_valueChanged( int theInt)
 void PluginGui::rotatePixmap(int theRotationInt)
 {
   QPixmap myQPixmap;
-
-
+#ifdef WIN32
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
   QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
   //std::cout << "Trying to load " << myFileNameQString << std::cout;
   if (myQPixmap.load(myFileNameQString))

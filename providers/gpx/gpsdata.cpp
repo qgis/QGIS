@@ -434,7 +434,7 @@ GPSData* GPSData::getData(const QString& filename) {
   // return a pointer and increase the reference count for that filename
   DataMap::iterator iter = dataObjects.find(filename);
   ++(iter->second.second);
-  return &iter->second.first;
+  return (GPSData*)&(iter->second.first);
 }
 
 
