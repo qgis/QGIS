@@ -31,7 +31,7 @@
 #include <qlineedit.h>
 #include <qtoolbutton.h>
 #include <qlabel.h>
-#include <qgroupbox.h>
+#include <qbuttongroup.h>
 
 QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), mVectorLayer(0)
 {
