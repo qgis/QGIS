@@ -126,7 +126,7 @@ inline void QgsMapToPixel::transform(QgsPoint* p)
     float x = ((p->x()-xMin)/mapUnitsPerPixel);
     float y = (yMax-((p->y() - yMin)) / mapUnitsPerPixel);
 #ifdef QGISDEBUG 
-    std::cout << "Point to pixel...X : " << p->x() << "-->" << x << ", Y: " << p->y() << " -->" << y << std::endl;
+    //std::cout << "Point to pixel...X : " << p->x() << "-->" << x << ", Y: " << p->y() << " -->" << y << std::endl;
 #endif     
     p->setX(x);
     p->setY(y);

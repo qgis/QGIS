@@ -148,7 +148,7 @@ inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint)
   else
   {
 #ifdef QGISDEBUG 
-    std::cout << "Point projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
+    //std::cout << "Point projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
 #endif        
     return QgsPoint(x, y);
   } 
@@ -207,7 +207,7 @@ inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
   else
   {
 #ifdef QGISDEBUG 
-    std::cout << "Point projection...X : " << theX << "-->" << x << ", Y: " << theY << " -->" << y << std::endl;
+    //std::cout << "Point projection...X : " << theX << "-->" << x << ", Y: " << theY << " -->" << y << std::endl;
 #endif    
     return QgsPoint(x, y);
   } 
@@ -239,7 +239,7 @@ inline QgsPoint QgsCoordinateTransform::inverseTransform(QgsPoint thePoint)
   else
   {
 #ifdef QGISDEBUG 
-    std::cout << "Point inverse projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
+    //std::cout << "Point inverse projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
 #endif        
     return QgsPoint(x, y);
   } 
@@ -300,7 +300,7 @@ inline QgsPoint QgsCoordinateTransform::inverseTransform(double theX, double the
   else
   {
 #ifdef QGISDEBUG 
-    std::cout << "Point inverse projection...X : " << theX << "-->" << x << ", Y: " << theY << " -->" << y << std::endl;
+    //std::cout << "Point inverse projection...X : " << theX << "-->" << x << ", Y: " << theY << " -->" << y << std::endl;
 #endif    
     return QgsPoint(x, y);
   } 
