@@ -125,7 +125,7 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     /* Reset the layer - for an OGRLayer, this means clearing the
      * spatial filter and calling ResetReading
      */
-    void reset();
+    /* virtual */ void reset();
 
     /**Returns the minimum value of an attribut
       @param position the number of the attribute*/
