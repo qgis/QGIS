@@ -102,8 +102,7 @@ QgsSiSyDialog::~QgsSiSyDialog()
 void QgsSiSyDialog::selectOutlineColor()
 {
     outlinecolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
-    mVectorLayer->propertiesDialog()->raise();
-    raise();
+    setActiveWindow();
 }
 
 void QgsSiSyDialog::selectOutlineStyle()
@@ -114,15 +113,13 @@ void QgsSiSyDialog::selectOutlineStyle()
 	stylebutton->setName(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()).ascii());
 	stylebutton->setPixmap(QgsSymbologyUtils::qString2LinePixmap(QString::fromAscii(stylebutton->name())));
     }
-    mVectorLayer->propertiesDialog()->raise();
-    raise();
+    setActiveWindow();
 }
 
 void QgsSiSyDialog::selectFillColor()
 {
     fillcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
-    mVectorLayer->propertiesDialog()->raise();
-    raise();
+    setActiveWindow();
 }
 
 void QgsSiSyDialog::selectFillPattern()
@@ -133,8 +130,7 @@ void QgsSiSyDialog::selectFillPattern()
 	patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
 	patternbutton->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
     }
-    mVectorLayer->propertiesDialog()->raise();
-    raise();
+    setActiveWindow();
 }
 
 void QgsSiSyDialog::apply()
