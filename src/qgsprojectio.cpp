@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.42 2004/06/24 07:58:45 timlinux Exp */
+/* qgsprojectio.cpp,v 1.43 2004/06/30 12:07:40 timlinux Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -264,7 +264,7 @@ std::list<QString> QgsProjectIo::read(QString path)
           dbl->toggleShowInOverview();
         }
         myMapLayerRegistry->addMapLayer(dbl);
-        myZOrder.push_front(dbl->getLayerID());
+        myZOrder.push_back(dbl->getLayerID());
       } 
       else if (type == "raster")
       {
@@ -317,7 +317,7 @@ std::list<QString> QgsProjectIo::read(QString path)
         myRasterLayer->setGrayBandName(myElement.text());
 
         myMapLayerRegistry->addMapLayer(myRasterLayer);
-        myZOrder.push_front(myRasterLayer->getLayerID());
+        myZOrder.push_back(myRasterLayer->getLayerID());
       }
       mMapCanvas->setExtent(savedExtent);
     }
