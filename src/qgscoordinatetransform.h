@@ -310,20 +310,31 @@ inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect theRect)
   std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
   std::cout << "Rect inverse projection..." << std::endl;
   std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
+  // show proj parms too
+  OGRSpatialReference sr(mSourceWKT);
+  char *proj4src;
+  sr.exportToProj4(&proj4src);
+  std::cout << "PROJ4: " << std::endl << proj4src << std::endl;  
   std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
+  char *proj4out;
+  char *pWkt = (char *)mDestWKT.ascii();
+  sr.importFromWkt(&pWkt);
+  sr.exportToProj4(&proj4src);
+  std::cout << "PROJ4: " << std::endl << proj4src << std::endl;  
+
   std::cout << "INPUT RECT: " << std::endl << x1 << "," << y1 << ":" << x2 << "," << y2 << std::endl;
   std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
 #endif  
 
-  CPLPushErrorHandler( CPLQuietErrorHandler );
+  //CPLPushErrorHandler( CPLQuietErrorHandler );
   // Number of points to reproject---------------+
   //                                             | 
   //                                             V    
   int myResult1 = mDestToSourceXForm->Transform( 1, &x1, &y1 );
-  int myResult2 = mDestToSourceXForm->Transform( 1, &x2, &y2 );
-  CPLPopErrorHandler();
+  //int myResult2 = mDestToSourceXForm->Transform( 1, &x2, &y2 );
+  //CPLPopErrorHandler();
 
-  if ( ! myResult1 || ! myResult2 )
+  if ( ! myResult1) // || ! myResult2 )
   {
     //something bad happened....
     throw QgsCsException(QString("Coordinate inverse transform failed"));

@@ -136,7 +136,13 @@ void QgsCoordinateTransform::initialise()
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
     std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
     std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
+  char *proj4src;
+  myInputSpatialRefSys.exportToProj4(&proj4src);
+  std::cout << "PROJ4: " << std::endl << proj4src << std::endl;  
     std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
+  char *proj4dest;
+  myOutputSpatialRefSys.exportToProj4(&proj4dest);
+  std::cout << "PROJ4: " << std::endl << proj4dest << std::endl;  
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
   }
   //just a test to see if inverse 
