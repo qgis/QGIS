@@ -1454,11 +1454,15 @@ for ( unsigned int i = 0; i < lstLayers->count(); i++ )
 {
 	QListBoxItem *item = lstLayers->item( i );
 	lstProjLayers->insertItem(item->text());
+	cboOutputMaskLayer->insertItem(item->text());
 }
-
+          
 //enable the user to carry on to the next page...
 lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
 setNextEnabled(currentPage(),true);
+
+
+
 }
 
 
@@ -1478,12 +1482,21 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
   std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
  
-  //store directory where localities file is for next time
-  QSettings settings;
-  settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
-
-  cboMaskLayer->insertItem(myFileNameQString);
-  cboMaskLayer->setCurrentItem(cboMaskLayer->count()-1);
+  //Check selected file is a valid gdal file with projection info
+  if ((isValidGdalFile(myFileNameQString)) && ((isValidGdalProj(myFileNameQString))))
+  {
+	//store directory where localities file is for next time
+	QSettings settings;
+	settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
+	
+	cboMaskLayer->insertItem(myFileNameQString);
+	cboMaskLayer->setCurrentItem(cboMaskLayer->count()-1);
+  }
+  else
+  {
+	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
+	return;
+  }
 } 
 
 void OpenModellerGui::pbnOtherOutputMask_clicked()
@@ -1502,12 +1515,21 @@ void OpenModellerGui::pbnOtherOutputMask_clicked()
   std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
  
-  //store directory where localities file is for next time
-  QSettings settings;
-  settings.writeEntry("/openmodeller/otherOutputMaskDirectory", myFileNameQString );
-
-  cboOutputMaskLayer->insertItem(myFileNameQString);
-  cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
+  //Check selected file is a valid gdal file with projection info  
+  if ((isValidGdalFile(myFileNameQString)) && ((isValidGdalProj(myFileNameQString))))
+  {
+	//store directory where localities file is for next time
+	QSettings settings;
+	settings.writeEntry("/openmodeller/otherOutputMaskDirectory", myFileNameQString );
+	
+	cboOutputMaskLayer->insertItem(myFileNameQString);
+	cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
+  }
+  else
+  {
+	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
+	return;
+  }
 } 
 
 void OpenModellerGui::pbnOtherOutputFormat_clicked()
@@ -1525,11 +1547,20 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
           );  
   std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
- 
-  //store directory where localities file is for next time
-  QSettings settings;
-  settings.writeEntry("/openmodeller/otherOutputFormatDirectory", myFileNameQString );
-
-  cboOutputFormatLayer->insertItem(myFileNameQString);
-  cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
+  
+  //Check selected file is a valid gdal file with projection info  
+  if ((isValidGdalFile(myFileNameQString)) && ((isValidGdalProj(myFileNameQString))))
+  {
+	//store directory where localities file is for next time
+	QSettings settings;
+	settings.writeEntry("/openmodeller/otherOutputFormatDirectory", myFileNameQString );
+	
+	cboOutputFormatLayer->insertItem(myFileNameQString);
+	cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
+  }
+  else
+  {
+	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
+	return;
+  }  
 } 
