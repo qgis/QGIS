@@ -10,11 +10,13 @@
 #
 # $Id$
 
-
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
-
 plugindir = ${pkglibdir}
 
+#for plugin so
+plugin_LTLIBRARIES = libopenmodellerplugin.la
+
+#for standalon executable
+bin_PROGRAMS = openmodellergui 
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -25,33 +27,63 @@ plugindir = ${pkglibdir}
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-
-plugin_LTLIBRARIES = libopenmodellerplugin.la
-
-openmodeller_MOC = plugin.moc.cpp \
-		openmodellergui.moc.cpp \
-		openmodellerguibase.moc.cpp
-
-openmodeller_UI = openmodellerguibase.h \
-		  openmodellerguibase.cpp 
-
-openmodeller_UIC = openmodellerguibase.ui
+##
+##  For plugin lib
+##
 
 libopenmodellerplugin_la_SOURCES =  plugin.cpp \
-				        plugin.h \
-				        openmodellergui.cpp \
-				        openmodellergui.h \
-				        $(openmodeller_UI)\
-				        $(openmodeller_MOC)
+			      openmodellergui.cpp \
+			      file_parser.hh \
+			      list.hh \
+			      $(plugin_UI)\
+			      $(plugin_MOC)
 
-# UI dependencies			
+	     
+plugin_MOC = plugin.moc.cpp \
+             openmodellergui.moc.cpp \
+	     openmodellerguibase.moc.cpp \
+	     ../../src/qgsmaplayer.moc.cpp \
+	     ../../src/qgsvectorlayer.moc.cpp 
+
+plugin_UI = openmodellerguibase.h \
+	    openmodellerguibase.cpp 
+
+plugin_UIC = openmodellerguibase.ui
+
+# UI dependencies      
 openmodellerguibase.cpp: openmodellerguibase.h openmodellerguibase.ui
 
-BUILT_SOURCES = $(openmodeller_MOC) $(openmodeller_UI)
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-#-lom is libopenmodeller which should be in to /usr/lib/libom.so.0.0
-libopenmodellerplugin_la_LIBADD = $(QT_LDADD) -lom -lm  ../../src/libqgis.la
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+
+libopenmodellerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la -L/usr/lib -lopenmodeller
+
 libopenmodellerplugin_la_LDFLAGS = -avoid-version -module
 
-EXTRA_DIST = $(openmodeller_UIC) icon_om.xpm
+##
+##  For standalone executable
+##
 
+openmodellergui_SOURCES =        main.cpp \
+			      openmodellergui.cpp \
+			      openmodellerguibase.cpp \
+			      $(standalone_MOC) 
+
+openmodellergui_LDADD = $(QT_LDADD) 
+
+standalone_MOC = openmodellergui.moc.cpp \
+	     openmodellerguibase.moc.cpp 
+
+standalone_UI = openmodellerguibase.h \
+	    openmodellerguibase.cpp 
+
+
+## 
+## Anything that must go in the tarball gets added here
+##
+
+EXTRA_DIST = $(plugin_UIC) icon.xpm \
+openmodellerguibase.h \
+openmodellerguibase.ui.h \
+openmodellergui.h
