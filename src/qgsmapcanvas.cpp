@@ -156,12 +156,14 @@ if(!frozen){
 		std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
 		while (mi != layers.end()) {
 			QgsMapLayer *ml = (*mi).second;
+			if(ml){
 			//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 			std::cout << "Rendering " << ml->name() << std::endl;
 			if (ml->visible())
 				ml->draw(paint, &currentExtent, coordXForm);
 			mi++;
 			//  mi.draw(p, &fullExtent);
+			}
 		}
 
 		paint->end();

@@ -26,6 +26,7 @@
 #include <qfiledialog.h>
 #include <qfileinfo.h>
 #include <qpixmap.h>
+#include <qbitmap.h>
 #include <qsplitter.h>
 #include <qpopupmenu.h>
 #include <qrect.h>
@@ -51,6 +52,8 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
+#include "xpm/cursorzoomin.xpm"
+#include "xpm/cursorzoomin_mask.xpm"
 #include <ogrsf_frmts.h>
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(parent, name, fl)
 {
@@ -58,6 +61,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	QPixmap icon;
 	icon = QPixmap(qgis_xpm);
 	setIcon(icon);
+	QBitmap zoomincur;
+//	zoomincur = QBitmap(cursorzoomin);
+	QBitmap zoomincurmask;
+//	zoomincurmask = QBitmap(cursorzoomin_mask);
+	
 	QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
 	QSplitter *split = new QSplitter(frameMain);
 	legendView = new QListView(split);
@@ -118,7 +126,7 @@ void QgisApp::about()
 
 void QgisApp::addLayer()
 {
-	qApp->processEvents();
+	
 	mapCanvas->freeze();
 	QStringList files = QFileDialog::getOpenFileNames("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
 													  "Select one or more layers to add");
@@ -150,8 +158,10 @@ void QgisApp::addLayer()
 	// update legend
 	/*! \todo Need legend scrollview and legenditem classes */
 	// draw the map
-	mapCanvas->freeze(false);
+	
 	mapLegend->update();
+	qApp->processEvents();
+	mapCanvas->freeze(false);
 	mapCanvas->render2();
 	statusBar()->message(mapCanvas->extent().stringRep());
 
@@ -166,10 +176,10 @@ void QgisApp::addDatabaseLayer()
 	
 
 	QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
+	mapCanvas->freeze();
 	if (dbs->exec()) {
 	// repaint the canvas if it was covered by the dialog
-		qApp->processEvents();
-		mapCanvas->freeze();
+		
 		// add files to the map canvas
 		QStringList tables = dbs->selectedTables();
 		QString connInfo = dbs->connInfo();
@@ -192,13 +202,16 @@ void QgisApp::addDatabaseLayer()
 		// update legend
 		/*! \todo Need legend scrollview and legenditem classes */
 		mapLegend->update();
-		mapCanvas->freeze(false);
+		
 		// draw the map
-		mapCanvas->render2();
+		//mapCanvas->render2();
 		statusBar()->message(mapCanvas->extent().stringRep());
 
 	}
-
+	qApp->processEvents();
+		
+  mapCanvas->freeze(false);
+  mapCanvas->render2();
 
 }
 
