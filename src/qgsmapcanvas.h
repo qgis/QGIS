@@ -4,7 +4,7 @@
     begin                : Sun Jun 30 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman@mrcc.com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -19,7 +19,8 @@
 #define QGSMAPCANVAS_H
 #include <map>
 #include <qwidget.h>
-
+#include "qgsrect.h"
+class QRect;
 class QgsMapLayer;
 
 /*! \class QgsMapCanvas
@@ -27,23 +28,28 @@ class QgsMapLayer;
  */
 
 class QgsMapCanvas : public QWidget  {
-   Q_OBJECT
+    Q_OBJECT
 public: 
-   //! Constructor
-	QgsMapCanvas(QWidget *parent=0, const char *name=0);
-   //! Destructor
-	~QgsMapCanvas();
-	/*! Adds a layer to the map canvas.
-	 * @param lyr Pointer to a layer derived from QgsMapLayer
-	 */
-	void addLayer(QgsMapLayer *lyr);
-	/*! Draw the map using the symbology set for each layer
-	 */
-	void render();
-private:
+    //! Constructor
+    QgsMapCanvas(QWidget *parent=0, const char *name=0);
+    //! Destructor
+    ~QgsMapCanvas();
+    /*! Adds a layer to the map canvas.
+     * @param lyr Pointer to a layer derived from QgsMapLayer
+     */
+    void addLayer(QgsMapLayer *lyr);
+    /*! Draw the map using the symbology set for each layer
+     */
+    void render();
+ private:
 
-//! map containing the layers by name
-	map<QString,QgsMapLayer> layers;
+    //! map containing the layers by name
+    map<QString,QgsMapLayer *>layers;
+    //! Full extent of the map canvas
+    QgsRect fullExtent;
+    //! Current extent
+    QgsRect currentExtent;
+    QRect *mapWindow;
 };
 
 #endif

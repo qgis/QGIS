@@ -1,5 +1,8 @@
 #ifndef QGSRECT_H
 #define QGSRECT_H
+
+class QString;
+
 /*! \class QgsRect
  * \brief A rectangle specified with double values.
  *
@@ -30,6 +33,12 @@ class QgsRect{
     double yMin() const;
     //! Normalize the rectangle so it has non-negative width/height
     void normalize();
+    //! Width of the rectangle
+    double width() const;
+    //! Height of the rectangle
+    double height() const;
+    //! returns string representation of form xmin,ymin xmax,ymax
+    QString stringRep() const;
     /*! Comparison operator
       @return True if rectangles are equal
     */

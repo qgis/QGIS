@@ -47,3 +47,9 @@ void QgisAppBase::init()
    PopupMenu_2->setFont( menubar_font ); 
    */
 }
+
+
+void QgisAppBase::drawLayers()
+{
+
+}

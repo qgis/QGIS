@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include "qgsrect.h"
 #include "qgsmaplayer.h"
 
@@ -37,7 +38,14 @@ void QgsMapLayer::setlayerName( const QString& _newVal){
 const QString QgsMapLayer::name(){
   return layerName;
 }
+const QgsRect QgsMapLayer::extent(){
+  return layerExtent;
+}
 QgsRect QgsMapLayer::calculateExtent(){
+  
 }
-void QgsMapLayer::draw(QPainter *, QgsRect *){
+void QgsMapLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
+  cout << "In QgsMapLayer::draw" << endl;
 }
+
+

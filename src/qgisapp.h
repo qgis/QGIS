@@ -45,6 +45,8 @@ public:
 	void readWKB(const char *, QStringList tables);
 	//! Draw a point on the map canvas
 	void drawPoint(double x, double y);
+	//! draw layers
+	void drawLayers();
 private:
 	//! Map canvase 
 QgsMapCanvas *mapCanvas;
