@@ -80,9 +80,11 @@
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddRasterLayer"/>
         <action name="actionAddLayer"/>
-        <separator/>
         <action name="actionAddAllToOverview"/>
         <action name="actionRemoveAllFromOverview"/>
+        <action name="actionShowAllLayers"/>
+        <action name="actionHideAllLayers"/>
+        <separator/>
         <action name="actionOpenTable"/>
         <action name="actionLayerProperties"/>
     </item>
@@ -144,9 +146,10 @@
         <action name="actionAddLayer"/>
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddRasterLayer"/>
-        <action name="drawAction"/>
         <action name="actionAddAllToOverview"/>
         <action name="actionRemoveAllFromOverview"/>
+        <action name="actionShowAllLayers"/>
+        <action name="actionHideAllLayers"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -162,6 +165,7 @@
         <action name="actionZoomToSelected"/>
         <action name="actionPan"/>
         <action name="actionZoomLast"/>
+        <action name="drawAction"/>
         <separator/>
         <action name="actionIdentify"/>
         <action name="actionSelect"/>
@@ -237,6 +241,9 @@
         </property>
         <property name="whatsThis">
             <string>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</string>
+        </property>
+        <property name="accel">
+            <string>D</string>
         </property>
     </action>
     <action>
@@ -466,6 +473,9 @@
         <property name="whatsThis">
             <string>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</string>
         </property>
+        <property name="accel">
+            <string>V</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -688,6 +698,9 @@
         <property name="whatsThis">
             <string>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</string>
         </property>
+        <property name="accel">
+            <string>R</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -905,6 +918,49 @@
             <string>-</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionShowAllLayers</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image34</iconset>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="menuText">
+            <string>Show All Layers</string>
+        </property>
+        <property name="toolTip">
+            <string>Show All Layers</string>
+        </property>
+        <property name="accel">
+            <string>S</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionHideAllLayers</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image35</iconset>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="menuText">
+            <string>Hide All Layers</string>
+        </property>
+        <property name="toolTip">
+            <string>Hide All Layers</string>
+        </property>
+        <property name="whatsThis">
+            <string>Hide All Layers</string>
+        </property>
+        <property name="accel">
+            <string>H</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1008,6 +1064,12 @@
     </image>
     <image name="image33">
         <data format="XPM.GZ" length="812">789cad92cd4ac5301046f77d8ad0ec8adc3f3717c447505c0ae2229966daa45c05bd2e447c77e7cb24f516eaceaf0de4e46432a5edb6338f0f77a6db36ef67778e6468746fa6eb3f4ea7cfa7e7dbafa63d1c8cdcfb6bb36faf9a7663c8dcbfbe04cca3cced4e72dc0143456620291e6501382a5241566456b4406c554c409a37f78acc94d10351a9d629623b7052ac270f15f5a936ab591a8bac1be7fc7f19e901533a5d182211ce7b4b39bf86fa102c442f611a6643c261b41001623e4d044b51b032024435a88080cf15d5a022af234451a27d68643461148890d7194b1f5ac4a729d63ec33044ef13f3944716f509629ae40c48ef5514934592459ebc57a106474db844a7228a59e4d20ccbac7d9fbfff8385f9be697e00d9acca1e</data>
+    </image>
+    <image name="image34">
+        <data format="XPM.GZ" length="706">789cad90b10ac2301086f73cc5d16c456cec2082f8088aa3200e77178b0e55d03a88f8eee692d6a6da41a15f33e4bf2f5c73c952d8ac979066ea5a617564e0035e20b5b7b2bc6f778b874af21cdc9ac22419a9640c0cabf3692f7bedf6da3866462237917d248968e4936825b2298a605162e1f16d7bf9dd688d43195d837f98d0cd31d4ddea563da6253614131b621b60b6849121a984ba88d6902f0a41bc0df9e3a11bc5937e8bda50f3835604d3b96e67528ce99bf4e30d9e73f50264179ca2</data>
+    </image>
+    <image name="image35">
+        <data format="XPM.GZ" length="409">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523234530022630543251d2e253d856405bffcbc54103b11c856360003105719c44d0303b04a348024a69ca88c2ea60c14534615534e0401656431e544b00c58102a06164a840a42c420aa12a12ac162ca2862ca6031a0e120ac0ca571aac3661e567b61ba51dc0712c4f00756ff22874bad351700b18f53a6</data>
     </image>
 </images>
 <connections>
@@ -1221,6 +1283,18 @@
         <receiver>QgisAppBase</receiver>
         <slot>removeAllFromOverview()</slot>
     </connection>
+    <connection>
+        <sender>actionShowAllLayers</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>showAllLayers()</slot>
+    </connection>
+    <connection>
+        <sender>actionHideAllLayers</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>hideAllLayers()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
@@ -1264,6 +1338,8 @@
     <slot>capturePoint()</slot>
     <slot>addAllToOverview()</slot>
     <slot>removeAllFromOverview()</slot>
+    <slot>hideAllLayers()</slot>
+    <slot>showAllLayers()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

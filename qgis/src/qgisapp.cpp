@@ -1430,7 +1430,7 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
     mMapCanvas->saveAsImage(theImageFileNameQString,theQPixmap);
   }
 }
-
+//reimplements method from base (gui) class
 void QgisApp::addAllToOverview()
 {
   mOverviewCanvas->freeze(true);
@@ -1450,6 +1450,7 @@ void QgisApp::addAllToOverview()
   mOverviewCanvas->render();
 }
 
+//reimplements method from base (gui) class
 void QgisApp::removeAllFromOverview()
 {
   mOverviewCanvas->freeze(true);
@@ -1469,6 +1470,51 @@ void QgisApp::removeAllFromOverview()
   mOverviewCanvas->render();
 }
 
+//reimplements method from base (gui) class
+void QgisApp::hideAllLayers()
+{
+#ifdef QGISDEBUG
+  std::cout << "hiding all layers!" << std::endl;
+#endif
+  mMapCanvas->freeze(true);
+  mOverviewCanvas->freeze(true);
+  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
+  {
+    QgsMapLayer * myMapLayer = myMapIterator->second;
+    myMapLayer->setVisible(false);
+  }
+  // draw the map
+  mMapCanvas->clear();
+  mMapCanvas->freeze(false);
+  mOverviewCanvas->freeze(false);
+  mMapCanvas->render();
+  mOverviewCanvas->render();
+}
+//reimplements method from base (gui) class
+void QgisApp::showAllLayers()
+{
+#ifdef QGISDEBUG
+  std::cout << "Showing all layers!" << std::endl;
+#endif
+  mMapCanvas->freeze(true);
+  mOverviewCanvas->freeze(true);
+  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
+  {
+    QgsMapLayer * myMapLayer = myMapIterator->second;
+    myMapLayer->setVisible(true);
+  }
+  // draw the map
+  mMapCanvas->clear();
+  mMapCanvas->freeze(false);
+  mOverviewCanvas->freeze(false);
+  mMapCanvas->render();
+  mOverviewCanvas->render();
+
+}
 
 void QgisApp::exportMapServer()
 {
@@ -2739,6 +2785,8 @@ void QgisApp::setTheme(QString themeName)
   actionAddRasterLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_raster_layer.png")));
   actionAddLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_pg_layer.png")));
   actionAddAllToOverview->setIconSet(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")));
+  actionHideAllLayers->setIconSet(QIconSet(QPixmap(iconPath + "/hide_all_layers.png")));
+  actionShowAllLayers->setIconSet(QIconSet(QPixmap(iconPath + "/show_all_layers.png")));
   actionRemoveAllFromOverview->setIconSet(QIconSet(QPixmap(iconPath + "/remove_all_from_overview.png")));
   actionProjectProperties->setIconSet(QIconSet(QPixmap(iconPath + "/project_properties.png")));
   actionPluginManager->setIconSet(QIconSet(QPixmap(iconPath + "/plugin_manager.png")));

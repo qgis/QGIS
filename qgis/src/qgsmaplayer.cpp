@@ -128,8 +128,12 @@ bool QgsMapLayer::visible()
 
 void QgsMapLayer::setVisible(bool vis)
 {
-  m_visible = vis;
-  emit visibilityChanged();
+  if (m_visible != vis)
+  {
+    ((QCheckListItem *) m_legendItem)->setOn(vis);
+    m_visible = vis;
+    emit visibilityChanged();
+  }
 }  /** Read property of int featureType. */
 
 void QgsMapLayer::toggleShowInOverview()
