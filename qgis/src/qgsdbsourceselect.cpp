@@ -60,6 +60,7 @@ void QgsDbSourceSelect::dbConnect(){
   QString username = "user="+settings.readEntry(key+"/username");
   QString password = "password="+settings.readEntry(key+"/password");
   m_connInfo = host +" " + database + " " + username + " " + password;
+  qDebug(m_connInfo);
   PgDatabase *pd = new PgDatabase((const char *)m_connInfo);
   cout << pd->ErrorMessage();
   if(pd->Status()==CONNECTION_OK){

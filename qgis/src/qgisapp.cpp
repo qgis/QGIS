@@ -25,6 +25,9 @@
 #include <qlayout.h>
 #include <qwmatrix.h>
 #include <qfiledialog.h>
+#include <libpq++.h>
+#include <iostream>
+#include <iomanip>
 #include "qgsmapcanvas.h"
 #include "qgsdbsourceselect.h"
 #include "qgisapp.h"
@@ -66,12 +69,12 @@ void QgisApp::addLayer(){
     QString connInfo = dbs->connInfo();
     // for each selected table, connect to the datbase, parse the WKT geometry,
     // and build a cavnasitem for it
- QStringList::Iterator it = tables.begin();
-  while( it != tables.end() ) {
+    QStringList::Iterator it = tables.begin();
+    while( it != tables.end() ) {
     
     
-    ++it;
-  }
+      ++it;
+    }
     
   }
   // show the file dialog
@@ -100,4 +103,53 @@ void QgisApp::zoomOut()
   m.scale( 0.5, 0.5 );
   cv->setWorldMatrix( m );
 }
+void QgisApp::readWKB(const char *connInfo){
+  PgCursor pgc(connInfo, "testcursor");
+  // get "endianness"
+  char *chkEndian = new char[4];
+  memset(chkEndian,'\0',4);
+  chkEndian[0] = 0xE8;
+  int *ce = (int *)chkEndian;
+  bool isNDR = (232 == *ce);
+  /*     if(*ce != 232)
+	 cout << "Big endian" << endl;
+	 else
+	 cout << "Little endian" << endl;
+  */
+  string sql = "select asbinary(the_geom,";
+  if(isNDR)
+    sql += "'NDR'";
+  else
+    sql += "'XDR'";
+  sql += ") as features from towns";
+  cout << sql.c_str() << endl;
+  pgc.Declare(sql.c_str(), true);
+  int res = pgc.Fetch();
+  cout << "Number of binary records: " << pgc.Tuples() << endl;
+ 
+  // process each record
+  for(int idx = 0; idx < pgc.Tuples(); idx++){
+    cout << "Size of this record: " << pgc.GetLength(idx,0) << endl;
+    // allocate memory for the item
+    char *feature = new char[pgc.GetLength(idx,0) +1]; 
+    memset(feature,'\0',pgc.GetLength(idx,0) +1);
+    memcpy(feature,pgc.GetValue(idx,0),pgc.GetLength(idx,0) );
+    char endian;
+    endian = *feature;
+    int *geotype;
+    geotype =(int *) (feature + 1);
+   
+
+    cout << "Endian is: " << (int)feature[0] << endl;
+    cout << "Geometry type is: " << (int)feature[1] << endl;
+    // print the x,y coordinates
+    double *x = (double *)(feature+5);
+    double *y = (double*)(feature+5 + sizeof(double));
+    cout << "x,y: " << setprecision(16) << *x << ", " << *y << endl;
+    // free it 
+    delete[] feature;
+  }
+}
+
+
 
