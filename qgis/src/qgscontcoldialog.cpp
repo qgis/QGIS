@@ -80,12 +80,14 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
     {
 	renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());
     }
+
+    classificationComboBox->setCurrentItem(renderer->classificationField());
     
     if (renderer)
     {
 	QgsRenderItem *minitem = renderer->minimumItem();
 	QgsRenderItem *maxitem = renderer->maximumItem();
-	if (mVectorLayer->vectorType() == QGis::Line)
+	if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
         {
 	    mincolorbutton->setPaletteBackgroundColor(minitem->getSymbol()->pen().color());
 	    maxcolorbutton->setPaletteBackgroundColor(maxitem->getSymbol()->pen().color());
@@ -141,7 +143,7 @@ void QgsContColDialog::apply()
 
     //create the render items for minimum and maximum value
     QgsSymbol* minsymbol = new QgsSymbol();
-    if (mVectorLayer->vectorType() == QGis::Line)
+    if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
 	minsymbol->setPen(QPen(mincolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
     } 
@@ -154,7 +156,7 @@ void QgsContColDialog::apply()
     
     
     QgsSymbol* maxsymbol = new QgsSymbol();
-    if (mVectorLayer->vectorType() == QGis::Line)
+    if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
 	maxsymbol->setPen(QPen(maxcolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
     } 

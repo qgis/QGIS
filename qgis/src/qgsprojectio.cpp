@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.33 2004/03/23 13:31:50 mhugent Exp */
+/* qgsprojectio.cpp,v 1.34 2004/03/30 07:08:17 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -352,7 +352,7 @@ bool QgsProjectIo::read(QString path)
 
                   QDomNode classnode = continuousnode.namedItem("classificationfield");
                   int classificationfield = classnode.toElement().text().toInt();
-
+		  crenderer->setClassificationField(classificationfield);
 
                   //read the settings for the renderitem of the minimum value
                   QDomNode lowernode = continuousnode.namedItem("lowestitem");
