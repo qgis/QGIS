@@ -20,41 +20,39 @@
 
 QgsSymbol::QgsSymbol(QColor c)
 {
-    m_pen.setColor(c);
-    m_brush.setColor(c);
+  m_pen.setColor(c);
+  m_brush.setColor(c);
 }
 
 QgsSymbol::~QgsSymbol()
 {
 }
-QColor QgsSymbol::color() const
+QColor QgsSymbol::color() const const
 {
-	return m_pen.color();
+  return m_pen.color();
 }
 
 void QgsSymbol::setColor(QColor c)
 {
-	m_pen.setColor(c);
+  m_pen.setColor(c);
 }
 
-QColor QgsSymbol::fillColor() const
+QColor QgsSymbol::fillColor() const const
 {
-	return m_brush.color();
+  return m_brush.color();
 }
 
 void QgsSymbol::setFillColor(QColor c)
 {
-    m_brush.setColor(c);
+  m_brush.setColor(c);
 }
 
-int QgsSymbol::lineWidth() const
+int QgsSymbol::lineWidth() const const
 {
-	return m_pen.width();
+  return m_pen.width();
 }
 
 void QgsSymbol::setLineWidth(int w)
 {
-    m_pen.setWidth(w);
+  m_pen.setWidth(w);
 }
-
-

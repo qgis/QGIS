@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
- 
+
 #include <iostream>
 #include <qmessagebox.h>
 #include <qstring.h>
@@ -26,43 +26,52 @@
 #include "qgsprovidermetadata.h"
 #include "qgspluginregistry.h"
 
-QgsPluginRegistry* QgsPluginRegistry::_instance = 0;
-QgsPluginRegistry* QgsPluginRegistry::instance () 
+QgsPluginRegistry *QgsPluginRegistry::_instance = 0;
+QgsPluginRegistry *QgsPluginRegistry::instance()
 {
-  if (_instance == 0){ 
-    _instance = new QgsPluginRegistry();
-  }
- return _instance;
+  if (_instance == 0)
+    {
+      _instance = new QgsPluginRegistry();
+    }
+  return _instance;
 }
-QgsPluginRegistry::QgsPluginRegistry(){
+
+QgsPluginRegistry::QgsPluginRegistry()
+{
 // constructor does nothing
 }
 QString QgsPluginRegistry::library(QString pluginKey)
 {
-  QgsPluginMetadata * pmd = plugins[pluginKey];
+  QgsPluginMetadata *pmd = plugins[pluginKey];
   QString retval;
-  if(pmd){
-    retval = pmd->library();
-  }
+  if (pmd)
+    {
+      retval = pmd->library();
+    }
   return retval;
 }
+
 QgsPluginMetadata *QgsPluginRegistry::pluginMetadata(QString name)
 {
   return plugins[name];
 }
-QgisPlugin * QgsPluginRegistry::plugin(QString name)
+
+QgisPlugin *QgsPluginRegistry::plugin(QString name)
 {
-  QgsPluginMetadata * pmd = plugins[name];
+  QgsPluginMetadata *pmd = plugins[name];
   QgisPlugin *retval = 0;
-  if(pmd){
-    retval = pmd->plugin();
-  }
+  if (pmd)
+    {
+      retval = pmd->plugin();
+    }
   return retval;
 }
-void QgsPluginRegistry::addPlugin(QString library, QString name, QgisPlugin *plugin)
+
+void QgsPluginRegistry::addPlugin(QString library, QString name, QgisPlugin * plugin)
 {
   plugins[name] = new QgsPluginMetadata(library, name, plugin);
 }
+
 void QgsPluginRegistry::removePlugin(QString name)
 {
   plugins.erase(name);

@@ -17,22 +17,23 @@
 
 #include "qgsrangerenderitem.h"
 
-QgsRangeRenderItem::QgsRangeRenderItem(): QgsRenderItem()
+QgsRangeRenderItem::QgsRangeRenderItem():QgsRenderItem()
 {
-    
+
 }
 
-QgsRangeRenderItem::QgsRangeRenderItem(QgsSymbol symbol, QString _value, QString u_value, QString _label): QgsRenderItem(symbol,_value,_label), m_upper_value(u_value)
+QgsRangeRenderItem::QgsRangeRenderItem(QgsSymbol symbol, QString _value, QString u_value, QString _label):QgsRenderItem(symbol, _value, _label),
+m_upper_value(u_value)
 {
 
 }
 
 void QgsRangeRenderItem::setUpperValue(QString value)
 {
-    m_upper_value=value;
+  m_upper_value = value;
 }
 
-const QString& QgsRangeRenderItem::upper_value() const 
+const QString & QgsRangeRenderItem::upper_value() const const
 {
-    return m_upper_value;
+  return m_upper_value;
 }

@@ -18,13 +18,19 @@
 
 #include "qgsattributetabledisplay.h"
 
-QgsAttributeTableDisplay::QgsAttributeTableDisplay() : QgsAttributeTableBase() {
+QgsAttributeTableDisplay::QgsAttributeTableDisplay():QgsAttributeTableBase()
+{
 }
-QgsAttributeTableDisplay::~QgsAttributeTableDisplay(){
+
+QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
+{
 }
-QgsAttributeTable * QgsAttributeTableDisplay::table(){
+QgsAttributeTable *QgsAttributeTableDisplay::table()
+{
   return tblAttributes;
 }
-void QgsAttributeTableDisplay::setTitle(QString title){
-	setCaption(title);
+
+void QgsAttributeTableDisplay::setTitle(QString title)
+{
+  setCaption(title);
 }
