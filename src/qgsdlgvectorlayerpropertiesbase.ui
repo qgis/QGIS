@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>492</width>
-            <height>600</height>
+            <width>685</width>
+            <height>602</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -382,164 +382,10 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QGroupBox" row="0" column="0">
+                    <widget class="QTextEdit" row="0" column="0">
                         <property name="name">
-                            <cstring>groupBox2</cstring>
+                            <cstring>teMetadata</cstring>
                         </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="title">
-                            <string>Features</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel" row="0" column="3">
-                                <property name="name">
-                                    <cstring>textLabel6_2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Count</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="4">
-                                <property name="name">
-                                    <cstring>lblFeatureCount</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>count</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>textLabel6</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Geometry type</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="2">
-                                <property name="name">
-                                    <cstring>lblGeometryType</cstring>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>120</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>geom</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0">
-                                <property name="name">
-                                    <cstring>textLabel7_6</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Upper right</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="1" rowspan="1" colspan="4">
-                                <property name="name">
-                                    <cstring>lblUpperRight</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>ur</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="2" column="1" rowspan="1" colspan="4">
-                                <property name="name">
-                                    <cstring>lblLowerLeft</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>ll</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="2" column="0">
-                                <property name="name">
-                                    <cstring>textLabel7_5</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Lower left</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="1" column="0">
-                        <property name="name">
-                            <cstring>groupBox1</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Fields</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QListView" row="0" column="0">
-                                <column>
-                                    <property name="text">
-                                        <string>Field</string>
-                                    </property>
-                                    <property name="clickable">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="resizable">
-                                        <bool>true</bool>
-                                    </property>
-                                </column>
-                                <column>
-                                    <property name="text">
-                                        <string>Type</string>
-                                    </property>
-                                    <property name="clickable">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="resizable">
-                                        <bool>true</bool>
-                                    </property>
-                                </column>
-                                <column>
-                                    <property name="text">
-                                        <string>Length</string>
-                                    </property>
-                                    <property name="clickable">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="resizable">
-                                        <bool>true</bool>
-                                    </property>
-                                </column>
-                                <column>
-                                    <property name="text">
-                                        <string>Precision</string>
-                                    </property>
-                                    <property name="clickable">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="resizable">
-                                        <bool>true</bool>
-                                    </property>
-                                </column>
-                                <property name="name">
-                                    <cstring>listViewFields</cstring>
-                                </property>
-                                <property name="resizePolicy">
-                                    <enum>Manual</enum>
-                                </property>
-                                <property name="resizeMode">
-                                    <enum>AllColumns</enum>
-                                </property>
-                            </widget>
-                        </grid>
                     </widget>
                 </grid>
             </widget>
