@@ -195,29 +195,11 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
 
 
     //declare the key value
-    myString=QString("CSM for Matlab");
+    myString=QString("Matlab");
     //convert it to upper case
     myString=myString.upper();
     //set its associated enum
-    myEnum=FileWriter::CSM_MATLAB;
-    //add it to the associative array
-    outputFileTypeMap[myString]=myEnum;
-
-    //declare the key value
-    myString=QString("CSM for Octave");
-    //convert it to upper case
-    myString=myString.upper();
-    //set its associated enum
-    myEnum=FileWriter::CSM_OCTAVE;
-    //add it to the associative array
-    outputFileTypeMap[myString]=myEnum;
-
-    //declare the key value
-    myString=QString("Desktop GARP");
-    //convert it to upper case
-    myString=myString.upper();
-    //set its associated enum
-    myEnum=FileWriter::GARP;
+    myEnum=FileWriter::MATLAB;
     //add it to the associative array
     outputFileTypeMap[myString]=myEnum;
 
@@ -1028,37 +1010,55 @@ bool ClimateDataProcessor::run()
     //work out how many cells need to be processed for each calculations
     //
     int myNumberOfCells =0;
+    int myXDimInt= 0;
+    int myYDimInt=0;
     if (meanTempFileGroup)
     {
         myNumberOfCells = meanTempFileGroup->getElementCount();
+        myXDimInt=meanTempFileGroup->getXDimInt();
+        myYDimInt=meanTempFileGroup->getYDimInt();
     }
     else if (minTempFileGroup)
     {
         myNumberOfCells = minTempFileGroup->getElementCount();
+        myXDimInt=minTempFileGroup->getXDimInt();
+        myYDimInt=minTempFileGroup->getYDimInt();
     }
     else if (maxTempFileGroup)
     {
         myNumberOfCells = maxTempFileGroup->getElementCount();
+        myXDimInt=maxTempFileGroup->getXDimInt();
+        myYDimInt=maxTempFileGroup->getYDimInt();
     }
     else if (diurnalTempFileGroup)
     {
         myNumberOfCells = diurnalTempFileGroup->getElementCount();
+        myXDimInt=diurnalTempFileGroup->getXDimInt();
+        myYDimInt=diurnalTempFileGroup->getYDimInt();
     }
     else if (meanPrecipFileGroup)
     {
         myNumberOfCells = meanPrecipFileGroup->getElementCount();
+        myXDimInt=meanPrecipFileGroup->getXDimInt();
+        myYDimInt=meanPrecipFileGroup->getYDimInt();
     }
     else if (frostDaysFileGroup)
     {
         myNumberOfCells = frostDaysFileGroup->getElementCount();
+        myXDimInt=frostDaysFileGroup->getXDimInt();
+        myYDimInt=frostDaysFileGroup->getYDimInt();
     }
     else if (totalSolarRadFileGroup)
     {
         myNumberOfCells = totalSolarRadFileGroup->getElementCount();
+        myXDimInt=totalSolarRadFileGroup->getXDimInt();
+        myYDimInt=totalSolarRadFileGroup->getYDimInt();
     }
     else if (windSpeedFileGroup)
     {
         myNumberOfCells = windSpeedFileGroup->getElementCount();
+        myXDimInt=windSpeedFileGroup->getXDimInt();
+        myYDimInt=windSpeedFileGroup->getYDimInt();
     }
     //check nothing fishy is going on
     if (myNumberOfCells ==  0)
@@ -1136,15 +1136,28 @@ bool ClimateDataProcessor::run()
                 else
                 {
                     //loop logic still needs to be implemented properly for this to work!
-                    sprintf(myYearChar,"%iBC",myCDPMainLoopInt);
+                    sprintf(myYearChar,"%iBP",myCDPMainLoopInt);
                 }
 
                 myFileNameString =  outputFilePathString + myFileNameString + "_" + myYearChar +".asc";
                 FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
-                //write a standard header if one is available
 
-                //myFileWriter->writeHeader(outputHeaderString);
-
+                //Use externally defined header if its been set
+                if (!outputHeaderString.isEmpty())
+                {
+                    myFileWriter->writeString(outputHeaderString);
+                }
+                //Otherwise calculate one dynamically
+                else
+                {
+                 QString myHeaderString=
+                 QString ("ncols         720\n")+
+                 QString ("nrows         360\n")+
+                 QString ("xllcorner     -180\n")+
+                 QString ("yllcorner     -90\n")+
+                 QString ("cellsize      0.5\n")+
+                 QString ("nodata_value  -9999\n");                    myFileWriter->writeString(myHeaderString);
+                }
 
                 std::cout << "Added " << myFileWriter->getFileNameString() << std::endl;
                 FileWriterStruct myFileWriterStruct;
@@ -1177,6 +1190,7 @@ bool ClimateDataProcessor::run()
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
 
+            int myXCountInt=0;
             bool myFirstIterationFlag=true;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
@@ -1197,6 +1211,11 @@ bool ClimateDataProcessor::run()
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt==myXDimInt)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }

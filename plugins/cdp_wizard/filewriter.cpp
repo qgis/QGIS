@@ -110,5 +110,17 @@ void FileWriter::close()
   filePointer->close();
 }
 
-
+bool FileWriter::writeString(QString theQString)
+{
+  if (filePointer==0)
+  {
+    return false;
+  }
+  if (textStream==0)
+  {
+    return false;
+  }
+  //write the string to the file
+  *textStream << theQString;
+}
 

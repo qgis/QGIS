@@ -115,9 +115,7 @@ bool CDPWizard::initialise()
     std::cout << "Adding items into the output filetype combo box" << endl;
 #endif
 
-    cboOutputFormat->insertItem(tr("CSM for Matlab"));
-    cboOutputFormat->insertItem(tr("CSM for Octave"));
-    cboOutputFormat->insertItem(tr("Desktop GARP"));
+    cboOutputFormat->insertItem(tr("Matlab"));
     cboOutputFormat->insertItem(tr("ESRI ASCII Grid"));
     cboOutputFormat->insertItem(tr("Plain matrix with no header"));
 
@@ -390,6 +388,8 @@ void CDPWizard::run()
     // get the ouput file type
     climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
 
+    
+
     //
     // find out if datafiles are in series (discrete files for each month)
     // We are using the isVisible property for the label, but we cant guarantee
@@ -437,8 +437,8 @@ void CDPWizard::run()
         {
             climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
         }
-    }
-
+    }   
+    
     //get a summary of the climate dataprocessor class now
 #ifdef QGISDEBUG
     std::cout << climateDataProcessor->getDescription() << endl;

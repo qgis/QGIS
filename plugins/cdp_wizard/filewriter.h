@@ -48,9 +48,7 @@ class FileWriter
 public:
 
     /** An enumerator defining the different types of output files that can be written. */
-    enum FileTypeEnum { CSM_MATLAB,
-                        CSM_OCTAVE ,
-                        GARP ,
+    enum FileTypeEnum { MATLAB,
                         ESRI_ASCII ,
                         PLAIN };
     /** Constructor */
@@ -68,7 +66,11 @@ public:
     * @return bool - indicating successor failure of the write operation.
     */
     bool writeElement(float theElementFloat);
-
+    /** Write a header to the output file.
+    * @param theString - the variable that is to be written off to file.
+    * @return bool - indicating successor failure of the write operation.
+    */    
+    bool writeString(QString theQString); 
     /** Read property of QString fileNameString.
     * @return QString - containing the name of the file.
     */

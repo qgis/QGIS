@@ -46,6 +46,18 @@ public:
     * @return int - The number of cells in a block of the first filereader.
     */
     int getElementCount();
+        /**
+    * Accessor for the xDimInt property. This property tells us
+    * how many cells in any one data block in the x dimension in a filereader exist.
+    * @return int - The number of cells in a block of the first filereader.
+    */
+    int getXDimInt() {return xDimInt;};
+        /**
+    * Accessor for the xDimInt property. This property tells us
+    * how many cells in any one data block in the y dimension in a filereader exist.
+    * @return int - The number of cells in a block of the first filereader.
+    */
+    int getYDimInt() {return yDimInt;};
     /** Read property of bool endOfMatrixFlag. */
     const bool getEndOfMatrixFlag();
     /** Move to the start of the active data block */
@@ -65,11 +77,25 @@ private:
     * dimensions.
     */
     int elementCountInt;
+   /**
+    * The number of cells in the x dimension in a block in the first file in the
+    * file group. It is assumed that all files in the group have the same block
+    * dimensions.
+    */
+    int xDimInt;
+   /**
+    * The number of cells in the y dimension in a block in the first file in the
+    * file group. It is assumed that all files in the group have the same block
+    * dimensions.
+    */
+    int yDimInt;
     /**
     * A flag to show whether the end of the matrix has been reached.
     * @note the first fileReader in the fileGroup is used to determine this.
     */
     bool endOfMatrixFlag;
+    
+    
 };
 
 #endif

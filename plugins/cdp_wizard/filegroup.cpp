@@ -20,6 +20,8 @@
 FileGroup::FileGroup()
 {
     elementCountInt=0;
+    xDimInt=0;
+    yDimInt=0;
     endOfMatrixFlag=false;
     fileReaderVector = new FileReaderVector();
     //automatically delete any filereader as it is
@@ -65,6 +67,8 @@ bool FileGroup::addFileReader(FileReader* theFileReader,
     if (mySizeInt==0)
     {
       elementCountInt=theFileReader->getXDim() * theFileReader->getYDim();
+      xDimInt=theFileReader->getXDim();
+      yDimInt=theFileReader->getYDim();
     }
     return true;
 }

@@ -338,149 +338,71 @@ bool FileReader::setFileType( const FileTypeEnum theNewVal)
         else if ((fileType == ARCINFO_GRID) || (fileType == CRES))
 
         {
-
             /* Typical Header:
-
                ncols         241
-
                nrows         207
-
                xllcorner     -795282.26306056
-
                yllcorner     -3846910.6343577
-
                cellsize      7128.3696735486
-
                NODATA_value  -9999
-
                */
 
-
-
 #ifdef QGISDEBUG
-
             std::cout << "FileReader::setFileType() - setting file type to ARCINFO_GRID / CRES" << std::endl;
-
 #endif
-
             headerLinesInt = 6;
-
             monthHeaderLinesInt = 0;
-
             if (filePointer==0)
-
             {
-
                 return false;
-
             }
-
             //Just testing remove this later! vvvvvvvvv
-
             //fseek(filePointer,0,SEEK_END);
-
             //long myFileSizeLong = ftell(filePointer);
-
             //rewind(filePointer);
-
             //Just testing remove this later!  ^^^^^^^^^^
-
             float myFloat;
-
             QString myString;
-
-
-
             //bit of hoop jumping here
-
             //fgetpos (filePointer, headerOffset);
 
-
-
 #ifdef QGISDEBUG
-
             std::cout << "FileReader::setFileType()- creating properties QMap" << std::endl;
-
 #endif
-
-            /*Create the QMap (associative array) to store the header key value pairs.
-
+           /*Create the QMap (associative array) to store the header key value pairs.
              * Doing it this way means that we dont need to worry about the order of the header
-
              * fields in the file */
-
             QMap <QString, float > myHeaderMap;
-
             for (int i=0; i <6;i++)
-
             {
-
-
-
                 //read a float from the file - this will advance the file pointer
-
                 *textStream >> myString;
-
-
-
                 //fscanf (filePointer, "%s", myString);
-
                 myString=myString.upper();   //make sure all keys are in upper case!
-
                 *textStream >> myFloat;
-
                 //fscanf (filePointer, "%f", &myFloat);
-
-
-
                 myHeaderMap[myString]=myFloat;
-
             }
-
             //print the QMap contents to stdout using an iterator
-
             QMap<QString, float>::const_iterator myIterator;
-
             for (myIterator=myHeaderMap.begin(); myIterator != myHeaderMap.end(); myIterator++)
-
             {
-
                 std::cout << "FileReader::setFileType() retrieved values : " << myIterator.key().latin1() << " --- " << myIterator.data() << std::endl;
-
             }
-
-
-
             //good, now we can assign the member vars their value
-
             //next four are not currently implemented used:
-
             //cellSizeFloat = myHeaderMap["CELLSIZE"];
-
             //lowerLeftXFloat = myHeaderMap["XLLCORNER"];
-
             //lowerLeftYFloat = myHeaderMap["YLLCORNER"];
-
             // noDataValueFloat = myHeaderMap["NODATA_VALUE"];
-
             //this may cause problems if the arcinfo data structure does not match the file structure!
-
             xDimLong  = static_cast<long>(myHeaderMap["NCOLS"]);            //note implicit cast from float to long int
-
             yDimLong = static_cast<long>(myHeaderMap["NROWS"]);            //note implicit cast from float to long int
-
-
-
             //set the start of data block pointer
-
             //fgetpos (filePointer,dataStartOffset); //erk this causes a crash
-
         }
-
         //Set Valdes member variables
-
         else if (fileType == VALDES)
-
         {
 
             /* class user will need to specify rows and cols */
