@@ -50,5 +50,6 @@ libNorthArrowplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
 libNorthArrowplugin_la_LDFLAGS = -avoid-version -module
 libNorthArrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH) -I../../src
 
-EXTRA_DIST = $(plugin_UIC) icon.xpm
+EXTRA_DIST = $(plugin_UIC) icon.xpm \
+        pluginguibase.ui.h
 
