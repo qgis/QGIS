@@ -19,7 +19,7 @@
 #define QGISAPP_H
 class QCanvas;
 class QCanvasView;
-#include "QgisAppBase.h"
+#include "qgisappbase.h"
 /**
   *@author Gary E.Sherman
   */

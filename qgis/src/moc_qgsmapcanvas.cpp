@@ -1,7 +1,7 @@
 /****************************************************************************
 ** QgsMapCanvas meta object code from reading C++ file 'qgsmapcanvas.h'
 **
-** Created: Fri Jul 5 08:50:13 2002
+** Created: Fri Jul 5 17:08:23 2002
 **      by: The Qt MOC ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
