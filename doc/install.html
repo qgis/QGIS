@@ -22,17 +22,6 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 </HEAD>
 
 <BODY >
-<!--Navigation Panel-->
-<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
- SRC="file:/usr/share/latex2html/icons/nx_grp_g.png"> 
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
- SRC="file:/usr/share/latex2html/icons/up_g.png"> 
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
- SRC="file:/usr/share/latex2html/icons/prev_g.png">   
-<BR>
-<BR>
-<BR>
-<!--End of Navigation Panel-->
 
 <P>
 
@@ -48,26 +37,30 @@ Contents</A>
 <!--Table of Contents-->
 
 <UL>
-<LI><A NAME="tex2html25"
-  HREF="install.html#SECTION00020000000000000000">Introduction</A>
-<LI><A NAME="tex2html26"
-  HREF="install.html#SECTION00030000000000000000">PostgreSQL</A>
-<LI><A NAME="tex2html27"
-  HREF="install.html#SECTION00040000000000000000">GEOS</A>
 <LI><A NAME="tex2html28"
-  HREF="install.html#SECTION00050000000000000000">PostGIS</A>
+  HREF="install.html#SECTION00020000000000000000">Introduction</A>
 <LI><A NAME="tex2html29"
-  HREF="install.html#SECTION00060000000000000000">GDAL/OGR</A>
+  HREF="install.html#SECTION00030000000000000000">PostgreSQL</A>
 <LI><A NAME="tex2html30"
-  HREF="install.html#SECTION00070000000000000000">Qt</A>
+  HREF="install.html#SECTION00040000000000000000">GEOS</A>
 <LI><A NAME="tex2html31"
+  HREF="install.html#SECTION00050000000000000000">PostGIS</A>
+<LI><A NAME="tex2html32"
+  HREF="install.html#SECTION00060000000000000000">GDAL/OGR</A>
+<LI><A NAME="tex2html33"
+  HREF="install.html#SECTION00070000000000000000">Qt</A>
+<LI><A NAME="tex2html34"
   HREF="install.html#SECTION00080000000000000000">Building QGIS</A>
 <UL>
-<LI><A NAME="tex2html32"
+<LI><A NAME="tex2html35"
   HREF="install.html#SECTION00081000000000000000">Quick and Dirty</A>
-<LI><A NAME="tex2html33"
+<LI><A NAME="tex2html36"
   HREF="install.html#SECTION00082000000000000000">Configuring QGIS the Right Way</A>
-</UL></UL>
+</UL>
+<BR>
+<LI><A NAME="tex2html37"
+  HREF="install.html#SECTION00090000000000000000">Building Plugins</A>
+</UL>
 <!--End of Table of Contents-->
 <P>
 
@@ -77,7 +70,7 @@ Contents</A>
 <BR>
 Introduction
 </H1>
-This document briefly describes how to build QGIS 0.3 (<I>Madison</I>) from the source distribution. Information on building the GRASS plugin with raster and vector support can be found in the <I>Building QGIS with GRASS Support</I> document, available at <TT><A NAME="tex2html1"
+This document briefly describes how to build QGIS 0.4 (<I>Baby</I>) from the source distribution. Information on building the GRASS plugin with raster and vector support can be found in the <I>Building QGIS with GRASS Support</I> document, available at <TT><A NAME="tex2html1"
   HREF="http://community.qgis.org/grass_plugin">http://community.qgis.org/grass_plugin</A></TT>. 
 <BR>
 <P>
@@ -112,7 +105,7 @@ If you are building QGIS without PostgreSQL, skip to the section on Installing G
 <H1><A NAME="SECTION00030000000000000000">
 PostgreSQL</A>
 </H1>
-  QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x or higher is recommended with QGIS version 0.3. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below). 
+  QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x or higher is recommended with QGIS version 0.4. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below). 
   
 <OL>
 <LI>Download PostgreSQL source from www.postgresql.org 
@@ -514,19 +507,19 @@ Compiling and Installing QGIS</A>
     make install
 </PRE>
 NOTE - As of version 0.1, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location. In the case of the example above, the QGIS binary resides in the bin subdirectory of the directory specified with the prefix option (/usr/local/qgis/bin).
-  <HR>
-<!--Navigation Panel-->
-<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
- SRC="file:/usr/share/latex2html/icons/nx_grp_g.png"> 
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
- SRC="file:/usr/share/latex2html/icons/up_g.png"> 
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
- SRC="file:/usr/share/latex2html/icons/prev_g.png">   
-<BR>
-<!--End of Navigation Panel-->
+
+<P>
+
+<H1><A NAME="SECTION00090000000000000000">
+Building Plugins</A>
+</H1>
+The QGIS source distribution contains a number of "core" plugins. These are built along with QGIS using the instructions above. Additional external plugins are available from the QGIS community website at <TT><A NAME="tex2html10"
+  HREF="http://community.qgis.org">http://community.qgis.org</A></TT>. Instructions for building an external plugin can be found at <TT><A NAME="tex2html11"
+  HREF="http://wiki.qgis.org/qgiswiki/StepByStepBuildInstructions">http://wiki.qgis.org/qgiswiki/StepByStepBuildInstructions</A></TT>. Some external plugins may include instructions on building. If so, follow the instructions provided with the plugin rather than those provided in the wiki. 
+  <BR><HR>
 <ADDRESS>
 Gary Sherman
-2004-05-25
+2004-06-28
 </ADDRESS>
 </BODY>
 </HTML>
