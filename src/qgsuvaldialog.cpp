@@ -170,7 +170,7 @@ void QgsUValDialog::apply()
 	    QgsSymbol* newsymbol=new QgsSymbol();
 	    newsymbol->setPen(symbol->pen());
 	    newsymbol->setBrush(symbol->brush());
-	    QgsRenderItem* ritem=new QgsRenderItem(newsymbol,it->first,"");
+	    QgsRenderItem* ritem=new QgsRenderItem(newsymbol,it->first,it->second->label());
 	    renderer->insertValue(it->first,ritem);
 	    //find out the width of the string
 	    valuewidth=fm.width(it->first);
