@@ -12,6 +12,14 @@
             <height>175</height>
         </rect>
     </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
     <property name="font">
         <font>
             <family>Helvetica [Urw]</family>
@@ -19,7 +27,7 @@
         </font>
     </property>
     <property name="caption">
-        <string>Add GRASS Vector Layer</string>
+        <string>Add GRASS Layer</string>
     </property>
     <property name="sizeGripEnabled">
         <bool>true</bool>
@@ -92,54 +100,6 @@
         </property>
         <property name="text">
             <string>Mapset</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>MapName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>100</y>
-                <width>70</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Map name</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>Layer</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>130</y>
-                <width>50</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Layer</string>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>ok</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>500</x>
-                <y>110</y>
-                <width>90</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>OK</string>
         </property>
     </widget>
     <widget class="QLineEdit">
@@ -216,6 +176,70 @@
             </rect>
         </property>
     </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>MapName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>100</y>
+                <width>70</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Map name</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>Layer</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>130</y>
+                <width>50</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Layer</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>ok</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>500</x>
+                <y>90</y>
+                <width>90</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>OK</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>cancel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>500</x>
+                <y>50</y>
+                <width>91</width>
+                <height>31</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Cancel</string>
+        </property>
+    </widget>
 </widget>
 <connections>
     <connection>
@@ -254,6 +278,12 @@
         <receiver>QgsGrassSelectBase</receiver>
         <slot>setLayers()</slot>
     </connection>
+    <connection>
+        <sender>cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassSelectBase</receiver>
+        <slot>reject()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsgrassselectbase.ui.h</include>
@@ -265,6 +295,7 @@
     <slot>setMaps()</slot>
     <slot>setMapsets()</slot>
     <slot>setLayers()</slot>
+    <slot>reject()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

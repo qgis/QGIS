@@ -36,3 +36,8 @@ void QgsGrassSelectBase::setLayers()
 {
 
 }
+
+void QgsGrassSelectBase::reject()
+{
+
+}
