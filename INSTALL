@@ -1,0 +1,7 @@
+To build Qgis:
+1. Make sure your QTDIR environment variable is set to your Qt directory
+2. Set PGSQL environment variable to point to your PostgresQL installation and make sure the libpq++
+   headers are available in $(PGSQL)/include
+3. Build qgis by typing: make
+
+The qgis executable will be built in the ./qgis/src directory
