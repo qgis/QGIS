@@ -237,19 +237,13 @@ void QgsProjectProperties::getProjList()
     while ( !myQTextStream.atEnd() ) 
     {
       myCurrentLineQString = myQTextStream.readLine(); // line of text excluding '\n'
-      if (myCurrentLineQString.left(4)!="PROJ")
-      {
-        QString myNextLineQString = myQTextStream.readLine(); // lthis is the actual wkt string
-        if (myNextLineQString.left(4)!="PROJ") //the line shoue start with PROJ
-        {
-          continue;
-        }
 #ifdef QGISDEBUG
-        //generates a lot of output to stdout!
-        //std::cout << " Match found:" << myCurrentLineQString.ascii() << std::endl;
+      //generates a lot of output to stdout!
+      //std::cout << " Match found:" << myCurrentLineQString.ascii() << std::endl;
 #endif
-        mProjectionsMap[myCurrentLineQString]=myNextLineQString;
-      }
+      //get the user friendly name for the WKT
+      QString myShortName = getWKTShortName(myCurrentLineQString);
+      mProjectionsMap[myShortName]=myCurrentLineQString;
     }
     myQFile.close();
     
@@ -265,6 +259,7 @@ void QgsProjectProperties::getProjList()
     {
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       cboProjection->insertItem(myIterator.key());
+
     }
     //make sure all the loaded layer WKT's and the active project projection exist in the 
     //combo box too....
@@ -275,6 +270,10 @@ void QgsProjectProperties::getProjList()
       QgsMapLayer * myMapLayer = myMapIterator->second;
       QString myWKT = myMapLayer->getProjectionWKT();
       QString myWKTShortName = getWKTShortName(myWKT);
+      //TODO add check here that CS is not already in the projections map
+      //and if not append to wkt_defs file
+      cboProjection->insertItem(myIterator.key());
+      mProjectionsMap[myWKTShortName]=myWKT;
     }    
     
     //set the combo entry to the current entry for the project
@@ -303,32 +302,43 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
     and
     Cassini_Soldner
     */
-    QString myCoordinateSystem, myProjection;
-    int myPos = 0;
-    QRegExp myRegExp;
-    myRegExp.setPattern( "\[\".*\"" );
-    if ( myRegExp.search( theWKT ,0) == -1 ) 
-    {
-      return NULL;
-    }
-    std::cout << "getWKTShortName part 1: " << myRegExp.cap(0) << std::endl;
-    myPos = myRegExp.matchedLength();
-    myRegExp.setPattern( "*\"," );
-    if ( myRegExp.search( theWKT ,myPos) == -1 ) 
-    {
-      return NULL;
-    }        
-    std::cout << "getWKTShortName part 2: " <<  myRegExp.cap(0) << std::endl;
-    myCoordinateSystem = myRegExp.cap( 1 );
-    myRegExp.setPattern( "(PROJECTION|projection|Projection)[\".*\"\]" );
-    if ( myRegExp.search( theWKT ) == -1 ) 
-    {
-      return NULL;
-    }        
-    //now find the projection
-    std::cout <<  "getWKTShortName part 3: " << myRegExp.cap(0) << std::endl;
-    myProjection = myRegExp.cap( 1 );
-        
-    std::cout << myProjection << " -- " << myCoordinateSystem << std::endl;
-    return myProjection + " - " + myCoordinateSystem;
+  OGRSpatialReference mySpatialRefSys;
+  //this is really ugly but we need to get a QString to a char**
+  const char * mySourceCharArray =  theWKT.ascii();
+  char *mySourceCharArrayPointer = (char *)mySourceCharArray;
+  
+  /* Here are the possible OGR error codes :
+     typedef int OGRErr;
+
+    #define OGRERR_NONE                0
+    #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize 
+    #define OGRERR_NOT_ENOUGH_MEMORY   2
+    #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
+    #define OGRERR_UNSUPPORTED_OPERATION 4
+    #define OGRERR_CORRUPT_DATA        5
+    #define OGRERR_FAILURE             6
+    #define OGRERR_UNSUPPORTED_SRS     7 */
+    
+  OGRErr myInputResult = mySpatialRefSys.importFromWkt( & mySourceCharArrayPointer );
+  if (myInputResult != OGRERR_NONE)
+  {
+    return NULL;
+  }
+  std::cout << theWKT << std::endl;
+  //check if the coordinate system is projected or not
+  QString myProjection,myDatum,myCoordinateSystem,myName;
+  if (mySpatialRefSys.GetAttrNode("GEOCS")!=NULL)
+  {
+    myProjection = "LatLong";
+    myDatum = mySpatialRefSys.GetAttrValue("DATUM",0);
+    myName = myProjection + " - " + myDatum;
+  }  
+  else
+  {    
+    myProjection = mySpatialRefSys.GetAttrValue("PROJCS",1);
+    myCoordinateSystem = mySpatialRefSys.GetAttrValue("PROJECTION",0);
+    myName = myProjection + " - " + myCoordinateSystem;
+  } 
+  std::cout << "Projection short name " << myName << std::endl;
+  return myName; 
 }
