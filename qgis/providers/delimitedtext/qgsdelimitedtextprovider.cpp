@@ -448,7 +448,7 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
+QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist)
 {
      // We must manually check each point to see if it is within the
   // selection rectangle
@@ -753,35 +753,6 @@ void QgsDelimitedTextProvider::fillMinMaxCash()
 //       actually has features
 bool QgsDelimitedTextProvider::isValid(){
   return mValid;
-}
-
-bool QgsDelimitedTextProvider::startEditing()
-{
-    return false;
-}
-
-void QgsDelimitedTextProvider::stopEditing()
-{
-}
-
-bool QgsDelimitedTextProvider::commitChanges()
-{
-    return false;
-}
-
-bool QgsDelimitedTextProvider::rollBack()
-{
-    return false;
-}
-
-bool QgsDelimitedTextProvider::addFeature(QgsFeature* f)
-{
-    return false;
-}
-
-bool QgsDelimitedTextProvider::deleteFeature(int id)
-{
-    return false;
 }
 
 /** 

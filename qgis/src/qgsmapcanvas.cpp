@@ -1202,10 +1202,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
           if(vlayer)
           {
-        if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
+        if(!vlayer->isEditable())
         {
-      QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-      break;
+	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+	    break;
         }
 
         QgsFeature* f = new QgsFeature(0,"WKBPoint");
@@ -1250,7 +1250,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
     if(vlayer)
     {
-        if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
+        if(!vlayer->isEditable())
         {
 	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
 	    break;

@@ -51,7 +51,7 @@ public:
   */
   QgsFeature * getNextFeature(bool fetchAttributes=false);
   bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
-  QgsFeature * getNextFeature(std::list<int>& attlist, bool getnotcommited=false);
+  QgsFeature * getNextFeature(std::list<int>& attlist);
   
   /** Get the feature type. This corresponds to 
       WKBPoint,
@@ -129,29 +129,6 @@ public:
    */
   bool isValid();
 
-  /**
-     Enables editing capabilities of the provider (if supported)
-     @return false in case of error or if the provider does not support editing
-  */
-  virtual bool startEditing();
-
-  /**
-     Disables the editing capabilities of the provider
-  */
-  virtual void stopEditing();
-
-  /**
-     Commits changes
-     @return false in case of problems
-  */
-  virtual bool commitChanges();
-
-  /**
-     Discards changes
-     @return false in case of problems
-  */
-  virtual bool rollBack();
-
   /**Returns true if the provider is in editing mode*/
   virtual bool isEditable() const { return mEditable; }
 
@@ -160,12 +137,7 @@ public:
 
   /**Adds a feature
      @return true in case of success and false in case of failure*/
-  bool addFeature(QgsFeature* f);
-
-/**Deletes a feature
-   @param id the number of the feature
-   @return true in case of success and false in case of failure*/
-  bool deleteFeature(int id);
+  bool addFeatures(std::list<QgsFeature*> flist);
   
   /**Returns the default value for attribute @c attr for feature @c f. */
   QString getDefaultValue(const QString& attr, QgsFeature* f);
@@ -178,12 +150,13 @@ public:
    * @return True if point is within the rectangle
    */
   bool boundsCheck(double x, double y);
+
+  bool supportsFeatureAddition(){return true;}
   
  private:
   
   /** Internal function used by the other getNextFeature() functions. */
-  bool getNextFeature(QgsFeature* feature, std::list<int>& attlist,
-		      bool getnotcommitted);
+  bool getNextFeature(QgsFeature* feature, std::list<int>& attlist);
 
   bool mEditable;
   std::vector<GPSObject*> mAddedFeatures;

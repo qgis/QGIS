@@ -48,7 +48,8 @@ public:
   */
   QgsFeature * getNextFeature(bool fetchAttributes=false);
   bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
-  QgsFeature * getNextFeature(std::list<int>& attlist, bool getnotcommited=false);
+
+  QgsFeature * getNextFeature(std::list<int>& attlist);
   
   /** Get the feature type. This corresponds to 
       WKBPoint,
@@ -128,44 +129,6 @@ public:
  /**Returns true if this is a valid delimited file
  */
  bool isValid();
-
- /**
-     Enables editing capabilities of the provider (if supported)
-     @return false in case of error or if the provider does not support editing
-  */
-  virtual bool startEditing();
-
-  /**
-     Disables the editing capabilities of the provider
-  */
-  virtual void stopEditing();
-
-  /**
-     Commits changes
-     @return false in case of problems
-  */
-  virtual bool commitChanges();
-
-  /**
-     Discards changes
-     @return false in case of problems
-  */
-  virtual bool rollBack();
-
-  /**Returns true if the provider is in editing mode*/
-  virtual bool isEditable() const {return false;}
-
-  /**Returns true if the provider has been modified since the last commit*/
-  virtual bool isModified() const {return false;}
-
- /**Adds a feature
-    @return true in case of success and false in case of failure*/
- bool addFeature(QgsFeature* f);
-
- /**Deletes a feature
-    @param id the number of the feature
-    @return true in case of success and false in case of failure*/
- bool deleteFeature(int id);
 
  /**
   * Check to see if the point is withn the selection

@@ -222,7 +222,7 @@ public:
   void setLegendItem(QgsLegendItem * li);
 
   /**True if the layer can be edited*/
-  virtual bool isEditable()=0;
+  virtual bool isEditable() const =0;
 
   /** sets state from DOM document
 

@@ -61,7 +61,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      *@param attlist a list containing the indexes of the attribute fields to copy
      *@param getnotcommited flag indicating if not commited features should be returned
      */
-    QgsFeature* getNextFeature(std::list<int>& attlist, bool getnotcommited=false);
+    QgsFeature* getNextFeature(std::list<int>& attlist);
     /** Get the feature type. This corresponds to 
     * WKBPoint,
     * WKBLineString,
@@ -162,28 +162,22 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   //! get status of PROJ4 capability
   bool hasPROJ(PGconn *);
 
-  /**
-     *Enables editing capabilities of the provider (if supported)
-     *@return false in case of error or if the provider does not support editing
-    */
-  virtual bool startEditing();
-
   /**Returns the default value for attribute @c attr for feature @c f. */
   QString getDefaultValue(const QString& attr, QgsFeature* f);
 
-  /**Deletes a feature
-       @param id the number of the feature
+  /**Adds a list of features
        @return true in case of success and false in case of failure*/
-  virtual bool deleteFeature(int id);
+    bool addFeatures(std::list<QgsFeature*> flist);
 
- protected:
-  /**Commits a feature
-     @return true in case of success and false in case of failure*/
-  bool commitFeature(QgsFeature* f);
-  /**Commits the deletion of a feature
-     @return true in case of success and false in case of faiure*/
-  bool eraseFeature(int id);
+  /**Deletes a list of features
+       @param id list of feature ids
+       @return true in case of success and false in case of failure*/
+  bool deleteFeatures(std::list<int> id);
   
+  bool supportsFeatureAddition(){return true;}
+
+  bool supportsFeatureDeletion(){return true;}
+
 private:
       std::vector < QgsFeature > features;
       std::vector < bool > *selected;
@@ -282,4 +276,8 @@ private:
   bool gistAvailable;
   //! PROJ4 capability
   bool projAvailable;
+  /**Writes a single feature*/
+  bool addFeature(QgsFeature* f);
+  /**Deletes a feature*/
+  bool deleteFeature(int id);
 };
