@@ -1,11 +1,11 @@
 /***************************************************************************
-                          plugin.h 
+                          plugin.h
  Functions:
                              -------------------
     begin                : Jan 21, 2004
     copyright            : (C) 2004 by Tim Sutton
     email                : tim@linfiniti.com
-  
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,7 +25,7 @@
 #include <qfont.h>
 #include <qcolor.h>
 #include <qsimplerichtext.h>
-
+#include <qpainter.h>
 /**
 * \class Plugin
 * \brief OpenModeller plugin for QGIS
@@ -34,11 +34,11 @@
 class Plugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
-      /** 
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+      /**
+       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
        * QGIS when it attempts to instantiate the plugin.
        * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object. 
+       * @param qI Pointer to the QgisIface object.
        */
       Plugin(QgisApp * , QgisIface * );
   //! init the gui
@@ -48,7 +48,7 @@ class Plugin:public QObject, public QgisPlugin
   public slots:
   //! Show the dialog box
   void run();
-  void renderLabel();
+  void renderLabel(QPainter *);
   //! Refresh the map display using the mapcanvas exported via the plugin interface
   void refreshCanvas();
   //! unload the plugin
@@ -65,9 +65,9 @@ class Plugin:public QObject, public QgisPlugin
   void setPlacement(QString);
   //! set copyright label enabled
   void setEnable(bool);
-  
 
-  
+
+
     private:
   //! This is the font that will be used for the copyright label
   QFont mQFont;
@@ -79,7 +79,7 @@ class Plugin:public QObject, public QgisPlugin
   QString mPlacement;
   //! Copyright label enabled
   bool mEnable;
-  
+
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;

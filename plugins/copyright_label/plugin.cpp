@@ -1,5 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
+  plugin.cpp
   Import tool for various worldmap analysis output files
 Functions:
 
@@ -53,7 +53,7 @@ email                : tim@linfiniti.com
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
-// 
+//
 static const char * const ident_ = "$Id$";
 
 static const char * const name_ = "CopyrightLabel";
@@ -69,7 +69,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), 
+          qgisMainWindowPointer(theQGisApp),
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
@@ -82,7 +82,7 @@ Plugin::~Plugin()
 }
 
 /*
- * Initialize the GUI interface for the plugin 
+ * Initialize the GUI interface for the plugin
  */
 void Plugin::initGui()
 {
@@ -99,13 +99,13 @@ void Plugin::initGui()
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // This calls the north arrow renderer everytime the cnavas has drawn itself
-  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete()), this, SLOT(renderLabel()));
- 
+  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
+
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
   //default text to start with
   toolBarPointer->setLabel("Copyright Label");
-  mLabelQString = QString("© QGIS 2004");
+  mLabelQString = QString(" QGIS 2004");
   mQFont = QFont("time", 12, QFont::Bold);
   mLabelQColor = QColor(Qt::black);
 
@@ -146,31 +146,24 @@ void Plugin::refreshCanvas()
  qGisInterface->getMapCanvas()->refresh();
 }
 
-void Plugin::renderLabel()
-{ 
+void Plugin::renderLabel(QPainter * theQPainter)
+{
   //Large IF statement to enable/disable copyright label
   if (mEnable)
   {
     //@todo softcode this!myQSimpleText.height()
     int myRotationInt = 90;
-    QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
-    // Draw a text alabel onto the pixmap 
-    //
-    QPainter myQPainter(myQPixmap);
-    //myQPainter.rotate(-myRotationInt);
-    //could use somthing like next line to draw a pic instead of text
-    //myQPainter.drawImage(-70, 0, myQImage);
 
     //hard coded cludge for getting a colorgroup.  Needs to be replaced
     QButton * myQButton =new QButton();
-    QColorGroup myQColorGroup = myQButton->colorGroup();  
+    QColorGroup myQColorGroup = myQButton->colorGroup();
 
     QSimpleRichText myQSimpleText(mLabelQString, mQFont);
-    myQSimpleText.setWidth( &myQPainter, (qGisInterface->getMapCanvas()->width()-10) );
+    myQSimpleText.setWidth( theQPainter, (theQPainter->viewport().width()-10) );
 
     //Get canvas dimensions
-    int myYOffset = qGisInterface->getMapCanvas()->height();
-    int myXOffset = qGisInterface->getMapCanvas()->width();
+    int myYOffset = theQPainter->viewport().height();
+    int myXOffset = theQPainter->viewport().width();
 
 
     //Determine placement of label from form combo box
@@ -179,7 +172,7 @@ void Plugin::renderLabel()
       //Define bottom left hand corner start point
       myYOffset = myYOffset - (myQSimpleText.height()+5);
       myXOffset = 5;
-    } 
+    }
     else if (mPlacement==tr("Top Left"))
     {
       //Define top left hand corner start point
@@ -191,17 +184,17 @@ void Plugin::renderLabel()
       //Define top right hand corner start point
       myYOffset = 5;
       myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
-    }  
+    }
     else // defaulting to bottom right
     {
       //Define bottom right hand corner start point
       myYOffset = myYOffset - (myQSimpleText.height()+5);
       myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
-    }    
+    }
 
     //Paint label to canvas
     QRect myRect(myXOffset,myYOffset,myQSimpleText.widthUsed(),myQSimpleText.height());
-    myQSimpleText.draw (&myQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
+    myQSimpleText.draw (theQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
 
     //myQPainter.setFont(mQFont);
     //myQPainter.setPen(mLabelQColor);
@@ -237,7 +230,7 @@ void Plugin::unload()
     mLabelQColor = theQColor;
     refreshCanvas();
   }
-  
+
   //! set placement of copyright label
   void Plugin::setPlacement(QString theQString)
   {
@@ -256,8 +249,8 @@ void Plugin::unload()
 
 
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
