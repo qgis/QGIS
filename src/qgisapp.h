@@ -30,6 +30,7 @@ class QVBox;
 class QCursor;
 class QListView;
 class QListViewItem;
+class QFileInfo;
 class QgsMapLayer;
 class QSocket;
 class QgsProviderRegistry;
@@ -40,7 +41,7 @@ class QgsMapCanvas;
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
-class QgisApp:public QgisAppBase
+class QgisApp : public QgisAppBase
 {
   Q_OBJECT public:
 //! Constructor
@@ -49,18 +50,67 @@ class QgisApp:public QgisAppBase
 	 ~QgisApp();
 public:
 	 QgisIface *getInterface();
+
+      /**
+         @todo XXX what the heck is this?
+       */
 	 int getInt();
+
          void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
          /** \brief overloaded vesion of the privat addLayer method that takes a list of
-         * filenames instead of prompting user with a dialog. */
-         void addLayer(QStringList const & theLayerQStringList);
-         /** \brief overloaded vesion of the privat addLRasterayer method that takes a list of
-         * filenames instead of prompting user with a dialog. */
-      	void addRasterLayer(QStringList const & theLayerQStringList);
+         * filenames instead of prompting user with a dialog. 
+
+         @returns true if successfully added layer
+
+         @note
+
+         This should be deprecated because it's possible to have a
+         heterogeneous set of files; i.e., a mix of raster and vector.
+         It's much better to try to just open one file at a time.
+
+         */
+         bool addLayer(QStringList const & theLayerQStringList);
+
+         /** open a vector layer for the given file
+
+           @returns false if unable to open a raster layer for rasterFile
+
+           @note
+
+           This is essentially a simplified version of the above
+         */
+         bool addLayer(QFileInfo const & vectorFile);
+
+
+         /** overloaded vesion of the private addRasterLayer()
+
+         Method that takes a list of filenames instead of prompting
+         user with a dialog.
+
+         @returns true if successfully added layer(s)
+
+         @note
+
+         This should be deprecated because it's possible to have a
+         heterogeneous set of files; i.e., a mix of raster and vector.
+         It's much better to try to just open one file at a time.
+
+         */
+      	 bool addRasterLayer(QStringList const & theLayerQStringList);
+
+
+      /** open a raster layer for the given file
+
+         @returns false if unable to open a raster layer for rasterFile
+
+         @note
+
+         This is essentially a simplified version of the above
+      */
+      	 bool addRasterLayer(QFileInfo const & rasterFile);
         
 private:
-	 //private:
-	//public slots:
+
 	//! Add a vector layer to the map
 	void addLayer();
 	//! Add a raster layer to the map

@@ -20,40 +20,39 @@
 
 #include <dlfcn.h>
 
-#include <qapplication.h>
 #include <qaction.h>
-#include <qmenubar.h>
+#include <qapplication.h>
+#include <qbitmap.h>
 #include <qcanvas.h>
 #include <qcolor.h>
+#include <qcursor.h>
 #include <qdir.h>
-#include <qscrollview.h>
-#include <qstringlist.h>
 #include <qerrormessage.h>
-#include <qmessagebox.h>
-#include <qstatusbar.h>
-#include <qlabel.h>
 #include <qfiledialog.h>
 #include <qfileinfo.h>
+#include <qinputdialog.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qlibrary.h>
+#include <qlistview.h>
+#include <qmenubar.h>
+#include <qmessagebox.h>
+#include <qpainter.h>
 #include <qpixmap.h>
-#include <qbitmap.h>
-#include <qsplitter.h>
+#include <qpoint.h>
 #include <qpopupmenu.h>
 #include <qprocess.h>
 #include <qrect.h>
-#include <qpoint.h>
-#include <qpainter.h>
-#include <qcursor.h>
-#include <qlayout.h>
-#include <qwmatrix.h>
-#include <qfiledialog.h>
-#include <qlibrary.h>
-#include <qvbox.h>
-#include <qlistview.h>
-#include <qsettings.h>
-#include <qtextstream.h>
-#include <qsocket.h>
-#include <qinputdialog.h>
 #include <qregexp.h>
+#include <qscrollview.h>
+#include <qsettings.h>
+#include <qsocket.h>
+#include <qsplitter.h>
+#include <qstatusbar.h>
+#include <qstringlist.h>
+#include <qtextstream.h>
+#include <qvbox.h>
+#include <qwmatrix.h>
 
 #include <iostream>
 #include <iomanip>
@@ -538,7 +537,10 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 
 
 /**
-	 This method prompts the user for a list of vector filenames with a dialog. 
+   This method prompts the user for a list of vector filenames with a dialog. 
+
+   @todo XXX I'd really like to return false, but can't because this
+         XXX is for a slot that was defined void; need to fix.
 */
 void QgisApp::addLayer()
 {
@@ -555,6 +557,7 @@ void QgisApp::addLayer()
 #ifdef QGISDEBUG
       qDebug("unable to get OGR registry");
 #endif
+      return;
   } else
     {
       mapCanvas->freeze();
@@ -566,8 +569,10 @@ void QgisApp::addLayer()
         {
           // no files were selected, so just bail
           mapCanvas->freeze(false);
+
           return;
         }
+
       addLayer(selectedFiles);
     }
 }                               // QgisApp::addLayer()
@@ -575,70 +580,207 @@ void QgisApp::addLayer()
 
 
 
-
-/** \brief overloaded vesion of the above method that takes a list of
- * filenames instead of prompting user with a dialog. */
-void QgisApp::addLayer(QStringList const &theLayerQStringList)
+bool QgisApp::addLayer(QFileInfo const & vectorFile)
 {
   // check to see if we have an ogr provider available
   QString pOgr = providerRegistry->library("ogr");
-  if (pOgr.length() > 0)
+
+  if ( pOgr.isEmpty() )
+    {
+      QMessageBox::critical(this, 
+                            tr("No OGR Provider"), 
+                            tr("No OGR data provider was found in the QGIS lib directory"));
+      return false;
+    }
+
+   // let the user know we're going to possibly be taking a while
+   QApplication::setOverrideCursor(Qt::WaitCursor);
+
+   mapCanvas->freeze();         // XXX why do we do this?
+
+   // create the layer
+
+   QgsVectorLayer *layer = new QgsVectorLayer(vectorFile.filePath(), 
+                                            vectorFile.baseName(), 
+                                            "ogr");
+   Q_CHECK_PTR( layer );
+
+   if ( ! layer )
+   { 
+      mapCanvas->freeze(false);
+      QApplication::restoreOverrideCursor();
+
+      // XXX insert meaningful whine to the user here
+      return false; 
+   }
+
+   if (layer->isValid())
+   {
+      // init the context menu so it can connect to slots
+      // in main app
+
+      layer->initContextMenu(this);
+
+      //add single symbol renderer as default
+      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
+
+      Q_CHECK_PTR( renderer );
+
+      if ( ! renderer )
+      {
+         mapCanvas->freeze(false);
+         QApplication::restoreOverrideCursor();
+
+         // XXX should we also delete the layer?
+
+         // XXX insert meaningful whine to the user here
+         return false; 
+      }
+
+      layer->setRenderer(renderer);
+      renderer->initializeSymbology(layer);
+      mapCanvas->addLayer(layer);
+      projectIsDirty = true;
+
+   } else
+   {
+      QString msg = vectorFile.baseName() + " ";
+      msg += tr("is not a valid or recognized data source");
+      QMessageBox::critical(this, tr("Invalid Data Source"), msg);
+
+      // since the layer is bad, stomp on it
+      delete layer;
+
+      mapCanvas->freeze(false);
+      QApplication::restoreOverrideCursor();
+
+      return false;
+   }
+
+   mapCanvas->freeze(false);
+   mapLegend->update();
+   qApp->processEvents();       // XXX why does this need to be called manually?
+   mapCanvas->render2();        // XXX eh, wot?
+
+   QApplication::restoreOverrideCursor();
+
+   statusBar()->message(mapCanvas->extent().stringRep());
+
+   return true;
+
+} // QgisApp::addLayer()
+
+
+
+
+
+/** \brief overloaded vesion of the above method that takes a list of
+ * filenames instead of prompting user with a dialog.
+
+  XXX yah know, this could be changed to just iteratively call the above
+
+ */
+bool QgisApp::addLayer(QStringList const &theLayerQStringList)
+{
+  // check to see if we have an ogr provider available
+  QString pOgr = providerRegistry->library("ogr");
+
+  if ( pOgr.isEmpty() )
+    {
+      QMessageBox::critical(this, 
+                            tr("No OGR Provider"), 
+                            tr("No OGR data provider was found in the QGIS lib directory"));
+      return false;
+    }
+  else
     {
       mapCanvas->freeze();
+
       QApplication::setOverrideCursor(Qt::WaitCursor);
-      QStringList::ConstIterator it = theLayerQStringList.begin();
-      while (it != theLayerQStringList.end())
+      
+
+      for ( QStringList::ConstIterator it = theLayerQStringList.begin();
+            it != theLayerQStringList.end();
+            ++it )
         {
-          if (true)
-            {
-              //            if (isValidVectorFileName(*it)) {
-
-              QFileInfo fi(*it);
-              QString base = fi.baseName();
+           QFileInfo fi(*it);
+           QString base = fi.baseName();
 
 
-              // create the layer
+           // create the layer
 
-              //dp    QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
-              QgsVectorLayer *lyr = new QgsVectorLayer(*it, base, "ogr");
+           QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "ogr");
 
-              if (lyr->isValid())
-                {
-                  // init the context menu so it can connect to slots in main app
-                  lyr->initContextMenu(this);
-                  //add single symbol renderer as default
-                  QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
-                  lyr->setRenderer(renderer);
-                  renderer->initializeSymbology(lyr);
-                  mapCanvas->addLayer(lyr);
-                  projectIsDirty = true;
-              } else
-                {
-                  QString msg = *it + " ";
-                  msg += tr("is not a valid or recognized data source");
-                  QMessageBox::critical(this, tr("Invalid Data Source"), msg);
-                }
-            }                   //end of isValidVectorFileName check
-          ++it;
+           Q_CHECK_PTR( layer );
+
+           if ( ! layer )
+           { 
+              mapCanvas->freeze(false);
+              QApplication::restoreOverrideCursor();
+
+              // XXX insert meaningful whine to the user here
+              return false; 
+           }
+
+           if (layer->isValid())
+           {
+              // init the context menu so it can connect to slots
+              // in main app
+
+              layer->initContextMenu(this);
+
+              //add single symbol renderer as default
+              QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
+
+              Q_CHECK_PTR( renderer );
+
+              if ( ! renderer )
+              {
+                 mapCanvas->freeze(false);
+                 QApplication::restoreOverrideCursor();
+
+                 // XXX insert meaningful whine to the user here
+                 return false; 
+              }
+
+              layer->setRenderer(renderer);
+              renderer->initializeSymbology(layer);
+              mapCanvas->addLayer(layer);
+              projectIsDirty = true;
+           } else
+           {
+              QString msg = *it + " ";
+              msg += tr("is not a valid or recognized data source");
+              QMessageBox::critical(this, tr("Invalid Data Source"), msg);
+
+              // since the layer is bad, stomp on it
+              delete layer;
+
+              // XXX should we return false here, or just grind through
+              // XXX the remaining arguments?
+           }
+
         }
+
       //qApp->processEvents();
       // update legend
       /*! \todo Need legend scrollview and legenditem classes */
       // draw the map
 
       mapLegend->update();
-      qApp->processEvents();
+      qApp->processEvents();    // XXX why does this need to be called manually?
       mapCanvas->freeze(false);
       mapCanvas->render2();
       QApplication::restoreOverrideCursor();
       statusBar()->message(mapCanvas->extent().stringRep());
 
-  } else
-    {
-      QMessageBox::critical(this, tr("No OGR Provider"), tr("No OGR data provider was found in the QGIS lib directory"));
-    }
+  }
 
-}
+  return true;
+
+} // QgisApp::addLayer()
+
+
 
 
 /**
@@ -857,7 +999,8 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
 
 
 
-
+/** @todo XXX I'd *really* like to return, ya know, _false_.
+ */
 void QgisApp::addRasterLayer()
 {
   mapCanvas->freeze();
@@ -873,17 +1016,86 @@ void QgisApp::addRasterLayer()
   if (selectedFiles.isEmpty())
     {
       // no files were selected, so just bail
-      return;
+       return;
     }
 
-  addRasterLayer(selectedFiles);
+   addRasterLayer(selectedFiles);
 
 }                               // QgisApp::addRasterLayer()
 
 
 
 
-void QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
+
+bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
+{
+   // let the user know we're going to possibly be taking a while
+   QApplication::setOverrideCursor(Qt::WaitCursor);
+
+   mapCanvas->freeze();         // XXX why do we do this?
+
+   // XXX ya know QgsRasterLayer can snip out the basename on its own;
+   // XXX why do we have to pass it in for it?
+   QgsRasterLayer *layer = 
+      new QgsRasterLayer(rasterFile.filePath(), rasterFile.baseName());
+
+   Q_CHECK_PTR( layer );
+
+   if ( ! layer )
+   {
+      mapCanvas->freeze(false);
+      QApplication::restoreOverrideCursor();
+
+      // XXX insert meaningful whine to the user here; although be
+      // XXX mindful that a null layer may mean exhausted memory resources
+      return false; 
+   }
+
+   if (layer->isValid())
+   {
+      // XXX doesn't the mapCanvas->addLayer() do this?
+      QObject::connect(layer, 
+                       SIGNAL(repaintRequested()), 
+                       mapCanvas, 
+                       SLOT(refresh()));
+
+      // add it to the mapcanvas collection
+      mapCanvas->addLayer(layer);
+      projectIsDirty = true;
+
+      // init the context menu so it can connect to slots in main app
+      layer->initContextMenu(this);
+   } else
+   {
+      QString msg(rasterFile.baseName() + " is not a valid or recognized raster data source");
+      QMessageBox::critical(this, "Invalid Data Source", msg);
+
+      delete layer;
+
+      mapCanvas->freeze(false);
+      QApplication::restoreOverrideCursor();
+
+      return false;
+   }
+
+
+  mapLegend->update();
+  qApp->processEvents();
+  mapCanvas->freeze(false);
+  mapCanvas->render2();
+  QApplication::restoreOverrideCursor();
+  statusBar()->message(mapCanvas->extent().stringRep());
+
+   return true;
+   
+} // QgisApp::addRasterLayer
+
+
+
+/**
+   @todo XXX ya know, this could be changed to iteratively call the above
+*/
+bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 {
   if (theFileNameQStringList.empty())
     {
@@ -891,31 +1103,48 @@ void QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
       // allow mapCanvas to handle events
       // first
       mapCanvas->freeze(false);
-      return;
+      return false;
   } else
     {
       mapCanvas->freeze();
     }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); myIterator != theFileNameQStringList.end();
+
+  for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); 
+       myIterator != theFileNameQStringList.end();
        ++myIterator)
     {
       if (isValidRasterFileName(*myIterator))
         {
           QFileInfo myFileInfo(*myIterator);
-          QString myDirNameQString = myFileInfo.dirPath();  //get the directory the .adf file was in
+          // get the directory the .adf file was in
+          QString myDirNameQString = myFileInfo.dirPath();
           QString myBaseNameQString = myFileInfo.baseName();
-          //only allow one copy of a ai grid file to be loaded at a time to
-          //prevent the user selecting all adfs in 1 dir which actually represent 1 coverate,
+          //only allow one copy of a ai grid file to be loaded at a
+          //time to prevent the user selecting all adfs in 1 dir which
+          //actually represent 1 coverate,
 
           // create the layer
           QgsRasterLayer *layer = new QgsRasterLayer(*myIterator, myBaseNameQString);
-          QObject::connect(layer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()));
+          Q_CHECK_PTR( layer );
 
+          if ( ! layer )
+          {
+             mapCanvas->freeze(false);
+             QApplication::restoreOverrideCursor();
+
+             // XXX insert meaningful whine to the user here
+             return false; 
+          }
           if (layer->isValid())
             {
-              // add it to the mapcanvas collection
+               QObject::connect(layer, 
+                                SIGNAL(repaintRequested()), 
+                                mapCanvas, 
+                                SLOT(refresh()));
+
+               // add it to the mapcanvas collection
               mapCanvas->addLayer(layer);
               projectIsDirty = true;
               // init the context menu so it can connect to slots in main app
@@ -925,17 +1154,25 @@ void QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
             {
               QString msg(*myIterator + " is not a valid or recognized raster data source");
               QMessageBox::critical(this, "Invalid Data Source", msg);
+
+              delete layer;
+
+              // XXX should we return false here, or just grind through
+              // XXX the remaining arguments?
             }
 
-          //only allow one copy of a ai grid file to be loaded at a time to
-          //prevent the user selecting all adfs in 1 dir which actually represent 1 coverate,
+          //only allow one copy of a ai grid file to be loaded at a
+          //time to prevent the user selecting all adfs in 1 dir which
+          //actually represent 1 coverate,
+
           if (myBaseNameQString.lower().endsWith(".adf"))
             {
 
               break;
             }
-        }                       //end of isValidRasterFileName check
+        } 
     }
+
   mapLegend->update();
 
   qApp->processEvents();
@@ -948,7 +1185,14 @@ void QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
   statusBar()->message(mapCanvas->extent().stringRep());
 
+  return true;
+
 }                               // QgisApp::addRasterLayer()
+
+
+
+
+
 
 /** This helper checks to see whether the filename appears to be a valid raster file name */
 bool QgisApp::isValidRasterFileName(QString theFileNameQString)
@@ -1015,25 +1259,25 @@ void QgisApp::addDatabaseLayer()
             {
 
               // create the layer
-              //qWarning("creating lyr");
-              QgsVectorLayer *lyr = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
-              if (lyr->isValid())
+              //qWarning("creating layer");
+              QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
+              if (layer->isValid())
                 {
                   // init the context menu so it can connect to slots in main app
-                  lyr->initContextMenu(this);
+                  layer->initContextMenu(this);
 
                   // give it a random color
                   QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
-                  lyr->setRenderer(renderer);
-                  renderer->initializeSymbology(lyr);
+                  layer->setRenderer(renderer);
+                  renderer->initializeSymbology(layer);
                   // add it to the mapcanvas collection
-                  mapCanvas->addLayer(lyr);
+                  mapCanvas->addLayer(layer);
                   projectIsDirty = true;
               } else
                 {
                   std::cerr << *it << " is an invalid layer - not loaded" << std::endl;
                   QMessageBox::critical(this, tr("Invalid Layer"), tr("%1 is an invalid layer and cannot be loaded.").arg(*it));
-                  delete lyr;
+                  delete layer;
                 }
               //qWarning("incrementing iterator");
               ++it;
@@ -1227,10 +1471,10 @@ void QgisApp::attributeTable()
   QListViewItem *li = mapLegend->currentItem();
   if (li)
     {
-      QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
-      if (lyr)
+      QgsMapLayer *layer = ((QgsLegendItem *) li)->layer();
+      if (layer)
         {
-          lyr->table();
+          layer->table();
 
       } else
         {
