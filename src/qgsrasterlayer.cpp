@@ -414,7 +414,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             else
             {
 
-              drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString), grayBandNameQString);        
+              int myBandNoInt=1;
+              drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort, myBandNoInt, grayBandNameQString);        
               break;
             }
             //a "Palette" image where the bands contains 24bit color info and 8 bits is pulled out per color
