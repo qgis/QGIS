@@ -36,6 +36,12 @@
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
+
 
 QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
 					      mMinMaxCacheDirty(true) {
@@ -575,14 +581,14 @@ bool QgsGPXProvider::boundsCheck(double x, double y)
  * Class factory to return a pointer to a newly created 
  * QgsGPXProvider object
  */
-extern "C" QgsGPXProvider * classFactory(const char *uri) {
+QGISEXTERN QgsGPXProvider * classFactory(const char *uri) {
   return new QgsGPXProvider(uri);
 }
 
 
 /** Required key function (used to map the plugin to a data store type)
 */
-extern "C" QString providerKey(){
+QGISEXTERN QString providerKey(){
   return QString("gpx");
 }
 
@@ -590,7 +596,7 @@ extern "C" QString providerKey(){
 /**
  * Required description function 
  */
-extern "C" QString description(){
+QGISEXTERN QString description(){
   return QString("GPS eXchange format and LOC provider");
 } 
 
@@ -599,7 +605,7 @@ extern "C" QString description(){
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin
  */
-extern "C" bool isProvider(){
+QGISEXTERN bool isProvider(){
   return true;
 }
 

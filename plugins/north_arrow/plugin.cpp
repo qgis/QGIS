@@ -52,6 +52,13 @@ email                : tim@linfiniti.com
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
+
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
+
 //
 static const char * const ident_ = "$Id$";
 
@@ -144,6 +151,9 @@ void Plugin::renderNorthArrow(QPainter * theQPainter)
   if (mEnable)
   {
     QPixmap myQPixmap; //to store the north arrow image in
+#ifdef WIN32
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
     QString myFileNameQString = QString(PKGDATAPATH) +
                                 QString("/images/north_arrows/default.png");
     //std::cout << "Trying to load " << myFileNameQString << std::cout;
@@ -257,38 +267,38 @@ void Plugin::setEnabled(bool theBool)
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
   return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-extern "C" QString name()
+QGISEXTERN QString name()
 {
   return name_;
 }
 
 // Return the description
-extern "C" QString description()
+QGISEXTERN QString description()
 {
   return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
-extern "C" int type()
+QGISEXTERN int type()
 {
   return type_;
 }
 
 // Return the version number for the plugin
-extern "C" QString version()
+QGISEXTERN QString version()
 {
   return version_;
 }
 
 // Delete ourself
-extern "C" void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
   delete thePluginPointer;
 }
