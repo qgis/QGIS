@@ -29,6 +29,8 @@ public:
 
 private:
     void rotatePixmap(int theRotationInt);
+    void paintEvent( QPaintEvent * );//overloads qwidget
+    void resizeEvent(QResizeEvent *); //overloads qwidget
 signals:
    //void drawRasterLayer(QString);
    //void drawVectorrLayer(QString,QString,QString);
