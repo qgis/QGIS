@@ -19,6 +19,7 @@
  /*  $Id$ */
 #ifndef PLUGIN
 #define PLUGIN
+#include "qgsbabelformat.h"
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qgisapp.h>
@@ -32,14 +33,15 @@ class QgsVectorLayer;
 */
 class Plugin:public QObject, public QgisPlugin
 {
-  Q_OBJECT public:
+  Q_OBJECT
+public:
       /** 
        * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
        * QGIS when it attempts to instantiate the plugin.
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+  Plugin(QgisApp * , QgisIface * );
   /**
    * Virtual function to return the name of the plugin. The name will be used when presenting a list 
    * of installable plugins to the user
@@ -64,8 +66,6 @@ class Plugin:public QObject, public QgisPlugin
   public slots:
   //! Show the dialog box
   void run();
-  //!draw a raster layer in the qui
-  void drawRasterLayer(QString);
   //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
   void drawVectorLayer(QString,QString,QString);
   //! unload the plugin
@@ -76,22 +76,24 @@ class Plugin:public QObject, public QgisPlugin
   //! load a GPX file
   void loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
 		   bool loadTracks);
-  void importGPSFile(QString inputFilename, QString inputFormat, 
+  void importGPSFile(QString inputFilename, QgsBabelFormat* importer, 
 		     bool importWaypoints, bool importRoutes, 
 		     bool importTracks, QString outputFilename, 
 		     QString layerName);
-  void downloadFromGPS(QString protocol, QString deviceFilename,
+  void downloadFromGPS(QString device, QString port,
 		       bool downloadWaypoints, bool downloadRoutes,
 		       bool downloadTracks, QString outputFilename,
 		       QString layerName);
-  void uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
-		   QString deviceFilename);
+  void uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
+		   QString port);
 
  signals:
   
   void closeGui();
 
-    private:
+ private:
+  
+  void setupBabel();
 
 
   //! Name of the plugin
@@ -112,6 +114,10 @@ class Plugin:public QObject, public QgisPlugin
   QgisIface *qGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
   QAction *myQActionPointer;
+  
+  QString mBabelPath;
+  std::map<QString, QgsBabelFormat*> mImporters;
+  std::map<QString, QgsBabelFormat*> mDevices;
 };
 
 #endif

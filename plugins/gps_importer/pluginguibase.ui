@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>PluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>763</width>
-            <height>405</height>
+            <width>606</width>
+            <height>370</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -292,125 +292,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>GPS Download File Importer</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="5">
-                        <property name="name">
-                            <cstring>teInstructions</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
-&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
-&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</string>
-                        </property>
-                        <property name="wordWrap">
-                            <enum>WidgetWidth</enum>
-                        </property>
-                        <property name="readOnly">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="2" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>leInputFile</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="0" rowspan="1" colspan="5">
-                        <property name="name">
-                            <cstring>lblOutputFile</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Output (Shape) File:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="4" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>leOutputShapeFile</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="5" column="0">
-                        <property name="name">
-                            <cstring>lblMinTimeGap</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Minimum time gap (s):</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="5" column="2">
-                        <property name="name">
-                            <cstring>lblMinDistanceGap</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Minimum distance gap (dd):</string>
-                        </property>
-                    </widget>
-                    <widget class="QSpinBox" row="5" column="1">
-                        <property name="name">
-                            <cstring>spinMinTimeGap</cstring>
-                        </property>
-                        <property name="maxValue">
-                            <number>999999999</number>
-                        </property>
-                        <property name="lineStep">
-                            <number>10</number>
-                        </property>
-                        <property name="value">
-                            <number>60</number>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="2" column="4">
-                        <property name="name">
-                            <cstring>pbnSelectInputFile</cstring>
-                        </property>
-                        <property name="text">
-                            <string>...</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="4" column="4">
-                        <property name="name">
-                            <cstring>pbnSelectOutputFile</cstring>
-                        </property>
-                        <property name="text">
-                            <string>...</string>
-                        </property>
-                    </widget>
-                    <widget class="QSpinBox" row="5" column="3" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>spinMinDistanceGap</cstring>
-                        </property>
-                        <property name="maxValue">
-                            <number>999999999</number>
-                        </property>
-                        <property name="lineStep">
-                            <number>10</number>
-                        </property>
-                        <property name="value">
-                            <number>60</number>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="0" rowspan="1" colspan="5">
-                        <property name="name">
-                            <cstring>lblInputFile</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Input File:</string>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
                     <string>Download from GPS</string>
                 </attribute>
                 <grid>
@@ -425,9 +306,9 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
                             <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This tool will help you download data from a GPS device. Choose your 
-protocol, the device your GPS is connected to, the feature type you want 
-to download, a name for your new layer, and the GPX file where 
-you want to store the data.&lt;/p&gt;
+GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, 
+and the GPX file where you want to store the data. If your device isn't listed, or if 
+you want to change some settings, you can also edit the devices.&lt;/p&gt;
 &lt;p&gt;This tool uses the program GPSBabel 
 (&lt;a href="http://gpsbabel.sf.net"&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
 don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
@@ -441,28 +322,72 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
                             <bool>true</bool>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="1" column="0">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Protocol:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Device file:</string>
-                        </property>
-                    </widget>
                     <widget class="QPushButton" row="3" column="4">
                         <property name="name">
                             <cstring>pbDLOutput</cstring>
                         </property>
                         <property name="text">
                             <string>...</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="2" column="1">
+                        <property name="name">
+                            <cstring>pbDLEditDevices</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Edit devices</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="1" column="1">
+                        <property name="name">
+                            <cstring>cmbDLDevice</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>GPS device:</string>
+                        </property>
+                    </widget>
+                    <spacer row="2" column="2">
+                        <property name="name">
+                            <cstring>spacer6</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>80</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <spacer row="1" column="2">
+                        <property name="name">
+                            <cstring>spacer5_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>80</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>leDLOutput</cstring>
                         </property>
                     </widget>
                     <widget class="QLabel" row="3" column="0">
@@ -473,12 +398,36 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
                             <string>Output file:</string>
                         </property>
                     </widget>
-                    <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="3">
+                    <widget class="QLabel" row="4" column="0">
                         <property name="name">
-                            <cstring>leDLOutput</cstring>
+                            <cstring>textLabel1_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Layer name:</string>
                         </property>
                     </widget>
-                    <widget class="QComboBox" row="1" column="3" rowspan="1" colspan="2">
+                    <widget class="QLineEdit" row="4" column="1" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>leDLBasename</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="3">
+                        <property name="name">
+                            <cstring>textLabel1_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Feature type:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="3">
+                        <property name="name">
+                            <cstring>textLabel2_5</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Port:</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="2" column="4">
                         <item>
                             <property name="text">
                                 <string>Waypoints</string>
@@ -498,51 +447,9 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
                             <cstring>cmbDLFeatureType</cstring>
                         </property>
                     </widget>
-                    <widget class="QLineEdit" row="2" column="3" rowspan="1" colspan="2">
+                    <widget class="QComboBox" row="1" column="4">
                         <property name="name">
-                            <cstring>leDLBasename</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="2">
-                        <property name="name">
-                            <cstring>textLabel1_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Layer name:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="2">
-                        <property name="name">
-                            <cstring>textLabel1_3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Feature type:</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="1" column="1">
-                        <item>
-                            <property name="text">
-                                <string>Garmin</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>Magellan</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>cmbDLProtocol</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="2" column="1">
-                        <property name="name">
-                            <cstring>cmbDLDevice</cstring>
-                        </property>
-                        <property name="editable">
-                            <bool>true</bool>
+                            <cstring>cmbDLPort</cstring>
                         </property>
                     </widget>
                 </grid>
@@ -558,23 +465,7 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="3" column="0">
-                        <property name="name">
-                            <cstring>textLabel3_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Device file:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel1_4</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Protocol:</string>
-                        </property>
-                    </widget>
-                    <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="3">
+                    <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="5">
                         <property name="name">
                             <cstring>teDLInstructions_2</cstring>
                         </property>
@@ -582,10 +473,12 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
                             <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
-Choose the layer you want to upload, your protocol, and the device your 
-GPS is connected to.&lt;/p&gt;
-&lt;p&gt;This tool uses the program &lt;a href="http://gpsbabel.sf.net"&gt;GPSBabel&lt;/a&gt; to transfer the data. If you don't 
-have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+Choose the layer you want to upload, the device you want to upload it to, and the port 
+your device is connected to. 
+If your device isn't listed, or if you want to change some settings, you can also 
+edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel (&lt;a href="http://gpsbabel.sf.net"&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
+to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
                         </property>
@@ -604,52 +497,60 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
                             <string>Data layer:</string>
                         </property>
                     </widget>
-                    <widget class="QComboBox" row="2" column="1">
-                        <item>
-                            <property name="text">
-                                <string>Garmin</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>Magellan</string>
-                            </property>
-                        </item>
+                    <widget class="QLabel" row="1" column="3">
                         <property name="name">
-                            <cstring>cmbULProtocol</cstring>
+                            <cstring>textLabel2_4</cstring>
                         </property>
-                        <property name="enabled">
-                            <bool>true</bool>
+                        <property name="text">
+                            <string>GPS device:</string>
                         </property>
                     </widget>
-                    <widget class="QComboBox" row="3" column="1">
+                    <widget class="QPushButton" row="2" column="4">
                         <property name="name">
-                            <cstring>cmbULDevice</cstring>
+                            <cstring>pbULEditDevices</cstring>
                         </property>
-                        <property name="editable">
-                            <bool>true</bool>
+                        <property name="text">
+                            <string>Edit devices</string>
                         </property>
                     </widget>
-                    <spacer row="1" column="2" rowspan="3" colspan="1">
+                    <widget class="QComboBox" row="1" column="1">
                         <property name="name">
-                            <cstring>spacer2</cstring>
+                            <cstring>cmbULLayer</cstring>
+                        </property>
+                    </widget>
+                    <spacer row="1" column="2">
+                        <property name="name">
+                            <cstring>spacer11</cstring>
                         </property>
                         <property name="orientation">
-                            <enum>Vertical</enum>
+                            <enum>Horizontal</enum>
                         </property>
                         <property name="sizeType">
                             <enum>Expanding</enum>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>20</width>
-                                <height>90</height>
+                                <width>40</width>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
-                    <widget class="QComboBox" row="1" column="1">
+                    <widget class="QComboBox" row="1" column="4">
                         <property name="name">
-                            <cstring>cmbULLayer</cstring>
+                            <cstring>cmbULDevice</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Port:</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="2" column="1">
+                        <property name="name">
+                            <cstring>cmbULPort</cstring>
                         </property>
                     </widget>
                 </grid>
@@ -725,74 +626,14 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
         <slot>pbnOK_clicked()</slot>
     </connection>
     <connection>
-        <sender>pbnSelectInputFile</sender>
-        <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>pbnSelectInputFile_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnSelectOutputFile</sender>
-        <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>pbnSelectOutputFile_clicked()</slot>
-    </connection>
-    <connection>
         <sender>pbnCancel</sender>
         <signal>clicked()</signal>
         <receiver>PluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
     <connection>
-        <sender>leInputFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>leInputFile_textChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>leOutputShapeFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>leOutputShapeFile_textChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>leGPXFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>leGPXFile_textChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>pbnGPXSelectFile</sender>
-        <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>pbnGPXSelectFile_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>leGPXFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>enableRelevantControls()</slot>
-    </connection>
-    <connection>
-        <sender>leInputFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>enableRelevantControls()</slot>
-    </connection>
-    <connection>
-        <sender>leOutputShapeFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>enableRelevantControls()</slot>
-    </connection>
-    <connection>
         <sender>tabWidget</sender>
         <signal>currentChanged(QWidget*)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>enableRelevantControls()</slot>
-    </connection>
-    <connection>
-        <sender>cmbDLDevice</sender>
-        <signal>textChanged(const QString&amp;)</signal>
         <receiver>PluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
@@ -815,22 +656,10 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
         <slot>pbnDLOutput_clicked()</slot>
     </connection>
     <connection>
-        <sender>leIMPInput</sender>
+        <sender>leIMPLayer</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>PluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
-    </connection>
-    <connection>
-        <sender>leIMPOutput</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>enableRelevantControls()</slot>
-    </connection>
-    <connection>
-        <sender>pbIMPInput</sender>
-        <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>pbnIMPInput_clicked()</slot>
     </connection>
     <connection>
         <sender>pbIMPOutput</sender>
@@ -839,7 +668,13 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
         <slot>pbnIMPOutput_clicked()</slot>
     </connection>
     <connection>
-        <sender>leIMPInput</sender>
+        <sender>pbIMPInput</sender>
+        <signal>clicked()</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>pbnIMPInput_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>leIMPOutput</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>PluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
@@ -851,7 +686,31 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
         <slot>enableRelevantControls()</slot>
     </connection>
     <connection>
-        <sender>leIMPLayer</sender>
+        <sender>leIMPInput</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>leIMPInput</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>pbnGPXSelectFile</sender>
+        <signal>clicked()</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>pbnGPXSelectFile_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>leGPXFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>leGPXFile_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leGPXFile</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>PluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
@@ -859,11 +718,7 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
 </connections>
 <slots>
     <slot>pbnOK_clicked()</slot>
-    <slot>pbnSelectInputFile_clicked()</slot>
-    <slot>pbnSelectOutputFile_clicked()</slot>
     <slot>pbnCancel_clicked()</slot>
-    <slot>leInputFile_textChanged( const QString &amp; theQString )</slot>
-    <slot>leOutputShapeFile_textChanged( const QString &amp; theQString )</slot>
     <slot>leGPXFile_textChanged( const QString &amp; theQString )</slot>
     <slot>pbnGPXSelectFile_clicked()</slot>
     <slot>cbGPXWaypoints_toggled( bool )</slot>

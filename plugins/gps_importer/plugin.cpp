@@ -41,6 +41,8 @@ email                : tim@linfiniti.com
 #include <qcursor.h>
 #include <qprocess.h>
 #include <qprogressdialog.h>
+#include <qsettings.h>
+#include <qstringlist.h>
 
 //non qt includes
 #include <cassert>
@@ -76,11 +78,17 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
+  setupBabel();
 }
 
 Plugin::~Plugin()
 {
-
+  // delete all our babel formats
+  BabelMap::iterator iter;
+  for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
+    delete iter->second;
+  for (iter = mDevices.begin(); iter != mDevices.end(); ++iter)
+    delete iter->second;
 }
 
 /* Following functions return name, description, version, and type for the plugin */
@@ -113,20 +121,15 @@ void Plugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
-
   pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
-  
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
-
   menuIdInt = qGisInterface->addMenu("&Gps", pluginMenu);
-  // Create the action for tool
-  myQActionPointer = new QAction("Import Gps Data", QIconSet(icon), "&Wmi",0, this, "run");
-  // Connect the action to the run
+
+  // add an action to the toolbar
+  myQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
+				 this, "run");
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-
-  // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
-
 }
 
 //method defined in interface
@@ -141,25 +144,33 @@ void Plugin::run()
   // find all GPX layers
   std::vector<QgsVectorLayer*> gpxLayers;
   std::map<QString, QgsMapLayer*>::const_iterator iter;
+  std::cerr<<"LAYERS: "<<qGisInterface->getLayerRegistry()->
+    mapLayers().size()<<std::endl;
   for (iter = qGisInterface->getLayerRegistry()->mapLayers().begin();
        iter != qGisInterface->getLayerRegistry()->mapLayers().end(); ++iter) {
+    std::cerr<<iter->second->name()<<std::endl;
     if (iter->second->type() == QgsMapLayer::VECTOR) {
-      QgsVectorLayer* vectorLayer =dynamic_cast<QgsVectorLayer*>(iter->second);
-      if (vectorLayer->providerType() == "gpx")
-	gpxLayers.push_back(vectorLayer);
+      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>(iter->second);
+      if (vLayer->providerType() == "gpx")
+	gpxLayers.push_back(vLayer);
     }
   }
+  std::cerr<<std::endl;
   
-  PluginGui *myPluginGui=new PluginGui(gpxLayers, qgisMainWindowPointer, "GPS Tools", true, 0);
+  PluginGui *myPluginGui=new PluginGui(mImporters, mDevices, gpxLayers, 
+				       qgisMainWindowPointer, "GPS Tools", 
+				       true, 0);
   //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), 
+	  this, SLOT(drawRasterLayer(QString)));
+  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), 
+	  this, SLOT(drawVectorLayer(QString,QString,QString)));
   connect(myPluginGui, SIGNAL(loadGPXFile(QString, bool, bool, bool)), 
 	  this, SLOT(loadGPXFile(QString, bool, bool, bool)));
-  connect(myPluginGui, SIGNAL(importGPSFile(QString, QString, bool, bool, bool,
-					    QString, QString)),
-	  this, SLOT(importGPSFile(QString, QString, bool, bool, bool, QString,
-				   QString)));
+  connect(myPluginGui, SIGNAL(importGPSFile(QString, QgsBabelFormat*, bool, 
+					    bool, bool, QString, QString)),
+	  this, SLOT(importGPSFile(QString, QgsBabelFormat*, bool, bool, 
+				   bool, QString, QString)));
   connect(myPluginGui, SIGNAL(downloadFromGPS(QString, QString, bool, bool,
 					      bool, QString, QString)),
 	  this, SLOT(downloadFromGPS(QString, QString, bool, bool, bool,
@@ -171,12 +182,6 @@ void Plugin::run()
   myPluginGui->show();
 }
 
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void Plugin::drawRasterLayer(QString theQString)
-{
-  qGisInterface->addRasterLayer(theQString);
-}
 //!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
 void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
@@ -205,6 +210,10 @@ void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
     return;
   }
   
+  // remember the directory
+  QSettings settings;
+  settings.writeEntry("/qgis/gps/gpxdirectory", fileInfo.dirPath());
+  
     // add the requested layers
   if (loadTracks)
     emit drawVectorLayer(filename + "?type=track", 
@@ -220,7 +229,7 @@ void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
 }
 
 
-void Plugin::importGPSFile(QString inputFilename, QString inputFormat, 
+void Plugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer, 
 			   bool importWaypoints, bool importRoutes, 
 			   bool importTracks, QString outputFilename, 
 			   QString layerName) {
@@ -235,9 +244,9 @@ void Plugin::importGPSFile(QString inputFilename, QString inputFormat,
     typeArg = "-t";
   
   // try to start the gpsbabel process
-  QStringList babelArgs;
-  babelArgs<<"gpsbabel"<<typeArg<<"-i"<<inputFormat<<"-o"<<"gpx"
-	   <<inputFilename<<outputFilename;
+  QStringList babelArgs = 
+    importer->getImportCommand(mBabelPath, typeArg, 
+			       inputFilename, outputFilename);
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
@@ -281,11 +290,11 @@ void Plugin::importGPSFile(QString inputFilename, QString inputFormat,
 }
 
 
-void Plugin::downloadFromGPS(QString protocol, QString deviceFilename,
+void Plugin::downloadFromGPS(QString device, QString port,
 			     bool downloadWaypoints, bool downloadRoutes,
 			     bool downloadTracks, QString outputFilename,
 			     QString layerName) {
-
+  
   // what does the user want to download?
   QString typeArg;
   if (downloadWaypoints)
@@ -296,9 +305,9 @@ void Plugin::downloadFromGPS(QString protocol, QString deviceFilename,
     typeArg = "-t";
   
   // try to start the gpsbabel process
-  QStringList babelArgs;
-  babelArgs<<"gpsbabel"<<typeArg<<"-i"<<protocol<<"-o"<<"gpx"
-	   <<deviceFilename<<outputFilename;
+  QStringList babelArgs = 
+    mDevices[device]->getImportCommand(mBabelPath, typeArg, 
+				       port, outputFilename);
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
@@ -337,12 +346,17 @@ void Plugin::downloadFromGPS(QString protocol, QString deviceFilename,
     emit drawVectorLayer(outputFilename + "?type=track", 
 			 layerName, "gpx");
   
+  // everything was OK, remember the device and port for next time
+  QSettings settings;
+  settings.writeEntry("/qgis/gps/lastdldevice", device);
+  settings.writeEntry("/qgis/gps/lastdlport", port);
+  
   emit closeGui();
 }
 
 
-void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
-			 QString deviceFilename) {
+void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
+			 QString port) {
   
   const QString& source(gpxLayer->getDataProvider()->getDataSourceUri());
   
@@ -360,10 +374,9 @@ void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
   }
   
   // try to start the gpsbabel process
-  QStringList babelArgs;
-  babelArgs<<"gpsbabel"<<typeArg<<"-i"<<"gpx"
-	   <<"-o"<<protocol
-	   <<source.left(source.findRev('?'))<<deviceFilename;
+  QStringList babelArgs = 
+    mDevices[device]->getExportCommand(mBabelPath, typeArg, 
+				       source.left(source.findRev('?')), port);
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
@@ -391,8 +404,97 @@ void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
     return;
   }
   
+  // everything was OK, remember this device for next time
+  QSettings settings;
+  settings.writeEntry("/qgis/gps/lastuldevice", device);
+  settings.writeEntry("/qgis/gps/lastulport", port);
+  
   emit closeGui();
 }
+
+
+void Plugin::setupBabel() {
+  
+  // where is gpsbabel?
+  QSettings settings;
+  mBabelPath = settings.readEntry("/qgis/gps/gpsbabelpath");
+  if (mBabelPath.isEmpty())
+    mBabelPath = "gpsbabel";
+  // the importable formats
+  mImporters["Geocaching.com .loc"] =
+    new QgsSimpleBabelFormat("geo", true, false, false);
+  mImporters["Magellan Mapsend"] = 
+    new QgsSimpleBabelFormat("mapsend", true, true, true);
+  mImporters["Garmin PCX5"] = 
+    new QgsSimpleBabelFormat("pcx", true, false, true);
+  mImporters["Garmin Mapsource"] = 
+    new QgsSimpleBabelFormat("mapsource", true, true, true);
+  mImporters["GPSUtil"] = 
+    new QgsSimpleBabelFormat("gpsutil", true, false, false);
+  mImporters["PocketStreets 2002/2003 Pushpin"] = 
+    new QgsSimpleBabelFormat("psp", true, false, false);
+  mImporters["CoPilot Flight Planner"] = 
+    new QgsSimpleBabelFormat("copilot", true, false, false);
+  mImporters["Magellan Navigator Companion"] = 
+    new QgsSimpleBabelFormat("magnav", true, false, false);
+  mImporters["Holux"] = 
+    new QgsSimpleBabelFormat("holux", true, false, false);
+  mImporters["Topo by National Geographic"] = 
+    new QgsSimpleBabelFormat("tpg", true, false, false);
+  mImporters["TopoMapPro"] = 
+    new QgsSimpleBabelFormat("tmpro", true, false, false);
+  mImporters["GeocachingDB"] = 
+    new QgsSimpleBabelFormat("gcdb", true, false, false);
+  mImporters["Tiger"] = 
+    new QgsSimpleBabelFormat("tiger", true, false, false);
+  mImporters["EasyGPS Binary Format"] = 
+    new QgsSimpleBabelFormat("easygps", true, false, false);
+  mImporters["Delorme Routes"] = 
+    new QgsSimpleBabelFormat("saroute", false, false, true);
+  mImporters["Navicache"] = 
+    new QgsSimpleBabelFormat("navicache", true, false, false);
+  mImporters["PSITrex"] = 
+    new QgsSimpleBabelFormat("psitrex", true, true, true);
+  mImporters["Delorme GPS Log"] = 
+    new QgsSimpleBabelFormat("gpl", false, false, true);
+  mImporters["OziExplorer"] = 
+    new QgsSimpleBabelFormat("ozi", true, false, false);
+  mImporters["NMEA Sentences"] = 
+    new QgsSimpleBabelFormat("nmea", true, false, true);
+  mImporters["Delorme Street Atlas 2004 Plus"] = 
+    new QgsSimpleBabelFormat("saplus", true, false, false);
+  mImporters["Microsoft Streets and Trips"] = 
+    new QgsSimpleBabelFormat("s_and_t", true, false, false);
+  mImporters["NIMA/GNIS Geographic Names"] = 
+    new QgsSimpleBabelFormat("nima", true, false, false);
+  mImporters["Maptech"] = 
+    new QgsSimpleBabelFormat("mxf", true, false, false);
+  mImporters["Mapopolis.com Mapconverter Application"] = 
+    new QgsSimpleBabelFormat("mapconverter", true, false, false);
+  mImporters["GPSman"] = 
+    new QgsSimpleBabelFormat("gpsman", true, false, false);
+  mImporters["GPSDrive"] = 
+    new QgsSimpleBabelFormat("gpsdrive", true, false, false);
+  mImporters["Fugawi"] = 
+    new QgsSimpleBabelFormat("fugawi", true, false, false);
+  mImporters["DNA"] = 
+    new QgsSimpleBabelFormat("dna", true, false, false);
+
+  // and the GPS devices
+  mDevices["Garmin serial"] = 
+    new QgsBabelCommand("%babel -i garmin -o gpx /dev/ttyS0 %out",
+			"%babel -i gpx -o garmin %in /dev/ttyS0");
+  QStringList deviceNames = settings.readListEntry("/qgis/gps/devicelist");
+  QStringList::iterator iter;
+  for (iter = deviceNames.begin(); iter != deviceNames.end(); ++iter) {
+    QString download = settings.
+      readEntry(QString("/qgis/gps/devices/%1/download").arg(*iter), "");
+    QString upload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/upload").arg(*iter), "");
+    mDevices[*iter] = new QgsBabelCommand(download, upload);
+  }
+}
+
 
 
 

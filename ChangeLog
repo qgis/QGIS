@@ -3,6 +3,15 @@ ChangeLog,v 1.200 2004/10/21 17:27:35 mcoletti Exp
 ------------------------------------------------------------------------------
 
 
+2004-10-22 [larsl] 0.5.0devel11
+** Some changes in the GPS plugin:
+   * Changed the tooltip of the action from "GPS Importer" to "GPS Tools"
+   * Removed some old unused code
+   * Made the upload/download tools much more flexible by letting users
+     specifying "devices" with upload and download commands
+   * Remember the last used device and port for uploads and downloads
+   * Remember the last directory that a GPX file was loaded from
+
 Version 0.6 'Simon' .... development version
 
 2004-10-20 [mcoletti] 0.5.0devel10
