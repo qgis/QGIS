@@ -3,6 +3,13 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-19 [mcoletti] 0.5.devel26
+** Changed QgsProject properties interface to be more similar to
+   QSettings.  New properties are emitted to file.  There is a known
+   bug with QStringLists in that thre're redundant copies written to
+   the file.  New properties aren't read yet.  Will be adding code
+   for that over next couple days.
+
 2004-11-17 [timlinux] 0.5.0devel25
 **Added a little checkbox to the bottom right of status bar that 
 when checked will suppress rendering of layers in main canvas 
