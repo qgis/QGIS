@@ -353,7 +353,7 @@ public:
 
         if ( keyName.empty() )  // then we have a leaf node
         {
-            properties_.insert( currentKey, new PropertyValue );
+            properties_.replace( currentKey, new PropertyValue );
 
             return properties_[currentKey]->setValue( keyName, value );
         }
@@ -363,7 +363,7 @@ public:
         }
         else
         {
-            properties_.insert( currentKey, new PropertyKey );
+            properties_.replace( currentKey, new PropertyKey );
 
             return properties_[currentKey]->setValue( keyName, value );
         }
