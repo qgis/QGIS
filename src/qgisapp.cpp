@@ -252,7 +252,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
     gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
   }
-  QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "canvasLegendLayout");
+  QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
   QSplitter *canvasLegendSplit = new QSplitter(frameMain);
   QGridLayout *legendOverviewLayout = new QGridLayout(canvasLegendSplit, 1, 2, 4, 6, "canvasLegendLayout");
   QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
