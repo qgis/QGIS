@@ -94,6 +94,9 @@ class QgsRasterLayer : public QgsMapLayer  {
       // Accessor and mutator for gray band name 
       QString getGrayBandName() {return grayBandNameQString;};
       void setGrayBandName(QString theBandNameQString);
+      // Accessor and mutator for showDebugOverlayFlag
+      bool getShowDebugOverlayFlag() {return showDebugOverlayFlag;};
+      void setShowDebugOverlayFlag(bool theFlag) {showDebugOverlayFlag=theFlag;};
       //get a legend image for this layer
       QPixmap getLegendQPixmap();
       public slots:
@@ -102,6 +105,8 @@ class QgsRasterLayer : public QgsMapLayer  {
     // emit a signal asking for a repaint
      void triggerRepaint();
     private:
+      //flag to indicate whether debug infor overlay should be rendered onto the raster
+      bool showDebugOverlayFlag;
       //private method to calculate various stats about this layer
       void calculateStats();
 
