@@ -374,146 +374,228 @@ public:
     };
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red colour). */
     void setRedBandName(QString theBandNameQString);
+    // 
     // Accessor and mutator for green band name
-    /** \brief   */
+    // 
+    /** \brief Accessor for green band name mapping.  */
     QString getGreenBandName()
     {
         return greenBandNameQString;
     };
-    /** \brief   */
+    /** \brief Mutator for green band name mapping.  */
     void setGreenBandName(QString theBandNameQString);
+    //
     // Accessor and mutator for blue band name
-    /** \brief   */
+    // 
+    /** \brief  Accessor for blue band name mapping. */
     QString getBlueBandName()
     {
         return blueBandNameQString;
     };
-    /** \brief   */
+    /** \brief Mutator for blue band name mapping.  */
     void setBlueBandName(QString theBandNameQString);
+    //
     // Accessor and mutator for gray band name
-    /** \brief   */
+    //
+    /** \brief Accessor for gray band name mapping.  */
     QString getGrayBandName()
     {
         return grayBandNameQString;
     };
-    /** \brief   */
+    /** \brief Mutator for gray band name mapping.  */
     void setGrayBandName(QString theBandNameQString);
+    // 
     // Accessor and mutator for showDebugOverlayFlag
-    /** \brief   */
+    // 
+    /** \brief Accessor for a flag that determines whether to show some debug info on the image.  */
     bool getShowDebugOverlayFlag()
     {
         return showDebugOverlayFlag;
     };
-    /** \brief   */
+    /** \brief Mutator for a flag that determines whether to show some debug info on the image.  */
     void setShowDebugOverlayFlag(bool theFlag)
     {
         showDebugOverlayFlag=theFlag;
     };
+    // 
     // Accessor and mutator for min and max red
-    /** \brief   */
+    // 
+    /** \brief Accessor for minimum clipping range for red.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMinRedDouble()
     {
         return minRedDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for minimum clipping range for red.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMinRedDouble(double theDouble)
     {
         minRedDouble=theDouble;
     };
-    /** \brief   */
+    /** \brief Accessor for maximum clipping range for red.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMaxRedDouble()
     {
         return maxRedDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for maximum clipping range for red.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMaxRedDouble(double theDouble)
     {
         maxRedDouble=theDouble;
     };
+    // 
     // Accessor and mutator for min and max green
-    /** \brief   */
+    // 
+    /** \brief Accessor for minimum clipping range for green.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMinGreenDouble()
     {
         return minGreenDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for minimum clipping range for green.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMinGreenDouble(double theDouble)
     {
         minGreenDouble=theDouble;
     };
-    /** \brief   */
+    /** \brief Accessor for maximum clipping range for green.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMaxGreenDouble()
     {
         return maxGreenDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for maximum clipping range for green.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMaxGreenDouble(double theDouble)
     {
         maxGreenDouble=theDouble;
     };
-    // Accessor and mutator for min and max red
+    // 
+    // Accessor and mutator for min and max blue
+    // 
+    /** \brief Accessor for minimum clipping range for blue.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     /** \brief   */
     double getMinBlueDouble()
     {
         return minBlueDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for minimum clipping range for blue.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMinBlueDouble(double theDouble)
     {
         minBlueDouble=theDouble;
     };
-    /** \brief   */
+    /** \brief Accessor for maximum clipping range for blue.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMaxBlueDouble()
     {
         return maxBlueDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for maximum clipping range for blue.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMaxBlueDouble(double theDouble)
     {
         maxBlueDouble=theDouble;
     };
-    // Accessor and mutator for min and max red
-    /** \brief   */
+    // 
+    // Accessor and mutator for min and max gray
+    // 
+    /** \brief Accessor for minimum clipping range for gray.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMinGrayDouble()
     {
         return minGrayDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for minimum clipping range for gray.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMinGrayDouble(double theDouble)
     {
         minGrayDouble=theDouble;
     };
-    /** \brief   */
+    /** \brief Accessor for maximum clipping range for gray.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     double getMaxGrayDouble()
     {
         return maxGrayDouble;
     };
-    /** \brief   */
+    /** \brief Mutator for maximum clipping range for gray.
+     *
+     * The clipping range can have different interpretations - it can either be used to perform
+     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
+     * that falls outside the clipping range.*/
     void setMaxGrayDouble(double theDouble)
     {
         maxGrayDouble=theDouble;
     };
-    //this enumerator describes the types of scaling algorithms that can be used
-    /** \brief   */
+    //
+    /** \brief This enumerator describes the types of histogram scaling algorithms that can be used.  */
     enum COLOR_SCALING_ALGORITHM
     {
         STRETCH_TO_MINMAX, //linear histogram stretch
         STRETCH_AND_CLIP_TO_MINMAX,
         CLIP_TO_MINMAX
     } colorScalingAlgorithm;
-    //Accessor and mutator for the color scaling algorithm
-    /** \brief   */
+    //
+    // Accessor and mutator for the color scaling algorithm
+    //
+    /** \brief Accessor for colour scaling algorithm. */
     COLOR_SCALING_ALGORITHM getColorScalingAlgorithm()
     {
         return colorScalingAlgorithm;
     };
-    /** \brief   */
+    /** \brief Mutator for color scaling algorithm. */
     void setColorScalingAlgorithm(COLOR_SCALING_ALGORITHM theAlgorithm)
     {
         colorScalingAlgorithm=theAlgorithm;
     };
-    //this enumerator describes the different kinds of drawing we can do
-    /** \brief   */
+    /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
     {
         SINGLE_BAND_GRAY, // a "Gray" or "Undefined" layer drawn as a range of gray colors
@@ -525,45 +607,49 @@ public:
         MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR, //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
         MULTI_BAND_COLOR //a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
     } drawingStyle;    
-    //accessor and mutator for drawins style
-    /** \brief   */
+    //
+    // Accessor and mutator for drawing style.
+    //
+    /** \brief Accessor for drawing style.  */
     DRAWING_STYLE getDrawingStyle() {return drawingStyle;};
-    /** \brief   */
+    /** \brief Returns a string representation of drawing style.
+     *
+     * Implementaed mainly for serialisation / deserialisation of settings to xml.
+     * NOTE: May be deprecated in the future!. Use alternate implementation above rather.
+     * */
     QString getDrawingStyleAsQString();
-    /** \brief   */
+    /** \brief Mutator for drawing style.  */
     void setDrawingStyle(DRAWING_STYLE theDrawingStyle) {drawingStyle=theDrawingStyle;};
-    //overloaded version of the above function for convenience when restoring from xml
-    /** \brief   */
+    /** \brief Overloaded version of the above function for convenience when restoring from xml.
+     *
+     * Implementaed mainly for serialisation / deserialisation of settings to xml.
+     * NOTE: May be deprecated in the future! Use alternate implementation above rather.
+     * */
     void setDrawingStyle(QString theDrawingStyleQString);
-    //this enumerator describes the type of raster layer
-    /** \brief   */
+    /** \brief This enumerator describes the type of raster layer.  */
     enum RASTER_LAYER_TYPE
     {
         GRAY_OR_UNDEFINED,
 	PALETTE,
 	MULTIBAND    
     } rasterLayerType;
-    //accessor and mutator for raster layer type
-    /** \brief   */
+    //
+    //accessor and for raster layer type (READ ONLY)
+    //
+    /** \brief  Accessor for raster layer type (which is a read only property) */
     RASTER_LAYER_TYPE getRasterLayerType() { return rasterLayerType; };
-    /** \brief   */
-    void setRasterLayerType( RASTER_LAYER_TYPE theRasterLayerType ) { rasterLayerType=theRasterLayerType; };
-    //get a legend image for this layer
-    /** \brief   */
+    /** \brief Get a legend image for this layer.  */
     QPixmap getLegendQPixmap();
-    /** \brief   */
+    /** \brief  Overloaded version of above function that can print layer name onto legend. */
     QPixmap getLegendQPixmap(bool);
-    //similar to above but returns a pointer. Implemented for qgsmaplayer interface
-    /** \brief   */
+    /** \brief Similar to above but returns a pointer. Implemented for qgsmaplayer interface. 
+     * Always overlays legend name!*/
     QPixmap * legendPixmap(); 
-    // Initialise the right click popup menu
-    /** \brief   */
+    /** \brief Initialiser for the right click popup menu.  */
     void initContextMenu(QgisApp *);
-    /** Accessor for the superclass popmenu var - implements pure virtual fn*/
-    /** \brief   */
+    /** \brief Accessor for the superclass's popmenu var - implements the pure virtual funtion. */
     QPopupMenu *contextMenu();
-    // emit a signal asking for a repaint
-    /** \brief   */
+    /** \brief Emit a signal asking for a repaint.  */
     void triggerRepaint();
     
 
@@ -572,111 +658,107 @@ private:
     //
     // Private methods
     //
-    /** \brief   */
+    /** \brief Paint debug information onto the output image.  */
     void showDebugOverlay(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
 
-    /** \brief   */
+    //
+    // Grayscale Imagery
+    //
+
+    /** \brief Drawing routine for single band grayscale image.  */
     void drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,int theBandNoInt);
 
-    /** \brief   */
+    /** \brief Drawing routine for single band grayscale image, rendered in pseudocolor.  */
     void drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,int theBandNoInt);
 
-    /** \brief   */
+
+    //
+    // Pseudocolor layers
+    //
+    
+    /** \brief Drawing routine for paletted image, rendered as a single band image in grayscale.  */
     void drawPalettedSingleBandGray(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort,
                                 int theBandNoInt,
                                 QString theColorQString);
 
-    /** \brief   */
+    /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort,
                                 int theBandNoInt,
                                 QString theColorQString);
 
-    /** \brief   */
+    /** \brief Drawing routine for paletted multiband image.  */
     void drawPalettedMultiBandColor(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort,
                                 int theBandNoInt);
 
-    /** \brief   */
+    //
+    // Multiband Layers
+    //
+    
+    /** \brief Drawing routine for multiband image, rendered as a single band image in grayscale.  */
     void drawMultiBandSingleBandGray(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort, 
                                 int theBandNoInt);
 
-    /** \brief   */
+    /** \brief Drawing routine for multiband image, rendered as a single band image in pseudocolor.  */
     void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, 
                                 RasterViewPort * theRasterViewPort, 
                                 int theBandNoInt);
 
-    /** \brief   */
+    /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
 
 
     //
     // Private member vars
     //
-    /** \brief   */
+    /** \brief  Raster width. */
     int rasterXDimInt;
-    /** \brief   */
+    /** \brief  Raster Height. */
     int rasterYDimInt;
-    /** \brief   */
+    /** \brief Cell value representing no data. e.g. -9999  */
     double noDataValueDouble;
-    //flag to indicate whether debug infor overlay should be rendered onto the raster
-    /** \brief   */
+    /** \brief Flag to indicate whether debug infor overlay should be rendered onto the raster.  */
     bool showDebugOverlayFlag;
-    /** \brief   */
+    /** \brief Pointer to the gdaldataset.  */
     GDALDataset * gdalDataset;
-    // values for mapping pixel to world coordinates
-    /** \brief   */
+    /** \brief Values for mapping pixel to world coordinates.  */
     double adfGeoTransform[6];
-    // flag indicating whether the histogram should be inverted or not
-    /** \brief   */
+    /** \brief Flag indicating whether the histogram should be inverted or not.  */
     bool invertHistogramFlag;
-    // Number of stddev to plot (0) to ignore
-    /** \brief   */
+    /** \brief Number of stddev to plot (0) to ignore. Not applicable to all layer types.  */
     double stdDevsToPlotDouble;
-    // a collection of stats - one for each band in the layer
-    // the typedef for this is defined above before class declaration
-    /** \brief   */
+    /** \brief A collection of stats - one for each band in the layer.
+     * The typedef for this is defined above before class declaration
+     */
     RasterStatsVector rasterStatsVector;
-    // transparency for this layer should be 0-255
-    /** \brief   */
+    /** \brief Transparency level for this layer should be 0-255.  */
     unsigned int transparencyLevelInt;
-    //the band to be associated with the color red - usually 1
-    /** \brief   */
+    /** \brief The band to be associated with the color red - usually 1.  */
     QString redBandNameQString;
-    //the band to be associated with the color green - usually 2
-    /** \brief   */
+    /** \brief The band to be associated with the color green - usually 2.  */
     QString greenBandNameQString;
-    //the band to be associated with the color blue - usually 3
-    /** \brief   */
+    /** \brief The band to be associated with the color blue - usually 3.  */
     QString blueBandNameQString;
-    //the band to be associated with the grayscale only ouput - usually 1
-    /** \brief   */
+    /** \brief The band to be associated with the grayscale only ouput - usually 1.  */
     QString grayBandNameQString;
-    // minimum red value - used in scaling procedure
-    /** \brief   */
+    /** \brief Minimum red value - used in scaling procedure.  */
     double minRedDouble;
-    // maximum red value - used in scaling procedure
-    /** \brief   */
+    /** \brief Maximum red value - used in scaling procedure.  */
     double maxRedDouble;
-    // minimum green value - used in scaling procedure
-    /** \brief   */
+    /** \brief Minimum green value - used in scaling procedure.  */
     double minGreenDouble;
-    // maximum green value - used in scaling procedure
-    /** \brief   */
+    /** \brief Maximum green value - used in scaling procedure.  */
     double maxGreenDouble;
-    // minimum blue value - used in scaling procedure
-    /** \brief   */
+    /** \brief Minimum blue value - used in scaling procedure.  */
     double minBlueDouble;
-    // maximum blue value - used in scaling procedure
-    /** \brief   */
+    /** \brief Maximum blue value - used in scaling procedure.  */
     double maxBlueDouble;
-    // minimum gray value - used in scaling procedure
-    /** \brief   */
+    /** \brief Minimum gray value - used in scaling procedure.  */
     double minGrayDouble;
-    // maximum gray value - used in scaling procedure
-    /** \brief   */
+    /** \brief Maximum gray value - used in scaling procedure.  */
     double maxGrayDouble;
 
 };
