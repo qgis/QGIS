@@ -118,6 +118,8 @@ void QgisApp::about()
 
 void QgisApp::addLayer()
 {
+	qApp->processEvents();
+	mapCanvas->freeze();
 	QStringList files = QFileDialog::getOpenFileNames("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
 													  "Select one or more layers to add");
 	QStringList::Iterator it = files.begin();
@@ -144,10 +146,11 @@ void QgisApp::addLayer()
 
 		++it;
 	}
-	qApp->processEvents();
+	//qApp->processEvents();
 	// update legend
 	/*! \todo Need legend scrollview and legenditem classes */
 	// draw the map
+	mapCanvas->freeze(false);
 	mapLegend->update();
 	mapCanvas->render2();
 	statusBar()->message(mapCanvas->extent().stringRep());
@@ -160,9 +163,13 @@ void QgisApp::addDatabaseLayer()
 {
 	// only supports postgis layers at present
 	// show the postgis dialog
-	mapCanvas->setEnabled(false);
+	
+
 	QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
 	if (dbs->exec()) {
+	// repaint the canvas if it was covered by the dialog
+		qApp->processEvents();
+		mapCanvas->freeze();
 		// add files to the map canvas
 		QStringList tables = dbs->selectedTables();
 		QString connInfo = dbs->connInfo();
@@ -181,16 +188,18 @@ void QgisApp::addDatabaseLayer()
 
 			++it;
 		}
-		qApp->processEvents();
+	//	qApp->processEvents();
 		// update legend
 		/*! \todo Need legend scrollview and legenditem classes */
 		mapLegend->update();
+		mapCanvas->freeze(false);
 		// draw the map
 		mapCanvas->render2();
 		statusBar()->message(mapCanvas->extent().stringRep());
 
 	}
-	mapCanvas->setEnabled(true);
+
+
 }
 
 void QgisApp::fileExit()
