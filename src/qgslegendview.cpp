@@ -45,6 +45,8 @@ void QgsLegendView::contentsDropEvent(QDropEvent* e)
 			QListViewItem *item = itemAt( contentsToViewport(e->pos()) );
 			// insert item in motion after one it was dropped on
 			movingItem->moveItem( item );
+			// avoid having more than one layer appear selected after drop
+			setCurrentItem(movingItem);
 			emit zOrderChanged(this);
 		}
 	} else {
