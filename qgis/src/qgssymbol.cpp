@@ -22,11 +22,15 @@ QgsSymbol::QgsSymbol(QColor c):m_color(c)
 {
 
 }
-
+QgsSymbol::QgsSymbol(const QgsSymbol &sym){
+	m_color = sym.color();
+	m_fillColor = sym.fillColor();
+	m_lineWidth = sym.lineWidth();
+}
 QgsSymbol::~QgsSymbol()
 {
 }
-QColor QgsSymbol::color()
+QColor QgsSymbol::color() const
 {
 	return m_color;
 }
@@ -36,7 +40,7 @@ void QgsSymbol::setColor(QColor c)
 	m_color = c;
 }
 
-QColor QgsSymbol::fillColor()
+QColor QgsSymbol::fillColor() const
 {
 	return m_fillColor;
 }
@@ -46,7 +50,7 @@ void QgsSymbol::setFillColor(QColor c)
 	m_fillColor = c;
 }
 
-int QgsSymbol::lineWidth()
+int QgsSymbol::lineWidth() const
 {
 	return m_lineWidth;
 }
@@ -54,4 +58,14 @@ int QgsSymbol::lineWidth()
 void QgsSymbol::setLineWidth(int w)
 {
 	m_lineWidth = w;
+}
+
+QgsSymbol & QgsSymbol::operator=(const QgsSymbol &r1){
+	
+	if(&r1 != this){
+		m_color = r1.color();
+		m_fillColor = r1.fillColor();
+		m_lineWidth = r1.lineWidth();
+	}
+	return *this;
 }

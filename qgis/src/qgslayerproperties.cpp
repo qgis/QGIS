@@ -36,6 +36,7 @@ QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 	txtDisplayName->setText(lyr->name());
 	//symbology
 	sym = layer->symbol();
+	newSym = *sym;
 
 	btnSetColor->setPaletteBackgroundColor(sym->color());
 
@@ -50,20 +51,20 @@ QgsLayerProperties::~QgsLayerProperties()
 void QgsLayerProperties::selectFillColor()
 {
 
-	QColor fc = QColorDialog::getColor(sym->fillColor(), this);
+	QColor fc = QColorDialog::getColor(newSym.fillColor(), this);
 	if (fc.isValid()) {
 
 		btnSetFillColor->setPaletteBackgroundColor(fc);
-		sym->setFillColor(fc);
+		newSym.setFillColor(fc);
 	}
 }
 void QgsLayerProperties::selectOutlineColor()
 {
-	QColor oc = QColorDialog::getColor(sym->color(), this);
+	QColor oc = QColorDialog::getColor(newSym.color(), this);
 	if (oc.isValid()) {
 
 		btnSetColor->setPaletteBackgroundColor(oc);
-		sym->setColor(oc);
+		newSym.setColor(oc);
 	}
 }
 
@@ -74,5 +75,8 @@ QString QgsLayerProperties::displayName()
 
 void QgsLayerProperties::setLineWidth(int w)
 {
-	sym->setLineWidth(w);
+	newSym.setLineWidth(w);
+}
+QgsSymbol * QgsLayerProperties::getSymbol(){
+	return new QgsSymbol(newSym);
 }
