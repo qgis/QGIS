@@ -27,7 +27,7 @@ class QgsLineStyleDialog: public QgsLineStyleDialogBase
 {
   Q_OBJECT
  public:
-    QgsLineStyleDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
+    QgsLineStyleDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = Qt::WStyle_StaysOnTop);
     ~QgsLineStyleDialog();
     Qt::PenStyle style();
  protected:

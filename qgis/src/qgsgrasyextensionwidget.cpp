@@ -233,7 +233,7 @@ QWidget *QgsGraSyExtensionWidget::getWidget(int column, int row)
 
 void QgsGraSyExtensionWidget::selectColor()
 {
-    ((QPushButton *) sender())->setPaletteBackgroundColor(QColorDialog::getColor());
+    ((QPushButton *) sender())->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
 }
 
