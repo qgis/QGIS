@@ -183,6 +183,7 @@ void QgsComposerScalebar::init ( void )
 QgsComposerScalebar::~QgsComposerScalebar()
 {
     std::cerr << "QgsComposerScalebar::~QgsComposerScalebar()" << std::endl;
+    QCanvasItem::hide();
 }
 
 QRect QgsComposerScalebar::render ( QPainter *p )
