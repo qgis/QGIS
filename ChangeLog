@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.119 2004/06/09 12:48:21 timlinux Exp
+ChangeLog,v 1.120 2004/06/09 16:03:02 sbr00pwb Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-09 [petebr] 0.3.0devel24
+Added the scale bar plugin. My first solo plugin! :-)
 
 2004-06-09 [ts] 0.3.0devel23
 Added "Show in overview" option to vector popup menu. 
