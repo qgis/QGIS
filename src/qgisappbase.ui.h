@@ -301,3 +301,11 @@ void QgisAppBase::zoomToLayerExtent()
 {
 
 }
+
+
+
+
+void QgisAppBase::measure()
+{
+
+}
