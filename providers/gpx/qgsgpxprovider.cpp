@@ -788,7 +788,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 	rte->xMax = (rte->xMax > rpt.lon ? rte->xMax : rpt.lon);
 	rte->yMin = (rte->yMin < rpt.lat ? rte->yMin : rpt.lat);
 	rte->yMax = (rte->yMax > rpt.lat ? rte->yMax : rpt.lat);
-
+	
 	rte->points.push_back(rpt);
       }
       
