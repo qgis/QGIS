@@ -121,7 +121,7 @@ void Plugin::drawRasterLayer(QString theQString)
   QgsRasterLayer *layer = new QgsRasterLayer(theQString, myBaseNameQString);
   layer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);
   layer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
-  qGisInterface->addRasterLayer(layer);
+  qGisInterface->addRasterLayer(layer, true);
 }
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
