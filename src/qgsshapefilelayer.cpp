@@ -76,9 +76,15 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 	   4. draw
 	 */
 	// set pen and fill
-	QgsSymbol *sym = symbol();
+    QgsSymbol *sym = symbol();
+	QPen pen;
+	pen.setColor(sym->color());
+	pen.setWidth(sym->lineWidth());
+	p->setPen(pen);
+  
+	
 	QBrush *brush = new QBrush(sym->fillColor());
-	p->setPen(sym->color());
+	
 	// reset the pointer to read from start of features
 
 	// set the spatial filter
