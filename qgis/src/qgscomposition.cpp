@@ -416,6 +416,7 @@ void QgsComposition::keyPressEvent ( QKeyEvent * e )
 	
 	QgsComposerItem *coi = dynamic_cast <QgsComposerItem *> (mSelectedItem);
 	coi->setSelected ( false );
+	coi->removeSettings();
 	for (std::list < QgsComposerItem * >::iterator it = mItems.begin(); 
 		                         it != mItems.end(); ++it) 
 	{
@@ -518,7 +519,6 @@ double QgsComposition::paperHeight ( void ) { return mPaperHeight; }
 int QgsComposition::resolution ( void ) { return mResolution; }
 
 int QgsComposition::scale( void ) { 
-    std::cout << "QgsComposition::scale = " << mScale << std::endl;
     return mScale; 
 }
 
