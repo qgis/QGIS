@@ -157,7 +157,7 @@ inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint)
   if ( ! mSourceToDestXForm->Transform( 1, &x, &y ) )
   {
     //something bad happened....
-    //throw QgsCsException(QString("Coordinate transform failed"));
+    throw QgsCsException(QString("Coordinate transform failed"));
   }
   else
   {
@@ -182,7 +182,7 @@ inline QgsRect QgsCoordinateTransform::transform(QgsRect theRect)
   if ( ! mSourceToDestXForm->Transform( 1, &x1, &y1 ) || ! mSourceToDestXForm->Transform( 1, &x2, &y2 ) )
   {
     //something bad happened....
-    //throw QgsCsException(QString("Coordinate transform failed"));
+    throw QgsCsException(QString("Coordinate transform failed"));
   }
   else
   {
@@ -220,7 +220,7 @@ inline QgsRect QgsCoordinateTransform::transform(QgsRect * theRect)
   if ( ! mSourceToDestXForm->Transform( 1, &x1, &y1 ) || ! mSourceToDestXForm->Transform( 1, &x2, &y2 ) )
   {
     //something bad happened....
-    //throw QgsCsException(QString("Coordinate transform failed"));
+    throw QgsCsException(QString("Coordinate transform failed"));
   }
   else
   {
@@ -254,7 +254,7 @@ inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
   if ( ! mSourceToDestXForm->Transform( 1, &x, &y ) )
   {
     //something bad happened....
-    //throw QgsCsException(QString("Coordinate transform failed"));
+    throw QgsCsException(QString("Coordinate transform failed"));
   }
   else
   {
@@ -326,7 +326,7 @@ inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect theRect)
   if ( ! myResult1 || ! myResult2 )
   {
     //something bad happened....
-   // throw QgsCsException(QString("Coordinate inverse transform failed"));
+    throw QgsCsException(QString("Coordinate inverse transform failed"));
   }
   else
   {
@@ -363,7 +363,7 @@ inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect * theRect)
   if ( ! mDestToSourceXForm->Transform( 1, &x1, &y1 ) || ! mDestToSourceXForm->Transform( 1, &x2, &y2 ) )
   {
     //something bad happened....
-    //throw QgsCsException(QString("Inverse Coordinate transform failed"));
+    throw QgsCsException(QString("Inverse Coordinate transform failed"));
   }
   else
   {
@@ -396,7 +396,7 @@ inline QgsPoint QgsCoordinateTransform::inverseTransform(double theX, double the
   if ( ! mDestToSourceXForm->Transform( 1, &x, &y ) )
   {
     //something bad happened....
-    //throw QgsCsException(QString("Coordinate inverseTransform failed"));
+    throw QgsCsException(QString("Coordinate inverseTransform failed"));
   }
   else
   {
