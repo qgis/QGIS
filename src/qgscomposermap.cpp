@@ -83,9 +83,9 @@ void QgsComposerMap::init ()
     mNumCachedLayers = 0;
     mSelected = false;
     mUserExtent = mMapCanvas->extent();
+    mDrawing = false;
 
     // Cache
-    mCachePixmap = new QPixmap();
     mCacheUpdated = false;
 
     // Potemkin
@@ -178,21 +178,18 @@ void QgsComposerMap::cache ( void )
     mCacheExtent.setXmax ( mCacheExtent.xMin() + w * scale );
     mCacheExtent.setYmax ( mCacheExtent.yMin() + h * scale );
 	    
-    // TODO: I saw Qtmessage: "QPaintDevice: Cannot destroy paint device that is being painted"
-    delete mCachePixmap;
-    // I think that monochrome makes a bit faster but not too much
-    mCachePixmap = new QPixmap ( w, h, -1, QPixmap::BestOptim ); 
+    mCachePixmap.resize( w, h );
 
     // WARNING: ymax in QgsMapToPixel is device height!!!
     QgsMapToPixel transform(scale, h, mCacheExtent.yMin(), mCacheExtent.xMin() );
 
     std::cout << "transform = " << transform.showParameters() << std::endl;
     
-    mCachePixmap->fill(QColor(255,255,255));
+    mCachePixmap.fill(QColor(255,255,255));
 
-    QPainter p(mCachePixmap);
+    QPainter p(&mCachePixmap);
     
-    draw( &p, &mCacheExtent, &transform, mCachePixmap );
+    draw( &p, &mCacheExtent, &transform, &mCachePixmap );
     p.end();
 
     mNumCachedLayers = mMapCanvas->layerCount();
@@ -201,6 +198,9 @@ void QgsComposerMap::cache ( void )
 
 void QgsComposerMap::draw ( QPainter & painter )
 {
+    if ( mDrawing ) return; 
+    mDrawing = true;
+
     std::cout << "draw mPlotStyle = " << plotStyle() 
 	      << " mPreviewMode = " << mPreviewMode << std::endl;
     
@@ -212,7 +212,7 @@ void QgsComposerMap::draw ( QPainter & painter )
 	}
 	
 	// Scale so that the cache fills the map rectangle
-	double scale = 1.0 * QCanvasRectangle::width() / mCachePixmap->width();
+	double scale = 1.0 * QCanvasRectangle::width() / mCachePixmap.width();
 	
 	
 	painter.save();
@@ -222,9 +222,8 @@ void QgsComposerMap::draw ( QPainter & painter )
 	std::cout << "scale = " << scale << std::endl;
         std::cout << "translate: " << QCanvasRectangle::x() << ", " << QCanvasRectangle::y() << std::endl;
 	// Note: drawing only a visible part of the pixmap doesn't make it much faster
-	painter.drawPixmap(0,0, *mCachePixmap);
+	painter.drawPixmap(0,0, mCachePixmap);
 
-	//painter.drawPixmap((int)QCanvasRectangle::x(), (int)QCanvasRectangle::y(), *mCachePixmap);
 	painter.restore();
 
     } else if ( (plotStyle() == QgsComposition::Preview && mPreviewMode == Render) || 
@@ -273,6 +272,8 @@ void QgsComposerMap::draw ( QPainter & painter )
 	x -= QCanvasRectangle::width();
 	painter.drawRect ( x, y-s, s, s );
     }
+    
+    mDrawing = false;
 }
 
 void QgsComposerMap::sizeChanged ( void ) 

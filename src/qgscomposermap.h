@@ -164,7 +164,7 @@ private:
     // NOTE:  QCanvasView is slow with bigger images but the spped does not decrease with image size.
     //        It is very slow, with zoom in in QCanvasView, it seems, that QCanvas is stored as a big image
     //        with resolution necessary for current zoom and so always a big image mus be redrawn. 
-    QPixmap *mCachePixmap; 
+    QPixmap mCachePixmap; 
 
     // Is cache up to date
     bool mCacheUpdated;
@@ -189,6 +189,9 @@ private:
 
     /** \brief Draw frame  */
     bool mFrame;
+
+    /** \brief set to true if in state of drawing, other requests are to draw are returned */
+    bool mDrawing;
 };
 
 #endif
