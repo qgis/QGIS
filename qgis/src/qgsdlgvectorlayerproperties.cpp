@@ -299,7 +299,8 @@ void QgsDlgVectorLayerProperties::pbnOK_clicked()
           legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
       }
     }
-  reject();
+  //reject();
+  close();
 }
 void QgsDlgVectorLayerProperties::pbnApply_clicked()
 {
@@ -430,8 +431,8 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "</td></tr>";
 
   //-------------
-  QgsVectorDataProvider *myDataProvider = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
-  QgsRect *myExtent = myDataProvider->extent();  
+
+  QgsRect myExtent = layer->extent();  
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Extents:");
   myMetadataQString += "</td></tr>";
@@ -439,13 +440,13 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("In layer spatial reference system units : ") + 
                        tr("xMin,yMin ") + 
-                       QString::number(myExtent->xMin()) + 
+                       QString::number(myExtent.xMin()) + 
                        "," + 
-                       QString::number( myExtent->yMin()) +
+                       QString::number( myExtent.yMin()) +
                        tr(" : xMax,yMax ") + 
-                       QString::number(myExtent->xMax()) + 
+                       QString::number(myExtent.xMax()) + 
                        "," + 
-                       QString::number(myExtent->yMax());
+                       QString::number(myExtent.yMax());
   myMetadataQString += "</td></tr>";
   //extents in project cs
   QgsRect myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
@@ -507,6 +508,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "<tr>";
  
   //get info for each field by looping through them
+  QgsVectorDataProvider *myDataProvider = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   std::vector<QgsField> myFields = myDataProvider->fields();
   for (int i = 0; i < myFields.size(); i++)
   {
