@@ -428,8 +428,9 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       getFeatureAttributes(*noid, f);
      
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry"));
-    //--std::cout << "Returned length is " << returnedLength << std::endl;
-    if(returnedLength > 0){
+    //--std::cerr << __FILE__ << ":" << __LINE__ << " Returned length is " << returnedLength << std::endl;
+    if(returnedLength > 0)
+    {
       unsigned char *feature = new unsigned char[returnedLength + 1];
       memset(feature, '\0', returnedLength + 1);
       memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength);
@@ -438,13 +439,15 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       //int wkbType = *((int *) (feature + 1));
       //std::cout << "WKBtype is: " << wkbType << std::endl;
 #endif
-
       f->setGeometry(feature, returnedLength + 1);
-    }else{
+    }
+    else
+    {
       //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
     }
   }
-  else {
+  else
+  {
     //--std::cout << "Read attempt on an invalid postgresql data source\n";
   }
 
@@ -1781,7 +1784,7 @@ void QgsPostgresProvider::customEvent( QCustomEvent * e )
         
         QgsProviderCountCalcEvent* e1 = (QgsProviderCountCalcEvent*) e;
         
-        long numberFeatures = e1->numberFeatures();
+        numberFeatures = e1->numberFeatures();
         
         std::cout << "QgsPostgresProvider: count is " << numberFeatures << std::endl;
         
