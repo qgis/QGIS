@@ -131,11 +131,11 @@ Wheel}}\index{zoom!mouse wheel}
 \end{Tip}
 \subsection{The QGIS map overview}
 \index{map!overview}
-The map overview area provides a full extent view of layers added to it. Within the view is a rectangle showing the current map extent. This allows you to quickly determine which area of the map you are currently viewing.
+The map overview area provides a full extent view of layers added to it. Within the view is a rectangle showing the current map extent. This allows you to quickly determine which area of the map you are currently viewing. Note that labels are not rendered to the map overview even if the layers in the map overview have been set up for labelling.
 
 \subsection{The QGIS map status bar} 
 The status bar shows you your current position in map coordinate (e.g. meters
-or decimal degress) as the mouse pointer is moved accross the map view.
+or decimal degress) as the mouse pointer is moved accross the map view. The status bar also shows the view extents of the map view as you pand and zoom in and out. A progress bar in the status bar shows progress of rendering as each layer is drawn to the map view. In some cases such as the gathering of statistics in raster layers, the progress bar will be used to show the status of lengthy operations. At the end of the status bar is a small checkbox which can be used to temporarily prevent layers being rendered to the map view )see Section \ref{subsec:redraw_events} below.
 
 \section{Rendering}\label{subsec:redraw_events}\index{rendering}
 By default, QGIS renders all visible layers whenever the map canvas must be refreshed. The events that trigger a refresh of the map canvas include:
@@ -146,9 +146,10 @@ By default, QGIS renders all visible layers whenever the map canvas must be refr
 \item Changing the visibility of a layer or layers
 \end{compactitem}
 QGIS allows you to control the rendering process in a number of ways.
+
 \subsection{Scale Dependent Rendering}\index{rendering!scale dependent}
 Scale dependent rendering allows you to specify the minimum and maximum scales
-at which a layer wil be visible.  To set scale dependency rendering, open the
+at which a layer will be visible.  To set scale dependency rendering, open the
 properties dialog by double-clicking on the layer in the legend. On the
 \textit{General} tab, set the minimum and maximum scale values and then click on
 the \textit{Use scale dependent rendering} checkbox.
@@ -184,7 +185,7 @@ refresh of the map canvas.
 Option}\index{rendering!options}\index{layers!initial visibility}
 You can set an option to always load new layers without drawing them. This means
 the layer will be added to the map, but its visibility checkbox in the legend
-will be unchecked. To set this option, choose \textit{Preferences} from the
+will be unchecked by default. To set this option, choose \textit{Preferences} from the
 \textit{Settings} menu and click on the \textit{Rendering} tab. Check the
 \textit{New layers added to the map are not displayed} checkbox. Any layer added
 to the map will be off (invisible) by default.
