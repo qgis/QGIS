@@ -1395,7 +1395,6 @@ void QgisApp::addDatabaseLayer()
 void QgisApp::fileExit()
 {
     QApplication::exit();
-
 }
 
 void QgisApp::fileNew()
@@ -2489,18 +2488,37 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
                     toolPopupCapture->setItemEnabled(0,TRUE);
                     toolPopupCapture->setItemEnabled(1,FALSE);
                     toolPopupCapture->setItemEnabled(2,FALSE);
+		    if(mMapCanvas->mapTool() == QGis::CaptureLine || mMapCanvas->mapTool() == QGis::CapturePolygon)
+		    {
+			mMapCanvas->setMapTool(QGis::CapturePoint);
+		    }
                 }
                 else if(vlayer->vectorType()==QGis::Line)
                 {
+#ifdef QGISDEBUG
+		    qWarning("QgisApp::currentLayerChanged: Line type recognized");
+		    qWarning("current map tool is: "+QString::number(mMapCanvas->mapTool()));
+#endif
                     toolPopupCapture->setItemEnabled(0,FALSE);
                     toolPopupCapture->setItemEnabled(1,TRUE);
                     toolPopupCapture->setItemEnabled(2,FALSE);
+		    if(mMapCanvas->mapTool() == QGis::CapturePoint || mMapCanvas->mapTool() == QGis::CapturePolygon)
+		    {
+#ifdef QGISDEBUG
+			qWarning("Changing map tool");
+#endif
+			mMapCanvas->setMapTool(QGis::CaptureLine);
+		    }
                 }
                 else if(vlayer->vectorType()==QGis::Polygon)
                 {
                     toolPopupCapture->setItemEnabled(0,FALSE);
                     toolPopupCapture->setItemEnabled(1,FALSE);
                     toolPopupCapture->setItemEnabled(2,TRUE);
+		    if(mMapCanvas->mapTool() == QGis::CapturePoint || mMapCanvas->mapTool() == QGis::CaptureLine)
+		    {
+			mMapCanvas->setMapTool(QGis::CapturePolygon);
+		    }
                 }
 
                 QgsVectorDataProvider* dprov=vlayer->getDataProvider();

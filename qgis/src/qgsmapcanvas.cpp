@@ -1926,3 +1926,8 @@ void QgsMapCanvas::recalculateExtents()
     mit++;
   }
 }
+
+int QgsMapCanvas::mapTool()
+{
+    return mCanvasProperties->mapTool;
+}

@@ -343,6 +343,9 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 
 void QgsUValDialog::changeCurrentValue()
 {
+#ifdef QGISDEBUG
+    qWarning("in changeCurrentValue");
+#endif
     QListBoxItem* item=mClassBreakBox->selectedItem();
     QString value=item->text();
     std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
@@ -357,6 +360,10 @@ void QgsUValDialog::changeCurrentValue()
 	sydialog.setOutlineColor(ocolor);
 	sydialog.setOutlineStyle(pen.style());
 	sydialog.setOutlineWidth(pen.width());
+#ifdef QGISDEBUG
+	qWarning("key is: "+it->first);
+	qWarning("Label is: "+it->second->label());
+#endif
 	sydialog.setLabel(it->second->label());
     }
     else
@@ -367,6 +374,9 @@ void QgsUValDialog::changeCurrentValue()
 
 void QgsUValDialog::applySymbologyChanges()
 {
+#ifdef QGISDEBUG
+    qWarning("in applySymbologyChanges");
+#endif
   QListBoxItem* item=mClassBreakBox->selectedItem();
   QString value=item->text();
   std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
@@ -380,5 +390,9 @@ void QgsUValDialog::applySymbologyChanges()
       brush.setColor(sydialog.getFillColor());
       brush.setStyle(sydialog.getFillStyle());
       it->second->setLabel(sydialog.label());
+#ifdef QGISDEBUG
+      qWarning("key is: "+it->first);
+      qWarning("setting label "+sydialog.label());
+#endif
   }
 }

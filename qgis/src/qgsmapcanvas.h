@@ -114,6 +114,9 @@ class QgsMapCanvas : public QWidget
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool(int tool);
 
+    /**Returns the currently active tool*/
+    int mapTool();
+
     /** Write property of QColor bgColor. */
     virtual void setbgColor(const QColor & _newVal);
 

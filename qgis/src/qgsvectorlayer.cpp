@@ -126,6 +126,14 @@ QgsVectorLayer::~QgsVectorLayer()
 #ifdef QGISDEBUG
   std::cerr << "In QgsVectorLayer destructor" << std::endl;
 #endif
+
+  valid=false;
+
+  if(isEditable())
+  {
+      stopEditing();
+  }
+
   if (tabledisplay)
   {
     tabledisplay->close();
@@ -1295,7 +1303,10 @@ void QgsVectorLayer::select(int number)
           else
           {
               mEditable=true;
-              updateItemPixmap();
+	      if(isValid())
+	      {
+		  updateItemPixmap();
+	      }
           }
       }
     }
@@ -1310,6 +1321,9 @@ void QgsVectorLayer::select(int number)
           int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
           if(commit==QMessageBox::Yes)
           {
+#ifdef QGISDEBUG
+	      qWarning("commit yes");
+#endif QGISDEBUG
             if(!commitChanges())
             {
               QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok);
@@ -1343,7 +1357,10 @@ void QgsVectorLayer::select(int number)
         }
         mEditable=false;
         mModified=false;
-        updateItemPixmap();
+	if(isValid())
+	{
+	    updateItemPixmap();
+	}
       }
     }
 
@@ -1871,6 +1888,9 @@ bool QgsVectorLayer::commitChanges()
 {
     if(dataProvider)
     {
+#ifdef QGISDEBUG
+	qWarning("in QgsVectorLayer::commitChanges");
+#endif
         bool returnvalue=true;
         std::list<QgsFeature*> addedlist;
         for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)

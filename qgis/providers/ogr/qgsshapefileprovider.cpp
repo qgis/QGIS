@@ -843,16 +843,26 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
     }
     ++numberFeatures;
     delete feature;
+    ogrLayer->SyncToDisk();
     return returnValue;
 }
 
 bool QgsShapeFileProvider::addFeatures(std::list<QgsFeature*> flist)
 {
+#ifdef QGISDEBUG
+    qWarning("in QgsShapeFileProvider::addFeatures");
+#endif
     bool returnvalue=true;
     for(std::list<QgsFeature*>::iterator it=flist.begin();it!=flist.end();++it)
     {
+#ifdef QGISDEBUG
+	qWarning("shapefileprovider: add a feature");
+#endif
 	if(!addFeature(*it))
 	{
+#ifdef QGISDEBUG
+	    qWarning("feature addition failed");
+#endif
 	    returnvalue=false;
 	}
     }
