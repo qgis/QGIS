@@ -66,11 +66,12 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), 
-          qGisInterface(theQgisInterFace),
-          QgisPlugin(name_,description_,version_,type_)
+qgisMainWindowPointer(theQGisApp), 
+    qGisInterface(theQgisInterFace),
+QgisPlugin(name_,description_,version_,type_)
 {
   mRotationInt=0;
+  mPlacement=tr("Bottom Left");
 }
 
 Plugin::~Plugin()
@@ -115,13 +116,14 @@ void Plugin::help()
 void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"North Arrow",true,0);
-    //overides function byt the same name created in .ui
-    myPluginGui->setRotation(mRotationInt);
+  //overides function byt the same name created in .ui
+  myPluginGui->setRotation(mRotationInt);
+  myPluginGui->setPlacement(mPlacement);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
   myPluginGui->show();
-  
+
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
@@ -133,96 +135,105 @@ void Plugin::drawRasterLayer(QString theQString)
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
 void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
+  qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 //! Refresh the map display using the mapcanvas exported via the plugin interface
 void Plugin::refreshCanvas()
 {
- qGisInterface->getMapCanvas()->refresh();
+  qGisInterface->getMapCanvas()->refresh();
 }
 
 void Plugin::renderNorthArrow()
 {
-    QPixmap myQPixmap; //to store the north arrow image in
-    QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
-    //std::cout << "Trying to load " << myFileNameQString << std::cout;
-    if (myQPixmap.load(myFileNameQString))
+  QPixmap myQPixmap; //to store the north arrow image in
+  QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
+  //std::cout << "Trying to load " << myFileNameQString << std::cout;
+  if (myQPixmap.load(myFileNameQString))
+  {
+    // myPainterPixmap.fill();
+    QPainter myQPainter;
+    myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
+
+    double centerXDouble = myQPixmap.width()/2;
+    double centerYDouble = myQPixmap.height()/2;
+    //save the current canvas rotation
+    myQPainter.save();
+    //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
+
+    //rotate the canvas
+    myQPainter.rotate( mRotationInt );
+    //work out how to shift the image so that it appears in the center of the canvas
+    //(x cos a + y sin a - x, -x sin a + y cos a - y)
+    const double PI = 3.14159265358979323846;
+    double myRadiansDouble = (PI/180) * mRotationInt;
+    int xShift = static_cast<int>((
+                (centerXDouble * cos(myRadiansDouble)) +
+                (centerYDouble * sin(myRadiansDouble))
+                ) - centerXDouble);
+    int yShift = static_cast<int>((
+                (-centerXDouble * sin(myRadiansDouble)) + 
+                (centerYDouble * cos(myRadiansDouble))
+                ) - centerYDouble);	
+
+    //Get canvas dimensions
+    int myHeight = qGisInterface->getMapCanvas()->height();
+    int myWidth = qGisInterface->getMapCanvas()->width();
+
+    //Determine placement of label from form combo box
+    if (mPlacement==tr("Bottom Left"))
     {
-       // myPainterPixmap.fill();
-        QPainter myQPainter;
-        myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
-
-        double centerXDouble = myQPixmap.width()/2;
-	double centerYDouble = myQPixmap.height()/2;
-        //save the current canvas rotation
-        myQPainter.save();
-	//myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
-	
-        //rotate the canvas
-        myQPainter.rotate( mRotationInt );
-	//work out how to shift the image so that it appears in the center of the canvas
-	//(x cos a + y sin a - x, -x sin a + y cos a - y)
-	const double PI = 3.14159265358979323846;
-	double myRadiansDouble = (PI/180) * mRotationInt;
-        int xShift = static_cast<int>((
-	              (centerXDouble * cos(myRadiansDouble)) +
-	              (centerYDouble * sin(myRadiansDouble))
-		     ) - centerXDouble);
-        int yShift = static_cast<int>((
-	              (-centerXDouble * sin(myRadiansDouble)) + 
-	              (centerYDouble * cos(myRadiansDouble))
-		     ) - centerYDouble);	
-
-  	//Get canvas dimensions
-  	int myYOffset = qGisInterface->getMapCanvas()->height();
-  	int myXOffset = qGisInterface->getMapCanvas()->width();
-
-	//Determine placement of label from form combo box
-  	if (mPlacement==tr("Bottom Left"))
-  	{
-    		//Code required to shift to position
-
-  	}
-  	else if (mPlacement==tr("Top Right"))
-  	{
-    		//Code required to shift to position
-
-  	}
-  	else if (mPlacement==tr("Bottom Right"))
-  	{
-    		//Code required to shift to position
-
-    			
-  	}
-  	else // defaulting to top left
-  	{
-
-  	}
-		     
-
-	//draw the pixmap in the proper position
-      	myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
-
-
-        //unrotate the canvase again
-        myQPainter.restore();
-        myQPainter.end();
-	
-	//bitBlt ( qGisInterface->getMapCanvas()->canvasPixmap(), 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
-	 
+#ifdef QGISDEBUG
+      std::cout << "Rendering n-arrow at bottom left: x = " << xShift 
+          << " y = " << myHeight-(myQPixmap.height()-yShift) << std::endl;
+#endif
+      myQPainter.drawPixmap(xShift,myHeight-(myQPixmap.height()-yShift),myQPixmap);	
     }
-    else
+    else if (mPlacement==tr("Top Right"))
     {
-        //myPainterPixmap.fill();
-        QPainter myQPainter;
-        myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
-        QFont myQFont("time", 32, QFont::Bold);
-        myQPainter.setFont(myQFont);
-        myQPainter.setPen(Qt::black);
-        myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
-        myQPainter.end();
+#ifdef QGISDEBUG
+      std::cout << "Rendering n-arrow at top right: x = "  << myWidth - myQPixmap.width()
+          << " y = " << myHeight-(myQPixmap.height()-yShift) << std::endl;
+#endif
+      myQPainter.drawPixmap(myWidth-myQPixmap.width(),yShift,myQPixmap);	
     }
+    else if (mPlacement==tr("Bottom Right"))
+    {
+#ifdef QGISDEBUG
+      std::cout << "Rendering n-arrow at bottom right: x = " << xShift-(myQPixmap.width()-xShift) 
+          << " y = " << myHeight-(myQPixmap.height()-yShift) << std::endl;
+#endif
+      myQPainter.drawPixmap(myWidth-(myQPixmap.width()-xShift),myHeight-(myQPixmap.height()-yShift),myQPixmap);	
+    }
+    else // defaulting to top left
+    {
+#ifdef QGISDEBUG
+      std::cout << "Rendering n-arrow at top left: x = " << xShift << " y = " << yShift << std::endl;
+#endif
+      myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
+    }
+
+
+
+
+    //unrotate the canvase again
+    myQPainter.restore();
+    myQPainter.end();
+
+    //bitBlt ( qGisInterface->getMapCanvas()->canvasPixmap(), 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
+
+  }
+  else
+  {
+    //myPainterPixmap.fill();
+    QPainter myQPainter;
+    myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
+    QFont myQFont("time", 32, QFont::Bold);
+    myQPainter.setFont(myQFont);
+    myQPainter.setPen(Qt::black);
+    myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
+    myQPainter.end();
+  }
 
 }
 // Unload the plugin by cleaning up the GUI
@@ -241,10 +252,10 @@ void Plugin::rotationChanged(int theInt)
 }
 
 //! set placement of north arrow
-  void Plugin::setPlacement(QString theQString)
-  {
-    mPlacement = theQString;
-  }
+void Plugin::setPlacement(QString theQString)
+{
+  mPlacement = theQString;
+}
 
 
 
@@ -267,19 +278,19 @@ extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * th
 // the class may not yet be insantiated when this method is called.
 extern "C" QString name()
 {
-    return name_;
+  return name_;
 }
 
 // Return the description
 extern "C" QString description()
 {
-    return description_;
+  return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 extern "C" int type()
 {
-    return type_;
+  return type_;
 }
 
 // Return the version number for the plugin
