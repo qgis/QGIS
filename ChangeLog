@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.111 2004/06/07 08:43:53 timlinux Exp
+ChangeLog,v 1.112 2004/06/07 16:45:02 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-07 [larsl] 0.3.0devel16
+** Changed some calls to QMessageBox::question() to QMessageBox::information()
+   since Qt 3.1.2 doesn't have question()
 
 2004-06-07 [ts] 0.3.0devel15
 ** Implemented map overview using maplayers rather than snapshots of a raster layer.
