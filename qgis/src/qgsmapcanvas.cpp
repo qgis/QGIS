@@ -26,6 +26,7 @@
 #include <qpixmap.h>
 #include <qmessagebox.h>
 #include <qsettings.h>
+#include <qpaintdevicemetrics.h>
 #include "qgsrect.h"
 #include "qgis.h"
 
@@ -186,11 +187,20 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
           double muppX, muppY;
           muppY = currentExtent.height() / height();
           muppX = currentExtent.width() / width();
-          #ifdef QGISDEBUG
-          std::cout << "Current extent is " << currentExtent.stringRep() << std::endl;
-          std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
-          #endif
           m_mupp = muppY > muppX ? muppY : muppX;
+#ifdef QGISDEBUG 
+          std::cout << "Current extent is " <<
+            currentExtent.stringRep() << std::endl; std::cout << "MuppX is: " <<
+            muppX << "\nMuppY is: " << muppY << std::endl; 
+          std::cout << "Canvas width: " << width() << ", height: " << height() << std::endl;
+          std::cout << "Extent width: " << currentExtent.width() << ", height: " 
+            << currentExtent.height() << std::endl; 
+            QPaintDeviceMetrics pdm(this); 
+          std::cout << "dpiX " << pdm.logicalDpiX() << ", dpiY " <<
+            pdm.logicalDpiY() << std::endl; 
+          std::cout << "widthMM " << pdm.widthMM() << ", heightMM " 
+            << pdm.heightMM() << std::endl; 
+#endif
           // calculate the actual extent of the mapCanvas
           double dxmin, dxmax, dymin, dymax, whitespace;
           if (muppY > muppX)
@@ -209,6 +219,10 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
               dymax = currentExtent.yMax() + whitespace;
 
             }
+#ifdef QGISDEBUG
+        std::cout << "Scale (assuming meters as map units) = 1:" 
+          << ((dxmax-dxmin) * 3.28 * 12)/(width()/pdm.logicalDpiX()) << std::endl; 
+#endif
 //      std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
 //        endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
           coordXForm->setParameters(m_mupp, dxmin, dymin, height());  //currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
