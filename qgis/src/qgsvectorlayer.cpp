@@ -2155,16 +2155,25 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         else
         {
           ptTo=theMapToPixelTransform->transform(pt);
+	  //std::cerr << theMapToPixelTransform->showParameters() << '\n';
         }
         if (idx == 0)
 	  ptFrom = ptTo;
 	else
 	{
+#if defined(Q_WS_X11)
+	  // Work around a +/- 32768 limitation on coordinates in X11
 	  if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
 	    p->drawLine(static_cast<int>(trimmedFrom.x()),
 			static_cast<int>(trimmedFrom.y()),
 			static_cast<int>(trimmedTo.x()),
 			static_cast<int>(trimmedTo.y()));
+#else
+	  p->drawLine(static_cast<int>(ptFrom.x()),
+		      static_cast<int>(ptFrom.y()),
+		      static_cast<int>(ptTo.x()),
+		      static_cast<int>(ptTo.y()));
+#endif
 	  ptFrom = ptTo;
 	}
       }
@@ -2219,11 +2228,19 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 	    ptFrom = ptTo;
 	  else
 	  {
+#if defined(Q_WS_X11)
+	    // Work around a +/- 32768 limitation on coordinates in X11
 	    if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
 	      p->drawLine(static_cast<int>(trimmedFrom.x()),
 			  static_cast<int>(trimmedFrom.y()),
 			  static_cast<int>(trimmedTo.x()),
 			  static_cast<int>(trimmedTo.y()));
+#else
+	      p->drawLine(static_cast<int>(ptFrom.x()),
+			  static_cast<int>(ptFrom.y()),
+			  static_cast<int>(ptTo.x()),
+			  static_cast<int>(ptTo.y()));
+#endif
 	    ptFrom = ptTo;
 	  }
         }
@@ -2316,11 +2333,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         }
       }
 
-      //      QgsMapToPixel::trimPolygon(pa);
-
       // draw the polygon fill
       pen = p->pen(); // store current pen
       p->setPen ( Qt::NoPen ); // no boundary
+#if defined(Q_WS_X11)
+      // Work around a +/- 32768 limitation on coordinates in X11
+      QgsClipper::trimPolygon(pa);
+#endif
       p->drawPolygon(*pa);
 
       // draw outline
@@ -2398,6 +2417,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 			      static_cast<int>(myProjectedPoint.y()));
           }
           // draw the ring
+#if defined(Q_WS_X11)
+	  // Work around a +/- 32768 limitation on coordinates in X11
+	  QgsClipper::trimPolygon(pa);
+#endif
           p->drawPolygon(*pa);
           delete pa;
         }
