@@ -184,6 +184,7 @@ qgis_MOC =						\
 		qgsattributeactiondialog.moc.cpp \
 		qgsattributedialog.moc.cpp \
 		qgsattributetable.moc.cpp \
+		qgscoordinatetransform.moc.cpp \
 		qgscontcoldialog.moc.cpp \
 		qgsdlgvectorlayerproperties.moc.cpp \
 		qgsgeomtypedialog.moc.cpp \

@@ -18,6 +18,8 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
+//qt includes
+#include <qobject.h>
 
 //qgis includes
 #include "qgspoint.h"
@@ -39,9 +41,10 @@ class QString;
 *
 * This class can convert map coordinates to a different spatial reference system.
 */
-class QgsCoordinateTransform{
+class QgsCoordinateTransform: public QObject
+{
+  Q_OBJECT
  public:
-
     QgsCoordinateTransform(QString theSourceWKT, QString theDestWKT  );
      //! destructor
     ~QgsCoordinateTransform();
@@ -89,11 +92,15 @@ class QgsCoordinateTransform{
     //! Accessor and mutator for source WKT
     void setSourceWKT(QString theWKT);
     QString sourceWKT() const {return mSourceWKT;};
-    //! Accessor and mutator for dest WKT
-    void setDestWKT(QString theWKT);
+    //! Accessor  for dest WKT
     QString destWKT() const {return mDestWKT;};    
     //! Accessor for whether this transoform is properly initialised
     bool isInitialised() {return mInitialisedFlag;};
+ public slots:
+    /** mutator for dest WKT - slot will usually be fired if proj props change and 
+        user selects a different coordinate system */
+    void setDestWKT(QString theWKT);    
+    
  private:
     //!initialise is used to actually create the Transformer instance
     void initialise();

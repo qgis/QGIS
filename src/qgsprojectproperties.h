@@ -73,12 +73,15 @@ public slots:
    */
   void mapUnitChange(int);
   /**
-   * Slot called when a projection is selected
-   * @param The Projection name (which will be used to retrieve its WKT
+   * Slot called when ok button pressed (inherits from gui base)
    */
-  void projectionChange(QString);
+  void accept();
   //! Populate the wkts map with projection names...
   void getProjList();
+signals:
+  /** Used to notify all coordinateTransform objects to update their dest wkt because the project
+      output projection system is changed */
+  void setDestWKT(QString);   
 private:
   typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
   //stores a list of available projection definitions 

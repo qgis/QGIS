@@ -1,6 +1,6 @@
 #include "qgscoordinatetransform.h"
 
-QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString theDestWKT )
+QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString theDestWKT ) : QObject()
 {
   mSourceWKT = theSourceWKT;
   mDestWKT = theDestWKT;
@@ -20,6 +20,9 @@ void QgsCoordinateTransform::setSourceWKT(QString theWKT)
 }
 void QgsCoordinateTransform::setDestWKT(QString theWKT)
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsCoordinateTransform::setDestWKT called" << std::endl;
+#endif
   mDestWKT = theWKT;
   initialise();
 }
@@ -121,7 +124,7 @@ void QgsCoordinateTransform::initialise()
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
   }
   //just a test to see if inverse 
-  inverseTransform(100.0,100.0);
+  //inverseTransform(10.0,10.0);
   // Deactivate GDAL error messages.
   //CPLSetErrorHandler( errorHandler );
 
