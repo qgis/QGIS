@@ -3,19 +3,19 @@
     <name>Plugin</name>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Inferior Direito</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Inferior Esquerdo</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Superior Esquerdo</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Superior Direito</translation>
     </message>
 </context>
 <context>
@@ -116,65 +116,55 @@
     </message>
     <message>
         <source>Copyright Label Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:20pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Selected text can also be formatted using the &apos;Font&apos; button.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin de rótulo de Copyright</translation>
     </message>
     <message encoding="UTF-8">
         <source>© QGIS 2004</source>
-        <translation type="unfinished"></translation>
+        <translation>© QGIS 2004</translation>
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Posicionamento</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Inferior Esquerdo</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Superior Esquerdo</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Inferior Direito</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Superior Direito</translation>
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientação</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <source>Enable Copyright Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar Rótulo de Copyright</translation>
     </message>
     <message>
         <source>GPS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramentas de GPS</translation>
     </message>
     <message>
         <source>GPX and LOC loader</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregador GPX e LOC</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -183,27 +173,32 @@
 &lt;p&gt;Select a GPX or LOC file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX é o &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;formato para troca de dados de GPS&lt;/a&gt;, o qual é utilizado para armazenar informações sobre waypoints, rotas e trilhas. LOC é o formato de waypoints do &lt;a href=&quot;http://www.geocaching.com&quot;&gt;geocaching.com.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Selecione um arquivo GPX ou LOC e depois selecione o tipo de feição que deseja carregar.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo:</translation>
     </message>
     <message>
         <source>Feature types:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de Feições:</translation>
     </message>
     <message>
         <source>Waypoints</source>
-        <translation type="unfinished"></translation>
+        <translation>Waypoints</translation>
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotas</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Trilhas</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -213,8 +208,8 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Selecione o arquivo GPS que gostaria que fosse convertido para shapefile e este plugin fará todo o trabalho! &lt;/p&gt;
 &lt;p&gt;Utilize o intervalo de distância mínimo para definir qual distância entre duas leituras devem ser consideradas o início de uma nova feição.&lt;/p&gt;
 &lt;p&gt;Utilize o intervalo de tempo mínimo para definir qual distância entre duas leituras devem ser consideradas o início de uma nova feição.&lt;/p&gt;
@@ -223,39 +218,39 @@
     </message>
     <message>
         <source>North Arrow Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin de Rosa do Ventos</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedades</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Ângulo</translation>
     </message>
     <message>
         <source>Show?</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir?</translation>
     </message>
     <message>
         <source>Placement on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Posicionamento na Tela</translation>
     </message>
     <message>
         <source>Preview of north arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Pré-visualização da rosa dos ventos</translation>
     </message>
     <message>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ícone</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished">Novo Item</translation>
+        <translation>Novo Item</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelo do Plugin</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -265,7 +260,29 @@
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Este plugin foi gerado utilizando o modelo de plugins interno do QGIS. Modifique-o como desejar.&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Bitstream Vera Sans&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Selected text can also be formatted using the &apos;Font&apos; button.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Bitstream Vera Sans&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Digite seu rótulo de copyright abaixo. Este plugin suporte html básico para formatação do rótulo. Por examplo:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Negrito&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Itálico&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;O texto selecionado também pode ser formatado utilizando o botão &quot;Fonte&quot;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -274,7 +291,12 @@
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:23pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Digite seu rótulo de copyright abaixo. Este plugin suporte html básico para formatação do rótulo. Por exemplo:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;texto em negrito&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Itálico&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -285,7 +307,7 @@
     </message>
     <message>
         <source>Save file dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar Arquivo</translation>
     </message>
 </context>
 <context>
@@ -568,11 +590,11 @@
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha o nome do arquivo com a imagem do mapa atual</translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation type="unfinished"></translation>
+        <translation>Extensão:</translation>
     </message>
 </context>
 <context>
@@ -903,15 +925,15 @@
     </message>
     <message>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedades do Projeto</translation>
     </message>
     <message>
         <source>Set project properties, including map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Define as propriedades do projeto, incluindo a unidade de medida do mapa</translation>
     </message>
     <message>
         <source>Set properties for the current project, including map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Define as propriedades para o projeto atual, incluindo a unidade de medida do mapa</translation>
     </message>
 </context>
 <context>
@@ -1699,11 +1721,11 @@ preenchimento</translation>
     </message>
     <message>
         <source>Add GRASS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Camada GRASS</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
 </context>
 <context>
@@ -2330,39 +2352,39 @@ identificando feições sem executar um zoom muito perto.
     <name>QgsProjectPropertiesBase</name>
     <message>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedades do Projeto</translation>
     </message>
     <message>
         <source>Map Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unidade do Mapa</translation>
     </message>
     <message>
         <source>Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Metros</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="unfinished"></translation>
+        <translation>Pés</translation>
     </message>
     <message>
         <source>Decimal degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>Graus Decimais</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Ajuda</translation>
+        <translation>&amp;Ajuda</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Cancelar</translation>
+        <translation>&amp;Cancelar</translation>
     </message>
 </context>
 <context>
@@ -2437,77 +2459,79 @@ identificando feições sem executar um zoom muito perto.
     </message>
     <message>
         <source>Pyramid overviews:</source>
-        <translation type="unfinished"></translation>
+        <translation>Visões da Pirâmide:</translation>
     </message>
     <message>
         <source>Band Statistics (if gathered):</source>
-        <translation type="unfinished"></translation>
+        <translation>Estatísticas da Banda (se coletadas):</translation>
     </message>
     <message>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedade</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished">Banda</translation>
+        <translation>Banda</translation>
     </message>
     <message>
         <source>Band No</source>
-        <translation type="unfinished"></translation>
+        <translation>No da Banda</translation>
     </message>
     <message>
         <source>No Stats</source>
-        <translation type="unfinished"></translation>
+        <translation>Sem Informações</translation>
     </message>
     <message>
         <source>No stats collected yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenhuma informação coletada até o momento</translation>
     </message>
     <message>
         <source>Min Val</source>
-        <translation type="unfinished"></translation>
+        <translation>Val Min</translation>
     </message>
     <message>
         <source>Max Val</source>
-        <translation type="unfinished"></translation>
+        <translation>Val Máx</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo</translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished"></translation>
+        <translation>Significado</translation>
     </message>
     <message>
         <source>Sum of squares</source>
-        <translation type="unfinished"></translation>
+        <translation>Soma das raízes</translation>
     </message>
     <message>
         <source>Standard Deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Desvio Padrão</translation>
     </message>
     <message>
         <source>Sum of all cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Soma de todas as células</translation>
     </message>
     <message>
         <source>Cell Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de Células</translation>
     </message>
     <message>
         <source>Write access denied</source>
-        <translation type="unfinished"></translation>
+        <translation>Acesso a escrita negado</translation>
     </message>
     <message>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Acesso a escrita negado. Ajuste as permissões do arquivo e tente novamente.
+
+</translation>
     </message>
 </context>
 <context>
@@ -2745,31 +2769,34 @@ identificando feições sem executar um zoom muito perto.
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt,font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notas&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Pirâmides</translation>
     </message>
     <message>
         <source>Resampling Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Método de Redimensionamento</translation>
     </message>
     <message>
         <source>Average Magphase</source>
-        <translation type="unfinished"></translation>
+        <translation>Magphase Média</translation>
     </message>
     <message>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Média</translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
-        <translation type="unfinished"></translation>
+        <translation>Vizinho mais Próximo</translation>
     </message>
     <message>
         <source>Build Pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Construir Pirâmides</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -2778,11 +2805,16 @@ identificando feições sem executar um zoom muito perto.
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;(new line)
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:24pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p&gt;Camadas raster de grande resolução podem tornar a navegação no QGIS mais lenta. Ao criar cópias de camadas em resoluções mais baixas (pirâmides) a performance pode ser melhorada consideravelmente uma vez o QGIS escolhe qual a melhor resolução a ser utilizada dependendo no nível de zoom. Você precisa ter acesso a escrita no diretório onde encontram-se os dados originais para criar pirâmides de dados. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Note que, construir pirâmides pode alterar o arquivo de dados original e, uma vez criadas, não há como removê-las.&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Pyramid Resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Resoluções das Pirâmides</translation>
     </message>
 </context>
 <context>
@@ -2801,19 +2833,19 @@ identificando feições sem executar um zoom muito perto.
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">Diretório</translation>
+        <translation>Diretório</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished">Novo Item</translation>
+        <translation>Novo Item</translation>
     </message>
     <message>
         <source>Scale Factor (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fator de Escala (%)</translation>
     </message>
 </context>
 <context>
