@@ -115,10 +115,9 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += QGis::qgisVersion;
-	watsNew += "\n* Random color now assigned to a layer when added\n"
-	  "  instead of all layers being the same color by type\n"
-	  "* Right-click menu to remove a layer or edit properties\n"
-	  "* Properties page for layer. Allows setting of color and\n" "  other options.";
+	watsNew += "\n* Display name can be set from the layer properties dialog\n"
+	  "* Fixed multiple render bug when adding a layer\n"
+	  "* New icons for various actions\n";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
