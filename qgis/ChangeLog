@@ -3,6 +3,9 @@
 
 
 QGIS Change Log
+2005-01-01 [larsl] 0.6.0devel3
+** Fixed a bug that crashed QGIS when loading rasters from a project file
+QGIS Change Log
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version

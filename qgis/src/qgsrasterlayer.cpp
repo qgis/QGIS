@@ -403,24 +403,8 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
       layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
       setLayerName(layerTitle);
   }
-
-  // load the file if one specified
-  if ( ! path.isEmpty() )
-  {
-      readFile( path );         // XXX add check for false?
-  }
-
-  //  Transparency slider for popup meni
-  //  QSlider ( int minValue, int maxValue, int pageStep, int value, Orientation orientation, QWidget * parent, const char * name = 0 )
-
-
-//   // emit a signal asking for a repaint
-//   emit repaintRequested();
-
-  //
-  // Get the layers project info and set up the QgsCoordinateTransform for this layer
-  //
-  QString mySourceWKT = getProjectionWKT();
+  
+  // Set the layers destination CS
   //hard coding to geo/wgs84 for now
   QString myDestWKT =     "GEOGCS[\"WGS 84\", "
     "  DATUM[\"WGS_1984\", "
@@ -433,7 +417,27 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     "  AXIS[\"Lat\",NORTH], "
     "  AXIS[\"Long\",EAST], "
     "  AUTHORITY[\"EPSG\",4326]]";
-  mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+
+  // load the file if one specified
+  if ( ! path.isEmpty() )
+  {
+      if ( readFile( path ) ) 
+      {
+	  // Get the layer's projection info and set up the 
+	  // QgsCoordinateTransform for this layer
+          QString mySourceWKT = getProjectionWKT();
+	  mCoordinateTransform = 
+	    new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+      }
+  }
+
+  //  Transparency slider for popup meni
+  //  QSlider ( int minValue, int maxValue, int pageStep, int value, Orientation orientation, QWidget * parent, const char * name = 0 )
+
+
+//   // emit a signal asking for a repaint
+//   emit repaintRequested();
+
 } // QgsRasterLayer ctor
 
 
