@@ -394,7 +394,7 @@ bool GPSData::parseLOC(QDomNode& node) {
 }
 
 
-GPSData* GPSData::getData(std::string filename) {
+GPSData* GPSData::getData(const QString& filename) {
   
   // if the data isn't there already, try to load it
   if (dataObjects.find(filename) == dataObjects.end()) {
@@ -418,7 +418,7 @@ GPSData* GPSData::getData(std::string filename) {
 }
 
 
-void GPSData::releaseData(std::string filename) {
+void GPSData::releaseData(const QString& filename) {
   
   /* decrease the reference count for the filename (if it is used), and erase
      it if the reference count becomes 0 */
