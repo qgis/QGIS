@@ -1,0 +1,252 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsGPSDeviceDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsGPSDeviceDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>482</width>
+            <height>252</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>GPS Device Editor</string>
+    </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="Line" row="0" column="1" rowspan="7" colspan="1">
+            <property name="name">
+                <cstring>line2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>VLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Device name:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel4</cstring>
+            </property>
+            <property name="text">
+                <string>Download command:</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="1" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>leDownloadCmd</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>leDeviceName</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>This is the name of the device as it will appear in the lists</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>leUploadCmd</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel5</cstring>
+            </property>
+            <property name="text">
+                <string>Upload command:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="3" rowspan="4" colspan="3">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
+&lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</string>
+            </property>
+            <property name="textFormat">
+                <enum>RichText</enum>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="6" column="0">
+            <property name="name">
+                <cstring>pbUpdateDevice</cstring>
+            </property>
+            <property name="text">
+                <string>Update device</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="0">
+            <property name="name">
+                <cstring>pbDeleteDevice</cstring>
+            </property>
+            <property name="text">
+                <string>Delete device</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="0">
+            <property name="name">
+                <cstring>pbNewDevice</cstring>
+            </property>
+            <property name="text">
+                <string>New device</string>
+            </property>
+        </widget>
+        <widget class="QListBox" row="0" column="0" rowspan="4" colspan="1">
+            <property name="name">
+                <cstring>lbDeviceList</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="5">
+            <property name="name">
+                <cstring>pbClose</cstring>
+            </property>
+            <property name="text">
+                <string>Close</string>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <spacer row="7" column="0" rowspan="1" colspan="5">
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>370</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>pbNewDevice</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGPSDeviceDialogBase</receiver>
+        <slot>slotNewDevice()</slot>
+    </connection>
+    <connection>
+        <sender>pbDeleteDevice</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGPSDeviceDialogBase</receiver>
+        <slot>slotDeleteDevice()</slot>
+    </connection>
+    <connection>
+        <sender>pbUpdateDevice</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGPSDeviceDialogBase</receiver>
+        <slot>slotUpdateDevice()</slot>
+    </connection>
+    <connection>
+        <sender>pbClose</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGPSDeviceDialogBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>lbDeviceList</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>QgsGPSDeviceDialogBase</receiver>
+        <slot>slotSelectionChanged()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>slotProtocolChanged(const QString&amp;)</slot>
+    <slot>slotNewDevice()</slot>
+    <slot>slotDeleteDevice()</slot>
+    <slot>slotUpdateDevice()</slot>
+    <slot>slotSelectionChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
