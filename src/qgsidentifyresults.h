@@ -45,10 +45,14 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */
   void addAttribute(QListViewItem *parent, QString field, QString value);
+  /** Add an attribute */
+  void addAttribute(QString field, QString value);
   /** Add a feature node to the feature display */
   QListViewItem * addNode(QString label);
   /** Set the title for the identify results dialog */
   void setTitle(QString title);
+  /** Set header column */
+  void setColumnText ( int column, const QString & label );
   void saveWindowLocation();
   void restorePosition();  
   void close();
