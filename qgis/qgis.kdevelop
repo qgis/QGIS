@@ -53,7 +53,7 @@
   </kdevdebugger>
   <kdevtrollproject>
     <general>
-      <activedir>/src</activedir>
+      <activedir></activedir>
     </general>
     <run>
       <mainprogram>./src/qgis</mainprogram>
