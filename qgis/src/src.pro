@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.47 2004/09/05 23:57:43 timlinux Exp 
+# src.pro,v 1.48 2004/09/06 17:37:10 timlinux Exp 
 ######################################################################
 #
 # For a WIN32 release build do the following:
@@ -137,6 +137,7 @@ INTERFACES += qgisappbase.ui \
               qgslabeldialogbase.ui \ 
               qgssimadialogbase.ui \
               qgssisydialogbase.ui \ 
+              qgsludialogbase.ui \
               qgsuvaldialogbase.ui 
 SOURCES += main.cpp \
            qgisapp.cpp \
