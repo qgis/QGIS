@@ -227,24 +227,25 @@ void QgsGraSyDialog::apply()
 	int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
 
 	//find out the width of the widest label and of the broadest lower-upper pair
-	QString widestlabel = "";
-	QString widestlu = "";
+	int labelwidth=0;
+	lowerupperwidth=0;
+
 	for (int i = 0; i < numberofclassesspinbox->value(); i++)
         {
-	    QString string = ((QLineEdit *) (ext->getWidget(2, i)))->text();
-	    if (string.length() > widestlabel.length())
+	    int currentlabelwidth=fm.width(((QLineEdit *) (ext->getWidget(2, i)))->text());  
+	    if(currentlabelwidth>labelwidth)
             {
-		widestlabel = string;
+		labelwidth=currentlabelwidth;
             }
-	    QString string2 = ((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text();
-	    if (string2.length() > widestlu.length())
+	    
+	    int currentluwidth=fm.width(((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text());
+	    if(currentluwidth>lowerupperwidth)
 	    {
-		widestlu = string2;
+		//widestlu = string2;
+		lowerupperwidth=currentluwidth;
 	    }
         }
-	int labelwidth = fm.width(widestlabel);
-	lowerupperwidth=fm.width(widestlu);
-
+	
 	//create the pixmap for the render item
 	QPixmap *pix = mVectorLayer->legendPixmap();
 	QString name;

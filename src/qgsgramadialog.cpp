@@ -163,24 +163,23 @@ void QgsGraMaDialog::apply()
 	int classesheight; //height of the classes section
 	
         //find out the width of the widest label and the widest lower - upper pair
-	QString widestlabel = "";
-	QString widestlu = "";
+	int labelwidth=0;
+	lowerupperwidth=0;
+
 	for (int i = 0; i < mNumberOfClassesSpinbox->value(); i++)
         {
-	    QString string = ((QLineEdit *) (ext->getWidget(2, i)))->text();
-	    if (string.length() > widestlabel.length())
+	    int currentlabelwidth=fm.width(((QLineEdit *) (ext->getWidget(2, i)))->text());
+	    if(currentlabelwidth>labelwidth)
             {
-		widestlabel = string;
+		labelwidth=currentlabelwidth;
             }
-	    QString string2 = ((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text();
-	    if (string2.length() > widestlu.length())
+	    
+	    int currentluwidth=fm.width(((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text());
+	    if(currentluwidth>lowerupperwidth)
 	    {
-		widestlu = string2;
+		lowerupperwidth=currentluwidth;
 	    }
         }
-	int labelwidth = fm.width(widestlabel);
-	//with of the values of the largest class
-	lowerupperwidth=fm.width(widestlu);
 
 	//find out the width of the broadest marker and the total height of the class section
 	markerwidth=0;
