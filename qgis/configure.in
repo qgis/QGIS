@@ -4,7 +4,7 @@ AC_INIT
 
 #AC_CONFIG_SRCDIR([libtool])
  
-AM_INIT_AUTOMAKE(qgis, 0.0.14)
+AM_INIT_AUTOMAKE(qgis, 0.1)
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -150,6 +150,13 @@ dnl ---------------------------------------------------------------------------
 # AC_SUBST(HAVE_GRASS)
 # AC_SUBST(GRASS_LIB)
 # AC_SUBST(GRASS_INC)
+
+if test x"$QGISDEBUG" = "x" ; then
+ DEBUG_QGIS=-DNO_DEBUG
+else
+ DEBUG_QGIS=-DDEBUG
+fi
+AC_SUBST(DEBUG_QGIS)
 
 #echo ${prefix}/lib
 libdir=${prefix}/lib
