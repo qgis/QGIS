@@ -34,6 +34,20 @@ bool QgsVectorDataProvider::deleteFeatures(std::list<int> const & id)
     return false;
 }
 
+bool QgsVectorDataProvider::addAttributes(std::list<QString> const & name, std::list<QString> const & type)
+{
+    return false;
+}
+
+bool QgsVectorDataProvider::deleteAttributes(std::list<QString> const & name)
+{
+    return false;
+}
+
+bool QgsVectorDataProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
+{
+    return false;
+}
 
 QString QgsVectorDataProvider::getDefaultValue(const QString& attr, 
 					       QgsFeature* f) {
@@ -48,7 +62,13 @@ bool QgsVectorDataProvider::supportsFeatureAddition() const
 
 bool QgsVectorDataProvider::supportsFeatureDeletion() const
 {
-    //needs to be overwritten by providers which support this
+    //needs to be overwritten by providers supporting this
+    return false;
+}
+
+bool QgsVectorDataProvider::supportsAttributeEditing() const
+{
+    //needs to be overwritten by providers supporting this
     return false;
 }
 
