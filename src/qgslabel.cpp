@@ -467,6 +467,19 @@ void QgsLabel::readXML( const QDomNode& node )
     mLabelAttributes->setAlignment ( QgsLabelAttributes::alignmentCode(el.attribute("value")) );
     setLabelField ( Alignment, el.attribute("field") );
 
+    // Buffer
+    el = node.namedItem("buffercolor").toElement();
+    red = el.attribute("red").toInt();
+    green = el.attribute("green").toInt();
+    blue = el.attribute("blue").toInt();
+    mLabelAttributes->setBufferColor ( QColor(red, green, blue) );
+    setLabelField ( BufferColor, el.attribute("field") );
+
+    el = node.namedItem("buffersize").toElement();
+    type = QgsLabelAttributes::unitsCode( el.attribute("units") );
+    mLabelAttributes->setBufferSize ( el.attribute("value").toDouble(), type );
+    setLabelField ( BufferSize, el.attribute("field") );
+
 }
 
 void QgsLabel::writeXML(std::ofstream& xml)
@@ -516,6 +529,14 @@ void QgsLabel::writeXML(std::ofstream& xml)
     xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment()).ascii() 
 	<< "\" field=\"" << mLabelField[Alignment].ascii() << "\" />\n";
 
+
+    // Buffer settings
+    xml << "\t\t\t<buffercolor red=\"" << mLabelAttributes->bufferColor().red() << "\" green=\"" << mLabelAttributes->bufferColor().green()
+        << "\" blue=\"" << mLabelAttributes->bufferColor().blue() << "\" field=\"" << mLabelField[BufferColor].ascii() << "\" />\n";
+    xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize() << "\" units=\"" 
+	<< (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()) << "\" field=\"" << mLabelField[BufferSize].ascii() << "\" />\n";
+
+    
     xml << "\t\t</labelattributes>\n";
 }
 
