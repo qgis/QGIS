@@ -4790,7 +4790,7 @@ identifying features without zooming in very close.<byte value="xd"/>
     <name>QgsSpitBase</name>
     <message>
         <source>SPIT - Shape ????to PostGIS Import Tool</source>
-        <translation type="obsolete">SPIT - Shape ファイルto PostGIS Import Tool</translation>
+        <translation>SPIT - Shape ファイルto PostGIS Import Tool</translation>
     </message>
     <message>
         <source>PostgreSQL Connections</source>
@@ -4810,7 +4810,7 @@ identifying features without zooming in very close.<byte value="xd"/>
     </message>
     <message>
         <source>Shape ????List</source>
-        <translation type="obsolete">Shape ファイル一覧</translation>
+        <translation>Shape ファイル一覧</translation>
     </message>
     <message>
         <source>File Name</source>
@@ -4850,7 +4850,7 @@ identifying features without zooming in very close.<byte value="xd"/>
     </message>
     <message>
         <source>Shape ????to PostGIS Import Tool</source>
-        <translation type="obsolete">Shape ファイルto PostGIS Import Tool</translation>
+        <translation>Shape ファイルto PostGIS Import Tool</translation>
     </message>
     <message>
         <source>Import the defined shapefiles to PostGIS</source>
@@ -4915,18 +4915,6 @@ identifying features without zooming in very close.<byte value="xd"/>
     <message>
         <source>Edit the current PostGIS connection</source>
         <translation>現在の PostGIS 接続を編集</translation>
-    </message>
-    <message>
-        <source>SPIT - Shapefile to PostGIS Import Tool</source>
-        <translation>SPIT - Shapefile to PostGIS Import Tool</translation>
-    </message>
-    <message>
-        <source>Shapefile to PostGIS Import Tool</source>
-        <translation>Shapefile to PostGIS Import Tool</translation>
-    </message>
-    <message>
-        <source>Shapefile List</source>
-        <translation>Shape ファイル一覧</translation>
     </message>
 </context>
 <context>
