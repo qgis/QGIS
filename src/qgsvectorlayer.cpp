@@ -54,7 +54,7 @@ email                : sherman at mrcc.com
 #include "qgsproviderregistry.h"
 #include "qgsrect.h"
 
-#include "wkbheader.h"
+//#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -363,9 +363,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         feature = fet->getGeometry();
         //  if (feature != 0) {
         //    std::cout << featureCount << "'the feature is null\n";
-wkbHeader header;
-  memcpy((void *)&header,feature,sizeof(header));
-  std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
+//wkbHeader header;
+  //memcpy((void *)&header,feature,sizeof(header));
+  //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
 
         wkbType = (int) feature[1];
         //  std::cout << "Feature type: " << wkbType << std::endl;
@@ -704,7 +704,7 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
     {
       QApplication::setOverrideCursor(Qt::waitCursor);
       // normalize the rectangle
-      rect.normalize();
+      rect->normalize();
       if (tabledisplay)
       {
         QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
