@@ -49,6 +49,10 @@ class QgsPgUtil
      * @return Pointer to the PostgreSQL connection object
      */
     PGconn *connection();
+    /*!
+     * Get the reserved word list
+     */
+    const QStringList & reservedWords();
   protected:
     //! Protected constructor
     QgsPgUtil();
