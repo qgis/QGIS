@@ -1,8 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.141 2004/06/20 23:05:28 timlinux Exp
+ChangeLog,v 1.142 2004/06/20 23:58:13 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
-	
+
+2004-06-21 [ts] 0.3.0devel45
+
+** Complete buffering so that bar as well as text will be visible on both 
+   light and dark surfaces.
+
 2004-06-21 [ts] 0.3.0devel44
 
 ** Fix for bug [ 973922 ] Overview shows layers in wrong order
