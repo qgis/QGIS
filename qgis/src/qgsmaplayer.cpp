@@ -24,6 +24,8 @@
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
+#include <qpainter.h>
+
 QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):internalName(lyrname), layerType(type), dataSource(source),
 m_legendItem(0)
 {
@@ -158,13 +160,28 @@ void QgsMapLayer::toggleShowInOverview()
     //set the checkbox using the property in the maplayer superclass
     popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
   }
-  //
-  //update the legend item
-  //
-  if (m_legendItem)
-    ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
-
+  updateItemPixmap();
   emit showInOverview(ID,mShowInOverview);
+}
+
+void QgsMapLayer::updateItemPixmap()
+{
+  if (m_legendItem)
+  {
+      //((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
+      if(mShowInOverview)
+      {
+	  //add overview glasses to the pixmap
+	  QPixmap pix=*(this->legendPixmap());
+	  QPainter p(&pix);
+	  p.drawPixmap(0,0,mInOverviewPixmap);
+	  ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
+      }
+      else
+      {
+	  ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
+      }
+  }  
 }
 
 const int &QgsMapLayer::featureType()
