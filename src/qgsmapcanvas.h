@@ -185,6 +185,11 @@ public slots:
     //! sets z order based on order of layers in the legend
     void setZOrderFromLegend(QgsLegend *lv);
 
+    //! determines whether the user can interact with the overview canvas.
+    void userInteractionAllowed(bool);
+    //! accessor to flag indicating whether the user can interact with the canvase
+    bool isUserInteractionAllowed();
+
 signals:
     /** Let the owner know how far we are with render operations */
     void setProgress(int,int);
@@ -261,6 +266,9 @@ private:
     //! true if canvas currently drawing
     bool isDrawing();
 
+    //! detrmines whether the user can interact with the canvas using a mouse
+    //(useful for locking the overview canvas)
+    bool mUserInteractionAllowed;
 }; // class QgsMapCanvas
 
 #endif
