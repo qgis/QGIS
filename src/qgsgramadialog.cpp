@@ -111,8 +111,8 @@ QgsGraMaDialog::QgsGraMaDialog(QgsVectorLayer* layer): QgsGraMaDialogBase(), ext
 
     //do the necessary signal/slot connections
     QObject::connect(mNumberOfClassesSpinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustNumberOfClasses()));
-    QObject::connect(mClassificationComboBox, SIGNAL(activated(int)), this, SLOT(adjustNumberOfClasses()));
-    QObject::connect(mModeComboBox, SIGNAL(activated(int)), this, SLOT(adjustNumberOfClasses()));
+    QObject::connect(mClassificationComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
+    QObject::connect(mModeComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
 }
 
 QgsGraMaDialog::QgsGraMaDialog()
@@ -357,4 +357,30 @@ void QgsGraMaDialog::adjustNumberOfClasses()
     
     QgsGraMaDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
     ext->show();
+}
+
+void QgsGraMaDialog::adjustClassification()
+{
+   //find out the number of the classification field
+    QString fieldstring = mClassificationComboBox->currentText();
+    if (fieldstring.isEmpty())    //don't do anything, it there is no classification field
+    {
+	show();
+	return;
+    }
+    
+    std::map < QString, int >::iterator iter = mFieldMap.find(fieldstring);
+    int field = iter->second; 
+    
+    if(ext)
+    {
+	if (mModeComboBox->currentText() == "Empty")
+	{
+	    ext->setClassification(QgsGraSyDialog::EMPTY,field);
+	}
+	else if(mModeComboBox->currentText() == "Equal Interval")
+	{
+	    ext->setClassification(QgsGraSyDialog::EQUAL_INTERVAL,field);
+	}
+    }
 }

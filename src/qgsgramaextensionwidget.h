@@ -47,6 +47,8 @@ class QgsGraMaExtensionWidget: public QScrollView
     void adjustMarkers();
     /**Adjusts the marker size in one row*/
     void adjustMarker(int row);
+    /**Changes the classification*/
+    void setClassification(QgsGraSyDialog::mode mode,int field);
 
  protected:
     /**Number of the field to classify*/
