@@ -59,7 +59,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsWorldMapImporter::QgsWorldMapImporter(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qgisMainWindowPointer(theQGisApp), 
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
@@ -120,7 +120,7 @@ void QgsWorldMapImporter::initGui()
 
 }
 //method defined in interface
-void Plugin::help()
+void QgsWorldMapImporter::help()
 {
   //implement me!
 }
@@ -155,7 +155,7 @@ void QgsWorldMapImporter::unload()
 // Class factory to return a new instance of the plugin class
 extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsWorldMapImporter(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as
