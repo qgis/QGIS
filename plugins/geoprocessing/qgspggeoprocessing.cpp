@@ -99,7 +99,8 @@ void QgsPgGeoprocessing::initGui()
 
     menu = ((QMainWindow *) qgisMainWindow)->menuBar();
 
-    menuId = menu->insertItem("&Geoprocessing", pluginMenu);
+  //  menuId = menu->insertItem("&Geoprocessing", pluginMenu);
+    menuId = qI->addMenu("&Geoprocessing", pluginMenu);
      // Create the action for tool
     QAction *bufferAction = new QAction("Buffer features", QIconSet(icon_buffer), "&Buffer",
                                               0, this, "buffer");
@@ -251,7 +252,7 @@ void QgsPgGeoprocessing::buffer()
                         // add the geometry column
                         //<db_name>, <table_name>, <column_name>, <srid>, <type>, <dimension>
                         sql = QString("select addgeometrycolumn('%1','%2','%3',%4,'%5',%6)")
-                          .arg(dbname)
+                          .arg(bb->schema())
                           .arg(bb->bufferLayerName())
                           .arg(bb->geometryColumn())
                           .arg(bb->srid())

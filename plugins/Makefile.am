@@ -1,1 +1,1 @@
-SUBDIRS = example maplayer spit geoprocessing
+SUBDIRS = spit geoprocessing
