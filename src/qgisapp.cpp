@@ -300,6 +300,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mMapLegend->setSorting(-1);
 
   mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit);
+  // lock the canvas to prevent user interaction
+  mOverviewCanvas->userInteractionAllowed(false);
   // mL = new QScrollView(canvasLegendSplit);
   //add a canvas
   mMapCanvas = new QgsMapCanvas(canvasLegendSplit);
@@ -1742,6 +1744,7 @@ void QgisApp::removeLayer()
   mMapLayerRegistry->removeMapLayer(layer->getLayerID());
   mOverviewCanvas->freeze(false);
   // draw the map
+  mOverviewCanvas->zoomFullExtent();
   mOverviewCanvas->clear();
   mOverviewCanvas->render();
   mMapCanvas->freeze(false);

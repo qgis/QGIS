@@ -207,6 +207,8 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
     : QWidget(parent, name), mCanvasProperties( new CanvasProperties(width(), height()) )
 {
   setEraseColor(mCanvasProperties->bgColor);
+  //by default we allow a user to interact with the canvas
+  mUserInteractionAllowed=true;
   setMouseTracking(true);
   setFocusPolicy(QWidget::StrongFocus);
   QPaintDeviceMetrics *pdm = new QPaintDeviceMetrics(this);
@@ -733,6 +735,7 @@ void QgsMapCanvas::zoomToSelected()
 
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
+  if (!mUserInteractionAllowed) return;
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->boxStartPoint = e->pos();
 
@@ -752,6 +755,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 
 void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 {
+  if (!mUserInteractionAllowed) return;
   QPainter paint;
   QPen     pen(Qt::gray);
   QgsPoint ll, ur;
@@ -974,6 +978,7 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
+  if (!mUserInteractionAllowed) return;
     // XXX magic numbers BAD -- 513?
   if (e->state() == Qt::LeftButton || e->state() == 513)
     {
@@ -1265,6 +1270,17 @@ std::list < QString >       & QgsMapCanvas::zOrders()
 {
     return mCanvasProperties->zOrder;
 } // zOrders
+
+//! determines whether the user can interact with the overview canvas.
+void QgsMapCanvas::userInteractionAllowed(bool theFlag)
+{
+  mUserInteractionAllowed = theFlag;
+}
+//! determines whether the user can interact with the overview canvas.
+bool QgsMapCanvas::isUserInteractionAllowed()
+{
+  return mUserInteractionAllowed;
+}
 
 
 double QgsMapCanvas::mupp() const
