@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.148 2004/06/24 08:04:04 timlinux Exp
+ChangeLog,v 1.149 2004/06/26 18:28:14 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-26 [ts] 0.3.0devel52
+** Extents are now correctly restored when project is loaded
 
 2004-06-24 [ts] 0.3.0devel51
 ** Completion of projectio fixes to freeze canvas and restore zorder correctly. 
