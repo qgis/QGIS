@@ -383,7 +383,6 @@ private:
   QString chooseViewColumn(const table_cols& cols);
 
   void findTableColumns(QString select_cmd, table_cols& cols);
-  static void findColumns(QString select_cmd, table_cols& cols);
   
   bool ready;
   std::ofstream pLog;
