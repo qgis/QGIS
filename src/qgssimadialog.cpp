@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "qgssimadialog.h"
 #include "qgssimarenderer.h"
@@ -29,116 +29,114 @@
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qpainter.h>
+#include <qspinbox.h>
+#include <qiconview.h>
+#include <qlabel.h>
 
-
-QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer), mMarkerSizeDirty(false)
+QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer)
 {
     if(mVectorLayer)
     {
-	QgsSiMaRenderer *renderer;
-	
-	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
-	if (mVectorLayer->propertiesDialog())
+        QgsSiMaRenderer *renderer;
+
+        //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
+        if (mVectorLayer->propertiesDialog())
         {
-	    renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
-	} 
-	else
+            renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+        }
+        else
         {
-	    renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->renderer());
+            renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->renderer());
         }
 
-	if(renderer)
-	{
-	    QgsMarkerSymbol* sy=dynamic_cast < QgsMarkerSymbol* >(renderer->item()->getSymbol());
-	    if(sy)
-	    {
-		QPicture pic;
-		double scalefactor=sy->scaleFactor();
-		mScaleEdit->setText(QString::number(scalefactor,'f',2));
-		QString svgfile=sy->picture();
-		mImageButton->setName(svgfile);
-		pic.load(svgfile,"svg");
+        if(renderer)
+        {
+            QgsMarkerSymbol* sy=dynamic_cast < QgsMarkerSymbol* >(renderer->item()->getSymbol());
+            if(sy)
+            {
+                QPicture pic;
+                double scalefactor=sy->scaleFactor();
+                mScaleSpin->setValue(scalefactor*100);
+                QString svgfile=sy->picture();
+                pic.load(svgfile,"svg");
 
-		int width=(int)(pic.boundingRect().width()*scalefactor);
-		int height=(int)(pic.boundingRect().height()*scalefactor);
+                int width=(int)(pic.boundingRect().width()*scalefactor);
+                int height=(int)(pic.boundingRect().height()*scalefactor);
 
-//prevent 0 width or height, which would cause a crash
-		if(width==0)
-		{
-		    width=1;
-		}
-		if(height==0)
-		{
-		    height=1;
-		}
+                //prevent 0 width or height, which would cause a crash
+                if(width==0)
+                {
+                    width=1;
+                }
+                if(height==0)
+                {
+                    height=1;
+                }
 
-		QPixmap pixmap(width,height);
-		pixmap.fill();
-		QPainter p(&pixmap);
-		p.scale(scalefactor,scalefactor);
-		p.drawPicture(0,0,pic);
-		mImageButton->setPixmap(pixmap);
-		
-	    }else
-	    {
-		qWarning("Warning, typecast failed in qgssimadialog.cpp on line 51");
-		mScaleEdit->setText("1.0");
-	    }
-	}else
-	{
-	    qWarning("Warning, typecast failed in qgssimadialog.cpp on line 42 or 46");
-	}
-	
+                QPixmap pixmap(width,height);
+                pixmap.fill();
+                QPainter p(&pixmap);
+                p.scale(scalefactor,scalefactor);
+                p.drawPicture(0,0,pic);
+                pmPreview->setPixmap(pixmap);
 
-	QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));  
-	QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
-	QObject::connect(mScaleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setMarkerSizeDirty()));
+            }
+            else
+            {
+                qWarning("Warning, typecast failed in qgssimadialog.cpp on line 51");
+                mScaleSpin->setValue(100);
+            }
+        }
+        else
+        {
+            qWarning("Warning, typecast failed in qgssimadialog.cpp on line 42 or 46");
+        }
+
+        //QString(PKGDATAPATH);
     }
 }
 
-QgsSiMaDialog::QgsSiMaDialog(): QgsSiMaDialogBase(), mVectorLayer(0), mMarkerSizeDirty(false)
-{
-    QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));
-    QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
-    QObject::connect(mScaleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setMarkerSizeDirty()));
-    mScaleEdit->setText("1.0");
-}
+
 
 QgsSiMaDialog::~QgsSiMaDialog()
 {
-
+    //do nothing
 }
 
 void QgsSiMaDialog::apply()
-{   
+{
 #ifdef QGISDEBUG
     qWarning("in QgsSiMaDialog::apply()");
 #endif
+
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
-    QString string(mImageButton->name());
+    QString string(pmPreview->name());
 #ifdef QGISDEBUG
+
     qWarning(string);
 #endif
+
     ms->setPicture(string);
-    ms->setScaleFactor(mScaleEdit->text().toDouble());
+    //set the scaled factor at the same time converting units from percentage
+    ms->setScaleFactor(static_cast<int>(mScaleSpin->value()/100));
 
     QgsRenderItem* ri = new QgsRenderItem();
     ri->setSymbol(ms);
 
     QgsSiMaRenderer *renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->renderer());
-    
+
     if( renderer )
     {
-	renderer->addItem(ri);
-    } 
+        renderer->addItem(ri);
+    }
     else
     {
-	qWarning("typecast failed in QgsSiMaDialog::apply()");
-	return;
+        qWarning("typecast failed in QgsSiMaDialog::apply()");
+        return;
     }
 
     //add a pixmap to the legend item
-    
+
     //font tor the legend text
     QFont f("times", 12, QFont::Normal);
     QFontMetrics fm(f);
@@ -146,11 +144,11 @@ void QgsSiMaDialog::apply()
     QString name;
     if (mVectorLayer->propertiesDialog())
     {
-	name = mVectorLayer->propertiesDialog()->displayName();
-    } 
+        name = mVectorLayer->propertiesDialog()->displayName();
+    }
     else
     {
-	name = "";
+        name = "";
     }
 
     QPicture pic;
@@ -158,17 +156,17 @@ void QgsSiMaDialog::apply()
 
     QPixmap *pix = mVectorLayer->legendPixmap();
 
-    int width = (int)(20+pic.boundingRect().width()*ms->scaleFactor()+fm.width(name));
+    int width = (int)(pic.boundingRect().width()*ms->scaleFactor()+fm.width(name));
     int height = (int)((pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor() +10 : fm.height()+10);
 
     //prevent 0 width or height, which would cause a crash
     if(width==0)
     {
-	width=1;
+        width=1;
     }
     if(height==0)
     {
-	height=1;
+        height=1;
     }
 
     pix->resize(width, height);
@@ -176,8 +174,8 @@ void QgsSiMaDialog::apply()
 
     QPainter p(pix);
     p.scale(ms->scaleFactor(),ms->scaleFactor());
-    p.drawPicture((int)(10/ms->scaleFactor()),(int)(5/ms->scaleFactor()),pic);
-    p.resetXForm(); 
+    p.drawPicture((int)(100/ms->scaleFactor()),(int)(100/ms->scaleFactor()),pic);
+    p.resetXForm();
 
     p.setPen(Qt::black);
     p.setFont(f);
@@ -185,93 +183,123 @@ void QgsSiMaDialog::apply()
 
     if (mVectorLayer->legendItem())
     {
-	mVectorLayer->legendItem()->setPixmap(0, (*pix));
-	updateMarkerSize();
+        mVectorLayer->legendItem()->setPixmap(0, (*pix));
+        //updateMarkerSize(0);
     }
-    
-    
+
+
     if (mVectorLayer->propertiesDialog())
     {
-	mVectorLayer->propertiesDialog()->setRendererDirty(false);
+        mVectorLayer->propertiesDialog()->setRendererDirty(false);
     }
     //repaint the map canvas
     mVectorLayer->triggerRepaint();
 }
 
-void QgsSiMaDialog::selectMarker()
+void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
 {
-    QgsMarkerDialog mdialog;
-    if(mdialog.exec()==QDialog::Accepted)
+    QString svgfile=mCurrentDir+"/"+theIconViewItem->text();
+    pmPreview->setName(svgfile);
+
+    //draw the SVG-Image on the button
+    QPicture pic;
+    double scalefactor=mScaleSpin->value()/100;
+    pic.load(svgfile,"svg");
+
+    int width=(int)(pic.boundingRect().width()*scalefactor);
+    int height=(int)(pic.boundingRect().height()*scalefactor);
+
+    //prevent 0 width or height, which would cause a crash
+    if(width==0)
     {
-	QString svgfile=mdialog.selectedMarker();
-	mImageButton->setName(svgfile);
-    
-	//draw the SVG-Image on the button
-	QPicture pic;
-	double scalefactor=mScaleEdit->text().toDouble();
-	pic.load(svgfile,"svg");
-
-	int width=(int)(pic.boundingRect().width()*scalefactor);
-	int height=(int)(pic.boundingRect().height()*scalefactor);
-
-	//prevent 0 width or height, which would cause a crash
-	if(width==0)
-	{
-	    width=1;
-	}
-	if(height==0)
-	{
-	    height=1;
-	}
-
-	QPixmap pixmap(height,width);
-	pixmap.fill();
-	QPainter p(&pixmap);
-	p.scale(scalefactor,scalefactor);
-	p.drawPicture(0,0,pic);
-	mImageButton->setPixmap(pixmap);
+        width=1;
+    }
+    if(height==0)
+    {
+        height=1;
     }
 
-    setActiveWindow();
+    QPixmap pixmap(height,width);
+    pixmap.fill();
+    QPainter p(&pixmap);
+    p.scale(scalefactor,scalefactor);
+    p.drawPicture(0,0,pic);
+    pmPreview->setPixmap(pixmap);
+
+}
+void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
+{
+    std::cout << "mScaleSpin_valueChanged(" << theSize << ") " << std::endl;
+    //draw the SVG-Image on the button
+    QString svgfile(pmPreview->name());
+    if(!svgfile.isEmpty())
+    {
+        QPicture pic;
+        //user enters scaling factor as a percentage
+        double scalefactor=mScaleSpin->value()/100;
+        pic.load(svgfile,"svg");
+
+        int width=(int)(pic.boundingRect().width()*scalefactor);
+        int height=(int)(pic.boundingRect().height()*scalefactor);
+
+        //prevent 0 width or height, which would cause a crash
+        if(width==0)
+        {
+            width=1;
+        }
+        if(height==0)
+        {
+            height=1;
+        }
+
+        QPixmap pixmap(width,height);
+        pixmap.fill();
+        QPainter p(&pixmap);
+        p.scale(scalefactor,scalefactor);
+        p.drawPicture(0,0,pic);
+        pmPreview->setPixmap(pixmap);
+    }
+
 }
 
-void QgsSiMaDialog::updateMarkerSize()
+void QgsSiMaDialog::mBrowseDirectoriesButton_clicked()
 {
-    if(mMarkerSizeDirty)
+    QString newdir=QFileDialog::getExistingDirectory(mCurrentDir,this,"get existing directory","Choose a directory",TRUE);
+    if (!newdir.isEmpty())
     {
-	//draw the SVG-Image on the button
-	QString svgfile(mImageButton->name());
-	if(!svgfile.isEmpty())
-	{
-	    QPicture pic;
-	    double scalefactor=mScaleEdit->text().toDouble();
-	    pic.load(svgfile,"svg");
-
-	    int width=(int)(pic.boundingRect().width()*scalefactor);
-	    int height=(int)(pic.boundingRect().height()*scalefactor);
-	    
-//prevent 0 width or height, which would cause a crash
-	    if(width==0)
-	    {
-		width=1;
-	    }
-	    if(height==0)
-	    {
-		height=1;
-	    }
-
-	    QPixmap pixmap(width,height);
-	    pixmap.fill();
-	    QPainter p(&pixmap);
-	    p.scale(scalefactor,scalefactor);
-	    p.drawPicture(0,0,pic);
-	    mImageButton->setPixmap(pixmap);
-	} 
-	mMarkerSizeDirty=false;
+        mCurrentDir=newdir;
+        visualizeMarkers(mCurrentDir);
+        mDirectoryEdit->setText(mCurrentDir);
     }
 }
 
-void QgsSiMaDialog::setMarkerSizeDirty()
+void QgsSiMaDialog::visualizeMarkers(QString directory)
 {
-    mMarkerSizeDirty=true;
+    mIconView->clear();
+
+    QDir dir(directory);
+    QStringList files=dir.entryList("*.svg;*.SVG");
+
+    for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
+    {
+        qWarning(*it);
+
+        //use the QPixmap way, as the QPicture version does not seem to work properly
+        QPicture pic;
+        pic.load(mCurrentDir+"/"+(*it),"svg");
+        QPixmap pix;
+        pix.resize(pic.boundingRect().width(),pic.boundingRect().height());
+        pix.fill();
+        QPainter p(&pix);
+        p.drawPicture(0,0,pic);
+        QIconViewItem* ivi=new QIconViewItem(mIconView,*it,pix);
+
+    }
 }
+
+QString QgsSiMaDialog::defaultDir()
+{
+    QString dir = QString(PKGDATAPATH)+"/svg";
+    return dir;
+}
+
