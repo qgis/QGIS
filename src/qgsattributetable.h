@@ -38,6 +38,8 @@ class QgsAttributeTable:public QTable
       void insertFeatureId(int id);
       /**Selects the row which belongs to the feature with the specified id*/
       void selectRowWithId(int id);
+      /**Sorts a column. This method replaces the one from QTable to allow alphanumeric sorting*/
+      virtual void sortColumn(int col, bool ascending=true, bool wholeRows=false);
 
       public slots:
       void columnClicked(int col);
@@ -48,9 +50,15 @@ class QgsAttributeTable:public QTable
       bool lockKeyPressed;
       /**Search tree to find a row corresponding to a feature id*/
       QMap<int,int> rowIdMap;
+      /**Flag indicating, which sorting order should be used*/
+      bool sort_ascending;
+      /**Compares the content of two cells either alphanumeric or numeric. If 'ascending' is true, -1 means s1 is less, 0 equal, 1 greater. If 'ascending' is false, -1 means s1 is more, 0 equal, 1 greater. This method is used mainly to sort a column*/
+      int compareItems(QString s1, QString s2, bool ascending, bool alphanumeric);
       void keyPressEvent(QKeyEvent* ev);
       void keyReleaseEvent(QKeyEvent* ev);
-        signals:
+      /**Method used by sortColumn (implementation of a quicksort)*/
+      void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
+       signals:
       /**Is emitted when a row was selected*/
       void selected(int);
       /**Is emitted when all rows have been deselected*/
