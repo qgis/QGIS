@@ -257,13 +257,19 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
   QSplitter *canvasLegendSplit = new QSplitter(frameMain);
   QGridLayout *legendOverviewLayout = new QGridLayout(canvasLegendSplit, 1, 2, 4, 6, "canvasLegendLayout");
+#ifdef QGISDEBUG
   QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
   mapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
+#else
+  mapLegend = new QgsLegend(canvasLegendSplit); //frameMain);
   mapLegend->addColumn(tr("Layers"));
   mapLegend->setSorting(-1);
+#endif
 
+#ifdef QGISDEBUG
   mOverviewLabel = new QLabel(legendOverviewSplit);
   mOverviewLabel->setText("Overview");
+#endif
   // mL = new QScrollView(canvasLegendSplit);
   //add a canvas
   mapCanvas = new QgsMapCanvas(canvasLegendSplit);
@@ -1246,11 +1252,13 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
       // use this layer in the map overview - well need to move this logic elsewher later
     
       //get the thumbnail for the layer
+
+#ifdef QGISDEBUG
       QPixmap myQPixmap = QPixmap(mOverviewLabel->width(),mOverviewLabel->height());
       layer->drawThumbnail(&myQPixmap);
       mOverviewLabel->setText("");
       mOverviewLabel->setPixmap(myQPixmap);
-          
+#endif          
       // init the context menu so it can connect to slots in main app
       layer->initContextMenu(this);
    } else
@@ -1347,12 +1355,13 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 	       // add it to the mapcanvas collection
               mapCanvas->addLayer(layer);
               
+#ifdef QGISDEBUG
              //get the thumbnail for the layer
              QPixmap myQPixmap = QPixmap(mOverviewLabel->width(),mOverviewLabel->height());
              layer->drawThumbnail(&myQPixmap);
              mOverviewLabel->setText("");
              mOverviewLabel->setPixmap(myQPixmap);
-      
+#endif      
       	      
 	      projectIsDirty = true;
               // init the context menu so it can connect to slots in main app
