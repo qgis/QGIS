@@ -220,7 +220,7 @@ _getExtents( QDomDocument const & doc, QgsRect & aoi )
 
 
 /**
-   Get the project title
+   Get the project map units
 
    XML in file has this form:
      <units>feet</units>
@@ -364,6 +364,44 @@ _findQgisApp()
 
 
 /**
+  locate a qgsMapCanvas object
+*/
+static QgsMapCanvas *_findMapCanvas(QString const &canonicalMapCanvasName)
+{
+    QgsMapCanvas *theMapCanvas;
+
+    QWidgetList *list = QApplication::topLevelWidgets();
+    QWidgetListIt it(*list);    // iterate over the widgets
+    QWidget *w;
+
+    while ((w = it.current()) != 0)
+    {   // for each top level widget...
+        ++it;
+        theMapCanvas = dynamic_cast < QgsMapCanvas * >(w->child(canonicalMapCanvasName, 0, true));
+
+        if (theMapCanvas)
+        {
+            break;
+        }
+    }
+    delete list;    // delete the list, not the widgets
+
+    if (theMapCanvas)
+    {
+        return theMapCanvas;
+    }
+    else
+    {
+        qDebug("Unable to find canvas widget " + canonicalMapCanvasName);
+
+        return 0x0;               // XXX some sort of error value?  Exception?
+    }
+
+} // _findMapCanvas
+
+
+
+/**
    Read map layers from project file
 
 @note XML of form:
@@ -408,6 +446,8 @@ static
 bool
 _getMapLayers( QDomDocument const & doc )
 {
+    // Layer order is implicit in the order they are stored in the project file
+    
     QDomNodeList nl = doc.elementsByTagName("maplayer");
 
     // XXX what is this used for? QString layerCount( QString::number(nl.count()) );
@@ -469,9 +509,6 @@ _getMapLayers( QDomDocument const & doc )
 //             }
 //         }
 
-        // XXX set z order here?  Or in readXML()?  Leaning to latter.
-        // XXX Or, how about Z order being implicit in order of layer
-        // XXX information stored in project file?
     }
 
     return true;
@@ -491,24 +528,8 @@ static
 void
 _setCanvasExtent( QString const & canonicalMapCanvasName, QgsRect const & newExtent )
 {
-                                // first find the canonical map canvas
-
-    QgsMapCanvas * theMapCanvas;
-
-    QWidgetList  * list = QApplication::topLevelWidgets();
-    QWidgetListIt it( *list );  // iterate over the widgets
-    QWidget * w;
-
-    while ( (w=it.current()) != 0 ) 
-    {   // for each top level widget...
-        ++it;
-        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( canonicalMapCanvasName, 0, true ));
-
-        if ( theMapCanvas )
-        { break; }
-    }
-    delete list;                // delete the list, not the widgets
-
+    // first find the canonical map canvas
+    QgsMapCanvas *theMapCanvas = _findMapCanvas(canonicalMapCanvasName);
 
     if( ! theMapCanvas )
     {
@@ -544,24 +565,8 @@ QgsRect _getFullExtent( QString const & canonicalMapCanvasName )
 {
     // XXX since this is a cut-n-paste from above, maybe generalize to a
     // XXX separate function?
-                                // first find the canonical map canvas
-
-    QgsMapCanvas * theMapCanvas;
-
-    QWidgetList  * list = QApplication::topLevelWidgets();
-    QWidgetListIt it( *list );  // iterate over the widgets
-    QWidget * w;
-
-    while ( (w=it.current()) != 0 ) 
-    {   // for each top level widget...
-        ++it;
-        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( canonicalMapCanvasName, 0, true ));
-
-        if ( theMapCanvas )
-        { break; }
-    }
-    delete list;                // delete the list, not the widgets
-
+    // first find the canonical map canvas
+    QgsMapCanvas *theMapCanvas = _findMapCanvas(canonicalMapCanvasName);
 
     if( ! theMapCanvas )
     {
@@ -596,24 +601,8 @@ QgsRect _getExtent( QString const & canonicalMapCanvasName )
 {
     // XXX since this is a cut-n-paste from above, maybe generalize to a
     // XXX separate function?
-                                // first find the canonical map canvas
-
-    QgsMapCanvas * theMapCanvas;
-
-    QWidgetList  * list = QApplication::topLevelWidgets();
-    QWidgetListIt it( *list );  // iterate over the widgets
-    QWidget * w;
-
-    while ( (w=it.current()) != 0 ) 
-    {   // for each top level widget...
-        ++it;
-        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( canonicalMapCanvasName, 0, true ));
-
-        if ( theMapCanvas )
-        { break; }
-    }
-    delete list;                // delete the list, not the widgets
-
+    // first find the canonical map canvas
+    QgsMapCanvas *theMapCanvas = _findMapCanvas(canonicalMapCanvasName);
 
     if( ! theMapCanvas )
     {
@@ -706,9 +695,6 @@ QgsProject::read( )
         return false;
     }
 
-    // XXX insert code for handling z order
-
-
     // restore the canvas' area of interest
 
     // restor the area of interest, or extent
@@ -785,17 +771,17 @@ QgsProject::write( )
 
     QDomDocumentType documentType = DOMImplementation.createDocumentType("qgis","http://mrcc.com/qgis.dtd","SYSTEM");
     std::auto_ptr<QDomDocument> doc = 
-	std::auto_ptr<QDomDocument>( new QDomDocument( documentType ) );
+        std::auto_ptr<QDomDocument>( new QDomDocument( documentType ) );
 
 
-    QDomElement qgis = doc->createElement( "qgis" );
-    qgis.setAttribute( "projectname", title() );
+    QDomElement qgisNode = doc->createElement( "qgis" );
+    qgisNode.setAttribute( "projectname", title() );
 
-    doc->appendChild( qgis );
+    doc->appendChild( qgisNode );
 
     // title
     QDomElement titleNode = doc->createElement( "title" );
-    qgis.appendChild( titleNode );
+    qgisNode.appendChild( titleNode );
 
     QDomText titleText = doc->createTextNode( title() ); // XXX why have title TWICE?
     titleNode.appendChild( titleText );
@@ -803,7 +789,7 @@ QgsProject::write( )
     // units
 
     QDomElement unitsNode = doc->createElement( "units" );
-    qgis.appendChild( unitsNode );
+    qgisNode.appendChild( unitsNode );
 
     QString unitsString;
 
@@ -825,52 +811,17 @@ QgsProject::write( )
 
     QDomText unitsText = doc->createTextNode( unitsString );
     unitsNode.appendChild( unitsText );
-
-    // extent
-
-    // XXX there should eventually be a QgsMapCanvas::writeXML() that does this
-    QDomElement extentNode = doc->createElement( "extent" );
-    qgis.appendChild( extentNode );
-
-    QDomElement xMin = doc->createElement( "xmin" );
-    QDomElement yMin = doc->createElement( "ymin" );
-    QDomElement xMax = doc->createElement( "xmax" );
-    QDomElement yMax = doc->createElement( "ymax" );
-
-    QgsRect mapCanvasExtent =  _getExtent( "theMapCanvas" );
-    QDomText xMinText = doc->createTextNode( QString::number(mapCanvasExtent.xMin(),'f') );
-    QDomText yMinText = doc->createTextNode( QString::number(mapCanvasExtent.yMin(),'f') );
-    QDomText xMaxText = doc->createTextNode( QString::number(mapCanvasExtent.xMax(),'f') );
-    QDomText yMaxText = doc->createTextNode( QString::number(mapCanvasExtent.yMax(),'f') );
-
-    xMin.appendChild( xMinText );
-    yMin.appendChild( yMinText );
-    xMax.appendChild( xMaxText );
-    yMax.appendChild( yMaxText );
-
-    extentNode.appendChild( xMin );
-    extentNode.appendChild( yMin );
-    extentNode.appendChild( xMax );
-    extentNode.appendChild( yMax );
-
-    // layers
-
-    // XXX QgsMapLayerRegistry should have a writeXML(), which then calls
-    // XXX QgsMapLayer::writeXML()
-    QDomElement projectLayersNode = doc->createElement( "projectlayers" );
-    projectLayersNode.setAttribute( "layercount", 
-                                    QgsMapLayerRegistry::instance()->mapLayers().size() );
-
-    qgis.appendChild( projectLayersNode );
-
-
-    for ( std::map<QString,QgsMapLayer*>::iterator i =
-              QgsMapLayerRegistry::instance()->mapLayers().begin();
-          i != QgsMapLayerRegistry::instance()->mapLayers().end();
-          i++ )
+    
+    // extents and layers info are written by the map canvas
+    // find the canonical map canvas
+    QgsMapCanvas *theMapCanvas = _findMapCanvas( "theMapCanvas" );
+    theMapCanvas->writeXML(qgisNode, *doc);
+    
+    if( ! theMapCanvas )
     {
-        if ( i->first )
-        { i->second->writeXML( projectLayersNode, *doc ); }
+        qDebug( "Unable to find canvas widget theMapCanvas" );
+
+        return false;                 // XXX some sort of error value?  Exception?
     }
 
     doc->normalize();           // XXX I'm not entirely sure what this does
@@ -900,6 +851,3 @@ QgsProject::properties()
 {
     return imp_->properties_;
 } // QgsProject::properties
-
-
-    

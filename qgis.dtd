@@ -26,10 +26,9 @@
   --  General Map Layer Properties
   --  (apply to both vector and raster)
   -->
-<!ELEMENT maplayer (layername, datasource, zorder, (singlesymbol|singlemarker|graduatedsymbol|continuoussymbol|graduatedmarker|rasterproperties) >
+<!ELEMENT maplayer (layername, datasource, (singlesymbol|singlemarker|graduatedsymbol|continuoussymbol|graduatedmarker|rasterproperties) >
 <!ELEMENT layername (#PCDATA) >
 <!ELEMENT datasource (#PCDATA) >
-<!ELEMENT zorder (#PCDATA) >
 <!--  Attribute Lists -->
 <!--Raster : flag indicating whether the layer should be represented in overview or not -->
 <!ELEMENT  showInOverviewFlag>
