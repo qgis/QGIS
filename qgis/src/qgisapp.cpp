@@ -250,21 +250,24 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
     gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
   }
-  QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
-  QSplitter *split = new QSplitter(frameMain);
-
-  mapLegend = new QgsLegend(split); //frameMain);
+  QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "canvasLegendLayout");
+  QSplitter *canvasLegendSplit = new QSplitter(frameMain);
+  QGridLayout *legendOverviewLayout = new QGridLayout(canvasLegendSplit, 1, 2, 4, 6, "canvasLegendLayout");
+  QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
+  mapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
   mapLegend->addColumn(tr("Layers"));
   mapLegend->setSorting(-1);
-  // mL = new QScrollView(split);
+  QLabel * myQLabel = new QLabel(legendOverviewSplit);
+  myQLabel->setText("Legend");
+  // mL = new QScrollView(canvasLegendSplit);
   //add a canvas
-  mapCanvas = new QgsMapCanvas(split);
+  mapCanvas = new QgsMapCanvas(canvasLegendSplit);
   // resize it to fit in the frame
   //    QRect r = frmCanvas->rect();
   //    canvas->resize(r.width(), r.height());
   mapCanvas->setBackgroundColor(Qt::white); //QColor (220, 235, 255));
   mapCanvas->setMinimumWidth(400);
-  FrameLayout->addWidget(split, 0, 0);
+  canvasLegendLayout->addWidget(canvasLegendSplit, 0, 0);
   mapLegend->setBackgroundColor(QColor(192, 192, 192));
   mapLegend->setMapCanvas(mapCanvas);
   mapLegend->setResizeMode(QListView::AllColumns);
