@@ -31,7 +31,11 @@
 <!ELEMENT datasource (#PCDATA) >
 <!ELEMENT zorder (#PCDATA) >
 <!--  Attribute Lists -->
-<!ATTLIST maplayer 
+<!--Raster : flag indicating whether the layer should be represented in overview or not -->
+<!ELEMENT  showInOverviewFlag>
+<!-- Attribute lists -->
+<!ATTLIST showInOverViewFlag boolean (1|0|true|false) "false">
+<!ATTLIST maplayer
 	type (vector|raster|database) "vector"
 	visible (1|0) "0"
 	>
