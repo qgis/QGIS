@@ -185,6 +185,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributeactiondialog.moc.cpp	\
 		qgsattributedialog.moc.cpp		\
 		qgsattributetable.moc.cpp		\
+		qgsattributetabledisplay.moc.cpp		\
 		qgscoordinatetransform.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
 		qgsdelattrdialog.moc.cpp			\

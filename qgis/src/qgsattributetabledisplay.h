@@ -35,6 +35,7 @@ class QMenuBar;
 
 class QgsAttributeTableDisplay:public QgsAttributeTableBase
 {
+    Q_OBJECT
   public:
 	QgsAttributeTableDisplay(QgsVectorLayer* layer);
 	~QgsAttributeTableDisplay();
