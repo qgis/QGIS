@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.185 2004/09/14 07:08:45 larsl Exp
+ChangeLog,v 1.186 2004/09/15 09:28:50 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-15 [larsl] 0.4.0devel33
+** Fixed QgsUValMaDialogBase so the listbox doesn't take up all of the space
 
 2004-09-14 [larsl] 0.4.0devel32
 ** Added the SVG icons in src/svg/gpsicons
