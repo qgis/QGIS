@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsSpitBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>620</width>
+            <width>689</width>
             <height>484</height>
         </rect>
     </property>
@@ -237,7 +237,7 @@
                         <number>5</number>
                     </property>
                     <property name="showGrid">
-                        <bool>false</bool>
+                        <bool>true</bool>
                     </property>
                     <property name="readOnly">
                         <bool>false</bool>
@@ -664,7 +664,16 @@
         <receiver>QgsSpitBase</receiver>
         <slot>editColumns(int,int,int,const QPoint&amp;)</slot>
     </connection>
+    <connection>
+        <sender>tblShapefiles</sender>
+        <signal>clicked(int,int,int,const QPoint&amp;)</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>editShapefile(int,int,int,const QPoint&amp;)</slot>
+    </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgsspitbase.ui.h</include>
+</includes>
 <slots>
     <slot>import()</slot>
     <slot>newConnection()</slot>
@@ -679,7 +688,8 @@
     <slot>useDefaultGeom()</slot>
     <slot>getSchema()</slot>
     <slot>updateSchema()</slot>
-    <slot>editColumns(int,int,int,const QPoint&amp;)</slot>
+    <slot>editColumns( int, int, int, const QPoint &amp; )</slot>
+    <slot>editShapefile( int, int, int, const QPoint &amp; )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,11 +1,11 @@
 /***************************************************************************
-                          qgsspit.h  -  description
-                             -------------------
-    begin                : Fri Dec 19 2003
-    copyright            : (C) 2003 by Denis Antipov
-                         : (C) 2004 by Gary Sherman
-    email                :
- ***************************************************************************/
+                        qgsspit.h  -  description
+                           -------------------
+  begin                : Fri Dec 19 2003
+  copyright            : (C) 2003 by Denis Antipov
+                       : (C) 2004 by Gary Sherman
+  email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -24,12 +24,13 @@
 #include "qgsshapefile.h"
 extern "C"
 {
-  #include <libpq-fe.h>
+#include <libpq-fe.h>
 }
 
-class QgsSpit :public QgsSpitBase{
-  public:
-  QgsSpit(QWidget *parent=0, const char *name=0);
+class QgsSpit : public QgsSpitBase
+{
+public:
+  QgsSpit( QWidget *parent = 0, const char *name = 0 );
   ~QgsSpit();
   //! Populate the list of available database connections
   void populateConnectionList();
@@ -63,9 +64,22 @@ class QgsSpit :public QgsSpitBase{
   //! Import shapefiles into PostgreSQL
   void import();
   //! Edit the column names for a shapefile in the queue
-  void editColumns(int, int, int, const QPoint &);
+  void editColumns( int, int, int, const QPoint & );
+  //! Edit import properties of a shapefile in the queue
+  void editShapefile( int, int, int, const QPoint & );
 
-  private:
+private:
+
+  // Enum of table columns indexes
+  enum ShpTableColumns
+  {
+    ColFILENAME = 0,
+    ColFEATURECLASS = 1, // is editable
+    ColFEATURECOUNT = 2,
+    ColDBRELATIONNAME = 3,  // is editable
+    ColDBSCHEMA = 4  // is editable
+  };
+  
   PGconn* checkConnection();
   QStringList schema_list;
   QStringList geometry_list;
