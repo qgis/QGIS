@@ -108,8 +108,6 @@ void OpenModellerGui::getAlgorithmList()
     std::cerr << "Found Algorithm: " << myAlgorithmMetadata->id << std::endl;
     cboModelAlgorithm->insertItem(myAlgorithmMetadata->id);
   }     
-  delete myAlgorithmMetadataArray;
-  delete myAlgorithmMetadata;
   return ;
 
 }
@@ -320,7 +318,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     QString myCoordSystem = settings.readEntry("/openModeller/coordSystem");
     if (myCoordSystem=="")
     {
-      //do nothing
+      //default to lat ling
+      cboCoordinateSystem->setCurrentText("Lat/Long WGS84");
     }
     else
     {
