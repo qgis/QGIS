@@ -34,6 +34,7 @@
 #include <qevent.h>
 #include <qvaluelist.h>
 #include <qsplitter.h>
+#include <qregexp.h>
 
 #include "qgisapp.h"
 #include "qgsproject.h"
@@ -270,10 +271,10 @@ void QgsComposer::print(void)
 	    // reset the page
 	    mPrinter->setPageSize ( psize );
 	    
-	    // Overwrite the bounding box
 	    QFile f(mPrinter->outputFileName());
-	    f.open( IO_ReadWrite );
 
+	    // Overwrite the bounding box
+	    f.open( IO_ReadWrite );
 	    Q_LONG offset = 0;
 	    Q_LONG size;
 	    bool found = false;
@@ -322,8 +323,60 @@ void QgsComposer::print(void)
 	    } else {
 	        QMessageBox::warning(this,"Error in Print", "Cannot find BoundingBox");
 	    }
-
 	    f.close();
+
+	    // Overwrite translate
+	    if ( mPrinter->orientation() == QPrinter::Portrait ) { 
+		f.open( IO_ReadWrite );
+		offset = 0;
+		found = false;
+		
+		//Example:
+		//0 4008 translate 1 -1 scale/defM matrix CM d } d
+		QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
+
+		while ( !f.atEnd() ) {
+		    size = f.readLine ( s, 100 );
+		    if ( rx.search( s ) != -1 ) {
+			found = true;
+			break;
+		    }
+		    offset += size;
+		}
+		
+		if ( found ) {
+		    int trans;
+		   
+		    trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+		    s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, rx.cap(1).ascii() );
+
+		    if ( s.length() > size ) {
+			QMessageBox::warning(this,"Error in Print", "Cannot format translate");
+		    } else {
+			if ( ! f.at(offset) ) {
+			    QMessageBox::warning(this,"Error in Print", "Cannot seek");
+			} else {
+			    /* Write spaces (for case the size > s.length() ) */
+			    QString es;
+			    es.fill(' ', size-1 );
+			    f.flush();
+			    if ( f.writeBlock ( es.ascii(), size-1 ) < size-1 ) {
+				QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+			    }
+			    f.flush();
+			    f.at(offset);
+			    f.flush();
+			    if ( f.writeBlock ( s.ascii(), s.length() ) <  s.length()-1 ) {
+				QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+			    }
+			    f.flush();
+			}
+		    }
+		} else {
+		    QMessageBox::warning(this,"Error in Print", "Cannot find translate");
+		}
+		f.close();
+	}
 #endif
 	} else { 
 	    bool print = true;
