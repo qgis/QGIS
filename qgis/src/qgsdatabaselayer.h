@@ -18,6 +18,7 @@
 #ifndef QGSDATABASELAYER_H
 #define QGSDATABASELAYER_H
 class QString;
+class QgsRect;
 
 #include "qgsmaplayer.h"
 
@@ -37,10 +38,10 @@ class QgsDatabaseLayer : public QgsMapLayer  {
     QgsDatabaseLayer(const char *conninfo=0, QString table=QString::null);
     //! Destructor
     ~QgsDatabaseLayer();
-    void draw(QPainter *p, QRect *viewExtent=0);
+    void draw(QPainter *p, QgsRect *viewExtent=0);
  private:
     //! Calculates extent of the layer using SQL and PostGIS functions
-    void calculateExtent();
+    QgsRect calculateExtent();
     //! Type geometry contained in the layer. This corresponds to one of the OGIS Simple geometry types
     QString type; 
     //! WKB type
@@ -60,7 +61,13 @@ class QgsDatabaseLayer : public QgsMapLayer  {
 	WKBMultiLineString,
 	WKBMultiPolygon
     };	
-	
+    enum ENDIAN{
+	NDR,
+	XDR
+    };
+    // Returns the endian type for the client
+    int endian();	
+    QString endianString();
 };
 
 #endif

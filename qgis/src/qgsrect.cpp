@@ -16,16 +16,16 @@ void QgsRect::setYmin(double y){
 void QgsRect::setYmax(double y){
   ymax = y;
 }
-double QgsRect::xMax(){
+double QgsRect::xMax() const {
   return xmax;
 }
-double QgsRect::xMin(){
+double QgsRect::xMin() const {
   return xmin;
 }
-double QgsRect::yMax(){
+double QgsRect::yMax() const {
   return ymax;
 }
-double QgsRect::yMin(){
+double QgsRect::yMin() const {
   return ymin;
 }
 void QgsRect::normalize(){
@@ -40,4 +40,21 @@ void QgsRect::normalize(){
     ymin = ymax;
     ymax = temp;
   }
+}
+
+bool QgsRect::operator==(const QgsRect &r1){
+  return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() &&
+	  r1.yMax() == this->yMax() && r1.yMin() == this->yMin());
+}
+
+QgsRect & QgsRect::operator=(const QgsRect &r){
+  if(&r != this){
+    xmax = r.xMax();
+    xmin = r.xMin();
+    ymax = r.yMax();
+    ymin = r.yMin();
+  }
+    return *this;
+  
+  
 }

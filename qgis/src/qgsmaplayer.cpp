@@ -37,7 +37,7 @@ void QgsMapLayer::setlayerName( const QString& _newVal){
 const QString QgsMapLayer::name(){
   return layerName;
 }
-void QgsMapLayer::calculateExtent(){
+QgsRect QgsMapLayer::calculateExtent(){
 }
-void QgsMapLayer::draw(QPainter *, QRect *){
+void QgsMapLayer::draw(QPainter *, QgsRect *){
 }

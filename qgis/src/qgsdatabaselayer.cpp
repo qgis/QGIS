@@ -1,11 +1,11 @@
 #include <qstring.h>
-#include <qrect.h>
+#include "qgsrect.h"
 #include <libpq++.h>
 #include <qmessagebox.h>
 #include "qgsdatabaselayer.h"
 
 QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table) :
-  QgsMapLayer(QgsMapLayer::DATABASE, table), tableName(table){
+  QgsMapLayer(QgsMapLayer::DATABASE, table),tableName(table){
   // create the database layer and get the needed information
   // about it from the database
   dataSource = conninfo;
@@ -39,6 +39,7 @@ QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table) :
 	QTextOStream(&xMsg) << "Set extents to: " << layerExtent.xMin() << ", " <<
 	  layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
 	qWarning(xMsg);
+       
       }else{
 	QString msg = "Unable to access " + tableName;
 	//QMessageBox::warning(this,"Connection Problem",msg); 
@@ -53,17 +54,52 @@ QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table) :
     delete pd;
   }
 }
-  QgsDatabaseLayer::~QgsDatabaseLayer(){
-  }
-  void QgsDatabaseLayer::calculateExtent(){
-  }
-  void QgsDatabaseLayer::draw(QPainter *p, QRect *viewExtent){
-    // painter is active (begin has been called
-    /* Steps to draw the layer
-       1. get the features in the view extent by SQL query
-       2. read WKB for a feature
-       3. transform
-       4. draw
-    */
+QgsDatabaseLayer::~QgsDatabaseLayer(){
+}
+QgsRect QgsDatabaseLayer::calculateExtent(){
+  return layerExtent;
+}
+void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent){
+  // painter is active (begin has been called
+  /* Steps to draw the layer
+     1. get the features in the view extent by SQL query
+     2. read WKB for a feature
+     3. transform
+     4. draw
+  */
+  PgCursor pgs(dataSource, "drawCursor");
+  QString sql = "select asbinary(" + geometryColumn + ",'" + endianString() +
+    "') as features from " + tableName + " where " + geometryColumn + 
+    " && GeometryFromText('BOX3D(" + viewExtent->xMin() + " " + viewExtent->yMin() 
+    + "," + viewExtent->xMax() + " " + viewExtent->yMax() + ")'::box3d,-1)";
+  pgs.Declare((const char *)sql, true);
+  int res = pgs.Fetch();
+  cout << "Number of matching records: " << pgs.Tuples() << endl;
+  for (int idx = 0; idx < pgs.Tuples (); idx++)
+    {
+      // read each feature based on its type
+    }
 
-  }
+
+
+}
+int QgsDatabaseLayer::endian(){
+  char *chkEndian = new char[4];
+  memset (chkEndian, '\0', 4);
+  chkEndian[0] = 0xE8;
+  int *ce = (int *) chkEndian;
+  if(232 == *ce)
+    return NDR;
+  else
+    return XDR;
+}
+QString QgsDatabaseLayer::endianString(){
+  char *chkEndian = new char[4];
+  memset (chkEndian, '\0', 4);
+  chkEndian[0] = 0xE8;
+  int *ce = (int *) chkEndian;
+  if(232 == *ce)
+    return QString("NDR");
+  else
+    return QString("XDR");
+}
