@@ -2407,7 +2407,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
   // open help in user browser
   if (useQgisDocDirectory)
     {
-      url = mAppDir + "/share/qgis/doc/" + url;
+      url = "file://" + mAppDir + "/share/qgis/doc/" + url;
     }
   // find a browser
   QSettings settings;
@@ -2436,6 +2436,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     {
       // find the installed location of the help files
       // open index.html using browser
+//XXX for debug on win32      QMessageBox::information(this,"Help opening...", browser + " - " + url);
       QProcess *helpProcess = new QProcess(this);
       helpProcess->addArgument(browser);
       helpProcess->addArgument(url);
