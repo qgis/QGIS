@@ -145,6 +145,8 @@ public:
     int  alignment ( void ) ;
 
     /* Buffer */
+    bool   bufferEnabled();
+    void   setBufferEnabled(bool useBufferFlag);
     void   setBufferSize ( double size, int type );
     bool   bufferSizeIsSet ( void );
     int    bufferSizeType ( void );
@@ -206,6 +208,8 @@ public:
     int  mAlignment;
     bool mAlignmentIsSet;            
 
+    /** Buffer enablement */
+    bool mBufferEnabledFlag;
     /** Buffer size, size type */
     int    mBufferSizeType;
     double mBufferSize;
