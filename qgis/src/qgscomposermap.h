@@ -63,6 +63,12 @@ public:
     QgsComposerMap( QgsComposition *composition, int id );
     ~QgsComposerMap();
 
+    /** \brief Calculate scale/extent.  */
+    enum Calculate {
+	Scale = 0,   // calculate scale from extent 
+	Extent      // calculate map extent from scale
+    };
+
     /** \brief Preview style  */
     enum PreviewMode {
 	Cache = 0,   // Use raster cache 
@@ -122,6 +128,12 @@ public slots:
     
     // Set User extent to current map extent
     void setCurrentExtent ( void );
+
+    // Called by GUI if calculate has changed 
+    void calculateChanged ( void );
+    
+    // Called by GUI if map scale has changed 
+    void mapScaleChanged ( void );
     
     // Called by GUI if with  scale was changed 
     void scaleChanged ( void );
@@ -157,6 +169,9 @@ private:
     //double mWidth;
     //double mHeight;
 
+    // Number of paper units in map per paper unit on paper, this is the xxx part of 1:xxx 
+    double mUserScale;
+
     // Scale from map (in map units) to paper (in canvas points), i.e. size_on_paper/size_in_map
     double mScale;
 
@@ -170,7 +185,7 @@ private:
     bool mCacheUpdated;
     
     // Resize schema
-    QgsComposition::Calculate mCalculate;
+    int mCalculate;
 
     // Line width scale
     double mWidthScale;
@@ -192,6 +207,12 @@ private:
 
     /** \brief set to true if in state of drawing, other requests are to draw are returned */
     bool mDrawing;
+
+    /** \brief calculate mScale from mUserScale */
+    double scaleFromUserScale ( double us );
+
+    /** \brief calculate mUserScale from mScale */
+    double userScaleFromScale ( double s );
 };
 
 #endif
