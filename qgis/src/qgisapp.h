@@ -199,6 +199,8 @@ private:
     void capturePoint();
     //! activates the capture line tool
     void captureLine();
+    //! activates the capture polygon tool
+    void capturePolygon();
     //! activates the selection tool
     void select();
     //! check to see if file is dirty and if so, prompt the user th save it

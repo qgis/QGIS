@@ -36,7 +36,8 @@ namespace QGis
     Table,
     Select,
     CapturePoint,
-    CaptureLine
+    CaptureLine,
+    CapturePolygon
   };
 //! Used for symbology operations
   // Featuure types
