@@ -1,3 +1,13 @@
+Version 0.0.4-alpha August 15, 2002
+ * Added Layer Properties dialog
+ * User can set color for layers
+ * Added right-click menu to the layer list in legend
+ * Layers can be removed using the right-click menu (buggy)
+ * Moved the KDevelop project file qgis.kdevprj to the src sub-directory
+ * Fixed multiple repaint bug that occurred when more than one layer was
+   added at a time
+ * Fixed bug that caused a full refresh at the beginning of a pan operation
+
 Version 0.0.3-alpha August 10, 2002
   * Support for shapefiles and other vector formats
   * Improved handling of extents when adding layers
