@@ -15,7 +15,6 @@ class QgsSpit :public QgsSpitBase{
 	void removeConnection();
   void addFile();
   void removeFile();
+  void removeAllFiles();
 
-  private:
-  QCheckListItem *lvi;
 };

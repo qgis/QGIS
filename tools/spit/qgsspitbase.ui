@@ -76,63 +76,13 @@
             <property name="title">
                 <string>Shapefile List</string>
             </property>
-            <spacer>
-                <property name="name">
-                    <cstring>spacer7</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>140</width>
-                        <height>31</height>
-                    </size>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>410</x>
-                        <y>30</y>
-                        <width>140</width>
-                        <height>31</height>
-                    </rect>
-                </property>
-            </spacer>
-            <spacer>
-                <property name="name">
-                    <cstring>spacer6</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>150</width>
-                        <height>21</height>
-                    </size>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>36</y>
-                        <width>150</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-            </spacer>
             <widget class="QPushButton">
                 <property name="name">
                     <cstring>btnAddFile</cstring>
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>160</x>
+                        <x>10</x>
                         <y>30</y>
                         <width>118</width>
                         <height>29</height>
@@ -148,7 +98,7 @@
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>290</x>
+                        <x>140</x>
                         <y>30</y>
                         <width>118</width>
                         <height>29</height>
@@ -183,7 +133,7 @@
                 </column>
                 <column>
                     <property name="text">
-                        <string>Size</string>
+                        <string>Features</string>
                     </property>
                     <property name="clickable">
                         <bool>true</bool>
@@ -198,13 +148,74 @@
                 <property name="geometry">
                     <rect>
                         <x>10</x>
-                        <y>70</y>
+                        <y>110</y>
                         <width>535</width>
-                        <height>260</height>
+                        <height>220</height>
                     </rect>
                 </property>
                 <property name="selectionMode">
                     <enum>Extended</enum>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel1_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>20</x>
+                        <y>70</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>SRID</string>
+                </property>
+            </widget>
+            <widget class="QSpinBox">
+                <property name="name">
+                    <cstring>spinSrid</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>140</x>
+                        <y>70</y>
+                        <width>110</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnRemoveAll</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>270</x>
+                        <y>30</y>
+                        <width>111</width>
+                        <height>29</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Remove All</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>chckUseDefault</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>270</x>
+                        <y>70</y>
+                        <width>100</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Use Default</string>
                 </property>
             </widget>
         </widget>
@@ -287,7 +298,7 @@
     </connection>
     <connection>
         <sender>btnEdit</sender>
-        <signal>pressed()</signal>
+        <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
         <slot>editConnection()</slot>
     </connection>
@@ -309,6 +320,18 @@
         <receiver>QgsSpitBase</receiver>
         <slot>removeConnection()</slot>
     </connection>
+    <connection>
+        <sender>btnRemoveAll</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>removeAllFiles()</slot>
+    </connection>
+    <connection>
+        <sender>chckUseDefault</sender>
+        <signal>pressed()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>useDefault()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>import()</slot>
@@ -317,6 +340,8 @@
     <slot>removeConnection()</slot>
     <slot>addFile()</slot>
     <slot>removeFile()</slot>
+    <slot>removeAllFiles()</slot>
+    <slot>useDefault()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
