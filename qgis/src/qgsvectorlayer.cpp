@@ -22,6 +22,7 @@
  /*  $Id$ */
 
 #include <iostream>
+#include <cfloat>
 #include <sstream>
 #include <qapplication.h>
 #include <qcursor.h>
@@ -49,6 +50,7 @@
 #include "qgsrenderitem.h"
 #include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
+#include "qgsrect.h"
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
 #endif
@@ -710,6 +712,209 @@ QPopupMenu *QgsVectorLayer::contextMenu(){
 
 QgsRect QgsVectorLayer::bBoxOfSelected()
 {
-    QgsRect myrect;//soon
-    return myrect;
+    QgsRect rect(DBL_MAX,DBL_MAX,DBL_MIN,DBL_MIN);
+    dataProvider->reset();
+
+    QgsFeature *fet;
+    unsigned char *feature;
+
+    while ((fet = dataProvider->getNextFeature(false)))
+    {
+	if(selected.find(fet->featureId())!=selected.end())
+	{
+	    feature = fet->getGeometry();
+	    int wkbType = (int) feature[1];
+	    double *x;
+	    double *y;
+	    int *nPoints;
+	    int *numRings;
+	    int *numPolygons;
+	    int numPoints;
+	    int numLineStrings;
+	    int idx, jdx, kdx;
+	    unsigned char *ptr;
+	    char lsb;
+	    QgsPoint pt;
+	    QPointArray *pa;
+	    QString fld;
+	    QString val;
+	    
+	    switch (wkbType) 
+	    {
+		case WKBPoint:
+		    x = (double *) (feature + 5);
+		    y = (double *) (feature + 5 + sizeof(double));
+		    if(*x<rect.xMin())
+		    {
+			rect.setXmin(*x);
+		    }
+		    if(*x>rect.xMax())
+		    {
+			rect.setXmax(*x);
+		    }
+		    if(*y<rect.yMin())
+		    {
+			rect.setYmin(*y);
+		    }
+		    if(*y>rect.yMax())
+		    {
+			rect.setYmax(*y);
+		    }
+		    break;
+
+		case WKBLineString:
+		    // get number of points in the line
+		    ptr = feature + 5;
+		    nPoints = (int *) ptr;
+		    ptr = feature + 1 + 2 * sizeof(int);
+		    for (idx = 0; idx < *nPoints; idx++) 
+		    {
+			x = (double *) ptr;
+			ptr += sizeof(double);
+			y = (double *) ptr;
+			ptr += sizeof(double);
+			if(*x<rect.xMin())
+			{
+			    rect.setXmin(*x);
+			}
+			if(*x>rect.xMax())
+			{
+			    rect.setXmax(*x);
+			}
+			if(*y<rect.yMin())
+			{
+			    rect.setYmin(*y);
+			}
+			if(*y>rect.yMax())
+			{
+			    rect.setYmax(*y);
+			}
+		    }
+		    break;
+
+		case WKBMultiLineString:
+		    numLineStrings = (int) (feature[5]);
+		    ptr = feature + 9;
+		    for (jdx = 0; jdx < numLineStrings; jdx++) 
+		    {
+			// each of these is a wbklinestring so must handle as such
+			lsb = *ptr;
+			ptr += 5;	// skip type since we know its 2
+			nPoints = (int *) ptr;
+			ptr += sizeof(int);
+			for (idx = 0; idx < *nPoints; idx++) 
+			{
+			    x = (double *) ptr;
+			    ptr += sizeof(double);
+			    y = (double *) ptr;
+			    ptr += sizeof(double);
+			    if(*x<rect.xMin())
+			    {
+				rect.setXmin(*x);
+			    }
+			    if(*x>rect.xMax())
+			    {
+				rect.setXmax(*x);
+			    }
+			    if(*y<rect.yMin())
+			    {
+				rect.setYmin(*y);
+			    }
+			    if(*y>rect.yMax())
+			    {
+				rect.setYmax(*y);
+			    }
+			}
+		    }
+		    break;
+
+		case WKBPolygon:
+                    // get number of rings in the polygon
+		    numRings = (int *) (feature + 1 + sizeof(int));
+		    ptr = feature + 1 + 2 * sizeof(int);
+		    for (idx = 0; idx < *numRings; idx++) 
+		    {
+			// get number of points in the ring
+			nPoints = (int *) ptr;
+			ptr += 4;
+			for (jdx = 0; jdx < *nPoints; jdx++) 
+			{
+			    // add points to a point array for drawing the polygon
+			    x = (double *) ptr;
+			    ptr += sizeof(double);
+			    y = (double *) ptr;
+			    ptr += sizeof(double);
+			    if(*x<rect.xMin())
+			    {
+				rect.setXmin(*x);
+			    }
+			    if(*x>rect.xMax())
+			    {
+				rect.setXmax(*x);
+			    }
+			    if(*y<rect.yMin())
+			    {
+				rect.setYmin(*y);
+			    }
+			    if(*y>rect.yMax())
+			    {
+				rect.setYmax(*y);
+			    }
+			}
+		    }
+		    break;
+
+		case WKBMultiPolygon:
+		    // get the number of polygons
+		    ptr = feature + 5;
+		    numPolygons = (int *) ptr;
+		    for (kdx = 0; kdx < *numPolygons; kdx++) 
+		    {
+			//skip the endian and feature type info and
+			// get number of rings in the polygon
+			ptr = feature + 14;
+			numRings = (int *) ptr;
+			ptr += 4;
+			for (idx = 0; idx < *numRings; idx++) 
+			{
+			    // get number of points in the ring
+			    nPoints = (int *) ptr;
+			    ptr += 4;
+			    for (jdx = 0; jdx < *nPoints; jdx++) 
+			    {
+				// add points to a point array for drawing the polygon
+				x = (double *) ptr;
+				ptr += sizeof(double);
+				y = (double *) ptr;
+				ptr += sizeof(double);
+				if(*x<rect.xMin())
+				{
+				    rect.setXmin(*x);
+				}
+				if(*x>rect.xMax())
+				{
+				    rect.setXmax(*x);
+				}
+				if(*y<rect.yMin())
+				{
+				    rect.setYmin(*y);
+				}
+				if(*y>rect.yMax())
+				{
+				    rect.setYmax(*y);
+				}
+			    }
+			}
+		    }
+		    break;
+
+		    default:
+			std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+			break;
+		    
+	    }
+	    delete[] feature;
+	}
+    }
+    return rect;
 }
