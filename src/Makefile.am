@@ -64,6 +64,7 @@ headers =  	qgis.h					\
 	   	qgsmapcanvas.h				\
 	   	qgsmaplayer.h				\
 	   	qgsmaplayerinterface.h			\
+		qgsmaplayerregistry.h			\
 		qgsmapserverexport.h			\
 		qgsmarkerdialog.h			\
 	   	qgsmarkersymbol.h			\
@@ -160,6 +161,7 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgslinestyledialog.moc.cpp		\
 		qgsmapcanvas.moc.cpp			\
 		qgsmaplayer.moc.cpp			\
+		qgsmaplayerregistry.moc.cpp			\
 		qgsmaplayerinterface.moc.cpp		\
 		qgsmapserverexport.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
@@ -205,6 +207,7 @@ qgis_SOURCES =  main.cpp			\
 		qgslinesymbol.cpp		\
 		qgsmapcanvas.cpp		\
 		qgsmaplayer.cpp			\
+		qgsmaplayerregistry.cpp		\
 		qgsmapserverexport.cpp		\
 		qgsmarkerdialog.cpp		\
 		qgsmarkersymbol.cpp		\
