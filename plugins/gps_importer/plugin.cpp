@@ -46,7 +46,12 @@ email                : tim@linfiniti.com
 // xpm for creating the toolbar icon
 #include "icon.xpm"
 // 
-static const char *pluginVersion = "0.1";
+static const char * const ident_ = "$Id$";
+
+static const char * const name_ = "GPS Dump Importer";
+static const char * const description_ = "An importer for GPS dump files.";
+static const char * const version_ = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
@@ -54,13 +59,10 @@ static const char *pluginVersion = "0.1";
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
+          qgisMainWindowPointer(theQGisApp), 
+          qGisInterface(theQgisInterFace),
+          QgisPlugin(name_,description_,version_,type_)
 {
-  /** Initialize the plugin and set the required attributes */
-  pluginNameQString = "GpsImporter";
-  pluginVersionQString = "Version 0.1";
-  pluginDescriptionQString = "An importer for GPS dump files.";
-
 }
 
 Plugin::~Plugin()
@@ -161,25 +163,25 @@ extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * th
 // the class may not yet be insantiated when this method is called.
 extern "C" QString name()
 {
-  return QString("Import GPS Data");
+    return name_;
 }
 
 // Return the description
 extern "C" QString description()
 {
-  return QString("An importer for GPS dump files.");
+    return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 extern "C" int type()
 {
-  return QgisPlugin::UI;
+    return type_;
 }
 
 // Return the version number for the plugin
 extern "C" QString version()
 {
-  return pluginVersion;
+  return version_;
 }
 
 // Delete ourself
