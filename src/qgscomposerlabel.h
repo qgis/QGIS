@@ -61,10 +61,17 @@ class QgsComposerLabel : public QgsComposerLabelBase, public QCanvasPolygonalIte
     Q_OBJECT
 
 public:
-    /** \brief Preview style  
+    /** \brief Constructor. Settings are written to project.  
+     *  \param id object id
      *  \param fontSize font size in typographic points!
      */
     QgsComposerLabel( QgsComposition *composition, int id, int x, int y, QString text, int fontSize = 0 );
+
+    /** \brief Constructor. Settings are read from project.  
+     *  \param id object id
+     */
+    QgsComposerLabel( QgsComposition *composition, int id );
+
     ~QgsComposerLabel();
 
     // Reimplement QgsComposerItem:

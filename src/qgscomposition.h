@@ -110,6 +110,13 @@ public:
     /** \brief Create default composition */
     void createDefault ( void );
 
+    /** \brief Remove all items */
+    void clear ( void );
+
+    /** \brief Recalculate page size according to mUserPaperWidth/Height and mPaperOrientation,
+     *         resize canvas and zoomFull */
+    void recalculate(void);
+
     /** \brief pointer to map canvas */
     QgsMapCanvas *mapCanvas(void);
 
@@ -210,17 +217,26 @@ private:
     /** \brief paper height in mm in GUI */
     double mUserPaperHeight;
 
-    /** \brief paper width in mm */
+    /** \brief paper width in mm (orientaion applied)  */
     double mPaperWidth;
 
-    /** \brief paper height in mm */
+    /** \brief paper height in mm (orientaion applied) */
     double mPaperHeight;
 
     /** \brief Papers */
     std::vector<QgsCompositionPaper> mPapers;
 
+    /** \brief Current paper */
+    int mPaper;
+	
     /** \brief Default paper index */
     int mDefaultPaper;
+
+    /** \brief Custom paper index */
+    int mCustomPaper;
+
+    /** \brief Orientation */
+    int mPaperOrientation;
 
     /** \brief pointer to map canvas */
     QgsMapCanvas *mMapCanvas;
