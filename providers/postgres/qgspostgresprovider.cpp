@@ -1146,7 +1146,7 @@ bool QgsPostgresProvider::deleteFeatures(std::list<int> id)
     return returnvalue;
 }
 
-bool QgsPostgresProvider::supportsSaveAsShapefile()
+bool QgsPostgresProvider::supportsSaveAsShapefile() const
 {
   return false;
 }

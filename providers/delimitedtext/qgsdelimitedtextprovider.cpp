@@ -725,7 +725,7 @@ bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
   return inBounds;
 }
 
-bool QgsDelimitedTextProvider::supportsSaveAsShapefile()
+bool QgsDelimitedTextProvider::supportsSaveAsShapefile() const
 {
   return true;
 }

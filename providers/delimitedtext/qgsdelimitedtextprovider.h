@@ -208,10 +208,11 @@ public:
 
   //! We support saving as shapefile - used to add item to the
   //  layers context menu
-  bool supportsSaveAsShapefile();
+  bool supportsSaveAsShapefile() const;
 
   //! Save the layer as a shapefile
   bool saveAsShapefile();
+
   QgsDataSourceURI *getURI()
   {
     return 0;

@@ -204,12 +204,14 @@ public:
        @return true in case of success and false in case of failure*/
   bool deleteFeatures(std::list<int> id);
 
-  bool supportsFeatureAddition(){return true;}
+  bool supportsFeatureAddition() const 
+  { return true; }
 
-  bool supportsFeatureDeletion(){return true;}
+  bool supportsFeatureDeletion() const 
+  {return true;}
 
   //! Flag to indicate if the provider can export to shapefile
-  bool supportsSaveAsShapefile();
+  bool supportsSaveAsShapefile() const;
 
   /** Accessor for sql where clause used to limit dataset */
   QString subsetString() {return sqlWhereClause;};
