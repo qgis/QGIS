@@ -38,7 +38,7 @@ class QgsContinuousColRenderer: public QgsRenderer
      @param layer the vector layer associated with the renderer*/
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Renders the feature using the minimum and maximum value of the classification field*/
-    void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t);
+    void renderFeature(QPainter* p, QgsFeature* f);
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Sets the id of the classification field*/
