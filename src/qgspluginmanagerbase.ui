@@ -39,6 +39,12 @@
                     <property name="name">
                         <cstring>txtPluginDir</cstring>
                     </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -121,7 +127,7 @@
         </widget>
         <widget class="QLayoutWidget" row="3" column="0">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>layout3</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -139,17 +145,42 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>70</width>
+                            <width>100</width>
                             <height>21</height>
                         </size>
                     </property>
                 </spacer>
                 <widget class="QPushButton">
                     <property name="name">
+                        <cstring>btnSelectAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Select All</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnClearAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>C&amp;lear All</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+L</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
                         <cstring>btnOk</cstring>
                     </property>
                     <property name="text">
-                        <string>Ok</string>
+                        <string>&amp;Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
                     </property>
                 </widget>
                 <widget class="QPushButton">
@@ -157,7 +188,10 @@
                         <cstring>btnClose</cstring>
                     </property>
                     <property name="text">
-                        <string>Close</string>
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                 </widget>
                 <spacer>
@@ -172,7 +206,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>80</width>
+                            <width>100</width>
                             <height>21</height>
                         </size>
                     </property>
@@ -200,10 +234,24 @@
         <receiver>QgsPluginManagerBase</receiver>
         <slot>apply()</slot>
     </connection>
+    <connection>
+        <sender>btnSelectAll</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPluginManagerBase</receiver>
+        <slot>selectAll()</slot>
+    </connection>
+    <connection>
+        <sender>btnClearAll</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPluginManagerBase</receiver>
+        <slot>clearAll()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>browseFiles()</slot>
     <slot>apply()</slot>
+    <slot>selectAll()</slot>
+    <slot>clearAll()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

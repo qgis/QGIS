@@ -238,8 +238,8 @@ void QgsDbSourceSelect::dbConnect()
     {
       QMessageBox::warning(this, tr("Connection failed"),
           tr
-          ("Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.").
-          arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n"));
+          ("Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5").
+          arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n").arg("\n\n").arg(PQerrorMessage(pd)));
     }
   }
 }
