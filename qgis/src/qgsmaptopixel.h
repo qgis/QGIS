@@ -85,7 +85,7 @@ class QgsMapToPixel{
     //! String representation of the parameters used in the transform
     QString showParameters();
 
-    static void trimLine(const QgsPoint& from, const QgsPoint& to, 
+    static bool trimLine(const QgsPoint& from, const QgsPoint& to, 
 			 QgsPoint& tFrom, QgsPoint& tTo);
  private:
     double mapUnitsPerPixel;

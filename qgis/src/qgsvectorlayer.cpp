@@ -2306,11 +2306,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 	  ptFrom = ptTo;
 	else
 	{
-	  QgsMapToPixel::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo);
-	  p->drawLine(static_cast<int>(trimmedFrom.x()),
-		      static_cast<int>(trimmedFrom.y()),
-		      static_cast<int>(trimmedTo.x()),
-		      static_cast<int>(trimmedTo.y()));
+	  if (QgsMapToPixel::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
+	    p->drawLine(static_cast<int>(trimmedFrom.x()),
+			static_cast<int>(trimmedFrom.y()),
+			static_cast<int>(trimmedTo.x()),
+			static_cast<int>(trimmedTo.y()));
 	  ptFrom = ptTo;
 	}
       }
@@ -2365,11 +2365,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 	    ptFrom = ptTo;
 	  else
 	  {
-	    QgsMapToPixel::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo);
-	    p->drawLine(static_cast<int>(trimmedFrom.x()),
-			static_cast<int>(trimmedFrom.y()),
-			static_cast<int>(trimmedTo.x()),
-			static_cast<int>(trimmedTo.y()));
+	    if (QgsMapToPixel::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
+	      p->drawLine(static_cast<int>(trimmedFrom.x()),
+			  static_cast<int>(trimmedFrom.y()),
+			  static_cast<int>(trimmedTo.x()),
+			  static_cast<int>(trimmedTo.y()));
 	    ptFrom = ptTo;
 	  }
         }
