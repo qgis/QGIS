@@ -16,7 +16,7 @@ plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = libopenmodellerplugin.la
 
 #for standalon executable
-bin_PROGRAMS = openmodellergui 
+#bin_PROGRAMS = openmodellergui 
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
