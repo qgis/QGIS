@@ -117,15 +117,13 @@
                 <cstring>textEdit2</cstring>
             </property>
             <property name="text">
-                <string>&lt;h1&gt;Description&lt;/h1&gt;
-Enter your copyright label on the right.  This plugin supports basic html markup tags for formatting the label.
-
-&lt;PRE&gt;
-&amp;lt;B&amp;gt; &lt;b&gt;Bold text&lt;/b&gt; &amp;lt;/B&amp;gt;
-&amp;lt;I&amp;gt; &lt;i&gt;Italics&lt;/i&gt; &amp;lt;/I&amp;gt;
-&lt;/PRE&gt;
-
-Font face and style can also be set using the 'Font' button.</string>
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:18px"&gt;&lt;span style="font-size:24pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Enter your copyright label on the right. This plugin supports basic html markup tags for formatting the label. &lt;/p&gt;
+&lt;p&gt;&lt;span style="font-family:Courier New,courier"&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style="font-family:Courier New,courier;font-weight:600"&gt;Bold text&lt;/span&gt;&lt;span style="font-family:Courier New,courier"&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style="font-family:Courier New,courier;font-style:italic"&gt;Italics&lt;/span&gt;&lt;span style="font-family:Courier New,courier"&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Font face and style can also be set using the 'Font' button.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
             </property>
             <property name="wordWrap">
                 <enum>WidgetWidth</enum>
@@ -283,10 +281,16 @@ Font face and style can also be set using the 'Font' button.</string>
         <slot>cboxEnabled_toggled(bool)</slot>
     </connection>
     <connection>
-        <sender>cboPlacement</sender>
+        <sender>cboOrientation</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>PluginGuiBase</receiver>
-        <slot>cboPlacement_textChanged(const QString&amp;)</slot>
+        <slot>cboOrientation_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>cboPlacement</sender>
+        <signal>highlighted(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>cboPlacement_highlighted(const QString&amp;)</slot>
     </connection>
 </connections>
 <includes>
@@ -298,7 +302,8 @@ Font face and style can also be set using the 'Font' button.</string>
     <slot>btnFontColour_clicked()</slot>
     <slot>btnFontFace_clicked()</slot>
     <slot>cboxEnabled_toggled( bool )</slot>
-    <slot>cboPlacement_textChanged( const QString &amp; )</slot>
+    <slot>cboOrientation_textChanged( const QString &amp; )</slot>
+    <slot>cboPlacement_highlighted( const QString &amp; )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

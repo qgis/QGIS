@@ -1,3 +1,5 @@
+
+
 /****************************************************************************
 ** ui.h extension file, included from the uic-generated form implementation.
 **
@@ -44,4 +46,22 @@ void PluginGuiBase::btnFontFace_clicked()
     }
     
     
+}
+
+
+void PluginGuiBase::cboxEnabled_toggled( bool )
+{
+
+}
+
+
+void PluginGuiBase::cboOrientation_textChanged( const QString & )
+{
+
+}
+
+
+void PluginGuiBase::cboPlacement_highlighted( const QString & )
+{
+
 }
