@@ -32,7 +32,15 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minm
 #ifdef QGISDEBUG
   std::cerr << "Data source uri is " << uri << std::endl;
 #endif
+  // try to open for update
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,TRUE);
+  if(ogrDataSource == NULL)
+  {
+    // try to open read-only
+    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,FALSE);
+  //TODO Need to set a flag or something to indicate that the layer
+  //TODO is in read-only mode, otherwise edit ops will fail
+  }
   if (ogrDataSource != NULL) {
 #ifdef QGISDEBUG
     std::cerr << "Data source is valid" << std::endl;
@@ -541,8 +549,8 @@ void QgsShapeFileProvider::fillMinMaxCash()
         minmaxcache[i][1]=value;  
       }
     }
-    //delete[] f->getGeometry();
-    delete f;
+    delete[] f->getGeometry();
+    //delete f;
    
   }while(f=getNextFeature(true));
 
