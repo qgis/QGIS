@@ -64,7 +64,10 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         void rbtnSingleBand_toggled( bool );
         /** \brief slot executed when the three band radio button is pressed. */
         void rbtnThreeBand_toggled( bool );
+        
     private:
+        /** \brief this slot asks the rasterlayer to construct pyramids */
+        void buttonBuildPyramids_clicked();
         /** \brief This function makes a pixmap to display in the color box */
         void makeScalePreview(QString theColor);
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
