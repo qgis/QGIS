@@ -30,6 +30,7 @@
 #include <qdom.h>
 
 #include "qgsattributeaction.h"
+#include "qgsrunprocess.h"
 
 static const char * const ident_ = "$Id$";
 
