@@ -295,5 +295,43 @@ If you are invoking an action that uses the \%\% notation, right-click on the
 field value in the \textit{Identify Results} dialog or the
 \textit{Attribute table} that you wish to pass to the application or script.
 
+Here is another example that pulls data out of a vector layer and inserts it into a file using bash and the `echo' command (so it will only work on Gnu/Linux and perhaps Mac OSX). The layer in question has fields for a species name (taxon\_name), latitude (lat) and longitude (long). I would like to be able to make a spatial selection of a localites and export these field values to a text file for the selected record (shown in yellow in the QGIS map area). Here is the action to achieve this:
+
+\begin{verbatim}
+bash -c "echo \"%taxon_name %lat %long\" >> /tmp/species_localities.txt"
+\end{verbatim} 
+
+After selecting a few localties and running the action on each one, opening the output file will show something like this:
+
+\begin{verbatim}
+Acacia mearnsii -34.0800000000 150.0800000000
+Acacia mearnsii -34.9000000000 150.1200000000
+Acacia mearnsii -35.2200000000 149.9300000000
+Acacia mearnsii -32.2700000000 150.4100000000
+\end{verbatim} 
+
+
 \section{Editing}
 
+
+As of version 0.6 QGIS supports basic capabilities for editing spatial data. Before reading any further you should note that at this stage editing is still experimental.Before performing any edits, always make a backup of the dataset you are about to edit. 
+
+\textbf{Note} - the procedure for editing GRASS layers is different - see Section \ref{grass_digitising} for details.
+
+
+if you wish to edit an existing layer,  choose `Start Editing' from the context menu after right clicking on the legend entry for that layer. Remember to back up your data before starting! Once the layer is in edit mode you will see a small \includegraphics[scale=1]{qgis_user_guide_images/editable} icon to remind you.
+
+Now that the layer is editable, you can use the `Capture Points' icon (or similiar icon for line and polygon layers) to put the qgis cursor into digitising mode. If you are capturing a point feature simple use the pan and zoom tools to arrive at an appropriate place in your layer, then click the `Capture Points' tool and click on the map area were you woul like your new point feature. A window will appear where you can set the attributes. Figure \ref{fig:vector_digitising} shows setting attributes of for a fictitious new city in the Antartic.
+
+\begin{figure}[h]
+   \begin{center}
+   \caption{Vector Digitizing Atributes Capture Dialog}\label{fig:vector_digitising}\smallskip
+   \includegraphics[scale=.5]{qgis_user_guide_images/digitising_attributes}
+\end{center}  
+\end{figure}
+
+In its current implementation the attributes dialog box does not check that type you have entered are correct, so you need to make sure of this yourself before pressing ok. Once you have finished adding your features, you can choose `Stop Editing' from the layer's context menu. Choosig `yes' at the dialog that pops up will save your changes to disk, and choosing `No' at this point will cause them to be discard. You should also note that QGIS does not (yet!) provide any way to delete an individual feature.
+
+\subsection{Creating new layers from scratch}
+
+In its current incarnation, the editing of attributes associated with spatial features is extremely basic and subsequently some of the procedures explained below involve some `hoop jumping' which will later no longer be necessary as QGIS's editing tools mature.
