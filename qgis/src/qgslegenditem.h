@@ -5,7 +5,7 @@
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc dot com
         Romans 3:23=>Romans 6:23=>Romans 5:8=>Romans 10:9,10=>Romans 12
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -19,49 +19,67 @@
 
 #ifndef QGSLEGENDITEM_H
 #define QGSLEGENDITEM_H
+
 #include <qlistview.h>
+
 class QgsMapLayer;
-
 class QgsSymbol;
+
+
 /**
-* \class QgsLegendItem
-* \brief An item in a QgsLegend
+ * \class QgsLegendItem
+ * \brief An item in a QgsLegend
 
-  *@author Gary E.Sherman
-  */
+ *@author Gary E.Sherman
+ */
 
-class QgsLegendItem : public QCheckListItem{
-//Q_OBJECT
+class QgsLegendItem : public QCheckListItem
+{
 public:
-/*! Constructor
-* @param lyr Map layer this legend item represents
-* @param parent The parent listview
-*/
-	QgsLegendItem(QgsMapLayer *lyr=0, QListView * parent=0);
-	//! Destructor
-	~QgsLegendItem();
-  /** Write property of QString layerName. */
-  virtual void setLayerName( const QString& _newVal);
-  /** Write property of QString displayName. */
-  virtual void setDisplayName( const QString& _newVal);
-  /*! Responds to changes in the layer state (eg. visible vs non visible)
-  *@param v True if layer is visible
-  */
-  void stateChange(bool v);
-  /*! Gets the layer associated with this legend item
-  * @return Pointer to the layer
-  */
-  virtual QgsMapLayer * layer();
-private: // Private attributes
-  /**  */
-  /**  */
-  QgsMapLayer * m_layer;
-  QgsSymbol * symbol;
-public: // Public attributes
-  /**  */
-  QString displayName;
-  /**  */
-  QString layerName;
+
+    /*! Constructor
+     * @param lyr Map layer this legend item represents
+     * @param parent The parent listview
+     */
+    QgsLegendItem(QgsMapLayer * lyr = 0, QListView * parent = 0);
+
+    //! Destructor
+    virtual ~QgsLegendItem();
+
+    /** Write property of QString layerName. */
+    virtual void setLayerName(const QString & _newVal);
+
+    /** Write property of QString displayName. */
+    // DEPRECATED? virtual void setDisplayName(const QString & _newVal);
+
+    /*! Responds to changes in the layer state (eg. visible vs non visible)
+     *@param v True if layer is visible
+     */
+    // DEPRECATED? void stateChange(bool v);
+
+    /*! Gets the layer associated with this legend item
+     * @return Pointer to the layer
+     */
+    virtual QgsMapLayer *layer();
+
+    /** returns layer ID of associated map layer 
+     */
+    QString layerID() const;
+
+private:                       // Private attributes
+
+    /**  */
+    QgsMapLayer * m_layer;
+
+    QgsSymbol *symbol;
+
+public:                        // Public attributes
+
+    /**  This is the name as rendered in the legend item pixmap */
+    // DEPRECATED? QString displayName;
+
+    /**  The layer name as stored originaly in the dataset */
+    QString layerName;
 };
 
 #endif

@@ -23,35 +23,51 @@
 #include "qgslegenditem.h"
 
 
-QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent):QCheckListItem(parent, "", QCheckListItem::CheckBox), m_layer(lyr)
+QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent)
+    : QCheckListItem(parent, "", QCheckListItem::CheckBox), 
+      m_layer(lyr),
+      layerName( lyr->name() )
 {
   setOn(lyr->visible());
-
-
+  setPixmap( 0, *lyr->legendPixmap() );
 }
+
+
 
 QgsLegendItem::~QgsLegendItem()
-{
-}
+{}
+
 
 /** Write property of QString layerName. */
 void QgsLegendItem::setLayerName(const QString & _newVal)
 {
   layerName = _newVal;
-}
 
-/** Write property of QString displayName. */
-void QgsLegendItem::setDisplayName(const QString & _newVal)
-{
-  displayName = _newVal;
-}
+  // commented out because this will cause the name to be rendered next to the
+  // legend item pixmap, which <em>already</em> contains the layer name
+  //setText( 0, _newVal );
+} // QgsLegendItem::setLayerName()
 
-void QgsLegendItem::stateChange(bool vis)
-{
-  m_layer->setVisible(vis);
-}
+
+
+// /** Write property of QString displayName. */
+// void QgsLegendItem::setDisplayName(const QString & _newVal)
+// {
+//   displayName = _newVal;
+// }
+
+// void QgsLegendItem::stateChange(bool vis)
+// {
+//   m_layer->setVisible(vis);
+// }
 
 QgsMapLayer *QgsLegendItem::layer()
 {
   return m_layer;
 }
+
+
+QString QgsLegendItem::layerID() const
+{
+    return m_layer->getLayerID();
+} // layerID

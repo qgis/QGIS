@@ -259,6 +259,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
   mapLegend->addColumn(tr("Layers"));
   mapLegend->setSorting(-1);
+
   mOverviewLabel = new QLabel(legendOverviewSplit);
   mOverviewLabel->setText("Overview");
   // mL = new QScrollView(canvasLegendSplit);
@@ -277,9 +278,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
 
   setCaption(caption);
+
   connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
-  connect(mapCanvas,SIGNAL(extentsChanged(QString )),this,SLOT(showExtents(QString )));
+  connect(mapCanvas, SIGNAL(extentsChanged(QString )),this,SLOT(showExtents(QString )));
   connect(mapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
+  connect(mapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mapLegend, SLOT(addLayer(QgsMapLayer *)));
+  connect(mapCanvas, SIGNAL(removedLayer(QString)), mapLegend, SLOT(removedLayer(QString)));
+
   connect(mapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
   connect(mapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
           this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
@@ -289,80 +294,95 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // add the whats this toolbar button
   //TODO Fix this ToolBar pointer to be named consistently
   QWhatsThis::whatsThisButton(helpToolbar);
+
   // add the empty plugin menu
   pluginMenu = new QPopupMenu(this);  
   menuBar()->insertItem("&Plugins", pluginMenu, -1, menuBar()->count() - 1);
+
   // create the layer popup menu
   mapCursor = 0;
+
   // create the interfce
   qgisInterface = new QgisIface(this);
   ///qgisInterface->setParent(this);
+
   // set the legend control for the map canvas
   mapCanvas->setLegend(mapLegend);
+
   // disable functions based on build type
 #ifndef HAVE_POSTGRESQL
   actionAddLayer->removeFrom(popupMenuLayers);
   actionAddLayer->removeFrom(DataToolbar);
 #endif
-  if (!myHideSplashFlag)
-  {
 
-    gSplashScreen->setStatus(tr("Loading plugins..."));
-  }
-  // store the application dir
-  appDir = PREFIX;
-  // Get pointer to the provider registry singleton
-  QString plib = PLUGINPATH;
-  providerRegistry = QgsProviderRegistry::instance(plib);
-  // load any plugins that were running in the last session
-#ifdef QGISDEBUG
-  std::cerr << "About to restore plugins session" << std::endl;
-#endif
-  restoreSessionPlugins(plib);
-  // set the provider plugin path 
-#ifdef QGISDEBUG
-  std::cout << "Setting plugin lib dir to " << plib << std::endl;
-#endif
   // connect the "cleanup" slot
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
 
-  
-  // set the focus to the map canvase
-  mapCanvas->setFocus();
-  if (!myHideSplashFlag)
-  {
-
-    gSplashScreen->finish(this);
-    delete gSplashScreen;
-  }
-
-#ifdef QGISDEBUG
-  std::cout << "Plugins are installed in " << plib << std::endl;
-#endif
   // set the dirty flag to false -- no changes yet
   projectIsDirty = false;
 
   //
   // Add a panel to the status bar for the scale, coords and progress
   //
-  mProgressBar=new QProgressBar(100,NULL);
+  mProgressBar = new QProgressBar(100,NULL);
   mProgressBar->setMaximumWidth(100);
   statusBar()->addWidget(mProgressBar,0.5,true);   
-  mScaleLabel=new QLabel(QString("Scale"),NULL);
+  mScaleLabel = new QLabel(QString("Scale"),NULL);
   mScaleLabel->setMinimumWidth(100);
   statusBar()->addWidget(mScaleLabel, 0,true);
-  mCoordsLabel=new QLabel(QString("Coordinates:"), NULL);
+  mCoordsLabel = new QLabel(QString("Coordinates:"), NULL);
   mCoordsLabel->setMinimumWidth(200);
   statusBar()->addWidget(mCoordsLabel, 0, true);
+
+
+  if (! myHideSplashFlag)
+  {
+
+    gSplashScreen->setStatus(tr("Loading plugins..."));
+  }
+
+  // store the application dir
+  appDir = PREFIX;
+
+  // Get pointer to the provider registry singleton
+  QString plib = PLUGINPATH;
+  providerRegistry = QgsProviderRegistry::instance(plib);
+
+#ifdef QGISDEBUG
+  std::cout << "Plugins are installed in " << plib << std::endl;
+#endif
+
+  // load any plugins that were running in the last session
+#ifdef QGISDEBUG
+  std::cerr << "About to restore plugins session" << std::endl;
+#endif
+  restoreSessionPlugins(plib);
+
+  // set the provider plugin path 
+#ifdef QGISDEBUG
+  std::cout << "Setting plugin lib dir to " << plib << std::endl;
+#endif
+
+
+  // set the focus to the map canvase
+  mapCanvas->setFocus();
+
+  if (!myHideSplashFlag)
+  {
+    gSplashScreen->finish(this);
+    delete gSplashScreen;
+  }
  
-}
+} // QgisApp ctor
 
 
 
 QgisApp::~QgisApp()
 {
 }
+
+
 void QgisApp::about()
 {
   QgsAbout *abt = new QgsAbout();
@@ -802,7 +822,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
    }
 
    mapCanvas->freeze(false);
-   mapLegend->update();
+   // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
    qApp->processEvents();       // XXX why does this need to be called manually?
    mapCanvas->render2();        // XXX eh, wot?
 
@@ -911,7 +931,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
       /*! \todo Need legend scrollview and legenditem classes */
       // draw the map
 
-      mapLegend->update();
+      // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
       qApp->processEvents();    // XXX why does this need to be called manually?
       mapCanvas->freeze(false);
       mapCanvas->render2();
@@ -1245,7 +1265,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
    }
 
 
-  mapLegend->update();
+   // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
   qApp->processEvents();
   mapCanvas->freeze(false);
   mapCanvas->render2();
@@ -1365,7 +1385,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
         }
     }
 
-  mapLegend->update();
+  // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
 
   qApp->processEvents();
 
@@ -1478,7 +1498,7 @@ void QgisApp::addDatabaseLayer()
           //  qApp->processEvents();
           // update legend
           /*! \todo Need legend scrollview and legenditem classes */
-          mapLegend->update();
+          // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
 
           // draw the map
           //mapCanvas->render2();
@@ -1512,11 +1532,13 @@ void QgisApp::fileNew()
       mapCanvas->removeAll();
       setCaption(tr("Quantum GIS -- Untitled"));
       mapCanvas->clear();
-      mapLegend->update();
+      // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
       fullPath = "";
       projectIsDirty = false;
     }
-}
+} // fileNew
+
+
 void QgisApp::fileOpen()
 {
   int answer = saveDirty();
@@ -1533,11 +1555,13 @@ void QgisApp::fileOpen()
         }
       delete pio;
 
-      mapLegend->update();
+      // mapLegend->update(); UPDATED VIA SIGNAL/SLOTS
       mapCanvas->freeze(false);
       projectIsDirty = false;
     }
 }
+
+
 void QgisApp::fileSave()
 {
   QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::SAVE);
@@ -1609,7 +1633,7 @@ bool QgisApp::addProject(QString projectFile)
     mapCanvas->freeze(true);
     setCaption(tr("Quantum GIS --") + " " + pio->baseName());
     fullPath = pio->fullPathName();
-    mapLegend->update();
+    // mapLegend->update(); UPDATED VIA SIGNAL/SLOTS
     mapCanvas->freeze(false);
     projectIsDirty = false;
     returnValue = true;
@@ -1828,7 +1852,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
           mapCanvas->setDirty(true);
           mapCanvas->refresh();
           mapCanvas->render2();
-          mapLegend->update();
+          // mapLegend->update(); XXX WHY CALL UPDATE HERE?
           delete rlp;
           qApp->processEvents();
         }
@@ -1888,8 +1912,8 @@ void QgisApp::removeLayer()
   mapCanvas->freeze();
   QListViewItem *lvi = mapLegend->currentItem();
   QgsMapLayer *lyr = ((QgsLegendItem *) lvi)->layer();
-  mapCanvas->remove(lyr->getLayerID());
-  mapLegend->update();
+  //mapCanvas->remove(lyr->getLayerID());
+  mapLegend->removeLayer(lyr->getLayerID()); // this implicitly calls mapCanvas::remove()
   mapCanvas->freeze(false);
   // draw the map
   mapCanvas->clear();
@@ -2562,7 +2586,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
       projectIsDirty = true;
       //qWarning("incrementing iterator");
       /*! \todo Need legend scrollview and legenditem classes */
-      mapLegend->update();
+      // mapLegend->update(); NOW DONE VIA SIGNAL/SLOTS
 
       // draw the map
       //mapCanvas->render2();
@@ -2699,3 +2723,4 @@ void QgisApp::showStatusMessage(QString theMessage)
 {
   statusBar()->message(theMessage);
 }
+
