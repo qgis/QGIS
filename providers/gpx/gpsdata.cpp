@@ -23,12 +23,44 @@
 #include "gpsdata.h"
 
 
+bool GPSObject::parseNode(const QDomNode& node) {
+  
+  QDomNode node2;
+  
+  // name is optional
+  node2 = node.namedItem("name");
+  if (!node2.isNull())
+    name = (const char*)node2.firstChild().nodeValue();
+  
+  // url is optional
+  node2 = node.namedItem("url");
+  if (!node2.isNull())
+    url = (const char*)node2.firstChild().nodeValue();
+}
+
+
+void GPSObject::fillElement(QDomDocument& qdd, QDomElement& elt) {
+  if (!name.isEmpty()) {
+    QDomElement nameElt = qdd.createElement("name");
+    nameElt.appendChild(qdd.createTextNode(name));
+    elt.appendChild(nameElt);
+  }
+  if (!url.isEmpty()) {
+    QDomElement urlElt = qdd.createElement("url");
+    urlElt.appendChild(qdd.createTextNode(url));
+    elt.appendChild(urlElt);
+  }
+}
+
+
 GPSPoint::GPSPoint() {
   ele = -std::numeric_limits<double>::max();
 }
 
 
 bool GPSPoint::parseNode(const QDomNode& node) {
+  GPSObject::parseNode(node);
+
   QDomNode node2;
   
   // lat and lon are required
@@ -41,16 +73,6 @@ bool GPSPoint::parseNode(const QDomNode& node) {
     return false;
   lon = node2.nodeValue().toDouble();
   
-  // name is optional
-  node2 = node.namedItem("name");
-  if (!node2.isNull())
-    name = (const char*)node2.firstChild().nodeValue();
-  
-  // url is optional
-  node2 = node.namedItem("url");
-  if (!node2.isNull())
-    url = (const char*)node2.firstChild().nodeValue();
-  
   // ele is optional
   node2 = node.namedItem("ele");
   if (!node2.isNull())
@@ -62,7 +84,26 @@ bool GPSPoint::parseNode(const QDomNode& node) {
 }
 
 
+void GPSPoint::fillElement(QDomDocument& qdd, QDomElement& elt) {
+  GPSObject::fillElement(qdd, elt);
+  elt.setAttribute("lat", QString("%1").arg(lat, 0, 'f'));
+  elt.setAttribute("lon", QString("%1").arg(lon, 0, 'f'));
+  if (ele != -std::numeric_limits<double>::max()) {
+    QDomElement eleElt = qdd.createElement("ele");
+    eleElt.appendChild(qdd.createTextNode(QString("%1").arg(ele, 0, 'f')));
+    elt.appendChild(eleElt);
+  }
+}
+
+
+void GPSExtended::fillElement(QDomDocument& qdd, QDomElement& elt) {
+  GPSObject::fillElement(qdd, elt);
+}
+
+
 bool Route::parseNode(const QDomNode& node) {
+  GPSObject::parseNode(node);
+  
   QDomNode node2;
   
   // reset extent
@@ -89,21 +130,24 @@ bool Route::parseNode(const QDomNode& node) {
     node2 = node2.nextSibling();
   }
   
-  // name is optional
-  node2 = node.namedItem("name");
-  if (!node2.isNull())
-    name = (const char*)node2.firstChild().nodeValue();
-  
-  // url is optional
-  node2 = node.namedItem("url");
-  if (!node2.isNull())
-    url = (const char*)node2.firstChild().nodeValue();
-  
   return true;
 }
 
 
+void Route::fillElement(QDomDocument& qdd, QDomElement& elt) {
+  GPSExtended::fillElement(qdd, elt);
+  
+  for (int i = 0; i < points.size(); ++i) {
+    QDomElement ptElt = qdd.createElement("rtept");
+    points[i].fillElement(qdd, ptElt);
+    elt.appendChild(ptElt);
+  }
+}
+
+
 bool Track::parseNode(const QDomNode& node) {
+  GPSObject::parseNode(node);
+  
   QDomNode node2, node3;
 
   // reset track bounds
@@ -139,17 +183,21 @@ bool Track::parseNode(const QDomNode& node) {
     node2 = node2.nextSibling();
   }
   
-  // name is optional
-  node2 = node.namedItem("name");
-  if (!node2.isNull())
-    name = (const char*)node2.firstChild().nodeValue();
-  
-  // url is optional
-  node2 = node.namedItem("url");
-  if (!node2.isNull())
-    url = (const char*)node2.firstChild().nodeValue();
-  
   return true;
+}
+
+
+void Track::fillElement(QDomDocument& qdd, QDomElement& elt) {
+  GPSExtended::fillElement(qdd, elt);
+  for (int i = 0; i < segments.size(); ++i) {
+    QDomElement sgmElt = qdd.createElement("trkseg");
+    for (int j = 0; j < segments[i].points.size(); ++j) {
+      QDomElement ptElt = qdd.createElement("trkpt");
+      segments[i].points[j].fillElement(qdd, ptElt);
+      sgmElt.appendChild(ptElt);
+    }
+    elt.appendChild(sgmElt);
+  }
 }
 
 
@@ -315,12 +363,22 @@ void GPSData::fillDom(QDomDocument& qdd) {
   // add waypoints
   for (int i = 0; i < waypoints.size(); ++i) {
     QDomElement wptElt = qdd.createElement("wpt");
-    wptElt.setAttribute("lat", QString("%1").arg(waypoints[i].lat, 0, 'f'));
-    wptElt.setAttribute("lon", QString("%1").arg(waypoints[i].lon, 0, 'f'));
-    QDomElement nameElt = qdd.createElement("name");
-    nameElt.appendChild(qdd.createTextNode(waypoints[i].name));
-    wptElt.appendChild(nameElt);
+    waypoints[i].fillElement(qdd, wptElt);
     gpxElt.appendChild(wptElt);
+  }
+
+  // add routes
+  for (int i = 0; i < routes.size(); ++i) {
+    QDomElement rteElt = qdd.createElement("rte");
+    routes[i].fillElement(qdd, rteElt);
+    gpxElt.appendChild(rteElt);
+  }
+
+  // add tracks
+  for (int i = 0; i < tracks.size(); ++i) {
+    QDomElement trkElt = qdd.createElement("trk");
+    tracks[i].fillElement(qdd, trkElt);
+    gpxElt.appendChild(trkElt);
   }
 }
 
