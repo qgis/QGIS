@@ -62,6 +62,9 @@ public:
     /** read state from project */
     virtual bool readSettings ( void );
 
+    /** delete settings from project file  */
+    virtual bool removeSettings( void ); 
+
     /** stores state in DOM node
      * @param node is DOM node corresponding to '???' tag
      * @param temp write template file
