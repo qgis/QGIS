@@ -65,7 +65,7 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
     std::vector<QgsFeatureAttribute> fields =  feature->attributeMap();
 
     for ( unsigned int i = 0; i < fields.size(); i++ ) {
-	if ( fields[i].fieldName().compare(mLabelField[attr]) == 0 ) {
+	if ( fields[i].fieldName().lower().compare(mLabelField[attr]) == 0 ) {
 	    return fields[i].fieldValue();
 	}
     }
