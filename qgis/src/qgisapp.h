@@ -49,6 +49,7 @@ class QgisApp:public QgisAppBase
 	public:
 	 QgisIface *getInterface();
 	 int getInt();
+     void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
 	  private:
 	 //private:
 	//public slots:
@@ -60,7 +61,7 @@ class QgisApp:public QgisAppBase
 	//! Add a databaselayer to the map
 	void addDatabaseLayer();
 	#endif
-  void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
+
 	//! Exit Qgis
 	void fileExit();
 	
