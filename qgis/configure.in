@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.54 2004/04/06 08:54:19 timlinux Exp
+dnl configure.in,v 1.55 2004/04/13 20:30:31 jobi Exp
 
 AC_INIT
 
@@ -49,7 +49,7 @@ AC_PROG_LIBTOOL
 dnl ---------------------------------------------------------------------------
 dnl Qt check
 dnl ---------------------------------------------------------------------------
-gw_CHECK_QT
+AQ_CHECK_QT
 
 
 dnl ---------------------------------------------------------------------------
