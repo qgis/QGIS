@@ -989,77 +989,7 @@
                             </widget>
                         </hbox>
                     </widget>
-                    <widget class="QListBox" row="1" column="0">
-                        <item>
-                            <property name="text">
-                                <string>1/2</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/4</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/8</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/16</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/32</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/64</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/128</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>1/256</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>lbxPyramidResolutions</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>150</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="selectionMode">
-                            <enum>Multi</enum>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="0">
-                        <property name="name">
-                            <cstring>textLabel5</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Pyramid Resolutions</string>
-                        </property>
-                    </widget>
-                    <widget class="QTextEdit" row="0" column="1" rowspan="2" colspan="1">
+                    <widget class="QTextEdit" row="0" column="0" rowspan="2" colspan="1">
                         <property name="name">
                             <cstring>textEdit5</cstring>
                         </property>
@@ -1081,6 +1011,36 @@
                         </property>
                         <property name="wordWrap">
                             <enum>WidgetWidth</enum>
+                        </property>
+                    </widget>
+                    <widget class="QListBox" row="1" column="1">
+                        <property name="name">
+                            <cstring>lbxPyramidResolutions</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>150</width>
+                                <height>32767</height>
+                            </size>
+                        </property>
+                        <property name="selectionMode">
+                            <enum>Multi</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="1">
+                        <property name="name">
+                            <cstring>textLabel5</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Pyramid Resolutions</string>
                         </property>
                     </widget>
                 </grid>
