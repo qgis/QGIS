@@ -38,13 +38,15 @@
 #include "qgslegend.h"
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
+#include "qgsshapefilelayer.h"
 #include "qgis.h"
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
-
+#include <ogrsf_frmts.h>
 QgisApp::QgisApp (QWidget * parent, const char *name, WFlags fl):
   QgisAppBase (parent, name, fl)
 {
+OGRRegisterAll();
   QPixmap icon;
   icon = QPixmap (qgis_xpm);
   setIcon (icon);
@@ -277,5 +279,10 @@ void QgisApp::drawLayers(){
 void QgisApp::showMouseCoordinate(QgsPoint &p){
 	statusBar()->message(p.stringRep());
 	//qWarning("X,Y is: " + p.stringRep());
+	
+}
+void QgisApp::testButton(){
+	QgsShapeFileLayer *sfl = new QgsShapeFileLayer();
+	delete sfl;
 	
 }
