@@ -390,7 +390,7 @@ void QgisApp::drawPoint(double x, double y)
 
 void QgisApp::drawLayers()
 {
-	std::cout << "In  QgisApp::drawLayers()" << std::endl;
+//	std::cout << "In  QgisApp::drawLayers()" << std::endl;
 	mapCanvas->render2();
 }
 

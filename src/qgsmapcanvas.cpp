@@ -78,6 +78,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
 
 	sym->setColor(QColor(red, green, blue));
+	sym->setLineWidth(1);
 	lyr->setSymbol(sym);
 	layers[lyr->name()] = lyr;
 	// update extent if warranted
@@ -113,10 +114,10 @@ QgsMapLayer *QgsMapCanvas::getZpos(int index)
 void QgsMapCanvas::render2()
 {
 QString msg = frozen?"frozen":"thawed";
-std::cout << "Map canvas is " << msg << std::endl;
+//std::cout << "Map canvas is " << msg << std::endl;
 if(!frozen){
 	if (!drawing) {
-	std::cout << "IN RENDER 2" << std::endl;
+//	std::cout << "IN RENDER 2" << std::endl;
 		drawing = true;
 		QPainter *paint = new QPainter();
 		paint->begin(this);
@@ -125,7 +126,7 @@ if(!frozen){
 		double muppX, muppY;
 		muppY = currentExtent.height() / height();
 		muppX = currentExtent.width() / width();
-		std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
+//		std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
 		m_mupp = muppY > muppX ? muppY : muppX;
 		// calculate the actual extent of the mapCanvas
 		double dxmin, dxmax, dymin, dymax, whitespace;
@@ -143,8 +144,8 @@ if(!frozen){
 			dymax = currentExtent.yMax() + whitespace;
 
 		}
-		std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
-		  endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
+//		std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
+//		  endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
 		coordXForm->setParameters(m_mupp, dxmin, dymin, height());	//currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
 		// update the currentExtent to match the device coordinates
 		currentExtent.setXmin(dxmin);
@@ -153,12 +154,12 @@ if(!frozen){
 		currentExtent.setYmax(dymax);
 		// render all layers in the stack, starting at the base
 		std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
-		std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+//		std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
 		while (mi != layers.end()) {
 			QgsMapLayer *ml = (*mi).second;
 			if(ml){
 			//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-			std::cout << "Rendering " << ml->name() << std::endl;
+//			std::cout << "Rendering " << ml->name() << std::endl;
 			if (ml->visible())
 				ml->draw(paint, &currentExtent, coordXForm);
 			mi++;
@@ -217,8 +218,8 @@ void QgsMapCanvas::paintEvent(QPaintEvent * pe)
 {
   if (!drawing)
 		render2();
-	else
-		std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
+//	else
+//		std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
 }
 
 QgsRect QgsMapCanvas::extent()

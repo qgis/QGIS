@@ -50,7 +50,7 @@ void QgsNewConnection::testConnection()
 	  "host=" + txtHost->text() + " dbname=" + txtDatabase->text() +
 	  " user=" + txtUsername->text() + " password=" + txtPassword->text();
 	PgDatabase *pd = new PgDatabase((const char *) connInfo);
-	std::cout << pd->ErrorMessage();
+//	std::cout << pd->ErrorMessage();
 	if (pd->Status() == CONNECTION_OK) {
 		// Database successfully opened; we can now issue SQL commands.
 		QMessageBox::information(this, "Test connection", "Connection to " + txtDatabase->text() + " was successfull");

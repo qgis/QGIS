@@ -17,6 +17,7 @@
 #include <iostream>
 #include <qstring.h>
 #include <qpainter.h>
+#include <qpen.h>
 #include <qpointarray.h>
 #include <qbrush.h>
 #include "qgis.h"
@@ -36,7 +37,7 @@ QgsMapLayer(QgsMapLayer::DATABASE, table, conninfo), tableName(table)
 	if (pd->Status() == CONNECTION_OK) {
 		// get the geometry column
 		QString sql = "select f_geometry_column,type from geometry_columns where f_table_name='" + tableName + "'";
-		qWarning("Getting geometry column: " + sql);
+//		qWarning("Getting geometry column: " + sql);
 		int result = pd->ExecTuplesOk((const char *) sql);
 		if (result) {
 			// set the simple type for use with symbology operations
@@ -52,7 +53,7 @@ QgsMapLayer(QgsMapLayer::DATABASE, table, conninfo), tableName(table)
 			QString sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
 			  "xmin(extent(" + geometryColumn + ")) as xmin,"
 			  "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
-			qWarning("Getting extents: " + sql);
+//			qWarning("Getting extents: " + sql);
 			result = pd->ExecTuplesOk((const char *) sql);
 
 			if (result) {
@@ -66,7 +67,7 @@ QgsMapLayer(QgsMapLayer::DATABASE, table, conninfo), tableName(table)
 				QTextOStream(&xMsg).width(18);
 				QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
 				  xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
-				qWarning(xMsg);
+//				qWarning(xMsg);
 
 			} else {
 				QString msg = "Unable to access " + tableName;
@@ -106,19 +107,19 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, int yTransform)
 	// set pen and fill
 	QgsSymbol *sym = symbol();
 	p->setPen(sym->color());
-	std::cout << "Drawing layer using view extent " << viewExtent->stringRep() << " with a y transform of " << yTransform << std::endl;
+	//std::cout << "Drawing layer using view extent " << viewExtent->stringRep() << " with a y transform of " << yTransform << std::endl;
 	PgCursor pgs(dataSource, "drawCursor");
 	QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
 	sql += "') as features from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
 	sql += ")'::box3d,-1)";
-	qWarning(sql);
+//	qWarning(sql);
 	pgs.Declare((const char *) sql, true);
 	//! \todo Check return from Fecth();
 	int res = pgs.Fetch();
 
-	std::cout << "Number of matching records: " << pgs.Tuples() << std::endl;
+	//std::cout << "Number of matching records: " << pgs.Tuples() << std::endl;
 	for (int idx = 0; idx < pgs.Tuples(); idx++) {
 		// allocate memory for the item
 		char *feature = new char[pgs.GetLength(idx, 0) + 1];
@@ -256,20 +257,23 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 	   4. draw
 	 */
 	QgsSymbol *sym = symbol();
-	p->setPen(sym->color());
+	QPen pen;
+	pen.setColor(sym->color());
+	pen.setWidth(sym->lineWidth());
+	p->setPen(pen);
 	PgCursor pgs(dataSource, "drawCursor");
 	QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
 	sql += "') as features from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
 	sql += ")'::box3d,-1)";
-	qWarning(sql);
+//	qWarning(sql);
 	pgs.Declare((const char *) sql, true);
 	int res = pgs.Fetch();
 	QString msg;
 	QTextOStream(&msg) << "Number of matching records: " << pgs.Tuples() << endl;
-	qWarning(msg);
-	std::cout << "Using following transform parameters:\n" << cXf->showParameters() << std::endl;
+//	qWarning(msg);
+//	std::cout << "Using following transform parameters:\n" << cXf->showParameters() << std::endl;
 	for (int idx = 0; idx < pgs.Tuples(); idx++) {
 		// allocate memory for the item
 		char *feature = new char[pgs.GetLength(idx, 0) + 1];

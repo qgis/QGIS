@@ -45,3 +45,12 @@ void QgsSymbol::setFillColor(QColor c)
 {
 	m_fillColor = c;
 }
+
+int QgsSymbol::lineWidth(){
+	return m_lineWidth;
+}
+
+void QgsSymbol::setLineWidth(int w){
+	m_lineWidth = w;
+}
+	

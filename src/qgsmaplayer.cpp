@@ -62,12 +62,12 @@ QgsRect QgsMapLayer::calculateExtent()
 }
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
-	std::cout << "In QgsMapLayer::draw" << std::endl;
+//	std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *)
 {
-	std::cout << "In QgsMapLayer::draw" << std::endl;
+//	std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 
