@@ -439,15 +439,22 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
       myQImage.setPixel(myColInt,myRowInt,qRgb((unsigned int)myRedDouble, (unsigned int)myGreenDouble, (unsigned int)myBlueDouble));
     }
   }
-  //now convert the qimage to a pixmap so we can set the pixmap label with it
+  // Create a pixmap the same size as the image - to be placed in the pixmalLabel
   QPixmap *myQPixmap = new QPixmap(100,100);
-  myQPixmap->convertFromImage(myQImage,36);
+
+  //
   // Draw a text alabel onto the pixmap showing the min max value
+  //
   QPainter myQPainter(myQPixmap);
+  myQPainter.rotate( -45 );
+  myQPainter.drawImage(-70,0,myQImage.scale(140,140));
+  myQPainter.rotate( 45 );
   QFont myQFont( "time", 18, QFont::Bold );
   myQPainter.setFont( myQFont );
   myQPainter.setPen( Qt::white );
-  myQPainter.drawText(10,50,  QString::number(static_cast<unsigned int>(myMinDouble)) + " - " + QString::number(static_cast<unsigned int>(myMaxDouble)) );
+  myQPainter.drawText(15,50,  QString::number(static_cast<unsigned int>(myMinDouble)) + " - " + QString::number(static_cast
+  <unsigned int>(myMaxDouble)) );
+  
   //now draw the image into the relevant pixmap label
   if (theColor=="red")
   {
