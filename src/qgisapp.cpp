@@ -96,7 +96,7 @@
 #include "qgssinglesymrenderer.h"
 //#include "qgssisydialog.h"
 #include "../plugins/qgisplugin.h"
-#include "qgsoptionsbase.uic.h"
+#include "qgsoptions.h"
 #include "qgsprojectproperties.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
@@ -2550,7 +2550,7 @@ void QgisApp::socketReadyRead()
 }
 void QgisApp::options()
 {
-  QgsOptionsBase *optionsDialog = new QgsOptionsBase(this);
+  QgsOptions *optionsDialog = new QgsOptions(this);
 
   // add the themes to the combo box on the option dialog
   QDir themeDir(appDir + "/share/qgis/themes");
@@ -2563,7 +2563,12 @@ void QgisApp::options()
       optionsDialog->addTheme(dirs[i]);
     }
   }
-  optionsDialog->exec();
+  if(optionsDialog->exec())
+  {
+    // set the theme if it changed
+   setTheme(optionsDialog->theme()); 
+  }
+      
 }
 
 void QgisApp::helpContents()
@@ -2862,6 +2867,10 @@ void QgisApp::setTheme(QString themeName)
 // Themes can be selected from the preferences dialog. The dialog parses 
 // the themes directory and builds a list of themes (ie subdirectories) 
 // for the user to choose from.
+//
+// TODO: Check as each icon is grabbed and if it doesn't exist, use the
+// one from the default theme (which is installed with qgis and should
+// always be good)
 */
   QString iconPath = appDir +"/share/qgis/themes/" + themeName;
   actionFileNew->setIconSet(QIconSet(QPixmap(iconPath + "/file_new.png")));

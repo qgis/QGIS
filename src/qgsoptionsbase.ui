@@ -313,6 +313,18 @@ identifying features without zooming in very close.
         <receiver>QgsOptionsBase</receiver>
         <slot>saveOptions()</slot>
     </connection>
+    <connection>
+        <sender>cmbTheme</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>QgsOptionsBase</receiver>
+        <slot>themeChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>cmbTheme</sender>
+        <signal>highlighted(const QString&amp;)</signal>
+        <receiver>QgsOptionsBase</receiver>
+        <slot>themeChanged(const QString&amp;)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsoptionsbase.ui.h</include>
@@ -321,6 +333,7 @@ identifying features without zooming in very close.
     <slot>saveOptions()</slot>
     <slot>cbxHideSplash_toggled( bool )</slot>
     <slot>addTheme( QString )</slot>
+    <slot>themeChanged(const QString &amp;)</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

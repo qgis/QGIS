@@ -94,7 +94,8 @@ headers =  	qgis.h					\
 	   	splashscreen.h				\
 	   	qgisapp.h \
 	   	qgsscalecalculator.h \
-	   	qgsprojectproperties.h
+	   	qgsprojectproperties.h \
+	   	qgsoptions.h
 
 
 ## qt designer files for all the GUI stuff
@@ -170,7 +171,8 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgsvectorlayer.moc.cpp			\
 		qgsvectorlayerproperties.moc.cpp	\
 		splashscreen.moc.cpp \
-		qgsprojectproperties.moc.cpp
+		qgsprojectproperties.moc.cpp \
+		qgsoptions.moc.cpp
 
 
 qgis_SOURCES =  main.cpp			\
@@ -230,7 +232,8 @@ qgis_SOURCES =  main.cpp			\
 		qgsvectorlayerproperties.cpp	\
 		splashscreen.cpp \
 		qgsscalecalculator.cpp  \
-		qgsprojectproperties.cpp 
+		qgsprojectproperties.cpp \
+		qgsoptions.cpp 
 
 postgresHEADERS = qgsdbsourceselect.h qgsnewconnection.h
 postgresSOURCES = qgsdbsourceselect.cpp qgsnewconnection.cpp
