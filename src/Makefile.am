@@ -68,6 +68,7 @@ headers =  qgis.h				\
 		qgsrenderitem.h			\
 		qgssinglesymrenderer.h		\
 		qgssimadialog.h			\
+		qgssimarenderer.h		\
 		qgssisydialog.h			\
 		qgssymbol.h			\
 		qgssymbologyutils.h		\
@@ -121,6 +122,7 @@ qgis_SOURCES =  main.cpp			\
 		qgsrect.cpp			\
 		qgsrenderitem.cpp		\
 		qgssimadialog.cpp		\
+		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
 		qgssymbol.cpp			\
