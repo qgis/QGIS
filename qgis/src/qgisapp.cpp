@@ -2762,6 +2762,10 @@ int QgisApp::addPluginToolBarIcon (QAction * qAction)
  qAction->addTo(mPluginToolBar);
  return 0;
 }
+void QgisApp::removePluginToolBarIcon(QAction *qAction)
+{
+  qAction->removeFrom(mPluginToolBar);
+}
 // slot to update the progress bar in the status bar
 void QgisApp::showProgress(int theProgress, int theTotalSteps)
 {

@@ -78,6 +78,8 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
     QgisApp *qgisMainWindow;
     //! Pointer to the QGIS interface object
     QgisIface *qI;
+    //! Pointer to the QAction used in the menu and on the toolbar
+    QAction *spitAction;
 };
 
 #endif

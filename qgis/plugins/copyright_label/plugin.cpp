@@ -101,7 +101,7 @@ void Plugin::initGui()
 
   menuIdInt = qGisInterface->addMenu("&Decorations", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // This calls the north arrow renderer everytime the cnavas has drawn itself
@@ -208,7 +208,8 @@ void Plugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  qGisInterface->removeToolBarIcon(myQActionPointer);
+  delete myQActionPointer;
 }
 
 

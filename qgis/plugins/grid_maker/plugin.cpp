@@ -114,7 +114,7 @@ void Plugin::initGui()
 
   menuIdInt = qGisInterface->addMenu("&Graticules", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Graticule Creator", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Graticule Creator", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
 
@@ -155,7 +155,8 @@ void Plugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  qGisInterface->removeToolBarIcon(myQActionPointer);
+  delete myQActionPointer;
 }
 /** 
  * Required extern functions needed  for every plugin 
