@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.30 2004/03/06 03:37:11 timlinux Exp
+ChangeLog,v 1.31 2004/03/06 11:58:19 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-06 [ts] 0.1.0devel6
+** Save state of plugins in ~/.qt/qtrc file (in progress). State is saved,
+   just need to implement code to load plugins marked as active during
+   application startup.
 
 2004-03-06 [ts] 0.1.0devel6
 ** Added QgsRasterLayer::filterLayer which gets called near the end of each of
