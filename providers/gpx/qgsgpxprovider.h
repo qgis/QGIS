@@ -178,12 +178,17 @@ public:
   
  private:
   
+  /** Internal function used by the other getNextFeature() functions. */
+  bool getNextFeature(QgsFeature* feature, std::list<int>& attlist,
+		      bool getnotcommitted);
+
   bool mEditable;
   std::vector<GPSObject*> mAddedFeatures;
   GPSData* data;
   void fillMinMaxCash();
   //! Fields
   std::vector<QgsField> attributeFields;
+  std::list<int> mAllAttributes;
   //! Map to store field position by name
   std::map<QString, int> fieldPositions;
   QString mDataSourceUri;

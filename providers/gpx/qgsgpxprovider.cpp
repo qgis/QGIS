@@ -70,11 +70,15 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
   attributeFields.push_back(QgsField(attr[NameAttr], "text"));
   if (mFeatureType == WaypointType) {
     mGeomType = 1;
+    for (int i = 0; i < 8; ++i)
+      mAllAttributes.push_back(i);
     attributeFields.push_back(QgsField(attr[EleAttr], "text"));
     attributeFields.push_back(QgsField(attr[SymAttr], "text"));
   }
   else if (mFeatureType == RouteType || mFeatureType == TrackType) {
     mGeomType = 2;
+    for (int i = 0; i < 8; ++i)
+      mAllAttributes.push_back(7);
     attributeFields.push_back(QgsField(attr[NumAttr], "text"));
   }
   attributeFields.push_back(QgsField(attr[CmtAttr], "text"));
@@ -136,161 +140,44 @@ bool QgsGPXProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes){
  * @return QgsFeature
  */
 QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
-  QgsFeature* result = 0;
-  
-  if (mFeatureType == WaypointType) {
-    // go through the list of waypoints and return the first one that is in
-    // the bounds rectangle
-    for (; mFid < data->getNumberOfWaypoints()+mAddedFeatures.size(); ++mFid) {
-      const Waypoint* wpt;
-      if (mFid < data->getNumberOfWaypoints())
-	wpt = &(data->getWaypoint(mFid));
-      else
-	wpt = dynamic_cast<Waypoint*>(mAddedFeatures[mFid - data->getNumberOfWaypoints()]);
-      
-      if (boundsCheck(wpt->lon, wpt->lat)) {
-	result = new QgsFeature(mFid);
-	
-	// some wkb voodoo
-	char* geo = new char[21];
-	std::memset(geo, 0, 21);
-	geo[0] = endian();
-	geo[1] = 1;
-	std::memcpy(geo+5, &wpt->lon, sizeof(double));
-	std::memcpy(geo+13, &wpt->lat, sizeof(double));
-	result->setGeometry((unsigned char *)geo, sizeof(wkbPoint));
-	result->setValid(true);
-
-	// add attributes if they are wanted
-	if (fetchAttributes) {
-	  result->addAttribute(attr[NameAttr], wpt->name);
-	  if (wpt->ele == -std::numeric_limits<double>::max())
-	    result->addAttribute(attr[EleAttr], "");
-	  else
-	    result->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
-	  result->addAttribute(attr[SymAttr], wpt->sym);
-	  result->addAttribute(attr[CmtAttr], wpt->cmt);
-	  result->addAttribute(attr[DscAttr], wpt->desc);
-	  result->addAttribute(attr[SrcAttr], wpt->src);
-	  result->addAttribute(attr[URLAttr], wpt->url);
-	  result->addAttribute(attr[URLNameAttr], wpt->urlname);
-	}
-	
-	++mFid;
-	break;
-      }
-    }
+  QgsFeature* feature = new QgsFeature(-1);
+  bool success;
+  if (fetchAttributes)
+    success = getNextFeature(feature, mAllAttributes, false);
+  else {
+    std::list<int> emptyList;
+    success = getNextFeature(feature, emptyList, false);
   }
-  
-  else if (mFeatureType == RouteType) {
-    // go through the routes and return the first one that is in the bounds
-    // rectangle
-    for (; mFid < data->getNumberOfRoutes(); ++mFid) {
-      const Route& rte(data->getRoute(mFid));
-      if (rte.points.size() == 0)
-	continue;
-      const Routepoint& rtept(rte.points[0]);
-      const QgsRect& b(*mSelectionRectangle);
-      if ((rte.xMax >= b.xMin()) && (rte.xMin <= b.xMax()) &&
-	  (rte.yMax >= b.yMin()) && (rte.yMin <= b.yMax())) {
-	result = new QgsFeature(mFid);
-	
-	// some wkb voodoo
-	int nPoints = rte.points.size();
-	char* geo = new char[9 + 16 * nPoints];
-	std::memset(geo, 0, 9 + 16 * nPoints);
-	geo[0] = endian();
-	geo[1] = 2;
-	std::memcpy(geo + 5, &nPoints, 4);
-	for (int i = 0; i < rte.points.size(); ++i) {
-	  std::memcpy(geo + 9 + 16 * i, &rte.points[i].lon, sizeof(double));
-	  std::memcpy(geo + 9 + 16 * i + 8, &rte.points[i].lat, sizeof(double));
-	}
-	result->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
-	result->setValid(true);
-	
-	// add attributes if they are wanted
-	if (fetchAttributes) {
-	  result->addAttribute(attr[NameAttr], rte.name);
-	  if (rte.number == std::numeric_limits<int>::max())
-	    result->addAttribute(attr[NumAttr], "");
-	  else
-	    result->addAttribute(attr[NumAttr], QString("%1").arg(rte.number));
-	  result->addAttribute(attr[CmtAttr], rte.cmt);
-	  result->addAttribute(attr[DscAttr], rte.desc);
-	  result->addAttribute(attr[SrcAttr], rte.src);
-	  result->addAttribute(attr[URLAttr], rte.url);
-	  result->addAttribute(attr[URLNameAttr], rte.urlname);
-	}
-	
-	++mFid;
-	break;
-      }
-    }
-  }
-  
-  else if (mFeatureType == TrackType) {
-    // go through the tracks and return the first one that is in the bounds
-    // rectangle
-    for (; mFid < data->getNumberOfTracks(); ++mFid) {
-      const Track& trk(data->getTrack(mFid));
-      if (trk.segments.size() == 0)
-	continue;
-      if (trk.segments[0].points.size() == 0)
-	continue;
-      const Trackpoint& trkpt(trk.segments[0].points[0]);
-      const QgsRect& b(*mSelectionRectangle);
-      if ((trk.xMax >= b.xMin()) && (trk.xMin <= b.xMax()) &&
-	  (trk.yMax >= b.yMin()) && (trk.yMin <= b.yMax())) {
-	result = new QgsFeature(mFid);
-	
-	// some wkb voodoo
-	int nPoints = trk.segments[0].points.size();
-	char* geo = new char[9 + 16 * nPoints];
-	std::memset(geo, 0, 9 + 16 * nPoints);
-	geo[0] = endian();
-	geo[1] = 2;
-	std::memcpy(geo + 5, &nPoints, 4);
-	for (int i = 0; i < nPoints; ++i) {
-	  std::memcpy(geo + 9 + 16 * i, &trk.segments[0].points[i].lon, sizeof(double));
-	  std::memcpy(geo + 9 + 16 * i + 8, &trk.segments[0].points[i].lat, sizeof(double));
-	}
-	result->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
-	result->setValid(true);
-	
-	// add attributes if they are wanted
-	if (fetchAttributes) {
-	  result->addAttribute(attr[NameAttr], trk.name);
-	  if (trk.number == std::numeric_limits<int>::max())
-	    result->addAttribute(attr[NumAttr], "");
-	  else
-	    result->addAttribute(attr[NumAttr], QString("%1").arg(trk.number));
-	  result->addAttribute(attr[CmtAttr], trk.cmt);
-	  result->addAttribute(attr[DscAttr], trk.desc);
-	  result->addAttribute(attr[SrcAttr], trk.src);
-	  result->addAttribute(attr[URLAttr], trk.url);
-	  result->addAttribute(attr[URLNameAttr], trk.urlname);
-	}
-	
-	++mFid;
-	break;
-      }
-    }
-  }
-  
-  return result;
+  if (success)
+    return feature;
+  delete feature;
+  return NULL;
 }
 
 
-QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited) {
-  QgsFeature* result = 0;
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, 
+					    bool getnotcommited) {
+  QgsFeature* feature = new QgsFeature(-1);
+  bool success = getNextFeature(feature, attlist, getnotcommited);
+  if (success)
+    return feature;
+  delete feature;
+  return NULL;
+}
+
+
+bool QgsGPXProvider::getNextFeature(QgsFeature* feature, 
+				    std::list<int>& attlist,
+				    bool getnotcommitted) {
+  bool result = false;
+  
   std::list<int>::const_iterator iter;
   
   if (mFeatureType == WaypointType) {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
     int maxFid = data->getNumberOfWaypoints() +
-      (getnotcommited ? mAddedFeatures.size() : 0);
+      (getnotcommitted ? mAddedFeatures.size() : 0);
     
     for (; mFid < maxFid; ++mFid) {
       const Waypoint* wpt;
@@ -301,7 +188,8 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	  (mAddedFeatures[mFid - data->getNumberOfWaypoints()]);
       }
       if (boundsCheck(wpt->lon, wpt->lat)) {
-	result = new QgsFeature(mFid);
+	feature->setFeatureId(mFid);
+	result = true;
 	
 	// some wkb voodoo
 	char* geo = new char[21];
@@ -310,38 +198,38 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	geo[1] = 1;
 	std::memcpy(geo+5, &wpt->lon, sizeof(double));
 	std::memcpy(geo+13, &wpt->lat, sizeof(double));
-	result->setGeometry((unsigned char *)geo, sizeof(wkbPoint));
-	result->setValid(true);
+	feature->setGeometry((unsigned char *)geo, sizeof(wkbPoint));
+	feature->setValid(true);
 	
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  switch (*iter) {
 	  case 0:
-	    result->addAttribute(attr[NameAttr], wpt->name);
+	    feature->addAttribute(attr[NameAttr], wpt->name);
 	    break;
 	  case 1:
 	    if (wpt->ele == -std::numeric_limits<double>::max())
-	      result->addAttribute(attr[EleAttr], "");
+	      feature->addAttribute(attr[EleAttr], "");
 	    else
-	      result->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
+	      feature->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
 	    break;
 	  case 2:
-	    result->addAttribute(attr[SymAttr], wpt->sym);
+	    feature->addAttribute(attr[SymAttr], wpt->sym);
 	    break;
 	  case 3:
-	    result->addAttribute(attr[CmtAttr], wpt->cmt);
+	    feature->addAttribute(attr[CmtAttr], wpt->cmt);
 	    break;
 	  case 4:
-	    result->addAttribute(attr[DscAttr], wpt->desc);
+	    feature->addAttribute(attr[DscAttr], wpt->desc);
 	    break;
 	  case 5:
-	    result->addAttribute(attr[SrcAttr], wpt->src);
+	    feature->addAttribute(attr[SrcAttr], wpt->src);
 	    break;
 	  case 6:
-	    result->addAttribute(attr[URLAttr], wpt->url);
+	    feature->addAttribute(attr[URLAttr], wpt->url);
 	    break;
 	  case 7:
-	    result->addAttribute(attr[URLNameAttr], wpt->urlname);
+	    feature->addAttribute(attr[URLNameAttr], wpt->urlname);
 	    break;
 	  }
 	}
@@ -356,7 +244,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
     // go through the routes and return the first one that is in the bounds
     // rectangle
     int maxFid = data->getNumberOfRoutes() +
-      (getnotcommited ? mAddedFeatures.size() : 0);
+      (getnotcommitted ? mAddedFeatures.size() : 0);
     for (; mFid < maxFid; ++mFid) {
       const Route* rte;
       if (mFid < data->getNumberOfRoutes())
@@ -372,7 +260,8 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
       const QgsRect& b(*mSelectionRectangle);
       if ((rte->xMax >= b.xMin()) && (rte->xMin <= b.xMax()) &&
 	  (rte->yMax >= b.yMin()) && (rte->yMin <= b.yMax())) {
-	result = new QgsFeature(mFid);
+	feature->setFeatureId(mFid);
+	result = true;
 	
 	// some wkb voodoo
 	int nPoints = rte->points.size();
@@ -385,29 +274,29 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	  std::memcpy(geo + 9 + 16 * i, &rte->points[i].lon, sizeof(double));
 	  std::memcpy(geo + 9 + 16 * i + 8, &rte->points[i].lat, sizeof(double));
 	}
-	result->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
-	result->setValid(true);
+	feature->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
+	feature->setValid(true);
 	
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
-	    result->addAttribute(attr[NameAttr], rte->name);
+	    feature->addAttribute(attr[NameAttr], rte->name);
 	  else if (*iter == 1) {
 	    if (rte->number == std::numeric_limits<int>::max())
-	      result->addAttribute(attr[NumAttr], "");
+	      feature->addAttribute(attr[NumAttr], "");
 	    else
-	      result->addAttribute(attr[NumAttr], QString("%1").arg(rte->number));
+	      feature->addAttribute(attr[NumAttr], QString("%1").arg(rte->number));
 	  }
 	  else if (*iter == 2)
-	    result->addAttribute(attr[CmtAttr], rte->url);
+	    feature->addAttribute(attr[CmtAttr], rte->cmt);
 	  else if (*iter == 3)
-	    result->addAttribute(attr[DscAttr], rte->url);
+	    feature->addAttribute(attr[DscAttr], rte->desc);
 	  else if (*iter == 4)
-	    result->addAttribute(attr[SrcAttr], rte->url);
+	    feature->addAttribute(attr[SrcAttr], rte->src);
 	  else if (*iter == 5)
-	    result->addAttribute(attr[URLAttr], rte->url);
+	    feature->addAttribute(attr[URLAttr], rte->url);
 	  else if (*iter == 6)
-	    result->addAttribute(attr[URLNameAttr], rte->url);
+	    feature->addAttribute(attr[URLNameAttr], rte->urlname);
 	}
 	
 	++mFid;
@@ -420,7 +309,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
     // go through the tracks and return the first one that is in the bounds
     // rectangle
     int maxFid = data->getNumberOfTracks() +
-      (getnotcommited ? mAddedFeatures.size() : 0);
+      (getnotcommitted ? mAddedFeatures.size() : 0);
     for (; mFid < maxFid; ++mFid) {
       const Track* trk;
       if (mFid < data->getNumberOfTracks())
@@ -438,7 +327,8 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
       const QgsRect& b(*mSelectionRectangle);
       if ((trk->xMax >= b.xMin()) && (trk->xMin <= b.xMax()) &&
 	  (trk->yMax >= b.yMin()) && (trk->yMin <= b.yMax())) {
-	result = new QgsFeature(mFid);
+	feature->setFeatureId(mFid);
+	result = true;
 	
 	// some wkb voodoo
 	int nPoints = trk->segments[0].points.size();
@@ -451,29 +341,29 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	  std::memcpy(geo + 9 + 16 * i, &trk->segments[0].points[i].lon, sizeof(double));
 	  std::memcpy(geo + 9 + 16 * i + 8, &trk->segments[0].points[i].lat, sizeof(double));
 	}
-	result->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
-	result->setValid(true);
+	feature->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
+	feature->setValid(true);
 	
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
-	    result->addAttribute(attr[NameAttr], trk->name);
+	    feature->addAttribute(attr[NameAttr], trk->name);
 	  else if (*iter == 1) {
 	    if (trk->number == std::numeric_limits<int>::max())
-	      result->addAttribute(attr[NumAttr], "");
+	      feature->addAttribute(attr[NumAttr], "");
 	    else
-	      result->addAttribute(attr[NumAttr], QString("%1").arg(trk->number));
+	      feature->addAttribute(attr[NumAttr], QString("%1").arg(trk->number));
 	  }
 	  else if (*iter == 2)
-	    result->addAttribute(attr[CmtAttr], trk->cmt);
+	    feature->addAttribute(attr[CmtAttr], trk->cmt);
 	  else if (*iter == 3)
-	    result->addAttribute(attr[DscAttr], trk->desc);
+	    feature->addAttribute(attr[DscAttr], trk->desc);
 	  else if (*iter == 4)
-	    result->addAttribute(attr[SrcAttr], trk->src);
+	    feature->addAttribute(attr[SrcAttr], trk->src);
 	  else if (*iter == 5)
-	    result->addAttribute(attr[URLAttr], trk->url);
+	    feature->addAttribute(attr[URLAttr], trk->url);
 	  else if (*iter == 6)
-	    result->addAttribute(attr[URLNameAttr], trk->urlname);
+	    feature->addAttribute(attr[URLNameAttr], trk->urlname);
 	}
 	
 	++mFid;
