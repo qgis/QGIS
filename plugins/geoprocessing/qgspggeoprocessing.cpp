@@ -42,7 +42,7 @@ extern "C"
 #include <libpq-fe.h>
 }
 // xpm for creating the toolbar icon
-//#include "matrix1.xpm"
+#include "icon_buffer.xpm"
 
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -101,7 +101,17 @@ void QgsPgGeoprocessing::initGui()
     menu = ((QMainWindow *) qgisMainWindow)->menuBar();
 
     menuId = menu->insertItem("&Geoprocessing", pluginMenu);
-
+     // Create the action for tool
+    QAction *bufferAction = new QAction("Buffer features", QIconSet(icon_buffer), "&Buffer",
+                                              0, this, "buffer");
+    // Connect the action to the zoomPrevous slot
+    connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
+    // Add the toolbar
+    toolBar = new QToolBar((QMainWindow *) qgisMainWindow, "geoprocessing");
+    toolBar->setLabel("PostgreSQL/PostGIS Geoprocessing");
+    // Add the zoom previous tool to the toolbar
+    bufferAction->addTo(toolBar);
+    
 
 }
 
@@ -305,6 +315,7 @@ void QgsPgGeoprocessing::unload()
 {
     // remove the GUI
     menu->removeItem(menuId);
+    delete toolBar;
 }
 
 /** 
