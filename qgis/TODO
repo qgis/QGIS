@@ -1,4 +1,4 @@
-TODO,v 1.14 2004/02/06 06:55:14 timlinux Exp
+TODO,v 1.15 2004/02/12 21:30:22 mcoletti Exp
 TODO List for getting to version 0.1 (in no order of importance)
  1. [Raster Done TS] Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
     needing attention are customized raster settings and symbology for vector
@@ -14,7 +14,7 @@ TODO List for getting to version 0.1 (in no order of importance)
     selected in the legend)
  6. SPIT integration needs to be completed. The libpq++ dependency must be
     removed and the current open bugs (sf.net) need to be resolved.
- 7. Adjust the open dialog for "shapefiles" to allow other formats supported
+ 7. [DONE (MAC)] Adjust the open dialog for "shapefiles" to allow other formats supported
     by OGR.
  8. [DONE (TS)] Move the "All rasters" filter to the top of the rasters 
     open dialog. 
