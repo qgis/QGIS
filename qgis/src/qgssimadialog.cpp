@@ -46,13 +46,14 @@ QgsSiMaDialog::~QgsSiMaDialog()
 void QgsSiMaDialog::apply()
 {
     qWarning("in QgsSiMaDialog::apply()");
-    QgsMarkerSymbol ms;
+    QgsMarkerSymbol* ms= new QgsMarkerSymbol();
     QString string(mImageButton->name());
     qWarning(string);
-    ms.setPicture(string);
-    ms.setScaleFactor(mScaleEdit->text().toDouble());
+    ms->setPicture(string);
+    ms->setScaleFactor(mScaleEdit->text().toDouble());
 
-    QgsRenderItem ri(ms,"","");
+    QgsRenderItem* ri = new QgsRenderItem();
+    ri->setSymbol(ms);
 
     QgsSiMaRenderer *renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->renderer());
     

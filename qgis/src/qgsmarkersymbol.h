@@ -36,12 +36,12 @@ class QgsMarkerSymbol : public QgsSymbol
     /**Sets the scale factor*/
     void setScaleFactor(double factor);
     /**Returns a pointer to the picture object*/
-    QPicture* picture();
+    const QString& picture() const;
     /**Returns the scale factor*/
     double scaleFactor();
  protected:
-    /**QPicture object storing the QPainter commands*/
-    QPicture mPicture;
+    /**Path to the SVG image*/
+    QString mSvgPath;
     /**Scale factor. 1 keeps the size as it is, 2 doubles the size, etc.*/
     double mScaleFactor;
 };
@@ -61,9 +61,9 @@ inline void QgsMarkerSymbol::setScaleFactor(double factor)
     mScaleFactor=factor;
 }
 
-inline QPicture* QgsMarkerSymbol::picture()
+inline const QString& QgsMarkerSymbol::picture() const
 {
-    return &mPicture;
+    return mSvgPath;
 }
 
 inline double QgsMarkerSymbol::scaleFactor()
