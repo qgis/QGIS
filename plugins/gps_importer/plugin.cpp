@@ -133,6 +133,15 @@ void Plugin::run()
 {
   // find all GPX layers
   std::vector<QgsVectorLayer*> gpxLayers;
+  std::map<QString, QgsMapLayer*>::const_iterator iter;
+  for (iter = qGisInterface->getLayerRegistry()->mapLayers().begin();
+       iter != qGisInterface->getLayerRegistry()->mapLayers().end(); ++iter) {
+    if (iter->second->type() == QgsMapLayer::VECTOR) {
+      QgsVectorLayer* vectorLayer =dynamic_cast<QgsVectorLayer*>(iter->second);
+      if (vectorLayer->providerType() == "gpx")
+	gpxLayers.push_back(vectorLayer);
+    }
+  }
   
   PluginGui *myPluginGui=new PluginGui(gpxLayers, qgisMainWindowPointer, "GPS Tools", true, 0);
   //listen for when the layer has been made so we can draw it
