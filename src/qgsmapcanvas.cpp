@@ -74,12 +74,14 @@
 
 #include "qgis.h"
 #include "qgsrect.h"
+#include "qgsacetatelines.h"
 #include "qgsacetaterectangle.h"
 #include "qgsattributedialog.h"
 #include "qgsmaptopixel.h"
 #include "qgsfeature.h"
 #include "qgslegend.h"
 #include "qgslegenditem.h"
+#include "qgsline.h"
 #include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerinterface.h"
@@ -526,6 +528,32 @@ void QgsMapCanvas::addAcetateObject(QString key, QgsAcetateObject *obj)
     }
 
     mCanvasProperties->acetateObjects[key] = obj;
+}
+
+void QgsMapCanvas::removeAcetateObject(const QString& key)
+{
+    std::map< QString, QgsAcetateObject *>::iterator it=mCanvasProperties->acetateObjects.find(key);
+    if(it!=mCanvasProperties->acetateObjects.end())
+    {
+	QgsAcetateObject* toremove=it->second;
+	mCanvasProperties->acetateObjects.erase(it->first);
+	delete toremove;
+    }
+}
+
+void QgsMapCanvas::removeEditingAcetates()
+{
+    for(std::map<QString,QgsAcetateObject*>::iterator it=mCanvasProperties->acetateObjects.begin();
+	it!=mCanvasProperties->acetateObjects.end();++it)
+    {
+	if(it->first.contains("_##digit##ac")>0)
+	{
+	   QgsAcetateObject* toremove=it->second;
+	   mCanvasProperties->acetateObjects.erase(it->first);
+	   delete toremove; 
+	}
+    }
+    mCaptureList.clear();
 }
 
 QgsMapLayer *QgsMapCanvas::getZpos(int idx)
@@ -1344,6 +1372,16 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
             paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
                 e->x(),e->y());
+	    //draw it to an acetate layer
+	    QgsPoint p1=*it;
+	    QgsPoint p2=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+	    QgsLine line(p1,p2);
+	    QgsAcetateLines* acetate=new QgsAcetateLines();
+	    acetate->add(line);
+	    addAcetateObject(vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()),acetate);
+#ifdef QGISDEBUG
+	    qWarning("adding "+vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()));
+#endif
           }
           if(e->button()==Qt::RightButton)
           {
@@ -1417,7 +1455,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             }
 
             vlayer->addFeature(f);
-            mCaptureList.clear();
+
+	    //delete the acetate objects and the elements of mCaptureList
+	    removeEditingAcetates();
             refresh();
 
           }
@@ -1542,7 +1582,6 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 void QgsMapCanvas::setMapTool(int tool)
 {
   mCanvasProperties->mapTool = tool;
-  mCaptureList.clear();
 } // setMapTool
 
 

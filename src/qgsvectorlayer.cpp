@@ -101,9 +101,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       setDataProvider( providerKey );
   }
 
-  //TODO - fix selection code that formerly used
-  //       a boolean vector and set every entry to false
-
   //draw the selected features in yellow
   selectionColor.setRgb(255, 255, 0);
 
@@ -788,8 +785,11 @@ void QgsVectorLayer::select(int number)
 
       popMenu->insertSeparator(); // XXX should this move to QgsMapLayer::initContextMenu()?
 
-      popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
-      popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
+      if(dataProvider->supportsFeatureAddition())
+      {
+	  popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
+	  popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
+      }
 
       // XXX Can we ask the provider if it wants to add things to the context menu?
       if(dataProvider->supportsSaveAsShapefile())
