@@ -21,6 +21,7 @@
 #include <qfont.h>
 #include "qgsattributetable.h"
 #include <iostream>
+#include <stdlib.h>
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false),
 sort_ascending(true)
