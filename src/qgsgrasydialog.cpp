@@ -68,8 +68,6 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
       return;
     }
 
-  setSizeGripEnabled(true);
-
   modeComboBox->insertItem("Empty");
   modeComboBox->insertItem("Equal Interval");
 

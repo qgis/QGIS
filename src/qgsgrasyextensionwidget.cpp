@@ -202,7 +202,8 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
         }
     }
 
-  resizeContents(200,200);
+  resizeContents(200,50*(m_numberofclasses+1));
+  updateContents();
   
 }
 
