@@ -3,6 +3,11 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-20 [timlinux] 0.5.0devel28
+** Added the capability to interrupt the rendering of the currently drawing map
+layer by pressing the escape key. Repeat and rinse to interrupt drawing of all
+vector layers. Not implemented for raster layers yet.
+
 2004-11-11 [gsherman] 0.5.0devel27
 ** First pass at a PostgreSQL query builder. This is not entirely
 	 functional yet. Fields for a table are displayed and sample or all
