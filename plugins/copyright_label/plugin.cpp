@@ -108,7 +108,7 @@ void Plugin::initGui()
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
   //this resets this plugin up if a project is loaded
   connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
-  
+
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
   //initialise default values in the gui
@@ -117,8 +117,9 @@ void Plugin::initGui()
 
 void Plugin::projectRead()
 {
-  std::cout << "Copyright plugin - project read slot called...." << std::endl;
+  std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
   //default text to start with - try to fetch it from qgsproject
+  /*
   QgsProject::Properties myProperties = QgsProject::instance()->properties("CopyrightLabel");
   for ( QgsProject::Properties::const_iterator i = myProperties.begin();
           i != myProperties.end();
@@ -148,11 +149,11 @@ void Plugin::projectRead()
         }
         // todo - store state of font color
     }
-   
-  if (mLabelQString.isEmpty()) mLabelQString = QString(" QGIS 2004");
+*/
+  if (mLabelQString.isEmpty()) mLabelQString = QString("QGIS 2004");
   if (mQFont.family().isEmpty()) mQFont = QFont("times", 12, QFont::Bold);
   if (mPlacement.isEmpty()) mPlacement=tr("Bottom Right");
-  
+
   //todo - read from settings file
   mLabelQColor = QColor(Qt::black);
 
@@ -252,43 +253,55 @@ void Plugin::unload()
   delete myQActionPointer;
 }
 
+void Plugin::writeEntry(QString theScope, QString theProperty, QVariant theValue)
+{
+  std::cout << "Copyright Plugin WriteEntry called ------------------" << std::endl;
+    /*
+    QgsProject::Properties myProperties = QgsProject::instance()->properties(theScope);
+    for ( QgsProject::Properties::iterator i = myProperties.begin();
+          i != myProperties.end();
+          ++i )
+     {
+        qDebug( "Writentry (%s : %s) match test for : %s -> %s",theProperty,theValue.asString(), (*i).first.ascii(), (*i).second.toString().ascii() );
+        QString myCurrentKeyString = (*i).first;
+        if ( theProperty == myCurrentKeyString )
+        {
+          (*i).second=theValue;
+          std::cout << "WriteEntry done by replacement" << std::endl;
+          return;
+        }
+     }
+     //property does not already exist in scope so append it....
+     myProperties.append(QgsProject::PropertyValue(theProperty,theValue ) );
+     std::cout << "WriteEntry done done by appendage" << std::endl;
+     std::cout <<  "Writentry " << theProperty << ", " << theValue.asString() << " in " << theScope <<std::endl;
+*/
+}
 
   //! change the copyright font
   void Plugin::setFont(QFont theQFont)
   {
     mQFont = theQFont;
     //save state to the project file.....
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("FontName", 
-          theQFont.family() ) ); 
+    writeEntry("CopyrightLabel","FontName",theQFont.family());
     //save state to the project file.....
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("FontSize", 
-          theQFont.pointSize() ) ); 
+    writeEntry("CopyrightLabel","FontSize", theQFont.pointSize()  );
     refreshCanvas();
   }
   //! change the copyright text
   void Plugin::setLabel(QString theLabelQString)
   {
     mLabelQString = theLabelQString;
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("Label", 
-          mLabelQString ) ); 
+    writeEntry("CopyrightLabel","Label", mLabelQString  );
     refreshCanvas();
   }
   //! change the copyright text colour
   void Plugin::setColor(QColor theQColor)
   {
     mLabelQColor = theQColor;
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("ColorRedPart", 
-          mLabelQColor.red() ) ); 
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("ColorGreenPart", 
-          mLabelQColor.green() ) ); 
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("ColorBluePart", 
-          mLabelQColor.blue() ) ); 
+    writeEntry("CopyrightLabel","ColorRedPart", mLabelQColor.red());
+    writeEntry("CopyrightLabel","ColorGreenPart", mLabelQColor.green());
+    writeEntry("CopyrightLabel","ColorBluePart", mLabelQColor.blue());
     refreshCanvas();
   }
 
@@ -296,9 +309,7 @@ void Plugin::unload()
   void Plugin::setPlacement(QString theQString)
   {
     mPlacement = theQString;
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("Placement", 
-          mPlacement ) ); 
+    writeEntry("CopyrightLabel","Placement", mPlacement);
     refreshCanvas();
   }
 
@@ -306,9 +317,7 @@ void Plugin::unload()
   void Plugin::setEnable(bool theBool)
   {
     mEnable = theBool;
-    QgsProject::instance()->properties("CopyrightLabel").append
-        ( QgsProject::PropertyValue("Enabled", 
-          mEnable ) ); 
+    writeEntry("CopyrightLabel","Enabled", mEnable );
     refreshCanvas();
   }
 

@@ -43,6 +43,7 @@ class Plugin:public QObject, public QgisPlugin
       Plugin(QgisApp * , QgisIface * );
   //! Destructor
   virtual ~ Plugin();
+  void writeEntry(QString theScope, QString theProperty, QVariant theValue);
   public slots:
   //! init the gui
   void initGui();
