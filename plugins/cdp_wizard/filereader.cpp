@@ -14,6 +14,7 @@ FileReader::FileReader(QString theFileNameString)
 #ifdef QGISDEBUG
     std::cout << "FileReader::FileReader(QString theFileNameString)" << std::endl;
 #endif
+
     openFile(theFileNameString);
     taskProgressInt=0;
 }
@@ -599,364 +600,186 @@ bool FileReader::setStartMonth( const int theNewVal)
         //get the QFile::Offset of the month
 
         QFile::Offset myOffset = dataBlockMarkersVector[theNewVal-1];
-
         setDataStartOffset(myOffset);
-
         moveToDataStart();
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
 
 }
-
-/** Read property of int headerLinesInt. */
 
 const int FileReader::getHeaderLines()
 {
-
     return headerLinesInt;
-
 }
-
-/** Write property of int headerLinesInt. */
 
 bool FileReader::setHeaderLines( const int theNewVal)
 {
-
     try
-
     {
-
         headerLinesInt = theNewVal;
-
         return true;
-
     }
 
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-/** Read property of long columnsPerRowLong. */
-
+/** @note - I'd like to get of 'columns per row' type functionality if possible */
 const long FileReader::getColumnsPerRow()
 {
-
     return columnsPerRowLong;
-
 }
-
-/** Write property of long columnsPerRowLong. */
 
 bool FileReader::setColumnsPerRow( const long theNewVal)
 {
-
     try
-
     {
-
         columnsPerRowLong = theNewVal;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-/** Read property of long currentColLong. */
 
 const long FileReader::getCurrentCol()
 {
-
     return currentColLong;
-
 }
-
-/** Write property of long currentColLong. */
 
 bool FileReader::setCurrentCol( const long theNewVal)
 {
-
     try
-
     {
-
         currentColLong = theNewVal;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-/** Read property of long currentRowLong. */
 
 const long FileReader::getCurrentRow()
 {
-
     return currentRowLong;
-
 }
-
-/** Write property of long currentRowLong. */
 
 bool FileReader::setCurrentRow( const long theNewVal)
 {
-
     try
 
     {
-
         currentRowLong = theNewVal;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-/** Read property of long currentElementLong. This is the position, not value of the the current element*/
 
 const long FileReader::getCurrentElement()
 {
-
     return currentElementLong;
-
 }
-
-/** Write property of long currentElementLong. */
-
+/** @todo remove this method!
+    @note this method is deprecated - use file writer! */
 bool FileReader::setCurrentElement( const long theNewVal)
 {
-
     try
-
     {
-
         currentElementLong = theNewVal;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-
-
-
-
-/** Read property of FILE *filePointer. */
 
 const QFile* FileReader::getFilePointer()
 {
-
     return filePointer;
-
 }
-
-/** Write property of FILE *filePointer. Make sure the file was opened in binary mode*/
 
 bool FileReader::setFilePointer( QFile* theNewVal)
 {
-
     try
-
     {
-
         //close any currently opened filepointer
-
         //if (filePointer) fclose(filePointer);
-
         filePointer = theNewVal;
-
         currentColLong=0;
-
         currentRowLong=1;
-
         currentElementLong=0;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
 }
-
-/** Read property of int monthHeaderLinesInt. */
 
 const int FileReader::getMonthHeaderLinesInt()
 {
-
     return monthHeaderLinesInt;
-
 }
-
-/** Write property of int monthHeaderLinesInt. */
 
 bool FileReader::setMonthHeaderLinesInt( const int theNewVal)
-
 {
-
     try
-
     {
-
         monthHeaderLinesInt = theNewVal;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
 }
-
-
-
-/** Return the various metadata stored for the open file. */
 
 QString FileReader::getFileReaderInfo()
-
 {
-
     QString myMetadataString = "";
-
-
-
-
-
-
-
     return myMetadataString;
-
 }
-
-/** Read property of QFile::Offset headerPos. */
 
 const QFile::Offset FileReader::getHeaderOffset()
 {
-
     return headerOffset;
-
 }
-
-/** Write property of QFile::Offset headerPos. */
 
 bool FileReader::setHeaderOffset( QFile::Offset theNewVal)
 {
-
     try
-
     {
-
         headerOffset = theNewVal;
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-/** Read property of QFile::Offset dataStartOffset. */
 
 const QFile::Offset FileReader::getDataStartOffset()
 {
-
     return dataStartOffset;
-
-
-
 }
-
-
-
-/** Write property of QFile::Offset dataStartOffset. */
 
 bool FileReader::setDataStartOffset( QFile::Offset theNewVal)
 {
     try
     {
         dataStartOffset = theNewVal;
+
         return true;
     }
     catch (...)
@@ -964,61 +787,32 @@ bool FileReader::setDataStartOffset( QFile::Offset theNewVal)
         return false;
     }
 }
-
-/** Move the internal file pointer to the start of the file header. */
 
 bool FileReader::moveToHeader()
 {
-
     try
-
     {
-
         headerOffset=filePointer->at();
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
-
-
-
-/** Move the internal file pointer to the start of the current file data block. */
 
 bool FileReader::moveToDataStart()
 {
-
     try
-
     {
-
-
-
+        filePointer->at(dataStartOffset);
         headerOffset=filePointer->at();
-
         currentElementLong=0;
-
         currentColLong = 0;
-
         currentRowLong=1;
-
         endOfMatrixFlag=false;
-
         return true;
-
     }
-
     catch (...)
     {
         return false;
@@ -1051,36 +845,39 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
     std::cout << "Looking for block markers file : " << myBmrFileName << std::endl;
     if (QFile::exists(myBmrFileName))
     {
-      QFile myBmrFile( myBmrFileName );
-      if ( !myBmrFile.open( IO_ReadOnly | IO_Translate) )
-      {
-          std::cerr << "Cannot open file : " << myBmrFileName << std::endl;
-      }
-      else if (forceFlag)
-      {
-          std::cerr << "Bmr file ignored - forceFlag is true " << std::endl;
-      }
-      else
-      {
-#ifdef QGISDEBUG
-        std::cout << "Opened block marker file : " << myBmrFileName << " successfully." << std::endl;
-#endif
-        // now open the text stream on the filereader
-        QTextStream myTextStream(&myBmrFile);
-        while (!myTextStream.eof())
+        QFile myBmrFile( myBmrFileName );
+        if ( !myBmrFile.open( IO_ReadOnly | IO_Translate) )
         {
-          myTextStream >> myFileOffset ;
-          dataBlockMarkersVector.push_back(myFileOffset);
+            std::cerr << "Cannot open file : " << myBmrFileName << " will reparse..." << std::endl;
         }
-        myBmrExistsFlag=true;
-        myBmrFile.close();
-      }
+        else if (forceFlag)
+        {
+            std::cerr << "Bmr file ignored - forceFlag is true " << std::endl;
+        }
+        else
+        {
+#ifdef QGISDEBUG
+            std::cout << "Opened block marker file : " << myBmrFileName << " successfully." << std::endl;
+#endif
+            // now open the text stream on the filereader
+            QTextStream myTextStream(&myBmrFile);
+            while (!myTextStream.eof())
+            {
+                myTextStream >> myFileOffset ;
+                dataBlockMarkersVector.push_back(myFileOffset);
+            }
+            myBmrExistsFlag=true;
+            myBmrFile.close();
+        }
     }
     if (myBmrExistsFlag)
     {
-      //no need to do any further parsing because we were able to
-      // get the cached bmrs from file
-      return dataBlockMarkersVector;
+        //for debugging purposes only!
+        printFirstCellInEachBlock();
+        //no need to do any further parsing because we were able to
+        // get the cached bmrs from file
+
+        return dataBlockMarkersVector;
     }
 
 
@@ -1098,10 +895,10 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
     else
     {
 #ifdef QGISDEBUG
-      std::cout << "Opened block marker file : " << myBmrFileName << " successfully." << std::endl;
+        std::cout << "Opened block marker file : " << myBmrFileName << " successfully." << std::endl;
 #endif
-      // now open the text stream on the filereader
-      myOuputTextStream.setDevice(&myBmrFile);
+        // now open the text stream on the filereader
+        myOuputTextStream.setDevice(&myBmrFile);
     }
 
     //if the datafile is a an arc/info grid file, there is only one data block
@@ -1129,8 +926,10 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
     //
 
 #ifdef QGISDEBUG
+
     std::cout << "FileReader::getBlockMarkers() - moving to the start of the file" << filePointer->name() << std::endl;
 #endif
+
     if (!filePointer->exists())
     {
         return false;
@@ -1146,13 +945,14 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
     //skip header lines at the top of the file
     for (int i=1; i <= headerLinesInt; i++)
     {
-         *textStream->readLine();
+        *textStream->readLine();
     }
     //Calculate number of rows in a month (depends on FileType)
     /** @todo Its going to better to avoid using colsPerRow
     /*  if possible and rather just read in in x * y elements */
     myMatrixRowsLong = ((xDimLong * yDimLong) / columnsPerRowLong);
 #ifdef QGISDEBUG
+
     std::cout << "FileReader::getBlockMarkers() - looping through rest of file with month header size of " << monthHeaderLinesInt << " lines and data block size of " << myMatrixRowsLong << " lines." << std::endl;
 #endif
     //loop through the rest of the file getting the start pos for each datablock
@@ -1169,8 +969,10 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
                 //read an impossibly long line - fgets will stop if it hits a newline
                 *textStream->readLine();
 #ifdef QGISDEBUG
+
                 std::cout << myLineQString;
 #endif
+
             }
         }
 #ifdef QGISDEBUG
@@ -1193,6 +995,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
 #ifdef QGISDEBUG
             //std::cout << myLineQString; //print out the first line of each datablock
 #endif
+
         }
         //calculate where we are in the file and update the progress member var
         myFileOffsetLong = filePointer->at();
@@ -1212,6 +1015,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
          */
         taskProgressInt = static_cast<int>(( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 );
 #ifdef QGISDEBUGNONONO
+
         std::cout << "Task Progress: " << ( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 << std::endl;
         std::cout << "Position " << myFileOffsetLong << "/" << myFileSizeLong << " ("
         << taskProgressInt << ") : ";
@@ -1221,17 +1025,23 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
         }
         std::cout << std::endl;
 #endif
+
     }
     while (!filePointer->atEnd()) ;
 #ifdef QGISDEBUG
+
     std::cout << "FileReader::getBlockMarkers() - read markers for " << dataBlockMarkersVector.size() << " data block(s)" << std::endl;
     std::cout << "FileReader::getBlockMarkers() - moving back to the start of the file" << std::endl;
 #endif
+
     filePointer->at(0);
 #ifdef QGISDEBUG
+
     std::cout << "FileReader::getBlockMarkers() - finished - returning vector of datablock start positions" << std::endl;
 #endif
+
     myBmrFile.close();
+
     return  dataBlockMarkersVector;
 }
 
@@ -1240,66 +1050,48 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
 bool FileReader::setBlockMarkers(QValueVector <QFile::Offset> theBlockMarkersVector)
 
 {
-
     if (theBlockMarkersVector.size()==0)
-
     {
-
 #ifdef QGISDEBUG
-
         std::cout << "setBlockMarkers() received empty vector!" << std::endl;
-
 #endif
 
         return false;
-
     }
-
     else
-
     {
-
         dataBlockMarkersVector.clear();
-
         QValueVector<QFile::Offset>::iterator myIterator = theBlockMarkersVector.begin();
-
         while (myIterator != theBlockMarkersVector.end())
-
         {
-
             dataBlockMarkersVector.push_back(*myIterator);
-
             myIterator++;
-
         }
-
-
-
     }
-
     //presume all went ok - need to add better error checking later
-
     return true;
-
 }
-
-
-
-/** Read property of int taskProgressInt. */
 
 const int FileReader::gettaskProgressInt()
 {
-
     return taskProgressInt;
-
 }
-
-/** Find out how many blocks (useful in multiblock formats such as SRES) are in this file. */
 
 int FileReader::getNumberOfBlocks()
 {
-
     return dataBlockMarkersVector.size();
-
 }
 
+void FileReader::printFirstCellInEachBlock()
+{
+    double myElementDouble=0;
+    QValueVector<QFile::Offset>::iterator myIterator = dataBlockMarkersVector.begin();
+    while (myIterator != dataBlockMarkersVector.end())
+    {
+        QFile::Offset myOffset = *myIterator;
+        filePointer->at(myOffset);
+        *textStream >> myElementDouble;
+        std::cout << "Offset " <<  myOffset << " -> Element Value " << myElementDouble << std::endl;
+        myIterator++;
+    }
+}

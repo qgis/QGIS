@@ -275,6 +275,13 @@ public:
   const int gettaskProgressInt();
   /** Find out how many blocks (useful in multiblock formats such as SRES) are in this file. */
   int getNumberOfBlocks();
+  /**
+  * A helper function to see if the block markers are correct.
+  * The value of each block marker plus its value at first element
+  * will be printed to console on std out.
+  * @return void - No return.
+  */
+  void printFirstCellInEachBlock();
 private:
   //
   //   Private attributes
@@ -319,7 +326,6 @@ private:
 
   /** The progress (as a percentage) of any task currently being executed. */
   int taskProgressInt;
-
 
 
 };
