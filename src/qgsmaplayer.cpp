@@ -24,13 +24,14 @@
 #include "qgsmaplayer.h"
 
 QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source)
-  :layerName(lyrname), layerType(type), dataSource(source), m_legendItem(0)
+  :internalName(lyrname), layerType(type), dataSource(source), m_legendItem(0)
 {
 	// assume the layer is valid (data source exists and can be used)
 	// until we learn otherwise
 	valid = true;
 	m_visible = true;
-	// create a default symbol
+	// Set the display name = internal name
+  layerName = internalName;
 
 	// Generate the unique ID of this layer
 	QDateTime dt = QDateTime::currentDateTime();
@@ -52,7 +53,7 @@ QString QgsMapLayer::getLayerID()
 }
 
 /** Write property of QString layerName. */
-void QgsMapLayer::setlayerName(const QString & _newVal)
+void QgsMapLayer::setLayerName(const QString & _newVal)
 {
 	layerName = _newVal;
 }
@@ -66,6 +67,10 @@ const QString QgsMapLayer::name()
 QString QgsMapLayer::source()
 {
 	return dataSource;
+}
+QString QgsMapLayer::sourceName()
+{
+  return internalName;
 }
 const QgsRect QgsMapLayer::extent()
 {
