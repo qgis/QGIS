@@ -87,6 +87,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 	QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
 	QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
 	QObject::connect(patternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
+	QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
     } 
     else
     {
@@ -105,6 +106,7 @@ void QgsSiSyDialog::selectOutlineColor()
 {
     lblOutlineColor->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
+    emit settingsChanged();
 }
 
 void QgsSiSyDialog::selectOutlineStyle()
@@ -114,6 +116,7 @@ void QgsSiSyDialog::selectOutlineStyle()
     {
 	stylebutton->setName(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()).ascii());
 	stylebutton->setPixmap(QgsSymbologyUtils::qString2LinePixmap(QString::fromAscii(stylebutton->name())));
+	emit settingsChanged();
     }
     setActiveWindow();
 }
@@ -122,6 +125,7 @@ void QgsSiSyDialog::selectFillColor()
 {
     lblFillColor->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
+    emit settingsChanged();
 }
 
 void QgsSiSyDialog::selectFillPattern()
@@ -131,6 +135,7 @@ void QgsSiSyDialog::selectFillPattern()
     {
 	patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
 	patternbutton->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
+	emit settingsChanged();
     }
     setActiveWindow();
 }
@@ -264,4 +269,9 @@ QColor QgsSiSyDialog::getFillColor()
 Qt::BrushStyle QgsSiSyDialog::getFillStyle()
 {
     return QgsSymbologyUtils::qString2BrushStyle(patternbutton->name());
+}
+
+void QgsSiSyDialog::resendSettingsChanged()
+{
+    emit settingsChanged();
 }
