@@ -35,6 +35,8 @@ class QgsRect{
     QgsRect(double xmin=0, double ymin=0, double xmax=0, double ymax=0);
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRect(QgsPoint p1, QgsPoint p2);
+    //! Copy constructor
+    QgsRect(const QgsRect &other);
     //! Destructor
     ~QgsRect();
     //! Set the minimum x value
