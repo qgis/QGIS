@@ -135,9 +135,9 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
     std::cout << "mLayout exists so deleting" << std::endl;
     delete mLayout;
   }
-  mLayout = new QGridLayout(frameParameters,myRowCountInt+1,2); 
-  //mLayout->setColSpacing(1,200);
-  //mLayout->setColSpacing(1,10);
+  mLayout = new QGridLayout(frameParameters,myRowCountInt+1,3); 
+  //mLayout->setColSpacing(0,200);
+  mLayout->setColSpacing(1,10);
   //mLayout->setColSpacing(2,50);
   //mLayout->setColSpacing(3,0);
   
@@ -169,12 +169,14 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
       }
       else
       {
-        //interate through parameters adding the correct control type
+        QSettings settings;
+	
+	//interate through parameters adding the correct control type
 	for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
 	{
-		//QSpacerItem mySpacer = QSpacerItem(5,5);
 		QString myParameterType(myParameter->type);
 		std::cout << "Parameter " << myParameter->name << " is a " << myParameterType << std::endl;
+		
 		if (myParameterType=="Integer")
 		{
 		//Create a spinbox for integer values
@@ -187,7 +189,17 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		//set spinbox details and write to map
 		if (!myParameter->has_min==0) mySpinBox->setMinValue(myParameter->min);
 		if (!myParameter->has_max==0) mySpinBox->setMaxValue(myParameter->max);
-		mySpinBox->setValue(atoi(myParameter->typical));
+		
+		//Set value to previous otherwise to default
+		QString myPreviousValue = settings.readEntry("/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myParameter->id);
+		if (myPreviousValue)
+		{
+		  mySpinBox->setValue(atoi(myPreviousValue));
+		}
+		else
+		{
+		  mySpinBox->setValue(atoi(myParameter->typical));
+		}
 		
 		QToolTip::add(mySpinBox, myParameter->description);
 		
@@ -196,17 +208,16 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		myLabel->setFont(myLabelFont);
 		
 		//add label and control to form
-		
 		mLayout->addWidget(myLabel, i, 0);
-		mLayout->addWidget(mySpinBox, i, 1);
-		//mLayout->addItem(&mySpacer, i, 4);
-		mySpinBox->show();
+		mLayout->addWidget(mySpinBox, i, 2);
+		mLayout->setRowSpacing(i,35);
 		
 		//
 		// Add the widget to the map
 		//
 		mMap[myParameter->id] = mySpinBox;
 		mLabelsMap[myParameter->name] = myLabel;
+		
 		}
 	
 		if (myParameterType=="Real")
@@ -215,10 +226,19 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		
 		//Create components
 		QLineEdit * myLineEdit = new QLineEdit (frameParameters, ("le"+QString(myParameter->id)));
-		QLabel * myLabel = new QLabel (frameParameters, ("lbl"+QString(myParameter->id)));
+		QLabel * myLabel = new QLabel (frameParameters, ("lbl"+QString(myParameter->id)));	
 		
-		//set line edit details and write to map
-		myLineEdit->setText(myParameter->typical);
+		//Set value to previous otherwise to default
+		QString myPreviousValue = settings.readEntry("/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myParameter->id);
+		if (myPreviousValue)
+		{
+		  myLineEdit->setText(myPreviousValue);
+		}
+		else
+		{
+		  myLineEdit->setText(myParameter->typical);
+		}
+		
 		QToolTip::add(myLineEdit, myParameter->description);
 		
 		//Set label details and write to map
@@ -227,8 +247,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		
 		//add label and control to form
 		mLayout->addWidget(myLabel, i,0);
-		mLayout->addWidget(myLineEdit,i,1);
-		//mLayout->addItem(&mySpacer, i, 4);
+		mLayout->addWidget(myLineEdit,i,2);
+		mLayout->setRowSpacing(i,35);
 		myLineEdit->show();
 		
 		//
@@ -237,22 +257,13 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		mMap[myParameter->id] = myLineEdit;
 		mLabelsMap[myParameter->name] = myLabel;
 		}
-	}
-	// Add a spacer into last row of grid layout
-	//QSpacerItem mySpacer = QSpacerItem(5,5);
-	//mLayout->addItem(&mySpacer, 0, myParameterCountInt+1);
-	 
-	
-	
+	}	
       }     
-     
-	//Exit loop because we have found the correct algorithm
-	break;      
+      //Exit loop because we have found the correct algorithm
+      break;      
      }
     }
-
-  return;
-  
+  return; 
 }
 
 /** This is the page selected event which I am reimplementing to do some housekeeping
@@ -263,7 +274,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   std::cout << thePageNameQString << " has focus " << std::endl;
   QString myQString;
   QSettings settings;
-  if (thePageNameQString==tr("Step 1 of 8")) //we do this when arriving at the mode selection page
+  if (thePageNameQString==tr("myParameter->typicalStep 1 of 8")) //we do this when arriving at the mode selection page
   {
     //select the last model used by getting the name from qsettings
     QString myModelName = settings.readEntry("/openmodeller/modelName");
@@ -381,11 +392,17 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
       {
         QLineEdit * myLineEdit = (QLineEdit*) myIterator.data();
 	myValueString = myLineEdit->text();
+	settings.writeEntry(
+	  "/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myIterator.key(),
+	  myLineEdit->text());
       }
       else if (myWidgetName.left(4)=="spin")
       {
         QSpinBox * mySpinBox = (QSpinBox*) myIterator.data();
 	myValueString = QString::number(mySpinBox->value());
+	settings.writeEntry(
+	  "/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myIterator.key(),
+	  mySpinBox->value());
       }
       
       extraParametersQStringList.append(myIterator.key() + " " + myValueString);
