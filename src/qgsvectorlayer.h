@@ -162,6 +162,21 @@ class QgsVectorLayer:public QgsMapLayer
   /**True if the layer can be edited*/
   bool isEditable();
 
+  /**
+   * Minimum scale at which the layer is rendered
+   * @return Scale as integer 
+   */
+  int minimumScale();
+  /**
+   * Maximum scale at which the layer is rendered
+   * @return Scale as integer 
+   */
+  int maximumScale();
+  /**
+   * Is scale dependent rendering in effect?
+   * @return true if so
+   */
+  bool scaleDependentRender();
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
     QgsAttributeTableDisplay * tabledisplay;
@@ -222,6 +237,13 @@ private:                       // Private methods
   //! Update threshold for drawing features as they are read. A value of zero indicates
   // that no features will be drawn until all have been read
   int updateThreshold;
+  //! Minimum scale factor at which the layer is displayed
+  int mMinimumScale;
+  //! Maximum scale factor at which the layer is displayed
+  int mMaximumScale;
+  //! Flag to indicate if scale dependent rendering is in effect
+  bool mScaleDependentRender;
+  
 
 };
 
