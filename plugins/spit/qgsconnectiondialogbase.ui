@@ -1,0 +1,302 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsConnectionDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsConnectionDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>411</width>
+            <height>230</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Connection Properties</string>
+    </property>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>connInfoBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>20</y>
+                <width>284</width>
+                <height>189</height>
+            </rect>
+        </property>
+        <property name="font">
+            <font>
+                <family>Helvetica [Urw]</family>
+            </font>
+        </property>
+        <property name="title">
+            <string>Connection Information</string>
+        </property>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>txtHost</cstring>
+                </property>
+            </widget>
+            <widget class="QLabel" row="1" column="0">
+                <property name="name">
+                    <cstring>lblHost</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Sans</family>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Host</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>txtDatabase</cstring>
+                </property>
+            </widget>
+            <widget class="QLabel" row="2" column="0">
+                <property name="name">
+                    <cstring>lblDatabase</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Sans</family>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Database</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" row="3" column="1">
+                <property name="name">
+                    <cstring>txtUsername</cstring>
+                </property>
+            </widget>
+            <widget class="QLabel" row="3" column="0">
+                <property name="name">
+                    <cstring>lblUsername</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Sans</family>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Username</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" row="4" column="1">
+                <property name="name">
+                    <cstring>txtPassword</cstring>
+                </property>
+                <property name="echoMode">
+                    <enum>Password</enum>
+                </property>
+            </widget>
+            <widget class="QLabel" row="0" column="0">
+                <property name="name">
+                    <cstring>lblName</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Sans</family>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Name</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>txtName</cstring>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Name of the new connection</string>
+                </property>
+            </widget>
+            <widget class="QLabel" row="4" column="0">
+                <property name="name">
+                    <cstring>lblPassword</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Sans</family>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Password</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" row="3" column="2" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>btnTestConnect</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Test Connect</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" row="5" column="1" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>chkStorePassword</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Save Password</string>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>buttonHelp</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>311</x>
+                <y>21</y>
+                <width>80</width>
+                <height>189</height>
+            </rect>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>0</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnOk</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>OK</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+                <property name="default">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnCancel</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Cancel</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnHelp</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Help</string>
+                </property>
+                <property name="accel">
+                    <string>F1</string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer1</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>btnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsConnectionDialogBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>btnTestConnect</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsConnectionDialogBase</receiver>
+        <slot>testConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnOk</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsConnectionDialogBase</receiver>
+        <slot>saveConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsConnectionDialogBase</receiver>
+        <slot>helpInfo()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>testConnection()</slot>
+    <slot>saveConnection()</slot>
+    <slot>helpInfo()</slot>
+</slots>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
