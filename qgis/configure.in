@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.67 2004/05/05 09:32:36 timlinux Exp
+dnl configure.in,v 1.68 2004/05/05 16:51:58 timlinux Exp
 
 AC_INIT
 
@@ -200,6 +200,7 @@ AC_CONFIG_FILES([
   src/svg/biology/Makefile
   src/svg/geometric/Makefile
   src/svg/icon/Makefile
+  src/svg/north_arrows/Makefile
   src/svg/symbol/Makefile
   providers/Makefile 
   providers/ogr/Makefile
