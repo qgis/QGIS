@@ -22,7 +22,7 @@
 #include <qevent.h>
 #include "qgsrect.h"
 class QRect;
-
+class QgsCoordinateTransform;
 class QgsMapLayer;
 
 /*! \class QgsMapCanvas
@@ -43,6 +43,8 @@ public:
     /*! Draw the map using the symbology set for each layer
      */
     void render();
+    void render2();
+    double mupp();
  private:
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
@@ -52,6 +54,9 @@ public:
     //! Current extent
     QgsRect currentExtent;
     QRect *mapWindow;
+    QgsCoordinateTransform *coordXForm;
+    double m_mupp;
+
 };
 
 #endif
