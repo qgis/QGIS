@@ -2907,6 +2907,7 @@ void QgisApp::setTheme(QString themeName)
   actionFileSave->setIconSet(QIconSet(QPixmap(iconPath + "/file_save.png")));
   actionFileSaveAs->setIconSet(QIconSet(QPixmap(iconPath + "/file_save_as.png")));
   actionFileOpen->setIconSet(QIconSet(QPixmap(iconPath + "/project_open.png")));
+  actionFilePrint->setIconSet(QIconSet(QPixmap(iconPath + "/file_print.png")));
   actionSaveMapAsImage->setIconSet(QIconSet(QPixmap(iconPath + "/save_map_image.png")));
   actionExportMapServer->setIconSet(QIconSet(QPixmap(iconPath + "/export_map_server.png")));
   actionFileExit->setIconSet(QIconSet(QPixmap(iconPath + "/exit.png")));
