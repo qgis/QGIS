@@ -46,6 +46,7 @@ m_legendItem(0)
 QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
 #endif
   mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
+  mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
 
 }
 
@@ -169,18 +170,20 @@ void QgsMapLayer::updateItemPixmap()
 {
   if (m_legendItem)
   {
+      QPixmap pix=*(this->legendPixmap());
       if(mShowInOverview)
       {
 	  //add overview glasses to the pixmap
-	  QPixmap pix=*(this->legendPixmap());
 	  QPainter p(&pix);
 	  p.drawPixmap(0,0,mInOverviewPixmap);
-	  ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
       }
-      else
+      if(isEditable())
       {
-	  ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
+	  //add editing icon to the pixmap
+	  QPainter p(&pix);
+	  p.drawPixmap(30,0,mEditablePixmap);
       }
+      ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
   }  
 }
 

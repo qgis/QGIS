@@ -2950,6 +2950,11 @@ RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
   return mPyramidList;
 }
 
+bool QgsRasterLayer::isEditable()
+{
+    return false;
+}
+
 void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable )
 {
     #ifdef QGISDEBUG
@@ -3063,4 +3068,3 @@ double QgsRasterLayer::readValue ( void *data, GDALDataType type, int index )
     }
     return 0.0;
 }
-
