@@ -206,6 +206,9 @@ public:
   /**Sets the pointer to the legend item*/
   void setLegendItem(QgsLegendItem * li);
 
+  /**True if the layer can be edited*/
+  virtual bool isEditable()=0;
+
 public  slots:
 
   //! set visibility
@@ -256,6 +259,8 @@ protected:
   //
   //! A little pixmap to show if this layer is represented in overview or now 
   QPixmap mInOverviewPixmap;
+
+  QPixmap mEditablePixmap;
 
   /** Name of the layer - used for display  */
   QString layerName;

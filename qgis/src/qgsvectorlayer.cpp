@@ -1365,6 +1365,10 @@ void QgsVectorLayer::startEditing()
 	{
 	    QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
 	}
+	else
+	{
+	    updateItemPixmap();
+	}
     }
 }
 
@@ -1393,5 +1397,18 @@ void QgsVectorLayer::stopEditing()
 	    triggerRepaint();
 	}
 	dataProvider->stopEditing();
+	updateItemPixmap();
+    }
+}
+
+bool QgsVectorLayer::isEditable()
+{
+    if(dataProvider)
+    {
+	return dataProvider->isEditable();
+    }
+    else
+    {
+	return false;
     }
 }

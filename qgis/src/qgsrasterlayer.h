@@ -752,6 +752,9 @@ public:
     /** \brief Helper method to retrieve the nth pyramid layer struct from the PyramidList. 
      * If the nth layer does not exist, NULL will be returned. */
 //   RasterPyramid getRasterPyramid(int thePyramidNo);
+
+    /**Currently returns always false*/
+    bool isEditable();
     
     
 public slots:    
