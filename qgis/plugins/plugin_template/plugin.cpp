@@ -120,9 +120,9 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"[menuitemname]",true,0);
   //listen for when the layer has been made so we can draw it
-  connect(myOpenModellerGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myOpenModellerGui, SIGNAL(drawVectorLayer(QString)), this, SLOT(drawVectorLayer(QString)));
-  myOpenModellerGui->show();
+  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
+  connect(myPluginGui, SIGNAL(drawVectorLayer(QString)), this, SLOT(drawVectorLayer(QString)));
+  myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
