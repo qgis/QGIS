@@ -68,9 +68,9 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer *lyr, QW
       QString("%1").arg(fld.getPrecision())); 
   }
   // symbology initialization
-  legendtypecombobox->insertItem(tr("single symbol"));
-  legendtypecombobox->insertItem(tr("graduated symbol"));
-  legendtypecombobox->insertItem(tr("continuous color"));
+  legendtypecombobox->insertItem(tr("Single Symbol"));
+  legendtypecombobox->insertItem(tr("Graduated Symbol"));
+  legendtypecombobox->insertItem(tr("Continuous Color"));
 
   QObject::connect(legendtypecombobox,SIGNAL(activated(const QString&)),this,SLOT(alterLayerDialog(const QString&)));
   QObject::connect(btnApply,SIGNAL(clicked()),this,SLOT(apply()));
