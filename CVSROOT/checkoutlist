@@ -12,3 +12,5 @@
 #
 # comment lines begin with '#'
 syncmail
+# cvs acl
+avail
