@@ -1825,14 +1825,12 @@ void QgisApp::actionPluginManager_activated()
           loadPlugin(plugin.name(), plugin.description(), plugin.fullPath());
           it++;
         }
-
-
     }
-
-
 }
+
 void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
 {
+  QSettings settings;
   // first check to see if its already loaded
   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
   QString lib = pRegistry->library(name);
@@ -1860,29 +1858,36 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
           switch (pType())
             {
               case QgisPlugin::UI:
-                {
-                  // UI only -- doesn't use mapcanvas
-                  create_ui *cf = (create_ui *) myLib->resolve("classFactory");
-                  if (cf)
+                  {
+                    // UI only -- doesn't use mapcanvas
+                    create_ui *cf = (create_ui *) myLib->resolve("classFactory");
+                    if (cf)
                     {
                       QgisPlugin *pl = cf(this, qgisInterface);
                       if (pl)
-                        {
-                          pl->initGui();
-                          // add it to the plugin registry
-                          pRegistry->addPlugin(myLib->library(), name, pl);
-                      } else
-                        {
-                          // something went wrong
-                          QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
-                        }
-                  } else
+                      {
+                        pl->initGui();
+                        // add it to the plugin registry
+                        pRegistry->addPlugin(myLib->library(), name, pl);
+                        //add it to the qsettings file [ts]
+                       settings.writeEntry("/qgis/Plugins/" + name, true);
+                      } 
+                      else
+                      {
+                        // something went wrong
+                        QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
+                        //disable it to the qsettings file [ts]
+                       settings.writeEntry("/qgis/Plugins/" + name, false);
+                      }
+                    } 
+                    else
                     {
 #ifdef QGISDEBUG
                       std::cout << "Unable to find the class factory for " << fullPath << std::endl;
 #endif
                     }
-                }
+
+                  }
                 break;
               case QgisPlugin::MAPLAYER:
                 {
@@ -1896,11 +1901,15 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
                           // set the main window pointer for the plugin
                           pl->setQgisMainWindow(this);
                           pl->initGui();
+                        //add it to the qsettings file [ts]
+                       settings.writeEntry("/qgis/Plugins/" + name, true);
 
                       } else
                         {
                           // something went wrong
                           QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
+                        //add it to the qsettings file [ts]
+                       settings.writeEntry("/qgis/Plugins/" + name, false);
                         }
                   } else
                     {

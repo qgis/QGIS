@@ -18,6 +18,7 @@
 #include <qlistview.h>
 #include <qmessagebox.h>
 #include <qlibrary.h>
+#include <qsettings.h>
 #include "../plugins/qgisplugin.h"
 #include "qgspluginmanager.h"
 #include "qgspluginitem.h"
@@ -141,6 +142,7 @@ void QgsPluginManager::apply()
 
 void QgsPluginManager::unload()
 {
+  QSettings settings;
 #ifdef QGISDEBUG
   std::cout << "Checking for plugins to unload" << std::endl;
 #endif
@@ -156,11 +158,13 @@ void QgsPluginManager::unload()
 #endif
           QgisPlugin *plugin = pRegistry->plugin(lvi->text(0));
           if (plugin)
-            {
-              plugin->unload();
-              // remove the plugin from the registry
-              pRegistry->removePlugin(lvi->text(0));
-            }
+          {
+            plugin->unload();
+            // remove the plugin from the registry
+            pRegistry->removePlugin(lvi->text(0));
+            //disable it to the qsettings file [ts]
+            settings.writeEntry("/qgis/Plugins/" + lvi->text(0), false);
+          }
         }
       lvi = (QCheckListItem *) lvi->nextSibling();
     }
