@@ -196,7 +196,10 @@ void QgsSiSyDialog::apply()
   p.setFont( f );
   p.drawText(35,pix->height()-10,name);//the problem again
   
-  m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+  if(m_vectorlayer->legendItem())
+  {
+      m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+  }
 
   m_vectorlayer->setRenderer(renderer);
   m_vectorlayer->setRendererDialog(this);
