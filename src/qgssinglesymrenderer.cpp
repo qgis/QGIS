@@ -205,21 +205,30 @@ void QgsSingleSymRenderer::writeXML(std::ofstream& xml)
 {
     xml << "\t\t<singlesymbol>\n";
     xml << "\t\t\t<renderitem>\n";
-    xml << "\t\t\t\t<value>" + this->item()->value() + "</value>\n";
+    xml << "\t\t\t\t<value>" << this->item()->value().ascii() << "</value>\n";
     QgsSymbol *symbol = this->item()->getSymbol();
+
     xml << "\t\t\t\t<symbol>\n";
-    xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(symbol->pen().color().red()) + "\" green=\"" +
-	QString::number(symbol->pen().color().green()) + "\" blue=\"" + QString::number(symbol->pen().color().blue()) +
-	"\" />\n";
-    xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(symbol->pen().style()) + "</outlinestyle>\n";
-    xml << "\t\t\t\t\t<outlinewidth>" + QString::number(symbol->pen().width()) + "</outlinewidth>\n";
-    xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(symbol->brush().color().red()) + "\" green=\"" +
-	QString::number(symbol->brush().color().green()) + "\" blue=\"" + QString::number(symbol->brush().color().blue()) +
-	"\" />\n";
-    xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()) +
-	"</fillpattern>\n";
+    xml << "\t\t\t\t\t<outlinecolor red=\"" 
+      << symbol->pen().color().red()
+      << "\" green=\"" 
+      << QString::number(symbol->pen().color().green()).ascii() 
+      << "\" blue=\"" 
+      << QString::number(symbol->pen().color().blue()).ascii() 
+      << "\" />\n";
+    xml << "\t\t\t\t\t<outlinestyle>" << (const char *)QgsSymbologyUtils::penStyle2QString(symbol->pen().style()) << "</outlinestyle>\n";
+    xml << "\t\t\t\t\t<outlinewidth>" << symbol->pen().width() << "</outlinewidth>\n";
+    xml << "\t\t\t\t\t<fillcolor red=\"" <<  symbol->brush().color().red() 
+      << "\" green=\"" 
+      << symbol->brush().color().green() 
+      << "\" blue=\"" 
+      << symbol->brush().color().blue() 
+      << "\" />\n";
+    xml << "\t\t\t\t\t<fillpattern>" 
+      << (const char *)QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()) 
+      << "</fillpattern>\n";
     xml << "\t\t\t\t</symbol>\n";
-    xml << "\t\t\t\t<label>" + this->item()->label() + "</label>\n";
+    xml << "\t\t\t\t<label>" << (const char *)this->item()->label() << "</label>\n";
     xml << "\t\t\t</renderitem>\n";
     xml << "\t\t</singlesymbol>\n";
 }

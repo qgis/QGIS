@@ -165,20 +165,28 @@ void QgsSiMaRenderer::writeXML(std::ofstream& xml)
     if(markersymbol)
     {
 	xml << "\t\t\t\t<markersymbol>\n";
-	xml << "\t\t\t\t\t<svgpath>" + markersymbol->picture() + "</svgpath>\n";
-	xml << "\t\t\t\t\t<scalefactor>" + QString::number(markersymbol->scaleFactor()) + "</scalefactor>\n";
-	xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(markersymbol->pen().color().red()) + "\" green=\"" +
-	    QString::number(markersymbol->pen().color().green()) + "\" blue=\"" + QString::number(markersymbol->pen().color().blue()) +
-	    "\" />\n";
-	xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) + "</outlinestyle>\n";
-	xml << "\t\t\t\t\t<outlinewidth>" + QString::number(markersymbol->pen().width()) + "</outlinewidth>\n";
-	xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(markersymbol->brush().color().red()) + "\" green=\"" +
-	    QString::number(markersymbol->brush().color().green()) + "\" blue=\"" + QString::number(markersymbol->brush().color().blue()) +
-	    "\" />\n";
-	xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style()) +
-	    "</fillpattern>\n";
+	xml << "\t\t\t\t\t<svgpath>" << (const char *) markersymbol->picture() << "</svgpath>\n";
+	xml << "\t\t\t\t\t<scalefactor>"  << markersymbol->scaleFactor() << "</scalefactor>\n";
+	xml << "\t\t\t\t\t<outlinecolor red=\"" 
+    << markersymbol->pen().color().red() 
+    << "\" green=\"" 
+	  << markersymbol->pen().color().green() 
+    << "\" blue=\"" 
+    << markersymbol->pen().color().blue()
+	  << "\" />\n";
+	xml << "\t\t\t\t\t<outlinestyle>" << (const char *) QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) << "</outlinestyle>\n";
+	xml << "\t\t\t\t\t<outlinewidth>" <<  markersymbol->pen().width() << "</outlinewidth>\n";
+	xml << "\t\t\t\t\t<fillcolor red=\"" << markersymbol->brush().color().red() 
+    << "\" green=\"" 
+    << markersymbol->brush().color().green()
+    << "\" blue=\"" 
+    << markersymbol->brush().color().blue()
+	  << "\" />\n";
+	xml << "\t\t\t\t\t<fillpattern>" 
+    << (const char *)QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style())
+	  << "</fillpattern>\n";
 	xml << "\t\t\t\t</markersymbol>\n";
-	xml << "\t\t\t\t<label>" + this->item()->label() + "</label>\n";
+	xml << "\t\t\t\t<label>" << this->item()->label() << "</label>\n";
 	xml << "\t\t\t</renderitem>\n";
 	xml << "\t\t</singlemarker>\n";
     }else
