@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.74 2004/05/14 11:47:12 larsl Exp
+ChangeLog,v 1.75 2004/05/15 00:28:52 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-13 [ts] 0.2.0devel17
+** Raster stats tab now displays pyramid/overview info
 
 2004-05-14 [larsl] 0.2.0devel16
 ** Cleaned up the enabling/disabling of controls in the GPS dialog
