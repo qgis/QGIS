@@ -585,13 +585,45 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
       {
 	  OGRLineString* l=new OGRLineString();
 	  int length;
-	  memcpy(&length,f->getGeometry()+5,sizeof(int));
+	  memcpy(&length,f->getGeometry()+sizeof(int),sizeof(int));
 #ifdef QGISDEBUG
 	  qWarning("length: "+QString::number(length));
 #endif
 	  l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
 	  feature->SetGeometry(l);
 	  break;
+      }
+      case QGis::WKBPolygon:
+      {
+	  OGRPolygon* pol=new OGRPolygon();
+	  int numrings;
+	  int totalnumpoints=0;
+	  int numpoints;//number of points in one ring
+	  unsigned char* ptr=f->getGeometry()+1+sizeof(int);
+	  memcpy(&numrings,ptr,sizeof(int));
+	  ptr+=sizeof(int);
+	  for(int i=0;i<numrings;++i)
+	  {
+	      memcpy(&numpoints,ptr,sizeof(int));
+	      ptr+=sizeof(int);
+	      totalnumpoints+=numpoints;
+	      ptr+=(2*sizeof(double));
+	  }
+	  pol->importFromWkb(f->getGeometry(),1+2*sizeof(int)+numrings*sizeof(int)+totalnumpoints*2*sizeof(double));
+	  feature->SetGeometry(pol);
+	  break;
+      }
+      case QGis::WKBMultiPoint:
+      {
+
+      }
+      case QGis::WKBMultiLineString:
+      {
+
+      }
+      case QGis::WKBMultiPolygon:
+      {
+
       }
   }
 
