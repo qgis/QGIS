@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>500</width>
-            <height>163</height>
+            <height>165</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -241,20 +241,6 @@
         </widget>
     </grid>
 </widget>
-<connections>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsVectorLayerPropertiesBase</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsVectorLayerPropertiesBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
 <slots>
     <slot>setLineWidth( int )</slot>
     <slot>selectFillColor()</slot>

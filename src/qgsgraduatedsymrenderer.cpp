@@ -227,8 +227,14 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoord
     delete[]feature;
 }
 
-void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer)
+void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr)
 {
+    bool toproperties=false;//if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
+    if(pr)
+    {
+	toproperties=true;
+    }
+
     setClassificationField(0);//the classification field does not matter
     
     if(layer)
@@ -248,7 +254,15 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer)
 	QFont f( "times", 12, QFont::Normal );
 	QFontMetrics fm(f);
 	
-	QPixmap* pixmap=layer->legendPixmap();
+	QPixmap* pixmap;
+	if(toproperties)
+	{
+	    pixmap=pr->getBufferPixmap();
+	}
+	else
+	{
+	    pixmap=layer->legendPixmap();
+	}
 	QString name=layer->name();
 	int width=40+fm.width(layer->name());
 	int height=(fm.height()+10>35) ? fm.height()+10 : 35;
@@ -289,11 +303,19 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer)
 	addItem(ri);
 
 	QgsGraSyDialog* dialog=new QgsGraSyDialog(layer);
-	layer->setRendererDialog(dialog);
-	QgsLegendItem* item;
-	if(item=layer->legendItem())
+
+	if(toproperties)
 	{
-	    item->setPixmap(0,(*pixmap));
+	    pr->setBufferDialog(dialog);
+	}
+	else
+	{
+	    layer->setRendererDialog(dialog);
+	    QgsLegendItem* item;
+	    if(item=layer->legendItem())
+	    {
+		item->setPixmap(0,(*pixmap));
+	    }
 	}
     }
     else

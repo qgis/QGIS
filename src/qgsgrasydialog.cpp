@@ -69,52 +69,56 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
     modeComboBox->insertItem("equal interval");
 
     setSizeGripEnabled(true);
-
-    //restore the correct settings
-    QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
-    if(renderer)
+    
+    if(!m_vectorlayer->propertiesDialog()->getRendererDirty())
     {
-	std::list<QgsRangeRenderItem*> list=renderer->items();
-	
-	ext=new QgsGraSyExtensionWidget(this,renderer->classificationField(),QgsGraSyDialog::EMPTY,list.size(),m_vectorlayer);
-	
-
-	//todo:find out the fieldname for the classification field
-	classificationComboBox->setCurrentItem(renderer->classificationField());
-
-        //set the right colors and texts to the widgets
-	int number=0;
-	for(std::list<QgsRangeRenderItem*>::iterator it=list.begin();it!=list.end();++it)
+	//restore the correct settings
+	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
+	if(renderer)
 	{
-	    ((QLineEdit*)(ext->getWidget(0,number)))->setText((*it)->value());
-	    ((QLineEdit*)ext->getWidget(1,number))->setText((*it)->upper_value());
-	    ((QLineEdit*)ext->getWidget(2,number))->setText((*it)->label());
-	    ((QPushButton*)ext->getWidget(3,number))->setPaletteBackgroundColor((*it)->getSymbol()->pen().color());
-	    ((QPushButton*)ext->getWidget(4,number))->setText(QgsSymbologyUtils::penStyle2QString((*it)->getSymbol()->pen().style()));
-	    ((QSpinBox*)ext->getWidget(5,number))->setValue((*it)->getSymbol()->pen().width());
-	    ((QPushButton*)ext->getWidget(6,number))->setPaletteBackgroundColor((*it)->getSymbol()->brush().color());
-	    ((QPushButton*)ext->getWidget(7,number))->setText(QgsSymbologyUtils::brushStyle2QString((*it)->getSymbol()->brush().style()));
-	    number++;
-	}
+	    std::list<QgsRangeRenderItem*> list=renderer->items();
+	
+	    ext=new QgsGraSyExtensionWidget(this,renderer->classificationField(),QgsGraSyDialog::EMPTY,list.size(),m_vectorlayer);
+	
 
-	if(scv)
-	{
-	    QgsGraSyDialogBaseLayout->remove(scv);
-	    delete scv;
-	}
+	    //todo:find out the fieldname for the classification field
+	    classificationComboBox->setCurrentItem(renderer->classificationField());
+
+	    //set the right colors and texts to the widgets
+	    int number=0;
+	    for(std::list<QgsRangeRenderItem*>::iterator it=list.begin();it!=list.end();++it)
+	    {
+		((QLineEdit*)(ext->getWidget(0,number)))->setText((*it)->value());
+		((QLineEdit*)ext->getWidget(1,number))->setText((*it)->upper_value());
+		((QLineEdit*)ext->getWidget(2,number))->setText((*it)->label());
+		((QPushButton*)ext->getWidget(3,number))->setPaletteBackgroundColor((*it)->getSymbol()->pen().color());
+		((QPushButton*)ext->getWidget(4,number))->setText(QgsSymbologyUtils::penStyle2QString((*it)->getSymbol()->pen().style()));
+		((QSpinBox*)ext->getWidget(5,number))->setValue((*it)->getSymbol()->pen().width());
+		((QPushButton*)ext->getWidget(6,number))->setPaletteBackgroundColor((*it)->getSymbol()->brush().color());
+		((QPushButton*)ext->getWidget(7,number))->setText(QgsSymbologyUtils::brushStyle2QString((*it)->getSymbol()->brush().style()));
+		number++;
+	    }
+
+	    if(scv)
+	    {
+		QgsGraSyDialogBaseLayout->remove(scv);
+		delete scv;
+	    }
        
-	numberofclassesspinbox->setValue(list.size());
+	    numberofclassesspinbox->setValue(list.size());
 	
-	if(numberofclassesspinbox->value()==0)
-	{
-	    scv=0;
-	    return;
+	    if(numberofclassesspinbox->value()==0)
+	    {
+		scv=0;
+		return;
+	    }
+	
+	    scv=new QScrollView(this);
+	    scv->addChild(ext);
+	    QgsGraSyDialogBaseLayout->addMultiCellWidget(scv,5,5,0,3);
+	    scv->show();
 	}
-	
-	scv=new QScrollView(this);
-	scv->addChild(ext);
-	QgsGraSyDialogBaseLayout->addMultiCellWidget(scv,5,5,0,3);
-	scv->show();
+    }
 
 	//do the necessary signal/slot connections
 	QObject::connect(numberofclassesspinbox,SIGNAL(valueChanged(int)),this,SLOT(adjustNumberOfClasses()));
@@ -122,7 +126,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 	QObject::connect(modeComboBox,SIGNAL(activated(int)),this,SLOT(adjustNumberOfClasses()));
 	QObject::connect(closebutton,SIGNAL(clicked()),this,SLOT(hide()));
 	QObject::connect(applybutton,SIGNAL(clicked()),this,SLOT(apply()));
-    }
+    
 }
 
 QgsGraSyDialog::QgsGraSyDialog()
@@ -183,8 +187,9 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     
 }
 
-void QgsGraSyDialog::apply() const
+void QgsGraSyDialog::apply()
 {
+    qWarning("1");
     if(ext)
     {
 	if(classificationComboBox->currentText().isEmpty())//don't do anything, it there is no classification field
@@ -218,7 +223,7 @@ void QgsGraSyDialog::apply() const
 	    }
 	}
 	int labelwidth=fm.width(widestlabel);
-
+	qWarning("2");
         //create the pixmap for the render item
 	QPixmap* pix=m_vectorlayer->legendPixmap();
 	QString name=displaynamefield->text();
@@ -231,13 +236,13 @@ void QgsGraSyDialog::apply() const
 	pix->fill();
 	QPainter p(pix);
 	p.setFont(f);
-
+	qWarning("3");
 	//draw the layer name and the name of the classification field into the pixmap
 	p.drawText(leftspace,topspace+fm.height(),name);
 	m_vectorlayer->setLayerName(name);
 	p.drawText(leftspace,topspace+2*fm.height(),classificationComboBox->currentText());
 
-	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
+	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
 	if(!renderer)
 	{
 	    qWarning("Warning, typecast failed in QgsGraSyDialog::apply()");
@@ -248,7 +253,7 @@ void QgsGraSyDialog::apply() const
 
 	int offset=topspace+2*fm.height();
 	int rowincrement=rowheight+rowspace;
-
+	qWarning("4");
 	for(int i=0;i<numberofclassesspinbox->value();i++)
 	{
 	    QgsSymbol sy(QColor(255,0,0));
@@ -279,7 +284,7 @@ void QgsGraSyDialog::apply() const
 	    {
 		sy.brush().setStyle(Qt::SolidPattern);
 	    }
-
+	    qWarning("5");
 	    QString lower_bound=((QLineEdit*)(ext->getWidget(0,i)))->text();
 	    QString upper_bound=((QLineEdit*)(ext->getWidget(1,i)))->text();
 	    QString label=((QLineEdit*)(ext->getWidget(2,i)))->text();
@@ -303,7 +308,7 @@ void QgsGraSyDialog::apply() const
 		    ubcontainsletter=true;
 		}
 	    }
-
+	    qWarning("6");
 	    if(lbcontainsletter==false&&ubcontainsletter==false&&lower_bound.length()>0&&upper_bound.length()>0)//only add the item if the value bounds do not contain letters and are not null strings
 	    {
 		QgsRangeRenderItem* item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, ((QLineEdit*)(ext->getWidget(2,i)))->text());
@@ -331,14 +336,21 @@ void QgsGraSyDialog::apply() const
 		p.drawText(pixwidth-labelwidth-rightspace,offset+rowincrement*i+rowheight,label);
 	    }
 	}
-
+	qWarning("7");
 	renderer->setClassificationField(ext->classfield());
 
-	m_vectorlayer->triggerRepaint();
 	if(m_vectorlayer->legendItem())
 	{
 	    m_vectorlayer->legendItem()->setPixmap(0,(*pix));
 	}
+	qWarning("8");
+	m_vectorlayer->setRenderer(renderer);
+	qWarning("9");
+	m_vectorlayer->setRendererDialog(this);
+	m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+	qWarning("10");
+	m_vectorlayer->triggerRepaint();
+	qWarning("11");
     }
 
     else//number of classes is 0

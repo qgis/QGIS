@@ -270,7 +270,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 		QgsPoint pt;
 		QPointArray *pa;
 		int wkbType;
-
 		while ((fet = dataProvider->getNextFeature(attributesneeded))) {//true is necessary for graduated symbol
 
 			if (fet == 0) {
@@ -680,21 +679,29 @@ QDialog* QgsVectorLayer::rendererDialog()
 	
 void QgsVectorLayer::setRenderer(QgsRenderer* r)
 {
-    if(m_renderer)//delete any previous renderer
+    if(r!=m_renderer)
     {
-	delete m_renderer;
-    }
+	if(m_renderer)//delete any previous renderer
+	{
+	    delete m_renderer;
+	}
     
-    m_renderer=r;
+	m_renderer=r;
+    }
 }
 	
 void QgsVectorLayer::setRendererDialog(QDialog* dialog)
 {
-    if(m_rendererDialog)
+    if(dialog!=m_rendererDialog)
     {
-	delete m_rendererDialog;
-    } 
-    m_rendererDialog=dialog;
+	qWarning("in loop");
+	if(m_rendererDialog)
+	{
+	    qWarning("deleting renderer dialog");
+	    delete m_rendererDialog;
+	} 
+	m_rendererDialog=dialog;
+    }
 }
 
 QGis::VectorType QgsVectorLayer::vectorType()
