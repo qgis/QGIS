@@ -111,7 +111,7 @@ public:
     It's much better to try to just open one file at a time.
 
     */
-    bool addRasterLayer(QStringList const & theLayerQStringList);
+    bool addRasterLayer(QStringList const & theLayerQStringList, bool guiWarning=true);
 
 
     /** open a raster layer for the given file
@@ -122,7 +122,7 @@ public:
 
        This is essentially a simplified version of the above
     */
-    bool addRasterLayer(QFileInfo const & rasterFile);
+    bool addRasterLayer(QFileInfo const & rasterFile, bool guiWarning=true);
 
     /** Add a 'pre-made' map layer to the project */
     void addMapLayer(QgsMapLayer *theMapLayer);
