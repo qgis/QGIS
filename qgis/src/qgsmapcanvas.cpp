@@ -21,6 +21,7 @@
 #include <qrect.h>
 #include <qevent.h>
 #include <qpixmap.h>
+#include <qmessagebox.h>
 #include "qgsrect.h"
 #include "qgis.h"
 
@@ -33,7 +34,8 @@
 #include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
 
-QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name):QWidget(parent, name)
+QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
+  : QWidget(parent, name)
 {
 	mapWindow = new QRect();
 	coordXForm = new QgsCoordinateTransform();
@@ -48,6 +50,9 @@ QgsMapCanvas::~QgsMapCanvas()
 	delete mapWindow;
 }
 
+void QgsMapCanvas::setLegend(QgsLegend *legend){
+    mapLegend = legend;
+}
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 // give the layer a default symbol
@@ -400,6 +405,30 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  clear();
 			  render2();
 			  break;
+		}
+	}else{
+		// map tools that rely on a click not a drag
+		switch(mapTool){
+			case QGis::Identify:
+				// call identify method for selected layer
+				QString lyrName = mapLegend->currentLayer();
+				if(!lyrName.isEmpty()){
+                QgsMapLayer * lyr = layers[lyrName];
+                // create the search rectangle
+                double searchRadius = extent().width() * .01;
+                QgsRect *search = new QgsRect();
+                // convert screen coordinates to map coordinates
+                QgsPoint idPoint =    coordXForm->toMapCoordinates(e->x(), e->y());
+                search->setXmin(idPoint.x() - searchRadius);
+                search->setXmax(idPoint.x() + searchRadius);
+                search->setYmin(idPoint.y() - searchRadius);
+                search->setYmax(idPoint.y() + searchRadius);
+                lyr->identify(search);
+                delete search;
+				}else{
+                QMessageBox::warning(this,"No active layer","To identify features, you must choose an layer active by clicking on its name in the legend");
+          }
+			break;
 		}
 	}
 }
