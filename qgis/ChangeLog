@@ -1,6 +1,19 @@
 QGIS Change Log
-ChangeLog,v 1.60 2004/04/25 14:04:34 jobi Exp
+ChangeLog,v 1.61 2004/04/28 22:07:58 timlinux Exp
 ------------------------------------------------------------------------------
+Version 0.3 'Madison' .... developement version
+
+2004-04-27 [ts] 0.2.0devel1
+
+** Rejigged single marker symbol so directory, icon selector, preview and 
+   scaling widget are all in one panel rather than having to spawn a new
+   window to select an icon.
+
+2004-04-27 [ts] 0.2.0devel0
+
+** Fixed broken bits in internal plugin builder template and updated default
+   plugin template gui,
+
 Version 0.2 'Pumpkin' .... development version
 
 2004-04-25 [jobi] 0.1.0devel36
