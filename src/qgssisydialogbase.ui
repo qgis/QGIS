@@ -92,11 +92,11 @@
                     <property name="minimumSize">
                         <size>
                             <width>50</width>
-                            <height>20</height>
+                            <height>40</height>
                         </size>
                     </property>
                     <property name="sizeLimit">
-                        <number>25</number>
+                        <number>10</number>
                     </property>
                 </widget>
                 <spacer>

@@ -36,7 +36,9 @@
 #include "qgspatterndialog.h"
 #include "qgssymbologyutils.h"
 #include "qgslinestyledialog.h"
+#include "qgsmarkercatalogue.h"
 #include "qgssymbol.h"
+#include "qgssvgcache.h"
 
 QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), mVectorLayer(0)
 {
@@ -53,35 +55,41 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
     //
     //set point symbol combo box
     //
-    QgsSymbol symbol;
-    symbol.setColor(QColor(0,0,255));
-    QBrush brush ( QColor(220,220,220), Qt::SolidPattern );
-    symbol.setBrush( brush);
-    symbol.setLineWidth(0); // keep zero, othervice not symmetric
 
-    int size = 10;
-    symbol.setPointSize(size);
+    QStringList ml = QgsMarkerCatalogue::instance()->list();
+    mMarkers.clear();
 
+    int size = 29;
     int maxwidth = 0;
-    // Get maximum symbol width
-    for (int i = 0; i < QgsSymbol::NPointSymbols; i++ ) {
-	symbol.setPointSymbol((QgsSymbol::PointSymbol)i);
-	QPixmap pm = symbol.getPointSymbolAsPixmap();
+    QPen pen (QColor(0,0,255));
+    QBrush brush ( QColor(220,220,220), Qt::SolidPattern );
 
-	if ( pm.width() > maxwidth ) maxwidth = pm.width();
+    // Get maximum symbol width - this is probably slow
+    for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
+    
+	QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+		                pen, brush, QgsSVGCache::instance().getOversampling() );
+
+	QRect br = pic.boundingRect();
+
+	if ( br.width() > maxwidth ) maxwidth = br.width();
     }
     
-    for (int i = 0; i < QgsSymbol::NPointSymbols; i++ ) {
-	symbol.setPointSymbol((QgsSymbol::PointSymbol)i);
-	QPixmap pm = symbol.getPointSymbolAsPixmap();
+    for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
+	mMarkers.push_back ( *it );
 
-	QPixmap pm2( 10+maxwidth, 10+pm.height() );
-	pm2.fill(QColor(255,255,255));
+	QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+		                pen, brush, QgsSVGCache::instance().getOversampling() );
+
+	QRect br = pic.boundingRect();
+
+	QPixmap pm( 10+maxwidth, 10+br.height() );
+	pm.fill(QColor(255,255,255));
 	QPainter p;
-	p.begin(&pm2);
-        p.drawPixmap ( 5+(maxwidth-pm.width())/2 , 5, pm);
+	p.begin(&pm);
+        p.drawPicture ( 5-br.x()+(maxwidth-br.width())/2 , 5-br.y(), pic);
 	p.end();
-        mPointSymbolComboBox->insertItem ( pm2, i );
+        mPointSymbolComboBox->insertItem ( pm );
     }
 
     //
@@ -227,7 +235,7 @@ void QgsSiSyDialog::apply( QgsSymbol *sy )
     //
     // Apply point symbol
     // 
-    sy->setPointSymbol( (QgsSymbol::PointSymbol) mPointSymbolComboBox->currentItem() ) ;
+    sy->setNamedPointSymbol( mMarkers[mPointSymbolComboBox->currentItem()] ) ;
     sy->setPointSize ( mPointSizeSpinBox->value() );
     
     //
@@ -390,7 +398,12 @@ void QgsSiSyDialog::apply()
 void QgsSiSyDialog::set ( QgsSymbol *sy ) 
 {
 	// Set point symbol
-	mPointSymbolComboBox->setCurrentItem ( sy->pointSymbol() );
+        for ( int i = 0; i < mMarkers.size(); i++ ) {
+	    if ( mMarkers[i] ==  sy->pointSymbolName() ) {
+	        mPointSymbolComboBox->setCurrentItem ( i );
+		break;
+	    }
+	}
 	mPointSizeSpinBox->setValue ( sy->pointSize() );
 	
 	outlinewidthspinbox->setValue(sy->pen().width());

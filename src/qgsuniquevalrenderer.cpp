@@ -75,21 +75,12 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 	    QPainter painter;
 	    painter.begin(pic);
 
-	    if ( QgsSVGCache::instance().getOversampling() > 1 ) {
-	        QPixmap pm = item->getSymbol()->getPointSymbolAsPixmap();
-		painter.drawPixmap(0,0,pm);
-		if(selected) {
-		    painter.setBrush(QColor(255,255,0));
-		    painter.drawRect(0,0,pm.width(),pm.height());
-		}
-	    } else { 
-		QPicture pic = item->getSymbol()->getPointSymbolAsPicture();
-		painter.drawPicture(0,0,pic);
-		if(selected) {
-		    painter.setBrush(QColor(255,255,0));
-		    QRect br = pic.boundingRect();
-		    painter.drawRect(-br.x(), -br.y(), br.width(), br.height());
-		}
+	    QPicture pic = item->getSymbol()->getPointSymbolAsPicture();
+	    painter.drawPicture(0,0,pic);
+	    if(selected) {
+		painter.setBrush(QColor(255,255,0));
+		QRect br = pic.boundingRect();
+		painter.drawRect(-br.x(), -br.y(), br.width(), br.height());
 	    }
 	    
 	    if ( scalefactor ) *scalefactor = 1;

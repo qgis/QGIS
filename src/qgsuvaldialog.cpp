@@ -97,7 +97,7 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	    QgsSymbol* sym=new QgsSymbol();
 	    sym->setPen(item->getSymbol()->pen());
 	    sym->setBrush(item->getSymbol()->brush());
-	    sym->setPointSymbol(item->getSymbol()->pointSymbol());
+	    sym->setNamedPointSymbol(item->getSymbol()->pointSymbolName());
 	    sym->setPointSize(item->getSymbol()->pointSize());
 	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
 	    mValues.insert(std::make_pair(itemvalue,ritem));
@@ -171,7 +171,7 @@ void QgsUValDialog::apply()
 	    QgsSymbol* newsymbol=new QgsSymbol();
 	    newsymbol->setPen(symbol->pen());
 	    newsymbol->setBrush(symbol->brush());
-	    newsymbol->setPointSymbol(symbol->pointSymbol());
+	    newsymbol->setNamedPointSymbol(symbol->pointSymbolName());
 	    newsymbol->setPointSize(symbol->pointSize());
 	    QgsRenderItem* ritem=new QgsRenderItem(newsymbol,it->first,it->second->label());
 	    renderer->insertValue(it->first,ritem);
