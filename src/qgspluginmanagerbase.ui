@@ -70,6 +70,17 @@
             </column>
             <column>
                 <property name="text">
+                    <string>Version</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
                     <string>Description</string>
                 </property>
                 <property name="clickable">
@@ -82,17 +93,6 @@
             <column>
                 <property name="text">
                     <string>Library Name</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Type</string>
                 </property>
                 <property name="clickable">
                     <bool>true</bool>
