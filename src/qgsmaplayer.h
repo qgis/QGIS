@@ -88,6 +88,9 @@ public:
    */
   virtual QgsRect calculateExtent();
 
+  /*! Accesor for mShowInOverviewFlag */
+  bool showInOverviewStatus() {return mShowInOverview;};
+  
   virtual void draw(QPainter *, QgsRect *, int);
   virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * ,QPaintDevice *);
 
