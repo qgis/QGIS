@@ -112,6 +112,17 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
   double myStdDevsDouble = rasterLayer->getStdDevsToPlot();
   cboStdDev->setCurrentText(QString::number(myStdDevsDouble));
   //
+  // Set up the sliders on the advanced symbology tab
+  //
+  sliderMinRed->setValue(static_cast<int>(rasterLayer->getMinRedDouble()));
+  sliderMaxRed->setValue(static_cast<int>(255-rasterLayer->getMaxRedDouble()));
+  sliderMinGreen->setValue(static_cast<int>(rasterLayer->getMinGreenDouble()));
+  sliderMaxGreen->setValue(static_cast<int>(255-rasterLayer->getMaxGreenDouble()));
+  sliderMinBlue->setValue(static_cast<int>(rasterLayer->getMinBlueDouble()));
+  sliderMaxBlue->setValue(static_cast<int>(255-rasterLayer->getMaxBlueDouble()));
+  sliderMinGray->setValue(static_cast<int>(rasterLayer->getMinGrayDouble()));
+  sliderMaxGray->setValue(static_cast<int>(255-rasterLayer->getMaxGrayDouble()));       
+  //
   // Populate the statistics table
   //
   int myRowInt=0;
@@ -270,6 +281,17 @@ void QgsRasterLayerProperties::apply()
   {
     rasterLayer->setShowDebugOverlayFlag(false);
   }
+  //
+  // update histogram clipping ranges from the advanced symbology tab
+  //
+  rasterLayer->setMinRedDouble(static_cast<double>(sliderMinRed->value()));
+  rasterLayer->setMaxRedDouble(static_cast<double>(255-sliderMaxRed->value()));
+  rasterLayer->setMinGreenDouble(static_cast<double>(sliderMinGreen->value()));
+  rasterLayer->setMaxGreenDouble(static_cast<double>(255-sliderMaxGreen->value()));
+  rasterLayer->setMinBlueDouble(static_cast<double>(sliderMinBlue->value()));
+  rasterLayer->setMaxBlueDouble(static_cast<double>(255-sliderMaxBlue->value()));
+  rasterLayer->setMinGrayDouble(static_cast<double>(sliderMinGray->value()));
+  rasterLayer->setMaxGrayDouble(static_cast<double>(255-sliderMaxGray->value())); 
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();
 }

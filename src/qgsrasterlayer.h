@@ -97,6 +97,36 @@ class QgsRasterLayer : public QgsMapLayer  {
       // Accessor and mutator for showDebugOverlayFlag
       bool getShowDebugOverlayFlag() {return showDebugOverlayFlag;};
       void setShowDebugOverlayFlag(bool theFlag) {showDebugOverlayFlag=theFlag;};
+      // Accessor and mutator for min and max red
+      double getMinRedDouble() {return minRedDouble;};
+      void setMinRedDouble(double theDouble) {minRedDouble=theDouble;};
+      double getMaxRedDouble() {return maxRedDouble;};
+      void setMaxRedDouble(double theDouble) {maxRedDouble=theDouble;};      
+      // Accessor and mutator for min and max green
+      double getMinGreenDouble() {return minGreenDouble;};
+      void setMinGreenDouble(double theDouble) {minGreenDouble=theDouble;};
+      double getMaxGreenDouble() {return maxGreenDouble;};
+      void setMaxGreenDouble(double theDouble) {maxGreenDouble=theDouble;};  
+      // Accessor and mutator for min and max red
+      double getMinBlueDouble() {return minBlueDouble;};
+      void setMinBlueDouble(double theDouble) {minBlueDouble=theDouble;};
+      double getMaxBlueDouble() {return maxBlueDouble;};
+      void setMaxBlueDouble(double theDouble) {maxBlueDouble=theDouble;};  
+      // Accessor and mutator for min and max red
+      double getMinGrayDouble() {return minGrayDouble;};
+      void setMinGrayDouble(double theDouble) {minGrayDouble=theDouble;};
+      double getMaxGrayDouble() {return maxGrayDouble;};
+      void setMaxGrayDouble(double theDouble) {maxGrayDouble=theDouble;};    
+      //this enumerator describes the types of scaling algorithms that can be used
+      enum COLOR_SCALING_ALGORITHM 
+      {
+  	STRETCH_TO_MINMAX, //linear histogram stretch
+	STRETCH_AND_CLIP_TO_MINMAX,
+	CLIP_TO_MINMAX
+      };             
+      //Accessor and mutator for the color scaling algorithm
+      int getColorScalingAlgorithm() {return colorScalingAlgorithm;};
+      void setColorScalingAlgorithm(COLOR_SCALING_ALGORITHM theAlgorithm) { colorScalingAlgorithm=theAlgorithm;};
       //get a legend image for this layer
       QPixmap getLegendQPixmap();
       public slots:
@@ -132,7 +162,24 @@ class QgsRasterLayer : public QgsMapLayer  {
       QString blueBandNameQString;
       //the band to be associated with the grayscale only ouput - usually 1
       QString grayBandNameQString;
-
+      // minimum red value - used in scaling procedure
+      double minRedDouble;
+      // maximum red value - used in scaling procedure
+      double maxRedDouble;      
+      // minimum green value - used in scaling procedure
+      double minGreenDouble;
+      // maximum green value - used in scaling procedure
+      double maxGreenDouble;
+      // minimum blue value - used in scaling procedure
+      double minBlueDouble;
+      // maximum blue value - used in scaling procedure
+      double maxBlueDouble;
+      // minimum gray value - used in scaling procedure
+      double minGrayDouble;
+      // maximum gray value - used in scaling procedure
+      double maxGrayDouble;
+      //the colour scaling algorithm to be used (see enum COLOR_SCALING_ALGORITHM)
+      int colorScalingAlgorithm;
 signals:
       void repaintRequested();
 };
