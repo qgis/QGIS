@@ -1151,11 +1151,11 @@ bool QgsPostgresProvider::supportsSaveAsShapefile() const
   return false;
 }
 
-int QgsPostgresProvider::capabilities()
+int QgsPostgresProvider::capabilities() const
 {
     return ( QgsVectorDataProvider::AddFeatures | 
 	     QgsVectorDataProvider::DeleteFeatures |
-	     QgsVectorDataProvider::ChangeAttributes |
+	     QgsVectorDataProvider::ChangeAttributeValues |
 	     QgsVectorDataProvider::AddAttributes |
 	     QgsVectorDataProvider::DeleteAttributes );
 }

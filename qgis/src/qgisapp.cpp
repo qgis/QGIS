@@ -2649,13 +2649,15 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
     {
         // disable/enable toolbar buttons as appropriate based on selected
         // layer type
+
+	toolPopupCapture->setItemEnabled(0,FALSE);
+	toolPopupCapture->setItemEnabled(1,FALSE);
+	toolPopupCapture->setItemEnabled(2,FALSE);
+	toolPopupCapture->setItemEnabled(3,FALSE);
+
         QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
         if (layer->type() == QgsMapLayer::RASTER)
         {
-            toolPopupCapture->setItemEnabled(0,FALSE);
-            toolPopupCapture->setItemEnabled(1,FALSE);
-            toolPopupCapture->setItemEnabled(2,FALSE);
-            toolPopupCapture->setItemEnabled(3,FALSE);
             actionIdentify->setEnabled(FALSE);
             actionSelect->setEnabled(FALSE);
             actionOpenTable->setEnabled(FALSE);
@@ -2673,57 +2675,31 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
             QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) lvi)->layer());
             if(vlayer)
             {
-                if(vlayer->vectorType()==QGis::Point)
-                {
-                    toolPopupCapture->setItemEnabled(0,TRUE);
-                    toolPopupCapture->setItemEnabled(1,FALSE);
-                    toolPopupCapture->setItemEnabled(2,FALSE);
-		    if(mMapCanvas->mapTool() == QGis::CaptureLine || mMapCanvas->mapTool() == QGis::CapturePolygon)
+		QgsVectorDataProvider* provider=vlayer->getDataProvider();
+		if(provider)
+		{
+		    int cap=vlayer->getDataProvider()->capabilities();
+		    if(cap&QgsVectorDataProvider::DeleteFeatures)
 		    {
-			mMapCanvas->setMapTool(QGis::CapturePoint);
+			toolPopupCapture->setItemEnabled(3,TRUE);
 		    }
-                }
-                else if(vlayer->vectorType()==QGis::Line)
-                {
-#ifdef QGISDEBUG
-		    qWarning("QgisApp::currentLayerChanged: Line type recognized");
-		    qWarning("current map tool is: "+QString::number(mMapCanvas->mapTool()));
-#endif
-                    toolPopupCapture->setItemEnabled(0,FALSE);
-                    toolPopupCapture->setItemEnabled(1,TRUE);
-                    toolPopupCapture->setItemEnabled(2,FALSE);
-		    if(mMapCanvas->mapTool() == QGis::CapturePoint || mMapCanvas->mapTool() == QGis::CapturePolygon)
+		    if(cap&QgsVectorDataProvider::AddFeatures)
 		    {
-#ifdef QGISDEBUG
-			qWarning("Changing map tool");
-#endif
-			mMapCanvas->setMapTool(QGis::CaptureLine);
+			if(vlayer->vectorType()==QGis::Point)
+			{
+			    toolPopupCapture->setItemEnabled(0,TRUE);
+			}
+			else if(vlayer->vectorType()==QGis::Line)
+			{
+			    toolPopupCapture->setItemEnabled(1,TRUE);
+			}
+			else if(vlayer->vectorType()==QGis::Polygon)
+			{
+			    toolPopupCapture->setItemEnabled(2,TRUE);
+			}
 		    }
-                }
-                else if(vlayer->vectorType()==QGis::Polygon)
-                {
-                    toolPopupCapture->setItemEnabled(0,FALSE);
-                    toolPopupCapture->setItemEnabled(1,FALSE);
-                    toolPopupCapture->setItemEnabled(2,TRUE);
-		    if(mMapCanvas->mapTool() == QGis::CapturePoint || mMapCanvas->mapTool() == QGis::CaptureLine)
-		    {
-			mMapCanvas->setMapTool(QGis::CapturePolygon);
-		    }
-                }
-
-                QgsVectorDataProvider* dprov=vlayer->getDataProvider();
-                if(dprov)
-                {
-                    if(dprov->supportsFeatureDeletion())
-                    {
-                        toolPopupCapture->setItemEnabled(3,TRUE);
-                    }
-                    else
-                    {
-                        toolPopupCapture->setItemEnabled(3,FALSE);
-                    }
-                }
-            }
+		}
+	    }
 
             actionIdentify->setEnabled(TRUE);
             actionSelect->setEnabled(TRUE);

@@ -37,7 +37,7 @@ class QgsVectorDataProvider : public QgsDataProvider
 	    NoCapabilities = 0,
 	    AddFeatures = 1,
 	    DeleteFeatures = 1 << 1,
-	    ChangeAttributes = 1 << 2,
+	    ChangeAttributeValues = 1 << 2,
 	    AddAttributes = 1 << 3,
 	    DeleteAttributes = 1 << 4,
 	    SaveAsShapefile = 1 << 5
@@ -166,19 +166,6 @@ class QgsVectorDataProvider : public QgsDataProvider
      */
     virtual std::vector<QgsFeature>& identify(QgsRect *rect) = 0;
 
-  /**Returns true if a provider supports feature editing*/
-  virtual bool supportsFeatureAddition() const;
-
-  /**Returns true if a provider supports deleting features*/
-  virtual bool supportsFeatureDeletion() const;
-
-  /*Returns true if a provider supports adding/ removing attributes and
-   attribute changes to already existing features*/
-  virtual bool supportsAttributeEditing() const;
-
-  /** Returns true is the provider supports saving to shapefile*/
-   virtual bool supportsSaveAsShapefile() const;
-
   /** saves current data as Shape file, if it can */
   virtual bool saveAsShapefile()
   {
@@ -186,7 +173,7 @@ class QgsVectorDataProvider : public QgsDataProvider
   }
 
   /**Returns a bitmask containing the supported capabilities*/
-  virtual int capabilities(){return QgsVectorDataProvider::NoCapabilities;}
+  virtual int capabilities() const {return QgsVectorDataProvider::NoCapabilities;}
 
   const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
   const std::list<QString>& numericalTypes(){return mNumericalTypes;}

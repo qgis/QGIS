@@ -872,14 +872,16 @@ void QgsVectorLayer::initContextMenu_(QgisApp * app)
 
   popMenu->insertSeparator(); // XXX should this move to QgsMapLayer::initContextMenu()?
 
-  if(dataProvider->supportsFeatureAddition())
+  int cap=dataProvider->capabilities();
+  if((cap&QgsVectorDataProvider::AddFeatures)
+     ||(cap&QgsVectorDataProvider::DeleteFeatures))
   {
     popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
     popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
   }
 
   // XXX Can we ask the provider if it wants to add things to the context menu?
-  if(dataProvider->supportsSaveAsShapefile())
+  if(cap&QgsVectorDataProvider::SaveAsShapefile)
   {
     // add the save as shapefile menu item
     popMenu->insertSeparator();
@@ -1314,19 +1316,19 @@ QString QgsVectorLayer::getDefaultValue(const QString& attr,
 
 bool QgsVectorLayer::deleteSelectedFeatures()
 {
-  if(!dataProvider->supportsFeatureDeletion())
-  {
-    QMessageBox::information(0, tr("Provider does not support deletion"), tr("Data provider does not support deleting features"));
-    return false;
-  }
+    if(dataProvider->capabilities()&QgsVectorDataProvider::DeleteFeatures)
+    {
+	QMessageBox::information(0, tr("Provider does not support deletion"), tr("Data provider does not support deleting features"));
+	return false;
+    }
 
-  if(!isEditable())
-  {
-    QMessageBox::information(0, tr("Layer not editable"), tr("The current layer is not editable. Choose 'start editing' in the legend item right click menu"));
-    return false;
-  }
+    if(!isEditable())
+    {
+	QMessageBox::information(0, tr("Layer not editable"), tr("The current layer is not editable. Choose 'start editing' in the legend item right click menu"));
+	return false;
+    }
 
-  for(std::set<int>::iterator it=mSelected.begin();it!=mSelected.end();++it)
+    for(std::set<int>::iterator it=mSelected.begin();it!=mSelected.end();++it)
     {
       bool notcommitedfeature=false;
       //first test, if the feature with this id is a not-commited feature
@@ -1346,21 +1348,21 @@ bool QgsVectorLayer::deleteSelectedFeatures()
       mDeleted.insert(*it);
     }
 
-  if(mSelected.size()>0)
-  {
-    mModified=true;
-    mSelected.clear();
-    triggerRepaint();
-
-    //hide and delete the table because it is not up to date any more
-    if (tabledisplay)
+    if(mSelected.size()>0)
     {
-      tabledisplay->close();
-      delete tabledisplay;
-      tabledisplay=0;
-    }
+	mModified=true;
+	mSelected.clear();
+	triggerRepaint();
 
-  }
+	//hide and delete the table because it is not up to date any more
+	if (tabledisplay)
+	{
+	    tabledisplay->close();
+	    delete tabledisplay;
+	    tabledisplay=0;
+	}
+
+    }
 
   return true;
 }
@@ -1384,18 +1386,18 @@ void QgsVectorLayer::startEditing()
 {
   if(dataProvider)
   {
-    if(!dataProvider->supportsFeatureAddition())
-    {
-      QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
-    }
-    else
-    {
-      mEditable=true;
-      if(isValid())
+      if(!(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures))
       {
-        updateItemPixmap();
+	  QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
       }
-    }
+      else
+      {
+	  mEditable=true;
+	  if(isValid())
+	  {
+	      updateItemPixmap();
+	  }
+      }
   }
 }
 

@@ -53,27 +53,3 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
 					       QgsFeature* f) {
   return "";
 }
-
-bool QgsVectorDataProvider::supportsFeatureAddition() const
-{
-    //needs to be overwritten by providers if they provide feature editing
-    return false;
-}
-
-bool QgsVectorDataProvider::supportsFeatureDeletion() const
-{
-    //needs to be overwritten by providers supporting this
-    return false;
-}
-
-bool QgsVectorDataProvider::supportsAttributeEditing() const
-{
-    //needs to be overwritten by providers supporting this
-    return false;
-}
-
-bool QgsVectorDataProvider::supportsSaveAsShapefile() const
-{
-  // default implementation is no support 
-  return false; 
-}
