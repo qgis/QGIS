@@ -962,6 +962,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             break;
 
         case QGis::CapturePoint:
+	{
             QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
 	    emit xyClickCoordinates(idPoint);
 	    
@@ -992,7 +993,57 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
             std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
 #endif
+	}
             break;
+
+	case QGis::CaptureLine:
+	    
+	    mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
+	    if(mCaptureList.size()>1)
+	    {
+		QPainter paint(this);
+		paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
+		std::list<QgsPoint>::iterator it=mCaptureList.end();
+		--it;
+		--it;
+		QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+		paint.drawLine(lastpoint.x(),lastpoint.y(),e->x(),e->y());
+	    }
+	    if(e->button()==Qt::RightButton)
+	    {
+		QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+		if(vlayer)
+		{
+		    //create QgsFeature with wkb representation
+		    QgsFeature f(0,"WKBLineString");
+		    int size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+		    unsigned char *wkb= new unsigned char[size];
+		    int wkbtype=QGis::WKBLineString;
+		    int length=mCaptureList.size();
+		    memcpy(&wkb[1],&wkbtype, sizeof(int));
+		    memcpy(&wkb[5],&length, sizeof(int));
+		    int position=1+2*sizeof(int);
+		    double x,y;
+		    for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+		    {
+			x=it->x();
+			memcpy(&wkb[position],&x,sizeof(double));
+			position+=sizeof(double);
+			y=it->y();
+			memcpy(&wkb[position],&y,sizeof(double));
+			position+=sizeof(double);
+		    }
+		    f.setGeometry(&wkb[0],size);
+		    vlayer->addFeature(&f);
+		    mCaptureList.clear();
+		    refresh();
+		}
+		else
+		{
+		    //not a vector layer
+		}
+	    }
+	    break;
     }
   }
 } // mouseReleaseEvent
@@ -1084,6 +1135,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 void QgsMapCanvas::setMapTool(int tool)
 {
   mCanvasProperties->mapTool = tool;
+  mCaptureList.clear();
 } // setMapTool
 
 

@@ -1650,6 +1650,11 @@ void QgisApp::capturePoint()
   mMapCanvas->setCursor(*mMapCursor);
 }
 
+void QgisApp::captureLine()
+{
+   mMapCanvas->setMapTool(QGis::CaptureLine); 
+}
+
 void QgisApp::select()
 {
 
