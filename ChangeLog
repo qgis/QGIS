@@ -1,7 +1,17 @@
 QGIS Change Log
-ChangeLog,v 1.71 2004/05/13 10:17:12 timlinux Exp
+ChangeLog,v 1.72 2004/05/13 23:53:18 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-14 [larsl] 0.2.0devel14
+** Added a tab for loading GPX and LOC files to the GPS plugin dialog
+
+2004-05-14 [larsl] 0.2.0devel13
+** Added a virtual destructor to QgsDataProvider and deleted dataProvider in
+   the destructor for QgsVectorLayer
+
+2004-05-13 [larsl] 0.2.0devel12
+Changing std::string to QString in GPSData::getData() and GPSData::releaseData() to support Qt libraries built without STL support
 
 2004-05-13 [ts] 0.2.0devel11
 ** Fixes for segfaults on grid_make and gps_importer dbf creation
