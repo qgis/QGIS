@@ -146,6 +146,13 @@ unsigned char * QgsFeature::getGeometry() const
   return geometry;
 }
 
+
+size_t QgsFeature::getGeometrySize() const
+{
+    return geometrySize;
+} //  QgsFeauture::getGeometrySize() const
+
+
 /**
  * Return well known text representation of this feature
  */

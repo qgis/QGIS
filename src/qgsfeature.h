@@ -90,6 +90,8 @@ class QgsFeature {
 
     unsigned char * getGeometry() const;
 
+    size_t getGeometrySize() const;
+
     QString const & wellKnownText() const; 
 
     /** Set geometry to given Well Known Text string 
