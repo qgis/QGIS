@@ -17,18 +17,18 @@ install_location=
 type=DATA
 
 [Config for BinMakefileAm]
-addcxxflags=
+addcxxflags=-I$PGSQL/include
 bin_program=qgis
 cflags=
 cppflags=-I$PGSQL/include
 cxxflags=\s-O0 -g3 -Wall
 ldadd=-L$(PGSQL)/lib -lpq++ $(LIB_QT)
-ldflags=\s
+ldflags=\s    \s
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Gary E.Sherman
-configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --with-qt-dir=/opt/qt3.0.5\s
+configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --with-qt-dir=/opt/qt3.0.5 --with-extra-includes=(PGSQL)/include
 email=sherman at mrcc dot com
 kdevprj_version=1.3
 lfv_open_groups=
