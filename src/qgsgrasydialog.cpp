@@ -52,10 +52,10 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
 
       for (std::vector < QgsField >::iterator it = fields.begin(); it != fields.end(); ++it)
         {
-          QString type = (*it).getType();
+          QString type = (*it).type();
           if (type != "String" && type != "varchar" && type != "geometry")
             {
-              str = (*it).getName();
+              str = (*it).name();
               str = str.left(1).upper() + str.right(str.length() - 1);  //make the first letter uppercase
               classificationComboBox->insertItem(str);
               m_fieldmap.insert(std::make_pair(str, fieldnumber));
