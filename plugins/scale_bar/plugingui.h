@@ -15,11 +15,11 @@
 #include <pluginguibase.h>
 
 /**
-@author Tim Sutton
+@author Peter Brewer
 */
 class PluginGui : public PluginGuiBase
 {
-Q_OBJECT
+Q_OBJECT;
 public:
     PluginGui();
     PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
@@ -30,6 +30,8 @@ public:
     void setPreferredSize(int);
     void setEnabled(bool);
     void setStyle(QString);
+    void setColour(QColor);
+
     
     
 private:
@@ -41,6 +43,8 @@ signals:
    void changePreferredSize(int);
    void changeEnabled(bool);
    void changeStyle(QString);
+   void changeColour(QColor);
+   void refreshCanvas();
 };
 
 #endif
