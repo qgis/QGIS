@@ -167,6 +167,7 @@ The [type] part of the variable should be the type class of the variable written
 // 
  
 #include <qvaluevector.h>
+#include <qvaluelist.h> 
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
@@ -215,6 +216,11 @@ struct RasterBandStats
      * TODO: check if NO_DATA are excluded!*/
     int elementCountInt;    
 };
+
+/** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
+ * Note that while very RasterBandStats element will have the name and number of its associated
+ * band populated, any additional stats are calculated on a need to know basis.*/
+typedef QValueVector<RasterBandStats> RasterStatsVector;
 
 /** \brief The RasterViewPort describes the area of the raster layer that will be
  * rendered during a draw operation.
@@ -265,12 +271,29 @@ struct RasterViewPort
     int drawableAreaYDimInt;
 };
 
+/** \brief This struct is used to store pyramid info for the raster layer. */
+struct RasterPyramid
+{
+  /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
+  int levelInt;
+  /** \brief XDimension for this pyramid layer */
+  int xDimInt;
+  /** \brief YDimension for this pyramid layer */
+  int yDimInt;
+  /** \brief Whether the pyramid layer has been built yet */
+  bool existsFlag;
 
-/** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
- * Note that while very RasterBandStats element will have the name and number of its associated
- * band populated, any additional stats are calculated on a need to know basis.*/
-typedef QValueVector<RasterBandStats> RasterStatsVector;
+};
 
+/** \brief  A list containing one RasterPyramid struct per 
+ * POTENTIAL pyramid layer. How this works is we divide the height
+ * and width of the raster by an incrementing number. As soon as the result
+ * of the division is <=256 we stop allowing RasterPyramid stracuts
+ * to be added to the list. Each time a RasterPyramid is created
+ * we will check to see if a pyramid matching these dimensions already exists
+ * in the raster layer, and if so mark the exists flag as true. */
+  
+typedef QValueList<RasterPyramid> RasterPyramidList;
 
 /** \brief This typedef is used when the showProgress function is passed to gdal as a function
 pointer. */
@@ -675,6 +698,9 @@ public:
     //
     /** \brief  Accessor for raster layer type (which is a read only property) */
     RASTER_LAYER_TYPE getRasterLayerType() { return rasterLayerType; };
+    /** \brief Accessor for hasPyramidsFlag (READ ONLY) */
+    bool getHasPyramidsFlag() {return hasPyramidsFlag;};
+     
     /** \brief Get a legend image for this layer.  */
     QPixmap getLegendQPixmap();
     /** \brief  Overloaded version of above function that can print layer name onto legend. */
@@ -690,19 +716,29 @@ public:
     void triggerRepaint();
     /** \brief Obtain GDAL Metadata for this layer */
     QString getMetadata(); 
-
+    /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the 
+     * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers 
+     * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the 
+     * list.*/
+    RasterPyramidList buildRasterPyramidList();
+    /** \brief Helper method to retrieve the nth pyramid layer struct from the PyramidList. 
+     * If the nth layer does not exist, NULL will be returned. */
+//   RasterPyramid getRasterPyramid(int thePyramidNo);
+    
     
 public slots:    
-    /** \brief Create 3 gdal pyramid overviews (2,4,8) for this layer.
+    /** \brief Create  gdal pyramid overviews  for this layer.
     * This will speed up performance at the expense of hard drive space.
-    * Also, write access to the file is required.*/
-    void buildOverviews();
+    * Also, write access to the file is required. If no paramter is passed in
+    * it will default to the class member pyramid list. */
+    void buildPyramids(RasterPyramidList);
     /** \brief Used at the moment by the above function but hopefully will later
     be useable by any operation that needs to notify the user of its progress. */
+/*
     int showTextProgress( double theProgressDouble,
                           const char *theMessageCharArray,
                           void *theData);    
-
+*/
 private:
 
     //
@@ -810,8 +846,15 @@ private:
     double minGrayDouble;
     /** \brief Maximum gray value - used in scaling procedure.  */
     double maxGrayDouble;
-
-    //we need to do the tr() stuff outside of the loop becauses tr() is a 
+    /** \brief Whether this raster has overviews / pyramids or not */
+    bool hasPyramidsFlag;
+    /** \brief These are two little icons used to indicate whether a 
+     * layer has pyramds bult or not. */
+    QPixmap mPyramidPixmap, mNoPyramidPixmap;
+    /** \brief This list holds a series of RasterPyramid structs
+     * which store infomation for each potential pyramid level for this raster.*/
+    RasterPyramidList mPyramidList;
+    //we need to do the tr() stuff outside of the main drawing loops becauses tr() is a 
     //time consuming operation nd we dont want to do it in the loop!
     QString redTranslatedQString;
     QString greenTranslatedQString;

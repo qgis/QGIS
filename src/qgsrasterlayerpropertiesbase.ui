@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsRasterLayerPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -1205,6 +1205,12 @@
         <receiver>QgsRasterLayerPropertiesBase</receiver>
         <slot>sliderTransparency_valueChanged(int)</slot>
     </connection>
+    <connection>
+        <sender>buttonBuildPyramids</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsRasterLayerPropertiesBase</receiver>
+        <slot>buttonBuildPyramids_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsrasterlayerpropertiesbase.ui.h</include>
@@ -1223,6 +1229,7 @@
     <slot>rbtnThreeBand_toggled( bool )</slot>
     <slot>apply()</slot>
     <slot>sliderTransparency_sliderMoved( int )</slot>
+    <slot>buttonBuildPyramids_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
