@@ -160,6 +160,9 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	brush.setColor(QColor(red, green, blue));
 
 	QDomElement fillpelement = synode.namedItem("fillpattern").toElement();
+#ifdef QGISDEBUG
+	qWarning("readXML, brush style is: "+fillpelement.text());
+#endif
 	brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
 
 	QDomElement labelelement = rangerendernode.namedItem("label").toElement();

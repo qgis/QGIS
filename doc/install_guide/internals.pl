@@ -3,7 +3,7 @@
 
 
 $key = q/label_introduction/;
-$ref_files{$key} = "$dir".q|node2.html|; 
+$ref_files{$key} = "$dir".q|install.html|; 
 $noresave{$key} = "$nosave";
 
 1;

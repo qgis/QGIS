@@ -53,6 +53,7 @@ class QgsShapeFile : public QObject
   std::vector <QString> column_names;
   std::vector <QString> column_types;
   void setColumnNames(QStringList);
+  bool scanGeometries();
 
 
   private:
@@ -61,9 +62,12 @@ class QgsShapeFile : public QObject
   OGRLayer * ogrLayer;
   bool import_cancelled;
   bool valid;
+  //! Flag to indicate the file contains multiple geometry types
+  bool isMulti;
   int features;
   QString filename;
   QString geom_type;
+  QStringList geometries;
 
   public slots:
   void cancelImport();

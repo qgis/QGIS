@@ -32,7 +32,8 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
   //    out with the old
     //    QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
     //    in with the new...
-    setMapUnits(QgsProject::instance()->mapUnits());
+    QgsScaleCalculator::units myUnit = QgsProject::instance()->mapUnits();
+    setMapUnits(myUnit);
     title(QgsProject::instance()->title());
 }
 

@@ -121,27 +121,31 @@ void QgsGrassPlugin::initGui()
     // Check GISBASE
     char *gb = getenv("GISBASE");
     if ( !gb ) {
-	QMessageBox::warning( 0, "Warning", "Enviroment variable 'GISBASE' is not set,\nGRASS data "
-		"cannot be used.\nSet 'GISBASE' and restart QGIS.\nGISBASE is full path to the\n"
-	        "directory where GRASS is installed." );
-	return;
+  QMessageBox::warning( 0, "Warning", "Enviroment variable 'GISBASE' is not set,\nGRASS data "
+    "cannot be used.\nSet 'GISBASE' and restart QGIS.\nGISBASE is full path to the\n"
+          "directory where GRASS is installed." );
+  return;
     }
 
     QString gbs ( gb );
     QFileInfo gbi ( gbs );
     if ( !gbi.exists() ) {
-	QMessageBox::warning( 0, "Warning", "GISBASE:\n'" + gbs + "'\ndoes not exist,\n"
-		"GRASS data cannot be used." );
-	return;
+  QMessageBox::warning( 0, "Warning", "GISBASE:\n'" + gbs + "'\ndoes not exist,\n"
+    "GRASS data cannot be used." );
+  return;
     }
 
     mCanvas = qGisInterface->getMapCanvas();
     
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-    pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this, SLOT(addVector()));
-    pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
-    pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
+    int menuId = pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this,
+                                        SLOT(addVector()));
+    pluginMenu->setWhatsThis(menuId, "Add a GRASS vector layer to the map canvas.");
+    menuId = pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
+    pluginMenu->setWhatsThis(menuId, "Add a GRASS raster layer to the map canvas.");
+    menuId = pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
+    pluginMenu->setWhatsThis(menuId, "Edit a GRASS vector layer");
 
     menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
@@ -149,23 +153,25 @@ void QgsGrassPlugin::initGui()
 
     // Create the action for tool
     QAction *addVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
-	                                   "Add GRASS vector layer",0, this, "addVector");
+                                     "Add GRASS vector layer",0, this, "addVector");
+    addVectorAction->setWhatsThis("Adds a GRASS vector layer to the map canvas");
     QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
-	                                   "Add GRASS raster layer",0, this, "addRaster");
-
+                                     "Add GRASS raster layer",0, this, "addRaster");
+    addRasterAction->setWhatsThis("Adds a GRASS raster layer to the map canvas");
     mRegionAction = new QAction("Display Current Grass Region", QIconSet(icon_grass_region), 
-	                        "Display Current Grass Region",0, this, "region", true);
+                          "Display Current Grass Region",0, this, "region", true);
+    mRegionAction->setWhatsThis("Displays the current GRASS region as a rectangle on the map canvas");
     QAction *editRegionAction = new QAction("Edit Current Grass Region", QIconSet(icon_grass_region_edit), 
-	                        "Edit Current Grass Region",0, this, "editRegion");
-
+                          "Edit Current Grass Region",0, this, "editRegion");
+    editRegionAction->setWhatsThis("Edit the current GRASS region");
     QAction *editAction = new QAction("Edit Grass Vector layer", QIconSet(icon_grass_edit), 
-	                        "Edit Grass Vector layer",0, this, "edit");
-    
+                          "Edit Grass Vector layer",0, this, "edit");
+    editAction->setWhatsThis("Edit the currently selected GRASS vector layer.");
     if ( !QgsGrass::activeMode() )  {
-	mRegionAction->setEnabled(false);
-	editRegionAction->setEnabled(false);
+  mRegionAction->setEnabled(false);
+  editRegionAction->setEnabled(false);
     } else {
-	mRegionAction->setOn(true);
+  mRegionAction->setOn(true);
     }
 
     // Connect the action 
@@ -201,23 +207,23 @@ void QgsGrassPlugin::addVector()
 
     QgsGrassSelect *sel = new QgsGrassSelect(QgsGrassSelect::VECTOR );
     if ( sel->exec() ) {
-	uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
+  uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
     }
     #ifdef QGISDEBUG
     std::cerr << "plugin URI: " << uri << std::endl;
     #endif
     if ( uri.length() == 0 ) {
-	std::cerr << "Nothing was selected" << std::endl;
-	return;
+  std::cerr << "Nothing was selected" << std::endl;
+  return;
     } else {
         #ifdef QGISDEBUG
-	std::cout << "Add new vector layer" << std::endl;
+  std::cout << "Add new vector layer" << std::endl;
         #endif
-	// create vector name: vector layer
-	int pos = uri.findRev('/');
-	pos = uri.findRev('/', pos-1);
-	QString name = uri.right( uri.length() - pos - 1 );
-	name.replace('/', ' ');
+  // create vector name: vector layer
+  int pos = uri.findRev('/');
+  pos = uri.findRev('/', pos-1);
+  QString name = uri.right( uri.length() - pos - 1 );
+  name.replace('/', ' ');
 
         qGisInterface->addVectorLayer( uri, name, "grass");
     }
@@ -232,30 +238,30 @@ void QgsGrassPlugin::addRaster()
 
     QgsGrassSelect *sel = new QgsGrassSelect(QgsGrassSelect::RASTER );
     if ( sel->exec() ) {
-	QString element;
-	if ( sel->selectedType == QgsGrassSelect::RASTER ) {
-	    element = "cellhd";
-	} else { // GROUP
-	    element = "group";
-	}
-	    
-	uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
+  QString element;
+  if ( sel->selectedType == QgsGrassSelect::RASTER ) {
+      element = "cellhd";
+  } else { // GROUP
+      element = "group";
+  }
+      
+  uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
     }
     #ifdef QGISDEBUG
     std::cerr << "plugin URI: " << uri << std::endl;
     #endif
     if ( uri.length() == 0 ) {
-	std::cerr << "Nothing was selected" << std::endl;
-	return;
+  std::cerr << "Nothing was selected" << std::endl;
+  return;
     } else {
         #ifdef QGISDEBUG
-	std::cout << "Add new raster layer" << std::endl;
+  std::cout << "Add new raster layer" << std::endl;
         #endif
-	// create raster name
-	int pos = uri.findRev('/');
-	pos = uri.findRev('/', pos-1);
-	QString name = uri.right( uri.length() - pos - 1 );
-	name.replace('/', ' ');
+  // create raster name
+  int pos = uri.findRev('/');
+  pos = uri.findRev('/', pos-1);
+  QString name = uri.right( uri.length() - pos - 1 );
+  name.replace('/', ' ');
 
         qGisInterface->addRasterLayer( uri );
     }
@@ -265,18 +271,17 @@ void QgsGrassPlugin::addRaster()
 void QgsGrassPlugin::edit()
 {
     if ( QgsGrassEdit::isRunning() ) {
-	QMessageBox::warning( 0, "Warning", "GRASS Edit is already running." );
-	return;
+  QMessageBox::warning( 0, "Warning", "GRASS Edit is already running." );
+  return;
     }
 
-    QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, 
-	                                 Qt::WType_Dialog );
+    QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, Qt::WType_Dialog );
 
     if ( ed->isValid() ) {
         ed->show();
-	mCanvas->refresh();
+  mCanvas->refresh();
     } else {
-	delete ed;
+  delete ed;
     }
 }
 
@@ -296,9 +301,9 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
     QString mapset   = QgsGrass::getDefaultMapset();
 
     if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() ) {
-	QMessageBox::warning( 0, "Warning", "GISDBASE, LOCATION_NAME or MAPSET is not set, "
-		                 "cannot display current region." );
-	return;
+  QMessageBox::warning( 0, "Warning", "GISDBASE, LOCATION_NAME or MAPSET is not set, "
+                     "cannot display current region." );
+  return;
     }
 
     QgsGrass::setLocation ( gisdbase, location );
@@ -307,8 +312,8 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
     char *err = G__get_window ( &window, "", "WIND", (char *) mapset.latin1() );
 
     if ( err ) {
-	QMessageBox::warning( 0, "Warning", "Cannot read current region: " + QString(err) );
-	return;
+  QMessageBox::warning( 0, "Warning", "Cannot read current region: " + QString(err) );
+  return;
     }
 
     std::vector<QgsPoint> points;
@@ -341,13 +346,13 @@ void QgsGrassPlugin::changeRegion(void)
     #endif
 
     if ( QgsGrassRegion::isRunning() ) {
-	QMessageBox::warning( 0, "Warning", "The Region tool is already running." );
-	return;
+  QMessageBox::warning( 0, "Warning", "The Region tool is already running." );
+  return;
     }
 
     QgsGrassRegion *reg = new QgsGrassRegion(this, qgisMainWindowPointer, qGisInterface, 
-	                         qgisMainWindowPointer, 0, 
-				 Qt::WType_Dialog );
+                           qgisMainWindowPointer, 0, 
+         Qt::WType_Dialog );
 
     reg->show();
 }

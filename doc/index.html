@@ -10,7 +10,7 @@
   </td>
   <td valign="center">
     <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 0.5 <i>Bandit</i></span>
+    <span class="subheader">Version 0.6 <i>Simon</i></span>
   </td>
 </tr>
 </table>
@@ -18,25 +18,42 @@
 <a href="userguide.pdf" class="bar">User Guide</a><br>
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 0.5</h2> 
-Version 0.5 of QGIS contains a number of new features:
+<h2>Whats new in Version 0.6</h2> 
 <table>
   <tr>
-    <td>
+    <td valign="top" width="50%">
   <ul class="small">
-  <li>Windows version
-  <li>Feature labeling with optional buffering
-  <li>Preliminary digitizing support for shapefiles
-  <li>GRASS digitizing support
-  <li>GPS SVG icons
+  <li> GEOS support to improve the method of feature
+  <li> PostGIS editing support in provider
+  <li> Vector dialog redesign to improve usability
+  <li> Improvement in project handling (loading and saving)
+  <li> Scale dependent rendering
+  <li> User option to load layers with out drawing them, thus allowing
+    you to set scale dependency, etc without waiting for the initial draw to
+    complete
+  <li> Interrupt drawing of features by hitting ESC
+  <li> Attribute actions - the ability to run an external program based
+    on the contents of an attribute field in a layer
+  <li> Create new vector layer (shapefile) for editing
+  <li> Windows installer
+  <li> Mac OSX binary
 </ul>
-<td>
-<td valign="top">
-    <ul class="small">
-  <li>Unique value renderers
-  <li>User interface improvements
-  <li>Specify a query when loading a PostGIS layer
-  <li>Italian translation
+<td valign="top" width="50%">
+ <ul class="small">
+  <li> New options in the graticule builder plugin
+  <li> Enhancements to the GPS plugin
+  <li> Man page
+  <li> Save delimited text as shapefile
+  <li> Improved Delimited Text plugin, including preview of text file
+  <li> Improved SPIT handling of PostgreSQL reserved words and shapefiles
+    with multiple geometry types
+  <li> Display SQL query used to create a PostGIS layer
+  <li> PostgreSQL query builder
+  <li> Ability to redefine the query used for PostgreSQL layers from the
+    layer properties dialog
+  <li> North arrow, scalebar, and copyright plugins save their state in
+    the project file
+  <li> Datasets with UTF8, Kanjii and CJK filenames now load properly
 </ul>
   </td>
 </tr>

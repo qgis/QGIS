@@ -27,6 +27,8 @@
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
+#include "qgsscangeometries.h"
+#include "../../src/qgis.h"
 
 
 QgsShapeFile::QgsShapeFile(QString name){
@@ -42,6 +44,9 @@ QgsShapeFile::QgsShapeFile(QString name){
   else
     valid = false;
   setDefaultTable();
+  // init the geometry types
+  geometries << "NULL" << "POINT" << "LINESTRING" << "POLYGON" << "MULTPOINT" 
+    << "MULTILINESTRING" << "MULTIPOLYGON" << "GEOMETRYCOLLECTION";
 }
 
 QgsShapeFile::~QgsShapeFile(){
@@ -54,17 +59,90 @@ QgsShapeFile::~QgsShapeFile(){
 int QgsShapeFile::getFeatureCount(){
   return features;
 }
+bool QgsShapeFile::scanGeometries()
+{
+  int progressThreshold = 5;
+  int progressCount = 0;
+  QgsScanGeometries *sg = new QgsScanGeometries();
+  sg->setFileInfo("Scanning " + filename);
+  sg->show();
+  qApp->processEvents();
 
+  OGRFeature *feat;
+  int currentType = 0;
+  bool multi = false;
+  while((feat = ogrLayer->GetNextFeature()))
+  {
+// update the progress counter
+//    if(++progressCount == progressThreshold)
+//    {
+//      progressCount = 0;
+//      sg->setStatus(0);
+      qApp->processEvents();
+//    }
+
+ 
+
+    //    feat->DumpReadable(NULL);
+    OGRGeometry *geom = feat->GetGeometryRef();
+    if(geom)
+    {
+      QString gml =  geom->exportToGML();
+      //      std::cerr << gml << std::endl; 
+      if(gml.find("gml:Multi") > -1)
+      {
+        //   std::cerr << "MULTI Part Feature detected" << std::endl; 
+        multi = true;
+      }
+      OGRFeatureDefn *fDef = feat->GetDefnRef();
+      OGRwkbGeometryType gType = fDef->GetGeomType();
+      //      std::cerr << fDef->GetGeomType() << std::endl; 
+      if(gType > currentType)
+      {
+        currentType = gType;
+      }
+      if(gType < currentType)
+      {
+        std::cerr << "Encountered inconsistent geometry type " << gType << std::endl; 
+      }
+
+    }
+  }
+  ogrLayer->ResetReading();
+  geom_type = geometries[currentType];
+  if(multi && (geom_type.find("MULTI") == -1))
+  {
+    geom_type = "MULTI" + geom_type;
+  }
+  delete sg;
+  //  std::cerr << "Geometry type is " << currentType << " (" << geometries[currentType] << ")" << std::endl; 
+  return multi;
+}
 QString QgsShapeFile::getFeatureClass(){
+  // scan the whole layer to try to determine the geometry
+  // type. 
+  qApp->processEvents();
+  isMulti = scanGeometries();
   OGRFeature *feat = ogrLayer->GetNextFeature();
   if(feat){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){
-      geom_type = QString(geom->getGeometryName());
+      /* OGR doesn't appear to report geometry type properly
+       * for a layer containing both polygon and multipolygon
+       * entities
+       *
+      // get the feature type from the layer
+      OGRFeatureDefn * gDef = ogrLayer->GetLayerDefn();
+      OGRwkbGeometryType gType = gDef->GetGeomType();
+      geom_type = QGis::qgisFeatureTypes[gType];
+      */
+      //geom_type = QString(geom->getGeometryName());
+      //geom_type = "GEOMETRY";
+      std::cerr << "Preparing to escape " << geom_type << std::endl; 
       char * esc_str = new char[geom_type.length()*2+1];
       PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
       geom_type = QString(esc_str);
-      
+      std::cerr << "After escaping, geom_type is : " << geom_type << std::endl;  
       delete[] esc_str;
       
       QString file(filename);
@@ -188,7 +266,18 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     qWarning(PQresultErrorMessage(res));
     PQclear(res);
   }
-
+  if(isMulti)
+  {
+    // drop the check constraint 
+    // TODO This whole concept needs to be changed to either
+    // convert the geometries to the same type or allow
+    // multiple types in the check constraint. For now, we
+    // just drop the constraint...
+    query = "alter table " + table_name + " drop constraint \"$2\"";
+    // XXX tacky - we don't even check the result...
+    PQexec(conn, (const char*)query);
+  }
+      
   //adding the data into the table
   for(int m=0;m<features && result; m++){
     if(import_cancelled){
@@ -227,6 +316,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           delete[] esc_str;
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
+    //    std::cerr << query << std::endl; 
 
         if(result)
           res = PQexec(conn, (const char *)query);

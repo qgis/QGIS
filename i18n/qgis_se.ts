@@ -62,7 +62,7 @@
     </message>
     <message>
         <source>GPS Download File Importer</source>
-        <translation>Importerare för GPS-dumpfiler</translation>
+        <translation type="obsolete">Importerare för GPS-dumpfiler</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -82,19 +82,19 @@
     </message>
     <message>
         <source>Input File:</source>
-        <translation>Indatafil:</translation>
+        <translation type="obsolete">Indatafil:</translation>
     </message>
     <message>
         <source>Output (Shape) File:</source>
-        <translation>Utdatafil (Shapefile):</translation>
+        <translation type="obsolete">Utdatafil (Shapefile):</translation>
     </message>
     <message>
         <source>Minimum time gap (s):</source>
-        <translation>Minsta tidsgap (s):</translation>
+        <translation type="obsolete">Minsta tidsgap (s):</translation>
     </message>
     <message>
         <source>Minimum distance gap (dd):</source>
-        <translation>Minsta avståndsgap (dd):</translation>
+        <translation type="obsolete">Minsta avståndsgap (dd):</translation>
     </message>
     <message>
         <source>...</source>
@@ -213,7 +213,7 @@
     </message>
     <message>
         <source>GPS Tools</source>
-        <translation>GPS-Verktyg</translation>
+        <translation type="obsolete">GPS-Verktyg</translation>
     </message>
     <message>
         <source>GPX and LOC loader</source>
@@ -235,23 +235,23 @@
     </message>
     <message>
         <source>File:</source>
-        <translation>Fil:</translation>
+        <translation type="obsolete">Fil:</translation>
     </message>
     <message>
         <source>Feature types:</source>
-        <translation>Objekttyper:</translation>
+        <translation type="obsolete">Objekttyper:</translation>
     </message>
     <message>
         <source>Waypoints</source>
-        <translation>Waypoints</translation>
+        <translation type="obsolete">Waypoints</translation>
     </message>
     <message>
         <source>Routes</source>
-        <translation>Rutter</translation>
+        <translation type="obsolete">Rutter</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation>Spår</translation>
+        <translation type="obsolete">Spår</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -261,7 +261,7 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Välj GPS-dumpfilen som du vill konvertera till en shapefile så gör detta plugin jobbet åt dig! &lt;/p&gt;
 &lt;p&gt;Använd det minimala tidsgapet för att ange vilket tidsintervall som ska användas för att bestämma när ett nytt objekt påbörjas. &lt;/p&gt;
@@ -375,7 +375,7 @@
     </message>
     <message>
         <source>Import other file</source>
-        <translation>Importera annan fil</translation>
+        <translation type="obsolete">Importera annan fil</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -405,23 +405,23 @@ så några detaljtyper är inaktiverade för en del filformat.&lt;/p&gt;
     </message>
     <message>
         <source>File to import:</source>
-        <translation>Fil att importera:</translation>
+        <translation type="obsolete">Fil att importera:</translation>
     </message>
     <message>
         <source>Feature type:</source>
-        <translation>Objekttyp:</translation>
+        <translation type="obsolete">Objekttyp:</translation>
     </message>
     <message>
         <source>GPX output file:</source>
-        <translation>GPX-fil (utdata):</translation>
+        <translation type="obsolete">GPX-fil (utdata):</translation>
     </message>
     <message>
         <source>Layer name:</source>
-        <translation>Lagernamn:</translation>
+        <translation type="obsolete">Lagernamn:</translation>
     </message>
     <message>
         <source>Download from GPS</source>
-        <translation>Hämta från GPS</translation>
+        <translation type="obsolete">Hämta från GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -435,7 +435,7 @@ you want to store the data.&lt;/p&gt;
 don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Det här verktyget hjälper dig att hämta data från en GPS-enhet.. Välj ditt protokoll, 
 porten som din GPS är kopplad till, typen av objekt du vill ladda ner, 
@@ -448,27 +448,27 @@ detta verktyg inte att fungera.&lt;/p&gt;
     </message>
     <message>
         <source>Protocol:</source>
-        <translation>Protokoll:</translation>
+        <translation type="obsolete">Protokoll:</translation>
     </message>
     <message>
         <source>Device file:</source>
-        <translation>Port:</translation>
+        <translation type="obsolete">Port:</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation>Utdatafil:</translation>
+        <translation type="obsolete">Utdatafil:</translation>
     </message>
     <message>
         <source>Garmin</source>
-        <translation>Garmin</translation>
+        <translation type="obsolete">Garmin</translation>
     </message>
     <message>
         <source>Magellan</source>
-        <translation>Magellan</translation>
+        <translation type="obsolete">Magellan</translation>
     </message>
     <message>
         <source>Upload to GPS</source>
-        <translation>Skicka till GPS</translation>
+        <translation type="obsolete">Skicka till GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -480,7 +480,7 @@ GPS is connected to.&lt;/p&gt;
 have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Det här verktyget hjälper dig att ladda upp data till en GPS-enhet. 
 Välj det GPS-lager du vill ladda upp, ditt protokoll och porten som din GPS 
@@ -492,7 +492,7 @@ data. Om du inte har GPSBabel installerat där QGIS kan hitta det så kommer det
     </message>
     <message>
         <source>Data layer:</source>
-        <translation>Datalager:</translation>
+        <translation type="obsolete">Datalager:</translation>
     </message>
     <message>
         <source>Scale Bar Plugin</source>
@@ -561,7 +561,7 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Load GPX file</source>
-        <translation>Ladda GPX-fil</translation>
+        <translation type="obsolete">Ladda GPX-fil</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -570,7 +570,7 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
 &lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX står för &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt; och används för att lagra information om waypoints, rutter och spår.&lt;/p&gt;
 &lt;p&gt;Välj en GPX-fil och typen av objekt som du vill ladda.&lt;/p&gt;
@@ -590,7 +590,7 @@ and a name for the new layer. All file formats can not store waypoints, routes, 
 tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;QGIS kan bara ladda GPX-filer, men många andra filformat kan
 konverteras till GPX med GPSBabel  (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
@@ -602,6 +602,30 @@ ett namn för det nya lagret. Alla filformat kan inte lagra waypoints, rutter
 och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
+    </message>
+    <message>
+        <source>Origin (Lower Left)</source>
+        <translation>Origo (nedre vänstra)</translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation>Latitud:</translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation>Longitud:</translation>
+    </message>
+    <message>
+        <source>End point (Upper Right)</source>
+        <translation>Ändpunkt (övre högra)</translation>
+    </message>
+    <message>
+        <source>Output (Shape) File</source>
+        <translation>Utfil (Shapefile)</translation>
+    </message>
+    <message>
+        <source>Graticule Size (units in degrees)</source>
+        <translation>Rutnätsstorlek (enheter i grader)</translation>
     </message>
 </context>
 <context>
@@ -623,19 +647,19 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     <name>QObject</name>
     <message>
         <source>Overwrite File?</source>
-        <translation>Skriva över fil?</translation>
+        <translation type="obsolete">Skriva över fil?</translation>
     </message>
     <message>
         <source>%1 exists.%2Do you want to overwrite it?</source>
-        <translation>%1 finns redan. %2Vill du skriva över den?</translation>
+        <translation type="obsolete">%1 finns redan. %2Vill du skriva över den?</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>Ja</translation>
+        <translation type="obsolete">Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation>Nej</translation>
+        <translation type="obsolete">Nej</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
@@ -672,7 +696,11 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>Choose a filename to save</source>
-        <translation>Välj ett filnamn att spara som</translation>
+        <translation type="obsolete">Välj ett filnamn att spara som</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation>Välj en QGIS-projektfil</translation>
     </message>
 </context>
 <context>
@@ -763,11 +791,11 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>Quantum GIS -- Untitled</source>
-        <translation>Quantum GIS -- Namnlös</translation>
+        <translation type="obsolete">Quantum GIS -- Namnlös</translation>
     </message>
     <message>
         <source>Quantum GIS --</source>
-        <translation>Quantum GIS --</translation>
+        <translation type="obsolete">Quantum GIS --</translation>
     </message>
     <message>
         <source>Saved map to:</source>
@@ -959,7 +987,7 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>QGIS ready</source>
-        <translation>QGIS redo</translation>
+        <translation type="obsolete">QGIS redo</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -968,6 +996,114 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     <message>
         <source>http://www.gnu.org/licenses</source>
         <translation>http://www.gnu.org/licenses</translation>
+    </message>
+    <message>
+        <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
+        <translation>Teckenförklaring som visar alla lager i kartvyn. Klicka på en checkbox för att aktivera eller inaktivera ett lager. Dubbelklicka på ett lager i teckenförklaringen för att ställa in dess utseende och ändra andra inställningar.</translation>
+    </message>
+    <message>
+        <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
+        <translation>Översiktskarta. Denna kartvy kan användas för att visa en översikt där den nuvarande kartvyn syns som en röd rektangel. Alla lager i kartan kan läggas till i översiktskartan.</translation>
+    </message>
+    <message>
+        <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
+        <translation>Kartvy. Det är här som raster- och vektorlager visas när de adderas till kartan</translation>
+    </message>
+    <message>
+        <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
+        <translation>Förloppsindikator som visar statusen för rendering av lager och andra tidsintensiva operationer</translation>
+    </message>
+    <message>
+        <source>Displays the current map scale</source>
+        <translation>Visar den nuvarande kartskalan</translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
+        <translation>Visar kartkoordinaterna vid den nuvarande pekarpositionen. Uppdateras kontinuerligt när musen flyttas.</translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation>Rendera</translation>
+    </message>
+    <message>
+        <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
+        <translation>När den här rutan är markerad så renderas kartlagren vid navigationskommandon och andra händelser com kräver en uppdatering av kartan. När den inte är markerad så renderas ingenting. Detta låter dig addera ett stort antal lager och ställa in deras symbologi innan du renderar dem.</translation>
+    </message>
+    <message>
+        <source>Setting theme...</source>
+        <translation>Ställer in tema...</translation>
+    </message>
+    <message>
+        <source>QGIS Ready</source>
+        <translation>QGIS är redo</translation>
+    </message>
+    <message>
+        <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
+        <translation>Stöd för GEOS i OGR-datapluginet för att förbättra markering av objekt med Identifiera-verktyget. Tidigare versioner har använt en enkel MBR-snittsmetod.</translation>
+    </message>
+    <message>
+        <source>PostGIS editing support in provider</source>
+        <translation>Stöd för redigering i PostGIS-dataplugin</translation>
+    </message>
+    <message>
+        <source>Vector dialog redesign to improve usability</source>
+        <translation>Vektordialogfönstret har en ny design för att förbättra användarvänligheten</translation>
+    </message>
+    <message>
+        <source>Improvement in project handling (loading and saving)</source>
+        <translation>Förbättringar i laddning och sparning av projekt</translation>
+    </message>
+    <message>
+        <source>Scale dependent rendering</source>
+        <translation>Skalberoende rendering</translation>
+    </message>
+    <message>
+        <source>User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete</source>
+        <translation>Möjlighet att ladda lager utan att rita dem, så att du kan göra inställningar för lagret utan att vänta på den första renderingen</translation>
+    </message>
+    <message>
+        <source>Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer</source>
+        <translation>Attributkommandon - kör ett externt program baserat på innehållet i ett lagers attributfält</translation>
+    </message>
+    <message>
+        <source>Create new vector layer (shapefile) for editing</source>
+        <translation>Skapa nytt vektorlager (shapefile) för redigering</translation>
+    </message>
+    <message>
+        <source>Windows installer</source>
+        <translation>Windowsinstallerare</translation>
+    </message>
+    <message>
+        <source>Mac OSX binary</source>
+        <translation>Mac OSX-program</translation>
+    </message>
+    <message>
+        <source>New options in the graticule builder plugin</source>
+        <translation>Nya inställningar i rutnätsbyggaren</translation>
+    </message>
+    <message>
+        <source>Enhancements to the GPS plugin</source>
+        <translation>Förbättringar i GPS-pluginet</translation>
+    </message>
+    <message>
+        <source>Man page</source>
+        <translation>Man-sida</translation>
+    </message>
+    <message>
+        <source>QGis files (*.qgs)</source>
+        <translation>QGis-filer (*.qgs)</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation>Välj en QGIS-projektfil</translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation>Kan inte spara projekt</translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation>Kan inte spara projekt som</translation>
     </message>
 </context>
 <context>
@@ -986,7 +1122,7 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation>&amp;Verktyg</translation>
+        <translation type="obsolete">&amp;Verktyg</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -1098,7 +1234,7 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>Action</source>
-        <translation>Funktion</translation>
+        <translation>Kommando</translation>
     </message>
     <message>
         <source>Zoom to last extent</source>
@@ -1442,7 +1578,7 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>E&amp;xport As Image</source>
-        <translation>E&amp;xportera Som Bild</translation>
+        <translation type="obsolete">E&amp;xportera Som Bild</translation>
     </message>
     <message>
         <source>&amp;Whats this?</source>
@@ -1454,7 +1590,7 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>Project &amp;Properties</source>
-        <translation>Projekt&amp;egenskaper</translation>
+        <translation type="obsolete">Projekt&amp;egenskaper</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -1563,6 +1699,30 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     <message>
         <source>Plugins Toolbar</source>
         <translation>Pluginverktygsrad</translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation>&amp;Inställningar</translation>
+    </message>
+    <message>
+        <source>&amp;Export As Image</source>
+        <translation>&amp;Exportera Som Bild</translation>
+    </message>
+    <message>
+        <source>P&amp;roject Properties</source>
+        <translation>P&amp;rojektegenskaper</translation>
+    </message>
+    <message>
+        <source>Remove Layer</source>
+        <translation>Ta Bort Lager</translation>
+    </message>
+    <message>
+        <source>Toggle In Overview</source>
+        <translation>Toggla I Översikten</translation>
+    </message>
+    <message>
+        <source>New Vectorlayer</source>
+        <translation>Nytt Vektorlager</translation>
     </message>
 </context>
 <context>
@@ -1712,6 +1872,143 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <message>
         <source>Providers</source>
         <translation>Dataplugin</translation>
+    </message>
+    <message>
+        <source>Christoph Spoerri</source>
+        <translation>Christoph Spoerri</translation>
+    </message>
+    <message>
+        <source>Gavin Macaulay</source>
+        <translation>Gavin Macaulay</translation>
+    </message>
+    <message>
+        <source>Tom Elwertowski</source>
+        <translation>Tom Elwertowski</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeActionDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation>Formulär1</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Namn</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation>Kommando</translation>
+    </message>
+    <message>
+        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
+        <translation>Denna lista innehåller alla kommandon som har definierats för det aktiva lagret. Lägg till kommandon genom att ange detaljerna i fälten nedan och sedan trycka på knappen Lägg till kommando. Kommandon kan redigeras genom att dubbelklicka på dem i listan.</translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation>Flytta upp</translation>
+    </message>
+    <message>
+        <source>Move the selected action up</source>
+        <translation>Flytta det markerade kommandot uppåt</translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation>Flytta ner</translation>
+    </message>
+    <message>
+        <source>Move the selected action down</source>
+        <translation>Flytta det markerade kommandot neråt</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Ta bort</translation>
+    </message>
+    <message>
+        <source>Remove the selected action</source>
+        <translation>Ta bort det markerade kommandot</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Namn:</translation>
+    </message>
+    <message>
+        <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
+        <translation>Ange namnet för ett kommando här. Namnet bör vara unikt (QGIS kommer att göra det unikt om det behövs).</translation>
+    </message>
+    <message>
+        <source>Enter the action name here</source>
+        <translation>Ange kommandonamnet här</translation>
+    </message>
+    <message>
+        <source>Action:</source>
+        <translation>Kommando:</translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
+        <translation>Ange kommandot här. Det kan vara ett godtyckligt program eller script som är tillgängligt på ditt system. När kommandot körs så kommer alla ord som börjar med % och namnet för ett attributfält att ersättas med värdet för det fältet. Specialtecknen %% kommer att ersättas med värdet för det markerade fältet. Dubbla citationstecken grupperar text till en enda parameter till programmet eller scriptet. Dubbla citationstecken ignoreras om de föregås av en backslash</translation>
+    </message>
+    <message>
+        <source>Enter the action command here</source>
+        <translation>Ange kommandot här</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Bläddra</translation>
+    </message>
+    <message>
+        <source>Browse for action commands</source>
+        <translation>Bläddra efter kommandon</translation>
+    </message>
+    <message>
+        <source>Insert action</source>
+        <translation>Lägg till kommando</translation>
+    </message>
+    <message>
+        <source>Inserts the action into the list above</source>
+        <translation>Lägg till kommandot i listan ovan</translation>
+    </message>
+    <message>
+        <source>Update action</source>
+        <translation>Uppdatera kommando</translation>
+    </message>
+    <message>
+        <source>Update the selected action</source>
+        <translation>Uppdatera det markerade kommandot</translation>
+    </message>
+    <message>
+        <source>Insert field</source>
+        <translation>Lägg till fält</translation>
+    </message>
+    <message>
+        <source>Inserts the selected field into the action, prepended with a %</source>
+        <translation>Lägger till det markerade fältet i kommandot</translation>
+    </message>
+    <message>
+        <source>The valid attribute names for this layer</source>
+        <translation>Giltiga attributnamn för det här lagret</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeDialogBase</name>
+    <message>
+        <source>Enter Attribute Values</source>
+        <translation>Ange Attributvärden</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTable</name>
+    <message>
+        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
+        <translation>&lt;center&gt;Kör kommando&lt;/center&gt;</translation>
     </message>
 </context>
 <context>
@@ -1895,7 +2192,11 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.</source>
-        <translation>Upkopplingen till %1 på %2 avbröts. Antingen är databasen nere eller också är dina inställningar fel.%3Kontrollera ditt användarnamn och lösenord och försök igen.</translation>
+        <translation type="obsolete">Upkopplingen till %1 på %2 avbröts. Antingen är databasen nere eller också är dina inställningar fel.%3Kontrollera ditt användarnamn och lösenord och försök igen.</translation>
+    </message>
+    <message>
+        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
+        <translation>Uppkopplingen till %1 på %2 misslyckades. Antingen är databasen nere eller så är dina inställningar felaktiga. %3Kontrollera ditt användarnamn och lösenord och försök igen. %4%5</translation>
     </message>
 </context>
 <context>
@@ -1971,6 +2272,29 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <message>
         <source>Sql</source>
         <translation>Sql</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelimitedTextPluginGui</name>
+    <message>
+        <source>No layer name</source>
+        <translation>Inget lagernamn</translation>
+    </message>
+    <message>
+        <source>Please enter a layer name before adding the layer to the map</source>
+        <translation>Ange ett lagernamn innan du lägger till lagret i kartan</translation>
+    </message>
+    <message>
+        <source>No delimiter</source>
+        <translation>Ingen separerare</translation>
+    </message>
+    <message>
+        <source>Please specify a delimiter prior to parsing the file</source>
+        <translation>Ange en separerare innan du läser filen</translation>
+    </message>
+    <message>
+        <source>Choose a delimited text file to open</source>
+        <translation>Välj en separerad textfil att öppna</translation>
     </message>
 </context>
 <context>
@@ -2063,7 +2387,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
 &lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Beskrinving&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Välj en fil som innehåller separerad text med lat/lon-koordinater som du vill använda som ett punktlager, så gör detta plugin jobbet åt dig! &lt;/p&gt;
 &lt;p&gt;Använd lagernamn-rutan för att ange namnet på det nya lagret. Använd separerar-rutan för att ange separeraren för din fil (t.ex. blanksteg, komma eller tab). Observera att denna ruta accepterar reguljära uttryck, så använd \t för tab osv. Efter att du har valt en separerare, tryck på läs-knappen för att se vilka fältnamn som har upptäckts i din fil. &lt;/p&gt;
@@ -2154,6 +2478,24 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>Sample text</source>
+        <translation>Exempeltext</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Välj en separerad textfil med x- och y-koordinater som du vill använda som ett punktlager så gör det här pluginet jobbet åt dig! &lt;/p&gt;
+&lt;p&gt;Använd lagernamnsfältet för att ange namnet i teckenförklaringen för det nya lagret. Använd separerarfältet för att ange vilken separerare som avänds i din fil (t.ex. mellanslag, komma eller tab). Notera att detta fält accepterar reguljära uttryck, så använd \t för tab och så vidare. Efter att du har valt en separerare kan du trycka på knappen &quot;Parsa&quot; och välja kolumnerna som innehåller x- och y-värdena för lagret.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -2253,6 +2595,50 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
         <source>Unique Value Marker</source>
         <translation>Unik Markör</translation>
     </message>
+    <message>
+        <source>The source of the data (path name or database connection information)</source>
+        <translation>Källan för datan (information om sökväg eller databasuppkoppling)</translation>
+    </message>
+    <message>
+        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation>Denna knapp öppnar frågebyggaren för PostgreSQL och låter dig skapa en delmängd av objekt som du kan visa i kartvyn istället för att visa alla objekt i lagret</translation>
+    </message>
+    <message>
+        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+        <translation>Frågan som används för att begränsa objekten i lagret visas här. Detta kan just nu enbart användas för PostgreSQL-lager. För att ange eller ändra frågan, klicka på Frågebyggarknappen</translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer</source>
+        <translation>Geometrityp för objekt i det här lagret</translation>
+    </message>
+    <message>
+        <source>The number of features in this layer</source>
+        <translation>Antal objekt i det här lagret</translation>
+    </message>
+    <message>
+        <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
+        <translation>För att QGIS ska kunna använda SVG-markörer i Windows så måste vi bygga QGIS</translation>
+    </message>
+    <message>
+        <source> using the commercial version of Qt. As this project is developed by volunteers</source>
+        <translation>med den kommersiella versionen av Qt. Eftersom det här projektet utvecklas av frivilliga</translation>
+    </message>
+    <message>
+        <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
+        <translation>som donerar sin tid, så har vi inte de finansiella resurserna för att köpa den</translation>
+    </message>
+    <message>
+        <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
+        <translation>kommersiella versionen av Qt. Om du vill hjälpa oss, besök QGIS&apos; SourceForge-</translation>
+    </message>
+    <message>
+        <source> home page to make a donation</source>
+        <translation>websida för att göra en donation</translation>
+    </message>
+    <message>
+        <source>No SVG Support</source>
+        <translation>Inget SVG-stöd</translation>
+    </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerPropertiesBase</name>
@@ -2266,7 +2652,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Close</source>
-        <translation>Stäng</translation>
+        <translation type="obsolete">Stäng</translation>
     </message>
     <message>
         <source>General</source>
@@ -2342,7 +2728,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Legend</source>
-        <translation>Teckenförklaring</translation>
+        <translation type="obsolete">Teckenförklaring</translation>
     </message>
     <message>
         <source>Legend type:</source>
@@ -2355,6 +2741,397 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <message>
         <source>Display labels</source>
         <translation>Visa etiketter</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Hjälp</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Symbology</source>
+        <translation>Symbologi</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Synlighet</translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation>Använd skalberoende rendering</translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation>Maximum 1:</translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation>Största skala vid vilken detta lager kommer att visas.</translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation>Minimum 1:</translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation>Minsta skala vid vilken detta lager kommer att visas.</translation>
+    </message>
+    <message>
+        <source>Display field</source>
+        <translation>Titelfält</translation>
+    </message>
+    <message>
+        <source>Display field for the Identify Results dialog box</source>
+        <translation>Titelfält för dialogrutan Identifiera</translation>
+    </message>
+    <message>
+        <source>This sets the display field for the Identify Results dialog box</source>
+        <translation>Detta anger titelfältet för dialogrutan Identifiera</translation>
+    </message>
+    <message>
+        <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
+        <translation>Använd detta fält för att ange vilket attribut som placeras högst upp i dialogrutan Identifiera.</translation>
+    </message>
+    <message>
+        <source>Subset:</source>
+        <translation>Delmängd:</translation>
+    </message>
+    <message>
+        <source>Query Builder</source>
+        <translation>Frågebyggare</translation>
+    </message>
+    <message>
+        <source>Metadata</source>
+        <translation>Metadata</translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation>Kommandon</translation>
+    </message>
+</context>
+<context>
+    <name>QgsEditReservedWordsBase</name>
+    <message>
+        <source>Edit Reserved Words</source>
+        <translation>Redigera Reserverade Ord</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>Column name</source>
+        <translation>Kolumnnamn</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation>Index</translation>
+    </message>
+    <message>
+        <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
+        <translation>Denna shapefile innehåller reserverade ord. Dessa kan påverka importeringen till PostgreSQL. Redigera kolumnnamnen så att inga av de reserverade orden listade till höger används. Du kan också ändra andra kolumnnamn om du vill.</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Hjälp</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Avbryt</translation>
+    </message>
+    <message>
+        <source>Reserved Words</source>
+        <translation>Reserverade Ord</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSDeviceDialogBase</name>
+    <message>
+        <source>GPS Device Editor</source>
+        <translation>GPS-enhetsredigerare</translation>
+    </message>
+    <message>
+        <source>Device name:</source>
+        <translation>Enhetsnamn:</translation>
+    </message>
+    <message>
+        <source>Download command:</source>
+        <translation>Nerladdningskommando:</translation>
+    </message>
+    <message>
+        <source>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</source>
+        <translation>Det här är det kommando som kommer att användas för att ladda ner GPS-data från enheten. %in och %out kommer att ersättas med porten och GPX-filens namn.</translation>
+    </message>
+    <message>
+        <source>This is the name of the device as it will appear in the lists</source>
+        <translation>Detta är namnet på enheten så som det kommer att visas i listorna</translation>
+    </message>
+    <message>
+        <source>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</source>
+        <translation>Det här är det kommando som kommer att användas för att ladda upp GPS-data till enheten. %in och %out kommer att ersättas med GPX-filens namn och porten.</translation>
+    </message>
+    <message>
+        <source>Upload command:</source>
+        <translation>Uppladdningskommando:</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
+&lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</source>
+        <translation>&lt;p&gt;I nerladdnings- och uppladdningskommandona kan det finnas speciella ord som kommer att bytas ut av QGIS när kommandona körs. Dessa ord är:&lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - sökvägen till GPSBabel&lt;br&gt;
+&lt;i&gt;%type&lt;/i&gt; - flaggan för objekttypen som överförs (-w, -r eller -t)&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - GPX-filens namn vid uppladdning eller portens namn vid nerladdning&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - portens namn vid uppladdning eller GPX-filens namn vid nerladdning</translation>
+    </message>
+    <message>
+        <source>Update device</source>
+        <translation>Uppdatera enhet</translation>
+    </message>
+    <message>
+        <source>Delete device</source>
+        <translation>Radera enhet</translation>
+    </message>
+    <message>
+        <source>New device</source>
+        <translation>Ny enhet</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Stäng</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSPluginGuiBase</name>
+    <message>
+        <source>GPS Tools</source>
+        <translation>GPS-Verktyg</translation>
+    </message>
+    <message>
+        <source>Load GPX file</source>
+        <translation>Ladda GPX-fil</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
+&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX står för &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt; och används för att lagra information om waypoints, rutter och spår.&lt;/p&gt;
+&lt;p&gt;Välj en GPX-fil och typen av objekt som du vill ladda.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>File:</source>
+        <translation>Fil:</translation>
+    </message>
+    <message>
+        <source>Feature types:</source>
+        <translation>Objekttyper:</translation>
+    </message>
+    <message>
+        <source>Waypoints</source>
+        <translation>Waypoints</translation>
+    </message>
+    <message>
+        <source>Routes</source>
+        <translation>Rutter</translation>
+    </message>
+    <message>
+        <source>Tracks</source>
+        <translation>Spår</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Import other file</source>
+        <translation>Importera annan fil</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS kan bara ladda GPX-filer, men många andra filformat kan
+konverteras till GPX med GPSBabel  (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). Det kräver att du har GPSBabel installerat någonstans
+där QGIS kan hitta det.&lt;/p&gt;
+&lt;p&gt;Välj ett filformat för GPS-data som du vill importera från, typen av objekt som
+du vill använda, ett filnamn som du vill spara den konverterade GPX-filen som och
+ett namn för det nya lagret. Alla filformat kan inte lagra waypoints, rutter
+och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>File to import:</source>
+        <translation>Fil att importera:</translation>
+    </message>
+    <message>
+        <source>Feature type:</source>
+        <translation>Objekttyp:</translation>
+    </message>
+    <message>
+        <source>GPX output file:</source>
+        <translation>GPX-fil (utdata):</translation>
+    </message>
+    <message>
+        <source>Layer name:</source>
+        <translation>Lagernamn:</translation>
+    </message>
+    <message>
+        <source>Download from GPS</source>
+        <translation>Hämta från GPS</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
+GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, 
+and the GPX file where you want to store the data. If your device isn&apos;t listed, or if 
+you want to change some settings, you can also edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
+don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Detta verktyg hjälper dig att ladda ner data från en GPS-enhet. Välj din enhet, porten 
+som den är kopplad till, objekttypen som du vill ladda ner, ett namn för ditt nya lager 
+och en GPX-fil där du vill lagra datan. Om din enhet inte finns med i listan eller om 
+du vill ändra några inställningar så kan du också redigera enheterna.&lt;/p&gt;
+&lt;p&gt;Det här verktyget använder GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) för att överföra data. Om du 
+inte har GPSBabel installerat där QGIS kan hitta det så kommer inte det här verktyget att fungera.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Edit devices</source>
+        <translation>Redigera enheter</translation>
+    </message>
+    <message>
+        <source>GPS device:</source>
+        <translation>GPS-enhet:</translation>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation>Utdatafil:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Port:</translation>
+    </message>
+    <message>
+        <source>Upload to GPS</source>
+        <translation>Skicka till GPS</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
+Choose the layer you want to upload, the device you want to upload it to, and the port 
+your device is connected to. 
+If your device isn&apos;t listed, or if you want to change some settings, you can also 
+edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
+to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Detta verktyg hjälper dig att ladda upp data till en GPS-enhet. Välj lagret som su vill ladda upp, 
+enheten som du vill ladda upp det till och porten som din enhet är kopplad till. 
+Om din enhet inte finns med i listan eller om 
+du vill ändra några inställningar så kan du också redigera enheterna.&lt;/p&gt;
+&lt;p&gt;Det här verktyget använder GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) för att överföra data. Om du 
+inte har GPSBabel installerat där QGIS kan hitta det så kommer inte det här verktyget att fungera.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Data layer:</source>
+        <translation>Datalager:</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Avbryt</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+A</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeomTypeDialogBase</name>
+    <message>
+        <source>Select Geometry type</source>
+        <translation>Välj Geometrityp</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation>Punkt</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Linje</translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation>Polygon</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
     </message>
 </context>
 <context>
@@ -2856,6 +3633,13 @@ Pattern</source>
     </message>
 </context>
 <context>
+    <name>QgsIdentifyResults</name>
+    <message>
+        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
+        <translation>&lt;center&gt;Kör kommando&lt;/center&gt;</translation>
+    </message>
+</context>
+<context>
     <name>QgsIdentifyResultsBase</name>
     <message>
         <source>Identify Results</source>
@@ -2945,7 +3729,7 @@ Pattern</source>
     </message>
     <message>
         <source>Default Style</source>
-        <translation>Standardstil</translation>
+        <translation type="obsolete">Standardstil</translation>
     </message>
     <message>
         <source>Font Style</source>
@@ -3111,6 +3895,18 @@ Pattern</source>
         <source>&amp;Colour:</source>
         <translation>&amp;Färg:</translation>
     </message>
+    <message>
+        <source>Font and Alignment</source>
+        <translation>Typsnitt och Justering</translation>
+    </message>
+    <message>
+        <source>Buffer and Position</source>
+        <translation>Buffer och Position</translation>
+    </message>
+    <message>
+        <source>Advanced Data Defined Style</source>
+        <translation>Avancerad Datadefinierad Stil</translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerPropertiesBase</name>
@@ -3237,7 +4033,22 @@ Pattern</source>
     </message>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation>För att identifiera objekt måste du välja ett aktivt lager genom att klicka på dess namn i teckenförklaringen</translation>
+        <translation>Attributkommandon - möjlighet att köra ett externt program baserat på innehållet i ett lagers attributfält</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapLayer</name>
+    <message>
+        <source>&amp;Zoom to extent of selected layer</source>
+        <translation>&amp;Zooma till det markerade lagrets utsträckning</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Radera</translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation>&amp;Egenskaper</translation>
     </message>
 </context>
 <context>
@@ -3440,7 +4251,16 @@ Pattern</source>
     </message>
     <message>
         <source>Connection failed - Check settings and try again </source>
-        <translation>Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen</translation>
+        <translation type="obsolete">Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen</translation>
+    </message>
+    <message>
+        <source>Connection failed - Check settings and try again.
+
+Extended error information:
+</source>
+        <translation>Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen.
+
+Detaljerad felinformation:</translation>
     </message>
 </context>
 <context>
@@ -3692,6 +4512,30 @@ med att identifiera objekt utan att zooma in väldigt nära.
         <source>...</source>
         <translation>...</translation>
     </message>
+    <message>
+        <source>Initial Visibility</source>
+        <translation>Initial Synlighet</translation>
+    </message>
+    <message>
+        <source>New layers added to the map are not displayed</source>
+        <translation>Nya lager som läggs till i kartan visas inte</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;<byte value="xd"/>
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;<byte value="xd"/>
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;<byte value="xd"/>
+&lt;br&gt;<byte value="xd"/>
+By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/>
+identifying features without zooming in very close.<byte value="xd"/>
+&lt;/html&gt;</source>
+        <translation>&lt;html&gt;
+&lt;b&gt;Notera:&lt;/b&gt; Ange värdet i tusendelar.  Formeln för sökradien är:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Kartvyns bredd) * ( Värde/1000.0)&lt;/i&gt;
+&lt;br&gt;
+QGIS använder värdet 5 som standard. Öka värdet om du har problem 
+med att identifiera objekt utan att zooma in väldigt nära.
+&lt;/html&gt;</translation>
+    </message>
 </context>
 <context>
     <name>QgsPatternDialogBase</name>
@@ -3788,6 +4632,164 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
 </context>
 <context>
+    <name>QgsPgQueryBuilder</name>
+    <message>
+        <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
+        <translation>Tabell &lt;b&gt;%1&lt;/b&gt; i databasen &lt;b&gt;%2&lt;/b&gt; på datorn &lt;b&gt;%3&lt;/b&gt;, användare &lt;b&gt;%4&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Connection Failed</source>
+        <translation>Uppkopplingen Misslyckades</translation>
+    </message>
+    <message>
+        <source>Connection to the database failed:</source>
+        <translation>Uppkopplingen till databasen misslyckades:</translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation>Databasfel</translation>
+    </message>
+    <message>
+        <source>Failed to get sample of field values</source>
+        <translation>Kunde inte hämta testvärden för fält</translation>
+    </message>
+    <message>
+        <source>Query Result</source>
+        <translation>Frågeresultat</translation>
+    </message>
+    <message>
+        <source>The where clause returned </source>
+        <translation>Where-satsen returnerade</translation>
+    </message>
+    <message>
+        <source> rows.</source>
+        <translation>rader.</translation>
+    </message>
+    <message>
+        <source>Query Failed</source>
+        <translation>Frågan Misslyckades</translation>
+    </message>
+    <message>
+        <source>An error occurred when executing the query:</source>
+        <translation>Ett fel inträffade när frågan kördes:</translation>
+    </message>
+    <message>
+        <source>No Records</source>
+        <translation>Inga Poster</translation>
+    </message>
+    <message>
+        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
+        <translation>Frågan som du angav gav noll poster som resultat. Giltiga PostgreSQL-lager måsta ha minst ett objekt.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgQueryBuilderBase</name>
+    <message>
+        <source>PostgreSQL Query Builder</source>
+        <translation>PostgreSQL Frågebyggare</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Radera</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Testa</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>Ok</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>Values</source>
+        <translation>Värden</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Alla</translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation>Fält</translation>
+    </message>
+    <message>
+        <source>Datasource:</source>
+        <translation>Datakälla:</translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation>Operatorer</translation>
+    </message>
+    <message>
+        <source>=</source>
+        <translation>=</translation>
+    </message>
+    <message>
+        <source>IN</source>
+        <translation>IN</translation>
+    </message>
+    <message>
+        <source>NOT IN</source>
+        <translation>NOT IN</translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation>&lt;</translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation>&gt;</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation>%</translation>
+    </message>
+    <message>
+        <source>&lt;=</source>
+        <translation>&lt;=</translation>
+    </message>
+    <message>
+        <source>&gt;=</source>
+        <translation>&gt;=</translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation>!=</translation>
+    </message>
+    <message>
+        <source>LIKE</source>
+        <translation>LIKE</translation>
+    </message>
+    <message>
+        <source>AND</source>
+        <translation>AND</translation>
+    </message>
+    <message>
+        <source>ILIKE</source>
+        <translation>ILIKE</translation>
+    </message>
+    <message>
+        <source>OR</source>
+        <translation>OR</translation>
+    </message>
+    <message>
+        <source>NOT</source>
+        <translation>NOT</translation>
+    </message>
+    <message>
+        <source>SQL where clause</source>
+        <translation>SQL where-sats</translation>
+    </message>
+</context>
+<context>
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
@@ -3822,11 +4824,11 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Ok</source>
-        <translation>Ok</translation>
+        <translation type="obsolete">Ok</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Stäng</translation>
+        <translation type="obsolete">Stäng</translation>
     </message>
     <message>
         <source>Plugin Directory</source>
@@ -3843,6 +4845,38 @@ med att identifiera objekt utan att zooma in väldigt nära.
     <message>
         <source>Version</source>
         <translation>Version</translation>
+    </message>
+    <message>
+        <source>&amp;Select All</source>
+        <translation>&amp;Markera Allt</translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <translation>Alt+M</translation>
+    </message>
+    <message>
+        <source>C&amp;lear All</source>
+        <translation>Radera A&amp;lla</translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation>Alt+L</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation>&amp;Stäng</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+S</translation>
     </message>
 </context>
 <context>
@@ -3883,6 +4917,14 @@ med att identifiera objekt utan att zooma in väldigt nära.
         <source>&amp;Cancel</source>
         <translation>&amp;Avbryt</translation>
     </message>
+    <message>
+        <source>Title</source>
+        <translation>Titel</translation>
+    </message>
+    <message>
+        <source>Default project title</source>
+        <translation>Standardtitel för projekt</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayer</name>
@@ -3892,15 +4934,15 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation>&amp;Zooma till det markerade lagrets utsträckning</translation>
+        <translation type="obsolete">&amp;Zooma till det markerade lagrets utsträckning</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation>&amp;Egenskaper</translation>
+        <translation type="obsolete">&amp;Egenskaper</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation>&amp;Radera</translation>
+        <translation type="obsolete">&amp;Radera</translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -4086,7 +5128,7 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Show In &amp;Overview</source>
-        <translation>Visa i &amp;Översikt</translation>
+        <translation type="obsolete">Visa i &amp;Översikt</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
@@ -4431,6 +5473,41 @@ med att identifiera objekt utan att zooma in väldigt nära.
 &lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Synlighet</translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation>Använd skalberoende rendering</translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation>Maximum 1:</translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation>Största skala vid vilken detta lager kommer att visas.</translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation>Minimum 1:</translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation>Minsta skala vid vilken detta lager kommer att visas.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScanGeometries</name>
+    <message>
+        <source>Scanning Geometries</source>
+        <translation>Läser Geometrier</translation>
+    </message>
+    <message>
+        <source>textLabel1</source>
+        <translation>textLabel1</translation>
+    </message>
 </context>
 <context>
     <name>QgsSiMaDialogBase</name>
@@ -4486,23 +5563,23 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Style</source>
-        <translation>Stil</translation>
+        <translation type="obsolete">Stil</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Fyllningsfärg</translation>
+        <translation type="obsolete">Fyllningsfärg</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Bredd</translation>
+        <translation type="obsolete">Bredd</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Kantfärg</translation>
+        <translation type="obsolete">Kantfärg</translation>
     </message>
     <message>
         <source>Pattern</source>
-        <translation>Mönster</translation>
+        <translation type="obsolete">Mönster</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -4514,7 +5591,7 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Outline</source>
-        <translation>Kant</translation>
+        <translation type="obsolete">Kant</translation>
     </message>
     <message>
         <source>...</source>
@@ -4522,11 +5599,39 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Fill</source>
-        <translation>Fyllning</translation>
+        <translation type="obsolete">Fyllning</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Etikett</translation>
+        <translation type="obsolete">Etikett</translation>
+    </message>
+    <message>
+        <source>Label:</source>
+        <translation>Etikett:</translation>
+    </message>
+    <message>
+        <source>Outline Style:</source>
+        <translation>Kantstil:</translation>
+    </message>
+    <message>
+        <source>Fill Color:</source>
+        <translation>Fyllnadsfärg:</translation>
+    </message>
+    <message>
+        <source>Outline color:</source>
+        <translation>Kantfärg:</translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
+        <translation>Kantbredd:</translation>
+    </message>
+    <message>
+        <source>Fill Patterns:</source>
+        <translation>Fyllningsmönster:</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Radera</translation>
     </message>
 </context>
 <context>
@@ -4718,11 +5823,11 @@ med att identifiera objekt utan att zooma in väldigt nära.
     <name>QgsVectorLayer</name>
     <message>
         <source>No features found</source>
-        <translation>Inga ??? hittade</translation>
+        <translation>Inga objekt hittade</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation>Inga ??? hittades i det aktiva lagret där du klickade</translation>
+        <translation>Inga objekt hittades i det aktiva lagret där du klickade</translation>
     </message>
     <message>
         <source>Tabledisplaytribute table - </source>
@@ -4734,7 +5839,7 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation>&amp;Zooma till det markerade lagrets utsträckning</translation>
+        <translation type="obsolete">&amp;Zooma till det markerade lagrets utsträckning</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -4742,11 +5847,11 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation>&amp;Egenskaper</translation>
+        <translation type="obsolete">&amp;Egenskaper</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation>&amp;Radera</translation>
+        <translation type="obsolete">&amp;Radera</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
@@ -4754,7 +5859,35 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Show In &amp;Overview</source>
-        <translation>Visa I &amp;Översikt</translation>
+        <translation type="obsolete">Visa I &amp;Översikt</translation>
+    </message>
+    <message>
+        <source>Start editing</source>
+        <translation>Börja redigera</translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation>Sluta redigera</translation>
+    </message>
+    <message>
+        <source>Save as shapefile...</source>
+        <translation>Spara som shapefile...</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation>Datapluginet stödjer inte radering</translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation>Datapluginet stödjer inte radering av objekt</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation>Lagret kan inte redigeras</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
+        <translation>Det markerade lagret kan inte redigeras. Välj &apos;Börja redigera&apos; i popupmenyn i teckenförklaringen</translation>
     </message>
 </context>
 <context>
@@ -4815,7 +5948,7 @@ med att identifiera objekt utan att zooma in väldigt nära.
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
-        <translation>GDT_CFloat64 - Komplex Float64 </translation>
+        <translation>Quantum GIS - </translation>
     </message>
 </context>
 </TS>

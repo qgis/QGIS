@@ -81,6 +81,7 @@ QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   schema_list << "public";
   gl_key = "/Qgis/connections/";
   getSchema();
+  // init the geometry type list
 }
 
 QgsSpit::~QgsSpit(){  
@@ -171,6 +172,10 @@ void QgsSpit::addFile()
       if(!is_error){
         QgsShapeFile * file = new QgsShapeFile(name);
         if(file->is_valid()){
+          /* XXX getFeatureClass actually does a whole bunch
+           * of things and is probably better named 
+           * something else
+           */
           QString featureClass = file->getFeatureClass();
           int row = tblShapefiles->numRows();
           fileList.push_back(file);

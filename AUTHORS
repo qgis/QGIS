@@ -1,16 +1,27 @@
-The following have contributed to QGis:
-Carl Anderson
-Christoph Spoerri <spoerri at users.sourceforge.net>
-Denis Antipov <rawbytes at users.sourceforge.net>
-Gary E.Sherman <sherman at mrcc dot com>
-Gavin Macaulay <g_j_m at users.sourceforge.net>
-Jens Oberender <j.obi at troja.net>
-Lars Luthman <larsl at users.sourceforge.net>
-Marco Hugentobler <mhugent at users.sourceforge.net>
-Mark Coletti <mcoletti at users.sourceforge.net>
-Masaru Hoshi <hoshi at users.sourceforge.net>
-Peter Brewer <p.w.brewer at rdg dot ac dot uk>
-Radim Blazek <blazek at itc.it>
-Steve Halasz <stevehalasz at users.sourceforge.net>
-Tim Sutton <tim at linfiniti.com>
-Tom Elwertowski <telwertowski at users.sourceforge.net>
+# The following have contributed to QGis:
+# --------------------------------------------------------
+# Please note that this file is parsed by the about box 
+# for the contributors list, so names should be strictly 
+# in the format:
+# name [tab] <email>
+#
+# The name will be used to infer the image name, with spaces 
+# replaced by underscores. If no matching image is found
+# a blank image will be displayed.
+# Images are read out of $PREFIX/share/images/contributors/
+# ---------------------------------------------------------
+Gary E.Sherman	<sherman at mrcc dot com>
+Steve Halasz	<stevehalasz at users.sourceforge.net>
+Marco Hugentobler	<mhugent at users.sourceforge.net>
+Tim Sutton	<tim at linfiniti.com>
+Denis Antipov	<rawbytes at users.sourceforge.net>
+Mark Coletti	<mcoletti at users.sourceforge.net>
+Lars Luthman	<larsl at users.sourceforge.net>
+Jens Oberender	<j.obi at troja.net>
+Christoph Spoerri	<spoerri at users.sourceforge.net>
+Carl Anderson	<>
+Gavin Macaulay	<g_j_m at users.sourceforge.net>
+Masaru Hoshi	<hoshi at users.sourceforge.net>
+Peter Brewer	<p.w.brewer at rdg dot ac dot uk>
+Radim Blazek	<blazek at itc.it>
+Tom Elwertowski	<telwertowski at users.sourceforge.net>

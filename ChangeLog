@@ -3,12 +3,63 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-12-19 [gsherman] 0.6.0rc2
+** Updated README
+** Added main.cpp so spit builds as standalone and plugin. Makefile.am modified
+   so spit binary installs in PREFIX dir
+
+2004-12-19 [timlinux] 0.6.0rc2
+** Added Slovak translation from Lubos Balazovic
+** Massive documentation updates
+** Updates to developer pictures and the about box
+
+2004-12-19 [mhugent]
+** providers/ogr/qgsshapefileprovider.cpp: fix for attribute problem
+    in ogr provider
+2004-12-05 [gsherman] 0.6.0rc2
+** Fixed bug 1079392 that caused QGIS to crash when a query was entered that
+   resulted in the layer being created with no records  
+** Additional validation of the SQL query was added to the query builder.
+   When Ok is clicked on the builder dialog, the query is sent to the
+   database and the result checked to ensure that it will create a valid
+   PostreSQL layer
+** Added tr to a number of strings that weren't prepared for translation in
+   the vector dialog properties code
+** Created QgsDataSourceURI structure to hold all the pertinent information
+   associated with a PostgreSQL layer connection, including host, database,
+   table, geometry column, username, password, port, and sql where clause.
+
+2004-12-03 [gsherman] 0.6.0rc1
+** Commented out excessive debug statements in the postgres provider
+
+2004-12-03 [gsherman] 0.6.0rc1
+** Changing the SQL query for a PostgreSQL layer using the query builder 
+   from the vector layer properties dialog now properly updates the mapcanvas
+   extents and feature count.
+** Fix for crash in pg buffer plugin (bug 1077412). Crash is due to the
+   addition of sql where clause support in the postgres provider. The provider
+   was not checking to see if a sql key was included in the datasource uri and
+   thus copying the entire URI as the where clause.
+** The .shp extension is now added the new vector layer name (if not specified
+   by the user).  The .qgs extension is now added to a project file when using
+   save or save as (if not specified by the user). 
+
+2004-12-01 [gsherman] 0.5.0devel30
+** Added functions to qgsdataprovider.h to support updating the feature count
+   and extents. To be supported, these functions must be implemented in the data
+   provider implementation. The default implementations don't do anything useful.
+** QgsVectorLayer now has functions for requesting feature count, extent
+   update, and the subset defintiion string (usually sql) from the underlying
+   data provider. Providers do not need to implement these functions unless they
+   want to support subsetting the layer via a layer definition query or other
+   means.
+
 2004-11-27 [larsl] 0.5.0devel30
 ** Fixed feature addition in GPX layers, it now works again
 
 2004-11-22 [mcoletti] 0.5.0devel29
 ** QgsProject properties now re-designed to be similar to QSettings
-	
+  
 2004-11-20 [timlinux] 0.5.0devel28
 ** Added the capability to interrupt the rendering of the currently drawing map
 layer by pressing the escape key. Repeat and rinse to interrupt drawing of all
@@ -16,11 +67,11 @@ vector layers. Not implemented for raster layers yet.
 
 2004-11-11 [gsherman] 0.5.0devel27
 ** First pass at a PostgreSQL query builder. This is not entirely
-	 functional yet. Fields for a table are displayed and sample or all
-	 values can be displayed. Double-clicking on a field name or sample
-	 value pastes it into the sql query box at the current cursor
-	 position. The test function is not implemented yet nor is the type
-	 checking to allow auto quoting of text values in the sql statement.
+   functional yet. Fields for a table are displayed and sample or all
+   values can be displayed. Double-clicking on a field name or sample
+   value pastes it into the sql query box at the current cursor
+   position. The test function is not implemented yet nor is the type
+   checking to allow auto quoting of text values in the sql statement.
 
 2004-11-19 [mcoletti] 0.5.devel26
 ** Changed QgsProject properties interface to be more similar to
@@ -45,8 +96,8 @@ caused by rerendering everything after each change you make.
 
 2004-11-11 [gsherman] 0.5.0devel22
 ** Added ifdef's for WIN32 around dynamic_casts in the vector renderer
-	dialogs. Even though rtti is enabled, use of dynamic casts causes seg
-	faults under WIN32.
+  dialogs. Even though rtti is enabled, use of dynamic casts causes seg
+  faults under WIN32.
 
 2004-11-09 [timlinux] 0.5.0devel21
 ** Added options to graticule builder to allow you to define origin and
@@ -96,7 +147,7 @@ qgis to crash.
 
 2004-10-20 [mcoletti] 0.5.0devel10
 ** merged in qgsproject-branch
-	
+  
 2004-10-19 [larsl] 0.5.0devel9
 ** Changed GPX attribute names from three letter abbreviations to more
    userfriendly whole words
@@ -538,20 +589,20 @@ All that remains to do now is sort out syncronisation of layer ordering between 
 ** Implemented map overview using maplayers rather than snapshots of a raster layer.
 
 ** Implemented QgsMapLayerRegistry  - s singleton object that keeps track of
-	 loaded layers. When a layer is added an entry is made in the registry. When a
-	 layer is removed, the registry emits a layerWillBeRemoved signal that is
-	 connected to any mapvcanvas, legend etc that may be using the layer. The
-	 objects using the layer can then remove any reference they make to the layer -
-	 after which the registry deletes the layer object.
+   loaded layers. When a layer is added an entry is made in the registry. When a
+   layer is removed, the registry emits a layerWillBeRemoved signal that is
+   connected to any mapvcanvas, legend etc that may be using the layer. The
+   objects using the layer can then remove any reference they make to the layer -
+   after which the registry deletes the layer object.
 
 ** This fixes a problem with adding an overview map which caused qgis to crash
-	 when a layer was removed because it was trying to delete the same pointer
-	 twice.
+   when a layer was removed because it was trying to delete the same pointer
+   twice.
 
 ** Added a better implementation of the overview map below map legend.
 
 ** Refactoring in qgis app - all private members now adhere to qgis naming
-	 conventions (prefixed with m).
+   conventions (prefixed with m).
 
 
 ** Import Note *** ONLY THE MAPLAYER REGISTRY SHOULD DELETE LAYERS NOW ***
@@ -585,7 +636,7 @@ not need src parameter (this can be obtained from painter->device()).
 ** Added basic print capability to qgis....consider this a work in progress.
 2004-05-31 [gsherman] 0.3.0devel9
 **Changed QgsIdentifyResultsBase to inherit from QWidget instead of QDialog
-	so window position can be saved/restored from user settings each time.
+  so window position can be saved/restored from user settings each time.
 **Changed qgis.h int version number to 300 (should have been done at release) 
 
 2004-05-30 [ts] 0.3.0devel8
@@ -961,7 +1012,7 @@ Added qgiscommit tool
 ** Fixed a bug in the drawing of pseudocolor single band grayscale images that
    prevented all class breaks being displayed.
 
-  	
+    
 2004-03-10 [gs] 0.1.0devel7
 ** Added delimited text plugin which provides gui to add delimited text
    layers using the delimited_text data provider
@@ -1161,25 +1212,26 @@ Version 0.0.3-alpha August 10, 2002
   * Other internal changes
   
 July 26, 2002
-	Drawing code now properly displays layers and calculates extents when
-	zooming. Zoom is still fixed zoom in rather than interactive.
-	
+  Drawing code now properly displays layers and calculates extents when
+  zooming. Zoom is still fixed zoom in rather than interactive.
+  
 July 20, 2002
-	Repaint automatic for layers.
-	
+  Repaint automatic for layers.
+  
 July 18, 2002
-	Point, line and polygon PostGis layers can be drawn. Still issues with
-	map exent and positioning of layers on the canvas. Drawing is manual and
-	not tied to the paint event. No zooming or panning yet.
-	
+  Point, line and polygon PostGis layers can be drawn. Still issues with
+  map exent and positioning of layers on the canvas. Drawing is manual and
+  not tied to the paint event. No zooming or panning yet.
+  
 July 10, 2002
-	Layers can be selected and added to the map canvas collection however
-	the rendering code is currently disabled and being reorganized. So if
-	you add a layer, nothing will be drawn...
-	
+  Layers can be selected and added to the map canvas collection however
+  the rendering code is currently disabled and being reorganized. So if
+  you add a layer, nothing will be drawn...
+  
 July 6, 2002
-	This code is preliminary and really has no true functionality other than
-	the ability to define a PostGIS connection and display the spatially enabled
-	tables that could be loaded. 
+  This code is preliminary and really has no true functionality other than
+  the ability to define a PostGIS connection and display the spatially enabled
+  tables that could be loaded. 
 
-	This is the initial import of the code base into CVS on Sourceforge.net.
+  This is the initial import of the code base into CVS on Sourceforge.net.
+ vim: set shiftwidth=3 textwidth=75 autoindent:

@@ -85,7 +85,7 @@ public:
     */
     virtual bool setValue( QStringList & keyName, QVariant const & value ) = 0;
 
-    /** dumps out the keys and values 
+    /** dumps out the keys and values
 
        @note used for debugging
     */
@@ -96,7 +96,8 @@ public:
 
        @param keyname key list tokenized by '/' by caller
     */
-    virtual bool remove( QStringList & keyname ) = 0;
+    virtual bool remove
+        ( QStringList & keyname ) = 0;
 
     /**
        restores property hierarchy to given DOM node
@@ -125,7 +126,8 @@ public:
     /// Does this property not have any subkeys or values?
     virtual bool isEmpty() const = 0;
 
-}; // class Property
+}
+; // class Property
 
 
 
@@ -144,10 +146,10 @@ public:
     {}
 
     PropertyValue( QVariant const & value )
-        : value_(value)
+            : value_(value)
     {}
 
-    virtual ~PropertyValue() 
+    virtual ~PropertyValue()
     {}
 
     /// just returns the value
@@ -201,8 +203,8 @@ public:
             QStringList sl = value_.toStringList();
 
             for ( QStringList::const_iterator i = sl.begin();
-                  i != sl.end();
-                  ++i )
+                    i != sl.end();
+                    ++i )
             {
                 qDebug( "[%s] ", (const char*)(*i).utf8() );
             }
@@ -218,7 +220,8 @@ public:
 
        @param keyname key list tokenized by '/' by caller
     */
-    /* virtual */ bool remove( QStringList & keyname )
+    /* virtual */ bool remove
+        ( QStringList & keyname )
     {
         // NOP; parent PropertyKey will delete this PropertyValue in its remove()
 
@@ -265,33 +268,33 @@ public:
 
         switch ( type )
         {
-            case QVariant::Invalid :
-                qDebug( "%s:%d invalid value type %s .. ",
-                        __FILE__, __LINE__, (const char*)typeString.utf8() );
+        case QVariant::Invalid :
+            qDebug( "%s:%d invalid value type %s .. ",
+                    __FILE__, __LINE__, (const char*)typeString.utf8() );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Map :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
+        case QVariant::Map :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::List :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
+        case QVariant::List :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::String :
-                value_ = subkeyElement.text(); // no translating necessary
-                break;
+        case QVariant::String :
+            value_ = subkeyElement.text(); // no translating necessary
+            break;
 
-            case QVariant::StringList :
+        case QVariant::StringList :
             {
                 size_t i = 0;
                 QDomNodeList values = keyNode.childNodes();
@@ -307,7 +310,7 @@ public:
                     }
                     else
                     {
-                        qDebug( "qgsproject.cpp:%d non <value> element ``%s'' in string list", 
+                        qDebug( "qgsproject.cpp:%d non <value> element ``%s'' in string list",
                                 __LINE__, (const char*)values.item(i).nodeName().utf8() );
                     }
 
@@ -318,203 +321,206 @@ public:
 
                 break;
             }
-            case QVariant::Font :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
+        case QVariant::Font :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Pixmap :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
+        case QVariant::Pixmap :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Brush :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
+        case QVariant::Brush :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Rect :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
+        case QVariant::Rect :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Size :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
+        case QVariant::Size :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Color :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
+        case QVariant::Color :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Palette :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
+        case QVariant::Palette :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::ColorGroup :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::ColorGroup", __LINE__ );
+        case QVariant::ColorGroup :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::ColorGroup", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::IconSet :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__ );
+        case QVariant::IconSet :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Point :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
+        case QVariant::Point :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Image :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
+        case QVariant::Image :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Int :
-                value_ = QVariant(subkeyElement.text()).asInt();
+        case QVariant::Int :
+            value_ = QVariant(subkeyElement.text()).asInt();
 
-                break;
+            break;
 
-            case QVariant::UInt :
-                value_ = QVariant(subkeyElement.text()).asUInt();
+        case QVariant::UInt :
+            value_ = QVariant(subkeyElement.text()).asUInt();
 
-                break;
+            break;
 
-            case QVariant::Bool :
-                value_ = QVariant(subkeyElement.text()).asBool();
+        case QVariant::Bool :
+            value_ = QVariant(subkeyElement.text()).asBool();
 
-                break;
+            break;
 
-            case QVariant::Double :
-                value_ = QVariant(subkeyElement.text()).asDouble();
+        case QVariant::Double :
+            value_ = QVariant(subkeyElement.text()).asDouble();
 
-                break;
+            break;
 
-            case QVariant::CString :
-                value_ = QVariant(subkeyElement.text()).asCString();
+        case QVariant::CString :
+            value_ = QVariant(subkeyElement.text()).asCString();
 
-                break;
+            break;
 
-            case QVariant::PointArray :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::PointArray", __LINE__ );
+        case QVariant::PointArray :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::PointArray", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Region :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
+        case QVariant::Region :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Bitmap :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
+        case QVariant::Bitmap :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Cursor :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
+        case QVariant::Cursor :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::SizePolicy :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::SizePolicy", __LINE__ );
+        case QVariant::SizePolicy :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::SizePolicy", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Date :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Date", __LINE__ );
+        case QVariant::Date :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Date", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Time :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Time", __LINE__ );
+        case QVariant::Time :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Time", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::DateTime :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::DateTime", __LINE__ );
+        case QVariant::DateTime :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::DateTime", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::ByteArray :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
+        case QVariant::ByteArray :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::BitArray :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
+        case QVariant::BitArray :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::KeySequence :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
+        case QVariant::KeySequence :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
 
-            case QVariant::Pen :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
+        case QVariant::Pen :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
 
-                return false;
+            return false;
 
-                break;
+            break;
+            //
+            // QGIS DIES NOT SUPPORT THESE VARIANT TYPES IN VERSION 3.1 DISABLING FOR NOW
+            //
+            /*
+                        case QVariant::LongLong :
+                            value_ = QVariant(subkeyElement.text()).asLongLong();
+                            break;
 
-            case QVariant::LongLong :
-                value_ = QVariant(subkeyElement.text()).asLongLong();
-                break;
-
-            case QVariant::ULongLong :
-                value_ = QVariant(subkeyElement.text()).asULongLong();
-                break;
-
-            default :
-                qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
-                        __FILE__, __LINE__, (const char*)typeString.utf8() );
+                        case QVariant::ULongLong :
+                            value_ = QVariant(subkeyElement.text()).asULongLong();
+                            break;
+            */
+        default :
+            qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
+                    __FILE__, __LINE__, (const char*)typeString.utf8() );
         }
 
         return true;
@@ -540,8 +546,8 @@ public:
             QStringList sl = value_.asStringList();
 
             for ( QStringList::iterator i = sl.begin();
-                  i != sl.end();
-                  ++i )
+                    i != sl.end();
+                    ++i )
             {
                 QDomElement stringListElement = document.createElement( "value" );
                 QDomText valueText = document.createTextNode( *i );
@@ -564,17 +570,18 @@ public:
     /// how many elements are contained within this one?
     size_t count() const
     {
-            return 0;
+        return 0;
     }
 
 private:
 
     /** We use QVariant as it's very handy to keep multiple types and provides
-        type conversions  
+        type conversions
     */
     QVariant value_;
 
-}; // class PropertyValue
+}
+; // class PropertyValue
 
 
 
@@ -627,7 +634,7 @@ public:
 
 
 
-    virtual ~PropertyKey() 
+    virtual ~PropertyKey()
     {}
 
 
@@ -643,7 +650,8 @@ public:
        has its value returned.
 
     */
-    /* virtual */ QVariant value( QStringList & keyName ) const
+    /* virtual */
+    QVariant value( QStringList & keyName ) const
     {
         // save the current key, which should be the front of the key list
         QString currentKey = keyName.front();
@@ -708,7 +716,8 @@ public:
 
        @param keyname key list tokenized by '/' by caller
     */
-    /* virtual */ bool remove( QStringList & keyName )
+    /* virtual */ bool remove
+        ( QStringList & keyName )
     {
         // save the current key, which should be the front of the key list
         QString const currentKey = keyName.front();
@@ -722,7 +731,8 @@ public:
         }
         else if ( properties_.find( currentKey ) )
         {   // recurse down to next key
-            properties_[currentKey]->remove( keyName );
+            properties_[currentKey]->remove
+            ( keyName );
 
             // if that subkey is now empty, then delete it, too
             if ( properties_[currentKey]->isEmpty() )
@@ -732,7 +742,7 @@ public:
         }
         else
         {
-            qDebug( "%s:%d cannot find key %s to remove", 
+            qDebug( "%s:%d cannot find key %s to remove",
                     __FILE__, __LINE__,  (const char*)currentKey.utf8() );
 
             return false;
@@ -754,8 +764,8 @@ public:
             // then we know it's a leaf node; i.e., a subkey _value_, and not
             // a subkey
             if ( subkeys.item(i).hasAttributes() && // if we have attributes
-                 subkeys.item(i).isElement() && // and we're an element
-                 subkeys.item(i).toElement().hasAttribute("type") ) // and we have a "type" attribute
+                    subkeys.item(i).isElement() && // and we're an element
+                    subkeys.item(i).toElement().hasAttribute("type") ) // and we have a "type" attribute
             {                                                       // then we're a key value
                 properties_.replace( subkeys.item(i).nodeName(), new PropertyValue );
 
@@ -763,7 +773,7 @@ public:
 
                 if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey ) )
                 {
-                    qDebug( "%s:%d unable to parse key value %s", 
+                    qDebug( "%s:%d unable to parse key value %s",
                             __FILE__, __LINE__, (const char*)subkeys.item(i).nodeName().utf8() );
                 }
             }
@@ -775,7 +785,7 @@ public:
 
                 if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey) )
                 {
-                    qDebug( "%s:%d unable to parse subkey %s", 
+                    qDebug( "%s:%d unable to parse subkey %s",
                             __FILE__, __LINE__, (const char*)subkeys.item(i).nodeName().utf8() );
                 }
             }
@@ -825,7 +835,8 @@ private:
     /// sub-keys
     QDict<Property> properties_;
 
-}; // class PropertyKey
+}
+; // class PropertyKey
 
 
 
@@ -852,18 +863,29 @@ struct QgsProject::Imp
     QgsScaleCalculator::units mapUnits;
 
     Imp()
-        : title(""), dirty(false), mapUnits(QgsScaleCalculator::METERS)
+            : title(""), dirty(false), mapUnits(QgsScaleCalculator::METERS)
     {}
 
-}; // struct QgsProject::Imp
+    /* clear project properties when a new project is started */
+    void clear()
+    {
+#ifdef QGISDEBUG
+    std::cout << "Clearing project properties Impl->clear();" << std::endl;
+#endif
+        properties_.clear();
+        mapUnits=  QgsScaleCalculator::METERS;
+        title="";
+    }
+
+}
+; // struct QgsProject::Imp
 
 
 
 
 QgsProject::QgsProject()
-    : imp_( new QgsProject::Imp )
-{
-} // QgsProject ctor
+        : imp_( new QgsProject::Imp )
+{} // QgsProject ctor
 
 
 
@@ -874,7 +896,7 @@ QgsProject::~QgsProject()
 
 
 
-QgsProject * 
+QgsProject *
 QgsProject::instance()
 {
     if ( ! QgsProject::theProject_ )
@@ -924,7 +946,7 @@ bool QgsProject::dirty() const
 } // bool QgsProject::dirty() const
 
 
-void QgsProject::dirty( bool b ) 
+void QgsProject::dirty( bool b )
 {
     imp_->dirty = b;
 } // bool QgsProject::dirty()
@@ -956,13 +978,13 @@ dump_( QMap< QString, PropertyKey > const & property_list )
     qDebug( "current properties:" );
 
     for ( QMap< QString, PropertyKey >::const_iterator curr_scope =
-              property_list.begin();
-          curr_scope != property_list.end();
-          curr_scope++ )
+                property_list.begin();
+            curr_scope != property_list.end();
+            curr_scope++ )
     {
-//        qDebug( "<%s>", curr_scope.key() );
+        //        qDebug( "<%s>", curr_scope.key() );
         curr_scope.data().dump( );
- //       qDebug( "</%s>", curr_scope.key() );
+        //       qDebug( "</%s>", curr_scope.key() );
     }
 } // dump_
 
@@ -1045,8 +1067,8 @@ _getScopeProperties( QDomNode const & scopeNode,
         QDomNode currentProperty = properties.item(i);
         QDomNode currentValue    = currentProperty.firstChild(); // should only have one child
 
-        qDebug( "Got property %s:%s (%s)", 
-                currentProperty.nodeName(), 
+        qDebug( "Got property %s:%s (%s)",
+                currentProperty.nodeName(),
                 currentValue.nodeValue(),
                 currentProperty.toElement().attributeNode("type").value() );
 
@@ -1055,175 +1077,175 @@ _getScopeProperties( QDomNode const & scopeNode,
         QVariant restoredValue;
 
         // get the type associated with the value first
-        QVariant::Type type = 
+        QVariant::Type type =
             QVariant::nameToType( currentProperty.toElement().attributeNode("type").value() );
 
         switch ( type )
         {
-            case QVariant::Invalid :
-                qDebug( "qgsproject.cpp:%d invalid value type %s .. ",
-                        __LINE__,
-                        currentProperty.toElement().attributeNode("type").value() );
+        case QVariant::Invalid :
+            qDebug( "qgsproject.cpp:%d invalid value type %s .. ",
+                    __LINE__,
+                    currentProperty.toElement().attributeNode("type").value() );
 
-                restoredValue.clear();
+            restoredValue.clear();
 
-                ++i;
+            ++i;
 
-                continue;
+            continue;
 
-                break;
+            break;
 
-            case QVariant::Map :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
-                break;
+        case QVariant::Map :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
+            break;
 
-            case QVariant::List :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
-                break;
+        case QVariant::List :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
+            break;
 
-            case QVariant::String :
-                restoredValue = currentValue.nodeValue(); // no translating necessary
-                break;
+        case QVariant::String :
+            restoredValue = currentValue.nodeValue(); // no translating necessary
+            break;
 
-            case QVariant::StringList :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::StringList", __LINE__ );
-                break;
+        case QVariant::StringList :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::StringList", __LINE__ );
+            break;
 
-            case QVariant::Font :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
-                break;
+        case QVariant::Font :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
+            break;
 
-            case QVariant::Pixmap :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
-                break;
+        case QVariant::Pixmap :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
+            break;
 
-            case QVariant::Brush :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
-                break;
+        case QVariant::Brush :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
+            break;
 
-            case QVariant::Rect :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
-                break;
+        case QVariant::Rect :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
+            break;
 
-            case QVariant::Size :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
-                break;
+        case QVariant::Size :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
+            break;
 
-            case QVariant::Color :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
-                break;
+        case QVariant::Color :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
+            break;
 
-            case QVariant::Palette :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
-                break;
+        case QVariant::Palette :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
+            break;
 
-            case QVariant::ColorGroup :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::ColorGroup", __LINE__ );
-                break;
+        case QVariant::ColorGroup :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::ColorGroup", __LINE__ );
+            break;
 
-            case QVariant::IconSet :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__ );
-                break;
+        case QVariant::IconSet :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__ );
+            break;
 
-            case QVariant::Point :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
-                break;
+        case QVariant::Point :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
+            break;
 
-            case QVariant::Image :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
-                break;
+        case QVariant::Image :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
+            break;
 
-            case QVariant::Int :
-                restoredValue = QVariant(currentValue.nodeValue()).asInt();
-                break;
+        case QVariant::Int :
+            restoredValue = QVariant(currentValue.nodeValue()).asInt();
+            break;
 
-            case QVariant::UInt :
-                restoredValue = QVariant(currentValue.nodeValue()).asUInt();
-                break;
+        case QVariant::UInt :
+            restoredValue = QVariant(currentValue.nodeValue()).asUInt();
+            break;
 
-            case QVariant::Bool :
-                restoredValue = QVariant(currentValue.nodeValue()).asBool();
-                break;
+        case QVariant::Bool :
+            restoredValue = QVariant(currentValue.nodeValue()).asBool();
+            break;
 
-            case QVariant::Double :
-                restoredValue = QVariant(currentValue.nodeValue()).asDouble();
-                break;
+        case QVariant::Double :
+            restoredValue = QVariant(currentValue.nodeValue()).asDouble();
+            break;
 
-            case QVariant::CString :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::CString", __LINE__ );
-                break;
+        case QVariant::CString :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::CString", __LINE__ );
+            break;
 
-            case QVariant::PointArray :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::PointArray", __LINE__ );
-                break;
+        case QVariant::PointArray :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::PointArray", __LINE__ );
+            break;
 
-            case QVariant::Region :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
-                break;
+        case QVariant::Region :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
+            break;
 
-            case QVariant::Bitmap :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
-                break;
+        case QVariant::Bitmap :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
+            break;
 
-            case QVariant::Cursor :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
-                break;
+        case QVariant::Cursor :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
+            break;
 
-            case QVariant::SizePolicy :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::SizePolicy", __LINE__ );
-                break;
+        case QVariant::SizePolicy :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::SizePolicy", __LINE__ );
+            break;
 
-            case QVariant::Date :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Date", __LINE__ );
-                break;
+        case QVariant::Date :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Date", __LINE__ );
+            break;
 
-            case QVariant::Time :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Time", __LINE__ );
-                break;
+        case QVariant::Time :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Time", __LINE__ );
+            break;
 
-            case QVariant::DateTime :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::DateTime", __LINE__ );
-                break;
+        case QVariant::DateTime :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::DateTime", __LINE__ );
+            break;
 
-            case QVariant::ByteArray :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
-                break;
+        case QVariant::ByteArray :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
+            break;
 
-            case QVariant::BitArray :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
-                break;
+        case QVariant::BitArray :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
+            break;
 
-            case QVariant::KeySequence :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
-                break;
+        case QVariant::KeySequence :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
+            break;
 
-            case QVariant::Pen :
-                qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
-                break;
+        case QVariant::Pen :
+            qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
+            break;
 
-            case QVariant::LongLong :
-                restoredValue = QVariant(currentValue.nodeValue()).asLongLong();
-                break;
+        case QVariant::LongLong :
+            restoredValue = QVariant(currentValue.nodeValue()).asLongLong();
+            break;
 
-            case QVariant::ULongLong :
-                restoredValue = QVariant(currentValue.nodeValue()).asULongLong();
-                break;
+        case QVariant::ULongLong :
+            restoredValue = QVariant(currentValue.nodeValue()).asULongLong();
+            break;
 
-            default :
-                qDebug( "unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
-                        currentProperty.toElement().attributeNode("type").value(),
-                        __LINE__ );
+        default :
+            qDebug( "unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
+                    currentProperty.toElement().attributeNode("type").value(),
+                    __LINE__ );
 
-                restoredValue.clear();
+            restoredValue.clear();
 
-                ++i;
+            ++i;
 
-                continue;
+            continue;
         }
 
 
-        project_properties[ scopeName ].append( QgsProject::PropertyValue( currentProperty.nodeName(), 
-                                                                           restoredValue ) );
+        project_properties[ scopeName ].append( QgsProject::PropertyValue( currentProperty.nodeName(),
+                                                restoredValue ) );
 
         ++i;
     }
@@ -1279,7 +1301,7 @@ _getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project
 
     size_t i = 0;
     QDomNodeList scopes = properties.item(0).childNodes(); // item(0) because there should only be ONE
-                                                           // "properties" node
+    // "properties" node
     if ( scopes.count() < 1 )
     {
         qDebug( "empty ``properties'' XML tag ... bailing" );
@@ -1290,7 +1312,7 @@ _getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project
     {
         QDomNode curr_scope_node = scopes.item( i );
 
-        qDebug( "found %d property node(s) for scope %s", 
+        qDebug( "found %d property node(s) for scope %s",
                 curr_scope_node.childNodes().count(),
                 (const char*)curr_scope_node.nodeName().utf8() );
 
@@ -1298,7 +1320,7 @@ _getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project
 
         if ( ! project_properties[curr_scope_node.nodeName()].readXML( curr_scope_node ) )
         {
-            qDebug ("%s:%d unable to read XML for property %s", 
+            qDebug ("%s:%d unable to read XML for property %s",
                     __FILE__, __LINE__, (const char*)curr_scope_node.nodeName().utf8() );
         }
 
@@ -1348,7 +1370,7 @@ _getMapUnits( QDomDocument const & doc )
     else
     {
         std::cerr << __FILE__ << ":" << __LINE__
-                  << " unknown map unit type " << element.text() << "\n";
+        << " unknown map unit type " << element.text() << "\n";
         false;
     }
 
@@ -1417,30 +1439,32 @@ _findQgisApp()
     QWidgetListIt it( *list );  // iterate over the widgets
     QWidget * w;
 
-    while ( (w=it.current()) != 0 ) 
+    while ( (w=it.current()) != 0 )
     {   // for each top level widget...
 
         if ( "QgisApp" == w->name() )
-        { 
+        {
             qgisApp = dynamic_cast<QgisApp*>(w);
             break;
         }
-                                // "QgisApp" canonical name assigned in main.cpp
+        // "QgisApp" canonical name assigned in main.cpp
         qgisApp = dynamic_cast<QgisApp*>(w->child( "QgisApp", 0, true ));
 
         if ( qgisApp )
-        { break; }
+        {
+            break;
+        }
 
         ++it;
     }
     delete list;                // delete the list, not the widgets
 
 
-//     if ( ! qgisApp )            // another tactic for finding qgisapp
-//     {
-//         if ( "QgisApp" == QApplication::mainWidget().name() )
-//         { qgisApp = QApplication::mainWidget(); }
-//     }
+    //     if ( ! qgisApp )            // another tactic for finding qgisapp
+    //     {
+    //         if ( "QgisApp" == QApplication::mainWidget().name() )
+    //         { qgisApp = QApplication::mainWidget(); }
+    //     }
 
     if( ! qgisApp )
     {
@@ -1538,13 +1562,13 @@ bool
 _getMapLayers( QDomDocument const & doc )
 {
     // Layer order is implicit in the order they are stored in the project file
-    
+
     QDomNodeList nl = doc.elementsByTagName("maplayer");
 
     // XXX what is this used for? QString layerCount( QString::number(nl.count()) );
-    
+
     QString wk;
-    
+
     // process the map layer nodes
 
     if ( 0 == nl.count() )      // if we have no layers to process, bail
@@ -1554,23 +1578,25 @@ _getMapLayers( QDomDocument const & doc )
 
     for (size_t i = 0; i < nl.count(); i++)
     {
-	QDomNode    node    = nl.item(i);
+        QDomNode    node    = nl.item(i);
         QDomElement element = node.toElement();
 
         QString type = element.attribute("type");
 
 
         QgsMapLayer * mapLayer;
-#ifdef QGISDEBUG 
-        std::cerr << "type is " << type << std::endl; 
-#endif 
-	if (type == "vector")
-	{
-	    mapLayer = new QgsVectorLayer;
+#ifdef QGISDEBUG
+
+        std::cerr << "type is " << type << std::endl;
+#endif
+
+        if (type == "vector")
+        {
+            mapLayer = new QgsVectorLayer;
         }
         else if (type == "raster")
         {
-	    mapLayer = new QgsRasterLayer;
+            mapLayer = new QgsRasterLayer;
         }
 
         Q_CHECK_PTR( mapLayer );
@@ -1579,11 +1605,12 @@ _getMapLayers( QDomDocument const & doc )
         {
 #ifdef QGISDEBUG
             std::cerr << __FILE__ << " : " << __LINE__
-                      << " unable to create layer\n";
-#endif                  
+            << " unable to create layer\n";
+#endif
+
             return false;
         }
-        
+
         // have the layer restore state that is stored in DOM node
         mapLayer->readXML( node );
 
@@ -1592,20 +1619,20 @@ _getMapLayers( QDomDocument const & doc )
         // XXX kludge for ensuring that overview canvas updates happen correctly;
         // XXX eventually this should be replaced by mechanism whereby overview
         // XXX canvas implicitly knows about all new layers
-//         if ( mapLayer )         // if successfully added to registry
-//         {
-//             // find canonical Qgis application object
-//             QgisApp * qgisApp = _findQgisApp();
+        //         if ( mapLayer )         // if successfully added to registry
+        //         {
+        //             // find canonical Qgis application object
+        //             QgisApp * qgisApp = _findQgisApp();
 
-//             // make connection
-//             if ( qgisApp )
-//             { 
-//                 QObject::connect(mapLayer, 
-//                                  SIGNAL(showInOverview(QString,bool)), 
-//                                  qgisApp, 
-//                                  SLOT(setLayerOverviewStatus(QString,bool)));
-//             }
-//         }
+        //             // make connection
+        //             if ( qgisApp )
+        //             {
+        //                 QObject::connect(mapLayer,
+        //                                  SIGNAL(showInOverview(QString,bool)),
+        //                                  qgisApp,
+        //                                  SLOT(setLayerOverviewStatus(QString,bool)));
+        //             }
+        //         }
 
     }
 
@@ -1672,7 +1699,7 @@ QgsRect _getFullExtent( QString const & canonicalMapCanvasName )
 
         return QgsRect();       // XXX some sort of error value?  Exception?
     }
-    
+
 
     return theMapCanvas->fullExtent();
 
@@ -1708,7 +1735,7 @@ QgsRect _getExtent( QString const & canonicalMapCanvasName )
 
         return QgsRect();       // XXX some sort of error value?  Exception?
     }
-    
+
 
     return theMapCanvas->extent();
 
@@ -1736,18 +1763,18 @@ QgsProject::read( QFileInfo const & file )
 bool
 QgsProject::read( )
 {
-    std::auto_ptr<QDomDocument> doc = 
-	std::auto_ptr<QDomDocument>(new QDomDocument("qgis"));
+    std::auto_ptr<QDomDocument> doc =
+        std::auto_ptr<QDomDocument>(new QDomDocument("qgis"));
 
     if ( ! imp_->file.open(IO_ReadOnly) )
     {
         imp_->file.close();     // even though we got an error, let's make
-                                // sure it's closed anyway
+        // sure it's closed anyway
 
         throw QgsIOException( "Unable to open " + imp_->file.name() );
 
-	return false;		// XXX raise exception? Ok now superfluous 
-                                // XXX because of exception.
+        return false;           // XXX raise exception? Ok now superfluous
+        // XXX because of exception.
     }
 
     // location of problem associated with errorMsg
@@ -1756,28 +1783,29 @@ QgsProject::read( )
 
     if ( ! doc->setContent(&imp_->file, &errorMsg, &line, &column) )
     {
-// want to make this class as GUI independent as possible; so commented out
-//         QMessageBox::critical( 0x0, "Project File Read Error", 
-//                                errorMsg + " at line " + QString::number( line ) +
-//                                " column " + QString::number( column ) );
+        // want to make this class as GUI independent as possible; so commented out
+        //         QMessageBox::critical( 0x0, "Project File Read Error",
+        //                                errorMsg + " at line " + QString::number( line ) +
+        //                                " column " + QString::number( column ) );
 
         QString errorString = "Project file read error" +
-                errorMsg + " at line " + QString::number( line ) +
-            " column " + QString::number( column );
+                              errorMsg + " at line " + QString::number( line ) +
+                              " column " + QString::number( column );
 
         qDebug( (const char*)errorString.utf8() );
 
-	imp_->file.close();
+        imp_->file.close();
 
         throw QgsException( errorString + " for file " + imp_->file.name() );
 
-	return false;           // XXX superfluous because of exception
+        return false;           // XXX superfluous because of exception
     }
 
     imp_->file.close();
 
 
 #ifdef QGISDEBUG
+
     qWarning("opened document " + imp_->file.name());
 #endif
 
@@ -1785,7 +1813,7 @@ QgsProject::read( )
     // properties first so that we don't have the properties from the previous
     // project still hanging around
 
-    imp_->properties_.clear();
+    imp_->clear();
 
 
     // first get the map layers
@@ -1794,6 +1822,7 @@ QgsProject::read( )
 #ifdef QGISDEBUG
         qDebug( "Unable to get map layers from project file." );
 #endif
+
         throw QgsException( "Cannot get map layers from " + imp_->file.name() );
 
         return false;
@@ -1827,6 +1856,7 @@ QgsProject::read( )
     // now get project title
     _getTitle( *doc, imp_->title );
 #ifdef QGISDEBUG
+
     qDebug( "Project title: " + imp_->title );
 #endif
 
@@ -1851,7 +1881,7 @@ QgsProject::read( )
 
 
 
-bool 
+bool
 QgsProject::write( QFileInfo const & file )
 {
     imp_->file.setName( file.filePath() );
@@ -1860,7 +1890,7 @@ QgsProject::write( QFileInfo const & file )
 } // QgsProject::write( QFileInfo const & file )
 
 
-bool 
+bool
 QgsProject::write( )
 {
     // if we have problems creating or otherwise writing to the project file,
@@ -1869,18 +1899,18 @@ QgsProject::write( )
     if ( ! imp_->file.open( IO_WriteOnly | IO_Translate | IO_Truncate ) )
     {
         imp_->file.close();     // even though we got an error, let's make
-                                // sure it's closed anyway
+        // sure it's closed anyway
 
         throw QgsIOException( "Unable to open " + imp_->file.name() );
 
-	return false;		// XXX raise exception? Ok now superfluous 
-                                // XXX because of exception.
+        return false;           // XXX raise exception? Ok now superfluous
+        // XXX because of exception.
     }
 
     QDomImplementation DOMImplementation;
 
     QDomDocumentType documentType = DOMImplementation.createDocumentType("qgis","http://mrcc.com/qgis.dtd","SYSTEM");
-    std::auto_ptr<QDomDocument> doc = 
+    std::auto_ptr<QDomDocument> doc =
         std::auto_ptr<QDomDocument>( new QDomDocument( documentType ) );
 
 
@@ -1905,28 +1935,28 @@ QgsProject::write( )
 
     switch (instance()->imp_->mapUnits)
     {
-        case QgsScaleCalculator::METERS :
-            unitsString = "meters";
-            break;
-        case QgsScaleCalculator::FEET :
-            unitsString = "feet";
-            break;
-        case QgsScaleCalculator::DEGREES :
-            unitsString = "degrees";
-            break;
-        default :
-            unitsString = "unknown";
-            break;
+    case QgsScaleCalculator::METERS :
+        unitsString = "meters";
+        break;
+    case QgsScaleCalculator::FEET :
+        unitsString = "feet";
+        break;
+    case QgsScaleCalculator::DEGREES :
+        unitsString = "degrees";
+        break;
+    default :
+        unitsString = "unknown";
+        break;
     }
 
     QDomText unitsText = doc->createTextNode( unitsString );
     unitsNode.appendChild( unitsText );
-    
+
     // extents and layers info are written by the map canvas
     // find the canonical map canvas
     QgsMapCanvas *theMapCanvas = _findMapCanvas( "theMapCanvas" );
     theMapCanvas->writeXML(qgisNode, *doc);
-    
+
     if( ! theMapCanvas )
     {
         qDebug( "Unable to find canvas widget theMapCanvas" );
@@ -1941,23 +1971,24 @@ QgsProject::write( )
     qDebug( "there are %d property scopes", imp_->properties_.count() );
 
     if ( ! imp_->properties_.empty() ) // only worry about properties if we
-                                       // actually have any
+        // actually have any
     {
         // <properties>
         QDomElement propertiesElement = doc->createElement( "properties" );
         qgisNode.appendChild( propertiesElement );
 
         for ( QMap< QString, PropertyKey >::iterator curr_scope =
-                  imp_->properties_.begin();
-              curr_scope != imp_->properties_.end();
-              curr_scope++ )
+                    imp_->
+                    properties_.begin();
+                curr_scope != imp_->properties_.end();
+                curr_scope++ )
         {
             qDebug( "scope ``%s'' has %d entries", (const char*)curr_scope.key().utf8(), curr_scope.data().count() );
 
             // <$scope>
             if ( ! curr_scope.data().writeXML( curr_scope.key(), propertiesElement, *doc ) )
             {
-                qDebug ( "%s:%d error create property %s's DOM objects", 
+                qDebug ( "%s:%d error create property %s's DOM objects",
                          __FILE__, __LINE__, (const char*)curr_scope.key().utf8() );
             }
             // </$scope>
@@ -1972,7 +2003,7 @@ QgsProject::write( )
     doc->normalize();           // XXX I'm not entirely sure what this does
 
     QString xml = doc->toString( 4 ); // write to string with indentation of four characters
-                                      // (yes, four is arbitrary)
+    // (yes, four is arbitrary)
 
     // const char * xmlString = xml; // debugger probe point
     // qDebug( "project file output:\n\n" + xml );
@@ -1994,7 +2025,11 @@ QgsProject::write( )
 void
 QgsProject::clearProperties()
 {
-    imp_->properties_.clear();
+#ifdef QGISDEBUG
+    std::cout << "Clearing project properties QgsProject::clearProperties()" << std::endl;
+#endif
+    imp_->clear();
+
 } // QgsProject::clearProperties()
 
 
@@ -2047,7 +2082,7 @@ QgsProject::writeEntry ( QString const & scope, const QString & key, const QStri
 
 
 
-QStringList 
+QStringList
 QgsProject::readListEntry ( QString const & scope, const QString & key, bool * ok ) const
 {
     QStringList keyTokens = QStringList::split( '/', key );
@@ -2071,8 +2106,8 @@ QgsProject::readListEntry ( QString const & scope, const QString & key, bool * o
 
 
 QString
-QgsProject::readEntry ( QString const & scope, 
-                        const QString & key, 
+QgsProject::readEntry ( QString const & scope,
+                        const QString & key,
                         const QString & def,
                         bool * ok ) const
 {
@@ -2097,9 +2132,9 @@ QgsProject::readEntry ( QString const & scope,
 
 
 int
-QgsProject::readNumEntry ( QString const & scope, 
-                           const QString & key, 
-                           int def, 
+QgsProject::readNumEntry ( QString const & scope,
+                           const QString & key,
+                           int def,
                            bool * ok ) const
 {
     QStringList keyTokens = QStringList::split( '/', key );
@@ -2123,9 +2158,9 @@ QgsProject::readNumEntry ( QString const & scope,
 
 
 double
-QgsProject::readDoubleEntry ( QString const & scope, 
-                              const QString & key, 
-                              double def, 
+QgsProject::readDoubleEntry ( QString const & scope,
+                              const QString & key,
+                              double def,
                               bool * ok ) const
 {
     QStringList keyTokens = QStringList::split( '/', key );
@@ -2149,8 +2184,8 @@ QgsProject::readDoubleEntry ( QString const & scope,
 
 
 bool
-QgsProject::readBoolEntry ( QString const & scope, 
-                            const QString & key, 
+QgsProject::readBoolEntry ( QString const & scope,
+                            const QString & key,
                             bool def,
                             bool * ok ) const
 {

@@ -68,6 +68,7 @@ class QgsSpit :public QgsSpitBase{
   private:
   PGconn* checkConnection();
   QStringList schema_list;
+  QStringList geometry_list;
   int total_features;
   std::vector <QgsShapeFile *> fileList;
   int defSrid;
