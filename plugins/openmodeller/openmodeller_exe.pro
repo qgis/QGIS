@@ -11,6 +11,10 @@ TEMPLATE = app
 CONFIG += qt rtti thread release
 #CONFIG += qt rtti thread debug console
 
+# for icon file under windows
+# see http://www.qiliang.net/qt/appicon.html#1
+RC_FILE = omguistandalone.rc
+
 DEFINES+=_WINDOWS
 DEFINES+=CORE_DLL_IMPORT 
 
