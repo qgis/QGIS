@@ -12,6 +12,7 @@
 
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = pggeoprocessingplugin.la
+
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -22,8 +23,10 @@ plugin_LTLIBRARIES = pggeoprocessingplugin.la
 	$(UIC) -o $@ -impl $*.h $<
 	
 pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
+				qgspggeoprocessing.h \
         qgsdlgpgbuffer.cpp \
-        ../../src/qgsmaplayer.cpp\
+        qgsdlgpgbuffer.h \
+				../../src/qgsmaplayer.cpp\
         ../../src/qgsvectorlayer.cpp\
         ../../src/qgsfield.cpp\
 				$(pggeoprocessing_UI)\
@@ -50,3 +53,6 @@ AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 
 pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB)
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
+
+EXTRA_DIST = $(pggeoprocessing_UIC) icon_buffer.xpm
+
