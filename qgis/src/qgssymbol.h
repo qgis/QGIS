@@ -31,27 +31,27 @@ class QgsSymbol{
     /**Constructor*/
     QgsSymbol(QColor c = QColor(0,0,0));
     /**Sets the brush*/
-    void setBrush(QBrush b);
+    virtual void setBrush(QBrush b);
     /**Gets a reference to m_brush*/
-    QBrush& brush();
+    virtual QBrush& brush();
     /**Set the color*/
-    void setColor(QColor c);
+    virtual void setColor(QColor c);
     /**Get the current color*/
-    QColor color() const;
+    virtual QColor color() const;
     /**Get the fill color*/
-    QColor fillColor() const;
+    virtual QColor fillColor() const;
     /**Sets the fill color*/
-    void setFillColor(QColor c);
+    virtual void setFillColor(QColor c);
     /**Get the line width*/
-    int lineWidth() const;
+    virtual int lineWidth() const;
     /**Sets the line width*/
-    void setLineWidth(int w);
+    virtual void setLineWidth(int w);
     /**Sets the pen*/
-    void setPen(QPen p);
+    virtual void setPen(QPen p);
     /**Gets a reference to m_pen*/
-    QPen& pen();
+    virtual QPen& pen();
     //! Destructor
-    ~QgsSymbol();
+    virtual ~QgsSymbol();
 
  protected:
     QPen m_pen;

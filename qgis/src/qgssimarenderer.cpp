@@ -18,12 +18,43 @@
  /* $Id$ */
 
 #include "qgssimarenderer.h"
+#include "qgssimadialog.h"
+#include "qgsdlgvectorlayerproperties.h"
+#include "qgsvectorlayer.h"
 #include "qgsmarkersymbol.h"
 #include <qpainter.h>
 
-void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties*)
+void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
+    bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
+    if (pr)
+    {
+	toproperties = true;
+    }
     
+    if (layer)
+    {
+	QgsMarkerSymbol sy;
+	sy.brush().setStyle(Qt::NoBrush);
+	sy.pen().setStyle(Qt::NoPen);
+	sy.pen().setWidth(1);//set width 1 as default instead of width 0
+
+	QgsRenderItem ri(sy, "", "");
+	addItem(ri);
+	
+	//todo: add a pixmap for the legend
+    
+
+	QgsSiMaDialog *dialog = new QgsSiMaDialog(layer);
+	if (toproperties)
+	{
+	    pr->setBufferDialog(dialog);
+	} 
+	else
+	{
+	    layer->setRendererDialog(dialog);
+	}
+    }
 }
 
 void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor)
@@ -31,10 +62,11 @@ void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, d
     p->setPen(mItem.getSymbol()->pen());
     p->setBrush(mItem.getSymbol()->brush());
 
-    QgsMarkerSymbol* ms=(QgsMarkerSymbol*)mItem.getSymbol();
+    QgsSymbol* testsymbol=mItem.getSymbol();
+    QgsMarkerSymbol* ms=dynamic_cast<QgsMarkerSymbol*>(mItem.getSymbol());
     if(ms)
     {
 	pic=ms->picture();
-	(*scalefactor)=ms->scaleFactor();
+	(*scalefactor)=ms->scaleFactor();//does not work, but why?
     }
 }

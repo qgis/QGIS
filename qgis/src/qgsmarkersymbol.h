@@ -29,7 +29,7 @@ class QgsMarkerSymbol : public QgsSymbol
     /**Constructor*/
     QgsMarkerSymbol();
     /**Destructor*/
-    ~QgsMarkerSymbol();
+    virtual ~QgsMarkerSymbol();
     /**Loads the QPainter commands from an svg file
        @param svgpath the pathe to the svg file which stores the picture*/
     void setPicture(const QString& svgpath);

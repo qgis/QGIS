@@ -31,6 +31,8 @@
 #include "qgssinglesymrenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
+#include "qgssimarenderer.h"
+#include "qgssimadialog.h"
 #include "qgslegenditem.h"
 #include <qwidgetstack.h>
 #include <qpushbutton.h>
@@ -74,6 +76,10 @@ bufferRenderer(layer->
   legendtypecombobox->insertItem(tr("Single Symbol"));
   legendtypecombobox->insertItem(tr("Graduated Symbol"));
   legendtypecombobox->insertItem(tr("Continuous Color"));
+  if( layer->vectorType()==QGis::Point )
+  {
+      legendtypecombobox->insertItem(tr("Single Marker"));
+  }
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
   QObject::connect(btnApply, SIGNAL(clicked()), this, SLOT(apply()));
@@ -107,16 +113,18 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   if (string == tr("Single Symbol"))
     {
       bufferRenderer = new QgsSingleSymRenderer();
-      bufferRenderer->initializeSymbology(layer, this);
   } else if (string == tr("Graduated Symbol"))
     {
       bufferRenderer = new QgsGraduatedSymRenderer();
-      bufferRenderer->initializeSymbology(layer, this);
   } else if (string == tr("Continuous Color"))
     {
       bufferRenderer = new QgsContinuousColRenderer();
-      bufferRenderer->initializeSymbology(layer, this);
-    }
+  } else if (string == tr("Single Marker"))
+  {
+      bufferRenderer = new QgsSiMaRenderer();
+  }
+  bufferRenderer->initializeSymbology(layer, this);
+
   widgetStackRenderers->addWidget(bufferDialog);
   widgetStackRenderers->raiseWidget(bufferDialog);
   rendererDirty = true;
@@ -138,6 +146,8 @@ void QgsDlgVectorLayerProperties::apply()
   QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(layer->rendererDialog());
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(layer->rendererDialog());
   QgsContColDialog *cdialog = dynamic_cast < QgsContColDialog * >(layer->rendererDialog());
+  QgsSiMaDialog* smdialog = dynamic_cast < QgsSiMaDialog * >(layer->rendererDialog());
+
   if (sdialog)
     {
       sdialog->apply();
@@ -148,6 +158,10 @@ void QgsDlgVectorLayerProperties::apply()
     {
       cdialog->apply();
     }
+  else if(smdialog)
+  {
+      smdialog->apply();
+  }
 
   rendererDirty = false;
 }
