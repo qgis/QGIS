@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsuvalmarenderer.h"
 #include "qgsuvalmadialog.h"

@@ -1,7 +1,7 @@
 /***************************************************************************
-  qgsprojectproperties.cpp
-  Set various project properties (inherits qgsprojectpropertiesbase)
-            -------------------
+                            qgsprojectproperties.cpp
+       Set various project properties (inherits qgsprojectpropertiesbase)
+                              -------------------
   begin                : May 18, 2004
   copyright            : (C) 2004 by Gary E.Sherman
   email                : sherman at mrcc.com

@@ -1,9 +1,9 @@
 /* **************************************************************************
-   qgsrasterlayer.cpp -  description
-   -------------------
-begin                : Sat Jun 22 2002
-copyright            : (C) 2003 by Tim Sutton, Steve Halasz and Gary E.Sherman
-email                : tim at linfiniti.com
+                       qgsrasterlayer.cpp -  description
+                              -------------------
+      begin                : Sat Jun 22 2002
+      copyright            : (C) 2003 by Tim Sutton, Steve Halasz and Gary E.Sherman
+      email                : tim at linfiniti.com
  ***************************************************************************/
 
 /* **************************************************************************

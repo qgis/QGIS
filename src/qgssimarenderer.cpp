@@ -1,6 +1,6 @@
 /***************************************************************************
-                          qgssimarenderer.cpp 
- Single marker renderer
+                            qgssimarenderer.cpp 
+                            Single marker renderer
                              -------------------
     begin                : March 2004
     copyright            : (C) 2004 by Marco Hugentobler

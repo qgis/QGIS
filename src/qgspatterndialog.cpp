@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsppatterndialog.cpp 
- Pattern dialog for vector layers
+                        Pattern dialog for vector layers
                              -------------------
     copyright            : (C) 2004 by Gary E.Sherman
     email                : sherman at mrcc.com
