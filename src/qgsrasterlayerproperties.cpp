@@ -38,6 +38,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
   //these properties (layername and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText(rasterLayer->source());
   leDisplayName->setText(lyr->name());
+  //update the legend pixmap
+  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
+  pixmapLegend->setScaledContents(true);
+  pixmapLegend->repaint(false);  
   //set the transparency slider
   sliderTransparency->setValue(255-rasterLayer->getTransparency());
   //decide whether user can change rgb settings
@@ -246,6 +250,11 @@ void QgsRasterLayerProperties::apply()
   rasterLayer->setBlueBandName(cboBlue->currentText());
   rasterLayer->setGrayBandName(cboGray->currentText());
 
+  //update the legend pixmap
+  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
+  pixmapLegend->setScaledContents(true);
+  pixmapLegend->repaint(false);
+  
   rasterLayer->setlayerName(leDisplayName->text());
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();
