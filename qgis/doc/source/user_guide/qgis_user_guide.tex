@@ -29,8 +29,8 @@
 
 %\renewcommand\familydefault{lucidabrightsans}
 \title{Quantum GIS User Guide\\
-\large Version 0.5 \textsl{'Bandit'}}
-\author{Gary E. Sherman \\Tim Sutton (Rasters) \\Radim Blazek (GRASS)}
+\large Version 0.6 \textsl{'Simon'}}
+\author{Gary E. Sherman \\Tim Sutton \\Radim Blazek (GRASS)}
 %\date{\small July 2004}
 
 \begin{document}
@@ -65,18 +65,31 @@ QGIS is released under the GNU Public License. You should have received a full c
 http://qgis.sourceforge.net/docs/userguide.html }
 \end{singlespace}
 \end{quote}
-\section{Whats New in 0.5}
-New features in version 0.5 include:
+\section{Whats New in 0.6}
+New features in version 0.6 include:
 \begin{compactenum}
-\item Windows version
-\item Feature labeling with optional buffering
-\item Preliminary digitizing support for shapefiles
-\item GRASS digitizing support
-\item GPS SVG icons
-\item Unique value renderers
-\item User interface improvements
-\item Specify a query when loading a PostGIS layer
-\item Italian translation
+\item GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.
+\item PostGIS editing support in provider
+\item Vector dialog redesign to improve usability
+\item Improvement in project handling (loading and saving)
+\item Scale dependent rendering
+\item User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete
+\item Interrupt drawing of features by hitting ESC
+\item Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer
+\item Create new vector layer (shapefile) for editing
+\item Windows installer
+ Mac OSX binary
+\item New options in the graticule builder plugin
+\item Enhancements to the GPS plugin
+\item Man page
+\item Save delimited text as shapefile
+\item Improved Delimited Text plugin, including preview of text file
+\item Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types
+\item Display SQL query used to create a PostGIS layer
+\item PostgreSQL query builder
+\item Ability to redefine the query used for PostgreSQL layers from the layer properties dialog
+\item North arrow, scalebar, and copyright plugins save their state in the project file
+\item Datasets with UTF8, Kanjii and CJK filenames now load properly
 
 \end{compactenum}
 \section{Major Features}
@@ -245,10 +258,10 @@ Clicking on the tool brings up a standard open file dialog (Figure \ref{fig:open
    
 \end{figure}
 Selecting a shapefile from the list and clicking Ok loads it into QGIS. Figure \ref{fig:loadedshapefile}
-shows QGIS after loading the alaska.shp file.
+shows QGIS after loading the country.shp file.
 \begin{figure}[h]
    \begin{center}
-   \caption{QGIS with the Alaska Shapefile Loaded}\label{fig:loadedshapefile}\smallskip
+   \caption{QGIS with the countries Shapefile Loaded}\label{fig:loadedshapefile}\smallskip
    \includegraphics[scale=.6]{qgis_user_guide_images/shapefileloaded}
 \end{center}  
    
@@ -300,7 +313,7 @@ To load a layer from PostGIS, perform the following steps:
 \item Click on the \textsl{Add} button to add the layer to the map
 \end{compactenum}
 \begin{Tip}\caption{\textsc{Using a Definition Query with PostGIS Layers}}
-\qgistip{If you wish to further define the features added from a PostGIS layer, double-click on the layer to open the SQL editor. Enter a conditional statement to be used to select features from the layer for display. For example, if you have a towns layer with a population field you could select only larger towns by entering \textsl{population > 100000}. Currently the SQL editor does not provide a list of field names to aid you in forming the conditional statement. The editor will be improved in a future release. Field names and values can be examined by loading the layer without a conditional statement and using the identify tool or by opening the attribute table.
+\qgistip{If you wish to further define the features added from a PostGIS layer, double-click on the layer to open the SQL editor. Enter a conditional statement to be used to select features from the layer for display. For example, if you have a towns layer with a population field you could select only larger towns by entering \textsl{population > 100000}. 
 }
 \end{Tip}
 \subsubsection{Importing Data into PostgreSQL}\label{sec:loading_postgis_data} 
@@ -314,7 +327,7 @@ To import a shapefile, click on the SPIT tool in the toolbar to open the dialog.
 }
 \end{Tip} 
 \subsection{The Vector Properties Dialog}
-The vector properties dialog provides information about a layer, symbology settings, and labeling options. To access the properties dialog, double-click on a layer in the legend or right-click on the layer and select Properties from the popup menu.
+The vector properties dialog provides information about a layer, symbology settings, and labeling options. If your vector layer has been loaded from a PostgreSQL / Postgis datastore, you can also alter the underlying SQL for  the layer - eitehr by hand editing the SQL on the `general' tab, or by invoking the query builder dialog on the `general' tab. To access the properties dialog, double-click on a layer in the legend or right-click on the layer and select Properties from the popup menu.
 
 \subsubsection{Vector Symbology}\label{sec:symbology}
 
@@ -350,6 +363,16 @@ available that use SVG icons:
     different icon.
 \end{compactdesc}
 
+To change the symbology for a layer, simply double click on its legend entry and the vector layer properties dialog will be shown.
+
+\begin{figure}[h]
+   \begin{center}
+   \caption{Vector Layer Properties Dialog}\label{fig:vector_symbology}\smallskip
+   \includegraphics[scale=.5]{qgis_user_guide_images/vectorLayerSymbology.png}  
+\end{center}  
+\end{figure}
+%force all figures to be printed
+\afterpage{\clearpage}
 
 \section{Working with Raster Data}
 QGIS supports a number of raster data formats. This section describes how to work with raster data in QGIS.
@@ -727,6 +750,9 @@ At the date of this document, the following formats are supported by the GDAL li
 \item X11 Pixmap (.xpm)
 
 \end{compactitem}
+
+\input{appendices/gpl.tex}
+\input{appendices/qgis_qt_gpl_exception.tex}
 
 \end{onehalfspace}
 
