@@ -42,7 +42,7 @@ signals:
 public slots:
     void setRotation(int);
     void setPlacement(QString thePlacementQString);
-    //void setEnable(bool);
+    void setEnabled(bool);
     
 private slots:
     //overides function byt the same name created in .ui
