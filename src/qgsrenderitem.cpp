@@ -18,24 +18,27 @@
 #include <qstring.h>
 #include "qgsrenderitem.h"
 
-QgsRenderItem::QgsRenderItem(){
+QgsRenderItem::QgsRenderItem()
+{
 };
 
-QgsRenderItem::QgsRenderItem(QgsSymbol symbol, QString _value, QString _label) :
-sym(symbol), m_value(_value), m_label(_label){
+QgsRenderItem::QgsRenderItem(QgsSymbol symbol, QString _value, QString _label):
+sym(symbol), m_value(_value), m_label(_label)
+{
 
 }
 
 void QgsRenderItem::setLabel(QString label)
 {
-    m_label=label;
+  m_label = label;
 }
 
-void QgsRenderItem::setSymbol(QgsSymbol s){
-	sym = s;
-}
-
-const QString& QgsRenderItem::label() const
+void QgsRenderItem::setSymbol(QgsSymbol s)
 {
-    return m_label;
+  sym = s;
+}
+
+const QString & QgsRenderItem::label() const const
+{
+  return m_label;
 }

@@ -26,10 +26,9 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include "qgshelpviewer.h"
-QgsHelpViewer::QgsHelpViewer( QWidget* parent, const char* name, bool modal, WFlags fl )
-    : QgsHelpViewerBase( parent, name, modal, fl )
+QgsHelpViewer::QgsHelpViewer(QWidget * parent, const char *name, bool modal, WFlags fl):QgsHelpViewerBase(parent, name, modal, fl)
 {
- 
+
 }
 
 /*
@@ -37,10 +36,10 @@ QgsHelpViewer::QgsHelpViewer( QWidget* parent, const char* name, bool modal, WFl
  */
 QgsHelpViewer::~QgsHelpViewer()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
-void QgsHelpViewer::showContent(QString path, QString doc){
+void QgsHelpViewer::showContent(QString path, QString doc)
+{
   textBrowser->mimeSourceFactory()->addFilePath(path);
   textBrowser->setSource(doc);
 }
-

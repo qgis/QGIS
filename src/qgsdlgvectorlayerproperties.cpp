@@ -38,14 +38,16 @@
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
 #include "qobjectlist.h"
- 
-QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer *lyr, QWidget *parent, const char *name): QgsDlgVectorLayerPropertiesBase(parent, name), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()), bufferRenderer(layer->renderer())
+
+QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name):QgsDlgVectorLayerPropertiesBase(parent, name), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
+bufferRenderer(layer->
+               renderer())
 {
   // populate the general information
   QString source = layer->source();
-	source = source.left(source.find("password"));
-	lblSource->setText(source);
-	txtDisplayName->setText(layer->name());
+  source = source.left(source.find("password"));
+  lblSource->setText(source);
+  txtDisplayName->setText(layer->name());
   // display type and feature count
   lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
   QgsDataProvider *dp = layer->getDataProvider();
@@ -59,129 +61,125 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer *lyr, QW
   QString ur;
 //  QTextOStream (&ur) << extent->xMax() << ", " << extent->yMax(); 
   lblUpperRight->setText(ur.sprintf("%16f, %16f", extent->xMax(), extent->yMax()));
-  std::vector<QgsField> fields = dp->fields();  	
+  std::vector < QgsField > fields = dp->fields();
   // populate the table with the field information
-  for(int i = 0; i < fields.size(); i++){
-    QgsField fld = fields[i];
-    QListViewItem *lvi = new QListViewItem(listViewFields,fld.getName(), 
-      fld.getType(), QString("%1").arg(fld.getLength()),
-      QString("%1").arg(fld.getPrecision())); 
-  }
+  for (int i = 0; i < fields.size(); i++)
+    {
+      QgsField fld = fields[i];
+      QListViewItem *lvi = new QListViewItem(listViewFields, fld.getName(),
+                                             fld.getType(), QString("%1").arg(fld.getLength()),
+                                             QString("%1").arg(fld.getPrecision()));
+    }
   // symbology initialization
   legendtypecombobox->insertItem(tr("Single Symbol"));
   legendtypecombobox->insertItem(tr("Graduated Symbol"));
   legendtypecombobox->insertItem(tr("Continuous Color"));
 
-  QObject::connect(legendtypecombobox,SIGNAL(activated(const QString&)),this,SLOT(alterLayerDialog(const QString&)));
-  QObject::connect(btnApply,SIGNAL(clicked()),this,SLOT(apply()));
-  QObject::connect(btnClose,SIGNAL(clicked()),this,SLOT(close()));
+  QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
+  QObject::connect(btnApply, SIGNAL(clicked()), this, SLOT(apply()));
+  QObject::connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
   //insert the renderer dialog of the vector layer into the widget stack
   widgetStackRenderers->addWidget(bufferDialog);
   widgetStackRenderers->raiseWidget(bufferDialog);
-  
+
 }
 
 QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
 {
-    widgetStackRenderers->removeWidget(bufferDialog);
-    if(rendererDirty)
+  widgetStackRenderers->removeWidget(bufferDialog);
+  if (rendererDirty)
     {
-	delete bufferDialog;
-	delete bufferRenderer;	
+      delete bufferDialog;
+      delete bufferRenderer;
     }
 }
 
-void QgsDlgVectorLayerProperties::alterLayerDialog(const QString& string)
+void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
 {
-    if(rendererDirty)
+  if (rendererDirty)
     {
-	widgetStackRenderers->removeWidget(bufferDialog);
-	delete bufferDialog;
-	delete bufferRenderer;	
+      widgetStackRenderers->removeWidget(bufferDialog);
+      delete bufferDialog;
+      delete bufferRenderer;
     }
-
-    //create a new Dialog
-    if(string==tr("Single Symbol"))
+  //create a new Dialog
+  if (string == tr("Single Symbol"))
     {
-        bufferRenderer=new QgsSingleSymRenderer();
-	bufferRenderer->initializeSymbology(layer,this);
-    }
-    else if(string==tr("Graduated Symbol"))
+      bufferRenderer = new QgsSingleSymRenderer();
+      bufferRenderer->initializeSymbology(layer, this);
+  } else if (string == tr("Graduated Symbol"))
     {
-	bufferRenderer=new QgsGraduatedSymRenderer();
-	bufferRenderer->initializeSymbology(layer,this);
-    }
-    else if(string==tr("Continuous Color"))
+      bufferRenderer = new QgsGraduatedSymRenderer();
+      bufferRenderer->initializeSymbology(layer, this);
+  } else if (string == tr("Continuous Color"))
     {
-	bufferRenderer=new QgsContinuousColRenderer();
-	bufferRenderer->initializeSymbology(layer,this);
+      bufferRenderer = new QgsContinuousColRenderer();
+      bufferRenderer->initializeSymbology(layer, this);
     }
-    widgetStackRenderers->addWidget(bufferDialog);
-    widgetStackRenderers->raiseWidget(bufferDialog);
-    rendererDirty=true;
+  widgetStackRenderers->addWidget(bufferDialog);
+  widgetStackRenderers->raiseWidget(bufferDialog);
+  rendererDirty = true;
 }
 
 void QgsDlgVectorLayerProperties::setRendererDirty(bool enabled)
 {
-    rendererDirty=enabled;
+  rendererDirty = enabled;
 }
 
 void QgsDlgVectorLayerProperties::apply()
 {
-    if(rendererDirty)
+  if (rendererDirty)
     {
-	layer->setRenderer(bufferRenderer);
-	layer->setRendererDialog(bufferDialog);
+      layer->setRenderer(bufferRenderer);
+      layer->setRendererDialog(bufferDialog);
     }
 
-    QgsSiSyDialog* sdialog=dynamic_cast<QgsSiSyDialog*>(layer->rendererDialog());
-    QgsGraSyDialog* gdialog=dynamic_cast<QgsGraSyDialog*>(layer->rendererDialog());
-    QgsContColDialog* cdialog=dynamic_cast<QgsContColDialog*>(layer->rendererDialog());
-    if(sdialog)
+  QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(layer->rendererDialog());
+  QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(layer->rendererDialog());
+  QgsContColDialog *cdialog = dynamic_cast < QgsContColDialog * >(layer->rendererDialog());
+  if (sdialog)
     {
-	sdialog->apply();
-    }
-    else if(gdialog)
+      sdialog->apply();
+  } else if (gdialog)
     {
-	gdialog->apply();
-    }
-    else if(cdialog)
+      gdialog->apply();
+  } else if (cdialog)
     {
-	cdialog->apply();
+      cdialog->apply();
     }
-    
-    rendererDirty=false;
+
+  rendererDirty = false;
 }
 
 
 void QgsDlgVectorLayerProperties::close()
 {
-    if(rendererDirty)
+  if (rendererDirty)
     {
-	widgetStackRenderers->removeWidget(bufferDialog);
-	delete bufferDialog;
-	delete bufferRenderer;
-	bufferDialog=layer->rendererDialog();
-	bufferRenderer=layer->renderer();
-	widgetStackRenderers->addWidget(bufferDialog);
-	widgetStackRenderers->raiseWidget(bufferDialog);
-	rendererDirty=false;
+      widgetStackRenderers->removeWidget(bufferDialog);
+      delete bufferDialog;
+      delete bufferRenderer;
+      bufferDialog = layer->rendererDialog();
+      bufferRenderer = layer->renderer();
+      widgetStackRenderers->addWidget(bufferDialog);
+      widgetStackRenderers->raiseWidget(bufferDialog);
+      rendererDirty = false;
     }
-    reject();
+  reject();
 }
 
-QDialog* QgsDlgVectorLayerProperties::getBufferDialog()
+QDialog *QgsDlgVectorLayerProperties::getBufferDialog()
 {
-    return bufferDialog;
+  return bufferDialog;
 }
 
-QgsRenderer* QgsDlgVectorLayerProperties::getBufferRenderer()
+QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
 {
-    return bufferRenderer;
+  return bufferRenderer;
 }
 
 void QgsDlgVectorLayerProperties::setLegendType(QString type)
 {
-    legendtypecombobox->setCurrentText(type);  
+  legendtypecombobox->setCurrentText(type);
 }

@@ -19,7 +19,8 @@
 #include "qgspoint.h"
 #include "qgsrect.h"
 
-QgsRect::QgsRect(QgsPoint p1, QgsPoint p2){
+QgsRect::QgsRect(QgsPoint p1, QgsPoint p2)
+{
   xmin = p1.x();
   xmax = p2.x();
   ymin = p1.y();
@@ -29,103 +30,111 @@ QgsRect::QgsRect(QgsPoint p1, QgsPoint p2){
 
 void QgsRect::normalize()
 {
-	double temp;
-	if (xmin > xmax) {
-		temp = xmin;
-		xmin = xmax;
-		xmax = temp;
-	}
-	if (ymin > ymax) {
-		temp = ymin;
-		ymin = ymax;
-		ymax = temp;
-	}
+  double temp;
+  if (xmin > xmax)
+    {
+      temp = xmin;
+      xmin = xmax;
+      xmax = temp;
+    }
+  if (ymin > ymax)
+    {
+      temp = ymin;
+      ymin = ymax;
+      ymax = temp;
+    }
 }
-void QgsRect::scale(double scaleFactor, QgsPoint *cp)
+void QgsRect::scale(double scaleFactor, QgsPoint * cp)
 {
-	// scale from the center
+  // scale from the center
   double centerX, centerY;
-  if(cp){
+  if (cp)
+    {
       centerX = cp->x();
       centerY = cp->y();
-    }else{
-	  centerX = xmin + width() / 2;
-	  centerY = ymin + height() / 2;
-  }
+  } else
+    {
+      centerX = xmin + width() / 2;
+      centerY = ymin + height() / 2;
+    }
   double newWidth = width() * scaleFactor;
   double newHeight = height() * scaleFactor;
- 	xmin = centerX - newWidth/2.0;
-	xmax = centerX + newWidth/2.0;
-	ymin = centerY -  newHeight/2.0;
-	ymax = centerY +  newHeight/2.0;
+  xmin = centerX - newWidth / 2.0;
+  xmax = centerX + newWidth / 2.0;
+  ymin = centerY - newHeight / 2.0;
+  ymax = centerY + newHeight / 2.0;
 }
-void QgsRect::expand(double scaleFactor, QgsPoint *cp)
+void QgsRect::expand(double scaleFactor, QgsPoint * cp)
 {
-	// scale from the center
+  // scale from the center
   double centerX, centerY;
-  if(cp){
+  if (cp)
+    {
       centerX = cp->x();
       centerY = cp->y();
-    }else{
-	  centerX = xmin + width() / 2;
-	  centerY = ymin + height() / 2;
-  }
-  
+  } else
+    {
+      centerX = xmin + width() / 2;
+      centerY = ymin + height() / 2;
+    }
+
   double newWidth = width() * scaleFactor;
   double newHeight = height() * scaleFactor;
-	xmin = centerX - newWidth;
-	xmax = centerX + newWidth;
-	ymin = centerY -  newHeight;
-	ymax = centerY +  newHeight;
+  xmin = centerX - newWidth;
+  xmax = centerX + newWidth;
+  ymin = centerY - newHeight;
+  ymax = centerY + newHeight;
 }
 
-QgsRect QgsRect::intersect(QgsRect *rect)
+QgsRect QgsRect::intersect(QgsRect * rect)
 {
-	QgsRect intersection = QgsRect();
-	intersection.setXmin( xmin >? rect->xMin() );
-	intersection.setYmin( ymin >? rect->yMin() );
-	intersection.setXmax( xmax <? rect->xMax() );
-	intersection.setYmax( ymax <? rect->yMax() );
-	return intersection;
+  QgsRect intersection = QgsRect();
+  intersection.setXmin(xmin > ? rect->xMin());
+  intersection.setYmin(ymin > ? rect->yMin());
+  intersection.setXmax(xmax < ? rect->xMax());
+  intersection.setYmax(ymax < ? rect->yMax());
+  return intersection;
 }
 
 bool QgsRect::isEmpty()
 {
-	if (xmax <= xmin || ymax <= ymin) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+  if (xmax <= xmin || ymax <= ymin)
+    {
+      return TRUE;
+  } else
+    {
+      return FALSE;
+    }
 }
 
-QString QgsRect::stringRep() const
+QString QgsRect::stringRep() const const
 {
-	QString tmp;
-	QString rep = tmp.setNum(xmin);;
-	rep += " ";
-	rep += tmp.setNum(ymin);
-	rep += ",";
-	rep += tmp.setNum(xmax);
-	rep += " ";
-	rep += tmp.setNum(ymax);
-	return rep;
+  QString tmp;
+  QString rep = tmp.setNum(xmin);;
+  rep += " ";
+  rep += tmp.setNum(ymin);
+  rep += ",";
+  rep += tmp.setNum(xmax);
+  rep += " ";
+  rep += tmp.setNum(ymax);
+  return rep;
 }
 
 bool QgsRect::operator==(const QgsRect & r1)
 {
-	return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() && r1.yMax() == this->yMax() && r1.yMin() == this->yMin());
+  return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() && r1.yMax() == this->yMax() && r1.yMin() == this->yMin());
 }
 
 QgsRect & QgsRect::operator=(const QgsRect & r)
 {
-	if (&r != this) {
-		xmax = r.xMax();
-		xmin = r.xMin();
-		ymax = r.yMax();
-		ymin = r.yMin();
-	}
-	return *this;
+  if (&r != this)
+    {
+      xmax = r.xMax();
+      xmin = r.xMin();
+      ymax = r.yMax();
+      ymin = r.yMin();
+    }
+  return *this;
 
 
 }
-

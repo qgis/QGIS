@@ -19,13 +19,19 @@
 #include <qstring.h>
 #include "qgsfeatureattribute.h"
 
-QgsFeatureAttribute::QgsFeatureAttribute(QString fld, QString val)
-  : field(fld), value(val){
-  }
-QgsFeatureAttribute::~QgsFeatureAttribute(){}
-QString QgsFeatureAttribute::fieldName() const{
-	return field;
+QgsFeatureAttribute::QgsFeatureAttribute(QString fld, QString val):field(fld), value(val)
+{
 }
-QString QgsFeatureAttribute::fieldValue() const{
-	return value;
+
+QgsFeatureAttribute::~QgsFeatureAttribute()
+{
+}
+QString QgsFeatureAttribute::fieldName() const const
+{
+  return field;
+}
+
+QString QgsFeatureAttribute::fieldValue() const const
+{
+  return value;
 }

@@ -29,27 +29,28 @@
 
 QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 {
-	// populate the property sheet based on the layer properties
-	// general info
-	QString source = lyr->source();
-	source = source.left(source.find("password"));
-	lblSource->setText(source);
-	txtDisplayName->setText(lyr->name());
-	//symbology
-	sym = layer->symbol();
-	newSym = *sym;
+  // populate the property sheet based on the layer properties
+  // general info
+  QString source = lyr->source();
+  source = source.left(source.find("password"));
+  lblSource->setText(source);
+  txtDisplayName->setText(lyr->name());
+  //symbology
+  sym = layer->symbol();
+  newSym = *sym;
 
-	btnSetColor->setPaletteBackgroundColor(sym->color());
+  btnSetColor->setPaletteBackgroundColor(sym->color());
 
-	btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
-	spinLineWidth->setValue(sym->lineWidth());
-	setCaption("Layer Properties - " + lyr->name());
-	// if this is a line layer, hide the fill properties
-	if(lyr->featureType() == QGis::WKBMultiLineString || lyr->featureType() == QGis::WKBLineString){
-		lblFillColor->hide();
-		btnSetFillColor->hide();
-		
-	}
+  btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
+  spinLineWidth->setValue(sym->lineWidth());
+  setCaption("Layer Properties - " + lyr->name());
+  // if this is a line layer, hide the fill properties
+  if (lyr->featureType() == QGis::WKBMultiLineString || lyr->featureType() == QGis::WKBLineString)
+    {
+      lblFillColor->hide();
+      btnSetFillColor->hide();
+
+    }
 }
 
 QgsLayerProperties::~QgsLayerProperties()
@@ -58,32 +59,36 @@ QgsLayerProperties::~QgsLayerProperties()
 void QgsLayerProperties::selectFillColor()
 {
 
-	QColor fc = QColorDialog::getColor(newSym.fillColor(), this);
-	if (fc.isValid()) {
+  QColor fc = QColorDialog::getColor(newSym.fillColor(), this);
+  if (fc.isValid())
+    {
 
-		btnSetFillColor->setPaletteBackgroundColor(fc);
-		newSym.setFillColor(fc);
-	}
+      btnSetFillColor->setPaletteBackgroundColor(fc);
+      newSym.setFillColor(fc);
+    }
 }
 void QgsLayerProperties::selectOutlineColor()
 {
-	QColor oc = QColorDialog::getColor(newSym.color(), this);
-	if (oc.isValid()) {
+  QColor oc = QColorDialog::getColor(newSym.color(), this);
+  if (oc.isValid())
+    {
 
-		btnSetColor->setPaletteBackgroundColor(oc);
-		newSym.setColor(oc);
-	}
+      btnSetColor->setPaletteBackgroundColor(oc);
+      newSym.setColor(oc);
+    }
 }
 
 QString QgsLayerProperties::displayName()
 {
-	return txtDisplayName->text();
+  return txtDisplayName->text();
 }
 
 void QgsLayerProperties::setLineWidth(int w)
 {
-	newSym.setLineWidth(w);
+  newSym.setLineWidth(w);
 }
-QgsSymbol * QgsLayerProperties::getSymbol(){
-	return new QgsSymbol(newSym);
+
+QgsSymbol *QgsLayerProperties::getSymbol()
+{
+  return new QgsSymbol(newSym);
 }

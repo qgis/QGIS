@@ -27,21 +27,23 @@ extern "C"
 }
 QgsNewConnection::QgsNewConnection(QString connName):QgsNewConnectionBase()
 {
-	if (!connName.isEmpty()) {
-		// populate the dialog with the information stored for the connection
-		// populate the fields with the stored setting parameters
-		QSettings settings;
+  if (!connName.isEmpty())
+    {
+      // populate the dialog with the information stored for the connection
+      // populate the fields with the stored setting parameters
+      QSettings settings;
 
-		QString key = "/Qgis/connections/" + connName;
-		txtHost->setText(settings.readEntry(key + "/host"));
-		txtDatabase->setText(settings.readEntry(key + "/database"));
-		txtUsername->setText(settings.readEntry(key + "/username"));
-        if(settings.readEntry(key + "/save") == "true"){
-            txtPassword->setText(settings.readEntry(key + "/password"));
-            chkStorePassword->setChecked(true);
+      QString key = "/Qgis/connections/" + connName;
+      txtHost->setText(settings.readEntry(key + "/host"));
+      txtDatabase->setText(settings.readEntry(key + "/database"));
+      txtUsername->setText(settings.readEntry(key + "/username"));
+      if (settings.readEntry(key + "/save") == "true")
+        {
+          txtPassword->setText(settings.readEntry(key + "/password"));
+          chkStorePassword->setChecked(true);
         }
-		txtName->setText(connName);
-	}
+      txtName->setText(connName);
+    }
 }
 
 QgsNewConnection::~QgsNewConnection()
@@ -49,42 +51,45 @@ QgsNewConnection::~QgsNewConnection()
 }
 void QgsNewConnection::testConnection()
 {
-	// following line uses Qt SQL plugin - currently not used
-	// QSqlDatabase *testCon = QSqlDatabase::addDatabase("QPSQL7","testconnection");
+  // following line uses Qt SQL plugin - currently not used
+  // QSqlDatabase *testCon = QSqlDatabase::addDatabase("QPSQL7","testconnection");
 
-	QString connInfo =
-	  "host=" + txtHost->text() + " dbname=" + txtDatabase->text() +
-	  " user=" + txtUsername->text() + " password=" + txtPassword->text();
-	PGconn *pd = PQconnectdb((const char *) connInfo);
+  QString connInfo =
+    "host=" + txtHost->text() + " dbname=" + txtDatabase->text() + " user=" + txtUsername->text() + " password=" + txtPassword->text();
+  PGconn *pd = PQconnectdb((const char *) connInfo);
 //  std::cout << pd->ErrorMessage();
-	if (PQstatus(pd) == CONNECTION_OK) {
-		// Database successfully opened; we can now issue SQL commands.
-		QMessageBox::information(this, tr("Test connection"), tr("Connection to %1 was successfull").arg(txtDatabase->text()));
-	} else {
-		QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again "));
-	}
+  if (PQstatus(pd) == CONNECTION_OK)
+    {
+      // Database successfully opened; we can now issue SQL commands.
+      QMessageBox::information(this, tr("Test connection"), tr("Connection to %1 was successfull").arg(txtDatabase->text()));
+  } else
+    {
+      QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again "));
+    }
   // free pg connection resources
-	PQfinish(pd);
+  PQfinish(pd);
 
 
 }
 
 void QgsNewConnection::saveConnection()
- {
- 	QSettings settings;
- 	QString baseKey = "/Qgis/connections/";
- 	baseKey += txtName->text();
- 	settings.writeEntry(baseKey + "/host", txtHost->text());
- 	settings.writeEntry(baseKey + "/database", txtDatabase->text());
- 	settings.writeEntry(baseKey + "/username", txtUsername->text());
- 	settings.writeEntry(baseKey + "/password", txtPassword->text());
-    if(chkStorePassword->isChecked()){
-        settings.writeEntry(baseKey + "/save", "true");
-    }else{
-        settings.writeEntry(baseKey + "/save", "false");
+{
+  QSettings settings;
+  QString baseKey = "/Qgis/connections/";
+  baseKey += txtName->text();
+  settings.writeEntry(baseKey + "/host", txtHost->text());
+  settings.writeEntry(baseKey + "/database", txtDatabase->text());
+  settings.writeEntry(baseKey + "/username", txtUsername->text());
+  settings.writeEntry(baseKey + "/password", txtPassword->text());
+  if (chkStorePassword->isChecked())
+    {
+      settings.writeEntry(baseKey + "/save", "true");
+  } else
+    {
+      settings.writeEntry(baseKey + "/save", "false");
     }
-    accept();
- }
+  accept();
+}
 
 /* void QgsNewConnection::saveConnection()
 {

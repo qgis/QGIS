@@ -28,17 +28,18 @@ QgsIdentifyResults::~QgsIdentifyResults()
 }
 
 /** add an attribute and its value to the list */
-void QgsIdentifyResults::addAttribute(QListViewItem *fnode, QString field, QString value)
+void QgsIdentifyResults::addAttribute(QListViewItem * fnode, QString field, QString value)
 {
-	 new QListViewItem(fnode, field, value);
+  new QListViewItem(fnode, field, value);
 }
 
 /** Add a feature node to the list */
-QListViewItem * QgsIdentifyResults::addNode(QString label){
-	return (new QListViewItem(lstResults,label));
+QListViewItem *QgsIdentifyResults::addNode(QString label)
+{
+  return (new QListViewItem(lstResults, label));
 }
 
 void QgsIdentifyResults::setTitle(QString title)
 {
-	setCaption("Identify Results - " + title);
+  setCaption("Identify Results - " + title);
 }
