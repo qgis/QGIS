@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>763</width>
+            <width>666</width>
             <height>399</height>
         </rect>
     </property>
@@ -82,8 +82,8 @@
                             <cstring>teGPXInstructions</cstring>
                         </property>
                         <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:9pt;font-family:Bitstream Vera Sans"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:13pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX is the &lt;a href="http://www.topografix.com/gpx.asp"&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks. LOC is the &lt;a href="http://www.geocaching.com"&gt;geocaching.com&lt;/a&gt; waypoint format.&lt;/p&gt;
 &lt;p&gt;Select a GPX or LOC file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -182,8 +182,8 @@
                             <cstring>teInstructions</cstring>
                         </property>
                         <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:9pt;font-family:Bitstream Vera Sans"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:13pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
 &lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
@@ -283,23 +283,6 @@
                 </grid>
             </widget>
         </widget>
-        <spacer row="1" column="1" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Preferred</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>530</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QPushButton" row="1" column="5">
             <property name="name">
                 <cstring>pbnOK</cstring>
