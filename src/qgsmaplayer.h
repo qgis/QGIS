@@ -53,14 +53,19 @@ class QgsMapLayer:public QObject
 	const int type();
 	/*! Get this layer's unique ID */
 	QString getLayerID();
-	/*! Set the name of the layer
+	/*! Set the display name of the layer
 	   # @param name New name for the layer
 	 */
-	void setlayerName(const QString & name);
-	/*! Get the name of the layer
+	void setLayerName(const QString & name);
+	/*! Get the display name of the layer
 	 * @return the layer name
 	 */
 	const QString name();
+  /*! Get the internal name of the layer. This is the name used to created the
+  * layer from the data source
+  * @return internal datasource name of the layer
+  */
+  QString sourceName();
 	/*! Virtual function to calculate the extent of the current layer.
 	 * This function must be overridden in all child classes and implemented
 	 * based on the layer type
@@ -130,6 +135,7 @@ class QgsMapLayer:public QObject
 	  QgsRect layerExtent;
 	//! Indicates if the layer is valid and can be drawn
 	bool valid;
+  //! data source description string, varies by layer type
 	QString dataSource;
 	//! Geometry type as defined in enum WKBTYPE (qgis.h)
 	int geometryType;
@@ -139,6 +145,8 @@ class QgsMapLayer:public QObject
 	QPixmap m_legendPixmap;
 	/** Name of the layer - used for display  */
 	QString layerName;
+  /** Internal name of the layer. Derived from the datasource */
+  QString internalName;
   //! context menu
   QPopupMenu *popMenu;
   private:						// Private attributes
