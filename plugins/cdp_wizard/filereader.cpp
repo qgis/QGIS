@@ -1,743 +1,575 @@
 #include "filereader.h"
 
-
-
-#include <cassert>  //assert debugging
-
 //qt includes
-
 #include <qmap.h>
-
 #include <qtextstream.h>
 
-//move this somewhere else!
-
-#define QGISDEBUG false
-
-
-
 FileReader::FileReader()
-
-
-
 {
-
-  taskProgressInt=0;
-
+    taskProgressInt=0;
 }
-
-
 
 FileReader::FileReader(QString theFileNameString)
-
 {
-
-
-
 #ifdef QGISDEBUG
-
-  std::cout << "FileReader::FileReader(QString theFileNameString)" << std::endl;
-
+    std::cout << "FileReader::FileReader(QString theFileNameString)" << std::endl;
 #endif
-
-  openFile(theFileNameString);
-
-  taskProgressInt=0;
-
-
-
+    openFile(theFileNameString);
+    taskProgressInt=0;
 }
-
-
 
 FileReader::~FileReader()
-
 {
-
-  delete textStream;
-
-  delete filePointer;
-
+    delete textStream;
+    delete filePointer;
 }
-
-
-
-/**
-
-  This method will open a given file. The file pointer will be moved to the first matrix element, and any header info will be skipped.
-
-  @param open. The filename (including full path) to open.
-
-  */
 
 bool FileReader::openFile(const QString theFileNameQString)
-
 {
-
-  filePointer = new QFile ( theFileNameQString );
-
-  if ( !filePointer->open( IO_ReadOnly | IO_Translate) )
-
-  {
-
-    std::cerr << "Cannot open file : " << theFileNameQString << std::endl;
-
-    return false;
-
-  }
-
+    filePointer = new QFile ( theFileNameQString );
+    if ( !filePointer->open( IO_ReadOnly | IO_Translate) )
+    {
+        std::cerr << "Cannot open file : " << theFileNameQString << std::endl;
+        return false;
+    }
 #ifdef QGISDEBUG
-
-  std::cout << "Opened file : " << theFileNameQString << " successfully." << std::endl;
-
+    std::cout << "Opened file : " << theFileNameQString << " successfully." << std::endl;
 #endif
-
-  // now open the text stream on the filereader
-
-  textStream = new QTextStream(filePointer);
-
-  currentColLong=1;
-
-  currentRowLong=1;
-
-  currentElementLong=0;
-
-  return true;
-
+    // now open the text stream on the filereader
+    textStream = new QTextStream(filePointer);
+    currentColLong=1;
+    currentRowLong=1;
+    currentElementLong=0;
+    return true;
 }
-
-/**
-
-  This method will close the file currently associated with the fileReader object.
-
-  */
 
 bool FileReader::closeFile()
-
 {
-
     filePointer->close();
-
     return true;
-
 }
-
-
-
-/**
-
-  Move the internal pointer to the first matrix of the current data block element.
-
-  */
 
 bool FileReader::moveFirst()
-
 {
-
-  std::cout << "Error move first is not implemented yet!";
-  return false;
-
+    std::cout << "Error move first is not implemented yet!";
+    return false;
 }
-
-
-
-/**
-
-  Get the next available element from the file matrix.
-
-  */
 
 float FileReader::getElement()
-
 {
-
-  float myElementFloat=0;
-
-  //see if it is ok to get another element
-
-  if (!endOfMatrixFlag)
-
-  {
-
-
-
-    //read a float from the file - this will advance the file pointer
-
-    *textStream >> myElementFloat;
-
-    currentElementLong++;
-
+    float myElementFloat=0;
+    //see if it is ok to get another element
+    if (!endOfMatrixFlag)
+    {
+        //read a float from the file - this will advance the file pointer
+        *textStream >> myElementFloat;
+        currentElementLong++;
 #ifdef QGISDEBUG
-
-    //print out the last entries for debuggging
-
-    if (currentElementLong > 0)
-
-    {
-
-     // if (debugModeFlag) std::cout << "FileReader::getElement() retrieved value : " << myElementFloat << " for element no " << currentElementLong << std::endl;
-
-    }
-
+        //print out the last entries for debuggging
+        if (currentElementLong > 0)
+        {
+            // if (debugModeFlag) std::cout << "FileReader::getElement() retrieved value : " << myElementFloat << " for element no " << currentElementLong << std::endl;
+        }
 #endif
-
-    //check if we have now run to the end of the matrix
-
-    if (currentElementLong == ((xDimLong*yDimLong)))
-
-    {
-
-      endOfMatrixFlag=true;
-
+        //check if we have now run to the end of the matrix
+        if (currentElementLong == ((xDimLong*yDimLong)))
+        {
+            endOfMatrixFlag=true;
+        }
+        else
+        {
+            endOfMatrixFlag=false;
+        }
     }
-
+    //increment the column and row counter and wrap them if needed
+    if ((currentColLong ) == xDimLong)
+    {
+        currentColLong=1;
+        currentRowLong++;
+    }
     else
-
     {
-
-      endOfMatrixFlag=false;
-
+        currentColLong++;
     }
-
-  }
-
-  //increment the column and row counter and wrap them if needed
-
-  if ((currentColLong ) == xDimLong)
-
-  {
-
-    currentColLong=1;
-
-    currentRowLong++;
-
-  }
-
-  else
-
-  {
-
-    currentColLong++;
-
-  }
-
-  return myElementFloat;
-
+    return myElementFloat;
 }
 
-/** Read property of long xDimLong. */
-
-const long FileReader::getXDim(){
-
-  return xDimLong;
-
+const long FileReader::getXDim()
+{
+    return xDimLong;
 }
 
-/** Write property of long xDimLong. */
-
-bool FileReader::setXDim( const long theNewVal){
-
-  try
-
-  {
-
-    xDimLong = theNewVal;
-
-    return true;
-
-  }
-
-  catch (...)
-
-  {
-
-    return false;
-
-  }
-
+bool FileReader::setXDim( const long theNewVal)
+{
+    try
+    {
+        xDimLong = theNewVal;
+        return true;
+    }
+    catch (...)
+    {
+        return false;
+    }
 }
 
 /** Read property of long yDimLong. */
 
-const long FileReader::getYDim(){
+const long FileReader::getYDim()
+{
 
-  return yDimLong;
+    return yDimLong;
 
 }
 
 /** Write property of long yDimLong. */
 
-bool FileReader::setYDim( const long theNewVal){
+bool FileReader::setYDim( const long theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    yDimLong = theNewVal;
+        yDimLong = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 }
 
 /** Read property of FileTypeEnum fileType. */
 
-const FileReader::FileTypeEnum FileReader::getFileType(){
+const FileReader::FileTypeEnum FileReader::getFileType()
+{
 
-  return fileType;
+    return fileType;
 
 }
 
 /** Write property of FileTypeEnum fileType. */
 
-bool FileReader::setFileType( const FileTypeEnum theNewVal){
+bool FileReader::setFileType( const FileTypeEnum theNewVal)
+{
 
 
 
 #ifdef QGISDEBUG
 
-   std::cout << "FileReader::setFileType() -  called with fileType: " << theNewVal << std::endl;
+    std::cout << "FileReader::setFileType() -  called with fileType: " << theNewVal << std::endl;
 
 #endif
 
-  try
+    try
 
-  {
+    {
 
-    fileType = theNewVal;
+        fileType = theNewVal;
 
 #ifdef QGISDEBUG
 
-    std::cout << "FileReader::setFileType() -  fileType set to : " << fileType << std::endl;
+        std::cout << "FileReader::setFileType() -  fileType set to : " << fileType << std::endl;
 
 #endif
 
-    //Set Hadley member variables
+        //Set Hadley member variables
 
-    if ((fileType == HADLEY_SRES) || (fileType == HADLEY_IS92))
+        if ((fileType == HADLEY_SRES) || (fileType == HADLEY_IS92))
 
-    {
+        {
 
-      xDimLong = 96;
+            xDimLong = 96;
 
-      yDimLong = 73;
+            yDimLong = 73;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
-    //Set IPCC observed member variables
+        //Set IPCC observed member variables
 
-    else if (fileType == IPCC_OBSERVED)
+        else if (fileType == IPCC_OBSERVED)
 
-    {
+        {
 
-      xDimLong = 720;
+            xDimLong = 720;
 
-      yDimLong = 360;
+            yDimLong = 360;
 
-      columnsPerRowLong = 720;
+            columnsPerRowLong = 720;
 
-      headerLinesInt = 2;
+            headerLinesInt = 2;
 
-      monthHeaderLinesInt = 0;
+            monthHeaderLinesInt = 0;
 
-    }
+        }
 
-    //Set ECHAM4 member variables
+        //Set ECHAM4 member variables
 
-    else if (fileType == ECHAM4)
+        else if (fileType == ECHAM4)
 
-    {
+        {
 
-      xDimLong = 128;
+            xDimLong = 128;
 
-      yDimLong = 64;
+            yDimLong = 64;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
-    //Set CCCma member variables
+        //Set CCCma member variables
 
-    else if (fileType == CGCM2)
+        else if (fileType == CGCM2)
 
-    {
+        {
 
-      xDimLong = 96;
+            xDimLong = 96;
 
-      yDimLong = 48;
+            yDimLong = 48;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
 
 
-    //Set CSIRO_Mk2 member variables
+        //Set CSIRO_Mk2 member variables
 
-    else if (fileType == CSIRO_MK2)
+        else if (fileType == CSIRO_MK2)
 
-    {
+        {
 
-      xDimLong = 64;
+            xDimLong = 64;
 
-      yDimLong = 56;
+            yDimLong = 56;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
-    //Set NCAR member variables
+        //Set NCAR member variables
 
-    else if (fileType == NCAR_CSM_PCM)
+        else if (fileType == NCAR_CSM_PCM)
 
-    {
+        {
 
-      xDimLong = 128;
+            xDimLong = 128;
 
-      yDimLong = 64;
+            yDimLong = 64;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
-    //Set GFDL member variables
+        //Set GFDL member variables
 
-    else if (fileType == GFDL_R30)
+        else if (fileType == GFDL_R30)
 
-    {
+        {
 
-      xDimLong = 96;
+            xDimLong = 96;
 
-      yDimLong = 80;
+            yDimLong = 80;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
-    //Set CCSRC member variables
+        //Set CCSRC member variables
 
-    else if (fileType == CCSR_AGCM_OGCM)
+        else if (fileType == CCSR_AGCM_OGCM)
 
-    {
+        {
 
-      xDimLong = 64;
+            xDimLong = 64;
 
-      yDimLong = 32;
+            yDimLong = 32;
 
-      columnsPerRowLong = 6;
+            columnsPerRowLong = 6;
 
-      headerLinesInt = 0;
+            headerLinesInt = 0;
 
-      monthHeaderLinesInt = 1;
+            monthHeaderLinesInt = 1;
 
-    }
+        }
 
-    //Set ArcInfo ASCII grid and CRES member variables
+        //Set ArcInfo ASCII grid and CRES member variables
 
-    else if ((fileType == ARCINFO_GRID) || (fileType == CRES))
+        else if ((fileType == ARCINFO_GRID) || (fileType == CRES))
 
-    {
+        {
 
-      /* Typical Header:
+            /* Typical Header:
 
-         ncols         241
+               ncols         241
 
-         nrows         207
+               nrows         207
 
-         xllcorner     -795282.26306056
+               xllcorner     -795282.26306056
 
-         yllcorner     -3846910.6343577
+               yllcorner     -3846910.6343577
 
-         cellsize      7128.3696735486
+               cellsize      7128.3696735486
 
-         NODATA_value  -9999
+               NODATA_value  -9999
 
-         */
+               */
 
 
 
 #ifdef QGISDEBUG
 
-      std::cout << "FileReader::setFileType() - setting file type to ARCINFO_GRID / CRES" << std::endl;
+            std::cout << "FileReader::setFileType() - setting file type to ARCINFO_GRID / CRES" << std::endl;
 
 #endif
 
-      headerLinesInt = 6;
+            headerLinesInt = 6;
 
-      monthHeaderLinesInt = 0;
+            monthHeaderLinesInt = 0;
 
-      if (filePointer==0)
+            if (filePointer==0)
 
-      {
+            {
+
+                return false;
+
+            }
+
+            //Just testing remove this later! vvvvvvvvv
+
+            //fseek(filePointer,0,SEEK_END);
+
+            //long myFileSizeLong = ftell(filePointer);
+
+            //rewind(filePointer);
+
+            //Just testing remove this later!  ^^^^^^^^^^
+
+            float myFloat;
+
+            QString myString;
+
+
+
+            //bit of hoop jumping here
+
+            //fgetpos (filePointer, headerOffset);
+
+
+
+#ifdef QGISDEBUG
+
+            std::cout << "FileReader::setFileType()- creating properties QMap" << std::endl;
+
+#endif
+
+            /*Create the QMap (associative array) to store the header key value pairs.
+
+             * Doing it this way means that we dont need to worry about the order of the header
+
+             * fields in the file */
+
+            QMap <QString, float > myHeaderMap;
+
+            for (int i=0; i <6;i++)
+
+            {
+
+
+
+                //read a float from the file - this will advance the file pointer
+
+                *textStream >> myString;
+
+
+
+                //fscanf (filePointer, "%s", myString);
+
+                myString=myString.upper();   //make sure all keys are in upper case!
+
+                *textStream >> myFloat;
+
+                //fscanf (filePointer, "%f", &myFloat);
+
+
+
+                myHeaderMap[myString]=myFloat;
+
+            }
+
+            //print the QMap contents to stdout using an iterator
+
+            QMap<QString, float>::const_iterator myIterator;
+
+            for (myIterator=myHeaderMap.begin(); myIterator != myHeaderMap.end(); myIterator++)
+
+            {
+
+                std::cout << "FileReader::setFileType() retrieved values : " << myIterator.key().latin1() << " --- " << myIterator.data() << std::endl;
+
+            }
+
+
+
+            //good, now we can assign the member vars their value
+
+            //next four are not currently implemented used:
+
+            //cellSizeFloat = myHeaderMap["CELLSIZE"];
+
+            //lowerLeftXFloat = myHeaderMap["XLLCORNER"];
+
+            //lowerLeftYFloat = myHeaderMap["YLLCORNER"];
+
+            // noDataValueFloat = myHeaderMap["NODATA_VALUE"];
+
+            //this may cause problems if the arcinfo data structure does not match the file structure!
+
+            xDimLong  = static_cast<long>(myHeaderMap["NCOLS"]);            //note implicit cast from float to long int
+
+            yDimLong = static_cast<long>(myHeaderMap["NROWS"]);            //note implicit cast from float to long int
+
+
+
+            //set the start of data block pointer
+
+            //fgetpos (filePointer,dataStartOffset); //erk this causes a crash
+
+        }
+
+        //Set Valdes member variables
+
+        else if (fileType == VALDES)
+
+        {
+
+            /* class user will need to specify rows and cols */
+
+            //xDimLong = frmCDPWizard.txtSpecifyNumCol;
+
+            //yDimLong = frmCDPWizard.txtSpecifyNumRow;
+
+            //columnsPerRowLong = frmCDPWizard.txtSpecifyNumDataCols;
+
+            headerLinesInt = 0;
+
+            monthHeaderLinesInt = 0;
+
+        }//end of filetype handling
+
+        return true;
+
+    }
+
+    catch (...)
+
+    {
 
         return false;
 
-      }
-
-      //Just testing remove this later! vvvvvvvvv
-
-      //fseek(filePointer,0,SEEK_END);
-
-      //long myFileSizeLong = ftell(filePointer);
-
-      //rewind(filePointer);
-
-      //Just testing remove this later!  ^^^^^^^^^^
-
-      float myFloat;
-
-      QString myString;
-
-
-
-      //bit of hoop jumping here
-
-      //fgetpos (filePointer, headerOffset);
-
-
-
-#ifdef QGISDEBUG
-
-      std::cout << "FileReader::setFileType()- creating properties QMap" << std::endl;
-
-#endif
-
-      /*Create the QMap (associative array) to store the header key value pairs.
-
-       * Doing it this way means that we dont need to worry about the order of the header
-
-       * fields in the file */
-
-      QMap <QString, float > myHeaderMap;
-
-      for (int i=0; i <6;i++)
-
-      {
-
-
-
-          //read a float from the file - this will advance the file pointer
-
-         *textStream >> myString;
-
-
-
-        //fscanf (filePointer, "%s", myString);
-
-        myString=myString.upper();   //make sure all keys are in upper case!
-
-        *textStream >> myFloat;
-
-        //fscanf (filePointer, "%f", &myFloat);
-
-
-
-        myHeaderMap[myString]=myFloat;
-
-      }
-
-      //print the QMap contents to stdout using an iterator
-
-      QMap<QString, float>::const_iterator myIterator;
-
-      for (myIterator=myHeaderMap.begin(); myIterator != myHeaderMap.end(); myIterator++)
-
-      {
-
-        std::cout << "FileReader::setFileType() retrieved values : " << myIterator.key().latin1() << " --- " << myIterator.data() << std::endl;
-
-      }
-
-
-
-      //good, now we can assign the member vars their value
-
-      //next four are not currently implemented used:
-
-      //cellSizeFloat = myHeaderMap["CELLSIZE"];
-
-      //lowerLeftXFloat = myHeaderMap["XLLCORNER"];
-
-      //lowerLeftYFloat = myHeaderMap["YLLCORNER"];
-
-      // noDataValueFloat = myHeaderMap["NODATA_VALUE"];
-
-      //this may cause problems if the arcinfo data structure does not match the file structure!
-
-      xDimLong  = static_cast<long>(myHeaderMap["NCOLS"]);            //note implicit cast from float to long int
-
-      yDimLong = static_cast<long>(myHeaderMap["NROWS"]);            //note implicit cast from float to long int
-
-
-
-      //set the start of data block pointer
-
-      //fgetpos (filePointer,dataStartOffset); //erk this causes a crash
-
     }
 
-    //Set Valdes member variables
-
-    else if (fileType == VALDES)
-
-    {
-
-      /* class user will need to specify rows and cols */
-
-      //xDimLong = frmCDPWizard.txtSpecifyNumCol;
-
-      //yDimLong = frmCDPWizard.txtSpecifyNumRow;
-
-      //columnsPerRowLong = frmCDPWizard.txtSpecifyNumDataCols;
-
-      headerLinesInt = 0;
-
-      monthHeaderLinesInt = 0;
-
-    }//end of filetype handling
-
-    return true;
-
-  }
-
-  catch (...)
-
-  {
-
-    return false;
-
-  }
-
 }
 
-/** Read property of FileFormatEnum fileFormat. */
-
-const FileReader::FileFormatEnum FileReader::getFileFormat(){
-
-  return fileFormat;
-
-}
-
-/** Write property of FileFormatEnum fileFormat. */
-
-bool FileReader::setFileFormat( const FileFormatEnum theNewVal){
-
-  try
-
-  {
-
-    fileFormat = theNewVal;
-
-    return true;
-
-  }
-
-  catch (...)
-
-  {
-
-    return false;
-
-  }
-
-}
 
 /** Read property of QString Filename. */
 
-const QString  FileReader::getFilename(){
+const QString  FileReader::getFilename()
+{
 
-  return filenameString;
+    return filenameString;
 
 }
 
 /** Write property of QString Filename. */
 
-bool FileReader::setFilename( QString theNewVal){
+bool FileReader::setFilename( QString theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    filenameString = theNewVal;
+        filenameString = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 }
 
 /** Read property of bool endOfMatrixFlag. */
 
-const bool FileReader::getEndOfMatrixFlag(){
+const bool FileReader::getEndOfMatrixFlag()
+{
 
-  return endOfMatrixFlag;
+    return endOfMatrixFlag;
 
 }
 
 /** Write property of bool endOfMatrixFlag. */
 
-bool FileReader::setEndOfMatrixFlag( const bool theNewVal){
+bool FileReader::setEndOfMatrixFlag( const bool theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    endOfMatrixFlag = theNewVal;
+        endOfMatrixFlag = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -745,73 +577,77 @@ bool FileReader::setEndOfMatrixFlag( const bool theNewVal){
 
 /** Read property of int startMonthInt. */
 
-const int FileReader::getStartMonth(){
+const int FileReader::getStartMonth()
+{
 
-  return startMonthInt;
+    return startMonthInt;
 
 }
 
 /** Write property of int startMonthInt. */
 
-bool FileReader::setStartMonth( const int theNewVal){
+bool FileReader::setStartMonth( const int theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    startMonthInt = theNewVal;
+        startMonthInt = theNewVal;
 
-    //get the QFile::Offset of the month
+        //get the QFile::Offset of the month
 
-    QFile::Offset myOffset = dataBlockMarkersVector[theNewVal-1];
+        QFile::Offset myOffset = dataBlockMarkersVector[theNewVal-1];
 
-    setDataStartOffset(myOffset);
+        setDataStartOffset(myOffset);
 
-    moveToDataStart();
+        moveToDataStart();
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 }
 
 /** Read property of int headerLinesInt. */
 
-const int FileReader::getHeaderLines(){
+const int FileReader::getHeaderLines()
+{
 
-  return headerLinesInt;
+    return headerLinesInt;
 
 }
 
 /** Write property of int headerLinesInt. */
 
-bool FileReader::setHeaderLines( const int theNewVal){
+bool FileReader::setHeaderLines( const int theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    headerLinesInt = theNewVal;
+        headerLinesInt = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -819,33 +655,35 @@ bool FileReader::setHeaderLines( const int theNewVal){
 
 /** Read property of long columnsPerRowLong. */
 
-const long FileReader::getColumnsPerRow(){
+const long FileReader::getColumnsPerRow()
+{
 
-  return columnsPerRowLong;
+    return columnsPerRowLong;
 
 }
 
 /** Write property of long columnsPerRowLong. */
 
-bool FileReader::setColumnsPerRow( const long theNewVal){
+bool FileReader::setColumnsPerRow( const long theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    columnsPerRowLong = theNewVal;
+        columnsPerRowLong = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -853,33 +691,35 @@ bool FileReader::setColumnsPerRow( const long theNewVal){
 
 /** Read property of long currentColLong. */
 
-const long FileReader::getCurrentCol(){
+const long FileReader::getCurrentCol()
+{
 
-  return currentColLong;
+    return currentColLong;
 
 }
 
 /** Write property of long currentColLong. */
 
-bool FileReader::setCurrentCol( const long theNewVal){
+bool FileReader::setCurrentCol( const long theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    currentColLong = theNewVal;
+        currentColLong = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -887,33 +727,35 @@ bool FileReader::setCurrentCol( const long theNewVal){
 
 /** Read property of long currentRowLong. */
 
-const long FileReader::getCurrentRow(){
+const long FileReader::getCurrentRow()
+{
 
-  return currentRowLong;
+    return currentRowLong;
 
 }
 
 /** Write property of long currentRowLong. */
 
-bool FileReader::setCurrentRow( const long theNewVal){
+bool FileReader::setCurrentRow( const long theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    currentRowLong = theNewVal;
+        currentRowLong = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -921,33 +763,35 @@ bool FileReader::setCurrentRow( const long theNewVal){
 
 /** Read property of long currentElementLong. This is the position, not value of the the current element*/
 
-const long FileReader::getCurrentElement(){
+const long FileReader::getCurrentElement()
+{
 
-  return currentElementLong;
+    return currentElementLong;
 
 }
 
 /** Write property of long currentElementLong. */
 
-bool FileReader::setCurrentElement( const long theNewVal){
+bool FileReader::setCurrentElement( const long theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    currentElementLong = theNewVal;
+        currentElementLong = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -959,51 +803,54 @@ bool FileReader::setCurrentElement( const long theNewVal){
 
 /** Read property of FILE *filePointer. */
 
-const QFile* FileReader::getFilePointer(){
+const QFile* FileReader::getFilePointer()
+{
 
-  return filePointer;
+    return filePointer;
 
 }
 
 /** Write property of FILE *filePointer. Make sure the file was opened in binary mode*/
 
-bool FileReader::setFilePointer( QFile* theNewVal){
+bool FileReader::setFilePointer( QFile* theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    //close any currently opened filepointer
+        //close any currently opened filepointer
 
-    //if (filePointer) fclose(filePointer);
+        //if (filePointer) fclose(filePointer);
 
-    filePointer = theNewVal;
+        filePointer = theNewVal;
 
-    currentColLong=0;
+        currentColLong=0;
 
-    currentRowLong=1;
+        currentRowLong=1;
 
-    currentElementLong=0;
+        currentElementLong=0;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 }
 
 /** Read property of int monthHeaderLinesInt. */
 
-const int FileReader::getMonthHeaderLinesInt(){
+const int FileReader::getMonthHeaderLinesInt()
+{
 
-  return monthHeaderLinesInt;
+    return monthHeaderLinesInt;
 
 }
 
@@ -1013,23 +860,23 @@ bool FileReader::setMonthHeaderLinesInt( const int theNewVal)
 
 {
 
-  try
+    try
 
-  {
+    {
 
-    monthHeaderLinesInt = theNewVal;
+        monthHeaderLinesInt = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 }
 
@@ -1041,7 +888,7 @@ QString FileReader::getFileReaderInfo()
 
 {
 
-  QString myMetadataString = "";
+    QString myMetadataString = "";
 
 
 
@@ -1049,39 +896,41 @@ QString FileReader::getFileReaderInfo()
 
 
 
-  return myMetadataString;
+    return myMetadataString;
 
 }
 
 /** Read property of QFile::Offset headerPos. */
 
-const QFile::Offset FileReader::getHeaderOffset(){
+const QFile::Offset FileReader::getHeaderOffset()
+{
 
-  return headerOffset;
+    return headerOffset;
 
 }
 
 /** Write property of QFile::Offset headerPos. */
 
-bool FileReader::setHeaderOffset( QFile::Offset theNewVal){
+bool FileReader::setHeaderOffset( QFile::Offset theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    headerOffset = theNewVal;
+        headerOffset = theNewVal;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -1089,9 +938,10 @@ bool FileReader::setHeaderOffset( QFile::Offset theNewVal){
 
 /** Read property of QFile::Offset dataStartOffset. */
 
-const QFile::Offset FileReader::getDataStartOffset(){
+const QFile::Offset FileReader::getDataStartOffset()
+{
 
-  return dataStartOffset;
+    return dataStartOffset;
 
 
 
@@ -1101,27 +951,28 @@ const QFile::Offset FileReader::getDataStartOffset(){
 
 /** Write property of QFile::Offset dataStartOffset. */
 
-bool FileReader::setDataStartOffset( QFile::Offset theNewVal){
+bool FileReader::setDataStartOffset( QFile::Offset theNewVal)
+{
 
-  try
+    try
 
-  {
+    {
 
-    dataStartOffset = theNewVal;
+        dataStartOffset = theNewVal;
 
 
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -1129,25 +980,26 @@ bool FileReader::setDataStartOffset( QFile::Offset theNewVal){
 
 /** Move the internal file pointer to the start of the file header. */
 
-bool FileReader::moveToHeader(){
+bool FileReader::moveToHeader()
+{
 
-  try
+    try
 
-  {
+    {
 
-    headerOffset=filePointer->at();
+        headerOffset=filePointer->at();
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -1157,35 +1009,36 @@ bool FileReader::moveToHeader(){
 
 /** Move the internal file pointer to the start of the current file data block. */
 
-bool FileReader::moveToDataStart(){
+bool FileReader::moveToDataStart()
+{
 
-  try
+    try
 
-  {
+    {
 
 
 
-    headerOffset=filePointer->at();
+        headerOffset=filePointer->at();
 
-    currentElementLong=0;
+        currentElementLong=0;
 
-    currentColLong = 0;
+        currentColLong = 0;
 
-    currentRowLong=1;
+        currentRowLong=1;
 
-    endOfMatrixFlag=false;
+        endOfMatrixFlag=false;
 
-    return true;
+        return true;
 
-  }
+    }
 
-  catch (...)
+    catch (...)
 
-  {
+    {
 
-    return false;
+        return false;
 
-  }
+    }
 
 
 
@@ -1203,265 +1056,265 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
 
 {
 
-  //
+    //
 
-  // Set up some vars
+    // Set up some vars
 
-  //
-
-
+    //
 
 
 
-  QFile::Offset myFileOffset; //store the current position in the file
-
-  long myMatrixRowsLong;
-
-  long myFileSizeLong;
-
-  long myFileOffsetLong;  //where we are in the currently open file
-
-  myFileOffsetLong=0;
-
-  //clear the vector
-
-  dataBlockMarkersVector.clear();
 
 
+    QFile::Offset myFileOffset; //store the current position in the file
 
-  //if the datafile is a an arc/info grid file, there is only one data block
+    long myMatrixRowsLong;
 
-  if (fileType==ARCINFO_GRID || fileType==CRES)
+    long myFileSizeLong;
 
-  {
+    long myFileOffsetLong;  //where we are in the currently open file
+
+    myFileOffsetLong=0;
+
+    //clear the vector
+
+    dataBlockMarkersVector.clear();
 
 
+
+    //if the datafile is a an arc/info grid file, there is only one data block
+
+    if (fileType==ARCINFO_GRID || fileType==CRES)
+
+    {
+
+
+
+        for (int i=1; i <= headerLinesInt; i++)
+
+        {
+
+
+
+            //read a line from the file - this will advance the file pointer
+
+            *textStream->readLine();
+
+
+
+        }
+
+        myFileOffset=filePointer->at();
+
+        dataStartOffset=myFileOffset;
+
+        dataBlockMarkersVector.push_back(myFileOffset);       //was *dataStartOffset
+
+        return dataBlockMarkersVector;
+
+    }
+
+#ifdef QGISDEBUG
+
+    printf ("FileReader::getBlockMarkers block xDimLong is %i, block yDimLong is %i.\n",
+
+            xDimLong, yDimLong);
+
+#endif
+
+
+
+    //
+
+    // Start parsing the file
+
+    //
+
+
+
+#ifdef QGISDEBUG
+
+    std::cout << "FileReader::getBlockMarkers() - moving to the start of the file" << filePointer->name() << std::endl;
+
+#endif
+
+    if (!filePointer->exists())
+
+    {
+
+        return false;
+
+    }
+
+    //make sure were at the start of the file -> retruns false if we fail to move there
+
+    if (!filePointer->at(0))
+
+    {
+
+        return 0;
+
+    }
+
+#ifdef QGISDEBUG
+
+    std::cout << "FileReader::getBlockMarkers() - skipping " << headerLinesInt << " file header line(s)" << std::endl;
+
+#endif
 
     for (int i=1; i <= headerLinesInt; i++)
 
     {
 
-
-
-    //read a line from the file - this will advance the file pointer
-
-    *textStream->readLine();
-
-
-
-    }
-
-    myFileOffset=filePointer->at();
-
-    dataStartOffset=myFileOffset;
-
-    dataBlockMarkersVector.push_back(myFileOffset);       //was *dataStartOffset
-
-    return dataBlockMarkersVector;
-
-  }
-
-#ifdef QGISDEBUG
-
-  printf ("FileReader::getBlockMarkers block xDimLong is %i, block yDimLong is %i.\n",
-
-          xDimLong, yDimLong);
-
-#endif
-
-
-
-  //
-
-  // Start parsing the file
-
-  //
-
-
-
-#ifdef QGISDEBUG
-
-  std::cout << "FileReader::getBlockMarkers() - moving to the start of the file" << filePointer->name() << std::endl;
-
-#endif
-
-  if (!filePointer->exists())
-
-  {
-
-    return false;
-
-  }
-
-  //make sure were at the start of the file -> retruns false if we fail to move there
-
-  if (!filePointer->at(0))
-
-  {
-
-    return 0;
-
-  }
-
-#ifdef QGISDEBUG
-
-  std::cout << "FileReader::getBlockMarkers() - skipping " << headerLinesInt << " file header line(s)" << std::endl;
-
-#endif
-
-  for (int i=1; i <= headerLinesInt; i++)
-
-  {
-
-    //read an impossibly long line - fgets will stop if it hits a newline
-
-    *textStream->readLine();
-
-  }
-
-
-
-  //Calculate number of rows in a month (depends on FileType)
-
-  myMatrixRowsLong = ((xDimLong * yDimLong) / columnsPerRowLong);
-
-#ifdef QGISDEBUG
-
-  std::cout << "FileReader::getBlockMarkers() - looping through rest of file with month header size of " << monthHeaderLinesInt << " lines and data block size of " << myMatrixRowsLong << " lines." << std::endl;
-
-#endif
-
-  //loop through the rest of the file getting the start pos for each datablock
-
-  do
-
-  {
-
-#ifdef QGISDEBUG
-
-    //std::cout << "FileReader::getBlockMarkers()  getting header block " << std::endl;
-
-#endif
-
-    //skip the datablock headers
-
-    if (monthHeaderLinesInt > 0)
-
-    {
-
-      for (int i=1; i <= monthHeaderLinesInt; i++)
-
-      {
-
         //read an impossibly long line - fgets will stop if it hits a newline
 
         *textStream->readLine();
 
+    }
+
+
+
+    //Calculate number of rows in a month (depends on FileType)
+
+    myMatrixRowsLong = ((xDimLong * yDimLong) / columnsPerRowLong);
+
 #ifdef QGISDEBUG
 
-        //std::cout << myLineQString;
+    std::cout << "FileReader::getBlockMarkers() - looping through rest of file with month header size of " << monthHeaderLinesInt << " lines and data block size of " << myMatrixRowsLong << " lines." << std::endl;
 
 #endif
 
-      }
+    //loop through the rest of the file getting the start pos for each datablock
 
-    }
-
-#ifdef QGISDEBUG
-
-    else
+    do
 
     {
 
-      std::cout << "no datablock header" << std::endl;
+#ifdef QGISDEBUG
 
-    }
-
-    //std::cout << "FileReader::getBlockMarkers()  getting data block " << std::endl;
+        //std::cout << "FileReader::getBlockMarkers()  getting header block " << std::endl;
 
 #endif
 
-    //so the file pointer is now offset() the start of the datablock - add it to the vector
+        //skip the datablock headers
 
-    myFileOffset=filePointer->at();
+        if (monthHeaderLinesInt > 0)
 
-    dataBlockMarkersVector.push_back(myFileOffset);
+        {
 
-    //now skip the data objects for this datablock
+            for (int i=1; i <= monthHeaderLinesInt; i++)
 
-    for (int i=1; i <= myMatrixRowsLong; i++)
+            {
 
-    {
+                //read an impossibly long line - fgets will stop if it hits a newline
 
-*textStream->readLine();
+                *textStream->readLine();
 
 #ifdef QGISDEBUG
 
-      //std::cout << myLineQString; //print out the first line of each datablock
+                //std::cout << myLineQString;
+
+#endif
+
+            }
+
+        }
+
+#ifdef QGISDEBUG
+
+        else
+
+        {
+
+            std::cout << "no datablock header" << std::endl;
+
+        }
+
+        //std::cout << "FileReader::getBlockMarkers()  getting data block " << std::endl;
+
+#endif
+
+        //so the file pointer is now offset() the start of the datablock - add it to the vector
+
+        myFileOffset=filePointer->at();
+
+        dataBlockMarkersVector.push_back(myFileOffset);
+
+        //now skip the data objects for this datablock
+
+        for (int i=1; i <= myMatrixRowsLong; i++)
+
+        {
+
+            *textStream->readLine();
+
+#ifdef QGISDEBUG
+
+            //std::cout << myLineQString; //print out the first line of each datablock
 
 #endif
 
 
 
-    }
+        }
 
-    //calculate where we are in the file and update the progress member var
-
-
-
-    myFileOffsetLong = filePointer->at();
+        //calculate where we are in the file and update the progress member var
 
 
 
-    /* Note we cannot simply divide two longs and expect to get a float!
-
-     * as the following excerpt from Spencer Collyer shows:
-
-     *
-
-     * The problem is that the expression is being evaluated using integer
-
-     * arithmetic. This is the way C++ (and C) do their arithmetic if there are
-
-     * no floating point values involved. The division 10388820/108262440 in
-
-     * integer maths gives you 0, and so the whole expression will return 0.
-
-     *
-
-     * As it looks like you want a floating point result, you need to force one
-
-     * of the numbers to be floating point. If they are actual constants, just
-
-     * make one of the numbers in the division sub-expression floating point
-
-     * (e.g. 10388820/108262440.0 would work) and the whole expression will be
-
-     * evaluated using fp maths.
-
-     */
+        myFileOffsetLong = filePointer->at();
 
 
 
-    taskProgressInt = static_cast<int>(( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 );
+        /* Note we cannot simply divide two longs and expect to get a float!
+
+         * as the following excerpt from Spencer Collyer shows:
+
+         *
+
+         * The problem is that the expression is being evaluated using integer
+
+         * arithmetic. This is the way C++ (and C) do their arithmetic if there are
+
+         * no floating point values involved. The division 10388820/108262440 in
+
+         * integer maths gives you 0, and so the whole expression will return 0.
+
+         *
+
+         * As it looks like you want a floating point result, you need to force one
+
+         * of the numbers to be floating point. If they are actual constants, just
+
+         * make one of the numbers in the division sub-expression floating point
+
+         * (e.g. 10388820/108262440.0 would work) and the whole expression will be
+
+         * evaluated using fp maths.
+
+         */
+
+
+
+        taskProgressInt = static_cast<int>(( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 );
 
 #ifdef QGISDEBUGNONONO
 
-       std::cout << "Task Progress: " << ( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 << std::endl;
+        std::cout << "Task Progress: " << ( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 << std::endl;
 
-       std::cout << "Position " << myFileOffsetLong << "/" << myFileSizeLong << " ("
+        std::cout << "Position " << myFileOffsetLong << "/" << myFileSizeLong << " ("
 
-       << taskProgressInt << ") : ";
+        << taskProgressInt << ") : ";
 
-       for (int i=1;i<(taskProgressInt/10);i++)
+        for (int i=1;i<(taskProgressInt/10);i++)
 
-       {
+        {
 
-        std::cout << "*";
+            std::cout << "*";
 
-       }
+        }
 
-       std::cout << std::endl;
+        std::cout << std::endl;
 
 #endif
 
@@ -1469,7 +1322,8 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
 
 
 
-  }    while (!filePointer->atEnd()) ;
+    }
+    while (!filePointer->atEnd()) ;
 
 
 
@@ -1477,23 +1331,23 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
 
 #ifdef QGISDEBUG
 
-  std::cout << "FileReader::getBlockMarkers() - read markers for " << dataBlockMarkersVector.size() << " data block(s)" << std::endl;
+    std::cout << "FileReader::getBlockMarkers() - read markers for " << dataBlockMarkersVector.size() << " data block(s)" << std::endl;
 
-  std::cout << "FileReader::getBlockMarkers() - moving back to the start of the file" << std::endl;
+    std::cout << "FileReader::getBlockMarkers() - moving back to the start of the file" << std::endl;
 
 #endif
 
-  filePointer->at(0);
+    filePointer->at(0);
 
 #ifdef QGISDEBUG
 
-  std::cout << "FileReader::getBlockMarkers() - finished - returning vector of datablock start positions" << std::endl;
+    std::cout << "FileReader::getBlockMarkers() - finished - returning vector of datablock start positions" << std::endl;
 
 #endif
 
 
 
-  return  dataBlockMarkersVector;
+    return  dataBlockMarkersVector;
 
 }
 
@@ -1503,45 +1357,45 @@ bool FileReader::setBlockMarkers(QValueVector <QFile::Offset> theBlockMarkersVec
 
 {
 
-  if (theBlockMarkersVector.size()==0)
-
-  {
-
-#ifdef QGISDEBUG
-
-    std::cout << "setBlockMarkers() received empty vector!" << std::endl;
-
-#endif
-
-    return false;
-
-  }
-
-  else
-
-  {
-
-    dataBlockMarkersVector.clear();
-
-    QValueVector<QFile::Offset>::iterator myIterator = theBlockMarkersVector.begin();
-
-    while (myIterator != theBlockMarkersVector.end())
+    if (theBlockMarkersVector.size()==0)
 
     {
 
-      dataBlockMarkersVector.push_back(*myIterator);
+#ifdef QGISDEBUG
 
-      myIterator++;
+        std::cout << "setBlockMarkers() received empty vector!" << std::endl;
+
+#endif
+
+        return false;
 
     }
 
+    else
+
+    {
+
+        dataBlockMarkersVector.clear();
+
+        QValueVector<QFile::Offset>::iterator myIterator = theBlockMarkersVector.begin();
+
+        while (myIterator != theBlockMarkersVector.end())
+
+        {
+
+            dataBlockMarkersVector.push_back(*myIterator);
+
+            myIterator++;
+
+        }
 
 
-  }
 
-  //presume all went ok - need to add better error checking later
+    }
 
-  return true;
+    //presume all went ok - need to add better error checking later
+
+    return true;
 
 }
 
@@ -1549,17 +1403,19 @@ bool FileReader::setBlockMarkers(QValueVector <QFile::Offset> theBlockMarkersVec
 
 /** Read property of int taskProgressInt. */
 
-const int FileReader::gettaskProgressInt(){
+const int FileReader::gettaskProgressInt()
+{
 
-  return taskProgressInt;
+    return taskProgressInt;
 
 }
 
 /** Find out how many blocks (useful in multiblock formats such as SRES) are in this file. */
 
-int FileReader::getNumberOfBlocks(){
+int FileReader::getNumberOfBlocks()
+{
 
-  return dataBlockMarkersVector.size();
+    return dataBlockMarkersVector.size();
 
 }
 

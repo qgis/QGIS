@@ -8,9 +8,7 @@
 #include <qvaluevector.h>
 #include <qmap.h>
 
-/**
- * This class will handle opening a file containing a climate matrix and iterating through the file in a columnwise / rowwise manner.
- * Tim Sutton
+/** This class will handle opening a file containing a climate matrix and iterating through the file in a columnwise / rowwise manner.
  **/
 class FileReader
 {
@@ -20,24 +18,19 @@ public:
    //
   // Enumerators
   //
-  enum FileTypeEnum { CRES,  
-                      ARCINFO_GRID, 
-                      HADLEY_SRES, 
-                      HADLEY_IS92,  
+  enum FileTypeEnum { CRES,
+                      ARCINFO_GRID,
+                      HADLEY_SRES,
+                      HADLEY_IS92,
                       IPCC_OBSERVED,
-                      VALDES,  
-                      ECHAM4,  
-                      CSIRO_MK2,  
-                      NCAR_CSM_PCM, 
-                      GFDL_R30, 
+                      VALDES,
+                      ECHAM4,
+                      CSIRO_MK2,
+                      NCAR_CSM_PCM,
+                      GFDL_R30,
                       CGCM2,
                       CCSR_AGCM_OGCM };
 
-  enum FileFormatEnum { CSM_MATLAB, 
-                        CSM_OCTAVE,  
-                        GARP,  
-                        ESRI_ASCII,  
-                        PLAIN };
 
   //
   //   Public methods
@@ -50,71 +43,186 @@ public:
   /*Does nothing */
    ~FileReader();
   /**
-  *Get the next available element from the file matrix.
-  */
-   float getElement();
-  /**
-  Move the internal pointer to the first matrix element.
-  */
-   bool moveFirst();
-  /**
-  This method will close the file currently associated with the fileReader object.
+  * This method will close the file currently associated with the fileReader object.
+  *@return bool - flag indicating success or failure
   */
    bool closeFile();
+
   /**
   * This  will open a given file. The file pointer will be moved to the first matrix element,
   * and any header info will be skipped. This is an overloaded version of openFile to take a
   * QString argument rather than a QString .
-  * @param open. The filename (including full path) to open.
+  * @param theFileNameString - QString with the filename (including full path) to open.
+  * @return bool - flag indicating success or failure
   */
    bool openFile(const QString theFileNameString);
-  /** Write property of FILE *filePointer. */
+
+  /**
+  * Mutator of QFile * filePointer.
+  * @param theNewVal - A pointer to a QFile object.
+  * @return bool - flag indicating success or failure
+  */
    bool setFilePointer( QFile*  theNewVal);
-  /** Read property of FILE *filePointer. */
+
+  /**
+  * Accessor of QFile *filePointer.
+  * @return QFile -  a pointer to a QFile object
+  */
    const QFile * getFilePointer();
-  /** Write property of long currentElementLong. This method likely to be removed!*/
+
+  /**
+  *Get the next available element from the file matrix.
+  *The cell index will be advanced by one.
+  * @return float - the value at the element at the next cell.
+  */
+   float getElement();
+
+  /**
+  *Move the internal pointer to the first matrix element.
+  *@TODO This method needs to be implemented still!
+  *@return bool - flag indicating success or failure
+  */
+   bool moveFirst();
+
+  /**
+  * Mutator for long currentElementLong (calculated as
+  * (currentRowLong * rows) + currentColLong).
+  * @note This method is deprecated and likely to be removed!
+  * @param theNewVal - a long containing the value to be written
+  * @return bool - flag indicating success or failure
+  */
    bool setCurrentElement( const long theNewVal);
-  /** Read property of long currentElementLong. */
+
+  /**
+  * Accessor for long currentElementLong.
+  * Calculated as (currentRowLong * rows) + currentColLong.
+  * @return long - the current position in the current block.
+  */
    const long getCurrentElement();
-  /** Write property of long currentRowLong. This method likely to be removed!*/
+
+  /**
+  * Mutator for long currentRowLong.
+  * @note This method likely to be removed!
+  * @param theNewVal - a long with the index of the desired new row pos.
+  * @return bool - flag indicating success or failure
+  */
    bool setCurrentRow( const long theNewVal);
-  /** Read property of long currentRowLong. */
+
+  /**
+  * Accessor property of long currentRowLong.
+  * @return long - the current row position in the current block.
+  */
    const long getCurrentRow();
-  /** Write property of long currentColLong. This method likely to be removed!*/
+
+  /**
+  * Mutator for long currentColLong.
+  * @note This method likely to be removed!
+  * @param theNewVal - a long with the index of the desired new col pos.
+  * @return bool - flag indicating success or failure
+  */
    bool setCurrentCol( const long theNewVal);
-  /** Read property of long currentColLong. */
+
+  /**
+  * Accessor property of long currentColLong.
+  * @return long - the current row position in the current block.
+  */
    const long getCurrentCol();
-  /** Write property of long columnsPerRowLong. */
+
+  /** Mutator for long columnsPerRowLong.
+  * @param theNewVal - a long with the index of the desired new col pos.
+  * @return bool - flag indicating success or failure
+  */
    bool setColumnsPerRow( const long theNewVal);
-  /** Read property of long columnsPerRowLong. */
+
+  /**
+  * Accessor for long columnsPerRowLong.
+  * @note The number of columns per row differs from the xDimension of the block.
+  * This is because the file may wrap / include line breaks before xdim is reached.
+  * @return long - the number of columns in each row (as represented in the file).
+  */
    const long getColumnsPerRow();
-  /** Write property of int headerLinesInt. */
+
+  /**
+  * Mutator for int headerLinesInt.
+  * @note The number of columns per row differs from the xDimension of the block.
+  * This is because the file may wrap / include line breaks before xdim is reached.
+  * @param theNewVal - an integer indicating the number of header lines.
+  * @return bool - flag indicating success or failure
+  */
    bool setHeaderLines( const int theNewVal);
-  /** Read property of int headerLinesInt. */
+
+  /**
+  * Accessor for the int headerLinesInt.
+  * @return int - the current column position in the current block.
+  */
    const int getHeaderLines();
-  /** Write property of int startMonthInt. */
+
+  /**
+  * Mutator for int startMonthInt.
+  * It will move the file pointer too the start of the data block indicated
+  * by the start month.
+  * This is really only applicable for file formats that include
+  * muliple months / years data in a single file such as Hadley SRES data.
+  * @param theNewVal - an int representing the new start month.
+  * @return bool - flag indicating success or failure
+  */
    bool setStartMonth( const int theNewVal);
-  /** Read property of int startMonthInt. */
+
+  /**
+  * Accessor of int startMonthInt.
+  * This is really only applicable for file formats that include
+  * muliple months / years data in a single file such as Hadley SRES data.
+  * @return bool - flag indicating success or failure
+  */
    const int getStartMonth();
-  /** Write property of bool endOfMatrixFlag. */
+
+  /**
+  * Mutator for bool endOfMatrixFlag.
+  * @note Usually you will not want to do this yourself - setting this flag is handled
+  * internally by this class.
+  * @param theNewVal - bool indicating the desired state of the end of matrix flag.
+  * @return bool - flag indicating success or failure
+  */
    bool setEndOfMatrixFlag( const bool theNewVal);
-  /** Read property of bool endOfMatrixFlag. */
+
+  /**
+  * Accessor for bool endOfMatrixFlag.
+  * @return bool - Current state of endOfMatrixFlag
+  */
    const bool getEndOfMatrixFlag();
-  /** Write property of QString Filename. */
+
+  /**
+  * Mutator for QString Filename.
+  * @note The filenam property is changed, BUT the file is NOT reopened and
+  * file offsets etc are not altered in any way.
+  * @param theNewVal - the new filename
+  * @return bool - flag indicating success or failure
+  */
    bool setFilename( QString theNewVal);
-  /** Read property of QString Filename. */
+
+  /**
+  * Accessor for QString Filename.
+  * @return QString - the current filename
+  */
    const QString  getFilename();
-  /** Write property of FileFormatEnum fileFormat. */
-   bool setFileFormat( const FileFormatEnum theNewVal);
-  /** Read property of FileFormatEnum fileFormat. Note that
-  * return type is FileReader::FileFormatEnum because the calling
-  * class does not have the enum in its name space so we need to
-  * explicitly specifiy the namespace*/
-   const FileReader::FileFormatEnum getFileFormat();
-  /** Write property of FileTypeEnum fileType. */
-   bool setFileType( const FileTypeEnum theNewVal);
-  /** Read property of FileTypeEnum fileType. */
+
+  /**
+  * Mutator of FileTypeEnum fileType.
+  * @note You should specify the file type BEFORE opening the file.
+  * @param theNewVal - a FileTypeEnum specifying the input file type.
+  * @return bool - flag indicating success or failure
+  */
+      bool setFileType( const FileTypeEnum theNewVal);
+
+  /**
+  * Read property of FileTypeEnum fileType.
+  * @note The return type is FileReader::FileTypeEnum because the calling
+  * class does not have the enum in its name space so we need to.
+  * explicitly specifiy the namespace.
+  * @return FileReader::FileTypeEnum - the file format of the current file.
+  */
    const FileReader::FileTypeEnum getFileType();
+
   /** Write property of long yDimLong. */
    bool setYDim( const long theNewVal);
   /** Read property of long yDimLong. */
@@ -162,8 +270,6 @@ private:
   long yDimLong;
   /** Type of file we are reading. */
   FileTypeEnum fileType;
-  /** Format for this file e.g. arc/info grid */
-  FileFormatEnum fileFormat;
   /** The name of the file, including full path if neccessary. */
   QString filenameString;
   /** Whether the file pointer has reached the end of the matrix */
