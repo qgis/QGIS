@@ -33,7 +33,7 @@
 #include <qfont.h>
 #include <qtabwidget.h>
 #include <qwidget.h>
-
+#include <qlistview.h>
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRasterLayerPropertiesBase()
 {
     //
@@ -60,10 +60,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
     //update the debug checkbox
     cboxShowDebugInfo->setChecked(rasterLayer->getShowDebugOverlayFlag());
 
-    //update the legend pixmap
+    //update the legend pixmap on this dialog
     pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
     pixmapLegend->setScaledContents(true);
     pixmapLegend->repaint(false);
+    
     //set the transparency slider
     sliderTransparency->setValue(255-rasterLayer->getTransparency());
     //update the transparency percentage label
@@ -352,7 +353,9 @@ void QgsRasterLayerProperties::apply()
     pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
     pixmapLegend->setScaledContents(true);
     pixmapLegend->repaint(false);
-
+    QgsLegendItem * myLegendItem = rasterLayer->legendItem();
+    ((QCheckListItem*)myLegendItem)->setPixmap(0,* rasterLayer->legendPixmap());
+    
     rasterLayer->setLayerName(leDisplayName->text());
     //see if the user would like debug overlays
     if (cboxShowDebugInfo->isChecked()==true)
