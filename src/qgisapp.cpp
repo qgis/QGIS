@@ -662,7 +662,9 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
   // theoreticaly we can open those files because there exists a
   // driver for them, the user will have to use the "All Files" to
   // open datasets with no explicitly defined file name extension.
-
+#ifdef QGISDEBUG 
+  std::cerr << "Driver count: " << driverRegistrar->GetDriverCount() << std::endl; 
+#endif 
   for (int i = 0; i < driverRegistrar->GetDriverCount(); ++i)
     {
       driver = driverRegistrar->GetDriver(i);
@@ -679,6 +681,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
 #ifdef QGISDEBUG
       qDebug("got driver string %s", driver->GetName());
+      std::cerr << "Filter string at start of build filter is: " << fileFilters << std::endl; 
 #endif
 
       if (driverName.startsWith("ESRI"))
@@ -689,9 +692,8 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
           // XXX needs file filter extension
       } else if (driverName.startsWith("SDTS"))
         {
-// XXX not yet supported; post 0.1 release task
-//          fileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
-//                                            "*catd.ddf" );
+          fileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
+                                            "*catd.ddf" );
       } else if (driverName.startsWith("TIGER"))
         {
           // XXX needs file filter extension
@@ -700,6 +702,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
           // XXX needs file filter extension
       } else if (driverName.startsWith("MapInfo"))
         {
+          fileFilters += createFileFilter_("MapInfo", "*.mif *.mid *.tab");
           // XXX needs file filter extension
       } else if (driverName.startsWith("DGN"))
         {
@@ -714,6 +717,9 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
         {
           // XXX needs file filter extension
       } else if (driverName.startsWith("Memory"))
+        {
+          // XXX needs file filter extension
+      } else if (driverName.startsWith("Jis"))
         {
           // XXX needs file filter extension
       } else if (driverName.startsWith("GML"))
@@ -773,9 +779,11 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 
   QString lastUsedDir = settings.readEntry("/qgis/UI/" + filterName + "Dir",
                                            ".");
+#ifdef QGISDEBUG 
+  std::cerr << "Opening vector file dialog with filters: " << filters << std::endl; 
+#endif 
 
-
-  std::auto_ptr < QFileDialog > openFileDialog(new QFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog")));
+  QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"));
 
   // allow for selection of more than one file
   openFileDialog->setMode(QFileDialog::ExistingFiles);
@@ -796,6 +804,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 
   settings.writeEntry("/qgis/UI/" + filterName + "Dir", openFileDialog->dirPath());
 
+  delete openFileDialog;
 }                               // openFilesRememberingFilter_
 
 
@@ -828,6 +837,9 @@ void QgisApp::addLayer()
       mMapCanvas->freeze();
 
       QStringList selectedFiles;
+#ifdef QGISDEBUG 
+  std::cerr << "Vector file filters: " << fileFilters << std::endl; 
+#endif
 
       openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles);
       if (selectedFiles.isEmpty())
@@ -3207,7 +3219,7 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
 
-bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
+bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
 {
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -3241,7 +3253,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
 
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
-bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
+bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool guiWarning)
 {
   if (theFileNameQStringList.empty())
   {
@@ -3291,8 +3303,15 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
     }
     else
     {
-      QString msg(*myIterator + " is not a supported raster data source");
-      QMessageBox::critical(this, "Unsupported Data Source", msg);
+      // Issue message box warning unless we are loading from cmd line since
+      // non-rasters are passed to this function first and then sucessfully
+      // loaded afterwards (see main.cpp)
+      
+      if(guiWarning)
+      {
+        QString msg(*myIterator + " is not a supported raster data source");
+        QMessageBox::critical(this, "Unsupported Data Source", msg);
+      }
       returnValue = false;
     }
   }

@@ -47,7 +47,7 @@ static const char * const ident_ = "$Id$";
  */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS - " << VERSION << " 'Pumpkin'\n" 
+  std::cerr << "Quantum GIS - " << VERSION << " 'Simon'\n" 
 	    << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n" 
 	    << "raster and vector data.\n"  
 	    << "Usage: " << appName <<  " [options] [FILES]\n"  
@@ -257,7 +257,7 @@ int main(int argc, char *argv[])
     // The funky bool ok is so this can be debugged a bit easier...
 
     //nope - try and load it as raster
-    bool ok = qgis->addRasterLayer(myLayerName);
+    bool ok = qgis->addRasterLayer(myLayerName, false);
     if(!ok){
       //nope - try and load it as a shape/ogr
       ok = qgis->addLayer(myLayerName);
