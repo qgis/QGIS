@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include <limits>
+#include <stdexcept>
+
+#include <qfile.h>
 
 #include "gpsdata.h"
 
@@ -55,21 +58,21 @@ int GPSData::getNumberOfTracks() const {
 
 Waypoint& GPSData::getWaypoint(int index) {
   if (index < 0 || index >= waypoints.size())
-    throw "Waypoint index out of range";
+    throw std::out_of_range("Waypoint index is out of range");
   return waypoints[index];
 }
 
 
 Route& GPSData::getRoute(int index) {
   if (index < 0 || index >= routes.size())
-    throw "Route index out of range";
+    throw std::out_of_range("Route index is out of range");
   return routes[index];
 }
 
 
 Track& GPSData::getTrack(int index) {
   if (index < 0 || index >= tracks.size())
-    throw "Track index out of range";
+    throw std::out_of_range("Track index is out of range");
   return tracks[index];
 }
 
@@ -103,9 +106,9 @@ int GPSData::addTrack(std::string name) {
 
 bool GPSData::removeWaypoint(int index, bool checkRoutes) {
   if (checkRoutes)
-    throw "Not implemented";
+    throw std::logic_error("Not implemented");
   if (index < 0 || index >= waypoints.size())
-    throw "Waypoint index is out of range";
+    throw std::out_of_range("Waypoint index is out of range");
   waypoints.erase(waypoints.begin() + index);
   return true;
 }
@@ -113,14 +116,14 @@ bool GPSData::removeWaypoint(int index, bool checkRoutes) {
 
 void GPSData::removeRoute(int index) {
   if (index < 0 || index >= routes.size())
-    throw "Route index is out of range";
+    throw std::out_of_range("Route index is out of range");
   routes.erase(routes.begin() + index);
 }
 
 
 void GPSData::removeTrack(int index) {
   if (index < 0 || index >= tracks.size())
-    throw "Track index is out of range";
+    throw std::out_of_range("Track index is out of range");
   tracks.erase(tracks.begin() + index);
 }
   
@@ -351,8 +354,6 @@ bool GPSData::parseGPX(QDomNode& node) {
     node = node.nextSibling();
   } 
   
-  // update bookkeeping variables
-  
   return true;
 }
 
@@ -393,3 +394,44 @@ bool GPSData::parseLOC(QDomNode& node) {
 }
 
 
+GPSData* GPSData::getData(std::string filename) {
+  
+  // if the data isn't there already, try to load it
+  if (dataObjects.find(filename) == dataObjects.end()) {
+    QDomDocument qdd;
+    QFile file(filename);
+    GPSData data;
+    std::cerr<<"Loading file "<<filename<<std::endl;
+    if (!(qdd.setContent(&file) && data.parseDom(qdd))) {
+      std::cerr<<filename<<"is not valid GPX!"<<std::endl;
+      return 0;
+    }
+    dataObjects[filename] = std::pair<GPSData, unsigned>(data, 0);
+  }
+  else
+    std::cerr<<filename<<" is already loaded"<<std::endl;
+  
+  // return a pointer and increase the reference count for that filename
+  DataMap::iterator iter = dataObjects.find(filename);
+  ++(iter->second.second);
+  return &iter->second.first;
+}
+
+
+void GPSData::releaseData(std::string filename) {
+  
+  /* decrease the reference count for the filename (if it is used), and erase
+     it if the reference count becomes 0 */
+  DataMap::iterator iter = dataObjects.find(filename);
+  if (iter != dataObjects.end()) {
+    std::cerr<<"unrefing "<<filename<<std::endl;
+    if (--(iter->second.second) == 0) {
+      std::cerr<<"No one's using "<<filename<<", I'll erase it"<<std::endl;
+      dataObjects.erase(iter);
+    }
+  }
+}
+
+
+// we have to initialize the static member
+GPSData::DataMap GPSData::dataObjects;

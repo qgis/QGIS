@@ -145,11 +145,15 @@ void Plugin::addGPXLayer() {
 				 qgisMainWindowPointer,
 				 "Select a GPX or LOC file",
 				 "Select a GPX or LOC file");
+  
+  // LOC files only has waypoints, don't add track and route layers for them
   if (gpxFileName != 0) {
-    qGisInterface->addVectorLayer(gpxFileName + "?type=track", 
-				  "Tracks", "gpx");
-    qGisInterface->addVectorLayer(gpxFileName + "?type=route",
-				  "Routes", "gpx");
+    if (gpxFileName.right(4) == ".gpx") {
+      qGisInterface->addVectorLayer(gpxFileName + "?type=track", 
+				    "Tracks", "gpx");
+      qGisInterface->addVectorLayer(gpxFileName + "?type=route",
+				    "Routes", "gpx");
+    }
     qGisInterface->addVectorLayer(gpxFileName + "?type=waypoint", 
 				  "Waypoints", "gpx");
   }
