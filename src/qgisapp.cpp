@@ -2959,7 +2959,7 @@ void QgisApp::addRasterLayer()
 // of the calling method to manage things such as the frozen state of the mapcanvas and
 // using waitcursors etc. - this method wont and SHOULDNT do it
 //
-bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
+bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedrawFlag)
 {
 
   Q_CHECK_PTR( theRasterLayer );
@@ -3011,10 +3011,12 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
     return false;
   }
 
-  //these must go!?
-  //qApp->processEvents();
-  //mMapCanvas->freeze(false);
-  //mMapCanvas->render();
+  if (theForceRedrawFlag)
+  {
+    qApp->processEvents();
+    mMapCanvas->freeze(false);
+    mMapCanvas->render();
+  }
   return true;
 
 }
