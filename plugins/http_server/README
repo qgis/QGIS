@@ -1,15 +1,12 @@
 ##############################################
-    QGIS PLUGIN TEMPLATE DIRECTORY
+          QGIS HTTP SERVER PLUGIN
 
               T.Sutton 2004
 ##############################################
 
-Please do not edit the files in this directory
-unless you know exactly what you are doing - 
-these files are used as the basis for creating
-new plugins. Altering these files may break
-the automated plugin template generation process.
+Please not that this plugin is at a very ealy stage in its development.
+It probably will cause unexpected things to happen including qgis crashing.
+It is only release at this early stage in the hope that it will 
+prove useful to people interested in writing QGIS plugins.
 
-Please visit: http://mrcc.com/qgiswiki/PluginDevelopersGuide
 
-For more information on creating plugins.
