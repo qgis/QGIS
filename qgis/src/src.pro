@@ -30,7 +30,11 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgslegend.h  \
            qgslegenditem.h
            
-INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui qgslegenditembase.ui
+INTERFACES += qgsdbsourceselectbase.ui \
+					 qgisappbase.ui \
+					 qgsnewconnectionbase.ui \
+					 qgslegenditembase.ui \
+					 qgsabout.ui
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgsdatabaselayer.cpp \

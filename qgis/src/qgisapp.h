@@ -61,6 +61,8 @@ public:
 	void drawLayers();
 	//! test function
 	void testButton();
+	//! About QGis
+	void about();
 public slots:
 	void showMouseCoordinate(QgsPoint &);	
 private:

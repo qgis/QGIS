@@ -44,6 +44,7 @@
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
 #include "qgsshapefilelayer.h"
+#include "qgsabout.h"
 #include "qgis.h"
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
@@ -86,6 +87,24 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
 
 QgisApp::~QgisApp ()
 {
+}
+void QgisApp::about(){
+  QgsAbout *abt = new QgsAbout();
+  QString versionString = "Version ";
+  versionString += QGis::qgisVersion;
+  abt->setVersion(versionString);
+  QString urls = "Web Page: http://qgis.sourceforge.net\nSourceforge Project Page: http://sourceforge.net/projects/qgis";
+  abt->setURLs(urls);
+  QString watsNew =  "Version ";
+  watsNew += QGis::qgisVersion;
+  watsNew += "\n* Support for shapefiles and other vector formats\n"
+					  "* Improved handling of extents when adding layers\n"
+						"* Primitive legend that allows control of layer visibility\n"
+						"* About Quantum GIS implemented\n"
+					  "* Other internal changes";
+	 abt->setWhatsNew(watsNew);
+	 abt->exec();
+  
 }
 void QgisApp::addLayer ()
 {
