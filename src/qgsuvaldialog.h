@@ -26,7 +26,7 @@
 #include <map>
 
 class QgsVectorLayer;
-class QgsSymbol;
+class QgsRenderItem;
 
 class QgsUValDialog: public QgsUValDialogBase
 {
@@ -42,14 +42,17 @@ class QgsUValDialog: public QgsUValDialogBase
     /**Pointer to the associated vector layer*/
     QgsVectorLayer* mVectorLayer;
     /**Set to store the already entered values*/
-    std::map<QString,QgsSymbol*> mValues;
+    std::map<QString,QgsRenderItem*> mValues;
     QgsSiSyDialog sydialog;
     /**Value for which symbology settings are displayed*/
     QString currentValue;
 
  protected slots:
+    /**Set new attribut for classification*/
     void changeClassificationAttribute(int nr);
+    /**Changes the display of the single symbol dialog*/
     void changeCurrentValue();
+    /**Writes changes in the single symbol dialog to the corresponding QgsSymbol*/
     void applySymbologyChanges();
 };
 

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>580</width>
-            <height>143</height>
+            <width>588</width>
+            <height>199</height>
         </rect>
     </property>
     <property name="caption">
@@ -22,195 +22,67 @@
         <property name="spacing">
             <number>0</number>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>groupBox1</cstring>
+                <cstring>layout8</cstring>
             </property>
-            <property name="title">
-                <string>Outline</string>
-            </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget" row="0" column="0">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>mLabel</cstring>
                     </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                            <property name="name">
-                                <cstring>outlinecolorlabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Outline color</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>lblOutlineColor</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>50</width>
-                                    <height>22</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>50</width>
-                                    <height>22</height>
-                                </size>
-                            </property>
-                            <property name="frameShape">
-                                <enum>StyledPanel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                        </widget>
-                        <widget class="QToolButton" row="1" column="1">
-                            <property name="name">
-                                <cstring>btnOutlineColor</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>22</width>
-                                    <height>22</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>22</width>
-                                    <height>22</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>...</string>
-                            </property>
-                        </widget>
-                    </grid>
+                    <property name="text">
+                        <string>Label</string>
+                    </property>
                 </widget>
-                <widget class="QLayoutWidget" row="0" column="1">
+                <widget class="QLineEdit">
                     <property name="name">
-                        <cstring>layout6</cstring>
+                        <cstring>mLabelEdit</cstring>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>outlinestylelabel</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Style</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>stylebutton</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                        </widget>
-                    </vbox>
                 </widget>
-                <widget class="QLayoutWidget" row="0" column="2">
-                    <property name="name">
-                        <cstring>layout7</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>outlinewidthlabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Width</string>
-                            </property>
-                        </widget>
-                        <widget class="QSpinBox">
-                            <property name="name">
-                                <cstring>outlinewidthspinbox</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>1</number>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-            </grid>
+            </hbox>
         </widget>
-        <widget class="QGroupBox" row="0" column="1">
+        <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
-                <cstring>groupBox2</cstring>
+                <cstring>layout9</cstring>
             </property>
-            <property name="title">
-                <string>Fill</string>
-            </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget" row="0" column="0">
+                <widget class="QGroupBox">
                     <property name="name">
-                        <cstring>layout10</cstring>
+                        <cstring>groupBox1</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Outline</string>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel" row="0" column="0">
+                        <widget class="QLayoutWidget" row="0" column="0">
                             <property name="name">
-                                <cstring>fillcolorlabel</cstring>
+                                <cstring>layout5</cstring>
                             </property>
-                            <property name="text">
-                                <string>Fill color</string>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget" row="1" column="0">
-                            <property name="name">
-                                <cstring>layout9</cstring>
-                            </property>
-                            <hbox>
+                            <grid>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLabel">
+                                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
                                     <property name="name">
-                                        <cstring>lblFillColor</cstring>
+                                        <cstring>outlinecolorlabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Outline color</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>lblOutlineColor</cstring>
                                     </property>
                                     <property name="sizePolicy">
                                         <sizepolicy>
@@ -242,9 +114,9 @@
                                         <string></string>
                                     </property>
                                 </widget>
-                                <widget class="QToolButton">
+                                <widget class="QToolButton" row="1" column="1">
                                     <property name="name">
-                                        <cstring>btnFillColor</cstring>
+                                        <cstring>btnOutlineColor</cstring>
                                     </property>
                                     <property name="minimumSize">
                                         <size>
@@ -262,43 +134,215 @@
                                         <string>...</string>
                                     </property>
                                 </widget>
-                            </hbox>
+                            </grid>
+                        </widget>
+                        <widget class="QLayoutWidget" row="0" column="1">
+                            <property name="name">
+                                <cstring>layout6</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>outlinestylelabel</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>1</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>Style</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>stylebutton</cstring>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>32767</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QLayoutWidget" row="0" column="2">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>outlinewidthlabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Width</string>
+                                    </property>
+                                </widget>
+                                <widget class="QSpinBox">
+                                    <property name="name">
+                                        <cstring>outlinewidthspinbox</cstring>
+                                    </property>
+                                    <property name="minValue">
+                                        <number>1</number>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QLayoutWidget" row="0" column="1">
+                <widget class="QGroupBox">
                     <property name="name">
-                        <cstring>layout11</cstring>
+                        <cstring>groupBox2</cstring>
                     </property>
-                    <vbox>
+                    <property name="title">
+                        <string>Fill</string>
+                    </property>
+                    <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>unnamed</cstring>
+                            <cstring>layout10</cstring>
                         </property>
-                        <widget class="QLabel">
+                        <property name="geometry">
+                            <rect>
+                                <x>11</x>
+                                <y>38</y>
+                                <width>93</width>
+                                <height>64</height>
+                            </rect>
+                        </property>
+                        <grid>
                             <property name="name">
-                                <cstring>fillpaternlabel</cstring>
+                                <cstring>unnamed</cstring>
                             </property>
-                            <property name="text">
-                                <string>Pattern</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>fillcolorlabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Fill color</string>
+                                </property>
+                            </widget>
+                            <widget class="QLayoutWidget" row="1" column="0">
+                                <property name="name">
+                                    <cstring>layout9</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>lblFillColor</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>1</hsizetype>
+                                                <vsizetype>1</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>50</width>
+                                                <height>22</height>
+                                            </size>
+                                        </property>
+                                        <property name="maximumSize">
+                                            <size>
+                                                <width>50</width>
+                                                <height>22</height>
+                                            </size>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>StyledPanel</enum>
+                                        </property>
+                                        <property name="frameShadow">
+                                            <enum>Sunken</enum>
+                                        </property>
+                                        <property name="text">
+                                            <string></string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QToolButton">
+                                        <property name="name">
+                                            <cstring>btnFillColor</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>22</width>
+                                                <height>22</height>
+                                            </size>
+                                        </property>
+                                        <property name="maximumSize">
+                                            <size>
+                                                <width>22</width>
+                                                <height>22</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>...</string>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout11</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>110</x>
+                                <y>38</y>
+                                <width>98</width>
+                                <height>64</height>
+                            </rect>
+                        </property>
+                        <vbox>
                             <property name="name">
-                                <cstring>patternbutton</cstring>
+                                <cstring>unnamed</cstring>
                             </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                        </widget>
-                    </vbox>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>fillpaternlabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Pattern</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>patternbutton</cstring>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>32767</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                            </widget>
+                        </vbox>
+                    </widget>
                 </widget>
-            </grid>
+            </hbox>
         </widget>
     </grid>
 </widget>

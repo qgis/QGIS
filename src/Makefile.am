@@ -60,6 +60,7 @@ headers =		qgis.h					\
 			qgslegenditem.h				\
 			qgslinestyledialog.h			\
 			qgslinesymbol.h				\
+			qgsludialog.h				\
 			qgsmapcanvas.h				\
 			qgsmaplayer.h				\
 			qgsmaplayerinterface.h			\
@@ -116,6 +117,7 @@ qgis_UIC =	qgisappbase.ui					\
 		qgshelpviewerbase.ui				\
 		qgsidentifyresultsbase.ui			\
 		qgslegenditembase.ui				\
+		qgsludialogbase.ui				\
 		qgslinestyledialogbase.ui			\
 		qgsmapserverexportbase.ui			\
 		qgsmarkerdialogbase.ui				\
@@ -167,6 +169,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgslegend.moc.cpp			\
 		qgslegenditem.moc.cpp			\
 		qgslinestyledialog.moc.cpp		\
+		qgsludialog.moc.cpp			\
 		qgsmapcanvas.moc.cpp			\
 		qgsmaplayer.moc.cpp			\
 		qgsmaplayerregistry.moc.cpp			\
@@ -214,6 +217,7 @@ qgis_SOURCES =  main.cpp			\
 		qgslegenditem.cpp		\
 		qgslinestyledialog.cpp		\
 		qgslinesymbol.cpp		\
+		qgsludialog.cpp			\
 		qgsmapcanvas.cpp		\
 		qgsmaplayer.cpp			\
 		qgsmaplayerregistry.cpp		\

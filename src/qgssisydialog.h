@@ -43,6 +43,8 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     void setOutlineWidth(int width);
     void setFillColor(QColor& c);
     void setFillStyle(Qt::BrushStyle fstyle);
+    void setLabel(QString label);
+    QString label();
     
     
  protected:
