@@ -20,6 +20,8 @@ extern "C"
 #include <libpq-fe.h>
 }
 #include "../../src/qgsdataprovider.h"
+#include <list>
+
 class QgsFeature;
 class QgsField;
 class OGRDataSource;
@@ -123,6 +125,8 @@ class QgsPostgresProvider:public QgsDataProvider
   * Get the attributes associated with a feature
   */
     void getFeatureAttributes(int oid, QgsFeature *f); 
+    /**Get the attributes with indices contained in attlist*/
+    void getFeatureAttributes(int oid, QgsFeature *f, std::list<int>& attlist);
   /**
   * Get the name of the primary key for the layer
 */  

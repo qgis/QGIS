@@ -93,6 +93,7 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 
     m_widgetvector.resize(mNumberOfClasses * 8);
     QGis::VectorType m_type = mVectorLayer->vectorType();
+    int precision=provider->fields()[classfield].precision();//round-off precision for equal interval
 
     //create the required number of rows
     for (int i = 1; i <= mNumberOfClasses; i++)
@@ -203,8 +204,8 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 	/*Set the default values of the lower and upper bounds according to the chosen mode */
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
         {
-	    ltextfield->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i - 1), 'f', 2));
-	    utextfield->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', 2));
+	    ltextfield->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i - 1), 'f', precision));
+	    utextfield->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', precision));
         }
     }
 
@@ -265,8 +266,8 @@ void QgsGraSyExtensionWidget::setClassification(QgsGraSyDialog::mode mode,int fi
     
     m_classfield=field;
     mMode=mode;
-
     QgsDataProvider *provider=mVectorLayer->getDataProvider();
+    int precision=provider->fields()[m_classfield].precision();//round-off precision for equal interval
 
     if (provider)
     {
@@ -280,8 +281,8 @@ void QgsGraSyExtensionWidget::setClassification(QgsGraSyDialog::mode mode,int fi
 	    
 	    for(int i=0;i<mNumberOfClasses;++i)
 	    {
-		((QLineEdit*)getWidget(0,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', 2));
-		((QLineEdit*)getWidget(1,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i+1), 'f', 2));
+		((QLineEdit*)getWidget(0,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', precision));
+		((QLineEdit*)getWidget(1,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i+1), 'f', precision));
 	    }
 	    
 	} 
