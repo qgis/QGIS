@@ -83,7 +83,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
         " using delimiter " << txtDelimiter->text() << std::endl;
 #endif
 
-      QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line, true);
+      QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line);
 
 #ifdef QGISDEBUG
       std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 
@@ -94,8 +94,11 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       int fieldPos = 0;
       for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it ) {
         // add item to both drop-downs (X field and Y field)
+        if((*it).length() > 0)
+        {
         cmbXField->insertItem(*it);
         cmbYField->insertItem(*it);
+        }
       }           
       // close the file
       file->close();
