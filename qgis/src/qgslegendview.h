@@ -37,4 +37,8 @@ private:
 	bool mousePressed;
 	// keep track of the Item being dragged
 	QListViewItem *movingItem;
+	// keep track of the original position of the Item being dragged
+	int movingItemOrigPos;
+	// return position of item in the list
+	int getItemPos(QListViewItem *item);
 };
