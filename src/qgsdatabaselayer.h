@@ -28,6 +28,13 @@ class QgsDatabaseLayer : public QgsMapLayer  {
 public: 
 	QgsDatabaseLayer();
 	~QgsDatabaseLayer();
+ private:
+	
+	QString type; // maps to one of the OGIS Simple geometry types
+	QString database;
+	QString tableName;
+	QString geometryColumn;
+	
 };
 
 #endif

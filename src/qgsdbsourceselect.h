@@ -9,7 +9,13 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     ~QgsDbSourceSelect();
     void addNewConnection();
     void editConnection();
+    void addTables();
     void dbConnect();
+    QStringList selectedTables();
+    QString connInfo();
+ private:
+    QString m_connInfo;
+    QStringList m_selectedTables;
 };
 
 
