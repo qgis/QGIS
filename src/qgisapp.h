@@ -60,6 +60,7 @@ class QgisApp:public QgisAppBase
 	//! Add a databaselayer to the map
 	void addDatabaseLayer();
 	#endif
+  void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
 	//! Exit Qgis
 	void fileExit();
 	
@@ -127,6 +128,12 @@ class QgisApp:public QgisAppBase
 	void fileNew();
 	//! Export current view as a mapserver map file
 	void exportMapServer();
+  //! Return pointer to the active layer
+  QgsMapLayer *activeLayer();
+  //! Return data source of the active layer
+  QString activeLayerSource();
+  //! Open the help contents in a browser
+  void helpContents();
 	//! Check qgis version against the qgis version server
 	void checkQgisVersion();
 	void socketConnected();

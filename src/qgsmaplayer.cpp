@@ -23,7 +23,8 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):layerName(lyrname), layerType(type), dataSource(source), m_legendItem(0)
+QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source)
+  :layerName(lyrname), layerType(type), dataSource(source), m_legendItem(0)
 {
 	// assume the layer is valid (data source exists and can be used)
 	// until we learn otherwise
