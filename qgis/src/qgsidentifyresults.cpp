@@ -27,12 +27,19 @@
 
 #include "qgsidentifyresults.h"
 
-QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa) : mActions(aa), mClickedOnValue(0), mActionPopup(0)
+QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa, QWidget *parent, 
+	                               const char * name, WFlags f) :
+    QgsIdentifyResultsBase ( parent, name, f),
+    mActions(aa), mClickedOnValue(0), mActionPopup(0)
 {
+    lstResults->setResizeMode(QListView::AllColumns);
+
+    connect ( lstResults, SIGNAL(clicked(QListViewItem *)), this, SLOT(clicked(QListViewItem *)));
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
 {
+  saveWindowLocation();
   delete mActionPopup;
 }
 // Slot called when user clicks the Close button
@@ -100,15 +107,17 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
   int j = 0;
   while (child != 0)
     {
-      mValues.push_back(std::make_pair(child->text(0), child->text(1)));
-      // Need to do the comparison on the text strings rather than the
-      // pointers because if the user clicked on the parent, we need
-      // to pick up which child that actually is (the parent in the
-      // identify results dialog box is just one of the children
-      // that has been chosen by some method).
-      if (child->text(0) == item->text(0))
-	mClickedOnValue = j;
-      ++j;
+      if ( child->text(2) != "action" ) {
+	  mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+	  // Need to do the comparison on the text strings rather than the
+	  // pointers because if the user clicked on the parent, we need
+	  // to pick up which child that actually is (the parent in the
+	  // identify results dialog box is just one of the children
+	  // that has been chosen by some method).
+	  if (child->text(0) == item->text(0))
+	    mClickedOnValue = j;
+	  ++j;
+      }
       child = child->nextSibling();
     }
 
@@ -150,6 +159,23 @@ void QgsIdentifyResults::addAttribute(QString field, QString value)
   new QListViewItem(lstResults, field, value);
 }
 
+void QgsIdentifyResults::addAction(QListViewItem * fnode, int id, QString field, QString value)
+{
+  QListViewItem *item = new QListViewItem(fnode, field, value, "action", QString::number(id) );
+
+  QString appDir;
+#if defined(WIN32) || defined(Q_OS_MACX)
+  appDir = qApp->applicationDirPath();
+#else
+  appDir = PREFIX;
+#endif
+
+  QString img = appDir + "/share/qgis/themes/default/action.png";
+  
+  QPixmap pm ( img );
+  item->setPixmap ( 0, pm ); 
+}
+
 /** Add a feature node to the list */
 QListViewItem *QgsIdentifyResults::addNode(QString label)
 {
@@ -179,3 +205,53 @@ void QgsIdentifyResults::showAllAttributes() {
     lstResults->setOpen(*qlvii, true);
 }
 
+void QgsIdentifyResults::clear()
+{
+    lstResults->clear();
+}
+
+void QgsIdentifyResults::setMessage( QString shortMsg, QString longMsg )
+{
+    new QListViewItem(lstResults, shortMsg, longMsg );
+}
+
+void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
+{
+    mActions = actions;
+}
+
+void QgsIdentifyResults::clicked ( QListViewItem *item )
+{
+    if ( !item ) return;
+    
+    if ( item->text(2) != "action" ) return;
+    
+    int id = item->text(3).toInt();
+    
+    QListViewItem* parent = item->parent();
+    QListViewItem* child;
+
+    if (item->parent() == 0)
+      child = item->firstChild();
+    else
+      child = parent->firstChild();
+
+    mValues.clear();
+
+    int j = 0;
+    
+    while (child != 0)
+    {
+      if ( child->text(2) != "action" ) {
+	  mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+
+	  if (child->text(0) == item->text(0))
+	      mClickedOnValue = j;
+	  
+	  ++j;
+      }
+      child = child->nextSibling();
+    }
+
+    mActions.doAction(id, mValues, mClickedOnValue);
+}
