@@ -78,22 +78,11 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
     if (renderer)
     {
 	mClassBreakBox->clear();
-	std::map<QString,QgsRenderItem*>& map=renderer->items();
-	for(std::map<QString,QgsRenderItem*>::iterator it=map.begin();it!=map.end();++it)
-	{
-	    mClassBreakBox->insertItem(it->first);
-	    QgsSymbol* symbol=new QgsSymbol();
-	    QgsRenderItem* ritem=new QgsRenderItem(symbol,"","");
-	    symbol->setPen(it->second->getSymbol()->pen());
-	    symbol->setBrush(it->second->getSymbol()->brush());
-	    mValues.insert(std::make_pair(it->first,ritem));
-	}
-	
 	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
 	int classattr=*iter;
 	mClassificationComboBox->setCurrentItem(classattr);
 	mClassBreakBox->setCurrentItem(0);
-	changeClassificationAttribute(0);
+	changeClassificationAttribute(classattr);
     }
     
 }
