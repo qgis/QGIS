@@ -1,9 +1,9 @@
 QGIS Change Log
-ChangeLog,v 1.109 2004/06/04 11:04:00 timlinux Exp
+ChangeLog,v 1.110 2004/06/04 11:04:29 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
-2004-06-03 [ts] 0.3.0devel12
+2004-06-03 [ts] 0.3.0devel14
 ** Added getPaletteAsPixmap function to raster and display on raster props
    dialog. Also added gdaldatatype to raster props metadata dialog.
 
