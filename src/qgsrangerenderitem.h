@@ -29,6 +29,9 @@ class QgsRangeRenderItem: public QgsRenderItem
     QgsRangeRenderItem(QgsSymbol* symbol, QString _value, QString u_value, QString _label);
     void setUpperValue(QString value);
     const QString& upper_value() const;
+    /**Writes the contents of the item to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & parent, QDomDocument & document );
  protected:
     /**Upper value for a range (the lower value is QgsRenderItem::value)*/
     QString m_upper_value;

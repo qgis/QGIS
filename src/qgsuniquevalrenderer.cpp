@@ -207,3 +207,22 @@ std::map<QString,QgsRenderItem*>& QgsUniqueValRenderer::items()
 {
     return mEntries;
 }
+
+bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnval=true;
+    QDomElement uniquevalue=document.createElement("uniquevalue");
+    layer_node.appendChild(uniquevalue);
+    QDomElement classificationfield=document.createElement("classificationfield");
+    QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
+    classificationfield.appendChild(classificationfieldtxt);
+    uniquevalue.appendChild(classificationfield);
+    for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    {
+	if(!(it->second)->writeXML(uniquevalue,document))
+	{
+	    returnval=false;  
+	}
+    }
+    return returnval;
+}

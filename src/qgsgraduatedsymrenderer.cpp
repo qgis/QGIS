@@ -231,3 +231,22 @@ QString QgsGraduatedSymRenderer::name()
 {
     return "Graduated Symbol";
 }
+
+bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnval=true;
+    QDomElement graduatedsymbol=document.createElement("graduatedsymbol");
+    layer_node.appendChild(graduatedsymbol);
+    QDomElement classificationfield=document.createElement("classificationfield");
+    QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
+    classificationfield.appendChild(classificationfieldtxt);
+    graduatedsymbol.appendChild(classificationfield);
+    for(std::list<QgsRangeRenderItem*>::iterator it=mItems.begin();it!=mItems.end();++it)
+    {
+	if(!(*it)->writeXML(graduatedsymbol,document))
+	{
+	    returnval=false;
+	}
+    }
+    return returnval;
+}

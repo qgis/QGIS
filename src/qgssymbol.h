@@ -22,6 +22,7 @@
 #include <qbrush.h>
 #include <qpen.h>
 #include <qpixmap.h>
+#include <qdom.h>
 
 class QString;
 
@@ -57,7 +58,9 @@ class QgsSymbol{
     virtual ~QgsSymbol();
     //! Get a little icon / image representation of this symbol
     virtual QPixmap getSymbolAsPixmap(int xDim, int yDim);
-
+    /**Writes the contents of the symbol to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & item, QDomDocument & document );
  protected:
     QPen mPen;
     QBrush mBrush;

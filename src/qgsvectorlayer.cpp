@@ -1703,73 +1703,9 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
     // renderer specific settings
 
     QgsRenderer * myRenderer;
-
-    if( myRenderer = renderer() )
+    if( myRenderer = renderer())
     {
-        std::stringstream rendererXML;
-        myRenderer->writeXML(rendererXML);
-
-        // because the renderer writeXML() deals with streams and not DOM
-        // objects directly, we'll make a separate DOM document and populate
-        // it with the objects from the stream, and then import the DOM
-        // document
-
-        // #    #                                    ###
-        // #   #  #      #    # #####   ####  ###### ###
-        // #  #   #      #    # #    # #    # #      ###
-        // ###    #      #    # #    # #      #####   #
-        // #  #   #      #    # #    # #  ### #
-        // #   #  #      #    # #    # #    # #      ###
-        // #    # ######  ####  #####   ####  ###### ###
-
-        // XXX this is a *HUGE* kludge -- the renderers *SHOULD* eventually
-        // XXX use DOM objects instead of streams; but there's no time to go
-        // XXX through all N renderers to make those changes
-
-        QDomDocument rendererDOM;
-
-        std::string rawXML, temp_str;
-        QString errorMsg;
-        int     errorLine;
-        int     errorColumn;
-
-        // start with bogus XML header
-        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n";
-
-        temp_str = rendererXML.str();
-
-        rawXML += temp_str;
-
-#ifdef QGISDEBUG
-        std::cout << rawXML << std::endl << std::flush;
-#endif
-
-        const char * s = rawXML.c_str(); // debugger probe
-
-        if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
-        {
-            qDebug( "%s:%d XML import error at line %d column %d " + errorMsg,
-                    __FILE__, __LINE__, errorLine, errorColumn );
-
-            return false;
-        }
-
-        // lastChild() because the first two nodes are the <xml> and
-        // <!DOCTYPE> nodes; the renderer node follows that, and is (hopefully)
-        // the last node.
-        QDomNode rendererDOMNode = document.importNode( rendererDOM.lastChild(), true );
-
-        if ( ! rendererDOMNode.isNull() )
-        {
-            layer_node.appendChild( rendererDOMNode );
-        }
-        else
-        {
-            qDebug( "not able to import renderer DOM node" );
-
-            // XXX return false?
-        }
-
+	myRenderer->writeXML(layer_node, document);
     }
     else
     {
