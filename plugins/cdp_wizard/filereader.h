@@ -45,7 +45,7 @@ public:
 
   /* Default constructor */
   FileReader();
-  /* constructor to open a file */
+  /* Constructor taking the name of the file to open. */
   FileReader(QString theFileNameString);
   /*Does nothing */
    ~FileReader();
@@ -198,13 +198,7 @@ private:
   /** The progress (as a percentage) of any task currently being executed. */
   int taskProgressInt;
 
-  /** flag to see whether we are at the end of the current line or not - probably wont need this
-  //eolFlag As Boolean
-  */
-  bool debugModeFlag;
-  //
-  //   Private methods
-  //
+
 
 };
 

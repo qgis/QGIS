@@ -151,13 +151,13 @@ const FileReader::FileTypeEnum FileReader::getFileType(){
 bool FileReader::setFileType( const FileTypeEnum theNewVal){
 
 #ifdef QGISDEBUG
-  if (debugModeFlag) std::cout << "FileReader::setFileType() -  called with fileType: " << theNewVal << std::endl;
+   std::cout << "FileReader::setFileType() -  called with fileType: " << theNewVal << std::endl;
 #endif
   try
   {
     fileType = theNewVal;
 #ifdef QGISDEBUG
-    if (debugModeFlag) std::cout << "FileReader::setFileType() -  fileType set to : " << fileType << std::endl;
+    std::cout << "FileReader::setFileType() -  fileType set to : " << fileType << std::endl;
 #endif
     //Set Hadley member variables
     if ((fileType == HADLEY_SRES) || (fileType == HADLEY_IS92))

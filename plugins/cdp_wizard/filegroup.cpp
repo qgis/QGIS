@@ -31,7 +31,7 @@ FileGroup::~FileGroup()
   //clean up - close each filereader in the group
   for (int myIteratorInt=0;myIteratorInt<fileReaderVector->size();myIteratorInt++)
   {
-    FileReader * myFileReader = fileReaderVector[myIteratorInt];
+    FileReader * myFileReader = fileReaderVector->at(myIteratorInt);
     myFileReader->closeFile();
   }
   //delete thee vector which will in turn autodelete its filereaders
