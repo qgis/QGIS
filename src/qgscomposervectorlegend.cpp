@@ -70,17 +70,72 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
     mComposition = composition;
     mId  = id;
     mMapCanvas = mComposition->mapCanvas();
-    mNumCachedLayers = 0;
 
-    mTitle = "Legend";
+    init();
 
     // Font and pen 
     mFont.setPointSize ( fontSize );
+    
+    // Set map to the first available if any
+    std::vector<QgsComposerMap*> maps = mComposition->maps();
+    if ( maps.size() > 0 ) {
+	mMap = maps[0]->id();
+    }
+
+    // Calc size and cache
+    recalculate();
+    cache();
+
+    // Add to canvas
+    setCanvas(mComposition->canvas());
+
+    QCanvasRectangle::show();
+    QCanvasRectangle::update();
+
+     
+    writeSettings();
+}
+
+QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id ) 
+    : QCanvasRectangle(0,0,10,10,0)
+{
+    std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+
+    mComposition = composition;
+    mId  = id;
+    mMapCanvas = mComposition->mapCanvas();
+
+    init();
+
+    readSettings();
+
+    // Calc size and cache
+    recalculate();
+    cache();
+
+    // Add to canvas
+    setCanvas(mComposition->canvas());
+
+    QCanvasRectangle::show();
+    QCanvasRectangle::update();
+}
+
+void QgsComposerVectorLegend::init ( void ) 
+{
+    mSelected = false;
+    mNumCachedLayers = 0;
+    mTitle = "Legend";
+    mMap = 0;
+
+    // Cache
+    mCachePixmap = new QPixmap();
+
+    // Rectangle
+    QCanvasRectangle::setZ(50);
+    setActive(true);
 
     // Plot style
     setPlotStyle ( QgsComposition::Preview );
-
-    mSelected = false;
     
     // Preview style
     mPreviewMode = Render;
@@ -89,42 +144,17 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
     mPreviewModeComboBox->insertItem ( "Rectangle", Rectangle );
     mPreviewModeComboBox->setCurrentItem ( mPreviewMode );
 
-    // Cache
-    mCachePixmap = new QPixmap();
-    
-    // Calc size and cache
-    recalculate();
-    cache();
-
-    // Add to canvas
-    setCanvas(mComposition->canvas());
-    QCanvasRectangle::setZ(50);
-    setActive(true);
-    QCanvasRectangle::show();
-    QCanvasRectangle::update(); // ?
-    
-    // Set map to the first available if any
-    std::vector<QgsComposerMap*> maps = mComposition->maps();
-
-    if ( maps.size() > 0 ) {
-	mMap = maps[0]->id();
-    } else {
-	mMap = 0;
-    }
-
     connect ( mComposition, SIGNAL(mapChanged(int)), this, SLOT(mapChanged(int)) ); 
-     
-    setOptions();
-    writeSettings();
 }
 
 QgsComposerVectorLegend::~QgsComposerVectorLegend()
 {
+    std::cerr << "QgsComposerVectorLegend::~QgsComposerVectorLegend()" << std::endl;
 }
 
 QRect QgsComposerVectorLegend::render ( QPainter *p )
 {
-    std::cout << "QgsComposerVectorLegend::render" << std::endl;
+    std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
 
     // Painter can be 0, create dummy to avoid many if below
     QPainter *painter;
@@ -136,10 +166,13 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	painter = new QPainter( pixmap );
     }
 
+    std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
     // Font size in canvas units
     int titleSize = (int) ( 25.4 * mComposition->scale() * mTitleFont.pointSize() / 72);
     int sectionSize = (int) ( 25.4 * mComposition->scale() * mSectionFont.pointSize() / 72);
     int size = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
+
+    std::cout << "font sizes = " << titleSize << " " << sectionSize << " " << size << std::endl;
 
     // Metrics 
     QFont titleFont ( mTitleFont );
@@ -153,7 +186,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     QFontMetrics titleMetrics ( titleFont );
     QFontMetrics sectionMetrics ( sectionFont );
     QFontMetrics metrics ( font );
-
+    
     // Fonts for rendering
 
     // It seems that font pointSize is used in points in Postscript, that means it depends 
@@ -461,7 +494,7 @@ void QgsComposerVectorLegend::recalculate ( void )
 
     QCanvasRectangle::setSize ( r.width(), r.height() );
     
-    setOptions();
+    //setOptions();
     cache();
 }
 
@@ -514,11 +547,21 @@ bool QgsComposerVectorLegend::writeSettings ( void )
 {
     QString path;
     path.sprintf("/composition_%d/vectorlegend_%d/", mComposition->id(), mId ); 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", (int)QCanvasRectangle::x() );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", (int)QCanvasRectangle::y() );
-    
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QCanvasRectangle::x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QCanvasRectangle::y()) );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"map", mMap );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"title", mTitle );
+
     QgsProject::instance()->writeEntry( "Compositions", path+"font/size", mFont.pointSize() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/family", mFont.family() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"font/weight", mFont.weight() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"font/underline", mFont.underline() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"font/strikeout", mFont.strikeOut() );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"previewmode", mPreviewMode );
     
     return true; 
 }
@@ -531,9 +574,17 @@ bool QgsComposerVectorLegend::readSettings ( void )
 
     QCanvasRectangle::setX( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok)) );
     QCanvasRectangle::setY( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok)) );
+
+    mMap = QgsProject::instance()->readNumEntry("Compositions", path+"map", 0, &ok);
+    mTitle = QgsProject::instance()->readEntry("Compositions", path+"title", "???", &ok);
      
     mFont.setFamily ( QgsProject::instance()->readEntry("Compositions", path+"font/family", "", &ok) );
     mFont.setPointSize ( QgsProject::instance()->readNumEntry("Compositions", path+"font/size", 10, &ok) );
+    mFont.setWeight(  QgsProject::instance()->readNumEntry("Compositions", path+"font/weight", (int)QFont::Normal, &ok) );
+    mFont.setUnderline(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/underline", false, &ok) );
+    mFont.setStrikeOut(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/strikeout", false, &ok) );
+    
+    mPreviewMode = (PreviewMode) QgsProject::instance()->readNumEntry("Compositions", path+"previewmode", Render, &ok);
     
     recalculate();
     

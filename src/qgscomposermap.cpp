@@ -46,18 +46,43 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mNumCachedLayers;
     mName.sprintf ( tr("Map %d"), mId );
-    
-    mSelected = false;
+
+    init();
+    recalculate();
 
     // Add to canvas
     setCanvas(mComposition->canvas());
-    QCanvasRectangle::setZ(20);
-    setActive(true);
     QCanvasRectangle::show();
     QCanvasRectangle::update(); // ?
-    
+
+    writeSettings();
+}
+
+QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id )
+    : QCanvasRectangle(0,0,10,10,0)
+{
+    mComposition = composition;
+    mId = id;
+    mMapCanvas = mComposition->mapCanvas();
+    mName.sprintf ( tr("Map %d"), mId );
+
+    init();
+    readSettings();
+    recalculate();
+
+    // Add to canvas
+    setCanvas(mComposition->canvas());
+    QCanvasRectangle::show();
+    QCanvasRectangle::update(); // ?
+}
+
+void QgsComposerMap::init ()
+{
+    mNumCachedLayers = 0;
+    mSelected = false;
+    mUserExtent = mMapCanvas->extent();
+
     // Cache
     mCachePixmap = new QPixmap();
 
@@ -77,11 +102,13 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mSymbolScale = 1.0;
     mFontScale = 1.0;
 
-    writeSettings();
+    QCanvasRectangle::setZ(20);
+    setActive(true);
 }
 
 QgsComposerMap::~QgsComposerMap()
 {
+     std::cerr << "QgsComposerMap::~QgsComposerMap" << std::endl;
 }
 
 void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *transform, QPaintDevice *device )
@@ -136,6 +163,8 @@ void QgsComposerMap::cache ( void )
 
     int w = QCanvasRectangle::width() < 1000 ? QCanvasRectangle::width() : 1000;
     int h = (int) ( mExtent.height() * w / mExtent.width() );
+    // It can happen that extent is not initialised well -> check 
+    if ( h < 1 || h > 10000 ) h = w; 
     
     std::cout << "extent = " << mExtent.width() <<  " x " << mExtent.height() << std::endl;
     std::cout << "cache = " << w <<  " x " << h << std::endl;
@@ -375,14 +404,20 @@ bool QgsComposerMap::writeSettings ( void )
 {
     QString path;
     path.sprintf("/composition_%d/map_%d/", mComposition->id(), mId ); 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", (int)QCanvasRectangle::x() );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", QCanvasRectangle::y() );
-    QgsProject::instance()->writeEntry( "Compositions", path+"width", (double)QCanvasRectangle::width() );
-    QgsProject::instance()->writeEntry( "Compositions", path+"height", (double)QCanvasRectangle::height() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QCanvasRectangle::x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QCanvasRectangle::y()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"width", mComposition->toMM(QCanvasRectangle::width()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"height", mComposition->toMM(QCanvasRectangle::height()) );
     QgsProject::instance()->writeEntry( "Compositions", path+"north", mUserExtent.yMax() );
     QgsProject::instance()->writeEntry( "Compositions", path+"south", mUserExtent.yMin() );
     QgsProject::instance()->writeEntry( "Compositions", path+"east", mUserExtent.xMax() );
     QgsProject::instance()->writeEntry( "Compositions", path+"west", mUserExtent.xMin() );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"widthscale", mWidthScale );
+    QgsProject::instance()->writeEntry( "Compositions", path+"symbolscale", mSymbolScale );
+    QgsProject::instance()->writeEntry( "Compositions", path+"fontscale", mFontScale );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"previewmode", mPreviewMode );
 
     return true; 
 }
@@ -404,6 +439,12 @@ bool QgsComposerMap::readSettings ( void )
     mUserExtent.setYmin ( QgsProject::instance()->readDoubleEntry( "Compositions", path+"south", 0, &ok) );
     mUserExtent.setXmax ( QgsProject::instance()->readDoubleEntry( "Compositions", path+"east", 100, &ok) );
     mUserExtent.setXmin ( QgsProject::instance()->readDoubleEntry( "Compositions", path+"west", 0, &ok) );
+
+    mWidthScale = QgsProject::instance()->readDoubleEntry("Compositions", path+"widthscale", 1., &ok);
+    mSymbolScale = QgsProject::instance()->readDoubleEntry("Compositions", path+"symbolscale", 1., &ok);
+    mFontScale = QgsProject::instance()->readDoubleEntry("Compositions", path+"fontscale", 1., &ok);
+    
+    mPreviewMode = (PreviewMode) QgsProject::instance()->readNumEntry("Compositions", path+"previewmode", Cache, &ok);
     
     recalculate();
 

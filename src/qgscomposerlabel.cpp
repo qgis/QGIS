@@ -77,8 +77,38 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
     writeSettings();
 }
 
+QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id ) 
+    : QCanvasPolygonalItem(0)
+{
+    std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+
+    mComposition = composition;
+    mId  = id;
+    mSelected = false;
+
+    readSettings();
+    
+    setOptions();
+
+    // Add to canvas
+    setCanvas(mComposition->canvas());
+    QCanvasPolygonalItem::setZ(100);
+    setActive(true);
+    QCanvasPolygonalItem::show();
+    QCanvasPolygonalItem::update(); // ?
+
+}
+
 QgsComposerLabel::~QgsComposerLabel()
 {
+    std::cout << "QgsComposerLabel::~QgsComposerLabel" << std::endl;
+    QCanvasItem::hide();
+}
+
+void QgsComposerLabel::drawShape ( QPainter & painter )
+{
+    std::cout << "QgsComposerLabel::drawShape" << std::endl;
+    draw ( painter );
 }
 
 void QgsComposerLabel::draw ( QPainter & painter )
@@ -163,11 +193,6 @@ QRect QgsComposerLabel::boundingRect ( void ) const
     return r;
 }
 
-void QgsComposerLabel::drawShape(QPainter&)
-{
-    std::cout << "QgsComposerLabel::drawShape" << std::endl;
-}
-
 QPointArray QgsComposerLabel::areaPoints() const
 {
     std::cout << "QgsComposerLabel::areaPoints" << std::endl;
@@ -192,6 +217,7 @@ void QgsComposerLabel::textChanged ( void )
 { 
     mText = mTextLineEdit->text();
     QCanvasPolygonalItem::update();
+    QCanvasPolygonalItem::canvas()->update();
     writeSettings();
 }
 
@@ -219,29 +245,44 @@ bool QgsComposerLabel::writeSettings ( void )
 {
     QString path;
     path.sprintf("/composition_%d/label_%d/", mComposition->id(), mId ); 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", (int)QCanvasPolygonalItem::x() );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", (int)QCanvasPolygonalItem::y() );
+    
+    QgsProject::instance()->writeEntry( "Compositions", path+"text", mText );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QCanvasPolygonalItem::x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QCanvasPolygonalItem::y()) );
 
     QgsProject::instance()->writeEntry( "Compositions", path+"font/size", mFont.pointSize() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/family", mFont.family() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"font/weight", mFont.weight() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"font/underline", mFont.underline() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"font/strikeout", mFont.strikeOut() );
     
     return true; 
 }
 
 bool QgsComposerLabel::readSettings ( void )
 {
+    std::cout << "QgsComposerLabel::readSettings mId = " << mId << std::endl;
     bool ok;
+
     QString path;
     path.sprintf("/composition_%d/label_%d/", mComposition->id(), mId );
 
-    QCanvasPolygonalItem::setX( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok)) );
-    QCanvasPolygonalItem::setY( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok)) );
+    mText = QgsProject::instance()->readEntry("Compositions", path+"text", "???", &ok);
+
+    int x = mComposition->fromMM( QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok) );
+    QCanvasPolygonalItem::setX( x );
+    int y = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok) );
+    QCanvasPolygonalItem::setY( y );
 
     mFont.setFamily ( QgsProject::instance()->readEntry("Compositions", path+"font/family", "", &ok) );
     mFont.setPointSize ( QgsProject::instance()->readNumEntry("Compositions", path+"font/size", 10, &ok) );
+    mFont.setWeight(  QgsProject::instance()->readNumEntry("Compositions", path+"font/weight", (int)QFont::Normal, &ok) );
+    mFont.setUnderline(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/underline", false, &ok) );
+    mFont.setStrikeOut(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/strikeout", false, &ok) );
 
     QCanvasPolygonalItem::update();
-    
+
     return true;
 }
 

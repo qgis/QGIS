@@ -35,6 +35,19 @@ class QResizeEvent;
 class QgisApp;
 class QgsComposerItem;
 
+/* The constructor creates empty composer, without compositions and mFirstTime set to true. 
+ * - if signal projectRead() is recieved all old compositions are deleted and
+ *     - if the composition exists in project it is created from project settings (mFirstTime set to false)
+ *     - if the composition does not exist in project 
+ *         - if the composer is visible new default composition is created (mFirstTime set to false)
+ *         - if the composer is not visible the composer is left empty (mFirstTime set to true)
+ * - if signal newProject() is recieved all old compositions are deleted and 
+ *     - if the composer is visible a new default composition is created (mFirstTime set to false)
+ *     - if the composer is not visible the composer is left empty (mFirstTime set to true)
+ *         
+ * If open() is called and mFirstTime == true, a new default composition is created.
+ *
+ */
 class QgsComposer: public QgsComposerBase
 {
     Q_OBJECT
