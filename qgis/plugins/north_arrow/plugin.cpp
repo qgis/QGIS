@@ -119,10 +119,11 @@ void Plugin::run()
   //overides function byt the same name created in .ui
   myPluginGui->setRotation(mRotationInt);
   myPluginGui->setPlacement(mPlacement);
+  myPluginGui->setEnabled(mEnable);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
-  connect(myPluginGui, SIGNAL(enableNorthArrow(bool)), this, SLOT(setEnable(bool)));
+  connect(myPluginGui, SIGNAL(enableNorthArrow(bool)), this, SLOT(setEnabled(bool)));
   myPluginGui->show();
 
 }
@@ -190,9 +191,10 @@ if (mEnable)
     {
 #ifdef QGISDEBUG
       std::cout << "Rendering n-arrow at bottom left: x = " << xShift 
-          << " y = " << myHeight-(myQPixmap.height()-yShift) << std::endl;
+          << " y = " << myHeight-(myQPixmap.height()-yShift)  
+          << "Rotation : " << mRotationInt << std::endl;
 #endif
-      myQPainter.drawPixmap(xShift,myHeight-(myQPixmap.height()-yShift),myQPixmap);	
+      myQPainter.drawPixmap(xShift,myHeight-(myQPixmap.height()+yShift),myQPixmap);	
     }
     else if (mPlacement==tr("Top Right"))
     {
@@ -263,7 +265,7 @@ void Plugin::setPlacement(QString theQString)
   mPlacement = theQString;
 }
 
-void Plugin::setEnable(bool theBool)
+void Plugin::setEnabled(bool theBool)
 {
   mEnable = theBool;
 }
