@@ -604,7 +604,7 @@ void QgisApp::zoomIn()
  
         QPixmap myZoomInQPixmap=QPixmap((const char **) zoom_in);
 	delete mapCursor;
-	mapCursor = new QCursor(myZoomInQPixmap, 5, 5);
+	mapCursor = new QCursor(myZoomInQPixmap, 7, 7);
 	mapCanvas->setCursor(*mapCursor);
 	// scale the extent
 	/* QgsRect ext = mapCanvas->extent();
@@ -623,7 +623,7 @@ void QgisApp::zoomOut()
 
         QPixmap myZoomOutQPixmap=QPixmap((const char **) zoom_out);
 	delete mapCursor;
-	mapCursor = new QCursor(myZoomOutQPixmap, 5, 5);
+	mapCursor = new QCursor(myZoomOutQPixmap, 7, 7);
 	mapCanvas->setCursor(*mapCursor);
 
 	/*    QWMatrix m = mapCanvas->worldMatrix();
@@ -665,7 +665,7 @@ void QgisApp::identify()
         
         QPixmap myIdentifyQPixmap=QPixmap((const char **) identify_cursor);
 	delete mapCursor;
-	mapCursor = new QCursor(myIdentifyQPixmap, 5, 5);
+	mapCursor = new QCursor(myIdentifyQPixmap, 1, 1);
 	mapCanvas->setCursor(*mapCursor);
 }
 
@@ -692,7 +692,7 @@ void QgisApp::select()
             
         QPixmap mySelectQPixmap=QPixmap((const char **) select_cursor);
 	delete mapCursor;
-	mapCursor = new QCursor(mySelectQPixmap, 5, 5);
+	mapCursor = new QCursor(mySelectQPixmap, 1, 1);
 	mapCanvas->setCursor(*mapCursor);
 }
 
