@@ -706,6 +706,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                       myBlueInt = 255;
                       myGreenInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin1)) * 3);
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=255-myGreenInt;}
                     }
                   //check if we are in the second class break
                   else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
@@ -717,6 +719,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                         static_cast <
                         int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3));
                       myGreenInt = 255;
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myGreenInt=myBlueInt;}
                     }
                   //otherwise we must be in the third classbreak
                   else
@@ -727,6 +731,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                       myGreenInt =
                         static_cast <
                         int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin3) / 1) * 3)));
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
                     }
               } else            //invert histogram toggle is on
                 {
@@ -737,6 +743,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                       myBlueInt = 0;
                       myGreenInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin1) / 1) * 3));
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=255-myGreenInt;}
                     }
                   //check if we are in the second class break
                   else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
@@ -747,6 +755,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                       myBlueInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3);
                       myGreenInt = 255;
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myGreenInt=myBlueInt;}
                     }
                   //otherwise we must be in the third classbreak
                   else
@@ -755,6 +765,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                       myBlueInt = 255;
                       myGreenInt =
                         static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin3)) * 3));
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
                     }
                 }
               myQImage.setPixel(myRowInt, myColumnInt, qRgba(myRedInt, myGreenInt, myBlueInt, transparencyLevelInt));
@@ -934,7 +946,6 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
 
 
 
-
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
     {
       for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
@@ -984,6 +995,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                       myBlueInt = 255;
                       myGreenInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin1)) * 3);
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=255-myGreenInt;}
                     }
                   //check if we are in the second class break
                   else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
@@ -994,6 +1007,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                         static_cast <
                         int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3));
                       myGreenInt = 255;
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myGreenInt=myBlueInt;}
                     }
                   //otherwise we must be in the third classbreak
                   else
@@ -1003,6 +1018,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                       myGreenInt =
                         static_cast <
                         int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin3) / 1) * 3)));
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
                     }
               } else            //invert histogram toggle is on
                 {
@@ -1013,6 +1030,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                       myBlueInt = 0;
                       myGreenInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin1) / 1) * 3));
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=255-myGreenInt;}
                     }
                   //check if we are in the second class break
                   else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
@@ -1023,6 +1042,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                       myBlueInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3);
                       myGreenInt = 255;
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myGreenInt=myBlueInt;}
                     }
                   //otherwise we must be in the third classbreak
                   else
@@ -1031,6 +1052,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                       myBlueInt = 255;
                       myGreenInt =
                         static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin3)) * 3));
+                      // testing this stuff still ...
+                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
                     }
 
 
@@ -1770,51 +1793,63 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
                   int myRedInt = 0;
                   int myBlueInt = 255;
                   int myGreenInt = static_cast < int >(((255 / myRangeSizeDouble) * (myDouble - myClassBreakMin1)) * 3);
+                  // testing this stuff still ...
+                  if (colorRampingType==FREAK_OUT) { myRedInt=255-myGreenInt;}
                   myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
                 }
               //check if we are in the second class break
               else if ((myDouble >= myClassBreakMin2) && (myDouble < myClassBreakMax2))
-                {
-                  int myRedInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3);
-                  int myBlueInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3));
-                  int myGreenInt = 255;
-                  myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
-                }
+              {
+                int myRedInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3);
+                int myBlueInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3));
+                int myGreenInt = 255;
+                // testing this stuff still ...
+                if (colorRampingType==FREAK_OUT) { myGreenInt=myBlueInt;}
+                myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+              }
               //otherwise we must be in the third classbreak
               else
-                {
-                  int myRedInt = 255;
-                  int myBlueInt = 0;
-                  int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin3) / 1) * 3)));
-                  myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
-                }
+              {
+                int myRedInt = 255;
+                int myBlueInt = 0;
+                int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin3) / 1) * 3)));
+                // testing this stuff still ...
+                if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+              }
             }                   //end of invert histogram == false check
           else                  //invert histogram toggle is off
             {
               //check if we are in the first class break
               if ((myDouble >= myClassBreakMin1) && (myDouble < myClassBreakMax1))
-                {
-                  int myRedInt = 255;
-                  int myBlueInt = 0;
-                  int myGreenInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin1) / 1) * 3));
-                  myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
-                }
+              {
+                int myRedInt = 255;
+                int myBlueInt = 0;
+                int myGreenInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin1) / 1) * 3));
+                // testing this stuff still ...
+                if (colorRampingType==FREAK_OUT) { myRedInt=255-myGreenInt;}
+                myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+              }
               //check if we are in the second class break
               else if ((myDouble >= myClassBreakMin2) && (myDouble < myClassBreakMax2))
-                {
-                  int myRedInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3));
-                  int myBlueInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3);
-                  int myGreenInt = 255;
-                  myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
-                }
+              {
+                int myRedInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3));
+                int myBlueInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3);
+                int myGreenInt = 255;
+                // testing this stuff still ...
+                if (colorRampingType==FREAK_OUT) { myGreenInt=myBlueInt;}
+                myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+              }
               //otherwise we must be in the third classbreak
               else
-                {
-                  int myRedInt = 0;
-                  int myBlueInt = 255;
-                  int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * (myDouble - myClassBreakMin3)) * 3));
-                  myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
-                }
+              {
+                int myRedInt = 0;
+                int myBlueInt = 255;
+                int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * (myDouble - myClassBreakMin3)) * 3));
+                // testing this stuff still ...
+                if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+              }
 
             }                   //end of invert histogram check
           myQPainter.drawPoint(myPosInt++, 0);

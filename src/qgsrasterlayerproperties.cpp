@@ -150,11 +150,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
     //
     cboColorMap->insertItem(tr("Grayscale"));
     cboColorMap->insertItem(tr("Pseudocolor"));
+    cboColorMap->insertItem(tr("Freak Out"));
     if (rasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
             rasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
             rasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR)
     {
+      if(rasterLayer->getColorRampingType()==QgsRasterLayer::BLUE_GREEN_RED)
+      {
         cboColorMap->setCurrentText(tr("Pseudocolor"));
+      }
+      else
+      {
+        cboColorMap->setCurrentText(tr("Freak Out"));
+      }
+        
     }
     else
     {
@@ -309,6 +318,15 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setGreenBandName(cboGreen->currentText());
     rasterLayer->setBlueBandName(cboBlue->currentText());
     rasterLayer->setGrayBandName(cboGray->currentText());
+    //set the appropriate color ramping type
+    if (cboColorMap->currentText() == tr("Pseudocolor"))
+    {
+      rasterLayer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);  
+    }
+    else if (cboColorMap->currentText() == tr("Freak Out"))
+    {
+      rasterLayer->setColorRampingType(QgsRasterLayer::FREAK_OUT);  
+    }
     //set the appropriate render style
     if ((grpBoxGrayscale->isEnabled())
             && (rbtnSingleBand->isChecked()))
@@ -319,7 +337,7 @@ void QgsRasterLayerProperties::apply()
         if (rasterLayer->rasterLayerType == QgsRasterLayer::GRAY_OR_UNDEFINED)
         {
 
-            if (cboColorMap->currentText() == tr("Pseudocolor"))
+            if (cboColorMap->currentText() != tr("Grayscale"))
             {
 #ifdef QGISDEBUG
                 std::cout << "Setting Raster Drawing Style to :: SINGLE_BAND_PSEUDO_COLOR" << std::endl;
@@ -341,7 +359,7 @@ void QgsRasterLayerProperties::apply()
         //
         else if (rasterLayer->rasterLayerType == QgsRasterLayer::PALETTE)
         {
-            if (cboColorMap->currentText() == tr("Pseudocolor"))
+            if (cboColorMap->currentText() != tr("Grayscale"))
             {
 #ifdef QGISDEBUG
                 std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" << std::endl;
@@ -368,7 +386,7 @@ void QgsRasterLayerProperties::apply()
         //
         else if (rasterLayer->rasterLayerType == QgsRasterLayer::MULTIBAND)
         {
-            if (cboColorMap->currentText() == tr("Pseudocolor"))
+            if (cboColorMap->currentText() != tr("Grayscale"))
             {
 #ifdef QGISDEBUG
                 std::cout << "Setting Raster Drawing Style to ::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR " << std::endl;

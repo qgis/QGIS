@@ -603,6 +603,27 @@ public:
     {
         colorScalingAlgorithm=theAlgorithm;
     };
+    
+    /** \brief This enumerator describes the types of histogram colour ramping that can be used.  */
+    enum COLOR_RAMPING_TYPE
+    {
+        BLUE_GREEN_RED, 
+        FREAK_OUT //it will scare your granny!
+    } colorRampingType;
+    //
+    // Accessor and mutator for the color ramping type
+    //
+    /** \brief Accessor for colour ramping type. */
+    COLOR_RAMPING_TYPE getColorRampingType()
+    {
+        return colorRampingType;
+    };
+    /** \brief Mutator for color scaling algorithm. */
+    void setColorRampingType(COLOR_RAMPING_TYPE theRamping)
+    {
+        colorRampingType=theRamping;
+    };
+    
     /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
     {
