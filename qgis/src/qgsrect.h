@@ -19,6 +19,7 @@
 #define QGSRECT_H
 
 class QString;
+class QgsPoint;
 
 /*! \class QgsRect
  * \brief A rectangle specified with double values.
@@ -30,6 +31,8 @@ class QgsRect{
  public:
     //! Constructor
     QgsRect(double xmin=0, double ymin=0, double xmax=0, double ymax=0);
+    //! Construct a rectangle from two points
+    QgsRect(QgsPoint p1, QgsPoint p2);
     //! Destructor
     ~QgsRect();
     //! Set the minimum x value

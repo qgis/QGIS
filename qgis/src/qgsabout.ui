@@ -156,10 +156,10 @@
                         <enum>WidgetOrigin</enum>
                     </property>
                     <property name="frameShape">
-                        <enum>Panel</enum>
+                        <enum>PopupPanel</enum>
                     </property>
                     <property name="frameShadow">
-                        <enum>Raised</enum>
+                        <enum>Sunken</enum>
                     </property>
                     <property name="readOnly">
                         <bool>true</bool>
@@ -209,6 +209,11 @@
                             <height>20</height>
                         </rect>
                     </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>11</pointsize>
+                        </font>
+                    </property>
                     <property name="text">
                         <string>Quantum GIS is licensed under the GNU General Public License</string>
                     </property>
@@ -219,11 +224,16 @@
                     </property>
                     <property name="geometry">
                         <rect>
-                            <x>70</x>
+                            <x>80</x>
                             <y>50</y>
                             <width>194</width>
                             <height>21</height>
                         </rect>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>11</pointsize>
+                        </font>
                     </property>
                     <property name="text">
                         <string>http://www.gnu.org/licenses</string>

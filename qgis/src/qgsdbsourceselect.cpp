@@ -83,7 +83,7 @@ void QgsDbSourceSelect::dbConnect()
 	m_connInfo = host + " " + database + " " + username + " " + password;
 	qDebug(m_connInfo);
 	PgDatabase *pd = new PgDatabase((const char *) m_connInfo);
-//	std::cout << pd->ErrorMessage();
+//  std::cout << pd->ErrorMessage();
 	if (pd->Status() == CONNECTION_OK) {
 		// clear the existing entries
 		lstTables->clear();

@@ -46,15 +46,15 @@ void QgsLegend::update()
 	listView->clear();
 
 
- std::list< QString>::iterator zi = map->zOrder.begin();
-while (zi != map->zOrder.end()) {
-	QgsMapLayer *lyr = map->layerByName(*zi);
-	QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);	// lyr->name(), QCheckListItem::CheckBox );
+	std::list < QString >::iterator zi = map->zOrder.begin();
+	while (zi != map->zOrder.end()) {
+		QgsMapLayer *lyr = map->layerByName(*zi);
+		QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);	// lyr->name(), QCheckListItem::CheckBox );
 
-	zi++;
-}
+		zi++;
+	}
 
-	
+
 // Get the list of layers in order from the
 // map canvas and add legenditems to the legend
 

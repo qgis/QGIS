@@ -82,7 +82,7 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 	// reset the pointer to read from start of features
 
 	// set the spatial filter
-//	std::cout << "Drawing " << dataSource << std::endl;
+//  std::cout << "Drawing " << dataSource << std::endl;
 	OGRGeometry *filter = 0;
 	filter = new OGRPolygon();
 	std::ostrstream wktExtent;
@@ -238,7 +238,7 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 			delete[]feature;
 			delete fet;
 		}
-//		std::cout << featureCount << " features in ogr layer within the extent" << std::endl;
+//      std::cout << featureCount << " features in ogr layer within the extent" << std::endl;
 		OGRGeometry *filt = ogrLayer->GetSpatialFilter();
 		filt->dumpReadable(stdout);
 		ogrLayer->ResetReading();
@@ -259,5 +259,6 @@ int QgsShapeFileLayer::endian()
 		return XDR;
 }
 
-void QgsShapeFileLayer::identify(QgsRect *r){
+void QgsShapeFileLayer::identify(QgsRect * r)
+{
 }
