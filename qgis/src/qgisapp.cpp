@@ -2021,7 +2021,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
     {
       QLibrary *myLib = new QLibrary(theFullPathName);
 #ifdef QGISDEBUG
-      std::cerr << "Library name is " << myLib->library() << std::endl;
+      std::cerr << "Library name is " << myLib->library().ascii() << std::endl;
 #endif
       bool loaded = myLib->load();
       if (loaded)
