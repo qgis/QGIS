@@ -1,3 +1,40 @@
+Version 0.0.12-alpha June 10, 2003
+**Multiple features displayed with the Identify tool
+**Identify function returns and displays attributes for multiple
+   features found within the search radius
+**Fixes to endian handling on big endian machines
+**Support for PostgreSQL 7.3 schemas for database layers
+**Features in shapefiles can be selected by dragging a selection
+  box or selecting the records in the attribute table
+**Zoom to extent of selected features (Shapefiles only)
+**Bug fix: Bug that prevented reopening of the attribute table once
+  it was initally displayed and closed
+**Bug fix: Bug that prevented lines from being drawn with widths
+  other than 1 pixel
+**Build system has changed for building with PostgreSQL support.
+
+Version 0.0.11-alpha June 10, 2003
+**Preliminary Plugin Manager implementation
+**Version check under tools menu
+**Version checking uses port 80 to prevent problems 
+   with firewalls
+**Fix for PostGIS bug when srid != -1
+**Fix for PostGIS LINESTRING rendering
+**Database Connections can now be deleted
+**Fixes to Database Connection dialog
+**Fix for crash when opening a shapefile attribute table 
+   twice in succession
+**Fix for crash when opening invalid shapefiles
+
+Version 0.0.10-alpha May 13, 2003
+*Fixes to project save/open support
+*Enhancements to plugin tests
+*Fixes to build system (gdal link problem)
+
+Version 0.0.9-alpha January 25, 2003
+*Preliminary project save/open support
+*Streamlined build system
+
 Version 0.0.8-alpha December 11, 2002
 *During repaint, the data store is only accessed if map state or extent
  has changed
