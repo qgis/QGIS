@@ -200,7 +200,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
           if (myParameterType=="Integer")
           {
             //Create a spinbox for integer values
-            std::cout << myParameter->id << " parameter is integer type" << std::endl;
+            std::cout << QString(myParameter->id).ascii() << " parameter is integer type" << std::endl;
 
             //Create components
             QSpinBox * mySpinBox = new QSpinBox (frameParameters, ("spin"+QString(myParameter->id)));
@@ -241,7 +241,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
           }
           else if (myParameterType.compare("Real") || myParameterType.compare("Double"))
           {
-            std::cout << myParameter->id << " parameter is " << myParameterType.ascii() 
+            std::cout << QString (myParameter->id).ascii() << " parameter is " << myParameterType.ascii() 
                       << " type" << std::endl;
 
             //Create components
@@ -291,7 +291,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
  *    This routine is a slot that runs each time next is pressed  */
 void OpenModellerGui::formSelected(const QString &thePageNameQString)
 {
-  std::cout << thePageNameQString << " has focus " << std::endl;
+  std::cout << thePageNameQString.ascii() << " has focus " << std::endl;
   QString myQString;
   QSettings settings;
   if (thePageNameQString==tr("myParameter->typicalStep 1 of 8")) //we do this when arriving at the mode selection page
@@ -404,7 +404,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     ParametersMap::Iterator myIterator;
     for ( myIterator = mMap.begin(); myIterator != mMap.end(); ++myIterator ) 
     {
-      std::cout << "Widget  " <<myIterator.key() << " : ";
+      std::cout << "Widget  " <<myIterator.key().ascii() << " : ";
       QString myWidgetName = myIterator.data()->name();
       std::cout << myWidgetName << std::endl;
       QString myValueString = "";
@@ -450,7 +450,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     QSettings myQSettings;
 
     //pull all the form data into local class vars.
-    outputFileNameQString=leOutputDirectory->text()+leOutputFileName->text();
+    outputFileNameQString=leOutputDirectory->text()+"/"+leOutputFileName->text();
     myQSettings.writeEntry("/openmodeller/fullOutputFileName",outputFileNameQString);
     localitiesFileNameQString=leLocalitiesFileName->text();
     myQSettings.writeEntry("/openmodeller/localitiesFileName",localitiesFileNameQString);
@@ -462,7 +462,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     if ( myQFile.open( IO_WriteOnly ) ) 
     {
       //Filename is valid
-      std::cout << "Filename '" << outputFileNameQString << "' is valid" << std::endl;
+      std::cout << "Filename '" << outputFileNameQString.ascii() << "' is valid" << std::endl;
       settings.writeEntry("/openmodeller/outputDirectory",leOutputDirectory->text());
       setFinishEnabled(currentPage(),true);
     }
@@ -470,7 +470,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     {
       //Filename is invalid so switch back to previous page and warn user
       showPage(QWizard::page(6));
-      std::cout << "Filename '" << outputFileNameQString << "' is invalid" << std::endl;
+      std::cout << "Filename '" << outputFileNameQString.ascii() << "' is invalid" << std::endl;
       QMessageBox::warning(this,"Error opening output file!","The output filename and/or directory you specified is invalid.\n Please check and try again.");
 
     }
@@ -516,7 +516,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 void OpenModellerGui::makeConfigFile()
 {
   QFile myQFile( outputFileNameQString+".cfg");
-  std::cout << "Config file name: " << outputFileNameQString << std::endl;
+  std::cout << "Config file name: " << outputFileNameQString.ascii() << std::endl;
   if ( myQFile.open( IO_WriteOnly ) ) {
     QTextStream myQTextStream( &myQFile );
     //write the header to the file
@@ -601,7 +601,7 @@ void OpenModellerGui::accept()
 {
   QApplication::setOverrideCursor(Qt::WaitCursor);
   QSettings myQSettings;
-  std::cout << "cboModelAlgorithm .. current text : " << cboModelAlgorithm->currentText() << std::endl;
+  std::cout << "cboModelAlgorithm .. current text : " << cboModelAlgorithm->currentText().ascii() << std::endl;
   modelNameQString=cboModelAlgorithm->currentText();
 
   //
@@ -692,7 +692,7 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
           "Select localities text file" , //caption
           &myFileTypeQString //the pointer to store selected filter
           );  
-  std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
   //check if the file is an arc/info binary grid in which case we should only use the
   //directory name in which the adf file occurs
@@ -731,7 +731,7 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
           "Select localities text file" , //caption
           &myFileTypeQString //the pointer to store selected filter
           );  
-  std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
   setSpeciesList(myFileNameQString);
 
@@ -776,7 +776,7 @@ void OpenModellerGui::getProjList()
           continue;
         }
 #ifdef QGISDEBUG
-        std::cout << " Match found:" << myCurrentLineQString << std::endl;
+        std::cout << " Match found:" << myCurrentLineQString.ascii() << std::endl;
 #endif
         mProjectionsMap[myCurrentLineQString]=myNextLineQString;
       }
@@ -786,7 +786,7 @@ void OpenModellerGui::getProjList()
     ProjectionWKTMap::Iterator myIterator;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
-      //std::cout << "Widget map has: " <<myIterator.key() << std::endl;
+      //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       cboCoordinateSystem->insertItem(myIterator.key());
     }
   }
@@ -796,7 +796,7 @@ void OpenModellerGui::getProjList()
     ProjectionWKTMap::Iterator myIterator;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
-      //std::cout << "Widget map has: " <<myIterator.key() << std::endl;
+      //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       cboCoordinateSystem->insertItem(myIterator.key());
     }
   }   
@@ -969,7 +969,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
 {
   QDir dir(dirname);
   dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
-  std::cout << "Current directory is: " << dirname << std::endl;
+  std::cout << "Current directory is: " << dirname.ascii() << std::endl;
 
   const QFileInfoList* fileinfolist = dir.entryInfoList();
   QFileInfoListIterator it(*fileinfolist);
@@ -999,7 +999,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
     {
       if (fi->fileName()=="hdr.adf")
       {
-        std::cout << "Current filename is: " << fi->dirPath(true) << std::endl;
+        std::cout << "Current filename is: " << fi->dirPath(true).ascii() << std::endl;
         lstLayers->insertItem(fi->dirPath(true));
         cboMaskLayer->insertItem(fi->dirPath(true)); 
       }
@@ -1026,7 +1026,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
       }
       else
       {
-        std::cout << "GDAL opened " << fi->absFilePath() << " successfully" << std::endl;
+        std::cout << "GDAL opened " << fi->absFilePath().ascii() << " successfully" << std::endl;
 
         //is GDAL compatible
         //check whether it has projection information
@@ -1039,7 +1039,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
         else
         {
           //does have projection info
-          std::cout << "Current filename is: " << fi->absFilePath() << std::endl;
+          std::cout << "Current filename is: " << fi->absFilePath().ascii() << std::endl;
           lstLayers->insertItem(fi->absFilePath());
           cboMaskLayer->insertItem(fi->absFilePath());
           cboMaskLayer->setCurrentItem(0);	  
@@ -1089,7 +1089,7 @@ void OpenModellerGui::pbnDefaultParameters_clicked()
   for ( myIterator = mMap.begin(); myIterator != mMap.end(); ++myIterator ) 
   {
     QString myWidgetName = myIterator.data()->name();
-    std::cout << myWidgetName << std::endl;
+    std::cout << myWidgetName.ascii() << std::endl;
     if (myWidgetName.left(2)=="le")
     {
       //QLineEdit * myLineEdit = (QLineEdit*) myIterator.data();
