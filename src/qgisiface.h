@@ -48,6 +48,8 @@ class QgisIface : public QgisInterface{
         void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
         //! Add a raster layer
         void addRasterLayer(QString rasterLayerPath);
+        //! Add a project
+        bool addProject(QString theProjectName);
         //! Get pointer to the active layer (layer selected in the legend)
         QgsMapLayer *activeLayer();
         //! Get source of the active layer
