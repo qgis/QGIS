@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="Qgis" targetNamespace="http://mrcc.com/Qgis.xsd" elementFormDefault="qualified" xmlns="http://mrcc.com/Qgis.xsd" xmlns:mstns="http://mrcc.com/Qgis.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:complexType name="MapLayer">
+		<xs:sequence>
+			<xs:element name="LayerName" type="xs:string" />
+			<xs:element name="DataSource" type="xs:string" />
+			<xs:element name="ZOrder" type="xs:integer" />
+			<xs:element name="Symbol" type="Symbol" />
+			<xs:element name="Type" type="xs:integer" />
+			<xs:element name="Visible" type="xs:boolean" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="QgisProject">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ProjectName" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Symbol">
+		<xs:sequence>
+			<xs:element name="OutlineColor" type="QColor" />
+			<xs:element name="FillColor" type="QColor" />
+			<xs:element name="LineWidth" type="xs:integer" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ProjectLayers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MapLayer" type="MapLayer" />
+			</xs:sequence>
+			<xs:attribute name="LayerCount" type="xs:integer" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Qgis">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="QgisProject" />
+				<xs:element ref="ProjectLayers" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="QColor">
+		<xs:sequence></xs:sequence>
+		<xs:attribute name="red" type="xs:integer" />
+		<xs:attribute name="green" type="xs:integer" />
+		<xs:attribute name="blue" type="xs:integer" />
+	</xs:complexType>
+</xs:schema>
