@@ -91,11 +91,11 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					<title>The QGIS toolbars</title>
 					<p>QGIS has toolbars that provide quick access to commonly used functions. These are:</p>
 					<ul>
-						<li><img alt="New Project" src="images/gis_add_raster_layer.png"/> - Start a new QGIS project. If you 
+						<li><img alt="New Project" src="images/filenew.png"/> - Start a new QGIS project. If you 
 						already have a project ope, you will be asked if you would like to save the existing one first.</li>
-						<li><img alt="Open Project" src="images/gis_add_raster_layer.png"/> - Open a previously saved project.</li>
-						<li><img alt="Save Project" src="images/gis_add_raster_layer.png"/> - Save the current project.</li>
-						<li><img alt="Save Project As" src="images/gis_add_raster_layer.png"/> - Save project under a new file name.</li>
+						<li><img alt="Open Project" src="images/open.png"/> - Open a previously saved project.</li>
+						<li><img alt="Save Project" src="images/filesave.png"/> - Save the current project.</li>
+						<li><img alt="Save Project As" src="images/filesaveas.png"/> - Save project under a new file name.</li>
 						<li><img alt="Add Postgis Layer(s)" src="images/gis_add_pg_layer.png"/> - Add one or more layers 
 						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
 						<li><img alt="Add Vector Layer(s)" src="images/gis_add_vector_layer.png"/> - Add one or more layers 
@@ -112,9 +112,9 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 						map view.</li>
 						<li><img alt="Pan" src="images/gis_pan.png"/> - Pan in the map display area.</li>
 						<li><img alt="Zoom to Previous" src="images/back20x20.png"/> - Zoom to last extents.</li>
-						<li><img alt="Identify" src="images/"/> - Show information about a feature (applies only to vector data).</li>
-						<li><img alt="Select Features" src="images/gis_add_raster_layer.png"/> - Select features in the map display (applies only to vector data).</li>
-						<li><img alt="Show Attributes" src="images/gis_add_raster_layer.png"/> - Show the attribute table for the selected layer (applies only to vector data).</li>										
+						<li><img alt="Identify" src="images/gis_identify.png"/> - Show information about a feature (applies only to vector data).</li>
+						<li><img alt="Select Features" src="images/select_features.png"/> - Select features in the map display (applies only to vector data).</li>
+						<li><img alt="Show Attributes" src="images/table.png"/> - Show the attribute table for the selected layer (applies only to vector data).</li>										
 					</ul>
 				</section>
 				<section>
@@ -126,9 +126,18 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				</section>
 				<section>
 					<title>The QGIS map view</title>
+					<p>This is the 'business end' of QGIS - maps are displayed in this area! The map 
+					displayed in this window will depend on the vector and raster layers you have chosen 
+					to load (see sections that follow for more info on this). The map view can be panned (shifting
+					to focus of the map display to another region), zoomed in and out, and supports various other 
+					actions as described in the toolbar description above.</p>
+					<p>The map view and the legend  are tightly bound to each other - the maps in view 
+					reflect changes you make in the legend area.</p>
 				</section>
 				<section>
 					<title>The QGIS map status bar</title>
+					<p>The status bar shows you your current position in map coordinate (e.g. meters or decimal 
+					degress) as the mouse pointer is moved accross the map view. </p>
 				</section>				
 			</section>
 		</section>
@@ -179,6 +188,10 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 			</section>
 			<section>
 				<title>Identifying a Feature</title>
+				<p>QGIS provides a useful tool (<img alt="Identify" src="images/gis_identify.png"/> - the 'identify' tool) that allows you to click on a vector feature (
+				point, line or polygon) and view information about that feautre. The information displayed is 
+				retrieved from the Postgres database (in the case of Postgis layers) or from the .dbf file
+				associated with the shapefile you are insecting.</p>
 
 			</section>
 		</section>
@@ -266,7 +279,7 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					the transparency slider to indicate to what extent the underlying layers (if any) should
 					be visible though the current raster layer.</p>
 				
-					<p>QGIS has the capability restrict the data displayed to show only cells whose values are
+					<p>QGIS has the capability to restrict the data displayed to show only cells whose values are
 					within a given number of standard diviations of the mean for the layer. This is useful
 					when you have one or two cells with abnormally high values in a raster grid that are having a
 					negative impact on the rendering of the raster. This option is only available for pseudocolor
@@ -280,7 +293,10 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					<p>This tab displays statistics about each band in the current raster layer. Statistics are
 					gathered on a 'need to know' basis, so it may well be that a given layer's statistics have 
 					not yet been collected.</p>	
-					<p>Statistics for a layer are gathered when pseudocolor rendering is used.</p>
+					<p>Statistics for a layer are gathered when pseudocolor rendering is selected and the 'apply'
+					button is pressed.</p>
+					<note>Gathering statistics for a layer can be time consuming. Please be patient while 
+					QGIS examines your data!</note>
 				</section>
 			</section>
 				
@@ -297,11 +313,12 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 		</section>		
 		<section>
 			<title>Acknowledgments</title>
-			<p>
+			<p>Hosting for the QGIS project is generously provided by Sourceforge.
 			</p>
 			<p>
 			<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>
 			</p>
+			<p>Please see the Help->About->Contributors for a list of people who have donated their time to the QGIS project.</p>
 		</section>		
 	</body>
 	<footer>
