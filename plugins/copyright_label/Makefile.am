@@ -12,7 +12,7 @@
 
 plugindir = ${pkglibdir}
 #CopyrightLabel below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = libCopyrightLabelplugin.la
+plugin_LTLIBRARIES = copyrightlabelplugin.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -23,7 +23,7 @@ plugin_LTLIBRARIES = libCopyrightLabelplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-libCopyrightLabelplugin_la_SOURCES =  plugin.cpp \
+copyrightlabelplugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
 			      plugingui.cpp \
 			      plugingui.h \
@@ -45,9 +45,9 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
-libCopyrightLabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LADD) ../../src/libqgis.la
-libCopyrightLabelplugin_la_LDFLAGS = -avoid-version -module
-libCopyrightLabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+copyrightlabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
+copyrightlabelplugin_la_LDFLAGS = -avoid-version -module
+copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
 	pluginguibase.ui.h

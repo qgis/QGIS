@@ -13,7 +13,7 @@
 plugindir = ${pkglibdir}
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 #NorthArrow below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = libNorthArrowplugin.la
+plugin_LTLIBRARIES = northarrowplugin.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -24,7 +24,7 @@ plugin_LTLIBRARIES = libNorthArrowplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-libNorthArrowplugin_la_SOURCES =  plugin.cpp \
+northarrowplugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
 			      plugingui.cpp \
 			      plugingui.h \
@@ -46,9 +46,9 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
-libNorthArrowplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LADD) ../../src/libqgis.la
-libNorthArrowplugin_la_LDFLAGS = -avoid-version -module
-libNorthArrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH) -I../../src
+northarrowplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
+northarrowplugin_la_LDFLAGS = -avoid-version -module
+northarrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
         pluginguibase.ui.h
