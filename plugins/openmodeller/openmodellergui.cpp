@@ -29,9 +29,10 @@
 
 //
 //openmodeller includes
-#include <om_control.hh>
-#include <om.hh>
+#include <openmodeller/om_control.hh>
+#include <openmodeller/om.hh>
 #include "file_parser.hh"
+#include <openmodeller/om.hh>
 
 //standard includes
 #include <stdlib.h>
@@ -41,15 +42,44 @@
 OpenModellerGui::OpenModellerGui()
  : OpenModellerGuiBase()
 {
+  getAlgorithmList();
 }
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
    
+  getAlgorithmList();
 }  
+
 OpenModellerGui::~OpenModellerGui()
 {
+}
+
+void OpenModellerGui::getAlgorithmList()
+{
+
+  ControlInterface  myController;
+  QStringList * myQStringList = new QStringList();
+  // Find out which model algorithm is to be used.
+  Algorithm **myAlgorithmsPointerArray = myController.availableAlgorithms();
+  Algorithm *myAlgorithm;
+  std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
+  while ( myAlgorithm = *myAlgorithmsPointerArray++ )
+  {
+    std::cerr << "Found Algorithm: " << myAlgorithm->getID() << std::endl;
+    myQStringList->append(myAlgorithm->getID());
+  }
+  //loop through the algorithm names adding to the algs combo
+  QStringList::Iterator myIterator= myQStringList->begin();
+  while( myIterator!= myQStringList->end() ) 
+  {
+    QString myAlgorithmQString=*myIterator;
+    cboModelAlgorithm->insertItem(myAlgorithmQString);
+    ++myIterator;
+  }     
+  return ;
+
 }
 
 /** This is the page selected event which I am reimplementing to do some housekeeping
@@ -198,12 +228,12 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   //  
   if ( ! myOutputFleNameCharArray )
   {
-      QMessageBox::warning( this,QString("Acme Wizard Error"),QString("The 'Output file name' was not specified!"));
+      QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The 'Output file name' was not specified!"));
       return;
   }
   if ( ! myOutputFormatCharArray )
   {
-      QMessageBox::warning( this,"Acme Wizard Error","The 'Output format' was not specified!");
+      QMessageBox::warning( this,"openModeller Wizard Error","The 'Output format' was not specified!");
       return;
   }
   if ( ! myScaleCharArray )
@@ -232,7 +262,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   if ( ! myController.run() )
   {
     QString myErrorQString;
-    QMessageBox::warning( this,"Acme Wizard Error",myErrorQString.sprintf("Error: %s\nModel aborted.", myController.error()));
+    QMessageBox::warning( this,"openModeller Wizard Error",myErrorQString.sprintf("Error: %s\nModel aborted.", myController.error()));
   }
   else
   {

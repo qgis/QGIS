@@ -15,7 +15,7 @@
 #define OPENMODELLERGUI_H
 
 #include <openmodellerguibase.h>
-
+#include <qstringlist.h>
 /**
 @author Tim Sutton
 */
@@ -26,6 +26,8 @@ public:
     OpenModellerGui();
     OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  );
     ~OpenModellerGui();
+    
+  void getAlgorithmList();
   void OpenModellerGui::parseAndRun(QString theParametersFileNameQString);
   void makeConfigFile();
   
