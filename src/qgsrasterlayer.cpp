@@ -571,15 +571,17 @@ QgsRasterLayer::readFile( QString const & fileName )
 
 void QgsRasterLayer::showLayerProperties()
 {
-    if ( ! mLayerProperties )
-    {
-        mLayerProperties = new QgsRasterLayerProperties(this);
-    }
+  std::cerr << "SHOWING RASTER LAYER PROPERTIES DIALOG\n";
+  qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
+  if ( ! mLayerProperties )
+  {
+    mLayerProperties = new QgsRasterLayerProperties(this);
+  }
 
-    mLayerProperties->sync();
-    mLayerProperties->raise();
-    mLayerProperties->show();
-
+  mLayerProperties->sync();
+  mLayerProperties->raise();
+  mLayerProperties->show();
+  qApp->restoreOverrideCursor();
 } // QgsRasterLayer::showLayerProperties()
 
 
