@@ -4,7 +4,9 @@
 #include <qdragobject.h>
 #include "qgslegend.h"
 #include "qgsmapcanvas.h"
-
+#include "qgslinestylewidget.h"
+#include "qgsfillstylewidget.h"
+#include "qgspointstylewidget.h"
 static const char *legend_pixmap[] = {
     "22 22 8 1",
     "  c Gray100",
@@ -78,9 +80,15 @@ namespace
 QgsDesignerWidgets::QgsDesignerWidgets()
 {
    mEntriesVector.append(Entry("QgsLegend", "qgslegend.h",
-        "qwtplot.png", "A legend widget that shows layers associated with a mapcanvas.", "A legend widget that shows layers associated with a mapcanvas"));
+        "", "A legend widget that shows layers associated with a mapcanvas.", "A legend widget that shows layers associated with a mapcanvas"));
    mEntriesVector.append(Entry("QgsMapCanvas", "qgsmapcanvas.h", 
-        "somepng.png", "A map canvas widget", "A map canvas is an interactive map that can be panned and zoomed."));
+        "", "A map canvas widget", "A map canvas is an interactive map that can be panned and zoomed."));
+   mEntriesVector.append(Entry("QgsLineStyleWidget", "qgslinestylewidget.h",
+        "", "A widget that lets you select a line style.", "A widget that lets you select a line style"));
+   mEntriesVector.append(Entry("QgsFillStyleWidget", "qgsfillstylewidget.h",
+        "", "A widget that lets you select a fill style.", "A widget that lets you select a fill style"));
+   mEntriesVector.append(Entry("QgsPointStyleWidget", "qgspointstylewidget.h",
+        "", "A widget that lets you select a point style.", "A widget that lets you select a point style"));
 }
 
 
@@ -90,7 +98,13 @@ QWidget* QgsDesignerWidgets::create(const QString &key,
     if ( key == "QgsLegend" )
         return new QgsLegend( parent, name );
     else if ( key == "QgsMapCanvas" )
+        return new QgsLineStyleWidget ( parent, name );
+    else if ( key == "QgsLineStyleWidget" )
         return new QgsMapCanvas ( parent, name );
+    else if ( key == "QgsFillStyleWidget" )
+        return new QgsFillStyleWidget ( parent, name );
+    else if ( key == "QgsPointStyleWidget" )
+        return new QgsPointStyleWidget ( parent, name );
     return 0;
 }
 
