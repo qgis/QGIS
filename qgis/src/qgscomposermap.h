@@ -113,6 +113,9 @@ public:
     /** \brief Font size scale */
     double fontScale ( void );
 
+    /** \brief Scale */
+    double scale ( void );
+
 public slots:
     // Called by GUI if with or height was changed 
     void sizeChanged ( void );

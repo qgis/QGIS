@@ -590,6 +590,7 @@ void QgsComposer::setToolActionsOff(void)
     actionAddMap->setOn ( false );
     actionAddVectorLegend->setOn ( false );
     actionAddLabel->setOn ( false );
+    actionAddScalebar->setOn ( false );
 }
 
 void QgsComposer::selectItem(void)
@@ -618,6 +619,13 @@ void QgsComposer::addLabel(void)
     mComposition->setTool ( QgsComposition::AddLabel );
     setToolActionsOff();
     actionAddLabel->setOn ( true );
+}
+
+void QgsComposer::addScalebar(void)
+{
+    mComposition->setTool ( QgsComposition::AddScalebar );
+    setToolActionsOff();
+    actionAddScalebar->setOn ( true );
 }
 
 void QgsComposer::moveEvent ( QMoveEvent *e ) { saveWindowState(); }
