@@ -1078,6 +1078,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
         myPainter.drawRect(myX+myYGutterWidth,myImageHeight-(myY+myXGutterHeight),myBarWidth,myY);
       }
       //store this point in our line too
+      myY = myGraphImageHeight - myY;
       myPointArray.setPoint(myBin, myX+myYGutterWidth, myY-myXGutterHeight);
     }
     //draw a line on the graph along the bar peaks; 
