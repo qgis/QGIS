@@ -355,33 +355,35 @@ void QgisApp::addLayer(QStringList theLayerQStringList)
     mapCanvas->freeze();
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QStringList::Iterator it = theLayerQStringList.begin();
-    while (it != theLayerQStringList.end()) {
+    while (it != theLayerQStringList.end()) 
+    {
+      if (isValidVectorFileName(*it))
+      {
+
+        QFileInfo fi(*it);
+        QString base = fi.baseName();
 
 
-      QFileInfo fi(*it);
-      QString base = fi.baseName();
+        // create the layer
 
+        //dp	QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
+        QgsVectorLayer *lyr = new QgsVectorLayer(*it, base, "ogr");
 
-      // create the layer
-
-      //dp	QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
-      QgsVectorLayer *lyr = new QgsVectorLayer(*it, base, "ogr");
-
-      if (lyr->isValid()) {
-        // init the context menu so it can connect to slots in main app
-        lyr->initContextMenu(this);
-        //add single symbol renderer as default
-        QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();
-        lyr->setRenderer(renderer);
-        renderer->initializeSymbology(lyr);
-        mapCanvas->addLayer(lyr);
-        projectIsDirty = true;
-      } else {
-        QString msg = *it + " ";
-        msg += tr("is not a valid or recognized data source");
-        QMessageBox::critical(this, tr("Invalid Data Source"), msg);
-      }
-
+        if (lyr->isValid()) {
+          // init the context menu so it can connect to slots in main app
+          lyr->initContextMenu(this);
+          //add single symbol renderer as default
+          QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();
+          lyr->setRenderer(renderer);
+          renderer->initializeSymbology(lyr);
+          mapCanvas->addLayer(lyr);
+          projectIsDirty = true;
+        } else {
+          QString msg = *it + " ";
+          msg += tr("is not a valid or recognized data source");
+          QMessageBox::critical(this, tr("Invalid Data Source"), msg);
+        }
+      }//end of isValidVectorFileName check
       ++it;
     }
     //qApp->processEvents();
@@ -405,10 +407,6 @@ void QgisApp::addLayer(QStringList theLayerQStringList)
 
 void QgisApp::addRasterLayer()
 {
-   // ensure that the map canvas temporarily suspends event processing
-   // until we've loaded the raster
-
-  mapCanvas->freeze();
 
   QString myFileTypeQString;
 
@@ -443,73 +441,61 @@ void QgisApp::addRasterLayer()
           &myFileTypeQString //the pointer to store selected filter
           );  
   //cout << "Selected filetype filter is : " << myFileTypeQString << endl;
+  addRasterLayer(myFileNameQStringList);
+} //end of addRasterLayer()
 
-  if ( myFileNameQStringList.empty() ) 
+
+void QgisApp::addRasterLayer(QStringList theFileNameQStringList)
+{
+  if ( theFileNameQStringList.empty() ) 
   {                             // no files selected so bail out, but
-                                // allow mapCanvas to handle events
-                                // first
-     mapCanvas->freeze( false );
-     return; 
+    // allow mapCanvas to handle events
+    // first
+    mapCanvas->freeze( false );
+    return; 
   }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
-
-  // handle ArcInfo rasters
-  if ( myArcInfoBinaryGridFilterString == myFileTypeQString )
+  for ( QStringList::Iterator myIterator = theFileNameQStringList.begin();
+          myIterator != theFileNameQStringList.end();
+          ++myIterator )
   {
-    //if multiple file were selected ignore the others because currently we 
-    //can only select one AI Binary Grid dir at a time
-
-    QStringList::Iterator it = myFileNameQStringList.begin();
-    QFileInfo fi(*it);
-    QString base = fi.dirPath(); //get the directory the .adf file was in
-
-    // create the layer
-    QgsRasterLayer *layer = new QgsRasterLayer(*it, base);
-    QObject::connect(layer,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
-
-    if ( layer->isValid() )
+    if (isValidRasterFileName(*myIterator))
     {
-      // add it to the mapcanvas collection
-      mapCanvas->addLayer( layer );
-      projectIsDirty = true;
-    } else 
-    {
-      QString msg( *it + " is not a valid or recognized raster data source" );
-      QMessageBox::critical( this, "Invalid Data Source", msg );
-    }
-      // init the context menu so it can connect to slots in main app
-      layer->initContextMenu( this );
-  }
-  else // Any other GDAL type
-  {
-    for ( QStringList::Iterator it = myFileNameQStringList.begin();
-          it != myFileNameQStringList.end();
-          ++it )
-    {
-      QFileInfo fi(*it);
-      QString baseName = fi.baseName();
+      QFileInfo myFileInfo(*myIterator);
+      QString myDirNameQString = myFileInfo.dirPath(); //get the directory the .adf file was in
+      QString myBaseNameQString = myFileInfo.baseName();
+      //only allow one copy of a ai grid file to be loaded at a time to
+      //prevent the user selecting all adfs in 1 dir which actually represent 1 coverate,
 
       // create the layer
-      QgsRasterLayer *layer = new QgsRasterLayer(*it, baseName);
+      QgsRasterLayer *layer = new QgsRasterLayer(*myIterator,myBaseNameQString);
       QObject::connect( layer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
 
       if ( layer->isValid() )
-      {// add it to the mapcanvas collection
-        mapCanvas->addLayer( layer );
-      } else 
       {
-        QString msg( *it + " is not a valid or recognized raster data source" );
+        // add it to the mapcanvas collection
+        mapCanvas->addLayer( layer );
+        projectIsDirty = true;
+        // init the context menu so it can connect to slots in main app
+        // XXX Yes, but what if the layer is invalid?  Should we still be doing this?
+        layer->initContextMenu( this );
+      } 
+      else 
+      {
+        QString msg( *myIterator + " is not a valid or recognized raster data source" );
         QMessageBox::critical( this, "Invalid Data Source", msg );
       }
 
-      // init the context menu so it can connect to slots in main app
-      // XXX Yes, but what if the layer is invalid?  Should we still be doing this?
-      layer->initContextMenu( this );
-    }
+      //only allow one copy of a ai grid file to be loaded at a time to
+      //prevent the user selecting all adfs in 1 dir which actually represent 1 coverate,
+      if (myBaseNameQString.endsWith(".adf", FALSE))
+      {
 
+        break;
+      }
+    }//end of isValidRasterFileName check
   }
-
   mapLegend->update();
 
   qApp->processEvents();
@@ -524,7 +510,37 @@ void QgisApp::addRasterLayer()
 
 } // QgisApp::addRasterLayer()
 
+/** This helper checks to see whether the filename appears to be a valid raster file name */
+bool QgisApp::isValidRasterFileName (QString theFileNameQString)
+{
+  return (theFileNameQString.endsWith(".adf", FALSE) ||
+          theFileNameQString.endsWith(".asc", FALSE) ||
+          theFileNameQString.endsWith(".grd", FALSE) ||
+          theFileNameQString.endsWith(".img", FALSE) ||
+          theFileNameQString.endsWith(".tif", FALSE) ||
+          theFileNameQString.endsWith(".png", FALSE) ||
+          theFileNameQString.endsWith(".jpg", FALSE) ||
+          theFileNameQString.endsWith(".dem", FALSE) ||
+          theFileNameQString.endsWith(".ddf", FALSE)) ;
+}
+/** Overloaded of the above function provided for convenience that takes a qstring pointer */
+bool QgisApp::isValidRasterFileName (QString * theFileNameQString)
+{
+  //dereference and delegate
+  return isValidRasterFileName(* theFileNameQString);
+}
 
+/** This helper checks to see whether the filename appears to be a valid vector file name */
+bool QgisApp::isValidVectorFileName (QString theFileNameQString)
+{
+  return (theFileNameQString.endsWith(".shp", FALSE)) ;
+}
+/** Overloaded of the above function provided for convenience that takes a qstring pointer */
+bool QgisApp::isValidVectorFileName (QString * theFileNameQString)
+{
+  //dereference and delegate
+  return isValidVectorFileName(* theFileNameQString);
+}
 
 
 
