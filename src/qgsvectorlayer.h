@@ -232,6 +232,8 @@ class QgsVectorLayer : public QgsMapLayer
   /**Returns true if the provider has been modified since the last commit*/
   virtual bool isModified() const {return mModified;}
 
+  //! Save as shapefile
+  void saveAsShapefile();
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
     QgsAttributeTableDisplay * tabledisplay;

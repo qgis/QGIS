@@ -178,6 +178,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
   bool supportsFeatureDeletion(){return true;}
 
+  bool supportsSaveAsShapefile(){return true;}
   /** Accessor for sql where clause used to limit dataset */
   QString subsetString() {return sqlWhereClause;};
   //! Get the postgres connection
