@@ -98,6 +98,6 @@ void PluginGui::pbnSelectOutputFile_clicked()
 
 void PluginGui::pbnCancel_clicked()
 {
-
+ close(1);
 }
 
