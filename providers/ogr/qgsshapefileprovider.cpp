@@ -9,6 +9,7 @@
 #endif
 #include <iostream>
 #include <cfloat>
+#include <cassert>
 
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
@@ -17,7 +18,7 @@
 
 //TODO Following ifndef can be removed once WIN32 GEOS support
 //    is fixed
-#ifndef NOWIN32GEOS
+#ifndef NOWIN32GEOSXXX
 //XXX GEOS support on windows is broken until we can get VC++ to
 //    tolerate geos.h without throwing a bunch of type errors. It
 //    appears that the windows version of GEOS may be compiled with 
@@ -259,13 +260,18 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     OGRFeature *fet;
     //TODO Following ifndef can be removed once WIN32 GEOS support
     //    is fixed
-#ifndef NOWIN32GEOS
+#ifndef NOWIN32GEOSXXX
     // create the geos geometry factory
+//    std::cerr << "Creating the GEOS geometry factory\n";
     geos::GeometryFactory *gf = new geos::GeometryFactory();
+    assert(gf!=0);
     // create the reader
+//    std::cerr << "Creating the wktReader\n";
     geos::WKTReader *wktReader = new geos::WKTReader(gf);
+    assert(wktReader !=0);
 #endif 
     OGRGeometry *geom;
+//    std::cerr << "Starting read of features\n";
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
       {
@@ -273,7 +279,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
         {
     //TODO Following ifndef can be removed once WIN32 GEOS support
     //    is fixed
-#ifndef NOWIN32GEOS
+#ifndef NOWIN32GEOSXXX
           // Test this geometry to see if it should be
           // returned. This dies big time using the GDAL GEOS
           // functionality so we implement our own logic using
@@ -282,26 +288,40 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
           // of the selection rectangle.
           // 
           // get the feature geometry and create a geos geometry from it
+//          std::cerr << "Using geos intersect to filter features\n";
           geom  =  fet->GetGeometryRef();
           char *wkt = new char[2 * geom->WkbSize()];
+
           geom->exportToWkt(&wkt);
           //std::cerr << "Passing " << wkt << " to goes\n";
+//          std::cerr << "Creating geos geometry from wkt\n";
           geos::Geometry *geosGeom = wktReader->read(wkt);
-          //std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
+          assert(geosGeom != 0);
+//          std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
           // get the selection rectangle and create a geos geometry from it
           char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
           mSelectionRectangle->exportToWkt(&sWkt);
-          //std::cerr << "Passing " << sWkt << " to goes\n";
+//          std::cerr << "Passing " << sWkt << " to goes\n";
           geos::Geometry *geosRect = wktReader->read(sWkt);
-          //std::cerr << "About to apply contains function\n";
+          assert(geosRect != 0);
+//          std::cerr << "About to apply intersects function\n";
 
           // test the geometry
+#ifdef QGISDEBUG
+//          std::cerr << "Testing intersection using geos\n";
+#endif
           if(geosGeom->intersects(geosRect))
           {
+//            std::cerr << "Intersection found\n";
             break;
           }
+//          std::cerr << "Deleting objects used in geos intersect\n";
+#ifndef WIN32
+          //XXX For some reason deleting these on win32 causes segfault
+          //XXX Someday I'll figure out why...
           delete[] wkt;  
           delete[] sWkt;  
+#endif
           delete geosGeom;
           delete geosRect;
 #endif
@@ -314,7 +334,8 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     }
     //TODO Following ifndef can be removed once WIN32 GEOS support
     //    is fixed
-#ifndef NOWIN32GEOS
+#ifndef NOWIN32GEOSXXX
+//    std::cerr << "Deleting geometry factory and wktReader\n";
     delete gf;
     delete wktReader;
 #endif 
