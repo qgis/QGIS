@@ -1,0 +1,3 @@
+?package(qgis):needs=X11 section=Apps/Science\
+  icon="/usr/share/pixmaps/qgis-icon.xpm" title="qgis"\
+  command="/usr/bin/qgis"
