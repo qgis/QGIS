@@ -20,8 +20,8 @@
 
 #include <qwidget.h>
 #include "qgsdatasource.h"
+#include "qgsrect.h"
 
-class QRect;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
@@ -55,10 +55,15 @@ class QgsMapLayer : public QgsDataSource  {
      * based on the layer type
      */
     virtual void calculateExtent();
+    virtual void draw(QPainter *, QRect * = 0);
     /*! Return the extent of the layer as a QRect
      */
-    const QRect extent();
-
+    const QgsRect extent();
+    /*! Returns the status of the layer. An invalid layer is one which has a bad datasource
+     * or other problem. Child classes set this flag when intialized
+     *@return True if the layer is valid and can be accessed
+     */
+    bool isValid();
 
  public: // Public attributes
     //! Layers enum defining the types of layers that can be added to a map
@@ -69,9 +74,11 @@ class QgsMapLayer : public QgsDataSource  {
     }  ;
  protected:
     //! Extent of the layer
-    QRect layerExtent; 
+    QgsRect layerExtent; 
     //! Position in the map stack 
     int zpos;
+    //! Indicates if the layer is valid and can be drawn
+    bool valid;
  private: // Private attributes
     /** Name of the layer - used for display  */
     QString layerName;
