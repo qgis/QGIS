@@ -167,6 +167,14 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      *@return false in case of error or if the provider does not support editing
     */
   virtual bool startEditing();
+
+  /**Returns the default value for attribute @c attr for feature @c f. */
+  QString getDefaultValue(const QString& attr, QgsFeature* f);
+
+ protected:
+  /**Commits a feature
+     @return true in case of success and false in case of failure*/
+  bool commitFeature(QgsFeature* f);
   
 private:
       std::vector < QgsFeature > features;

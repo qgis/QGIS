@@ -1234,12 +1234,6 @@ void QgsVectorLayer::select(int number)
 
         if(dataProvider->addFeature(f))
         {
-          if (tabledisplay)
-          {
-            tabledisplay->close();
-            delete tabledisplay;
-            tabledisplay=0;
-          }
           return true;
         }
       }
@@ -1319,6 +1313,15 @@ void QgsVectorLayer::select(int number)
             {
               QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok); 
             }
+	    else
+	    {
+		if (tabledisplay)
+		{
+		    tabledisplay->close();
+		    delete tabledisplay;
+		    tabledisplay=0;
+		}
+	    }
           }
           else if(commit==QMessageBox::No)
           {
