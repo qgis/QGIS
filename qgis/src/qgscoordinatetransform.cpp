@@ -120,6 +120,8 @@ void QgsCoordinateTransform::initialise()
     std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
   }
+  //just a test to see if inverse 
+  inverseTransform(100.0,100.0);
   // Deactivate GDAL error messages.
   //CPLSetErrorHandler( errorHandler );
 
