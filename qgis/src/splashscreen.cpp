@@ -22,7 +22,7 @@
 #include "qfont.h"
 #include "qgis.h"
 #ifdef WIN32
-QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
+QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
