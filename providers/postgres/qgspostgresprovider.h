@@ -239,6 +239,10 @@ private:
     */
     int primaryKeyIndex;
     /**
+     * Data type for the primary key 
+     */
+    QString primaryKeyType;
+    /**
     * Name of the geometry column in the table
     */
     QString geometryColumn;
