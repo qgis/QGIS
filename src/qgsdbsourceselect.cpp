@@ -22,6 +22,7 @@
 #include <qstringlist.h>
 #include <qcombobox.h>
 #include <qmessagebox.h>
+#include <qinputdialog.h>
 #include "xpm/point_layer.xpm"
 #include "xpm/line_layer.xpm"
 #include "xpm/polygon_layer.xpm"
@@ -77,11 +78,28 @@ void QgsDbSourceSelect::dbConnect()
 	QSettings settings;
 
 	QString key = "/Qgis/connections/" + cmbConnections->currentText();
-	QString host = "host=" + settings.readEntry(key + "/host");
-	QString database = "dbname=" + settings.readEntry(key + "/database");
-	QString username = "user=" + settings.readEntry(key + "/username");
-	QString password = "password=" + settings.readEntry(key + "/password");
-	m_connInfo = host + " " + database + " " + username + " " + password;
+	QString connString = "host=";
+	QString host = settings.readEntry(key + "/host");
+	connString += host;
+	connString += " dbname=";
+	QString database = settings.readEntry(key + "/database");
+	connString += database + " user=";
+	QString username = settings.readEntry(key + "/username");
+	connString += username;
+	QString password = settings.readEntry(key + "/password");
+  bool makeConnection = true;
+	if (password == QString::null) {
+		// get password from user
+	    makeConnection = false;
+		QString password = QInputDialog::getText("Password for " + database + "@" + host,
+													 "Please enter your password:",
+													 QLineEdit::Password, QString::null, &makeConnection, this);
+		
+		//  allow null password entry in case its valid for the database
+    }
+		connString += " password=" + password;
+	  if(makeConnection){
+	m_connInfo = connString;	//host + " " + database + " " + username + " " + password;
 	qDebug(m_connInfo);
 	PgDatabase *pd = new PgDatabase((const char *) m_connInfo);
 //  std::cout << pd->ErrorMessage();
@@ -124,8 +142,12 @@ void QgsDbSourceSelect::dbConnect()
 			qDebug(pd->ErrorMessage());
 		}
 	} else {
-		QMessageBox::warning(this,"Connection failed", "Connection to " + database + " on " + host);
+		QMessageBox::warning(this, "Connection failed",
+							 "Connection to " + settings.readEntry(key + "/database") +
+							 " on " + settings.readEntry(key + "/host") +
+							 " failed. Either the database is down or your settings are incorrect.\n\nCheck your username and password and try again.");
 	}
+  }
 }
 
 QStringList QgsDbSourceSelect::selectedTables()
