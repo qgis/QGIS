@@ -34,14 +34,14 @@
 
 QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), m_vectorlayer(0)
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsSiSyDialog");
 #endif
 }
 
 QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), m_vectorlayer(layer)
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsSiSyDialog");
 #endif
 
@@ -89,7 +89,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), m_vect
 
 QgsSiSyDialog::~QgsSiSyDialog()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("destructor QgsSiSyDialog");
 #endif
 }

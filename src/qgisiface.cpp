@@ -76,7 +76,7 @@ int QgisIface::addMenu(QString menuText, QPopupMenu * menu)
 {
   QMenuBar *mainMenu = qgis->menuBar();
   // get the index of the help menu 
-#ifdef DEBUG
+#ifdef QGISDEBUG
   std::cout << "Menu item count is : " << mainMenu->count() << std::endl;
 #endif
   return mainMenu->insertItem(menuText, menu, -1, mainMenu->count() - 1);

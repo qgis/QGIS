@@ -34,7 +34,7 @@
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(), m_vectorlayer(layer)
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsContColDialog");
 #endif
 
@@ -97,14 +97,14 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
 
 QgsContColDialog::QgsContColDialog()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsContColDialog");
 #endif
 }
 
 QgsContColDialog::~QgsContColDialog()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("destructor QgsContColDialog");
 #endif
 }

@@ -36,7 +36,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
 {
 
 
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsGraSyDialog");
 #endif
 
@@ -145,7 +145,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
 
 QgsGraSyDialog::QgsGraSyDialog()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("constructor QgsGraSyDialog");
 #endif
 }
@@ -157,7 +157,7 @@ QgsGraSyDialog::~QgsGraSyDialog()
       ext->hide();
       delete ext;
     }
-#ifdef DEBUG
+#ifdef QGISDEBUG
   qWarning("destructor QgsGraSyDialog");
 #endif
 }

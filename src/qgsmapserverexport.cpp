@@ -88,7 +88,7 @@ QString QgsMapserverExport::fullPathName()
 void QgsMapserverExport::writeMapFile()
 {
   // write the map file, making massive assumptions about default values
-#ifdef DEBUG
+#ifdef QGISDEBUG
   std::cout << "Opening map file " << txtMapFilePath->text() << std::endl;
 #endif
   std::ofstream mapFile(txtMapFilePath->text());
@@ -171,7 +171,7 @@ void QgsMapserverExport::writeMapFile()
           bool isPolygon = false;
           bool isLine = false;
           QgsMapLayer *lyr = map->getZpos(i);
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Mapsrver Export Processing Layer" << std::endl;
 #endif
           mapFile << "LAYER" << std::endl;
@@ -183,7 +183,7 @@ void QgsMapserverExport::writeMapFile()
           name.replace(QRegExp("\\)"), "_");
           mapFile << "  NAME " << name << std::endl;
           // feature type
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export checking feature type" << std::endl;
 #endif
           mapFile << "  TYPE ";
@@ -206,7 +206,7 @@ void QgsMapserverExport::writeMapFile()
             }
           mapFile << std::endl;
 
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export checking visibility" << std::endl;
 #endif
           // set visibility (STATUS)
@@ -222,7 +222,7 @@ void QgsMapserverExport::writeMapFile()
 
           // data source (DATA)
           // Data source spec depends on layer type
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export checking layer type" << std::endl;
 #endif
           switch (lyr->type())
@@ -243,7 +243,7 @@ void QgsMapserverExport::writeMapFile()
                    break;
                    #endif */
             }
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export creating symbol entries" << std::endl;
 #endif
           // create a simple class entry based on layer color
@@ -252,20 +252,20 @@ void QgsMapserverExport::writeMapFile()
           QgsLegend *lgd = map->getLegend();
           //QListViewItem *li = lgd->currentItem();
           //    return li->text(0);
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export symbol name" << std::endl;
 #endif
           mapFile << "    NAME \"" << lyr->name() << "\"" << std::endl;
           mapFile << "    # TEMPLATE" << std::endl;
           if (isPolygon)
             {
-#ifdef DEBUG
+#ifdef QGISDEBUG
               std::cout << "\tMapsrver Export symbol fill color" << std::endl;
 #endif
               QColor fillColor = sym->fillColor();
               mapFile << "    COLOR " << fillColor.red() << " " << fillColor.green() << " " << fillColor.blue() << std::endl;
             }
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export checking for line symbol " << std::endl;
 #endif
           if (isPolygon || isLine)
@@ -276,7 +276,7 @@ void QgsMapserverExport::writeMapFile()
             }
           mapFile << "  END" << std::endl;
           mapFile << "END" << std::endl;
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "\tMapsrver Export layer definition done..." << std::endl;
 #endif
         }

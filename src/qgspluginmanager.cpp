@@ -101,19 +101,19 @@ void QgsPluginManager::getPluginDescriptions()
                   pl->setText(2, pDesc());
                   pl->setText(3, pluginDir[i]);
 
-#ifdef DEBUG
+#ifdef QGISDEBUG
                   std::cout << "Getting an instance of the QgsPluginRegistry" << std::endl;
 #endif
                   // check to see if the plugin is loaded and set the checkbox accordingly
                   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
                   // get the library using the plugin description
-#ifdef DEBUG
+#ifdef QGISDEBUG
                   std::cout << "Getting library name from the registry" << std::endl;
 #endif
                   QString libName = pRegistry->library(pName());
                   if (libName.length() > 0)
                     {
-#ifdef DEBUG
+#ifdef QGISDEBUG
                       std::cout << "Found library name in the registry" << std::endl;
 #endif
                       if (libName == myLib->library())
@@ -141,7 +141,7 @@ void QgsPluginManager::apply()
 
 void QgsPluginManager::unload()
 {
-#ifdef DEBUG
+#ifdef QGISDEBUG
   std::cout << "Checking for plugins to unload" << std::endl;
 #endif
   QCheckListItem *lvi = (QCheckListItem *) lstPlugins->firstChild();
@@ -151,7 +151,7 @@ void QgsPluginManager::unload()
         {
           // its off -- see if it is loaded and if so, unload it
           QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-#ifdef DEBUG
+#ifdef QGISDEBUG
           std::cout << "Checking to see if " << lvi->text(0) << " is loaded" << std::endl;
 #endif
           QgisPlugin *plugin = pRegistry->plugin(lvi->text(0));
