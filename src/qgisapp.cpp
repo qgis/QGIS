@@ -191,12 +191,7 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*Improved handling/management of PostGIS connections\n"
-	  "*Password prompt if the password is not stored with a connection\n"
-	  "*Windows size and position and toolbar docking state is saved/restored\n"
-	  "*Identify function for layers\n"
-	  "*Attribute table for a layer can be displayed and sorted by clicking on column headers\n"
-	  "*Duplicate layers (layers with same name) are now handled properly\n";
+	watsNew += "\n*QGis can be built without PostgreSQL support";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
