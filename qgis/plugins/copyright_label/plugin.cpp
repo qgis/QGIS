@@ -39,6 +39,10 @@ email                : tim@linfiniti.com
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qfont.h>
+#include <qrect.h>
+#include <qbrush.h>
+#include <qbutton.h>
+
 
 //non qt includes
 #include <iostream>
@@ -68,6 +72,7 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
+
 }
 
 Plugin::~Plugin()
@@ -101,7 +106,7 @@ void Plugin::initGui()
   mLabelQString = QString("© QGIS 2004");
   mQFont = QFont("time", 24, QFont::Bold);
   mLabelQColor = QColor(Qt::black);
-  
+
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
   refreshCanvas();
@@ -125,6 +130,7 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(changeFont(QFont )), this, SLOT(setFont(QFont )));
   connect(myPluginGui, SIGNAL(changeLabel(QString )), this, SLOT(setLabel(QString )));
   connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
+  connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -148,7 +154,7 @@ void Plugin::refreshCanvas()
 
 void Plugin::renderLabel()
 { 
-  //@todo softcode this!
+  //@todo softcode this!myQSimpleText.height()
   int myRotationInt = 90;
   QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
   // Draw a text alabel onto the pixmap 
@@ -158,10 +164,50 @@ void Plugin::renderLabel()
   //could use somthing like next line to draw a pic instead of text
   //myQPainter.drawImage(-70, 0, myQImage);
   
-   
-  myQPainter.setFont(mQFont);
-  myQPainter.setPen(mLabelQColor);
-  myQPainter.drawText(10, myQPixmap->height()-10, mLabelQString);
+  //hard coded cludge for getting a colorgroup.  Needs to be replaced
+  QButton * myQButton =new QButton();
+  QColorGroup myQColorGroup = myQButton->colorGroup();  
+       
+  QSimpleRichText myQSimpleText(mLabelQString, mQFont);
+  
+  //Get canvas dimensions
+  int myYOffset = qGisInterface->getMapCanvas()->height();
+  int myXOffset = qGisInterface->getMapCanvas()->width();
+  
+  
+  //Determine placement of label from form combo box
+  if (mPlacement==tr("Bottom Left"))
+  {
+    //Define bottom left hand corner start point
+    myYOffset = myYOffset - (myQSimpleText.height()+5);
+    myXOffset = 5;
+  } 
+  else if (mPlacement==tr("Top Left"))
+  {
+    //Define top left hand corner start point
+    myYOffset = 5;
+    myXOffset = 5;
+  }
+  else if (mPlacement==tr("Top Right"))
+  {
+    //Define top right hand corner start point
+    myYOffset = 5;
+    myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+  }  
+  else // defaulting to bottom right
+  {
+    //Define bottom right hand corner start point
+    myYOffset = myYOffset - (myQSimpleText.height()+5);
+    myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+  }    
+  
+  //Paint label to canvas
+  QRect myRect(myXOffset,myYOffset,myQSimpleText.widthUsed(),myQSimpleText.height());
+  myQSimpleText.draw (&myQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
+  
+  //myQPainter.setFont(mQFont);
+  //myQPainter.setPen(mLabelQColor);
+  //myQPainter.drawText(10, myQPixmap->height()-10, mLabelQString);
   
   //myQPainter.rotate(myRotationInt);
 }
@@ -190,8 +236,11 @@ void Plugin::unload()
     mLabelQColor = theQColor;
   }
   
-
-
+  //! set placement of copyright label
+  void Plugin::setPlacement(QString theQString)
+  {
+    mPlacement = theQString;
+  }
 
 
 
