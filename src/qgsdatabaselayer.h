@@ -56,6 +56,8 @@ class QgsDatabaseLayer:public QgsMapLayer
 	int wkbType;
 	//! Name of the database containing the layer (table)
 	QString database;
+	//! Name of the schema containing the layer (table)
+	QString schema;
 	//! Name of the table containing the features
 	QString tableName;
 	//! Name of the column in the table that contains the geometry for the features
