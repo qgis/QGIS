@@ -23,6 +23,7 @@ email                : sherman at mrcc.com
 
 #include <iostream>
 #include <cfloat>
+#include <cstring>
 #include <sstream>
 #include <memory>
 #include <qapplication.h>
@@ -363,11 +364,17 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         feature = fet->getGeometry();
         //  if (feature != 0) {
         //    std::cout << featureCount << "'the feature is null\n";
+//TODO - add this to the debug options -- if we decide to keep it
 //wkbHeader header;
   //memcpy((void *)&header,feature,sizeof(header));
   //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
 
-        wkbType = (int) feature[1];
+        // FIX for the endian problem on osx (possibly sparc?)
+        // TODO Restructure this whole wkb reading code to use
+        // wkb structures as defined at (among other places):
+        // http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
+        memcpy(&wkbType, (feature+1), sizeof(wkbType));
+
         //  std::cout << "Feature type: " << wkbType << std::endl;
         // read each feature based on its type
 
@@ -451,25 +458,25 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             // get number of rings in the polygon
             numRings = (int *) (feature + 1 + sizeof(int));
 
-	    int *ringStart; // index of first point for each ring
-	    int *ringNumPoints; // number of points in each ring
-	    ringStart = new int[*numRings];
-	    ringNumPoints = new int[*numRings];
+      int *ringStart; // index of first point for each ring
+      int *ringNumPoints; // number of points in each ring
+      ringStart = new int[*numRings];
+      ringNumPoints = new int[*numRings];
 
-	    int x0, y0, pdx;
-	    pdx = 0;
+      int x0, y0, pdx;
+      pdx = 0;
             ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
             for (idx = 0; idx < *numRings; idx++) {
-	      // get number of points in the ring
-	      nPoints = (int *) ptr;
-	      ringStart[idx] = pdx;
-	      ringNumPoints[idx] = *nPoints;
+        // get number of points in the ring
+        nPoints = (int *) ptr;
+        ringStart[idx] = pdx;
+        ringNumPoints[idx] = *nPoints;
               ptr += 4;
-	      if ( idx == 0 ) {	
+        if ( idx == 0 ) { 
                   pa = new QPointArray(*nPoints);
-	      } else {
-		  pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
-	      }
+        } else {
+      pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
+        }
               for (jdx = 0; jdx < *nPoints; jdx++) {
                 // add points to a point array for drawing the polygon
                 x = (double *) ptr;
@@ -481,28 +488,28 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 cXf->transform(&pt);
                 pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
               }
-	      if ( idx == 0 ) { // remember last outer ring point
-		  x0 = pt.xToInt();
-		  y0 = pt.yToInt();
-	      } else { // return to x0,y0 (inner rings - islands)
-		  pa->setPoint(pdx++, x0, y0);
-	      }
+        if ( idx == 0 ) { // remember last outer ring point
+      x0 = pt.xToInt();
+      y0 = pt.yToInt();
+        } else { // return to x0,y0 (inner rings - islands)
+      pa->setPoint(pdx++, x0, y0);
+        }
             }
-	    // draw the polygon fill
-	    pen = p->pen(); // store current pen
-	    p->setPen ( Qt::NoPen ); // no boundary
-	    p->drawPolygon(*pa);
+      // draw the polygon fill
+      pen = p->pen(); // store current pen
+      p->setPen ( Qt::NoPen ); // no boundary
+      p->drawPolygon(*pa);
 
-	    // draw outline
-	    p->setPen ( pen );
-	    p->setBrush ( Qt::NoBrush );
+      // draw outline
+      p->setPen ( pen );
+      p->setBrush ( Qt::NoBrush );
             for (idx = 0; idx < *numRings; idx++) {
-	        p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
-	    }
-	    
-	    delete pa;
-	    delete ringStart;
-	    delete ringNumPoints;
+          p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
+      }
+      
+      delete pa;
+      delete ringStart;
+      delete ringNumPoints;
 
             break;
 

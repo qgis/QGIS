@@ -28,11 +28,11 @@ QgsContinuousColRenderer::~QgsContinuousColRenderer()
 {
     if (mMinimumItem)
     {
-	delete mMinimumItem;
+  delete mMinimumItem;
     }
     if (mMaximumItem)
     {
-	delete mMaximumItem;
+  delete mMaximumItem;
     }
 }
 
@@ -40,7 +40,7 @@ void QgsContinuousColRenderer::setMinimumItem(QgsRenderItem * it)
 {
     if (mMinimumItem)
     {
-	delete mMinimumItem;
+  delete mMinimumItem;
     }
     mMinimumItem = it;
 }
@@ -49,7 +49,7 @@ void QgsContinuousColRenderer::setMaximumItem(QgsRenderItem * it)
 {
     if (mMaximumItem)
     {
-	delete mMaximumItem;
+  delete mMaximumItem;
     }
     mMaximumItem = it;
 }
@@ -59,103 +59,103 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
     bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
     if (pr)
     {
-	toproperties = true;
+  toproperties = true;
     }
 
     setClassificationField(0);    //the classification field does not matter
     
     if (layer)
     {
-	QgsSymbol* misy = new QgsSymbol();
-	QgsSymbol* masy = new QgsSymbol();
-	misy->brush().setStyle(Qt::SolidPattern);
-	masy->brush().setStyle(Qt::SolidPattern);
-	misy->pen().setStyle(Qt::SolidLine);
-	masy->pen().setStyle(Qt::SolidLine);
-	misy->pen().setWidth(1);
-	masy->pen().setWidth(1);
-	
-	//random fill colors for points and polygons and pen colors for lines
-	int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-	int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-	int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-	
-	//font tor the legend text
-	QFont f("times", 12, QFont::Normal);
-	QFontMetrics fm(f);
+  QgsSymbol* misy = new QgsSymbol();
+  QgsSymbol* masy = new QgsSymbol();
+  misy->brush().setStyle(Qt::SolidPattern);
+  masy->brush().setStyle(Qt::SolidPattern);
+  misy->pen().setStyle(Qt::SolidLine);
+  masy->pen().setStyle(Qt::SolidLine);
+  misy->pen().setWidth(1);
+  masy->pen().setWidth(1);
+  
+  //random fill colors for points and polygons and pen colors for lines
+  int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  
+  //font tor the legend text
+  QFont f("times", 12, QFont::Normal);
+  QFontMetrics fm(f);
 
-	QPixmap *pixmap;
-	if (toproperties)
+  QPixmap *pixmap;
+  if (toproperties)
         {
-	    pixmap = pr->getBufferPixmap();
-	} 
-	else
+      pixmap = pr->getBufferPixmap();
+  } 
+  else
         {
-	    pixmap = layer->legendPixmap();
+      pixmap = layer->legendPixmap();
         }
-	QString name = layer->name();
-	int width = 40 + fm.width(layer->name());
-	int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
-	pixmap->resize(width, height);
-	pixmap->fill();
-	QPainter p(pixmap);
+  QString name = layer->name();
+  int width = 40 + fm.width(layer->name());
+  int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
+  pixmap->resize(width, height);
+  pixmap->fill();
+  QPainter p(pixmap);
 
-	if ( layer->vectorType() == QGis::Line || layer->vectorType() == QGis::Point )
+  if ( layer->vectorType() == QGis::Line || layer->vectorType() == QGis::Point )
         {
-	    misy->pen().setColor(QColor(red, green, blue));
-	    masy->pen().setColor(QColor(red, green, blue));
-	    //paint the pixmap for the legend
-	    p.setPen(misy->pen());
-	    p.drawLine(10, pixmap->height() - 25, 25, pixmap->height() - 10);
-	} 
-	else
+      misy->pen().setColor(QColor(red, green, blue));
+      masy->pen().setColor(QColor(red, green, blue));
+      //paint the pixmap for the legend
+      p.setPen(misy->pen());
+      p.drawLine(10, pixmap->height() - 25, 25, pixmap->height() - 10);
+  } 
+  else
         {
-	    misy->brush().setColor(QColor(red, green, blue));
-	    masy->brush().setColor(QColor(red, green, blue));
-	    misy->pen().setColor(QColor(0, 0, 0));
-	    masy->pen().setColor(QColor(0, 0, 0));
-	    //paint the pixmap for the legend
-	    p.setPen(misy->pen());
-	    p.setBrush(misy->brush());
-	    if (layer->vectorType() == QGis::Point)
+      misy->brush().setColor(QColor(red, green, blue));
+      masy->brush().setColor(QColor(red, green, blue));
+      misy->pen().setColor(QColor(0, 0, 0));
+      masy->pen().setColor(QColor(0, 0, 0));
+      //paint the pixmap for the legend
+      p.setPen(misy->pen());
+      p.setBrush(misy->brush());
+      if (layer->vectorType() == QGis::Point)
             {
-		p.drawRect(20, pixmap->height() - 17, 5, 5);
-	    } 
-	    else                //polygon
+    p.drawRect(20, pixmap->height() - 17, 5, 5);
+      } 
+      else                //polygon
             {
-		p.drawRect(10, pixmap->height() - 25, 20, 15);
+    p.drawRect(10, pixmap->height() - 25, 20, 15);
             }
-	}
+  }
 
-	p.setPen(Qt::black);
-	p.setFont(f);
-	p.drawText(35, pixmap->height() - 10, name);
-	
-	QgsRenderItem *QgsRenderItem1 = new QgsRenderItem(misy, QString::number(DBL_MIN, 'f', 6), "");
-	QgsRenderItem *QgsRenderItem2 = new QgsRenderItem(masy, QString::number(DBL_MAX, 'f', 6), "");
+  p.setPen(Qt::black);
+  p.setFont(f);
+  p.drawText(35, pixmap->height() - 10, name);
+  
+  QgsRenderItem *QgsRenderItem1 = new QgsRenderItem(misy, QString::number(DBL_MIN, 'f', 6), "");
+  QgsRenderItem *QgsRenderItem2 = new QgsRenderItem(masy, QString::number(DBL_MAX, 'f', 6), "");
 
-	setMinimumItem(QgsRenderItem1);
-	setMaximumItem(QgsRenderItem2);
+  setMinimumItem(QgsRenderItem1);
+  setMaximumItem(QgsRenderItem2);
 
-	QgsContColDialog *dialog = new QgsContColDialog(layer);
+  QgsContColDialog *dialog = new QgsContColDialog(layer);
 
-	if (toproperties)
+  if (toproperties)
         {
-	    pr->setBufferDialog(dialog);
-	} 
-	else
+      pr->setBufferDialog(dialog);
+  } 
+  else
         {
-	    layer->setRendererDialog(dialog);
-	    QgsLegendItem *item;
-	    if (item = layer->legendItem())
+      layer->setRendererDialog(dialog);
+      QgsLegendItem *item;
+      if (item = layer->legendItem())
             {
-		item->setPixmap(0, (*pixmap));
+    item->setPixmap(0, (*pixmap));
             }
         }
     } 
     else
     {
-	qWarning("Warning, layer is null in QgsContinuousSymRenderer::initializeSymbology(..)");
+  qWarning("Warning, layer is null in QgsContinuousSymRenderer::initializeSymbology(..)");
     }
 }
 
@@ -163,55 +163,62 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 {
     if ((mMinimumItem && mMaximumItem))
     {
-	//first find out the value for the classification attribute
-	std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-	//std::cout << "classification field: " << mClassificationField << std::endl << std::flush;
-	double value = vec[mClassificationField].fieldValue().toDouble();
-	//std::cout << "value: " << value << std::endl << std::flush;
-	
-	double fvalue = vec[mClassificationField].fieldValue().toDouble();
-	double minvalue = mMinimumItem->value().toDouble();
-	double maxvalue = mMaximumItem->value().toDouble();
-	
-	QColor mincolor, maxcolor;
-	
-	unsigned char *feature = f->getGeometry();
-	int wkbType = (int) feature[1];
-	
-	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString || wkbType == QGis::WKBPoint)
+  //first find out the value for the classification attribute
+  std::vector < QgsFeatureAttribute > vec = f->attributeMap();
+  //std::cout << "classification field: " << mClassificationField << std::endl << std::flush;
+  double value = vec[mClassificationField].fieldValue().toDouble();
+  //std::cout << "value: " << value << std::endl << std::flush;
+  
+  double fvalue = vec[mClassificationField].fieldValue().toDouble();
+  double minvalue = mMinimumItem->value().toDouble();
+  double maxvalue = mMaximumItem->value().toDouble();
+  
+  QColor mincolor, maxcolor;
+  
+  unsigned char *feature = f->getGeometry();
+  int wkbType;
+  // FIX for the endian problem on osx (possibly sparc?)
+  // TODO Restructure this whole wkb reading code to use
+  // wkb structures as defined at (among other places):
+  // http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
+  memcpy(&wkbType, (feature+1), sizeof(wkbType));
+
+
+  
+  if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString || wkbType == QGis::WKBPoint)
         {
-	    mincolor = mMinimumItem->getSymbol()->pen().color();
-	    maxcolor = mMaximumItem->getSymbol()->pen().color();
-	} 
-	else                    //if(point or polygon)
+      mincolor = mMinimumItem->getSymbol()->pen().color();
+      maxcolor = mMaximumItem->getSymbol()->pen().color();
+  } 
+  else                    //if(point or polygon)
         {
-	    p->setPen(mMinimumItem->getSymbol()->pen());
-	    mincolor = mMinimumItem->getSymbol()->fillColor();
-	    maxcolor = mMaximumItem->getSymbol()->fillColor();
+      p->setPen(mMinimumItem->getSymbol()->pen());
+      mincolor = mMinimumItem->getSymbol()->fillColor();
+      maxcolor = mMaximumItem->getSymbol()->fillColor();
         }
 
-	int red,green,blue;
+  int red,green,blue;
 
-	if((maxvalue - minvalue)!=0)
-	{
-	    red = int (maxcolor.red() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.red() * (maxvalue - fvalue) / (maxvalue - minvalue));
-	    green = int (maxcolor.green() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.green() * (maxvalue - fvalue) / (maxvalue - minvalue));
-	    blue =  int (maxcolor.blue() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.blue() * (maxvalue - fvalue) / (maxvalue - minvalue));
-	}
-	else
-	{
-	    red = int (mincolor.red());
-	    green = int (mincolor.green());
-	    blue = int (mincolor.blue());
-	}
+  if((maxvalue - minvalue)!=0)
+  {
+      red = int (maxcolor.red() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.red() * (maxvalue - fvalue) / (maxvalue - minvalue));
+      green = int (maxcolor.green() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.green() * (maxvalue - fvalue) / (maxvalue - minvalue));
+      blue =  int (maxcolor.blue() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.blue() * (maxvalue - fvalue) / (maxvalue - minvalue));
+  }
+  else
+  {
+      red = int (mincolor.red());
+      green = int (mincolor.green());
+      blue = int (mincolor.blue());
+  }
 
-	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString ||wkbType == QGis::WKBPoint)
+  if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString ||wkbType == QGis::WKBPoint)
         {
-	    p->setPen(QPen(QColor(red, green, blue),mMinimumItem->getSymbol()->pen().width()));//make sure the correct line width is used
-	} 
-	else
+      p->setPen(QPen(QColor(red, green, blue),mMinimumItem->getSymbol()->pen().width()));//make sure the correct line width is used
+  } 
+  else
         {
-	    p->setBrush(QColor(red, green, blue));
+      p->setBrush(QColor(red, green, blue));
         }
     }
 }
@@ -316,7 +323,7 @@ void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
 {
     xml << "\t\t<continuoussymbol>\n";
     xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()) +
-	"</classificationfield>\n";
+  "</classificationfield>\n";
 
 
     QgsRenderItem *lowestitem = this->minimumItem();
@@ -326,16 +333,16 @@ void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
     xml << "\t\t\t\t<value>" + lowestitem->value() + "</value>\n";
     xml << "\t\t\t\t\t<symbol>\n";
     xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(lsymbol->pen().color().red()) + "\" green=\"" +
-	QString::number(lsymbol->pen().color().green()) + "\" blue=\"" + QString::number(lsymbol->pen().color().blue()) +
-	"\" />\n";
+  QString::number(lsymbol->pen().color().green()) + "\" blue=\"" + QString::number(lsymbol->pen().color().blue()) +
+  "\" />\n";
     xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(lsymbol->pen().style()) +
-	"</outlinestyle>\n";
+  "</outlinestyle>\n";
     xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(lsymbol->pen().width()) + "</outlinewidth>\n";
     xml << "\t\t\t\t\t\t<fillcolor red=\"" + QString::number(lsymbol->brush().color().red()) + "\" green=\"" +
-	QString::number(lsymbol->brush().color().green()) + "\" blue=\"" +
-	QString::number(lsymbol->brush().color().blue()) + "\" />\n";
+  QString::number(lsymbol->brush().color().green()) + "\" blue=\"" +
+  QString::number(lsymbol->brush().color().blue()) + "\" />\n";
     xml << "\t\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(lsymbol->brush().style()) +
-	"</fillpattern>\n";
+  "</fillpattern>\n";
     xml << "\t\t\t\t\t</symbol>\n";
     xml << "\t\t\t\t\t<label>" + lowestitem->label() + "</label>\n";
     xml << "\t\t\t\t</renderitem>\n";
@@ -348,16 +355,16 @@ void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
     xml << "\t\t\t\t<value>" + highestitem->value() + "</value>\n";
     xml << "\t\t\t\t\t<symbol>\n";
     xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(hsymbol->pen().color().red()) + "\" green=\"" +
-	QString::number(hsymbol->pen().color().green()) + "\" blue=\"" + QString::number(hsymbol->pen().color().blue()) +
-	"\" />\n";
+  QString::number(hsymbol->pen().color().green()) + "\" blue=\"" + QString::number(hsymbol->pen().color().blue()) +
+  "\" />\n";
     xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(hsymbol->pen().style()) +
-	"</outlinestyle>\n";
+  "</outlinestyle>\n";
     xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(hsymbol->pen().width()) + "</outlinewidth>\n";
     xml << "\t\t\t\t\t\t<fillcolor red=\"" + QString::number(hsymbol->brush().color().red()) + "\" green=\"" +
-	QString::number(hsymbol->brush().color().green()) + "\" blue=\"" +
-	QString::number(hsymbol->brush().color().blue()) + "\" />\n";
+  QString::number(hsymbol->brush().color().green()) + "\" blue=\"" +
+  QString::number(hsymbol->brush().color().blue()) + "\" />\n";
     xml << "\t\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(hsymbol->brush().style()) +
-	"</fillpattern>\n";
+  "</fillpattern>\n";
     xml << "\t\t\t\t\t</symbol>\n";
     xml << "\t\t\t\t\t<label>" + highestitem->label() + "</label>\n";
     xml << "\t\t\t\t</renderitem>\n";
