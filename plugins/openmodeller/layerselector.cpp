@@ -18,6 +18,8 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qlistview.h>
+#include <qsettings.h>
+#include <qlabel.h>
 
 //for the is valid gdal file functions
 #include "openmodellergui.h"
@@ -30,98 +32,106 @@
 LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , WFlags fl  )
   : LayerSelectorBase( parent, name, modal, fl )
 {
-  QString myStartDirString = "/home/aps02ts/dev/cpp/sample_data/";
-  listParent = new QListViewItem(listFileTree,myStartDirString);
-  traverseDirectories(myStartDirString,listParent);
+  QSettings mySettings;
+  baseDirString = mySettings.readEntry("/openmodeller/projectionLayersDirectory"), //initial dir
+  listParent = new QListViewItem(listFileTree,baseDirString);
+  lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
+  traverseDirectories(baseDirString,listParent);
 }
 
-void LayerSelector::traverseDirectories(const QString& dirname, QListViewItem* theParentListViewItem)
+void LayerSelector::pbnDirectorySelector_clicked()
 {
-  QDir dir(dirname);
-  dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
-  std::cout << "Current directory is: " << dirname.ascii() << std::endl;
 
-  const QFileInfoList* fileinfolist = dir.entryInfoList();
-  QFileInfoListIterator it(*fileinfolist);
-  QFileInfo* fi;
+  QSettings mySettings;
+
+  QString baseDirString = QFileDialog::getExistingDirectory(
+          baseDirString, //initial dir
+          this,
+          "get existing directory",
+          "Choose a directory",
+          TRUE );
+  lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
+  traverseDirectories(baseDirString,listParent);
+  
+}
+
+void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem* theParentListViewItem)
+{
+  QDir myDirectory(theDirName);
+  myDirectory.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
+  std::cout << "Current directory is: " << theDirName.ascii() << std::endl;
+
+  const QFileInfoList* myFileInfoList = myDirectory.entryInfoList();
+  QFileInfoListIterator myIterator(*myFileInfoList);
+  QFileInfo*myFileInfo;
 
   bool myInvalidFileFlag = false;
   bool myInvalidFileProjFlag = false;
   QString myInvalidFileList;
   QString myInvalidFileProjList;
 
-  while( (fi = it.current() ) )
+  while( (myFileInfo = myIterator.current() ) )
   {
     //Ignore directories
-    if( fi->fileName() == "." || fi->fileName() == ".." ) 
+    if(myFileInfo->fileName() == "." ||myFileInfo->fileName() == ".." ) 
     {
-      ++it;
+      ++myIterator;
       continue;
     }
 
     //check to see if entry is a directory - if so iterate through it (recursive function)
     //a new tree node will be created each time
-    if(fi->isDir() && fi->isReadable() )
+    if(myFileInfo->isDir() && myFileInfo->isReadable() )
     {
-      traverseDirectories(fi->absFilePath(), new QListViewItem(theParentListViewItem,fi->absFilePath()));
+      traverseDirectories(myFileInfo->absFilePath(), new QListViewItem(theParentListViewItem,myFileInfo->absFilePath()));
     }
 
     //check to see if its an adf file type
     //only add the hdr.adf files to ensure multiple adf files from one directory aren't added
-    else if (fi->extension(false)=="adf")
+    else if (myFileInfo->extension(false)=="adf")
     {
-      if (fi->fileName()=="hdr.adf")
+      if (myFileInfo->fileName()=="hdr.adf")
       {
-        std::cout << "Current filename is: " << fi->dirPath(true).ascii() << std::endl;
-        QListViewItem myItem = new QListViewItem(theParentListViewItem,fi->dirPath(true));
+        std::cout << "Current filename is: " <<myFileInfo->dirPath(true).ascii() << std::endl;
+        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->dirPath(true));
+        myItem->setText(1,"AIG");
       }
     }
 
     //check to see if entry is of the other required file types
-    else if ((fi->extension(false)=="tif") ||
-            (fi->extension(false)=="asc") ||
-            (fi->extension(false)=="bil") ||
-            (fi->extension(false)=="jpg")   )
+    else if ((myFileInfo->extension(false)=="tif") ||
+            (myFileInfo->extension(false)=="asc") ||
+            (myFileInfo->extension(false)=="bil") ||
+            (myFileInfo->extension(false)=="jpg")   )
     {      
 
       //test whether the file is GDAL compatible
-      if (OpenModellerGui::isValidGdalFile(fi->absFilePath()) && OpenModellerGui::isValidGdalProj(fi->absFilePath()))
+      if (OpenModellerGui::isValidGdalFile(myFileInfo->absFilePath()) && OpenModellerGui::isValidGdalProj(myFileInfo->absFilePath()))
       {
         //GOOD FILE AND GOOD PROJ
-	std::cout << fi->absFilePath().ascii() << " is a valid GDAL file and contains projection info" << std::endl;
-        QListViewItem myItem = new QListViewItem(theParentListViewItem,fi->dirPath(true));
+        std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file and contains projection info" << std::endl;
+        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->dirPath(true));
+        myItem->setText(1,myFileInfo->extension(false));
+        myItem->setText(2,"Valid");
       }
-      else if (OpenModellerGui::isValidGdalFile(fi->absFilePath()) && !OpenModellerGui::isValidGdalProj(fi->absFilePath()))
+      else if (OpenModellerGui::isValidGdalFile(myFileInfo->absFilePath()) && !OpenModellerGui::isValidGdalProj(myFileInfo->absFilePath()))
       {
         //GOOD FILE AND BAD PROJ
-	std::cout << fi->absFilePath().ascii() << " is a valid GDAL file but contains no projection info" << std::endl;
-        QListViewItem myItem = new QListViewItem(theParentListViewItem,fi->dirPath(true));
-	myInvalidFileProjFlag = true;	  
-	myInvalidFileProjList += fi->absFilePath()+"\n"; 	
+        std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file but contains no projection info" << std::endl;
+        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->dirPath(true));
+        myItem->setText(2,"Invalid");
+        myInvalidFileProjFlag = true;	  
+        myInvalidFileProjList +=myFileInfo->absFilePath()+"\n"; 	
       }
       else 
       {
         //BAD FILE AND/OR BAD PROJ
         myInvalidFileFlag = true;
-        myInvalidFileList += fi->absFilePath()+"\n";         
+        myInvalidFileList +=myFileInfo->absFilePath()+"\n";         
       } 
     }  
-  ++it;
+    ++myIterator;
   }
-  
-  if (myInvalidFileFlag)
-  {
-     //BAD FILE WARNING
-     //QMessageBox::critical( this,QString("openModeller Wizard Error"),QString("The following are not valid GDAL files.  Please check and try again:\n\n "+myInvalidFileList));
-  }
-  else
-  {
-    if (myInvalidFileProjFlag)
-    {
-      //BAD PROJ WARNING 
-      //QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("Warning!! The following files do not have any projection information associated.\n\n "+myInvalidFileProjList));
-    }
-   
-  }
+
 
 }   

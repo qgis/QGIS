@@ -1283,6 +1283,9 @@ void OpenModellerGui::pbnDefaultParameters_clicked()
 
 void OpenModellerGui::pbnSelectLayerFileProj_clicked()
 {
+  LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
+  myLayerSelector->show();
+  /*
   std::cout << " OpenModellerGui::pbnSelectLayerFileProj_clicked() " << std::endl;
   QString myFileTypeQString;
   QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
@@ -1326,6 +1329,10 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
   {
     QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));
   } 
+*/
+
+
+  
   lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
   if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
   {

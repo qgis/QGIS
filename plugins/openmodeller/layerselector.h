@@ -33,11 +33,14 @@ public:
     LayerSelector( QWidget* parent , const char* name , bool modal , WFlags fl  );
     ~LayerSelector() {};
     
-  
+public slots:
+    void pbnDirectorySelector_clicked();
+
 private:
     
     void traverseDirectories(const QString& dirname, QListViewItem* theListViewItem);
     QListViewItem * listParent; 
+    QString baseDirString;
 signals:
 };
 
