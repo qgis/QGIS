@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>327</width>
-            <height>242</height>
+            <width>246</width>
+            <height>237</height>
         </rect>
     </property>
     <property name="caption">
@@ -40,9 +40,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image0</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -53,9 +50,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image1</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -68,9 +62,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image2</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -82,9 +73,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="pixmap">
-                        <pixmap>image3</pixmap>
-                    </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
@@ -95,9 +83,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image4</pixmap>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
@@ -157,22 +142,5 @@
         </widget>
     </grid>
 </widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="1762">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232335030325330513054d2e1524a544856f0cbcf4b05b19591d87a48ec24205bd90008924dc152cae443b0957ae4c351fb47ed4fa2000c07fd031dfea3f68fda3f60f6d75a7301002beea187</data>
-    </image>
-    <image name="image1">
-        <data format="XPM.GZ" length="1762">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232335030325330513054d2e1524a544856f0cbcf4b05b19591d87a48ec24205bd90008924dc152cae443b0957ae4c351fb47eda7d4fe242400361559006c0b6e15e8fac1a6220b806dc1ad6230d83fd0e13f6affa8fd64db5f6bcd0500ea7197ed</data>
-    </image>
-    <image name="image2">
-        <data format="XPM.GZ" length="1762">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232335030325330513054d2e1524a544856f0cbcf4b05b19591d87a48ec24205bd90008924dc152cae443b0957ae4c351fb47eda7d4fe24200099450e0dd30f328b1c7a30d83fd0e13f6affa8fd64db5f6bcd0500a41b8f27</data>
-    </image>
-    <image name="image3">
-        <data format="XPM.GZ" length="1762">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232335030325330513054d2e1524a544856f0cbcf4b05b19591d87a48ec24205bd90008924dc152cae443b0957ae4c351fb47eda7d4fe24240032139926248eae1f6426324d487c30d83fd0e13f6affa8fd64db5f6bcd0500f2ce9707</data>
-    </image>
-    <image name="image4">
-        <data format="XPM.GZ" length="1777">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232335030325330553054d2e1524a544856f0cbcf4b05b19591d87a486ca0190aca0640906c0ae22681b869600056a94c3e04bb408f7c386affa8fd49140070ea46022033b1d1b8e4d1f583fc848dc6253f18ec1feaf13f6aff08b6bfd69a0b00d61fa689</data>
-    </image>
-</images>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,8 +1,25 @@
 #include "qgspatterndialog.h"
 #include "qpushbutton.h"
+#include "qgssymbologyutils.h"
 
 QgsPatternDialog::QgsPatternDialog(QWidget* parent, const char* name, bool modal, WFlags fl): QgsPatternDialogBase(parent, name, modal,fl)
 {
+    //set the icons (which are stored in QgsSymbologyUtils.cpp to avoid redundancy)
+    solid->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
+    horizontal->setPixmap(QgsSymbologyUtils::char2PatternPixmap("HorPattern"));
+    vertical->setPixmap(QgsSymbologyUtils::char2PatternPixmap("VerPattern"));
+    cross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("CrossPattern"));
+    bdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern"));
+    fdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern"));
+    diagcross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern"));
+    dense1->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern"));
+    dense2->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern"));
+    dense3->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern"));
+    dense4->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern"));
+    dense5->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern"));
+    dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
+    dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
+
     QObject::connect(okbutton,SIGNAL(clicked()),this,SLOT(queryPattern()));
     QObject::connect(cancelbutton,SIGNAL(clicked()),this,SLOT(reject()));
     solid->toggle();//solid pattern is the default
