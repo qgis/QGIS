@@ -51,3 +51,9 @@ bool QgsVectorDataProvider::supportsFeatureDeletion()
     //needs to be overwritten by providers which support this
     return false;
 }
+
+bool QgsVectorDataProvider::supportsSaveAsShapefile()
+{
+  // default implementation is no support 
+  return true; 
+}

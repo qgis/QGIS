@@ -117,6 +117,9 @@ class QgsVectorDataProvider: public QgsDataProvider
 
   /**Returns true if a provider supports deleting features*/
   virtual bool supportsFeatureDeletion();
+
+  /** Returns true is the provider supports saving to shapefile*/
+   virtual bool supportsSaveAsShapefile();
 };
 
 #endif

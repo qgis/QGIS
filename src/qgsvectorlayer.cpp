@@ -786,6 +786,13 @@ void QgsVectorLayer::select(int number)
       popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
       popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
 
+      // XXX Can we ask the provider if it wants to add things to the context menu?
+      if(dataProvider->supportsSaveAsShapefile())
+      {
+        // add the save as shapefile menu item
+        popMenu->insertItem(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
+      }
+
     } // QgsVectorLayer::initContextMenu_(QgisApp * app)
 
 
@@ -2066,4 +2073,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTran
 #endif
           break;
   }
+}
+
+void QgsVectorLayer::saveAsShapefile(){
+  QMessageBox::information(0,"Save As Shapefile", "Someday...");
 }
