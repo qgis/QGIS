@@ -17,7 +17,7 @@
 #define QGSVECTORDATAPROVIDER_H
 
 #include <set>
-
+#include <map>
 #include <qgsdataprovider.h>
 
 /** Base class for vector data providers
@@ -123,6 +123,23 @@ class QgsVectorDataProvider : public QgsDataProvider
        @return true in case of success and false in case of failure*/
     virtual bool deleteFeatures(std::list<int> const & id);
 
+    /**Adds new attributes
+       @param name list with attribute names
+       @param type list with attribute types (in the same order as the names)
+       @return true in case of success and false in case of failure*/
+    virtual bool addAttributes(std::list<QString> const & name, std::list<QString> const & type);
+
+    /**Deletes existing attributes
+     @param names of the attributes to delete
+     @return true in case of success and false in case of failure*/
+    virtual bool deleteAttributes(std::list<QString> const & name);
+
+    /**Changes attribute values of existing features
+       @param attr_map a map containing the new attributes. The integer is the feature id,
+       the first QString is the attribute name and the second one is the new attribute value
+       @return true in case of success and false in case of failure*/
+    virtual bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
+
     /**Returns the default value for attribute @c attr for feature @c f. */
     virtual QString getDefaultValue(const QString & attr, QgsFeature* f);
     
@@ -138,6 +155,10 @@ class QgsVectorDataProvider : public QgsDataProvider
 
   /**Returns true if a provider supports deleting features*/
   virtual bool supportsFeatureDeletion() const;
+
+  /*Returns true if a provider supports adding/ removing attributes and
+   attribute changes to already existing features*/
+  virtual bool supportsAttributeEditing() const;
 
   /** Returns true is the provider supports saving to shapefile*/
    virtual bool supportsSaveAsShapefile() const;
