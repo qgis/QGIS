@@ -60,7 +60,7 @@ void QgisApp::addLayer(){
     ++it;
   }
    
-  QMessageBox::information(this,"Search Paths",msg);
+  //  QMessageBox::information(this,"Search Paths",msg);
 
   // show the postgis dialog
   QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
