@@ -482,7 +482,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	  //loop through combo entries and check there is not already one for
 	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
 	  //editable combo boxes
-	  for (i=0; i < cboInputMaskLayer->count(); i++)
+	  for (i=0; i <= cboInputMaskLayer->count(); i++)
 	  {
         cboInputMaskLayer->setCurrentItem(i);
 		
@@ -495,7 +495,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	  if (!myFlag)
 	  {
         cboInputMaskLayer->insertItem(myInputMask);
-        cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
+        cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count());
 	  }
     }
     if (!myOutputMask.isEmpty())
@@ -504,7 +504,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
 	  //editable combo boxes
 	  myFlag = false;
-	  for (i=0; i < cboInputMaskLayer->count(); i++)
+	  for (i=0; i <= cboInputMaskLayer->count(); i++)
 	  {
         cboOutputMaskLayer->setCurrentItem(i);
 		if (cboOutputMaskLayer->currentText().compare(myOutputMask))
@@ -516,7 +516,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	  if (!myFlag)
 	  {
         cboOutputMaskLayer->insertItem(myOutputMask);
-        cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
+        cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count());
 	  }
     }
     if (!myOutputFormat.isEmpty())
@@ -525,7 +525,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
 	  //editable combo boxes
 	  myFlag = false;
-	  for ( i=0; i < cboOutputFormatLayer->count(); i++)
+	  for ( i=0; i <= cboOutputFormatLayer->count(); i++)
 	  {
         cboOutputFormatLayer->setCurrentItem(i);
 		if (cboOutputFormatLayer->currentText().compare(myOutputMask))
@@ -537,7 +537,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	  if (!myFlag)
 	  {
         cboOutputFormatLayer->insertItem(myOutputFormat);
-        cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
+        cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count());
 	  }
     }
   }
