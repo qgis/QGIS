@@ -29,6 +29,13 @@ QgsRect::QgsRect(QgsPoint p1, QgsPoint p2)
   normalize();
 }
 
+QgsRect::QgsRect(const QgsRect &r){
+  xmin = r.xMin();
+  ymin = r.yMin();
+  xmax = r.xMax();
+  ymax = r.yMax();
+}
+
 void QgsRect::normalize()
 {
   double temp;
