@@ -92,7 +92,42 @@ public:
   { 
      // NOP by default 
   }
-
+  /**
+   * Update the feature count based on current spatial filter. If not
+   * overridden in the data provider this function returns -1
+   */
+  virtual long updateFeatureCount()
+  {
+    return -1;
+  }
+  /**
+   * Update the extents of the layer. Not implemented by default
+   */
+  virtual void updateExtents()
+  {
+    // NOP by default
+  }
+  /**
+   * Set the subset string used to create a subset of features in
+   * the layer. This may be a sql where clause or any other string
+   * that can be used by the data provider to create a subset.
+   * Must be implemented in the dataprovider.
+   */
+  virtual void setSubsetString(QString subset)
+  {
+    // NOP by default
+  }
+/**
+ * Returns the subset definition string (typically sql) currently in
+ * use by the layer and used by the provider to limit the feature set.
+ * Must be overridden in the dataprovider, otherwise returns a null
+ * QString.
+ */
+  virtual QString subsetString()
+  {
+    return QString::null;
+  }
+    
 };
 
 

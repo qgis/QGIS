@@ -1081,7 +1081,51 @@ void QgsVectorLayer::select(int number)
       return dataProvider->featureCount();
     } // QgsVectorLayer::featureCount
 
+   long QgsVectorLayer::updateFeatureCount() const
+    {
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::updateFeatureCount() invoked with null dataProvider\n";
+        return 0;
+      }
+      return dataProvider->updateFeatureCount();
+    }
+    void QgsVectorLayer::updateExtents()
+    {
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::updateFeatureCount() invoked with null dataProvider\n";
+      }
+      else
+      {
+        dataProvider->updateExtents();
+      }
+    }
 
+  QString QgsVectorLayer::subsetString()
+{
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::subsetString() invoked with null dataProvider\n";
+        return 0;
+      }
+  return dataProvider->subsetString();
+}
+    void QgsVectorLayer::setSubsetString(QString subset)
+    {
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::setSubsetString() invoked with null dataProvider\n";
+      }
+      else
+      {
+        dataProvider->setSubsetString(subset);
+      }
+    }
     int QgsVectorLayer::fieldCount() const
     {
       if ( ! dataProvider )
