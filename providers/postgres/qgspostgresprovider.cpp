@@ -495,7 +495,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
     declare += "))";
   }else{
     declare += " where " + geometryColumn;
-    declare += " && GeometryFromText('BOX3D(" + rect->stringRep();
+    declare += " && setsrid('BOX3D(" + rect->stringRep();
     declare += ")'::box3d,";
     declare += srid;
     declare += ")";
