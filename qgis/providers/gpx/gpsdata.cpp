@@ -343,9 +343,21 @@ int GPSData::addWaypoint(double lat, double lon, QString name,
 }
 
 
+int GPSData::addWaypoint(const Waypoint& wpt) {
+  waypoints.push_back(wpt);
+  return waypoints.size() - 1;
+}
+
+
 int GPSData::addRoute(QString name) {
   Route rte;
   rte.name = name;
+  routes.push_back(rte);
+  return routes.size() - 1;
+}
+
+
+int GPSData::addRoute(const Route& rte) {
   routes.push_back(rte);
   return routes.size() - 1;
 }
@@ -358,6 +370,12 @@ int GPSData::addTrack(QString name) {
   return tracks.size() - 1;
 }
   
+
+int GPSData::addTrack(const Track& trk) {
+  tracks.push_back(trk);
+  return tracks.size() - 1;
+}
+
 
 bool GPSData::removeWaypoint(int index, bool checkRoutes) {
   if (checkRoutes)
