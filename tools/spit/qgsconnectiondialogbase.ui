@@ -169,7 +169,7 @@
     </widget>
     <widget class="QLayoutWidget">
         <property name="name">
-            <cstring>Layout5</cstring>
+            <cstring>buttonHelp</cstring>
         </property>
         <property name="geometry">
             <rect>
@@ -230,7 +230,7 @@
             </widget>
             <widget class="QPushButton">
                 <property name="name">
-                    <cstring>buttonHelp</cstring>
+                    <cstring>btnHelp</cstring>
                 </property>
                 <property name="font">
                     <font>
@@ -285,10 +285,17 @@
         <receiver>QgsConnectionDialogBase</receiver>
         <slot>saveConnection()</slot>
     </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsConnectionDialogBase</receiver>
+        <slot>helpInfo()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>testConnection()</slot>
     <slot>saveConnection()</slot>
+    <slot>helpInfo()</slot>
 </slots>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>

@@ -46,7 +46,7 @@ class QgsShapeFile
   bool valid;
   const char * filename;
   const char * geom_type;
-  char * geometry;
+  QString geometry;
   
 };
 

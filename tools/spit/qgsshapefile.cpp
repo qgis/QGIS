@@ -41,7 +41,6 @@ QgsShapeFile::~QgsShapeFile(){
   delete ogrDataSource;
   delete filename;
   delete geom_type;
-  delete[] geometry;
 }
 
 const char * QgsShapeFile::getFeatureCount(){
@@ -59,24 +58,18 @@ const char * QgsShapeFile::getFeatureClass(){
 
       geom_type = geom->getGeometryName();
       int num = geom->WkbSize();
-      geometry = new char[16384];
-      geom->exportToWkt(&geometry);
+      char * geo_temp = new char[num*3];
+      geom->exportToWkt(&geo_temp);
 
       int numFields = feat->GetFieldCount();
       for(int n=0; n<numFields; n++){
         column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
         column_types.push_back(OGRFieldDefn::GetFieldTypeName(feat->GetFieldDefnRef(n)->GetType()));
-        out << feat->GetFieldDefnRef(n)->GetType() << std::ends;
-        
-        std::cout << column_names[n] << " of type: " << feat->GetFieldDefnRef(n)->GetType() << " " << column_types[n] << std::endl;
-        //qWarning(QString(column_names[n]) + " of type: " + out.str() + " " + QString(column_types[n]));
       }
 
-      //for(int k=0; k<num; k++)
-      std::cout<< geometry << std::endl;
-      QString qgeo(geometry);
-      std::cout << "Length of wkt is: " << qgeo.length() << std::endl;
-      std::cout << "Length of wkb is: " << num << std::endl;
+      QString geometry(geo_temp);
+      
+      delete[] geo_temp;
     }else{
       valid = false;
       delete geom;

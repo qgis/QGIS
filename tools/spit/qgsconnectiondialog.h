@@ -28,6 +28,7 @@ class QgsConnectionDialog : public QgsConnectionDialogBase
     ~QgsConnectionDialog();
     void testConnection();
     void saveConnection();
+    void helpInfo();
 };
 
 #endif

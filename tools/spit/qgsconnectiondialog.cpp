@@ -22,6 +22,7 @@
 #include <qmessagebox.h>
 #include <libpq++.h>
 #include "qgsconnectiondialog.h"
+#include "qgsmessageviewer.h"
 
 QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, WFlags fl)
   : QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
@@ -76,4 +77,11 @@ void QgsConnectionDialog::saveConnection()
   if(chkStorePassword->isChecked())  settings.writeEntry(baseKey + "/save", "true");
   else settings.writeEntry(baseKey + "/save", "false");
   accept();
+}
+
+void QgsConnectionDialog::helpInfo(){
+  QString message = "General Interface Help:\n\n";
+  QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
+  e->setMessage(message);
+  e->exec();
 }
