@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.103 2004/05/29 23:48:10 timlinux Exp
+ChangeLog,v 1.104 2004/05/31 19:43:19 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-31 [gsherman] 0.3.0devel9
+**Changed QgsIdentifyResultsBase to inherit from QWidget instead of QDialog
+	so window position can be saved/restored from user settings each time.
+**Changed qgis.h int version number to 300 (should have been done at release) 
 
 2004-05-30 [ts] 0.3.0devel8
 ** Fix poorly placed status text on splash screen.
