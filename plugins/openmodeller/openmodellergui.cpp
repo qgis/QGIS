@@ -56,14 +56,12 @@
 OpenModellerGui::OpenModellerGui()
  : OpenModellerGuiBase()
 {
-  mLayout = new QVBoxLayout(frameParameters);
   getAlgorithmList();
 }
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
-  mLayout = new QVBoxLayout(frameParameters); 
   getAlgorithmList();
 }  
 
@@ -97,6 +95,7 @@ void OpenModellerGui::getAlgorithmList()
 void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 {
 
+  
   std::cout <<"getParameterList called" << std::endl;
   
   OpenModeller  myOpenModeller;
@@ -107,10 +106,13 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
  
 
   
-  
+ 
+  //find out how many params and clear maps
+  int myRowCountInt = 0;
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
-  {
-    //delete current parameter map contents
+  { 
+    myRowCountInt++;
+        //delete current parameter map contents
     ParametersMap::Iterator myIterator;
 
     for ( myIterator = mMap.begin(); myIterator != mMap.end(); ++myIterator ) 
@@ -128,6 +130,18 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
     }
     mLabelsMap.clear();
     
+  }
+   if (mLayout) delete mLayout;
+    std::cerr << "-------------- openModeller plugin :  Creating Grid layout with ..." << myRowCountInt <<  " rows" << std::endl;
+  mLayout = new QGridLayout(frameParameters,myRowCountInt,2); 
+  std::cerr << "Grid layout created" << std::endl;
+  //reinitialise the metadataarray 
+  myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
+  
+  //Buidling maps for widgets
+  while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
+  {
+
     //QString myFontName = "Arial [Monotype]";
     //QFont myLabelFont(myFontName, 12, 75);
     
@@ -165,8 +179,9 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 	   myLabel->setText(myParameter->name);	   
 	   
 	   //add label and control to form
-	   mLayout->addWidget(myLabel);
-	   mLayout->addWidget(mySpinBox);
+	   
+	   mLayout->addWidget(myLabel, i, 0);
+	   mLayout->addWidget(mySpinBox, i, 1);
 	   mySpinBox->show();
 	   std::cout << mySpinBox->name() << " created" << std::endl;
 	   std::cout << myLabel->name() << " created" << std::endl;
@@ -194,8 +209,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 	   myLabel->setText(myParameter->name);	   
 	    
 	   //add label and control to form
-	   mLayout->addWidget(myLabel);
-	   mLayout->addWidget(myLineEdit);
+	   mLayout->addWidget(myLabel, i,0);
+	   mLayout->addWidget(myLineEdit,i,1);
 	   myLineEdit->show();
 	   std::cout << myLineEdit->name() << " created" << std::endl;
 	   std::cout << myLabel->name() << " created" << std::endl;
@@ -691,7 +706,7 @@ void OpenModellerGui::getProjList()
   mProjectionsMap["Long/Lat - Datum: Corrego Alegre"] = "GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]]";
   
   std::cout << "Getting proj list " << std::endl;
-  QString theFileNameQString="/home/aps02ts/dev/cpp/qgis_plugins/openmodeller/wkt_defs.txt";
+  QString theFileNameQString="/home/aps03pwb/dev/cpp/plugins/openmodeller/wkt_defs.txt";
   QFile myQFile( theFileNameQString );
   if ( myQFile.open( IO_ReadOnly ) ) 
   {
