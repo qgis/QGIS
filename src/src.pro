@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.43 2004/08/18 03:15:55 gsherman Exp 
+# src.pro,v 1.44 2004/08/19 05:33:36 gsherman Exp 
 ######################################################################
 #
 # For a WIN32 release build do the following:
@@ -43,7 +43,6 @@ HEADERS += qgis.h \
            qgscontinuouscolrenderer.h \
            qgscoordinatetransform.h \
            qgscustomsymbol.h \
-           qgsdatabaselayer.h \
            qgsdataprovider.h \
            qgsdatasource.h \
            qgsdbsourceselect.h \
@@ -106,7 +105,6 @@ HEADERS += qgis.h \
            qgstable.h \
            qgsvectorlayer.h \
            qgssvgcache.h \
-           qgsvectorlayerproperties.h \
            splashscreen.h \
 	   qgsacetateobject.h \
            qgslabel.h \
@@ -201,7 +199,6 @@ SOURCES += main.cpp \
            qgssymbologyutils.cpp \
            qgsvectorlayer.cpp \
            qgssvgcache.cpp \
-           qgsvectorlayerproperties.cpp \
            splashscreen.cpp \
 	   qgsacetateobject.cpp \
            qgslabeldialog.cpp \
