@@ -64,31 +64,23 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   }
   
   // render and rescale it (with smoothing)
-  QPixmap pixmap;
-  if (oversampling != 1) {
-    QPixmap osPixmap(oversampling*width,oversampling*height);
-    osPixmap.fill(QColor(qRgba(255, 255, 255, 0)));
-    QPainter p(&osPixmap);
-    p.scale(scaleFactor*oversampling,scaleFactor*oversampling);
-    p.drawPicture(0,0,pic);
-    QImage osImage = osPixmap.convertToImage();
-    QImage image = osImage.smoothScale(width, height);
-    pixmap = QPixmap(image);
+  QPixmap osPixmap(oversampling*width,oversampling*height);
+  osPixmap.fill(QColor(qRgb(255, 255, 0)));    QPainter p(&osPixmap);
+  p.scale(scaleFactor*oversampling,scaleFactor*oversampling);
+  p.drawPicture(0,0,pic);
+  QImage osImage = osPixmap.convertToImage();
+  // set a mask - this is probably terribly inefficient
+  osImage.setAlphaBuffer(true);
+  for (int i = 0; i < osImage.width(); ++i) {
+    for (int j = 0; j < osImage.height(); ++j) {
+      if (osImage.pixel(i, j) == qRgb(255, 255, 0)) {
+	osImage.setPixel(i, j, qRgba(255, 255, 0, 0));
+      }
+    }
   }
-  else {
-    pixmap = QPixmap(width, height);
-    pixmap.fill(QColor(qRgba(255, 255, 255, 0)));
-    QPainter p(&pixmap);
-    p.scale(scaleFactor, scaleFactor);
-    p.drawPicture(0, 0, pic);
-  }
-  
-  // FIXME - this frame is added because there already is an ugly white
-  // rectangle around the SVG symbol. The frame makes it look at least almost
-  // intentional. Can be removed when transparency is fixed.
-  QPainter p2(&pixmap);
-  p2.setPen(QColor(0, 0, 0));
-  p2.drawRect(0, 0, width, height);
+  if (scaleFactor != 1)
+    osImage = osImage.smoothScale(width, height);
+  QPixmap pixmap = QPixmap(osImage);
   
   // cache it if possible, and remove other pixmaps from the cache
   // if it grows too large
