@@ -21,12 +21,12 @@
 
 #include <qapplication.h>
 #include <qdatetime.h>
-#include <qpopupmenu.h>
-#include <qlistview.h>
-#include <qlabel.h>
-#include <qpainter.h>
 #include <qdom.h> 
-
+#include <qfileinfo.h> 
+#include <qlabel.h>
+#include <qlistview.h>
+#include <qpainter.h>
+#include <qpopupmenu.h>
 
 #include "qgsrect.h"
 #include "qgssymbol.h"
@@ -38,7 +38,8 @@
 QgsMapLayer::QgsMapLayer(int type, 
                          QString lyrname, 
                          QString source)
-    : internalName(lyrname), 
+    : internalName(lyrname),
+      ID(""),
       layerType(type), 
       dataSource(source),
       m_legendItem(0),
@@ -82,7 +83,7 @@ const int QgsMapLayer::type()
 }
 
 /** Get this layer's unique ID */
-QString QgsMapLayer::getLayerID()
+QString const & QgsMapLayer::getLayerID() const
 {
   return ID;
 }
@@ -94,17 +95,17 @@ void QgsMapLayer::setLayerName(const QString & _newVal)
 }
 
 /** Read property of QString layerName. */
-const QString QgsMapLayer::name()
+QString const & QgsMapLayer::name() const
 {
   return layerName;
 }
 
-QString QgsMapLayer::source()
+QString const & QgsMapLayer::source() const
 {
   return dataSource;
 }
 
-QString QgsMapLayer::sourceName()
+QString const & QgsMapLayer::sourceName() const
 {
   return internalName;
 }
@@ -188,6 +189,10 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     dataSource = mne.text();
 
     const char * dataSourceStr = dataSource.ascii(); // debugger probe
+
+    // the internal name is just the data source basename
+    QFileInfo dataSourceFileInfo( dataSource );
+    internalName = dataSourceFileInfo.baseName();
 
     // set name
     mnl = layer_node.namedItem("layername");

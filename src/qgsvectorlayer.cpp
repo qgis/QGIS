@@ -292,313 +292,317 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinat
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
 {
-  if ( /*1 == 1 */ m_renderer)
-  {
-    // painter is active (begin has been called
-    /* Steps to draw the layer
-       1. get the features in the view extent by SQL query
-       2. read WKB for a feature
-       3. transform
-       4. draw
-       */
-
-    QPen pen;
-    /*Pointer to a marker image*/
-    QPicture marker;
-    /*Scale factor of the marker image*/
-    double markerScaleFactor=1;
-
-    // select the records in the extent. The provider sets a spatial filter
-    // and sets up the selection set for retrieval
-#ifdef QGISDEBUG
-    qWarning("Selecting features based on view extent");
-#endif
-    dataProvider->reset();
-    dataProvider->select(viewExtent);
-    int featureCount = 0;
-    //  QgsFeature *ftest = dataProvider->getFirstFeature();
-#ifdef QGISDEBUG
-    qWarning("Starting draw of features");
-#endif
-    QgsFeature *fet;
-    unsigned char *feature;
-    bool attributesneeded = m_renderer->needsAttributes();
-
-    double *x;
-    double *y;
-    int *nPoints;
-    int *numRings;
-    int *numPolygons;
-    int numPoints;
-    int numLineStrings;
-    int idx, jdx, kdx;
-    unsigned char *ptr;
-    char lsb;
-    QgsPoint pt;
-    QPointArray *pa;
-    int wkbType;
-
-    std::list<int> attributes=m_renderer->classificationAttributes();
-
-    while((fet = dataProvider->getNextFeature(attributes,true)))
+    if ( /*1 == 1 */ m_renderer)
     {
-      // If update threshold is greater than 0, check to see if
-      // the threshold has been exceeded
-      if(updateThreshold > 0)
-      {
-        //copy the drawing buffer every updateThreshold elements
-        if(featureCount%updateThreshold==0)
-        {
-          bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
-        }
-      }
+        // painter is active (begin has been called
+        /* Steps to draw the layer
+           1. get the features in the view extent by SQL query
+           2. read WKB for a feature
+           3. transform
+           4. draw
+        */
 
-      if (fet == 0)
-      {
+        QPen pen;
+        /*Pointer to a marker image*/
+        QPicture marker;
+        /*Scale factor of the marker image*/
+        double markerScaleFactor=1;
+
+        // select the records in the extent. The provider sets a spatial filter
+        // and sets up the selection set for retrieval
 #ifdef QGISDEBUG
-        std::cerr << "get next feature returned null\n";
+        qWarning("Selecting features based on view extent");
 #endif
-      } else
-      {
-        bool sel=selected.find(fet->featureId()) != selected.end();
-        m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
+        dataProvider->reset();
+        dataProvider->select(viewExtent);
+        int featureCount = 0;
+        //  QgsFeature *ftest = dataProvider->getFirstFeature();
+#ifdef QGISDEBUG
+        qWarning("Starting draw of features");
+#endif
+        QgsFeature *fet;
+        unsigned char *feature;
+        bool attributesneeded = m_renderer->needsAttributes();
 
-        // get the wkb representation
-        feature = fet->getGeometry();
-        //  if (feature != 0) {
-        //    std::cout << featureCount << "'the feature is null\n";
-        //TODO - add this to the debug options -- if we decide to keep it
-        //wkbHeader header;
-        //memcpy((void *)&header,feature,sizeof(header));
-        //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
+        double *x;
+        double *y;
+        int *nPoints;
+        int *numRings;
+        int *numPolygons;
+        int numPoints;
+        int numLineStrings;
+        int idx, jdx, kdx;
+        unsigned char *ptr;
+        char lsb;
+        QgsPoint pt;
+        QPointArray *pa;
+        int wkbType;
 
-        // FIX for the endian problem on osx (possibly sparc?)
-        // TODO Restructure this whole wkb reading code to use
-        // wkb structures as defined at (among other places):
-        // http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
-        memcpy(&wkbType, (feature+1), sizeof(wkbType));
+        std::list<int> attributes=m_renderer->classificationAttributes();
 
-        //  std::cout << "Feature type: " << wkbType << std::endl;
-        // read each feature based on its type
-
-        switch (wkbType)
+        while((fet = dataProvider->getNextFeature(attributes,true)))
         {
-          case WKBPoint:
-
-            //  fldDef = fet->GetFieldDefnRef(1);
-            //   fld = fldDef->GetNameRef();
-            //NEEDTHIS?  val = fet->GetFieldAsString(1);
-            //std::cout << val << "\n";
-
-            x = (double *) (feature + 5);
-            y = (double *) (feature + 5 + sizeof(double));
-            //    std::cout << "transforming point\n";
-            pt.setX(*x);
-            pt.setY(*y);
-            cXf->transform(&pt);
-            //std::cout << "drawing marker for feature " << featureCount << "\n";
-            p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
-            p->scale(markerScaleFactor,markerScaleFactor);
-            p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker.boundingRect().width() / 2), 
-                           (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker.boundingRect().height() / 2),
-                           marker);
-            p->resetXForm(); 
-
-            break;
-
-          case WKBLineString:
-
-            // get number of points in the line
-            ptr = feature + 5;
-            nPoints = (int *) ptr;
-            ptr = feature + 1 + 2 * sizeof(int);
-            for (idx = 0; idx < *nPoints; idx++)
+            // If update threshold is greater than 0, check to see if
+            // the threshold has been exceeded
+            if(updateThreshold > 0)
             {
-              x = (double *) ptr;
-              ptr += sizeof(double);
-              y = (double *) ptr;
-              ptr += sizeof(double);
-              // transform the point
-              pt.setX(*x);
-              pt.setY(*y);
-              cXf->transform(&pt);
-              if (idx == 0)
-                p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-              else
-                p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-            }
-            break;
-
-          case WKBMultiLineString:
-
-            numLineStrings = (int) (feature[5]);
-            ptr = feature + 9;
-            for (jdx = 0; jdx < numLineStrings; jdx++)
-            {
-              // each of these is a wbklinestring so must handle as such
-              lsb = *ptr;
-              ptr += 5; // skip type since we know its 2
-              nPoints = (int *) ptr;
-              ptr += sizeof(int);
-              for (idx = 0; idx < *nPoints; idx++)
-              {
-                x = (double *) ptr;
-                ptr += sizeof(double);
-                y = (double *) ptr;
-                ptr += sizeof(double);
-                // transform the point
-                pt.setX(*x);
-                pt.setY(*y);
-                cXf->transform(&pt);
-                if (idx == 0)
-                  p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-                else
-                  p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-              }
-            }
-            break;
-
-          case WKBPolygon:
-
-          {
-            // get number of rings in the polygon
-            numRings = (int *) (feature + 1 + sizeof(int));
-
-            if ( ! *numRings )  // sanity check for zero rings in polygon
-            {
-                break;
-            }
-
-            int *ringStart; // index of first point for each ring
-            int *ringNumPoints; // number of points in each ring
-            ringStart = new int[*numRings];
-            ringNumPoints = new int[*numRings];
-
-            int x0, y0, pdx;
-            pdx = 0;
-            ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
-            for (idx = 0; idx < *numRings; idx++) {
-              // get number of points in the ring
-              nPoints = (int *) ptr;
-              ringStart[idx] = pdx;
-              ringNumPoints[idx] = *nPoints;
-              ptr += 4;
-              if ( idx == 0 ) { 
-                pa = new QPointArray(*nPoints);
-              } else {
-                pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
-              }
-              for (jdx = 0; jdx < *nPoints; jdx++) {
-                // add points to a point array for drawing the polygon
-                x = (double *) ptr;
-                ptr += sizeof(double);
-                y = (double *) ptr;
-#ifdef QGISX11DEBUG
-                std::cout << "Transforming " << *x << "," << *y << " to ";
-#endif
-                ptr += sizeof(double);
-                pt.setX(*x);
-                pt.setY(*y);
-                cXf->transform(&pt);
-                pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
-              }
-              if ( idx == 0 ) { // remember last outer ring point
-                x0 = static_cast<int>(pt.x());
-                y0 = static_cast<int>(pt.y());
-              } else { // return to x0,y0 (inner rings - islands)
-                pa->setPoint(pdx++, x0, y0);
-              }
-            }
-            // draw the polygon fill
-            pen = p->pen(); // store current pen
-            p->setPen ( Qt::NoPen ); // no boundary
-            p->drawPolygon(*pa);
-
-            // draw outline
-            p->setPen ( pen );
-            p->setBrush ( Qt::NoBrush );
-            for (idx = 0; idx < *numRings; idx++) {
-              p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
-            }
-
-            delete pa;
-            delete [] ringStart;
-            delete [] ringNumPoints;
-
-            break;
-
-          }
-          case WKBMultiPolygon:
-
-            // get the number of polygons
-            ptr = feature + 5;
-            numPolygons = (int *) ptr;
-            ptr = feature + 9;
-            for (kdx = 0; kdx < *numPolygons; kdx++)
-            {
-              //skip the endian and feature type info and
-              // get number of rings in the polygon
-              ptr+=5;
-              numRings = (int *) ptr;
-              ptr += 4;
-              for (idx = 0; idx < *numRings; idx++)
-              {
-                // get number of points in the ring
-                nPoints = (int *) ptr;
-                ptr += 4;
-                pa = new QPointArray(*nPoints);
-                for (jdx = 0; jdx < *nPoints; jdx++)
+                //copy the drawing buffer every updateThreshold elements
+                if(0 == featureCount % updateThreshold)
                 {
-                  // add points to a point array for drawing the polygon
-                  x = (double *) ptr;
-                  ptr += sizeof(double);
-                  y = (double *) ptr;
-                  ptr += sizeof(double);
-#ifdef QGISX11DEBUG
-                  std::cout << "Transforming " << *x << "," << *y << " to ";
-#endif
-                  pt.setX(*x);
-                  pt.setY(*y);
-                  cXf->transform(&pt);
-                  pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                    bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
                 }
-                // draw the ring
-                p->drawPolygon(*pa);
-                delete pa;
-              }
             }
-            break;
 
-          default:
+            if (fet == 0)
+            {
 #ifdef QGISDEBUG
-            std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+                std::cerr << "get next feature returned null\n";
 #endif
-            break;
+            } else
+            {
+                bool sel=selected.find(fet->featureId()) != selected.end();
+                m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
+
+                // get the wkb representation
+                feature = fet->getGeometry();
+                //  if (feature != 0) {
+                //    std::cout << featureCount << "'the feature is null\n";
+                //TODO - add this to the debug options -- if we decide to keep it
+                //wkbHeader header;
+                //memcpy((void *)&header,feature,sizeof(header));
+                //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
+
+                // FIX for the endian problem on osx (possibly sparc?)
+                // TODO Restructure this whole wkb reading code to use
+                // wkb structures as defined at (among other places):
+                // http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
+                memcpy(&wkbType, (feature+1), sizeof(wkbType));
+
+                //  std::cout << "Feature type: " << wkbType << std::endl;
+                // read each feature based on its type
+
+                switch (wkbType)
+                {
+                    case WKBPoint:
+
+                        //  fldDef = fet->GetFieldDefnRef(1);
+                        //   fld = fldDef->GetNameRef();
+                        //NEEDTHIS?  val = fet->GetFieldAsString(1);
+                        //std::cout << val << "\n";
+
+                        x = (double *) (feature + 5);
+                        y = (double *) (feature + 5 + sizeof(double));
+                        //    std::cout << "transforming point\n";
+                        pt.setX(*x);
+                        pt.setY(*y);
+                        cXf->transform(&pt);
+                        //std::cout << "drawing marker for feature " << featureCount << "\n";
+                        p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
+                        p->scale(markerScaleFactor,markerScaleFactor);
+                        p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker.boundingRect().width() / 2), 
+                                       (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker.boundingRect().height() / 2),
+                                       marker);
+                        p->resetXForm(); 
+
+                        break;
+
+                    case WKBLineString:
+
+                        // get number of points in the line
+                        ptr = feature + 5;
+                        nPoints = (int *) ptr;
+                        ptr = feature + 1 + 2 * sizeof(int);
+                        for (idx = 0; idx < *nPoints; idx++)
+                        {
+                            x = (double *) ptr;
+                            ptr += sizeof(double);
+                            y = (double *) ptr;
+                            ptr += sizeof(double);
+                            // transform the point
+                            pt.setX(*x);
+                            pt.setY(*y);
+                            cXf->transform(&pt);
+                            if (idx == 0)
+                                p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                            else
+                                p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                        }
+                        break;
+
+                    case WKBMultiLineString:
+
+                        numLineStrings = (int) (feature[5]);
+                        ptr = feature + 9;
+                        for (jdx = 0; jdx < numLineStrings; jdx++)
+                        {
+                            // each of these is a wbklinestring so must handle as such
+                            lsb = *ptr;
+                            ptr += 5; // skip type since we know its 2
+                            nPoints = (int *) ptr;
+                            ptr += sizeof(int);
+                            for (idx = 0; idx < *nPoints; idx++)
+                            {
+                                x = (double *) ptr;
+                                ptr += sizeof(double);
+                                y = (double *) ptr;
+                                ptr += sizeof(double);
+                                // transform the point
+                                pt.setX(*x);
+                                pt.setY(*y);
+                                cXf->transform(&pt);
+                                if (idx == 0)
+                                    p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                                else
+                                    p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                            }
+                        }
+                        break;
+
+                    case WKBPolygon:
+
+                    {
+                        // get number of rings in the polygon
+                        numRings = (int *) (feature + 1 + sizeof(int));
+
+                        if ( ! *numRings )  // sanity check for zero rings in polygon
+                        {
+                            break;
+                        }
+
+                        int *ringStart; // index of first point for each ring
+                        int *ringNumPoints; // number of points in each ring
+                        ringStart = new int[*numRings];
+                        ringNumPoints = new int[*numRings];
+
+                        int x0, y0, pdx;
+                        pdx = 0;
+                        ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
+                        for (idx = 0; idx < *numRings; idx++) {
+                            // get number of points in the ring
+                            nPoints = (int *) ptr;
+                            ringStart[idx] = pdx;
+                            ringNumPoints[idx] = *nPoints;
+                            ptr += 4;
+                            if ( idx == 0 ) { 
+                                pa = new QPointArray(*nPoints);
+                            } else {
+                                pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
+                            }
+                            for (jdx = 0; jdx < *nPoints; jdx++) {
+                                // add points to a point array for drawing the polygon
+                                x = (double *) ptr;
+                                ptr += sizeof(double);
+                                y = (double *) ptr;
+#ifdef QGISX11DEBUG
+                                std::cout << "Transforming " << *x << "," << *y << " to ";
+#endif
+                                ptr += sizeof(double);
+                                pt.setX(*x);
+                                pt.setY(*y);
+                                cXf->transform(&pt);
+                                pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                            }
+                            if ( idx == 0 ) { // remember last outer ring point
+                                x0 = static_cast<int>(pt.x());
+                                y0 = static_cast<int>(pt.y());
+                            } else { // return to x0,y0 (inner rings - islands)
+                                pa->setPoint(pdx++, x0, y0);
+                            }
+                        }
+                        // draw the polygon fill
+                        pen = p->pen(); // store current pen
+                        p->setPen ( Qt::NoPen ); // no boundary
+                        p->drawPolygon(*pa);
+
+                        // draw outline
+                        p->setPen ( pen );
+                        p->setBrush ( Qt::NoBrush );
+                        for (idx = 0; idx < *numRings; idx++) {
+                            p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
+                        }
+
+                        delete pa;
+                        delete [] ringStart;
+                        delete [] ringNumPoints;
+
+                        break;
+
+                    }
+                    case WKBMultiPolygon:
+
+                        // get the number of polygons
+                        ptr = feature + 5;
+                        numPolygons = (int *) ptr;
+                        ptr = feature + 9;
+                        for (kdx = 0; kdx < *numPolygons; kdx++)
+                        {
+                            //skip the endian and feature type info and
+                            // get number of rings in the polygon
+                            ptr+=5;
+                            numRings = (int *) ptr;
+                            ptr += 4;
+                            for (idx = 0; idx < *numRings; idx++)
+                            {
+                                // get number of points in the ring
+                                nPoints = (int *) ptr;
+                                ptr += 4;
+                                pa = new QPointArray(*nPoints);
+                                for (jdx = 0; jdx < *nPoints; jdx++)
+                                {
+                                    // add points to a point array for drawing the polygon
+                                    x = (double *) ptr;
+                                    ptr += sizeof(double);
+                                    y = (double *) ptr;
+                                    ptr += sizeof(double);
+#ifdef QGISX11DEBUG
+                                    std::cout << "Transforming " << *x << "," << *y << " to ";
+#endif
+                                    pt.setX(*x);
+                                    pt.setY(*y);
+                                    cXf->transform(&pt);
+                                    pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                                }
+                                // draw the ring
+                                p->drawPolygon(*pa);
+                                delete pa;
+                            }
+                        }
+                        break;
+
+                    default:
+#ifdef QGISDEBUG
+                        std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+#endif
+                        break;
+                }
+
+
+                // XXX should be lower down? delete fet;
+                delete fet;
+                //std::cout << "deleting feature[]\n";
+                //      std::cout << geom->getGeometryName() << std::endl;
+                featureCount++;
+
+            }
+
+            //qApp->processEvents();
+
+            //delete fet;
         }
-
-
-        delete fet;
-
-        //std::cout << "deleting feature[]\n";
-        //      std::cout << geom->getGeometryName() << std::endl;
-        featureCount++;
-      }
-      //qApp->processEvents();
-      }
 #ifdef QGISDEBUG
-      std::cerr << "Total features processed is " << featureCount << std::endl;
+        std::cerr << "Total features processed is " << featureCount << std::endl;
 #endif
-      qApp->processEvents();
+        qApp->processEvents();
     } else
     {
 #ifdef QGISDEBUG
-      qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
+        qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
 #endif
     }
-  }
+}
 
 
-  int QgsVectorLayer::endian()
+int QgsVectorLayer::endian()
   {
     char *chkEndian = new char[4];
     memset(chkEndian, '\0', 4);
