@@ -1629,6 +1629,7 @@ void QgisApp::fileNew()
       mMapCanvas->removeAll();
 #ifdef QGISDEBUG
       mOverviewCanvas->removeAll();
+      mOverviewCanvas->clear();
 #endif
       setCaption(tr("Quantum GIS -- Untitled"));
       mMapCanvas->clear();
