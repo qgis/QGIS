@@ -27,7 +27,7 @@ class QgsDataSource {
 public: 
 	QgsDataSource();
 	~QgsDataSource();
- private:
+ protected:
  //! Path or uri of the datasource
  	QString dataSource;
 };
