@@ -84,6 +84,8 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				<p>These five parts of the main QGIS are described in more detail in the following sections</p>
 				<section>
 					<title>The QGIS menu bar</title>
+					<p>The menu bar provides access to various QGIS features using a standard windows 
+					heirachical menu.</p>
 				</section>
 				<section>
 					<title>The QGIS toolbars</title>
@@ -94,9 +96,9 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 						<li><img alt="Open Project" src="images/gis_add_raster_layer.png"/> - Open a previously saved project.</li>
 						<li><img alt="Save Project" src="images/gis_add_raster_layer.png"/> - Save the current project.</li>
 						<li><img alt="Save Project As" src="images/gis_add_raster_layer.png"/> - Save project under a new file name.</li>
-						<li><img alt="Add Postgis Layer(s)" src="images/gis_add_raster_layer.png"/> - Add one or more layers 
+						<li><img alt="Add Postgis Layer(s)" src="images/gis_add_pg_layer.png"/> - Add one or more layers 
 						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
-						<li><img alt="Add Vector Layer(s)" src="images/gis_add_raster_layer.png"/> - Add one or more layers 
+						<li><img alt="Add Vector Layer(s)" src="images/gis_add_vector_layer.png"/> - Add one or more layers 
 						stored on disk as shapefiles to the map view.</li>
 						<li><img alt="Add Raster Layers" src="images/gis_add_raster_layer.png"/> - Add one or more raster layers
 						to the map view. </li>
@@ -131,14 +133,14 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 			<section>
 				<title>Loading vector data</title>
 				<p>To load one or more shapefiles, click on the Add Layer button 
-				<img alt="Add Layer" src="images/btn_add_layer.gif"/>. </p>
+				<img alt="Add Layer" src="images/gis_add_vector_layer.png"/>. </p>
 				<p>The <em>Select one or more layers to add</em> dialog box will be displayed.
-				<img alt="Select layers" src="images/add_layer_dialog.gif"/></p>
+				<img alt="Select layers" src="images/add_layer_dialog.png"/></p>
 				<p>Navigate to the directory where the shapefiles reside. Select one or
 				more files and click ok to load them.</p>
 				<p>When QGIS loads a layer, it assigns a random color to it as shown 
 				below.</p>
-				<p><img alt="Shapefiles loaded into QGIS" src="images/loaded_shapefiles.gif"/>
+				<p><img alt="Shapefiles loaded into QGIS" src="images/loaded_shapefiles.png"/>
 				</p>
 				<p>
 				Obviously QGIS's choice of colors is not very pleasing in this case.
