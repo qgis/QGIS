@@ -1,0 +1,247 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsLauncherPluginGuiBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsLauncherPluginGuiBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>592</width>
+            <height>294</height>
+        </rect>
+    </property>
+    <property name="paletteBackgroundColor">
+        <color>
+            <red>255</red>
+            <green>255</green>
+            <blue>255</blue>
+        </color>
+    </property>
+    <property name="caption">
+        <string>QGIS Launcher</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>tabOutput</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Output</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit" row="0" column="0">
+                        <property name="name">
+                            <cstring>txtOutput</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <family>Bitstream Vera Sans Mono</family>
+                                <pointsize>11</pointsize>
+                            </font>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Command</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>cmbCommands</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>17</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnSelectProgram</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>22</width>
+                            <height>22</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Select program tor execute</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select the program to execute by browsing the file system</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnRun</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>26</width>
+                            <height>26</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="pixmap">
+                        <pixmap>image1</pixmap>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Run the selected program/command</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Run the selected program/command and display the output</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>340</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>&lt;h2&gt;Run an External Command or Program&lt;/h2&gt;</string>
+            </property>
+        </widget>
+        <spacer row="0" column="1">
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>130</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QPushButton" row="0" column="2">
+            <property name="name">
+                <cstring>pbnCancel</cstring>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>62</width>
+                    <height>25</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>&amp;Close</string>
+            </property>
+            <property name="accel">
+                <string>Alt+C</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="823">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000002fe49444154789ca5d431881c6514c0f1ffca166fe0846fe18a1948200bb198b081dc92403283e02d2a98c442bbbd6061c442d4420d36da0842b00829242c31b94d11a28590e674af3b0bbdbdc290150cb78d300b0666c083f9c08179e0c058ec70172f7bc97979cd37c31b7ef3bef7bd99dafa709d678d661096d4010322a009d49f053441583a002704f3de459c850e188ff8d5f0e0b004610960cebb343efe128c817a033445b383561c84a502debb8b48f702f99cc1514052186f90da03c05a55ea5fbf89e92ea105a82a4cd670ac25ea2da3c5ff84d30a3df6e19b98e3061e0c0041dd36a892ae2cb3f98bc5e109705c21bba37dfd266e77099be9b4d2ad883c5392d56fd9fc7a030019aed76ab3c62d0ac2b27954302d1faf6960ae818a815ffb98177c989bce55f4da326c6d321e25e8671f20aa78c3f51ab32a1e0761e9b784e0ad3330efc1f31e9826fc3e80c3863c4b21cbc1f5b03625fd79037bf90aa8d2acd0c7e0511096fe0943f046130a85cc566f5b83c9080a2159b5c86983310ed1c60ebaf008fa1f78188465fba44ba7eb836a05a7b015818d01b8bfa260c03f0c9a44c4572f812ac12e741b5eab0e6a782f61782fd94e9e7dd9a57d4a00616d05c4c0c2223875488e2ea1daa73303dd8677270741582e9c74692f3621b3dcf96e823142e71501145e7c075283ce1267f518c0dc0a4bcf9d5ee785d0bf1561e60de75e3753f450679aacdab3573cf7e88ddc084b4458fae613f03b5cb9fc13665eb8d0f5490b87bcee4df1bf63c8923dc85db0f4c2b2d13ac2b12f7e444e5f24198d10d7c5730db155aef5c624493a3dd0cc924fc64f87a51796724868befd3908d8c988238b67b8b4799f2899b0dc1ba10ae040a1e40f23ee7ebf0f580bf04eb9d36d16315ecbe3dc57efc31f77f08f53a180087901fddb11aa70768f89d86945018d9607450c85add68868e51ab003e405f46f8c89137d220a50d7ab612906100f48a71f868d89570744bf59e4a31de0eeedd1532bdd86f9079a2f194806a40f15fd13e20760ff7afce1fda200b51fce533a337e9ef2e9fe80bde25f6f2c5750850348520000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="919">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000035e49444154789c9d944f681c6518c67f1be6f00eece11bc861065ae8403d4c4921c9b6c5ee2a98603d847a68a4075b3cd43f07a91e6cc18b7a32e241c4430801437ae91f0f6273a8890761bd980da449b660493c142687c20cb830032ecc0b0e8c87d9c46de3d6d4b9bc7cccf0ccf33edff33c95cdf54dc8010b3457c492e73efb676a051660400434066befe5ff995ebd5100302ac8fb6f639f9e82aa83bed6c0eaff981c0e7b363d50f7bc8b7d6d06865dc0815cd12e0cf533e85fef99e77aa34801f3de045c9b01e342578104da2b242925e3e7614abd5128102cdec2b978990c48ba19cee3267462a2f94534ef313e2c53ad378a04f03f9c460281df97d187cb68ae64dd94ecde225bbfa6280cd638e93113a07fd6176fe15dbc4ca2196957210d4952859fefb235bb860dd05aad54565bab076e3baa370aefb8e08d0418df205587540c72ff06f242805d356422c4afdf268bb708db29e927ef6254715aab15b1e4a0c661bd510423c2f895b3603c707ca87ad83b4d386a4013e866d8473ca24e84aeb5893fff02e903257fcac73bf546e18f1ac62ff8a00add1408e1b715d86d432e843fa598170d626ca23e50bf07ba87b7af71bbde28c64eb9d4df0a7ad601ba09a4217422b0607b49c1807f14b24e48f8cd07d8aa047d4cf7f02ccd9566cfecad8d98e646ccde33fdaacb89d30208cd253006828932cef1914ba037187b8ae9138ca75a9b957e8bdd3d532bce9e723931514a72fbbb369e11c6cf09580a2fbf83fce992c240df1ff0b12cd40adf2dad452ecc2dec20c386c90b2e54058e4f812568270418e8fba1fe3fc97cadb0abc2a56faf2327a798f9f217dc61e18d3703321cb03cb08024443405062774bf2b98ad15cec831fccf96b15fbacaeefd351cd7c5710d49aa7c3ddb268a134823e8a6248fda6568062476482c41666b85734cf0ae7c0a552179d4223837c1d5ed6da27897b9f9764f1bbbbcd5c7212bdfef94891ca0b1a5b9420ede985baea921cea8cfe44800bb8bf827217cd8c3152153e5cecd9054617a7db332a8af7b1a8333ea83866523680844444b73880593add54ab936dc59d8218c95e9f5cdcab35ad04abfaa15c60096035652264e23a27b2b840f52f8a8e753e0879bedff64fa8f8fff02ff15039d15b20d4523881e40fa47b9bed96302fba087e9efca8fe7291cebc96a14808fff3d51879d7f03fa0e614631370d780000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>pbnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsLauncherPluginGuiBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>btnSelectProgram</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsLauncherPluginGuiBase</receiver>
+        <slot>chooseProgram()</slot>
+    </connection>
+    <connection>
+        <sender>btnRun</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsLauncherPluginGuiBase</receiver>
+        <slot>runProgram()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>cmbCommands</tabstop>
+    <tabstop>btnSelectProgram</tabstop>
+    <tabstop>btnRun</tabstop>
+    <tabstop>pbnCancel</tabstop>
+    <tabstop>tabOutput</tabstop>
+    <tabstop>txtOutput</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">qgslauncherpluginguibase.ui.h</include>
+</includes>
+<slots>
+    <slot>pbnCancel_clicked()</slot>
+    <slot>chooseProgram()</slot>
+    <slot>runProgram()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
