@@ -284,7 +284,7 @@ _getTitle( QDomDocument const & doc, QString & title )
 
     if ( ! nl.count() )
     {
-        qDebug( "%s : %s %s", __FILE__ , __LINE__, " unable to find title element\n" );
+        qDebug( "%s : %d %s", __FILE__ , __LINE__, " unable to find title element\n" );
         return;
     }
 
@@ -292,7 +292,7 @@ _getTitle( QDomDocument const & doc, QString & title )
 
     if ( ! titleNode.hasChildNodes() ) // if not, then there's no actual text
     {
-        qDebug( "%s : %s %s", __FILE__ , __LINE__, " unable to find title element\n" );
+        qDebug( "%s : %d %s", __FILE__ , __LINE__, " unable to find title element\n" );
         return;
     }
 
@@ -300,7 +300,7 @@ _getTitle( QDomDocument const & doc, QString & title )
 
     if ( ! titleTextNode.isText() )
     {
-        qDebug( "%s : %s %s", __FILE__ , __LINE__, " unable to find title element\n" );
+        qDebug( "%s : %d %s", __FILE__ , __LINE__, " unable to find title element\n" );
         return;
     }
 
