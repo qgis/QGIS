@@ -352,7 +352,12 @@ void QgsShapeFileProvider::fillMinMaxCash()
 
     minmaxcachedirty=false;
 }
-
+//TODO - add sanity check for shape file layers, to include cheking to
+//       see if the .shp, .dbf, .shx files are all present and the layer
+//       actually has features
+bool QgsShapeFileProvider::isValid(){
+  return true;
+}
 /**
 * Class factory to return a pointer to a newly created 
 * QgsShapeFileProvider object
