@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-
+#include <iostream>
 #include <qstring.h>
 #include "qgsfeature.h"
 /** \class QgsFeature
@@ -33,6 +33,10 @@ QgsFeature::QgsFeature(int id):fId(id), geometry(0), wkt(0)
 //! Destructor
 QgsFeature::~QgsFeature()
 {
+  #ifdef DEBUG
+  std::cerr << "In QgsFeature destructor" << std::endl;
+  #endif
+  
   delete[]geometry;
   delete[]wkt;
 }
