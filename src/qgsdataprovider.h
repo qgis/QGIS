@@ -56,10 +56,15 @@ public:
   virtual int fieldCount()=0;
 	/**
 	* Select features based on a bounding rectangle. Features can be retrieved 
-	* with calls to getFirstFeature and getNextFeature.
+	* with calls to getFirstFeature and getNextFeature. Request for features 
+  * for use in drawing the map canvas should set useIntersect to false.
 	* @param mbr QgsRect containing the extent to use in selecting features
+  * @param useIntersect If true, use the intersects function to select features
+  * rather than the PostGIS && operator that selects based on bounding box
+  * overlap.
+  *
 	*/
-	virtual void QgsDataProvider::select(QgsRect *mbr)=0;
+	virtual void QgsDataProvider::select(QgsRect *mbr, bool useIntersect=false)=0;
 	/** 
 		* Set the data source specification. This may be a path or database
 	* connection string
