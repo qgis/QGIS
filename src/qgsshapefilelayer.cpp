@@ -41,7 +41,7 @@ QgsShapeFileLayer::QgsShapeFileLayer(QString vectorLayerPath, QString baseName)
 
 	ogrDataSource = OGRSFDriverRegistrar::Open((const char *) dataSource);
 	if (ogrDataSource != NULL) {
-		std::cout << "Adding " << dataSource << std::endl;
+		//std::cout << "Adding " << dataSource << std::endl;
 		ogrLayer = ogrDataSource->GetLayer(0);
 		OGREnvelope *ext = new OGREnvelope();
 		ogrLayer->GetExtent(ext);
@@ -114,10 +114,20 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 		ogrLayer->SetSpatialFilter(filter);
 		int featureCount = 0;
 		while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
+		if(!fet){
+			std::cout << "get next feature returned null\n";
+			}
+		//std::cout << "reading feautures\n";
 			//fet->DumpReadable(stdout);
 			OGRGeometry *geom = fet->GetGeometryRef();
+			if(!geom){
+				std::cout << "geom pointer is null" << std::endl;
+				}
 			// get the wkb representation
 			unsigned char *feature = new unsigned char[geom->WkbSize()];
+			if(!feature){
+				std::cout << featureCount << "'the feature is null\n";
+				}
 			geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
 
 
@@ -136,14 +146,24 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 			char lsb;
 			QgsPoint pt;
 			QPointArray *pa;
-
-			switch (wkbType) {
+OGRFieldDefn *fldDef;
+QString fld;
+QString val;
+			switch (wkbType) { 
 			  case WKBPoint:
-
+			  
+			//	fldDef = fet->GetFieldDefnRef(1);
+			//	 fld = fldDef->GetNameRef();
+				val = fet->GetFieldAsString(1);
+				//std::cout << val << "\n";
+				
 				  x = (double *) (feature + 5);
 				  y = (double *) (feature + 5 + sizeof(double));
+				  //std::cout << "transforming point\n";
 				  pt = cXf->transform(*x, *y);
+				  //std::cout << "drawing marker for feature " << featureCount << "\n";
 				  p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
+				  //std::cout << "marker draw complete\n";
 				  break;
 			  case WKBLineString:
 
@@ -251,12 +271,15 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 				  break;
 			}
 
-
+			//std::cout << "deleting feature[]\n";
 			//      std::cout << geom->getGeometryName() << std::endl;
 			featureCount++;
 			delete[]feature;
+			//std::cout << "deleting fet\n";
 			delete fet;
+			//std::cout << "ready to fetch next feature\n";
 		}
+		//std::cout << "finished reading features\n";
 //      std::cout << featureCount << " features in ogr layer within the extent" << std::endl;
 		OGRGeometry *filt = ogrLayer->GetSpatialFilter();
 		//filt->dumpReadable(stdout);
@@ -358,6 +381,8 @@ void QgsShapeFileLayer::table()
 		fet = ogrLayer->GetNextFeature();
 
 	}
+	// reset the pointer to start of features so
+	// subsequent reads will not fail
 	ogrLayer->ResetReading();
 	at->table()->setSorting(true);
 
