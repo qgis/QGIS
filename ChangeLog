@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.98 2004/05/27 05:16:57 gsherman Exp
+ChangeLog,v 1.99 2004/05/27 06:44:00 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-26 [gsherman] 0.3.0devel5
+** Added theme selection to the user preferences dialog. Currently there
+   is only one theme (default) available
 
 2004-05-26 [gsherman] 0.3.0devel4
 ** Added theme support for loading png icons during startup. This solves
