@@ -150,16 +150,10 @@ public:
    */
   bool boundsCheck(double x, double y);
 
-  bool supportsFeatureAddition() const 
-  {
-    return true;
+  int capabilities() const {
+    return AddFeatures | DeleteFeatures;
   }
-
-  bool supportsFeatureDeletion() const 
-  {
-    return true;
-  }
-
+  
   QgsDataSourceURI *getURI()
   {
       return 0;
