@@ -930,6 +930,24 @@
                     </widget>
                 </grid>
             </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tabMetadata</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Metadata</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextBrowser" row="0" column="0">
+                        <property name="name">
+                            <cstring>txtbMetadata</cstring>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
         </widget>
     </grid>
 </widget>
