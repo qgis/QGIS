@@ -29,6 +29,7 @@ delimitedtextlayerplugin_la_SOURCES =  qgsdelimitedtextplugin.cpp \
 			      qgsdelimitedtextplugingui.h \
 			      ../../src/qgsmaplayer.cpp\
 			      ../../src/qgsvectorlayer.cpp\
+						../../src/qgssymbol.cpp\
 			      $(plugin_UI)\
 			      $(plugin_MOC)
 
