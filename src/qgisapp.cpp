@@ -859,8 +859,10 @@ void QgisApp::layerProperties(QListViewItem * lvi)
             delete rlp;
             qApp->processEvents();
           }
+        }else{
+          lyr->showLayerProperties();
         }
-        else if ((lyr->type()==QgsMapLayer::VECTOR) || (lyr->type()==QgsMapLayer::DATABASE))
+        /* else if ((lyr->type()==QgsMapLayer::VECTOR) || (lyr->type()==QgsMapLayer::DATABASE))
         {
           QgsLayerProperties *lp = new QgsLayerProperties(lyr);
           if (lp->exec()) {
@@ -891,11 +893,11 @@ void QgisApp::layerProperties(QListViewItem * lvi)
           "Unknown Layer Type");
         }
   
+   */
   
   
   
-  
-	lyr->showLayerProperties();
+//	lyr->showLayerProperties();
 }
 //>>>>>>> 1.97.2.17
 
