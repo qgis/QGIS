@@ -130,6 +130,34 @@ void QgsFeature::addAttribute(QString const&  field, QString const & value)
   attributes.push_back(QgsFeatureAttribute(field, value));
 }
 
+/**Deletes an attribute and its value*/
+void QgsFeature::deleteAttribute(const QString& name)
+{
+    for(std::vector<QgsFeatureAttribute>::iterator iter=attributes.begin();iter!=attributes.end();++iter)
+    {
+	if(iter->fieldName()==name)
+	{
+	    attributes.erase(iter);
+	    break;
+	}
+    }
+}
+
+/**Changes an existing attribute value
+   @param name attribute name
+   @param newval new value*/
+void QgsFeature::changeAttributeValue(const QString& name, const QString& newval)
+{
+   for(std::vector<QgsFeatureAttribute>::iterator iter=attributes.begin();iter!=attributes.end();++iter)
+    {
+	if(iter->fieldName()==name)
+	{
+	    iter->setFieldValue(newval);
+	    break;
+	}
+    } 
+}
+
 /**
  * Get the fields for this feature
  * @return A std::map containing field position (index) and field name

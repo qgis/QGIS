@@ -109,11 +109,11 @@ void QgsAttributeTableDisplay::stopEditing()
 	int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
 	if(commit==QMessageBox::Yes)
 	{
-	    table()->commitChanges(mLayer->getDataProvider());
+	    table()->commitChanges(mLayer);
 	}
 	else
 	{
-	    table()->rollBack(mLayer->getDataProvider());
+	    table()->rollBack(mLayer);
 	}
     }
     btnStartEditing->setEnabled(true);
