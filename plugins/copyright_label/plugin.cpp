@@ -106,19 +106,15 @@ void Plugin::initGui()
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // This calls the north arrow renderer everytime the cnavas has drawn itself
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
-
-  // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon(myQActionPointer);
   //default text to start with
-  toolBarPointer->setLabel("Copyright Label");
   mLabelQString = QString(" QGIS 2004");
   mQFont = QFont("time", 12, QFont::Bold);
   mLabelQColor = QColor(Qt::black);
 
   //default placement to start with
   mPlacement=tr("Bottom Right");
-  // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(toolBarPointer);
   refreshCanvas();
 
 }
