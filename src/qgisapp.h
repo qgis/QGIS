@@ -136,6 +136,7 @@ public:
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage(QString, QPixmap *);
     QgsMapCanvas * getMapCanvas() { return mMapCanvas; };
+    QgsMapLayerRegistry * getLayerRegistry() { return mLayerRegistry; };
     //! Set theme (icons)
     void setTheme(QString themeName="default");
 private:
@@ -299,6 +300,8 @@ private:
     //QgsLegendView *mLegendView;
     //! Map canvas
     QgsMapCanvas *mMapCanvas;
+    //! Map layer registry
+    QgsMapLayerRegistry *mLayerRegistry;
     //! Overview canvas where the map overview is shown
     QgsMapCanvas * mOverviewCanvas;
     //! Table of contents (legend) for the map

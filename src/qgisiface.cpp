@@ -120,3 +120,7 @@ QgsMapCanvas * QgisIface::getMapCanvas()
   return qgis->getMapCanvas();
 }
 
+QgsMapLayerRegistry * QgisIface::getLayerRegistry() 
+{
+  return qgis->getLayerRegistry();
+}

@@ -299,6 +299,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // mL = new QScrollView(canvasLegendSplit);
   //add a canvas
   mMapCanvas = new QgsMapCanvas(canvasLegendSplit);
+  // we need to cache the layer registry instance so plugins can get to it
+  mLayerRegistry = QgsMapLayerRegistry::instance();
   // resize it to fit in the frame
   //    QRect r = frmCanvas->rect();
   //    canvas->resize(r.width(), r.height());
