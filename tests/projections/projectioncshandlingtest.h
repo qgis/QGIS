@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
@@ -42,6 +43,9 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase {
       suiteOfTests->addTest( new CppUnit::TestCaller<ProjectionCsHandlingTest>( 
             "testAkAlbersExportToProj4Morph",
             &ProjectionCsHandlingTest::testAkAlbersExportToProj4Morph ) );
+      suiteOfTests->addTest( new CppUnit::TestCaller<ProjectionCsHandlingTest>( 
+            "testWktFromFile",
+            &ProjectionCsHandlingTest::testWktFromFile ) );
       return suiteOfTests;
     }  
     // 
@@ -206,6 +210,31 @@ wktAkAlbers = "PROJCS[\"Alaska_Albers_Equal_Area_Conic\",GEOGCS[\"GCS_North_Amer
       CPPUNIT_ASSERT(datum != 0);
       std::cout << "\tDatum: " << datum << std::endl; 
     }
+    //
+    // Test the WKT contained in wkt.txt in the current directory to see if
+    // the datum can be determined
+    //
+    void testWktFromFile()
+    {
+     std::ifstream wktIn("./wkt.txt");
+    char *buf = new char[16384];
+    wktIn.getline(buf, 16384);
+    wktIn.close();
+      std::cout << "\n\nGetting proj4 parameters from wkt.txt" << std::endl; 
+      // set up the spatial ref
+      OGRSpatialReference myInputSpatialRefSys;
+      CPPUNIT_ASSERT(myInputSpatialRefSys.importFromWkt(&buf)== OGRERR_NONE);
+//      std::cout << "\tGetting proj4 paramters with morph to ESRI form" << std::endl; 
+//      CPPUNIT_ASSERT(myInputSpatialRefSys.morphFromESRI() == OGRERR_NONE);
+      // get the proj4 for the unmorphed projection
+      char *proj4src;
+      CPPUNIT_ASSERT(myInputSpatialRefSys.exportToProj4(&proj4src) == OGRERR_NONE);
+      std::cout << "\tPROJ4: " << proj4src << std::endl;  
+      CPPUNIT_ASSERT(QString(proj4src).find("datum") > -1);
+      
+    }
+
+    
   private:
     // WKT for default projection hardcoded in QgsCoordinateTransform class
     QString wkt;
