@@ -43,6 +43,7 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
       hideSplashFlag =true;
     }
     cbxHideSplash->setChecked(hideSplashFlag);
+    
     // set the current theme
     cmbTheme->setCurrentText(settings.readEntry("/qgis/theme"));
     // set the SVG oversampling factor
@@ -64,4 +65,10 @@ QString QgsOptions::theme()
 {
   // returns the current theme (as selected in the cmbTheme combo box)
   return cmbTheme->currentText();
+}
+// Return state of the visibility flag for newly added layers. If
+
+bool QgsOptions::newVisible()
+{
+  return !chkAddedVisibility->isChecked();
 }

@@ -483,6 +483,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
   setTheme(themeName);
   setupToolbarPopups(themeName);
 
+  // Set the initial visibility flag for layers
+  // This user option allows the user to turn off inital drawing of
+  // layers when they are added to the map. This is useful when adding
+  // many layers and the user wants to adjusty symbology, etc prior to
+  // actually viewing the layer.
+  mAddedLayersHidden = settings.readBoolEntry("/qgis/new_layers_visible", true);
+
   if (! myHideSplashFlag)
   {
     gSplashScreen->setStatus(tr("QGIS Ready"));
@@ -855,7 +862,7 @@ void QgisApp::addLayer()
 
   if (pOgr.isEmpty())
     {
-#ifdef QGISDEBUG
+#ifdef QGSDEBUG
       qDebug("unable to get OGR registry");
 #endif
       return;
@@ -949,7 +956,8 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
       layer->setRenderer(renderer);
       renderer->initializeSymbology(layer);
       // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
-      // XXX some day will not necessary since connect up a request from the raster layer to show in overview map
+      // XXX some day will not necessary since connect up a request from
+      // the raster layer to show in overview map
 //      QObject::connect(layer, 
 //              SIGNAL(showInOverview(QString,bool)), 
 //              this, 
@@ -1025,6 +1033,9 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
            QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "ogr");
 
            Q_CHECK_PTR( layer );
+           // set the visibility based on user preference for newly added
+           // layers
+           layer->setVisible(mAddedLayersHidden);
 
            if ( ! layer )
            { 
@@ -2738,6 +2749,9 @@ void QgisApp::options()
     // set the theme if it changed
    setTheme(optionsDialog->theme()); 
    setupToolbarPopups(optionsDialog->theme());
+
+   // set the visible flag for new layers
+  mAddedLayersHidden = optionsDialog->newVisible(); 
   }
       
 }
