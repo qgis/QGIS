@@ -74,7 +74,7 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.11pre1 June 2, 2003";
+static const char *qgisVersion = "0.0.11pre2 June 4, 2003";
 static const int qgisVersionInt = 10;
 // cursors
 static unsigned char zoom_in_bits[] = {
@@ -210,7 +210,9 @@ void QgisApp::about()
 		"*Version check under tools menu\n"
 		"*Fix for PostGIS bug when srid != -1\n"
 		"*Database Connections can now be deleted\n"
-		"*Fixes to Database Connection dialog\n";
+		"*Fixes to Database Connection dialog\n"
+		"*Improved detection of invalid layers when loading\n"
+		;
 
 
 	abt->setWhatsNew(watsNew);

@@ -41,7 +41,7 @@ QgsShapeFileLayer::QgsShapeFileLayer(QString vectorLayerPath, QString baseName)
 
 	ogrDataSource = OGRSFDriverRegistrar::Open((const char *) dataSource);
 	if (ogrDataSource != NULL) {
-
+		std::cout << "Adding " << dataSource << std::endl;
 		ogrLayer = ogrDataSource->GetLayer(0);
 		OGREnvelope *ext = new OGREnvelope();
 		ogrLayer->GetExtent(ext);
@@ -51,11 +51,18 @@ QgsShapeFileLayer::QgsShapeFileLayer(QString vectorLayerPath, QString baseName)
 		layerExtent.setYmin(ext->MinY);
 		// get the feature type
 		OGRFeature *feat = ogrLayer->GetNextFeature();
-		OGRGeometry *geom = feat->GetGeometryRef();
-		feature = geom->getGeometryType();
-		ogrLayer->ResetReading();
-		delete feat;
-
+		if(feat){
+			OGRGeometry *geom = feat->GetGeometryRef();
+			if(geom){
+				feature = geom->getGeometryType();
+				ogrLayer->ResetReading();
+			}else{
+				valid = false;
+			}
+			delete feat;
+		}else{
+			valid = false;
+		}
 	} else {
 		valid = false;
 	}
@@ -351,6 +358,7 @@ void QgsShapeFileLayer::table()
 		fet = ogrLayer->GetNextFeature();
 
 	}
+	ogrLayer->ResetReading();
 	at->table()->setSorting(true);
 
 
