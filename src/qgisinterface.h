@@ -25,7 +25,7 @@ class QgisApp;
 class QgsMapLayer;
 class QPopupMenu;
 class QgsMapCanvas;
-
+class QgsRasterLayer;
 /** 
  * \class QgisInterface
  * \brief Abstract base class defining interfaces exposed by QgisApp and
@@ -55,8 +55,10 @@ class QgisInterface : public QWidget{
     virtual void zoomActiveLayer()=0;
     //! Add a vector layer
     virtual bool addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
-    //! Add a raster layer
+    //! Add a raster layer given a raster layer file name
     virtual bool addRasterLayer(QString rasterLayerPath)=0;
+    //! Add a raster layer given a QgsRasterLayer object
+    virtual bool addRasterLayer(QgsRasterLayer * theRasterLayer)=0;
     //! Add a project
     virtual bool addProject(QString theProject)=0; 
 
