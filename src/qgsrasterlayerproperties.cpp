@@ -38,6 +38,7 @@ email                : tim@linfiniti.com
 #include <qlistbox.h>
 #include <qtextbrowser.h>
 #include <qspinbox.h>
+#include <qpointarray.h>
 
 const char * const ident = 
 "$Id";
@@ -124,7 +125,6 @@ const char * const ident =
       myBandNameQStringList.append(myRasterBandNameQString);
     }
 
-    myBandCountInt = 1;
 
     for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
             myIterator != myBandNameQStringList.end(); 
@@ -147,8 +147,6 @@ const char * const ident =
     cboGray->insertItem("Not Set");
   }
 
-  //
-  // Set up the pyramiding tab
   //
 #if defined(WIN32) || defined(Q_OS_MACX)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
@@ -176,8 +174,43 @@ const char * const ident =
               QString::number((*myRasterPyramidIterator).yDimInt)); 
     }
   }
+  
+  //
+  //draw the histogram
+  //
+  int myHistogramWidth = pixHistogram->width();
+  int myHistogramHeight = pixHistogram->height();
+  int myBandCountInt = rasterLayer->getBandCount();
+  
+  QPixmap myPixmap(myHistogramWidth,myHistogramHeight);
+  myPixmap.fill(Qt::white);
+  QPainter myPainter(&myPixmap, this);
+  for (int myIteratorInt = 1;
+            myIteratorInt <= myBandCountInt;
+            ++myIteratorInt)
+  {
+    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    QPointArray myPointArray(256);
+    for (int myBin = 0; myBin <256; myBin++)
+    {
+      int myBinValue = myRasterBandStats.histogram[myBin];
+      int myX = (myHistogramWidth/256)*myBin;
+      //height varies according to freq.
+      int myY = (myHistogramHeight/256)*myBinValue;
+#ifdef QGISDEBUG
+      std::cout << "Band " << myIteratorInt << ", bin " << myBin << ", Value : " << myY << std::endl;
+#endif
+      myPointArray.setPoint(myBin, myX, myY);
+    }
+    myPainter.setPen( Qt::black );
+    myPainter.drawPolyline(myPointArray);
+  }
 
-  sync();                     // update based on lyr's current state
+  myPainter.end();
+  pixHistogram->setPixmap(myPixmap);
+
+ // update based on lyr's current state
+  sync();  
 } // QgsRasterLayerProperties ctor
 
 
