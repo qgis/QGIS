@@ -60,7 +60,7 @@ EXTRA_DIST = doc \
 	doc/skin/breadcrumbs.js \
 	doc/userguide.html \
 	doc/favicon.ico \
-	doc/install.pdf \ 
+	doc/install.pdf \
 	doc/README \
 	doc/index.html \
 	doc/install.html \
