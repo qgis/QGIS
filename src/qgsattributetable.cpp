@@ -17,10 +17,15 @@
  ***************************************************************************/
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qfont.h>
 #include "qgsattributetable.h"
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name)
 {
+	QFont f( font() );
+	f.setFamily( "Helvetica" );
+	f.setPointSize(11);
+	setFont(f);
 }
 
 QgsAttributeTable::~QgsAttributeTable()
