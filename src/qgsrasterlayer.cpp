@@ -3943,6 +3943,7 @@ void QgsRasterLayer::identify(QgsRect * r)
     }
 
     mIdentifyResults->showAllAttributes();
+    mIdentifyResults->show();
 
 } // void QgsRasterLayer::identify(QgsRect * r)
 
