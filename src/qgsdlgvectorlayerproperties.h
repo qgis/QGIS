@@ -56,10 +56,20 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
 
   public slots:
   void alterLayerDialog(const QString& string);
-  void apply();
-  void close();
   /** Reset to original (vector layer) values */
   void reset();
+
+  //
+  //methods reimplemented from qt designer base class
+  //
+
+
+  void pbnCancel_clicked();
+  void pbnOK_clicked();
+  void pbnApply_clicked();
+  void btnHelp_clicked();
+  
+  
 
   protected:
   QgsVectorLayer *layer;
@@ -75,7 +85,6 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   QgsAttributeActionDialog* actionDialog;
   /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
   QPixmap bufferPixmap;
-  void closeEvent(QCloseEvent* e);
 };
 
 inline void QgsDlgVectorLayerProperties::setBufferDialog(QDialog* dialog)
