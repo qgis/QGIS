@@ -53,17 +53,9 @@
 #include <qtextstream.h>
 #include <qsocket.h>
 #include <qinputdialog.h>
-#include <qregexp.h> 
 
 #include <iostream>
 #include <iomanip>
-
-
-#ifndef GDAL_PRIV_H_INCLUDED
-#include <gdal_priv.h>
-#endif
-
-
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -224,10 +216,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
     //
     SplashScreen *mySplash = new SplashScreen();
     mySplash->setStatus(tr("Loading QGIS..."));
-
-    GDALAllRegister();          // register all GDAL and OGR plug-ins
     OGRRegisterAll();
-
     QPixmap icon;
     icon = QPixmap(qgis_xpm);
     setIcon(icon);
@@ -288,7 +277,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
     appDir = PREFIX;
     // Get pointer to the provider registry singleton
     QString plib = PREFIX;
-    plib += "/lib";
+    plib += "/lib/qgis";
     providerRegistry = QgsProviderRegistry::instance(plib);
     // set the provider plugin path 
 #ifdef DEBUG
@@ -410,173 +399,39 @@ void QgisApp::addLayer(QStringList theLayerQStringList)
 }
 
 
-
-
-/**
-   Builds the list of file filter strings to later be used by
-   QgisApp::addRasterLayer()
-
-   We query GDAL for a list of supported raster formats; we then build
-   a list of file filter strings from that list.  We return a string
-   that contains this list that is suitable for use in a a
-   QFileDialog::getOpenFileNames() call.
-
- */
-static
-void
-buildSupportedRasterFileFilter_( QString & fileFilters )
-{
-   // first get the GDAL driver manager
-
-   GDALDriverManager * driverManager =  GetGDALDriverManager( );
-
-   if ( ! driverManager )
-   {
-      std::cerr << "unable to get GDALDriverManager\n";
-      return;                   // XXX good place to throw exception if we 
-   }                            // XXX decide to do exceptions
-
-   // then iterate through all of the supported drivers, adding the
-   // corresponding file filter
-
-   GDALDriver * driver;         // current driver
-
-   char **  driverMetadata;     // driver metadata strings
-
-   QString driverLongName( "" ); // long name for the given driver
-   QString driverExtension( "" ); // file name extension for given driver
-
-   QStringList metadataTokens;  // essentially the metadata string delimited by '='
-
-   // Grind through all the drivers and their respective metadata.
-   // We'll add a file filter for those drivers that have a file
-   // extension defined for them; the others, welll, even though
-   // theoreticaly we can open those files because there exists a
-   // driver for them, the user will have to use the "All Files" to
-   // open datasets with no explicitly defined file name extension.
-   // Note that file name extension strings are of the form
-   // "DMD_EXTENSION=.*".  We'll also store the long name of the
-   // driver, which will be found in DMD_LONGNAME, which will have the
-   // same form.
-
-   for ( int i = 0; i < driverManager->GetDriverCount(); ++i )
-   {
-      driver = driverManager->GetDriver( i );
-
-      if ( ! driver )
-      {
-         std::cerr << "unable to get driver " << i << "\n";
-      }
-
-      // std::cerr << "got driver string " << driver->GetDescription() << "\n";
-
-      driverMetadata = driver->GetMetadata();
-
-      // presumably we know we've run out of metadta if either the
-      // address is 0, or the first character is null
-      while ( driverMetadata && '\0' != driverMetadata[0] )
-      {
-         metadataTokens = QStringList::split( "=", *driverMetadata );
-         // std::cerr << "\t" << *driverMetadata << "\n";
-
-         // XXX add check for malformed metadataTokens
-
-         // Note that it's oddly possible for their to be a
-         // DMD_EXTENSION with no corresponding defined extension
-         // string; so we check that there're more than two tokens.
-
-         if ( metadataTokens.count() > 1 )
-         {
-            if ( "DMD_EXTENSION" == metadataTokens[0] )
-            {
-               driverExtension = metadataTokens[1];
-
-            }
-            else if ( "DMD_LONGNAME" == metadataTokens[0] )
-            {
-               driverLongName = metadataTokens[1];
-
-               // remove any superfluous (.*) strings at the end as
-               // they'll confuse QFileDialog::getOpenFileNames()
-
-               driverLongName.remove( QRegExp("\\(.*\\)$") );
-            }
-         }
-
-         // if we have both the file name extension and the long name,
-         // then we've all the information we need for the current
-         // driver; therefore emit a file filter string and move to
-         // the next driver
-         if ( ! (driverExtension.isEmpty() || driverLongName.isEmpty()) )
-         {
-            // XXX add check for SDTS; in that case we want (*CATD.DDF)
-            fileFilters += 
-               driverLongName + "(*." + driverExtension.lower() 
-                              + " *." + driverExtension.upper() + ");;";
-
-            driverExtension = driverLongName = ""; // reset for next driver
-
-            continue;           // ... to next driver, if any.
-         }
-
-         ++driverMetadata;
-
-      } // each metadata item
-
-      // XXX if you want to insert whining about formats with no
-      // XXX extensions, this is where you'd check for it and complain
-
-      driverExtension = driverLongName = ""; // reset for next driver
-
-   } // each loaded GDAL driver
-
-   // can't forget the default case
-   fileFilters += "All files (*.*)";
-
-} // buildSupportedRasterFileFilter_()
-
-
-
-
-
 void QgisApp::addRasterLayer()
 {
-    QString fileFilters;
 
-    buildSupportedRasterFileFilter_( fileFilters );
+    QString myFileTypeQString;
 
-    // std::cerr << fileFilters << "\n";
+    QString myArcInfoBinaryGridFilterString = "Arc Info Binary Grid (*.adf)";
+    QString myArcInfoAsciiGridFilterString = "Arc Info Ascii Grid (*.asc;*.grd)";
+    QString myERDASFilterString = "ERDAS Imagine (*.img)";
+    QString myGeoTiffFilterString = "Geo tiff (*.tif)";
+    QString myUSGSAsciiDemFilterString = "USGS Ascii DEM (*.dem;*.DEM)";
+    QString myGrassFilterString = "Grass raster (*.*)";
+    QString mySDTSFilterString = "SDTS (*CATD*.DDF)";
+    QString myAllRasterFormatsFilterString = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DEM;*.DDF)";
+    QString myOtherFormatsFilterString = "Other (*.*)";
+    //QString myBilFilterString="Band Interleaved by Line (*.bil)";
+    //QString myJpgFilterString="Geo jpg (*.jpg)";
 
-    QString selectedFilter;
-
-//     QString myArcInfoBinaryGridFilterString = "Arc Info Binary Grid (*.adf)";
-//     QString myArcInfoAsciiGridFilterString = "Arc Info Ascii Grid (*.asc;*.grd)";
-//     QString myERDASFilterString = "ERDAS Imagine (*.img)";
-//     QString myGeoTiffFilterString = "Geo tiff (*.tif)";
-//     QString myUSGSAsciiDemFilterString = "USGS Ascii DEM (*.dem;*.DEM)";
-//     QString myGrassFilterString = "Grass raster (*.*)";
-//     QString mySDTSFilterString = "SDTS (*CATD*.DDF)";
-//     QString myAllRasterFormatsFilterString = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DEM;*.DDF)";
-//     QString myOtherFormatsFilterString = "Other (*.*)";
-//     //QString myBilFilterString="Band Interleaved by Line (*.bil)";
-//     //QString myJpgFilterString="Geo jpg (*.jpg)";
-
-    QStringList selectedFilenames = 
-       QFileDialog::getOpenFileNames( fileFilters,
-                                      "",   // initial dir
-                                      this, // parent dialog
-                                      "OpenFileDialog", // QFileDialog qt object name
-                                      "Select file name and type",  // caption
-                                      &selectedFilter    // the pointer to store selected filter
-          );
-
-    // cout << "Selected filetype filter is : " << myFileTypeQString << endl;
-
-    addRasterLayer( selectedFilenames );
-
-} // QgisApp::addRasterLayer()
-
-
+    QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(myAllRasterFormatsFilterString + ";;" +
+                                                                      myArcInfoBinaryGridFilterString + ";;" +
+                                                                      myArcInfoAsciiGridFilterString + ";;" +
+                                                                      myERDASFilterString + ";;" +
+                                                                      //myBilFilterString + ";;" +
+                                                                      //myJpgFilterString + ";;" +  
+                                                                      myGeoTiffFilterString + ";;" + myGrassFilterString + ";;" + myUSGSAsciiDemFilterString + ";;" + mySDTSFilterString + ";;" + myOtherFormatsFilterString,   //filters to select 
+                                                                      "",   //initial dir
+                                                                      this, //parent dialog
+                                                                      "OpenFileDialog", //QFileDialog qt object name
+                                                                      "Select file name and type",  //caption
+                                                                      &myFileTypeQString    //the pointer to store selected filter
+      );
+    //cout << "Selected filetype filter is : " << myFileTypeQString << endl;
+    addRasterLayer(myFileNameQStringList);
+}                               //end of addRasterLayer()
 
 
 void QgisApp::addRasterLayer(QStringList theFileNameQStringList)
