@@ -29,7 +29,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
 {
  public:
     //! Constructor
-    QgsDbSourceSelect();
+    QgsDbSourceSelect(QWidget *parent = 0, const char *name = 0);
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection

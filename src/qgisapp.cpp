@@ -162,8 +162,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	// create the layer popup menu
 	popMenu = new QPopupMenu();
 	popMenu->insertItem("&Zoom to extent of selected layer", this, SLOT(zoomToLayerExtent()));
-	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
+	popMenu->insertItem("&Open attribute table", this, SLOT(attributeTable()));
+	popMenu->insertSeparator();
 	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
+	popMenu->insertSeparator();
+	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
 	mapCursor = 0;
 
 	// set the legend control for the map canvas
@@ -258,7 +261,7 @@ void QgisApp::addDatabaseLayer()
 	// show the postgis dialog
 
 
-	QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
+	QgsDbSourceSelect *dbs = new QgsDbSourceSelect(this);
 	mapCanvas->freeze();
 	if (dbs->exec()) {
 		QApplication::setOverrideCursor(Qt::WaitCursor);
