@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.142 2004/06/20 23:58:13 timlinux Exp
+ChangeLog,v 1.143 2004/06/21 00:15:49 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-21 [ts] 0.3.0devel46
+
+** Got tired of always resetting my gidbase dir everytime qgis restarts - 
+   added it to qsettings.
 
 2004-06-21 [ts] 0.3.0devel45
 
