@@ -555,6 +555,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
+  myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
 #ifdef QGISDEBUG
   std::cout << "draw gray band Retrieving stats" << std::endl;
@@ -627,6 +628,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
+  myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
   RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   double myRangeDouble = myRasterBandStats.rangeDouble;
@@ -801,6 +803,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
   // print each point in myGdalScanData using color looked up in color table
   GDALColorTable *colorTable = myGdalBand->GetColorTable();
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
+  myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
 
 
@@ -884,6 +887,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
   // print each point in myGdalScanData using color looked up in color table
   GDALColorTable *colorTable = myGdalBand->GetColorTable();
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
+  myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
 
 
@@ -1085,6 +1089,7 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   // print each point in myGdalScanData using color looked up in color table
   GDALColorTable *colorTable = myGdalBand->GetColorTable();
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
+  myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
     {
@@ -1212,6 +1217,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
   int myRedInt, myGreenInt, myBlueInt;
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
+  myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
     {
