@@ -208,10 +208,15 @@ void QgsPgGeoprocessing::buffer()
                     // functions)
                     PGresult *result = PQexec(conn, "begin work");
                     PQclear(result);
-                    QString sql = QString("set search_path = '%1','public'").arg(bb->schema());
-                    result = PQexec(conn, (const char *) sql);
-                    PQclear(result);
-                    std::cerr << sql << std::endl;
+                    QString sql;
+                    // set the schema search path if schema is not public
+                    if(bb->schema() != "public")
+                    {
+                      sql = QString("set search_path = '%1','public'").arg(bb->schema());
+                      result = PQexec(conn, (const char *) sql);
+                      PQclear(result);
+                      std::cerr << sql << std::endl;
+                    }
                     // first create the new table
 
                     sql = QString("create table %1.%2 (%3 %4)")
@@ -243,6 +248,17 @@ void QgsPgGeoprocessing::buffer()
                         std::cerr << sql << std::endl;
                         result = PQexec(conn, (const char *) sql);
                         PQclear(result);
+                        // check pg version and formulate insert query accordingly
+                        result = PQexec(conn,"select version()");
+                        QString versionString = PQgetvalue(result,0,0);
+                        QStringList versionParts = QStringList::split(" ", versionString);
+                        // second element is the version number
+                        QString version = versionParts[1];
+                        if(version < "7.4.0"){
+                          // modify the tableName 
+                          tableName = tableName.mid(tableName.find(".")+1);
+                        }
+                          std::cerr << "Table name for PG 7.3 is: " << tableName.mid(tableName.find(".")+1) << std::endl;
                         //   if(PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
                         // do the buffer and insert the features
                         if (objId == "objectid") {
