@@ -3,6 +3,9 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-16 [larsl] 0.5.0devel24
+** Reimplemented getNextFeature() so features are visible again
+
 2004-11-13 [larsl] 0.5.0devel23
 ** Changed QgsIdentifyResults and QgsVectorLayer to show all attributes
    automatically (expand the feature node) if only one feature is identified
