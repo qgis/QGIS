@@ -1089,6 +1089,10 @@ bool QgsPostgresProvider::deleteFeatures(std::list<int> id)
     return returnvalue;
 }
 
+bool QgsPostgresProvider::supportsSaveAsShapefile()
+{
+  return false;
+}
 /**
  * Class factory to return a pointer to a newly created 
  * QgsPostgresProvider object
