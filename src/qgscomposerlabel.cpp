@@ -55,7 +55,8 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
     mComposition = composition;
     mId  = id;
 
-    mText = text;
+    //mText = text;
+    mText = "Quantum GIS";
 
     // Font and pen 
     mFont.setPointSize ( fontSize );
@@ -167,9 +168,13 @@ void QgsComposerLabel::changeFont ( void )
 {
     bool result;
 
+    QRect r = boundingRect();
+
     mFont = QFontDialog::getFont(&result, mFont, this );
 
     if ( result ) {
+	QCanvasPolygonalItem::invalidate();
+    	QCanvasPolygonalItem::canvas()->setChanged(r);
 	QCanvasPolygonalItem::update();
 	QCanvasPolygonalItem::canvas()->update();
     }
@@ -223,7 +228,10 @@ void QgsComposerLabel::setOptions ( void )
 
 void QgsComposerLabel::textChanged ( void )
 { 
+    QRect r = boundingRect();
     mText = mTextLineEdit->text();
+    QCanvasPolygonalItem::invalidate();
+    QCanvasPolygonalItem::canvas()->setChanged(r);
     QCanvasPolygonalItem::update();
     QCanvasPolygonalItem::canvas()->update();
     writeSettings();
