@@ -110,7 +110,7 @@ QString QgsShapeFile::getFeatureClass(){
   }else valid = false;
   
   ogrLayer->ResetReading();    
-  return valid?geom_type:NULL;
+  return valid?geom_type:QString::null;
 }
 
 bool QgsShapeFile::is_valid(){
