@@ -1,7 +1,7 @@
 QGIS Change Log
-ChangeLog,v 1.17 2004/02/25 03:54:57 gsherman Exp
+ChangeLog,v 1.18 2004/02/25 07:02:35 gsherman Exp
 ------------------------------------------------------------------------------
-Version 0.1 'Moroz' February 15, 2004
+Version 0.1 'Moroz' February 25, 2004
 **User interface improvements - menu and dialog cleanups and a new icon theme
   based on Everaldo's Crystal icon set.
 **QGIS can load layers and / or a project on start up by specifying these
