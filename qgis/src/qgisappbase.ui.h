@@ -140,3 +140,8 @@ void QgisAppBase::checkQgisVersion()
 {
 
 }
+
+void QgisAppBase::select()
+{
+
+}

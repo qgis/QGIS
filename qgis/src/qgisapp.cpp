@@ -462,6 +462,12 @@ void QgisApp::attributeTable()
 	}
 }
 
+void QgisApp::select()
+{
+    std::cout << "bin in select" << std::endl;
+    mapCanvas->setMapTool(QGis::Select);
+}
+
 //void QgisApp::readWKB (const char *connInfo, QStringList tables)
 //{
 //    PgCursor pgc (connInfo, "testcursor");

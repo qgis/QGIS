@@ -45,7 +45,9 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 	setMouseTracking(true);
 	drawing = false;
 	dirty = true;
+	ctrlPressed=false;
 	pmCanvas = new QPixmap(width(),height());
+        setFocusPolicy(QWidget::StrongFocus);
 }
 
 QgsMapCanvas::~QgsMapCanvas()
@@ -308,11 +310,12 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 	mouseButtonDown = true;
 	boxStartPoint = e->pos();
 	switch (mapTool) {
-	  case QGis::ZoomIn:
-	  case QGis::ZoomOut:
+	    case QGis::Select:
+	    case QGis::ZoomIn:
+	    case QGis::ZoomOut:
 		  zoomBox.setRect(0, 0, 0, 0);
 		  break;
-	  case QGis::Distance:
+	    case QGis::Distance:
 //              distanceEndPoint = e->pos();
 		  break;
 	}
@@ -393,6 +396,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  break;
 
 		  case QGis::Pan:
+		  {
 			  // use start and end box points to calculate the extent
 			  QgsPoint start = coordXForm->toMapCoordinates(boxStartPoint);
 			  QgsPoint end = coordXForm->toMapCoordinates(e->pos());
@@ -419,7 +423,37 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  }
 			  clear();
 			  render2();
+		  }
 			  break;
+
+		    case QGis::Select:
+			// erase the rubber band box
+			paint.begin(this);
+			paint.setPen(pen);
+			paint.setRasterOp(Qt::XorROP);
+			paint.drawRect(zoomBox);
+			paint.end();
+
+			QgsMapLayer * lyr = mapLegend->currentLayer();
+			if(lyr)
+			{
+			    QgsPoint ll, ur;
+			    
+                            // store the rectangle
+			    zoomBox.setRight(e->pos().x());
+			    zoomBox.setBottom(e->pos().y());
+
+			    ll = coordXForm->toMapCoordinates(zoomBox.left(), zoomBox.bottom());
+			    ur = coordXForm->toMapCoordinates(zoomBox.right(), zoomBox.top()); 
+
+			    QgsRect* search= new QgsRect(ll.x(),ll.y(),ur.x(),ur.y());
+			    lyr->select(search,ctrlPressed);
+			    delete search;
+			}
+			else
+			{
+			    QMessageBox::warning(this, "No active layer", "To select features, you must choose an layer active by clicking on its name in the legend");
+			}
 		}
 	} else {
 		// map tools that rely on a click not a drag
@@ -462,8 +496,9 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 		// this is a drag-type operation (zoom, pan or other maptool)
 
 		switch (mapTool) {
-		  case QGis::ZoomIn:
-		  case QGis::ZoomOut:
+		    case QGis::Select:
+		    case QGis::ZoomIn:
+		    case QGis::ZoomOut:
 			  // draw the rubber band box as the user drags the mouse
 			  dragging = true;
 
@@ -480,7 +515,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 			  paint.drawRect(zoomBox);
 			  paint.end();
 			  break;
-		  case QGis::Pan:
+		    case QGis::Pan:
 			  // show the pmCanvas as the user drags the mouse
 			  dragging = true;
 			  // bitBlt the pixmap on the screen, offset by the
@@ -593,3 +628,22 @@ void QgsMapCanvas::removeAll(){
 	layers.clear();
 	zOrder.clear();
 }
+
+void QgsMapCanvas::keyPressEvent(QKeyEvent* ev)
+{
+    if(ev->key()==Qt::Key_Control)
+    {
+	std::cout << "ctrlPressed = true" << std::endl;
+	ctrlPressed=true;
+    }
+}
+
+void QgsMapCanvas::keyReleaseEvent(QKeyEvent* ev)
+{
+   if(ev->key()==Qt::Key_Control)
+    {
+	std::cout << "ctrlPressed = false" << std::endl;
+	ctrlPressed=false;
+    } 
+}
+

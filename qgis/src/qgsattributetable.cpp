@@ -64,6 +64,7 @@ void QgsAttributeTable::keyReleaseEvent(QKeyEvent* ev)
 
 void QgsAttributeTable::handleChangedSelections()
 {   
+    std::cout << "bin in QgsAttributeTable::handleChangedSelection" << std::endl;
     QTableSelection cselection;
     if(lockKeyPressed==false)
     {
@@ -74,6 +75,7 @@ void QgsAttributeTable::handleChangedSelections()
     //if there is no current selection, there is nothing to do
     if(currentSelection()==-1)
     {
+	std::cout << "No current selection" << std::endl;
 	emit repaintRequested();
 	return;
     }
@@ -82,10 +84,30 @@ void QgsAttributeTable::handleChangedSelections()
     
     for(int index=cselection.topRow();index<=cselection.bottomRow();index++)
     {
+	std::cout << "topRow: " << cselection.topRow() << std::endl;
+	std::cout << "bottomRow: " << cselection.bottomRow() << std::endl;
+	std::cout << "index: " << index << std::endl;
 	emit selected(text(index,0).toInt());
     }
+
+   
+    std::cout << "emit QgsAttributeTable::repaintRequested" << std::endl;
     emit repaintRequested();
+   
 }
 
+
+void QgsAttributeTable::selectRowWithId(int id)
+{
+    //brute force approach
+    for(int i=0;i<numRows();i++)
+    {
+	if(text(i,0).toInt()==id)
+	{
+	    selectRow(i);
+	    return;
+	}
+    }
+}
 
 	  

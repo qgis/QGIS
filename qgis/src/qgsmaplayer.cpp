@@ -152,3 +152,8 @@ void QgsMapLayer::identify(QgsRect * r)
 void QgsMapLayer::table()
 {
 }
+
+void QgsMapLayer::select(QgsRect *, bool lock)
+{
+
+}

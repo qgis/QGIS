@@ -82,6 +82,8 @@ class QgisApp:public QgisAppBase
 	void testButton();
 	//! About QGis
 	void about();
+	//! activates the selection tool
+	void select();
 
 	private slots:
 //! Slot to show the map coordinate position of the mouse cursor

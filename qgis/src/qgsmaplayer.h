@@ -66,6 +66,8 @@ class QgsMapLayer:public QObject
 	/*! Identify the feature(s) in this layer that are contained in the search rectangle
 	 */
 	virtual void identify(QgsRect *);
+	/*!Select features on the map canvas by dragging a rectangle*/
+	virtual void select(QgsRect *, bool lock);
 	/*! Display the attribute table for the layer
 	 */
 	virtual void table();
