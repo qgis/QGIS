@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.101 2004/05/27 15:05:06 jobi Exp
+ChangeLog,v 1.102 2004/05/27 16:53:10 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-27 [gsherman] 0.3.0devel7
+** Fixed schema problem with the spit plugin
 
 2004-05-27 [jobi] 0.3.0devel7
 ** cleanup of gcc warnings
