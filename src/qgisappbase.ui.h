@@ -73,7 +73,7 @@ void QgisAppBase::pan()
 
 }
 
-void QgisAppBase::about()
+void QgisAppBase::capturePolygon()
 {
 
 }
