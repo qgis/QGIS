@@ -91,6 +91,13 @@ public:
     virtual void dump( ) const = 0;
 
     /**
+       deletes the given key
+
+       @param keyname key list tokenized by '/' by caller
+    */
+    virtual bool remove( QStringList & keyname ) = 0;
+
+    /**
        restores property hierarchy to given DOM node
 
        Used for restoring properties from project file
@@ -113,6 +120,9 @@ public:
        @note does not recursively count all sub-keys, only immediate objects
     */
     virtual size_t count() const = 0;
+
+    /// Does this property not have any subkeys or values?
+    virtual bool isEmpty() const = 0;
 
 }; // class Property
 
@@ -201,6 +211,26 @@ public:
             qDebug( "%s", value_.toString().ascii() );
         }
     }
+
+    /**
+       deletes the given key
+
+       @param keyname key list tokenized by '/' by caller
+    */
+    /* virtual */ bool remove( QStringList & keyname )
+    {
+        // NOP; parent PropertyKey will delete this PropertyValue in its remove()
+
+        return false;           // we shouldn't ever be calling this, so return false
+    } // remove
+
+
+    /// Does this property not have any subkeys or values?
+    /* virtual */ bool isEmpty() const
+    {   // values are leaf nodes, so are always empty
+        return true;
+    }
+
 
     /* virtual */ bool readXML( QDomNode & keyNode )
     {
@@ -660,7 +690,8 @@ public:
         return true;
     }
 
-    virtual void dump( ) const
+
+    /* virtual */ void dump( ) const
     {
         for ( QDictIterator<Property> i(properties_); i.current(); ++i )
         {
@@ -669,6 +700,47 @@ public:
             qDebug( "</%s>", i.currentKey().ascii() );
         }
     }
+
+
+    /**
+       deletes the given key
+
+       @param keyname key list tokenized by '/' by caller
+    */
+    /* virtual */ bool remove( QStringList & keyName )
+    {
+        // save the current key, which should be the front of the key list
+        QString const currentKey = keyName.front();
+
+        // now pop it off
+        keyName.pop_front();
+
+        if ( keyName.empty() )  // then we have a leaf node
+        {
+            properties_.remove( currentKey );
+        }
+        else if ( properties_.find( currentKey ) )
+        {   // recurse down to next key
+            properties_[currentKey]->remove( keyName );
+
+            // if that subkey is now empty, then delete it, too
+            if ( properties_[currentKey]->isEmpty() )
+            {
+                properties_.remove( currentKey );
+            }
+        }
+        else
+        {
+            qDebug( "%s:%d cannot find key %s to remove", 
+                    __FILE__, __LINE__,  currentKey.ascii() );
+
+            return false;
+        }
+
+        return true;
+
+    } // remove
+
 
     /* virtual */ bool readXML( QDomNode & keyNode )
     {
@@ -731,10 +803,18 @@ public:
         return true;
     }
 
+
     /// how many elements are contained within this one?
     size_t count() const
     {
         return properties_.count();
+    }
+
+
+    /// Does this property not have any subkeys or values?
+    /* virtual */ bool isEmpty() const
+    {
+        return properties_.isEmpty();
     }
 
 
@@ -2097,6 +2177,7 @@ QgsProject::readBoolEntry ( QString const & scope,
 bool
 QgsProject::removeEntry ( QString const & scope, const QString & key )
 {
-    qDebug( "%s:%d not implemented yet", __FILE__, __LINE__ );
-    return false;
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    return imp_->properties_[scope].remove( keyTokens );
 } // QgsProject::removeEntry
