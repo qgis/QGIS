@@ -200,7 +200,7 @@ void QgsSpit::import(){
   	if (pd->Status() == CONNECTION_OK) {     
       QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 10000, this, "Progress");
       pro->setAutoClose(true);
-      pro->exec();
+      pro->show();
 
       //pd->ExecTuplesOk("BEGIN");
       for(int i=0; i<fileList.size(); i++){

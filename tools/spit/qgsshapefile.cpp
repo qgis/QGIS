@@ -119,9 +119,12 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
   table = table.section('/', -1);
   table = table.section('.', 0, 0);
   QString query = "CREATE TABLE "+table+"(gid int4, ";
-  for(int n=0; n<column_names.size(); n++)
-    query += QString(column_names[n]).lower() + " " + QString(column_types[n]) + ",";
-  query += "the_geom geometry)";
+  for(int n=0; n<column_names.size(); n++){
+    query += QString(column_names[n]).lower() + " " + QString(column_types[n]);
+    if(n < column_names.size() -1)
+      query += ", ";
+  }
+  query += ")";
 
   conn->ExecTuplesOk((const char *)query);
   
