@@ -755,6 +755,25 @@ bool QgsDelimitedTextProvider::isValid(){
   return mValid;
 }
 
+bool QgsDelimitedTextProvider::startEditing()
+{
+    return false;
+}
+
+void QgsDelimitedTextProvider::stopEditing()
+{
+}
+
+bool QgsDelimitedTextProvider::commitChanges()
+{
+    return false;
+}
+
+bool QgsDelimitedTextProvider::rollBack()
+{
+    return false;
+}
+
 bool QgsDelimitedTextProvider::addFeature(QgsFeature* f)
 {
     return false;

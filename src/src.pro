@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.51 2004/09/18 06:29:59 gsherman Exp 
+# src.pro,v 1.52 2004/09/27 21:30:27 mhugent Exp 
 ######################################################################
 #
 # For a WIN32 release build do the following:
@@ -102,6 +102,7 @@ HEADERS += qgis.h \
             qgssymbol.h \
             qgssymbologyutils.h \
             qgstable.h \
+            qgsvectordataprovider.h \^M
             qgsvectorlayer.h \
             qgssvgcache.h \
             splashscreen.h \

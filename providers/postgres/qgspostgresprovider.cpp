@@ -828,6 +828,27 @@ bool QgsPostgresProvider::isValid(){
     return valid;
 }
 
+
+bool QgsPostgresProvider::startEditing()
+{
+    return false;
+}
+
+void QgsPostgresProvider::stopEditing()
+{
+    
+}
+
+bool QgsPostgresProvider::commitChanges()
+{
+    return false;
+}
+
+bool QgsPostgresProvider::rollBack()
+{
+    return false;
+}
+
 bool QgsPostgresProvider::addFeature(QgsFeature* f)
 {
   // need to create an insert statement to add the feature
