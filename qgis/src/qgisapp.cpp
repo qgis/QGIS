@@ -2934,7 +2934,7 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
 void QgisApp::addRasterLayer()
 {
-  mMapCanvas->freeze(true);
+  //mMapCanvas->freeze(true);
   QString fileFilters;
 
   // build the file filters based on the loaded GDAL drivers
@@ -2945,12 +2945,13 @@ void QgisApp::addRasterLayer()
   openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles);
 
   if (selectedFiles.isEmpty())
-    {
-      // no files were selected, so just bail		
-       return;
-    }
- 
-   addRasterLayer(selectedFiles);
+  {
+    // no files were selected, so just bail		
+    return;
+  }
+
+  //mMapCanvas->freeze(false);
+  addRasterLayer(selectedFiles);
 }// QgisApp::addRasterLayer()
 
 //
@@ -3011,7 +3012,7 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
     return false;
   }
 
-  //these must go!
+  //these must go!?
   //qApp->processEvents();
   //mMapCanvas->freeze(false);
   //mMapCanvas->render();
