@@ -1,7 +1,8 @@
-BUGS,v 1.3 2004/02/13 16:52:25 stevehalasz Exp
-Known issues and bugs in this release (QGIS 0.1pre1 'Moroz')
+BUGS,v 1.4 2004/02/25 05:42:07 gsherman Exp
+-----------------------------------------------------------------------------
+Known issues and bugs in this release (QGIS 0.1 'Moroz')
 RASTER:
-1. Canvas repaints multiple times when adding multiple rasters.[Bug 891870]
+1. Very large rasters cause crash [Bug 898642]
 
 VECTOR:
 1. OGR layers (for example shapefiles) do not reliably select or identify
@@ -11,3 +12,9 @@ VECTOR:
 2. Zooming in very close can result in a scrambled display. [Bug 895506]
 3. Drawing polygons with patterns other than solid may leave "holes" where the
    polygons are not properly rendered.[Bug 889454]
+
+PLUGINS:
+1. SPIT crashes on empty/invalid data in a shapefile [Bug 903940]
+
+For additional information, see the QGIS Bugs page at:
+  http://sourceforge.net/tracker/?group_id=55820&atid=478378
