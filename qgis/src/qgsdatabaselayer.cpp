@@ -319,21 +319,23 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 		  case QGis::WKBLineString:
 
 			  // get number of points in the line
-			  numPoints = (int) (feature + 1 + sizeof(int));
-			  ptr = feature + 1 + 2 * sizeof(int);
-			  for (idx = 0; idx < numPoints; idx++) {
-				  x = (double *) ptr;
-				  ptr += sizeof(double);
-				  y = (double *) ptr;
-				  ptr += sizeof(double);
-				  // transform the point
-				  pt = cXf->transform(*x, *y);
-				  if (idx == 0)
-					  p->moveTo(pt.xToInt(), pt.yToInt());
-				  else
-					  p->lineTo(pt.xToInt(), pt.yToInt());
+			 lsb = *ptr;
+			 	nPoints = (int *) (feature + 1 + sizeof(int));
+				  ptr = feature + 1 + 2 * sizeof(int);	
+				 // ptr += sizeof(int);
+				  for (idx = 0; idx < *nPoints; idx++) {
+					  x = (double *) ptr;
+					  ptr += sizeof(double);
+					  y = (double *) ptr;
+					  ptr += sizeof(double);
+					  // transform the point
+					  pt = cXf->transform(*x, *y);
+					  if (idx == 0)
+						  p->moveTo(pt.xToInt(), pt.yToInt());
+					  else
+						  p->lineTo(pt.xToInt(), pt.yToInt());
 
-			  }
+				  }
 			  break;
 		  case QGis::WKBMultiLineString:
 
