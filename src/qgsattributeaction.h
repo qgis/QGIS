@@ -30,7 +30,8 @@
 #include <qprocess.h>
 
 #include <list>
-
+#include <vector>
+#include <utility>
 class QDomNode;
 class QDomDocument;
 
@@ -85,8 +86,11 @@ class QgsAttributeAction
   // dialog box.
   void addAction(QString name, QString action, bool capture = false);
 
-  //! Does the action for the given attribute. 
-  void doAction(unsigned int index, QString value);
+  //! Does the action using the given values. defaultValueIndex is an
+  // index into values which indicates which value in the values vector
+  // is to be used if the action has a default placeholder. 
+  void doAction(unsigned int index, const std::vector<std::pair<QString, QString> >& values,
+		int defaultValueIndex = 0);
 
   //! Returns a const_iterator that points to the QgsAction at the
   // given position in the data collection. The insertion order is
@@ -111,7 +115,8 @@ class QgsAttributeAction
 
   //! Expands the given action, replacing all %'s with the value as
   // given.  
-  static QString expandAction(QString action, QString value);
+  static QString expandAction(QString action, const std::vector<std::pair<QString, QString> >& values,
+			      int defaultValueIndex);
 
   //! Writes the actions out in XML format
   bool writeXML(QDomNode& layer_node, QDomDocument& doc) const;
