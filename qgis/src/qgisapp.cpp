@@ -57,6 +57,8 @@
 
 #include <iostream>
 #include <iomanip>
+#include <memory>
+
 
 
 #ifndef GDAL_PRIV_H_INCLUDED
@@ -475,6 +477,76 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
 
 
+/**
+   Open files, preferring to have the default file selector be the
+   last one used, if any; also, prefer to start in the last directory
+   associated with filterName.
+
+   @param filterName the name of the filter; used for persistent store
+                     key
+   @param filters    the file filters used for QFileDialog
+
+   @param selectedFiles string list of selected files; will be empty
+                        if none selected
+
+   @note
+
+   Stores persistent settings under /qgis/UI/.  The sub-keys will be
+   filterName and filterName + "Dir".
+
+   Opens dialog on last directory associated with the filter name, or
+   the current working directory if this is the first time invoked
+   with the current filter name.
+
+*/
+static
+void
+openFilesRememberingFilter_( QString const & filterName,
+                             QString const & filters,
+                             QStringList & selectedFiles )
+{
+   bool haveLastUsedFilter = false; // by default, there is no last
+                                // used filter
+
+   QSettings settings;          // where we keep last used filter in
+                                // persistant state
+
+   QString   lastUsedFilter = settings.readEntry( "/qgis/UI/" + filterName, 
+                                                  QString::null,
+                                                  &haveLastUsedFilter );
+
+   QString   lastUsedDir    = settings.readEntry( "/qgis/UI/" + filterName + "Dir", 
+                                                  "." );
+
+
+   std::auto_ptr<QFileDialog> openFileDialog( new QFileDialog( lastUsedDir,
+                                                               filters, 
+                                                               0, 
+                                                               QFileDialog::tr("open files dialog")));
+
+   // allow for selection of more than one file
+   openFileDialog->setMode( QFileDialog::ExistingFiles );
+
+   if ( haveLastUsedFilter ) // set the filter to the last one used
+   {
+      openFileDialog->setSelectedFilter( lastUsedFilter );
+   }
+
+   if ( openFileDialog->exec() == QDialog::Accepted )
+   {
+      selectedFiles = openFileDialog->selectedFiles();
+   }
+
+   settings.writeEntry( "/qgis/UI/" + filterName, 
+                        openFileDialog->selectedFilter() );
+
+
+   settings.writeEntry( "/qgis/UI/" + filterName + "Dir", 
+                        openFileDialog->dirPath() );
+
+} // openFilesRememberingFilter_
+
+
 
 
 /**
@@ -490,16 +562,29 @@ void QgisApp::addLayer()
 
   QString pOgr = providerRegistry->library("ogr");
 
-  if (!pOgr.isEmpty())
+  if (pOgr.isEmpty())
+  {
+#ifdef QT_DEBUG
+     qDebug( "unable to get OGR registry" );
+#endif
+  }
+  else
     {
       mapCanvas->freeze();
+      
+      QStringList selectedFiles;
 
-      QStringList files = QFileDialog::getOpenFileNames(fileFilters, 0, this,
-                                                        tr("open files dialog"),
-                                                        tr("Select one or more layers to add"));
-      addLayer(files);
+      openFilesRememberingFilter_( "lastVectorFileFilter",
+                                   fileFilters,
+                                   selectedFiles );
+      if ( selectedFiles.isEmpty() )
+      {
+         // no files were selected, so just bail
+         mapCanvas->freeze( false );
+         return;
+      }
+      addLayer( selectedFiles );
     }
-
 }                               // QgisApp::addLayer()
 
 
@@ -760,13 +845,19 @@ void QgisApp::addRasterLayer()
   // build the file filters based on the loaded GDAL drivers
   buildSupportedRasterFileFilter_(fileFilters);
 
-  QStringList selectedFilenames = QFileDialog::getOpenFileNames(fileFilters,
-                                                                "", // initial dir
-                                                                this, // parent dialog
-                                                                "OpenFileDialog", // QFileDialog qt object name
-                                                                "Select file name and type");
+  QStringList selectedFiles;
 
-  addRasterLayer(selectedFilenames);
+  openFilesRememberingFilter_( "lastRasterFileFilter",
+                               fileFilters,
+                               selectedFiles );
+
+  if ( selectedFiles.isEmpty() )
+  {
+     // no files were selected, so just bail
+     return;
+  }
+
+  addRasterLayer(selectedFiles);
 
 }                               // QgisApp::addRasterLayer()
 
