@@ -478,15 +478,16 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     mSelectionRectangle = new OGRPolygon();
     mSelectionRectangle->importFromWkt((char **)&wktText);
   }
+
   // reset the extent for the ogr filter
-  //
-  wktExtent = QString("POLYGON ((%1))").arg(rect->stringRep());
+  wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
   wktText = (const char *)wktExtent;
 
   OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
-  if (result == OGRERR_NONE) {
+  if (result == OGRERR_NONE) 
+  {
     std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
@@ -496,7 +497,10 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     assert(result==OGRERR_NONE);
 #endif
   }
-}
+} // QgsOgrProvider::select
+
+
+
 /**
  * Set the data source specification. This may be a path or database
  * connection string
