@@ -30,11 +30,11 @@ dnl Look for qgis headers
 dnl
 dnl XXX -DQGISDEBUG should be added iff --enable-debug is true
 dnl
-AC_CHECK_PROG( QGIS_CONFIG, qgis_config, yes,
+AC_CHECK_PROG( QGIS_CONFIG, qgis-config, yes,
                AC_MSG_ERROR([No Qgis C++ library -- get from http://qgis.sf.net/]) )
 
-QGIS_CFLAGS="`qgis_config --cflags`"
-QGIS_LDFLAGS="`qgis_config --libs`"
+QGIS_CFLAGS="`qgis-config --cflags`"
+QGIS_LDFLAGS="`qgis-config --libs`"
 
 dnl must add Qt header search path as qgis headers, in turn, include Qt stuff
 saved_CPPFLAGS=$CPPFLAGS
