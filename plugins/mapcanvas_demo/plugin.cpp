@@ -38,7 +38,8 @@ email                : tim@linfiniti.com
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qpixmap.h>
-
+#include <qpainter.h>
+#include <qfont.h>
 //non qt includes
 #include <iostream>
 
@@ -138,10 +139,19 @@ void Plugin::refreshCanvas()
 
 void Plugin::renderCopyRight()
 {
- QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
- //change this!
- myQPixmap->fill();
- 
+  QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
+  // Draw a text alabel onto the pixmap 
+  //
+  QPainter myQPainter(myQPixmap);
+  myQPainter.rotate(-45);
+  //could use somthing like next line to draw a pic instead of text
+  //myQPainter.drawImage(-70, 0, myQImage);
+  myQPainter.rotate(45);
+  QFont myQFont("time", 18, QFont::Bold);
+  myQPainter.setFont(myQFont);
+  myQPainter.setPen(Qt::white);
+  myQPainter.drawText(15, 50, QString("Hello world!"));
+
 }
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
