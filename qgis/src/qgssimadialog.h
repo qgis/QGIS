@@ -17,6 +17,9 @@
  ***************************************************************************/
  /* $Id$ */
 
+#ifndef QGSSIMADIALOG_H
+#define QGSSIMADIALOG_H
+
 #include "qgssimadialogbase.uic.h"
 
 class QgsVectorLayer;
@@ -40,3 +43,5 @@ class QgsSiMaDialog: public QgsSiMaDialogBase
     /**Default constructor is privat to not use is*/
      QgsSiMaDialog();
 };
+
+#endif
