@@ -83,7 +83,8 @@ sharedLibExtension = "*.so*";
 #ifndef WIN32
           // test code to help debug loading problems
           QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
-          void *handle = dlopen((const char *) lib, RTLD_LAZY);
+//          void *handle = dlopen((const char *) lib, RTLD_LAZY);
+          void *handle = dlopen((const char *) lib, RTLD_LAZY | RTLD_GLOBAL);
           if (!handle)
             {
               std::cout << "Error in dlopen: " << dlerror() << std::endl;
