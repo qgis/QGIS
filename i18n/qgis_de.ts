@@ -442,11 +442,11 @@
     </message>
     <message>
         <source>Identify a feature on the active layer</source>
-        <translation>Identifiziere eine Eigenschaft in der akiven Ebene</translation>
+        <translation>Identifiziere ein Objekt in der aktiven Ebene</translation>
     </message>
     <message>
         <source>select features</source>
-        <translation>wähle Eigenschaft</translation>
+        <translation>Selektiere Objekt</translation>
     </message>
     <message>
         <source>&amp;About Quantum GIS</source>
