@@ -1,4 +1,4 @@
-TODO,v 1.7 2004/01/21 21:30:34 timlinux Exp
+TODO,v 1.8 2004/01/22 07:12:13 gsherman Exp
 TODO List for getting to version 0.1 (in no order of importance)
  1. Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
     needing attention are customized raster settings and symbology for vector
@@ -17,10 +17,15 @@ TODO List for getting to version 0.1 (in no order of importance)
     removed and the current open bugs (sf.net) need to be resolved.
  7. Adjust the open dialog for "shapefiles" to allow other formats supported
     by OGR.
- 8. Move the "All rasters" filter to the top of the rasters open dialog. DONE (TS)
- 9. Remove *.adf from all rasters filter DONE (TS)
+ 8. DONE (TS): Move the "All rasters" filter to the top of the rasters 
+    open dialog. 
+ 9. DONE (TS): Remove *.adf from all rasters filter 
 10. Add options dialog to store user preferences.
 11. Add Help (HTML opened in user specified browser)
-12. Modify cursors so the black cursor / transparency bounndaries are bordered with a 
-    1 pixel wide white border (to prevent losing the cursor over all black image regions.
+12. Modify cursors so the black cursor / transparency bounndaries are bordered 
+    with a 1 pixel wide white border (to prevent losing the cursor over all 
+    black image regions.
 13. Update file open boxes to remember the last filter used in that session.
+14. Add vector of view extents and replace the Previous Extent function with
+    Forward and Back view buttons to allow user to move back and forth between
+    views.
