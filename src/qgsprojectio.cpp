@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.39 2004/06/10 23:07:08 timlinux Exp */
+/* qgsprojectio.cpp,v 1.40 2004/06/16 05:49:52 gsherman Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -419,12 +419,12 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
         /* QgsDatabaseLayer *dblyr = (QgsDatabaseLayer *)lyr;
            xml << "\t\t<layername>" + dblyr->schemaName() << "." <<
            dblyr->geometryTableName() << "</layername>\n"; */
-        xml << "\t\t<layername>" + lyr->name() + "</layername>\n";
+        xml << "\t\t<layername>" << lyr->name().ascii() << "</layername>\n";
       } else
       {
-        xml << "\t\t<layername>" + lyr->name() + "</layername>\n";
+        xml << "\t\t<layername>" << lyr->name().ascii() << "</layername>\n";
       }
-      xml << "\t\t<datasource>" + lyr->source() + "</datasource>\n";
+      xml << "\t\t<datasource>" << lyr->source().ascii() << "</datasource>\n";
       xml << "\t\t<zorder>" << i << "</zorder>\n";
       if (lyr->type() != QgsMapLayer::RASTER)
       {
@@ -457,7 +457,7 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
         }
 
         // The drawing style for the layer
-        xml << "\t\t\t<drawingStyle>" << myRasterLayer->getDrawingStyleAsQString() << "</drawingStyle>\n";
+        xml << "\t\t\t<drawingStyle>" << myRasterLayer->getDrawingStyleAsQString().ascii() << "</drawingStyle>\n";
         //Raster : flag indicating whether the histogram should be inverted or not 
         xml << "\t\t\t<invertHistogramFlag boolean=\"";
         if (myRasterLayer->getInvertHistogramFlag())
@@ -472,13 +472,13 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
         //Raster transparency for this layer should be 0-255 -->
         xml << "\t\t\t<transparencyLevelInt>" << myRasterLayer->getTransparency() << "</transparencyLevelInt>\n";
         //Raster : the band to be associated with the color red - usually red -->
-        xml << "\t\t\t<redBandNameQString>" << myRasterLayer->getRedBandName() << "</redBandNameQString>\n";
+        xml << "\t\t\t<redBandNameQString>" << myRasterLayer->getRedBandName().ascii() << "</redBandNameQString>\n";
         //Raster : the band to be associated with the color green - usually green -->
-        xml << "\t\t\t<greenBandNameQString>" << myRasterLayer->getGreenBandName() << "</greenBandNameQString>\n";
+        xml << "\t\t\t<greenBandNameQString>" << myRasterLayer->getGreenBandName().ascii() << "</greenBandNameQString>\n";
         //Raster : the band to be associated with the color blue - usually blue -->
-        xml << "\t\t\t<blueBandNameQString>" << myRasterLayer->getBlueBandName() << "</blueBandNameQString>\n";
+        xml << "\t\t\t<blueBandNameQString>" << myRasterLayer->getBlueBandName().ascii() << "</blueBandNameQString>\n";
         //Raster :  the band to be associated with the grayscale only ouput - usually gray  -->
-        xml << "\t\t\t<grayBandNameQString>" << myRasterLayer->getGrayBandName() << "</grayBandNameQString>\n";
+        xml << "\t\t\t<grayBandNameQString>" << myRasterLayer->getGrayBandName().ascii() << "</grayBandNameQString>\n";
         xml << "\t\t</rasterproperties>\n";
       }
       xml << "\t</maplayer>\n";
