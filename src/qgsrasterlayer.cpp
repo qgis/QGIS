@@ -1447,11 +1447,14 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
             return myNullReturnStats;
             break;
         }
-  } else
+  } else if (rasterLayerType==GRAY_OR_UNDEFINED)
     {
-      //myRasterBandStats.bandName = myColorInterpretation;
+      myRasterBandStats.bandName = myColorInterpretation;
     }
-
+  else //rasterLayerType is MULTIBAND
+  {
+    //do nothing
+  }
   myRasterBandStats.elementCountInt = rasterXDimInt * rasterYDimInt;
 
   //allocate a buffer to hold one row of ints
