@@ -223,24 +223,24 @@ qgsnewconnectionbase.h: qgsnewconnectionbase.ui
 qgsnewconnectionbase.cpp: qgsnewconnectionbase.h qgsnewconnectionbase.ui
 
 #PostgreSQL files
-postgres_SOURCES = 	qgsdbsourceselect.cpp \
+postgresSOURCES = 	qgsdbsourceselect.cpp \
 					qgsnewconnection.cpp\
-postgres_UI = 	qgsdbsourceselectbase.h \
+postgresUI = 	qgsdbsourceselectbase.h \
 				qgsdbsourceselectbase.cpp\
 				qgsnewconnectionbase.h\
 				qgsnewconnectionbase.cpp
-postgres_UIC = qgsdbsourceselectbase.ui \
+postgresUIC = qgsdbsourceselectbase.ui \
 		qgsnewconnectionbase.ui	
-postgres_MOC = 	qgsdbsourceselectbase.moc.cpp \
+postgresMOC = 	qgsdbsourceselectbase.moc.cpp \
 				qgsdbsourceselect.moc.cpp \
 				qgsnewconnection.moc.cpp\
 				qgsnewconnectionbase.moc.cpp
 
 # if PostgreSQL support requested, add PostgreSQL files				
 if POSTGRESDB
-qgis_SOURCES += $(postgres_SOURCES)
-qgis_UI += $(postgres_UI) 
-qgis_MOC += $(postgres_MOC)
+qgis_SOURCES += $(postgresSOURCES)
+qgis_UI += $(postgresUI) 
+qgis_MOC += $(postgresMOC)
 # add required defines for compiling PostgreSQL
 PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
 endif

@@ -27,7 +27,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgssymbol.h"
 #include <qpixmap.h>
-
+class QPopupMenu;
 class QgsLegendItem;
 
 
@@ -103,6 +103,8 @@ class QgsMapLayer:public QObject
 	virtual void setFeatureType(const int &_newVal);
   /** Read property of int featureType. */
 	virtual const int &featureType();
+  /** Return the context menu for the layer */
+  virtual QPopupMenu *contextMenu(); //TODO make this pure virtual after implemented in raster
   public:						// Public attributes
 	//! Layers enum defining the types of layers that can be added to a map
 	enum LAYERS

@@ -27,6 +27,7 @@ class QgsDataProvider;
 class QgsRenderer;
 class QgsLegendItem;
 class QgsVectorLayerProperties;
+class QgisApp;
 
 #include <map>
 #include "qgsmaplayer.h"
@@ -54,6 +55,8 @@ class QgsVectorLayer:public QgsMapLayer
 	void table();
   //! Set the primary display field to be used in the identify results dialog 
   void setDisplayField();
+  //! Initialize the context menu
+  void initContextMenu(QgisApp *app);
 	enum SHAPETYPE
 	{
 		Point,
@@ -82,7 +85,8 @@ class QgsVectorLayer:public QgsMapLayer
 	QGis::VectorType vectorType();
 	/**Returns a pointer to the properties dialog*/
 	QgsVectorLayerProperties* propertiesDialog();
-
+  /** Return the context menu for the layer */
+  QPopupMenu *contextMenu();
   protected:
 	/**Pointer to the table display object if there is one, else a pointer to 0*/
 	QgsAttributeTableDisplay* tabledisplay;
@@ -108,6 +112,7 @@ class QgsVectorLayer:public QgsMapLayer
   // index of the primary label field
   QString fieldIndex;
 	bool registered;
+  QPopupMenu *popMenu;
 	enum ENDIAN
 	{
 		NDR = 1,
