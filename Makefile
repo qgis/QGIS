@@ -31,7 +31,7 @@ plugins/$(MAKEFILE):
 sub-plugins: plugins/$(MAKEFILE) FORCE
 	cd plugins && $(MAKE) -f $(MAKEFILE)
 
-Makefile: qgis.pro	/home/gsherman/qt-x11-free-3.2.1/mkspecs/default/qmake.conf 
+Makefile: qgis.pro	/usr/lib/qt3/mkspecs/default/qmake.conf 
 	$(QMAKE) -o Makefile qgis.pro
 qmake: qmake_all
 	@$(QMAKE) -o Makefile qgis.pro
