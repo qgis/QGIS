@@ -1,0 +1,231 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>QgsDlgPgBufferBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsDlgPgBufferBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>516</width>
+            <height>275</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Buffer features</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>lblBufferInfo</cstring>
+            </property>
+            <property name="text">
+                <string>Buffer the features in layer</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel3</cstring>
+            </property>
+            <property name="text">
+                <string>Table name for the buffered layer</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="1" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>txtBufferDistance</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Buffer distance in map units</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>txtBufferedLayerName</cstring>
+            </property>
+        </widget>
+        <spacer row="1" column="4">
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>195</width>
+                    <height>25</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="3" column="0" rowspan="1" colspan="5">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Use the following field as feature id (must be unique)</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="5">
+            <property name="name">
+                <cstring>Layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="accel">
+                        <string>F1</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QCheckBox" row="5" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>chkAddToMap</cstring>
+            </property>
+            <property name="text">
+                <string>Add the buffered layer to the map</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="4" column="1" rowspan="1" colspan="2">
+            <item>
+                <property name="text">
+                    <string>Create unique object id</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>cmbFields</cstring>
+            </property>
+        </widget>
+        <spacer row="4" column="3" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>258</width>
+                    <height>24</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="4" column="0">
+            <property name="name">
+                <cstring>spacer3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>44</width>
+                    <height>19</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDlgPgBufferBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDlgPgBufferBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
