@@ -394,13 +394,13 @@ void QgsComposerScalebar::sizeChanged ( )
     writeSettings();
 }
 
-void QgsComposerScalebar::move(int x, int y )
+void QgsComposerScalebar::moveBy(double x, double y )
 {
     std::cout << "QgsComposerScalebar::move" << std::endl;
-    setX( (double)x );
-    setY( (double)y );
+    QCanvasItem::moveBy ( x, y );
+
     recalculate();
-    writeSettings();
+    //writeSettings(); // not necessary called by composition
 }
 
 void QgsComposerScalebar::recalculate ( void ) 
@@ -410,7 +410,12 @@ void QgsComposerScalebar::recalculate ( void )
     mHeight = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
     mMargin = (int) (3.*mHeight/2);
     
+    // !!! invalidate() MUST BE called before the value returned by areaPoints() changes
+    QCanvasPolygonalItem::invalidate();
+    
     mBoundingRect = render(0);
+    
+    QCanvasItem::update();
 }
 
 QRect QgsComposerScalebar::boundingRect ( void ) const

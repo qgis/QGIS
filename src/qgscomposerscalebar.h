@@ -125,7 +125,7 @@ public slots:
     void mapChanged ( int id );
 
     // Move to position
-    void move ( int x, int y );
+    void moveBy ( double x, double y );
 
 private:
     // Pointer to composition
