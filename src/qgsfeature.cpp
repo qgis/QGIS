@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsfeature.cpp - Spatial Feature Implementation
-     --------------------------------------
-    Date                 : 09-Sep-2003
-    Copyright            : (C) 2003 by Gary E.Sherman
-    email                : sherman at mrcc.com
+  qgsfeature.cpp - Spatial Feature Implementation
+  --------------------------------------
+Date                 : 09-Sep-2003
+Copyright            : (C) 2003 by Gary E.Sherman
+email                : sherman at mrcc.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,15 @@
 #include <qstring.h>
 #include "qgsfeature.h"
 /** \class QgsFeature
-* \brief Encapsulates a spatial feature with attributes
-*/
+ * \brief Encapsulates a spatial feature with attributes
+ */
 //! Constructor
-QgsFeature::QgsFeature():fId(0), geometry(0), wkt(0)
+QgsFeature::QgsFeature():mFid(0), geometry(0), mWKT(0)
 {
 
 }
 
-QgsFeature::QgsFeature(int id):fId(id), geometry(0), wkt(0)
+QgsFeature::QgsFeature(int id):mFid(id), geometry(0), mWKT(0)
 {
 
 }
@@ -33,65 +33,72 @@ QgsFeature::QgsFeature(int id):fId(id), geometry(0), wkt(0)
 //! Destructor
 QgsFeature::~QgsFeature()
 {
-  #ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cerr << "In QgsFeature destructor" << std::endl;
-  #endif
-  
+#endif
+
   delete[]geometry;
-  delete[]wkt;
+  delete[]mWKT;
 }
 
 /**
-* Get the feature id for this feature
-* @return Feature id
-*/
+ * Get the feature id for this feature
+ * @return Feature id
+ */
 int QgsFeature::featureId()
 {
-  return fId;
+  return mFid;
 }
 
 /**
-* Get the attributes for this feature.
-* @return A std::map containing the field name/value mapping
-*/
+ * Get the attributes for this feature.
+ * @return A std::map containing the field name/value mapping
+ */
 const std::vector < QgsFeatureAttribute > &QgsFeature::attributeMap()
 {
   return attributes;
 }
 
 /**
-* Add an attribute to the map
-*/
+ * Add an attribute to the map
+ */
 void QgsFeature::addAttribute(QString field, QString value)
 {
   attributes.push_back(QgsFeatureAttribute(field, value));
 }
 
 /**
-* Get the fields for this feature
-* @return A std::map containing field position (index) and field name
-*/
+ * Get the fields for this feature
+ * @return A std::map containing field position (index) and field name
+ */
 const std::map < int, QString > &QgsFeature::fields()
 {
   return fieldNames;
 }
 
 /**
-* Get the pointer to the feature geometry
-*/
+ * Get the pointer to the feature geometry
+ */
 unsigned char *QgsFeature::getGeometry()
 {
   return geometry;
 }
 
 /**
-* Return well known text representation of this feature
-*/
+ * Return well known text representation of this feature
+ */
 char *QgsFeature::wellKnownText()
 {
-  return wkt;
+  return mWKT;
 }
 
+/** Set the feature id
+*/
+void QgsFeature::setFeatureId(int id)
+{
+  mFid = id;
+
+}
 /** Set the pointer to the feature geometry
 */
 void QgsFeature::setGeometry(unsigned char *geom)
@@ -101,5 +108,13 @@ void QgsFeature::setGeometry(unsigned char *geom)
 }
 void QgsFeature::setWellKnownText(char *wkText)
 {
-  wkt = wkText;
+  mWKT = wkText;
+}
+bool QgsFeature::isValid()
+{
+  return mValid;
+}
+void QgsFeature::setValid(bool validity)
+{
+  mValid = validity;
 }
