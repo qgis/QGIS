@@ -16,13 +16,13 @@ void OpenModellerGuiBase::init()
   progressBar1->hide();
   //this is really cheating - I am using the char arrays creataed in the cpp file after uic has run
   //to set the images
-  pmAcmeLogo_2->setPixmap( image1);
-  pmAcmeLogo_3 ->setPixmap( image1);
-  pmAcmeLogo_4->setPixmap( image1);
-  pmAcmeLogo_5->setPixmap( image1);
-  pmAcmeLogo_6->setPixmap( image1);
-  pmAcmeLogo_7->setPixmap( image1);
-  pmAcmeLogo_8->setPixmap( image1);
+  //pmAcmeLogo_2->setPixmap( image1);
+  //pmAcmeLogo_3 ->setPixmap( image1);
+  //pmAcmeLogo_4->setPixmap( image1);
+  //pmAcmeLogo_5->setPixmap( image1);
+  //pmAcmeLogo_6->setPixmap( image1);
+  //pmAcmeLogo_7->setPixmap( image1);
+  //pmAcmeLogo_8->setPixmap( image1);
 }
 
 void OpenModellerGuiBase::pbRun_clicked()

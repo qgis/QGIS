@@ -27,6 +27,8 @@
 #include <qregexp.h>
 #include <qlabel.h>
 #include <qsettings.h>
+#include <qcursor.h>
+#include <qapplication.h> 
 
 //
 //openmodeller includes
@@ -84,6 +86,10 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
   AlgMetadata **myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
   AlgMetadata *myAlgorithmMetadata;
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
+
+  //Clear parameters combo pick list in case reloading page
+  cbxParameterType->clear();
+  
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
   {
     std::cerr << "Found Algorithm: " << myAlgorithmMetadata->id << std::endl;
@@ -96,13 +102,14 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
       //detailed list of parameters and their useage
       //to be placed in a textbox control on the algorithm selection page
 
-      txtAlgorithmParameters->setText("<h1>Algorithm Parameters</h1><p>Use the descriptions below set parameters for this algorithm</p>");
+      txtAlgorithmParameters->setText("<h3>Algorithm Parameters</h3><p>Use the descriptions below set parameters for this algorithm</p>");
       for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
       {
         //
         //first we add a new combo item to the parameter picklist
         //
         QString myQString = myParameter->name ;
+        cbxParameterType->insertItem(myQString);
         //
         // Now we build up a detailed description of the parameters
         //
@@ -138,6 +145,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
       }
     }
   }
+  
+  
   // no matching algorthm was found :-(
   delete myAlgorithmsMetadataArray;
   delete myAlgorithmMetadata;
@@ -169,11 +178,26 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }
   if (thePageNameQString==tr("Step 2 of 8")) //we do this after leaving the file selection page
   {
+    settings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
     getParameterList(cboModelAlgorithm->currentText());
+    
+    
+    //set the coordinate system to the same as the last time run
+    QString myCoordSystem = settings.readEntry("/openModeller/coordSystem");
+    if (myCoordSystem=="")
+    {
+      //do nothing
+    }
+    else
+    {
+      cboCoordinateSystem->setCurrentText(tr(myCoordSystem));
+    }
+    
   }
   if (thePageNameQString==tr("Step 3 of 8")) //we do this after leaving the file selection page
   {
     setNextEnabled(currentPage(),false);
+    settings.writeEntry("/openmodeller/coordSystem",cboCoordinateSystem->currentText());        
     
     if (leLocalitiesFileName->text() !="")
     {
@@ -181,7 +205,11 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     }
     else
     {
-      setSpeciesList(settings.readEntry("/openmodeller/localitiesFileName"));
+      QString myFileName = settings.readEntry("/openmodeller/localitiesFileName");
+      if (!myFileName.isEmpty())
+      {
+        setSpeciesList(myFileName);
+      } 
     }
   }
   if (thePageNameQString==tr("Step 4 of 8")) 
@@ -355,6 +383,7 @@ void OpenModellerGui::makeConfigFile()
 /** The accept method overrides the qtwizard method of the same name and is run when the finish button is pressed */
 void OpenModellerGui::accept()
 {
+  QApplication::setOverrideCursor(Qt::WaitCursor);
   QSettings myQSettings;
   std::cout << "cboModelAlgorithm .. current text : " << cboModelAlgorithm->currentText() << std::endl;
   modelNameQString=cboModelAlgorithm->currentText();
@@ -382,7 +411,7 @@ void OpenModellerGui::accept()
   }
    
   
-  myQSettings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
+  
   //pull all the form data into local class vars.
   outputFileNameQString=leOutputFileName->text();
   myQSettings.writeEntry("/openmodeller/outputFileName",outputFileNameQString);
@@ -408,6 +437,8 @@ void OpenModellerGui::accept()
   taxonNameQString=cboTaxon->currentText();
   makeConfigFile();
   parseAndRun(outputFileNameQString+".cfg");
+  
+  QApplication::restoreOverrideCursor();
   //close the dialog
   done(1);
 }
@@ -419,14 +450,19 @@ void OpenModellerGui::cboModelAlgorithm_activated(  const QString &theAlgorithmQ
 
 void OpenModellerGui::pbnSelectOutputFile_clicked()
 {
+  QSettings settings;
   std::cout << " OpenModellerGui::pbnSelectOutputFile_clicked() " << std::endl;
     QString myOutputFileNameQString = QFileDialog::getSaveFileName(
-                    ".",
+                    settings.readEntry("/openmodeller/outputFileName"), //initial dir
                     "All Files (*.)",
                     this,
                     "save file dialog"
                     "Choose a filename to save under" );
     leOutputFileName->setText(myOutputFileNameQString);
+    
+    //store output filename for use next time
+    settings.writeEntry("/openmodeller/outputFileName",myOutputFileNameQString);
+    
     if ( leOutputFileName->text()=="")
     {
       setNextEnabled(currentPage(),false);
@@ -445,8 +481,12 @@ void OpenModellerGui::pbnRemoveParameter_clicked()
         // if the item is selected...
         if ( myItem->isSelected() )
         {
+            //add the deleted item back to combo pick list
+	    QStringList deletedItemList( QStringList::split( " ", lstParameters->currentText()));
+	    cbxParameterType->insertItem(deletedItemList[0]);
+	    cbxParameterType->setCurrentItem(0);
             //remove the item if it is selected
-            lstParameters->removeItem(myInt);
+	    lstParameters->removeItem(myInt);
         }
     }
 }
@@ -454,8 +494,16 @@ void OpenModellerGui::pbnRemoveParameter_clicked()
 
 void OpenModellerGui::pbnAddParameter_clicked()
 {
-  lstParameters->insertItem(leNewParameter->text());
-  leNewParameter->setText("");
+  QString myParameterString = "";
+  
+  //create parameter string 
+  myParameterString = cbxParameterType->currentText() + " " + txtParameterValue->text() ;
+  //remove parameter type from combo pick list
+  cbxParameterType->removeItem(cbxParameterType->currentItem());
+  //add parameter to selected list
+  lstParameters->insertItem(myParameterString);
+  //clear value box
+  txtParameterValue->setText("");
 }
 
 
@@ -522,11 +570,12 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
 
 void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
 {
+  QSettings settings;
   std::cout << " OpenModellerGui::pbnSelectLocalitiesFile_clicked() " << std::endl;
   QString myFileTypeQString;
   QString myTextFileFilterString="Text File (*.txt)";
   QString myFileNameQString = QFileDialog::getOpenFileName(
-   "" , //initial dir
+  settings.readEntry("/openmodeller/localitiesFileDirectory"), //initial dir
   myTextFileFilterString,  //filters to select
   this , //parent dialog
   "OpenFileDialog" , //QFileDialog qt object name
@@ -536,6 +585,10 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
   std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
   setSpeciesList(myFileNameQString);
+  
+  //store directory where localities file is for next time
+  settings.writeEntry("/openmodeller/localitiesFileDirectory", myFileNameQString );
+  
 } //end of pbnSelectLocalitiesFile_clicked
 
 void OpenModellerGui::setSpeciesList(QString theFileNameQString)
