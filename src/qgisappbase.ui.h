@@ -64,3 +64,8 @@ void QgisAppBase::pan()
 {
 
 }
+
+void QgisAppBase::about()
+{
+
+}
