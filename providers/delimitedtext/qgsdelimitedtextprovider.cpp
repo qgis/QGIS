@@ -754,6 +754,17 @@ void QgsDelimitedTextProvider::fillMinMaxCash()
 bool QgsDelimitedTextProvider::isValid(){
   return mValid;
 }
+
+bool QgsDelimitedTextProvider::addFeature(QgsFeature* f)
+{
+    return false;
+}
+
+bool QgsDelimitedTextProvider::deleteFeature(int id)
+{
+    return false;
+}
+
 /** 
  * Check to see if the point is within the selection rectangle
  */

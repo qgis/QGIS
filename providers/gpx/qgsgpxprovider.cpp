@@ -562,6 +562,15 @@ bool QgsGPXProvider::isValid(){
   return mValid;
 }
 
+bool QgsGPXProvider::addFeature(QgsFeature* f)
+{
+    return false;
+}
+
+bool QgsGPXProvider::deleteFeature(int id)
+{
+    return false;
+}
 
 /** 
  * Check to see if the point is within the selection rectangle

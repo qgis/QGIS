@@ -142,6 +142,10 @@ class QgsVectorLayer:public QgsMapLayer
   */
   virtual std::vector<QgsField> const & fields() const;
 
+  /**Adds a feature*/
+  bool addFeature(QgsFeature* f);
+  
+
 
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/

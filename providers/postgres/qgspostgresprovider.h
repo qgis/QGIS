@@ -152,6 +152,16 @@ class QgsPostgresProvider:public QgsDataProvider
 /**Returns true if layer is valid
 */
   bool isValid();
+
+  /**Adds a feature
+     @return true in case of success and false in case of failure*/
+  bool addFeature(QgsFeature* f);
+
+  /**Deletes a feature
+     @param id the number of the feature
+     @return true in case of success and false in case of failure*/
+  bool deleteFeature(int id);
+
   //! get postgis version string
   QString postgisVersion(PGconn *);
   //! get status of GEOS capability
