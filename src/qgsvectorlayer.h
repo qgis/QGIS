@@ -280,8 +280,6 @@ protected:
   std::set<int> mDeleted;
   /**Features which are not commited*/
   std::list<QgsFeature*> mAddedFeatures;
-  /**Color to and fill the selected features*/
-  QColor selectionColor;
   /**Renderer object which holds the information about how to display the features*/
   QgsRenderer *m_renderer;
   /**Label */
@@ -303,7 +301,7 @@ protected slots:
   void startEditing();
   void stopEditing();
 
-  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor);
+  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag);
 
 private:                       // Private attributes
   /** A simple helper method to find out if on the fly projections are enabled or not */

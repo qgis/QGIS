@@ -422,22 +422,21 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
   }
   else
   {
-      if(swapEndian)
+   if(swapEndian)
       {
-    char *temp  = new char[sizeof(oid)];
-    char *ptr = (char *)&oid + sizeof(oid) -1;
-    int cnt = 0;
-    while(cnt < sizeof(oid))
-    {
-        temp[cnt] = *ptr--;
-        cnt++;
-    }  
-    noid = (int *)temp;
+        // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
+#ifdef QGISDEBUG
+	  qWarning("swapping endian for oid");
+#endif 
+        // convert oid to opposite endian
+        // XXX "Opposite?"  Umm, that's not enough information.
+        oid = ntohl(oid);
+        noid = &oid;
       }
       else
       {
-    noid = &oid;
-      }
+        noid = &oid;
+      }   
   }
   
     
