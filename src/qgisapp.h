@@ -65,6 +65,15 @@ private:
 	void addLayer();
 	//! Add a raster layer to the map
 	void addRasterLayer();
+        /** This helper checks to see whether the filename appears to be a valid raster file name */
+        bool isValidRasterFileName (QString theFileNameQString);
+        /** Overloaded version of the above function provided for convenience that takes a qstring pointer */ 
+        bool isValidRasterFileName (QString * theFileNameQString);
+        /** This helper checks to see whether the filename appears to be a valid vector file name */
+        bool isValidVectorFileName (QString theFileNameQString);
+        /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
+        bool isValidVectorFileName (QString * theFileNameQString);
+
 	#ifdef POSTGRESQL
 	//! Add a databaselayer to the map
 	void addDatabaseLayer();
