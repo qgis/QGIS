@@ -128,3 +128,9 @@ void QgisAppBase::fileNew()
 {
 
 }
+
+
+void QgisAppBase::actionPluginManager_activated()
+{
+
+}

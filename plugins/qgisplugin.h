@@ -56,5 +56,8 @@ public:
 typedef QgisPlugin* create_t(QgisApp *, QgisInterface *);
 //! Typedef for the function to unload a plugin and free its resources
 typedef void unload_t(QgisPlugin *);
-
+//! Typedef for getting the name of the plugin without instantiating it
+typedef QString name_t();
+//! Typedef for getting the description without instantiating the plugin
+typedef QString description_t();
 #endif //qgisplugin_h

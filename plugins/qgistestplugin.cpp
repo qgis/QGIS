@@ -95,7 +95,12 @@ void QgisTestPlugin::zoomPrevious(){
 extern "C" QgisPlugin * classFactory(QgisApp *qgis, QgisIface *qI){
 	return new QgisTestPlugin(qgis, qI);
 }
-
+extern "C" QString name(){
+	return QString("Test Plugin");
+}
+extern "C" QString description(){
+	return QString("Default QGIS Test Plugin");
+}
 extern "C" void unload(QgisPlugin *p){
 	delete p;
 }
