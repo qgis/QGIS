@@ -94,7 +94,7 @@ void QgsPgGeoprocessing::initGui()
     // add a menu with 2 items
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
 
-    pluginMenu->insertItem("&Buffer Features", this, SLOT(buffer()));
+    pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
   //  pluginMenu->insertItem("&Unload Geoprocessing Plugin", this, SLOT(unload()));
 
     menu = ((QMainWindow *) qgisMainWindow)->menuBar();
