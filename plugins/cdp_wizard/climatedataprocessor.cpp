@@ -1063,7 +1063,7 @@ bool ClimateDataProcessor::run()
     //check nothing fishy is going on
     if (myNumberOfCells ==  0)
     {
-      return false;
+        return false;
     }
 
 
@@ -1206,6 +1206,7 @@ bool ClimateDataProcessor::run()
         if (diurnalTempFileGroup && diurnalTempFileNameString != "" &&
                 availableCalculationsMap["Annual mean diurnal temperature range"])
         {
+            emit variableStart("Annual mean diurnal temperature range");
             std::cout << "ClimateDataProcessor::run Annual mean diurnal temperature range requested" << std::endl;
             //move to start of the current data matrix
             diurnalTempFileGroup->moveToDataStart();
@@ -1229,12 +1230,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
 
         if (frostDaysFileGroup && frostDaysFileNameString != "" &&
                 availableCalculationsMap["Annual mean number of frost days"])
         {
+            emit variableStart("Annual mean number of frost days");
             std::cout << "ClimateDataProcessor::run Annual mean number of frost days requested" << std::endl;
             //move to start of the current data matrix
             frostDaysFileGroup->moveToDataStart();
@@ -1259,12 +1263,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
 
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != "" &&
                 availableCalculationsMap["Annual mean total incident solar radiation"])
         {
+            emit variableStart("Annual mean total incident solar radiation");
             std::cout << "ClimateDataProcessor::run Annual mean total incident solar radiation requested" << std::endl;
             //move to start of the current data matrix
             totalSolarRadFileGroup->moveToDataStart();
@@ -1288,7 +1295,9 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
 
         if ( minTempFileGroup
@@ -1298,7 +1307,7 @@ bool ClimateDataProcessor::run()
                 && availableCalculationsMap["Annual temperature range"])
         {
 
-
+            emit variableStart("Annual temperature range");
             std::cout << "ClimateDataProcessor::run - Annual temperature range requested" << std::endl;
             //move to start of the current data matrix
             minTempFileGroup->moveToDataStart();
@@ -1324,13 +1333,16 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
 
         if (maxTempFileGroup
                 && maxTempFileNameString != ""
                 && availableCalculationsMap["Highest temperature in warmest month"])
         {
+            emit variableStart("Highest temperature in warmest month");
             std::cout << "ClimateDataProcessor::run - Highest temperature in warmest month requested" << std::endl;
             maxTempFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1353,16 +1365,16 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
-
-
+            emit variableDone();
         }
 
         if (minTempFileGroup
                 && minTempFileNameString != ""
                 && availableCalculationsMap["Lowest temperature in coolest month"])
         {
-
+            emit variableStart("Lowest temperature in coolest month");
             std::cout << "ClimateDataProcessor::run - Lowest temperature in coolest month requested" << std::endl;
             minTempFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1385,14 +1397,16 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
 
         }
         if (meanPrecipFileGroup
                 && meanPrecipFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation"])
         {
-
+            emit variableStart("Mean daily precipitation");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1415,13 +1429,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if ( meanPrecipFileGroup &&  minTempFileGroup
                 && meanPrecipFileNameString != "" && minTempFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation in coolest month"])
         {
-
+            emit variableStart("Mean daily precipitation in coolest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             minTempFileGroup->moveToDataStart();
@@ -1447,14 +1463,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
-
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != ""
                 && minTempFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation in coolest quarter"])
         {
-
+            emit variableStart("Mean daily precipitation in coolest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             minTempFileGroup->moveToDataStart();
@@ -1480,12 +1497,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
                 availableCalculationsMap["Mean daily precipitation in driest month"])
         {
-
+            emit variableStart("Mean daily precipitation in driest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1508,11 +1527,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
                 availableCalculationsMap["Mean daily precipitation in driest quarter"])
         {
+            emit variableStart("Mean daily precipitation in driest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
 
@@ -1536,13 +1558,16 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
                 && maxTempFileGroup
                 && maxTempFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation in warmest month"])
         {
+            emit variableStart("Mean daily precipitation in warmest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest month" << std::endl;
             //move to the start of data blocks
             meanPrecipFileGroup->moveToDataStart();
@@ -1569,13 +1594,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
-
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
                 && maxTempFileGroup &&  maxTempFileNameString != ""
                 &&availableCalculationsMap["Mean daily precipitation in warmest quarter"])
         {
+            emit variableStart("Mean daily precipitation in warmest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             maxTempFileGroup->moveToDataStart();
@@ -1601,12 +1628,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
-
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
                 availableCalculationsMap["Mean daily precipitation in wettest month"])
         {
+            emit variableStart("Mean daily precipitation in wettest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1629,13 +1658,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
-
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
                 availableCalculationsMap["Mean daily precipitation in wettest quarter"])
         {
-
+            emit variableStart("Mean daily precipitation in wettest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1658,13 +1688,16 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (diurnalTempFileGroup && diurnalTempFileNameString != ""
                 && meanTempFileGroup
                 && meanTempFileNameString !=""
                 && availableCalculationsMap["Mean diurnal temperature range in coolest month"])
         {
+            emit variableStart("Mean diurnal temperature range in coolest month");
             std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in coolest month" << std::endl;
             diurnalTempFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
@@ -1690,13 +1723,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
-
+            emit variableDone();
         }
         if (diurnalTempFileGroup && diurnalTempFileNameString != "" && meanTempFileGroup
                 && meanTempFileNameString !=""
                 && availableCalculationsMap["Mean diurnal temperature range in warmest month"])
         {
+            emit variableStart("Mean diurnal temperature range in warmest month");
             std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in warmest month" << std::endl;
             diurnalTempFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
@@ -1722,12 +1757,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && frostDaysFileGroup
                 && frostDaysFileNameString != ""
                 && availableCalculationsMap["Mean precipitation in frost free months"])
         {
+            emit variableStart("Mean precipitation in frost free months");
             std::cout << "ClimateDataProcessor::run Mean precipitation in frost free months" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             frostDaysFileGroup->moveToDataStart();
@@ -1752,12 +1790,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
 
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in coolest month"])
         {
+            emit variableStart("Mean temperature in coolest month");
             std::cout << "ClimateDataProcessor::run Mean temperature in coolest month" << std::endl;
 
             meanTempFileGroup->moveToDataStart();
@@ -1781,11 +1822,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in coolest quarter"])
         {
+            emit variableStart("Mean temperature in coolest quarter");
             std::cout << "ClimateDataProcessor::run Mean temperature in coolest quarter" << std::endl;
             meanTempFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1808,12 +1852,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanTempFileGroup && meanTempFileNameString !="" && frostDaysFileGroup
                 && frostDaysFileNameString != ""
                 && availableCalculationsMap["Mean temperature in frost free months"])
         {
+            emit variableStart("Mean temperature in frost free months");
             std::cout << "ClimateDataProcessor::run Mean temperature in frost free months" << std::endl;
             meanTempFileGroup->moveToDataStart();
             frostDaysFileGroup->moveToDataStart();
@@ -1838,11 +1885,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in warmest month"])
         {
+            emit variableStart("Mean temperature in warmest month");
             std::cout << "ClimateDataProcessor::run Mean temperature in warmest month" << std::endl;
 
 
@@ -1867,11 +1917,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in warmest quarter"])
         {
+            emit variableStart("Mean temperature in warmest quarter");
             std::cout << "ClimateDataProcessor::run Mean temperature in warmest quarter" << std::endl;
             meanTempFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1895,11 +1948,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (windSpeedFileGroup && windSpeedFileNameString != "" &&
                 availableCalculationsMap["Mean wind speed"])
         {
+            emit variableStart("Mean wind speed");
             std::cout << "ClimateDataProcessor::run Mean wind speed" << std::endl;
             windSpeedFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1922,11 +1978,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (minTempFileGroup && minTempFileNameString !="" &&
                 availableCalculationsMap["Number of months with minimum temperature above freezing"])
         {
+            emit variableStart("Number of months with minimum temperature above freezing");
             std::cout << "ClimateDataProcessor::run Number of months with minimum temperature above freezing" << std::endl;
             minTempFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -1949,12 +2008,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString !=""
                 && availableCalculationsMap["Radiation in coolest month"])
         {
+            emit variableStart("Radiation in coolest quarter");
             std::cout << "ClimateDataProcessor::run Radiation in coolest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
@@ -1980,12 +2042,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString !=""
                 && availableCalculationsMap["Radiation in coolest quarter"])
         {
+            emit variableStart("Radiation in coolest quarter");
             std::cout << "ClimateDataProcessor::run Radiation in coolest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
@@ -2011,12 +2076,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString != ""
                 && availableCalculationsMap["Radiation in warmest month"])
         {
+            emit variableStart("Radiation in warmest month");
             std::cout << "ClimateDataProcessor::run Radiation in warmest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
@@ -2042,12 +2110,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString != ""
                 && availableCalculationsMap["Radiation in warmest quarter"])
         {
+            emit variableStart("Radiation in warmest quarter");
             std::cout << "ClimateDataProcessor::run Radiation in warmest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
@@ -2074,14 +2145,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
-
+                emit cellDone(myFloat);
             }
-
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
                 && availableCalculationsMap["Radiation in driest month"])
         {
+            emit variableStart("Radiation in driest month");
             std::cout << "ClimateDataProcessor::run Radiation in driest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
@@ -2107,13 +2179,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
-
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
                 && availableCalculationsMap["Radiation in driest quarter"])
         {
+            emit variableStart("Radiation in driest quarter");
             std::cout << "ClimateDataProcessor::run Radiation in driest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
@@ -2139,13 +2213,16 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
 
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
                 && availableCalculationsMap["Radiation in wettest month"])
         {
+            emit variableStart("Radiation in wettest month");
             std::cout << "ClimateDataProcessor::run Radiation in wettest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
@@ -2171,14 +2248,15 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
-
-
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
                 && availableCalculationsMap["Radiation in wettest quarter"])
         {
+            emit variableStart("Radiation in wettest quarter");
             std::cout << "ClimateDataProcessor::run Radiation in wettest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
@@ -2204,12 +2282,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
-
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanPrecipFileGroup && meanPrecipFileNameString != "" &&
                 availableCalculationsMap["Standard deviation of mean precipitation"])
         {
+            emit variableStart("Standard deviation of mean precipitation");
             std::cout << "ClimateDataProcessor::run Standard deviation of mean precipitation" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -2232,11 +2312,14 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         if (meanTempFileGroup && meanTempFileNameString != ""
                 && availableCalculationsMap["Standard deviation of mean temperature"])
         {
+            emit variableStart("Standard deviation of mean temperature");
             std::cout << "ClimateDataProcessor::run Standard deviation of mean temperature" << std::endl;
             meanTempFileGroup->moveToDataStart();
             //create a data processor to do the low level processing
@@ -2259,8 +2342,9 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
-
+                emit cellDone(myFloat);
             }
+            emit variableDone();
         }
         emit yearDone();
     }//This is the END OF MAIN OUTER LOOP:

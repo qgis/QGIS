@@ -454,10 +454,11 @@ void CDPWizard::run()
 
 void CDPWizard::numberOfYearsToCalc(int theNumberInt)
 {
-
+  progressCurrentJob->setTotalSteps(theNumberInt);
 }
 void CDPWizard::numberOfVariablesToCalc(int theNumberInt)
 {
+  progressCurrentYear->setTotalSteps(theNumberInt);
 }
 void CDPWizard::numberOfCellsToCalc(int theNumberInt)
 {
@@ -465,17 +466,25 @@ void CDPWizard::numberOfCellsToCalc(int theNumberInt)
 }
 void CDPWizard::yearStart(QString theNameQString)
 {
+  progressCurrentYear->setProgress(1);
 }
 void CDPWizard::yearDone()
 {
+   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
+  progressCurrentTask->setProgress(1);
+  progressCurrentYear->setProgress(1);
+  progressCurrentJob->setProgress(progressCurrentJob->progress()+1);
+  qApp->processEvents();
 }
 void CDPWizard::variableStart(QString theNameQString)
 {
+
 }
 void CDPWizard::variableDone()
 {
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
   progressCurrentTask->setProgress(1);
+  progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::cellDone(float theResultFloat)
