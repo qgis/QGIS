@@ -375,6 +375,9 @@ QgsProject * QgsProject::theProject_;
      // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
      writeEntry("PositionPrecision", "/Automatic", true);
      writeEntry("PositionPrecision", "/DecimalPlaces", 2);
+     // XXX writeEntry() makes the project dirty, but it doesn't make sense
+     // for a new project to be dirty, so let's clean it up
+     dirty(false);
  } // QgsProject ctor
 
 
