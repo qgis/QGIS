@@ -56,10 +56,10 @@ private:
     QStringList mList;
 
     /** Hard coded */
-    QPicture hardMarker ( QString name, int size, QPen pen, QBrush brush, int oversample = 1 );
+    QPicture hardMarker ( QString name, int size, QPen pen, QBrush brush, int oversampling = 1 );
 
     /** Hard coded */
-    QPicture svgMarker ( QString name, int size );
+    QPicture svgMarker ( QString name, int size, int oversampling = 1 );
 };
     
 #endif // QGSMARKERCATALOGUE_H

@@ -61,7 +61,8 @@ void QgsUniqueValRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVect
         }
 }
     
-void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected)
+void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
+	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
     QString value = vec[0].fieldValue();
@@ -72,20 +73,10 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 
 	// Point 
 	if ( pic && mVectorType == QGis::Point ) {
-	    QPainter painter;
-	    painter.begin(pic);
-
-	    QPicture pic = item->getSymbol()->getPointSymbolAsPicture();
-	    painter.drawPicture(0,0,pic);
-	    if(selected) {
-		painter.setBrush(QColor(255,255,0));
-		QRect br = pic.boundingRect();
-		painter.drawRect(-br.x(), -br.y(), br.width(), br.height());
-	    }
+	    *pic = item->getSymbol()->getPointSymbolAsPicture( oversampling, widthScale,
+		                                             selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;
-
-	    painter.end();
 	} 
 
         // Line, polygon
@@ -93,12 +84,15 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 	{
 	    if( !selected ) 
 	    {
+		QPen pen=item->getSymbol()->pen();
+		pen.setWidth ( (int) (widthScale * pen.width()) );
 		p->setPen(item->getSymbol()->pen());
 		p->setBrush(item->getSymbol()->brush());
 	    }
 	    else
 	    {
 		QPen pen=item->getSymbol()->pen();
+		pen.setWidth ( (int) (widthScale * pen.width()) );
 		pen.setColor(mSelectionColor);
 		QBrush brush=item->getSymbol()->brush();
 		brush.setColor(mSelectionColor);

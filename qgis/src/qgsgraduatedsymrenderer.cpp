@@ -52,7 +52,8 @@ void QgsGraduatedSymRenderer::removeItems()
     mItems.clear();
 }
 
-void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor, bool selected)
+void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
+	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
     //first find out the value for the classification attribute
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
@@ -82,20 +83,11 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 
 	// Point 
 	if ( pic && mVectorType == QGis::Point ) {
-	    QPainter painter;
-	    painter.begin(pic);
-
-	    QPicture pic = item->getSymbol()->getPointSymbolAsPicture();
-	    painter.drawPicture(0,0,pic);
-	    if(selected) {
-		painter.setBrush(QColor(255,255,0));
-		QRect br = pic.boundingRect();
-		painter.drawRect(-br.x(), -br.y(), br.width(), br.height());
-	    }
+	    *pic = item->getSymbol()->getPointSymbolAsPicture( oversampling, widthScale,
+		                                             selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;
 
-	    painter.end();
 	} 
 
         // Line, polygon
@@ -103,6 +95,8 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 	{
 	    if( !selected ) 
 	    {
+		QPen pen=item->getSymbol()->pen();
+		pen.setWidth ( (int) (widthScale * pen.width()) );
 		p->setPen(item->getSymbol()->pen());
 		p->setBrush(item->getSymbol()->brush());
 	    }
@@ -110,6 +104,7 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 	    {
 		QPen pen=item->getSymbol()->pen();
 		pen.setColor(mSelectionColor);
+		pen.setWidth ( (int) (widthScale * pen.width()) );
 		QBrush brush=item->getSymbol()->brush();
 		brush.setColor(mSelectionColor);
 		p->setPen(pen);

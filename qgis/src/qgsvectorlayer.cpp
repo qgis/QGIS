@@ -77,6 +77,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsattributedialog.h"
 #include "qgsclipper.h"
+#include "qgssvgcache.h"
 //#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
@@ -349,10 +350,14 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
-    draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1. );
+    QSettings settings;
+    int oversampling = settings.readNumEntry("/qgis/svgoversampling", 1);
+
+    draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1., oversampling );
 }
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst, double widthScale, double symbolScale)
+void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, 
+	                  QPaintDevice* dst, double widthScale, double symbolScale, int oversampling)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -432,9 +437,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
         if(mDeleted.find(fet->featureId())==mDeleted.end())
         {
           bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-          m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
+          m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, oversampling, widthScale );
 	  double scale = markerScaleFactor * symbolScale;
-          drawFeature(p,fet,theMapToPixelTransform,&marker, scale, widthScale, projectionsEnabledFlag);
+          drawFeature(p,fet,theMapToPixelTransform,&marker, scale, projectionsEnabledFlag);
           ++featureCount;
           delete fet;
         }
@@ -444,9 +449,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-      m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
+      m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, oversampling, widthScale);
       double scale = markerScaleFactor * symbolScale;
-      drawFeature(p,*it,theMapToPixelTransform,&marker,scale, widthScale, projectionsEnabledFlag);
+      drawFeature(p,*it,theMapToPixelTransform,&marker,scale, projectionsEnabledFlag);
     }
 
 #ifdef QGISDEBUG
@@ -2051,7 +2056,8 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   point.setY(mindisty);
 }
 
-void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor, double widthScale, bool projectionsEnabledFlag)
+void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, 
+	           QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
 {
   unsigned char *feature;
   bool attributesneeded = m_renderer->needsAttributes();
@@ -2064,14 +2070,6 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   QgsPoint trimmedFrom, trimmedTo;
 
   QPen pen;
-
-  // Scale pen width if necessary
-  if ( widthScale != 1. ) {
-      pen = p->pen(); 
-      pen.setWidth ( (int) (widthScale * pen.width() ) ) ;
-      //std::cout << "width = " << pen.width() << std::endl;
-      p->setPen ( pen );
-  }
 
   feature = fet->getGeometry();
 
