@@ -63,8 +63,6 @@ class QgsDelimitedTextPlugin:public QObject, public QgisPlugin
   public slots:
   //! Show the dialog box
   void run();
-  //!draw a raster layer in the qui
-  void drawRasterLayer(QString);
   //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
   void drawVectorLayer(QString,QString,QString);
   //! unload the plugin
