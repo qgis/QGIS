@@ -94,19 +94,6 @@ void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *)
 //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-
-/** Read property of QgsSymbol * m_symbol. */
-QgsSymbol *QgsMapLayer::symbol()
-{
-  return m_symbol;
-}
-
-/** Write property of QgsSymbol * m_symbol. */
-void QgsMapLayer::setSymbol(QgsSymbol * _newVal)
-{
-  m_symbol = _newVal;
-}
-
 /** Read property of QString labelField. */
 const QString & QgsMapLayer::labelField()
 {

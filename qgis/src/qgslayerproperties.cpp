@@ -36,12 +36,12 @@ QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
   lblSource->setText(source);
   txtDisplayName->setText(lyr->name());
   //symbology
-  sym = layer->symbol();
-  newSym = *sym;
+  //sym = layer->symbol();
+  //newSym = *sym;
 
-  btnSetColor->setPaletteBackgroundColor(sym->color());
+  //btnSetColor->setPaletteBackgroundColor(sym->color());
 
-  btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
+  //btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
   spinLineWidth->setValue(sym->lineWidth());
   setCaption("Layer Properties - " + lyr->name());
   // if this is a line layer, hide the fill properties
