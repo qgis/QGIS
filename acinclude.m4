@@ -55,17 +55,17 @@ AC_REQUIRE([AC_PATH_X])
 AC_MSG_CHECKING([QTDIR])
 AC_ARG_WITH([qtdir], [  --with-qtdir=DIR        Qt installation directory [default=/usr/local]], QTDIR=$withval)
 # Check that QTDIR is defined or that --with-qtdir given
-if test x"$QTDIR" = x ; then
+if test x$QTDIR = x ; then
   QT_SEARCH="/usr/lib/qt31 /usr/local/qt31 /usr/lib/qt3 /usr/local/qt3 /usr/lib/qt2 /usr/local/qt2 /usr/lib/qt /usr/local/qt"
   for i in $QT_SEARCH; do
-    if test -a x$QTDIR = x; then
+    if test x$QTDIR = x; then
       if test -f $i/include/qt/qglobal.h -o -f $i/include/qglobal.h; then
         QTDIR=$i
       fi
     fi
   done
 fi
-if test x"$QTDIR" = x ; then
+if test x$QTDIR = x ; then
   AC_MSG_ERROR([*** QTDIR must be defined, or --with-qtdir option given])
 fi
 AC_MSG_RESULT([$QTDIR])
