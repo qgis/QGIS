@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+#include <iostream>
 #include <qapplication.h>
 #include <qfont.h>
 #include <qfile.h>
