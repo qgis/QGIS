@@ -499,16 +499,22 @@ void QgisApp::addDatabaseLayer()
 			// create the layer
 			//qWarning("creating lyr");
 			QgsVectorLayer *lyr = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
-      
-      // init the context menu so it can connect to slots in main app
-      lyr->initContextMenu(this);
-      
-			// give it a random color
-			QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();//add single symbol renderer as default
-			lyr->setRenderer(renderer);
-			renderer->initializeSymbology(lyr);
-			// add it to the mapcanvas collection
-			mapCanvas->addLayer(lyr);
+      if(lyr->isValid()){
+        // init the context menu so it can connect to slots in main app
+        lyr->initContextMenu(this);
+        
+        // give it a random color
+        QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();//add single symbol renderer as default
+        lyr->setRenderer(renderer);
+        renderer->initializeSymbology(lyr);
+        // add it to the mapcanvas collection
+        mapCanvas->addLayer(lyr);
+      }else{
+        std::cerr << *it << " is an invalid layer - not loaded" << std::endl;
+        QMessageBox::critical(this, tr("Invalid Layer"),
+          tr("%1 is an invalid layer and cannot be loaded.").arg(*it));
+          delete lyr;
+      }
 			//qWarning("incrementing iterator");
 			++it;
 		}

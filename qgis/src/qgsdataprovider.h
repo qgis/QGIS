@@ -115,7 +115,12 @@ public:
   /**Returns the maximum value of an attributs
      @param position the number of the attribute*/
   virtual QString maxValue(int position)=0;
+
+/**
+* Returns true if this is a valid layer. It is up to individual providers
+* to determine what constitutes a valid layer
+*/
+virtual bool isValid()=0;
 };
-
-
 #endif
+
