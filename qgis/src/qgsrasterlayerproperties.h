@@ -65,8 +65,6 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         /** \brief slot executed when the three band radio button is pressed. */
         void rbtnThreeBand_toggled( bool );
     private:
-        /** \brief Private function to populate the statistics table from the band stats. */
-        void fillStatsTable();
         /** \brief This function makes a pixmap to display in the color box */
         void makeScalePreview(QString theColor);
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */

@@ -2080,7 +2080,7 @@ void QgsRasterLayer::initContextMenu(QgisApp * theApp)
 QString QgsRasterLayer::getMetadata()
 {
   QString myMetadataQString = "<html><body>";
-  myMetadataQString += "<table>";
+  myMetadataQString += "<table width=\"100%\">";
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Driver:");
   myMetadataQString += "</td></tr>";
@@ -2101,7 +2101,7 @@ QString QgsRasterLayer::getMetadata()
   myMetadataQString += tr("Pyramid overviews:");
   myMetadataQString += "</td></tr>";
   myMetadataQString += "<tr><td bgcolor=\"white\">";
-  
+
   GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
   if( GDALGetOverviewCount(myGDALBand) > 0 )
   {
@@ -2147,6 +2147,139 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += QString::number(adfGeoTransform[5]);
     myMetadataQString += "</td></tr>";
   }
+  //
+  // Add the stats for each band to the output table
+  //
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Band Statistics (if gathered):");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+
+  // Start a nested table in this trow
+  myMetadataQString += "<table width=\"100%\">";
+  myMetadataQString += "<tr><th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
+  myMetadataQString += "</th>";
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
+  myMetadataQString += "</th><tr>";
+
+  int myRowInt = 0;
+  int myBandCountInt = getBandCount();
+  for (int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt)
+  {
+#ifdef QGISDEBUG
+    std::cout << "Raster properties : checking if band " << myIteratorInt << " has stats? ";
+#endif
+    //band name
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Band");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += getRasterBandName(myIteratorInt);
+    myMetadataQString += "</td></tr>";
+    //band number
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += tr("Band No");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"white\">";
+    myMetadataQString += QString::number(myIteratorInt); 
+    myMetadataQString += "</td></tr>";
+
+    //check if full stats for this layer have already been collected
+    if (!hasStats(myIteratorInt))  //not collected
+    {
+#ifdef QGISDEBUG
+      std::cout << ".....no" << std::endl;
+#endif
+
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("No Stats");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += tr("No stats collected yet"); 
+      myMetadataQString += "</td></tr>";
+    } 
+    else                    // collected - show full detail
+    {
+#ifdef QGISDEBUG
+      std::cout << ".....yes" << std::endl;
+#endif
+
+      RasterBandStats myRasterBandStats = getRasterBandStats(myIteratorInt);
+      //Min Val
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Min Val");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.minValDouble); 
+      myMetadataQString += "</td></tr>";
+
+      // Max Val
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Max Val");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.maxValDouble); 
+      myMetadataQString += "</td></tr>";
+
+      // Range
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Range");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.rangeDouble); 
+      myMetadataQString += "</td></tr>";
+
+      // Mean
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Mean");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.meanDouble); 
+      myMetadataQString += "</td></tr>";
+
+      //sum of squares
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Sum of squares");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.sumSqrDevDouble); 
+      myMetadataQString += "</td></tr>";
+
+      //standard deviation
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Standard Deviation");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.stdDevDouble); 
+      myMetadataQString += "</td></tr>";
+
+      //sum of all cells
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Sum of all cells");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.sumDouble); 
+      myMetadataQString += "</td></tr>";
+
+      //number of cells
+      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += tr("Cell Count");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += QString::number(myRasterBandStats.elementCountInt); 
+      myMetadataQString += "</td></tr>";
+    }
+  }
+  myMetadataQString += "</table>"; //end of nested table
+  myMetadataQString += "</td></tr>"; //end of stats container table row
+
+
+  //
+  // Close the table
+  //
+
   myMetadataQString += "</table>";
   myMetadataQString += "</body></html>";
   return myMetadataQString;
