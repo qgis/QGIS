@@ -23,11 +23,14 @@
 #include "qgsmarkerdialogbase.uic.h"
 #include <qdir.h>
 
+/**A class for choosing marker images by clicking icons*/
 class QgsMarkerDialog: public QgsMarkerDialogBase
 {
     Q_OBJECT
  public:
+    /**Constructor. If no directory is specified, the home directory is used*/
     QgsMarkerDialog(QString startdir=QDir::homeDirPath());
+    /**Destructor*/
     virtual ~QgsMarkerDialog();
     /**Returns the path of the selected SVG marker*/
     QString selectedMarker();
@@ -35,14 +38,13 @@ class QgsMarkerDialog: public QgsMarkerDialogBase
     public slots:
     /**Brings up the file dialog and triggers visualizeMarkers*/
     void changeDirectory();
-    /**Resets the current directory and the icons if a valid path is inserted into mDirectoryEdit*/
-    void setCurrentDirFromText();
     /**Queries mIconView for selected marker symbols*/
     void updateSelectedMarker();
 
  protected:
 	/**Current Directory*/
 	QString mCurrentDir;
+	/**File name of the selected marker*/
 	QString mSelectedMarker;
 	/**Renders the SVG pictures of directory to mIconView*/
 	void visualizeMarkers(QString directory);
