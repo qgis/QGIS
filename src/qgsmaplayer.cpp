@@ -19,62 +19,86 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer(int type, QString lyrname ) 
-  : QgsDataSource(), layerName(lyrname), layerType(type)
+QgsMapLayer::QgsMapLayer (int type, QString lyrname):QgsDataSource (),
+layerName (lyrname), layerType (type)
 {
   // assume the layer is valid (data source exists and can be used)
   // until we learn otherwise
   valid = true;
 }
-QgsMapLayer::~QgsMapLayer(){
-} 
-const int QgsMapLayer::type(){
+
+QgsMapLayer::~QgsMapLayer ()
+{
+}
+const int QgsMapLayer::type ()
+{
   return layerType;
 }
+
 /** Write property of QString layerName. */
-void QgsMapLayer::setlayerName( const QString& _newVal){
+void QgsMapLayer::setlayerName (const QString & _newVal)
+{
   layerName = _newVal;
 }
+
 /** Read property of QString layerName. */
-const QString QgsMapLayer::name(){
+const QString QgsMapLayer::name ()
+{
   return layerName;
 }
-const QgsRect QgsMapLayer::extent(){
+
+const QgsRect QgsMapLayer::extent ()
+{
   return layerExtent;
 }
-QgsRect QgsMapLayer::calculateExtent(){
-  
+
+QgsRect QgsMapLayer::calculateExtent ()
+{
+
 }
-void QgsMapLayer::draw(QPainter *, QgsRect *viewExtent, int yTransform){
+void QgsMapLayer::draw (QPainter *, QgsRect * viewExtent, int yTransform)
+{
   std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *){
+void QgsMapLayer::draw (QPainter *, QgsRect *, QgsCoordinateTransform *)
+{
   std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 
 /** Read property of QgsSymbol * m_symbol. */
-const QgsSymbol * QgsMapLayer::symbol(){
-	return m_symbol;
+const QgsSymbol *QgsMapLayer::symbol ()
+{
+  return m_symbol;
 }
+
 /** Write property of QgsSymbol * m_symbol. */
-void QgsMapLayer::setSymbol( QgsSymbol * _newVal){
-	m_symbol = _newVal;
+void QgsMapLayer::setSymbol (QgsSymbol * _newVal)
+{
+  m_symbol = _newVal;
 }
+
 /** Read property of QString labelField. */
-const QString& QgsMapLayer::labelField(){
-	return m_labelField;
+const QString & QgsMapLayer::labelField ()
+{
+  return m_labelField;
 }
+
 /** Write property of QString labelField. */
-void QgsMapLayer::setlabelField( const QString& _newVal){
-	m_labelField = _newVal;
+void QgsMapLayer::setlabelField (const QString & _newVal)
+{
+  m_labelField = _newVal;
 }
+
 /** No descriptions */
-int QgsMapLayer::z(){
-	return zpos;
+int QgsMapLayer::z ()
+{
+  return zpos;
 }
+
 /** No descriptions */
-void QgsMapLayer::setZ(int zorder){
-	zpos = zorder;
+void QgsMapLayer::setZ (int zorder)
+{
+  zpos = zorder;
 }

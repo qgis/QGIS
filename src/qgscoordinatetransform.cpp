@@ -21,61 +21,87 @@
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 
-QgsCoordinateTransform::QgsCoordinateTransform(double mupp, double ymax, double ymin, double xmin) : 
-  mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin){
-}
-QgsCoordinateTransform::~QgsCoordinateTransform(){
-}
-QgsPoint QgsCoordinateTransform::transform(QgsPoint p){
-  // transform x
-  double dx = (p.x() - xMin)/mapUnitsPerPixel;
-  double dy = yMax - ((p.y() - yMin))/mapUnitsPerPixel;
-  // double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
-  return QgsPoint(dx,dy);
+QgsCoordinateTransform::QgsCoordinateTransform (double mupp, double ymax,
+						double ymin,
+						double
+						xmin):mapUnitsPerPixel (mupp),
+yMax (ymax), yMin (ymin), xMin (xmin)
+{
 }
 
-QgsPoint QgsCoordinateTransform::transform(double x, double y){
-  return(transform(QgsPoint(x,y)));
+QgsCoordinateTransform::~QgsCoordinateTransform ()
+{
 }
-QgsPoint QgsCoordinateTransform::toMapPoint(int x, int y){
-	double mx = x * mapUnitsPerPixel + xMin;
-	double my = -1 *( (y - yMax) * mapUnitsPerPixel - yMin);
-	return QgsPoint(mx,my);
+
+QgsPoint QgsCoordinateTransform::transform (QgsPoint p)
+{
+  // transform x
+  double dx = (p.x () - xMin) / mapUnitsPerPixel;
+  double dy = yMax - ((p.y () - yMin)) / mapUnitsPerPixel;
+  // double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
+  return QgsPoint (dx, dy);
 }
-QgsPoint QgsCoordinateTransform::toMapCoordinates(QPoint p){
-	QgsPoint mapPt = toMapPoint(p.x(), p.y()	);
-	return QgsPoint(mapPt);
+
+QgsPoint QgsCoordinateTransform::transform (double x, double y)
+{
+  return (transform (QgsPoint (x, y)));
 }
-QgsPoint QgsCoordinateTransform::toMapCoordinates(int x, int y){
-	return toMapPoint(x,y);
+
+QgsPoint QgsCoordinateTransform::toMapPoint (int x, int y)
+{
+  double mx = x * mapUnitsPerPixel + xMin;
+  double my = -1 * ((y - yMax) * mapUnitsPerPixel - yMin);
+  return QgsPoint (mx, my);
 }
-void QgsCoordinateTransform::setMapUnitsPerPixel(double mupp){
+
+QgsPoint QgsCoordinateTransform::toMapCoordinates (QPoint p)
+{
+  QgsPoint mapPt = toMapPoint (p.x (), p.y ());
+  return QgsPoint (mapPt);
+}
+
+QgsPoint QgsCoordinateTransform::toMapCoordinates (int x, int y)
+{
+  return toMapPoint (x, y);
+}
+
+void QgsCoordinateTransform::setMapUnitsPerPixel (double mupp)
+{
   mapUnitsPerPixel = mupp;
 }
 
-void QgsCoordinateTransform::setYmax(double ymax){
+void QgsCoordinateTransform::setYmax (double ymax)
+{
   yMax = ymax;
 }
-void QgsCoordinateTransform::setYmin(double ymin){
+
+void QgsCoordinateTransform::setYmin (double ymin)
+{
   yMin = ymin;
 }
-void QgsCoordinateTransform::setXmin(double xmin){
+
+void QgsCoordinateTransform::setXmin (double xmin)
+{
   xMin = xmin;
 }
-void QgsCoordinateTransform::setParameters(double mupp, double xmin,
-					   double ymin, double ymax){
- mapUnitsPerPixel = mupp;
- xMin = xmin;
- yMin = ymin;
- yMax = ymax;
+
+void
+  QgsCoordinateTransform::setParameters (double mupp, double xmin,
+					 double ymin, double ymax)
+{
+  mapUnitsPerPixel = mupp;
+  xMin = xmin;
+  yMin = ymin;
+  yMax = ymax;
 
 }
-QString QgsCoordinateTransform::showParameters(){
+
+QString QgsCoordinateTransform::showParameters ()
+{
   QString rep;
-  QTextOStream(&rep) << "Map units/pixel: " << mapUnitsPerPixel 
-		     << " X minimum: " << xMin 
-		     << " Y minimum: " << yMin
-		     << " Y maximum: " << yMax;
+  QTextOStream (&rep) << "Map units/pixel: " << mapUnitsPerPixel
+    << " X minimum: " << xMin
+    << " Y minimum: " << yMin << " Y maximum: " << yMax;
   return rep;
-		 
+
 }

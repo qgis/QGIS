@@ -17,57 +17,72 @@
 #include <qstring.h>
 #include <qtextstream.h>
 #include "qgspoint.h"
-QgsPoint::QgsPoint(){
+QgsPoint::QgsPoint ()
+{
 }
 
-QgsPoint::QgsPoint(double x, double y) : m_x(x), m_y(y){
- 
+QgsPoint::QgsPoint (double x, double y):m_x (x), m_y (y)
+{
+
 }
 
-QgsPoint::~QgsPoint(){
+QgsPoint::~QgsPoint ()
+{
 }
 
-double QgsPoint::x() const {
+double QgsPoint::x () const
+{
   return m_x;
 }
 
-double QgsPoint::y() const {
+double QgsPoint::y () const
+{
   return m_y;
 }
-int QgsPoint::xToInt() {
-  return (int)m_x;
-}
-int QgsPoint::yToInt() {
-  return (int)m_y;
+
+int QgsPoint::xToInt ()
+{
+  return (int) m_x;
 }
 
-QString QgsPoint::stringRep(){
-	QString rep;
-	QTextOStream ot(&rep);
-	ot.precision(12);
-	ot << m_x << ", " << m_y;
-	return rep;
+int QgsPoint::yToInt ()
+{
+  return (int) m_y;
+}
+
+QString QgsPoint::stringRep ()
+{
+  QString rep;
+  QTextOStream ot (&rep);
+  ot.precision (12);
+  ot << m_x << ", " << m_y;
+  return rep;
 }
 
 // operators
-bool QgsPoint::operator==(const QgsPoint &other){
-  if((m_x == other.x()) && (m_y == other.y()))
+bool QgsPoint::operator== (const QgsPoint & other)
+{
+  if ((m_x == other.x ()) && (m_y == other.y ()))
     return true;
   else
     return false;
 }
-bool QgsPoint::operator!=(const QgsPoint &other){
-  if((m_x == other.x()) && (m_y == other.y()))
+
+bool QgsPoint::operator!= (const QgsPoint & other)
+{
+  if ((m_x == other.x ()) && (m_y == other.y ()))
     return false;
   else
     return true;
 }
 
-QgsPoint & QgsPoint::operator=(const QgsPoint &other){
-  if(&other != this){
-    m_x = other.x();
-    m_y = other.y();
-  }
-  
-    return *this;
+QgsPoint & QgsPoint::operator= (const QgsPoint & other)
+{
+  if (&other != this)
+    {
+      m_x = other.x ();
+      m_y = other.y ();
+    }
+
+  return *this;
 }

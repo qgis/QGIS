@@ -22,6 +22,8 @@
 #include <qstringlist.h>
 #include <qmessagebox.h>
 #include <qstatusbar.h>
+#include <qfiledialog.h>
+#include <qfileinfo.h>
 #include <qpixmap.h>
 #include <qsplitter.h>
 #include <qrect.h>
@@ -43,10 +45,10 @@
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
-QgisApp::QgisApp (QWidget * parent, const char *name, WFlags fl):
-  QgisAppBase (parent, name, fl)
+QgisApp::QgisApp (QWidget * parent, const char *name,
+		  WFlags fl):QgisAppBase (parent, name, fl)
 {
-OGRRegisterAll();
+  OGRRegisterAll ();
   QPixmap icon;
   icon = QPixmap (qgis_xpm);
   setIcon (icon);
@@ -59,19 +61,54 @@ OGRRegisterAll();
   // resize it to fit in the frame
   //    QRect r = frmCanvas->rect();
   //    canvas->resize(r.width(), r.height());
-  mapCanvas->setBackgroundColor (Qt::white); //QColor (220, 235, 255));
+  mapCanvas->setBackgroundColor (Qt::white);	//QColor (220, 235, 255));
   mapCanvas->setMinimumWidth (400);
-    FrameLayout->addWidget (split, 0, 0);
+  FrameLayout->addWidget (split, 0, 0);
   mapLegend->setBackgroundColor (QColor (192, 192, 192));
-  connect( mapCanvas, SIGNAL( xyCoordinates(QgsPoint &) ), this, SLOT( showMouseCoordinate(QgsPoint &) ) );
+  connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
+	   SLOT (showMouseCoordinate (QgsPoint &)));
 
 }
 
 QgisApp::~QgisApp ()
 {
 }
-void
-QgisApp::addLayer ()
+void QgisApp::addLayer ()
+{
+  QStringList files =
+    QFileDialog::getOpenFileNames (0, 0, this, "open files dialog",
+				   "Select one or more layers to add");
+  QStringList::Iterator it = files.begin ();
+  while (it != files.end ())
+    {
+
+
+      QFileInfo fi (*it);
+      QString base = fi.baseName ();
+
+
+      // create the layer
+
+      QgsShapeFileLayer *lyr = new QgsShapeFileLayer (*it, base);
+      // give it a random color
+
+      // add it to the mapcanvas collection
+      mapCanvas->addLayer (lyr);
+
+      ++it;
+    }
+  qApp->processEvents ();
+  // update legend
+  /*! \todo Need legend scrollview and legenditem classes */
+  // draw the map
+  mapCanvas->render2 ();
+  statusBar ()->message (mapCanvas->extent ().stringRep ());
+
+
+
+}
+
+void QgisApp::addDatabaseLayer ()
 {
   // only supports postgis layers at present
   // show the postgis dialog
@@ -91,68 +128,70 @@ QgisApp::addLayer ()
 	  // create the layer
 	  QgsDatabaseLayer *lyr = new QgsDatabaseLayer (connInfo, *it);
 	  // give it a random color
-	  
+
 	  // add it to the mapcanvas collection
 	  mapCanvas->addLayer (lyr);
-	  
+
 	  ++it;
 	}
-      qApp->processEvents();
+      qApp->processEvents ();
       // update legend
-			/*! \todo Need legend scrollview and legenditem classes */
+      /*! \todo Need legend scrollview and legenditem classes */
       // draw the map
-      mapCanvas->render2();
-      statusBar()->message(mapCanvas->extent().stringRep());
+      mapCanvas->render2 ();
+      statusBar ()->message (mapCanvas->extent ().stringRep ());
 
     }
 
 }
-void
-QgisApp::fileExit ()
+void QgisApp::fileExit ()
 {
   QApplication::exit ();
 
 }
 
-void
-QgisApp::zoomIn ()
+void QgisApp::zoomIn ()
 {
   /*  QWMatrix m = mapCanvas->worldMatrix();
-      m.scale( 2.0, 2.0 );
-      mapCanvas->setWorldMatrix( m );
-  */
+     m.scale( 2.0, 2.0 );
+     mapCanvas->setWorldMatrix( m );
+   */
 
   mapTool = QGis::ZoomIn;
-  mapCanvas->setMapTool(mapTool);
+  mapCanvas->setMapTool (mapTool);
   // scale the extent
- /* QgsRect ext = mapCanvas->extent();
-  ext.scale(0.5);
-  mapCanvas->setExtent(ext);
-  statusBar()->message(ext.stringRep());
-  mapCanvas->clear();
-  mapCanvas->render2(); */
+  /* QgsRect ext = mapCanvas->extent();
+     ext.scale(0.5);
+     mapCanvas->setExtent(ext);
+     statusBar()->message(ext.stringRep());
+     mapCanvas->clear();
+     mapCanvas->render2(); */
 
 }
 
-void
-QgisApp::zoomOut ()
+void QgisApp::zoomOut ()
 {
-	mapTool = QGis::ZoomOut;
-	mapCanvas->setMapTool(mapTool);
+  mapTool = QGis::ZoomOut;
+  mapCanvas->setMapTool (mapTool);
   /*    QWMatrix m = mapCanvas->worldMatrix();
-	m.scale( 0.5, 0.5 );
-	mapCanvas->setWorldMatrix( m );
-  */
+     m.scale( 0.5, 0.5 );
+     mapCanvas->setWorldMatrix( m );
+   */
 
 
 }
-void QgisApp::pan(){
-    mapTool = QGis::Pan;
-    mapCanvas->setMapTool(mapTool);
+
+void QgisApp::pan ()
+{
+  mapTool = QGis::Pan;
+  mapCanvas->setMapTool (mapTool);
 }
-void QgisApp::zoomFull(){
-  mapCanvas->zoomFullExtent();
+
+void QgisApp::zoomFull ()
+{
+  mapCanvas->zoomFullExtent ();
 }
+
 //void QgisApp::readWKB (const char *connInfo, QStringList tables)
 //{
 //    PgCursor pgc (connInfo, "testcursor");
@@ -192,24 +231,24 @@ void QgisApp::zoomFull(){
 
 //       // determine the dominate direction for the mapcanvas
 //       if (mapCanvas->width () > mapCanvas->height ())
-// 	{
-// 	  subordinantAxisLength = mapCanvas->height ();
-// 	  scaleFactor = yMu / subordinantAxisLength;
-// 	  mapWindow = new QRect (x1, y1, xMu, xMu);
-// 	}
+//      {
+//        subordinantAxisLength = mapCanvas->height ();
+//        scaleFactor = yMu / subordinantAxisLength;
+//        mapWindow = new QRect (x1, y1, xMu, xMu);
+//      }
 //       else
-// 	{
-// 	  subordinantAxisLength = mapCanvas->width ();
-// 	  scaleFactor = xMu / subordinantAxisLength;
-// 	  mapWindow = new QRect (x1, y1, yMu, yMu);
-// 	}
+//      {
+//        subordinantAxisLength = mapCanvas->width ();
+//        scaleFactor = xMu / subordinantAxisLength;
+//        mapWindow = new QRect (x1, y1, yMu, yMu);
+//      }
 
 //       const char *xtent = (const char *) extent;
 //       string sql = "select asbinary(the_geom,";
 //       if (isNDR)
-// 	sql += "'NDR'";
+//      sql += "'NDR'";
 //       else
-// 	sql += "'XDR'";
+//      sql += "'XDR'";
 //       sql += ") as features from ";
 //       sql += *it++;
 //       cout << sql.c_str () << endl;
@@ -225,37 +264,37 @@ void QgisApp::zoomFull(){
 //       QRect v = paint.viewport ();
 //       int d = QMIN (v.width (), v.height ());
 //       paint.setViewport (v.left () + (v.width () - d) / 2,
-// 			 v.top () + (v.height () - d) / 2, d, d);
+//                       v.top () + (v.height () - d) / 2, d, d);
 
 
 //       paint.setPen (Qt::red);
 
 //       for (int idx = 0; idx < pgc.Tuples (); idx++)
-// 	{
-// 	  cout << "Size of this record: " << pgc.GetLength (idx, 0) << endl;
-// 	  // allocate memory for the item
-// 	  char *feature = new char[pgc.GetLength (idx, 0) + 1];
-// 	  memset (feature, '\0', pgc.GetLength (idx, 0) + 1);
-// 	  memcpy (feature, pgc.GetValue (idx, 0), pgc.GetLength (idx, 0));
+//      {
+//        cout << "Size of this record: " << pgc.GetLength (idx, 0) << endl;
+//        // allocate memory for the item
+//        char *feature = new char[pgc.GetLength (idx, 0) + 1];
+//        memset (feature, '\0', pgc.GetLength (idx, 0) + 1);
+//        memcpy (feature, pgc.GetValue (idx, 0), pgc.GetLength (idx, 0));
 
 
-// 	  cout << "Endian is: " << (int) feature[0] << endl;
-// 	  cout << "Geometry type is: " << (int) feature[1] << endl;
-// 	  // print the x,y coordinates
-// 	  double *x = (double *) (feature + 5);
-// 	  double *y = (double *) (feature + 5 + sizeof (double));
-// 	  cout << "x,y: " << setprecision (16) << *x << ", " << *y << endl;
-// 	  QPoint pt = paint.xForm (QPoint ((int) *x, (int) *y));
-// 	  cout << "Plotting " << *x << ", " << *y << " at " << pt.
-// 	    x () << ", " << pt.y () << endl;
-// 	  paint.drawRect ((int) *x, mapWindow->bottom () - (int) *y, 15000,
-// 			  15000);
-// 	  // free it 
-// 	  delete[]feature;
-// 	}
+//        cout << "Endian is: " << (int) feature[0] << endl;
+//        cout << "Geometry type is: " << (int) feature[1] << endl;
+//        // print the x,y coordinates
+//        double *x = (double *) (feature + 5);
+//        double *y = (double *) (feature + 5 + sizeof (double));
+//        cout << "x,y: " << setprecision (16) << *x << ", " << *y << endl;
+//        QPoint pt = paint.xForm (QPoint ((int) *x, (int) *y));
+//        cout << "Plotting " << *x << ", " << *y << " at " << pt.
+//          x () << ", " << pt.y () << endl;
+//        paint.drawRect ((int) *x, mapWindow->bottom () - (int) *y, 15000,
+//                        15000);
+//        // free it 
+//        delete[]feature;
+//      }
 //       paint.end ();
 //     }
-  
+
 //}
 
 
@@ -268,21 +307,27 @@ void QgisApp::drawPoint (double x, double y)
   paint.setWindow (*mapWindow);
 
   paint.setPen (Qt::blue);
-  paint.drawPoint ((int)x, (int)y);
+  paint.drawPoint ((int) x, (int) y);
   paint.end ();
 }
 
-void QgisApp::drawLayers(){
+void QgisApp::drawLayers ()
+{
   std::cout << "In  QgisApp::drawLayers()" << std::endl;
-  mapCanvas->render2();
+  mapCanvas->render2 ();
 }
-void QgisApp::showMouseCoordinate(QgsPoint &p){
-	statusBar()->message(p.stringRep());
-	//qWarning("X,Y is: " + p.stringRep());
-	
+
+void QgisApp::showMouseCoordinate (QgsPoint & p)
+{
+  statusBar ()->message (p.stringRep ());
+  //qWarning("X,Y is: " + p.stringRep());
+
 }
-void QgisApp::testButton(){
-	QgsShapeFileLayer *sfl = new QgsShapeFileLayer();
-	delete sfl;
-	
+
+void QgisApp::testButton ()
+{
+  QgsShapeFileLayer *sfl = new QgsShapeFileLayer ("foo");
+  mapCanvas->addLayer (sfl);
+//      delete sfl;
+
 }

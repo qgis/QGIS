@@ -17,7 +17,11 @@
 
 #ifndef QGSSHAPEFILELAYER_H
 #define QGSSHAPEFILELAYER_H
-
+class QPainter;
+class QgsRect;
+class QgsCoordinateTransform;
+class OGRLayer;
+class OGRDataSource;
 
 #include "qgsmaplayer.h"
 
@@ -28,7 +32,7 @@
 class QgsShapeFileLayer : public QgsMapLayer  {
 public: 
     //! Constructor
-	QgsShapeFileLayer();
+	QgsShapeFileLayer(QString path=0, QString baseName=0);
 	//! Destructor
 	~QgsShapeFileLayer();
        
@@ -39,11 +43,29 @@ enum SHAPETYPE {
 };
 
 private: // Private attributes
+void draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTransform *cXf);
+OGRDataSource *ogrDataSource;
+	
+OGRLayer *ogrLayer; 
   /**  */
   bool registered;
+     enum ENDIAN{
+	NDR=1,
+	XDR=0
+    };
+    enum WKBTYPE{
+	WKBPoint=1,
+	WKBLineString,
+	WKBPolygon,
+	WKBMultiPoint,
+	WKBMultiLineString,
+	WKBMultiPolygon
+    };	
 private: // Private methods
   /** No descriptions */
   void registerFormats();
+  int endian();
+  
 };
 
 #endif

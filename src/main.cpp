@@ -24,31 +24,29 @@
 //#include "qgis.h"
 #include "qgisapp.h"
 
-int main(int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 
-  
-  QApplication a(argc, argv);
+
+  QApplication a (argc, argv);
   // a.setFont(QFont("helvetica", 11));
-  QTranslator tor( 0 );
+  QTranslator tor (0);
   // set the location where your .qm files are in load() below as the last parameter instead of "."
   // for development, use "/" to use the english original as
   // .qm files are stored in the base project directory.
-  tor.load( QString("qgis.") + QTextCodec::locale(), "." );
-  a.installTranslator( &tor );
-  /* uncomment the following line, if you want a Windows 95 look*/
-  a.setStyle("Windows");
+  tor.load (QString ("qgis.") + QTextCodec::locale (), ".");
+  a.installTranslator (&tor);
+  /* uncomment the following line, if you want a Windows 95 look */
+  a.setStyle ("Windows");
 
-  QgisApp *qgis=new QgisApp();
-  a.setMainWidget(qgis);
+  QgisApp *qgis = new QgisApp ();
+  a.setMainWidget (qgis);
 
-  qgis->show();
-  a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );
+  qgis->show ();
+  a.connect (&a, SIGNAL (lastWindowClosed ()), &a, SLOT (quit ()));
 
 
-  int result = a.exec();
+  int result = a.exec ();
 
   return result;
 }
-
-
