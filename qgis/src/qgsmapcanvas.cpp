@@ -41,6 +41,7 @@
 #include "qgsmaplayerinterface.h"
 #include "qgsvectorlayer.h"
 
+
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name):QWidget(parent, name)
 {
   mapWindow = new QRect();
@@ -81,6 +82,10 @@ bool QgsMapCanvas::isDirty()
   return dirty;
 }
 
+bool QgsMapCanvas::isDrawing()
+{
+  return drawing;;
+}
 void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr)
 {
   // add a maplayer interface to a layer type defined in a plugin
@@ -189,7 +194,11 @@ void QgsMapCanvas::refresh()
   render2();
 }
 
-void QgsMapCanvas::render2()
+// The painter device parameter is optional - if ommitted it will default
+// to the pmCanvas (ie the gui map display). The idea is that you can pass
+// an alternative device such as one that will be used for printing or 
+// saving a map view as an image file.
+void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
 {
   QString msg = frozen ? "frozen" : "thawed";
  #ifdef QGISDEBUG
@@ -202,8 +211,16 @@ void QgsMapCanvas::render2()
 //  std::cout << "IN RENDER 2" << std::endl;
           drawing = true;
           QPainter *paint = new QPainter();
-          pmCanvas->fill(bgColor);
-          paint->begin(pmCanvas);
+          //default to pmCanvas if no paintdevice is supplied
+          if (theQPaintDevice==NULL)
+          {
+            pmCanvas->fill(bgColor);
+            paint->begin(pmCanvas);
+          }
+          else
+          {
+            paint->begin(theQPaintDevice);
+          }
           // calculate the translation and scaling parameters
           double muppX, muppY;
           muppY = currentExtent.height() / height();
@@ -272,6 +289,7 @@ void QgsMapCanvas::render2()
     }
 }
 
+//Render is deprecated! Use Render2
 void QgsMapCanvas::render()
 {
 /*  QPainter *paint = new QPainter();
@@ -313,9 +331,20 @@ void QgsMapCanvas::render()
   paint->end();
   */
 }
-void QgsMapCanvas::saveAsImage(QString theFileName)
+void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap)
 {
-  pmCanvas->save(theFileName,"PNG");
+  //
+  //check if the optional QPaintDevice was supplied
+  //
+  if (theQPixmap != NULL)
+  {
+    render2(theQPixmap);
+    theQPixmap->save(theFileName,"PNG");
+  }
+  else //use the map view
+  {
+    pmCanvas->save(theFileName,"PNG");
+  }
 }
 void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 {
