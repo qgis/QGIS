@@ -145,8 +145,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
     query += column_names[n].lower();
     query += " ";
     query += column_types[n];
-    if(n < column_names.size() -1)
-      query += ", ";
+    query += ", ";
   }
   query += " PRIMARY KEY (gid))";
   
