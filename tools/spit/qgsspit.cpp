@@ -49,6 +49,10 @@ QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   tblShapefiles->adjustColumn(3);
   tblShapefiles->setLeftMargin(0);
 
+  tblShapefiles->setColumnReadOnly(0, true);
+  tblShapefiles->setColumnReadOnly(1, true);
+  tblShapefiles->setColumnReadOnly(2, true);  
+
   chkUseDefaultSrid->setChecked(true);
   chkUseDefaultGeom->setChecked(true);
   useDefaultSrid();
@@ -126,15 +130,16 @@ void QgsSpit::addFile()
     if(!exist){
       QgsShapeFile * file = new QgsShapeFile(*it);
       if(file->is_valid()){
+        int row = tblShapefiles->numRows();
         fileList.push_back(file);
-        tblShapefiles->insertRows(0);
-        tblShapefiles->setText(0, 0, *it);
-        tblShapefiles->setText(0, 1, file->getFeatureClass());
+        tblShapefiles->insertRows(row);
+        tblShapefiles->setText(row, 0, *it);
+        tblShapefiles->setText(row, 1, file->getFeatureClass());
         std::stringstream temp;
         int count = file->getFeatureCount();
         temp << count;
-        tblShapefiles->setText(0, 2, temp.str());
-        tblShapefiles->setText(0, 3, fileList.back()->getTable());
+        tblShapefiles->setText(row, 2, temp.str());
+        tblShapefiles->setText(row, 3, file->getTable());
         total_features += count;
       }
       else{
@@ -152,6 +157,9 @@ void QgsSpit::addFile()
   }
   
   tblShapefiles->adjustColumn(0);
+  tblShapefiles->adjustColumn(1);
+  tblShapefiles->adjustColumn(3);
+  tblShapefiles->adjustColumn(4);
   tblShapefiles->setCurrentCell(-1, 0);  
 }
 
@@ -250,6 +258,7 @@ void QgsSpit::import(){
       pd->ExecTuplesOk("BEGIN");
       
       for(int i=0; i<fileList.size() ; i++){
+        fileList[i]->setTable(tblShapefiles->text(i, 3));
         pro->show();
         pro->setLabelText("Importing files\n"+fileList[i]->getName());
         int rel_exists1 = 0;

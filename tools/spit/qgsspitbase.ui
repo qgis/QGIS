@@ -227,32 +227,20 @@
                         <property name="text">
                             <string>File Name</string>
                         </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
                     </column>
                     <column>
                         <property name="text">
                             <string>Feature Class</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
                         </property>
                     </column>
                     <column>
                         <property name="text">
                             <string>Features</string>
                         </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
                     </column>
                     <column>
                         <property name="text">
                             <string>DB Relation Name</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
                         </property>
                     </column>
                     <property name="name">
@@ -268,7 +256,7 @@
                         <bool>false</bool>
                     </property>
                     <property name="readOnly">
-                        <bool>true</bool>
+                        <bool>false</bool>
                     </property>
                     <property name="selectionMode">
                         <enum>MultiRow</enum>
