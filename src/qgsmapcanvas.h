@@ -152,7 +152,7 @@ public slots:
     void addLayer(QgsMapLayerInterface * lyr);
 
     //! remove the layer defined by key
-    void remove (QString const & key);
+    void remove (QString key);
 
     //! remove all layers from the map
     void removeAll();

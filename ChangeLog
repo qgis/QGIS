@@ -1,7 +1,21 @@
 QGIS Change Log
-ChangeLog,v 1.110 2004/06/04 11:04:29 timlinux Exp
+ChangeLog,v 1.111 2004/06/07 08:43:53 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-07 [ts] 0.3.0devel15
+** Implemented map overview using maplayers rather than snapshots of a raster layer.
+
+** Implemented QgsMapLayerRegistry  - s singleton object that keeps track of loaded layers. When a layer is added an entry is made in the registry. When a layer is removed, the registry emits a layerWillBeRemoved signal that is connected to any mapvcanvas, legend etc that may be using the layer. The objects using the layer can then remove any reference they make to the layer - after which the registry deletes the layer object.
+
+** This fixes a problem with adding an overview map which caused qgis to crash when a layer was removed because it was trying to delete the same pointer twice.
+
+** Added a better implementation of the overview map below map legend.
+
+** Refactoring in qgis app - all private members now adhere to qgis naming conventions (prefixed with m).
+
+
+** Import Note *** ONLY THE MAPLAYER REGISTRY SHOULD DELETE LAYERS NOW ***
 
 2004-06-03 [ts] 0.3.0devel14
 ** Added getPaletteAsPixmap function to raster and display on raster props
