@@ -115,18 +115,6 @@ void QgsMapLayer::setlabelField(const QString & _newVal)
 	m_labelField = _newVal;
 }
 
-/** No descriptions */
-int QgsMapLayer::z()
-{
-	return zpos;
-}
-
-/** No descriptions */
-void QgsMapLayer::setZ(int zorder)
-{
-	zpos = zorder;
-}
-
 bool QgsMapLayer::isValid()
 {
 	return valid;
