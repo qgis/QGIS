@@ -83,8 +83,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
   const char *cOgrLib = (const char *) ogrlib;
 #ifdef TESTPROVIDERLIB
   // test code to help debug provider loading problems
-//  void *handle = dlopen(cOgrLib, RTLD_LAZY);
-  void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
+  void *handle = dlopen(cOgrLib, RTLD_LAZY);
   if (!handle)
   {
     std::cout << "Error in dlopen: " << dlerror() << std::endl;
@@ -267,7 +266,7 @@ void QgsVectorLayer::setDisplayField()
   }
 
   //if there were no fields in the dbf just return - otherwise qgis segfaults!
-  if (fields.size() == 0) return;
+  if (j==0) return;
 
   if (idxName.length() > 0)
   {
