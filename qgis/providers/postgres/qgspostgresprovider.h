@@ -274,6 +274,10 @@ private:
    * Name of the table with schema included
    */
   QString schemaTableName;
+  /** 
+   * Name of the schema
+   */
+  QString mSchema;
   /**
    * SQL statement used to limit the features retreived
    */
@@ -332,6 +336,9 @@ private:
    XXX that's not reflected in this variable
   */
   bool swapEndian;
+
+  bool deduceEndian();
+  bool getGeometryDetails();
     
   bool ready;
   std::ofstream pLog;
@@ -359,4 +366,5 @@ private:
 
   //! Calculate the extents of the layer
   void calculateExtents();
+
 };

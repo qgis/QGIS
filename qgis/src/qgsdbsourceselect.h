@@ -26,6 +26,10 @@ extern "C"
 {
 #include <libpq-fe.h>
 }
+
+#include <vector>
+#include <utility>
+
 class QListBoxItem;
 class QgisApp;
 /*! \class QgsDbSourceSelect
@@ -39,6 +43,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
 {
   Q_OBJECT
  public:
+
     //! Constructor
     QgsDbSourceSelect(QgisApp *app=0, QWidget *parent = 0, const char *name = 0);
     //! Destructor
@@ -66,6 +71,13 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     public slots:
       void setSql(QListViewItem *);
  private:
+
+    typedef std::pair<QString, QString> geomPair;
+    typedef std::vector<geomPair > geomCol;
+
+    bool getGeometryColumnInfo(PGconn *pd, 
+			       geomCol& details);
+
     QString m_connInfo;
     QStringList m_selectedTables;
     //! Pointer to the qgis application mainwindow
