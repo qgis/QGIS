@@ -14,11 +14,13 @@ i18ndir = ${pkgdatadir}/i18n
 
 nodist_i18n_DATA = \
 	qgis_de.qm \
-	qgis_pt.qm
+	qgis_pt.qm \
+	qgis_se.qm
 
 i18n_SOURCES = \
 	qgis_de.ts \
-	qgis_pt.ts
+	qgis_pt.ts \
+	qgis_se.ts
 
 %.qm: %.ts
 	cd ..; ./create_qm_files.sh
