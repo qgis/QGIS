@@ -394,7 +394,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   
   //fill type names into lists
   mNumericalTypes.push_back("double precision");
+  mNumericalTypes.push_back("int4");
+  mNumericalTypes.push_back("int8");
   mNonNumericalTypes.push_back("text");
+  mNonNumericalTypes.push_back("varchar(30)");
 
 }
 
@@ -1218,14 +1221,31 @@ bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
 
 bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
 {
-    bool returnvalue=true;
+    bool returnvalue=true; 
+    //TODO: find out, if a value is text and quote if yes
     PQexec(connection,"BEGIN");
     for(std::map<int,std::map<QString,QString> >::const_iterator iter=attr_map.begin();iter!=attr_map.end();++iter)
     {
 	for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
 	{
-	    //TODO: collect several attribute changes for a feature in one statement (possibly more efficient)
-	    QString sql="UPDATE "+tableName+" SET "+(*siter).first+"="+(*siter).second+" WHERE " +primaryKey+"="+QString::number((*iter).first);
+	    QString value=(*siter).second;
+	    
+            //find out, if value contains letters and quote if yes
+	    bool text=false;
+	    for(int i=0;i<value.length();++i)
+	    {
+		if(value[i].isLetter())
+		{
+		    text=true;
+		}
+	    }
+	    if(text)
+	    {
+		value.prepend("'");
+		value.append("'");
+	    }
+
+	    QString sql="UPDATE "+tableName+" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
 #ifdef QGISDEBUG
 	    qWarning(sql);
 #endif
