@@ -57,6 +57,11 @@ void QgisIface::addRasterLayer(QString rasterLayerPath)
   qgis->addRasterLayer(rasterLayerPath);
 }
 
+bool QgisIface::addProject(QString theProjectName)
+{
+  return qgis->addProject(theProjectName);
+}
+
 QgsMapLayer *QgisIface::activeLayer()
 {
   return qgis->activeLayer();

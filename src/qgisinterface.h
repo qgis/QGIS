@@ -57,6 +57,9 @@ class QgisInterface : public QWidget{
     virtual void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
     //! Add a raster layer
     virtual void addRasterLayer(QString rasterLayerPath)=0;
+    //! Add a project
+    virtual bool addProject(QString theProject)=0; 
+
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer()=0;
     //! add a menu item to the main menu, postioned to the left of the Help menu
