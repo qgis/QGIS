@@ -856,6 +856,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 */
 static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles)
 {
+  
     bool haveLastUsedFilter = false;  // by default, there is no last
     // used filter
 
@@ -908,6 +909,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 */
 void QgisApp::addLayer()
 {
+  
     QString fileFilters;
 
     buildSupportedVectorFileFilter_(fileFilters);

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>406</width>
+            <width>366</width>
             <height>373</height>
         </rect>
     </property>
@@ -474,7 +474,7 @@
                 </size>
             </property>
             <property name="title">
-                <string>Fill Pattern:</string>
+                <string>Fill Patterns:</string>
             </property>
             <property name="exclusive">
                 <bool>true</bool>
