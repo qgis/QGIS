@@ -1131,11 +1131,32 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQSt
 
 }
 
+// get the name of a band given its number
+const  QString QgsRasterLayer::getRasterBandName (int theBandNoInt) 
+{
+  
+  if (theBandNoInt <= rasterStatsVector.size()) 
+  { 
+    //vector starts at base 0, band counts at base1 !
+    return rasterStatsVector[theBandNoInt-1].bandName;
+  } 
+  else 
+  {
+    return QString("");
+  }
+}
 /** Check whether a given band number has stats associated with it */
 const  bool QgsRasterLayer::hasStats(int theBandNoInt)
 {
-    RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
-    return myRasterBandStats.statsGatheredFlag;
+  if (theBandNoInt <= rasterStatsVector.size()) 
+  { 
+    //vector starts at base 0, band counts at base1 !
+    return rasterStatsVector[theBandNoInt-1].statsGatheredFlag;
+  } 
+  else 
+  {
+    return false;
+  }
 }
 /** Private method to calculate statistics for a band. Populates rasterStatsMemArray.
     Note that this is a cpu intensive /slow task!*/
@@ -1167,6 +1188,7 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   }
   GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+  //this wll probably have been populated in the constructor already...but we will double check
   myRasterBandStats.bandName=myColorInterpretation;
   //declare a colorTable to hold a palette - will only be used if the layer color interp is palette
   GDALColorTable *colorTable;
