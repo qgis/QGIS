@@ -395,7 +395,7 @@ void PluginGui::createShapefile(QString theShapefileName)
 {
 
   ShapefileMaker * myShapefileMaker = new ShapefileMaker(theShapefileName);
-  for (int myIteratorInt = 0; myIteratorInt <= mFishingSpotsVector.size(); ++myIteratorInt)
+  for (int myIteratorInt = 0; myIteratorInt < mFishingSpotsVector.size(); ++myIteratorInt)
   {
         FishingSpot myFishingSpot = mFishingSpotsVector[myIteratorInt];
         myShapefileMaker->writePoint(theShapefileName, static_cast<double>(0-myFishingSpot.longitude), static_cast<double>(myFishingSpot.latitude) );
