@@ -19,7 +19,7 @@
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
 #include <iostream>
-class QString;
+#include <qstring.h>
 
 class QgsPoint {
  private:

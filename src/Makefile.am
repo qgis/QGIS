@@ -96,7 +96,9 @@ headers =  	qgis.h					\
 	   	qgisapp.h \
 	   	qgsscalecalculator.h \
 	   	qgsprojectproperties.h \
-	   	qgsoptions.h
+	   	qgsoptions.h \
+	   	qgsacetateobject.h \
+	   	qgsacetaterectangle.h 
 
 
 ## qt designer files for all the GUI stuff
@@ -237,7 +239,9 @@ qgis_SOURCES =  main.cpp			\
 		splashscreen.cpp \
 		qgsscalecalculator.cpp  \
 		qgsprojectproperties.cpp \
-		qgsoptions.cpp 
+		qgsoptions.cpp \
+	   	qgsacetateobject.cpp \
+	   	qgsacetaterectangle.cpp 
 
 postgresHEADERS = qgsdbsourceselect.h qgsnewconnection.h
 postgresSOURCES = qgsdbsourceselect.cpp qgsnewconnection.cpp
@@ -272,7 +276,7 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB)
 qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 
-libqgis_la_SOURCES = qgsmapcanvas.cpp qgsmapcanvas.moc.cpp qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp qgsfield.cpp qgsfeature.cpp qgsfeatureattribute.cpp qgsrect.cpp qgscoordinatetransform.cpp qgsscalecalculator.cpp
+libqgis_la_SOURCES = qgsmapcanvas.cpp qgsmapcanvas.moc.cpp qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp qgsfield.cpp qgsfeature.cpp qgsfeatureattribute.cpp qgsrect.cpp qgscoordinatetransform.cpp qgsscalecalculator.cpp qgsacetaterectangle.cpp qgsacetateobject.cpp
 libqgis_la_LIBFLAGS =  $(QT_LDADD)
 libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 

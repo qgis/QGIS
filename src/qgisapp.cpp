@@ -72,6 +72,7 @@
 
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
+#include "qgsacetaterectangle.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
@@ -284,7 +285,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   setCaption(caption);
 
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
-  connect(mMapCanvas, SIGNAL(extentsChanged(QString )),this,SLOT(showExtents(QString )));
+  connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mMapLegend, SLOT(addLayer(QgsMapLayer *)));
   connect(mMapCanvas, SIGNAL(removedLayer(QString)), mMapLegend, SLOT(removeLayer(QString)));
@@ -2949,10 +2950,49 @@ void QgisApp::showProgress(int theProgress, int theTotalSteps)
   
 }
 
-void QgisApp::showExtents(QString theExtents)
+void QgisApp::showExtents(QgsRect theExtents)
 {
-  statusBar()->message(QString(tr("Extents: ")) + theExtents);
+  // update the statusbar with the current extents
+  statusBar()->message(QString(tr("Extents: ")) + theExtents.stringRep(2));
+  // Update the extent rectangle in the overview map
+  QgsPoint origin(0,0);
+  // create the new acetate object
+  QgsAcetateRectangle *acRect = new QgsAcetateRectangle(origin, mMapCanvas->extent());
+  // add it to the acetate layer
+  mOverviewCanvas->addAcetateObject("extent", acRect);
+  // refresh the overview map
+  std::cerr << "Adding extent to acetate layer" << std::endl; 
+  mOverviewCanvas->refresh();
+}
 
+void QgisApp::drawExtentRectangle(QPainter *painter)
+{
+  //XXX - This code is not used but lets save it for a bit...
+  // Draw the current extents rectangle on the overview
+  // We don't care about the painter since we want to draw
+  // on a copy of the overview pixmap
+ /* 
+  QgsCoordinateTransform *cXf = mOverviewCanvas->getCoordinateTransform();
+  // get the upper right and lower left corners of the extent rectangle
+  QgsRect theExtents = mMapCanvas->extent();
+  QgsPoint ul(theExtents.xMin(), theExtents.yMax());
+  QgsPoint lr(theExtents.xMax(), theExtents.yMin());
+  // transform the points from map coordinates to device coordinates
+  cXf->transform(&ul);
+  cXf->transform(&lr);
+  // copy the overview pixmap 
+  QPixmap *overviewPixmap = new QPixmap(*mOverviewCanvas->canvasPixmap());
+  QPainter *canvasPainter = new QPainter();
+  canvasPainter->begin(overviewPixmap);
+  canvasPainter->setPen(QColor(255,0,0));
+  canvasPainter->drawRect(ul.xToInt(), lr.yToInt(), 
+      lr.xToInt() - ul.xToInt(), ul.yToInt() - lr.yToInt());
+  canvasPainter->end();
+ delete canvasPainter;
+ // bitblt the new overview to the overview canvas
+ bitBlt(mOverviewCanvas,0,0, overviewPixmap, 0,0);
+
+*/
 }
 
 void QgisApp::showStatusMessage(QString theMessage)

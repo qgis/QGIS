@@ -47,7 +47,7 @@
 #include "qgsmaplayerinterface.h"
 #include "qgsvectorlayer.h"
 #include "qgsscalecalculator.h"
-
+#include "qgsacetaterectangle.h"
 
 /**
    Implementation struct for QgsMapCanvas
@@ -105,6 +105,9 @@ struct QgsMapCanvas::CanvasProperties
     }
     //! map containing the layers by name
     std::map < QString, QgsMapLayer * >layers;
+
+    //! map containing the acetate objects by key (name)
+    std::map <QString, QgsAcetateObject *> acetateObjects;
 
     //! list containing the names of layers in zorder
     std::list < QString > zOrder;
@@ -302,6 +305,19 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 
 } // addLayer
 
+void QgsMapCanvas::addAcetateObject(QString key, QgsAcetateObject *obj)
+{
+  // since we are adding pointers, check to see if the object
+  // referenced by key already exists and if so, delete it prior
+  // to adding the new object with the same key
+  QgsAcetateObject *oldObj = mCanvasProperties->acetateObjects[key];
+  if(oldObj)
+  {
+    delete oldObj;
+  }
+
+  mCanvasProperties->acetateObjects[key] = obj;
+}
 
 QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 {
@@ -487,9 +503,23 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #ifdef QGISDEBUG
       std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
 #endif
+      emit renderComplete(paint);
+      // draw the acetate layer
+      std::map <QString, QgsAcetateObject *>::iterator ai = mCanvasProperties->acetateObjects.begin();
+      while(ai != mCanvasProperties->acetateObjects.end())
+      {
+        QgsAcetateObject *acObj = ai->second;
+        if(acObj)
+        {
+          acObj->draw(paint, mCanvasProperties->coordXForm);
+        }
+        ai++;
+      }
+
       // notify any listeners that rendering is complete
       //note that pmCanvas is not draw to gui yet
-      emit renderComplete(paint);
+      //emit renderComplete(paint);
+      
       paint->end();
       mCanvasProperties->drawing = false;
     }
@@ -499,7 +529,12 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
 } // render
 
-
+// return the current coordinate transform based on the extents and
+// device size
+QgsCoordinateTransform * QgsMapCanvas::getCoordinateTransform()
+{
+  return mCanvasProperties->coordXForm;
+}
 
 void QgsMapCanvas::currentScale(int thePrecision)
 {
@@ -607,7 +642,7 @@ QgsRect const & QgsMapCanvas::extent() const
 void QgsMapCanvas::setExtent(QgsRect const & r)
 {
   mCanvasProperties->currentExtent = r;
-  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+  emit extentsChanged(r);
 } // setExtent
 
 
@@ -626,7 +661,7 @@ void QgsMapCanvas::zoomFullExtent()
 
   clear();
   render();
-  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+  emit extentsChanged(mCanvasProperties->currentExtent);
 } // zoomFullExtent
 
 
@@ -640,7 +675,7 @@ void QgsMapCanvas::zoomPreviousExtent()
       mCanvasProperties->previousExtent = tempRect;
       clear();
       render();
-      emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+      emit extentsChanged(mCanvasProperties->currentExtent);
   }
 } // zoomPreviousExtent
 
@@ -672,9 +707,9 @@ void QgsMapCanvas::zoomToSelected()
           mCanvasProperties->currentExtent.setYmin(rect.yMin() - 25);
           mCanvasProperties->currentExtent.setXmax(rect.xMax() + 25);
           mCanvasProperties->currentExtent.setYmax(rect.yMax() + 25);
+    emit extentsChanged(mCanvasProperties->currentExtent);
           clear();
           render();
-    emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
           return;
         }
       //zoom to an area
@@ -685,9 +720,9 @@ void QgsMapCanvas::zoomToSelected()
           mCanvasProperties->currentExtent.setYmin(rect.yMin());
           mCanvasProperties->currentExtent.setXmax(rect.xMax());
           mCanvasProperties->currentExtent.setYmax(rect.yMax());
+    emit extentsChanged(mCanvasProperties->currentExtent);
           clear();
           render();
-    emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
           return;
         }
     }
@@ -747,7 +782,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             mCanvasProperties->currentExtent.setXmax(ur.x());
             mCanvasProperties->currentExtent.setYmax(ur.y());
             mCanvasProperties->currentExtent.normalize();
-      emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+      emit extentsChanged(mCanvasProperties->currentExtent);
             clear();
             render();
 
@@ -798,7 +833,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #endif
               clear();
               render();
-        emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+        emit extentsChanged(mCanvasProperties->currentExtent);
             }
             break;
 
@@ -837,7 +872,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 }
               clear();
               render();
-        emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+        emit extentsChanged(mCanvasProperties->currentExtent);
             }
             break;
 
@@ -921,7 +956,7 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 {
   mCanvasProperties->dirty = true;
   mCanvasProperties->pmCanvas->resize(e->size());
-  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+  emit extentsChanged(mCanvasProperties->currentExtent);
 } // resizeEvent
 
 
@@ -1036,7 +1071,7 @@ void QgsMapCanvas::updateFullExtent(QgsRect const & r)
     mCanvasProperties->fullExtent.setYmax(r.yMax());
   }
 
-  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
+  emit extentsChanged(mCanvasProperties->currentExtent);
 } // updateFullExtent
 
 
