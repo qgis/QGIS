@@ -2879,6 +2879,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
       {
         gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
               GDALDummyProgress, NULL );
+      }
 #endif      
       myCountInt++;
       //make sure the raster knows it has pyramids
