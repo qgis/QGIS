@@ -1,0 +1,11 @@
+July 10, 2002
+Layers can be selected and added to the map canvas collection however
+the rendering code is currently disabled and being reorganized. So if
+you add a layer, nothing will be drawn...
+ 
+July 6, 2002
+This code is preliminary and really has no true functionality other than
+the ability to define a PostGIS connection and display the spatially enabled
+tables that could be loaded. 
+
+This is the initial import of the code base into CVS on Sourceforge.net.
