@@ -69,8 +69,8 @@ void PluginGui::pbnOK_clicked()
     return;
   }
   if (!e2g.writeGPX(pictures, leGPXOut->text(), cbInterpolate->isChecked(), 
-		    time_t((hour < 0 ? -1 : 1) * 
-			   (second + 60 * minute + 3600 * std::abs(hour))), 
+		    ((hour < 0 ? -1 : 1) * 
+		     (second + 60 * minute + 3600 * std::abs(hour))), 
 		    lePrefix->text())) {
     QMessageBox::warning(this, "Could not write GPX",
 			 "Could not open the GPX output file for writing.",

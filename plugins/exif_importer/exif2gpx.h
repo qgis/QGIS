@@ -12,10 +12,10 @@
 #ifndef EXIF2GPX_H
 #define EXIF2GPX_H
 
-#include <ctime>
 #include <map>
 #include <utility>
 
+#include <qdatetime.h>
 #include <qdom.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -26,16 +26,18 @@ class Exif2GPX {
   
   bool loadGPX(const QString& filename, bool useTracks, bool useWaypoints);
   bool writeGPX(const QStringList& pictures, const QString& gpxOutput,
-		bool interpolate, time_t offset, const QString& prefix);
+		bool interpolate, unsigned offset, const QString& prefix);
   
  private:
-  time_t getTimeFromEXIF(const QString& filename);
-  std::pair<double, double> computePosition(time_t time, bool interpolate);
+  QDateTime getTimeFromEXIF(const QString& filename);
+  std::pair<double, double> computePosition(QDateTime time,
+					    bool interpolate);
   void addWaypoint(QDomElement& elt, std::pair<double,double> position,
-		   time_t time, const QString& prefix, const QString& name);
+		   QDateTime time, const QString& prefix, 
+		   const QString& name);
   void loadPoint(const QDomNode& node);
   
-  std::map<time_t, std::pair<double, double> > points;
+  std::map<QDateTime, std::pair<double, double> > points;
 };
 
 
