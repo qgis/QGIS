@@ -165,6 +165,7 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgsrasterlayer.moc.cpp			\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrasterlayerpropertiesbase.moc.cpp	\
+		qgssimadialogbase.moc.cpp		\
 		qgssisydialog.moc.cpp			\
 		qgssisydialogbase.moc.cpp		\
 		qgsvectorlayer.moc.cpp			\
@@ -173,44 +174,46 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		splashscreen.moc.cpp
 
 qgis_UIHEADERS = \
-          qgisappbase.h				\
-          qgsabout.h				\
-          qgsattributetablebase.h		\
-          qgscontcoldialogbase.h		\
-          qgsgrasydialogbase.h			\
-          qgshelpviewerbase.cpp			\
-          qgshelpviewerbase.h			\
-          qgsidentifyresultsbase.h		\
-          qgslegenditembase.h			\
-          qgslinestyledialogbase.h		\
-          qgsmapserverexportbase.h		\
-          qgsmessageviewer.h			\
-          qgspatterndialogbase.h		\
-          qgspluginmanagerbase.h		\
-          qgsrasterlayerpropertiesbase.h	\
-          qgssisydialogbase.h			\
-          qgsdlgvectorlayerpropertiesbase.h	\
-          qgsoptionsbase.h			\
-          qgsvectorlayerpropertiesbase.h
+         	qgisappbase.h				\
+          	qgsabout.h				\
+          	qgsattributetablebase.h			\
+          	qgscontcoldialogbase.h			\
+          	qgsgrasydialogbase.h			\
+          	qgshelpviewerbase.cpp			\
+          	qgshelpviewerbase.h			\
+          	qgsidentifyresultsbase.h		\
+          	qgslegenditembase.h			\
+          	qgslinestyledialogbase.h		\
+          	qgsmapserverexportbase.h		\
+          	qgsmessageviewer.h			\
+          	qgspatterndialogbase.h			\
+          	qgspluginmanagerbase.h			\
+          	qgsrasterlayerpropertiesbase.h		\
+		qgssimadialogbase.h			\
+          	qgssisydialogbase.h			\
+          	qgsdlgvectorlayerpropertiesbase.h	\
+          	qgsoptionsbase.h			\
+          	qgsvectorlayerpropertiesbase.h
 
-qgis_UI = qgisappbase.cpp			\
-          qgsabout.cpp				\
-          qgsattributetablebase.cpp		\
-          qgscontcoldialogbase.cpp		\
-          qgsgrasydialogbase.cpp		\
-          qgshelpviewerbase.cpp			\
-          qgsidentifyresultsbase.cpp		\
-          qgslegenditembase.cpp			\
-          qgslinestyledialogbase.cpp		\
-          qgsmapserverexportbase.cpp		\
-          qgsmessageviewer.cpp			\
-          qgspatterndialogbase.cpp		\
-          qgspluginmanagerbase.cpp		\
-          qgsrasterlayerpropertiesbase.cpp	\
-          qgssisydialogbase.cpp			\
-          qgsdlgvectorlayerpropertiesbase.cpp	\
-          qgsoptionsbase.cpp			\
-          qgsvectorlayerpropertiesbase.cpp
+qgis_UI = 	qgisappbase.cpp			\
+          	qgsabout.cpp				\
+          	qgsattributetablebase.cpp		\
+          	qgscontcoldialogbase.cpp		\
+          	qgsgrasydialogbase.cpp		\
+          	qgshelpviewerbase.cpp			\
+          	qgsidentifyresultsbase.cpp		\
+          	qgslegenditembase.cpp			\
+          	qgslinestyledialogbase.cpp		\
+          	qgsmapserverexportbase.cpp		\
+          	qgsmessageviewer.cpp			\
+          	qgspatterndialogbase.cpp		\
+          	qgspluginmanagerbase.cpp		\
+          	qgsrasterlayerpropertiesbase.cpp	\
+		qgssimadialogbase.cpp			\
+          	qgssisydialogbase.cpp			\
+          	qgsdlgvectorlayerpropertiesbase.cpp	\
+          	qgsoptionsbase.cpp			\
+          	qgsvectorlayerpropertiesbase.cpp
 
 qgis_UIC = 	qgisappbase.ui					\
 		qgisappbase.ui.h				\
@@ -238,6 +241,7 @@ qgis_UIC = 	qgisappbase.ui					\
 		qgspluginmanagerbase.ui				\
 		qgsrasterlayerpropertiesbase.ui			\
 		qgsrasterlayerpropertiesbase.ui.h		\
+		qgssimadialogbase.ui				\
 		qgssisydialogbase.ui				\
 		qgsvectorlayerpropertiesbase.ui
 
@@ -271,6 +275,8 @@ qgspluginmanagerbase.cpp: qgspluginmanagerbase.h qgspluginmanagerbase.ui
 qgspluginmanagerbase.h: qgspluginmanagerbase.ui
 qgsrasterlayerpropertiesbase.cpp: qgsrasterlayerpropertiesbase.h qgsrasterlayerpropertiesbase.ui
 qgsrasterlayerpropertiesbase.h: qgsrasterlayerpropertiesbase.ui
+qgssimadialogbase.cpp: qgssimadialogbase.h qgssimadialogbase.ui
+qgssimadialogbase.h: qgssimadialogbase.ui
 qgssisydialogbase.cpp: qgssisydialogbase.h qgssisydialogbase.ui
 qgssisydialogbase.h: qgssisydialogbase.ui
 qgsvectorlayerpropertiesbase.cpp: qgsvectorlayerpropertiesbase.h qgsvectorlayerpropertiesbase.ui
