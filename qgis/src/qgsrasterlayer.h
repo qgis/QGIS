@@ -304,7 +304,10 @@ public:
     } drawingStyle;    
     //accessor and mutator for drawins style
     DRAWING_STYLE getDrawingStyle() {return drawingStyle;};
+    QString getDrawingStyleAsQString();
     void setDrawingStyle(DRAWING_STYLE theDrawingStyle) {drawingStyle=theDrawingStyle;};
+    //overloaded version of the above function for convenience when restoring from xml
+    void setDrawingStyle(QString theDrawingStyleQString);
     //this enumerator describes the type of raster layer
     enum RASTER_LAYER_TYPE
     {

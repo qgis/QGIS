@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.22 2004/01/28 14:01:31 mhugent Exp */
+/* qgsprojectio.cpp,v 1.23 2004/02/01 19:31:10 timlinux Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -399,11 +399,10 @@ bool QgsProjectIo::read(){
                                 QVariant myQVariant = (QVariant) myElement.attribute("boolean");
 				myRasterLayer->setShowDebugOverlayFlag(myQVariant.toBool());
 
-                                //The following lines are deprecated and will be removed...
-				//snode = mnl.namedItem("showGrayAsColorFlag");
-				//myElement = snode.toElement();
-                                //myQVariant = (QVariant) myElement.attribute("boolean");
-				//myRasterLayer->setShowGrayAsColorFlag(myQVariant.toBool());				
+				snode = mnl.namedItem("drawingStyle");
+				myElement = snode.toElement();
+				myRasterLayer->setDrawingStyle(myElement.text());				
+                                
 				snode = mnl.namedItem("invertHistogramFlag");
 				myElement = snode.toElement();
                                 myQVariant = (QVariant) myElement.attribute("boolean");
@@ -637,18 +636,8 @@ void QgsProjectIo::writeXML(){
                               xml << "false\"/>\n";
                             }
                             
-                            /* The followin lines are deprecated and will be removed...                     
-                            // Raster flag indicating whether grayscale images should be rendered as pseudocolor
-                            xml << "\t\t\t<showGrayAsColorFlag boolean=\"" ;
-                            if (myRasterLayer->getShowGrayAsColorFlag())
-                            {
-                              xml << "true\"/>\n";
-                            }
-                            else
-                            {
-                              xml << "false\"/>\n";
-                            }                             
-                            */
+                            // The drawing style for the layer
+                            xml << "\t\t\t<drawingStyle>" << myRasterLayer->getDrawingStyleAsQString() << "</drawingStyle>\n" ; 
                             //Raster : flag indicating whether the histogram should be inverted or not 
                             xml << "\t\t\t<invertHistogramFlag boolean=\"" ;
                             if (myRasterLayer->getInvertHistogramFlag())
