@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.11 2003/11/12 04:44:37 gsherman Exp */
+/* qgsprojectio.cpp,v 1.12 2003/12/26 15:56:30 stevehalasz Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -24,6 +24,7 @@
  #ifdef POSTGRESQL
  #include "qgsdatabaselayer.h"
  #endif
+#include "qgsrasterlayer.h"
  #include "qgsshapefilelayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsrect.h"
@@ -61,129 +62,131 @@ bool QgsProjectIo::write(){
 		return false;
 		}
 }
+
 bool QgsProjectIo::read(){
 	QString path = selectFileName();
 	QDomDocument *doc;
 	if(!path.isEmpty()){
-	doc = new QDomDocument( "qgisdocument" );
-    QFile file( path );
-    if ( !file.open( IO_ReadOnly ) )
-        return false;
-    if ( !doc->setContent( &file ) ) {
-        file.close();
-        return false;
-    }
-    file.close();
-	// clear the map canvas
-	map->removeAll();
-	// get the extent
-	QDomNodeList extents = doc->elementsByTagName("extent");
-	QDomNode extentNode = extents.item(0);
-	QDomNode xminNode = extentNode.namedItem("xmin");
-	QDomNode yminNode = extentNode.namedItem("ymin");
-	QDomNode xmaxNode = extentNode.namedItem("xmax");
-	QDomNode ymaxNode = extentNode.namedItem("ymax");
-	QDomElement exElement = xminNode.toElement();
-	double xmin = exElement.text().toDouble();
-	exElement = yminNode.toElement();
-	double ymin = exElement.text().toDouble();
-	exElement = xmaxNode.toElement();
-	double xmax = exElement.text().toDouble();
-	exElement = ymaxNode.toElement();
-	double ymax = exElement.text().toDouble();
-	QgsRect savedExtent(xmin,ymin,xmax,ymax);
-	
-	
-	QDomNodeList nl = doc->elementsByTagName("maplayer");
-	QString layerCount;
-	layerCount = layerCount.setNum(nl.count());
-	//QMessageBox::information(0, "Number of map layers", layerCount);
-	QString wk;
-	// process the map layer nodes
-	for(int i = 0; i < nl.count(); i++){
-		QDomNode node = nl.item(i);
-		QDomElement element = node.toElement();
-		QString type = element.attribute("type");
-		QString visible = element.attribute("visible");
-		
-		//QMessageBox::information(0,"Type of map layer", type);
-		// process layer name
-		QDomNode mnl = node.namedItem("layername"); 
-		QTextStream ts( &wk, IO_WriteOnly );
-		ts << mnl.nodeType();
-		//QMessageBox::information(0,"Node Type", wk);
-		QDomElement mne = mnl.toElement();
-		//QMessageBox::information(0,"Layer Name", mne.text());
-		QString layerName = mne.text();
-		
-		//process data source
-		mnl = node.namedItem("datasource"); 
-		mne = mnl.toElement();
-		//QMessageBox::information(0,"Datasource Name", mne.text());
-		QString dataSource = mne.text();
-		
-		//process zorder
-		mnl = node.namedItem("zorder"); 
-		mne = mnl.toElement();
-		//QMessageBox::information(0,"Zorder", mne.text());
-		
-		//process symbology
-		mnl = node.namedItem("symbol"); 
-		QDomNode snode = mnl.namedItem("linewidth");
-		QDomElement lineElement = snode.toElement();
-		int lineWidth = lineElement.text().toInt();
+		doc = new QDomDocument( "qgisdocument" );
+		QFile file( path );
+		if ( !file.open( IO_ReadOnly ) )
+			return false;
+		if ( !doc->setContent( &file ) ) {
+			file.close();
+			return false;
+		}
+		file.close();
+		// clear the map canvas
+		map->removeAll();
+		// get the extent
+		QDomNodeList extents = doc->elementsByTagName("extent");
+		QDomNode extentNode = extents.item(0);
+		QDomNode xminNode = extentNode.namedItem("xmin");
+		QDomNode yminNode = extentNode.namedItem("ymin");
+		QDomNode xmaxNode = extentNode.namedItem("xmax");
+		QDomNode ymaxNode = extentNode.namedItem("ymax");
+		QDomElement exElement = xminNode.toElement();
+		double xmin = exElement.text().toDouble();
+		exElement = yminNode.toElement();
+		double ymin = exElement.text().toDouble();
+		exElement = xmaxNode.toElement();
+		double xmax = exElement.text().toDouble();
+		exElement = ymaxNode.toElement();
+		double ymax = exElement.text().toDouble();
+		QgsRect savedExtent(xmin,ymin,xmax,ymax);
 		
 		
-		snode = mnl.namedItem("outlinecolor");
-		QDomElement colorElement = snode.toElement();
-		int olRed = colorElement.attribute("red").toInt();
-		int olGreen = colorElement.attribute("green").toInt();
-		int olBlue = colorElement.attribute("blue").toInt();
+		QDomNodeList nl = doc->elementsByTagName("maplayer");
+		QString layerCount;
+		layerCount = layerCount.setNum(nl.count());
+		//QMessageBox::information(0, "Number of map layers", layerCount);
+		QString wk;
+		// process the map layer nodes
+		for(int i = 0; i < nl.count(); i++){
+			QDomNode node = nl.item(i);
+			QDomElement element = node.toElement();
+			QString type = element.attribute("type");
+			QString visible = element.attribute("visible");
+			
+			//QMessageBox::information(0,"Type of map layer", type);
+			// process layer name
+			QDomNode mnl = node.namedItem("layername"); 
+			QTextStream ts( &wk, IO_WriteOnly );
+			ts << mnl.nodeType();
+			//QMessageBox::information(0,"Node Type", wk);
+			QDomElement mne = mnl.toElement();
+			//QMessageBox::information(0,"Layer Name", mne.text());
+			QString layerName = mne.text();
 		
-		snode = mnl.namedItem("fillcolor");
-		colorElement = snode.toElement();
-		int fillRed = colorElement.attribute("red").toInt();
-		int fillGreen = colorElement.attribute("green").toInt();
-		int fillBlue = colorElement.attribute("blue").toInt();
-		
-		QgsSymbol *sym = new QgsSymbol();
-		sym->setFillColor( QColor(fillRed, fillGreen, fillBlue));
-		sym->setColor(QColor(olRed, olGreen, olBlue));
-		sym->setLineWidth(lineWidth);
-		// get the linewidth information
-		
-		//QMessageBox::information(0,"Zorder", mne.text());
-		
-		
-		// add the layer to the maplayer
-		
-		if(type == "database"){
-			#ifdef POSTGRESQL
+			//process data source
+			mnl = node.namedItem("datasource"); 
+			mne = mnl.toElement();
+			//QMessageBox::information(0,"Datasource Name", mne.text());
+			QString dataSource = mne.text();
+			
+			//process zorder
+			mnl = node.namedItem("zorder"); 
+			mne = mnl.toElement();
+			//QMessageBox::information(0,"Zorder", mne.text());
+			
+			//process symbology
+			QgsSymbol *sym = new QgsSymbol();
+			if ( type != "raster" ) {
+				mnl = node.namedItem("symbol"); 
+				QDomNode snode = mnl.namedItem("linewidth");
+				QDomElement lineElement = snode.toElement();
+				int lineWidth = lineElement.text().toInt();
+				
+				
+				snode = mnl.namedItem("outlinecolor");
+				QDomElement colorElement = snode.toElement();
+				int olRed = colorElement.attribute("red").toInt();
+				int olGreen = colorElement.attribute("green").toInt();
+				int olBlue = colorElement.attribute("blue").toInt();
+				
+				snode = mnl.namedItem("fillcolor");
+				colorElement = snode.toElement();
+				int fillRed = colorElement.attribute("red").toInt();
+				int fillGreen = colorElement.attribute("green").toInt();
+				int fillBlue = colorElement.attribute("blue").toInt();
+				
+				sym->setFillColor( QColor(fillRed, fillGreen, fillBlue));
+				sym->setColor(QColor(olRed, olGreen, olBlue));
+				sym->setLineWidth(lineWidth);
+				// get the linewidth information
+			}
+			
+			//QMessageBox::information(0,"Zorder", mne.text());
+			
+			
+			// add the layer to the maplayer
+			
+			if(type == "database"){
+#ifdef POSTGRESQL
 				QgsDatabaseLayer *dbl = new QgsDatabaseLayer(dataSource, layerName);
 				
 				map->addLayer(dbl);
 				dbl->setSymbol(sym);
 				dbl->setVisible(visible == "1");
-			#endif
-		}else{
-			if(type == "vector"){
+#endif
+			} else if ( type == "vector" ) {
 				QgsShapeFileLayer *shpl = new QgsShapeFileLayer(dataSource, layerName);
 				
 				map->addLayer(shpl);
 				shpl->setSymbol(sym);
 				shpl->setVisible(visible == "1");
-			}else{
-				if(type == "raster"){
-				}
-				}
+			} else if ( type == "raster" ) {
+				QgsRasterLayer *rastl = new QgsRasterLayer(dataSource, layerName);
+				
+				map->addLayer(rastl);
+				rastl->setVisible(visible == "1");
 			}
-			
-	
+			map->setExtent(savedExtent);
+		}
+		return true;
 	}
-	map->setExtent(savedExtent);
-	}
-	return true;
 }
+	
 QString QgsProjectIo::selectFileName(){
 if(action == SAVE && fullPath.isEmpty()){
 	action = SAVEAS;
@@ -262,17 +265,19 @@ void QgsProjectIo::writeXML(){
 			}
 			xml << "\t\t<datasource>" + lyr->source() + "</datasource>\n";
 			xml << "\t\t<zorder>" << i << "</zorder>\n";
-			xml << "\t\t<symbol>\n";
-			QgsSymbol *sym = lyr->symbol();
-			xml << "\t\t\t<linewidth>" << sym->lineWidth() << "</linewidth>\n";
-			QColor outlineColor = sym->color();
-			xml << "\t\t\t<outlinecolor red=\"" << outlineColor.red() << "\" green=\"" 
-				<< outlineColor.green() << "\" blue=\"" << outlineColor.blue() << "\" />\n";
-			QColor fillColor = sym->fillColor();
-			xml << "\t\t\t<fillcolor red=\"" << fillColor.red() << "\" green=\"" 
-				<< fillColor.green() << "\" blue=\"" << fillColor.blue() << "\" />\n";
-
-			xml << "\t\t</symbol>\n";
+			if ( lyr->type() != QgsMapLayer::RASTER ) {
+				xml << "\t\t<symbol>\n";
+				QgsSymbol *sym = lyr->symbol();
+				xml << "\t\t\t<linewidth>" << sym->lineWidth() << "</linewidth>\n";
+				QColor outlineColor = sym->color();
+				xml << "\t\t\t<outlinecolor red=\"" << outlineColor.red() << "\" green=\"" 
+						<< outlineColor.green() << "\" blue=\"" << outlineColor.blue() << "\" />\n";
+				QColor fillColor = sym->fillColor();
+				xml << "\t\t\t<fillcolor red=\"" << fillColor.red() << "\" green=\"" 
+						<< fillColor.green() << "\" blue=\"" << fillColor.blue() << "\" />\n";
+				
+				xml << "\t\t</symbol>\n";
+			}
 			xml << "\t</maplayer>\n";
 		}
 		xml << "</projectlayers>\n";
