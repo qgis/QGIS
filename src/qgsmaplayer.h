@@ -89,10 +89,6 @@ class QgsMapLayer:public QObject
 	 *@return True if the layer is valid and can be accessed
 	 */
 	bool isValid();
-  /** Write property of QgsSymbol * symbol. */
-	virtual void setSymbol(QgsSymbol * _newVal);
-  /** Read property of QgsSymbol * symbol. */
-	virtual QgsSymbol *symbol();
   /** Write property of QString labelField. */
 	virtual void setlabelField(const QString & _newVal);
   /** Read property of QString labelField. */
@@ -157,8 +153,6 @@ class QgsMapLayer:public QObject
   
 	//! Tag for embedding additional information
 	QString tag;
-  /**  */
-	QgsSymbol *m_symbol;
 
 	bool m_visible;
   /**  */

@@ -248,8 +248,9 @@ void QgsMapserverExport::writeMapFile()
 #ifdef QGISDEBUG
           std::cout << "\tMapsrver Export creating symbol entries" << std::endl;
 #endif
-          // create a simple class entry based on layer color
-          QgsSymbol *sym = lyr->symbol();
+          // create a simple class entry based on red fill color and black outline color
+	  //TODO: adapt the following section to the new symbology
+          
           mapFile << "  CLASS" << std::endl;
           QgsLegend *lgd = map->getLegend();
           //QListViewItem *li = lgd->currentItem();
@@ -264,7 +265,7 @@ void QgsMapserverExport::writeMapFile()
 #ifdef QGISDEBUG
               std::cout << "\tMapsrver Export symbol fill color" << std::endl;
 #endif
-              QColor fillColor = sym->fillColor();
+              QColor fillColor(255,0,0);//constant red fill color for the moment
               mapFile << "    COLOR " << fillColor.red() << " " << fillColor.green() << " " << fillColor.blue() << std::endl;
             }
 #ifdef QGISDEBUG
@@ -272,7 +273,7 @@ void QgsMapserverExport::writeMapFile()
 #endif
           if (isPolygon || isLine)
             {
-              QColor outlineColor = sym->color();
+		QColor outlineColor(0,0,0);//constant black outline color for the moment
               mapFile << "    OUTLINECOLOR " << outlineColor.red() << " "
                 << outlineColor.green() << " " << outlineColor.blue() << std::endl;
             }
