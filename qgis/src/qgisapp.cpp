@@ -312,7 +312,16 @@ void QgisApp::fileExit()
 	QApplication::exit();
 
 }
-
+void QgisApp::fileOpen(){
+	mapCanvas->freeze(true);
+	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN);
+	
+	pio->read();
+	delete pio;
+	
+	mapLegend->update();
+	mapCanvas->freeze(false);
+}
 void QgisApp::fileSave(){
 	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::SAVE);
 	pio->write();
