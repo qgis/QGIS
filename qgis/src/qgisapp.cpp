@@ -257,6 +257,48 @@ static char *identify_cursor[] = {
                                      "#############.##"
                                  };
 
+
+/** set the application title bar text
+
+  If the current project title is null
+     if the project file is null then
+         set title text to just application name and version
+     else
+         set set title text to the the project file name
+  else
+     set the title text to project title
+ */
+static
+void
+setTitleBarText_( QWidget & qgisApp )
+{
+    QString caption = QgisApp::tr("Quantum GIS - ");
+    caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName) + " ";
+
+    if ( QgsProject::instance()->title().isEmpty() )
+    {
+        if ( QgsProject::instance()->filename().isEmpty() )
+        {
+            // no project title nor file name, so just leave caption with
+            // application name and version
+        }
+        else
+        {
+            QFileInfo projectFileInfo( QgsProject::instance()->filename() );
+            caption += projectFileInfo.baseName();
+        }
+    }
+    else
+    {
+        caption += QgsProject::instance()->title();
+    }
+
+    qgisApp.setCaption( caption );
+} // setTitleBarText_( QWidget * qgisApp )
+
+
+
+
 // constructor starts here
 
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
@@ -1330,15 +1372,13 @@ void QgisApp::fileNew()
         mMapCanvas->clear();
         mOverviewCanvas->clear();
 
-        QString caption = tr("Quantum GIS - ");
 
-        caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-        caption += " -- Untitled";
-        setCaption( caption );
-
+        QgsProject::instance()->title( QString::null );
         QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
+
+        setTitleBarText_( *this );
 
         emit newProject();
 
@@ -1363,15 +1403,12 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
         mOverviewCanvas->removeAll();
         mOverviewCanvas->clear();
 
-        QString caption = tr("Quantum GIS - ");
-        caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-        caption += " Untitled ";
-
-        setCaption( caption );
-
+        QgsProject::instance()->title( QString::null );
         QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
+
+        setTitleBarText_( *this );
 
         emit newProject();
     }
@@ -1514,16 +1551,12 @@ void QgisApp::fileOpen()
 
         if ( QgsProject::instance()->read() )
         {
-            QString caption = tr("Quantum GIS - ");
-            caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-
-            setCaption( caption + " " + QgsProject::instance()->title() );
+            setTitleBarText_( *this );
 
             emit projectRead();     // let plug-ins know that we've read in a new
             // project so that they can check any project
             // specific plug-in state
         }
-
     }
 
 } // QgisApp::fileOpen
@@ -1546,10 +1579,7 @@ bool QgisApp::addProject(QString projectFile)
     {
         if ( QgsProject::instance()->read( projectFile ) )
         {
-            QString caption = tr("Quantum GIS - ");
-            caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-
-            setCaption( caption + " " + QgsProject::instance()->title() );
+            setTitleBarText_( *this );
 
             emit projectRead();       // let plug-ins know that we've read in a new
             // project so that they can check any project
@@ -1598,16 +1628,29 @@ void QgisApp::fileSave()
         QgsProject::instance()->filename( fullPath );
     }
 
-    if ( QgsProject::instance()->write() )
+    try
     {
-        statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        if ( QgsProject::instance()->write() )
+        {
+            statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        }
+        else
+        {
+            QMessageBox::critical(this,
+                                  tr("Unable to save project"),
+                                  tr("Unable to save project to ") + QgsProject::instance()->filename() );
+        }
     }
-    else
+    catch ( std::exception & e )
     {
-        QMessageBox::critical(this,
-                              tr("Unable to save project"),
-                              tr("Unable to save project to ") + QgsProject::instance()->filename() );
+        QMessageBox::critical( 0x0, 
+                               "Unable to save project " + QgsProject::instance()->filename(), 
+                               e.what(), 
+                               QMessageBox::Ok, 
+                               QMessageBox::NoButton );
+
     }
+
 } // QgisApp::fileSave
 
 
@@ -3403,13 +3446,10 @@ void QgisApp::projectProperties()
         mMapCanvas->setMapUnits(pp->mapUnits());
         QgsProject::instance()->title( pp->title() );
 
-        QString caption = tr("Quantum GIS - ");
-        caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-
-        setCaption(caption + pp->title());
-
+        setTitleBarText_( *this );
     }
-}
+} // QgisApp::projectProperties
+
 
 QgsMapLayerRegistry * QgisApp::getLayerRegistry()
 {
