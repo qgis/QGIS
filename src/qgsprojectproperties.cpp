@@ -98,7 +98,7 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
 
     //get the colour selections and set the button colour accordingly
     myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
-    myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",0);
+    myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",255);
     myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
     myColour = QColor(myRedInt,myGreenInt,myBlueInt);
     pbnSelectionColour->setPaletteBackgroundColor (myColour);    
