@@ -1,0 +1,7 @@
+This directory contains cppunit tests  related to projection
+classes and implementation in QGIS
+
+To build and run the test suite:
+1. run qmake
+2. run make
+3. run the test(s) by executing ./testproj
