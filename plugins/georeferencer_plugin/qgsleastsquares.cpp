@@ -94,3 +94,55 @@ void QgsLeastSquares::helmert(std::vector<QgsPoint> mapCoords,
 			std::pow(gsl_vector_get(x, 1), 2));
   rotation = std::atan2(gsl_vector_get(x, 1), gsl_vector_get(x, 0));    
 }
+
+
+void QgsLeastSquares::affine(std::vector<QgsPoint> mapCoords,
+			     std::vector<QgsPoint> pixelCoords) {
+  int n = mapCoords.size();
+  if (n < 4) {
+    throw std::domain_error("Fit to an affine transform requires at "
+			    "least 4 points.");
+  }
+  
+  double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, 
+    G = 0, H = 0, I = 0, J = 0, K = 0;
+  for (int i = 0; i < n; ++i) {
+    A += pixelCoords[i].x();
+    B += pixelCoords[i].y();
+    C += mapCoords[i].x();
+    D += mapCoords[i].y();
+    E += std::pow(pixelCoords[i].x(), 2);
+    F += std::pow(pixelCoords[i].y(), 2);
+    G += pixelCoords[i].x() * pixelCoords[i].y();
+    H += pixelCoords[i].x() * mapCoords[i].x();
+    I += pixelCoords[i].y() * mapCoords[i].y();
+    J += pixelCoords[i].x() * mapCoords[i].y();
+    K += mapCoords[i].x() * pixelCoords[i].y();
+  }
+
+  /* The least squares fit for the parameters { a, b, c, d, x0, y0 } is the 
+     solution to the matrix equation Mx = b, where M and b is given below. 
+     I *think* that this is correct but I derived it myself late at night. 
+     Look at affine.jpg if you suspect bugs. */
+  
+  double MData[] = { A,    B,    0,    0,    n,    0,
+		     0,    0,    A,    B,    0,    n,
+		     E,    G,    0,    0,    A,    0,
+		     G,    F,    0,    0,    B,    0,
+		     0,    0,    E,    G,    0,    A,
+		     0,    0,    G,    F,    0,    B };
+
+  double bData[] = { C,    D,    H,    K,    J,    I };
+  
+  // we want to solve the equation M*x = b, where x = [a b c d x0 y0]
+  gsl_matrix_view M = gsl_matrix_view_array(MData, 6, 6);
+  gsl_vector_view b = gsl_vector_view_array(bData, 6);
+  gsl_vector* x = gsl_vector_alloc(6);
+  gsl_permutation* p = gsl_permutation_alloc(6);
+  int s;
+  gsl_linalg_LU_decomp(&M.matrix, p, &s);
+  gsl_linalg_LU_solve(&M.matrix, p, &b.vector, x);
+  gsl_permutation_free(p);
+
+}
+

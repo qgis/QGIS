@@ -110,14 +110,30 @@ bool QgsPointDialog::generateWorldFile() {
   try {
     if (cmbTransformType->currentItem() == 0)
       QgsLeastSquares::linear(mMapCoords, mPixelCoords, origin, pixelSize);
-    else if (cmbTransformType->currentItem() == 1)
-      QgsLeastSquares::helmert(mMapCoords, mPixelCoords, 
-			       origin, pixelSize, rotation);
+    else if (cmbTransformType->currentItem() == 1) {
+      QMessageBox::critical(this, "Not implemented!",
+			    "A Helmert transform requires a rotation of the "
+			    "original raster file. This is not yet "
+			    "supported.");
+      return false;
+      /*
+	QgsLeastSquares::helmert(mMapCoords, mPixelCoords, 
+	origin, pixelSize, rotation);
+      */
+    }
+    else if (cmbTransformType->currentItem() == 2) {
+      QMessageBox::critical(this, "Not implemented!",
+			    "An affine transform requires changing the "
+			    "original raster file. This is not yet "
+			    "supported.");
+      return false;
+    }
   }
   catch (std::domain_error& e) {
     QMessageBox::critical(this, "Error", QString(e.what()));
     return false;
   }
+
   std::cerr<<"================="<<std::endl
 	   <<pixelSize<<std::endl
 	   <<0<<std::endl

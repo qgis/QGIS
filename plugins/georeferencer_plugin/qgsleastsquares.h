@@ -18,28 +18,8 @@ class QgsLeastSquares {
 		      std::vector<QgsPoint> pixelCoords,
 		      QgsPoint& origin, double& pixelSize, double& rotation);
   
-  // private:
-  /*
-  class LinearSystem {
-  public:
-    
-    LinearSystem(int n, double** coeff) {
-      mCoeff = new double*[n];
-      for (int r = 0; r < n; ++r) {
-	mCoeff[r] = new double[n+1];
-	for (int c = 0; c < n + 1; ++c)
-	  mCoeff[r][c] = coeff[r][c];
-      }
-    }
-    
-    void solve(std::vector<double>& solution) {
-      
-    }
-      
-  private:
-    double** mCoeff;
-  };
-  */
+  static void affine(std::vector<QgsPoint> mapCoords,
+		     std::vector<QgsPoint> pixelCoords);  
 };
 
 
