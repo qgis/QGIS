@@ -42,7 +42,7 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
 
     edit->insertItem(tr("&Add Attribute..."), this, SLOT(addAttribute()), CTRL+Key_A,0);
     edit->insertItem(tr("&Delete Attributes..."), this, SLOT(deleteAttributes()), CTRL+Key_D,1);
-    selection->insertItem(tr("&Bring selected to top"), this, SLOT(selectedToTop()), CTRL+Key_T);
+    selection->insertItem(tr("&Bring selection to top"), this, SLOT(selectedToTop()), CTRL+Key_T);
     selection->insertItem(tr("&Invert selection"), this, SLOT(invertSelection()), CTRL+Key_I);
     mMenuBar->insertItem(tr("&Edit"), edit);
     mMenuBar->insertItem(tr("&Selection"),selection);

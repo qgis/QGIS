@@ -133,7 +133,7 @@ public slots:
   QgsDlgVectorLayerProperties *propertiesDialog();
   /** Return the context menu for the layer */
   QPopupMenu *contextMenu();
-  /**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds -DBL_MAX*/
+  /**Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned*/
   virtual QgsRect bBoxOfSelected();
   //! Return the provider type for this layer
   QString providerType();
