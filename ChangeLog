@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.146 2004/06/21 20:07:11 timlinux Exp
+ChangeLog,v 1.147 2004/06/23 19:32:25 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-23 [mcoletti] 0.3.0devel50
+Fixed bug whereby one couldn't downcast from QgsMapLayer* to a
+QgsVectorLayer*.  Apparently this was because dlopen()'d files didn't have
+full access to global variables.  Now plug-ins can use global variable by
+linking with -rdynamic and using dlopen()'s RTLD_GLOBAL flag.
 
 2004-06-21 [ts] 0.3.0devel49
 
