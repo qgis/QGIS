@@ -63,6 +63,8 @@ public slots:
   void addVector();
   //! Show the dialog box for new raster
   void addRaster();
+  //! Start vector editing
+  void edit();
   //! unload the plugin
   void unload();
   //! show the help document

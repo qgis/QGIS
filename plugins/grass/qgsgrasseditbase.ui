@@ -1,0 +1,511 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsGrassEditBase</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>QgsGrassEditBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>364</width>
+            <height>175</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>GRASS Edit</string>
+    </property>
+    <widget class="QTabWidget">
+        <property name="name">
+            <cstring>tabWidget2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>355</width>
+                <height>120</height>
+            </rect>
+        </property>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>tab</cstring>
+            </property>
+            <attribute name="title">
+                <string>Category</string>
+            </attribute>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel3</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>50</width>
+                        <height>25</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Mode</string>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>210</x>
+                        <y>45</y>
+                        <width>50</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Field</string>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>catLabel</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>45</y>
+                        <width>80</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Category</string>
+                </property>
+            </widget>
+            <widget class="QComboBox">
+                <property name="name">
+                    <cstring>mFieldBox</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>260</x>
+                        <y>45</y>
+                        <width>55</width>
+                        <height>30</height>
+                    </rect>
+                </property>
+                <property name="editable">
+                    <bool>true</bool>
+                </property>
+                <property name="duplicatesEnabled">
+                    <bool>false</bool>
+                </property>
+            </widget>
+            <widget class="QLineEdit">
+                <property name="name">
+                    <cstring>mCatEntry</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>90</x>
+                        <y>45</y>
+                        <width>91</width>
+                        <height>27</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QComboBox">
+                <property name="name">
+                    <cstring>mCatModeBox</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>90</x>
+                        <y>10</y>
+                        <width>225</width>
+                        <height>25</height>
+                    </rect>
+                </property>
+                <property name="currentItem">
+                    <number>0</number>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>tab</cstring>
+            </property>
+            <attribute name="title">
+                <string>Settings</string>
+            </attribute>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel4</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>195</width>
+                        <height>26</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Snapping in screen pixels</string>
+                </property>
+            </widget>
+            <widget class="QSpinBox">
+                <property name="name">
+                    <cstring>mSnapPixels</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>280</x>
+                        <y>10</y>
+                        <width>50</width>
+                        <height>26</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>10</number>
+                </property>
+            </widget>
+        </widget>
+    </widget>
+</widget>
+<toolbars>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>toolBar</cstring>
+        </property>
+        <property name="label">
+            <string>Tools</string>
+        </property>
+        <action name="newPointAction"/>
+        <action name="newLineAction"/>
+        <action name="newBoundaryAction"/>
+        <action name="newCentroidAction"/>
+        <separator/>
+        <action name="moveVertexAction"/>
+        <action name="addVertexAction"/>
+        <action name="deleteVertexAction"/>
+        <separator/>
+        <action name="moveLineAction"/>
+        <action name="splitLineAction"/>
+        <action name="deleteLineAction"/>
+        <separator/>
+        <action name="closeEditAction"/>
+    </toolbar>
+</toolbars>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>newLineAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image0</iconset>
+        </property>
+        <property name="text">
+            <string>New line</string>
+        </property>
+        <property name="menuText">
+            <string>New line</string>
+        </property>
+        <property name="accel">
+            <string>F2</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>closeEditAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image1</iconset>
+        </property>
+        <property name="text">
+            <string>Close</string>
+        </property>
+        <property name="menuText">
+            <string>Close</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>newPointAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image2</iconset>
+        </property>
+        <property name="text">
+            <string>New point</string>
+        </property>
+        <property name="accel">
+            <string>F1</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>newBoundaryAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image3</iconset>
+        </property>
+        <property name="text">
+            <string>New boundary</string>
+        </property>
+        <property name="accel">
+            <string>F3</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>newCentroidAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image4</iconset>
+        </property>
+        <property name="text">
+            <string>New centroid</string>
+        </property>
+        <property name="accel">
+            <string>F4</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>moveVertexAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image5</iconset>
+        </property>
+        <property name="text">
+            <string>Move vertex</string>
+        </property>
+        <property name="accel">
+            <string>F5</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>addVertexAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image6</iconset>
+        </property>
+        <property name="text">
+            <string>Add vertex</string>
+        </property>
+        <property name="accel">
+            <string>F6</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>deleteVertexAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image7</iconset>
+        </property>
+        <property name="text">
+            <string>Delete vertex</string>
+        </property>
+        <property name="accel">
+            <string>F7</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>splitLineAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image8</iconset>
+        </property>
+        <property name="text">
+            <string>Split line</string>
+        </property>
+        <property name="accel">
+            <string>F10</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>moveLineAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image9</iconset>
+        </property>
+        <property name="text">
+            <string>Move line</string>
+        </property>
+        <property name="accel">
+            <string>F9</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>deleteLineAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image10</iconset>
+        </property>
+        <property name="text">
+            <string>Delete line</string>
+        </property>
+        <property name="accel">
+            <string>F11</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editCatsAction</cstring>
+        </property>
+        <property name="text">
+            <string>Edit categories</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editAttributesAction</cstring>
+        </property>
+        <property name="text">
+            <string>Edit attributes</string>
+        </property>
+    </action>
+</actions>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b014563014659471c92823eb5156c621a30c460809b88c329c4093514688c028423228c640796832480e01cba0b817c6c1908103bac542ad351700afdf726b</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="676">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022130543251d2e253d856405bffcbc54103b09c8564e340041103711c44d4b4b4c3535077195215c10006bc40a6827a30c0258649461005d4659194d8a0819dca6e925c2001e99a4a424ec32204d49483289b4934171016e191457a38535aa475162014582bc38adb5e6020039de90ca</data>
+    </image>
+    <image name="image2">
+        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b0145630846494e920a30c0303e602343008646aadb900ffaa72d9</data>
+    </image>
+    <image name="image3">
+        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b014568022a30c04d86420a27039b80c4235940593419802e340655024205c4232681260010232181220291ac890e336b2c2004f88e289053ddc310711c51edb6840a9d69a0b0043de7158</data>
+    </image>
+    <image name="image4">
+        <data format="XPM.GZ" length="661">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022630543251d2e253d856405bffcbc54103b11c85636360041105719c4b5300041b04aac0045461908b0c94044e1727019846a280b26833005c681caa04840b88464e012890829023208b360324021a264126180283de4b80d2195487c18e009513cb1a0873be620a2d8631b0d28d55a7301006e5a7795</data>
+    </image>
+    <image name="image5">
+        <data format="XPM.GZ" length="661">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022630543251d2e253d856405bffcbc54103b11c85636360041105719c44d4b330002b04aac805819656565eac9284331868c32128922a38c4a236410362823cb242626227905cc03871018a0ca2426e2d703e52224d0dd96884a23fb271145014a1824221b8a1a6ec80ea15c06199025536bcd050056d17dff</data>
+    </image>
+    <image name="image6">
+        <data format="XPM.GZ" length="661">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022630543251d2e253d856405bffcbc54105b19c85636360041103711c44d4b330002b04aac6098ca282b2b23098279e0100283440400f3f1eb81721112e82e5046a591dda68ca200c5d5cac886a2fa07d92194cb2003b2646aadb900fe65773b</data>
+    </image>
+    <image name="image7">
+        <data format="XPM.GZ" length="661">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022630543251d2e253d856405bffcbc54103b11c85636360041105719c44d4b330002b04aac805819656565eac9284331868c32128922a38c4a236410362823cb242626227905cc03871056805f8f1e563082646aadb900c6617ccd</data>
+    </image>
+    <image name="image8">
+        <data format="XPM.GZ" length="691">789cc591c10ac2300c86ef7d8ab0dc86b8399121e223281e05f1d0c6153d4c41e741c477b7a95d5dc7ead53494fc7cfd1368b214b69b15a499b835b23911d0515e213ddcebfab1db2f9f22290a303983493212c91808d69773c5359a1a73135ab3942ca7391f96c4725e9565ae582a965af373db6730fe4010e30423a48782390172444ad94156d90f6be3839c083dcee53ddfdeaa332b204af959d421caa643d423ee423420e8e65d34405a1074f3c10683625b88939f9b7b2dc41bc7fd879e</data>
+    </image>
+    <image name="image9">
+        <data format="XPM.GZ" length="661">789c8d90c10ac2301044eff98a25b915496b7b143f41f1288887a15af450055b0f22febbc9d6a61bb5e82490d9bc6433244d68bd5a5092aaa6457b2ca93ce042c9ee5ad7b7cd767e573acfc9cd82a67aa2b4a59296e7d3de7b386f8acc0f5f1a5f5655e6c427bfc8d81162ac20c68c10c3730081388f0109e22dc22d5e7e11b6e8f73a1e087888204cb897970c1f88edc020f10711c0d8ef40de899a4902d90ee21d442f09822804ec1f246af3aade8808c224cadb171f24483f66ea0966267e2a</data>
+    </image>
+    <image name="image10">
+        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c8564e4b330002b014563014659471c92823eb5156c621a30c460809b88c329c4093514688c028423228c640796832480e01cba0b817c6c1908103bac542ad35170090dc72ce</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>newLineAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>newLine()</slot>
+    </connection>
+    <connection>
+        <sender>closeEditAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>closeEdit()</slot>
+    </connection>
+    <connection>
+        <sender>newPointAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>newPoint()</slot>
+    </connection>
+    <connection>
+        <sender>newBoundaryAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>newBoundary()</slot>
+    </connection>
+    <connection>
+        <sender>newCentroidAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>newCentroid()</slot>
+    </connection>
+    <connection>
+        <sender>moveVertexAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>moveVertex()</slot>
+    </connection>
+    <connection>
+        <sender>addVertexAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>addVertex()</slot>
+    </connection>
+    <connection>
+        <sender>deleteVertexAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>deleteVertex()</slot>
+    </connection>
+    <connection>
+        <sender>moveLineAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>moveLine()</slot>
+    </connection>
+    <connection>
+        <sender>splitLineAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>splitLine()</slot>
+    </connection>
+    <connection>
+        <sender>deleteLineAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>deleteLine()</slot>
+    </connection>
+    <connection>
+        <sender>mCatModeBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>catModeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mFieldBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>fieldChanged()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgsgrasseditbase.ui.h</include>
+</includes>
+<slots>
+    <slot>newLine()</slot>
+    <slot>closeEdit()</slot>
+    <slot>newPoint()</slot>
+    <slot>newBoundary()</slot>
+    <slot>newCentroid()</slot>
+    <slot>moveVertex()</slot>
+    <slot>deleteVertex()</slot>
+    <slot>addVertex()</slot>
+    <slot>moveLine()</slot>
+    <slot>deleteLine()</slot>
+    <slot>splitLine()</slot>
+    <slot>editCats()</slot>
+    <slot>editAttributes()</slot>
+    <slot>catModeChanged()</slot>
+    <slot>fieldChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
