@@ -239,11 +239,8 @@ QString QgsShapeFileProvider::getDataSourceUri()
 	*/
 std::vector<QgsFeature>& QgsShapeFileProvider::identify(QgsRect * rect)
 {
-  features.clear();
   // select the features
   select(rect);
-  
-	return features;
 }
 
 unsigned char * QgsShapeFileProvider::getGeometryPointer(OGRFeature *fet){
