@@ -25,7 +25,7 @@ email                : t.sutton@reading.ac.uk
 #include <qlabel.h>
 #include <qsettings.h>
 #include <qapplication.h>
-
+#include <qdatetime.h>
 //#define QGISDEBUG true
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -365,6 +365,9 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
 void CDPWizard::run()
 {
+    //mark the start time:
+    startTime.start();
+
     int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
     QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
     QString myQString;
@@ -467,17 +470,19 @@ void CDPWizard::numberOfCellsToCalc(int theNumberInt)
 void CDPWizard::yearStart(QString theNameQString)
 {
   progressCurrentYear->setProgress(1);
+  lblCurrentYear->setText("<p align=\"right\">Calculating variables for " + theNameQString + "</p>");
 }
 void CDPWizard::yearDone()
 {
    //dont set progress to 0 - 0 has a special qt meaning of 'busy'
   progressCurrentTask->setProgress(1);
-  progressCurrentYear->setProgress(1);
+  progressCurrentYear->setProgress(0);
   progressCurrentJob->setProgress(progressCurrentJob->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::variableStart(QString theNameQString)
 {
+  lblCurrentTask->setText("<p align=\"right\">" + theNameQString + "</p>");
 
 }
 void CDPWizard::variableDone()
@@ -490,6 +495,10 @@ void CDPWizard::variableDone()
 void CDPWizard::cellDone(float theResultFloat)
 {
   progressCurrentTask->setProgress(progressCurrentTask->progress()+1);
+  //update the elapsed time
+  QString myLabelString;
+  myLabelString.sprintf("<p align=\"right\">Time elapsed: %d s</p>", startTime.elapsed()/1000);
+  lblElapsedTime->setText(myLabelString);
   qApp->processEvents();
 }
 

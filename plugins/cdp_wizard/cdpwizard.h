@@ -271,6 +271,12 @@ private:
     * of producing aggregates. */
     ClimateDataProcessor *climateDataProcessor;
 
+    /**
+    * This is used to mark the time at start of processing so
+    * we can keep track of elapsed time.
+    */
+    QTime startTime;
+
     /**This checks whether any of the file input list boxes
      *are full and if not disables the next button
      */
