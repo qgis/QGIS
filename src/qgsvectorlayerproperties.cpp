@@ -92,3 +92,7 @@ void QgsVectorLayerProperties::showSymbolSettings()
     layer->rendererDialog()->raise();
 }
 
+void QgsVectorLayerProperties::setLegendType(QString type)
+{
+    legendtypecombobox->setCurrentText(type);  
+}
