@@ -1,3 +1,9 @@
+Requirements:
+1. PostgresQL built with the --with-CXX configure options (C++ wrapper)
+2. PostGIS support in PostgresQL
+3. Qt 3.0.4 or higher built with thread support
+4. Qt PostgresQL driver (can be built with Qt or separately -- see Qt SQL docs)
+
 To build Qgis:
 1. Make sure your QTDIR environment variable is set to your Qt directory
 2. Set PGSQL environment variable to point to your PostgresQL installation and make sure the libpq++
