@@ -205,10 +205,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
     sliderMinGray->setValue(static_cast < int >(rasterLayer->getMinGrayDouble()));
     sliderMaxGray->setValue(static_cast < int >(255 - rasterLayer->getMaxGrayDouble()));
     //
-    // Populate the statistics table
-    //
-    fillStatsTable();
-    //
     // Get a list of band names
     //
     QStringList myBandNameQStringList;
@@ -461,8 +457,6 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setMaxBlueDouble(static_cast < double >(255 - sliderMaxBlue->value()));
     rasterLayer->setMinGrayDouble(static_cast < double >(sliderMinGray->value()));
     rasterLayer->setMaxGrayDouble(static_cast < double >(255 - sliderMaxGray->value()));
-    //update the stats table
-    fillStatsTable();
     //get the thumbnail for the layer
     QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
     rasterLayer->drawThumbnail(&myQPixmap);
@@ -721,81 +715,3 @@ void QgsRasterLayerProperties::rbtnThreeBand_toggled(bool)
 {}
 
 
-void QgsRasterLayerProperties::fillStatsTable()
-{
-    //
-    // Populate the statistics table
-    //
-    int myRowInt = 0;
-    int myBandCountInt = rasterLayer->getBandCount();
-    //allocate 1 row per struct element (11)
-    tblStats->setNumRows(11 * myBandCountInt);
-    tblStats->setNumCols(2);
-    QHeader *myQHeader = tblStats->horizontalHeader();
-    myQHeader->setLabel(0, "Property");
-    myQHeader->setLabel(1, "Value");
-    for (int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt)
-    {
-#ifdef QGISDEBUG
-        std::cout << "Raster properties : checking if band " << myIteratorInt << " has stats? ";
-#endif
-        //check if full stats for this layer have already been collected
-        if (!rasterLayer->hasStats(myIteratorInt))  //not collected
-        {
-#ifdef QGISDEBUG
-            std::cout << ".....no" << std::endl;
-#endif
-
-            tblStats->setText(myRowInt, 0, "Band");
-            tblStats->setText(myRowInt, 1, rasterLayer->getRasterBandName(myIteratorInt));
-            ++myRowInt;
-
-            tblStats->setText(myRowInt, 0, "Band No");
-            tblStats->setText(myRowInt, 1, QString::number(myIteratorInt));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "Stats");
-            tblStats->setText(myRowInt, 1, "Not collected yet");
-            ++myRowInt;
-        } else                    // collected - show full detail
-        {
-#ifdef QGISDEBUG
-            std::cout << ".....yes" << std::endl;
-#endif
-
-            RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
-
-            tblStats->setText(myRowInt, 0, "Band");
-            tblStats->setText(myRowInt, 1, myRasterBandStats.bandName);
-            ++myRowInt;
-
-            tblStats->setText(myRowInt, 0, "Band No");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.bandNoInt));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "minValDouble");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.minValDouble));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "maxValDouble");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.maxValDouble));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "rangeDouble");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.rangeDouble));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "meanDouble");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.meanDouble));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "sumSqrDevDouble");  //used to calculate stddev
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.sumSqrDevDouble)); //used to calculate stddev
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "stdDevDouble");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.stdDevDouble));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "sumDouble");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.sumDouble));
-            ++myRowInt;
-            tblStats->setText(myRowInt, 0, "elementCountInt");
-            tblStats->setText(myRowInt, 1, QString::number(myRasterBandStats.elementCountInt));
-            ++myRowInt;
-        }
-        ++myRowInt;
-    }
-}
