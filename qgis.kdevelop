@@ -60,7 +60,7 @@
         <f77flags/>
       </debug>
       <default>
-        <configargs>--prefix=$HOME</configargs>
+        <configargs>--prefix=$HOME --enable-debug</configargs>
         <builddir></builddir>
         <topsourcedir></topsourcedir>
         <cppflags></cppflags>
@@ -148,9 +148,7 @@
     </references>
   </kdevcppsupport>
   <kdevfileview>
-    <groups>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-    </groups>
+    <groups/>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
