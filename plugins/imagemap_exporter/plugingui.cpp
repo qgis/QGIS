@@ -30,7 +30,7 @@
 
 #include <qgsfeature.h>
 #include <qgsvectorlayer.h>
-#include <qgscoordinatetransform.h>
+#include <qgsmaptopixel.h>
 
 
 PluginGui::PluginGui() : PluginGuiBase()
@@ -91,7 +91,7 @@ void PluginGui::pbnOK_clicked()
 					 cmbFormat->currentText());
   
   // write the HTML code
-  QgsCoordinateTransform transform;
+  QgsMapToPixel transform;
   transform.setParameters(qgisIFace->getMapCanvas()->mupp(),
 			  qgisIFace->getMapCanvas()->extent().xMin(),
 			  qgisIFace->getMapCanvas()->extent().yMin(),
