@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "C:\apache-forrest-0.5.1-bin\context\resources\schema\dtd\document-v12.dtd">
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" 
+"../../resources/schema/dtd/document-v12.dtd">
 <document>
 	<header>
 		<title>QGIS Installation Guide</title>
-		<subtitle>For Versions 0.0.13 and Higher</subtitle>
+		<subtitle>For Version 0.1 Pre1 <em>Moroz</em></subtitle>
 		<authors>
-			<person name="Gary E. Sherman" email="sherman@mrcc.com"/>
+			<person name="Gary E. Sherman" email="sherman at mrcc.com"/>
+      <person name="Tim Sutton" email="tim at linfiniti.com"/>
 		</authors>
 	</header>
 	<body>
@@ -14,17 +16,15 @@
 			<p>
     
    This document briefly describes how to build QGIS from the source distribution. 
-   The information below is for <strong>version 0.0.13</strong> of QGIS.
+   The information below is for <strong>version 0.1 Pre1 <em>Moroz</em></strong> of QGIS.
    </p>
 			<p>
 QGIS requires that a number of libraries be installed on your system:
 </p>
 			<ul>
-				<li>Qt</li>
-				<li>GDAL</li>
-				<li>PostgreSQL (Optional)</li>
-				<li>libpq++ (C++ API for PostgreSQL - Optional)</li>
-				<li>PostGIS (Optional)</li>
+				<li>Qt 3.1.2 or higher</li>
+				<li>GDAL/OGR</li>
+				<li>PostgreSQL and PostGIS (Optional)</li>
 			</ul>
 			<p>
 Each of these requirements are discussed below. Note that the information given 
@@ -40,57 +40,54 @@ If you are building QGIS <strong>without PostgreSQL</strong>, skip to the sectio
 		</section>
 		<section>
 			<title>PostgreSQL</title>
-			<p>
-				<strong>PostgreSQL Versions 7.3 and higher:</strong>
+			<p>QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x is recommended with QGIS version 0.1
 				</p>
 				<ol>
 					<li>Download PostgreSQL source from <link href="http://www.postgresql.org">www.postgresql.org</link>
 					</li>
 					<li>Configure PostgreSQL:
 
-					<source>	./configure --prefix=/usr/local/pgsql </source>
+					<source>./configure --prefix=/usr/local/pgsql </source>
 					</li>
-					<li>Build and install PostgreSQL using the information provided in the INSTALL file of the PostgreSQL distribution.</li>
-					<li>Download the C++ wrapper libpq++ from <link href="http://gborg.postgresql.org/project/libpqpp/projdisplay.php">http://gborg.postgresql.org/project/libpqpp/projdisplay.php</link>
-					</li>
-					<li>Follow the instructions in the libpq++ README to make and install the library</li>
-				</ol>
-				<p>
-					<strong>PostgreSQL Versions prior to 7.3:</strong>
-				</p>
-				<ol>
-					<li>Download PostgreSQL source from <link href="http://www.postgresql.org">www.postgresql.org</link>
-					</li>
-					<li>The C++ wrapper libpq++ is bundled with versions prior to 7.3. Use the --with-CXX option to configure PostgreSQL to use the C++ wrapper 
-<source>	./configure --prefix=/usr/local/pgsql --with-CXX</source>
-					</li>
-					<li>Build and install PostgreSQL using the information provided in the INSTALL file of the PostgreSQL distribution.</li>
-				</ol>
-				<p>
-				<strong>All Versions:</strong>
-				</p>
-				<ol>
-					<li>Create the postgres user and setup the database (following taken from PostgreSQL INSTALL file with modification):
-	<source>
-As root:
- adduser postgres
- mkdir /usr/local/pgsql/data
- chown postgres /usr/local/pgsql/data
- su - postgres
- cd /usr/local/pgsql
- ./bin/initdb -D /usr/local/pgsql/data
- ./bin/pg_ctl start  -o "-i" -D /usr/local/pgsql/data -l serverlog
- ./bin/createdb test
-</source>
-					</li>
-					<li>PostgreSQL should now be running. Logon as the postgres user (or use su - postgres). You should be able to connect to the test database with the command:
-<source>
-	psql test
+          <li>Build
+          <source>make</source>
+          </li>
+          <li>Install
+          <source>make install</source>
+          </li>
+					<li>As root, create the postgres user and setup the database (following taken from PostgreSQL INSTALL file with modification)</li>
+          <ul>
+          <li>Create the postgres user <source>adduser postgres</source></li>
+          <li>Create the directory for the PostgreSQL database <source>mkdir /usr/local/pgsql/data</source>
+          </li>
+          <li>Change ownership of the data directory to the postgres user<source>chown postgres /usr/local/pgsql/data</source>
+          </li>
+          <li>su to the postgres user (or login as postgres
+          <source>su - postgres</source>
+          </li>
+          <li>Change to the PostgreSQL install directory
+          <source>cd /usr/local/pgsql</source>
+          </li>
+          <li>Initialize the database
+          <source>./bin/initdb -D /usr/local/pgsql/data</source>
+          </li>
+          <li>Start the PostgreSQL daemon
+          <source>./bin/pg_ctl start  -o "-i" -D /usr/local/pgsql/data -l serverlog ./bin/createdb test</source>
+          </li>
+          </ul>
+					<li>PostgreSQL should now be running. Logon as the postgres user (or use su - postgres). You should be able to connect to the test database and execute a test query with the following commands:
+<source><strong>psql test</strong>
+<strong>select version();</strong>
+                                       version
+-------------------------------------------------------------------------------------
+ PostgreSQL 7.4.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
+(1 row)
+  
+<strong>\q</strong>
 </source>
 					</li>
 					<li>PostgreSQL install is done.</li>
-				</ol>
-			
+			</ol>
 		</section>
 		<section>
 			<title>PostGIS</title>

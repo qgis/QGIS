@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" 
-"../../build/webapp/resources/schema/dtd/document-v12.dtd">
+"../../resources/schema/dtd/document-v12.dtd">
 <document>
 	<header>
 		<title>QGIS User Guide</title>
