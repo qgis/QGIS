@@ -53,7 +53,7 @@
   </kdevdebugger>
   <kdevtrollproject>
     <general>
-      <activedir></activedir>
+      <activedir>/src</activedir>
     </general>
     <run>
       <mainprogram>./src/qgis</mainprogram>
@@ -62,6 +62,7 @@
     <envvars>
       <envvar value="/usr/local/pgsql" name="PGSQL" />
     </envvars>
+    <subclassing/>
   </kdevtrollproject>
   <cppsupportpart>
     <codecompletion>
