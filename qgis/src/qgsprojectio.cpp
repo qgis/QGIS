@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.25 2004/02/04 12:03:43 mhugent Exp */
+/* qgsprojectio.cpp,v 1.26 2004/02/10 07:52:10 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -215,7 +215,7 @@ bool QgsProjectIo::read(){
 
 				QgsDlgVectorLayerProperties* properties = new QgsDlgVectorLayerProperties(dbl);
 				dbl->setLayerProperties(properties);
-				properties->setLegendType("graduated symbol");
+				properties->setLegendType("Single Symbol");
 				
 				sdialog->apply();
 			    }
@@ -283,7 +283,7 @@ bool QgsProjectIo::read(){
 
 				QgsDlgVectorLayerProperties* properties = new QgsDlgVectorLayerProperties(dbl);
 				dbl->setLayerProperties(properties);
-				properties->setLegendType("graduated symbol");
+				properties->setLegendType("Graduated Symbol");
 
 				gdialog->apply();
 			    }
@@ -382,7 +382,7 @@ bool QgsProjectIo::read(){
 
 				QgsDlgVectorLayerProperties* properties = new QgsDlgVectorLayerProperties(dbl);
 				dbl->setLayerProperties(properties);
-				properties->setLegendType("continuous color");
+				properties->setLegendType("Continuous Color");
 
 				cdialog->apply();
 
