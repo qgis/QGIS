@@ -1,12 +1,15 @@
 QGIS Change Log
-ChangeLog,v 1.67 2004/05/05 19:29:04 jobi Exp
+ChangeLog,v 1.68 2004/05/11 23:08:45 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... developement version
 
-2004-05-03 [ts] 0.2.0devel6
+2004-05-12 0.2.0devel8
+** Added addProject(QString) to plugin interface.
+
+2004-05-05 [jobi] 0.2.0devel7
 ** Extended qgis-config to expose version
 
-2004-05-03 [ts] 0.2.0devel6
+2004-05-04 [ts] 0.2.0devel6
 ** Added two new internal plugins - North Arrow and Copyright message overlay
 
 2004-05-03 [ts] 0.2.0devel5
