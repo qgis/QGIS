@@ -98,7 +98,7 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
 	pixmap->fill();
 	QPainter p(pixmap);
 
-	if (layer->vectorType() == QGis::Line)
+	if ( layer->vectorType() == QGis::Line || layer->vectorType() == QGis::Point )
         {
 	    misy->pen().setColor(QColor(red, green, blue));
 	    masy->pen().setColor(QColor(red, green, blue));
@@ -176,7 +176,7 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 	unsigned char *feature = f->getGeometry();
 	int wkbType = (int) feature[1];
 	
-	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString)
+	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString || wkbType == QGis::WKBPoint)
         {
 	    mincolor = mMinimumItem->getSymbol()->pen().color();
 	    maxcolor = mMaximumItem->getSymbol()->pen().color();
@@ -192,7 +192,7 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 	int green = int (maxcolor.green() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.green() * (maxvalue - fvalue) / (maxvalue - minvalue));
 	int blue =  int (maxcolor.blue() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.blue() * (maxvalue - fvalue) / (maxvalue - minvalue));
 
-	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString)
+	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString ||wkbType == QGis::WKBPoint)
         {
 	    p->setPen(QPen(QColor(red, green, blue),mMinimumItem->getSymbol()->pen().width()));//make sure the correct line width is used
 	} 
