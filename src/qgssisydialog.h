@@ -31,9 +31,10 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     ~QgsSiSyDialog();
  protected:
     QgsVectorLayer* m_vectorlayer;
- protected slots:
+ public slots:
      /**applies the changes to the vector layer*/
     void apply();
+ protected slots:
     void selectOutlineColor();
     void selectOutlineStyle();
     void selectFillColor();

@@ -192,7 +192,10 @@ void QgsContColDialog::apply()
     p.drawText(leftspace+gradientwidth+wordspace,rangeoffset+gradientheight,QString::number(maximum,'f',2));
 
     m_vectorlayer->triggerRepaint();
-    m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+    if(m_vectorlayer->legendItem())
+    {
+	m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+    }
 }
 
 void QgsContColDialog::selectMinimumColor()

@@ -86,7 +86,6 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 	int number=0;
 	for(std::list<QgsRangeRenderItem*>::iterator it=list.begin();it!=list.end();++it)
 	{
-	    qWarning("inside loop");
 	    ((QLineEdit*)(ext->getWidget(0,number)))->setText((*it)->value());
 	    ((QLineEdit*)ext->getWidget(1,number))->setText((*it)->upper_value());
 	    ((QLineEdit*)ext->getWidget(2,number))->setText((*it)->label());
@@ -307,7 +306,6 @@ void QgsGraSyDialog::apply() const
 
 	    if(lbcontainsletter==false&&ubcontainsletter==false&&lower_bound.length()>0&&upper_bound.length()>0)//only add the item if the value bounds do not contain letters and are not null strings
 	    {
-		qWarning("adde ein renderitem");
 		QgsRangeRenderItem* item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, ((QLineEdit*)(ext->getWidget(2,i)))->text());
 
 		renderer->addItem(item);
@@ -337,7 +335,10 @@ void QgsGraSyDialog::apply() const
 	renderer->setClassificationField(ext->classfield());
 
 	m_vectorlayer->triggerRepaint();
-	m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+	if(m_vectorlayer->legendItem())
+	{
+	    m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+	}
     }
 
     else//number of classes is 0

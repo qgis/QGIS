@@ -43,15 +43,15 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
     {
 	//Set the initial display name
 	displaynamefield->setText(m_vectorlayer->name());
-	outlinecolorbutton->setPaletteBackgroundColor(((QgsSingleSymRenderer*)(layer->renderer()))->item()->getSymbol()->pen().color());
-	stylebutton->setText(tr("SolidLine"));
 	QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(layer->renderer());
 	if(renderer)
 	{
 	    outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
 	    fillcolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
+	    patternbutton->setText(QgsSymbologyUtils::brushStyle2QString(renderer->item()->getSymbol()->brush().style()));
+	    stylebutton->setText(QgsSymbologyUtils::penStyle2QString((renderer->item()->getSymbol()->pen().style())));
+	    outlinecolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
 	}
-	patternbutton->setText(tr("SolidPattern"));
 
 	if(m_vectorlayer&&m_vectorlayer->vectorType()==QGis::Line)
 	{
@@ -172,7 +172,10 @@ void QgsSiSyDialog::apply()
   p.setPen( Qt::black );
   p.setFont( f );
   p.drawText(35,pix->height()-10,displaynamefield->text());
-    m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+  if(m_vectorlayer->legendItem())
+  {
+      m_vectorlayer->legendItem()->setPixmap(0,(*pix));
+  }
 
     //repaint the map canvas
     m_vectorlayer->triggerRepaint();
