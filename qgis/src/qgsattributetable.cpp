@@ -22,7 +22,7 @@
 #include "qgsattributetable.h"
 #include <iostream>
 
-QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false)
+QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false), sort_ascending(true)
 {
 	QFont f( font() );
 	f.setFamily( "Helvetica" );
@@ -51,7 +51,7 @@ void QgsAttributeTable::columnClicked(int col)
 	   } 
 	}
 
-	sortColumn(col, true, true);
+	sortColumn(col, sort_ascending, true);
 
 	//clear and rebuild rowIdMap. Overwrite sortColumn later and sort rowIdMap there
 	rowIdMap.clear();
@@ -74,7 +74,81 @@ void QgsAttributeTable::columnClicked(int col)
 	}
 	QObject::connect(this,SIGNAL(selectionChanged()),this,SLOT(handleChangedSelections()));
 
+	//change the sorting order after each sort
+	if(sort_ascending==true)
+	{
+	    sort_ascending=false;
+	}
+	else
+	{
+	    sort_ascending=true;
+	}
+
 	QApplication::restoreOverrideCursor();
+}
+
+int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool alphanumeric)
+{
+    if(alphanumeric)
+    {
+	if(s1>s2)
+	{
+	    if(ascending)
+	    {
+		return 1;
+	    }
+	    else
+	    {
+		return -1;
+	    }
+	}
+	else if(s1<s2)
+	{
+	    if(ascending)
+	    {
+		return -1;
+	    }
+	    else
+	    {
+		return 1;
+	    }
+	}
+	else if(s1==s2)
+	{
+	    return 0;
+	}
+    }
+    else//numeric
+    {
+	double d1=s1.toDouble();
+	double d2=s2.toDouble();
+	if(d1>d2)
+	{
+	    if(ascending)
+	    {
+		return 1;
+	    }
+	    else
+	    {
+		return -1;
+	    }
+	}
+	else if(d1<d2)
+	{
+	    if(ascending)
+	    {
+		return -1;
+	    }
+	    else
+	    {
+		return 1;
+	    }
+	}
+	else if(d1==d2)
+	{
+	    return 0;
+	}
+    }
 }
 
 void QgsAttributeTable::keyPressEvent(QKeyEvent* ev)
@@ -131,4 +205,53 @@ void QgsAttributeTable::selectRowWithId(int id)
     selectRow(it.data());
 }
 
-	  
+void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
+{
+    //if the first entry contains a letter, sort alphanumerically, otherwise numerically
+    QString firstentry=text(0,col);
+    bool containsletter=false;
+    for(uint i=0;i<firstentry.length();i++)
+    {
+	if(firstentry.ref(i).isLetter())
+	{
+	    containsletter=true;
+	}
+    }
+
+    if(containsletter)
+    {
+	qsort(0,numRows()-1,col,ascending,true);
+    }
+    else
+    {
+	qsort(0,numRows()-1,col,ascending,false);
+    }
+
+    repaintContents();
+}
+
+void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, bool alphanumeric)
+{
+    //add the following modifications later: avoid worst case, call selection sort for short ranges
+    int i,j;
+    QString v;
+    if(upper>lower)
+    {
+	v=text(upper,col);
+	i=lower-1;
+	j=upper;
+	for(;;)
+	{
+	    while(compareItems(text(++i,col),v,ascending,alphanumeric)==-1);
+	    while(compareItems(text(--j,col),v,ascending,alphanumeric)==1&&j>0);//make sure that j does not get negative
+	    if(i>=j) 
+		{
+		    break;
+		}
+	    swapRows(i,j);
+	}
+	swapRows(i,upper);
+	qsort(lower, i-1, col, ascending, alphanumeric);
+	qsort(i+1, upper, col, ascending, alphanumeric);
+    }
+}	  
