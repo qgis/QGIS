@@ -272,6 +272,8 @@ public slots: // Public slots
     void cboFileType_activated( const QString &myQString );
 
     /** This method overrides the virtual CDPWizardBase method (slot) of the same name.
+    * It is called when each page selected event (by pressing the next button)
+    * which I am reimplementing to do some housekeeping between wizard pages.
     * @param thePageNameQString - name of the newly activated page
     * @return void
     */

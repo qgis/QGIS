@@ -180,9 +180,9 @@ void CDPWizard::loadDefaults()
 
     leOutputPath->setText(myQSettings.readEntry("/qgis/cdpwizard/outputPath"));
     cboOutputFormat->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/outputFormat"));
-    
+
     cboFileType_activated(cboFileType->currentText());
-    
+
 }
 
 
@@ -209,22 +209,19 @@ void CDPWizard::cboFileType_activated( const QString &myQString )
 
 }
 
-/** This is the page selected event which I am reimplementing to do some housekeeping
- *    between wizard pages.
- *    This routine is a slot that runs each time next is pressed to update the summary page */
 void CDPWizard::formSelected(const QString  &thePageNameQString)
 {
     QString myQString;
     QLineEdit *myLineEdit;
-    
+
     if (thePageNameQString==tr("Raw data file selection"))
-    {              
+    {
 #ifdef QGISDEBUG
     std::cout << "Opening Raw Data File Selection page" << std::endl;
-#endif   
+#endif
     checkInputFilenames();
-    }   
-    
+    }
+
     if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
     {
 //#ifdef QGISDEBUG
@@ -434,7 +431,7 @@ void CDPWizard::checkInputFilenames()
 {
     if (leMeanTemp->text() =="" && leMinTemp->text() =="" && leMaxTemp->text() ==""  && leDiurnalTemp->text()=="" && leMeanPrecipitation->text()=="" && leFrostDays->text()=="" && leFrostDays->text()=="" && leTotalSolarRadiation->text()=="" && leWindSpeed->text() =="" )
     {
-      setNextEnabled(currentPage(),false);    
+      setNextEnabled(currentPage(),false);
     }
     else
     {
@@ -510,12 +507,12 @@ void CDPWizard::spinFirstYearToCalc_valueChanged( int theInt)
     //make sure the number is valid
     if (theInt < spinFirstYearInFile->value())
     {
-	spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+        spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
     }
     if (spinFirstYearToCalc->value() > spinLastYearToCalc->value())
     {
-	spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-	leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+        spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+        leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
     }
     leStartYearSummary->setText(QString::number(theInt));
 }
@@ -526,18 +523,18 @@ void CDPWizard::spinFirstYearInFile_valueChanged( int theInt)
    //make sure the number is valid
     if (theInt > spinFirstYearToCalc->value())
     {
-	    spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-	    leStartYearSummary->setText(QString::number(spinFirstYearToCalc->value()));
+            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+            leStartYearSummary->setText(QString::number(spinFirstYearToCalc->value()));
     }
     if (theInt > spinLastYearToCalc->value())
     {
-	    spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-	    leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+            leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
     }
     if (spinFirstYearToCalc->value() > spinLastYearToCalc->value())
     {
-	    spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-	    leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
+            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+            leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
     }
 }
 
@@ -547,7 +544,7 @@ void CDPWizard::spinLastYearToCalc_valueChanged( int theInt)
     //make sure the number is valid
     if (theInt < spinFirstYearToCalc->value())
     {
-	    spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
     }
 
     leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
@@ -572,11 +569,11 @@ void CDPWizard::lstVariablesToCalc_selectionChanged()
 
     if (!selectionSizeInt)
     {
-	    //setNextEnabled(false); //doesnt work :-(
+            //setNextEnabled(false); //doesnt work :-(
     }
     else
     {
-    	//setNextEnabled(true);  //doesnt work :-(
+        //setNextEnabled(true);  //doesnt work :-(
     }
 
 }

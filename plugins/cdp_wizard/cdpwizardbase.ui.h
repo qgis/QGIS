@@ -102,12 +102,23 @@ void CDPWizardBase::leWindSpeed_textChanged( const QString & )
 }
 
 
-void CDPWizardBase::form_selected( const QString &thePageNameQString )
+void CDPWizardBase::formSelected (const QString &thePageNameQString )
 {
 
 }
 
 void CDPWizardBase::accept()
 {
-    
+
 }
+
+
+
+
+void CDPWizardBase::cboFileType_activated( const QString & )
+{
+
+}
+
+
+

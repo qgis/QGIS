@@ -50,7 +50,14 @@ public:
     int firstMonthOfHighestQ (QValueVector <float> theClimateVector);
 
     /** This method returns the month that starts the quarter with the lowest
-    average values. */
+    average values. For example, if 12 months were :
+
+    1   2   3   4   5   6   7   8   9   10  11  12
+    -----------------------------------------------
+    21 18  19  15   12  5   6   8   12  15  16  20
+
+    Then the return from this method would be 6 because
+    5,6 and 8 combined form the lowest quarter. */
     int firstMonthOfLowestQ (QValueVector <float> theClimateVector);
 
     /** This method will return the mean over three months in
