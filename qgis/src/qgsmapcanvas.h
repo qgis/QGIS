@@ -188,6 +188,8 @@ signals:
 
     /** emits current mouse position */
     void xyCoordinates(QgsPoint & p);
+    /** emits mouse position when the canvas is clicked */
+    void xyClickCoordinates(QgsPoint &p);
 
     //! Emitted when the scale of the map changes
     void scaleChanged(QString);
