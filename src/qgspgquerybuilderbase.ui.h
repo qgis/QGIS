@@ -116,3 +116,13 @@ void QgsPgQueryBuilderBase::clearSQL()
 {
     txtSQL->clear();
 }
+
+
+void QgsPgQueryBuilderBase::insIlike()
+{
+    txtSQL->insert(" ILIKE ");
+}
+void QgsPgQueryBuilderBase::setDatasourceDescription(QString uri)
+{
+    lblDataUri->setText(uri);
+}
