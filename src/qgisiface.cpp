@@ -59,9 +59,9 @@ bool QgisIface::addRasterLayer(QString rasterLayerPath)
   return qgis->addRasterLayer(rasterLayerPath);
 }
 
-bool QgisIface::addRasterLayer(QgsRasterLayer * theRasterLayer)
+bool QgisIface::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRenderFlag)
 {
-  return qgis->addRasterLayer(theRasterLayer);
+  return qgis->addRasterLayer(theRasterLayer, theForceRenderFlag);
 }
 
 bool QgisIface::addProject(QString theProjectName)
