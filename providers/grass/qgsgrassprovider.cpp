@@ -276,6 +276,8 @@ QgsFeature *QgsGrassProvider::getFirstFeature(bool fetchAttributes)
 
     if ( isEdited() )
 	return 0;
+    
+    if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
 
     mNextCidx = 0;
 	
@@ -294,6 +296,8 @@ bool QgsGrassProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
 
     if ( isEdited() )
 	return 0;
+    
+    if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
 
     // TODO once clear how to do that 
     return false;
@@ -314,6 +318,8 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     if ( isEdited() )
 	return 0;
 
+    if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
+
     std::list<int> attlist;
 
     if ( fetchAttributes ) {
@@ -332,12 +338,14 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist)
     unsigned char *wkb;
     int wkbsize;
 
-    #ifdef QGISDEBUG
+    #if QGISDEBUG > 3
     std::cout << "QgsGrassProvider::getNextFeature( attlist )" << std::endl;
     #endif
 
     if ( isEdited() )
 	return 0;
+    
+    if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
     
     // Get next line/area id
     int found = 0;
@@ -1137,7 +1145,7 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 
 void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int> const& attlist)
 {
-#ifdef QGISDEBUG
+    #if QGISDEBUG > 3
     std::cerr << "setFeatureAttributes cat = " << cat << std::endl;
     #endif
     if ( mLayers[layerId].nColumns > 0 ) {
@@ -1208,7 +1216,7 @@ bool QgsGrassProvider::isGrassEditable ( void )
 
 bool QgsGrassProvider::isEdited ( void )
 {
-    #ifdef QGISDEBUG
+    #if QGISDEBUG > 3
     std::cerr << "QgsGrassProvider::isEdited" << std::endl;
     #endif
 
