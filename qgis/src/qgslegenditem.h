@@ -1,3 +1,4 @@
+
 /***************************************************************************
                           qgslegenditem.h  -  description
                              -------------------
@@ -55,7 +56,7 @@ public:
     /*! Responds to changes in the layer state (eg. visible vs non visible)
      *@param v True if layer is visible
      */
-    // DEPRECATED? void stateChange(bool v);
+    void stateChange(bool v);
 
     /*! Gets the layer associated with this legend item
      * @return Pointer to the layer
@@ -65,6 +66,9 @@ public:
     /** returns layer ID of associated map layer 
      */
     QString layerID() const;
+
+    /** sets check box state and consequently the visibility of corresponding map layer */
+    void setOn( bool );
 
 private:                       // Private attributes
 

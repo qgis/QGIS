@@ -28,6 +28,7 @@ QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent)
       m_layer(lyr),
       layerName( lyr->name() )
 {
+  activate();
   setOn(lyr->visible());
   setPixmap( 0, *lyr->legendPixmap() );
 }
@@ -56,10 +57,10 @@ void QgsLegendItem::setLayerName(const QString & _newVal)
 //   displayName = _newVal;
 // }
 
-// void QgsLegendItem::stateChange(bool vis)
-// {
-//   m_layer->setVisible(vis);
-// }
+void QgsLegendItem::stateChange(bool vis)
+{
+  m_layer->setVisible(vis);
+}
 
 QgsMapLayer *QgsLegendItem::layer()
 {
@@ -71,3 +72,9 @@ QString QgsLegendItem::layerID() const
 {
     return m_layer->getLayerID();
 } // layerID
+
+
+void QgsLegendItem::setOn( bool b )
+{
+    m_layer->setVisible( b );
+} // setOn
