@@ -92,3 +92,9 @@ void QgsRasterLayerPropertiesBase::sliderTransparency_sliderMoved( int )
 {
 
 }
+
+
+void QgsRasterLayerPropertiesBase::buttonBuildPyramids_clicked()
+{
+
+}
