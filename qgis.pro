@@ -5,4 +5,4 @@ CONFIG += qt thread debug
 TEMPLATE = subdirs
 
 # Directories
-SUBDIRS = src
+SUBDIRS = src plugins
