@@ -19,7 +19,8 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgsshapefilelayer.h \
            qgstable.h \
            qgsdbsourceselect.h \
-           qgsnewconnection.h
+           qgsnewconnection.h \ 
+           ../qgisicons.h
 INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui
 SOURCES += main.cpp \
            qgisapp.cpp \
