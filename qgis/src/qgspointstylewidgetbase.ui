@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>180</width>
-            <height>326</height>
+            <height>141</height>
         </rect>
     </property>
     <property name="caption">
@@ -25,7 +25,7 @@
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
-                    <hsizetype>0</hsizetype>
+                    <hsizetype>7</hsizetype>
                     <vsizetype>7</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
@@ -38,15 +38,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>txtSymbol</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Symbol</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="2">
+                <widget class="QLabel" row="1" column="0">
                     <property name="name">
                         <cstring>txtSymbolScale</cstring>
                     </property>
@@ -54,7 +46,7 @@
                         <string>Scale</string>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="3" column="2">
+                <widget class="QSpinBox" row="2" column="0">
                     <property name="name">
                         <cstring>spbSymbolScale</cstring>
                     </property>
@@ -65,126 +57,15 @@
                         </size>
                     </property>
                 </widget>
-                <spacer row="3" column="1">
+                <widget class="QComboBox" row="0" column="0">
                     <property name="name">
-                        <cstring>spcSymbol</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Fixed</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>30</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton" row="3" column="0">
-                    <property name="name">
-                        <cstring>btnSymbolFirstColour</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>50</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>col</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>txtSymbolColour</cstring>
-                    </property>
-                    <property name="acceptDrops">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Colour</string>
-                    </property>
-                </widget>
-                <widget class="QIconView" row="1" column="0" rowspan="1" colspan="3">
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap>image0</pixmap>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap>image0</pixmap>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap>image0</pixmap>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap>image0</pixmap>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap>image0</pixmap>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap>image0</pixmap>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>iconView1</cstring>
+                        <cstring>comboBox8</cstring>
                     </property>
                 </widget>
             </grid>
         </widget>
     </grid>
 </widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="1347">789c7dd3c14ac4301405d07dbf22f4ed8a743ace0882f8098a4b415ca4c92475310a3a2e44fc777393a64df2dabed7452e1c6eb368778d787e7a10cdaefabac8cb9b126a909fa2d1dfe7f3cfcbebfd6f551fae857bf69dd8d75755dd0a251e3fde4f38933b53e707b10f518df18478e8b08803e271c21af1e6168b681165e7f688681055874594211a13a242347efc95da9688dad58946ca75e58d6be9e5ba0a46e92d351a952aa2d3b2495459989849f949546632b5688c32c65aeadde428ed0132da23306e4c5863f1ba017042738f6fc138a5fdbd0a135b2203ec7bca7b723022e23d19628601cb0d6f59e8612dce0c2b2641658fb5650b375a0795a2c2b8afcaaba4859ba852c4cda4364da9964daed64caa60c2475d9a590503c54d54d1d0a2096abb67541bf79955fc0debbfbbea1f81b84f0e</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>btnSymbolFirstColour</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsPointStyleWidgetBase</receiver>
-        <slot>btnSymbolFirstColour_clicked()</slot>
-    </connection>
-</connections>
 <includes>
     <include location="local" impldecl="in implementation">qgspointstylewidgetbase.ui.h</include>
 </includes>
