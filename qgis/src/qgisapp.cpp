@@ -476,6 +476,7 @@ QgisApp::~QgisApp()
 
 void QgisApp::about()
 {
+  QApplication::setOverrideCursor(Qt::WaitCursor);
   QgsAbout *abt = new QgsAbout();
   QString versionString = tr("Version ");
   versionString += QGis::qgisVersion;
@@ -483,6 +484,10 @@ void QgisApp::about()
   versionString += tr(" with PostgreSQL support");
 #else
   versionString += tr(" (no PostgreSQL support)");
+#endif
+#ifdef WIN32
+  // special version stuff for windows (if required)
+  versionString += "\nThis is a Windows preview release - not for production use";
 #endif
   abt->setVersion(versionString);
   QString urls = tr("Web Page: http://qgis.org") +
@@ -512,7 +517,9 @@ void QgisApp::about()
   // add the available plugins to the list
   QString providerInfo = "<b>" + tr("Available Data Provider Plugins") + "</b><br>";
   abt->setPluginInfo(providerInfo + mProviderRegistry->pluginList(true));
+  QApplication::restoreOverrideCursor();
   abt->exec();
+
 
 }
 
@@ -550,7 +557,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       if (loaded)
       {
 	//purposely leaving this one to stdout!      
-        std::cout << "Loaded " << myLib->library() << std::endl;
+        std::cout << "Loaded " << myLib->library().ascii() << std::endl;
         name_t * myName =(name_t *) myLib->resolve("name");
         description_t *  myDescription = (description_t *)  myLib->resolve("description");
         version_t *  myVersion =  (version_t *) myLib->resolve("version");
@@ -1188,13 +1195,15 @@ void QgisApp::fileOpen()
   if (answer != QMessageBox::Cancel)
   {
     QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, mMapCanvas);
+    //loading a project will add all layers to the registry and
+    //return the zorder for those layers.
+    std::list<QString> myZOrder = pio->read();
+    if(myZOrder.size() > 0)
+    {
     mOverviewCanvas->freeze(true);
     mMapCanvas->freeze(true);
     // clear the map canvas
     removeAllLayers();
-    //loading a project will add all layers to the registry and
-    //return the zorder for those layers.
-    std::list<QString> myZOrder = pio->read();
     std::list < QString >::iterator li = myZOrder.begin();
     QgsRect myExtent = mMapCanvas->extent();
 #ifdef QGISDEBUG
@@ -1202,10 +1211,12 @@ void QgisApp::fileOpen()
 #endif
     while (li != myZOrder.end())
     {
-#ifdef QGISDEBUG
-      std::cout << "Found  " << *li << " in zOrder" << std::endl;
-#endif
       QgsMapLayer * myMapLayer = mMapLayerRegistry->mapLayer(*li);
+#ifdef QGISDEBUG
+      QString lyr = *li;
+      std::cout << "Found  " << lyr.ascii() << " in zOrder" << std::endl;
+      std::cout << "MapLayer type is " << myMapLayer->type() << std::endl;
+#endif
       //find out what type of file it is and add it to the project
       if (myMapLayer->type() == QgsMapLayer::VECTOR)
       {
@@ -1228,6 +1239,12 @@ void QgisApp::fileOpen()
     mOverviewCanvas->freeze(false);
     mMapCanvas->freeze(false);
     mProjectIsDirtyFlag = false;
+  }
+  else
+  {
+    // just delete the project io object since the user cancelled
+    delete pio;
+  }
   }
 }
 

@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.41 2004/08/14 01:07:15 timlinux Exp 
+# src.pro,v 1.42 2004/08/15 00:52:47 gsherman Exp 
 ######################################################################
 
 TEMPLATE = app
@@ -14,9 +14,9 @@ INCLUDEPATH += . $(GDAL)\include \
 LIBS += $(GDAL)\lib\gdal_i.lib \
         $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
 
-#DEFINES+= QGISDEBUG
+DEFINES+= QGISDEBUG
 DESTDIR = ../win_build
-CONFIG += qt thread rtti debug
+CONFIG += qt thread rtti debug console
 RC_FILE = qgis_win32.rc
 # Input
 HEADERS += qgis.h \
@@ -102,7 +102,9 @@ HEADERS += qgis.h \
            qgslabel.h \
            qgslabelattributes.h \
            qgslabeldialog.h \
-	   qgsacetaterectangle.h
+	   qgsacetaterectangle.h \
+     qgsuvaldialog.h \
+     qgsuniquevalrenderer.cpp
 INTERFACES += qgisappbase.ui \
               qgsabout.ui \
               qgsattributetablebase.ui \
@@ -126,7 +128,8 @@ INTERFACES += qgisappbase.ui \
               qgsrasterlayerpropertiesbase.ui \
               qgssimadialogbase.ui \
               qgssisydialogbase.ui \
-              qgsvectorlayerpropertiesbase.ui
+              qgsvectorlayerpropertiesbase.ui \
+              qgsuvaldialogbase.ui
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgisiface.cpp \
@@ -194,4 +197,6 @@ SOURCES += main.cpp \
            qgslabeldialog.cpp \
            qgslabel.cpp \
            qgslabelattributes.cpp \
-	   qgsacetaterectangle.cpp
+	   qgsacetaterectangle.cpp \
+     qgsuvaldialog.cpp \
+     qgsuniquevalrenderer.cpp

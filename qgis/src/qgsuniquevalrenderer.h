@@ -20,7 +20,7 @@
 
 #include "qgsrenderer.h"
 #include <qcolor.h>
-#include <map.h>
+#include <map>
 
 class QgsRenderItem;
 

@@ -17,10 +17,13 @@
 
 #ifndef QGSUVALDIALOG_H
 #define QGSUVALDIALOG_H
-
+#ifdef WIN32
+#include "qgsuvaldialogbase.h"
+#else
 #include "qgsuvaldialogbase.uic.h"
+#endif
 #include "qgssisydialog.h"
-#include <map.h>
+#include <map>
 
 class QgsVectorLayer;
 
