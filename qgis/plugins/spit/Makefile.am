@@ -9,9 +9,9 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 # $Id$
-if SPIT
+if HAVE_SPIT
 if POSTGRESDB
-lib_LTLIBRARIES = libspitplugin.la
+lib_LTLIBRARIES = spitplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -21,7 +21,7 @@ lib_LTLIBRARIES = libspitplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 	
-libspitplugin_la_SOURCES =  qgsspit.cpp \
+spitplugin_la_SOURCES =  qgsspit.cpp \
         qgsspitplugin.cpp \
 				qgsspitplugin.h \
 				qgsconnectiondialog.cpp \
@@ -62,6 +62,8 @@ BUILT_SOURCES = $(spit_MOC) $(spit_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 
-libspitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB)
+spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB)
+spitplugin_la_LDFLAGS = -avoid-version -module
+
 endif
 endif

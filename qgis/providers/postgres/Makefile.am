@@ -1,8 +1,8 @@
 # if PostgreSQL support requested, add PostgreSQL files
 if POSTGRESDB
-lib_LTLIBRARIES     = libpostgresprovider.la
+lib_LTLIBRARIES     = postgresprovider.la
                       
-libpostgresprovider_la_SOURCES = qgspostgresprovider.cpp \
+postgresprovider_la_SOURCES = qgspostgresprovider.cpp \
                       ../../src/qgsfeature.cpp \
                        ../../src/qgsfeatureattribute.cpp \
                        ../../src/qgsrect.cpp \
@@ -11,5 +11,7 @@ libpostgresprovider_la_SOURCES = qgspostgresprovider.cpp \
                        
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 
-libpostgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) 
+postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB)
+postgresprovider_la_LDFLAGS = -avoid-version -module
+
 endif
