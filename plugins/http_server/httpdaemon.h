@@ -42,7 +42,8 @@ signals:
   void wroteToClient(QString); //passed out
 
 public slots:
-  void requestCompleted(QString); //will contain the filename of the output image
+  void requestCompleted(QString); //used to return text to the browser
+  void requestCompleted( QPixmap *theQPixmap); //used to return an image to the browser
 
 private slots:
   void readClient();

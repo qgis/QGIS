@@ -12,6 +12,9 @@
 #include "httpdaemon.h"
 #include <qdatetime.h>
 #include <qregexp.h>
+#include <qbuffer.h>
+#include <qdatastream.h>
+#include <qcstring.h> 
 // HttpDaemon is the the class that implements the simple HTTP server.
 HttpDaemon::HttpDaemon( QObject* parent ) : QServerSocket(8081,1,parent)
 {
@@ -80,7 +83,7 @@ void HttpDaemon::readClient()
         {
           //emit request received (to be displayed in debug tab of gui)
           //and processed by plugin (request must be a qgs project!)
-          emit requestReceived(QString("Token[1]: ") +myTokenString);
+          emit requestReceived(myTokenString);
           return;
         }
       }
@@ -124,6 +127,27 @@ void HttpDaemon::requestCompleted(QString theQString)
   emit wroteToClient(myTimeQString);
   myQSocket->close();
 }
+
+void HttpDaemon::requestCompleted( QPixmap *theQPixmap)
+{
+  QSocket * myQSocket = (QSocket*)sender();
+  QByteArray myQByteArray;
+  QBuffer myQBuffer(myQByteArray);
+  myQBuffer.open(IO_WriteOnly);
+  theQPixmap->save(&myQBuffer, "PNG", 50);
+  myQBuffer.close();
+
+  QDataStream myQDataStream(myQSocket);
+  QString myResponseString;
+  myResponseString.append("HTTP/1.0 200 OK\n");
+  myResponseString.append("Content-Type: image/png\n\n");
+  myQSocket->writeBlock(myResponseString.ascii(), myResponseString.length());
+  myQSocket->writeBlock(myQByteArray.data(), myQByteArray.size());
+  myQSocket->close();
+}
+
+
+
 void HttpDaemon::closeStreamWithError(QString theErrorQString)
 {
   QSocket * myQSocket = (QSocket*)sender();
