@@ -64,6 +64,11 @@ QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
 
   //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
 
+  //set some generous  defaults for scale based visibility
+  mMinScale = 0;
+  mMaxScale = 100000000;
+  mScaleBasedVisibility = false;
+
 }
 
 

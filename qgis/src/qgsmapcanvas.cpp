@@ -680,13 +680,23 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
           std::cout << "Rendering " << ml->name() << std::endl;
-#endif
+#endif    
           if (ml->visible())
           {
-            ml->draw(paint, 
-                     &mCanvasProperties->currentExtent, 
-                     mCanvasProperties->coordXForm,
-                     this);
+            if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale) 
+                    || (!ml->scaleBasedVisibility()))
+            {
+                ml->draw(paint, 
+                      &mCanvasProperties->currentExtent, 
+                      mCanvasProperties->coordXForm,
+                      this);
+            }
+#ifdef QGISDEBUG
+            else
+            {
+              std::cout << "Layer not rendered because it is not within the defined visibility scale range" << std::endl;
+            }
+#endif            
           }
 
           li++;
