@@ -40,6 +40,7 @@ class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
 class QgsMapLayerRegistry;
+class QgsRasterLayer;
 #ifdef WIN32
 #include "qgisappbase.h"
 #else
@@ -141,12 +142,11 @@ private:
 
     //! Add a vector layer to the map
     void addLayer();
-    //! Add a raster layer to the map
+    //! Add a raster layer to the map (will prompt user for filename using dlg
     void addRasterLayer();
-    /** This helper checks to see whether the filename appears to be a valid raster file name */
-    bool isValidRasterFileName (QString theFileNameQString);
-    /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
-    bool isValidRasterFileName (QString * theFileNameQString);
+    //! Add a raster layer to the map (passed in as a ptr)
+    bool addRasterLayer(QgsRasterLayer * theRasterLayer);
+    //@todo We should move these next two into vector layer class
     /** This helper checks to see whether the filename appears to be a valid vector file name */
     bool isValidVectorFileName (QString theFileNameQString);
     /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
