@@ -399,6 +399,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     connect(mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mMapLegend, SLOT(addLayer(QgsMapLayer *)));
     connect(mMapCanvas, SIGNAL(removedLayer(QString)), mMapLegend, SLOT(removeLayer(QString)));
     connect(mMapCanvas, SIGNAL(removedAll()), mMapLegend, SLOT(removeAll()));
+    connect(mMapCanvas, SIGNAL(stopZoom()), this, SLOT(stopZoom()));
 
     connect(mMapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
     connect(mMapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
@@ -2198,6 +2199,12 @@ void QgisApp::zoomIn()
        mMapCanvas->setWorldMatrix( m );
      */
 
+    if ( mMapCanvas->mapTool() != QGis::ZoomIn && mMapCanvas->mapTool() != QGis::ZoomOut
+	 && mMapCanvas->mapTool() != QGis::Pan )
+    {
+	mPreviousNonZoomMapTool = mMapCanvas->mapTool();
+    }
+
     mMapTool = QGis::ZoomIn;
     mMapCanvas->setMapTool(mMapTool);
     // set the cursor
@@ -2222,6 +2229,12 @@ void QgisApp::zoomIn()
 
 void QgisApp::zoomOut()
 {
+    if ( mMapCanvas->mapTool() != QGis::ZoomIn && mMapCanvas->mapTool() != QGis::ZoomOut
+	 && mMapCanvas->mapTool() != QGis::Pan )
+    {
+	mPreviousNonZoomMapTool = mMapCanvas->mapTool();
+    }
+
     mMapTool = QGis::ZoomOut;
     mMapCanvas->setMapTool(mMapTool);
 
@@ -2248,6 +2261,12 @@ void QgisApp::zoomToSelected()
 
 void QgisApp::pan()
 {
+    if ( mMapCanvas->mapTool() != QGis::ZoomIn && mMapCanvas->mapTool() != QGis::ZoomOut
+	 && mMapCanvas->mapTool() != QGis::Pan )
+    {
+	mPreviousNonZoomMapTool = mMapCanvas->mapTool();
+    }
+
     mMapTool = QGis::Pan;
     mMapCanvas->setMapTool(mMapTool);
     QBitmap panBmp(16, 16, pan_bits, true);
@@ -2285,6 +2304,7 @@ void QgisApp::identify()
     delete mMapCursor;
     mMapCursor = new QCursor(myIdentifyQPixmap, 1, 1);
     mMapCanvas->setCursor(*mMapCursor);
+    actionIdentify->setOn(true);
 }
 
 void QgisApp::measure()
@@ -2292,10 +2312,42 @@ void QgisApp::measure()
     mMapTool = QGis::Measure;
     mMapCanvas->setMapTool(mMapTool);
 
-    QPixmap pm = QPixmap((const char **)  capture_point_cursor);
-    delete mMapCursor;
-    mMapCursor = new QCursor(pm, 8, 8);
-    mMapCanvas->setCursor(*mMapCursor);
+    //QPixmap pm = QPixmap((const char **)  capture_point_cursor);
+    //delete mMapCursor;
+    //mMapCursor = new QCursor(pm, 8, 8);
+    mMapCanvas->setCursor( Qt::CrossCursor );
+    actionMeasure->setOn(true);
+}
+
+void QgisApp::stopZoom() 
+{
+    actionZoomIn->setOn(false);
+    actionZoomIn->setOn(false);
+    actionPan->setOn(false);
+
+    switch ( mPreviousNonZoomMapTool ) {
+	case QGis::Identify:
+	    identify();
+	    break;
+	case QGis::Select:
+	    select();
+	    break;
+	case QGis::CapturePoint:
+	    capturePoint();
+	    break;
+	case QGis::CaptureLine:
+	    captureLine();
+	    break;
+	case QGis::CapturePolygon:
+	    capturePolygon();
+	    break;
+	case QGis::EmitPoint:
+	    mMapCanvas->setMapTool( QGis::EmitPoint );
+	    break;
+	case QGis::Measure:
+	    measure();
+	    break;
+    }
 }
 
 void QgisApp::attributeTable()
@@ -2359,6 +2411,8 @@ void QgisApp::capturePoint()
         delete mMapCursor;
         mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
         mMapCanvas->setCursor(*mMapCursor);
+    
+	actionCapturePoint->setOn(true);
     }
 }
 
@@ -2371,6 +2425,8 @@ void QgisApp::captureLine()
         delete mMapCursor;
         mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
         mMapCanvas->setCursor(*mMapCursor);
+
+	actionCaptureLine->setOn(true);
     }
 }
 
@@ -2383,6 +2439,8 @@ void QgisApp::capturePolygon()
         delete mMapCursor;
         mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
         mMapCanvas->setCursor(*mMapCursor);
+	
+	actionCapturePolygon->setOn(true);
     }
 }
 
@@ -2396,6 +2454,7 @@ void QgisApp::select()
     delete mMapCursor;
     mMapCursor = new QCursor(mySelectQPixmap, 1, 1);
     mMapCanvas->setCursor(*mMapCursor);
+    actionSelect->setOn(true);
 }
 
 void QgisApp::drawPoint(double x, double y)

@@ -71,6 +71,8 @@
 #include <qstring.h>
 #endif
 
+#include <qcursor.h>
+
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -1140,6 +1142,16 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
   if (!mUserInteractionAllowed)
     return;
+
+  // right button was pressed in zoom tool, return to previous non zoom tool
+  if ( e->button() == Qt::RightButton &&
+       ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
+	 || mCanvasProperties->mapTool == QGis::Pan ) )
+  {
+      emit stopZoom();
+      return;
+  }
+  
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->boxStartPoint = e->pos();
 
@@ -1153,6 +1165,14 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
   case QGis::Distance:
     //              distanceEndPoint = e->pos();
     break;
+  case QGis::EmitPoint: 
+    {
+    QgsPoint  idPoint = mCanvasProperties->coordXForm->
+      toMapCoordinates(e->x(), e->y());
+    emit xyClickCoordinates(idPoint);
+    emit xyClickCoordinates(idPoint,e->button());
+    break;
+    }
   }
 } // mousePressEvent
 
@@ -1554,14 +1574,6 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	break;
       }
       
-    case QGis::EmitPoint: 
-      {
-	QgsPoint  idPoint = mCanvasProperties->coordXForm->
-	  toMapCoordinates(e->x(), e->y());
-	emit xyClickCoordinates(idPoint);
-	emit xyClickCoordinates(idPoint,e->button());
-	break;
-      }
 
     case QGis::Measure:
       {
@@ -1700,7 +1712,10 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 /** Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool(int tool)
 {
-  mCanvasProperties->mapTool = tool;
+    mCanvasProperties->mapTool = tool;
+    if ( tool == QGis::EmitPoint ) {
+	setCursor ( Qt::CrossCursor );
+    }
 } // setMapTool
 
 
