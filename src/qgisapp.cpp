@@ -516,18 +516,33 @@ void QgisApp::about()
   QString watsNew = "<html><body>" + tr("Version") + " ";
   watsNew += QGis::qgisVersion;
   watsNew += "<h3>New features</h3>";
-  watsNew += "<ul>"
-        "<li>Windows version"
-        "<li>Feature labeling with optional buffering"
-        "<li>Preliminary digitizing support for shapefiles"
-        "<li>GRASS digitizing support"
-        "<li>GPS SVG icons"
-        "<li>Unique value renderers"
-        "<li>User interface improvements"
-        "<li>Specify a query when loading a PostGIS layer"
-        "<li>Italian translation"
-      "</ul>"
-"</body></html>";
+  watsNew += "<ul><li>" 
+    + tr("GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.")
+   + "<li>"
+  + tr("PostGIS editing support in provider")
+  + "<li>"
+  + tr("Vector dialog redesign to improve usability")
+  + "<li>"
+  + tr("Improvement in project handling (loading and saving)")
+  + "<li>"
+  + tr("Scale dependent rendering")
+  + "<li>"
+  + tr("User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete")
+  + "<li>"
+  + tr("Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer")
+  + "<li>"
+  + tr("Create new vector layer (shapefile) for editing")
+  + "<li>"
+  + tr("Windows installer")
+  + "<li>"
+  + tr("Mac OSX binary")
+  + "<li>" 
+  + tr("New options in the graticule builder plugin")
+  + "<li>"
+  + tr("Enhancements to the GPS plugin")
+  + "<li>"
+  + tr("Man page")
+  + "</ul></body></html>";
 
 
   abt->setWhatsNew(watsNew);

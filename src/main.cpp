@@ -41,11 +41,6 @@ email                : sherman at mrcc.com
 #include "qgsproject.h"
 
 #include <splashscreen.h>
-#ifdef WIN32
-//TODO - fix this to use the appdir for setting path to i18ln and other resources
-#define PKGDATAPATH "/home"
-#endif
-
 static const char * const ident_ = "$Id$";
 
 /** print usage text
@@ -220,15 +215,13 @@ int main(int argc, char *argv[])
 
   // a.setFont(QFont("helvetica", 11));
 
-#ifdef Q_OS_MACX
+#if defined(Q_OS_MACX) || defined(WIN32)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 
   QTranslator tor(0);
 
-  // set the location where your .qm files are in load() below as the last parameter instead of "."
-  // for development, use "/" to use the english original as
-  // .qm files are stored in the base project directory.
+  // For WIN32, get the locale
   if (myTranslationFileName!="")
   {
     QString translation = "qgis_" + myTranslationFileName;
@@ -236,6 +229,10 @@ int main(int argc, char *argv[])
   } 
   else
   {
+#ifdef QGISDEBUG
+    std::cout << "Setting translation to " 
+      << PKGDATAPATH << "/i18n/qgis_" << QTextCodec::locale() << std::endl; 
+#endif
     tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");
   }
 
