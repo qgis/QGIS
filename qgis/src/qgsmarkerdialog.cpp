@@ -98,6 +98,9 @@ QString QgsMarkerDialog::defaultDir()
 	//qgis install
 	QString dir = "Foo";
 #else
+#ifdef Q_OS_MACX
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
     QString dir = QString(PKGDATAPATH)+"/svg"; 
 #endif
     return dir;

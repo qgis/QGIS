@@ -308,8 +308,8 @@ void QgsUValMaDialog::changeClassificationAttribute(int nr)
 	    QgsMarkerSymbol* sym = 
 	      dynamic_cast<QgsMarkerSymbol*>(it->second->getSymbol());
 	    assert(sym != NULL);
-#ifdef WIN32
-            QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#if defined(WIN32) || defined(Q_OS_MACX)
+        QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 	    sym->setPicture(QString(PKGDATAPATH) + "/svg/symbol/Cross4.svg");
 	    sym->setScaleFactor(minSize + (maxSize - minSize) * frac);

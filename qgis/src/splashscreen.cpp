@@ -21,7 +21,7 @@
 #include "splashscreen.h"
 #include "qfont.h"
 #include "qgis.h"
-#ifdef WIN32
+#if defined(WIN32) || defined(Q_OS_MACX)
 QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 #define STATUS_TEXT_X 10

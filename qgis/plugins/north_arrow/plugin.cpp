@@ -147,8 +147,8 @@ void Plugin::renderNorthArrow(QPainter * theQPainter)
   if (mEnable)
   {
     QPixmap myQPixmap; //to store the north arrow image in
-#ifdef WIN32
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#if defined(WIN32) || defined(Q_OS_MACX)
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
     QString myFileNameQString = QString(PKGDATAPATH) +
                                 QString("/images/north_arrows/default.png");
