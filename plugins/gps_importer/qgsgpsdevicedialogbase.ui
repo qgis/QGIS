@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsGPSDeviceDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>405</height>
+            <width>515</width>
+            <height>409</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,14 +23,14 @@
     <property name="caption">
         <string>GPS Device Editor</string>
     </property>
-    <property name="modal" stdset="0">
+    <property name="modal">
         <bool>true</bool>
     </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="0" column="1" rowspan="7" colspan="1">
+        <widget class="Line" row="0" column="1" rowspan="6" colspan="1">
             <property name="name">
                 <cstring>line2</cstring>
             </property>
@@ -44,105 +44,7 @@
                 <enum>Vertical</enum>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel3</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>1</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Device name:</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel4</cstring>
-            </property>
-            <property name="text">
-                <string>Download command:</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="1" column="4" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>leDownloadCmd</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>2</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="4" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>leDeviceName</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>2</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>This is the name of the device as it will appear in the lists</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="2" column="4" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>leUploadCmd</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>2</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel5</cstring>
-            </property>
-            <property name="text">
-                <string>Upload command:</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="3" rowspan="4" colspan="3">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
-&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
-&lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
-&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
-&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</string>
-            </property>
-            <property name="textFormat">
-                <enum>RichText</enum>
-            </property>
-            <property name="alignment">
-                <set>WordBreak|AlignVCenter</set>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="6" column="0">
+        <widget class="QPushButton" row="5" column="0">
             <property name="name">
                 <cstring>pbUpdateDevice</cstring>
             </property>
@@ -150,7 +52,7 @@
                 <string>Update device</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="5" column="0">
+        <widget class="QPushButton" row="4" column="0">
             <property name="name">
                 <cstring>pbDeleteDevice</cstring>
             </property>
@@ -158,7 +60,7 @@
                 <string>Delete device</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="4" column="0">
+        <widget class="QPushButton" row="3" column="0">
             <property name="name">
                 <cstring>pbNewDevice</cstring>
             </property>
@@ -166,7 +68,7 @@
                 <string>New device</string>
             </property>
         </widget>
-        <widget class="QListBox" row="0" column="0" rowspan="4" colspan="1">
+        <widget class="QListBox" row="0" column="0" rowspan="3" colspan="1">
             <property name="name">
                 <cstring>lbDeviceList</cstring>
             </property>
@@ -179,7 +81,7 @@
                 </sizepolicy>
             </property>
         </widget>
-        <widget class="QPushButton" row="7" column="5">
+        <widget class="QPushButton" row="6" column="4">
             <property name="name">
                 <cstring>pbClose</cstring>
             </property>
@@ -190,7 +92,7 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <spacer row="7" column="0" rowspan="1" colspan="5">
+        <spacer row="6" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>spacer2</cstring>
             </property>
@@ -207,6 +109,164 @@
                 </size>
             </property>
         </spacer>
+        <widget class="QLabel" row="2" column="2" rowspan="4" colspan="3">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</string>
+            </property>
+            <property name="textFormat">
+                <enum>RichText</enum>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QGroupBox" row="1" column="2" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Commands</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Waypoint download:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Waypoint upload:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Route download:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2_4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Route upload:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2_5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Track download:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="5" column="1">
+                    <property name="name">
+                        <cstring>leTrkUp</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The command that is used to upload tracks to the device</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2_5_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Track upload:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="4" column="1">
+                    <property name="name">
+                        <cstring>leTrkDown</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The command that is used to download tracks from the device</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="3" column="1">
+                    <property name="name">
+                        <cstring>leRteUp</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The command that is used to upload routes to the device</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>leRteDown</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The command that is used to download routes from the device</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>leWptUp</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The command that is used to upload waypoints to the device</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>leWptDown</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The command that is used to download waypoints from the device</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLabel" row="0" column="2">
+            <property name="name">
+                <cstring>textLabel3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Device name:</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="3" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>leDeviceName</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>This is the name of the device as it will appear in the lists</string>
+            </property>
+        </widget>
     </grid>
 </widget>
 <connections>

@@ -89,8 +89,9 @@ QgsGPSPlugin::~QgsGPSPlugin()
   BabelMap::iterator iter;
   for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
     delete iter->second;
-  for (iter = mDevices.begin(); iter != mDevices.end(); ++iter)
-    delete iter->second;
+  std::map<QString, QgsGPSDevice*>::iterator iter2;
+  for (iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2)
+    delete iter2->second;
 }
 
 
@@ -127,18 +128,14 @@ void QgsGPSPlugin::run()
   // find all GPX layers
   std::vector<QgsVectorLayer*> gpxLayers;
   std::map<QString, QgsMapLayer*>::const_iterator iter;
-  std::cerr<<"LAYERS: "<<mQGisInterface->getLayerRegistry()->
-    mapLayers().size()<<std::endl;
   for (iter = mQGisInterface->getLayerRegistry()->mapLayers().begin();
        iter != mQGisInterface->getLayerRegistry()->mapLayers().end(); ++iter) {
-    std::cerr<<iter->second->name()<<std::endl;
     if (iter->second->type() == QgsMapLayer::VECTOR) {
       QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>(iter->second);
       if (vLayer->providerType() == "gpx")
 	gpxLayers.push_back(vLayer);
     }
   }
-  std::cerr<<std::endl;
   
   QgsGPSPluginGui *myPluginGui = 
     new QgsGPSPluginGui(mImporters, mDevices, gpxLayers, mMainWindowPointer, 
@@ -308,18 +305,30 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 				   QString layerName) {
   
   // what does the user want to download?
-  QString typeArg;
-  if (downloadWaypoints)
+  QString typeArg, features;
+  if (downloadWaypoints) {
     typeArg = "-w";
-  else if (downloadRoutes)
+    features = "waypoints";
+  }
+  else if (downloadRoutes) {
     typeArg = "-r";
-  else if (downloadTracks)
+    features = "routes";
+  }
+  else if (downloadTracks) {
     typeArg = "-t";
+    features = "tracks";
+  }
   
   // try to start the gpsbabel process
   QStringList babelArgs = 
     mDevices[device]->importCommand(mBabelPath, typeArg, 
-				       port, outputFilename);
+				    port, outputFilename);
+  if (babelArgs.isEmpty()) {
+    QMessageBox::warning(NULL, "Not supported",
+			 QString("This device does not support downloading "
+				 "of ") + features + ".");
+    return;
+  }
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
@@ -373,13 +382,19 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   const QString& source(gpxLayer->getDataProvider()->getDataSourceUri());
   
   // what kind of data does the user want to upload?
-  QString typeArg;
-  if (source.right(8) == "waypoint")
+  QString typeArg, features;
+  if (source.right(8) == "waypoint") {
     typeArg = "-w";
-  else if (source.right(5) == "route")
+    features = "waypoints";
+  }
+  else if (source.right(5) == "route") {
     typeArg = "-r";
-  else if (source.right(5) == "track")
+    features = "routes";
+  }
+  else if (source.right(5) == "track") {
     typeArg = "-t";
+    features = "tracks";
+  }
   else {
     std::cerr<<source.right(8)<<std::endl;
     assert(false);
@@ -389,6 +404,12 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   QStringList babelArgs = 
     mDevices[device]->exportCommand(mBabelPath, typeArg, 
 				       source.left(source.findRev('?')), port);
+  if (babelArgs.isEmpty()) {
+    QMessageBox::warning(NULL, "Not supported",
+			 QString("This device does not support uploading of ")+
+			 features + ".");
+    return;
+  }
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
@@ -494,16 +515,30 @@ void QgsGPSPlugin::setupBabel() {
 
   // and the GPS devices
   mDevices["Garmin serial"] = 
-    new QgsBabelCommand("%babel -i garmin -o gpx /dev/ttyS0 %out",
-			"%babel -i gpx -o garmin %in /dev/ttyS0");
+    new QgsGPSDevice("%babel -w -i garmin -o gpx %in %out",
+		     "%babel -w -i gpx -o garmin %in %out",
+		     "%babel -r -i garmin -o gpx %in %out",
+		     "%babel -r -i gpx -o garmin %in %out",
+		     "%babel -t -i garmin -o gpx %in %out",
+		     "%babel -t -i gpx -o garmin %in %out");
   QStringList deviceNames = settings.readListEntry("/qgis/gps/devicelist");
   QStringList::iterator iter;
   for (iter = deviceNames.begin(); iter != deviceNames.end(); ++iter) {
-    QString download = settings.
-      readEntry(QString("/qgis/gps/devices/%1/download").arg(*iter), "");
-    QString upload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/upload").arg(*iter), "");
-    mDevices[*iter] = new QgsBabelCommand(download, upload);
+    QString wptDownload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/wptdownload").arg(*iter), "");
+    QString wptUpload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/wptupload").arg(*iter), "");
+    QString rteDownload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/rtedownload").arg(*iter), "");
+    QString rteUpload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/rteupload").arg(*iter), "");
+    QString trkDownload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/trkdownload").arg(*iter), "");
+    QString trkUpload = settings.
+      readEntry(QString("/qgis/gps/devices/%1/trkupload").arg(*iter), "");
+    mDevices[*iter] = new QgsGPSDevice(wptDownload, wptUpload,
+				       rteDownload, rteUpload,
+				       trkDownload, trkUpload);
   }
 }
 
