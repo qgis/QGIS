@@ -1,762 +1,532 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>QGIS Installation Guide</title>
-<link type="text/css" href="skin/page.css" rel="stylesheet">
-<script src="skin/fontsize.js" language="javascript" type="text/javascript"></script><script src="skin/menu.js" language="javascript" type="text/javascript"></script>
-</head>
-<body onload="init()" text="#000000" bgcolor="#FFFFFF">
-<script type="text/javascript">ndeSetTextSize();</script>
-<!--================= start Banner ==================-->
-<table summary="header with logos" width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<!--================= start Group Logo ==================-->
-<td bgcolor="#FFFFFF"></td>
-<!--================= end Group Logo ==================-->
-<!--================= start Project Logo ==================--><td align="center" bgcolor="#FFFFFF">
-<div class="headerlogo">
-<a href="http://qgis.org/"><img border="0" class="logoImage" alt="QGIS" src="images/project-logo.gif"></a>
-</div>
-</td>
-<!--================= end Project Logo ==================-->
-<!--================= start Search ==================--><td valign="top" rowspan="2" bgcolor="#FFFFFF" align="right" class="search"></td>
-<!--================= end Search ==================--><td bgcolor="#FFFFFF" align="right"><img height="10" width="10" alt="" src="skin/images/spacer.gif" class="spacer"><span class="textheader">QGIS</span></td>
-</tr>
-<tr>
-<td valign="bottom" bgcolor="#FFFFFF" colspan="2">
-<!--================= start Tabs ==================-->
-<div class="tab">
-<table summary="tab bar" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td width="8"><img alt="" height="8" width="8" src="skin/images/spacer.gif"></td><td valign="bottom">
-<table summary="selected tab" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td height="22" class="top-left"></td><td height="22" valign="middle" bgcolor="#a5b6c6"><span class="tab"><b><a class="base-selected" href="index.html">Documentation</a></b></span></td><td height="22" class="top-right"></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</div>
-<!--================= end Tabs ==================-->
-</td><td bgcolor="#FFFFFF"><img alt="" width="1" height="1" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td align="right" bgcolor="#a5b6c6" colspan="4"><img width="1" height="10" alt="" src="skin/images/spacer.gif"><span class="datenote"><script type="text/javascript" language="JavaScript"><!--
-                  //document.write("Published: " + document.lastModified);
-		  document.write("-- QGIS Version 0.2 Pumpkin  --");
-                  //  --></script></span></td>
-</tr>
-</table>
-<!--================= end Banner ==================-->
-<!--================= start Menu, NavBar, Content ==================-->
-<table summary="page content" bgcolor="#ffffff" width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td valign="top">
-<table summary="menu" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<!--================= start left top NavBar ==================-->
-<td rowspan="3" valign="top">
-<table summary="blue line" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td bgcolor="#CFDCED"><font color="#F7F7F7" size="4" face="Arial, Helvetica, Sans-serif">&nbsp;</font></td>
-</tr>
-<tr>
-<td bgcolor="#FFFFFF"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-</table>
-</td>
-<!--================= end left top NavBar ==================--><td bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td valign="bottom" bgcolor="#F7F7F7"><img width="10" height="10" alt="" src="skin/images/spacer.gif" class="spacer"></td><td nowrap="nowrap" valign="top" bgcolor="#F7F7F7">
-<!--================= start Menu items ==================-->
-<div class="menu">
-<div onclick="SwitchMenu('About1B')" id="About1BTitle" class="menutitle">About</div>
-<div id="About1B" class="menuitemgroup">
-<div class="menuitem">
-<a href="index.html">QGIS</a>
-</div>
-</div>
-<div onclick="SwitchMenu('_selected_2B')" id="_selected_2BTitle" class="menutitle">Documentation</div>
-<div id="_selected_2B" class="selectedmenuitemgroup">
-<div class="menupage">
-<div class="menupagetitle">Installation</div>
-<div class="menupageitemgroup">
-<div class="menupageitem">
-<a href="#Introduction">Introduction</a>
-</div>
-<div class="menupageitem">
-<a href="#PostgreSQL">PostgreSQL</a>
-</div>
-<div class="menupageitem">
-<a href="#GEOS">GEOS</a>
-</div>
-<div class="menupageitem">
-<a href="#PostGIS">PostGIS</a>
-</div>
-<div class="menupageitem">
-<a href="#gdal">GDAL/OGR</a>
-</div>
-<div class="menupageitem">
-<a href="#Qt">Qt</a>
-</div>
-<div class="menupageitem">
-<a href="#Building+QGIS">Building QGIS</a>
-</div>
-</div>
-</div>
-<div class="menuitem">
-<a href="userguide.html">User Guide</a>
-</div>
-</div>
-</div>
-<!--================= end Menu items ==================-->
-</td><td valign="bottom" bgcolor="#F7F7F7"><img width="10" height="10" alt="" src="skin/images/spacer.gif" class="spacer"></td><td bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td colspan="2" rowspan="2" class="bottom-left-thick"></td><td bgcolor="#a5b6c6"><img height="10" width="10" border="0" alt="" src="skin/images/spacer.gif" class="spacer"></td><td colspan="2" rowspan="2" class="bottom-right-thick"></td>
-</tr>
-<tr>
-<td height="1" bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td height="5"><img width="1" height="5" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-</table>
-</td><td valign="top" width="100%">
-<table summary="content" width="100%" border="0" cellpadding="0" cellspacing="0">
-<!--================= start middle NavBar ==================-->
-<tr>
-<td colspan="3" bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td align="left" width="10" bgcolor="#CFDCED"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td bgcolor="#CFDCED" width="100%">
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td align="left" width="50%" bgcolor="#CFDCED"><span class="trail">
-                      &nbsp;
-                      <script src="skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script></span><img width="10" height="8" alt="" src="skin/images/spacer.gif" class="spacer"></td><td align="right" width="50%" bgcolor="#CFDCED"><span class="trail">Font size: 
-                        &nbsp;<input value="-a" class="smallerfont" title="Shrink text" onclick="ndeSetTextSize('decr'); return false;" type="button">
-                        &nbsp;<input value="+a" class="biggerfont" title="Enlarge text" onclick="ndeSetTextSize('incr'); return false;" type="button">
-                        &nbsp;<input value="Reset" class="resetfont" title="Reset text" onclick="ndeSetTextSize('reset'); return false;" type="button"></span><img width="10" height="8" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-</table>
-</td><td width="10" bgcolor="#CFDCED"><font color="#F7F7F7" size="4" face="Arial, Helvetica, Sans-serif">&nbsp;</font><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<tr>
-<td colspan="4" bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<!--================= end middle NavBar ==================-->
-<!--================= start Content==================-->
-<tr>
-<td align="left" width="10"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td align="left" width="100%">
-<div class="content">
-<table class="title">
-<tr>
-<td valign="middle">
-<h1>QGIS Installation Guide</h1>
-</td><td nowrap="nowrap" width="40" align="center"><a class="dida" href="install.pdf"><img alt="PDF" src="skin/images/pdfdoc.gif" class="skin"><br>
-          PDF</a></td>
-</tr>
-</table>
-<h3>For Version 0.2 (Pumpkin)</h3>
-    
-<a name="N1001C"></a><a name="Introduction"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>Introduction</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-<p>
-    
-   This document briefly describes how to build QGIS from the source distribution. 
-   The information below is for <strong>version 0.2 <em>Pumpkin</em></strong> of QGIS.  </p>
-   
-<div class="frame note">
-<div class="label">Note</div>
-<div class="content">The latest version of this document can always be found at <a href="http://qgis.org/docs/install.html">
-   http://qgis.org/docs/install.html
-</a>
-</div>
-</div>
- 
-      
-<p>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.70)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Building and Installing QGIS</TITLE>
+<META NAME="description" CONTENT="Building and Installing QGIS">
+<META NAME="keywords" CONTENT="install">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="install.css">
+
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="file:/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<P>
+
+<P>
+<H1 ALIGN=CENTER>Building and Installing QGIS</H1>
+<P ALIGN=CENTER><STRONG>Gary Sherman  - Tim Sutton</STRONG></P>
+<P ALIGN=LEFT></P>
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL>
+<LI><A NAME="tex2html25"
+  HREF="install.html#SECTION00020000000000000000">Introduction</A>
+<LI><A NAME="tex2html26"
+  HREF="install.html#SECTION00030000000000000000">PostgreSQL</A>
+<LI><A NAME="tex2html27"
+  HREF="install.html#SECTION00040000000000000000">GEOS</A>
+<LI><A NAME="tex2html28"
+  HREF="install.html#SECTION00050000000000000000">PostGIS</A>
+<LI><A NAME="tex2html29"
+  HREF="install.html#SECTION00060000000000000000">GDAL/OGR</A>
+<LI><A NAME="tex2html30"
+  HREF="install.html#SECTION00070000000000000000">Qt</A>
+<LI><A NAME="tex2html31"
+  HREF="install.html#SECTION00080000000000000000">Building QGIS</A>
+<UL>
+<LI><A NAME="tex2html32"
+  HREF="install.html#SECTION00081000000000000000">Quick and Dirty</A>
+<LI><A NAME="tex2html33"
+  HREF="install.html#SECTION00082000000000000000">Configuring QGIS the Right Way</A>
+</UL></UL>
+<!--End of Table of Contents-->
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000"></A><A NAME="label_introduction"></A>
+<BR>
+Introduction
+</H1>
+This document briefly describes how to build QGIS 0.3 (<I>Madison</I>) from the source distribution. Information on building the GRASS plugin with raster and vector support can be found in the <I>Building QGIS with GRASS Support</I> document, available at <TT><A NAME="tex2html1"
+  HREF="http://community.qgis.org/grass_plugin">http://community.qgis.org/grass_plugin</A></TT>. 
+<BR>
+<P>
+NOTE - I<SMALL>F YOU PLAN TO BUILD THE GRASS PLUGIN, A PATCHED VERSION OF </SMALL>GDAL <SMALL>MUST BE USED. </SMALL>S<SMALL>EE THE </SMALL>B<SMALL>UILDING </SMALL>QGIS <SMALL>WITH </SMALL>GRASS S<SMALL>UPPORT DOCUMENT BEFORE PROCEEDING</SMALL>.
+<BR>
+<P>
+The latest version of this document can always be found at <TT><A NAME="tex2html2"
+  HREF="http://qgis.org/docs/install.html">http://qgis.org/docs/install.html</A></TT>.
+<BR>
+<P>
 QGIS requires that a number of libraries be installed on your system:
-</p>
-      
-<ul>
-        
-<li>Qt 3.1.2 or higher</li>
-        
-<li>GDAL/OGR</li>
-        
-<li>PostgreSQL and PostGIS (Optional)</li>
-      
-</ul>
-      
-<p>
-Each of these requirements are discussed below. Note that the information given 
-below is abstracted from the installation documentation for each of the 
-libraries. See the install information for each library to get detailed 
-instructions.</p>
 
-<p>In the documentation below, the file names used are examples.</p>
-      
-<p>
-If you are building QGIS <strong>without PostgreSQL</strong>, skip to the section on
+<UL>
+<LI>Qt 3.1.2 or higher
+</LI>
+<LI>GDAL/OGR
+</LI>
+<LI>PostgreSQL/GEOS/PostGIS (Optional)
+  
+</LI>
+</UL> 
 
-<a href="#gdal">Installing GDAL/OGR</a>.
-</p>
-    
-    
-</div>
-    
-<a name="N10050"></a><a name="PostgreSQL"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>PostgreSQL</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-<p>QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x is recommended with QGIS version 0.2. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below).
-        </p>
-        
-<ol>
-          
-<li>Download PostgreSQL source from <a href="http://www.postgresql.org">www.postgresql.org</a>
-          
-</li>
-          
-<li>Extract the source
-          <pre class="code">tar -xzf postgresql-7.4.1.tar.gz</pre>
-          
-</li>
-          
-<li>Change to the source directory
-          <pre class="code">cd postgresql-7.4.1</pre>
-          
-</li>
-          
-<li>Configure PostgreSQL:
+<P>
+Each of these requirements are discussed below. Note that the information given below is abstracted from the installation documentation for each of the libraries. See the install information for each library to get detailed instructions. In the documentation below, the file names used are examples.
 
-          <pre class="code">./configure --prefix=/usr/local/pgsql </pre>
-          
-</li>
-          
-<li>Build
-          <pre class="code">make</pre>
-          
-</li>
-          
-<li>Install
-          <pre class="code">make install</pre>
-          
-</li>
-          
-<li>As root, create the postgres user and setup the database (following taken from PostgreSQL INSTALL file with modification)</li>
-          
-<ul>
-          
-<li>Create the postgres user <pre class="code">adduser postgres</pre>
-</li>
-          
-<li>Create the directory for the PostgreSQL database <pre class="code">mkdir /usr/local/pgsql/data</pre>
-          
-</li>
-          
-<li>Change ownership of the data directory to the postgres user<pre class="code">chown postgres /usr/local/pgsql/data</pre>
-          
-</li>
-          
-<li>su to the postgres user (or login as postgres
-          <pre class="code">su - postgres</pre>
-          
-</li>
-          
-<li>Change to the PostgreSQL install directory
-          <pre class="code">cd /usr/local/pgsql</pre>
-          
-</li>
-          
-<li>Initialize the database
-          <pre class="code">./bin/initdb -D /usr/local/pgsql/data</pre>
-          
-</li>
-          
-<li>Start the PostgreSQL daemon
-          <pre class="code">./bin/pg_ctl start  -o "-i" -D /usr/local/pgsql/data -l serverlog ./bin/createdb test</pre>
-          
-</li>
-          
-</ul>
-          
-<li>PostgreSQL should now be running. Logon as the postgres user (or use su - postgres). You should be able to connect to the test database and execute a test query with the following commands:
-<pre class="code">
-<strong>psql test</strong>
-<strong>select version();</strong>
-                                       version
--------------------------------------------------------------------------------------
- PostgreSQL 7.4.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
+<BR>
+<P>
+If you are building QGIS without PostgreSQL, skip to the section on Installing GDAL/OGR. 
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+PostgreSQL</A>
+</H1>
+  QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x or higher is recommended with QGIS version 0.3. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below). 
+  
+<OL>
+<LI>Download PostgreSQL source from www.postgresql.org 
+</LI>
+<LI>Extract the source 
+  <PRE>
+  tar -xzf postgresql-7.4.1.tar.gz
+</PRE>
+
+<P>
+</LI>
+<LI>Change to the source directory 
+  <PRE>
+  cd postgresql-7.4.1
+</PRE>
+
+<P>
+</LI>
+<LI>Configure PostgreSQL:
+  <PRE>
+  ./configure --prefix=/usr/local/pgsql
+</PRE>
+
+<P>
+</LI>
+<LI>Build
+  <PRE>
+  make
+</PRE>
+
+<P>
+</LI>
+<LI>Install
+  <PRE>
+  make install
+</PRE>
+
+<P>
+</LI>
+<LI>As root, create the postgres user and setup the database (following taken from PostgreSQL INSTALL file with modification)
+
+<UL>
+<LI>Create the postgres user 
+  <PRE>
+  adduser postgres
+</PRE>
+
+<P>
+</LI>
+<LI>Create the directory for the PostgreSQL database 
+  <PRE>
+  mkdir /usr/local/pgsql/data
+</PRE>
+
+<P>
+</LI>
+<LI>Change ownership of the data directory to the postgres user
+  <PRE>
+  chown postgres /usr/local/pgsql/data
+</PRE>
+
+<P>
+</LI>
+<LI>su to the postgres user (or login as postgres)
+  <PRE>
+  su - postgres
+</PRE>
+
+<P>
+</LI>
+<LI>Change to the PostgreSQL install directory 
+  <PRE>
+  cd /usr/local/pgsql
+</PRE>
+
+<P>
+</LI>
+<LI>Initialize the database 
+  <PRE>
+  ./bin/initdb -D /usr/local/pgsql/data
+</PRE>
+
+<P>
+Start the PostgreSQL daemon 
+  <FONT SIZE="-1">  </FONT><PRE>
+  ./bin/pg_ctl start  -o "-i" -D /usr/local/pgsql/data -l serverlog ./bin/createdb test
+</PRE><FONT SIZE="-1"> 
+  </FONT>
+</LI>
+</UL>
+</LI>
+<LI>PostgreSQL should now be running. Logon as the postgres user (or use su - postgres). You should be able to connect to the test database and execute a test query with the following commands: 
+
+<P>
+<PRE>
+  psql test
+  select version();
+  version
+  -------------------------------------------------------------------------------------
+  PostgreSQL 7.4.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
 (1 row)
-  
-<strong>\q</strong>
 
-</pre>
-          
-</li>
-          
-<li>PostgreSQL install is done.</li>
-      
-</ol>
-    
-</div>
-    
-<a name="N100DC"></a><a name="GEOS"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>GEOS</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-    
-    
-<p>
-    QGIS uses GEOS to properly fetch features from the database when doing an identify or select. You can still view PostGIS layers without GEOS, but you will not be able to create a selection or identify a feature.</p>
-    
-<p>
-    If you choose to proceed without GEOS support, QGIS will warn you each time you load a layer from the database.
-    </p>
-    
-<p>To install GEOS:</p>
-      
-<ol>
-        
-<li>Download GEOS source from <a href="http://geos.refractions.net">geos.refractions.net</a>
-</li>
-        
-<li>Untar GEOS
-        <pre class="code">tar -xzf geos-1.0.0.tar.gz</pre>
-</li>
-        
-<li>Change to the GEOS source dir
-        <pre class="code">cd geos-1.0-.0</pre>
-        
-</li>
-        
-<li>Follow the instructions in the GEOS README file to complete the installation. Typically the install goes like this:
-        <ul>
-        
-<li>./configure</li>
-        
-<li>make</li>
-        
-<li>make install</li>
-        
-</ul>
-        
-</li>
-        
-</ol>
-    
-</div>
-    
-<a name="N10113"></a><a name="PostGIS"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>PostGIS</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-<div class="frame note">
-<div class="label">Note</div>
-<div class="content">You must edit the PostGIS Makefile and make sure that USE_GEOS=1 is set. Also adjust GEOS_DIR to point to your GEOS installation directory.</div>
-</div>
-      
-<ol>
-        
-<li>Download PostGIS source from <a href="http://postgis.refractions.net">postgis.refractions.net</a>
-        
-</li>
-        
-<li>Untar PostGIS into the contrib subdirectory of the postgresql build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.</li>
-        
-<li>Change to the postgis subdirectory</li>
-        
-<li>Edit the Makefile to enable GEOS support (see the note above)</li>
-        
-<li>PostGIS provides a manual in the doc/html subdirectory that explains the build process (see the Installation section)</li>
-        
-<li>The quick and dirty steps to install PostGIS are:
-        <ul>
-        
-<li>cd contrib</li>
-        
-<li>gunzip postgis-0.8.0.tar.gz</li> 
-        
-<li>tar xvf postgis-0.8.0.tar</li> 
-        
-<li>cd postgis-0.8.0 </li>
-        
-<li>make </li>
-       
-<li>make install </li>
-        
-<li>createlang plpgsql yourtestdatabase </li>
-       
-<li>psql -d yourtestdatabase -f postgis.sql </li>
-        
-<li>psql -d yourtestdatabase -f spatial_ref_sys.sql</li> 
-        
-</ul>
-        
-</li>
-        
-<li>The <strong>better way</strong> is to carefully follow the instructions in the PostGIS manual in the doc/html subdirectory or the online manual at <a href="http://postgis.refractions.net/docs">http://postgis.refractions.net/docs</a>
-</li>
-      
-</ol>
-    
-    
-</div>
-    
-<a name="N1015D"></a><a name="gdal"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>GDAL/OGR</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-      
-<p>The GDAL and OGR libraries provide support for raster and vector data formats. QGIS makes use of both of these libraries (which come bundled in one distribution).
-<strong>Note:</strong> A Linux binary of GDAL is available at <a href="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</a>. If you choose to install the binary you will also need to download and unpack the source tree since QGIS needs the header files in order to compile.
-</p>
-      
-<p>
+  \q
+</PRE>
+
+<P>
+</LI>
+<LI>PostgreSQL install is done
+  
+</LI>
+</OL>
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+GEOS</A>
+</H1>
+
+<P>
+QGIS uses GEOS to properly fetch features from the database when doing an
+  identify or select. You can still view PostGIS layers without GEOS, but you
+  will not be able to create a selection or identify a feature.
+
+<P>
+If you choose to proceed without GEOS support, QGIS will warn you each time you load a layer from the database.
+
+<P>
+To install GEOS:
+  
+<OL>
+<LI>Download GEOS source from <TT><A NAME="tex2html3"
+  HREF="http://geos.refractions.net">http://geos.refractions.net</A></TT>
+</LI>
+<LI>Untar GEOS
+  <PRE>
+  tar -xzf geos-1.0.0.tar.gz
+</PRE>
+</LI>
+<LI>Change to the GEOS source dir
+  <PRE>
+  cd geos-1.0-.0
+</PRE>
+</LI>
+<LI>Follow the instructions in the GEOS README file to complete the installation. Typically the install goes like this:
+  <PRE>
+  ./configure
+  make
+  make install
+</PRE>
+
+<P>
+</LI>
+</OL>
+
+<P>
+
+<H1><A NAME="SECTION00050000000000000000">
+PostGIS</A>
+</H1>
+
+<P>
+NOTE - You must edit the PostGIS Makefile and make sure that USE_GEOS=1 is
+  set. Also adjust GEOS_DIR to point to your GEOS installation directory.
+  
+<OL>
+<LI>Download PostGIS source from <TT><A NAME="tex2html4"
+  HREF="http://postgis.refractions.net">http://postgis.refractions.net</A></TT> 
+
+<P>
+</LI>
+<LI>Untar PostGIS into the contrib subdirectory of the postgresql build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.
+</LI>
+<LI>Change to the postgis subdirectory
+</LI>
+<LI>Edit the Makefile to enable GEOS support (see the note above)
+</LI>
+<LI>PostGIS provides a manual in the doc/html subdirectory that explains the build process (see the Installation section)
+</LI>
+<LI>The quick and dirty steps to install PostGIS are:
+  <PRE>
+   cd contrib
+   gunzip postgis-0.8.0.tar.gz 
+   tar xvf postgis-0.8.0.tar 
+   cd postgis-0.8.0 
+   make 
+   make install 
+   createlang plpgsql yourtestdatabase 
+   psql -d yourtestdatabase -f postgis.sql 
+   psql -d yourtestdatabase -f spatial_ref_sys.sql
+</PRE>
+
+<P>
+</LI>
+<LI>The <B>better way</B> is to carefully follow the instructions in the PostGIS manual in the doc/html subdirectory or the online manual at <TT><A NAME="tex2html5"
+  HREF="http://postgis.refractions.net/docs">http://postgis.refractions.net/docs</A></TT>
+</LI>
+</OL>
+
+<P>
+
+<H1><A NAME="SECTION00060000000000000000">
+GDAL/OGR</A>
+</H1>
+  The GDAL and OGR libraries provide support for raster and vector data formats. QGIS makes use of both of these libraries (which come bundled in one distribution).
+
+<P>
+Note: A Linux binary of GDAL is available at <TT><A NAME="tex2html6"
+  HREF="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</A></TT>. If you choose to install the binary you will also need to download and unpack the source tree since QGIS needs the header files in order to compile.
+
+<P>
 To install GDAL/OGR from source:
-</p>
-
-<ol>
-
-<li>Download the GDAL distribution from <a href="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</a>. You should use version 1.1.9 or higher. Versions prior to 1.1.9 contained a bug that caused problems when a null feature was encountered.
-          </li>
-
-<li>Untar the distribution 
-<pre class="code">tar xfvz /../path/../gdal-x.x.x.tar.gz</pre>
-
-</li>
-
-<li>Change to the gdal-x.x.x subdirectory that was created by step 2
-<pre class="code">cd gdal-x.x.x</pre>
-
-</li>
-
-<li>Configure GDAL without PostgreSQL support (necessary):
-<pre class="code">./configure --without-pg</pre>
-
-</li>
-
-<li>Build and install GDAL:
-<pre class="code">
-make
-su
-make install
-</pre>
-
-</li>
-
-<li>In order to run GDAL after installing it is necessary for the shared library to be findable. This can often be accomplished by setting LD_LIBRARY_PATH to include /usr/local/lib. On Linux, you can add /usr/local/lib (or whatever path you used for installing GDAL) to /etc/ld.so.conf and running ldconfig.
-</li>
-
-<li>Make sure that gdal-config (found in the bin subdirectory where GDAL was installed) is included in the PATH. If necessary, add the path to gdal-config to the PATH environment variable.
-<pre class="code">export PATH=/../path/../gdal-config:$PATH</pre>
-
-</li>
-
-<li>Check the install by running:
-<pre class="code">gdal-config --prefix</pre>
-
-</li>
-
-</ol>
- 
-<p>
-If you've had problems during the installation, refer to this manual, where the whole process is described with some more detail: http://www.remotesensing.org/gdal/gdal_building.html 
-    </p>      
-    
-</div>
-    
-<a name="N101B1"></a><a name="Qt"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>Qt</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-      
-      
-<p>Qt 3.1.2 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.1.2 or later. If not already installed, you will have to install the Qt development package for your distribution. If you are not able to install the required Qt packages, you will have to build from source.
-To install Qt from source:
-</p>
-
-<ol>
-
-<li>Download Qt from <a href="http://www.trolltech.com/developer">http://www.trolltech.com/developer</a> (choose the Qt/X11 Free Edition)</li>
-          
-<li>Unpack the distribution</li>
-          
-<li>Follow directions provided in the distribution directory
-doc/html/install-x11.html</li>
-          
-<li>Use whatever configure options you like but make sure you include -thread for use with QGIS. You can configure Qt with minimal options:
-<pre class="code">./configure -thread</pre>
-          
-</li>
-          
-<li>Complete the installation per the instructions provided in the Qt
-documentation (see step 3)</li>
-        
-</ol>
-    
-</div>
-    
-<a name="N101D6"></a><a name="Building+QGIS"></a>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h3>Building QGIS</h3>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
-</tr>
-</tbody>
-</table>
-<div class="section">
-    
-    
-<p>
-    After you have installed the required libraries, you are ready to build QGIS. Download and untar the QGIS distribution and change to the QGIS source directory. You have two options for building and installing QGIS: <em>Quick and Dirty</em> and the <em>right way</em>.
-    </p>
-    
-<a name="N101E5"></a><a name="Quick+and+Dirty"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>Quick and Dirty</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-<p>If you don't need PostgreSQL support and have installed GDAL ,
-    you can configure and build QGIS by changing to the distribution directory
-    and typing:
-    </p>
-<pre class="code">./configure
-make
-make install</pre>
-<div class="frame note">
-<div class="label">Note</div>
-<div class="content">This assumes that the gdal-config program is in
-    your PATH</div>
-</div>
-<p>See the next section for the full configuration instructions.</p>
-    
-<a name="N101FA"></a><a name="Configuring+QGIS"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>Configuring QGIS</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-<p>
-    To see the configure options available, change the the QGIS 
-    directory and enter:
-    </p>
-<pre class="code">./configure --help</pre>
-<p>Among other options, there are three that are important to
-    the success of the build:</p>
-<pre class="code">
---with-qtdir=DIR              Qt installation directory default=$QTDIR
---with-gdal=path/gdal-config  Full path to 'gdal-config' script,
-                              e.g. '--with-gdal=/usr/local/bin/gdal-config'
---with-pg=path/pg_config      PostgreSQL (PostGIS) Support
-                              (full path to pg_config)
-    </pre>
-<a name="N10210"></a><a name="Qt-N101F7"></a>
-<h4>Qt</h4>
-<p>The configure script will detect Qt, unless it is installed in a
-    non-standard location. Setting the QTDIR environment variable will 
-    make ensure that the detection succeeds. You can also specify the
-    path using the --with-qtdir option. 
-    </p>
-<a name="N1021A"></a><a name="GDAL"></a>
-<h4>GDAL</h4>
-<p>
-    If the gdal-config script is in the PATH, configure will automatically
-    detect and configure GDAL support. If not in the path, you can specify
-    the full path to gdal-config using the --with-gdal option. For example:</p>
-<p>
-    
-<span class="codefrag">./configure --with-gdal=/usr/mystuff/bin/gdal-config</span>
-    
-</p>
-<a name="N1022A"></a><a name="PostgreSQL-N10211"></a>
-<h4>PostgreSQL</h4>
-<p>
-    If the pg_config script is in the PATH, configure will automatically
-    detect and configure PostgreSQL support. If not, you can use the
-    --with-pg option to specify the full path to pg_config. For example:</p>
-<p>
-    
-<span class="codefrag">./configure --with-pg=/usr/local/psql/bin/pg_config</span>
-    
-</p>
-<a name="N1023A"></a><a name="Example+Use+of+Configure"></a>
-<h4>Example Use of Configure</h4>
-<pre class="code">
-./configure --prefix=/usr/local/qgis 
-  --with-gdal=/usr/local/gdal/bin/gdal-config
-  --with-pg=/usr/local/psql/bin/pg_config
-</pre>
-<p>This will configure QGIS to use both GDAL and PostgreSQL. QGIS will be
-installed in /usr/local/qgis.</p>
-<div class="frame note">
-<div class="label">Note</div>
-<div class="content">If QTDIR is set and gdal-config and pg_config are both
-    in the PATH, there is no need to use the --with-gdal and --with-pg
-    options. The configure script will properly detect and configure
-    GDAL and PostgreSQL</div>
-</div>
-    
-<a name="N1024D"></a><a name="Compiling+and+Installing+QGIS"></a>
-<table border="0" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td height="10" width="9"></td><td>
-<h4>Compiling and Installing QGIS</h4>
-</td><td></td>
-</tr>
-<tr>
-<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
-</tr>
-</tbody>
-</table>
-<p>Once properly configured simply issue the following commands:
-    </p>
-<pre class="code">make
-make install
-</pre>
-<div class="frame note">
-<div class="label">Note</div>
-<div class="content">As of version 0.1, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location</div>
-</div>
-    
-<p>
-    
-<a href="http://sourceforge.net/"><img alt="SourceForge.net Logo" height="31" src="http://sourceforge.net/sflogo.php?group_id=55820&type=1" width="88"></a>
   
-    
-</p>
-    
-</div>
+<OL>
+<LI>Download the GDAL distribution from <TT><A NAME="tex2html7"
+  HREF="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</A></TT>. You should use version 1.1.9 or higher. Versions prior to 1.1.9 contained a bug that caused problems when a null feature was encountered. If you want to build vector support for GRASS, you must use GDAL 1.2.0 (see note in Section <A HREF="#label_introduction">1</A>).
+
+<P>
+</LI>
+<LI>Untar the distribution 
+  <PRE>
+    tar xfvz /../path/../gdal-x.x.x.tar.gz
+</PRE>
+
+<P>
+</LI>
+<LI>Change to the gdal-x.x.x subdirectory that was created by step 2
+  <PRE>
+    cd gdal-x.x.x
+</PRE>
+
+<P>
+</LI>
+<LI>Configure GDAL without PostgreSQL support (necessary):
+  <PRE>
+    ./configure --without-pg
+</PRE>
+
+<P>
+</LI>
+<LI>Build and install GDAL:
+  <PRE>
+    make
+    su
+    make install
+</PRE>
+
+<P>
+</LI>
+<LI>In order to run GDAL after installing it is necessary for the shared
+  library to be findable. This can often be accomplished by setting
+  LD_LIBRARY_PATH to include /usr/local/lib. On Linux, you can add
+  /usr/local/lib (or whatever path you used for installing GDAL) to
+  /etc/ld.so.conf and run ldconfig as root.
+
+<P>
+</LI>
+<LI>Make sure that gdal-config (found in the bin subdirectory where GDAL was installed) is included in the PATH. If necessary, add the path to gdal-config to the PATH environment variable.
+  <PRE>
+    export PATH=/../path/../gdal-config:$PATH
+</PRE>
+
+<P>
+</LI>
+<LI>Check the install by running:
+  <PRE>
+    gdal-config --prefix
+</PRE>
+
+<P>
+</LI>
+</OL>
+
+<P>
+If you've had problems during the installation, refer to this manual, where the whole process is described with some more detail: <TT><A NAME="tex2html8"
+  HREF="http://www.remotesensing.org/gdal/gdal_building.html">http://www.remotesensing.org/gdal/gdal_building.html</A></TT> 
+
+<P>
+
+<H1><A NAME="SECTION00070000000000000000">
+Qt</A>
+</H1>
+  Qt 3.1.2 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.1.2 or later. If not already installed, you will have to install the Qt development package for your distribution. If you are not able to install the required Qt packages, you will have to build from source.
+  To install Qt from source:
   
-<p align="right">
-<font size="-2">by&nbsp;Gary E. Sherman,&nbsp;Tim Sutton</font>
-</p>
-</div>
-</td><td width="10"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
-</tr>
-<!--================= end Content==================-->
-</table>
-</td>
-</tr>
-<tr>
-<td>
-<br>
-<br>
-</td>
-</tr>
-</table>
-<!--================= end Menu, NavBar, Content ==================-->
-<!--================= start Footer ==================-->
-<table summary="footer" cellspacing="0" cellpadding="0" width="100%" border="0">
-<tr>
-<td colspan="2" height="1" bgcolor="#F7F7F7"><img height="1" width="1" alt="" src="skin/images/spacer.gif" class="spacer"><a href="skin/images/label.gif"></a><a href="skin/images/page.gif"></a><a href="skin/images/chapter.gif"></a><a href="skin/images/chapter_open.gif"></a><a href="skin/images/current.gif"></a><a href="/favicon.ico"></a></td>
-</tr>
-<tr>
-<td colspan="2" bgcolor="#a5b6c6" class="copyright" align="center" width="90%"><span class="footnote">Copyright &copy;
-                2004&nbsp;Micro Resources. All rights reserved.
-                <br>
-<script type="text/javascript" language="JavaScript"><!--
-                // document.write(" - "+"Last Published: " + document.lastModified);
-                  //  --></script></span></td><td nowrap="nowrap" align="right" bgcolor="#a5b6c6" class="logos"></td>
-</tr>
-</table>
-<!--================= end Footer ==================-->
-</body>
-</html>
+<OL>
+<LI>Download Qt from <TT><A NAME="tex2html9"
+  HREF="http://www.trolltech.com/developer">http://www.trolltech.com/developer</A></TT> (choose the Qt/X11 Free Edition)
+</LI>
+<LI>Unpack the distribution
+</LI>
+<LI>Follow directions provided in the distribution directory (doc/html/install-x11.html)
+</LI>
+<LI>Use whatever configure options you like but make sure you include -thread for use with QGIS. You can configure Qt with minimal options:
+  <PRE>
+    ./configure -thread
+</PRE>
+
+<P>
+</LI>
+<LI>Complete the installation per the instructions provided in the Qt documentation (see step 3)
+  
+</LI>
+</OL>
+
+<P>
+
+<H1><A NAME="SECTION00080000000000000000">
+Building QGIS</A>
+</H1>
+
+<P>
+After you have installed the required libraries, you are ready to build QGIS. Download and untar the QGIS distribution and change to the QGIS source directory. You have two options for building and installing QGIS: <B>Quick and Dirty</B> and the <B>right way</B>.
+  
+<H2><A NAME="SECTION00081000000000000000">
+Quick and Dirty</A>
+</H2>
+  If you don't need PostgreSQL support and have installed GDAL ,
+  you can configure and build QGIS by changing to the distribution directory
+  and typing:
+  <PRE>./configure
+    make
+    make install
+</PRE>
+  The above assumes that the gdal-config program is in your PATH
+  See the next section for the full configuration instructions.
+  
+<H2><A NAME="SECTION00082000000000000000">
+Configuring QGIS the Right Way</A>
+</H2>
+  To see the configure options available, change the the QGIS 
+  directory and enter:
+  <PRE>
+    ./configure --help
+</PRE>
+  Among other options, there are three that are important to
+  the success of the build:
+  <PRE>
+    --with-qtdir=DIR              Qt installation directory default=$QTDIR
+    --with-gdal=path/gdal-config  Full path to 'gdal-config' script,
+                                  e.g. '--with-gdal=/usr/local/bin/gdal-config'
+    --with-pg=path/pg_config      PostgreSQL (PostGIS) Support
+                                 (full path to pg_config)
+</PRE>
+
+<P>
+
+<H3><A NAME="SECTION00082100000000000000">
+Qt</A>
+</H3>
+  The configure script will detect Qt, unless it is installed in a
+  non-standard location. Setting the QTDIR environment variable will 
+  make ensure that the detection succeeds. You can also specify the
+  path using the -with-qtdir option. 
+  
+<H3><A NAME="SECTION00082200000000000000">
+GDAL</A>
+</H3>
+  If the gdal-config script is in the PATH, configure will automatically
+  detect and configure GDAL support. If not in the path, you can specify
+  the full path to gdal-config using the -with-gdal option. For example:
+  <PRE>
+    /configure --with-gdal=/usr/mystuff/bin/gdal-config
+</PRE>
+<H3><A NAME="SECTION00082300000000000000">
+PostgreSQL</A>
+</H3>
+  If the pg_config script is in the PATH, configure will automatically
+  detect and configure PostgreSQL support. If not, you can use the
+  -with-pg option to specify the full path to pg_config. For example:
+  <PRE>
+    ./configure --with-pg=/usr/local/psql/bin/pg_config
+</PRE>
+
+<P>
+
+<H3><A NAME="SECTION00082400000000000000">
+Example Use of Configure</A>
+</H3>
+  <PRE>
+    ./configure --prefix=/usr/local/qgis 
+    --with-gdal=/usr/local/gdal/bin/gdal-config
+    --with-pg=/usr/local/psql/bin/pg_config
+</PRE>
+  This will configure QGIS to use both GDAL and PostgreSQL. QGIS will be
+  installed in /usr/local/qgis.
+
+<P>
+If QTDIR is set and gdal-config and pg_config are both
+  in the PATH, there is no need to use the -with-gdal and -with-pg
+  options. The configure script will properly detect and configure
+  GDAL and PostgreSQL
+  
+<H3><A NAME="SECTION00082500000000000000">
+Compiling and Installing QGIS</A>
+</H3>
+  Once properly configured simply issue the following commands:
+  <PRE>
+    make
+    make install
+</PRE>
+NOTE - As of version 0.1, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location. In the case of the example above, the QGIS binary resides in the bin subdirectory of the directory specified with the prefix option (/usr/local/qgis/bin).
+  <HR>
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="file:/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Gary Sherman
+2004-05-25
+</ADDRESS>
+</BODY>
+</HTML>
