@@ -393,7 +393,7 @@ QgisApp::addRasterLayer()
   QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
   QString myERDASFilterString="ERDAS Imagine (*.img)";
   QString myGeoTiffFilterString="Geo tiff (*.tif)";
-  QString myUSGSAsciiDemFilterString="USGS Ascii DEM (*.dem)";
+  QString myUSGSAsciiDemFilterString="USGS Ascii DEM (*.dem;*.DEM)";
   QString myGrassFilterString="Grass raster (*.*)";
   QString mySDTSFilterString="SDTS (*CATD*.DDF)";
   QString myAllRasterFormats = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DDF)";
