@@ -625,7 +625,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   if ((mCanvasProperties->currentExtent.width() > 0 &&
        mCanvasProperties->currentExtent.width() < minExtent) ||
       (mCanvasProperties->currentExtent.height() > 0 &&
-       mCanvasProperties->currentExtent.height() < minExtent)
+       mCanvasProperties->currentExtent.height() < minExtent))
     {
       // Go back to the previous extent
       mCanvasProperties->currentExtent = 
