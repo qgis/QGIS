@@ -116,14 +116,9 @@ public slots:
   QRect zoomBox;
   /** Beginning point of a rubber band box */
   QPoint boxStartPoint;
-  /** Pixmap snapshot used for panning */
-  QPixmap * tempPanImage;
-  /*! Pixmap used for restoring the canvas when no change in
-  * data or extents has occurred.
+  /*! Pixmap used for restoring the canvas.
   */
   QPixmap *pmCanvas;
-  /** Pixmap used for filling the background when panning */
-  QPixmap *backgroundFill;
   /** Background color for the map canvas */
   QColor bgColor;
   /** Flag to indicate a map canvas drag operation is taking place */
