@@ -3330,7 +3330,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     myElement = snode.toElement();
     setGrayBandName(myElement.text());
 
-    const char * sourceNameStr = source().ascii(); // debugger probe
+    const char * sourceNameStr = source(); // debugger probe
 
     if ( ! readFile( source() ) )   // Data source name set in
                                     // QgsMapLayer::readXML()
@@ -3357,7 +3357,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
     if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
     {
-        const char * nn = mapLayerNode.nodeName().ascii(); // debugger probe
+        const char * nn = mapLayerNode.nodeName(); // debugger probe
 
         qDebug( "QgsRasterLayer::writeXML() can't find <maplayer>" );
 

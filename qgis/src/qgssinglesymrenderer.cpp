@@ -211,16 +211,16 @@ void QgsSingleSymRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<singlesymbol>\n";
     xml << "\t\t\t<renderitem>\n";
-    xml << "\t\t\t\t<value>" << this->item()->value().ascii() << "</value>\n";
+    xml << "\t\t\t\t<value>" << this->item()->value() << "</value>\n";
     QgsSymbol *symbol = this->item()->getSymbol();
 
     xml << "\t\t\t\t<symbol>\n";
     xml << "\t\t\t\t\t<outlinecolor red=\"" 
       << symbol->pen().color().red()
       << "\" green=\"" 
-      << QString::number(symbol->pen().color().green()).ascii() 
+      << QString::number(symbol->pen().color().green()) 
       << "\" blue=\"" 
-      << QString::number(symbol->pen().color().blue()).ascii() 
+      << QString::number(symbol->pen().color().blue()) 
       << "\" />\n";
     xml << "\t\t\t\t\t<outlinestyle>" << (const char *)QgsSymbologyUtils::penStyle2QString(symbol->pen().style()) << "</outlinestyle>\n";
     xml << "\t\t\t\t\t<outlinewidth>" << symbol->pen().width() << "</outlinewidth>\n";

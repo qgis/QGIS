@@ -154,26 +154,26 @@ void QgsUniqueValRenderer::writeXML(std::ostream& xml)
     qWarning("in QgsUniqueValRenderer::writeXML");
 #endif
     xml << "\t\t<uniquevalue>\n";
-    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() << "</classificationfield>\n";
+    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) << "</classificationfield>\n";
     for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
     {
 	xml << "\t\t\t<renderitem>\n";
-	xml << "\t\t\t\t<value>" << QString(it->first).ascii() << "</value>\n";
+	xml << "\t\t\t\t<value>" << QString(it->first) << "</value>\n";
 	xml << "\t\t\t\t<symbol>\n";
 	QgsSymbol *symbol = (it->second)->getSymbol();
-	xml << "\t\t\t\t\t<outlinecolor red=\"" << QString::number(symbol->pen().color().red()).ascii() << "\" green=\"" <<
-	    QString::number(symbol->pen().color().green()).ascii() << "\" blue=\"" << QString::number(symbol->pen().color().blue()).ascii()  << 
+	xml << "\t\t\t\t\t<outlinecolor red=\"" << QString::number(symbol->pen().color().red()) << "\" green=\"" <<
+	    QString::number(symbol->pen().color().green()) << "\" blue=\"" << QString::number(symbol->pen().color().blue())  << 
 	    "\" />\n";
-	xml << "\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(symbol->pen().style()).ascii()  << 
+	xml << "\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(symbol->pen().style())  << 
 	    "</outlinestyle>\n";
-	xml << "\t\t\t\t\t<outlinewidth>" << QString::number(symbol->pen().width()).ascii() << "</outlinewidth>\n";
-	xml << "\t\t\t\t\t<fillcolor red=\"" << QString::number(symbol->brush().color().red()).ascii() << "\" green=\""  << 
-	    QString::number(symbol->brush().color().green()).ascii() << "\" blue=\""  << 
-	    QString::number(symbol->brush().color().blue()).ascii() << "\" />\n";
-	xml << "\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()).ascii()  << 
+	xml << "\t\t\t\t\t<outlinewidth>" << QString::number(symbol->pen().width()) << "</outlinewidth>\n";
+	xml << "\t\t\t\t\t<fillcolor red=\"" << QString::number(symbol->brush().color().red()) << "\" green=\""  << 
+	    QString::number(symbol->brush().color().green()) << "\" blue=\""  << 
+	    QString::number(symbol->brush().color().blue()) << "\" />\n";
+	xml << "\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(symbol->brush().style())  << 
 	    "</fillpattern>\n";
 	xml << "\t\t\t\t</symbol>\n";
-	xml << "\t\t\t\t<label>" << (it->second)->label().ascii() << "</label>\n";
+	xml << "\t\t\t\t<label>" << (it->second)->label() << "</label>\n";
 #ifdef QGISDEBUG
 	qWarning((it->second)->label());
 #endif
