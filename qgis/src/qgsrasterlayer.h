@@ -177,7 +177,7 @@ The [type] part of the variable should be the type class of the variable written
 class QgsRect;
 class GDALDataset;
 class GDALRasterBand;
-
+class QImage;
 
 //
 // Structs
@@ -368,6 +368,8 @@ public:
     unsigned int getTransparency();
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
     void setTransparency(unsigned int); //
+    /** \brief Call any inline image manipulation filters */
+    void filterLayer(QImage * theQImage);
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red colour). */
     QString getRedBandName()
     {
