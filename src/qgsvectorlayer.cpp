@@ -783,6 +783,7 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
         tabledisplay->table()->selectRowWithId(fet->featureId());
       }
     }
+    delete fet;
   }
 
   //also test the not commited features

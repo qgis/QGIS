@@ -311,6 +311,76 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
  */
 QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 {
+   if(!valid)
+   {
+       std::cerr << "Read attempt on an invalid shapefile data source\n";
+       return 0;
+   }
+   
+   OGRFeature* fet;
+   OGRGeometry* geom;
+   QgsFeature *f = 0;
+   while((fet = ogrLayer->GetNextFeature()) != NULL)
+   {
+       if (fet->GetGeometryRef())
+       {
+	   geom = fet->GetGeometryRef();
+	   // get the wkb representation
+	   unsigned char *feature = new unsigned char[geom->WkbSize()];
+	   geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
+	   OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
+	   QString featureTypeName =   featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+
+	   f = new QgsFeature(fet->GetFID(), featureTypeName);
+	   f->setGeometry(feature, geom->WkbSize());
+	   if(fetchAttributes)
+	   {
+	       getFeatureAttributes(fet, f);
+	   }
+	   delete fet;
+
+	   if(mUseIntersect)
+	   {
+	       geos::Geometry* geosGeom=f->geosGeometry();
+	       char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
+	       mSelectionRectangle->exportToWkt(&sWkt);  
+	       geos::Geometry *geosRect = wktReader->read(sWkt);
+	       if(geosGeom->intersects(geosRect))
+	       {
+#ifdef QGISDEBUG
+		   qWarning("intersection found");
+#endif
+		   delete[] sWkt;
+		   delete geosGeom;
+		   break;
+	       }
+	       else
+	       {
+#ifdef QGISDEBUG
+		   qWarning("no intersection found");
+#endif
+		   delete[] sWkt;
+		   delete geosGeom;
+		   delete f;
+		   f=0;
+	       }
+	   }
+	   else
+	   {
+	       break;
+	   }
+       }
+   }
+   return f;
+}
+
+/**
+ * Get the next feature resutling from a select operation
+ * Return 0 if there are no features in the selection set
+ * @return QgsFeature
+ */
+/*QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
+{
 
   QgsFeature *f = 0;
   if(valid){
@@ -384,7 +454,8 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 #endif
   }
   return f;
-}
+}*/
+
 
 QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
 {
