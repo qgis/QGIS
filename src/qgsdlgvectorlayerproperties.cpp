@@ -86,7 +86,6 @@ bufferRenderer(layer->
   // populate the table and the display field drop-down with the field
   // information
 
-  displayFieldComboBox->insertItem( "" );
   for (int i = 0; i < fields.size(); i++)
   {
     QgsField fld = fields[i];
