@@ -465,7 +465,9 @@ QgsRasterLayer::readFile( QString const & fileName )
 
     //just testing remove this later
     getMetadata();
-
+    
+    // Use the affine transform to get geo coordinates for
+    // the corners of the raster
     double myXMaxDouble = adfGeoTransform[0] +
         gdalDataset->GetRasterXSize() * adfGeoTransform[1] +
         gdalDataset->GetRasterYSize() * adfGeoTransform[2];
@@ -474,6 +476,8 @@ QgsRasterLayer::readFile( QString const & fileName )
         gdalDataset->GetRasterYSize() * adfGeoTransform[5];
 
     layerExtent.setXmax(myXMaxDouble);
+    // The affine transform reduces to these values at the
+    // top-left corner of the raster
     layerExtent.setXmin(adfGeoTransform[0]);
     layerExtent.setYmax(adfGeoTransform[3]);
     layerExtent.setYmin(myYMinDouble);
@@ -3488,4 +3492,3 @@ void QgsRasterLayer::inOverview( bool b )
 {
     QgsMapLayer::inOverview( b );
 } // QgsRasterLayer::inOverview( bool )
-
