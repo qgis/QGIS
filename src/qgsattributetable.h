@@ -57,8 +57,9 @@ class QgsAttributeTable:public QTable
       void setEditable(bool enabled){mEditable=enabled;}
       /**Adds an attribute to the table (but does not commit it yet)
        @param name attribute name
-       @param type attribute type*/
-      void addAttribute(const QString& name, const QString& type);
+       @param type attribute type
+       @return false in case of a name conflict, true in case of success*/
+      bool addAttribute(const QString& name, const QString& type);
       /**Deletes an attribute (but does not commit it)
        @param name attribute name*/
       void deleteAttribute(const QString& name);
@@ -108,6 +109,9 @@ class QgsAttributeTable:public QTable
       void contentsMouseReleaseEvent(QMouseEvent* e);
       /**Clears mAddedAttributes, mDeletedAttributes and mChangedValues*/
       void clearEditingStructures();
+      /**Removes the column belonging to an attribute from the table
+       @name attribut name*/
+      void removeAttrColumn(const QString& name);
 
         signals:
 

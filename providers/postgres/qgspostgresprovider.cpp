@@ -391,8 +391,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       selected = 0;
       } */
   //  tabledisplay=0;
-  //draw the selected features in yellow
-  //  selectionColor.setRgb(255,255,0);
+  
+  //fill type names into lists
+  mNumericalTypes.push_back("double precision");
+  mNonNumericalTypes.push_back("text");
 
 }
 
@@ -1151,9 +1153,13 @@ bool QgsPostgresProvider::deleteFeatures(std::list<int> const & id)
 bool QgsPostgresProvider::addAttributes(std::map<QString,QString> const & name)
 {
     bool returnvalue=true;
+    PQexec(connection,"BEGIN");
     for(std::map<QString,QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
 	QString sql="ALTER TABLE "+tableName+" ADD COLUMN "+(*iter).first+" "+(*iter).second;
+#ifdef QGISDEBUG
+	qWarning(sql);
+#endif
 	//send sql statement and do error handling
 	PGresult* result=PQexec(connection, (const char *)sql);
 	if(result==0)
@@ -1166,6 +1172,8 @@ bool QgsPostgresProvider::addAttributes(std::map<QString,QString> const & name)
 	    } 
 	}
     }
+    PQexec(connection,"COMMIT");
+    reset();
     return returnvalue;
 }
 
