@@ -24,9 +24,10 @@
 #include <qcombobox.h>
 #include "qgsdlgpgbuffer.h"
 #include <qspinbox.h>
+#include "../../src/qgisiface.h"
 
-QgsDlgPgBuffer::QgsDlgPgBuffer(QWidget * parent, const char *name)
-:QgsDlgPgBufferBase(parent, name)
+QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, const char *name)
+:QgsDlgPgBufferBase(parent, name),qI(_qI)
 {
 }
 
@@ -96,4 +97,8 @@ void QgsDlgPgBuffer::setBufferLayerName(QString name)
 void QgsDlgPgBuffer::setGeometryColumn(QString name)
 {
     txtGeometryColumn->setText(name);
+}
+void QgsDlgPgBuffer::help()
+{
+   qI->openURL("plugins/geoprocessing/buffer/index.html",true);
 }
