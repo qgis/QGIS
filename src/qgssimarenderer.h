@@ -39,7 +39,7 @@ class QgsSiMaRenderer: public QgsRenderer
 
 inline QgsSiMaRenderer::QgsSiMaRenderer()
 {
-
+   
 }
 
 inline QgsSiMaRenderer::~QgsSiMaRenderer()
