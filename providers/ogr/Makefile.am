@@ -1,4 +1,5 @@
-lib_LTLIBRARIES = ogrprovider.la 
+plugindir = ${pkglibdir}
+plugin_LTLIBRARIES = ogrprovider.la 
 
 ogrprovider_la_SOURCES = qgsshapefileprovider.cpp \
                       ../../src/qgsfeature.cpp \
