@@ -85,6 +85,21 @@ class QgisIface : public QgisInterface{
         QgsMapCanvas * getMapCanvas();	
         /** Return a pointer to the map layer registry */
         QgsMapLayerRegistry * getLayerRegistry();	
+
+
+        /** Gives access to main QgisApp object
+
+          Even though this class is supposed to act as a Facade for the
+          QgisApp, the plug-ins need direct access to the application object
+          for their connect() calls.
+
+          @todo XXX this may call into question the current need for this
+          interface?  Maybe these connect() calls can be done in some other
+          less intrusive way?
+
+        */
+        QgisApp * app();
+
     private:
 
         /// QgisIface aren't copied
