@@ -460,11 +460,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                         // get the number of polygons
                         ptr = feature + 5;
                         numPolygons = (int *) ptr;
+			ptr = feature + 9;
                         for (kdx = 0; kdx < *numPolygons; kdx++)
                           {
                             //skip the endian and feature type info and
                             // get number of rings in the polygon
-                            ptr = feature + 14;
+                            ptr+=5;
                             numRings = (int *) ptr;
                             ptr += 4;
                             for (idx = 0; idx < *numRings; idx++)
