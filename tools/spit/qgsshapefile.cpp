@@ -19,7 +19,6 @@
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 #include <string>
-#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -69,7 +68,6 @@ const char * QgsShapeFile::getFeatureClass(){
       dbf.read((char *)&dbh, sizeof(dbh));
 
       Fda fda;
-      std::stringstream num;
       QString str_type = "varchar(";
       for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read += sizeof(fda)){
       	dbf.read((char *)&fda, sizeof(fda));
@@ -85,9 +83,6 @@ const char * QgsShapeFile::getFeatureClass(){
                     break;
           case 'C': 
                     str_type= QString("varchar(%1)").arg(fda.field_length);
-                    qWarning(str_type);
-                 //   str_type += QString(num.str());
-                 //   str_type += ")";
                     column_types.push_back(str_type);
                     break;
           case 'L': column_types.push_back("boolean");
@@ -133,15 +128,11 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
       query += ", ";
   }
   query += ")";  
-  conn->ExecTuplesOk((const char *)query);
-  qWarning(conn->ErrorMessage());
-  qWarning(query);   
+  conn->ExecTuplesOk((const char *)query);  
 
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table + "\', \'the_geom\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";
   conn->ExecTuplesOk((const char *)query);
-  qWarning(conn->ErrorMessage());
-  qWarning(query);
 
   //adding the data into the table
   for(int m=0;m<features; m++){
@@ -149,27 +140,26 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
     if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
       if(geom){
-        std::stringstream out;
-        out << m;
-        query = "INSERT INTO "+table+"values( "+out.str()+", ";
+        query = "INSERT INTO "+table+QString(" VALUES( %1, ").arg(m);
         
         int num = geom->WkbSize();
         char * geo_temp = new char[num*3];
         geom->exportToWkt(&geo_temp);
         QString geometry(geo_temp);
 
-        char quotes;
+        QString quotes;
         for(int n=0; n<column_types.size(); n++){
           if(column_types[n] == "int" || column_types[n] == "float")
-            quotes = ' ';
+            quotes = " ";
           else
-            quotes = '\'';
-          query += quotes+QString(feat->GetFieldAsString(n))+QString(quotes + ", ");
-          //qWarning(query);
+            quotes = "\'";
+          query += quotes;
+          query += QString(feat->GetFieldAsString(n));
+          query += QString(quotes + ", ");
+
         }
         query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
         conn->ExecTuplesOk((const char *)query);
-        //qWarning(conn->ErrorMessage());
 
         pro->setProgress(pro->progress()+1);
         delete[] geo_temp;

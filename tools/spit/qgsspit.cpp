@@ -151,7 +151,6 @@ void QgsSpit::removeFile()
       it = lstShapefiles->firstChild();
     }
     else ++it;
-  std::cout << "total: " << total_features << std::endl;
 }
 
 void QgsSpit::removeAllFiles(){
@@ -222,7 +221,7 @@ void QgsSpit::import(){
       else{
         int temp = pd->ExecCommandOk("COMMIT");
         removeAllFiles();
-        std::cout<<"commit " << temp << " " << pd->ErrorMessage() << total_features << " " << pro->progress() << std::endl;
+        //std::cout<<"commit " << temp << " " << pd->ErrorMessage() << total_features << " " << pro->progress() << std::endl;
       }
     }
     else 
