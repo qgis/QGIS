@@ -49,6 +49,7 @@ void QgsDbSourceSelect::addTables(){
     if(lstTables->isSelected(idx))
       m_selectedTables += lstTables->text(idx);
   }
+  accept();
 }
 void QgsDbSourceSelect::dbConnect(){
   // populate the table list
