@@ -41,9 +41,6 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
 {
     if(layer)
     {
-	//Set the initial display name
-	displaynamefield->setText(m_vectorlayer->name());
-
 	QgsSingleSymRenderer* renderer;
 
 	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
@@ -80,8 +77,6 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
 	QObject::connect(stylebutton,SIGNAL(clicked()),this,SLOT(selectOutlineStyle()));
 	QObject::connect(fillcolorbutton,SIGNAL(clicked()),this,SLOT(selectFillColor()));
 	QObject::connect(patternbutton,SIGNAL(clicked()),this,SLOT(selectFillPattern()));
-	QObject::connect(applybutton,SIGNAL(clicked()),this,SLOT(apply()));
-	QObject::connect(closebutton,SIGNAL(clicked()),this,SLOT(hide()));
     }
     else
     {
@@ -143,20 +138,10 @@ void QgsSiSyDialog::apply()
     sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
     QgsRenderItem ri(sy,"blabla", "blabla");
     
-    QgsSingleSymRenderer* renderer;
+    QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->renderer());
     
-    if(m_vectorlayer->propertiesDialog())
-    {
-	renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
-    }
-    else
-    {
-	renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->renderer());
-    }     
-
     if(renderer)
     {
-	qWarning("3");
 	renderer->addItem(ri);
     }
     else
@@ -175,13 +160,23 @@ void QgsSiSyDialog::apply()
 
     QPixmap* pix=m_vectorlayer->legendPixmap();
   
-    int width=40+fm.width(displaynamefield->text());
+    
+    QString name;
+    if(m_vectorlayer->propertiesDialog())
+    {
+	name=m_vectorlayer->propertiesDialog()->displayName();
+    }
+    else
+    {
+	name="";
+    }
+    
+    int width=40+fm.width(name);//problem, how do we determine the width of the displaynamefield now?
     int height=(fm.height()+10>35) ? fm.height()+10 : 35;
     pix->resize(width,height);
     pix->fill();
 
     QPainter p(pix);
-    m_vectorlayer->setLayerName(displaynamefield->text());
     p.setPen(sy.pen());
     p.setBrush(sy.brush());
     //paint differently in case of point, lines, polygones
@@ -199,18 +194,16 @@ void QgsSiSyDialog::apply()
    
   p.setPen( Qt::black );
   p.setFont( f );
-  p.drawText(35,pix->height()-10,displaynamefield->text());
-  if(m_vectorlayer->legendItem())
-  {
-      m_vectorlayer->legendItem()->setPixmap(0,(*pix));
-  }
+  p.drawText(35,pix->height()-10,name);//the problem again
+  
+  m_vectorlayer->legendItem()->setPixmap(0,(*pix));
 
   m_vectorlayer->setRenderer(renderer);
   m_vectorlayer->setRendererDialog(this);
 
   if(m_vectorlayer->propertiesDialog())
   {
-      m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+      m_vectorlayer->propertiesDialog()->setRendererDirty(false);
   }
 
   //repaint the map canvas

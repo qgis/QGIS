@@ -23,7 +23,7 @@
 #include "qgspoint.h"
 #include "qpainter.h"
 #include "qgscoordinatetransform.h"
-#include "qgsvectorlayerproperties.h"
+#include "qgsdlgvectorlayerproperties.h"
 class QgsFeature;
 
 /**Render class to display all the features with a single QgsSymbol*/
@@ -40,7 +40,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t);
     /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn
      @param layer the vector layer associated with the renderer*/
-    virtual void initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr=0);
+    virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes();
  protected:

@@ -82,19 +82,20 @@ void QgsVectorLayerProperties::alterLayerDialog(const QString& string)
     if(string==tr("single symbol"))
     {
         bufferRenderer=new QgsSingleSymRenderer();
-	bufferRenderer->initializeSymbology(layer,this);
+	//bufferRenderer->initializeSymbology(layer,this);
     }
     else if(string==tr("graduated symbol"))
     {
 	bufferRenderer=new QgsGraduatedSymRenderer();
-	bufferRenderer->initializeSymbology(layer,this);
+	//bufferRenderer->initializeSymbology(layer,this);
     }
     else if(string==tr("continuous color"))
     {
 	bufferRenderer=new QgsContinuousColRenderer();
-	bufferRenderer->initializeSymbology(layer,this);
+	//bufferRenderer->initializeSymbology(layer,this);
     }
     rendererDirty=true;
+
 }
 
 void QgsVectorLayerProperties::showSymbolSettings()

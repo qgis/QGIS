@@ -9,19 +9,14 @@
 #include "qgslayerproperties.h"
 #include "qgslegenditem.h"
 #include <qlineedit.h>
-#include "qgsvectorlayerproperties.h"
+#include "qgsdlgvectorlayerproperties.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer* layer): QgsContColDialogBase(), m_vectorlayer(layer)
 {
-    QObject::connect(closebutton,SIGNAL(clicked()),this,SLOT(hide()));
-    QObject::connect(applybutton,SIGNAL(clicked()),this,SLOT(apply()));
     QObject::connect(mincolorbutton,SIGNAL(clicked()),this,SLOT(selectMinimumColor()));
     QObject::connect(maxcolorbutton,SIGNAL(clicked()),this,SLOT(selectMaximumColor()));
-
-    //Set the initial display name
-    displaynamefield->setText(m_vectorlayer->name());
 
     //find out the numerical fields of m_vectorlayer
     QgsDataProvider* provider;
@@ -86,7 +81,7 @@ QgsContColDialog::QgsContColDialog()
 
 QgsContColDialog::~QgsContColDialog()
 {
-
+    qWarning("bin im Destruktor von QgsContColDialog");
 }
 
 void QgsContColDialog::apply()
@@ -181,7 +176,15 @@ void QgsContColDialog::apply()
     //add a pixmap to the QgsLegendItem
     QPixmap* pix=m_vectorlayer->legendPixmap();
     //use the name and the maximum value to estimate the necessary width of the pixmap
-    QString name=displaynamefield->text();
+    QString name;
+    if(m_vectorlayer->propertiesDialog())
+    {
+	name=m_vectorlayer->propertiesDialog()->displayName();
+    }
+    else
+    {
+	name="";
+    }
     int namewidth=fm.width(name);
     int numberlength=gradientwidth+wordspace+fm.width(QString::number(maximum,'f',2));
     int pixwidth=(numberlength > namewidth) ? numberlength : namewidth;
@@ -193,7 +196,6 @@ void QgsContColDialog::apply()
     p.setFont(f);
     //draw the layer name and the name of the classification field into the pixmap
     p.drawText(leftspace,topspace+fm.height(),name);
-    m_vectorlayer->setLayerName(name);
     p.drawText(leftspace,topspace+fm.height()*2,classificationComboBox->currentText());
 
     int rangeoffset=topspace+fm.height()*2;
@@ -220,7 +222,7 @@ void QgsContColDialog::apply()
     m_vectorlayer->setRendererDialog(this);
     if(m_vectorlayer->propertiesDialog())
     {
-	m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+	m_vectorlayer->propertiesDialog()->setRendererDirty(false);
     }
 
     m_vectorlayer->triggerRepaint();

@@ -28,7 +28,7 @@
 #include <cfloat>
 #include <qlayout.h>
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerproperties.h"
+#include "qgsdlgvectorlayerproperties.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 
