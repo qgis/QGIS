@@ -47,6 +47,14 @@ class QgsDatabaseLayer:public QgsMapLayer
 	void identify(QgsRect *);
 	//! Display the attribute table
 	void table();
+	//! Get the name of the geometry column
+	QString geometryColumnName();
+	//! Get the name of the table containing the geometry column
+	QString geometryTableName();
+	//! Get the name of the database
+	QString databaseName();
+	//! Get the schema name
+	QString schemaName();
   private:
 	//! Calculates extent of the layer using SQL and PostGIS functions
 	  QgsRect calculateExtent();
