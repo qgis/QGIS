@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Fri Mar 5 13:08:43 2004
+** Created: Die Mär 23 15:00:23 2004
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -11973,15 +11973,15 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     pbnCancel = new QPushButton( this, "pbnCancel" );
     pbnCancel->setGeometry( QRect( 11, 398, 70, 23 ) );
 
+    pbnOK = new QPushButton( this, "pbnOK" );
+    pbnOK->setEnabled( FALSE );
+    pbnOK->setGeometry( QRect( 534, 398, 48, 23 ) );
+
     leInputFile = new QLineEdit( this, "leInputFile" );
     leInputFile->setGeometry( QRect( 180, 260, 350, 21 ) );
 
     leOutputShapeFile = new QLineEdit( this, "leOutputShapeFile" );
     leOutputShapeFile->setGeometry( QRect( 180, 320, 350, 21 ) );
-
-    pbnOK = new QPushButton( this, "pbnOK" );
-    pbnOK->setEnabled( FALSE );
-    pbnOK->setGeometry( QRect( 534, 398, 48, 23 ) );
     languageChange();
     resize( QSize(593, 432).expandedTo(minimumSizeHint()) );
     clearWState( WState_Polished );
@@ -11991,6 +11991,8 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     connect( pbnSelectInputFile, SIGNAL( clicked() ), this, SLOT( pbnSelectInputFile_clicked() ) );
     connect( pbnSelectOutputFile, SIGNAL( clicked() ), this, SLOT( pbnSelectOutputFile_clicked() ) );
     connect( pbnCancel, SIGNAL( clicked() ), this, SLOT( pbnCancel_clicked() ) );
+    connect( leInputFile, SIGNAL( textChanged(const QString&) ), this, SLOT( leInputFile_textChanged(const QString&) ) );
+    connect( leOutputShapeFile, SIGNAL( textChanged(const QString&) ), this, SLOT( leOutputShapeFile_textChanged(const QString&) ) );
 }
 
 /*
@@ -12009,12 +12011,13 @@ void PluginGuiBase::languageChange()
 {
     setCaption( tr( "QGIS Plugin Template" ) );
     txtHeading->setText( tr( "GPS Download File Importer" ) );
-    teInstructions->setText( tr( "<h2>Description</h2>\n"
+    teInstructions->setText( tr( "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:12pt;font-family:Arial\">\n"
+"<p style=\"margin-top:16px\"><span style=\"font-size:18pt;font-weight:600\">Description</span></p>\n"
 "<p>Select the GPS dowload file that you would like to convert to a shapefile and this plugin will do the job for you! </p>\n"
-"\n"
 "<p>Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. </p>\n"
-"\n"
-"<p>Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.</p>" ) );
+"<p>Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.</p>\n"
+"</body></html>\n"
+"" ) );
     lblInputFile->setText( tr( "Input File:" ) );
     lblOutputFile->setText( tr( "Output (Shape) File:" ) );
     lblMinTimeGap->setText( tr( "Minimum time gap (s):" ) );

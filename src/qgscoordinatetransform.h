@@ -44,6 +44,7 @@ class QgsCoordinateTransform{
     * @return QgsPoint in device coordinates
     */
     QgsPoint transform(QgsPoint p);
+    void transform(QgsPoint* p);
     /*! Transform the point specified by x,y from map (world) coordinates to device coordinates
     * @param x x cordinate o point to transform
 	* @param y y coordinate of point to transform
@@ -111,6 +112,12 @@ inline QgsPoint QgsCoordinateTransform::transform(QgsPoint p)
 	double dy = yMax - ((p.y() - yMin)) / mapUnitsPerPixel;
 	// double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
 	return QgsPoint(dx, dy);
+}
+
+inline void QgsCoordinateTransform::transform(QgsPoint* p)
+{
+    p->setX((p->x()-xMin)/mapUnitsPerPixel);
+    p->setY(yMax-((p->y() - yMin)) / mapUnitsPerPixel);
 }
 
 #endif // QGSCOORDINATETRANSFORM_H

@@ -19,38 +19,6 @@
 #include <qstring.h>
 #include <qtextstream.h>
 #include "qgspoint.h"
-QgsPoint::QgsPoint()
-{
-}
-
-QgsPoint::QgsPoint(double x, double y):m_x(x), m_y(y)
-{
-
-}
-
-QgsPoint::~QgsPoint()
-{
-}
-
-double QgsPoint::x() const
-{
-  return m_x;
-}
-
-double QgsPoint::y() const
-{
-  return m_y;
-}
-
-int QgsPoint::xToInt()
-{
-  return (int) m_x;
-}
-
-int QgsPoint::yToInt()
-{
-  return (int) m_y;
-}
 
 QString QgsPoint::stringRep() const
 {
