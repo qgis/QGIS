@@ -58,9 +58,9 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 
     if ( type == QgsGrassSelect::RASTER ) {
 	/* Remove layer combo box */
-	Layer->hide();
-	elayer->hide();
-	resize ( width(), height() - 40 );
+	optionsFrame->removeChild ( dynamic_cast<QWidget *>(Layer) );
+	optionsFrame->removeChild ( dynamic_cast<QWidget *>(elayer) );
+	
 	setCaption ( "Add GRASS Raster Layer" );
     } else { // vector
 	setCaption ( "Add GRASS Vector Layer" );
@@ -80,12 +80,15 @@ QgsGrassSelect::~QgsGrassSelect()
 
 void QgsGrassSelect::restorePosition()
 {
+  optionsFrame->adjustSize ();
+  adjustSize ();
+  
   QSettings settings;
   int ww = settings.readNumEntry("/qgis/grass/windows/select/w", 500);
   int wh = settings.readNumEntry("/qgis/grass/windows/select/h", 100);
   int wx = settings.readNumEntry("/qgis/grass/windows/select/x", 100);
   int wy = settings.readNumEntry("/qgis/grass/windows/select/y", 100);
-  resize(ww,wh);
+  resize(ww,height());
   move(wx,wy);
 }
 
