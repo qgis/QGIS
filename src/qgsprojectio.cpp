@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.47 2004/07/15 00:40:25 gsherman Exp */
+/* qgsprojectio.cpp,v 1.48 2004/07/20 21:40:11 mcoletti Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -112,11 +112,24 @@ std::list<QString> QgsProjectIo::read(QString path)
     {
       return myZOrder;
     }
-    if (!doc->setContent(&file))
+
+    // possible error message from setContent()
+    QString errorMsg;
+
+    // location of problem associated with errorMsg
+    int line, column;
+
+    if (!doc->setContent(&file, &errorMsg, &line, &column))
     {
+
+        QMessageBox::critical( 0x0, "Project File Read Error", 
+                               errorMsg + " at line " + QString::number( line ) +
+                               " column " + QString::number( column ) );
+
       file.close();
       return myZOrder;
     }
+
     file.close();
     //enable the hourglass
     qWarning("opened document" + file.name());
