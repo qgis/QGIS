@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsLauncherPluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -32,44 +32,9 @@
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>tabOutput</cstring>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Output</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QTextEdit" row="0" column="0">
-                        <property name="name">
-                            <cstring>txtOutput</cstring>
-                        </property>
-                        <property name="font">
-                            <font>
-                                <family>Bitstream Vera Sans Mono</family>
-                                <pointsize>11</pointsize>
-                            </font>
-                        </property>
-                        <property name="textFormat">
-                            <enum>LogText</enum>
-                        </property>
-                        <property name="wordWrap">
-                            <enum>NoWrap</enum>
-                        </property>
-                        <property name="readOnly">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
-        </widget>
+        <property name="spacing">
+            <number>0</number>
+        </property>
         <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>layout2</cstring>
@@ -206,6 +171,52 @@
                 <string>Alt+C</string>
             </property>
         </widget>
+        <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>tabOutput</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Output</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit" row="0" column="0">
+                        <property name="name">
+                            <cstring>txtOutput</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <family>Bitstream Vera Sans Mono</family>
+                                <pointsize>11</pointsize>
+                            </font>
+                        </property>
+                        <property name="textFormat">
+                            <enum>LogText</enum>
+                        </property>
+                        <property name="wordWrap">
+                            <enum>NoWrap</enum>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+        </widget>
     </grid>
 </widget>
 <images>
@@ -221,7 +232,7 @@
         <sender>pbnCancel</sender>
         <signal>clicked()</signal>
         <receiver>QgsLauncherPluginGuiBase</receiver>
-        <slot>reject()</slot>
+        <slot>cleanUp()</slot>
     </connection>
     <connection>
         <sender>btnSelectProgram</sender>
@@ -248,9 +259,9 @@
     <include location="local" impldecl="in implementation">qgslauncherpluginguibase.ui.h</include>
 </includes>
 <slots>
-    <slot>pbnCancel_clicked()</slot>
     <slot>chooseProgram()</slot>
     <slot>runProgram()</slot>
+    <slot>cleanUp()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

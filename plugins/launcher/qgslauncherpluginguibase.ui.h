@@ -10,7 +10,7 @@
 
 
 
-void QgsLauncherPluginGuiBase::pbnCancel_clicked()
+void QgsLauncherPluginGuiBase::cleanUp()
 {
 
 }

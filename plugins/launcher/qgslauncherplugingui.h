@@ -15,6 +15,7 @@
 #include <qgslauncherpluginguibase.uic.h>
 
 class QProcess;
+class QTextEdit;
 /**
   \class QgsLauncherPluginGui
   \brief Launches external programs from QGIS.
@@ -43,10 +44,16 @@ public slots:
   void readFromStderr();
   //! Slot to delete the QProcess object after the program has exited
   void processFinished();
+  //! Slot to save the previous command list and close the dialog
+  void cleanUp();
 
 private:
   //! QProcess object used to launch a program
   QProcess *proc;    
+  //! Pointer to current text output widget
+  QTextEdit *textOutput;
+  //! Flag to indicate if this is the first run
+  bool firstRun;
 signals:
    void drawRasterLayer(QString);
    void drawVectorrLayer(QString,QString,QString);

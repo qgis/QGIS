@@ -10,24 +10,35 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgslauncherplugingui.h"
-
+#include <iostream>
 //qt includes
 #include <qcombobox.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qprocess.h>
 #include <qtextedit.h>
+#include <qtabwidget.h>
+#include <qsettings.h>
 //standard includes
 
 QgsLauncherPluginGui::QgsLauncherPluginGui() : QgsLauncherPluginGuiBase()
 {
-
+  firstRun = true;
 }
 
   QgsLauncherPluginGui::QgsLauncherPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : QgsLauncherPluginGuiBase( parent, name, modal, fl )
 {
-
+  // populate the combobox from the settings file
+  QSettings settings;
+  int count = settings.readNumEntry("/qgis/launcher_plugin/command_count"); 
+  QString commandNum;
+  for(int i=0; i < count; i++)
+  {
+    std::cerr << "Reading key " << "/qgis/launcher_plugin/" << commandNum.setNum(i) << std::endl; 
+    cmbCommands->insertItem(settings.readEntry("/qgis/launcher_plugin/command" + commandNum.setNum(i)));
+  }
+  firstRun = true;
 }  
 QgsLauncherPluginGui::~QgsLauncherPluginGui()
 {
@@ -49,15 +60,16 @@ void QgsLauncherPluginGui::runProgram()
     txtOutput->setText("");
     proc = new QProcess(this);
     connect( proc, SIGNAL(readyReadStdout()),
-                this, SLOT(readFromStdout()) );
+        this, SLOT(readFromStdout()) );
     connect( proc, SIGNAL(readyReadStderr()),
-                this, SLOT(readFromStderr()) );
+        this, SLOT(readFromStderr()) );
     connect( proc, SIGNAL(processExited()),
-                this, SLOT(processFinished()) );
+        this, SLOT(processFinished()) );
     for(int i=0; i < args.size(); i++)
     {
       proc->addArgument(args[i]);
     }
+    // If the command fails to start, throw up a critical error msg
     if(! proc->start())
     {
       QMessageBox::critical(this, "Unable to Launch", "Unable to start " + args[0] + ".\n" +
@@ -65,9 +77,31 @@ void QgsLauncherPluginGui::runProgram()
     }else
     {
       // add the program to the combo list
-      cmbCommands->insertItem(cmbCommands->currentText(), 0);
+      //cmbCommands->insertItem(cmbCommands->currentText(), 0);
+      // If this is first time around, remove the default tab
+      if(firstRun)
+      {
+        tabOutput->removePage(tabOutput->currentPage());
+        firstRun = false;
+      }
+      // create the tab and textedit box for this process
+      QTextEdit *te = new QTextEdit();
+      // set textedit properties
+      te->setReadOnly(true);
+      te->setFamily("Bitstream Vera Sans Mono");
+      te->setPointSize(11);
+      te->setWordWrap(QTextEdit::NoWrap);
+      // Create the tab page containing the textedit box. The
+      // tab title is the first argument (program name)
+      tabOutput->insertTab(te, args[0], 0);
+      // set the current output to be the new tab
+      tabOutput->setCurrentPage(0); 
+      // point the output stream to the new tab
+      textOutput = te;
+      // Show the command in the textedit box for future reference
+      textOutput->append("COMMAND: " + cmbCommands->currentText());
     }
-    
+
   }else
   {
     QMessageBox::warning(this, 
@@ -82,7 +116,7 @@ void QgsLauncherPluginGui::readFromStdout()
     QString line;
     while((line = proc->readLineStdout()) != QString::null)
     {
-      txtOutput->append(line);
+      textOutput->append(line);
     }
   }
 }
@@ -93,12 +127,28 @@ void QgsLauncherPluginGui::readFromStderr()
     QString line;
     while((line = proc->readLineStderr()) != QString::null)
     {
-      txtOutput->append(line);
+      textOutput->append(line);
     }
   }
 }
 void QgsLauncherPluginGui::processFinished()
 {
   delete proc;
+  // scroll the output to the top
+  textOutput->setCursorPosition(0, 0);
 }
 
+void QgsLauncherPluginGui::cleanUp()
+{
+  // Write out the command list to the settings file and then exit
+  QSettings settings;
+
+  settings.writeEntry("/qgis/launcher_plugin/command_count", cmbCommands->count());
+  // write the commands in the combo box to the settings file (~/.qt/qgisrc)
+  for(int i = 0; i < cmbCommands->count(); i++)
+  {
+    QString commandNumber;
+    settings.writeEntry("/qgis/launcher_plugin/command" + commandNumber.setNum(i), cmbCommands->text(i));
+  }
+  reject();
+}
