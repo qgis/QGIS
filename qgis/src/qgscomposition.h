@@ -158,6 +158,11 @@ public:
     /**  \brief Set tool */
     void setTool ( Tool tool );
 
+    /** Refresh. Refresh objects which are not updated automaticaly, e.g. map object does not know
+     * if a layer was switched on/off. Later should be substituted by appropriate signals 
+     * se by map canvas */
+    void refresh();
+
     /**  \brief Canvas scale */
     int scale (void);
 
