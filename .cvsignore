@@ -13,4 +13,3 @@ qgis.spec
 qgsconfig.h
 qgsconfig.h.in
 stamp-h1
-autom4te.cache
