@@ -482,6 +482,9 @@ void QgsGrassProvider::select(QgsRect *rect, bool useIntersect)
     if ( mMapVersion < mMaps[mapId].version ) {
         update();
     }
+    if ( attributesOutdated(mapId) ) {
+	loadAttributes (mLayers[mLayerId]);
+    }
 
     resetSelection(0);
     
@@ -609,6 +612,17 @@ std::vector<QgsField> const & QgsGrassProvider::fields() const
 }
 
 void QgsGrassProvider::reset(){
+    int mapId = mLayers[mLayerId].mapId;
+    if ( mapOutdated(mapId) ) {
+        updateMap ( mapId );
+    }
+    if ( mMapVersion < mMaps[mapId].version ) {
+        update();
+    }
+    if ( attributesOutdated(mapId) ) {
+	loadAttributes (mLayers[mLayerId]);
+    }
+    
     resetSelection(1);
     mNextCidx = 0;
 }
@@ -728,7 +742,15 @@ void QgsGrassProvider::loadLayerSourcesFromMap ( GLAYER &layer )
 	}
 	free ( layer.attributes );
     }
+    loadAttributes ( layer );
+}
     
+void QgsGrassProvider::loadAttributes ( GLAYER &layer )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::loadLayerSourcesFromMap" << std::endl;
+    #endif
+
     // Get field info
     layer.fieldInfo = Vect_get_field( layer.map, layer.field); // should work also with field = 0
 
@@ -736,6 +758,7 @@ void QgsGrassProvider::loadLayerSourcesFromMap ( GLAYER &layer )
     layer.nColumns = 0;
     layer.nAttributes = 0;
     layer.attributes = 0;
+    layer.fields.clear();
     layer.keyColumn = -1;
     if ( layer.fieldInfo == NULL ) {
         #ifdef QGISDEBUG
@@ -912,6 +935,11 @@ void QgsGrassProvider::loadLayerSourcesFromMap ( GLAYER &layer )
 	    }
 	}
     }
+
+    GMAP *map = &(mMaps[layer.mapId]);
+    
+    QFileInfo di ( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName + "/dbln" );
+    map->lastAttributesModified = di.lastModified();
 }
 
 void QgsGrassProvider::closeLayer( int layerId )
@@ -999,6 +1027,9 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     // could be owerwritten)
     QFileInfo di ( gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName );
     map.lastModified = di.lastModified();
+    
+    di.setFile ( gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName + "/dbln" );
+    map.lastAttributesModified = di.lastModified();
 
     // Open vector
     QgsGrass::resetError(); // to "catch" error after Vect_open_old()
@@ -1041,6 +1072,9 @@ void QgsGrassProvider::updateMap ( int mapId )
 
     QFileInfo di ( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName );
     map->lastModified = di.lastModified();
+
+    di.setFile ( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName + "/dbln" );
+    map->lastAttributesModified = di.lastModified();
 
     // Reopen vector
     QgsGrass::resetError(); // to "catch" error after Vect_open_old()
@@ -1116,6 +1150,28 @@ bool QgsGrassProvider::mapOutdated( int mapId )
     return false;
 }
 
+bool QgsGrassProvider::attributesOutdated( int mapId )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::attributesOutdated()" << std::endl;
+    #endif
+
+    GMAP *map = &(mMaps[mapId]);
+    
+    QString dp = map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName + "/dbln";
+    QFileInfo di ( dp );
+
+    if ( map->lastAttributesModified < di.lastModified() ) {
+	#ifdef QGISDEBUG
+	std::cerr << "**** The attributes of the map " << mapId << " were modified ****" << std::endl;
+	#endif
+	
+	return true;
+    }
+
+    return false;
+}
+
 /** Set feature attributes */
 void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *feature )
 {
@@ -1126,6 +1182,7 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 	// find cat
 	GATT key;
 	key.cat = cat;
+    
 	GATT *att = (GATT *) bsearch ( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
 		                       sizeof(GATT), cmpAtt);
 
@@ -1305,6 +1362,9 @@ bool QgsGrassProvider::closeEdit ( void )
 
     QFileInfo di ( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapName );
     map->lastModified = di.lastModified();
+
+    di.setFile ( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapset + "/dbln" );
+    map->lastAttributesModified = di.lastModified();
 
     // Reopen vector
     QgsGrass::resetError(); // to "catch" error after Vect_open_old()
