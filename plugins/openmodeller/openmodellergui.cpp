@@ -64,7 +64,6 @@
 : OpenModellerGuiBase()
 {
   mOpenModeller = new OpenModeller();
-  mOpenModeller->loadAlgorithms();
   getAlgorithmList();
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
@@ -79,7 +78,6 @@
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
   mOpenModeller = new OpenModeller();
-  mOpenModeller->loadAlgorithms();
   getAlgorithmList();
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
@@ -886,7 +884,6 @@ void OpenModellerGui::leLocalitiesFileName_returnPressed()
 
 void OpenModellerGui::cboModelAlgorithm_highlighted( const QString &theModelAlgorithm )
 {
-  mOpenModeller->loadAlgorithms();
   AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
   AlgMetadata *myAlgorithmMetadata;
 
