@@ -1,9 +1,9 @@
 /***************************************************************************
   qgsdelimitedtextprovider.cpp -  Data provider for delimted text
   -------------------
-begin                : 2004-02-27
-copyright            : (C) 2004 by Gary E.Sherman
-email                : sherman at mrcc.com
+          begin                : 2004-02-27
+          copyright            : (C) 2004 by Gary E.Sherman
+          email                : sherman at mrcc.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -98,7 +98,11 @@ email                : sherman at mrcc.com
             // We don't know anything about a text based field other
             // than its name. All fields are assumed to be text
             int fieldPos = 0;
-            for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it ) {
+            for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it ) 
+            {
+              QString field = *it;
+              if(field.length() > 0)
+              {
               attributeFields.push_back(QgsField(*it, "Text"));
               fieldPositions[*it] = fieldPos++;
               // check to see if this field matches either the x or y field
@@ -120,7 +124,11 @@ email                : sherman at mrcc.com
               std::cerr << "Adding field: " << *it << std::endl; 
 #endif
 
+            }
             }           
+#ifdef QGISDEBUG 
+            std::cerr << "Field count for the delimited text file is " << attributeFields.size() << std::endl; 
+#endif 
           }else
           {
             // examine the x,y and update extents
