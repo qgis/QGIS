@@ -1,5 +1,9 @@
-SPIT =
 if HAVE_SPIT
-	SPIT = spit
+SPIT = spit
 endif
-SUBDIRS = geoprocessing $(SPIT)
+
+if HAVE_POSTGRESDB
+GEOPROCESSING = geoprocessing
+endif
+
+SUBDIRS = $(GEOPROCESSING) $(SPIT)
