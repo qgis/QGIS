@@ -2039,8 +2039,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       //std::cout << "drawing marker for feature " << featureCount << "\n";
       p->drawRect(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()), 5, 5);
       p->scale(markerScaleFactor,markerScaleFactor);
-      p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker->boundingRect().width() / 2),
-                     (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker->boundingRect().height() / 2),
+      p->drawPicture((int)(static_cast<int>(myProjectedPoint.x()) / markerScaleFactor - marker->boundingRect().width() / 2),
+                     (int)(static_cast<int>(myProjectedPoint.y()) / markerScaleFactor - marker->boundingRect().height() / 2),
                      *marker);
       p->resetXForm();
 
