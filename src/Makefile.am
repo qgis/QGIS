@@ -151,7 +151,8 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 						splashscreen.moc.cpp \
 						qgsdlgvectorlayerpropertiesbase.moc.cpp \
 						qgsdlgvectorlayerproperties.moc.cpp \
-						qgshelpviewerbase.moc.cpp
+						qgshelpviewerbase.moc.cpp \
+            qgsoptionsbase.moc.cpp
 					
 qgis_UI = qgisappbase.cpp \
           qgisappbase.h \
@@ -188,7 +189,9 @@ qgis_UI = qgisappbase.cpp \
           qgsvectorlayerpropertiesbase.cpp \
           qgsvectorlayerpropertiesbase.h \
           qgsdlgvectorlayerpropertiesbase.cpp \
-          qgsdlgvectorlayerpropertiesbase.h
+          qgsdlgvectorlayerpropertiesbase.h \
+          qgsoptionsbase.cpp \
+          qgsoptionsbase.h 
 qgis_UIC = qgisappbase.ui \
           qgsabout.ui \
           qgsattributetablebase.ui \
@@ -200,7 +203,8 @@ qgis_UIC = qgisappbase.ui \
           qgsmessageviewer.ui \
           qgspatterndialogbase.h \
           qgsrasterlayerpropertiesbase.ui \
-          qgsdlgvectorlayerpropertiesbase.ui
+          qgsdlgvectorlayerpropertiesbase.ui \
+          qgsoptionsbase.ui
 # UI dependencies			
 gsattributetablebase.cpp: gsattributetablebase.h qgsattributetablebase.ui
 gsattributetablebase.h: qgsattributetablebase.ui
