@@ -404,8 +404,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName):QgsMapLayer(RASTE
   buildRasterPyramidList(); 
   //load  up the pyramid icons
 #ifdef WIN32
-  //TODO Fix this to use the right path
-  const char *PKGDATAPATH = "foo";
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
 #endif
   mPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   mNoPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
