@@ -18,15 +18,22 @@
 #include "qgssymbol.h"
 #include "qgslegenditem.h"
 
-QgsLegendItem::QgsLegendItem(){
+QgsLegendItem::QgsLegendItem ()
+{
 }
-QgsLegendItem::~QgsLegendItem(){
+
+QgsLegendItem::~QgsLegendItem ()
+{
 }
+
 /** Write property of QString layerName. */
-void QgsLegendItem::setLayerName( const QString& _newVal){
-	layerName = _newVal;
+void QgsLegendItem::setLayerName (const QString & _newVal)
+{
+  layerName = _newVal;
 }
+
 /** Write property of QString displayName. */
-void QgsLegendItem::setDisplayName( const QString& _newVal){
-	displayName = _newVal;
+void QgsLegendItem::setDisplayName (const QString & _newVal)
+{
+  displayName = _newVal;
 }

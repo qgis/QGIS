@@ -38,6 +38,8 @@ public:
 	//public slots:
 	//! Add a layer to the map
 	void addLayer();
+	//! Add a databaselayer to the map
+	void addDatabaseLayer();
 	//! Exit Qgis
 	void fileExit();
 	//! Set map tool to Zoom out

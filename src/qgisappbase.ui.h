@@ -19,7 +19,7 @@ void QgisAppBase::fileOpen()
 }
 
 
-void QgisAppBase::addLayer()
+void QgisAppBase::addDatabaseLayer()
 {
 
 }
@@ -71,6 +71,11 @@ void QgisAppBase::about()
 }
 
 void QgisAppBase::testButton()
+{
+
+}
+
+void QgisAppBase::addLayer()
 {
 
 }
