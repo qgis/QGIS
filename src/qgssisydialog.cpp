@@ -87,6 +87,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 	QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
 	QObject::connect(patternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
 	QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+	QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
     } 
     else
     {
@@ -273,4 +274,14 @@ Qt::BrushStyle QgsSiSyDialog::getFillStyle()
 void QgsSiSyDialog::resendSettingsChanged()
 {
     emit settingsChanged();
+}
+
+QString QgsSiSyDialog::label()
+{
+    return mLabelEdit->text();
+}
+
+void QgsSiSyDialog::setLabel(QString label)
+{
+    mLabelEdit->setText(label);
 }

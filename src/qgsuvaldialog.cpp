@@ -30,10 +30,11 @@
 #include <qlistbox.h>
 #include <qcombobox.h>
 #include <qpainter.h>
-#include <list.h>
+#include <list>
 
 QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLayer(vl), sydialog(vl)
 {
+    setSizeGripEnabled(true); 
 
     //find out the fields of mVectorLayer
     QgsDataProvider *provider;
@@ -82,22 +83,24 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	{
 	    mClassBreakBox->insertItem(it->first);
 	    QgsSymbol* symbol=new QgsSymbol();
+	    QgsRenderItem* ritem=new QgsRenderItem(symbol,"","");
 	    symbol->setPen(it->second->getSymbol()->pen());
 	    symbol->setBrush(it->second->getSymbol()->brush());
-	    mValues.insert(std::make_pair(it->first,symbol));
+	    mValues.insert(std::make_pair(it->first,ritem));
 	}
 	
 	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
 	int classattr=*iter;
 	mClassificationComboBox->setCurrentItem(classattr);
 	mClassBreakBox->setCurrentItem(0);
+	changeClassificationAttribute(0);
     }
     
 }
 
 QgsUValDialog::~QgsUValDialog()
 {
-    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
 	delete it->second;
     }
@@ -119,8 +122,27 @@ void QgsUValDialog::apply()
     int rightspace = 5;
     int rowspace = 5;
     int wordspace = 5;        //space between graphics/word
-    int widestlabel = 0;
-    int labelwidth;
+    int widestvalue = 0;
+    int valuewidth;
+
+    //find out the width of the widest label and of the broadest value string
+    int maxlabelwidth=0;
+    int maxvaluewidth=0;
+
+    for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    {
+	int currentlabelwidth=fm.width(it->second->label());
+	if(currentlabelwidth>maxlabelwidth)
+	{
+	    maxlabelwidth=currentlabelwidth;
+	}
+	int currentvwidth=fm.width(it->second->value());
+	if(currentvwidth>maxvaluewidth)
+	{
+	    //widestlu = string2;
+	    maxvaluewidth=currentvwidth;
+	}
+    }
 
     QgsUniqueValRenderer *renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
 
@@ -128,19 +150,19 @@ void QgsUValDialog::apply()
     if(renderer)
     {
 	renderer->clearValues();
-	for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+	for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
 	{
-	    QgsSymbol* symbol=it->second;
+	    QgsSymbol* symbol=it->second->getSymbol();
 	    QgsSymbol* newsymbol=new QgsSymbol();
 	    newsymbol->setPen(symbol->pen());
 	    newsymbol->setBrush(symbol->brush());
 	    QgsRenderItem* ritem=new QgsRenderItem(newsymbol,it->first,"");
 	    renderer->insertValue(it->first,ritem);
 	    //find out the width of the string
-	    labelwidth=fm.width(it->first);
-	    if(labelwidth>widestlabel)
+	    valuewidth=fm.width(it->first);
+	    if(valuewidth>widestvalue)
 	    {
-		widestlabel=labelwidth;
+		widestvalue=valuewidth;
 	    }
 	}
 	renderer->setClassificationField(mClassificationComboBox->currentItem());
@@ -157,9 +179,9 @@ void QgsUValDialog::apply()
     QString name;
     QString field=mClassificationComboBox->currentText();
     int fieldwidth=fm.width(field);
-    if(fieldwidth>widestlabel)
+    if(fieldwidth>widestvalue)
     {
-	widestlabel=fieldwidth;
+	widestvalue=fieldwidth;
     }
     if (mVectorLayer->propertiesDialog())
     {
@@ -170,11 +192,23 @@ void QgsUValDialog::apply()
 	name = "";
     }
     int namewidth=fm.width(name);
-    if(namewidth>widestlabel)
+    int pixwidth;
+    if(namewidth>widestvalue)
     {
-	widestlabel=namewidth;
+	if(namewidth>(symbolwidth+wordspace+widestvalue+maxlabelwidth))
+	{
+	    pixwidth = leftspace+wordspace+namewidth+rightspace;
+	}
+	else
+	{
+	    pixwidth = leftspace+2*wordspace+symbolwidth+maxlabelwidth+widestvalue+rightspace; 
+	}
     }
-    int pixwidth = leftspace+wordspace+symbolwidth+widestlabel+rightspace;
+    else
+    {
+	pixwidth = leftspace+2*wordspace+symbolwidth+widestvalue+maxlabelwidth+rightspace;
+    }
+   
     int pixheight = topspace+2*fm.height()+rowspace+(rowheight+rowspace)*mValues.size()+bottomspace;
     
     pix->resize(pixwidth,pixheight);
@@ -188,9 +222,9 @@ void QgsUValDialog::apply()
     int intermheight=topspace+2*fm.height()+rowspace;
     int row=0;
 
-    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
-	QgsSymbol* sym=it->second;
+	QgsSymbol* sym=it->second->getSymbol();
 	p.setPen(sym->pen());
 	p.setBrush(sym->brush());
 
@@ -208,6 +242,7 @@ void QgsUValDialog::apply()
 	}
 	p.setPen(Qt::black);
 	p.drawText(leftspace+symbolwidth+wordspace, intermheight+row*(rowheight+rowspace)+rowheight, it->first);
+	p.drawText(leftspace+symbolwidth+2*wordspace+widestvalue, intermheight+row*(rowheight+rowspace)+rowheight, it->second->label());
 	++row;
     }
 
@@ -226,7 +261,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
     //todo: reset sdialog
 
     //delete old entries
-    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
 	delete it->second;
     }
@@ -240,6 +275,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 	attlist.push_back(nr);
 	std::vector < QgsFeatureAttribute > vec;
 	QgsSymbol* symbol;
+	QgsRenderItem* ritemptr;
 
 	provider->reset();
 	QgsFeature* f;
@@ -254,7 +290,8 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 	    if(mValues.find(value)==mValues.end())
 	    {
 		symbol=new QgsSymbol();
-		mValues.insert(std::make_pair(value,symbol));
+		ritemptr=new QgsRenderItem(symbol,"","");
+		mValues.insert(std::make_pair(value,ritemptr));
 	    }
 	}
 
@@ -263,14 +300,14 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 	double number=0;
 	double frac;
 
-	for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+	for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
 	{
 	    ++number;
 	    //color range from blue to red
 	    frac=number/mValues.size();
 	    thecolor.setRgb(int(255*frac),0,int(255-(255*frac)));
 	    mClassBreakBox->insertItem(it->first);
-	    QgsSymbol* sym=it->second;
+	    QgsSymbol* sym=it->second->getSymbol();
 	    QPen pen;
 	    QBrush brush;
 	    if(mVectorLayer->vectorType() == QGis::Line)
@@ -298,11 +335,11 @@ void QgsUValDialog::changeCurrentValue()
 {
     QListBoxItem* item=mClassBreakBox->selectedItem();
     QString value=item->text();
-    std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
+    std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
     if(it!=mValues.end())
     {
-	QPen& pen=it->second->pen();
-	QBrush& brush=it->second->brush();
+	QPen& pen=it->second->getSymbol()->pen();
+	QBrush& brush=it->second->getSymbol()->brush();
 	QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
 	QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
 	sydialog.setFillColor(fcolor);
@@ -310,6 +347,7 @@ void QgsUValDialog::changeCurrentValue()
 	sydialog.setOutlineColor(ocolor);
 	sydialog.setOutlineStyle(pen.style());
 	sydialog.setOutlineWidth(pen.width());
+	sydialog.setLabel(it->second->label());
     }
     else
     {
@@ -321,15 +359,16 @@ void QgsUValDialog::applySymbologyChanges()
 {
   QListBoxItem* item=mClassBreakBox->selectedItem();
   QString value=item->text();
-  std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
+  std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
   if(it!=mValues.end())
   {
-      QPen& pen=it->second->pen();
-      QBrush& brush=it->second->brush(); 
+      QPen& pen=it->second->getSymbol()->pen();
+      QBrush& brush=it->second->getSymbol()->brush(); 
       pen.setWidth(sydialog.getOutlineWidth());
       pen.setColor(sydialog.getOutlineColor());
       pen.setStyle(sydialog.getOutlineStyle());
       brush.setColor(sydialog.getFillColor());
       brush.setStyle(sydialog.getFillStyle());
+      it->second->setLabel(sydialog.label());
   }
 }

@@ -19,10 +19,12 @@
 #include "qspinbox.h"
 #include "qpushbutton.h"
 #include <qcombobox.h>
+#include <qlistbox.h>
 #include "qgsgrasyextensionwidget.h"
 #include "qgssymbologyutils.h"
 #include "qgsrangerenderitem.h"
 #include "qlineedit.h"
+#include "qgsludialog.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslegenditem.h"
@@ -30,8 +32,9 @@
 #include "qgsfield.h"
 #include "qscrollview.h"
 #include <qlayout.h>
+#include <qwidgetstack.h>
 
-QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext(0), mVectorLayer(layer)
+QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVectorLayer(layer), sydialog(layer)
 {
 
 
@@ -90,14 +93,14 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
     {
 	std::list < QgsRangeRenderItem * >list = renderer->items();
 	
-	ext = new QgsGraSyExtensionWidget(this, renderer->classificationField(), QgsGraSyDialog::EMPTY, list.size(), mVectorLayer);
+	//ext = new QgsGraSyExtensionWidget(this, renderer->classificationField(), QgsGraSyDialog::EMPTY, list.size(), mVectorLayer);
 	
 	classificationComboBox->setCurrentItem(renderer->classificationField());
 
 	QGis::VectorType m_type = mVectorLayer->vectorType();
 
 	//set the right colors and texts to the widgets
-	int number = 0;
+	/*int number = 0;
 	for (std::list < QgsRangeRenderItem * >::iterator it = list.begin(); it != list.end(); ++it)
         {
 	    ((QLineEdit *) (ext->getWidget(0, number)))->setText((*it)->value());
@@ -118,29 +121,36 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
 		((QPushButton *) ext->getWidget(7, number))->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap((*it)->getSymbol()->brush().style()));
 	    }
 	    number++;
-        }
+	    }*/
 	
 	numberofclassesspinbox->setValue(list.size());
 	
-	if (numberofclassesspinbox->value() == 0)
+	/*if (numberofclassesspinbox->value() == 0)
         {
 	    ext = 0;
 	    return;
-        }
+	    }*/
 	
 	numberofclassesspinbox->setValue(list.size());
-	QgsGraSyDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
-	ext->show();
 	
     }
     
     //do the necessary signal/slot connections
-    QObject::connect(numberofclassesspinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustNumberOfClasses()));
+    //QObject::connect(numberofclassesspinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustNumberOfClasses()));
+    QObject::connect(numberofclassesspinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustClassification()));
     QObject::connect(classificationComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
     QObject::connect(modeComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
+    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+    QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
+    QObject::connect(mClassBreakBox, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(changeClass(QListBoxItem*)));
+
+    mSymbolWidgetStack->addWidget(&sydialog);
+    mSymbolWidgetStack->raiseWidget(&sydialog); 
+
+    mClassBreakBox->setCurrentItem(0);
 }
 
-QgsGraSyDialog::QgsGraSyDialog()
+QgsGraSyDialog::QgsGraSyDialog(): QgsGraSyDialogBase(), mVectorLayer(0), sydialog(0)
 {
 #ifdef QGISDEBUG
     qWarning("constructor QgsGraSyDialog");
@@ -149,11 +159,6 @@ QgsGraSyDialog::QgsGraSyDialog()
 
 QgsGraSyDialog::~QgsGraSyDialog()
 {
-    if (ext)
-    {
-	ext->hide();
-	delete ext;
-    }
 #ifdef QGISDEBUG
     qWarning("destructor QgsGraSyDialog");
 #endif
@@ -173,14 +178,8 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     std::map < QString, int >::iterator iter = mFieldMap.find(fieldstring);
     int field = iter->second;
     
-    if(ext)
-    {
-	QgsGraSyDialogBaseLayout->remove(ext);
-	delete ext;
-    }
-    
     //create a new extension dialog
-    if (modeComboBox->currentText() == "Empty")
+    /*if (modeComboBox->currentText() == "Empty")
     {
 	ext = new QgsGraSyExtensionWidget(this, field, QgsGraSyDialog::EMPTY, numberofclassesspinbox->value(), mVectorLayer);
     } 
@@ -196,14 +195,12 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     }
     
     QgsGraSyDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
-    ext->show();
+    ext->show();*/
     
 }
 
 void QgsGraSyDialog::apply()
 {
-    if (ext)
-    {
 	if (classificationComboBox->currentText().isEmpty())  //don't do anything, it there is no classification field
         {
 	    return;
@@ -229,21 +226,20 @@ void QgsGraSyDialog::apply()
 	int labelwidth=0;
 	lowerupperwidth=0;
 
-	for (int i = 0; i < numberofclassesspinbox->value(); i++)
-        {
-	    int currentlabelwidth=fm.width(((QLineEdit *) (ext->getWidget(2, i)))->text());  
+	for(std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+	{
+	    int currentlabelwidth=fm.width(it->second->label());
 	    if(currentlabelwidth>labelwidth)
             {
 		labelwidth=currentlabelwidth;
             }
-	    
-	    int currentluwidth=fm.width(((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text());
+	    int currentluwidth=fm.width(it->second->value())+fm.width(" - ")+fm.width(it->second->upper_value());
 	    if(currentluwidth>lowerupperwidth)
 	    {
 		//widestlu = string2;
 		lowerupperwidth=currentluwidth;
 	    }
-        }
+	}
 	
 	//create the pixmap for the render item
 	QPixmap *pix = mVectorLayer->legendPixmap();
@@ -282,39 +278,33 @@ void QgsGraSyDialog::apply()
 	
 	int offset = topspace + 2 * fm.height();
 	int rowincrement = rowheight + rowspace;
-	for (int i = 0; i < numberofclassesspinbox->value(); i++)
+	int i=0;
+
+	for (std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
         {
 	    QgsSymbol* sy = new QgsSymbol();
 	    
-	    if (mVectorLayer->vectorType() == QGis::Polygon)
-            {
-		sy->pen().setColor(((QPushButton *) (ext->getWidget(3, 0)))->paletteBackgroundColor());
-		sy->pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton *) (ext->getWidget(4, 0)))->name())));
-		sy->pen().setWidth(((QSpinBox *) (ext->getWidget(5, 0)))->value());
-	    } 
-	    else
-            {
-		sy->pen().setColor(((QPushButton *) (ext->getWidget(3, i)))->paletteBackgroundColor());
-		sy->pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton *) (ext->getWidget(4, i)))->name())));
-		sy->pen().setWidth(((QSpinBox *) (ext->getWidget(5, i)))->value());
-            }
+	    sy->pen().setColor(it->second->getSymbol()->pen().color());
+	    sy->pen().setStyle(it->second->getSymbol()->pen().style());
+	    sy->pen().setWidth(it->second->getSymbol()->pen().width());
+	     
 	    
 	    if (mVectorLayer->vectorType() != QGis::Line)
             {
-		sy->brush().setColor(((QPushButton *) (ext->getWidget(6, i)))->paletteBackgroundColor());
+		sy->brush().setColor(it->second->getSymbol()->brush().color());
             }
 	    
 	    if (mVectorLayer->vectorType() == QGis::Polygon)
             {
-		sy->brush().setStyle(QgsSymbologyUtils::char2BrushStyle((((QPushButton *) (ext->getWidget(7, i)))->name())));
+		sy->brush().setStyle(it->second->getSymbol()->brush().style());
 	    } 
 	    else if (mVectorLayer->vectorType() == QGis::Point)
             {
 		sy->brush().setStyle(Qt::SolidPattern);
             }
-	    QString lower_bound = ((QLineEdit *) (ext->getWidget(0, i)))->text();
-	    QString upper_bound = ((QLineEdit *) (ext->getWidget(1, i)))->text();
-	    QString label = ((QLineEdit *) (ext->getWidget(2, i)))->text();
+	    QString lower_bound = it->second->value();
+	    QString upper_bound = it->second->upper_value();
+	    QString label = it->second->label();
 	    
 	    //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
 	    bool lbcontainsletter = false;
@@ -360,9 +350,15 @@ void QgsGraSyDialog::apply()
 		p.setPen(Qt::black);
 		p.drawText(leftspace + symbolwidth + wordspace, offset + rowincrement * i + rowheight, legendstring);
 		p.drawText(pixwidth - labelwidth - rightspace, offset + rowincrement * i + rowheight, label);
-            }
+	    }
+	    ++i;
         }
-	renderer->setClassificationField(ext->classfield());
+	
+	std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
+	if(iter!=mFieldMap.end())
+	{
+	   renderer->setClassificationField(iter->second); 
+	}
 	
 	mVectorLayer->updateItemPixmap();
 
@@ -371,19 +367,25 @@ void QgsGraSyDialog::apply()
 	    mVectorLayer->propertiesDialog()->setRendererDirty(false);
         }
 	mVectorLayer->triggerRepaint();
-    }
-    
-    else                          //number of classes is 0
-    {
-	std::cout << "warning, number of classes is zero" << std::endl << std::flush;
-    }
-    
 }
 
 void QgsGraSyDialog::adjustClassification()
 {
+    mClassBreakBox->clear();
+    QGis::VectorType m_type = mVectorLayer->vectorType();
+    QgsDataProvider *provider = mVectorLayer->getDataProvider();
+    double minimum, maximum;
+    
+    //delete all previous entries
+    for(std::map<QString, QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    {
+	delete it->second;
+    }
+    mEntries.clear();
+
     //find out the number of the classification field
     QString fieldstring = classificationComboBox->currentText();
+
     if (fieldstring.isEmpty())    //don't do anything, it there is no classification field
     {
 	show();
@@ -391,17 +393,147 @@ void QgsGraSyDialog::adjustClassification()
     }
     
     std::map < QString, int >::iterator iter = mFieldMap.find(fieldstring);
-    int field = iter->second; 
-    
-    if(ext)
+    int field = iter->second;
+
+    if (provider)
     {
+	if (modeComboBox->currentText() == "Equal Interval")
+	{
+	    minimum = provider->minValue(field).toDouble();
+	    maximum = provider->maxValue(field).toDouble();
+	} 
+	else                    //don't waste performance if mMode is QgsGraSyDialog::EMPTY
+	{
+	    minimum = 0;
+	    maximum = 0;
+	}
+    }
+ 
+    
+    QString listboxtext;
+    for(int i=0;i<numberofclassesspinbox->value();++i)
+    {
+	QgsRangeRenderItem* rritem = new QgsRangeRenderItem();
+	QgsSymbol* symbol = new QgsSymbol();
+	rritem->setLabel(sydialog.label());
+	QPen pen;
+	QBrush brush;
+
 	if (modeComboBox->currentText() == "Empty")
 	{
-	    ext->setClassification(QgsGraSyDialog::EMPTY,field);
+	    listboxtext="Empty"+QString::number(i+1);
+	    mClassBreakBox->insertItem(listboxtext);
 	}
 	else if(modeComboBox->currentText() == "Equal Interval")
 	{
-	    ext->setClassification(QgsGraSyDialog::EQUAL_INTERVAL,field);
+	    double lower=minimum + (maximum - minimum) / numberofclassesspinbox->value() * i;
+	    double upper=minimum + (maximum - minimum) / numberofclassesspinbox->value() * (i+1);
+	    rritem->setValue(QString::number(lower,'f',3));
+	    rritem->setUpperValue(QString::number(upper,'f',3));
+	    listboxtext=QString::number(lower,'f',3)+" - " +QString::number(upper,'f',3);
+	    mClassBreakBox->insertItem(listboxtext);
+	    //set default symbology
+
+	    //apply a nice color range from blue to red as default
+	    if (i == 0)
+	    {
+		if (m_type == QGis::Line)
+		{
+		    pen.setColor(QColor(0, 0, 255));
+		} 
+		else                //point or polygon
+		{
+		    brush.setColor(QColor(0, 0, 255));
+		    pen.setColor(Qt::black);
+		}
+	    } 
+	    else
+	    {
+		if (m_type == QGis::Line)
+		{
+		    pen.setColor(QColor(255 / numberofclassesspinbox->value() * (i+1), 0, 255 - (255 / numberofclassesspinbox->value() * (i+1))));
+		} 
+		else                //point or polygon
+		{
+		    brush.setColor(QColor(255 / numberofclassesspinbox->value() * (i+1), 0, 255 - (255 / numberofclassesspinbox->value() * (i+1))));
+		    pen.setColor(Qt::black);
+		}
+	    }
+	    pen.setWidth(1);
+	    brush.setStyle(Qt::SolidPattern);
+	    symbol->setPen(pen);
+	    symbol->setBrush(brush);
+	    rritem->setSymbol(symbol);
 	}
+	mEntries.insert(std::make_pair(listboxtext,rritem));
+    }
+    mClassBreakBox->setCurrentItem(0);
+}
+
+void QgsGraSyDialog::changeCurrentValue()
+{
+    QListBoxItem* item=mClassBreakBox->selectedItem();
+    QString value=item->text();
+    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
+    if(it!=mEntries.end())
+    {
+	QPen& pen=it->second->getSymbol()->pen();
+	QBrush& brush=it->second->getSymbol()->brush();
+	QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
+	QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
+	if(mVectorLayer->vectorType()!=QGis::Line)
+	{
+	    sydialog.setFillColor(fcolor);
+	    sydialog.setFillStyle(brush.style());
+	}
+	sydialog.setOutlineColor(ocolor);
+	sydialog.setOutlineStyle(pen.style());
+	sydialog.setOutlineWidth(pen.width());
+	sydialog.setLabel(it->second->label());
+    }
+    else
+    {
+	//no entry found
+    }
+}
+
+void QgsGraSyDialog::applySymbologyChanges()
+{
+    QListBoxItem* item=mClassBreakBox->selectedItem();
+    QString value=item->text();
+    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
+    if(it!=mEntries.end())
+    {
+	QPen& pen=it->second->getSymbol()->pen();
+	QBrush& brush=it->second->getSymbol()->brush(); 
+	pen.setWidth(sydialog.getOutlineWidth());
+	pen.setColor(sydialog.getOutlineColor());
+	pen.setStyle(sydialog.getOutlineStyle());
+	brush.setColor(sydialog.getFillColor());
+	brush.setStyle(sydialog.getFillStyle());
+	it->second->setLabel(sydialog.label());
+    }
+}
+
+void QgsGraSyDialog::changeClass(QListBoxItem* item)
+{
+    QString currenttext=item->text();
+    QgsRangeRenderItem* rritem=0;
+    std::map<QString,QgsRangeRenderItem*>::iterator iter=mEntries.find(currenttext);
+    if(iter!=mEntries.end())
+    {
+	rritem=iter->second;
+    }
+    QgsLUDialog dialog;
+    if(dialog.exec()==QDialog::Accepted)
+    {
+	//todo: change values in mEntries
+	if(rritem)
+	{
+	    rritem->setValue(dialog.lowerValue());
+	    rritem->setUpperValue(dialog.upperValue());
+	}
+	QString newclass=dialog.lowerValue()+"-"+dialog.upperValue();
+	//item->setText(newclass);//todo: find another way to change the text	
     }
 }

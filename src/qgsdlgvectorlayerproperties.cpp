@@ -82,10 +82,7 @@ bufferRenderer(layer->
       QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
                                              fld.type(), QString("%1").arg(fld.length()),
                                              QString("%1").arg(fld.precision()));
-      cmbDisplayLabelField->insertItem(fld.name());
     }
-  // set the current display/label field name in use
-  cmbDisplayLabelField->setCurrentText(lyr->labelField());
   // symbology initialization
   legendtypecombobox->insertItem(tr("Single Symbol"));
   legendtypecombobox->insertItem(tr("Graduated Symbol"));
@@ -201,8 +198,6 @@ void QgsDlgVectorLayerProperties::apply()
   }
 
   rendererDirty = false;
-  // set the display field
-  layer->setDisplayField(cmbDisplayLabelField->currentText());
 }
 
 void QgsDlgVectorLayerProperties::closeEvent(QCloseEvent* e)
