@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>480</width>
+            <width>479</width>
             <height>296</height>
         </rect>
     </property>
@@ -188,63 +188,134 @@
             </widget>
             <widget class="QWidget">
                 <property name="name">
-                    <cstring>tabMap</cstring>
+                    <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>&amp;Map</string>
+                    <string>&amp;Rendering</string>
                 </attribute>
                 <grid>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0">
+                    <widget class="QGroupBox" row="0" column="0">
                         <property name="name">
-                            <cstring>textLabel1_3</cstring>
+                            <cstring>groupBox4</cstring>
                         </property>
-                        <property name="text">
-                            <string>Search Radius for Identifying Features</string>
+                        <property name="title">
+                            <string>&amp;Update During Drawing</string>
                         </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLayoutWidget" row="0" column="0">
+                                <property name="name">
+                                    <cstring>layout2</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel1_6</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Update display after reading</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QSpinBox">
+                                        <property name="name">
+                                            <cstring>spinBoxUpdateThreshold</cstring>
+                                        </property>
+                                        <property name="maxValue">
+                                            <number>1000000</number>
+                                        </property>
+                                        <property name="value">
+                                            <number>1000</number>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel2_2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>features</string>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0">
+                                <property name="name">
+                                    <cstring>textLabel3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>(Set to 0 to not update the display until all features have been read)</string>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
-                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tabMap</cstring>
+                </property>
+                <attribute name="title">
+                    <string>&amp;Selection</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QGroupBox" row="0" column="0">
                         <property name="name">
-                            <cstring>textLabel2</cstring>
+                            <cstring>groupBox3_2</cstring>
                         </property>
-                        <property name="text">
-                            <string>&lt;html&gt;
-&lt;b&gt;Note:&lt;/b&gt; 
-Specify the value in thousandths.  
-The search radius is calculated as:
-&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
-&lt;/ul&gt;
+                        <property name="title">
+                            <string>Search Radius</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel1_3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Search Radius for Identifying Features</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox" row="0" column="1">
+                                <property name="name">
+                                    <cstring>spinBoxIdentifyValue</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>100</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>textLabel2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&lt;html&gt;
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&lt;br&gt;
 By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</string>
-                        </property>
-                    </widget>
-                    <widget class="Line" row="1" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>line1</cstring>
-                        </property>
-                        <property name="frameShape">
-                            <enum>HLine</enum>
-                        </property>
-                        <property name="frameShadow">
-                            <enum>Sunken</enum>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                    </widget>
-                    <widget class="QSpinBox" row="0" column="1">
-                        <property name="name">
-                            <cstring>spinBoxIdentifyValue</cstring>
-                        </property>
-                        <property name="maxValue">
-                            <number>100</number>
-                        </property>
-                        <property name="minValue">
-                            <number>1</number>
-                        </property>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
                 </grid>
             </widget>

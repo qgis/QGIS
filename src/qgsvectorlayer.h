@@ -191,6 +191,9 @@ private:                       // Private methods
   QLibrary *myLib;
   //! Pointer to the identify results dialog
   QgsIdentifyResults *ir;
+  //! Update threshold for drawing features as they are read. A value of zero indicates
+  // that no features will be drawn until all have been read
+  int updateThreshold;
 
 };
 
