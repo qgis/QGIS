@@ -161,9 +161,9 @@ target_alias = @target_alias@
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS)
 
-lib_LTLIBRARIES = libqgsworldmapimporter.la
+lib_LTLIBRARIES = libHttpServer.la
 
-plugin_UI = qgsworldmapimporterguibase.ui
+plugin_UI = pluginguibase.ui
 
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
 
@@ -171,20 +171,22 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
-plugin_MOC = qgsworldmapimporter.moc.cpp qgsworldmapimportergui.moc.cpp
+plugin_MOC = plugin.moc.cpp plugingui.moc.cpp
 
-libqgsworldmapimporter_la_SOURCES = qgsworldmapimporter.cpp \
-	qgsworldmapimporter.h \
-	qgsworldmapimportergui.cpp \
-	qgsworldmapimportergui.h \
+libHttpServer_la_SOURCES = plugin.cpp \
+	plugin.h \
+	plugingui.cpp \
+	plugingui.h \
+	httpdaemon.cpp \
+	httpdaemon.h \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
 
 
-nodist_libqgsworldmapimporter_la_SOURCES = $(plugin_MOC)
+nodist_libHttpServer_la_SOURCES = $(plugin_MOC)
 
-libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
+libHttpServer_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
@@ -196,31 +198,29 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libqgsworldmapimporter_la_LIBADD =
-am__objects_1 = qgsworldmapimporterguibase.uic.lo
+libHttpServer_la_LIBADD =
+am__objects_1 = pluginguibase.uic.lo
 am__objects_2 = $(am__objects_1)
 am__objects_3 =
 am__objects_4 = $(am__objects_3)
-am__objects_5 = qgsworldmapimporterguibase.moc.uic.lo
+am__objects_5 = pluginguibase.moc.uic.lo
 am__objects_6 = $(am__objects_5)
-am_libqgsworldmapimporter_la_OBJECTS = qgsworldmapimporter.lo \
-	qgsworldmapimportergui.lo $(am__objects_2) $(am__objects_4) \
-	$(am__objects_6)
-am__objects_7 = qgsworldmapimporter.moc.lo qgsworldmapimportergui.moc.lo
-nodist_libqgsworldmapimporter_la_OBJECTS = $(am__objects_7)
-libqgsworldmapimporter_la_OBJECTS = \
-	$(am_libqgsworldmapimporter_la_OBJECTS) \
-	$(nodist_libqgsworldmapimporter_la_OBJECTS)
+am_libHttpServer_la_OBJECTS = plugin.lo plugingui.lo httpdaemon.lo \
+	$(am__objects_2) $(am__objects_4) $(am__objects_6)
+am__objects_7 = plugin.moc.lo plugingui.moc.lo
+nodist_libHttpServer_la_OBJECTS = $(am__objects_7)
+libHttpServer_la_OBJECTS = $(am_libHttpServer_la_OBJECTS) \
+	$(nodist_libHttpServer_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/qgsworldmapimporter.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qgsworldmapimporter.moc.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qgsworldmapimportergui.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qgsworldmapimportergui.moc.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qgsworldmapimporterguibase.moc.uic.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qgsworldmapimporterguibase.uic.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/httpdaemon.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/plugin.Plo ./$(DEPDIR)/plugin.moc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/plugingui.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/plugingui.moc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pluginguibase.moc.uic.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pluginguibase.uic.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -236,11 +236,11 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libqgsworldmapimporter_la_SOURCES)
+DIST_SOURCES = $(libHttpServer_la_SOURCES)
 DIST_COMMON = README COPYING INSTALL Makefile.am Makefile.in \
 	acinclude.m4 aclocal.m4 config.guess config.sub configure \
 	configure.ac depcomp install-sh ltmain.sh missing mkinstalldirs
-SOURCES = $(libqgsworldmapimporter_la_SOURCES) $(nodist_libqgsworldmapimporter_la_SOURCES)
+SOURCES = $(libHttpServer_la_SOURCES) $(nodist_libHttpServer_la_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -291,8 +291,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libqgsworldmapimporter.la: $(libqgsworldmapimporter_la_OBJECTS) $(libqgsworldmapimporter_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libqgsworldmapimporter_la_LDFLAGS) $(libqgsworldmapimporter_la_OBJECTS) $(libqgsworldmapimporter_la_LIBADD) $(LIBS)
+libHttpServer.la: $(libHttpServer_la_OBJECTS) $(libHttpServer_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libHttpServer_la_LDFLAGS) $(libHttpServer_la_OBJECTS) $(libHttpServer_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -300,12 +300,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsworldmapimporter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsworldmapimporter.moc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsworldmapimportergui.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsworldmapimportergui.moc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsworldmapimporterguibase.moc.uic.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsworldmapimporterguibase.uic.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/httpdaemon.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.moc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugingui.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugingui.moc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pluginguibase.moc.uic.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pluginguibase.uic.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
