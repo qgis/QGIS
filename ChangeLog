@@ -1,7 +1,16 @@
+2004-12-30  Mark Coletti  <mcoletti@er.usgs.gov>
+
+
+
 QGIS Change Log
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-12-30 [mcoletti] 0.6.0devel2
+*** Re-factored endian-handling in data providers
+*** Re-factored delimited text provider 
+*** Made some class members const-correct
 
 2004-12-30 [larsl] 0.6.0devel1
 ** Implemented getProjectionWKT() in QgsGPXProvider
