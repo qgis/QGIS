@@ -1,9 +1,9 @@
 /***************************************************************************
-  main.cpp  -  description
-  -------------------
-begin                : Fri Jun 21 10:48:28 AKDT 2002
-copyright            : (C) 2002 by Gary E.Sherman
-email                : sherman at mrcc.com
+                            main.cpp  -  description
+                              -------------------
+              begin                : Fri Jun 21 10:48:28 AKDT 2002
+              copyright            : (C) 2002 by Gary E.Sherman
+              email                : sherman at mrcc.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -48,21 +48,21 @@ static const char * const ident_ = "$Id$";
 void usage( std::string const & appName )
 {
   std::cerr << "Quantum GIS - " << VERSION << " 'Simon'\n" 
-	    << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n" 
-	    << "raster and vector data.\n"  
-	    << "Usage: " << appName <<  " [options] [FILES]\n"  
-	    << "  options:\n"
-	    << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
-	    << "\t[--lang language]\tuse language for interface text\n"
-	    << "\t[--project projectfile]\tload the given QGIS project\n"
-	    << "\t[--help]\t\tthis text\n\n"
-	    << "  FILES:\n"  
-	    << "    Files specified on the command line can include rasters,\n"  
-	    << "    vectors, and QGIS project files (.qgs): \n"  
-	    << "     1. Rasters - Supported formats include GeoTiff, DEM \n"  
-	    << "        and others supported by GDAL\n"  
-	    << "     2. Vectors - Supported formats include ESRI Shapefiles\n"  
-	    << "        and others supported by OGR and PostgreSQL layers using\n"  
+      << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n" 
+      << "raster and vector data.\n"  
+      << "Usage: " << appName <<  " [options] [FILES]\n"  
+      << "  options:\n"
+      << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
+      << "\t[--lang language]\tuse language for interface text\n"
+      << "\t[--project projectfile]\tload the given QGIS project\n"
+      << "\t[--help]\t\tthis text\n\n"
+      << "  FILES:\n"  
+      << "    Files specified on the command line can include rasters,\n"  
+      << "    vectors, and QGIS project files (.qgs): \n"  
+      << "     1. Rasters - Supported formats include GeoTiff, DEM \n"  
+      << "        and others supported by GDAL\n"  
+      << "     2. Vectors - Supported formats include ESRI Shapefiles\n"  
+      << "        and others supported by OGR and PostgreSQL layers using\n"  
             << "        the PostGIS extension\n"  ;
 
 } // usage()
@@ -75,7 +75,7 @@ void usage( std::string const & appName )
  */
 bool bundleclicked(int argc, char *argv[])
 {
-	return ( argc > 1 && memcmp(argv[1], "-psn_", 5) == 0 );
+  return ( argc > 1 && memcmp(argv[1], "-psn_", 5) == 0 );
 }
 
 
@@ -110,87 +110,87 @@ int main(int argc, char *argv[])
   if ( !bundleclicked(argc, argv) )
   {
 
-	//////////////////////////////////////////////////////////////// 
-	// USe the GNU Getopts utility to parse cli arguments
-	// Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
-	///////////////////////////////////////////////////////////////
-	int optionChar;
-	while (1)
-	{
-	  static struct option long_options[] =
-	  {
-		/* These options set a flag. */
-		{"help", no_argument, 0, 'h'},
-		/* These options don't set a flag.
-		 *  We distinguish them by their indices. */
-		{"snapshot", required_argument, 0, 's'},
-		{"lang",     required_argument, 0, 'l'},
-		{"project",  required_argument, 0, 'p'},
-		{0, 0, 0, 0}
-	  };
+  //////////////////////////////////////////////////////////////// 
+  // USe the GNU Getopts utility to parse cli arguments
+  // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
+  ///////////////////////////////////////////////////////////////
+  int optionChar;
+  while (1)
+  {
+    static struct option long_options[] =
+    {
+    /* These options set a flag. */
+    {"help", no_argument, 0, 'h'},
+    /* These options don't set a flag.
+     *  We distinguish them by their indices. */
+    {"snapshot", required_argument, 0, 's'},
+    {"lang",     required_argument, 0, 'l'},
+    {"project",  required_argument, 0, 'p'},
+    {0, 0, 0, 0}
+    };
 
-	  /* getopt_long stores the option index here. */
-	  int option_index = 0;
+    /* getopt_long stores the option index here. */
+    int option_index = 0;
 
-	  optionChar = getopt_long (argc, argv, "slp",
-			  long_options, &option_index);
+    optionChar = getopt_long (argc, argv, "slp",
+        long_options, &option_index);
 
-	  /* Detect the end of the options. */
-	  if (optionChar == -1)
-		break;
+    /* Detect the end of the options. */
+    if (optionChar == -1)
+    break;
 
-	  switch (optionChar)
-	  {
-		case 0:
-		  /* If this option set a flag, do nothing else now. */
-		  if (long_options[option_index].flag != 0)
-			break;
-		  printf ("option %s", long_options[option_index].name);
-		  if (optarg)
-			printf (" with arg %s", optarg);
-		  printf ("\n");
-		  break;
+    switch (optionChar)
+    {
+    case 0:
+      /* If this option set a flag, do nothing else now. */
+      if (long_options[option_index].flag != 0)
+      break;
+      printf ("option %s", long_options[option_index].name);
+      if (optarg)
+      printf (" with arg %s", optarg);
+      printf ("\n");
+      break;
 
-		case 's':
-		  mySnapshotFileName = optarg;
-		  break;
+    case 's':
+      mySnapshotFileName = optarg;
+      break;
 
-		case 'l':
-		  myTranslationFileName = optarg;
-		  break;
+    case 'l':
+      myTranslationFileName = optarg;
+      break;
 
-		case 'p':
-		  myProjectFileName = optarg;
-		  break;
+    case 'p':
+      myProjectFileName = optarg;
+      break;
 
-		case 'h':
-		case '?':
-		  usage( argv[0] );
-		  return 2;		// XXX need standard exit codes
-		  break;
+    case 'h':
+    case '?':
+      usage( argv[0] );
+      return 2;   // XXX need standard exit codes
+      break;
 
-		default:
-		  std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
-		  return 1;		// XXX need standard exit codes
-	  }
-	}
+    default:
+      std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
+      return 1;   // XXX need standard exit codes
+    }
+  }
 
-	// Add any remaining args to the file list - we will attempt to load them 
-	// as layers in the map view further down....
+  // Add any remaining args to the file list - we will attempt to load them 
+  // as layers in the map view further down....
 #ifdef QGISDEBUG
-	std::cout << "Files specified on command line: " << optind << std::endl;
+  std::cout << "Files specified on command line: " << optind << std::endl;
 #endif
-	if (optind < argc)
-	{
-	  while (optind < argc)
-	  {
+  if (optind < argc)
+  {
+    while (optind < argc)
+    {
 #ifdef QGISDEBUG
-		int idx = optind;
-		std::cout << idx << ": " << argv[idx] << std::endl;
+    int idx = optind;
+    std::cout << idx << ": " << argv[idx] << std::endl;
 #endif
-		myFileList->append(argv[optind++]);
-	  }
-	}
+    myFileList->append(argv[optind++]);
+    }
+  }
   }
 #endif //WIN32
 
