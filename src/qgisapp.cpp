@@ -527,7 +527,11 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
   std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString << std::endl;
 #endif
   // check all libs in the current plugin directory and get name and descriptions
+#ifdef WIN32
+  QDir myPluginDir(thePluginDirString, "*.dll", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+#else
   QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+#endif
 
   if (myPluginDir.count() == 0)
   {
@@ -554,7 +558,10 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
         {
           //check if the plugin was active on last session
           QString myEntryName = myName();
-          if (mySettings.readEntry("/qgis/Plugins/" + myEntryName)=="true")
+          // Windows stores a "true" value as a 1 in the registry so we
+          // have to use readBoolEntry in this function
+
+          if (mySettings.readBoolEntry("/qgis/Plugins/" + myEntryName))
           {
 #ifdef QGISDEBUG
             std::cerr << " -------------------- loading " << myEntryName << std::endl;
