@@ -26,7 +26,6 @@
 #include "qgsgraduatedsymrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslegenditem.h"
-#include "qgsvectorlayerproperties.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
 #include "qscrollview.h"

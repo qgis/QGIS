@@ -17,6 +17,7 @@
 #define QGSLABELATTRIBUTES_H
 
 #include <qnamespace.h>
+#include <qpen.h>
 class QString;
 class QFont;
 class QColor;
