@@ -1,5 +1,6 @@
 #include <iostream>
 #include <qstring.h>
+#include <qmenubar.h>
 #include "qgisinterface.h"
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
@@ -35,3 +36,11 @@ QString QgisIface::activeLayerSource(){
   return qgis->activeLayerSource();
 }
 
+int QgisIface::addMenu(QString menuText, QPopupMenu *menu){
+  QMenuBar *mainMenu = qgis->menuBar();
+  // get the index of the help menu 
+  #ifdef DEBUG
+  std::cout << "Menu item count is : " << mainMenu->count() << std::endl;
+  #endif
+  return mainMenu->insertItem(menuText, menu,-1, mainMenu->count() -1);
+}
