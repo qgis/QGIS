@@ -49,6 +49,7 @@
 #include <qsettings.h>
 
 #include "qgisapp.h"
+#include "qgsproject.h"
 #include "qgsrect.h"
 #include "qgspoint.h"
 #include "qgsmaptopixel.h"
@@ -107,9 +108,13 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   {
       setDataProvider( providerKey );         
   }
-  
-  //draw the selected features in yellow
-  selectionColor.setRgb(255, 255, 0);
+  // XXXX Is it just me or is selection colour not actually used anywhere? TS
+  //draw the selected features the colour set in project file
+  //(defaults to yellow)
+  int myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
+  int myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",0);
+  int myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
+  selectionColor.setRgb(myRedInt,myGreenInt,myBlueInt);
 
   // Default for the popup menu
   popMenu = 0;
@@ -1647,25 +1652,14 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 		    //
 		    // Get the layers project info and set up the QgsCoordinateTransform for this layer
 		    //
-		    QString mySourceWKT = getProjectionWKT();
-		    //hard coding to geo/wgs84 for now
-		    /*
-		      QString myDestWKT =    "PROJCS[\"Alaska_Albers_Equal_Area_Conic\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"False_Easting\",0.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"longitude_of_center\",-154.0],PARAMETER[\"Standard_Parallel_1\",55.0],PARAMETER[\"Standard_Parallel_2\",65.0],PARAMETER[\"latitude_of_center\",50.0],UNIT[\"Meter\",1.0]]";
-		    */
-		    QString myDestWKT =     "GEOGCS[\"WGS 84\", "
-		      "  DATUM[\"WGS_1984\", "
-		      "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-		      "      AUTHORITY[\"EPSG\",7030]], "
-		      "    TOWGS84[0,0,0,0,0,0,0], "
-		      "    AUTHORITY[\"EPSG\",6326]], "
-		      "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-		      "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-		      "  AXIS[\"Lat\",NORTH], "
-		      "  AXIS[\"Long\",EAST], "
-		      "  AUTHORITY[\"EPSG\",4326]]";
-		    
-		    mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
-  
+                    QString mySourceWKT = getProjectionWKT();
+                    //get the project projection, defaulting to this layer's projection 
+                    //if none exists....
+                    QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
+                    //set up the coordinat transform - in the case of raster this is mainly used to convert 
+                    //the inverese projection of the map extents of the canvas when zzooming in etc. so 
+                    //that they match the coordinate system of this layer      
+                    mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
                 }
             } else
             {

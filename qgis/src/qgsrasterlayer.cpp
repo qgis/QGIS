@@ -84,6 +84,7 @@
 #include "qgisapp.h"
 #include "qgscolortable.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsproject.h"
 
 #include <gdal_priv.h>
 
@@ -567,18 +568,12 @@ QgsRasterLayer::readFile( QString const & fileName )
     // Get the layer's projection info and set up the 
     // QgsCoordinateTransform for this layer
     QString mySourceWKT = getProjectionWKT();
-    //hard coding to geo/wgs84 for now
-    QString myDestWKT =     "GEOGCS[\"WGS 84\", "
-      "  DATUM[\"WGS_1984\", "
-      "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-      "      AUTHORITY[\"EPSG\",7030]], "
-      "    TOWGS84[0,0,0,0,0,0,0], "
-      "    AUTHORITY[\"EPSG\",6326]], "
-      "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-      "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-      "  AXIS[\"Lat\",NORTH], "
-      "  AXIS[\"Long\",EAST], "
-      "  AUTHORITY[\"EPSG\",4326]]";
+    //get the project projection, defaulting to this layer's projection 
+    //if none exists....
+    QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
+    //set up the coordinat transform - in the case of raster this is mainly used to convert 
+    //the inverese projection of the map extents of the canvas when zzooming in etc. so 
+    //that they match the coordinate system of this layer      
     mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
     
     return true;
