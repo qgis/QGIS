@@ -26,8 +26,11 @@ class PluginGui : public PluginGuiBase
 Q_OBJECT
 public:
   PluginGui();
-  PluginGui( QgisIface* iFace, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  PluginGui( QgisIface* iFace, QWidget* parent = 0, const char* name = 0, 
+	     bool modal = FALSE, WFlags fl = 0 );
   ~PluginGui();
+  
+public slots:
   
   void pbnOK_clicked();
   void pbnCancel_clicked();
@@ -36,7 +39,20 @@ public:
   
 private:
   
-  bool polygonIsHole(double* points, int nPoints);
+  /** Polygons in shapefiles are built from one or several "rings", which are
+      closed simple curves. If the points in the ring are given in clockwise
+      order the ring defines the outer boundary of a polygon, if they are given
+      in counterclockwise order they define an inner boundary, a hole. This
+      function checks the winding of a ring (clockwise or counterclockwise)
+      and returns @c true if it is an inner boundary and @c false if it is an
+      outer boundary.
+      @param points A pointer to the start of the ring. The ring should be
+                    given as an array of doubles with alternating x and y 
+		    values.
+      @param nPoints The number of points in the ring (including the end point,
+                     which should be equal to the first point).
+  */
+  bool polygonIsHole(const double* points, int nPoints);
   
 signals:
   void drawRasterLayer(QString);

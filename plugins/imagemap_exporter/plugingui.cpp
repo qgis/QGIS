@@ -185,7 +185,7 @@ void PluginGui::pbnSelectHTML_clicked()
 }
 
 
-bool PluginGui::polygonIsHole(double* points, int nPoints)
+bool PluginGui::polygonIsHole(const double* points, int nPoints)
 {
   /* This is how it works: Find the leftmost point, point[i]. Check if the ray
      from point[i] that goes through point[i+1] is above the ray from point[i]
