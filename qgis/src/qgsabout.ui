@@ -105,10 +105,10 @@
                             <cstring>TextLabel4</cstring>
                         </property>
                         <property name="text">
-                            <string>Quantum GIS (qgis)</string>
+                            <string>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</string>
                         </property>
                         <property name="alignment">
-                            <set>AlignCenter</set>
+                            <set>WordBreak|AlignCenter</set>
                         </property>
                     </widget>
                     <widget class="QTextEdit" row="4" column="0">
