@@ -1,5 +1,25 @@
-TODO,v 1.18 2004/02/13 22:15:30 mcoletti Exp
+TODO,v 1.19 2004/04/03 16:42:34 gsherman Exp
+#############################################################################
+TODO List for getting to version 0.2 (in no order of importance)
+#############################################################################
+1.  Add vector of view extents and replace the Previous Extent 
+    function with Forward and Back view buttons to allow user to move back and 
+    forth between views.
+2   [DONE (TS)] Can the loaded plugin list be remebered from one session 
+    to the next?
+3.  On the properties dialog for pg layer, can you make an apply button or 
+    wait cursor or progress bar. The gui is currently quite unresponsive when 
+    changing the layer type.
+4.  [DELAYED] PostgreSQL/PostGIS layer management plugin (create/delete layers)
+    Forward and Back view buttons to allow user to move back and forth between
+    views.
+5.  GRASS support tested and implemented.
+6.  Create SVG marker directory and supply a minimal set of markers for this
+    release.
+
+#############################################################################
 TODO List for getting to version 0.1 (in no order of importance)
+#############################################################################
  1. [DONE TS/MH] Fix QgsProjectIo so that qgis projects can be saved and 
     loaded. Major areas needing attention are customized raster settings and 
     symbology for vector layers.
