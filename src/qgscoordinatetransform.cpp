@@ -28,7 +28,8 @@ QgsCoordinateTransform::~QgsCoordinateTransform(){
 QgsPoint QgsCoordinateTransform::transform(QgsPoint p){
   // transform x
   double dx = (p.x() - xMin)/mapUnitsPerPixel;
-  double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
+  double dy = yMax - ((p.y() - yMin))/mapUnitsPerPixel;
+  // double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
   return QgsPoint(dx,dy);
 }
 

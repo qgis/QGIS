@@ -36,7 +36,9 @@ void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
   // update extent if warranted
   if(layers.size() == 1){
     fullExtent = lyr->extent();
+    fullExtent.scale(1.1);
     currentExtent = fullExtent;
+    
   }
 
   // set zpos to something...
@@ -53,9 +55,22 @@ void QgsMapCanvas::render2(){
       muppX = currentExtent.width()/width();
       cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << endl;
       m_mupp = muppY > muppX?muppY:muppX;
-      m_mupp *= 1.20;
-  coordXForm->setParameters(m_mupp, currentExtent.xMin(), 
-			    currentExtent.yMin(), currentExtent.yMax());
+      // calculate the actual extent of the mapCanvas
+      double dxmin,dymin,dymax,whitespace;
+      if(muppY > muppX){
+	dymin = currentExtent.yMin();
+	dymax = currentExtent.yMax();
+	whitespace = ((width() *m_mupp) - currentExtent.width())/2;
+	dxmin = currentExtent.xMin() - whitespace;
+      }else{
+	dxmin = currentExtent.xMin();
+	whitespace = ((height() *m_mupp) - currentExtent.height())/2;
+	dymin = currentExtent.yMin() - whitespace;
+	dymax = currentExtent.yMax() + whitespace;
+
+      }
+      cout << "dxmin: " << dxmin << endl << "dymin: " << dymin << endl << "dymax: " << dymax << endl << "whitespace: " << whitespace << endl;
+      coordXForm->setParameters(m_mupp, dxmin,dymin,height()); //currentExtent.xMin(), 	    currentExtent.yMin(), currentExtent.yMax());
   // render all layers in the stack, starting at the base
   map<QString,QgsMapLayer *>::iterator mi = layers.begin();
   while(mi != layers.end()){
