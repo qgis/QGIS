@@ -169,8 +169,8 @@ void QgsPgGeoprocessing::buffer()
         std::vector < QgsField > flds = dp->fields();
         for (int i = 0; i < flds.size(); i++) {
           // check the field type -- if its int we can use it
-          if (flds[i].getType().find("int") > -1) {
-            bb->addFieldItem(flds[i].getName());
+          if (flds[i].type().find("int") > -1) {
+            bb->addFieldItem(flds[i].name());
           }
         }
         // connect to the database
