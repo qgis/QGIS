@@ -17,7 +17,8 @@ email                : sherman at mrcc.com
 #ifndef QGSFIELD_H
 #define QGSFIELD_H
 
-class QString;
+#include <qstring.h>
+
 /**
   \class QgsField
   \brief Class to encapsulate a field in an attribute table or data source.
