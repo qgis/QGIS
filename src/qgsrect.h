@@ -19,6 +19,7 @@
 #define QGSRECT_H
 #include <iostream>
 #include <qstring.h>
+#include "qgspoint.h"
 class QgsPoint;
 
 /*! \class QgsRect
@@ -85,6 +86,68 @@ class QgsRect{
     double ymax;
 };
 
+inline QgsRect::QgsRect(double minX, double minY, double maxX, double maxY):xmin(minX), ymin(minY), xmax(maxX), ymax(maxY)
+{
+}
+
+inline QgsRect::~QgsRect()
+{
+}
+
+inline void QgsRect::setXmin(double x)
+{
+	xmin = x;
+}
+
+inline void QgsRect::setXmax(double x)
+{
+	xmax = x;
+}
+
+inline void QgsRect::setYmin(double y)
+{
+	ymin = y;
+}
+
+inline void QgsRect::setYmax(double y)
+{
+	ymax = y;
+}
+
+inline double QgsRect::xMax() const
+{
+	return xmax;
+}
+
+inline double QgsRect::xMin() const
+{
+	return xmin;
+}
+
+inline double QgsRect::yMax() const
+{
+	return ymax;
+}
+
+inline double QgsRect::yMin() const
+{
+	return ymin;
+}
+
+inline double QgsRect::width() const
+{
+	return xmax - xmin;
+}
+
+inline double QgsRect::height() const
+{
+	return ymax - ymin;
+}
+
+inline QgsPoint QgsRect::center() const
+{
+  return QgsPoint(xmin + width() / 2 ,  ymin + height() / 2);
+}
 inline std::ostream& operator << (std::ostream& os, const QgsRect &r)
 {
     return os << r.stringRep();

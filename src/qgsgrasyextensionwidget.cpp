@@ -35,7 +35,6 @@
 QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer* vlayer): QWidget(parent), m_classfield(classfield), m_gridlayout(new QGridLayout(this,1,8)), m_mode(mode), m_numberofclasses(nofclasses), m_vectorlayer(vlayer)
 {
     m_gridlayout->setSpacing(10);
-    
 
     //fill the title line into the grid layout
     QLabel* lvaluelabel=new QLabel(tr("lower"),this);
@@ -44,15 +43,15 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
     m_gridlayout->addWidget(uvaluelabel,0,1);
     QLabel* labellabel=new QLabel(tr("label"),this);
     m_gridlayout->addWidget(labellabel,0,2);
-    QLabel* outlinecolorlabel=new QLabel(tr("outl_color"),this);
+    QLabel* outlinecolorlabel=new QLabel(tr("outline color"),this);
     m_gridlayout->addWidget(outlinecolorlabel,0,3);
-    QLabel* outlinestylelabel=new QLabel(tr("outl_style"),this);
+    QLabel* outlinestylelabel=new QLabel(tr("outline style"),this);
     m_gridlayout->addWidget(outlinestylelabel,0,4);
-    QLabel* outlinewidthlabel=new QLabel(tr("outl_width"),this);
+    QLabel* outlinewidthlabel=new QLabel(tr("outline width"),this);
     m_gridlayout->addWidget(outlinewidthlabel,0,5);
-    QLabel* fillcolorlabel=new QLabel(tr("fill_color"),this);
+    QLabel* fillcolorlabel=new QLabel(tr("fill color"),this);
     m_gridlayout->addWidget(fillcolorlabel,0,6);
-    QLabel* fillpatternlabel=new QLabel(tr("fill_pattern"),this);
+    QLabel* fillpatternlabel=new QLabel(tr("fill pattern"),this);
     m_gridlayout->addWidget(fillpatternlabel,0,7);
 
     //fint the minimum and maximum of the classification variable
