@@ -65,11 +65,12 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
+  startServer();  
 }
 
 Plugin::~Plugin()
 {
-
+ unload();
 }
 
 /*
@@ -131,6 +132,7 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
 void Plugin::unload()
 {
   //kill the web server daemon
+  stopServer();
   //delete mHttpDaemon;
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
