@@ -158,7 +158,9 @@ public:
         // if keyName isn't empty, then something went wrong in the recursion
         if ( ! keyName.empty() )
         {
+#ifdef QGISDEBUG        
             qDebug( "%s:%d PropertyValue given a non-empty keyName", __FILE__, __LINE__ );
+#endif            
         }
 
         // we ignore keyName since we're a leaf node and don't have one
@@ -181,14 +183,18 @@ public:
 
         if ( ! value_.isValid() )
         {
+#ifdef QGISDEBUG                
             qDebug( "%s:%d PropertyValue given an invaild value", __FILE__, __LINE__ );
+#endif      
 
             return false;
         }
 
         if ( value_.isNull() )
         {
+#ifdef QGISDEBUG               
             qDebug( "%s:%d PropertyValue given a null value", __FILE__, __LINE__ );
+#endif            
 
             // XXX return false; I guess this might be ok?
         }
