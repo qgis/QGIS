@@ -198,6 +198,8 @@ private:
   void actionPluginManager_activated();
   //! plugin loader
   void loadPlugin(QString name, QString description, QString fullPath);
+  //! Add a plugin menu to the main Plugins menu
+  int addPluginMenu(QString menuText, QPopupMenu *menu);
   //! Save window state
   void saveWindowState();
   //! Restore the window and toolbar state
@@ -246,6 +248,8 @@ private:
   private:
 //! Popup menu
     QPopupMenu * popMenu;
+    //! Top level plugin menu
+    QPopupMenu *pluginMenu;
 //! Legend list view control
   QgsLegendView *legendView;
   //! Map canvas
