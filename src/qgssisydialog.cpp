@@ -49,6 +49,36 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
     qWarning("constructor QgsSiSyDialog called WITH a layer");
 #endif
 
+    //
+    //set outline / line style
+    //
+    pbnLineSolid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
+    pbnLineDash->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashLine"));
+    pbnLineDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DotLine"));
+    pbnLineDashDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotLine"));
+    pbnLineDashDotDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine"));
+    pbnLineNoPen->setPixmap(QgsSymbologyUtils::char2LinePixmap("NoPen"));
+
+    //
+    //set pattern button group icons and state
+    //
+    solid->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
+    horizontal->setPixmap(QgsSymbologyUtils::char2PatternPixmap("HorPattern"));
+    vertical->setPixmap(QgsSymbologyUtils::char2PatternPixmap("VerPattern"));
+    cross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("CrossPattern"));
+    bdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern"));
+    fdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern"));
+    diagcross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern"));
+    dense1->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern"));
+    dense2->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern"));
+    dense3->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern"));
+    dense4->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern"));
+    dense5->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern"));
+    dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
+    dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
+    nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
+    
+
     if (layer)
     {
         QgsSingleSymRenderer *renderer;
@@ -78,19 +108,10 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 
             lblOutlineColor->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
 
-            //
-            //set outline / line style
-            //
-
             //stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
             //stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
             //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
-            pbnLineSolid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
-            pbnLineDash->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashLine"));
-            pbnLineDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DotLine"));
-            pbnLineDashDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotLine"));
-            pbnLineDashDotDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine"));
-            pbnLineNoPen->setPixmap(QgsSymbologyUtils::char2LinePixmap("NoPen"));
+            
             QPen myPen = renderer->item()->getSymbol()->pen();
             if (myPen==Qt::NoPen)
                 (pbnLineNoPen->setOn(true));
@@ -105,24 +126,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
             else
                 (pbnLineSolid->setOn(true)); //default to solid
 
-            //
-            //set pattern button group icons and state
-            //
-            solid->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
-            horizontal->setPixmap(QgsSymbologyUtils::char2PatternPixmap("HorPattern"));
-            vertical->setPixmap(QgsSymbologyUtils::char2PatternPixmap("VerPattern"));
-            cross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("CrossPattern"));
-            bdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern"));
-            fdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern"));
-            diagcross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern"));
-            dense1->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern"));
-            dense2->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern"));
-            dense3->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern"));
-            dense4->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern"));
-            dense5->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern"));
-            dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
-            dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
-            nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
+
             QBrush myBrush = renderer->item()->getSymbol()->brush();
             if (myBrush==Qt::SolidPattern)
                 (solid->setOn(true));
