@@ -693,7 +693,11 @@ void OpenModellerGui::cboModelAlgorithm_highlighted( const QString &theModelAlgo
       QString myAlgorithmNameQString=myAlgorithmMetadata->id;
       if (myAlgorithmNameQString==theModelAlgorithm)
         {
-          txtAlgorithmDescription->setText(myAlgorithmMetadata->description);
+          txtAlgorithm->setText(myAlgorithmMetadata->name);
+	  txtVersion->setText(myAlgorithmMetadata->version);
+	  txtAuthor->setText(myAlgorithmMetadata->author);
+	  txtAlgorithmDescription->setText(myAlgorithmMetadata->description);
+	  txtBibliography->setText(myAlgorithmMetadata->biblio);
         }
     }
 }
@@ -864,6 +868,8 @@ bool OpenModellerGui::checkLocalitiesFileFormat(const QString)
 
 void OpenModellerGui::mapCallback( float progress, void *extra_param )
 {
+  
   std::cout << "Map creation progress : " << ( 100 * progress ) << std::endl;
+  //progressBar1->setProgress(100 * progress, 100);
 }
 
