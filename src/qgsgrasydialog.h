@@ -42,7 +42,6 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
  protected:
      /**Pointer to the curret extension widget*/
      QgsGraSyExtensionWidget* ext;
-     QScrollView* scv;
      QgsVectorLayer* m_vectorlayer;
      /**Stores the names and numbers of the fields with numeric values*/
      std::map<QString,int> m_fieldmap;
