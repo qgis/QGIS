@@ -92,7 +92,11 @@ AC_MSG_CHECKING([SPIT option])
 if test x"$with_spit" = "xno" ; then
   WANT_SPIT=0
 else
-  WANT_SPIT=1
+ if test x"$with_pg" = "xyes" -o x"$with_pg" = "x" ; then
+    WANT_SPIT=1
+ else
+    WANT_SPIT=0
+ fi
 fi
 
 if test x"$WANT_SPIT" = "x1" ; then
@@ -147,7 +151,11 @@ dnl ---------------------------------------------------------------------------
 # AC_SUBST(GRASS_LIB)
 # AC_SUBST(GRASS_INC)
 
-
+#echo ${prefix}/lib
+libdir=${prefix}/lib
+AC_MSG_CHECKING([plugin install directory])
+AC_MSG_RESULT([$libdir])
+#echo Plugins will be installed in $libdir
 AC_CONFIG_FILES([
 	Makefile 
 	src/Makefile 
