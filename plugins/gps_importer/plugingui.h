@@ -16,6 +16,8 @@
 
 #include <vector>
 
+#include <qstring.h>
+
 
 class QgsMapLayer;
 
@@ -49,14 +51,28 @@ class PluginGui : public PluginGuiBase
 
       void populateDeviceComboBox();
       void populateULLayerComboBox();
+      void populateIMPBabelFormats();
       
 signals:
       void drawRasterLayer(QString);
       void drawVectorLayer(QString,QString,QString);
 
 private:
+      
+      struct BabelFormatInfo {
+	BabelFormatInfo(QString fn = "", bool hw = false, bool hr = false, 
+			bool ht = false) :
+	  formatName(fn), hasWaypoints(hw), hasRoutes(hr), hasTracks(ht) { }
+	QString formatName;
+	bool hasWaypoints;
+	bool hasRoutes;
+	bool hasTracks;
+      };
+      
       std::vector<QgsMapLayer*> gpxLayers;
-
+      std::map<QString, BabelFormatInfo> babelFormats;
+      std::string babelFilter;
+      std::string impFormat;
 };
 
 #endif
