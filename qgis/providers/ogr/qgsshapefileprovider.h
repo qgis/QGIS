@@ -25,22 +25,23 @@ class OGRLayer;
 \class QgsShapeFileProvider
 \brief Data provider for ESRI shapefiles
 */
-class QgsShapeFileProvider : public QgsDataProvider {
+class QgsShapeFileProvider:public QgsDataProvider
+{
 public:
-	QgsShapeFileProvider(QString uri=0);
-	virtual ~QgsShapeFileProvider();
+  QgsShapeFileProvider(QString uri = 0);
+  virtual ~ QgsShapeFileProvider();
 /**
 	* Get the first feature resutling from a select operation
 	* @return QgsFeature
 	*/
-	QgsFeature * getFirstFeature(bool fetchAttributes=false);
-	/** 
+  QgsFeature *getFirstFeature(bool fetchAttributes = false);
+  /** 
 	* Get the next feature resutling from a select operation
 	* @return QgsFeature
 	*/
-	QgsFeature * getNextFeature(bool fetchAttributes=false);
-	
-	/** Get the feature type. This corresponds to 
+  QgsFeature *getNextFeature(bool fetchAttributes = false);
+
+  /** Get the feature type. This corresponds to 
 			WKBPoint,
 			WKBLineString,
 			WKBPolygon,
@@ -49,96 +50,96 @@ public:
 			WKBMultiPolygon
  	* as defined in qgis.h
 	*/
-	int geometryType();
+  int geometryType();
     /** 
     * Get the number of features in the layer
     */
-    long featureCount();
+  long featureCount();
     /** 
     * Get the number of fields in the layer
     */
-    int fieldCount();
-	/**
+  int fieldCount();
+  /**
 	* Select features based on a bounding rectangle. Features can be retrieved 
 	* with calls to getFirstFeature and getNextFeature.
 	* @param mbr QgsRect containing the extent to use in selecting features
 	*/
-	void select(QgsRect *mbr, bool useIntersect=false);
-	/** 
+  void select(QgsRect * mbr, bool useIntersect = false);
+  /** 
 		* Set the data source specification. This may be a path or database
 	* connection string
 	* @uri data source specification
 	*/
-	void setDataSourceUri(QString uri);
-	
-		/** 
+  void setDataSourceUri(QString uri);
+
+    /** 
 	* Get the data source specification. This may be a path or database
 	* connection string
 	* @return data source specification
 	*/
-	QString getDataSourceUri();
-	
-	/**
+  QString getDataSourceUri();
+
+  /**
 	* Identify features within the search radius specified by rect
 	* @param rect Bounding rectangle of search radius
 	* @return std::vector containing QgsFeature objects that intersect rect
 	*/
-	virtual std::vector<QgsFeature>& identify(QgsRect *rect);
+  virtual std::vector < QgsFeature > &identify(QgsRect * rect);
 
   /** Return endian-ness for this layer
-  */	
-	int endian();
+  */
+  int endian();
 
   /** Return the extent for this data layer
   */
-  virtual QgsRect * extent();
+  virtual QgsRect *extent();
   /**
   * Get the attributes associated with a feature
   */
- void getFeatureAttributes(OGRFeature *ogrFet, QgsFeature *f); 
+  void getFeatureAttributes(OGRFeature * ogrFet, QgsFeature * f);
  /**
  * Get the field information for the layer
  */
- std::vector<QgsField>& fields();
- 
- /* Reset the layer - for an OGRLayer, this means clearing the
- * spatial filter and calling ResetReading
- */
- void reset();
+    std::vector < QgsField > &fields();
+
+  /* Reset the layer - for an OGRLayer, this means clearing the
+   * spatial filter and calling ResetReading
+   */
+  void reset();
 
  /**Returns the minimum value of an attribut
     @param position the number of the attribute*/
- QString minValue(int position);
+  QString minValue(int position);
 
  /**Returns the maximum value of an attribut
     @param position the number of the attribute*/
- QString maxValue(int position);
+  QString maxValue(int position);
 
  /**Returns true if this is a valid shapefile
  */
- bool isValid();
- 
+  bool isValid();
+
 private:
-	unsigned char *getGeometryPointer(OGRFeature *fet);
-	std::vector<QgsField> attributeFields;
-	QString dataSourceUri;
-	OGRDataSource *ogrDataSource;
-	OGREnvelope *extent_;
-	OGRLayer *ogrLayer;
-	bool valid;
-	int geomType;
-	long numberFeatures;
-	enum ENDIAN
-	{
-		NDR = 1,
-		XDR = 0
-	};
-	/**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
-	bool minmaxcachedirty;
-	/**Matrix storing the minimum and maximum values*/
-	double** minmaxcache;
-	/**Fills the cash and sets minmaxcachedirty to false*/
-	void fillMinMaxCash();
-	
-	
+  unsigned char *getGeometryPointer(OGRFeature * fet);
+    std::vector < QgsField > attributeFields;
+  QString dataSourceUri;
+  OGRDataSource *ogrDataSource;
+  OGREnvelope *extent_;
+  OGRLayer *ogrLayer;
+  bool valid;
+  int geomType;
+  long numberFeatures;
+  enum ENDIAN
+  {
+    NDR = 1,
+    XDR = 0
+  };
+  /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
+  bool minmaxcachedirty;
+  /**Matrix storing the minimum and maximum values*/
+  double **minmaxcache;
+  /**Fills the cash and sets minmaxcachedirty to false*/
+  void fillMinMaxCash();
+
+
 };
