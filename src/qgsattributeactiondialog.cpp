@@ -25,15 +25,27 @@ back to QgsVectorLayer.
 #include <vector>
 
 #include <qtable.h>
+#include <qlineedit.h>
+#include <qstring.h>
+#include <qcheckbox.h>
+#include <qcombobox.h>
+#include <qfiledialog.h>
 
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
 #include "qgsfield.h"
-#include "qgsvectorlayer.h"
 
-QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions, QWidget* parent):
+QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
+						   const std::vector<QgsField>& fields,
+						   QWidget* parent):
   QgsAttributeActionDialogBase(parent), mActions(actions)
 {
+  init();
+  // Populate the combo box with the field names. Will the field names
+  // change? If so, they need to be passed into the init() call, or
+  // some access to them retained in this class.
+  for (int i = 0; i < fields.size(); ++i)
+    fieldComboBox->insertItem(fields[i].name());
 }
 
 void QgsAttributeActionDialog::init()
@@ -42,8 +54,7 @@ void QgsAttributeActionDialog::init()
   attributeActionTable->setColumnStretchable(0, true);
   attributeActionTable->setColumnStretchable(1, true);
 
-  // Start from a fresh slate. (or more efficiently, remove or insert
-  // rows to have one more than the number of actions).
+  // Start from a fresh slate.
   for (int i = attributeActionTable->numRows()-1; i >= 0; --i)
     attributeActionTable->removeRow(i);
 
@@ -57,9 +68,153 @@ void QgsAttributeActionDialog::init()
     attributeActionTable->setText(i, 0, iter->name());
     attributeActionTable->setText(i, 1, iter->action());
   }
-  // Always have a blank row at the end for the user to enter new
-  // actions. 
-  attributeActionTable->insertRows(i);
+}
+
+void QgsAttributeActionDialog::moveUp()
+{
+  // Swap the selected row with the one above
+
+  int row1 = -1, row2 = -1;
+  for (int i = 0; i < attributeActionTable->numRows(); ++i)
+    if (attributeActionTable->isRowSelected(i))
+      row1 = i;
+
+  if (row1 > 0)
+    row2 = row1 - 1;
+  
+  if (row1 != -1 && row2 != -1)
+  {
+    for (int i = 0; i < attributeActionTable->numSelections(); ++i)
+      attributeActionTable->removeSelection(i);
+
+    attributeActionTable->swapRows(row1, row2);
+    attributeActionTable->updateContents();
+    // Move the selection to follow
+    attributeActionTable->selectRow(row2);
+  }
+}
+
+void QgsAttributeActionDialog::moveDown()
+{
+  // Swap the selected row with the one below
+  int row1 = -1, row2 = -1;
+  for (int i = 0; i < attributeActionTable->numRows(); ++i)
+    if (attributeActionTable->isRowSelected(i))
+      row1 = i;
+
+  if (row1 < attributeActionTable->numRows()-1)
+    row2 = row1 + 1;
+  
+  if (row1 != -1 && row2 != -1)
+  {
+    for (int i = 0; i < attributeActionTable->numSelections(); ++i)
+      attributeActionTable->removeSelection(i);
+
+    attributeActionTable->swapRows(row1, row2);
+    attributeActionTable->updateContents();
+    // Move the selection to follow
+    attributeActionTable->selectRow(row2);
+  }
+}
+
+void QgsAttributeActionDialog::browse()
+{
+  // Popup a file browser and place the results into the actionName
+  // widget 
+
+  QString action = QFileDialog::getOpenFileName(
+	QString::null, QString::null, this, 
+	"Select action dialog", "Select an action");
+
+  if (!action.isNull())
+    actionAction->insert(action);    
+}
+
+void QgsAttributeActionDialog::remove()
+{
+  // Remove the selected row. Remember which row was selected.
+  int row = -1;
+  for (int i = 0; i < attributeActionTable->numRows(); ++i)
+    if (attributeActionTable->isRowSelected(i))
+    {
+      row = i;
+      break;
+    }
+
+  if (row != -1)
+  {
+    attributeActionTable->removeRow(row);
+    attributeActionTable->clearSelection();
+
+    // And select the row below the one that was selected or the last
+    // one, or none.
+    // Note something is not quite right here. The highlight in the
+    // QTable isn't turning on when a row is selected. Don't
+    // understand why. Needs a bit more investigation.
+    if (row < attributeActionTable->numRows())
+      attributeActionTable->selectRow(row);
+    else if (attributeActionTable->numRows() > 0)
+      attributeActionTable->selectRow(attributeActionTable->numRows()-1);
+  }
+}
+
+void QgsAttributeActionDialog::insert()
+{
+  // Add the action details as a new row in the table. 
+
+  int pos = attributeActionTable->numRows();
+  insert(pos);
+}
+
+void QgsAttributeActionDialog::insert(int pos)
+{
+  // Get the action details and insert into the table at the given
+  // position. Name needs to be unique, so make it so if required. 
+
+  // If the new action name is the same as the action name in the
+  // given pos, don't make the new name unique (because we're
+  // replacing it).
+
+  QString name;
+  if (actionName->text() == attributeActionTable->text(pos, 0))
+    name = actionName->text();
+  else
+    name = uniqueName(actionName->text());
+
+  QString action = actionAction->text();
+
+  // Expand the table to have a row with index pos
+  int numRows = attributeActionTable->numRows();
+  if (pos >= numRows)
+    attributeActionTable->insertRows(numRows, pos-numRows+1);
+
+  attributeActionTable->setText(pos, 0, name);
+  attributeActionTable->setText(pos, 1, action);
+}
+
+void QgsAttributeActionDialog::update()
+{
+  // Updates the action that is selected with the
+  // action details.
+  for (int i = 0; i < attributeActionTable->numRows(); ++i)
+    if (attributeActionTable->isRowSelected(i))
+    {
+      insert(i);
+      break;
+    }
+}
+
+void QgsAttributeActionDialog::insertField()
+{
+  // Take the selected field, preprend a % and insert into the action
+  // field at the cursor position
+
+  if (!fieldComboBox->currentText().isNull())
+  {
+    QString field("%");
+    field += fieldComboBox->currentText();
+    actionAction->insert(field);
+  }
 }
 
 void QgsAttributeActionDialog::apply()
@@ -72,45 +227,53 @@ void QgsAttributeActionDialog::apply()
     if (!attributeActionTable->text(i, 0).isEmpty() &&
 	!attributeActionTable->text(i, 1).isEmpty())
     {
-      mActions->addAction(attributeActionTable->text(i,0),
-			  attributeActionTable->text(i,1));
+      mActions->addAction(attributeActionTable->text(i, 0),
+			  attributeActionTable->text(i, 1));
     }
   }
-  // Regenerate the actions items. This effectively gets rid of blank
-  // lines, making things nice and tidy for when the user comes back
-  // to this dialog box.
-  init();
 }
 
-
-void QgsAttributeActionDialog::add()
+void QgsAttributeActionDialog::rowSelected(int row, int col, int button, 
+					   const QPoint& pos)
 {
-  // Put a new row in the table
-  attributeActionTable->insertRows(attributeActionTable->numRows(), 1);
+  // The user has selected a row. We take the contents of that row and
+  // populate the edit section of the dialog so that they can change
+  // the row if desired.
+
+  actionName->setText(attributeActionTable->text(row, 0));
+  actionAction->setText(attributeActionTable->text(row, 1));
 }
 
-
-void QgsAttributeActionDialog::remove()
+QString QgsAttributeActionDialog::uniqueName(QString name)
 {
-  // Remove the contents from the selected rows
-  int nRows = attributeActionTable->numRows();
-  for (int i = 0; i < nRows; ++i)
+  // Make sure that the given name is unique, adding a numerical
+  // suffix if necessary.
+
+  int pos = attributeActionTable->numRows();
+  bool unique = true;
+
+  for (int i = 0; i < pos; ++i)
   {
-    if (attributeActionTable->isRowSelected(i))
+    if (attributeActionTable->text(i, 0) == name)
+      unique = false;
+  }
+
+  if (!unique)
+  {
+    int suffix_num = 1;
+    QString new_name;
+    while (!unique)
     {
-      attributeActionTable->setText(i,0,"");
-      attributeActionTable->setText(i,1,"");
+      QString suffix = QString::number(suffix_num);
+      new_name = name + "_" + suffix;
+      unique = true;
+      for (int i = 0; i < pos; ++i)
+	if (attributeActionTable->text(i, 0) == new_name)
+	  unique = false;
+      ++suffix_num;
     }
+    name = new_name;
   }
+  return name;
 }
 
-void QgsAttributeActionDialog::clearAll()
-{
-  // Remove the contents from all rows in the table
-  int nRows = attributeActionTable->numRows();
-  for (int i = 0; i < nRows; ++i)
-  {
-    attributeActionTable->setText(i,0,"");
-    attributeActionTable->setText(i,1,"");
-  }
-}

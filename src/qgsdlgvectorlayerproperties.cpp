@@ -94,7 +94,6 @@ bufferRenderer(layer->
 					   QString("%1").arg(fld.precision()));
     displayFieldComboBox->insertItem( fld.name() );
   }
-  displayFieldComboBox->setCurrentItem(0); // the blank one
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
@@ -118,7 +117,8 @@ bufferRenderer(layer->
   layout->addWidget( labelDialog );
 
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
-  actionDialog = new QgsAttributeActionDialog ( layer->actions(), actionOptionsFrame );
+  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
+						actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
