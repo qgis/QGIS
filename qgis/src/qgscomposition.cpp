@@ -346,14 +346,7 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 		double x,y;
 		mView->inverseWorldMatrix().map( e->pos().x(), e->pos().y(), &x, &y );
 		
-		// TODO better move
-	        if (  typeid (*mSelectedItem) == typeid(QgsComposerScalebar) ) {
-	            QgsComposerScalebar *sb = dynamic_cast<QgsComposerScalebar *> (mSelectedItem);
-	            sb->move ( (int)(mSelectedItem->x() + x - mLastX), (int)(mSelectedItem->y() + y - mLastY) );
-	        } else {
-		    mSelectedItem->setX( mSelectedItem->x() + x - mLastX );
-		    mSelectedItem->setY( mSelectedItem->y() + y - mLastY );
-		}
+		mSelectedItem->moveBy ( x - mLastX, y - mLastY );
 
 		QgsComposerItem *ci = dynamic_cast <QgsComposerItem *> (mSelectedItem);
 		ci->writeSettings();
@@ -388,14 +381,8 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 
 	case AddVectorLegend:
 	case AddLabel:
-	    mNewCanvasItem->setX( p.x() );
-	    mNewCanvasItem->setY( p.y() );
-	    mCanvas->update();
-	    break;
-
 	case AddScalebar:
-	    QgsComposerScalebar *sb = dynamic_cast<QgsComposerScalebar *> (mNewCanvasItem);
-	    sb->move ( p.x(), p.y() );
+	    mNewCanvasItem->move ( p.x(), p.y() );
 	    mCanvas->update();
 	    break;
     }
