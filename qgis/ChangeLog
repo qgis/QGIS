@@ -1,7 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.196 2004/10/18 18:55:26 larsl Exp
+ChangeLog,v 1.197 2004/10/19 05:16:56 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-10-18 [gsherman] 0.5.0devel7
+** Added test for GEOS to acinclude.m4 and configure.in
+** Added members/methods in preparation for support of scale dependent
+   rendering
+** Added Display tab to the vector dialog to allow setting of min and max
+   scales for rendering 
 
 2004-10-18 [larsl] 0.5.0devel6
 ** Removed duplicate code, added bounds calculation for digitized features in the GPX provider
