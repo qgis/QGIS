@@ -1,7 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.55 2004/04/06 08:56:00 timlinux Exp
+ChangeLog,v 1.56 2004/04/17 09:04:37 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-17 [ts] 0.1.0devel32
+** Fix for crash when opening singleband grayscale images introduced by Steves
+   fix for crash when opening MULTIBAND_SINGLEBAND_GRAYSCALE images. Thanks to 
+   Steves help, all eight raster renderers are now working properly.
+   This resolves bug : [ 934234 ] Segfault when drawing multiband image band as
+   grayscale
 
 2004-04-06 [ts] 0.1.0devel31
 ** Added new plugin (grid_maker) to build arbitary sized graticules and add
