@@ -589,7 +589,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             break;
         }
 
-        //delete[]feature;
 	delete fet;
 
         //std::cout << "deleting feature[]\n";
