@@ -30,7 +30,8 @@ QgsPluginManager::QgsPluginManager(QWidget *parent, const char * name)
  : QgsPluginManagerBase(parent, name)
 {
   // set the default lib dir to the qgis install directory/lib
-  QString appDir = qApp->applicationDirPath();
+  char **argv = qApp->argv();
+  QString appDir = argv[0];
   int bin = appDir.findRev("/bin", -1, false);
   QString baseDir = appDir.left(bin);
   QString libDir = baseDir + "/lib";

@@ -126,8 +126,6 @@ class QgsMapLayer:public QObject
 
 	  signals:void visibilityChanged(void);
   protected:
-        //popup menu that will apear when right clicking legend
-        QPopupMenu *popMenu;
 	//! Extent of the layer
 	  QgsRect layerExtent;
 	//! Indicates if the layer is valid and can be drawn
@@ -141,12 +139,14 @@ class QgsMapLayer:public QObject
 	QPixmap m_legendPixmap;
 	/** Name of the layer - used for display  */
 	QString layerName;
+  //! context menu
+  QPopupMenu *popMenu;
   private:						// Private attributes
 	/** Unique ID of this layer - used to refer to this layer  in QGIS code */
 	  QString ID;
 	/** Type of the layer (eg. vector, raster, database  */
 	int layerType;
-
+  
 	//! Tag for embedding additional information
 	QString tag;
   /**  */
@@ -161,7 +161,7 @@ class QgsMapLayer:public QObject
 
   signals:
 	  /**This signal should be connected with the slot QgsMapCanvas::refresh()*/
-	  void repaintRequested();
+	virtual void repaintRequested();
 };
 
 #endif
