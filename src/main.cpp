@@ -206,6 +206,10 @@ int main(int argc, char *argv[])
 
   // a.setFont(QFont("helvetica", 11));
 
+#ifdef Q_OS_MACX
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+
   QTranslator tor(0);
 
   // set the location where your .qm files are in load() below as the last parameter instead of "."

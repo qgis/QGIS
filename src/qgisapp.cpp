@@ -22,10 +22,6 @@
 #include <dlfcn.h>
 #endif
 
-#ifdef Q_OS_MACX
-#import <Carbon/Carbon.h>
-#endif
-
 #include <qaction.h>
 #include <qapplication.h>
 #include <qbitmap.h>
@@ -408,30 +404,18 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
   }
 
   // store the application dir
-#ifdef WIN32
+#if defined(WIN32) || defined(Q_OS_MACX)
   mAppDir = qApp->applicationDirPath();
-  QString PLUGINPATH = mAppDir + "/lib/qgis";
 #else
   mAppDir = PREFIX;
 #endif
 
   // Get pointer to the provider registry singleton
-#ifdef Q_OS_MACX
-  // we do different things for OSX - set both application dir and plugin lib
-  // location here:
-  CFURLRef pprefixRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-  CFStringRef mmacPath = CFURLCopyFileSystemPath(pprefixRef, kCFURLPOSIXPathStyle);
-  // store application dir
-  mAppDir = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
-  mAppDir = mAppDir + "/Contents/Resources";
-  // store location of plugins
-  plib = CFStringGetCStringPtr(mmacPath, CFStringGetSystemEncoding());
-  plib = plib + "/Contents/Resources/lib";
+#if defined(WIN32) || defined(Q_OS_MACX)
+  QString plib = mAppDir + "/lib/qgis";
 #else
-  // win32 and posix plugin path:
   QString plib = PLUGINPATH;
 #endif
-
   mProviderRegistry = QgsProviderRegistry::instance(plib);
 
 #ifdef QGISDEBUG

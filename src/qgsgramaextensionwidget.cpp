@@ -17,6 +17,7 @@
 /* $Id */
 
 #include "qgsgramaextensionwidget.h"
+#include <qapplication.h>
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -148,6 +149,9 @@ void QgsGraMaExtensionWidget::selectMarker()
 	//QApplication::applicationPathDir()
     QgsMarkerDialog mdialog("");
 #else
+#ifdef Q_OS_MACX
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
     QgsMarkerDialog mdialog(QString(PKGDATAPATH)+"/svg");
 #endif
 

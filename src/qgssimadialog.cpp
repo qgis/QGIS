@@ -77,8 +77,8 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
         }
   
   //set the dir to the default svg dir
-#ifdef WIN32
-       QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#if defined(WIN32) || defined(Q_OS_MACX)
+        QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
         mCurrentDir=QString(PKGDATAPATH)+"/svg/";
 #ifdef QGISDEBUG
@@ -273,8 +273,8 @@ void QgsSiMaDialog::visualizeMarkers(QString directory)
 
 QString QgsSiMaDialog::defaultDir()
 {
-#ifdef WIN32
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#if defined(WIN32) || defined(Q_OS_MACX)
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
     QString dir = QString(PKGDATAPATH)+"/svg";
     return dir;

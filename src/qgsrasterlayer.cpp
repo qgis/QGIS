@@ -454,8 +454,8 @@ QgsRasterLayer::readFile( QString const & fileName )
     buildRasterPyramidList(); 
 
     //load  up the pyramid icons
-#ifdef WIN32
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
+#if defined(WIN32) || defined(Q_OS_MACX)
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 
     mPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
