@@ -249,6 +249,9 @@ protected:
 
   /**Pixmap used in the legend item*/
   QPixmap m_legendPixmap;
+  //
+  //! A little pixmap to show if this layer is represented in overview or now 
+  QPixmap mInOverviewPixmap;
 
   /** Name of the layer - used for display  */
   QString layerName;
