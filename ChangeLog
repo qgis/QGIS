@@ -1,3 +1,11 @@
+Version 0.0.6-alpha November 24, 2002
+*Improved handling/management of PostGIS connections
+*Password prompt if the password is not stored with a connection
+*Windows size and position and toolbar docking state is saved/restored
+*Identify function for layers
+*Attribute table for a layer can be displayed and sorted by clicking on column headers
+*Duplicate layers (layers with same name) are now handled properly
+
 Version 0.0.5-alpha October 5, 2002
  * Removing a layer from the map no longer crashes the application
  * Fixed multiple render bug when adding a layer
