@@ -38,3 +38,10 @@ void QgsProjectPropertiesBase::pbnDigitisedLineColour_clicked()
    pbnDigitisedLineColour->setPaletteBackgroundColor(
 	    QColorDialog::getColor(pbnDigitisedLineColour->paletteBackgroundColor(),this));
 }
+
+
+void QgsProjectPropertiesBase::coordinateSystemSelected( QListViewItem * )
+{
+
+}
+
