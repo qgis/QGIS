@@ -3,6 +3,10 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-13 [larsl] 0.5.0devel23
+** Changed QgsIdentifyResults and QgsVectorLayer to show all attributes
+   automatically (expand the feature node) if only one feature is identified
+
 2004-11-11 [gsherman] 0.5.0devel22
 ** Added ifdef's for WIN32 around dynamic_casts in the vector renderer
 	dialogs. Even though rtti is enabled, use of dynamic casts causes seg

@@ -158,3 +158,11 @@ void QgsIdentifyResults::popupItemSelected(int id)
 {
   mActions.doAction(id, mValues, mClickedOnValue);
 }
+
+/** Expand all the identified features (show their attributes). */
+void QgsIdentifyResults::showAllAttributes() {
+  QListViewItemIterator qlvii(lstResults);
+  for ( ; *qlvii; ++qlvii)
+    lstResults->setOpen(*qlvii, true);
+}
+
