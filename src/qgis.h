@@ -2,56 +2,56 @@
 #define QGIS_H
 /*!  \mainpage Quantum GIS
 *
-*  \section about  About QGis
-* QGis aims to be an easy to use desktop GIS tool. Initial focus is on viewing spatial
-* and tabular data from common data stores, including Shapefiles and PostGIS.
+*  \section about  About QGIS
+* QGIS aims to be an easy to use desktop GIS tool. Initial focus is on viewing spatial
+* and tabular data from common data stores, including rasters, Shapefiles and PostGIS.
 *
-* This API documentation provides information about all classes that make up QGis.
+* This API documentation provides information about all classes that make up QGIS.
 *
 */
 /* $Id$ */
 
 namespace QGis
 { 
-	// Version constants
-	//
-	// Version string 
-	static const char *qgisVersion = VERSION;
-	// Version number used for comparing versions using the "Check QGIS Version" function
-	static const int qgisVersionInt =200;
+  // Version constants
+  //
+  // Version string 
+  static const char *qgisVersion = VERSION;
+  // Version number used for comparing versions using the "Check QGIS Version" function
+  static const int qgisVersionInt =200;
   // Release name
   static const char *qgisReleaseName = "Pumpkin";
-	
-	// Enumerations
-	//
-	// Maptool enumeration
-	enum MapTools
-	{
-		ZoomIn,
-		ZoomOut,
-		Pan,
-		Distance,
-		Identify,
-		Table,
-		Select
-	};
+  
+  // Enumerations
+  //
+  // Maptool enumeration
+  enum MapTools
+  {
+    ZoomIn,
+    ZoomOut,
+    Pan,
+    Distance,
+    Identify,
+    Table,
+    Select
+  };
 //! Used for symbology operations
-	// Featuure types
-	enum WKBTYPE
-	{
-		WKBPoint = 1,
-		WKBLineString,
-		WKBPolygon,
-		WKBMultiPoint,
-		WKBMultiLineString,
-		WKBMultiPolygon
-	};
-	enum VectorType
-	    {
-		Point,
-		Line,
-		Polygon
-	    };
+  // Featuure types
+  enum WKBTYPE
+  {
+    WKBPoint = 1,
+    WKBLineString,
+    WKBPolygon,
+    WKBMultiPoint,
+    WKBMultiLineString,
+    WKBMultiPolygon
+  };
+  enum VectorType
+      {
+    Point,
+    Line,
+    Polygon
+      };
   static const char *qgisVectorGeometryType[] =
   {
     "Point",
@@ -63,10 +63,10 @@ namespace QGis
  {
     "Null",
     "WKBPoint",
-		"WKBLineString",
-		"WKBPolygon",
-		"WKBMultiPoint",
-		"WKBMultiLineString",
+    "WKBLineString",
+    "WKBPolygon",
+    "WKBMultiPoint",
+    "WKBMultiLineString",
     "WKBMultiPolygon" 
   };
 }
