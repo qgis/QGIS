@@ -1,10 +1,7 @@
 
 dnl Process this file with autoconf to produce a configure script.
-<<<<<<< configure.in
-dnl configure.in,v 1.149 2004/06/23 19:32:25 mcoletti Exp
-=======
-dnl configure.in,v 1.149 2004/06/23 19:32:25 mcoletti Exp
->>>>>>> 1.147
+dnl configure.in,v 1.150 2004/06/24 08:04:04 timlinux Exp
+
 
 
 AC_INIT
@@ -29,7 +26,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=3
 MICRO_VERSION=0
-EXTRA_VERSION=50
+EXTRA_VERSION=51
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
