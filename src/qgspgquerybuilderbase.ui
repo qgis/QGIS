@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsPgQueryBuilderBase</class>
 <comment>Query builder for PostgreSQL layers (using PostGIS)	</comment>
 <author>Gary Sherman</author>
