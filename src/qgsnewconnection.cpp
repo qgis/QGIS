@@ -49,6 +49,18 @@ QgsNewConnection::QgsNewConnection(QString connName):QgsNewConnectionBase()
         }
       txtName->setText(connName);
     }
+
+  QWidget::setTabOrder(txtName, txtHost);
+  QWidget::setTabOrder(txtHost, txtDatabase);
+  QWidget::setTabOrder(txtDatabase, txtPort);
+  QWidget::setTabOrder(txtPort, txtUsername);
+  QWidget::setTabOrder(txtUsername, txtPassword);
+  QWidget::setTabOrder(txtPassword, chkStorePassword);
+  QWidget::setTabOrder(chkStorePassword, (QWidget*)btnConnect);
+  QWidget::setTabOrder((QWidget*)btnConnect, (QWidget*)btnOk);
+  QWidget::setTabOrder((QWidget*)btnOk, (QWidget*)btnCancel);
+  QWidget::setTabOrder((QWidget*)btnCancel, (QWidget*)btnHelp);
+  QWidget::setTabOrder((QWidget*)btnHelp, txtName);
 }
 
 QgsNewConnection::~QgsNewConnection()
