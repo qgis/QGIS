@@ -22,18 +22,20 @@
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
+#include "qgsmarkercatalogue.h"
 
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qbitmap.h>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qrect.h>
 #include <qpointarray.h>
 
 QgsSymbol::QgsSymbol()
 {
-  mPointSymbol = Circle;
+  mPointSymbolName = "hard:circle";
   mPointSize = 6;
   mPointSymbolPixmap.resize(1,1);
   mCacheUpToDate = false;
@@ -41,9 +43,9 @@ QgsSymbol::QgsSymbol()
 
 QgsSymbol::QgsSymbol(QColor c)
 {
+  mPointSymbolName = "hard:circle";
   mPen.setColor(c);
   mBrush.setColor(c);
-  mPointSymbol = Circle;
   mPointSize = 6;
   mPointSymbolPixmap.resize(1,1);
   mCacheUpToDate = false;
@@ -97,60 +99,15 @@ void QgsSymbol::setFillStyle( Qt::BrushStyle s )
   mCacheUpToDate = false;
 }
 
-void QgsSymbol::setPointSymbol(PointSymbol ps)
-{
-    if (  ps >= NPointSymbols || ps < 0 )
-	mPointSymbol = Circle;
-    else
-        mPointSymbol = ps;
-    
-    mCacheUpToDate = false;
-}
-
 void QgsSymbol::setNamedPointSymbol(QString name)
 {
-    if ( name == "circle" ) 
-        mPointSymbol = Circle;	
-    else if ( name == "rectangle" ) 
-        mPointSymbol = Rectangle;	
-    else if ( name == "diamond" ) 
-        mPointSymbol = Diamond;	
-    else if ( name == "cross" ) 
-        mPointSymbol = Cross;	
-    else if ( name == "cross2" ) 
-        mPointSymbol = Cross2;	
-    else 
-        mPointSymbol = Circle;	
-
+    mPointSymbolName = name;
     mCacheUpToDate = false;
-}
-
-QgsSymbol::PointSymbol QgsSymbol::pointSymbol() const
-{
-  return mPointSymbol;
 }
 
 QString QgsSymbol::pointSymbolName() const
 {
-    switch ( mPointSymbol ) {
-	case Circle:
-    	    return "circle";
-	    break;
-	case Rectangle:
-    	    return "rectangle";
-	    break;
-	case Diamond:
-    	    return "diamond";
-	    break;
-	case Cross:
-    	    return "cross";
-	    break;
-	case Cross2:
-    	    return "cross2";
-	    break;
-    }
-  
-    return "circle";
+    return mPointSymbolName;
 }
 
 void QgsSymbol::setPointSize(int s)
@@ -194,128 +151,20 @@ QPicture QgsSymbol::getPointSymbolAsPicture()
 
 void QgsSymbol::cache()
 {
-    // Size of polygon symbols is calculated so that the area is equal to circle with 
-    // diameter mPointSize
-    
-    // Size for circle
-    int half = (int)floor(mPointSize/2); // number of points from center
-    int size = 2*half + 1;  // must be odd
-    double area = 3.14 * (size/2.) * (size/2.);
 
-    // Picture
-    QPainter picpainter;
-    picpainter.begin(&mPointSymbolPicture);
-    
-    // Also width must be odd otherwise there are discrepancies visible in canvas!
-    QPen pen = mPen;
-    int lw = (int)(2*floor(pen.width()/2)+1);
-    pen.setWidth(lw);
-    picpainter.setPen ( pen );
+    mPointSymbolPicture = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
+	                        mPen, mBrush, QgsSVGCache::instance().getOversampling() );
 
-    picpainter.setBrush(mBrush);
-
-    switch ( mPointSymbol ) {
-	case Circle:
-	    picpainter.drawEllipse(0, 0, size, size);
-	    break;
-	case Rectangle:
-	    size = (int) (2*floor(sqrt(area)/2.) + 1);
-	    picpainter.drawRect(0, 0, size, size);
-	    break;
-	case Diamond:
-	    {
-	    half = (int) ( sqrt(area/2.) );
-	    QPointArray pa(4);
-	    pa.setPoint ( 0, 0, half);
-	    pa.setPoint ( 1, half, 2*half);
-	    pa.setPoint ( 2, 2*half, half);
-	    pa.setPoint ( 3, half, 0);
-	    picpainter.drawPolygon ( pa );
-	    }
-	    break;
-    
-    // Warning! if pen width > 0 picpainter.drawLine(x1,y1,x2,y2) will draw only (x1,y1,x2-1,y2-1) !
-    // It is impossible to use drawLine(x1,y1+1,x2,y2+1) because then the bounding box is incorrect 
-    // and the picture is shifted in drawFeature. 
-    // -> draw line width 1 as 0 and width > 1 as rectangle
-
-	case Cross:
-	    pen.setWidth(0);
-	    picpainter.setPen ( pen );
-	    if ( lw < 3 ) {
-		// Draw line
-		picpainter.drawLine(0, half, size-1, half); // horizontal
-		picpainter.drawLine(half, 0, half, size-1); // vertical
-	    } else {
-		// Draw rectangle
-		QBrush brush = mBrush;
-		brush.setColor( mPen.color() );
-		picpainter.setBrush ( brush );
-		int off = (int) floor(lw/2);
-	        picpainter.drawRect(0, half-off, size, lw);
-	        picpainter.drawRect(half-off, 0, lw, size);
-	    }
-	    break;
-	case Cross2:
-	    pen.setWidth(0);
-	    picpainter.setPen ( pen );
-	    if ( lw < 3 ) {
-		// Draw line
-		half = (int) floor( mPointSize/2/sqrt(2));
-		size = 2*half + 1;
-		picpainter.drawLine( 0, 0, size-1, size-1);
-		picpainter.drawLine( 0, size-1, size-1, 0);
-	    } else {
-		// Draw rectangle
-		QBrush brush = mBrush;
-		brush.setColor( mPen.color() );
-		picpainter.setBrush ( brush );
-		int off = (int) floor(lw/2);
-		picpainter.rotate ( 45 );
-	        picpainter.drawRect(0, half-off, size, lw);
-	        picpainter.drawRect(half-off, 0, lw, size);
-	    }
-	    break;
-	default:
-	    break;
-    }
-    picpainter.end();
-
-    // Pixmap
-    int oversampling = QgsSVGCache::instance().getOversampling();
     QRect br = mPointSymbolPicture.boundingRect();
-    mPointSymbolPixmap.resize ( oversampling * br.width(), oversampling * br.height() );
+    mPointSymbolPixmap.resize ( br.width(), br.height() );
 
-    // Find bg color (must differ from line and fill)
-    QColor transparent;
-    for ( int i = 0; i < 255; i++ ) {
-	if ( mPen.color().red() != i &&  mBrush.color().red() != i ) {
-	    transparent = QColor ( i, 0, 0 );
-	    break;
-	}
-    }
-    
-    mPointSymbolPixmap.fill( transparent );
+    // TODO - this is not correct, the background must be transparent
+    mPointSymbolPixmap.fill ( QColor(255,255,255) );
+
     QPainter pixpainter;
     pixpainter.begin(&mPointSymbolPixmap);
-    pixpainter.scale ( oversampling, oversampling );
     pixpainter.drawPicture ( -br.x(), -br.y(), mPointSymbolPicture );
     pixpainter.end();
-
-    QImage img = mPointSymbolPixmap.convertToImage();
-    img.setAlphaBuffer(true);
-    for ( int i = 0; i < img.width(); i++ ) {
-        for ( int j = 0; j < img.height(); j++ ) {
-	    QRgb pixel = img.pixel(i, j);
-	    int alpha = 255;
-	    if ( qRed(pixel) == transparent.red() ) {
-		alpha = 0;
-	    }
-            img.setPixel ( i, j, qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), alpha) );
-	}
-    }
-    img = img.smoothScale( br.width(), br.height());
-    mPointSymbolPixmap.convertFromImage ( img );
 
     mCacheUpToDate = true;
 }

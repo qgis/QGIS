@@ -119,7 +119,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 		QgsRangeRenderItem* rritem=new QgsRangeRenderItem(sym,item->value(),item->upper_value(),item->label());
 		sym->setPen(item->getSymbol()->pen());
 		sym->setBrush(item->getSymbol()->brush());
-		sym->setPointSymbol(item->getSymbol()->pointSymbol());
+		sym->setNamedPointSymbol(item->getSymbol()->pointSymbolName());
 		sym->setPointSize(item->getSymbol()->pointSize());
 		mEntries.insert(std::make_pair(classbreak,rritem));
 		mClassBreakBox->insertItem(classbreak);
@@ -268,7 +268,7 @@ void QgsGraSyDialog::apply()
 	    
 	    if (mVectorLayer->vectorType() == QGis::Point)
 	    {
-		sy->setPointSymbol(it->second->getSymbol()->pointSymbol());
+		sy->setNamedPointSymbol(it->second->getSymbol()->pointSymbolName());
 		sy->setPointSize(it->second->getSymbol()->pointSize());
 	     
 	    }

@@ -33,16 +33,6 @@ class QString;
 class QgsSymbol{
 
  public:
-    /**Hardcoded Point symbol*/
-    enum PointSymbol {
-	Circle,    // 'circle'
-	Rectangle, // 'rectangle'  
-	Diamond,   // 'diamond'
-	Cross,     // 'cross'     +
-	Cross2,    // 'cross2'    x
-	NPointSymbols // number of available point symbols
-    };
-     
     /**Constructor*/
     QgsSymbol();
     /**Constructor*/
@@ -73,12 +63,8 @@ class QgsSymbol{
     /**Set the fill (brush) style*/
     virtual void setFillStyle(Qt::BrushStyle s);
 
-    /**Set point symbol*/
-    virtual void setPointSymbol(PointSymbol ps);
     /**Set point symbol from name*/
     virtual void setNamedPointSymbol(QString name);
-    /**Get point symbol*/
-    virtual PointSymbol pointSymbol() const;
     /**Get point symbol*/
     virtual QString pointSymbolName() const;
     /**Set size*/
@@ -102,8 +88,8 @@ class QgsSymbol{
  protected:
     QPen mPen;
     QBrush mBrush;
-    /* Point symbol */
-    PointSymbol mPointSymbol;
+    /* Point symbol name */
+    QString mPointSymbolName;
     /* Point size */
     int mPointSize; 
     /* Point symbol cache */

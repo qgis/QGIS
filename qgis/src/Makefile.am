@@ -124,6 +124,7 @@ headers =	qgisapp.h					\
 		qgssinglesymrenderer.h				\
 		qgssisydialog.h					\
 		qgssvgcache.h					\
+		qgsmarkercatalogue.h				\
 		qgssymbol.h					\
 		qgssymbologyutils.h				\
 		qgsuniquevalrenderer.h				\
@@ -341,6 +342,7 @@ qgis_SOURCES =	main.cpp			\
 		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
 		qgssvgcache.cpp			\
+		qgsmarkercatalogue.cpp		\
 		qgssymbol.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuniquevalrenderer.cpp	\
@@ -466,6 +468,7 @@ libqgis_la_SOURCES =				\
 		qgsscalecalculator.cpp		\
 		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
+		qgsmarkercatalogue.cpp		\
 		qgssymbol.cpp			\
 		qgsuniquevalrenderer.cpp	\
 		qgsuvalmarenderer.cpp		\
