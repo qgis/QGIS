@@ -31,8 +31,20 @@
 #include <qtextedit.h>
 #include <qpainter.h>
 #include <qfont.h>
+#include <qtabwidget.h>
+#include <qwidget.h>
+
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRasterLayerPropertiesBase()
 {
+    //
+    //
+    //
+    // Remove the advanced symbology widget and debug overlay for 0.1 release
+    //
+    //
+    //
+    tabSymbology->removePage( TabPage );
+    cboxShowDebugInfo->hide();
     //downcast the maplayer to rasterlayer
     rasterLayer = (QgsRasterLayer *) lyr;
 
