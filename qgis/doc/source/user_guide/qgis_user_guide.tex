@@ -307,6 +307,23 @@ shows QGIS after loading the country.shp file.
 \end{Tip}
 
 Once loaded, you can zoom around the shapefile using the map navigation tools. To change the symbology of a layer, open the layer properties dialog by double clicking on the layer name or by right-clicking on the name in the legend and choosing \textsl{Properties} from the popup menu. See Section \ref{sec:symbology} for more information on setting symbology of vector layers.
+\subsubsection{Loading a MapInfo Layer}
+To load a MapInfo layer, click on the \textit{Add a vector layer}
+toolbar bar button and change the file type filter to \textit{MapInfo (*.mif
+*.tab *.MIF *.TAB)} and select the layer you want to load.
+
+\subsubsection{Loading an ArcInfo Coverage}
+Loading an an ArcInfo coverage is done using the same method as with a
+shapefiles and MapInfo layers. Click on the \textit{Add a vector layer} toolbar
+button to open the layer dialog.  Navigate to the coverage directory and select
+one of the following files (if present in your coverage)
+\begin{compactenum}
+\item .lab - to load a label layer (polygon labels, or standing points
+\item .cnt - to load a polygon centroid layer 
+\item .arc - to load an arc (line) layer
+\item .pal - to load a polygon layer
+\end{compactenum}
+
 \subsection{PostGIS Layers}\index{PostGIS!layers}
 PostGIS layers are stored in a PostgreSQL database. The advantage of PostGIS is the spatial indexing, filtering, and query capability. Using PostGIS, vector functions such as select and identify work more accurately than with OGR layers in QGIS.
 To use PostGIS layers you must:\index{PostgreSQL!loading layers}
@@ -482,6 +499,9 @@ the vector layer properties dialog will be shown.\index{symbology!changing}
 \end{center}  
 \end{figure}
 %force all figures to be printed
+\subsection{Attribute Actions}
+\subsection{Editing}
+
 \clearpage
 
 \section{Working with Raster Data}
@@ -769,6 +789,68 @@ GRASS within your mapset).
 
 %\subsection{The GRASS Toolbar}
 %The GRASS toolbar is displayed when the GRASS plugin is loaded using the Plugin Manager (see Section \ref{sec:managing_plugins}, \textsl{Managing Plugins}). Figure  shows the toolbar with each function annotated.
+\section{Rendering}\label{sec:redraw_events}\index{rendering}
+By default, QGIS renders all visible layers whenever the map canvas must be refreshed. The events that trigger a refresh of the map canvas include:
+\begin{compactitem}
+\item Adding a layer
+\item Panning or zooming
+\item Resizing the QGIS window
+\item Changing the visibility of a layer or layers
+\end{compactitem}
+QGIS allows you to control the rendering process in a number of ways.
+\subsection{Scale Dependent Rendering}\index{rendering!scale dependent}
+Scale dependent rendering allows you to specify the minimum and maximum scales
+at which a layer wil be visible.  To set scale dependency rendering, open the
+properties dialog by double-clicking on the layer in the legend. On the
+\textit{General} tab, set the minimum and maximum scale values and then click on
+the \textit{Use scale dependent rendering} checkbox.
+
+You can determine the scale values by first zooming to the level you want to use
+an noting the scale value in the QGIS status bar.\index{scale}
+\subsection{Controlling Map Rendering}
+Map rendering can be controlled in the following ways:
+\begin{compactenum}
+\item Stopping rendering during drawing of the map canvas
+\item Temporarily suspending rendering
+\item Setting an option to control the visibility of layers when they are added
+\end{compactenum}
+\subsubsection{Stopping Rendering}\index{rendering!halting}
+To stop the map drawing, press the ESC key. This will halt the refresh of the
+map canvas and leave the map partially drawn. It may take a bit of time between
+pressing ESC and the time the map drawing is halted.
+\subsubsection{Suspending Rendering}\index{rendering!suspending}
+To suspend rendering, click the \textit{Render} checkbox in the lower right
+corner of the statusbar. When the \textit{Render} box is not checked, QGIS does
+not redraw the canvas in response to any of the events described in Section
+\ref{sec:redraw_events}. Examples of when you might want to suspend rendering
+include:
+\begin{compactitem}
+\item Add many layers and symbolize them prior to drawing
+\item Add one or more large layers and set scale dependency before drawing
+\item Add one or more large layers and zoom to a specific view before drawing
+\item Any combination of the above
+\end{compactitem}
+Checking the \textit{Render} box enables rendering and causes and immediate
+refresh of the map canvas.
+\subsubsection{Setting Layer Add
+Option}\index{rendering!options}\index{layers!initial visibility}
+You can set an option to always load new layers without drawing them. This means
+the layer will be added to the map, but its visibility checkbox in the legend
+will be unchecked. To set this option, choose \textit{Preferences} from the
+\textit{Settings} menu and click on the \textit{Rendering} tab. Check the
+\textit{New layers added to the map are not displayed} checkbox. Any layer added
+to the map will be off (invisible) by default.
+\subsection{Updating the Map Display During Rendering}\index{rendering!update
+during drawing}
+You can set an option to update the map display as features are drawn. By
+default, QGIS does not display any features for a layer until the entire layer
+has been rendered. To update the display as features are read from the
+datastore, choose \textit{Preferences} from the
+\textit{Settings} menu and click on the \textit{Rendering} tab. Set the feature
+count to an appropriate value to update the display during rendering. Setting a
+value of 0 disables update during drawing (this is the default). Setting a value
+too low will result in poor performance as the map canvas is continually updated
+during the reading of the features. A suggested value to start with is 500. 
 
 \section{Using Plugins}\index{plugins}
 QGIS has been designed with a plugin architecture. This allows new features/functions to be added to the application. Many of the features in QGIS are actually implemented as plugins.\\
