@@ -2697,7 +2697,9 @@ void QgisApp::showExtents(QgsRect theExtents)
   // add it to the acetate layer
   mOverviewCanvas->addAcetateObject("extent", acRect);
   // refresh the overview map
+#ifdef QGISDEBUG
   std::cerr << "Adding extent to acetate layer" << std::endl; 
+#endif
   mOverviewCanvas->refresh();
 }
 

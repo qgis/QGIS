@@ -585,8 +585,10 @@ void QgsMapCanvas::currentScale(int thePrecision)
             }
       QgsRect paddedExtent(dxmin, dymin, dxmax, dymax);
       mCanvasProperties->mScale = mCanvasProperties->scaleCalculator->calculate(paddedExtent, width());
+#ifdef QGISDEBUG
           std::cout << "Scale (assuming meters as map units) = 1:"
           << mCanvasProperties->mScale << std::endl;
+#endif
           // return scale based on geographic
           //
 
@@ -787,9 +789,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             mCanvasProperties->currentExtent.setXmax(ur.x());
             mCanvasProperties->currentExtent.setYmax(ur.y());
             mCanvasProperties->currentExtent.normalize();
-            emit extentsChanged(mCanvasProperties->currentExtent);
             clear();
             render();
+            emit extentsChanged(mCanvasProperties->currentExtent);
 
             break;
         case QGis::ZoomOut:
