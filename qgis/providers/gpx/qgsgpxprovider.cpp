@@ -57,6 +57,7 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
     attributeFields.push_back(QgsField("lat", "text"));
     attributeFields.push_back(QgsField("lon", "text"));
     attributeFields.push_back(QgsField("ele", "text"));
+    attributeFields.push_back(QgsField("url", "text"));
   }
   else if (mFeatureType == "route" || mFeatureType == "track") {
     mGeomType = 2;
@@ -147,6 +148,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	  result->addAttribute("lon", QString("%1").arg(wpt.lon));
 	  if (!isnan(wpt.ele))
 	    result->addAttribute("ele", QString("%1").arg(wpt.ele));
+	  result->addAttribute("url", wpt.url);
 	}
 	
 	++mFid;

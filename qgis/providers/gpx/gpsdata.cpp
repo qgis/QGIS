@@ -202,6 +202,11 @@ bool GPSData::parseGPX(QDomNode& node) {
       if (!node2.isNull())
 	wpt.name = (const char*)node2.firstChild().nodeValue();
       
+      // url is optional
+      node2 = node.namedItem("url");
+      if (!node2.isNull())
+	wpt.url = (const char*)node2.firstChild().nodeValue();
+      
       // ele is optional
       node2 = node.namedItem("ele");
       if (!node2.isNull())
@@ -369,6 +374,10 @@ bool GPSData::parseLOC(QDomNode& node) {
       // name is optional
       if (!(node2 = node.namedItem("name")).isNull())
 	wpt.name = (const char*)node2.firstChild().nodeValue();
+      
+      // link is optional
+      if (!(node2 = node.namedItem("link")).isNull())
+	wpt.url = (const char*)node2.firstChild().nodeValue();
       
       // coord with lat and lon is required
       if ((node2 = node.namedItem("coord")).isNull())
