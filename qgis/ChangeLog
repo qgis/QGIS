@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.99 2004/05/27 06:44:00 gsherman Exp
+ChangeLog,v 1.100 2004/05/27 11:07:07 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-27 [petebr] 0.3.0devel6
+** Altered buttons on GUI to a standardised layout - HELP - APPLY - OK - CANCEL
 
 2004-05-26 [gsherman] 0.3.0devel5
 ** Added theme selection to the user preferences dialog. Currently there
