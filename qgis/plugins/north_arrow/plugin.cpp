@@ -24,7 +24,6 @@ email                : tim@linfiniti.com
 
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
-#include <qgsrasterlayer.h>
 #include "plugin.h"
 
 

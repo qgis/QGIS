@@ -25,7 +25,6 @@ email                : tim@linfiniti.com
 #include "../../src/qgsmaplayerregistry.h"
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsrasterlayer.h"
 #include "../../src/qgsdataprovider.h"
 #include "plugin.h"
 
