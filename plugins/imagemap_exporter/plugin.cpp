@@ -101,14 +101,10 @@ void Plugin::initGui()
   QAction *myQActionPointer = new QAction("Image Map Exporter", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the toolbar
-  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Image Map Exporter");
-  mToolBarPointer->setLabel("Image Map Exporter");
-  // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(mToolBarPointer);
-
-
+  // Add the tool button
+  mQGisIface->addToolBarIcon(myQActionPointer);
 }
+
 //method defined in interface
 void Plugin::help()
 {
