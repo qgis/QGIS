@@ -524,7 +524,8 @@ QString QgsGrassProvider::maxValue(int position)
 
 bool QgsGrassProvider::isValid(){
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassProvider::isValid()" << std::endl;
+    QString validString = mValid?"true":"false";
+    std::cerr << "QgsGrassProvider::isValid() returned: " << validString << std::endl;
     #endif
     return mValid;
 }
@@ -845,6 +846,9 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
 
     // Set GRASS location
     QgsGrass::setLocation ( gisdbase, location ); 
+#ifdef QGISDEBUG
+	std::cerr << "Setting  gisdbase, location: " << gisdbase << ", " << location << std::endl;
+#endif
 
     // Find the vector
     char *ms = G_find_vector2 ( (char *) mapName.ascii(), (char *) mapset.ascii()) ;

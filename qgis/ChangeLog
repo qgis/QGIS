@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.87 2004/05/20 10:38:22 timlinux Exp
+ChangeLog,v 1.88 2004/05/21 06:26:22 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-20 [gsherman] 0.2.0devel30
+** Changed release name to Madison in qgis.h
+** Added QgsScaleCalculator to libqgis spec in src/Makefile.am
+** Additional debug statements in grass data provider
 
 2004-05-20 [ts] 0.2.0devel29
 ** Added pyramid / no pyramid icon to raster legend entry and made legend 
