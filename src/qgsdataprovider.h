@@ -114,6 +114,14 @@ public:
   /**Returns true if the provider has been modified since the last commit*/
   virtual bool isModified() const=0;
 
+  /* Reset the layer - for an OGRLayer, this means clearing the
+   * spatial filter and calling ResetReading
+   */
+  virtual void reset()
+  { 
+     // NOP by default 
+  }
+
 };
 
 
