@@ -184,6 +184,7 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QgsCoo
             // draw the ring
             //std::cout << "Drawing the polygon\n";
             p->drawPolygon(*pa);
+            delete pa;
           }
         break;
 
@@ -232,7 +233,9 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QgsCoo
   //      std::cout << geom->getGeometryName() << std::endl;
 
   //std::cout << "Feature count: " << featureCount << std::endl;
-  delete[]feature;
+  
+  //GS - can't delete feature -- its an internal pointer managed by QgsFeature
+  //delete[]feature;
 }
 
 void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)
