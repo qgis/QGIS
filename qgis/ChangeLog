@@ -1,3 +1,18 @@
+Version 0.0.8-alpha December 11, 2002
+*During repaint, the data store is only accessed if map state or extent
+ has changed
+*Changes to layer properites aren't effective until the Layer Properties
+ dialog is closed
+*Canceling the Layer Propeties dialog cancels changes
+
+Version 0.0.7-alpha November 30, 2002
+*Changes to the build system to allow building with/without PostgeSQL 
+ support
+
+Version 0.0.6a-alpha November 27, 2002
+*Fix to build problems introduced at 0.0.6. No new features are included
+ in this release.
+
 Version 0.0.6-alpha November 24, 2002
 *Improved handling/management of PostGIS connections
 *Password prompt if the password is not stored with a connection
