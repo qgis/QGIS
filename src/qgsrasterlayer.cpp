@@ -1859,13 +1859,13 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
         myLegendQPixmap = QPixmap(3,1);
         myQPainter.begin(&myLegendQPixmap);
         //draw legend red part
-        myQPainter.setPen( QPen( QColor(127,0,0, QColor::Rgb), 0) );
+        myQPainter.setPen( QPen( QColor(224,103,103, QColor::Rgb), 0) );
         myQPainter.drawPoint( 0,0);
         //draw legend green part
-        myQPainter.setPen( QPen( QColor(0,127,0, QColor::Rgb), 0) );
+        myQPainter.setPen( QPen( QColor(132,224,127, QColor::Rgb), 0) );
         myQPainter.drawPoint( 1,0);
         //draw legend blue part
-        myQPainter.setPen( QPen( QColor(0,0,127, QColor::Rgb), 0) );
+        myQPainter.setPen( QPen( QColor(127,160,224, QColor::Rgb), 0) );
         myQPainter.drawPoint( 2,0);
     }
 
