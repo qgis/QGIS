@@ -56,7 +56,7 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
             {
                 QPicture pic;
                 double scalefactor=sy->scaleFactor();
-                mScaleSpin->setValue(scalefactor*100);
+                mScaleSpin->setValue((int)(scalefactor*100.0));
                 QString svgfile=sy->picture();
                 pic.load(svgfile,"svg");
 
@@ -118,7 +118,7 @@ void QgsSiMaDialog::apply()
 
     ms->setPicture(string);
     //set the scaled factor at the same time converting units from percentage
-    ms->setScaleFactor(static_cast<int>(mScaleSpin->value()/100));
+    ms->setScaleFactor(mScaleSpin->value()/100.0);
 
     QgsRenderItem* ri = new QgsRenderItem();
     ri->setSymbol(ms);
@@ -173,8 +173,8 @@ void QgsSiMaDialog::apply()
     pix->fill();
 
     QPainter p(pix);
-    p.scale(ms->scaleFactor(),ms->scaleFactor());
-    p.drawPicture((int)(100/ms->scaleFactor()),(int)(100/ms->scaleFactor()),pic);
+    p.scale(ms->scaleFactor()/100.0,ms->scaleFactor()/100.0);
+    p.drawPicture((int)(100.0/ms->scaleFactor()),(int)(100.0/ms->scaleFactor()),pic);
     p.resetXForm();
 
     p.setPen(Qt::black);
@@ -203,7 +203,7 @@ void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
 
     //draw the SVG-Image on the button
     QPicture pic;
-    double scalefactor=mScaleSpin->value()/100;
+    double scalefactor=mScaleSpin->value()/100.0;
     pic.load(svgfile,"svg");
 
     int width=(int)(pic.boundingRect().width()*scalefactor);
@@ -236,12 +236,13 @@ void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
     {
         QPicture pic;
         //user enters scaling factor as a percentage
-        double scalefactor=mScaleSpin->value()/100;
+        double scalefactor=mScaleSpin->value()/100.0;
         pic.load(svgfile,"svg");
 
-        int width=(int)(pic.boundingRect().width()*scalefactor);
-        int height=(int)(pic.boundingRect().height()*scalefactor);
-
+        int width=pic.boundingRect().width();
+	width=static_cast<int>(static_cast<double>(width)*scalefactor);
+        int height=pic.boundingRect().height();
+	height=static_cast<int>(static_cast<double>(height)*scalefactor);
         //prevent 0 width or height, which would cause a crash
         if(width==0)
         {
