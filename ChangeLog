@@ -1,8 +1,7 @@
-2004-12-30  Mark Coletti  <mcoletti@er.usgs.gov>
-
-
-
 QGIS Change Log
+2005-01-29 [gsherman] 0.6.0devel5
+** Applied patches from M. Loskot for a build error and missing Q_OBJECT
+   macros in qgsspit.h and qgsattributetable.h
 2005-01-01 [larsl] 0.6.0devel4
 ** Fixed a bug that crashed QGIS when loading rasters from a project file, pt 2
 QGIS Change Log
