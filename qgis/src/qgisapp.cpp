@@ -322,7 +322,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   actionAddLayer->removeFrom(popupMenuLayers);
   actionAddLayer->removeFrom(DataToolbar);
 #endif
-
   // connect the "cleanup" slot
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
@@ -352,7 +351,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   // store the application dir
   appDir = PREFIX;
-
+  // set the theme 
+  setTheme();
   // Get pointer to the provider registry singleton
   QString plib = PLUGINPATH;
   providerRegistry = QgsProviderRegistry::instance(plib);
@@ -2824,4 +2824,59 @@ void QgisApp::projectProperties()
     mapCanvas->setMapUnits(pp->mapUnits());
 
   }
+}
+void QgisApp::setTheme(QString themeName)
+{
+/*****************************************************************
+// Init the toolbar icons by setting the icon for each action.
+// All toolbar/menu items must be a QAction in order for this
+// to work.
+//
+// When new toolbar/menu QAction objects are added to the interface,
+// add an entry below to set the icon
+//
+// PNG names must match those defined for the default theme. The
+// default theme is installed in <prefix>/share/qgis/themes/default.
+// 
+// TODO:Next step is to allow user specified icon sets by loading the
+// images from a theme directory other than "default". This will require
+// adding information to preferences to allow selecting the theme.
+//
+// New core themes can be added by creating a subdirectory under src/themes
+// and modifying the appropriate Makefile.am files. User contributed themes
+// will be installed directly into <prefix>/share/qgis/themes/<themedir>.
+//
+// TODO: Create a theme preferences dialog that parses the themes directory
+// and builds a list of themes (ie subdirectories) for the user to 
+// choose from.
+*/
+  QString iconPath = appDir +"/share/qgis/themes/" + themeName;
+  actionFileNew->setIconSet(QIconSet(QPixmap(iconPath + "/file_new.png")));
+  actionFileSave->setIconSet(QIconSet(QPixmap(iconPath + "/file_save.png")));
+  actionFileSaveAs->setIconSet(QIconSet(QPixmap(iconPath + "/file_save_as.png")));
+  actionFileOpen->setIconSet(QIconSet(QPixmap(iconPath + "/project_open.png")));
+  actionSaveMapAsImage->setIconSet(QIconSet(QPixmap(iconPath + "/save_map_image.png")));
+  actionExportMapServer->setIconSet(QIconSet(QPixmap(iconPath + "/export_map_server.png")));
+  actionFileExit->setIconSet(QIconSet(QPixmap(iconPath + "/exit.png")));
+  actionAddNonDbLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_vector_layer.png")));
+  actionAddRasterLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_raster_layer.png")));
+  actionAddLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_pg_layer.png")));
+  actionProjectProperties->setIconSet(QIconSet(QPixmap(iconPath + "/project_properties.png")));
+  actionPluginManager->setIconSet(QIconSet(QPixmap(iconPath + "/plugin_manager.png")));
+  actionCheckQgisVersion->setIconSet(QIconSet(QPixmap(iconPath + "/check_version.png")));
+  actionOptions->setIconSet(QIconSet(QPixmap(iconPath + "/preferences.png")));
+  actionHelpContents->setIconSet(QIconSet(QPixmap(iconPath + "/help_contents.png")));
+  actionQgisHomePage->setIconSet(QIconSet(QPixmap(iconPath + "/home_page.png")));
+  actionQgisSourceForgePage->setIconSet(QIconSet(QPixmap(iconPath + "/sourceforge_page.png")));
+  actionHelpAbout->setIconSet(QIconSet(QPixmap(iconPath + "/help_about.png")));
+  drawAction->setIconSet(QIconSet(QPixmap(iconPath + "/reload.png")));
+  actionZoomIn->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_in.png")));
+  actionZoomOut->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_out.png")));
+  actionZoomFullExtent->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_full.png")));
+  actionZoomToSelected->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_selected.png")));
+  actionPan->setIconSet(QIconSet(QPixmap(iconPath + "/pan.png")));
+  actionZoomLast->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_last.png")));
+  actionIdentify->setIconSet(QIconSet(QPixmap(iconPath + "/identify.png")));
+  actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
+  actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
 }
