@@ -301,12 +301,13 @@ postgresHEADERS = qgsdbsourceselect.h \
 postgresSOURCES = qgsdbsourceselect.cpp \
 									qgsnewconnection.cpp \
 									qgspgquerybuilder.cpp \
-									qgspgutil.cpp
+									qgspgutil.h
 postgresUIC     = qgsdbsourceselectbase.ui \
 									qgsnewconnectionbase.ui \
 									qgspgquerybuilderbase.ui	
 postgresUIH     = 
- 
+postgresLIBSOURCES = qgspgutil.cpp
+
 if HAVE_POSTGRESQL
 postgresUIHEADERS = $(postgresUIC:.ui=.uic.h)
 postgresUISOURCES = $(postgresUIC:.ui=.uic.cpp)
@@ -367,10 +368,9 @@ libqgis_la_SOURCES =				\
 		qgsvectordataprovider.cpp \
 		qgsvectorlayer.cpp \
 		qgsvectorlayer.moc.cpp 
-#ifdef HAVE_POSTGRESQL
-postgresLIBSOURCES = qgspgutil.cpp
+if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
-#endif
+endif
 
 libqgis_la_LIBFLAGS = $(QT_LDADD) $(GEOS_LDADD)
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
