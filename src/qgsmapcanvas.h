@@ -32,6 +32,7 @@ public:
 	QgsMapCanvas(QWidget *parent=0, const char *name=0);
 	~QgsMapCanvas();
 	void addLayer(QgsMapLayer *lyr);
+	void render();
 private:
 //! map containing the layers by name
 	map<QString,QgsMapLayer> layers;

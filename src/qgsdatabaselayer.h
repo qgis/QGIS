@@ -29,11 +29,12 @@ public:
 	QgsDatabaseLayer(const char *conninfo=0, QString table=QString::null);
 	~QgsDatabaseLayer();
  private:
-	
+	void calculateExtent();
 	QString type; // maps to one of the OGIS Simple geometry types
 	QString database;
 	QString tableName;
 	QString geometryColumn;
+	
 	
 };
 
