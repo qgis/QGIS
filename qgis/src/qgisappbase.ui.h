@@ -211,3 +211,9 @@ void QgisAppBase::filePrint()
 {
 
 }
+
+
+void QgisAppBase::capturePoint()
+{
+
+}

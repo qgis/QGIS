@@ -34,7 +34,8 @@ namespace QGis
     Distance,
     Identify,
     Table,
-    Select
+    Select,
+    CapturePoint
   };
 //! Used for symbology operations
   // Featuure types

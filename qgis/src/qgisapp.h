@@ -185,6 +185,8 @@ private:
     void testButton();
     //! About QGis
     void about();
+    //! activates the capture point tool
+    void capturePoint();
     //! activates the selection tool
     void select();
     //! check to see if file is dirty and if so, prompt the user th save it
@@ -192,6 +194,8 @@ private:
 private slots:
     //! Slot to show the map coordinate position of the mouse cursor
     void showMouseCoordinate(QgsPoint &);
+    //copy the click coord to clipboard and let the user know its there
+    void showCapturePointCoordinate(QgsPoint &);
     //! Slot to show current map scale;
     void showScale(QString theScale);
     //! Show layer properties for the selected layer

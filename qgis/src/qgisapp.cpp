@@ -64,6 +64,8 @@
 #include <qimage.h>
 #include <qprinter.h>
 #include <qpaintdevicemetrics.h> 
+#include <qclipboard.h>
+#include <qapplication.h>
 
 #include <iostream>
 #include <iomanip>
@@ -186,6 +188,27 @@ static unsigned char pan_mask_bits[] = {
 };
 
 
+static char *capture_point_cursor[] = {
+  "16 16 3 1",
+  " »     c None",
+  ".»     c #000000",
+  "+»     c #FFFFFF",
+  "                ",
+  "       +.+      ",
+  "      ++.++     ",
+  "     +.....+    ",
+  "    +.     .+   ",
+  "   +.   .   .+  ",
+  "  +.    .    .+ ",
+  " ++.    .    .++",
+  " ... ...+... ...",
+  " ++.    .    .++",
+  "  +.    .    .+ ",
+  "   +.   .   .+  ",
+  "   ++.     .+   ",
+  "    ++.....+    ",
+  "      ++.++     ",
+  "       +.+      "};
 
 static char *select_cursor[] = {
   "16 16 3 1",
@@ -295,7 +318,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   setCaption(caption);
 
+  //signal when mouse moved over window (coords display in status bar)
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
+  //signal when mouse in capturePoint mode and mouse clicked on canvas
+  connect(mMapCanvas, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(showCapturePointCoordinate(QgsPoint &)));
   connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mMapLegend, SLOT(addLayer(QgsMapLayer *)));
@@ -1954,6 +1980,18 @@ void QgisApp::attributeTable()
         }
     }
 }
+void QgisApp::capturePoint()
+{
+
+  // set current map tool to select
+  mMapCanvas->setMapTool(QGis::CapturePoint);
+
+
+  QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+  delete mMapCursor;
+  mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+  mMapCanvas->setCursor(*mMapCursor);
+}
 
 void QgisApp::select()
 {
@@ -3101,6 +3139,7 @@ void QgisApp::setTheme(QString themeName)
   actionQgisSourceForgePage->setIconSet(QIconSet(QPixmap(iconPath + "/sourceforge_page.png")));
   actionHelpAbout->setIconSet(QIconSet(QPixmap(iconPath + "/help_about.png")));
   drawAction->setIconSet(QIconSet(QPixmap(iconPath + "/reload.png")));
+  actionCapturePoint->setIconSet(QIconSet(QPixmap(iconPath + "/digitising_point.png")));
   actionZoomIn->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_in.png")));
   actionZoomOut->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_out.png")));
   actionZoomFullExtent->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_full.png")));
@@ -3174,4 +3213,15 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
   mOverviewCanvas->zoomFullExtent();
   mOverviewCanvas->refresh();
 
+}
+//copy the click coord to clipboard and let the user know its there
+void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
+{
+#ifdef QGISDEBUG    
+    std::cout << "Capture point (clicked on map) at position " << theQgsPoint.stringRep(2) << std::endl;
+#endif      
+  QClipboard *myClipboard = QApplication::clipboard();
+  myClipboard->setText(theQgsPoint.stringRep(2));
+  QString myMessage = "Clipboard contents set to: ";
+  statusBar()->message(myMessage + myClipboard->text());
 }
