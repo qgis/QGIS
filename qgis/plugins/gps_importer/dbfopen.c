@@ -34,6 +34,9 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.2  2004/03/31 20:36:46  timlinux
+ * Fix for knock on effects of change of filename from shapefil.h to shapefile.h
+ *
  * Revision 1.1  2004/03/22 23:38:25  timlinux
  * This is a c++ first draft of a port of a perl script by Schuyler to import Garmin gps dump files as a shapefile. The resulting imported file will be displayed in the map view. At the moment it only generates a point layer of the waypoints but a future version will generate polylines and perhaps polygons too using similar logic to that used by Shuylers perl stuff. Note this plugin is still under construction and I am commiting it mainly so that other developers can assist me when I get stuck. Also note that the plugins Makefile builds a standalone app based on the plugin gui that can be run separately from qgis.
  *
@@ -112,7 +115,7 @@
 static char rcsid[] = 
   "$Id$";
 
-#include "shapefil.h"
+#include "shapefile.h"
 
 #include <math.h>
 #include <stdlib.h>
