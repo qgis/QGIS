@@ -102,6 +102,7 @@ headers =	qgisapp.h					\
 		qgsrect.h					\
 		qgsrenderer.h					\
 		qgsrenderitem.h					\
+		qgsrunprocess.h					\
 		qgsscalecalculator.h				\
 		qgssimadialog.h					\
 		qgssimarenderer.h				\
@@ -176,7 +177,6 @@ qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
 
 qgis_MOC =	qgisapp.moc.cpp				\
 		qgisinterface.moc.cpp			\
-		qgsattributeaction.moc.cpp		\
 		qgsattributeactiondialog.moc.cpp	\
 		qgsattributedialog.moc.cpp		\
 		qgsattributetable.moc.cpp		\
@@ -206,6 +206,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsprojectproperties.moc.cpp		\
 		qgsrasterlayer.moc.cpp			\
 		qgsrasterlayerproperties.moc.cpp	\
+		qgsrunprocess.moc.cpp			\
 		qgssimadialog.moc.cpp			\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
@@ -278,6 +279,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsrasterlayerproperties.cpp	\
 		qgsrect.cpp			\
 		qgsrenderitem.cpp		\
+		qgsrunprocess.cpp		\
 		qgsscalecalculator.cpp		\
 		qgssimadialog.cpp		\
 		qgssimarenderer.cpp		\
@@ -342,6 +344,7 @@ libqgis_la_SOURCES =				\
 		qgisappbase.moc.uic.cpp		\
 		qgsacetateobject.cpp		\
 		qgsacetaterectangle.cpp		\
+		qgsattributeaction.cpp		\
 		qgscolortable.cpp		\
 		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
@@ -369,6 +372,7 @@ libqgis_la_SOURCES =				\
 		qgsrenderitem.cpp		\
 		qgsscalecalculator.cpp		\
 		qgsrenderer.cpp 		\
+		qgsrunprocess.cpp		\
 		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssymbol.cpp			\
