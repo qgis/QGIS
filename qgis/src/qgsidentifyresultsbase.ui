@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsIdentifyResultsBase</class>
-<widget class="QDialog">
+<widget class="QWidget">
     <property name="name">
         <cstring>QgsIdentifyResultsBase</cstring>
     </property>
@@ -8,14 +8,14 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>281</width>
-            <height>316</height>
+            <width>231</width>
+            <height>540</height>
         </rect>
     </property>
     <property name="caption">
         <string>Identify Results</string>
     </property>
-    <property name="sizeGripEnabled">
+    <property name="sizeGripEnabled" stdset="0">
         <bool>true</bool>
     </property>
     <grid>
@@ -75,27 +75,10 @@
                 </spacer>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>buttonOk</cstring>
-                    </property>
-                    <property name="text">
-                        <string>OK</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
                         <cstring>buttonCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>Close</string>
                     </property>
                     <property name="accel">
                         <string></string>
@@ -151,17 +134,14 @@
 </widget>
 <connections>
     <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsIdentifyResultsBase</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>
         <receiver>QgsIdentifyResultsBase</receiver>
-        <slot>reject()</slot>
+        <slot>close()</slot>
     </connection>
 </connections>
+<slots>
+    <slot>close()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

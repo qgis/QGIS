@@ -20,7 +20,7 @@ namespace QGis
   // Version string 
   static const char *qgisVersion = VERSION;
   // Version number used for comparing versions using the "Check QGIS Version" function
-  static const int qgisVersionInt =200;
+  static const int qgisVersionInt =300;
   // Release name
   static const char *qgisReleaseName = "Madison";
   

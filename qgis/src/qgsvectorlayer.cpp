@@ -319,7 +319,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     int wkbType;
     //std::list<int> attributes=m_renderer->classificationAttributes();
     while ((fet = dataProvider->getNextFeature(attributesneeded)))
-    //while((fet = dataProvider->getNextFeature(attributes)))
+      //while((fet = dataProvider->getNextFeature(attributes)))
     {
       if(featureCount%1000==0)//copy the drawing buffer every 1000 elements
       {
@@ -328,7 +328,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
       //true is necessary for graduated symbol
 #ifdef QGISDEBUG
-     // std::cout << "Fetched next feature" << std::endl;
+      // std::cout << "Fetched next feature" << std::endl;
 #endif
       if (fet == 0)
       {
@@ -368,10 +368,10 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         feature = fet->getGeometry();
         //  if (feature != 0) {
         //    std::cout << featureCount << "'the feature is null\n";
-//TODO - add this to the debug options -- if we decide to keep it
-//wkbHeader header;
-  //memcpy((void *)&header,feature,sizeof(header));
-  //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
+        //TODO - add this to the debug options -- if we decide to keep it
+        //wkbHeader header;
+        //memcpy((void *)&header,feature,sizeof(header));
+        //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
 
         // FIX for the endian problem on osx (possibly sparc?)
         // TODO Restructure this whole wkb reading code to use
@@ -462,25 +462,25 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             // get number of rings in the polygon
             numRings = (int *) (feature + 1 + sizeof(int));
 
-      int *ringStart; // index of first point for each ring
-      int *ringNumPoints; // number of points in each ring
-      ringStart = new int[*numRings];
-      ringNumPoints = new int[*numRings];
+            int *ringStart; // index of first point for each ring
+            int *ringNumPoints; // number of points in each ring
+            ringStart = new int[*numRings];
+            ringNumPoints = new int[*numRings];
 
-      int x0, y0, pdx;
-      pdx = 0;
+            int x0, y0, pdx;
+            pdx = 0;
             ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
             for (idx = 0; idx < *numRings; idx++) {
-        // get number of points in the ring
-        nPoints = (int *) ptr;
-        ringStart[idx] = pdx;
-        ringNumPoints[idx] = *nPoints;
+              // get number of points in the ring
+              nPoints = (int *) ptr;
+              ringStart[idx] = pdx;
+              ringNumPoints[idx] = *nPoints;
               ptr += 4;
-        if ( idx == 0 ) { 
-                  pa = new QPointArray(*nPoints);
-        } else {
-      pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
-        }
+              if ( idx == 0 ) { 
+                pa = new QPointArray(*nPoints);
+              } else {
+                pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
+              }
               for (jdx = 0; jdx < *nPoints; jdx++) {
                 // add points to a point array for drawing the polygon
                 x = (double *) ptr;
@@ -492,28 +492,28 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 cXf->transform(&pt);
                 pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
               }
-        if ( idx == 0 ) { // remember last outer ring point
-      x0 = pt.xToInt();
-      y0 = pt.yToInt();
-        } else { // return to x0,y0 (inner rings - islands)
-      pa->setPoint(pdx++, x0, y0);
-        }
+              if ( idx == 0 ) { // remember last outer ring point
+                x0 = pt.xToInt();
+                y0 = pt.yToInt();
+              } else { // return to x0,y0 (inner rings - islands)
+                pa->setPoint(pdx++, x0, y0);
+              }
             }
-      // draw the polygon fill
-      pen = p->pen(); // store current pen
-      p->setPen ( Qt::NoPen ); // no boundary
-      p->drawPolygon(*pa);
+            // draw the polygon fill
+            pen = p->pen(); // store current pen
+            p->setPen ( Qt::NoPen ); // no boundary
+            p->drawPolygon(*pa);
 
-      // draw outline
-      p->setPen ( pen );
-      p->setBrush ( Qt::NoBrush );
+            // draw outline
+            p->setPen ( pen );
+            p->setBrush ( Qt::NoBrush );
             for (idx = 0; idx < *numRings; idx++) {
-          p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
-      }
-      
-      delete pa;
-      delete ringStart;
-      delete ringNumPoints;
+              p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
+            }
+
+            delete pa;
+            delete ringStart;
+            delete ringNumPoints;
 
             break;
 
@@ -647,7 +647,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     if (ir)
     {
       ir->setTitle(name());
-      ir->show();
+      // restore the identify window position and show it
+      ir->restorePosition();
     }
     QApplication::restoreOverrideCursor();
     if (featureCount == 0)

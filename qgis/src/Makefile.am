@@ -154,6 +154,7 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgsgrasydialog.moc.cpp			\
 		qgsgrasyextensionwidget.moc.cpp		\
 		qgshelpviewer.moc.cpp			\
+		qgsidentifyresults.moc.cpp			\
 		qgslegend.moc.cpp			\
 		qgslegenditem.moc.cpp			\
 		qgslinestyledialog.moc.cpp		\
