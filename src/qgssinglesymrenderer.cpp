@@ -234,7 +234,7 @@ void QgsSingleSymRenderer::writeXML(std::ostream& xml)
       << (const char *)QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()) 
       << "</fillpattern>\n";
     xml << "\t\t\t\t</symbol>\n";
-    xml << "\t\t\t\t<label>" << (const char *)this->item()->label() << "</label>\n";
+    //xml << "\t\t\t\t<label>" << this->item()->label().latin1() << "</label>\n";
     xml << "\t\t\t</renderitem>\n";
     xml << "\t\t</singlesymbol>\n";
 }

@@ -167,6 +167,11 @@ void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 void QgsSiMaRenderer::writeXML(std::ostream& xml)
 {
+#ifdef QGISDEBUG
+    qWarning("in QgsSiMaRenderer::writeXML");
+    qWarning("label seems to make problems");
+    qWarning(this->item()->label());
+#endif
     xml << "\t\t<singlemarker>\n";
     xml << "\t\t\t<renderitem>\n";
     xml << "\t\t\t\t<value>" + this->item()->value() + "</value>\n";
@@ -183,7 +188,7 @@ void QgsSiMaRenderer::writeXML(std::ostream& xml)
 	  << markersymbol->pen().color().green() 
     << "\" blue=\"" 
     << markersymbol->pen().color().blue()
-	  << "\" />\n";
+    << "\" />\n";
 	xml << "\t\t\t\t\t<outlinestyle>" << (const char *) QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) << "</outlinestyle>\n";
 	xml << "\t\t\t\t\t<outlinewidth>" <<  markersymbol->pen().width() << "</outlinewidth>\n";
 	xml << "\t\t\t\t\t<fillcolor red=\"" << markersymbol->brush().color().red() 
@@ -191,12 +196,12 @@ void QgsSiMaRenderer::writeXML(std::ostream& xml)
     << markersymbol->brush().color().green()
     << "\" blue=\"" 
     << markersymbol->brush().color().blue()
-	  << "\" />\n";
+    << "\" />\n";
 	xml << "\t\t\t\t\t<fillpattern>" 
     << (const char *)QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style())
 	  << "</fillpattern>\n";
-	xml << "\t\t\t\t</markersymbol>\n";
-	xml << "\t\t\t\t<label>" << this->item()->label() << "</label>\n";
+	  xml << "\t\t\t\t</markersymbol>\n";
+	  xml << "\t\t\t\t<label>" + this->item()->label() + "</label>\n";
 	xml << "\t\t\t</renderitem>\n";
 	xml << "\t\t</singlemarker>\n";
     }else

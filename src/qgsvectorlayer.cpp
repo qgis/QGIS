@@ -1623,7 +1623,6 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
     if( myRenderer = renderer() )
     {
         std::stringstream rendererXML;
-
         myRenderer->writeXML(rendererXML);
 
         // because the renderer writeXML() deals with streams and not DOM
@@ -1658,6 +1657,10 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         {
             rawXML += temp_str + '\n';
         }
+
+#ifdef QGISDEBUG
+	std::cout << rawXML << std::endl << std::flush;
+#endif
 
         // const char * s = rawXML.c_str(); // debugger probe
 
