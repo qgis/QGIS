@@ -562,12 +562,15 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point)
 		break;
 
 	    case QGis::WKBMultiPoint:
+		//soon...
 		break;
 
 	    case QGis::WKBMultiLineString:
+		//soon...
 		break;
 
 	    case QGis::WKBMultiPolygon:
+		//...
 		break;
 
 	    default:
