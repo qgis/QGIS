@@ -1277,6 +1277,51 @@ void QgisApp::newVectorLayer()
     qWarning("the filename is : "+filename);
 #endif
     
+    //strange, the 'provider way' does not work...
+    /*QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+    QString ogrlib = pReg->library("ogr");
+    const char *cOgrLib = (const char *) ogrlib;
+    // load the data provider
+    QLibrary* myLib = new QLibrary((const char *) ogrlib);
+    bool loaded = myLib->load();
+    if (loaded)
+    {
+#ifdef QGISDEBUG
+	qWarning("ogr provider loaded");
+#endif
+	typedef bool (*createEmptyDataSourceProc)(const QString&,const QString&, QGis::WKBTYPE);
+	createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc)myLib->resolve("createEmptyDataSource");
+	if(createEmptyDataSource)
+	{
+	    QString format("ESRI Shapefile");
+	    if(geometrytype == QGis::WKBPoint)
+	    {
+		createEmptyDataSource(filename,format,QGis::WKBPoint);
+	    }
+	    else if (geometrytype == QGis::WKBLineString)
+	    {
+		createEmptyDataSource(filename,format,QGis::WKBLineString);
+	    }
+	    else if(geometrytype == QGis::WKBPolygon)
+	    {
+		createEmptyDataSource(filename,format,QGis::WKBPolygon);
+	    }
+	    else
+	    {
+#ifdef QGISDEBUG
+		qWarning("QgisApp.cpp: geometry type not recognised");
+#endif	
+		return;
+	    }
+	}
+	else
+	{
+#ifdef QGISDEBUG
+	    qWarning("Resolving newEmptyDataSource(...) failed");;
+#endif
+	}
+	}*/
+
     if(geometrytype == QGis::WKBPoint)
     {
 	QgsVectorFileWriter writer(filename,wkbPoint);

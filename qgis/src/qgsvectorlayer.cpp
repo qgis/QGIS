@@ -103,7 +103,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
 
   //TODO - fix selection code that formerly used
   //       a boolean vector and set every entry to false
-
+ 
   //draw the selected features in yellow
   selectionColor.setRgb(255, 255, 0);
 

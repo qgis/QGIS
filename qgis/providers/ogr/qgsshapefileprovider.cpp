@@ -15,6 +15,7 @@
 #include <cpl_error.h>
 #include <qmessagebox.h>
 #include <geos.h>
+#include "ogr_api.h"//only for a test
 
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
@@ -26,7 +27,7 @@
 #else
 #define QGISEXTERN extern "C"
 #endif
-QgsShapeFileProvider::QgsShapeFileProvider(QString uri):mEditable(false), mModified(false), dataSourceUri(uri), minmaxcachedirty(true)
+QgsShapeFileProvider::QgsShapeFileProvider(QString uri): QgsVectorDataProvider(), dataSourceUri(uri), minmaxcachedirty(true)
 {
   OGRRegisterAll();
 
@@ -665,19 +666,10 @@ bool QgsShapeFileProvider::isValid()
   return valid;
 }
 
-bool QgsShapeFileProvider::addFeature(QgsFeature* f)
+bool QgsShapeFileProvider::startEditing()
 {
-    if(mEditable)
-    {
-  mAddedFeatures.push_back(f);
-  mAddedFeaturesIt=mAddedFeatures.begin();
-  mModified=true;
-  return true;
-    }
-    else
-    {
-  return false;
-    }
+    mEditable=true;
+    return true;
 }
 
 bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
@@ -833,9 +825,9 @@ bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
   }
 }
 
-bool QgsShapeFileProvider::deleteFeature(int id)
+/*bool QgsShapeFileProvider::deleteFeature(int id)
 {
-/*#ifdef QGISDEBUG
+#ifdef QGISDEBUG
     int test=ogrLayer->TestCapability("OLCDeleteFeature");
     if(!test)
     {
@@ -856,65 +848,9 @@ bool QgsShapeFileProvider::deleteFeature(int id)
 #endif
       break;
     }
-    return true;*/
-    return false;
-}
-
-
-bool QgsShapeFileProvider::startEditing()
-{
-    mEditable=true;
     return true;
-}
-
-void QgsShapeFileProvider::stopEditing()
-{
-    mEditable=false;
-}
-
-bool QgsShapeFileProvider::commitChanges()
-{
-    if(mEditable)
-    {
-  bool returnvalue=true;
-  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-  {
-      if(!commitFeature(*it))
-      {
-    returnvalue=false;
-      }
-      delete *it;
-  }
-  ogrLayer->SyncToDisk();
-  mAddedFeatures.clear();
-  mModified=false;
-  return returnvalue;
-    }
-    else
-    {
-  return false;
-    }
-}
-
-bool QgsShapeFileProvider::rollBack()
-{
-    if(mEditable)
-    {
-  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-  {
-      delete *it;
-  }
-  mAddedFeatures.clear();
-  mModified=false;
-  return true;
-    }
-    else
-    {
-  return false;
-    }
-}
-
-
+    return false;
+}*/
 
 /**
  * Class factory to return a pointer to a newly created 
@@ -945,4 +881,132 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+
+QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, QGis::WKBTYPE vectortype)
+{
+    //hard coded for the moment
+    OGRwkbGeometryType geomtype=(OGRwkbGeometryType)((int)vectortype);
+    QString mOutputFormat = "ESRI Shapefile";
+    QString mOutputFileName = uri;
+#ifdef WIN32 
+    QString outname=mOutputFileName.mid(mOutputFileName.findRev("\\")+1,mOutputFileName.length());
+#else
+    QString outname=mOutputFileName.mid(mOutputFileName.findRev("/")+1,mOutputFileName.length());
+#endif
+    OGRSFDriverRegistrar* driverregist = OGRSFDriverRegistrar::GetRegistrar();
+    
+    if(driverregist==0)
+    {
+	return false;
+    }
+    OGRSFDriver* driver = driverregist->GetDriverByName(mOutputFormat);
+    if(driver==0)
+    {
+	return false;
+    }
+    OGRDataSource* datasource = driver->CreateDataSource(mOutputFileName,NULL);
+    if(datasource==0)
+    {
+	return false;
+    }
+
+    OGRSpatialReference reference;
+    OGRLayer* layer = datasource->CreateLayer(outname.latin1(),&reference,geomtype,NULL);
+    if(layer==0)
+    {
+	return false;
+    }
+
+    //create a dummy field
+    OGRFieldDefn fielddef("dummy",OFTReal);
+    fielddef.SetWidth(1);
+    fielddef.SetPrecision(1);
+    if(layer->CreateField(&fielddef,FALSE)!=OGRERR_NONE)
+    {
+	return false;
+    }
+
+    int count=layer->GetLayerDefn()->GetFieldCount();
+#ifdef QGISDEBUG
+    qWarning("Field count is: "+QString::number(count));
+#endif
+    //just for a test: create a dummy featureO
+    /*OGRFeatureDefn* fdef=layer->GetLayerDefn();
+    OGRFeature* feature=new OGRFeature(fdef);
+    OGRPoint* p=new OGRPoint();
+    p->setX(700000);
+    p->setY(300000);
+    feature->SetGeometry(p);
+    if(layer->CreateFeature(feature)!=OGRERR_NONE)
+    {
+	qWarning("errrrrrrrrrror!");
+	}*/
+
+    if(layer->SyncToDisk()!=OGRERR_NONE)
+    {
+	return false;
+    }
+    
+    return true;
+
+    /*OGRLayerH mLayerHandle;
+    OGRRegisterAll();
+    OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat );
+
+    if( myDriverHandle == NULL )
+    {
+	std::cout << "Unable to find format driver named " << mOutputFormat << std::endl;
+	return false;
+    }
+
+    OGRDataSourceH mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName, NULL );
+    if( mDataSourceHandle == NULL )
+    {
+	std::cout << "Datasource handle is null! " << std::endl;
+	return false;
+    }
+
+    //define the spatial ref system
+    OGRSpatialReferenceH mySpatialReferenceSystemHandle = NULL;
+
+    QString myWKT = NULL; //WKT = Well Known Text
+    //sample below shows how to extract srs from a raster
+    //    const char *myWKT = GDALGetProjectionRef( hBand );
+
+    if( myWKT != NULL && strlen(myWKT) != 0 )
+    {
+	mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT );
+    }
+    //change 'contour' to something more useful!
+#ifdef QGISDEBUG
+    qWarning("mOutputFileName: "+mOutputFileName);
+#endif //QGISDEBUG
+
+
+#ifdef QGISDEBUG
+  qWarning("outname: "+outname);
+#endif //QGISDEBUG
+
+  mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, outname, 
+  mySpatialReferenceSystemHandle, geomtype, NULL );
+  
+  if( mLayerHandle == NULL )
+  {
+    std::cout << "Error layer handle is null!" << std::endl;
+    return false;
+  }
+  else
+  {
+    std::cout << "File handle created!" << std::endl;
+  }
+
+  OGRFieldDefnH myFieldDefinitionHandle;
+  myFieldDefinitionHandle = OGR_Fld_Create( "dummy",OFTReal);
+  OGR_Fld_SetWidth( myFieldDefinitionHandle,1);
+  OGR_Fld_SetPrecision( myFieldDefinitionHandle,1);
+  OGR_L_CreateField( mLayerHandle, myFieldDefinitionHandle, FALSE );
+  OGR_Fld_Destroy( myFieldDefinitionHandle );
+  
+  return true;*/
 }
