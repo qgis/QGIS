@@ -2,15 +2,21 @@
 \section{Introduction}\label{label_introduction}
 This document briefly describes how to build QGIS 0.6 (\textit{`Simon'}) from the source distribution. These instructions are for Linux/Unix and other POSIX systems which have the required build environment.
 
+The latest version of this document can always be found at \url{http://qgis.org/docs/install.html}.
 %\textsc{NOTE - All of the required packages for SuSE 9.1 are available at }\url{ftp://ftp.lingis.org}
-
+\subsection{Installing Windows Version}
 Installing the Windows version of QGIS is simply a matter of running the user friendly setup wizard. See the README.WIN32 file for additional information regarding the Windows version of QGIS. At version 0.6, the GRASS plugin is not available in Windows.
+\subsection{Installing Mac OSX Version}
+To install the compressed disk image containing the OSX version of QGIS,
+double-click to expand and mount the image, then drag QGIS application to your
+hard drive. The OSX version does not include GRASS support.
 
 %This document does not contain instructions for building the GRASS plugins. Information on building the GRASS plugin with raster and vector support can be found in the \textit{Building QGIS with GRASS Support} document, available at \url{http://community.qgis.org/grass_plugin}. 
 
+\subsection{Building from Source}
+The remainder of this document deals with compiling and installing QGIS from the
+source code. Specifically this applies to Linux/Unix systems.
 
-
-The latest version of this document can always be found at \url{http://qgis.org/docs/install.html}.
 
 QGIS can be installed with three levels of support for data stores:
 \begin{enumerate}
@@ -131,13 +137,10 @@ Packages for most of the software/libraries discussed below can be found for alm
 
   \section{GEOS}
 
-  \textbf{Note:} As of QGIS 0.6 GEOS is a requirement in order to build the main body of QGIS code.
+  \textbf{Note:} As of version 0.6, GEOS is a requirement in order to build QGIS.
   
-  QGIS uses GEOS to properly fetch features from the database when doing an
-  identify or select. You can still view PostGIS layers without GEOS, but you
-  will not be able to create a selection or identify a feature.
-
-  If you choose to proceed without GEOS support, QGIS will warn you each time you load a layer from the database.
+  QGIS uses GEOS to properly fetch features from the the underlying datastore
+  when doing an identify or select operation.
 
   To install GEOS:
   \begin{enumerate}
