@@ -10,7 +10,7 @@
 #
 # $Id$
 
-svgdir = ${pkgdatadir}/svg/icon
+svgdir = ${pkgdatadir}/svg/north_arrows
 
 svg_DATA = *.svg
 
