@@ -824,7 +824,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
    mapCanvas->freeze(false);
    // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
    qApp->processEvents();       // XXX why does this need to be called manually?
-   mapCanvas->render2();        // XXX eh, wot?
+   mapCanvas->render();        // XXX eh, wot?
 
    QApplication::restoreOverrideCursor();
 
@@ -934,7 +934,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
       // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
       qApp->processEvents();    // XXX why does this need to be called manually?
       mapCanvas->freeze(false);
-      mapCanvas->render2();
+      mapCanvas->render();
       QApplication::restoreOverrideCursor();
       statusBar()->message(mapCanvas->extent().stringRep(2));
 
@@ -1268,7 +1268,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
    // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
   qApp->processEvents();
   mapCanvas->freeze(false);
-  mapCanvas->render2();
+  mapCanvas->render();
   QApplication::restoreOverrideCursor();
   statusBar()->message(mapCanvas->extent().stringRep(2));
 
@@ -1391,7 +1391,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
   mapCanvas->freeze(false);
 
-  mapCanvas->render2();
+  mapCanvas->render();
 
   QApplication::restoreOverrideCursor();
 
@@ -1501,14 +1501,14 @@ void QgisApp::addDatabaseLayer()
           // mapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
 
           // draw the map
-          //mapCanvas->render2();
+          //mapCanvas->render();
           statusBar()->message(mapCanvas->extent().stringRep(2));
 
         }
       qApp->processEvents();
 
       mapCanvas->freeze(false);
-      mapCanvas->render2();
+      mapCanvas->render();
       QApplication::restoreOverrideCursor();
   } else
     {
@@ -1681,7 +1681,7 @@ void QgisApp::zoomIn()
      mapCanvas->setExtent(ext);
      statusBar()->message(ext.stringRep(2));
      mapCanvas->clear();
-     mapCanvas->render2(); */
+     mapCanvas->render(); */
   
   
 
@@ -1793,7 +1793,7 @@ void QgisApp::drawLayers()
 {
   std::cout << "In  QgisApp::drawLayers()" << std::endl;
   mapCanvas->setDirty(true);
-  mapCanvas->render2();
+  mapCanvas->render();
   
 }
 
@@ -1851,7 +1851,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
           //this code will be called it the user selects ok
           mapCanvas->setDirty(true);
           mapCanvas->refresh();
-          mapCanvas->render2();
+          mapCanvas->render();
           // mapLegend->update(); XXX WHY CALL UPDATE HERE?
           delete rlp;
           qApp->processEvents();
@@ -1863,7 +1863,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 
   //TODO Fix this area below and above
   //this is a very hacky way to force the legend entry to refresh - the call above does ne happen for some reason
-  //mapCanvas->render2();
+  //mapCanvas->render();
   //mapLegend->update();
 
 
@@ -1883,7 +1883,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
      // apply changes
      mapCanvas->freeze(false);
      mapCanvas->setDirty(true);
-     mapCanvas->render2();
+     mapCanvas->render();
      }
      }
      else if (lyr->type()==QgsMapLayer::DATABASE)
@@ -1917,7 +1917,7 @@ void QgisApp::removeLayer()
   mapCanvas->freeze(false);
   // draw the map
   mapCanvas->clear();
-  mapCanvas->render2();
+  mapCanvas->render();
   
 
 }
@@ -1930,7 +1930,7 @@ void QgisApp::zoomToLayerExtent()
   QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
   mapCanvas->setExtent(lyr->extent());
   mapCanvas->clear();
-  mapCanvas->render2();
+  mapCanvas->render();
   
 
 }
@@ -2589,7 +2589,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
       // mapLegend->update(); NOW DONE VIA SIGNAL/SLOTS
 
       // draw the map
-      //mapCanvas->render2();
+      //mapCanvas->render();
       statusBar()->message(mapCanvas->extent().stringRep(2));
 
     }else
@@ -2599,7 +2599,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     }
     qApp->processEvents();
     mapCanvas->freeze(false);
-    mapCanvas->render2();
+    mapCanvas->render();
     QApplication::restoreOverrideCursor();
   }
     

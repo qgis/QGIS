@@ -68,9 +68,6 @@ class QgsMapCanvas : public QWidget
     //! Get a pointer to the legend control used with this canvas
     QgsLegend * getLegend();
 
-    //! Draw the map using the symbology set for each layer
-    void render();
-
     //! Clear the map canvas
     void clear();
 
@@ -153,14 +150,14 @@ public slots:
     //! remove all layers from the map
     void removeAll();
 
-    /**Sets dirty=true and calls render2()*/
+    /**Sets dirty=true and calls render()*/
     void refresh();
 
     //! The painter device parameter is optional - if ommitted it will default
     // to the pmCanvas (ie the gui map display). The idea is that you can pass
     // an alternative device such as one that will be used for printing or
     // saving a map view as an image file.
-    void render2(QPaintDevice * theQPaintDevice=0);
+    void render(QPaintDevice * theQPaintDevice=0);
 
     //! Save the convtents of the map canvas to disk as an image
     void saveAsImage(QString theFileName,QPixmap * QPixmap=0 );
