@@ -852,7 +852,7 @@ QString QgsPostgresProvider::getPrimaryKey()
     QString type = PQgetvalue(tableType, 0, 0);
     PQclear(tableType);
 
-    if (type == "t") // the relation is a table
+    if (type == "r") // the relation is a table
     {
 #ifdef QGISDEBUG
       std::cerr << "Relation is a table. Checking to see if it has an "
@@ -1170,8 +1170,8 @@ void QgsPostgresProvider::findColumns(QString select_cmd,
 	table_col_name = tt[1];
       }
       else
-	std::cerr << "The view column definition is not in the full form."
-		  << std::endl;
+	qWarning("The view column definition '" + table_col_name +
+		 "' is not in the full form.");
 
       // If there was no 'AS', the view column name is the same as
       // the column name from the underlying table.
@@ -1182,9 +1182,9 @@ void QgsPostgresProvider::findColumns(QString select_cmd,
       std::cout << "View column '" << view_col_name << "' comes from " 
 		<< table_name << "." << table_col_name << std::endl;
 #endif
-      // If there are braces () in the view_col_name this probably
-      // indicates that the view column is using some sql function
-      // to transform the underlying column. This is probably not
+      // If there are braces () in the table_col_name this probably
+      // indicates that some sql function is being used to transform
+      // the underlying column. This is probably not
       // suitable so exclude such columns from the result.
       if (!view_col_name.contains('('))
 	cols[view_col_name] = 
