@@ -224,8 +224,11 @@ public:
     int readNumEntry ( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
     double readDoubleEntry ( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
     bool readBoolEntry ( QString const & scope, const QString & key, bool def = FALSE, bool * ok = 0 ) const;
-    bool removeEntry ( QString const & scope, const QString & key );
     //@}
+
+
+    /** remove the given key */
+    bool removeEntry ( QString const & scope, const QString & key );
 
 
     /** return keys with values -- do not return keys that contain other keys
@@ -234,11 +237,20 @@ public:
     */
     QStringList entryList ( QString const & scope, QString const & key ) const;
 
-    /** return keys which contain other keys
+    /** return keys with keys -- do not return keys that contain only values
 
-      @note equivalent to QSettings subkeyList
+      @note equivalent to QSettings subkeyList()
     */
     QStringList subkeyList ( QString const & scope, QString const & key ) const;
+
+
+    /** dump out current project properties to stderr 
+
+      @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
+                and redundantly prints sub-keys.
+    */
+    void dumpProperties() const;
+
 
 private:
 
