@@ -203,7 +203,10 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QgsCoordi
   //      std::cout << geom->getGeometryName() << std::endl;
 
   //std::cout << "Feature count: " << featureCount << std::endl;
-  delete[]feature;
+  
+  //TODO determine if we need to delete this - this is a pointer to data maintained
+  // by QgsFeature and probably shouldn't be deleted
+  //delete[]feature;
 }
 
 void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)

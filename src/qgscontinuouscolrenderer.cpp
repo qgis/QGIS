@@ -354,7 +354,9 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QgsCo
       //      std::cout << geom->getGeometryName() << std::endl;
 
       //std::cout << "Feature count: " << featureCount << std::endl;
-      delete[]feature;
+     
+      //GS - can't delete feature -- its an internal pointer managed by QgsFeature
+      //delete[]feature;
   } else
     {
       qWarning("Warning, m_minimumItem or m_maximumItem are null in QgsContinuousColRenderer::renderFeature(...)");
