@@ -37,3 +37,8 @@ void QgsDbSourceSelectBase::deleteConnection()
 {
 
 }
+
+void QgsDbSourceSelectBase::addLayer( QListBoxItem * )
+{
+
+}

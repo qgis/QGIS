@@ -18,6 +18,9 @@
 #ifndef QGSDBSOURCESELECT_H
 #define QGSDBSOURCESELECT_H
 #include "qgsdbsourceselectbase.h"
+
+class QListBoxItem;
+class QgisApp;
 /*! \class QgsDbSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
  *
@@ -30,7 +33,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
   Q_OBJECT
  public:
     //! Constructor
-    QgsDbSourceSelect(QWidget *parent = 0, const char *name = 0);
+    QgsDbSourceSelect(QgisApp *app=0, QWidget *parent = 0, const char *name = 0);
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection
@@ -51,9 +54,13 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
     QString connInfo();
+    //! Add the layer selected when user double-clicks the mouse
+    void addLayer(QListBoxItem *item);
  private:
     QString m_connInfo;
     QStringList m_selectedTables;
+    //! Pointer to the qgis application mainwindow
+    QgisApp *qgisApp;
 };
 
 
