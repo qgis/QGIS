@@ -3,6 +3,9 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-12-30 [larsl] 0.6.0devel1
+** Implemented getProjectionWKT() in QgsGPXProvider
+
 2004-12-19 [gsherman] 0.6.0rc2
 ** Updated README
 ** Added main.cpp so spit builds as standalone and plugin. Makefile.am modified
