@@ -301,13 +301,14 @@ libqgis_la_SOURCES = qgsmapcanvas.cpp \
 										 qgspoint.cpp \
 										 qgspoint.moc.cpp \
 										 qgsvectorfilewriter.cpp
-libqgis_la_LIBFLAGS =  $(QT_LDADD)
+libqgis_la_LIBFLAGS = $(QT_LDADD)
+libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
+
 
 ## for installing headers in $(includedir)/qgis
 pkginclude_HEADERS = $(headers) $(qgis_UIHEADERS) $(qgis_UIH) $(postgresHEADERS) $(postgresUIH)
 pkginclude_dir = $(includedir)/qgis
-
 
 
 CLEANFILES = $(BUILT_SOURCES)
