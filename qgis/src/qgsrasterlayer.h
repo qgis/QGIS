@@ -300,12 +300,9 @@ public:
     void setRasterLayerType( RASTER_LAYER_TYPE theRasterLayerType ) { rasterLayerType=theRasterLayerType; };
     //get a legend image for this layer
     QPixmap getLegendQPixmap();
+    QPixmap getLegendQPixmap(bool);
     //similar to above but returns a pointer. Implemented for qgsmaplayer interface
-    QPixmap * legendPixmap()
-    {
-      QPixmap myQPixmap = getLegendQPixmap();
-      return new QPixmap(myQPixmap);
-    };    
+    QPixmap * legendPixmap(); 
     // emit a signal asking for a repaint
     void triggerRepaint();
     
