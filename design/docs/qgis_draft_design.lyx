@@ -1,5 +1,5 @@
-#LyX 1.2 created this file. For more info see http://www.lyx.org/
-\lyxformat 220
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
 \textclass article
 \language english
 \inputencoding auto
@@ -579,7 +579,7 @@ Load Data
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -617,7 +617,7 @@ Goal in Context:
 
 \layout Standard
 \added_space_top smallskip 
-Load a data set from a data store and display it
+Load a data set from a data set
 \end_inset 
 </cell>
 </row>
@@ -677,7 +677,7 @@ Success End Condition:
 
 \layout Standard
 \added_space_top smallskip 
-Data set is loaded and displayed
+Data is loaded and displayed
 \end_inset 
 </cell>
 </row>
@@ -737,7 +737,7 @@ Trigger:
 
 \layout Standard
 \added_space_top smallskip 
-User wants to view data
+User wants to load data into environment for use
 \end_inset 
 </cell>
 </row>
@@ -752,21 +752,108 @@ User wants to view data
 Description of Steps:
 \end_inset 
 </cell>
+<cell alignment="block" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="left" valignment="top" leftline="true" rightline="true" width="0in">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User
+\end_inset 
+</cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
-\layout Enumerate
+\layout Standard
 
-Decision is made to view a dataset
-\layout Enumerate
+System
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-Navigate to the location of the dataset
-\layout Enumerate
+\layout Standard
 
-Select dataset
-\layout Enumerate
+selects data
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
 
-Dataset is displayed
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+acknowledges
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+start load
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+system shows loading of data then shows data
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \end_inset 
 </cell>
 </row>
@@ -784,7 +871,7 @@ Browse Data
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -991,7 +1078,7 @@ Load Plugin
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -1200,7 +1287,7 @@ Find Feature
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -1405,7 +1492,7 @@ Identify Feature
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -1612,7 +1699,7 @@ Get Help
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -1820,7 +1907,7 @@ Customize
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -2027,7 +2114,7 @@ Save Project
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -2231,7 +2318,7 @@ Restore Project
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -2438,7 +2525,7 @@ Navigate
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -2642,7 +2729,7 @@ Save Image
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -2846,7 +2933,7 @@ Print
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -3055,7 +3142,7 @@ Write Script
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -3262,7 +3349,7 @@ Run Script
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -3470,7 +3557,7 @@ Edit Data
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -3680,7 +3767,7 @@ Digitize
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -3893,7 +3980,7 @@ Buffer Feature
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -4101,7 +4188,7 @@ Process Data - Union
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -4304,7 +4391,7 @@ Process Data - Intersect
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -4508,7 +4595,7 @@ Process Data - Merge
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -4720,7 +4807,7 @@ Change projection
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -4930,7 +5017,7 @@ Import Data
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -5140,7 +5227,7 @@ Export Data
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -5344,7 +5431,7 @@ Export Selected Set
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -5551,7 +5638,7 @@ Select Spatially
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -5755,7 +5842,7 @@ Select by Attribute
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -5959,7 +6046,7 @@ Edit Layer Preferences
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -6166,7 +6253,7 @@ Edit Symbology
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -6367,7 +6454,7 @@ Edit Labels
 \begin_inset  Tabular
 <lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
 <column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -6612,12 +6699,8 @@ Sample QGIS Main Window Layout
 \layout Standard
 
 
-\begin_inset Graphics FormatVersion 1
+\begin_inset Graphics
 	filename ./qgismain.png
-	display default
-	size_type 0
-	rotateOrigin leftBaseline
-	lyxsize_type 0
 
 \end_inset 
 
@@ -6665,12 +6748,8 @@ Conceptual Diagram of Plugin Architecture
 \layout Standard
 
 
-\begin_inset Graphics FormatVersion 1
+\begin_inset Graphics
 	filename ./plugin.png
-	display default
-	size_type 0
-	rotateOrigin leftBaseline
-	lyxsize_type 0
 
 \end_inset 
 
