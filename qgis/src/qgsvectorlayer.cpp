@@ -562,14 +562,14 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 x = (double *) ptr;
                 ptr += sizeof(double);
                 y = (double *) ptr;
-#ifdef QGISDEBUG
+#ifdef QGISX11DEBUG
                    std::cout << "Transforming " << *x << "," << *y << " to ";
 #endif
                 ptr += sizeof(double);
                 pt.setX(*x);
                 pt.setY(*y);
                 cXf->transform(&pt);
-#ifdef QGISDEBUG
+#ifdef QGISX11DEBUG
                   std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
 #endif
                 pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
@@ -625,13 +625,13 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                   ptr += sizeof(double);
                   y = (double *) ptr;
                   ptr += sizeof(double);
-#ifdef QGISDEBUG
+#ifdef QGISX11DEBUG
                    std::cout << "Transforming " << *x << "," << *y << " to ";
 #endif
                   pt.setX(*x);
                   pt.setY(*y);
                   cXf->transform(&pt);
-#ifdef QGISDEBUG
+#ifdef QGISX11DEBUG
                   std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
 #endif
                   pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
