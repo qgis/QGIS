@@ -205,15 +205,14 @@ public:
   bool deleteFeatures(std::list<int> const & id);
 
   /**Adds new attributes
-       @param name list with attribute names
-       @param type list with attribute types (in the same order as the names)
+       @param name map with attribute name as key and type as value
        @return true in case of success and false in case of failure*/
-  bool addAttributes(std::list<QString> const & name, std::list<QString> const & type);
+  bool addAttributes(std::map<QString,QString> const & name);
 
   /**Deletes existing attributes
      @param names of the attributes to delete
      @return true in case of success and false in case of failure*/
-  bool deleteAttributes(std::list<QString> const & name);
+  bool deleteAttributes(std::set<QString> const & name);
 
   /**Changes attribute values of existing features
        @param attr_map a map containing the new attributes. The integer is the feature id,
