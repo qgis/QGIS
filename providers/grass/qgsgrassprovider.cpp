@@ -30,6 +30,7 @@
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
+#include "../../src/qgsfeatureattribute.h"
 
 extern "C" {
 #include <gis.h>
@@ -1407,7 +1408,7 @@ bool QgsGrassProvider::lineNodes ( int line, int *node1, int *node2 )
     return true;
 }
 
-long QgsGrassProvider::writeLine ( int type, struct line_pnts *Points, struct line_cats *Cats )
+int QgsGrassProvider::writeLine ( int type, struct line_pnts *Points, struct line_cats *Cats )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::writeLine n_points = " << Points->n_points 
@@ -1417,7 +1418,7 @@ long QgsGrassProvider::writeLine ( int type, struct line_pnts *Points, struct li
     if ( !isEdited() )
 	return -1;
 
-    return ( Vect_write_line(mMap,type,Points,Cats) );
+    return ( (int) Vect_write_line(mMap,type,Points,Cats) );
 }
 
 int QgsGrassProvider::rewriteLine ( int line, int type, struct line_pnts *Points, struct line_cats *Cats )
@@ -1572,6 +1573,301 @@ int QgsGrassProvider::updatedNode ( int idx )
     
     return ( Vect_get_updated_node( mMap, idx ) ) ;
 }
+
+// ------------------ Attributes -------------------------------------------------
+
+QString *QgsGrassProvider::key ( int field )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::key() field = " << field << std::endl;
+    #endif
+
+    QString *key = new QString();
+
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    if ( fi == NULL ) {
+        #ifdef QGISDEBUG
+	std::cerr << "No field info -> no attributes" << std::endl;
+        #endif
+	return key;
+    }
+
+    key->setAscii(fi->key);
+    return key;
+}
+
+std::vector<QgsField> *QgsGrassProvider::columns ( int field, int cat )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::columns() field = " << field << " cat = " << cat << std::endl;
+    #endif
+
+    std::vector<QgsField> *col = new std::vector<QgsField>;
+    
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    // Read attributes
+    if ( fi == NULL ) {
+        #ifdef QGISDEBUG
+	std::cerr << "No field info -> no attributes" << std::endl;
+        #endif
+	return ( col );
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Field info found -> open database" << std::endl;
+    #endif
+    dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
+
+    if ( driver == NULL ) {
+	std::cerr << "Cannot open database " << fi->database << " by driver " << fi->driver << std::endl;
+	return ( col );
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Database opened -> describe table" << std::endl;
+    #endif
+
+    dbString tableName;
+    db_init_string ( &tableName );
+    db_set_string ( &tableName, fi->table);
+    
+    dbTable *table;
+    if(db_describe_table (driver, &tableName, &table) != DB_OK) {
+	std::cerr << "Cannot describe table" << std::endl;
+	return ( col );
+    }
+
+    int nCols = db_get_table_number_of_columns(table);
+
+    for (int c = 0; c < nCols; c++) {
+        dbColumn *column = db_get_table_column (table, c);
+
+	int ctype = db_sqltype_to_Ctype( db_get_column_sqltype (column) );
+	QString type;
+	switch ( ctype ) {
+	    case DB_C_TYPE_INT:
+		type = "int";
+		break;
+	    case DB_C_TYPE_DOUBLE:
+		type = "double";
+		break;
+	    case DB_C_TYPE_STRING:
+		type = "string";
+		break;
+	    case DB_C_TYPE_DATETIME:
+		type = "datetime";
+		break;
+	}
+        col->push_back ( QgsField( db_get_column_name (column), type, 0, 0) );
+    }
+	
+    db_close_database_shutdown_driver ( driver );
+
+    return col;
+}
+
+std::vector<QgsFeatureAttribute> *QgsGrassProvider::attributes ( int field, int cat )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::attributes() field = " << field << " cat = " << cat << std::endl;
+    #endif
+
+    std::vector<QgsFeatureAttribute> *att = new std::vector<QgsFeatureAttribute>;
+
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    // Read attributes
+    if ( fi == NULL ) {
+        #ifdef QGISDEBUG
+	std::cerr << "No field info -> no attributes" << std::endl;
+        #endif
+	return att;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Field info found -> open database" << std::endl;
+    #endif
+    dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
+
+    if ( driver == NULL ) {
+	std::cerr << "Cannot open database " << fi->database << " by driver " << fi->driver << std::endl;
+	return att;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Database opened -> read attributes" << std::endl;
+    #endif
+
+    dbString dbstr; 
+    db_init_string (&dbstr);
+    QString query;
+    query.sprintf("select * from %s where %s = %d", fi->table, fi->key, cat );
+    db_set_string (&dbstr, (char *)query.ascii());
+    
+    #ifdef QGISDEBUG
+    std::cerr << "SQL: " << db_get_string(&dbstr) << std::endl;
+    #endif
+
+    dbCursor databaseCursor;
+    if ( db_open_select_cursor(driver, &dbstr, &databaseCursor, DB_SCROLL) != DB_OK ){
+	db_close_database_shutdown_driver ( driver );
+	std::cerr << "Cannot select attributes from table" << std::endl;
+	return att;
+    } 
+
+    int nRecords = db_get_num_rows ( &databaseCursor );
+    #ifdef QGISDEBUG
+    std::cerr << "Number of records: " << nRecords << std::endl;
+    #endif
+
+    if ( nRecords < 1 ) {
+        std::cerr << "No DB record" << std::endl;
+	return att;
+    }
+    
+    dbTable  *databaseTable = db_get_cursor_table (&databaseCursor);
+    int nColumns = db_get_table_number_of_columns(databaseTable);
+
+    int more;
+    if ( db_fetch (&databaseCursor, DB_NEXT, &more) != DB_OK ) {
+	std::cout << "Cannot fetch DB record" << std::endl;
+	return att;
+    }
+
+    // Read columns' description 
+    for (int i = 0; i < nColumns; i++) {
+	dbColumn *column = db_get_table_column (databaseTable, i);
+	db_convert_column_value_to_string (column, &dbstr);
+	std::cerr << "Value: " << db_get_string(&dbstr) << std::endl;
+        att->push_back ( QgsFeatureAttribute( db_get_column_name(column), 
+		                              db_get_string(&dbstr) ) );
+    }
+
+    db_close_cursor (&databaseCursor);
+    db_close_database_shutdown_driver ( driver );
+    db_free_string(&dbstr);
+
+    return att;
+}
+
+QString *QgsGrassProvider::updateAttributes ( int field, int cat, const QString &values )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::updateAttributes() field = " << field << " cat = " << cat << std::endl;
+    #endif
+
+    QString *error = new QString();
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    // Read attributes
+    if ( fi == NULL ) {
+        #ifdef QGISDEBUG
+	std::cerr << "No field info -> no attributes" << std::endl;
+        #endif
+	error->setLatin1( "Cannot get field info" );
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Field info found -> open database" << std::endl;
+    #endif
+    dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
+
+    if ( driver == NULL ) {
+	std::cerr << "Cannot open database " << fi->database << " by driver " << fi->driver << std::endl;
+	error->setAscii("Cannot open database");
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Database opened -> read attributes" << std::endl;
+    #endif
+
+    dbString dbstr; 
+    db_init_string (&dbstr);
+    QString query;
+    
+    query.sprintf("update %s set %s where %s = %d", fi->table, values.latin1(), fi->key, cat );
+    db_set_string (&dbstr, (char *)query.latin1());
+    
+    #ifdef QGISDEBUG
+    std::cerr << "SQL: " << db_get_string(&dbstr) << std::endl;
+    #endif
+
+    int ret = db_execute_immediate (driver, &dbstr);
+
+    if ( ret != DB_OK) { 
+        std::cerr << "Error: " <<  db_get_error_msg() << std::endl;
+	error->setLatin1( db_get_error_msg() );
+    }
+
+    db_close_database_shutdown_driver ( driver );
+    db_free_string(&dbstr);
+
+    return error;
+}
+
+QString *QgsGrassProvider::insertAttributes ( int field, int cat )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::insertAttributes() field = " << field << " cat = " << cat << std::endl;
+    #endif
+
+    QString *error = new QString();
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    // Read attributes
+    if ( fi == NULL ) {
+        #ifdef QGISDEBUG
+	std::cerr << "No field info -> no attributes" << std::endl;
+        #endif
+	error->setLatin1( "Cannot get field info" );
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Field info found -> open database" << std::endl;
+    #endif
+    dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
+
+    if ( driver == NULL ) {
+	std::cerr << "Cannot open database " << fi->database << " by driver " << fi->driver << std::endl;
+	error->setAscii("Cannot open database");
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Database opened -> insert new record" << std::endl;
+    #endif
+
+    dbString dbstr; 
+    db_init_string (&dbstr);
+    QString query;
+    
+    query.sprintf("insert into %s ( %s ) values ( %d )", fi->table, fi->key, cat );
+    db_set_string (&dbstr, (char *)query.latin1());
+    
+    #ifdef QGISDEBUG
+    std::cerr << "SQL: " << db_get_string(&dbstr) << std::endl;
+    #endif
+
+    int ret = db_execute_immediate (driver, &dbstr);
+
+    if ( ret != DB_OK) { 
+        std::cerr << "Error: " <<  db_get_error_msg() << std::endl;
+	error->setLatin1( db_get_error_msg() );
+    }
+
+    db_close_database_shutdown_driver ( driver );
+    db_free_string(&dbstr);
+
+    return error;
+}
+
+
+// -------------------------------------------------------------------------------
 
 int QgsGrassProvider::cidxGetNumFields( void ) 
 {

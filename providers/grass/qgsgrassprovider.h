@@ -292,7 +292,7 @@ public:
 	*   @return line number
 	*   @return -1 error
 	*/
-	long writeLine ( int type, struct line_pnts *Points, struct line_cats *Cats );
+	int writeLine ( int type, struct line_pnts *Points, struct line_cats *Cats );
 
 	/** Rewrite line. 
 	*   @return line number
@@ -336,6 +336,40 @@ public:
 	*/
 	int findNode ( double x, double y, double threshold );
 
+	/** Get columns' definitions
+	*   @param field
+	*   @param cat
+	*   @return vector of attributes
+	*/
+	std::vector<QgsField> *columns ( int field, int cat );
+
+	/** Read attributes from DB
+	*   @param field
+	*   @param cat
+	*   @return vector of attributes
+	*/
+	std::vector<QgsFeatureAttribute> *attributes ( int field, int cat );
+
+	/** Key (cat) column name 
+	*   @param field
+	*   @return Key column name or empty string 
+	*/
+	QString *key ( int field );
+
+	/** Update attributes 
+	*   @param field
+	*   @param cat
+	*   @param update comma separated update string, e.g.: col1 = 5, col2 = 'Val d''Aosta'
+	*   @return empty string or error message 
+	*/
+	QString *updateAttributes ( int field, int cat, const QString &values );
+
+	/** Insert new attributes to the table (it does not check if attributes already exists)
+	*   @param field
+	*   @param cat
+	*   @return empty string or error message 
+	*/
+	QString *insertAttributes ( int field, int cat );
 
 	/* Following functions work only until first edit operation! (category index used) */
 	
