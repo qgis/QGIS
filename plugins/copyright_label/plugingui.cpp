@@ -11,6 +11,8 @@
  ***************************************************************************/
 #include "plugingui.h"
 #include <qtextedit.h>
+#include <qsimplerichtext.h>
+#include <qcombobox.h>
 //qt includes
 
 //standard includes
@@ -43,6 +45,7 @@ void PluginGui::pbnOK_clicked()
   emit changeFont(txtCopyrightText->currentFont());
   emit changeLabel(txtCopyrightText->text());
   emit changeColor(txtCopyrightText->color());
+  emit changePlacement(cboPlacement->currentText());
   
   done(1);
 } 
@@ -50,3 +53,5 @@ void PluginGui::pbnCancel_clicked()
 {
  close(1);
 }
+
+
