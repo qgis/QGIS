@@ -17,6 +17,8 @@
 #include <qfile.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
+#include <qsettings.h>
+#include <qfileinfo.h>
 #include "qgsdelimitedtextplugingui.h"
 #include "../../src/qgisiface.h"
 
@@ -27,6 +29,11 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QgsDelimitedTextPluginG
 
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , WFlags fl  ) : QgsDelimitedTextPluginGuiBase( parent, name, modal, fl ), qI(_qI)
 {
+  // at startup, fetch the last used delimiter and directory from
+  // settings
+  QSettings settings;
+  QString key = "/Qgis/delimited_text_plugin";
+  txtDelimiter->setText(settings.readEntry(key + "/delimiter"));
 
 }  
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
@@ -43,7 +50,14 @@ void QgsDelimitedTextPluginGui::pbnOK_clicked()
     .arg(cmbYField->currentText());
   std::cerr << "Adding layer using " << uri << std::endl; 
   // add the layer to the map
-  emit drawVectorLayer(uri,QString("layername"),"delimitedtext");
+  emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
+  // store the settings
+
+  QSettings settings;
+  QString key = "/Qgis/delimited_text_plugin";
+  settings.writeEntry(key + "/delimiter", txtDelimiter->text());
+  QFileInfo fi(txtFilePath->text());
+  settings.writeEntry(key + "/text_path", fi.dirPath());
 } 
 
 void QgsDelimitedTextPluginGui::updateFieldLists()
@@ -92,8 +106,11 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 void QgsDelimitedTextPluginGui::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
+  // Set inital dir to last used
+  QSettings settings;
+  
   QString s = QFileDialog::getOpenFileName(
-      "./",
+    settings.readEntry("/Qgis/delimited_text_plugin/text_path","./"),
       "Text files (*.txt)",
       0,
       "open file dialog",

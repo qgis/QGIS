@@ -4,9 +4,9 @@
 Functions:
 
 -------------------
-begin                : Jan 21, 2004
-copyright            : (C) 2004 by Tim Sutton
-email                : tim@linfiniti.com
+  begin                : Feb 21, 2004
+  copyright            : (C) 2004 by Gary Sherman
+  email                : sherman at mrcc.com
 
  ***************************************************************************/
 
@@ -46,15 +46,15 @@ email                : tim@linfiniti.com
 // xpm for creating the toolbar icon
 #include "icon.xpm"
 // 
-static const char *pluginVersion = "0.1";
+static const char *pluginVersion = "Version 0.1";
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsDelimitedTextPlugin::QgsDelimitedTextPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
+  QgsDelimitedTextPlugin::QgsDelimitedTextPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
 {
   /** Initialize the plugin and set the required attributes */
   pluginNameQString = "DelimitedTextLayer";
@@ -126,25 +126,30 @@ void QgsDelimitedTextPlugin::initGui()
 // Slot called when the buffer menu item is activated
 void QgsDelimitedTextPlugin::run()
 {
-  QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui=new QgsDelimitedTextPluginGui(qGisInterface, qgisMainWindowPointer,"Add Delimited Text Layer",true,0);
+  QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui=
+    new QgsDelimitedTextPluginGui(qGisInterface, qgisMainWindowPointer,
+        "Add Delimited Text Layer",true,0);
   //listen for when the layer has been made so we can draw it
-  connect(myQgsDelimitedTextPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myQgsDelimitedTextPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  connect(myQgsDelimitedTextPluginGui, 
+      SIGNAL(drawRasterLayer(QString)), 
+      this, SLOT(drawRasterLayer(QString)));
+  connect(myQgsDelimitedTextPluginGui, 
+      SIGNAL(drawVectorLayer(QString,QString,QString)),
+      this, SLOT(drawVectorLayer(QString,QString,QString)));
   myQgsDelimitedTextPluginGui->show();
 }
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void QgsDelimitedTextPlugin::drawRasterLayer(QString theQString)
-{
-  qGisInterface->addRasterLayer(theQString);
-}
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+//!draw a vector layer in the qui - intended to respond to signal 
+//sent by diolog when it as finished creating a layer
+////needs to be given vectorLayerPath, baseName, 
+//providerKey ("ogr" or "postgres");
+void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString, 
+    QString theBaseNameQString, QString theProviderQString)
 {
   std::cerr << "Calling addVectorLayer with:" 
-    << thePathNameQString << ", " << theBaseNameQString << ", " << theProviderQString << std::endl; 
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
+    << thePathNameQString << ", " << theBaseNameQString 
+    << ", " << theProviderQString << std::endl; 
+  qGisInterface->addVectorLayer( thePathNameQString, 
+      theBaseNameQString, theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -160,7 +165,8 @@ void QgsDelimitedTextPlugin::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, 
+    QgisIface * theQgisInterfacePointer)
 {
   return new QgsDelimitedTextPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
