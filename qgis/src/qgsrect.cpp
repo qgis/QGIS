@@ -107,20 +107,23 @@ bool QgsRect::isEmpty()
       return FALSE;
     }
 }
-
+// Return a string representation of the rectangle with high precision
 QString QgsRect::stringRep() const
 {
   QString tmp;
-  QString rep = tmp.setNum(xmin);;
-  rep += " ";
-  rep += tmp.setNum(ymin);
-  rep += ",";
-  rep += tmp.setNum(xmax);
-  rep += " ";
-  rep += tmp.setNum(ymax);
+  QString rep = tmp.sprintf("%16f %16f,%16f %16f", xmin, ymin, xmax, ymax);
   return rep;
 }
 
+// Return the rectangle as a set of polygon coordinates
+QString QgsRect::asPolygon() const
+{
+  QString tmp;
+  QString rep = tmp.sprintf("%16f %16f,%16f %16f,%16f %16f,%16f %16f,%16f %16f",
+    xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin);
+    return rep;
+    
+}
 bool QgsRect::operator==(const QgsRect & r1)
 {
   return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() && r1.yMax() == this->yMax() && r1.yMin() == this->yMin());
