@@ -70,6 +70,7 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
+  mRotationInt=0;
 }
 
 Plugin::~Plugin()
@@ -114,9 +115,10 @@ void Plugin::help()
 void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"North Arrow",true,0);
+    //overides function byt the same name created in .ui
+    myPluginGui->setRotation(mRotationInt);
   //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
   myPluginGui->show();
   
 }
@@ -141,57 +143,62 @@ void Plugin::refreshCanvas()
 
 void Plugin::renderNorthArrow()
 {
-  //how much should the north arrow be rotated by?
-  int myRotationInt = 0;
-  //dir where north arrows live
-  QString myDirString = QString(PKGDATAPATH)+"/svg/north_arrows/";
-  //pixmap containing map
-  QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
-  //paint device that we can draw our pixmap onto
-  QPainter myQPainter(myQPixmap);
-  //QPointArray myPointArray;
-  //save the current canvas rotation
-  myQPainter.save();
-  //rotate the canvas  
-  myQPainter.rotate( myRotationInt );
-  //myPointArray.setPoints( 30,10, -10,-10 , 20,0 );
-  //myQPainter.drawPolygon( myPointArray );
-  
-  
+    QPixmap myQPixmap; //to store the north arrow image in
+    QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
+    //std::cout << "Trying to load " << myFileNameQString << std::cout;
+    if (myQPixmap.load(myFileNameQString))
+    {
+       // myPainterPixmap.fill();
+        QPainter myQPainter;
+        myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
 
-  QString myFileNameQString = QString(PKGDATAPATH)+QString("/svg/north_arrows/NorthArrow4.svg");
-  QPixmap myNarrowPixmap;
-  QPicture myQPicture;
-  //try to load the n-arrow as a svg
-  if (myQPicture.load(myFileNameQString))
-  {
-    myQPainter.drawPicture(5,5,myQPicture);  
-  }
-  else
-  {
-    std::cout << " *************** North Arrow svg failed to load **************\n" << myFileNameQString << std::endl;
-  }
-  
-  myFileNameQString = QString(PKGDATAPATH)+QString("/images/north_arrows/default.png");
-  //try to load the narrow as a pixmap
-  if (myNarrowPixmap.load(myFileNameQString))
-  {
-    myQPainter.drawPixmap(5,5,myNarrowPixmap);
-  }
-  else
-  {
-    std::cout << " *************** North Arrow png failed to load **************\n" << myFileNameQString << std::endl;
-  }
-  /* This is how you write some text to the qpainter */
-  //QFont myQFont("time", 24, QFont::Bold);
-  //myQPainter.setFont(myQFont);
-  //myQPainter.setPen(Qt::black);
-  //myQPainter.drawText(15, 50, QString("N"));
-  
-  //unrotate the canvase again
-  myQPainter.restore();
+        double centerXDouble = myQPixmap.width()/2;
+	double centerYDouble = myQPixmap.height()/2;
+        //save the current canvas rotation
+        myQPainter.save();
+	//myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
+	
+        //rotate the canvas
+        myQPainter.rotate( mRotationInt );
+	//work out how to shift the image so that it appears in the center of the canvas
+	//(x cos a + y sin a - x, -x sin a + y cos a - y)
+	const double PI = 3.14159265358979323846;
+	double myRadiansDouble = (PI/180) * mRotationInt;
+        int xShift = static_cast<int>((
+	              (centerXDouble * cos(myRadiansDouble)) + 
+	              (centerYDouble * sin(myRadiansDouble))
+		     ) - centerXDouble);
+        int yShift = static_cast<int>((
+	              (-centerXDouble * sin(myRadiansDouble)) + 
+	              (centerYDouble * cos(myRadiansDouble))
+		     ) - centerYDouble);	
+		     	     
+		     
+
+	//draw the pixmap in the proper position
+      	myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
+
+
+        //unrotate the canvase again
+        myQPainter.restore();
+        myQPainter.end();
+	
+	//bitBlt ( qGisInterface->getMapCanvas()->canvasPixmap(), 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
+	 
+    }
+    else
+    {
+        //myPainterPixmap.fill();
+        QPainter myQPainter;
+        myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
+        QFont myQFont("time", 32, QFont::Bold);
+        myQPainter.setFont(myQFont);
+        myQPainter.setPen(Qt::black);
+        myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
+        myQPainter.end();
+    }
+
 }
-
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
 {
@@ -199,6 +206,21 @@ void Plugin::unload()
   menuBarPointer->removeItem(menuIdInt);
   delete toolBarPointer;
 }
+
+
+void Plugin::rotationChanged(int theInt)
+{
+  mRotationInt = theInt;
+  refreshCanvas();
+}
+
+
+
+
+
+
+
+
 /** 
  * Required extern functions needed  for every plugin 
  * These functions can be called prior to creating an instance
