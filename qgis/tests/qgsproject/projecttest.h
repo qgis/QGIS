@@ -137,11 +137,26 @@ class ProjectTest : public CppUnit::TestFixture
     /** check that writing entries works */
     void testWriteEntries()
     {
+        QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mBoolValueKey, mBoolValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+
+        QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mNumValueKey, mNumValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+
+        QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mDoubleValueKey, mDoubleValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+
+        QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mStringValueKey, mStringValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+
+        QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mStringListValueKey, mStringListValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+
 
         bool status;
 
