@@ -25,6 +25,7 @@
 #include <vector>
 
 #include <qdom.h>
+#include <qstring.h>
 
 #include "../../src/qgsrect.h"
 
@@ -180,13 +181,13 @@ class GPSData {
       function you should also call releaseData() with the same @c filename
       when you're done with the GPSData pointer, otherwise the data will stay
       in memory forever and you will get an ugly memory leak. */
-  static GPSData* getData(std::string filename);
+  static GPSData* getData(const QString& filename);
   
   /** Call this function when you're done with a GPSData pointer that you
       got earlier using getData(). Do NOT call this function if you haven't
       called getData() earlier with the same @c filename, that can cause data
       that is still in use to be deleted. */
-  static void releaseData(std::string filename);
+  static void releaseData(const QString& filename);
   
   
   /** operator<< is our friend. */
@@ -219,7 +220,7 @@ class GPSData {
   double xMin, xMax, yMin, yMax;
   
   /** This is used internally to store GPS data objects (one per file). */
-  typedef std::map<std::string, std::pair<GPSData, unsigned> > DataMap;
+  typedef std::map<QString, std::pair<GPSData, unsigned> > DataMap;
   
   /** This is the static container that maps filenames to GPSData objects and
       does reference counting, so several providers can use the same GPSData 
