@@ -11,7 +11,7 @@
 void OpenModellerGuiBase::init()
 {
    //hide some controls that have not yet been implemented
-  cbxDefaultToLastChoices->hide();
+  
   //textLabel3->hide();
   //progressBar1->hide();
   //this is really cheating - I am using the char arrays creataed in the cpp file after uic has run
