@@ -275,7 +275,7 @@ void ImageWriter::writeImage(QString theInputFileString, QString theOutputFileSt
 	CPLFree(myGdalScanData);
 	GDALClose(gdalDataset);
 	printf("Saving image...\n");
-	myQImage.save("theOutputFileString","PNG");
+	myQImage.save(theOutputFileString,"PNG");
 	return ;
 }
 

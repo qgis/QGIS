@@ -346,9 +346,11 @@ public slots: // Public slots
     /**
     * A slot for notices of that we
     * completed calculating the given variable.
+    *@param QString theFileNameString - the filename that the variable layer 
+    *was saved to.
     *@return void - No return
     */
-    void variableDone();
+    void variableDone(QString theFileNameString);
     /**
     * A slot for notices of that we
     * have completed calculating a given cell.

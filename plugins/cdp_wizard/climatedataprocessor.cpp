@@ -24,6 +24,7 @@ email                : t.sutton@reading.ac.uk
 #include <qtextstream.h>
 #include <qmessagebox.h>
 #include <qdir.h>
+#include <qregexp.h>
 
 ClimateDataProcessor::ClimateDataProcessor() : QObject()
 {
@@ -1140,6 +1141,9 @@ bool ClimateDataProcessor::run()
                     sprintf(myYearChar,"%iBP",myCDPMainLoopInt);
                 }
 
+                //replace any spaces with underscores in the name
+                myFileNameString = myFileNameString.replace( QRegExp(" "), "_");                 
+                //set the extension
                 myFileNameString =  outputFilePathString + myFileNameString + "_" + myYearChar +".asc";
                 FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
 
@@ -1239,7 +1243,8 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            std::cout << " ++++++ Emitting variableDone signal! " << std::endl;
+            emit variableDone(myFileWriterStruct.structFullFileName);
 
         }
         if (diurnalTempFileGroup && diurnalTempFileNameString != "" &&
@@ -1271,7 +1276,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if (frostDaysFileGroup && frostDaysFileNameString != "" &&
@@ -1304,7 +1309,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != "" &&
@@ -1336,7 +1341,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if ( minTempFileGroup
@@ -1374,7 +1379,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if (maxTempFileGroup
@@ -1406,7 +1411,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if (minTempFileGroup
@@ -1438,7 +1443,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
 
         }
         if (meanPrecipFileGroup
@@ -1470,7 +1475,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if ( meanPrecipFileGroup &&  minTempFileGroup
                 && meanPrecipFileNameString != "" && minTempFileNameString != ""
@@ -1504,7 +1509,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != ""
                 && minTempFileNameString != ""
@@ -1538,7 +1543,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
                 availableCalculationsMap["Mean daily precipitation in driest month"])
@@ -1568,7 +1573,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
                 availableCalculationsMap["Mean daily precipitation in driest quarter"])
@@ -1599,7 +1604,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
                 && maxTempFileGroup
@@ -1635,7 +1640,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
                 && maxTempFileGroup &&  maxTempFileNameString != ""
@@ -1669,7 +1674,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
                 availableCalculationsMap["Mean daily precipitation in wettest month"])
@@ -1699,7 +1704,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
                 availableCalculationsMap["Mean daily precipitation in wettest quarter"])
@@ -1729,7 +1734,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (diurnalTempFileGroup && diurnalTempFileNameString != ""
                 && meanTempFileGroup
@@ -1764,7 +1769,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (diurnalTempFileGroup && diurnalTempFileNameString != "" && meanTempFileGroup
                 && meanTempFileNameString !=""
@@ -1798,7 +1803,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && frostDaysFileGroup
                 && frostDaysFileNameString != ""
@@ -1831,7 +1836,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if (meanTempFileGroup && meanTempFileNameString !="" &&
@@ -1863,7 +1868,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in coolest quarter"])
@@ -1893,7 +1898,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanTempFileGroup && meanTempFileNameString !="" && frostDaysFileGroup
                 && frostDaysFileNameString != ""
@@ -1926,7 +1931,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in warmest month"])
@@ -1958,7 +1963,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature in warmest quarter"])
@@ -1989,7 +1994,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (windSpeedFileGroup && windSpeedFileNameString != "" &&
                 availableCalculationsMap["Mean wind speed"])
@@ -2019,7 +2024,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (minTempFileGroup && minTempFileNameString !="" &&
                 availableCalculationsMap["Number of months with minimum temperature above freezing"])
@@ -2049,7 +2054,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString !=""
@@ -2083,7 +2088,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString !=""
@@ -2117,7 +2122,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString != ""
@@ -2151,7 +2156,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanTempFileGroup && meanTempFileNameString != ""
@@ -2186,7 +2191,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
@@ -2220,7 +2225,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
@@ -2254,7 +2259,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
 
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
@@ -2289,7 +2294,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
                 && meanPrecipFileGroup && meanPrecipFileNameString != ""
@@ -2323,7 +2328,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup && meanPrecipFileNameString != "" &&
                 availableCalculationsMap["Standard deviation of mean precipitation"])
@@ -2353,7 +2358,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanTempFileGroup && meanTempFileNameString != ""
                 && availableCalculationsMap["Standard deviation of mean temperature"])
@@ -2383,7 +2388,7 @@ bool ClimateDataProcessor::run()
                 }
                 emit cellDone(myFloat);
             }
-            emit variableDone();
+            emit variableDone(myFileWriterStruct.structFullFileName);
         }
         emit yearDone();
     }//This is the END OF MAIN OUTER LOOP:

@@ -16,17 +16,20 @@ email                : t.sutton@reading.ac.uk
  ***************************************************************************/
 
 #include "cdpwizard.h"
+#include "imagewriter.h"
+
+
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qlineedit.h>
 #include <qspinbox.h>
 #include <string.h>
 #include <qlabel.h>
-#include <qlabel.h>
+#include <qpixmap.h>
 #include <qsettings.h>
 #include <qapplication.h>
 #include <qdatetime.h>
-//#define QGISDEBUG true
+
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
         : CDPWizardBase( parent, name, modal, fl )
@@ -138,8 +141,8 @@ bool CDPWizard::initialise()
                                  this,SLOT(yearDone()));
     connect(climateDataProcessor,SIGNAL(variableStart(QString )),
                                  this,SLOT(variableStart(QString )));
-    connect(climateDataProcessor,SIGNAL(variableDone()),
-                                 this,SLOT(variableDone()));
+    connect(climateDataProcessor,SIGNAL(variableDone(QString)),
+                                 this,SLOT(variableDone(QString)));
     connect(climateDataProcessor,SIGNAL(cellDone(float)),
                                  this,SLOT(cellDone(float)));
 
@@ -488,8 +491,17 @@ void CDPWizard::variableStart(QString theNameQString)
   lblCurrentTask->setText("<p align=\"right\">" + theNameQString + "</p>");
   progressCurrentTask->setProgress(0);
 }
-void CDPWizard::variableDone()
+void CDPWizard::variableDone(QString theFileNameString)
 {
+  std::cout << " ---------------- Variable " << theFileNameString << " written! " << std::endl;
+  //convert the completed variable layer to an image file
+  ImageWriter myImageWriter;
+  myImageWriter.writeImage(theFileNameString,theFileNameString+QString(".png"));
+  //set the image label on the calculating variables screen to show the last
+  //variable calculated
+  QPixmap myPixmap(theFileNameString+QString(".png"));
+  pixmapLabel2->setScaledContents(true);
+  pixmapLabel2->setPixmap(myPixmap);
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
   //progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
   //progressTotalJob->setProgress(progressTotalJob->progress()+1);

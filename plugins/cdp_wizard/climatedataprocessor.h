@@ -415,9 +415,10 @@ class ClimateDataProcessor : public QObject {
         /**
         * A signal emitted to notify listeners that we
         * completed calculating the given variable.
+        *@param theFileNameString - the filename that the variable was outputted to
         *@return void - No return
         */
-        void variableDone();
+        void variableDone(QString theFileNameString);
         /**
         * A signal emitted to notify listeners that we
         * have completed calculating a given cell.
