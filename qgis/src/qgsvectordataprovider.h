@@ -26,7 +26,25 @@ class QgsVectorDataProvider: public QgsDataProvider
     QgsVectorDataProvider();
 
     virtual ~QgsVectorDataProvider() {};
-
+  /**
+  * Select features based on a bounding rectangle. Features can be retrieved 
+  * with calls to getFirstFeature and getNextFeature. Request for features 
+  * for use in drawing the map canvas should set useIntersect to false.
+  * @param mbr QgsRect containing the extent to use in selecting features
+  * @param useIntersect If true, use the intersects function to select features
+  * rather than the PostGIS && operator that selects based on bounding box
+  * overlap.
+  *
+  */
+  virtual void select(QgsRect *mbr, bool useIntersect=false)=0;
+  /**
+  * Update the feature count based on current spatial filter. If not
+  * overridden in the data provider this function returns -1
+  */
+  virtual long updateFeatureCount()
+  {
+    return -1;
+  }
     /** 
      * Get the first feature resulting from a select operation
      * @return QgsFeature

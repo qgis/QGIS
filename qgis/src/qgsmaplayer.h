@@ -38,6 +38,7 @@ class QgsLegendItem;
 class QDomNode;
 class QDomDocument;
 class QEvent;
+class QgsCoordinateTransform;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
@@ -347,11 +348,13 @@ signals:
 
 protected:
 
+    /** Used to ask the layer for its projection as a WKT string. Must be reimplemented by each provider. */
+    virtual QString getProjectionWKT()  = 0 ;
+  
     /** called by readXML(), used by children to read state specific to them from
         project files.
     */
     virtual bool readXML_( QDomNode & layer_node );
-
 
     /** called by writeXML(), used by children to write state specific to them to
         project files.
@@ -428,6 +431,9 @@ private:                       // Private attributes
     //! Tag for embedding additional information
     QString tag;
 
+    //! A QgsCoordinateTransform is used for on the fly reprojection of map layers
+    QgsCoordinateTransform * gCoordinateTransfrom;
+    
     /**  true if visible ? */
     bool m_visible;
 
