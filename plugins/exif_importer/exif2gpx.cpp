@@ -37,9 +37,9 @@ bool Exif2GPX::loadGPX(const QString& filename,
   
   node2 = node.firstChild();
   while (!node2.isNull()) {
-    if (node2.nodeName() == "wpt")
+    if (node2.nodeName() == "wpt" && useWaypoints)
       loadPoint(node2);
-    else if (node2.nodeName() == "trk") {
+    else if (node2.nodeName() == "trk" && useTracks) {
       node3 = node2.firstChild();
       while (!node3.isNull()) {
 	if (node3.nodeName() == "trkseg") {
