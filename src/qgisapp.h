@@ -33,6 +33,7 @@ class QListViewItem;
 class QgsMapLayer;
 class QSocket;
 class QgsProviderRegistry;
+class QgsHelpViewer;
 #include "qgisappbase.h"
 #include "qgisiface.h"
 class QgsMapCanvas;
@@ -168,6 +169,10 @@ class QgisApp:public QgisAppBase
 	QString versionMessage;
 	friend class QgisIface;
   QgsProviderRegistry *providerRegistry;
+  //! application directory
+  QString appDir;
+  //! help viewer
+  QgsHelpViewer *helpViewer;
   /** Flag to track whether the user should be prompted to save the project
   * before opening/creating a new one or exiting the application
   */
