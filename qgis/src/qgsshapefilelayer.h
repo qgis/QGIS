@@ -37,6 +37,7 @@ public:
 	QgsShapeFileLayer( QString baseName=0, QString path=0);
 	//! Destructor
 	~QgsShapeFileLayer();
+  void identify(QgsRect *);
        
 enum SHAPETYPE {
 	Point,

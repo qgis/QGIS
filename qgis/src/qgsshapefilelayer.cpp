@@ -258,3 +258,6 @@ int QgsShapeFileLayer::endian()
 	else
 		return XDR;
 }
+
+void QgsShapeFileLayer::identify(QgsRect *r){
+}
