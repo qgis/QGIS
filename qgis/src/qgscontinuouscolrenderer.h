@@ -52,6 +52,8 @@ class QgsContinuousColRenderer: public QgsRenderer
     QgsRenderItem* minimumItem();
     /**Returns the item for the maximum value*/
     QgsRenderItem* maximumItem();
+    /**Writes the contents of the renderer to a configuration file*/
+    virtual void writeXML(std::ofstream& xml);
     /** Returns true*/
     bool needsAttributes();
  protected:

@@ -25,6 +25,7 @@ class QPainter;
 class QgsDlgVectorLayerProperties;
 class QPicture;
 
+#include <fstream>
 
 
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
@@ -41,6 +42,8 @@ class QgsRenderer
      @param pic pointer to a marker from SVG (is only used by marker renderers
      @param scalefactor pointer to the scale factor for the marker image*/
     virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor)=0;
+    /**Writes the contents of the renderer to a configuration file*/
+    virtual void writeXML(std::ofstream& xml)=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     virtual bool needsAttributes()=0;
 };

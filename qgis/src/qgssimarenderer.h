@@ -33,6 +33,8 @@ class QgsSiMaRenderer: public QgsRenderer
     void addItem(QgsRenderItem* ri);
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
+    /**Writes the contents of the renderer to a configuration file*/
+    virtual void writeXML(std::ofstream& xml);
     bool needsAttributes();
     QgsRenderItem* item();
  protected:

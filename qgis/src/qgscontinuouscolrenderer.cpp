@@ -21,6 +21,7 @@
 #include <cfloat>
 #include "qgslegenditem.h"
 #include "qgscontcoldialog.h"
+#include "qgssymbologyutils.h"
 
 QgsContinuousColRenderer::~QgsContinuousColRenderer()
 {
@@ -212,4 +213,57 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 	    p->setBrush(QColor(red, green, blue));
         }
     }
+}
+
+void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
+{
+    xml << "\t\t<continuoussymbol>\n";
+    xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()) +
+	"</classificationfield>\n";
+
+
+    QgsRenderItem *lowestitem = this->minimumItem();
+    QgsSymbol *lsymbol = lowestitem->getSymbol();
+    xml << "\t\t\t<lowestitem>\n";
+    xml << "\t\t\t\t<renderitem>\n";
+    xml << "\t\t\t\t<value>" + lowestitem->value() + "</value>\n";
+    xml << "\t\t\t\t\t<symbol>\n";
+    xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(lsymbol->pen().color().red()) + "\" green=\"" +
+	QString::number(lsymbol->pen().color().green()) + "\" blue=\"" + QString::number(lsymbol->pen().color().blue()) +
+	"\" />\n";
+    xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(lsymbol->pen().style()) +
+	"</outlinestyle>\n";
+    xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(lsymbol->pen().width()) + "</outlinewidth>\n";
+    xml << "\t\t\t\t\t\t<fillcolor red=\"" + QString::number(lsymbol->brush().color().red()) + "\" green=\"" +
+	QString::number(lsymbol->brush().color().green()) + "\" blue=\"" +
+	QString::number(lsymbol->brush().color().blue()) + "\" />\n";
+    xml << "\t\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(lsymbol->brush().style()) +
+	"</fillpattern>\n";
+    xml << "\t\t\t\t\t</symbol>\n";
+    xml << "\t\t\t\t\t<label>" + lowestitem->label() + "</label>\n";
+    xml << "\t\t\t\t</renderitem>\n";
+    xml << "\t\t\t</lowestitem>\n";
+
+    QgsRenderItem *highestitem = this->maximumItem();
+    QgsSymbol *hsymbol = highestitem->getSymbol();
+    xml << "\t\t\t<highestitem>\n";
+    xml << "\t\t\t\t<renderitem>\n";
+    xml << "\t\t\t\t<value>" + highestitem->value() + "</value>\n";
+    xml << "\t\t\t\t\t<symbol>\n";
+    xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(hsymbol->pen().color().red()) + "\" green=\"" +
+	QString::number(hsymbol->pen().color().green()) + "\" blue=\"" + QString::number(hsymbol->pen().color().blue()) +
+	"\" />\n";
+    xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(hsymbol->pen().style()) +
+	"</outlinestyle>\n";
+    xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(hsymbol->pen().width()) + "</outlinewidth>\n";
+    xml << "\t\t\t\t\t\t<fillcolor red=\"" + QString::number(hsymbol->brush().color().red()) + "\" green=\"" +
+	QString::number(hsymbol->brush().color().green()) + "\" blue=\"" +
+	QString::number(hsymbol->brush().color().blue()) + "\" />\n";
+    xml << "\t\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(hsymbol->brush().style()) +
+	"</fillpattern>\n";
+    xml << "\t\t\t\t\t</symbol>\n";
+    xml << "\t\t\t\t\t<label>" + highestitem->label() + "</label>\n";
+    xml << "\t\t\t\t</renderitem>\n";
+    xml << "\t\t\t</highestitem>\n";
+    xml << "\t\t</continuoussymbol>\n";
 }

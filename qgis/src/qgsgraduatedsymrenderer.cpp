@@ -19,6 +19,7 @@
 #include <cfloat>
 #include "qgsgrasydialog.h"
 #include "qgslegenditem.h"
+#include "qgssymbologyutils.h"
 
 inline QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
 {
@@ -169,4 +170,35 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlg
     {
 	qWarning("Warning, layer is null in QgsGraduatedSymRenderer::initializeSymbology(..)");
     }
+}
+
+void QgsGraduatedSymRenderer::writeXML(std::ofstream& xml)
+{
+    xml << "\t\t<graduatedsymbol>\n";
+    xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()) +
+	"</classificationfield>\n";
+    for (std::list < QgsRangeRenderItem * >::iterator it = this->items().begin(); it != this->items().end();
+	 ++it)
+    {
+	xml << "\t\t\t<rangerenderitem>\n";
+	xml << "\t\t\t\t<lowervalue>" + (*it)->value() + "</lowervalue>\n";
+	xml << "\t\t\t\t<uppervalue>" + (*it)->upper_value() + "</uppervalue>\n";
+	xml << "\t\t\t\t<symbol>\n";
+	QgsSymbol *symbol = (*it)->getSymbol();
+	xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(symbol->pen().color().red()) + "\" green=\"" +
+	    QString::number(symbol->pen().color().green()) + "\" blue=\"" + QString::number(symbol->pen().color().blue()) +
+	    "\" />\n";
+	xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(symbol->pen().style()) +
+	    "</outlinestyle>\n";
+	xml << "\t\t\t\t\t<outlinewidth>" + QString::number(symbol->pen().width()) + "</outlinewidth>\n";
+	xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(symbol->brush().color().red()) + "\" green=\"" +
+	    QString::number(symbol->brush().color().green()) + "\" blue=\"" +
+	    QString::number(symbol->brush().color().blue()) + "\" />\n";
+	xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()) +
+	    "</fillpattern>\n";
+	xml << "\t\t\t\t</symbol>\n";
+	xml << "\t\t\t\t<label>" + (*it)->label() + "</label>\n";
+	xml << "\t\t\t</rangerenderitem>\n";
+    }
+    xml << "\t\t</graduatedsymbol>\n";
 }

@@ -114,4 +114,7 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
     }
 }
 
-
+void QgsGraduatedMaRenderer::writeXML(std::ofstream& xml)
+{
+    //soon
+}

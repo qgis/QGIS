@@ -57,6 +57,8 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Returns the list with the render items*/
     std::list<QgsRangeRenderItem*>& items();
+    /**Writes the contents of the renderer to a configuration file*/
+    virtual void writeXML(std::ofstream& xml);
     /** Returns true*/
     bool needsAttributes();
  protected:
