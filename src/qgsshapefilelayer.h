@@ -24,6 +24,8 @@ class OGRLayer;
 class OGRDataSource;
 
 #include "qgsmaplayer.h"
+#include "qvaluevector.h"
+#include "qgsattributetabledisplay.h"
 
 /*! \class QgsShapeFileLayer
  * \brief Shapefile layer
@@ -47,6 +49,21 @@ class QgsShapeFileLayer:public QgsMapLayer
 		Line,
 		Polygon
 	};
+
+ public slots:
+     /**Sets the 'tabledisplay' to 0 again*/
+     void invalidateTableDisplay();
+     void select(int number);
+     void removeSelection();
+     void triggerRepaint();
+
+ protected:
+        /**Pointer to the table display object if there is one, else a pointer to 0*/
+        QgsAttributeTableDisplay* tabledisplay;
+	/**Vector holding the information which features are activated*/
+	QValueVector<bool>* selected;
+	/**Color to draw and fill the selected features*/
+	QColor selectionColor;
 
   private:						// Private attributes
 //! Draws the layer using coordinate transformation
@@ -74,6 +91,9 @@ class QgsShapeFileLayer:public QgsMapLayer
   /** No descriptions */
 	void registerFormats();
 	int endian();
+
+ signals:
+	void repaintRequested();
 
 };
 

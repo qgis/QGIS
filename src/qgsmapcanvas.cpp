@@ -139,6 +139,12 @@ QgsMapLayer *QgsMapCanvas::layerByName(QString name)
 
 }
 
+void QgsMapCanvas::refresh()
+{
+    dirty=true;
+    render2();
+}
+
 void QgsMapCanvas::render2()
 {
 	QString msg = frozen ? "frozen" : "thawed";
