@@ -19,7 +19,7 @@
 /* $Id$ */
 #ifndef QGSWORLDMAPIMPORTERGUI_H
 #define QGSWORLDMAPIMPORTERGUI_H
-#include "qgsworldmapimporterguibase.h"
+#include "qgsworldmapimporterguibase.uic.h"
 #include <qstring.h>
 
 /**Gui subclass for importing worldmap results

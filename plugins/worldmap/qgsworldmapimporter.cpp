@@ -22,11 +22,7 @@
 
 // includes
 
-#include "../../src/qgisapp.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsrasterlayer.h"
 #include "qgsworldmapimporter.h"
-
 
 #include <qtoolbar.h>
 #include <qmenubar.h>
@@ -40,6 +36,11 @@
 //non qt includes
 #include <iostream>
 #include <qgsworldmapimportergui.h>
+
+// qgis includes
+#include <qgis/qgisapp.h>
+#include <qgis/qgsmaplayer.h>
+#include <qgis/qgsrasterlayer.h>
 
 // xpm for creating the toolbar icon
  #include "icon_wmi.xpm"

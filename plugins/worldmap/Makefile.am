@@ -45,22 +45,26 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 ## uic created MOC files
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
-## source NOT automatically generated from ANYTHING
-headers = qgsworldmapimporter.h qgsworldmapimportergui.h
-
 ## MOC files
 plugin_MOC = qgsworldmapimporter.moc.cpp qgsworldmapimportergui.moc.cpp
 
 
-libqgsworldmapimporter_la_SOURCES =  qgsworldmapimporter.cpp qgsworldmapimportergui.cpp $(plugin_UISOURCES) $(plugin_UIMOC)  $(plugin_MOC) 
-libqgsworldmapimporter_la_LIBADD  = $(prefix)/lib/libqgis.la
-libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS)  $(QT_LDADD)
+libqgsworldmapimporter_la_SOURCES = qgsworldmapimporter.cpp \
+	qgsworldmapimporter.h \
+	qgsworldmapimportergui.cpp \
+	qgsworldmapimportergui.h \
+	$(plugin_UISOURCES) \
+	$(plugin_UIHEADERS) \
+	$(plugin_UIMOC)
+	
+nodist_libqgsworldmapimporter_la_SOURCES =	$(plugin_MOC)
 
+libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(plugin_UI) $(headers) icon.xpm
+EXTRA_DIST = $(plugin_UI) icon_wmi.xpm
 
 
 

@@ -21,11 +21,9 @@
  /*  $Id$ */
 #ifndef QGISWorldMapImporter
 #define QGISWorldMapImporter
-#include "../qgisplugin.h"
+
+#include <qgis/qgisplugin.h>
 #include <qwidget.h>
-
-
-//#include "qgsworkerclass.h"
 
 /**
 * \class QgsWorldMapImporter
