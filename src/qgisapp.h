@@ -221,6 +221,8 @@ private slots:
     void fileOpen();
     //! Create a new project
     void fileNew();
+    //! Print the current map view frame
+    void filePrint();
     //! Export current view as a mapserver map file
     void exportMapServer();
     //! Return pointer to the active layer

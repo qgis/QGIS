@@ -202,3 +202,12 @@ void QgisAppBase::projectProperties()
 {
 
 }
+
+
+
+
+
+void QgisAppBase::filePrint()
+{
+
+}
