@@ -71,10 +71,10 @@ class Plugin:public QObject, public QgisPlugin
   /** 
   * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
   * QGIS when it attempts to instantiate the plugin.
-  * @param Pointer to the QgisApp object
-  * @param Pointer to the QgisIface object. 
+  * @param theQGisApp - Pointer to the QgisApp object
+  * @param theQGisIface -  to the QgisIface object. 
    */
-  Plugin(QgisApp * , QgisIface * );
+  Plugin(QgisApp * theQGisApp, QgisIface * theQGisIface);
   //! init the gui
   virtual void initGui();
   //! Destructor

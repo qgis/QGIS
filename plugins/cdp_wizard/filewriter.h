@@ -133,7 +133,7 @@ public:
 
     /** Mutator for the seperator between numbers in a file. 
 
-    * @param QString - the new seperator to be used.
+    * @param theQString - the new seperator to be used.
 
     */
 

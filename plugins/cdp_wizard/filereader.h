@@ -18,6 +18,9 @@ public:
    //
   // Enumerators
   //
+  /**
+  * This enum defines the different types of files that can be read in.
+  */
   enum FileTypeEnum { CRES,
                       ARCINFO_GRID,
                       HADLEY_SRES,
@@ -36,11 +39,11 @@ public:
   //   Public methods
   //
 
-  /* Default constructor */
+  /** Default constructor */
   FileReader();
-  /* Constructor taking the name of the file to open. */
+  /** Constructor taking the name of the file to open. */
   FileReader(QString theFileNameString);
-  /*Does nothing */
+  /** Destructor  */
    ~FileReader();
   /**
   * This method will close the file currently associated with the fileReader object.
@@ -79,7 +82,7 @@ public:
 
   /**
   *Move the internal pointer to the first matrix element.
-  *@TODO This method needs to be implemented still!
+  *@todo This method needs to be implemented still!
   *@return bool - flag indicating success or failure
   */
    bool moveFirst();

@@ -53,8 +53,10 @@ private:
     typedef QPtrVector <FileReader> FileReaderVector;
     /**This is the container for all the file readers in this group. */
     FileReaderVector * fileReaderVector;
-    /** A flag to show whether the end of the matrix has been reached.
-    * @Note the first fileReader in the fileGroup is used to determine this. */
+    /** 
+    * A flag to show whether the end of the matrix has been reached.
+    * @note the first fileReader in the fileGroup is used to determine this. 
+    */
     bool endOfMatrixFlag;
 };
 
