@@ -80,6 +80,48 @@ Note that it's presumed that the reader is familiar with C++, object-oriented
  design, and UML.
 \layout Section
 
+Definitions
+\layout Standard
+
+The following is a list of definitions for terms used in this document.
+ Some of these definitions are taken from the Association for Geographic
+ Information and the University Of Edinburgh Department of Geography online
+ dictionary of GIS terms available at http://www.geo.ed.ac.uk/agidict/welcome.html.
+\layout Description
+
+Attribute: A fact describing an entity in a relational data model, equivalent
+ to the column in a relational table.
+\layout Description
+
+Feature: A set of points, lines or polygons in a spatial database that represent
+ a real-world entity.
+ The terms feature and object are often used synonymously.
+\layout Description
+
+GIS: Geographic Information System.
+ A software system that provides the ability to view and analyze spatial
+ data and its attributes.
+\layout Description
+
+Layer: A dataset that has a spatial context and can be drawn on a map canvas.
+ Layers may have associated attributes.
+ 
+\layout Description
+
+Plugin: A compiled library that can be dynamically loaded into an application
+ to provide new functionality.
+\layout Description
+
+Projection: A method of representing the earth's three-dimensional surface
+ as a flat two-dimensional surface.
+ This normally involves a mathematical model that transforms the locations
+ of features on the earth's surface to locations on a two-dimensional surface.
+ Because the earth is three-dimensional, some method must be used to depict
+ the map in two dimensions.
+ Therefore such representations distort some parameter of the earth's surface,
+ be it distance, area, shape, or direction.
+\layout Section
+
 History
 \layout Standard
 
