@@ -22,7 +22,10 @@
 #else
 #include "qgsdbsourceselectbase.uic.h"
 #endif
-
+extern "C"
+{
+#include <libpq-fe.h>
+}
 class QListBoxItem;
 class QgisApp;
 /*! \class QgsDbSourceSelect
@@ -67,6 +70,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QStringList m_selectedTables;
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
+    PGconn *pd;
 };
 
 
