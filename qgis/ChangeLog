@@ -1,8 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.64 2004/05/03 23:24:15 timlinux Exp
+ChangeLog,v 1.65 2004/05/05 08:55:46 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... developement version
 
+2004-05-03 [ts] 0.2.0devel5
+** Canvas now emits renderComplete signal when rendering of cnavas has completed,
+but before the screen is refreshed. Added accessor and mutators for the canvas
+pixmap.
 2004-05-03 [ts] 0.2.0devel4
 ** qgisApp->mapCanvas is now exposed through the plugin interface.
 
