@@ -220,8 +220,22 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             QLabel * myLabel = new QLabel (mLayoutWidget, ("lbl"+QString(myParameter->id)));
 
             //set spinbox details and write to map
-            if (!myParameter->has_min==0) mySpinBox->setMinValue(myParameter->min);
-            if (!myParameter->has_max==0) mySpinBox->setMaxValue(myParameter->max);
+	    if (!myParameter->has_min==0) 
+	      {
+	        mySpinBox->setMinValue(myParameter->min);
+	      }
+	    else
+	      {
+	        mySpinBox->setMinValue(-32767);
+	      }        
+            if (!myParameter->has_max==0) 
+	      {
+	        mySpinBox->setMaxValue(myParameter->max);
+	      }
+	    else
+	      {
+	        mySpinBox->setMaxValue(32767);
+	      }
 
             //Set value to previous otherwise to default
             QString myPreviousValue = settings.readEntry("/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myParameter->id);
