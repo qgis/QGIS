@@ -76,6 +76,8 @@ qgis_SOURCES =  qgisapp.cpp \
 				qgssymbol.h\
 				qgsmapserverexport.cpp \
 				qgsmapserverexport.h \
+				splashscreen.h \
+				splashscreen.cpp \
 				qtiffio.cpp \
 				qtiffio.h \
 				$(qgis_UI)\
@@ -104,7 +106,8 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 			qgsshapefilelayer.moc.cpp \
 			qgsmapserverexportbase.moc.cpp \
 			qgsmapserverexport.moc.cpp \
-			qgshelpviewer.moc.cpp
+			qgshelpviewer.moc.cpp \
+			splashscreen.moc.cpp
 qgis_UI = qgisappbase.h\
 			qgisappbase.cpp\
 			qgslegenditembase.h\
