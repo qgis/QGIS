@@ -57,26 +57,15 @@ void QgsUniqueValRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVect
     
 void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected)
 {
-#ifdef QGISDEBUG
-    qWarning("in QgsUniqueValRenderer::renderFeature");
-#endif
-
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
     QString value = vec[0].fieldValue();
-#ifdef QGISDEBUG
-    qWarning("Wert: "+value);
-#endif
     std::map<QString,QgsRenderItem*>::iterator it=mEntries.find(value);
     if(it!=mEntries.end())
     {
 	QgsRenderItem* ritem=it->second;
 	p->setPen(ritem->getSymbol()->pen());
 	p->setBrush(ritem->getSymbol()->brush());
-#ifdef QGISDEBUG
-	qWarning("outline color: "+QString::number(ritem->getSymbol()->pen().color().red())+"//"+QString::number(ritem->getSymbol()->pen().color().green())+"//"+QString::number(ritem->getSymbol()->pen().color().blue()));
-	qWarning("fill color: "+QString::number(ritem->getSymbol()->brush().color().red())+"//"+QString::number(ritem->getSymbol()->brush().color().green())+"//"+QString::number(ritem->getSymbol()->brush().color().blue()));
-	qWarning("outline style: "+QString::number((int)(ritem->getSymbol()->pen().style())));
-#endif
+
 	if(selected)
 	{
 	    QPen pen=ritem->getSymbol()->pen();
@@ -135,11 +124,14 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	QDomElement fillpelement = synode.namedItem("fillpattern").toElement();
 	brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
 
+	QDomElement labelelement = renderitemnode.namedItem("label").toElement();
+	QString label = labelelement.text();
+
 	//create a renderitem and add it to the renderer
 	msy->setBrush(brush);
 	msy->setPen(pen);
 
-	QgsRenderItem *ri = new QgsRenderItem(msy, value, " ");
+	QgsRenderItem *ri = new QgsRenderItem(msy, value, label);
 	this->insertValue(value,ri);
 
 	renderitemnode = renderitemnode.nextSibling();
@@ -158,6 +150,9 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 void QgsUniqueValRenderer::writeXML(std::ostream& xml)
 {
+#ifdef QGISDEBUG
+    qWarning("in QgsUniqueValRenderer::writeXML");
+#endif
     xml << "\t\t<uniquevalue>\n";
     xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() << "</classificationfield>\n";
     for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
@@ -178,6 +173,10 @@ void QgsUniqueValRenderer::writeXML(std::ostream& xml)
 	xml << "\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()).ascii()  << 
 	    "</fillpattern>\n";
 	xml << "\t\t\t\t</symbol>\n";
+	xml << "\t\t\t\t<label>" << (it->second)->label().ascii() << "</label>\n";
+#ifdef QGISDEBUG
+	qWarning((it->second)->label());
+#endif
 	xml << "\t\t\t</renderitem>\n";
     }
     xml << "\t\t</uniquevalue>\n";
