@@ -1143,6 +1143,8 @@ void QgisApp::fileNew()
 
   if (answer != QMessageBox::Cancel)
     {
+      mMapCanvas->freeze(true);
+      mOverviewCanvas->freeze(true);
       mMapLayerRegistry->removeAllMapLayers();
       mMapCanvas->clear();
       mOverviewCanvas->clear();
@@ -1150,6 +1152,8 @@ void QgisApp::fileNew()
       // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
       mFullPathName = "";
       mProjectIsDirtyFlag = false;
+      mMapCanvas->freeze(false);
+      mOverviewCanvas->freeze(false);
     }
 } // fileNew
 
