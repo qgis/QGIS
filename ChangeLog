@@ -1,7 +1,17 @@
 QGIS Change Log
-ChangeLog,v 1.82 2004/05/18 23:06:17 timlinux Exp
+ChangeLog,v 1.83 2004/05/19 05:16:58 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-18 [gsherman] 0.2.0devel25
+** Changes to implement scale display for map data in feets, meters, and
+decimal degrees. A new menu item is added to the Tools menu for selecting
+the map units. This setting is currently not saved with a project file.
+TODO:Modify qgis.dtd and project save/load to support map units.
+
+NOTE - the qgisapp.ui file was created with qt 3.3.x and WILL NOT WORK
+with qt 3.1.2. This will be changed as soon as I can find my 3.1.2 version
+of qt designer...
 
 2004-05-18 [ts] 0.2.0devel24
 ** Relax checking of raster filetype extensions to cater for filetypes where
