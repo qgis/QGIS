@@ -34,17 +34,19 @@ class QgsCoordinateTransform;
 * The draw function must be overridden in a subclass to provide the specfic logic for
 * drawing the object.
 */ 
-class QgsAcetateObject {
+class QgsAcetateObject 
+{
 public:
   /**
    * Constructor. Constructs an object with the specified origin. If the object is
    * spatially referenced, the origin should be in map coordinates.
    */
   QgsAcetateObject(QgsPoint &origin);
-	/** 
-	 * Destructor
-	 */
-	~QgsAcetateObject();
+
+  /** 
+   * Destructor
+   */
+  virtual ~QgsAcetateObject();
 
   /**
    * Draw the object using the Qpainter and applying a coordinate transform if
