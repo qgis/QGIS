@@ -577,3 +577,7 @@ void QgsMapCanvas::remove(QString key)
 	delete l;
 	zOrder.remove(key);
 }
+void QgsMapCanvas::removeAll(){
+	layers.clear();
+	zOrder.clear();
+}

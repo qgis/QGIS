@@ -122,3 +122,9 @@ void QgisAppBase::fileSaveAs()
 {
 
 }
+
+
+void QgisAppBase::fileNew()
+{
+
+}
