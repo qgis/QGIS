@@ -22,9 +22,9 @@ email                : tim@linfiniti.com
 
 // includes
 
-#include "../../src/qgisapp.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsrasterlayer.h"
+#include <qgisapp.h>
+#include <qgsmaplayer.h>
+#include <qgsrasterlayer.h>
 #include "plugin.h"
 
 
@@ -48,8 +48,8 @@ email                : tim@linfiniti.com
 // 
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "PostgresSQL Geoprocessing";
-static const char * const description_ = "Geoprocessing functions for working with PostgreSQL/PostGIS layers";
+static const char * const name_ = "[pluginname]";
+static const char * const description_ = "[plugindescription]";
 static const char * const version_ = "Version 0.1";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
