@@ -486,7 +486,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
       while (li != mCanvasProperties->zOrder.end())
       {
-        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size()*2);
+        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
         QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
         if (ml)
@@ -512,7 +512,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
       while (li != mCanvasProperties->zOrder.end())
       {
-        emit setProgress((myRenderCounter++)*2,mCanvasProperties->zOrder.size()*2);
+        emit setProgress((myRenderCounter++),mCanvasProperties->zOrder.size());
         QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
         if (ml)
