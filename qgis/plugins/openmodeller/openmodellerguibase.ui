@@ -105,6 +105,17 @@ The openModeller wizard will assist you in carrying out a species distribution m
                     <string>&lt;b&gt;Enter the WKT coordinate system definition:&lt;/b&gt;</string>
                 </property>
             </widget>
+            <widget class="QLabel" row="0" column="0">
+                <property name="name">
+                    <cstring>pmAcmeLogo_2</cstring>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="scaledContents">
+                    <bool>true</bool>
+                </property>
+            </widget>
             <widget class="QTextBrowser" row="1" column="0">
                 <property name="name">
                     <cstring>tbrLocalitiesFileDescription</cstring>
@@ -117,33 +128,24 @@ The openModeller wizard will assist you in carrying out a species distribution m
 &lt;p&gt;Specify the coordinate system using the WKT format (more information on the WKT format is available at the Open Gis Consortium &lt;a href="http://www.opengis.org/docs/01-009.pdf"&gt;Website&lt;/a&gt;).&lt;/p&gt;</string>
                 </property>
             </widget>
-            <widget class="QTextEdit" row="4" column="0">
+            <widget class="QComboBox" row="2" column="0">
+                <item>
+                    <property name="text">
+                        <string>Lat/Long WGS84</string>
+                    </property>
+                </item>
+                <item>
+                    <property name="text">
+                        <string>Lat/Long 1924 Brazil</string>
+                    </property>
+                </item>
+                <item>
+                    <property name="text">
+                        <string>UTM Zone 22 - Datum: Corrego Alegre</string>
+                    </property>
+                </item>
                 <property name="name">
-                    <cstring>txtWKT</cstring>
-                </property>
-                <property name="text">
-                    <string>GEOGCS["1924 ellipsoid",
-DATUM["Not_specified",
-SPHEROID["International 1924",6378388,297,AUTHORITY["EPSG","7022"]],
-AUTHORITY["EPSG","6022"]],
-PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
-UNIT["degree",0.0174532925199433,
-AUTHORITY["EPSG","9108"]],
-AUTHORITY["EPSG","4022"]]</string>
-                </property>
-                <property name="wordWrap">
-                    <enum>WidgetWidth</enum>
-                </property>
-            </widget>
-            <widget class="QLabel" row="0" column="0">
-                <property name="name">
-                    <cstring>pmAcmeLogo_2</cstring>
-                </property>
-                <property name="pixmap">
-                    <pixmap>image0</pixmap>
-                </property>
-                <property name="scaledContents">
-                    <bool>true</bool>
+                    <cstring>cboCoordinateSystem</cstring>
                 </property>
             </widget>
         </grid>
@@ -640,6 +642,9 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="text">
                     <string>Default to the choices I have made the next time I run this model.</string>
+                </property>
+                <property name="checked">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">

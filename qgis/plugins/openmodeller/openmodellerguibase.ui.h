@@ -22,8 +22,8 @@ void OpenModellerGuiBase::init()
   pmAcmeLogo_5->setPixmap( image1);
   pmAcmeLogo_6->setPixmap( image1);
   pmAcmeLogo_7->setPixmap( image1);
-  pmAcmeLogo_2->setPixmap( image1);
-}
+  pmAcmeLogo_8->setPixmap( image1);
+  
 
 void OpenModellerGuiBase::pbRun_clicked()
 {
