@@ -321,8 +321,10 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       ready = false;
       return 0;
     } 
+
     //  //--std::cout <<"Raw value of the geometry field: " << PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")) << std::endl;
     //--std::cout << "Length of oid is " << PQgetlength(queryResult,0, PQfnumber(queryResult,"oid")) << std::endl;
+
     // get the value of the primary key based on type
 
     int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
@@ -367,19 +369,23 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 #ifdef QGISDEBUG
 //    std::cerr << "Using OID: " << *noid << std::endl;
 #endif
+
+    f = new QgsFeature(*noid);
+    if (fetchAttributes)
+      getFeatureAttributes(*noid, f);
+     
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry"));
     //--std::cout << "Returned length is " << returnedLength << std::endl;
     if(returnedLength > 0){
       unsigned char *feature = new unsigned char[returnedLength + 1];
       memset(feature, '\0', returnedLength + 1);
       memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength);
+#ifdef QGSIDEBUG
       int wkbType = *((int *) (feature + 1));
-      //--std::cout << "WKBtype is: " << wkbType << std::endl;
-      f = new QgsFeature(*noid);
+      std::cout << "WKBtype is: " << wkbType << std::endl;
+#endif
+
       f->setGeometry(feature, returnedLength + 1);
-      if (fetchAttributes) {
-        getFeatureAttributes(*noid, f);
-      }
     }else{
       //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
     }
@@ -387,6 +393,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   else {
     //--std::cout << "Read attempt on an invalid postgresql data source\n";
   }
+
   return f;
 }
 
@@ -600,7 +607,9 @@ int QgsPostgresProvider::fieldCount() const
  * Fetch attributes for a selected feature
  */
 void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
+
   QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
+
 #ifdef QGISDEBUG
 //  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
 #endif
