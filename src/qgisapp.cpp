@@ -22,6 +22,9 @@
 #include <qmessagebox.h>
 #include <qpixmap.h>
 #include <qsplitter.h>
+#include <qrect.h>
+#include <qpoint.h>
+#include <qpainter.h>
 #include <qlayout.h>
 #include <qwmatrix.h>
 #include <qfiledialog.h>
@@ -37,26 +40,28 @@ QgisApp::QgisApp(QWidget *parent, const char * name, WFlags fl ) : QgisAppBase(p
   QPixmap icon;
   icon = QPixmap(appicon_xpm);
   setIcon(icon);
-
-  //add a canvas
-  canvas = new QCanvas(1024,768);
-  // resize it to fit in the frame
-  //	QRect r = frmCanvas->rect();
-  //	canvas->resize(r.width(), r.height());
-  canvas->setBackgroundColor(QColor(220,235,255));
-
-
-
-
-
   QGridLayout *FrameLayout = new QGridLayout( frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter(frameMain);
   mapToc = new QWidget(split);//frameMain);
-  cv = new QCanvasView(canvas,split);
+  //add a canvas
+  mapCanvas = new QgsMapCanvas(split);
+  // resize it to fit in the frame
+  //	QRect r = frmCanvas->rect();
+  //	canvas->resize(r.width(), r.height());
+  mapCanvas->setBackgroundColor(QColor(220,235,255));
+  mapCanvas->setMinimumWidth(400);
+
+
+
+
+
+ 
+ 
+ 
  
   FrameLayout->addWidget( split, 0, 0 );
   mapToc->setBackgroundColor(QColor(192,192,192));
-  canvas->update();
+ 
 }
 QgisApp::~QgisApp(){
 }
@@ -69,6 +74,7 @@ void QgisApp::addLayer(){
     QString connInfo = dbs->connInfo();
     // for each selected table, connect to the datbase, parse the WKT geometry,
     // and build a cavnasitem for it
+    readWKB(connInfo);
     QStringList::Iterator it = tables.begin();
     while( it != tables.end() ) {
     
@@ -92,16 +98,19 @@ void QgisApp::fileExit(){
 
 }
 void QgisApp::zoomIn(){
-  QWMatrix m = cv->worldMatrix();
-  m.scale( 2.0, 2.0 );
-  cv->setWorldMatrix( m );
+    QWMatrix m = mapCanvas->worldMatrix();
+      m.scale( 2.0, 2.0 );
+      mapCanvas->setWorldMatrix( m );
+  
 }
 
 void QgisApp::zoomOut()
 {
-  QWMatrix m = cv->worldMatrix();
-  m.scale( 0.5, 0.5 );
-  cv->setWorldMatrix( m );
+    QWMatrix m = mapCanvas->worldMatrix();
+      m.scale( 0.5, 0.5 );
+      mapCanvas->setWorldMatrix( m );
+  
+
 }
 void QgisApp::readWKB(const char *connInfo){
   PgCursor pgc(connInfo, "testcursor");
@@ -116,6 +125,37 @@ void QgisApp::readWKB(const char *connInfo){
 	 else
 	 cout << "Little endian" << endl;
   */
+  // get the extent of the layer
+  QString esql = "select extent(the_geom) from towns";
+  PgDatabase *pd = new PgDatabase(connInfo);
+  int result = pd->ExecTuplesOk((const char *)esql);
+  QString extent = pd->GetValue(0,0);
+  // parse out the x and y values
+  extent = extent.right(extent.length() - extent.find("BOX3D(")- 6);
+  QStringList coordPairs = QStringList::split(",", extent);
+  QStringList x1y1 = QStringList::split(" ", coordPairs[0]);
+  QStringList x2y2 = QStringList::split(" ", coordPairs[1]);
+  double x1 = x1y1[0].toDouble();
+  double y1 = x1y1[1].toDouble();
+  double x2 = x2y2[0].toDouble();
+  double y2 = x2y2[1].toDouble();
+  double xMu = x2 - x1;
+  double yMu = y2 - y1;
+  int subordinantAxisLength;
+
+ 
+  // determine the dominate direction for the mapcanvas
+  if(mapCanvas->width() > mapCanvas->height()){
+    subordinantAxisLength = mapCanvas->height();
+    scaleFactor = yMu/subordinantAxisLength;
+  mapWindow = new QRect(x1,y1, xMu, xMu);
+  } else{
+    subordinantAxisLength = mapCanvas->width();
+    scaleFactor = xMu/subordinantAxisLength;
+  mapWindow = new QRect(x1,y1, yMu, yMu);
+  }
+
+  const char * xtent = (const char *)extent;
   string sql = "select asbinary(the_geom,";
   if(isNDR)
     sql += "'NDR'";
@@ -126,8 +166,20 @@ void QgisApp::readWKB(const char *connInfo){
   pgc.Declare(sql.c_str(), true);
   int res = pgc.Fetch();
   cout << "Number of binary records: " << pgc.Tuples() << endl;
- 
+  bool setExtent = true;
   // process each record
+  QPainter paint;
+ 
+  paint.begin(mapCanvas);
+  paint.setWindow(*mapWindow);
+  QRect v = paint.viewport();
+    int d = QMIN( v.width(), v.height() );
+    paint.setViewport( v.left() + (v.width()-d)/2,
+    v.top() + (v.height()-d)/2, d, d );
+
+
+  paint.setPen(Qt::red);
+ 
   for(int idx = 0; idx < pgc.Tuples(); idx++){
     cout << "Size of this record: " << pgc.GetLength(idx,0) << endl;
     // allocate memory for the item
@@ -146,10 +198,24 @@ void QgisApp::readWKB(const char *connInfo){
     double *x = (double *)(feature+5);
     double *y = (double*)(feature+5 + sizeof(double));
     cout << "x,y: " << setprecision(16) << *x << ", " << *y << endl;
+    QPoint pt = paint.xForm(QPoint((int)*x, (int) *y));
+    cout << "Plotting " << *x << ", " << *y << " at " << pt.x() << ", " << pt.y() << endl;
+    paint.drawRect((int)*x, mapWindow->bottom()-(int)*y,15000,15000);
     // free it 
     delete[] feature;
   }
+  paint.end();
 }
 
 
-
+void QgisApp::drawPoint(double x,double y){
+  QPainter paint;
+  QWMatrix mat(scaleFactor,0,0,scaleFactor,0,0);
+  paint.begin(mapCanvas);
+  // paint.setWorldMatrix(mat);
+  paint.setWindow(*mapWindow);
+ 
+  paint.setPen(Qt::blue);
+  paint.drawPoint(x,y);
+  paint.end();
+}
