@@ -30,6 +30,10 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 	
 	GDALAllRegister();
 	gdalDataset = (GDALDataset *) GDALOpen( path, GA_ReadOnly );
+	if ( gdalDataset == NULL ) {
+		valid = FALSE;
+		return;
+	}
 	//std::cout << "Raster Count: " << gdalDataset->GetRasterCount() << std::endl;
 	
 	if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
@@ -126,6 +130,8 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 			}			
 		} else if ( colorInterp == "Red" ) {
 			// print each point in scandata as the red part of an rgb value
+			// this assumes that the red band will always be first
+			// is that necessarily the case?
 			for (int y = 0; y < lYSize; y++) {
 				for (int x =0; x < lXSize; x++) {					
 					p->setPen(QColor(scandata[y*lXSize + x], 0, 0));
