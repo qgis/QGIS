@@ -10,8 +10,11 @@
 #
 # $Id$
 
+PREFIX=-DPREFIX=\"$(prefix)\"
 plugindir = ${pkglibdir}
+
 plugin_LTLIBRARIES = spitplugin.la
+bin_PROGRAMS = spit
 
 
 %.moc.cpp: %.h
@@ -69,6 +72,8 @@ spitplugin_la_SOURCES =  qgsspit.cpp \
 	qgseditreservedwordsdialog.cpp \
 	$(spit_UI)
 
+spit_SOURCES = $(spitplugin_la_SOURCES) ../../src/qgspgutil.cpp  main.cpp $(SPIT_UIC) $(spit_MOC)
+
 nodist_spitplugin_la_SOURCES = $(spit_MOC)
 
 # UI dependencies			
@@ -86,5 +91,9 @@ spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../src/libqgis.la
 spitplugin_la_LDFLAGS = -avoid-version -module
 spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
 
+
+spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)
+#spit_LDFLAGS = -avoid-version -module
+spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
 
 EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm spit_icons.h
