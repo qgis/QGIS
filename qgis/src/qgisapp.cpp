@@ -53,10 +53,10 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
-#include "xpm/cursorzoomin.xpm"
-#include "xpm/cursorzoomin_mask.xpm"
 #include <ogrsf_frmts.h>
 
+// version
+static const char *qgisVersion = "0.0.5-alpha build 20020916";
 // cursors
 static unsigned char zoom_in_bits[] = {
    0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -127,7 +127,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	mapLegend->setMapCanvas(mapCanvas);
 	legendView->setResizeMode(QListView::AllColumns);
 	QString caption = "Quantum GIS - ";
-	caption += QGis::qgisVersion;
+	caption += qgisVersion;
 	setCaption(caption);
 	connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
 	connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
@@ -148,12 +148,12 @@ void QgisApp::about()
 {
 	QgsAbout *abt = new QgsAbout();
 	QString versionString = "Version ";
-	versionString += QGis::qgisVersion;
+	versionString += qgisVersion;
 	abt->setVersion(versionString);
 	QString urls = "Web Page: http://qgis.sourceforge.net\nSourceforge Project Page: http://sourceforge.net/projects/qgis";
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
-	watsNew += QGis::qgisVersion;
+	watsNew += qgisVersion;
 	watsNew += "\n* Display name can be set from the layer properties dialog\n"
 	  "* Fixed multiple render bug when adding a layer\n"
 	  "* New icons for various actions\n";
@@ -521,7 +521,7 @@ void QgisApp::removeLayer()
 	
 	
 }
-void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int i)
+void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int )
 {
 	if (lvi)
 		popMenu->exec(pt);
