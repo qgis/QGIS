@@ -21,6 +21,7 @@
 #include <qlistbox.h>
 #include <qstringlist.h>
 #include <qcombobox.h>
+#include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include "xpm/point_layer.xpm"
@@ -31,6 +32,7 @@
 
 QgsDbSourceSelect::QgsDbSourceSelect(QWidget *parent, const char *name):QgsDbSourceSelectBase()
 {
+    btnAdd->setEnabled(false);
 	populateConnectionList();
 	// connect the double-click signal to the addSingleLayer slot in the parent
 
@@ -47,10 +49,8 @@ void QgsDbSourceSelect::populateConnectionList(){
 	cmbConnections->clear();
 	while (it != keys.end()) {
 		cmbConnections->insertItem(*it);
-
 		++it;
 	}
-
 }
 void QgsDbSourceSelect::addNewConnection()
 {
@@ -95,7 +95,13 @@ void QgsDbSourceSelect::addTables()
 		if (lstTables->isSelected(idx))
 			m_selectedTables += lstTables->text(idx);
 	}
-	accept();
+
+// BEGIN CHANGES ECOS
+    if( m_selectedTables.empty() == true )
+        QMessageBox::information(this, "Select Table","You must select a table in order to add a Layer.");
+    else
+	    accept();
+// END CHANGES ECOS
 }
 
 void QgsDbSourceSelect::dbConnect()
@@ -163,6 +169,10 @@ void QgsDbSourceSelect::dbConnect()
 					p = 0;
 				lstTables->insertItem(*p, v);
 			}
+// BEGIN CHANGES ECOS
+            if( cmbConnections->count() > 0 )
+                btnAdd->setEnabled(true);
+// END CHANGES ECOS
 		} else {
 			//qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
 			//qDebug(pd->ErrorMessage());
