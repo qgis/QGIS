@@ -1,0 +1,50 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsUValDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsUValDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>404</width>
+            <height>59</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>unique Value</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QComboBox" row="0" column="2">
+            <property name="name">
+                <cstring>mClassificationComboBox</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mClassVarLabel</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Classification Field:</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
