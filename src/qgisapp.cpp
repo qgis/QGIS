@@ -54,7 +54,7 @@ QgisAppBase (parent, name, fl)
   // resize it to fit in the frame
   //    QRect r = frmCanvas->rect();
   //    canvas->resize(r.width(), r.height());
-  mapCanvas->setBackgroundColor (QColor (220, 235, 255));
+  mapCanvas->setBackgroundColor (Qt::white); //QColor (220, 235, 255));
   mapCanvas->setMinimumWidth (400);
 
 

@@ -1,3 +1,5 @@
+July 20, 2002
+	Repaint automatic for layers.
 July 18, 2002
 	Point, line and polygon PostGis layers can be drawn. Still issues with
 	map exent and positioning of layers on the canvas. Drawing is manual and

@@ -19,8 +19,10 @@
 #define QGSMAPCANVAS_H
 #include <map>
 #include <qwidget.h>
+#include <qevent.h>
 #include "qgsrect.h"
 class QRect;
+
 class QgsMapLayer;
 
 /*! \class QgsMapCanvas
@@ -42,7 +44,7 @@ public:
      */
     void render();
  private:
-
+    void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
     map<QString,QgsMapLayer *>layers;
     //! Full extent of the map canvas
