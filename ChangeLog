@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.47 2004/04/01 14:01:09 jobi Exp
+ChangeLog,v 1.48 2004/04/02 17:34:15 stevehalasz Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-02 [stevehalasz] 0.1.0devel25
+
 
 2004-04-01 [jobi] 0.1.0devel24
 ** changed qgiscommit to hopefuly fix all problems
