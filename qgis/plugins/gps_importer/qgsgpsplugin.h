@@ -20,6 +20,7 @@
 #ifndef QGSGPSPLUGIN_H
 #define QGSGPSPLUGIN_H
 #include "qgsbabelformat.h"
+#include "qgsgpsdevice.h"
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qgisapp.h>
@@ -95,7 +96,7 @@ private:
   //! Importers for external GPS data file formats
   std::map<QString, QgsBabelFormat*> mImporters;
   //! Upload/downloaders for GPS devices
-  std::map<QString, QgsBabelFormat*> mDevices;
+  std::map<QString, QgsGPSDevice*> mDevices;
 };
 
 #endif

@@ -37,7 +37,8 @@
 #include <iostream>
 
 
-QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers, BabelMap& devices,
+QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers, 
+				 std::map<QString, QgsGPSDevice*>& devices,
 				 std::vector<QgsVectorLayer*> gpxMapLayers, 
 				 QWidget* parent, const char* name, 
 				 bool modal, WFlags fl)
@@ -339,10 +340,8 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
 
 
 void QgsGPSPluginGui::populateULLayerComboBox() {
-  for (int i = 0; i < mGPXLayers.size(); ++i) {
+  for (int i = 0; i < mGPXLayers.size(); ++i)
     cmbULLayer->insertItem(mGPXLayers[i]->name());
-    std::cerr<<mGPXLayers[i]->name()<<std::endl;
-  }
 }
 
 
@@ -357,17 +356,14 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
   for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
     mBabelFilter.append((const char*)iter->first).append(" (*.*);;");
   int u = -1, d = -1;
-  for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
-    if (iter->second->supportsExport()) {
-      cmbULDevice->insertItem(iter->first);
-      if (iter->first == lastULDevice)
-	u = cmbULDevice->count() - 1;
-    }
-    if (iter->second->supportsImport()) {
-      cmbDLDevice->insertItem(iter->first);
-      if (iter->first == lastDLDevice)
-	d = cmbDLDevice->count() - 1;
-    }
+  std::map<QString, QgsGPSDevice*>::const_iterator iter2;
+  for (iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2) {
+    cmbULDevice->insertItem(iter2->first);
+    if (iter2->first == lastULDevice)
+      u = cmbULDevice->count() - 1;
+    cmbDLDevice->insertItem(iter2->first);
+    if (iter2->first == lastDLDevice)
+      d = cmbDLDevice->count() - 1;
   }
   if (u != -1)
     cmbULDevice->setCurrentItem(u);

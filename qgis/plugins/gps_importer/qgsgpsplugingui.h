@@ -21,6 +21,7 @@
 #include "../../src/qgsvectorlayer.h"
 #include "qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
+#include "qgsgpsdevice.h"
 
 #include <vector>
 
@@ -34,7 +35,8 @@ class QgsGPSPluginGui : public QgsGPSPluginGuiBase
 {
   Q_OBJECT
 public:
-  QgsGPSPluginGui(const BabelMap& importers, BabelMap& devices, 
+  QgsGPSPluginGui(const BabelMap& importers, 
+		  std::map<QString, QgsGPSDevice*>& devices, 
 		  std::vector<QgsVectorLayer*> gpxMapLayers, QWidget* parent, 
 		  const char* name , bool modal , WFlags);
   ~QgsGPSPluginGui();
@@ -83,7 +85,7 @@ private:
   
   std::vector<QgsVectorLayer*> mGPXLayers;
   const BabelMap& mImporters;
-  BabelMap& mDevices;
+  std::map<QString, QgsGPSDevice*>& mDevices;
   QString mBabelFilter;
   QString mImpFormat;
 };

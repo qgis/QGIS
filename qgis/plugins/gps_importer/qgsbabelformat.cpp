@@ -23,16 +23,15 @@
 #include <qstring.h>
 
 
-QgsBabelFormat::QgsBabelFormat() 
+QgsBabelFormat::QgsBabelFormat(const QString& name) 
   : mSupportsImport(false), mSupportsExport(false), mSupportsWaypoints(false),
-    mSupportsRoutes(false), mSupportsTracks(false) {
+    mSupportsRoutes(false), mSupportsTracks(false), mName(name) {
   
 }
 
 
 const QString& QgsBabelFormat::name() const {
-  static QString name = "";
-  return name;
+  return mName;
 }
 
 
