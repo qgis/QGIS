@@ -34,6 +34,9 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.2  2004/06/14 04:35:19  gsherman
+ * Changes to support Windows version
+ *
  * Revision 1.1  2004/04/05 15:39:45  timlinux
  * Initial commit of new plugin to build graticules - not working yet! And thus not added to higher level makefiles yet.
  *
@@ -122,7 +125,9 @@ static char rcsid[] =
 
 #include <math.h>
 #include <stdlib.h>
-
+#ifdef WIN32
+#include <string.h>
+#endif
 typedef unsigned char uchar;
 
 #ifndef FALSE

@@ -28,6 +28,12 @@ email                : sherman at mrcc.com
 #include "qgsdelimitedtextprovider.h"
 #include <cfloat>
 
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
+
   QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
 :mDataSourceUri(uri), mMinMaxCacheDirty(true)
 {
@@ -501,6 +507,12 @@ std::vector<QgsFeature>& QgsDelimitedTextProvider::identify(QgsRect * rect)
     << rect->stringRep() << std::endl; 
   // select the features
   select(rect);
+#ifdef WIN32
+  //TODO fix this later for win32
+  std::vector<QgsFeature> feat;
+  return feat;
+#endif
+
 }
 
 /*
@@ -669,26 +681,26 @@ bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
  * Class factory to return a pointer to a newly created 
  * QgsDelimitedTextProvider object
  */
-extern "C" QgsDelimitedTextProvider * classFactory(const char *uri)
+QGISEXTERN QgsDelimitedTextProvider * classFactory(const char *uri)
 {
   return new QgsDelimitedTextProvider(uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */
-extern "C" QString providerKey(){
+QGISEXTERN QString providerKey(){
   return QString("delimitedtext");
 }
 /**
  * Required description function 
  */
-extern "C" QString description(){
+QGISEXTERN QString description(){
   return QString("Delimited text data provider");
 } 
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin
  */
-extern "C" bool isProvider(){
+QGISEXTERN bool isProvider(){
   return true;
 }
 
