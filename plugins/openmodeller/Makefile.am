@@ -50,8 +50,7 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	plugin.h \
 	openmodellergui.cpp \
 	openmodellergui.h \
-	file_parser.hh \
-	list.hh \
+	request_file.cpp \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
