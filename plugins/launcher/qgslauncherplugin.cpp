@@ -98,7 +98,7 @@ void QgsLauncherPlugin::initGui()
 
 }
 //method defined in interface
-void Plugin::help()
+void QgsLauncherPlugin::help()
 {
   //implement me!
 }
