@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>564</width>
-            <height>307</height>
+            <height>310</height>
         </rect>
     </property>
     <property name="caption">
@@ -66,6 +66,12 @@
             </column>
             <property name="name">
                 <cstring>lstPlugins</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <family>Helvetica</family>
+                    <pointsize>10</pointsize>
+                </font>
             </property>
         </widget>
         <spacer row="2" column="0">
