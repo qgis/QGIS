@@ -19,6 +19,7 @@
 #include <vector>
 
 class QString;
+class QCloseEvent;
 
 #include <qpointarray.h>
 #include <qcursor.h>
@@ -167,6 +168,9 @@ public slots:
 
     // The type of column was changed
     void columnTypeChanged ( int row, int col );
+
+    // ! Close event
+    void closeEvent(QCloseEvent *e);
 
 private:
     //! Editing is already running

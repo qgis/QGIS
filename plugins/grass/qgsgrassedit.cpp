@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include <iostream>
 #include <qdir.h>
+#include <qevent.h>
 #include <qfile.h>
 #include <qfiledialog.h> 
 #include <qsettings.h>
@@ -684,9 +685,20 @@ void QgsGrassEdit::closeEdit(void)
 
     mProvider->closeEdit();
     
-    close();
+    hide();
 
     delete this; 
+}
+
+void QgsGrassEdit::closeEvent(QCloseEvent *e)
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::closeEvent()" << std::endl;
+    #endif
+
+    e->accept();
+
+    closeEdit();
 }
 
 void QgsGrassEdit::catModeChanged ( void )
