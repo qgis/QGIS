@@ -971,7 +971,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	    {
 		QgsFeature f(0,"WKBPoint");
 		int size=5+2*sizeof(double);
-		unsigned char wkb[size];
+		unsigned char *wkb = new unsigned char[size];
 		int wkbtype=QGis::WKBPoint;
 		double x=idPoint.x();
 		double y=idPoint.y();
