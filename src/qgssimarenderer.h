@@ -48,6 +48,8 @@ class QgsSiMaRenderer: public QgsRenderer
     QgsRenderItem* item();
     /**Returns the renderers name*/
     QString name();
+    /**Return symbology items*/
+    const std::list<QgsRenderItem*> items() const;
  protected:
     QgsRenderItem* mItem;
 };

@@ -35,6 +35,8 @@ class QColor;
 #include "qgsproject.h"
 #include <qcolor.h>
 
+class QgsRenderItem;
+
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
 class QgsRenderer
 {
@@ -67,12 +69,15 @@ class QgsRenderer
     /**Returns the renderers name*/
     virtual QString name()=0;    
     /** Set up the selection color by reading approriate values from project props */
-    void initialiseSelectionColor();         
+    void initialiseSelectionColor();
+    /**Return symbology items*/
+    virtual const std::list<QgsRenderItem*> items() const=0;
     /**Color to draw selected features - static so we can change it in proj props and automatically 
        all renderers are updated*/
     static QColor mSelectionColor;
     
 };
+
 inline void QgsRenderer::initialiseSelectionColor()
 {
     int myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);

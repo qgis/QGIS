@@ -228,3 +228,13 @@ bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
     }
     return returnval;
 }
+
+const std::list<QgsRenderItem*> QgsUniqueValRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    for(std::map<QString,QgsRenderItem*>::const_iterator iter=mEntries.begin();iter!=mEntries.end();++iter)
+    {
+	list.push_back(iter->second);
+    }
+    return list;
+}

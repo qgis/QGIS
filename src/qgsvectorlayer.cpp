@@ -515,20 +515,50 @@ void QgsVectorLayer::identify(QgsRect * r)
 #ifdef QGISDEBUG
       std::cout << "Feature count on identify: " << featureCount << std::endl;
 #endif
+
+      //also test the not commited features //todo: eliminate copy past code
+      /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      {
+	  if((*it)->intersects(r))
+	  {
+	      featureCount++;
+	      if (featureCount == 1)
+	      {
+		  ir = new QgsIdentifyResults(mActions);
+	      }
+
+	      QListViewItem *featureNode = ir->addNode("foo");
+	      featureNode->setText(0, fieldIndex);
+	      std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
+	      for (int i = 0; i < attr.size(); i++)
+	      {
+#ifdef QGISDEBUG
+		  std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+#endif
+		  if (attr[i].fieldName().lower() == fieldIndex)
+		  {
+		      featureNode->setText(1, attr[i].fieldValue());
+		  }
+		  ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
+	      } 
+	  }
+	  }*/
+
       if (ir)
       {
-	ir->setTitle(name());
-	if (featureCount == 1)
-	  ir->showAllAttributes();
-	// restore the identify window position and show it
-	ir->restorePosition();
+	  ir->setTitle(name());
+	  if (featureCount == 1)
+	      ir->showAllAttributes();
+	  // restore the identify window position and show it
+	  ir->restorePosition();
       }
       
       if (featureCount == 0)
       {
-	QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
+	  QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
       }
-  } else { // Edit attributes 
+  } 
+  else { // Edit attributes 
       // TODO: what to do if more features were selected? - nearest?
       if ( (fet = dataProvider->getNextFeature(true)) ) {
 	  // Was already changed?
@@ -625,8 +655,8 @@ void QgsVectorLayer::table()
       delete fet;
     }
 
-    //also consider the not commited features
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    //also consider the not commited features //temporarily disabled
+    /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       //id-field
       tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
@@ -638,7 +668,7 @@ void QgsVectorLayer::table()
         tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
       }
       row++;
-    }
+      }*/
 
     // reset the pointer to start of fetabledisplayures so
     // subsequent reads will not fail
