@@ -121,6 +121,7 @@ void QgsSpit::removeConnection()
 	if(result == 0){
 		settings.removeEntry(key + "/host");
 		settings.removeEntry(key + "/database");
+		settings.removeEntry(key + "/port");
 		settings.removeEntry(key + "/username");
 		settings.removeEntry(key + "/password");
 		settings.removeEntry(key + "/save");
@@ -290,8 +291,10 @@ PGconn* QgsSpit::checkConnection(){
 		result = false;
   }
 	else{
-    QString connInfo = "host=" + settings.readEntry(gl_key +connName+ "/host") + " dbname=" + 
-			settings.readEntry(gl_key+connName+"/database") +" user=" + settings.readEntry(gl_key+connName+ "/username") + 
+    QString connInfo = "host=" + settings.readEntry(gl_key +connName+ "/host") + 
+			" dbname=" + settings.readEntry(gl_key+connName+"/database") +
+			" port=" + settings.readEntry(gl_key+connName+ "/port") +
+			" user=" + settings.readEntry(gl_key+connName+ "/username") + 
 			" password=" + settings.readEntry(gl_key+connName+ "/password");
     pd = PQconnectdb((const char *) connInfo);
 
