@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.117 2004/06/08 22:18:16 larsl Exp
+ChangeLog,v 1.118 2004/06/09 08:19:42 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-09 [ts] 0.3.0devel22
+** Fixed bug that causes qgis to crash when an empty .dbf is encountered.
+** Added transparency slider to raster popup menu.
 
 2004-06-09 [larsl] 0.3.0devel21
 ** Hid the "GPS download file importer" tab
