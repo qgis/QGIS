@@ -86,12 +86,13 @@ case "${host}" in
         ;;
 
     *)
-        QT_IS_STATIC=`ls $QTDIR/lib/*.a 2> /dev/null`
+        QT_IS_STATIC=`ls $QTDIR/lib/libqt*.a 2> /dev/null`
         if test "x$QT_IS_STATIC" = x; then
             QT_IS_STATIC="no"
         else
             QT_IS_STATIC="yes"
         fi
+	#echo "QT_IS_STATIC=$QT_IS_STATIC"
         if test x$QT_IS_STATIC = xno ; then
             QT_IS_DYNAMIC=`ls $QTDIR/lib/*.so 2> /dev/null` 
             if test "x$QT_IS_DYNAMIC" = x;  then
@@ -99,10 +100,10 @@ case "${host}" in
             fi
         fi
 
-        if test "x`ls $QTDIR/lib/libqt.* 2> /dev/null`" != x ; then
+        if test "x`ls $QTDIR/lib/libqt.a* 2> /dev/null`" != x ; then
             QT_LIB="-lqt"
             QT_IS_MT="no"
-        elif test "x`ls $QTDIR/lib/libqt-mt.* 2> /dev/null`" != x ; then
+        elif test "x`ls $QTDIR/lib/libqt-mt.so* 2> /dev/null`" != x ; then
             QT_LIB="-lqt-mt"
             QT_IS_MT="yes"
         elif test "x`ls $QTDIR/lib/libqte.* 2> /dev/null`" != x ; then
@@ -116,6 +117,7 @@ case "${host}" in
         fi
         ;;
 esac
+#echo "QT_LIB is $QT_LIB"
 AC_MSG_CHECKING([if Qt is static])
 AC_MSG_RESULT([$QT_IS_STATIC])
 AC_MSG_CHECKING([if Qt is multithreaded])
@@ -125,6 +127,7 @@ AC_MSG_RESULT([$QT_IS_EMBEDDED])
 
 QT_GUILINK=""
 QASSISTANTCLIENT_LDADD="-lqassistantclient"
+#echo "host is ${host}"
 case "${host}" in
     *irix*)
         QT_LIBS="$QT_LIB"
@@ -185,7 +188,6 @@ case "${host}" in
         ;;
 
 esac
-
 
 if test x"$QT_IS_EMBEDDED" = "xyes" ; then
         QT_CXXFLAGS="-DQWS $QT_CXXFLAGS"
