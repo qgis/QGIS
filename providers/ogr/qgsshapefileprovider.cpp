@@ -737,6 +737,28 @@ bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
 	    }
 	}
 	
+	//add possible attribute information
+       
+	for(int i=0;i<f->attributeMap().size();++i)
+	{
+	    QString s=(f->attributeMap())[i].fieldValue();
+	    if(!s.isEmpty())
+	    {
+		if(fdef->GetFieldDefn(i)->GetType()==OFTInteger)
+		{
+		    feature->SetField(i,s.toInt());
+		}
+		else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
+		{
+		    feature->SetField(i,s.toDouble());
+		}
+		else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
+		{
+		    feature->SetField(i,s.ascii());
+		}
+	    }
+	}
+
 	if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
 	{
 	    //writing failed

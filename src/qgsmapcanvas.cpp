@@ -48,6 +48,7 @@
 #include "qgsscalecalculator.h"
 #include "qgsacetaterectangle.h"
 #include "qgsfeature.h"
+#include "qgsattributedialog.h"
 
 /**
   Implementation struct for QgsMapCanvas
@@ -1013,6 +1014,17 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         memcpy(&wkb[5], &x, sizeof(double));
         memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
         f->setGeometry(&wkb[0],size);
+
+        //add the fields to the QgsFeature
+	std::vector<QgsField> fields=vlayer->fields();
+	for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
+	{
+	    f->addAttribute((*it).name(),"");
+	}
+	
+	//show the dialog to enter attribute values
+	f->attributeDialog();
+
         // also need to store the well known text so feature
         // can be inserted into postgis layer if applicable.
         // We set the geometry but not the SRID. The provider
@@ -1111,6 +1123,17 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           } 
       }
       f->setGeometry(&wkb[0],size);
+
+      //add the fields to the QgsFeature
+      std::vector<QgsField> fields=vlayer->fields();
+      for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
+      {
+	  f->addAttribute((*it).name(),"");
+      }
+
+      //show the dialog to enter attribute values
+      f->attributeDialog();
+      
       vlayer->addFeature(f);
       mCaptureList.clear();
       refresh();

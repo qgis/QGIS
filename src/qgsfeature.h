@@ -115,6 +115,9 @@ class QgsFeature {
 
     void setWellKnownText(QString const & wkt);
 
+    /**Shows a popup dialog to change attribute values*/
+    void attributeDialog();
+
   private:
 
     //! feature id
