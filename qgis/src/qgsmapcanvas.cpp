@@ -34,6 +34,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
   if(layers.size() == 1){
     fullExtent = lyr->extent();
   }
+  render();
   // set zpos to something...
   //lyr->zpos = 0;
 }
@@ -61,12 +62,12 @@ void QgsMapCanvas::render(){
  QRect v = paint->viewport ();
       int d = QMIN (v.width (), v.height ());
       int dm = QMAX(v.width(), v.height());
-          paint->setViewport (v.left () + (v.width () - d) / 2,
-      		 v.top () + (v.height () - d) / 2, d, d);
+           paint->setViewport (v.left () + (v.width () - d) / 2,
+       		 v.top () + (v.height () - d) / 2, d, d);
       
   // render all layers in the stack, starting at the base
   map<QString,QgsMapLayer *>::iterator mi = layers.begin();
-  int yTransform = mapWindow->bottom() - abs(mapWindow->height() - currentExtent.height())/2;
+  int yTransform =  currentExtent.yMax();//mapWindow->bottom() -  abs(mapWindow->height() - currentExtent.height())/2;
   while(mi != layers.end()){
     QgsMapLayer *ml = (*mi).second;
     //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
@@ -75,4 +76,7 @@ void QgsMapCanvas::render(){
     //  mi.draw(p, &fullExtent);
   }
   paint->end();
+}
+void QgsMapCanvas::paintEvent(QPaintEvent *pe){
+  render();
 }
