@@ -213,6 +213,8 @@ public  slots:
   /*! Slot connected to popup menus of derived classes. Used to indicate whether this layer
    * should be shown or hidden in the map overview. */
   virtual void toggleShowInOverview();
+  /**Copies the legend pixmap of this layer to the legenditem and adds an overview glasses if necessary*/
+  void updateItemPixmap();
 
 signals:
 
