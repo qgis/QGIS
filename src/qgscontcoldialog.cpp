@@ -16,25 +16,31 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
- 
+
 #include "qgscontcoldialog.h"
-#include "qgsvectorlayer.h"
-#include "qpushbutton.h"
-#include "qcolordialog.h"
-#include <qcombobox.h>
+
 #include <cfloat>
-#include "qgscontinuouscolrenderer.h"
 #include <iostream>
-#include "qgslegenditem.h"
+
+#include <qcolordialog.h>
+#include <qcombobox.h>
+#include <qlabel.h>
 #include <qlineedit.h>
-#include "qgsdlgvectorlayerproperties.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfield.h"
+#include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qtoolbutton.h>
-#include <qlabel.h>
+ 
+#include "qgscontinuouscolrenderer.h"
+#include "qgsdlgvectorlayerproperties.h"
+#include "qgsfield.h"
+#include "qgslegenditem.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(), mVectorLayer(layer)
+
+
+QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
+    : QgsContColDialogBase(), mVectorLayer(layer)
 {
 #ifdef QGISDEBUG
     qWarning("constructor QgsContColDialog");
@@ -47,11 +53,11 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
     QgsVectorDataProvider *provider;
     if (provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider()))
     {
-	std::vector < QgsField > &fields = provider->fields();
+	std::vector < QgsField > const & fields = provider->fields();
 	int fieldnumber = 0;
 	QString str;
 
-	for (std::vector < QgsField >::iterator it = fields.begin(); it != fields.end(); ++it)
+	for (std::vector < QgsField >::const_iterator it = fields.begin(); it != fields.end(); ++it)
         {
 	    QString type = (*it).type();
 	    if (type != "String" && type != "varchar" && type != "geometry")

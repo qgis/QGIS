@@ -29,7 +29,7 @@ bool QgsVectorDataProvider::addFeatures(std::list<QgsFeature*> flist)
     return false;
 }
 
-bool QgsVectorDataProvider::deleteFeatures(std::list<int> id)
+bool QgsVectorDataProvider::deleteFeatures(std::list<int> const & id)
 {
     return false;
 }
@@ -40,19 +40,19 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
   return "";
 }
 
-bool QgsVectorDataProvider::supportsFeatureAddition()
+bool QgsVectorDataProvider::supportsFeatureAddition() const
 {
     //needs to be overwritten by providers if they provide feature editing
     return false;
 }
 
-bool QgsVectorDataProvider::supportsFeatureDeletion()
+bool QgsVectorDataProvider::supportsFeatureDeletion() const
 {
     //needs to be overwritten by providers which support this
     return false;
 }
 
-bool QgsVectorDataProvider::supportsSaveAsShapefile()
+bool QgsVectorDataProvider::supportsSaveAsShapefile() const
 {
   // default implementation is no support 
   return false; 
