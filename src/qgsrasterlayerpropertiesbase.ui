@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>759</width>
-            <height>595</height>
+            <height>594</height>
         </rect>
     </property>
     <property name="caption">
@@ -416,7 +416,7 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Bitstream Vera Sans"&gt;
 &lt;p style="margin-top:14px"&gt;&lt;span style="font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
@@ -1110,7 +1110,7 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Bitstream Vera Sans"&gt;
 &lt;p style="margin-top:18px"&gt;&lt;span style="font-size:22pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
 &lt;p&gt;&lt;span style="color:#ff0000"&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
@@ -1326,7 +1326,7 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="PNG" length="727">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000029e49444154388d95925b48530118c7ff3b3bd3b9a6392f9b97b42413a7b912b1de7ab10cc44c3408c5348d0a0c347b29848c2233d0613d1651122a09f950a1f83012ba4b379b28a37969a6a6e7ecd2e6e639673b971e62656e41fddfbeefe3fffbe0ff7dc07f28e63cb2355d7848666277b047fc8b31ba05a99a4edc966b3121aca0849f86189c91e10c2b2b3d09b1b152cd946572879c64f977b639aaa97fb888d049a440830260ffeb3686e92be105a3e3f148b95713a7aca93ba93ffad25a21a61849497d1cdf22f6e205007558f3eaea1d4340b8c6cc398e4975a7b24700a8c80c90fa4ef5bcae8d949a2f1aa623b5f20200f2b0192895dfdb299f55e95b0b60d6ea790380511d41f3b2e84d3b149189fafaeced8d0d79fb81df19fc020c0d9d51f132ba98e1fcf07302a815c6a66e849e88c7d52c2a61ed74e54ea8a31548cf509701880c01e4e64a495cc01311acfd82109027a147a4c11ed6e9879393370100542a790a005508c06c76ba7970120010840c5b8a34e70e64e71516713983b5d5056332990c0060a73916801402282b7be0b2bb58330044a9481c346ccd8f18152d4d5539a5b189e4155e14c171023ebca52700f8c28528be7e4e75b10c0f829061d2b2e4ecbf35599b911ed7ed62a8287f40c0ab67cb6ba6e1857b00fc2100721b88b366d352e7a38f0e3bcda0aa2c8b34ec4a746be33591003035e10cdcb86e36badddc684747d59f678caa8442598c768146efe0a7cf71272e3ffd3231ee98696ddb333063631b045184d7cbfb9c76a18f65efb6aeb1f60684910280565581fb91fbd08d9fdf96f6c4547ac14a554b56aa5a72f95afcbd03e5768582280c9ae4eb0022009f221f0b220d088b1803e059fcca8c7bdcfe54dbec6acce0a065fea6f1fd258fdb6fc2ba67da2842aec3e60d3d128006400c00d9fac10f3d4b18bb5f2121880000000049454e44ae426082</data>
+        <data format="XPM.GZ" length="2878">789c6d55cb521d390cddf315b7a25d6a4a69b7dbaf9a9a45c893100810122053b370b76dde90f04880a9f9f7e93e32a9dc9ee1b2b8e74a96649d23f9d9d3c5fed6c6e2e9b395eb9b78733c2c86a378b5789a6ecfcfeffffceb8fbf579e28bb98fe3bb5689ffcb6f264fb66312c362f2ff204786b04d4e06fc2743ec36f80bbb6625e9fd971de3bef4c98703c5eb6f3eb7a5e557f3d3bbf0d1c8caef8c7ecbc99e15733fc79c2bde98ded811f96ed314d58e74ea9047c3ab39f006be56afeb3597dc30c235edff6adf1c87734e11c728862ef66f57d9d618997dc633fdccc6e11afc98d8db0bf9f709bb55206b899b00a2a3605fe84f3d9d5fa19f666b0b1e2c359fce7132ebae83000f7959faedadf013b651b8d7cabf57c5bfb1581cdf88198a29c8fa6e6a3b7c0c5f5150bff65fc38c4ff86fcaeb888fbf0ed844db1a615fda09fca8ff7133e6f80956a1be9b7473f54eb1ae897ee261c4a0c5d07fb17d85d1b95423ce9b7d58ffcb61376c9954ef243af259410a49fdbb59fa6fac39ebbdc39e9cf279c57ce6bb1bfa87c696b81515faffba193fe424f21f7b6c37d6803f96cb14efaf101fa4ca33e856fe0515e59a1bfa4e0ef8b0f72df9dcaafadf559e14be7ca1ff49dda64ace487be87929493fe24e9a77fe407fd36ca0e2df2c78cfb656fb5e8cd547e2bfff41dfeda8456f401fd79eba3c67c71acf1875a0ff45bfad27ba9e765e5dbb6c2e7fd323f8cf9f1231d5afc83e8c73fea0f7ab6bd6b5be4a322fdb351813fc23ef0c6678dfed2de84a38fa5f6ff02fdf1d91ae937f468a20dadd84f7f9e97fad690afb8d4cabe94fd3898a1117d21bf4fc16a89077db4d15825fdc27c8410b596faf6915f2767456fd8af6d18f990fb5e227e6f2a9ff471996fbeabf8711f5d416f653006fcd29af437e8167a8ce027763118f1c7fc9be09a56f480f3651488977e72d5ffe33ec63c45d32b99175aaffb2f77b82f5f57ec253e63beb4735a493dd8d7a18fb6137b99cd17ce97ae84aa4fe85d35ded7fbae56fd248ffbf05edd1f83cc0f6d22bfea5327fb03f5e7528c033f9cab1e53cdb75bfbf7b8efa0e7c1a4dec8bcc13f0fc55960be58ee07efd478a162ec3be55c6ea47ebc5f2a8ef9e4fed0abe96214bd32f8b49def44ff84f7c177c16b996fecdfc12523f530decba14f4ef8e503e09c46c281719fd4a46c64ff609e52975b23fb65b3622def1561df2693bb8aa1b714b2aff380794b7d8e153ffcc4b28f45bf43ee2bc6fe4b252723fa39a8fb301be899b0bfb3cac5c8fd30ff5997a6e228fb75c4321fd857d994f10142fc8d8a5b2b7ce2bd1c9f1367c1f7f6cdff7d9838723f7dfb7f1f1e3871e6c287fff5e1233ee6133ee5333ee70bbee4af731ffec6577ccd377ccbdff907dff13d3f2cfbf0735ee517fc925ff16b7ec36f798ddff1facce73d6ff0267fe02ddee61dfec8bbfc89b77ef5e1cfbcc7fb7cc05fb861c52deb11756c967c2c3bf8780ec44414799f7a1a7ef5a14479f4d9a542877444c77432fa9cd2d992cf395d8cbf5ed257fa4657744d37744bdfe9c772cd7447f7f440cf69955ed0cbf1db2b7a2d969f71ded05b5aa377b44eef6963f4d9a40f6ce8977bd136edd047daa54ff499f6689f0ee80b35a4a85d8aa3a92343961fc891a7402172a418e75cc43ee2ae31c51c4b3c8c47f178ee43e7f1a47a1fd3593c952e8f3efffcbef22fa916821c</data>
     </image>
 </images>
 <connections>
