@@ -4,7 +4,7 @@
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc.com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -21,7 +21,7 @@
 #include <iostream>
 #include <qstring.h>
 #include "qgspoint.h"
-class QgsPoint;
+
 
 /*! \class QgsRect
  * \brief A rectangle specified with double values.
@@ -29,7 +29,8 @@ class QgsPoint;
  * QgsRect is used to store a rectangle when double values are required. 
  * Examples are storing a layer extent or the current view extent of a map
  */
-class QgsRect{
+class QgsRect
+{
  public:
     //! Constructor
     QgsRect(double xmin=0, double ymin=0, double xmax=0, double ymax=0);
@@ -67,7 +68,7 @@ class QgsRect{
     void scale(double, QgsPoint *c =0);
     //! Expand the rectangle to support zoom out scaling
     void expand(double, QgsPoint *c = 0);
-     //! return the intersection with the given rectangle
+    //! return the intersection with the given rectangle
     QgsRect intersect(QgsRect *rect);
     //! test if rectangle is empty
     bool isEmpty();
@@ -103,57 +104,57 @@ inline QgsRect::~QgsRect()
 
 inline void QgsRect::setXmin(double x)
 {
-	xmin = x;
+    xmin = x;
 }
 
 inline void QgsRect::setXmax(double x)
 {
-	xmax = x;
+    xmax = x;
 }
 
 inline void QgsRect::setYmin(double y)
 {
-	ymin = y;
+    ymin = y;
 }
 
 inline void QgsRect::setYmax(double y)
 {
-	ymax = y;
+    ymax = y;
 }
 
 inline double QgsRect::xMax() const
 {
-	return xmax;
+    return xmax;
 }
 
 inline double QgsRect::xMin() const
 {
-	return xmin;
+    return xmin;
 }
 
 inline double QgsRect::yMax() const
 {
-	return ymax;
+    return ymax;
 }
 
 inline double QgsRect::yMin() const
 {
-	return ymin;
+    return ymin;
 }
 
 inline double QgsRect::width() const
 {
-	return xmax - xmin;
+    return xmax - xmin;
 }
 
 inline double QgsRect::height() const
 {
-	return ymax - ymin;
+    return ymax - ymin;
 }
 
 inline QgsPoint QgsRect::center() const
 {
-  return QgsPoint(xmin + width() / 2 ,  ymin + height() / 2);
+    return QgsPoint(xmin + width() / 2 ,  ymin + height() / 2);
 }
 inline std::ostream& operator << (std::ostream& os, const QgsRect &r)
 {

@@ -162,7 +162,6 @@ class QgsMapLayer:public QObject
   virtual std::vector<QgsField> const & fields() const;
 
 
-public:                        // Public attributes
   //! Layers enum defining the types of layers that can be added to a map
   enum LAYERS
   {
