@@ -26,6 +26,7 @@
 #include <qtable.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
+#include <qspinbox.h>
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -89,6 +90,11 @@ bufferRenderer(layer->
                                              fld.type(), QString("%1").arg(fld.length()),
                                              QString("%1").arg(fld.precision()));
     }
+  // set up the scale based layer visibility stuff....
+  chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
+  spinMinimumScale->setValue(lyr->minScale());
+  spinMaximumScale->setValue(lyr->maxScale());
+
   // symbology initialization
   legendtypecombobox->insertItem(tr("Single Symbol"));
   legendtypecombobox->insertItem(tr("Graduated Symbol"));
@@ -202,6 +208,12 @@ void QgsDlgVectorLayerProperties::setRendererDirty(bool enabled)
 
 void QgsDlgVectorLayerProperties::apply()
 {
+
+  // set up the scale based layer visibility stuff....
+  layer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
+  layer->setMinScale(spinMinimumScale->value());
+  layer->setMaxScale(spinMaximumScale->value());
+  
   if (rendererDirty)
     {
       layer->setRenderer(bufferRenderer);
