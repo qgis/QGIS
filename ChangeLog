@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.85 2004/05/19 15:18:38 larsl Exp
+ChangeLog,v 1.86 2004/05/20 07:27:36 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-20 [ts] 0.2.0devel28
+** Changed splash to load picture from file instead of an xpm include. This
+will hopefully speed up compile times for folks building on p133's. Changed
+splash image to the fluffball ready for 0.3 release.
 
 2004-05-19 [larsl] 0.2.0devel27
 ** Implemented getNextFeature(list<int>&) in the GPX provider
