@@ -128,6 +128,16 @@ public:
   /**Returns true if this is a valid delimited file
    */
   bool isValid();
+
+  /**Adds a feature
+     @return true in case of success and false in case of failure*/
+  bool addFeature(QgsFeature* f);
+
+/**Deletes a feature
+   @param id the number of the feature
+   @return true in case of success and false in case of failure*/
+  bool deleteFeature(int id);
+
   /**
    * Check to see if the point is withn the selection
    * rectangle

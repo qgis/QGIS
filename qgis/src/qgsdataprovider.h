@@ -140,7 +140,19 @@ public:
 * Returns true if this is a valid layer. It is up to individual providers
 * to determine what constitutes a valid layer
 */
-virtual bool isValid()=0;
+  virtual bool isValid()=0;
+
+/**Adds a feature
+@return true in case of success and false in case of failure*/
+  virtual bool addFeature(QgsFeature* f)=0;
+
+/**Deletes a feature
+@param id the number of the feature
+@return true in case of success and false in case of failure*/
+  virtual bool deleteFeature(int id)=0;
+
 };
+
+
 #endif
 

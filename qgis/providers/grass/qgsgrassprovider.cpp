@@ -530,6 +530,16 @@ bool QgsGrassProvider::isValid(){
     return mValid;
 }
 
+bool QgsGrassProvider::addFeature(QgsFeature* f)
+{
+    return false;
+}
+
+bool QgsGrassProvider::deleteFeature(int id)
+{
+    return false;
+}
+
 // ------------------------------------------------------------------------------------------------------
 // Compare categories in GATT
 static int cmpAtt ( const void *a, const void *b ) {

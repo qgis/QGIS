@@ -12,6 +12,7 @@
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 #include <cpl_error.h>
+#include <qmessagebox.h>
 
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
@@ -30,7 +31,7 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minm
 #ifdef QGISDEBUG
   std::cerr << "Data source uri is " << uri << std::endl;
 #endif
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri);
+  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,TRUE);
   if (ogrDataSource != NULL) {
 #ifdef QGISDEBUG
     std::cerr << "Data source is valid" << std::endl;
@@ -552,6 +553,37 @@ void QgsShapeFileProvider::fillMinMaxCash()
 bool QgsShapeFileProvider::isValid()
 {
   return valid;
+}
+
+bool QgsShapeFileProvider::addFeature(QgsFeature* f)
+{
+    OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
+    OGRFeature* feature=new OGRFeature(fdef);
+    /*double x;
+    double y;
+    memcpy(&x,(f->getGeometry()+5),sizeof(double));
+#ifdef QGISDEBUG
+    qWarning("x: "+QString::number(x,'f'));
+#endif
+    memcpy(&y,(f->getGeometry()+5+sizeof(double)),sizeof(double));
+#ifdef QGISDEBUG
+    qWarning("y: "+QString::number(y,'f'));
+#endif
+OGRPoint* p=new OGRPoint(x,y,0);*/
+    OGRPoint* p=new OGRPoint();
+    p->importFromWkb(f->getGeometry(),21);
+    feature->SetGeometry(p);
+    if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
+    {
+	//writing failed
+	QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+    }
+    ogrLayer->SyncToDisk();
+}
+
+bool QgsShapeFileProvider::deleteFeature(int id)
+{
+    return false;
 }
 
 /**
