@@ -38,4 +38,10 @@ void PluginGui::pbnOK_clicked()
   // or for a vector layer
   // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
+  //close the dialog
+  done(1);
 } 
+void PluginGui::pbnCancel_clicked()
+{
+ close(1);
+}
