@@ -309,12 +309,12 @@ postgresMOC =   qgsdbsourceselect.moc.cpp	\
 		qgsnewconnectionbase.moc.cpp
 
 # if PostgreSQL support requested, add PostgreSQL files				
-if HAVE_POSTGRESDB
+if HAVE_POSTGRESQL
 qgis_SOURCES += $(postgresSOURCES)
 qgis_UI += $(postgresUI) 
 qgis_MOC += $(postgresMOC)
 # add required defines for compiling PostgreSQL
-PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
+#PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
 endif
 
 PREFIX=-DPREFIX=\"$(prefix)\"

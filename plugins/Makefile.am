@@ -2,7 +2,7 @@ if HAVE_SPIT
 SPIT = spit
 endif
 
-if HAVE_POSTGRESDB
+if HAVE_POSTGRESQL
 GEOPROCESSING = geoprocessing
 endif
 

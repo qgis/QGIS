@@ -16,6 +16,8 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
+#include <config.h>
+
 #include <iostream>
 #include <cstdio>
 
