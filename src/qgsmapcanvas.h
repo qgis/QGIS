@@ -75,6 +75,8 @@ public:
    void freeze(bool frz=true);
 	//! remove the layer defined by key
 	void remove(QString key);
+	//! remove all layers from the map 
+	void removeAll();
 	void setDirty(bool _dirty);
 	friend class QgsLegend;
 public slots:

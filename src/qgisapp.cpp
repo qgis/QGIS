@@ -199,9 +199,9 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*During repaint, the data store is only accessed if map state or extent has changed\n"
-		"*Changes to layer properites aren't effective until the Layer Properties dialog is closed\n"
-		"*Cancelling the Layer Propeties dialog cancels changes";
+	watsNew += "\n*Preliminary project save/open support\n"
+		"*Streamlined build system\n";
+
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
@@ -312,11 +312,21 @@ void QgisApp::fileExit()
 	QApplication::exit();
 
 }
+void QgisApp::fileNew(){
+	mapCanvas->removeAll();
+	setCaption("Quantum GIS -- Untitled");
+	mapCanvas->clear();
+	mapLegend->update();
+	fullPath = "";
+}
 void QgisApp::fileOpen(){
 	mapCanvas->freeze(true);
 	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN);
 	
-	pio->read();
+	if(pio->read()){
+		setCaption("Quantum GIS -- " + pio->baseName());
+		fullPath = pio->fullPathName();
+		}
 	delete pio;
 	
 	mapLegend->update();
@@ -324,11 +334,21 @@ void QgisApp::fileOpen(){
 }
 void QgisApp::fileSave(){
 	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::SAVE);
-	pio->write();
+	pio->setFileName(fullPath);
+	if(pio->write()){
+		setCaption("Quantum GIS -- " + pio->baseName());
+		statusBar()->message("Saved map to: " + pio->fullPathName());
+	}
 	delete pio;
 }
 
 void QgisApp::fileSaveAs(){
+	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::SAVEAS);
+	if(pio->write()){
+		setCaption("Quantum GIS -- " + pio->baseName());
+		statusBar()->message("Saved map to: " + pio->fullPathName());
+	}
+	delete pio;	
 }
 
 void QgisApp::zoomIn()
