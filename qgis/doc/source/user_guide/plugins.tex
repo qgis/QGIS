@@ -1,5 +1,5 @@
 \section{Using Plugins}\index{plugins}
-QGIS has been designed with a plugin architecture. This allows new features/functions to be added to the application. Many of the features in QGIS are actually implemented as plugins.\\
+QGIS has been designed with a plugin architecture. This allows new features/functions to be added to the application. Many of the features in QGIS are actually implemented as plugins.
 
 There are two types of plugins in QGIS: core and user-contributed.
 \index{plugins!types}A core plugin is maintained by the QGIS development team and is part of every QGIS distribtution. A user-contributed plugin is an external plugin that is maintained by the individual author. The QGIS Community site (\url{http://community.qgis.org}) serves as the repository for user contributed plugins.
@@ -9,11 +9,11 @@ When you install QGIS, all of the core plugins are included (these are described
 below). \index{plugins!installing}Additional user-contributed plugins may be
 available on the QGIS Community site. To see what user-contributed plugins are
 available, see the plugins page on the Community site
-(\url{http://community.qgis.org/plugins}).\index{plugins!user contributed}\\
+(\url{http://community.qgis.org/plugins}).\index{plugins!user contributed}
 
 Typically user-contributed plugins are distributed in source form and require compiling. For instructions on building and installing a user-contributed plugin, see the documentation included with the plugin.
 \subsection{Managing Plugins}\label{sec:managing_plugins}\index{plugins!managing}
-Managing plugins consists of loading or unloading them from QGIS. Loaded plugins are "remembered" when you exit the application and restored the next time you run QGIS.\\
+Managing plugins consists of loading or unloading them from QGIS. Loaded plugins are "remembered" when you exit the application and restored the next time you run QGIS.
 
 To manage plugins, open the \textsl{Plugin Manager} from the \textsl{Tools}
 menu. \index{plugins!manager}The Plugin Manager displays all the available plugins and their status (loaded or unloaded). Figure \ref{fig:pluginmanager} shows the Plugin Manager dialog.
@@ -33,7 +33,7 @@ Typically all QGIS plugins are installed in the same location. This location is 
 \end{Tip} 
 
 \subsection{Data Providers}\index{data providers}
-Data Providers are "special" plugins that provides access to a data store. By default, QGIS supports PostGIS layers and disk-based data stores supported by the OGR library (Appendix \ref{appdx_ogr}). A Data Provider plugin extends the ability of QGIS to use other data sources.\\
+Data Providers are "special" plugins that provides access to a data store. By default, QGIS supports PostGIS layers and disk-based data stores supported by the OGR library (Appendix \ref{appdx_ogr}). A Data Provider plugin extends the ability of QGIS to use other data sources.
 
 Data Provider plugins are registered automatically by QGIS at startup. They are not managed by the Plugin Manager but are used behind the scenes when a corresponding data type is added as a layer in QGIS.
 \subsection{Core Plugins}\index{plugins!core}

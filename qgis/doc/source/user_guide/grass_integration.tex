@@ -15,7 +15,7 @@ If QGIS is started from the GRASS shell (GRASS started by grass57 command), no
 additional settings are required. \index{GRASS!shell}
 \subsubsection{Outside GRASS shell}
 
-If QGIS is not started from the GRASS shell, the environment variables must be properly set before starting QGIS.\\
+If QGIS is not started from the GRASS shell, the environment variables must be properly set before starting QGIS.
  
 The path to GRASS libraries must be added to LD\_LIBRARY\_PATH environment
 variable. For example (in bash): \index{GRASS!environment settings}
@@ -39,16 +39,16 @@ In general, GRASS uses a topological vector model.\index{GRASS!topology} This
 means that areas are not represented as closed polygons, but by one or more
 boundaries. A boundary between two adjacent areas is digitized only once, and it
 is shared by both areas. Boundaries must be connected without gaps. An area is
-identified (labeled) by the centroid of the area.\\
+identified (labeled) by the centroid of the area.
 
 Besides boundaries and centroids, a vector map can also contain
 points and lines. All these geometry elements can be mixed
-in one vector.\\
+in one vector.
 
 It is possible to store more 'layers' in one vector dataset. For example,
 fields, forests and lakes can be stored in one vector. Adjacent
 forest and lake can share the same boundary, but they have separate attribute tables.
-It is also possible to attach attributes to boundaries. For example, the boundary between lake and forest is a road with different attribute table.\\
+It is also possible to attach attributes to boundaries. For example, the boundary between lake and forest is a road with different attribute table.
 %In addition, one geometry element can represent a geometry for more
 %features. For example, a road can be a marked turistic route at the same 
 %time.
@@ -56,15 +56,15 @@ It is also possible to attach attributes to boundaries. For example, the boundar
 The 'layer' of the feature is defined by 'field' (sorry for this name).
 'Field' is the number which defines if the geometry is forest or lake.
 For now, it can be only a number, in the future GRASS will also support  
-names as fields in the user interface.\\
+names as fields in the user interface.
 
 Attributes are stored in external database tables, for example
-DBF, PostgreSQL, etc.\index{GRASS!attribute storage}\\
+DBF, PostgreSQL, etc.\index{GRASS!attribute storage}
 
 Attributes in database tables are linked to geometry elements
 using 'category'.\index{GRASS!attribute linkage} 'Category' (key, ID) is an
 integer attached to geometry primitives, and it is used as the link to one
-column in the database table.\\
+column in the database table.
 \begin{Tip}\caption{\textsc{Learning the GRASS Vector Model}}
 \qgistip{The best way to learn the GRASS vector model and its capabilities
 is to download the demo mapset from \url{http://mpa.itc.it/radim/g51/g51test-12-multi.tar.gz}.
@@ -80,7 +80,7 @@ The digitizing tools for GRASS vector layers are accessed using the \textsl{Edit
    \includegraphics[scale=.7]{qgis_user_guide_images/grassedit}
 \end{center}  
 \end{figure}
-The tools and settings are discussed in the following sections.\\
+The tools and settings are discussed in the following sections.
 \subsubsection{Toolbar}
 Table \ref{tab:grass_tools} lists the digitizing tools provided by the GRASS plugin. These correspond to the tool buttons in the toolbar(s) across the top of the dialog.
 \begin{table}[h]\index{GRASS!digitizing tools}
@@ -136,7 +136,7 @@ raster modules. All new created rasters have the extension and resolution
 of the current region, regardless their original region. 
 The region is stored in \$LOCATION/\$MAPSET/WIND file, and it defines
 north, south, east, west, number of columns, number of rows, 
-horizontal and vertical resolution.\\
+horizontal and vertical resolution.
 
 It is possible to switch on/off the grass region in QGIS canvas
 using the \textsl{Display Current GRASS Region}
@@ -146,7 +146,7 @@ With the \textsl{Edit Current GRASS Region} you can open a tool
 in which you can change the current region and symbology
 of the rectangle on the QGIS Canvas. When the tool is running,
 it is also possible to select a new region interactively
-on the QGIS canvas.\index{GRASS!region!editing}\\
+on the QGIS canvas.\index{GRASS!region!editing}
 
 Both tools are available only if QGIS was started from a GRASS 
 shell or if the GISRC enviroment variable pointing to a

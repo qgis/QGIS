@@ -28,8 +28,7 @@
  \renewcommand{\textfraction}{0.1}
 \renewcommand{\floatpagefraction}{0.75}
 \makeindex
-%added by Tim to create a decent space between paragraphs
-\setlength{\parskip}{10pt plus 1pt minus 1pt}
+
 %\renewcommand\familydefault{lucidabrightsans}
 \title{Quantum GIS User Guide\\
 \large Version 0.6 \textsl{'Simon'}}
@@ -48,7 +47,9 @@
 \tableofcontents
 \listof{Tip}{QGIS Tips}
 %\newpage
-
+%added by Tim to create a decent space between paragraphs
+%note its only after toc so toc remains compact
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
 %\fancyfoot[C]{\thepage}
 \pagestyle{fancy}
 \fancyhead[L]{QGIS User Guide}

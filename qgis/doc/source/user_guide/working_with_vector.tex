@@ -2,7 +2,7 @@
 QGIS supports vector data in a number of formats, including shapefiles,
 MapInfo mif, and PostGIS\index{PostGIS} layers in a PostgreSQL database. Support for
 additional data types is provided by plugins, for example delimited
-text\index{delimited text}.\\
+text\index{delimited text}.
 
 This section describes how to work with two common formats:
 shapefiles\index{shapefile} and PostGIS\index{PostGIS} layers. Many of the
@@ -12,7 +12,7 @@ functions.
 
 \subsection{Shapefiles}\index{shapefile}
 Shapefile support is provided by a library of functions (OGR
-\url{http://www.remotesensing.org/gdal/ogr})\index{ogr}. See Appendix \ref{appdx_ogr} for a list of supported formats.\\
+\url{http://www.remotesensing.org/gdal/ogr})\index{ogr}. See Appendix \ref{appdx_ogr} for a list of supported formats.
 
 A shapefile actually consists of a minimum of three
 files:\index{shapefile!format}
@@ -110,7 +110,7 @@ Security}}\index{settings}\index{security}
 }
 \end{Tip}
 \subsubsection{Loading a PostGIS Layer}\index{PostgreSQL!loading layers}
-\parpic[l]{\includegraphics{qgis_user_guide_images/addpostgis}}Once you have one or more connections defined, you can load layers from the PostgreSQL database. Of course this requires having data in PostgreSQL. See Section \ref{sec:loading_postgis_data} for a discussion on importing data into the database. \\
+\parpic[l]{\includegraphics{qgis_user_guide_images/addpostgis}}Once you have one or more connections defined, you can load layers from the PostgreSQL database. Of course this requires having data in PostgreSQL. See Section \ref{sec:loading_postgis_data} for a discussion on importing data into the database. 
 
 To load a layer from PostGIS, perform the following steps:
 \begin{compactenum}
@@ -164,14 +164,14 @@ dialog by double-clicking on the layer in the legend and click on the
 
 \subsubsection{Importing Data into PostgreSQL}\label{sec:loading_postgis_data}
 \index{SPIT!importing data}
-Data can be imported into PostgreSQL using a number of methods. PostGIS includes a utility called shp2pgsql that can be used to import shapefiles into a PostGIS enabled database. \\
+Data can be imported into PostgreSQL using a number of methods. PostGIS includes a utility called shp2pgsql that can be used to import shapefiles into a PostGIS enabled database. 
 
 \parpic[l]{\includegraphics{qgis_user_guide_images/spiticon}}QGIS comes with a
 plugin named SPIT (Shapefile to PostGIS Import Tool)\index{SPIT}.
 SPIT can be used to load mutliple shapefiles at one time and includes support
 for schemas. To use SPIT, open the Plugin Manager from the Tools menu and load
 the plugin by checking the box next to the SPIT plugin and click Ok. The SPIT
-icon will be added to the plugin toolbar\index{SPIT!loading}. \\
+icon will be added to the plugin toolbar\index{SPIT!loading}. 
 
 To import a shapefile, click on the SPIT tool in the toolbar to open the dialog.
 You can add one or more files to the queue by clicking on the \textsl{Add}
