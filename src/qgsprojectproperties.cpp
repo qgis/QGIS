@@ -337,7 +337,21 @@ void QgsProjectProperties::getProjList()
   }   
 
 }
-
+void QgsProjectProperties::coordinateSystemSelected( QListViewItem * theItem)
+{
+    //set the text box to show the full proection spec
+    std::cout << "Item selected : " << theItem->text(0) << std::endl;
+    std::cout << "Item selected full wkt : " << mProjectionsMap[theItem->text(0)] << std::endl;
+    QString myKey = mProjectionsMap[lstCoordinateSystems->currentItem()->text(0)];
+    if (!myKey.isEmpty())
+    { 
+      QString myFullWKT = mProjectionsMap[theItem->text(0)];
+      if (!myFullWKT.isEmpty())
+      {
+           teProjection->setText(myFullWKT);
+      }
+    }
+}
 QString QgsProjectProperties::getWKTShortName(QString theWKT)
 {
     /* for example 
@@ -388,6 +402,6 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
     myCoordinateSystem = mySpatialRefSys.GetAttrValue("PROJECTION",0);
     myName = myProjection + " - " + myCoordinateSystem;
   } 
-  std::cout << "Projection short name " << myName << std::endl;
+  //std::cout << "Projection short name " << myName << std::endl;
   return myName; 
 }
