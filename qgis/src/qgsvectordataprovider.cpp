@@ -15,6 +15,8 @@
 /* $Id$ */
 
 #include "qgsvectordataprovider.h"
+#include "qgsfeature.h"
+
 
 QgsVectorDataProvider::QgsVectorDataProvider(): mEditable(false), mModified(false)
 {
