@@ -204,9 +204,10 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*Fixes to project save/open support\n"
-		"*Enhancements to plugin tests\n"
-		"*Fixes to build system\n";
+	watsNew += "\n*Preliminary Plugin Manager implementation\n"
+		"*Fix for PostGIS bug when srid != -1\n"
+		"*Database Connections can now be deleted\n"
+		"*Fixes to Database Connection dialog\n";
 
 
 	abt->setWhatsNew(watsNew);
