@@ -496,8 +496,11 @@ void QgisApp::about()
   versionString += "\nThis is a Windows preview release - not for production use";
 #endif
   abt->setVersion(versionString);
-  QString urls = tr("Web Page: http://qgis.org") +
-    "\n" + tr("Sourceforge Project Page: http://sourceforge.net/projects/qgis");
+  QString urls = "<p align=\"center\">" +
+    tr("Quantum GIS is licensed under the GNU General Public License") +
+    "</p><p align=\"center\">" +
+     tr("http://www.gnu.org/licenses") +
+    "</p>";    
   abt->setURLs(urls);
   QString watsNew = "<html><body>" + tr("Version") + " ";
   watsNew += QGis::qgisVersion;

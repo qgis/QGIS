@@ -32,6 +32,14 @@ void QgsAbout::qgisUserMailingList()
 {
   // find a browser
   QString url = "http://lists.sourceforge.net/lists/listinfo/qgis-user";
+  openUrl(url);
+}
+void QgsAbout::qgisHomePage()
+{
+  openUrl("http://qgis.org");
+}
+void QgsAbout::openUrl(QString url)
+{
   QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
   if (browser.length() == 0)
@@ -69,3 +77,5 @@ void QgsAbout::qgisUserMailingList()
      mHelpViewer->show(); */
 
 }
+
+
