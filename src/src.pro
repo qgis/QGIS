@@ -22,7 +22,7 @@ exists ( $(PGSQL)/bin/psql ) {
 }
 CONFIG += qt thread debug
 
-LIBS += -L$/usr/local/lib -lgdal
+LIBS += -L$/usr/local/lib -lgdal.1.1
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgsdatasource.cpp \

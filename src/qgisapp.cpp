@@ -15,6 +15,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <dlfcn.h>
+
 #include <qapplication.h>
 #include <qaction.h>
 #include <qmenubar.h>
@@ -663,16 +665,29 @@ void QgisApp::testPluginFunctions()
 		
 		for(unsigned i = 0; i < pluginDir.count(); i++){
 		std::cout << "Getting information for plugin: " << pluginDir[i] << std::endl;
-		QLibrary myLib("../plugins/" + pluginDir[i]);
-		bool loaded = myLib.load();
+		QLibrary *myLib = new QLibrary("../plugins/" + pluginDir[i]);//"/home/gsherman/development/qgis/plugins/" + pluginDir[i]);
+		std::cout << "Library name is " << myLib->library() << std::endl;
+		//QLibrary myLib("../plugins/" + pluginDir[i]);
+		std::cout << "Attempting to load " << + "../plugins/" + pluginDir[i] << std::endl;
+	/*	void *handle = dlopen("/home/gsherman/development/qgis/plugins/" + pluginDir[i], RTLD_LAZY);
+	             if (!handle) {
+                      std::cout << "Error in dlopen: " <<  dlerror() << std::endl;
+                     
+                  }else{
+				  	std::cout << "dlopen suceeded" << std::endl;
+					dlclose(handle);
+					}
+				  	
+*/
+		bool loaded = myLib->load();
 		if (loaded) {
 			std::cout << "Loaded test plugin library" << std::endl;
 			std::cout << "Attempting to resolve the classFactory function" << std::endl;
-			create_t *cf = (create_t *) myLib.resolve("classFactory");
+			create_t *cf = (create_t *) myLib->resolve("classFactory");
 	
 			if (cf) {
 				std::cout << "Getting pointer to a QgisPlugin object from the library\n";
-				QgisPlugin *pl = cf();
+				QgisPlugin *pl = cf(this);
 				std::cout << "Displaying name, version, and description\n";
 				std::cout << "Plugin name: " << pl->name() << std::endl;
 				std::cout << "Plugin version: " << pl->version() << std::endl;
@@ -681,6 +696,7 @@ void QgisApp::testPluginFunctions()
 										 + pl->name() + "\nVersion: " + pl->version() + "\nDescription: " + pl->description());
 				// unload the plugin (delete it)
 				std::cout << "Attempting to resolve the unload function" << std::endl;
+				/*
 				unload_t *ul = (unload_t *) myLib.resolve("unload");
 				if (ul) {
 					ul(pl);
@@ -688,10 +704,11 @@ void QgisApp::testPluginFunctions()
 				} else {
 					std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
 				}
+				*/
 			}
 		} else {
 			QMessageBox::warning(this, "Unable to Load Plugin",
-								 "QGis was unable to load the plugin from: ../plugins/libqgisplugin.so.1.0.0");
+								 "QGis was unable to load the plugin from: ../plugins/" + pluginDir[i]);
 			std::cout << "Unable to load library" << std::endl;
 		}
 		}
