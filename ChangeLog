@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.188 2004/09/20 17:55:20 larsl Exp
+ChangeLog,v 1.189 2004/09/20 18:00:11 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-20 [larsl] 0.4.0devel36
+** Added the element definition of uniquevaluemarker to qgis.dtd
 
 2004-09-20 [larsl] 0.4.0devel35
 ** Re-fixed bug 987874, the provider will now skip geometry-less features

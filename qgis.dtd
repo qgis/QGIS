@@ -93,6 +93,7 @@ markersymbol(svgpath,scalefactor,outlinecolor,outlinestyle,outlinewidth,fillcolo
 <!ELEMENT graduatedsymbol (classificationfield,rangerenderitem+) >
 <!ELEMENT graduatedmarker (classificationfield,rangerenderitem+) >
 <!ELEMENT uniquevalue (classificationfield,renderitem+) >
+<!ELEMENT uniquevaluemarker (classificationfield,renderitem+) >
 <!ELEMENT classificationfield (#PCDATA) >
 <!ELEMENT continuoussymbol (classificationfield,lowestitem,highestitem) >
 <!ELEMENT lowestitem (renderitem) >
