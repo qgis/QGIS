@@ -47,11 +47,6 @@ void QgisIface::zoomActiveLayer()
   qgis->zoomToLayerExtent();
 }
 
-int QgisIface::getInt()
-{
-  return qgis->getInt();
-}
-
 void QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
 {
   qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
