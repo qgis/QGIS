@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsDlgPgBufferBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>520</width>
-            <height>294</height>
+            <height>307</height>
         </rect>
     </property>
     <property name="caption">
@@ -22,53 +22,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>lblBufferInfo</cstring>
-            </property>
-            <property name="text">
-                <string>Buffer the features in layer</string>
-            </property>
-        </widget>
-        <spacer row="1" column="5" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>195</width>
-                    <height>25</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLineEdit" row="1" column="3" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>txtBufferDistance</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>textLabel2</cstring>
-            </property>
-            <property name="text">
-                <string>Buffer distance in map units</string>
-            </property>
-        </widget>
-        <widget class="QCheckBox" row="6" column="0" rowspan="1" colspan="5">
-            <property name="name">
-                <cstring>chkAddToMap</cstring>
-            </property>
-            <property name="text">
-                <string>Add the buffered layer to the map</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="7" column="0" rowspan="1" colspan="8">
+        <widget class="QLayoutWidget" row="2" column="0">
             <property name="name">
                 <cstring>Layout1</cstring>
             </property>
@@ -146,96 +100,252 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="3" column="7">
+        <widget class="QGroupBox" row="1" column="0">
             <property name="name">
-                <cstring>spacer5</cstring>
+                <cstring>groupBox1</cstring>
             </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+            <property name="title">
+                <string>Buffer Settings:</string>
             </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>43</width>
-                    <height>28</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLineEdit" row="2" column="3" rowspan="1" colspan="5">
-            <property name="name">
-                <cstring>txtBufferedLayerName</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>textLabel3</cstring>
-            </property>
-            <property name="text">
-                <string>Table name for the buffered layer</string>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="3" column="1" rowspan="1" colspan="3">
-            <item>
-                <property name="text">
-                    <string>public</string>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-            </item>
-            <property name="name">
-                <cstring>cmbSchema</cstring>
-            </property>
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Buffer distance in map units:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Table name for the buffered layer:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="4" column="3">
+                    <item>
+                        <property name="text">
+                            <string>Create unique object id</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>cmbFields</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="5" column="3">
+                    <item>
+                        <property name="text">
+                            <string>public</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>cmbSchema</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel2_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Geometry column:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Spatial reference ID:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Unique field to use as feature id:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Schema:</string>
+                    </property>
+                </widget>
+                <spacer row="4" column="2">
+                    <property name="name">
+                        <cstring>spacer8</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>111</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="5" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>spacer9</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>151</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="6" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>chkAddToMap</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add the buffered layer to the map?</string>
+                    </property>
+                </widget>
+                <spacer row="6" column="3">
+                    <property name="name">
+                        <cstring>spacer10</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>141</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="0" column="2">
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>120</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="1" column="2">
+                    <property name="name">
+                        <cstring>spacer4_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>120</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="2" column="2">
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>110</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="3" column="2">
+                    <property name="name">
+                        <cstring>spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>120</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLineEdit" row="3" column="3">
+                    <property name="name">
+                        <cstring>txtGeometryColumn</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="3">
+                    <property name="name">
+                        <cstring>txtSrid</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="3">
+                    <property name="name">
+                        <cstring>txtBufferedLayerName</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="3">
+                    <property name="name">
+                        <cstring>spinBufferDistance</cstring>
+                    </property>
+                    <property name="buttonSymbols">
+                        <enum>UpDownArrows</enum>
+                    </property>
+                    <property name="maxValue">
+                        <number>100000000</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10</number>
+                    </property>
+                    <property name="value">
+                        <number>1</number>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-        <widget class="QLabel" row="3" column="0">
+        <widget class="QLabel" row="0" column="0">
             <property name="name">
-                <cstring>textLabel1_2</cstring>
+                <cstring>lblBufferInfo</cstring>
             </property>
             <property name="text">
-                <string>Schema</string>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="5" column="3" rowspan="1" colspan="4">
-            <item>
-                <property name="text">
-                    <string>Create unique object id</string>
-                </property>
-            </item>
-            <property name="name">
-                <cstring>cmbFields</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>Unique field to use as feature id</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="3" column="6">
-            <property name="name">
-                <cstring>txtSrid</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="4" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel2_2</cstring>
-            </property>
-            <property name="text">
-                <string>Spatial Ref. Id</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel2_2_2</cstring>
-            </property>
-            <property name="text">
-                <string>Geometry column</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>txtGeometryColumn</cstring>
+                <string>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</string>
             </property>
         </widget>
     </grid>
