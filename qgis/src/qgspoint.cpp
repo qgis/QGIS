@@ -32,12 +32,12 @@ QgsPoint::~QgsPoint()
 {
 }
 
-double QgsPoint::x() const const
+double QgsPoint::x() const
 {
   return m_x;
 }
 
-double QgsPoint::y() const const
+double QgsPoint::y() const
 {
   return m_y;
 }
@@ -52,7 +52,7 @@ int QgsPoint::yToInt()
   return (int) m_y;
 }
 
-QString QgsPoint::stringRep() const const
+QString QgsPoint::stringRep() const
 {
   QString rep;
   QTextOStream ot(&rep);
