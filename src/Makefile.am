@@ -133,6 +133,9 @@ headers =	qgisapp.h					\
 		qgsvectordataprovider.h				\
 		qgsvectorfilewriter.h				\
 		qgsvectorlayer.h				\
+		qgspointstylewidget.h				\
+		qgslinestylewidget.h				\
+		qgsfillstylewidget.h				\
 		splashscreen.h				
 
 ## qt designer files for all the GUI stuff
@@ -172,7 +175,10 @@ qgis_UIC =	qgisappbase.ui				\
 		qgssimadialogbase.ui			\
 		qgssisydialogbase.ui			\
 		qgsuvaldialogbase.ui			\
-		qgsuvalmadialogbase.ui
+		qgsuvalmadialogbase.ui			\
+		qgspointstylewidgetbase.ui		\
+		qgsfillstylewidgetbase.ui		\
+		qgslinestylewidgetbase.ui
 
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
@@ -246,6 +252,9 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsuvalmadialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp			\
 		qgsvectordataprovider.moc.cpp		\
+		qgspointstylewidget.moc.cpp 		\
+		qgsfillstylewidget.moc.cpp		\
+		qgslinestylewidget.moc.cpp		\
 		splashscreen.moc.cpp 
 
 
@@ -341,6 +350,9 @@ qgis_SOURCES =	main.cpp			\
 		qgsvectordataprovider.cpp	\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
+		qgspointstylewidget.cpp		\
+		qgslinestylewidget.cpp		\
+		qgsfillstylewidget.cpp		\
 		splashscreen.cpp 
 
 postgresHEADERS = qgsdbsourceselect.h		\
@@ -461,7 +473,13 @@ libqgis_la_SOURCES =				\
 		qgsvectordataprovider.moc.cpp	\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
-		qgsvectorlayer.moc.cpp 
+		qgsvectorlayer.moc.cpp 		\
+		qgspointstylewidget.cpp		\
+		qgspointstylewidget.moc.cpp	\
+		qgslinestylewidget.cpp		\
+		qgslinestylewidget.moc.cpp	\
+		qgsfillstylewidget.cpp		\
+		qgsfillstylewidget.moc.cpp		
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
