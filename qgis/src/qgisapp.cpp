@@ -58,7 +58,7 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.5-alpha";
+static const char *qgisVersion = "0.0.6-alpha-dev";
 // cursors
 static unsigned char zoom_in_bits[] = {
    0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
