@@ -70,7 +70,8 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   
   // render and rescale it (with smoothing)
   QPixmap osPixmap(oversampling*width,oversampling*height);
-  osPixmap.fill(QColor(qRgb(255, 255, 0)));    QPainter p(&osPixmap);
+  osPixmap.fill(QColor(qRgb(255, 255, 0)));
+  QPainter p(&osPixmap);
   p.scale(scaleFactor*oversampling,scaleFactor*oversampling);
   p.drawPicture(0,0,pic);
   QImage osImage = osPixmap.convertToImage();
@@ -78,9 +79,18 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   osImage.setAlphaBuffer(true);
   for (int i = 0; i < osImage.width(); ++i) {
     for (int j = 0; j < osImage.height(); ++j) {
-      if (osImage.pixel(i, j) == qRgb(255, 255, 0)) {
-	osImage.setPixel(i, j, qRgba(255, 255, 0, 0));
+#ifdef Q_OS_MACX
+      // set opaque since pixels are transparent by default
+      QRgb pixel = osImage.pixel(i, j);
+      if (pixel != qRgba(255, 255, 0, 0)) {
+        osImage.setPixel(i, j, qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), 255));
       }
+#else
+      // set transparent since pixels are opaque by default
+      if (osImage.pixel(i, j) == qRgb(255, 255, 0)) {
+        osImage.setPixel(i, j, qRgba(255, 255, 0, 0));
+      }
+#endif
     }
   }
   if (oversampling != 1)
