@@ -2943,11 +2943,11 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
     myIterator++;
   }
 
-  mOverviewCanvas->render();
+  //mOverviewCanvas->render();
   mOverviewCanvas->zoomFullExtent();
   // set the extents of the overview to match the mapcanvas
   mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
-  mOverviewCanvas->refresh();
+  //mOverviewCanvas->refresh();
 
 }
 
