@@ -1,0 +1,1152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<!-- HTML © 2002 Stanley R. Ecklund, Southern California Marlin Online -->
+<HEAD>
+	<TITLE>S C M O - Lat/Lon Coordinates</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// BROWSER CHECK
+	browser = navigator.appName;
+	appVer = parseInt(navigator.appVersion);
+	ie = "Microsoft Internet Explorer";
+	ns = "Netscape";
+	if (navigator.appVersion.indexOf("Macintosh") != -1) {
+		isMac = true;
+	} else {
+		isMac = false;
+	}
+	if (document.getElementById) {
+		document.write('<link rel="stylesheet" type="text/css" href="http://www.marlinnut.com/style/ie.css" title="master">');
+	} else	
+	if (browser == ns && isMac == false) {
+		if (appVer > 3) {
+			document.write('<link rel="stylesheet" type="text/css" href="http://www.marlinnut.com/style/nn.css">');
+		}
+	} 	else if (browser == ie && isMac == true) {
+	   document.write('<link rel="stylesheet" type="text/css" href="http://www.marlinnut.com/style/ie_mac.css">');
+	} else if (browser == ns && isMac == true) {
+	   document.write('<link rel="stylesheet" type="text/css" href="http://www.marlinnut.com/style/nn_mac.css">');
+	} else {
+		document.write('<link rel="stylesheet" type="text/css" href="http://www.marlinnut.com/style/ie.css">');
+	} 
+// -->
+
+<!-- Begin
+function formHandler(form){
+var URL = document.form.site.options[document.form.site.selectedIndex].value;
+window.location.href = URL;
+}
+// End -->
+</SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#57ffff">
+
+<TABLE>
+	<TR>
+		<TD>
+			<TABLE WIDTH="100%" BORDER="0" BGCOLOR="#009999" cellpadding="0" cellspacing="0">
+				<TR>
+			    	<TD align="left" cellspacing="0" WIDTH="109"><A HREF="http://www.marlinnut.com/"><IMG SRC="images/smscmo.gif"  WIDTH="109" HEIGHT="89" ALT="S C M O" BORDER=0></A></TD>
+					<TD align="left" cellspacing="0" WIDTH="46"><img src="images/ribbon.gif" width="54" height="89"></TD>
+					<TD ALIGN="center" width="626"><A HREF="/cgi-bin/showsell/showsell.pl?redirect=yes&ssi=no"><IMG SRC="/cgi-bin/showsell/showsell.pl?ssi=no" BORDER=1 HEIGHT="60" WIDTH="468" ALT="Click Here To Visit Our Sponsor"></A><br>
+            <a href="http://www.marlinnut.com/advertise.shtml" style="TEXT-DECORATION: NONE"><font size="1" color="#ffffff" face="Arial">Advertise 
+            Your Product at SCMO</font></a></TD>
+				</TR>
+				<TR>
+          			<TD ALIGN="CENTER" BGCOLOR="#57ffff" COLSPAN=3"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#003333"><B><I>The Offshore Angler's Online Home &copy;</I></B></FONT></TD>
+				</TR>
+			</TABLE>    
+
+			<TABLE BORDER="0" BGCOLOR="#006666" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
+				<TR VALIGN="TOP">
+		<TD WIDTH="109" VALIGN="TOP" class=nav><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="109"><TR><TD><img src="http://www.marlinnut.com/images/clear.gif" width="2" height="2" border="0"></TD></TR></TABLE>
+<TABLE BORDER="0" CELLPADDING="1" CELLSPACING="1"><TR><TH BGCOLOR="#0073ce" WIDTH=109><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">SECTIONS</FONT></TH></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/bfu.shtml" onMouseOver="window.status='Resources to make you a better fisherman';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Billfish University</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/planner.shtml" onMouseOver="window.status='Online resources to help you plan your next trip';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Trip Planner</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/conservation.shtml" onMouseOver="window.status='Conservation information';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Conservation Info</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/weather.shtml" onMouseOver="window.status='Weather information';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Weather Center</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cabo.shtml" onMouseOver="window.status='Our links to the best of Baja';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Cabo Connection</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><img src="http://www.marlinnut.com/images/clear.gif" width="2" height="6" border="0"></TD></TR><TR><TH BGCOLOR="#0073ce" WIDTH=109><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">INTERACTIVE</FONT></TH></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cgi-bin/dcforum/dcboard.cgi?az=list&forum=DCForumID3" onMouseOver="window.status='Our original posting board - still the best!';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">The Marlin Club</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cgi-bin/dcforum/dcboard.cgi?az=list&forum=DCForumID2" onMouseOver="window.status='Marine conservation discussion and information';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Friends of Fish</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cgi-bin/dcforum/dcboard.cgi?az=list&forum=DCForumID1" onMouseOver="window.status='Share your trip and see how others did';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Trip Reporter</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cgi-bin/ogrrs/log.cgi" onMouseOver="window.status='Release reports';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Release Reports</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cgi-bin/dcguest/dcguest.cgi" onMouseOver="window.status='Let us know you stopped by';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Guest Log</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><img src="http://www.marlinnut.com/images/clear.gif" width="2" height="6" border="0"></TD></TR><TR><TH BGCOLOR="#0073ce"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">SEARCH SCMO</FONT></TH></TR>
+<TR><TD ALIGN="CENTER" BGCOLOR="#006666" valign="top"><FORM METHOD=GET ACTION="http://www.marlinnut.com/cgi-bin/search/search.cgi"><INPUT TYPE=TEXT NAME="terms" SIZE=8><BR><INPUT TYPE=SUBMIT VALUE="Find It"><BR><A href="http://www.marlinnut.com/cgi-bin/search/search.cgi" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="1" COLOR="#FFFFFF">Advanced</FONT></A></FORM></TD></TR>
+<TR><TH BGCOLOR="#0073ce"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">FEATURES</FONT></TH></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/about.shtml" onMouseOver="window.status='About this site';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">About This Site</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/portal/index.shtml" onMouseOver="window.status='Our ultimate window on the Web';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Internet Portal</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/sst.shtml" onMouseOver="window.status='SST Charts';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">SST Charts</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/gallery.shtml" onMouseOver="window.status='Fishing pictures submitted by you';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Galer&iacute;a del Pez</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/facts/index.shtml" onMouseOver="window.status='Everything you wanted to know about your favorite offshore species';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Fish Facts</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/latlon.shtml" onMouseOver="window.status='Coordinates for local SoCal fishing hotspots';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Lat/Lon Table</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cards/index.shtml" onMouseOver="window.status='eCards';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">eCards</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.cafeshops.com/marlinnut" onMouseOver="window.status='Get your SCMO goodies here';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Marketplace</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/tales/index.shtml" onMouseOver="window.status='Tales and stories submitted by you';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Fish Tales</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/endline/index.shtml" onMouseOver="window.status='Editorial comment from your humble host';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">End of the Line</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><img src="http://www.marlinnut.com/images/clear.gif" width="2" height="6" border="0"></TD></TR><TR><TH BGCOLOR="#0073ce"><font face="Arial,Helvetica,san-serif" size="2" color="#FFFFFF">MORE CONTENT</font></TH></TR>
+<TR><TD BGCOLOR="#006666" ALIGN=CENTER valign="top"><form NAME="form"><select NAME="site" onChange="javascript:formHandler()" SIZE="1"><option value="">Go To ...</option><option value="http://www.marlinnut.com/bookstore.shtml">Bookstore</option><option value="http://www.marlinnut.com/faq.shtml">FAQ</option><option value="http://www.marlinnut.com/galley.shtml">Galley</option><option value="http://www.marlinnut.com/fishnet.shtml">FishNet</option><option value="http://www.marlinnut.com/knots/index.shtml">Knot Guide</option><option value="http://www.marlinnut.com/links.shtml">Links</option><option value="http://www.marlinnut.com/scmo2go.shtml">SCMO2Go</option><option value="http://www.marlinnut.com/cgi-bin/dcforum/dcboard.cgi?az=list&forum=DCForumID9&conf=DCConfID1">Swap Meet</option><option value="http://www.marlinnut.com/tnr.shtml">T&amp;R Primer</option><option value="http://www.marlinnut.com/tourney.shtml">Tourneys</option><option value="http://www.marlinnut.com/host.shtml">Your Host</option></select></form></TD></TR>
+<TR><TD BGCOLOR="#006666"><img src="http://www.marlinnut.com/images/clear.gif" width="2" height="6" border="0"></TD></TR><TR><TH BGCOLOR="#0073ce"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">MEMBERS</FONT></TH></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/joinmnac.shtml" onMouseOver="window.status='Become a member of the MarlinNut Angling Club';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Join MNAC</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/members/" onMouseOver="window.status='Home of the MarlinNut Angling Club';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Members Home</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/members/hschart.shtml" onMouseOver="window.status='Our interactive chart of all those places you keep hearing about';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Hot Spot Chart</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/members/news.shtml" onMouseOver="window.status='The hottest local offshore fishing information available anywhere';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Fishing News</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/members/tutorial/index.shtml" onMouseOver="window.status='Our exclusive how-to marlin tutorial';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Marlin Tutorial</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/members/mens.shtml" onMouseOver="window.status='A place for our members to hang out and be ... well, men!';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">Men's Room</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><A href="http://www.marlinnut.com/cgi-bin/dcforum/dcboard.cgi" onMouseOver="window.status='MNAC War Room';return true" onMouseOut="window.status='';return true" style="TEXT-DECORATION: NONE"><FONT FACE="Arial,Helvetica,san-serif" SIZE="2" COLOR="#FFFFFF">MNAC War Room</FONT></A></TD></TR>
+<TR><TD BGCOLOR="#006666"><img src="http://www.marlinnut.com/images/clear.gif" width="2" height="6" border="0"></TD></TR><TR><TD align="center" BGCOLOR="#006666"><FONT FACE="Arial,Helvetica,san-serif" SIZE="1" COLOR="#FFFFFF">&copy; 2004 SCMO</FONT></TD></TR></TABLE></TD>
+		
+
+
+
+
+
+					<TD BGCOLOR="#FFFFFF" WIDTH="15" VALIGN="TOP"><IMG SRC="images/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+					<TD BGCOLOR="#FFFFFF" WIDTH=100%>
+						<table width=100%>
+							<tr>
+								<td><IMG SRC="images/clear.gif" WIDTH="1" HEIGHT="15"></td>
+							</tr>
+							<tr>
+								<td>
+					<!-- Begin Page Content -->
+<CENTER>
+                    <TABLE WIDTH=85% BGCOLOR="#108c8c" BORDER=1>
+                      <TR>
+                        <TD ALIGN=CENTER><IMG SRC="images/t-latlon.gif" WIDTH=396 HEIGHT=35 ALIGN="MIDDLE" ALT="Hot Spot Table"></TD>
+                      </TR>
+                    </TABLE>
+                  </CENTER>
+                  <P>&nbsp;</P>
+                  <P>Ever been listening to the radio and hear of a spot you don't 
+                    know? Have you read the Fishing News and wondered, "where 
+                    the heck is that"? The answer is <B>right here</B>!!</P>
+                  <P>If you don't find the spot you're looking for, <A HREF="mailto:latlon@marlinnut.com"><B>email 
+                    us</B></A> and we'll add it!</P>
+                  <P>&nbsp;</P>
+                  <H2 ALIGN=CENTER>Points And Ports</H2>
+                  <TABLE BORDER=1 BGCOLOR="#57ffff" CELLPADDING=1 WIDTH="100%">
+                    <TR> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P align="center"><b>Name</b> 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER><B>North Latitude</B> 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER><B>West Longitude</B> 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="oxnard"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Oxnard 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>34&#176; 09.30' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 13.67' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="dume"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Pt. Dume 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 59.59' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 48.25' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="mdr"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Marina Del Rey 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 57.87' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 27.71' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="king"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>King Harbor 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 50.30' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 23.80' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="vicente"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Pt. Vicente 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 44.20' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 25.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="la"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Los Angeles Harbor 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 42.50' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 15.10' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="lb"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Long Beach Harbor 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 43.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 11.20' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="alamitos"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Alamitos Bay 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 43.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 07.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="newport"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Newport Beach 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 35.10' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 52.60' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="dana"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Dana Point 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 27.30' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 43.24' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="onofre"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>San Onofre 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 21.60' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 33.60' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="oceanside"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Oceanside 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 12.10' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 24.43' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="mission"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Mission Bay 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 45.54' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 15.38' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="loma"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Pt. Loma 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 37.30' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 14.70' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="coral"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Marina Coral 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 56.36' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>116&#176; 40.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="colnett"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Pt. Colnett 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 04.74' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>116&#176; 19.55' 
+                      </TD>
+                    </TR>
+                  </TABLE>
+                  <P>&nbsp;</P>
+                  <H2 ALIGN=CENTER>Islands</H2>
+                  <TABLE BGCOLOR="#57ffff"  BORDER=1 CELLPADDING=1 WIDTH="100%">
+                    <TR> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P align="center"><b>Name</b> 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER><B>North Latitude</B> 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER><B>West Longitude</B> 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="anacapa"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Anacapa - West End 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>34&#176; 01.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 27.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="todos"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Isla Todos Santos 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 50.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>116&#176; 49.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="ncoronado"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Coronado del Norte 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 27.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 18.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="scoronado"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Coronado del Sur 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 25.22' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 14.89' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="nw"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>San Clemente - Northwest Harbor 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 01.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 35.50' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="dome"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>San Clemente - Dome 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 53.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 27.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="pyramid"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>San Clemente - Pyramid Head 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 48.92' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 21.25' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="nicolas"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>San Nicolas - East End 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 14.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 12.40' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="sbi"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Barbara 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 29.20' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 00.75' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="avalon"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - Avalon 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 20.83' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 19.42' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="cat"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - Cat Harbor 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 25.23' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 30.21' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="church"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - Church Rock 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 17.80' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 18.60' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="ecat"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - East End 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 17.94' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 19.07' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="isthmus"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - Isthmus Cove 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 26.80' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 29.30' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="slide"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - Slide 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 178.80' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 17.90' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="wcat"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Catalina - West End 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 28.96' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 36.62' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="smugglers"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Cruz - Smuggler's Cove 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>34&#176; 01.34' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 32.24' 
+                      </TD>
+                    </TR>
+                  </TABLE>
+                  <P>&nbsp;</P>
+                  <H2 ALIGN=CENTER>Favorite Spots</H2>
+                  <P> 
+                  <TABLE BGCOLOR="#57ffff"  BORDER=1 CELLPADDING=1 WIDTH="100%">
+                    <TR> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P align="center"><b>Name</b> 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER><B>North Latitude</B> 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER><B>West Longitude</B> 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="airplane"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Airplane Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 52.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 08.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="avalonb"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Avalon Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 24.50' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 13.30' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="boomerang"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Boomerang Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 59.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 01.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="boot"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Boot Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 40.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 43.50' 
+                      </TD>
+                    </TR>
+                    <TR> 
+                    <TR> <A NAME="butterfly"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Butterfly Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 22.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 15.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="cortes"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Cortes Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 28.68' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 12.90' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="dumping"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Dumping Ground 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 42.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 28.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="farnsworth"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Farnsworth Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 20.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 31.15' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="lfinger"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Finger Bank - Lower 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 40.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>116&#176; 52.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="ufinger"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Finger Bank - Upper 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 04.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 03.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="footprint"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Footprint Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 57.80' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 29.20' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="harrison"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Harrison's Reef 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>34&#176; 02.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 56.50' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="hidden"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Hidden Reef 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 43.60' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 09.69' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="inner"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Inner Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 40.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 15.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="mackeral"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Mackeral Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 02.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 23.20' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="platforms"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Mid-Channel Platforms 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 34.95' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 07.75' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="mushroom"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Mushroom Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 04.94' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 29.61' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="osborn"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Osborn Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 21.60' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 02.40' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="potato"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Potato Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 15.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 49.60' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="smbb"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Santa Monica Basin Buoy 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 45.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 04.80' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="tanner"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Tanner Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 42.35' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 08.01' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="worm"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>Worm Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 24.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>116&#176; 52.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="9"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>9 Mile Bank (North End) 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 39.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 26.70' 
+                      </TD>
+                    </TR>
+                    <TR> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>9 Mile Bank (South End) 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 32.50' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 20.80' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="14"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>14 Mile Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 23.92' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 00.20' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="17"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>17 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 43.70' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 09.60' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="43"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>43 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 39.30' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 58.30' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="48"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>48 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 56.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 51.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="60"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>60 Mile Bank 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; .03.67' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 13.14' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="1010"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>1010 Trench (North End)
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 42.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 38.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="125"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>125 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 29.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 42.60' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="152"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>152 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 15.70' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 11.06' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="153"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>153 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 55.20' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 28.80' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="172"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>172 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 30.30' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 50.30' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="175"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>175 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 36.70' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 57.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="181"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>181 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 54.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 53.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="182"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>182 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 41.25' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 42.30' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="209"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>209 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 05.62' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 52.28' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="213"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>213 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 51.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 51.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="220"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>220 Fathom Spot (Twin 220's) 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 37.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 35.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="267"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>267 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 30.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 40.90' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="270"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>270 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 40.70' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 34.50' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="277"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>277 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 11.90' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 04.72' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="279"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>279 Fathom Spot (Old 267) 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 17.50' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 49.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="286"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>286 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 34.50' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 36.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="289"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>289 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 56.25' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 05.75' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="295"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>295 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>31&#176; 39.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 25.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="302"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>302 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 26.40' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 35.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="311"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>311 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 37.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>120&#176; 16.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="371"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>371 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 17.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 32.00' 
+                      </TD>
+                    </TR>
+                    <TR> 
+                    <TR> <A NAME="390"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>390 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 05.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 50.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="425"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>425 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>32&#176; 16.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>117&#176; 26.00' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="499"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>499 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 16.50' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>118&#176; 44.30' 
+                      </TD>
+                    </TR>
+                    <TR> <A NAME="711"></a> 
+                      <TD BGCOLOR="#ffffff"> 
+                        <P>711 Fathom Spot 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>33&#176; 08.00' 
+                      </TD>
+                      <TD BGCOLOR="#ffffff"> 
+                        <P ALIGN=CENTER>119&#176; 03.00' 
+                      </TD>
+                    </TR>
+                  </TABLE>
+                  <p></P>
+                  <P ALIGN=CENTER><B>Note: </B> Any mariner worth his (or her) 
+                    salt knows to use more than one navigational aid. Be sure 
+                    the other one you choose is Coast Guard approved.</P>				
+
+					<!-- End Page Content --> 
+					</td></tr>							<tr>
+								<td><IMG SRC="images/clear.gif" WIDTH="1" HEIGHT="15"></td>
+							</tr>
+</table>
+					</TD>	
+					<TD BGCOLOR="#FFFFFF" WIDTH="15" VALIGN="TOP"><IMG SRC="images/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+				</table>
+			</TD>
+		</TR>
+	</TABLE>
+</BODY>
+</HTML>
+ 
