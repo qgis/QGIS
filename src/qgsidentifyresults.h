@@ -25,12 +25,14 @@
   *@author Gary E.Sherman
   */
 
-class QgsIdentifyResults : public QgsIdentifyResultsBase  {
-public: 
+class QgsIdentifyResults:public QgsIdentifyResultsBase
+{
+  public:
 	QgsIdentifyResults();
 	~QgsIdentifyResults();
   /** No descriptions */
-  void addAttribute(QString field, QString value);
+	void addAttribute(QString field, QString value);
+	void setTitle(QString title);
 };
 
 #endif

@@ -85,6 +85,11 @@ void QgisAppBase::identify()
 
 }
 
+void QgisAppBase::attributeTable()
+{
+	
+}
+
 void QgisAppBase::zoomPrevious()
 {
 

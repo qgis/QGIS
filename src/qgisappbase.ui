@@ -456,26 +456,30 @@
         <receiver>QgisAppBase</receiver>
         <slot>testPluginFunctions()</slot>
     </connection>
+    <connection>
+        <sender>actionOpenTable</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>attributeTable()</slot>
+    </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
-</includes>
 <slots>
+    <slot>about()</slot>
+    <slot>addDatabaseLayer()</slot>
+    <slot>addLayer()</slot>
+    <slot>drawLayers()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
-    <slot>addDatabaseLayer()</slot>
+    <slot>identify()</slot>
+    <slot>init()</slot>
+    <slot>attributeTable()</slot>
+    <slot>pan()</slot>
+    <slot>testButton()</slot>
+    <slot>testPluginFunctions()</slot>
+    <slot>zoomFull()</slot>
     <slot>zoomIn()</slot>
     <slot>zoomOut()</slot>
-    <slot>init()</slot>
-    <slot>drawLayers()</slot>
-    <slot>zoomFull()</slot>
-    <slot>pan()</slot>
-    <slot>about()</slot>
-    <slot>testButton()</slot>
-    <slot>addLayer()</slot>
-    <slot>identify()</slot>
     <slot>zoomPrevious()</slot>
-    <slot>testPluginFunctions()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

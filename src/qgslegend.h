@@ -32,26 +32,28 @@ class QPainter;
   *@author Gary E.Sherman
   */
 
-class QgsLegend : public QWidget{
-	Q_OBJECT
-public:
+class QgsLegend:public QWidget
+{
+  Q_OBJECT public:
 /*! Constructor.
 * @param lv ListView control containing legend items
 * @param parent Parent widget
 * @param name Name of the widget
 */
-	QgsLegend(QListView *lv, QWidget *parent=0, const char *name=0);
+	  QgsLegend(QListView * lv, QWidget * parent = 0, const char *name = 0);
 	//! Destructor
-	~QgsLegend();
+	 ~QgsLegend();
 	//! Set the pointer to the map canvas
-	void setMapCanvas(QgsMapCanvas *canvas);
+	void setMapCanvas(QgsMapCanvas * canvas);
 	//! Update the legend
 	void update();
-    QString currentLayer();
-	
-private:
-QListView* listView;
-QgsMapCanvas *map;
+	QString currentLayerName();
+
+	QgsMapLayer *currentLayer();
+
+  private:
+	  QListView * listView;
+	QgsMapCanvas *map;
 };
 
 #endif

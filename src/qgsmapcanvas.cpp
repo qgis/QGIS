@@ -413,9 +413,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 		switch (mapTool) {
 		  case QGis::Identify:
 			  // call identify method for selected layer
-			  QString lyrName = mapLegend->currentLayer();
-			  if (!lyrName.isEmpty()) {
-				  QgsMapLayer *lyr = layers[lyrName];
+			  QgsMapLayer * lyr = mapLegend->currentLayer();
+			  if (lyr) {
 				  // create the search rectangle
 				  double searchRadius = extent().width() * .005;
 				  QgsRect *search = new QgsRect();
@@ -432,6 +431,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 									   "To identify features, you must choose an layer active by clicking on its name in the legend");
 			  }
 			  break;
+
+
 		}
 	}
 }

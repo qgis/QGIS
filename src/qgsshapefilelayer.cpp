@@ -17,13 +17,19 @@
  ***************************************************************************/
 #include <iostream>
 #include <strstream>
+#include <qapplication.h>
+#include <qcursor.h>
 #include <qpainter.h>
 #include <qpointarray.h>
 #include <qstring.h>
+#include <qmessagebox.h>
 #include "qgsrect.h"
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 #include "qgsshapefilelayer.h"
+#include "qgsidentifyresults.h"
+#include "qgsattributetable.h"
+#include "qgsattributetabledisplay.h"
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
@@ -267,4 +273,89 @@ int QgsShapeFileLayer::endian()
 
 void QgsShapeFileLayer::identify(QgsRect * r)
 {
+	OGRGeometry *filter = 0;
+	filter = new OGRPolygon();
+	std::ostrstream wktExtent;
+	wktExtent << "POLYGON ((" << r->stringRep() << "))" << ends;
+	char *wktText = wktExtent.str();
+
+	OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&wktText);
+	if (result == OGRERR_NONE) {
+
+		ogrLayer->SetSpatialFilter(filter);
+		int featureCount = 0;
+		// just id the first feature for now
+		//while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
+		//}
+
+		OGRFeature *fet = ogrLayer->GetNextFeature();
+		if (fet) {
+			// found feature - show it in the identify box
+			QgsIdentifyResults *ir = new QgsIdentifyResults();
+			// just show one result - modify this later
+			int numFields = fet->GetFieldCount();
+			for (int i = 0; i < numFields; i++) {
+				// get the field definition
+				OGRFieldDefn *fldDef = fet->GetFieldDefnRef(i);
+				QString fld = fldDef->GetNameRef();
+				OGRFieldType fldType = fldDef->GetType();
+				QString val;
+				//if(fldType ==  16604 )    // geometry
+				val = "(geometry column)";
+				// else
+				val = fet->GetFieldAsString(i);
+				ir->addAttribute(fld, val);
+			}
+			ir->setTitle(name());
+			ir->show();
+
+		} else {
+			QMessageBox::information(0, "No features found", "No features were found in the active layer at the point you clicked");
+		}
+	}
+
+}
+void QgsShapeFileLayer::table()
+{
+	// display the attribute table
+	QApplication::setOverrideCursor(Qt::waitCursor);
+	ogrLayer->SetSpatialFilter(0);
+	OGRFeature *fet = ogrLayer->GetNextFeature();
+	int numFields = fet->GetFieldCount();
+	QgsAttributeTableDisplay *at = new QgsAttributeTableDisplay();
+	at->table()->setNumRows(ogrLayer->GetFeatureCount(true));
+	at->table()->setNumCols(numFields);
+
+	int row = 0;
+	// set up the column headers
+	QHeader *colHeader = at->table()->horizontalHeader();
+	for (int h = 0; h < numFields; h++) {
+		OGRFieldDefn *fldDef = fet->GetFieldDefnRef(h);
+		QString fld = fldDef->GetNameRef();
+		colHeader->setLabel(h, fld);
+	}
+	while (fet) {
+		for (int i = 0; i < numFields; i++) {
+			// get the field values
+			QString val;
+			//if(fldType ==  16604 )    // geometry
+			val = "(geometry column)";
+			// else
+			val = fet->GetFieldAsString(i);
+
+			at->table()->setText(row, i, val);
+
+		}
+		row++;
+		delete fet;
+		fet = ogrLayer->GetNextFeature();
+
+	}
+	at->table()->setSorting(true);
+
+
+	at->setTitle("Attribute table - " + name());
+	QApplication::restoreOverrideCursor();
+	at->show();
+
 }

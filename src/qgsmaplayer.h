@@ -34,8 +34,7 @@
  */
 class QgsMapLayer:public QObject
 {
-  Q_OBJECT
-  public:
+  Q_OBJECT public:
 	/*! Constructor
 	 * @param type Type of layer as defined in LAYERS enum
 	 * @param lyrname Display Name of the layer
@@ -64,9 +63,12 @@ class QgsMapLayer:public QObject
 	virtual QgsRect calculateExtent();
 	virtual void draw(QPainter *, QgsRect *, int);
 	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
-  /*! Identify the feature(s) in this layer that are contained in the search rectangle
-  */
-    virtual void identify(QgsRect *);
+	/*! Identify the feature(s) in this layer that are contained in the search rectangle
+	 */
+	virtual void identify(QgsRect *);
+	/*! Display the attribute table for the layer
+	 */
+	virtual void table();
 	/*! Return the extent of the layer as a QRect
 	 */
 	const QgsRect extent();
@@ -105,8 +107,7 @@ class QgsMapLayer:public QObject
 		RASTER,
 		DATABASE
 	};
-	signals:
-	void visibilityChanged(void);
+	  signals:void visibilityChanged(void);
   protected:
 	//! Extent of the layer
 	  QgsRect layerExtent;
@@ -118,10 +119,10 @@ class QgsMapLayer:public QObject
 	int feature;
   private:						// Private attributes
 	/** Unique ID of this layer - used to refer to this layer  in QGIS code */
-	QString ID;
-	
+	  QString ID;
+
 	/** Name of the layer - used for display  */
-	  QString layerName;
+	QString layerName;
 	/** Type of the layer (eg. vector, raster, database  */
 	int layerType;
 

@@ -35,13 +35,13 @@ class QgsMapCanvas;
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
-class QgisApp : public QgisAppBase  {
-	Q_OBJECT
-public:
+class QgisApp:public QgisAppBase
+{
+  Q_OBJECT public:
 //! Constructor
-	QgisApp(QWidget *parent=0, const char * name=0, WFlags fl = WType_TopLevel );
-	
-	~QgisApp();
+	QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
+
+	 ~QgisApp();
 	//public slots:
 	//! Add a layer to the map
 	void addLayer();
@@ -50,16 +50,19 @@ public:
 	//! Exit Qgis
 	void fileExit();
 	//! Set map tool to Zoom out
- 	void zoomOut();
+	void zoomOut();
 	//! Set map tool to Zoom in
-  	void zoomIn();
+	void zoomIn();
 	//! Zoom to full extent
 	void zoomFull();
-  //! Zoom to the previous extent
-  void zoomPrevious();
+	//! Zoom to the previous extent
+	void zoomPrevious();
 	//! Set map tool to pan
 	void pan();
+	//! Identify feature(s) on the currently selected layer
 	void identify();
+	//! show the attribute table for the currently selected layer
+	void attributeTable();
 	//! Read Well Known Binary stream from PostGIS
 	//void readWKB(const char *, QStringList tables);
 	//! Draw a point on the map canvas
@@ -70,8 +73,8 @@ public:
 	void testButton();
 	//! About QGis
 	void about();
-  
-public slots:
+
+	public slots:
 //! Slot to show the map coordinate position of the mouse cursor
 	void showMouseCoordinate(QgsPoint &);
 	//! Show layer properties for the selected layer
@@ -79,34 +82,34 @@ public slots:
 	//! Show layer properties for selected layer (called by right-click menu)
 	void layerProperties();
 	//! Show the right-click menu for the legend
-	void rightClickLegendMenu(QListViewItem *, const QPoint &, int );
+	void rightClickLegendMenu(QListViewItem *, const QPoint &, int);
 	//! Remove a layer from the map and legend
 	void removeLayer();
-  //! zoom to extent of layer
-  void zoomToLayerExtent();
-  //! test plugin functionality
-  void testPluginFunctions();
-  //! Save window state
-  void saveWindowState();
-  //! Restore the window and toolbar state
-  void restoreWindowState();
-private:
+	//! zoom to extent of layer
+	void zoomToLayerExtent();
+	//! test plugin functionality
+	void testPluginFunctions();
+	//! Save window state
+	void saveWindowState();
+	//! Restore the window and toolbar state
+	void restoreWindowState();
+  private:
 //! Popup menu
-QPopupMenu *popMenu;
+	  QPopupMenu * popMenu;
 //! Legend list view control
-QListView *legendView;
+	QListView *legendView;
 	//! Map canvas
-QgsMapCanvas *mapCanvas;
+	QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
-QgsLegend *mapLegend;
-QCursor *mapCursor;
+	QgsLegend *mapLegend;
+	QCursor *mapCursor;
 //! scale factor
- double scaleFactor;
- //! Current map window extent in real-world coordinates
- QRect *mapWindow;
- //! Current map tool
- int mapTool;
- QCursor *cursorZoomIn;
+	double scaleFactor;
+	//! Current map window extent in real-world coordinates
+	QRect *mapWindow;
+	//! Current map tool
+	int mapTool;
+	QCursor *cursorZoomIn;
 };
 
 #endif
