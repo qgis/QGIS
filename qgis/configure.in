@@ -176,6 +176,9 @@ AC_ARG_WITH(grass,
 if test -n "$with_grass" -a x"$with_grass" != "xno"; then
     # I don't know how to add library path to AC_CHECK_LIB()
     if test ! -f "$GISLIB"; then
+      GISLIB=`ls $with_grass/lib/libgrass_gis.dylib 2> /dev/null`
+    fi
+    if test ! -f "$GISLIB"; then
       GISLIB=`ls $with_grass/lib/libgrass_gis.so 2> /dev/null`
     fi
     if test ! -f "$GISLIB"; then
