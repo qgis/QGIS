@@ -23,26 +23,26 @@
 #include "qgssisydialog.h"
 #include "qgslegenditem.h"
 
-QgsSingleSymRenderer::QgsSingleSymRenderer()
+QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem())
 {
     
 }
 
 QgsSingleSymRenderer::~QgsSingleSymRenderer()
 {
-
+    delete mItem;
 }
 
-void QgsSingleSymRenderer::addItem(QgsRenderItem ri)
+void QgsSingleSymRenderer::addItem(QgsRenderItem* ri)
 {
-  mItem = ri;
-
+    delete mItem;
+    mItem = ri;
 }
 
 void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor)
 {
-  p->setPen(mItem.getSymbol()->pen());
-  p->setBrush(mItem.getSymbol()->brush());
+  p->setPen(mItem->getSymbol()->pen());
+  p->setBrush(mItem->getSymbol()->brush());
 }
 
 void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)
@@ -115,7 +115,7 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
 	p.setPen(Qt::black);
 	p.setFont(f);
 	p.drawText(35, pixmap->height() - 10, name);
-	QgsRenderItem ri(sy, "", "");
+	QgsRenderItem* ri = new QgsRenderItem(sy, "", "");
 	addItem(ri);
 
 	QgsSiSyDialog *dialog = new QgsSiSyDialog(layer);

@@ -28,11 +28,11 @@ class QString;
 class QgsRenderItem {
  protected:
     /**Symbol to use in rendering the class*/
-    QgsSymbol sym;
+    QgsSymbol* mSymbol;
     /**Value of the field*/
-    QString m_value;
+    QString mValue;
     /**Label to use when rendering (may be same as value of field)*/
-    QString m_label;
+    QString mLabel;
  public:
     /**Default Constructor*/
     QgsRenderItem();
@@ -42,6 +42,8 @@ class QgsRenderItem {
     * @param _label Label to use in the legend
     */
     QgsRenderItem(QgsSymbol symbol, QString _value, QString _label);
+    /**Destructor*/
+    ~QgsRenderItem();
     /** Gets the symbol associated with this render item
      * @return QgsSymbol pointer
      */
@@ -50,25 +52,27 @@ class QgsRenderItem {
      * @param label the string used as label
      */
     void setLabel(QString label);
-    /** Sets the symbol associated with this render item
+    /** Sets the symbol associated with this render item. The symbol is copied.
      * @param s Symbol
      */
     void setSymbol(QgsSymbol s);
+    /** Sets a symbol object, which is allocated on the heap. QgsRenderItem automatically deletes it*/
+    void setSymbol(QgsSymbol* s);
     /**Returns the label*/
     const QString& label() const;
     /**Returns the value of the field*/
-    const QString& value() const;
+    const QString& value() const; 
 
 };
 
 inline QgsSymbol* QgsRenderItem::getSymbol()
 {
-	return &sym;
+    return mSymbol;
 }
 
 inline const QString& QgsRenderItem::value() const
 {
-    return m_value;
+    return mValue;
 }
 
 #endif // QGSRENDERITEM_H

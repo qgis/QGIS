@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.30 2004/03/04 20:58:13 mcoletti Exp */
+/* qgsprojectio.cpp,v 1.31 2004/03/18 14:06:00 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -254,7 +254,7 @@ bool QgsProjectIo::read(QString path)
                   //create a renderer and add it to the vector layer
                   sy.setBrush(brush);
                   sy.setPen(pen);
-                  QgsRenderItem ri(sy, value, label);
+                  QgsRenderItem* ri = new QgsRenderItem(sy, value, label);
                   QgsSingleSymRenderer *srenderer = new QgsSingleSymRenderer();
                   srenderer->addItem(ri);
                   dbl->setRenderer(srenderer);
