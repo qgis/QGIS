@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.102 2004/05/27 16:53:10 gsherman Exp
+ChangeLog,v 1.103 2004/05/29 23:48:10 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-30 [ts] 0.3.0devel8
+** Fix poorly placed status text on splash screen.
 
 2004-05-27 [gsherman] 0.3.0devel7
 ** Fixed schema problem with the spit plugin

@@ -70,9 +70,7 @@ void SplashScreen::setStatus(const QString & message, int alignment, const QColo
   painter.setPen(color);
   QFont myQFont("arial", 18, QFont::Bold);
   painter.setFont(myQFont);
-  QRect r = rect();
-  r.setRect(r.x() + 50, r.y() + 250, r.width() - 20, r.height() - 20);
-  painter.drawText(r, alignment, message);
+  painter.drawText(5,textPix.height()-5, message);
   setErasePixmap(textPix);
   repaint();
 }
