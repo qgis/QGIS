@@ -417,7 +417,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  if (!lyrName.isEmpty()) {
 				  QgsMapLayer *lyr = layers[lyrName];
 				  // create the search rectangle
-				  double searchRadius = extent().width() * .01;
+				  double searchRadius = extent().width() * .005;
 				  QgsRect *search = new QgsRect();
 				  // convert screen coordinates to map coordinates
 				  QgsPoint idPoint = coordXForm->toMapCoordinates(e->x(), e->y());

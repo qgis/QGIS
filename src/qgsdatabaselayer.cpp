@@ -26,6 +26,7 @@
 #include <libpq++.h>
 #include <qmessagebox.h>
 #include "qgsdatabaselayer.h"
+#include "qgsidentifyresults.h"
 
 QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table):
 QgsMapLayer(QgsMapLayer::DATABASE, table, conninfo), tableName(table)
@@ -424,6 +425,37 @@ void QgsDatabaseLayer::identify(QgsRect * r)
   sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + r->stringRep();
 	sql += ")'::box3d,-1)";
+  qWarning(sql);
+  // select the features
+   PgCursor pgs(dataSource, "identifyCursor");
+
+	pgs.Declare((const char *) sql, false);
+	int res = pgs.Fetch();
+	QString msg;
+	QTextOStream(&msg) << "Number of matching records: " << pgs.Tuples() << endl;
+//  qWarning(msg);
+//  std::cout << "Using following transform parameters:\n" << cXf->showParameters() << std::endl;
+  // create the results window
+  if(pgs.Tuples() > 0){
+    QgsIdentifyResults *ir = new QgsIdentifyResults();
+    // just show one result - modify this later
+    int numFields = pgs.Fields();
+    for(int i = 0; i < numFields; i++){
+      QString fld = pgs.FieldName(i);
+      int fldType = pgs.FieldType(i);
+      QString val;
+      if(fldType ==  16604 )    // geometry
+        val = "(geometry column)";
+      else 
+        val = pgs.GetValue(0,i);
+      ir->addAttribute(fld, val);
+      }
+      ir->show();
+
+  }else{
+      QMessageBox::information(0,"No features found","No features were found in the active layer at the point you clicked");
+    }
+  int foo = 0;
 }
 int QgsDatabaseLayer::endian()
 {
