@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.27 2004/02/29 23:21:23 timlinux Exp
+ChangeLog,v 1.28 2004/03/04 05:23:43 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+2004-03-04 [ts] 0.1.0devel5
+** Added option to options dialog to disable splashscreen.
+
 2004-02-28 [ts] 0.1.0devel5
 ** --snapshot command line parameter working now and correctly scaling
    snapshot to size of pixmap.
