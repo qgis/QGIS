@@ -46,13 +46,13 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   
   // if we already have the pixmap, return it
   if (iter != pixmapMap.end()) {
-    std::cerr<<"SVGCACHE: "<<filename.ascii()<<"["<<scaleFactor
+    std::cerr<<"SVGCACHE: "<<filename<<"["<<scaleFactor
 	     <<"] is already loaded"<<std::endl;
     return iter->second;
   }
   
   // if not, try to load it
-  std::cerr<<"SVGCACHE: loading "<<filename.ascii()<<"["<<scaleFactor<<"]"<<std::endl;
+  std::cerr<<"SVGCACHE: loading "<<filename<<"["<<scaleFactor<<"]"<<std::endl;
   QPicture pic;
   pic.load(filename,"svg");
   int width=pic.boundingRect().width();

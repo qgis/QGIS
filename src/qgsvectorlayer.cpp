@@ -452,7 +452,7 @@ int QgsVectorLayer::endian()
       for (int i = 0; i < attr.size(); i++)
       {
 #ifdef QGISDEBUG
-        std::cout << attr[i].fieldName().ascii() << " == " << fieldIndex.ascii() << std::endl;
+        std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
 #endif
         if (attr[i].fieldName().lower() == fieldIndex)
         {
@@ -1578,7 +1578,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 
     if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
     {
-        const char * nn = mapLayerNode.nodeName().ascii(); // debugger probe
+        const char * nn = mapLayerNode.nodeName(); // debugger probe
 
         qDebug( "QgsVectorLayer::writeXML() can't find <maplayer>" );
 

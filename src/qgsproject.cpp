@@ -204,12 +204,12 @@ public:
                   i != sl.end();
                   ++i )
             {
-                qDebug( "[%s] ", (*i).ascii() );
+                qDebug( "[%s] ", (*i) );
             }
         }
         else
         {
-            qDebug( "%s", value_.toString().ascii() );
+            qDebug( "%s", value_.toString() );
         }
     }
 
@@ -244,7 +244,7 @@ public:
         if ( QString::null == typeString )
         {
             qDebug( "%s:%d null ``type'' attribute for %s",
-                    __FILE__, __LINE__, keyNode.nodeName().ascii() );
+                    __FILE__, __LINE__, keyNode.nodeName() );
 
             return false;
         }
@@ -267,7 +267,7 @@ public:
         {
             case QVariant::Invalid :
                 qDebug( "%s:%d invalid value type %s .. ",
-                        __FILE__, __LINE__, typeString.ascii() );
+                        __FILE__, __LINE__, typeString );
 
                 return false;
 
@@ -308,7 +308,7 @@ public:
                     else
                     {
                         qDebug( "qgsproject.cpp:%d non <value> element ``%s'' in string list", 
-                                __LINE__, values.item(i).nodeName().ascii() );
+                                __LINE__, values.item(i).nodeName() );
                     }
 
                     ++i;
@@ -514,7 +514,7 @@ public:
 
             default :
                 qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
-                        __FILE__, __LINE__, typeString.ascii() );
+                        __FILE__, __LINE__, typeString );
         }
 
         return true;
@@ -696,9 +696,9 @@ public:
     {
         for ( QDictIterator<Property> i(properties_); i.current(); ++i )
         {
-            qDebug( "<%s>", i.currentKey().ascii() );
+            qDebug( "<%s>", i.currentKey() );
             i.current()->dump( );
-            qDebug( "</%s>", i.currentKey().ascii() );
+            qDebug( "</%s>", i.currentKey() );
         }
     }
 
@@ -733,7 +733,7 @@ public:
         else
         {
             qDebug( "%s:%d cannot find key %s to remove", 
-                    __FILE__, __LINE__,  currentKey.ascii() );
+                    __FILE__, __LINE__,  currentKey );
 
             return false;
         }
@@ -764,7 +764,7 @@ public:
                 if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey ) )
                 {
                     qDebug( "%s:%d unable to parse key value %s", 
-                            __FILE__, __LINE__, subkeys.item(i).nodeName().ascii() );
+                            __FILE__, __LINE__, subkeys.item(i).nodeName() );
                 }
             }
             else // otherwise it's a subkey, so just recurse on down the remaining keys
@@ -776,7 +776,7 @@ public:
                 if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey) )
                 {
                     qDebug( "%s:%d unable to parse subkey %s", 
-                            __FILE__, __LINE__, subkeys.item(i).nodeName().ascii() );
+                            __FILE__, __LINE__, subkeys.item(i).nodeName() );
                 }
             }
 
@@ -960,9 +960,9 @@ dump_( QMap< QString, PropertyKey > const & property_list )
           curr_scope != property_list.end();
           curr_scope++ )
     {
-        qDebug( "<%s>", curr_scope.key().ascii() );
+        qDebug( "<%s>", curr_scope.key() );
         curr_scope.data().dump( );
-        qDebug( "</%s>", curr_scope.key().ascii() );
+        qDebug( "</%s>", curr_scope.key() );
     }
 } // dump_
 
@@ -1046,9 +1046,9 @@ _getScopeProperties( QDomNode const & scopeNode,
         QDomNode currentValue    = currentProperty.firstChild(); // should only have one child
 
         qDebug( "Got property %s:%s (%s)", 
-                currentProperty.nodeName().ascii(), 
-                currentValue.nodeValue().ascii(),
-                currentProperty.toElement().attributeNode("type").value().ascii() );
+                currentProperty.nodeName(), 
+                currentValue.nodeValue(),
+                currentProperty.toElement().attributeNode("type").value() );
 
         // the values come in as strings; we need to restore them to their
         // original values *and* types
@@ -1063,7 +1063,7 @@ _getScopeProperties( QDomNode const & scopeNode,
             case QVariant::Invalid :
                 qDebug( "qgsproject.cpp:%d invalid value type %s .. ",
                         __LINE__,
-                        currentProperty.toElement().attributeNode("type").value().ascii() );
+                        currentProperty.toElement().attributeNode("type").value() );
 
                 restoredValue.clear();
 
@@ -1211,7 +1211,7 @@ _getScopeProperties( QDomNode const & scopeNode,
 
             default :
                 qDebug( "unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
-                        currentProperty.toElement().attributeNode("type").value().ascii(),
+                        currentProperty.toElement().attributeNode("type").value(),
                         __LINE__ );
 
                 restoredValue.clear();
@@ -1292,14 +1292,14 @@ _getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project
 
         qDebug( "found %d property node(s) for scope %s", 
                 curr_scope_node.childNodes().count(),
-                curr_scope_node.nodeName().ascii() );
+                curr_scope_node.nodeName() );
 
         // DEPRECATED _getScopeProperties( curr_scope_node, project_properties );
 
         if ( ! project_properties[curr_scope_node.nodeName()].readXML( curr_scope_node ) )
         {
             qDebug ("%s:%d unable to read XML for property %s", 
-                    __FILE__, __LINE__, curr_scope_node.nodeName().ascii() );
+                    __FILE__, __LINE__, curr_scope_node.nodeName() );
         }
 
         ++i;
@@ -1765,7 +1765,7 @@ QgsProject::read( )
 
 	imp_->file.close();
 
-        throw QgsException( errorString + " for file " + imp_->file.name().ascii() );
+        throw QgsException( errorString + " for file " + imp_->file.name() );
 
 	return false;           // XXX superfluous because of exception
     }
@@ -1948,13 +1948,13 @@ QgsProject::write( )
               curr_scope != imp_->properties_.end();
               curr_scope++ )
         {
-            qDebug( "scope ``%s'' has %d entries", curr_scope.key().ascii(), curr_scope.data().count() );
+            qDebug( "scope ``%s'' has %d entries", curr_scope.key(), curr_scope.data().count() );
 
             // <$scope>
             if ( ! curr_scope.data().writeXML( curr_scope.key(), propertiesElement, *doc ) )
             {
                 qDebug ( "%s:%d error create property %s's DOM objects", 
-                         __FILE__, __LINE__, curr_scope.key().ascii() );
+                         __FILE__, __LINE__, curr_scope.key() );
             }
             // </$scope>
 
@@ -1970,7 +1970,7 @@ QgsProject::write( )
     QString xml = doc->toString( 4 ); // write to string with indentation of four characters
                                       // (yes, four is arbitrary)
 
-    // const char * xmlString = xml.ascii(); // debugger probe point
+    // const char * xmlString = xml; // debugger probe point
     // qDebug( "project file output:\n\n" + xml );
 
     QTextStream projectFileStream( &imp_->file );
