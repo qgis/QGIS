@@ -142,8 +142,6 @@ class QgsVectorDataProvider : public QgsDataProvider
   /** Returns true is the provider supports saving to shapefile*/
    virtual bool supportsSaveAsShapefile() const;
 
-  //! Save layer as a shapefile
-   virtual bool saveAsShapefile(){return false;};
 };
 
 #endif
