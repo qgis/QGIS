@@ -83,6 +83,13 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
     p.drawPicture(0, 0, pic);
   }
   
+  // FIXME - this frame is added because there already is an ugly white
+  // rectangle around the SVG symbol. The frame makes it look at least almost
+  // intentional. Can be removed when transparency is fixed.
+  QPainter p2(&pixmap);
+  p2.setPen(QColor(0, 0, 0));
+  p2.drawRect(0, 0, width, height);
+  
   // cache it if possible, and remove other pixmaps from the cache
   // if it grows too large
   if (width * height < pixelLimit) {

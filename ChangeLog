@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.171 2004/08/20 21:31:31 larsl Exp
+ChangeLog,v 1.172 2004/08/21 15:30:18 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-21 [larsl] 0.4.0devel16
+** Added a black frame around the white rectangle around SVG symbols to make it look cleaner, can be removed when transparency is fixed
 
 2004-08-20 [larsl] 0.4.0devel15
 ** Added more attribute fields to the GPX provider: cmt, desc, src, sym, number, urlname
