@@ -247,7 +247,7 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
 
-libqgis_la_SOURCES = qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp
+libqgis_la_SOURCES = qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp qgsfield.cpp
 #libqgis_la_LIBFLAGS = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
 libqgis_la_LIBFLAGS =  $(QT_LDADD)
 
