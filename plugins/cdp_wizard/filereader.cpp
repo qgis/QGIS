@@ -943,7 +943,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
     std::cout << "FileReader::getBlockMarkers() - skipping " << headerLinesInt << " file header line(s)" << std::endl;
 #endif
     //skip header lines at the top of the file
-    for (int i=1; i <= headerLinesInt; i++)
+    for (int i=0; i < headerLinesInt; i++)
     {
         *textStream->readLine();
     }

@@ -69,7 +69,6 @@ TestDataMaker::TestDataMaker(QString outputFileName, int baseValue)
                 myColumnCountInt=0;
             }
         }
-        *textStream << QString("\n");
     }
 }
 
