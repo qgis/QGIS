@@ -1,6 +1,7 @@
 #include <qstring.h>
 #include <qpainter.h>
 #include <qpointarray.h>
+#include <qbrush.h>
 #include "qgsrect.h"
 #include <libpq++.h>
 #include <qmessagebox.h>
@@ -47,6 +48,7 @@ QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table) :
 	//QMessageBox::warning(this,"Connection Problem",msg); 
 	valid = false;
       }
+     
     }else{
       QString msg =  "Unable to get geometry information for " + tableName;
       //QMessageBox::warning(this,"Connection Problem",msg); 
@@ -69,6 +71,8 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
      3. transform
      4. draw
   */
+  cout << "Drawing layer using view extent " << viewExtent->stringRep() <<
+    " with a y transform of " << yTransform << endl;
   PgCursor pgs(dataSource, "drawCursor");
   QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
   sql +=   "') as features from " + tableName;
@@ -86,7 +90,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
       memset (feature, '\0', pgs.GetLength (idx, 0) + 1);
       memcpy (feature, pgs.GetValue (idx, 0), pgs.GetLength (idx, 0));
       wkbType = (int)feature[1];
-      cout << "Feature type: " << wkbType << endl;
+      //cout << "Feature type: " << wkbType << endl;
       // read each feature based on its type
       double *x;
       double *y;
@@ -171,7 +175,9 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	}
 	break;
       case WKBMultiPolygon:
-	p->setPen(Qt::blue);
+	p->setPen(Qt::darkGreen);
+	QBrush brush(Qt::green);
+	p->setBrush(brush);
 	// get the number of polygons
 	ptr = feature + 5;
 	numPolygons = (int *)ptr;
