@@ -97,6 +97,7 @@
 //#include "qgssisydialog.h"
 #include "../plugins/qgisplugin.h"
 #include "qgsoptionsbase.uic.h"
+#include "qgsprojectproperties.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
 
@@ -2815,3 +2816,14 @@ void QgisApp::showStatusMessage(QString theMessage)
   statusBar()->message(theMessage);
 }
 
+void QgisApp::projectProperties()
+{
+  QgsProjectProperties *pp = new QgsProjectProperties(this);
+  pp->setMapUnits(mapCanvas->mapUnits());
+  if(pp->exec())
+  {
+    // set the map units for the project (ie the map canvas)
+    mapCanvas->setMapUnits(pp->mapUnits());
+
+  }
+}
