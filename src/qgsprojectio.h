@@ -4,7 +4,7 @@
     Date                 : 08-Nov-2003
     Copyright            : (C) 2003 by Gary E.Sherman
     email                : sherman at mrcc.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.h,v 1.7 2004/06/24 07:58:45 timlinux Exp */
+/* qgsprojectio.h,v 1.8 2004/10/16 21:59:14 gsherman Exp */
 
 #ifndef _QGSPROJECTIO_H_
 #define _QGSPROJECTIO_H_

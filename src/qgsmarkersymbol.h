@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSMARKERSYMBOL_H
 #define QGSMARKERSYMBOL_H

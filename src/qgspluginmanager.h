@@ -1,7 +1,7 @@
 
 /***************************************************************************
                           qgspluginmanager.h 
- Plugin manager for loading/unloading QGIS plugins
+               Plugin manager for loading/unloading QGIS plugins
                              -------------------
     begin                : 2004-02-12
     copyright            : (C) 2004 by Gary E.Sherman

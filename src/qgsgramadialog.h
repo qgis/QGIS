@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSGRAMADIALOG_H
 #define QGSGRAMADIALOG_H

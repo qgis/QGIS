@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSLEGENDITEM_H
 #define QGSLEGENDITEM_H

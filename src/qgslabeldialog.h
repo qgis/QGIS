@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 #ifndef QGSLABELDIALOG_H
 #define QGSLABELDIALOG_H
 

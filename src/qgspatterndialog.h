@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgspatterndialog 
- Dialog for selecting pattern for rendering vector layers
+            Dialog for selecting pattern for rendering vector layers
                              -------------------
     begin                : 2004-02-12
     copyright            : (C) 2004 by Gary E.Sherman

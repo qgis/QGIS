@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsuvalmadialog.h  -  unique value marker dialog
+                qgsuvalmadialog.h  -  unique value marker dialog
                              -------------------
     begin                : September 2004
     copyright            : (C) 2004 by Lars Luthman
@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSUVALMADIALOG_H
 #define QGSUVALMADIALOG_H
 #ifdef WIN32

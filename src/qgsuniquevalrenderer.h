@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSUNIQUEVALRENDERER_H
 #define QGSUNIQUEVALRENDERER_H
 

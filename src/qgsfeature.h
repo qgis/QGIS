@@ -1,6 +1,6 @@
 /***************************************************************************
-  qgsfeature.h - Spatial Feature Class
-  --------------------------------------
+                      qgsfeature.h - Spatial Feature Class
+                     --------------------------------------
 Date                 : 09-Sep-2003
 Copyright            : (C) 2003 by Gary E.Sherman
 email                : sherman at mrcc.com

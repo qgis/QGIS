@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *  Based on an example by Trolltech                                                                       *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef SPLASHSCREEN_H
 #define SPLASHSCREEN_H
