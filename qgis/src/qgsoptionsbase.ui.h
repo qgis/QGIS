@@ -16,11 +16,24 @@ void QgsOptionsBase::init()
     cmbBrowser->setCurrentText(browser);
     int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius");
     spinBoxIdentifyValue->setValue(identifyValue);
+    bool hideSplashFlag = false;
+    if (settings.readEntry("/qgis/hideSplash")=="true")
+    {
+	hideSplashFlag =true;
+    }
+    cbxHideSplash->setChecked(hideSplashFlag);
 }
 void QgsOptionsBase::saveOptions()
 {
  QSettings settings;
  settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
  settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
+ settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
  accept();
+}
+
+
+void QgsOptionsBase::cbxHideSplash_toggled( bool )
+{
+
 }

@@ -222,10 +222,16 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   //
   // Splash screen global is declared in qgisapp.h header
   //
-  gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
-  gSplashScreen->setStatus(tr("Loading QGIS..."));
+  QSettings settings;
+  bool myHideSplashFlag = false;
+  if (settings.readEntry("/qgis/hideSplash")=="true") { myHideSplashFlag=true; }
+  if (!myHideSplashFlag)
+  {
+    gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
+    gSplashScreen->setStatus(tr("Loading QGIS..."));
+  }
 
- // register all GDAL and OGR plug-ins
+  // register all GDAL and OGR plug-ins
   GDALAllRegister();           
   OGRRegisterAll();
 
@@ -240,8 +246,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   //  zoomincur = QBitmap(cursorzoomin);
   QBitmap zoomincurmask;
   //  zoomincurmask = QBitmap(cursorzoomin_mask);
+  if (!myHideSplashFlag)
+  {
 
-  gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
+    gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
+  }
   QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter(frameMain);
 
@@ -283,7 +292,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   actionAddLayer->removeFrom(PopupMenu_2);
   actionAddLayer->removeFrom(DataToolbar);
 #endif
-  gSplashScreen->setStatus(tr("Loading plugins..."));
+  if (!myHideSplashFlag)
+  {
+
+    gSplashScreen->setStatus(tr("Loading plugins..."));
+  }
   // store the application dir
   appDir = PREFIX;
   // Get pointer to the provider registry singleton
@@ -299,8 +312,12 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   restoreWindowState();
   // set the focus to the map canvase
   mapCanvas->setFocus();
-  gSplashScreen->finish(this);
-  delete gSplashScreen;
+  if (!myHideSplashFlag)
+  {
+
+    gSplashScreen->finish(this);
+    delete gSplashScreen;
+  }
 
 #ifdef QGISDEBUG
   std::cout << "Plugins are installed in " << plib << std::endl;

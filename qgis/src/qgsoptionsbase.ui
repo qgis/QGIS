@@ -148,7 +148,15 @@ identifying features without zooming in very close.
                             <string>Preferred browser (used to open Help documents)</string>
                         </property>
                     </widget>
-                    <spacer row="3" column="0">
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>textLabel1_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>The browser must be in your PATH or you can specify &lt;br&gt;the full path above</string>
+                        </property>
+                    </widget>
+                    <spacer row="4" column="0">
                         <property name="name">
                             <cstring>spacer2</cstring>
                         </property>
@@ -165,12 +173,12 @@ identifying features without zooming in very close.
                             </size>
                         </property>
                     </spacer>
-                    <widget class="QLabel" row="2" column="0">
+                    <widget class="QCheckBox" row="3" column="0">
                         <property name="name">
-                            <cstring>textLabel1_2</cstring>
+                            <cstring>cbxHideSplash</cstring>
                         </property>
                         <property name="text">
-                            <string>The browser must be in your PATH or you can specify &lt;br&gt;the full path above</string>
+                            <string>Hide splash screen at startup</string>
                         </property>
                     </widget>
                 </grid>
@@ -261,6 +269,7 @@ identifying features without zooming in very close.
 </includes>
 <slots>
     <slot>saveOptions()</slot>
+    <slot>cbxHideSplash_toggled( bool )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
