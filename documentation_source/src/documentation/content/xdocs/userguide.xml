@@ -38,7 +38,7 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 		</section>
 		<section>
 			<title>Getting Started</title>
-			<p>This section gives you a quick overview of running QGIS and examining data in
+			<p>This section gives you a quick overview of running QGIS and examining data 
 			available on the QGIS web page.
 			</p>
 			<section>
@@ -47,16 +47,16 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				</p>
 			</section>
 			<section>
+				<title>Sample Data</title>
+				<p>If you do not have any GIS data, you can obtain a dataset for Alaska (which will be used as the
+				basis for the examples and screenshots provided in this document) from the 
+				<link href="http://qgis.sourceforge.net/qgis_sample_data.tar.gz">the QGIS web site</link></p>
+			</section>
+			<section>
 				<title>Starting QGIS</title>
 				<p>
 				Assuming the QGIS is installed in the PATH, you can start QGIS by typing:
 				<code>qgis</code>.</p>
-				<p>
-				When QGIS starts, an empty window is displayed as shown below.
-				<img alt="QGIS Main Window" src="images/qgis_mainwindow01.png"/>
-				</p>
-				<note>Your window decorations (title bar, etc.) may appear different depending on your operating system
-				and window manager</note>
 				<p>
 				In addition, you can start QGIS by specifying one or more datafiles on the commandline. For example, 
 				assuming you are in your data directory, you could start QGIS with two shapefiles and a raster file set to 
@@ -64,6 +64,66 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				</p>
 				<p><code>qgis ak_shade.tif alaska.shp majrivers.shp </code></p>		
 				<p><img alt="QGIS Load Data On Start" src="images/qgis_load_data_on_startup.png"/></p>
+				<note>Your window decorations (title bar, etc.) may appear different depending on your operating system
+				and window manager</note>				
+			</section>
+			<section>
+				<title>The QGIS main window</title>
+				<p>
+				When QGIS starts, an empty window is displayed as shown below.
+				<img alt="QGIS Main Window" src="images/qgis_mainwindow01.png"/>
+				</p>
+				<p>The QGIS main window is divided into five areas:</p>
+				<ol>
+					<li>The menu bar</li>
+					<li>The tool bar</li>
+					<li>The map legend</li>
+					<li>The map view</li>
+					<li>The status bar</li>
+				</ol>
+				<p>These five parts of the main QGIS are described in more detail in the following sections</p>
+				<section>
+					<title>The QGIS menu bar</title>
+				</section>
+				<section>
+					<title>The QGIS toolbars</title>
+					<p>QGIS has toolbars that provide quick access to commonly used functions. These are:</p>
+					<ul>
+						<li><img alt="New Project" src="images/gis_add_raster_layer.png"/> - Start a new QGIS project. If you 
+						already have a project ope, you will be asked if you would like to save the existing one first.</li>
+						<li><img alt="Open Project" src="images/gis_add_raster_layer.png"/> - Open a previously saved project.</li>
+						<li><img alt="Save Project" src="images/gis_add_raster_layer.png"/> - Save the current project.</li>
+						<li><img alt="Save Project As" src="images/gis_add_raster_layer.png"/> - Save project under a new file name.</li>
+						<li><img alt="Add Postgis Layer(s)" src="images/gis_add_raster_layer.png"/> - Add one or more layers 
+						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
+						<li><img alt="Add Vector Layer(s)" src="images/gis_add_raster_layer.png"/> - Add one or more layers 
+						stored on disk as shapefiles to the map view.</li>
+						<li><img alt="Add Raster Layers" src="images/gis_add_raster_layer.png"/> - Add one or more raster layers
+						to the map view. </li>
+						<li><img alt="Reload" src="images/gis_add_raster_layer.png"/> - Reload the current map view (refreshes display)</li>
+						<li><img alt="Zoom In" src="images/gis_add_raster_layer.png"/> - Zoom in the map display by dragging a rectangle</li>
+						<li><img alt="Zoom Out" src="images/gis_add_raster_layer.png"/> - Zoom out of the map display by dragging a rectangle.
+						Dragging a small rectangle will zoom out a long way, dragging a large rectangle will zoom out a little way.</li>
+						<li><img alt="Zoom Full Extent" src="images/gis_add_raster_layer.png"/> - Zoom out until all features in all map layers
+						are visible.</li>
+						<li><img alt="Zoom to Selected" src="images/gis_add_raster_layer.png"/> - Zoom to fit all selected features in the 
+						map view.</li>
+						<li><img alt="Pan" src="images/gis_add_raster_layer.png"/> - Pan in the map display area.</li>
+						<li><img alt="Zoom to Previous" src="images/gis_add_raster_layer.png"/> - Zoom to last extents.</li>
+						<li><img alt="Identify" src="images/gis_add_raster_layer.png"/> - Show information about a feature (applies only to vector data).</li>
+						<li><img alt="Select Features" src="images/gis_add_raster_layer.png"/> - Select features in the map display (applies only to vector data).</li>
+						<li><img alt="Show Attributes" src="images/gis_add_raster_layer.png"/> - Show the attribute table for the selected layer (applies only to vector data).</li>										
+					</ul>
+				</section>
+				<section>
+					<title>The QGIS map legend</title>
+				</section>
+				<section>
+					<title>The QGIS map view</title>
+				</section>
+				<section>
+					<title>The QGIS map status bar</title>
+				</section>				
 			</section>
 		</section>
 		<section>
@@ -203,7 +263,11 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					<title>The raster statistics properties tab</title>
 					<p>
 					<img alt="Raster Properties Popup" src="images/qgis_raster_properties_statistics_tab.png"/>
-					</p>	
+					</p>
+					<p>This tab displays statistics about each band in the current raster layer. Statistics are
+					gathered on a 'need to know' basis, so it may well be that a given layer's statistics have 
+					not yet been collected.</p>	
+					<p>Statistics for a layer are gathered when pseudocolor rendering is used.</p>
 				</section>
 			</section>
 				
