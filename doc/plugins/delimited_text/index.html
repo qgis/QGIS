@@ -49,9 +49,22 @@
         <img src="toolbar_icon.png" align="absmiddle" alt="Delimited Text toolbar icon"></li>
         <li>Click on the icon to open the Delimited Text dialog:
         <br><br>
-        <img src="dialog.png" alt="Add delimited text layer dialog">
+        <img src="dialog.png" alt="Add delimited text layer dialog"><br><br>
 
         </li>
+        <li>First select the file to import by clicking on the ellipsis button: <img src="ellipsis.png" align="absmiddle"><br></li>
+        <li>Select the desired text file from the file dialog</li>
+        <li>Once the file is selected, the plugin attempts to parse the file using the last used delimiter, in this case |<br><br>
+        <img src="file_selected.png"><br><br></li>
+        <li>In this case the delimiter | is not correct for the file. The file is actually tab delimited. Note that the X and Y field drop down boxes do not contain valid field names.</li>
+        <li>To properly parse the file, change the delimiter to tab using \t (this is a regular expression for the tab character). After changing the delimiter, click <i>Parse</i></li>
+        <li>The drop down boxes now contain the fields properly parsed:<br><br>
+        <img src="file_selected2.png"><br><br></li>
+        <li>Choose the X and Y fields from the drop down boxes and enter a Layer name<br><br>
+        <img src="file_selected3.png"><br><br></li>
+        <li>Click <i>Add Layer</i></li>
+        <li>The layer is added to the map:<br><br> <img src="layer_added.png"></li>
+        
         </ol>
     </body>
   </html>
