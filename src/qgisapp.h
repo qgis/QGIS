@@ -155,6 +155,8 @@ private:
   QString activeLayerSource();
   //! Open the help contents in a browser
   void helpContents();
+  //! Open a url in the users configured browser
+  void openURL(QString url, bool useQgisDocDirectory=true);
 	//! Check qgis version against the qgis version server
 	void checkQgisVersion();
   //! options dialog slot
