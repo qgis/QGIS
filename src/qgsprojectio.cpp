@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.15 2004/01/19 17:59:41 gsherman Exp */
+/* qgsprojectio.cpp,v 1.16 2004/01/19 23:58:58 timlinux Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -186,10 +186,11 @@ bool QgsProjectIo::read(){
                                 QVariant myQVariant = (QVariant) myElement.attribute("boolean");
 				myRasterLayer->setShowDebugOverlayFlag(myQVariant.toBool());
 
-				snode = mnl.namedItem("showGrayAsColorFlag");
-				myElement = snode.toElement();
-                                myQVariant = (QVariant) myElement.attribute("boolean");
-				myRasterLayer->setShowGrayAsColorFlag(myQVariant.toBool());				
+                                //The following lines are deprecated and will be removed...
+				//snode = mnl.namedItem("showGrayAsColorFlag");
+				//myElement = snode.toElement();
+                                //myQVariant = (QVariant) myElement.attribute("boolean");
+				//myRasterLayer->setShowGrayAsColorFlag(myQVariant.toBool());				
 				snode = mnl.namedItem("invertHistogramFlag");
 				myElement = snode.toElement();
                                 myQVariant = (QVariant) myElement.attribute("boolean");
@@ -201,7 +202,7 @@ bool QgsProjectIo::read(){
 
 				snode = mnl.namedItem("transparencyLevelInt");
 				myElement = snode.toElement();
-				myRasterLayer->slot_setTransparency(myElement.text().toInt());  
+				myRasterLayer->setTransparency(myElement.text().toInt());  
 
 				snode = mnl.namedItem("redBandNameQString");
 				myElement = snode.toElement();
@@ -323,6 +324,7 @@ void QgsProjectIo::writeXML(){
                           //cast the maplayer to rasterlayer
                           QgsRasterLayer *myRasterLayer = (QgsRasterLayer *) lyr;
                           //Raster flag to indicate whether debug infor overlay should be rendered onto the raster
+                     
                           xml << "\t\t<rasterproperties>\n";
                             xml << "\t\t\t<showDebugOverlayFlag boolean=\"" ;
                             if (myRasterLayer->getShowDebugOverlayFlag())
@@ -332,7 +334,9 @@ void QgsProjectIo::writeXML(){
                             else
                             {
                               xml << "false\"/>\n";
-                            }                           
+                            }
+                            
+                            /* The followin lines are deprecated and will be removed...                     
                             // Raster flag indicating whether grayscale images should be rendered as pseudocolor
                             xml << "\t\t\t<showGrayAsColorFlag boolean=\"" ;
                             if (myRasterLayer->getShowGrayAsColorFlag())
@@ -343,6 +347,7 @@ void QgsProjectIo::writeXML(){
                             {
                               xml << "false\"/>\n";
                             }                             
+                            */
                             //Raster : flag indicating whether the histogram should be inverted or not 
                             xml << "\t\t\t<invertHistogramFlag boolean=\"" ;
                             if (myRasterLayer->getInvertHistogramFlag())
