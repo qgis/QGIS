@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.40 2004/06/16 05:49:52 gsherman Exp */
+/* qgsprojectio.cpp,v 1.41 2004/06/21 20:03:55 timlinux Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -20,6 +20,9 @@ email                : sherman at mrcc.com
 #include <qdom.h>
 #include <qmessagebox.h>
 #include <qcolor.h>
+#include <qapplication.h>
+#include <qcursor.h>
+
 #include "qgsmaplayer.h"
 #include "qvariant.h"
 #include "qgsvectorlayer.h"
@@ -107,6 +110,8 @@ bool QgsProjectIo::read(QString path)
       return false;
     }
     file.close();
+    //enable the hourglass
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     qWarning("opened document" + file.name());
     // clear the map canvas
     qgisApp->removeAllLayers();
@@ -127,7 +132,8 @@ bool QgsProjectIo::read(QString path)
     double ymax = exElement.text().toDouble();
     QgsRect savedExtent(xmin, ymin, xmax, ymax);
 
-
+    std::list<QString> myZOrder;
+    
     QDomNodeList nl = doc->elementsByTagName("maplayer");
     QString layerCount;
     layerCount = layerCount.setNum(nl.count());
@@ -161,6 +167,7 @@ bool QgsProjectIo::read(QString path)
       //process zorder
       mnl = node.namedItem("zorder");
       mne = mnl.toElement();
+      myZOrder.push_back(mne.text());
       //QMessageBox::information(0,"Zorder", mne.text());
 
       // XXX I strongly suggest that much of this be pushed into the
@@ -256,7 +263,6 @@ bool QgsProjectIo::read(QString path)
       else if (type == "raster")
       {
         QgsRasterLayer *myRasterLayer = new QgsRasterLayer(dataSource, layerName);
-        qgisApp->addMapLayer(myRasterLayer);
 
         myRasterLayer->setVisible(visible == "1");
         if (showInOverview == "1")
@@ -303,9 +309,13 @@ bool QgsProjectIo::read(QString path)
         myElement = snode.toElement();
         myRasterLayer->setGrayBandName(myElement.text());
 
+        qgisApp->addMapLayer(myRasterLayer);
       }
       qgisApp->setExtent(savedExtent);
     }
+
+    qgisApp->setZOrder(myZOrder);
+    QApplication::restoreOverrideCursor();
     return true;
   }
 }
