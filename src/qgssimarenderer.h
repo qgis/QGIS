@@ -33,6 +33,7 @@ class QgsSiMaRenderer: public QgsRenderer
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
     bool needsAttributes();
+    QgsRenderItem* item();
  protected:
     QgsRenderItem* mItem;
 };
@@ -56,6 +57,11 @@ inline void QgsSiMaRenderer::addItem(QgsRenderItem* ri)
 {
     delete mItem;
     mItem=ri;
+}
+
+inline QgsRenderItem* QgsSiMaRenderer::item()
+{
+    return mItem;
 }
 
 #endif

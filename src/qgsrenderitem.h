@@ -58,6 +58,7 @@ class QgsRenderItem {
     void setSymbol(QgsSymbol s);
     /** Sets a symbol object, which is allocated on the heap. QgsRenderItem automatically deletes it*/
     void setSymbol(QgsSymbol* s);
+    void setValue(QString value);
     /**Returns the label*/
     const QString& label() const;
     /**Returns the value of the field*/

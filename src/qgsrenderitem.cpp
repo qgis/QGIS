@@ -53,3 +53,8 @@ void QgsRenderItem::setSymbol(QgsSymbol* s)
     delete mSymbol;
     mSymbol=s;
 }
+
+void QgsRenderItem::setValue(QString value)
+{
+    mValue=value;
+}
