@@ -145,7 +145,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
       //if it turned out the dir contained an arc info coverage, the 'DIR' label above will have been changed
       //to AIG in the above travers call. Now we can test if this item has no child nodes and is not named AIG
       //we can prune it out of the tree
-      if (myItem->childCount()<1)
+      if ((myItem->childCount()<1) && (myItem->text(1) !="AIG"))
       {
         delete myItem;
       }

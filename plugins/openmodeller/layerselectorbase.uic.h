@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'layerselectorbase.ui'
 **
-** Created: Thu Feb 17 09:48:40 2005
+** Created: Sat Feb 19 15:24:36 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
