@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrass SYSTEM "http://mrcc.com/qgisgrass.dtd">
+<qgisgrass name="Default">
+<modules>
+	<section label="Convert a vector to raster">
+		<grass name="v.to.rast.constant"/>
+	</section>
+	<section label="Convert a raster to vector">
+		<grass name="r.to.vect.point"/>
+		<grass name="r.to.vect.line"/>
+		<grass name="r.to.vect.area"/>
+	</section>
+	<section label="General">
+		<grass name="g.gisenv"/>
+	</section>
+</modules>
+</qgisgrass>
