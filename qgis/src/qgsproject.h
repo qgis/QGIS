@@ -160,24 +160,33 @@ public:
 
 
     /// syntactic sugar for property lists
-    typedef QMap< QString, QValueList<QVariant> > Properties;
+    typedef QPair< QString, QVariant >  PropertyValue;
+    typedef QValueList< PropertyValue > Properties;
 
     /** extra properties, typically added by plug-ins
 
-       @note 
+       This allows for extra properties to be associated with projects.  Think
+       of it as a registry bound to a project.
 
-       Use a QMap because the key string is a sort of "name space".  Each
-       plug-in, provider, or whatever would presumably store its respective
-       properties under a name well known and specific to itself.  E.g., open
-       modeller might use <code>"QgsProject::instance()->properties()["openmodeller"]</code>.
+       Properties are arbitrary values keyed by a name and associated with a
+       scope.  The scope would presumably refer to your plug-in.
+       E.g., "openmodeller".
+
+       @note
+
+       E.g., open modeller might use:
+
+       <code>"QgsProject::instance()->properties("openmodeller")["foo"]</code>.
 
        @todo "properties" is, overall, a good name; but that might imply that
        the qgis specific state properites are different since they aren't
        accessible here.  Actually, what if we make "qgis" yet another
-       namespace that stores its state in the properties list?  E.g., 
-       QgsProject::instance()->properties()["qgis"]  ?
+       scope that stores its state in the properties list?  E.g., 
+       QgsProject::instance()->properties()["qgis"]?
+
+       
      */
-    Properties & properties();
+    Properties & properties( QString const & scope );
 
 private:
 
