@@ -245,6 +245,25 @@ int main(int argc, char *argv[])
 
   a.setMainWidget(qgis);
 
+  /////////////////////////////////////////////////////////////////////
+  // If no --project was specified, parse the args to look for a     //
+  // .qgs file and set myProjectFileName to it. This allows loading  //
+  // of a project file by clicking on it in various desktop managers //
+  // where an appropriate mime-type has been set up.                 //
+  /////////////////////////////////////////////////////////////////////
+  if(myProjectFileName.isEmpty())
+  {
+    // check for a .qgs
+    for(int i = 0; i < argc; i++)
+    {
+      QString arg = argv[i];
+      if(arg.contains(".qgs"))
+      {
+        myProjectFileName = argv[i];
+        break;
+      }
+    }
+  }
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
@@ -284,22 +303,27 @@ int main(int argc, char *argv[])
   for ( QStringList::Iterator myIterator = myFileList->begin(); myIterator != myFileList->end(); ++myIterator ) 
   {
 
+
 #ifdef QGISDEBUG
     std::cout << "Trying to load file : " << *myIterator << std::endl;
 #endif
     QString myLayerName = *myIterator;
-    // try to add all these layers - any unsupported file types will
-    // be rejected automatically
-    // The funky bool ok is so this can be debugged a bit easier...
+    // don't load anything with a .qgs extension - these are project files
+    if(!myLayerName.contains(".qgs"))
+    {
+      // try to add all these layers - any unsupported file types will
+      // be rejected automatically
+      // The funky bool ok is so this can be debugged a bit easier...
 
-    //nope - try and load it as raster
-    bool ok = qgis->addRasterLayer(QFileInfo(myLayerName), false);
-    if(!ok){
-      //nope - try and load it as a shape/ogr
-      ok = qgis->addLayer(QFileInfo(myLayerName));
-      //we have no idea what this layer is...
+      //nope - try and load it as raster
+      bool ok = qgis->addRasterLayer(QFileInfo(myLayerName), false);
       if(!ok){
-        std::cout << "Unable to load " << myLayerName << std::endl;
+        //nope - try and load it as a shape/ogr
+        ok = qgis->addLayer(QFileInfo(myLayerName));
+        //we have no idea what this layer is...
+        if(!ok){
+          std::cout << "Unable to load " << myLayerName << std::endl;
+        }
       }
     }
   }
