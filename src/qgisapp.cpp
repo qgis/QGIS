@@ -900,18 +900,20 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
         }
         else if (driverName.startsWith("GML"))
         {
-            // XXX not yet supported; post 0.1 release task
-            //          myFileFilters += createFileFilter_( "Geography Markup Language",
-            //                                            "*.gml" );
+//             // XXX not yet supported; post 0.1 release task
+//             myFileFilters += createFileFilter_( "Geography Markup Language",
+//                                                 "*.gml" );
         }
         else
         {
             // NOP, we don't know anything about the current driver
             // with regards to a proper file filter string
+            qDebug( "%s:%d unknown driver %s", __FILE__, __LINE__, driverName.ascii() );
         }
 
-        std::cout << myFileFilters << std::endl;
     }                           // each loaded GDAL driver
+
+    std::cout << myFileFilters << std::endl;
 
     // can't forget the default case
 

@@ -15,10 +15,21 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
+
 #include <iostream>
+#include <algorithm>
+
 #include <qstring.h>
+#include <qtextstream.h> 
+
 #include "qgspoint.h"
 #include "qgsrect.h"
+
+QgsRect::QgsRect(double newxmin, double newymin, double newxmax, double newymax)
+    : xmin(newxmin), ymin(newymin), xmax(newxmax), ymax(newymax)
+{
+  normalize();
+}
 
 QgsRect::QgsRect(QgsPoint const & p1, QgsPoint const & p2)
 {
@@ -29,7 +40,8 @@ QgsRect::QgsRect(QgsPoint const & p1, QgsPoint const & p2)
   normalize();
 }
 
-QgsRect::QgsRect(const QgsRect &r){
+QgsRect::QgsRect(const QgsRect &r)
+{
   xmin = r.xMin();
   ymin = r.yMin();
   xmax = r.xMax();
@@ -40,31 +52,29 @@ void QgsRect::normalize()
 {
   double temp;
   if (xmin > xmax)
-    {
-      temp = xmin;
-      xmin = xmax;
-      xmax = temp;
-    }
+  {
+      std::swap(xmin, xmax);
+  }
   if (ymin > ymax)
-    {
-      temp = ymin;
-      ymin = ymax;
-      ymax = temp;
-    }
-}
+  {
+      std::swap(ymin, ymax);
+  }
+} // QgsRect::normalize()
+
+
 void QgsRect::scale(double scaleFactor, QgsPoint * cp)
 {
   // scale from the center
   double centerX, centerY;
   if (cp)
-    {
+  {
       centerX = cp->x();
       centerY = cp->y();
   } else
-    {
+  {
       centerX = xmin + width() / 2;
       centerY = ymin + height() / 2;
-    }
+  }
   double newWidth = width() * scaleFactor;
   double newHeight = height() * scaleFactor;
   xmin = centerX - newWidth / 2.0;
@@ -72,19 +82,20 @@ void QgsRect::scale(double scaleFactor, QgsPoint * cp)
   ymin = centerY - newHeight / 2.0;
   ymax = centerY + newHeight / 2.0;
 }
+
 void QgsRect::expand(double scaleFactor, QgsPoint * cp)
 {
   // scale from the center
   double centerX, centerY;
   if (cp)
-    {
+  {
       centerX = cp->x();
       centerY = cp->y();
   } else
-    {
+  {
       centerX = xmin + width() / 2;
       centerY = ymin + height() / 2;
-    }
+  }
 
   double newWidth = width() * scaleFactor;
   double newHeight = height() * scaleFactor;
@@ -105,6 +116,7 @@ QgsRect QgsRect::intersect(QgsRect * rect)
   return intersection;
 }
 
+
 void QgsRect::combineExtentWith(QgsRect * rect)
 {
  
@@ -116,16 +128,19 @@ void QgsRect::combineExtentWith(QgsRect * rect)
 
 }
 
+
 bool QgsRect::isEmpty()
 {
   if (xmax <= xmin || ymax <= ymin)
-    {
+  {
       return TRUE;
   } else
-    {
+  {
       return FALSE;
-    }
+  }
 }
+
+
 // Return a string representation of the rectangle with high precision
 QString QgsRect::stringRep() const
 {
@@ -151,30 +166,48 @@ QString QgsRect::stringRep(int thePrecision) const
 #endif    
   return rep;
 }
+
+
 // Return the rectangle as a set of polygon coordinates
 QString QgsRect::asPolygon() const
 {
-  QString tmp;
-  QString rep = tmp.sprintf("%16f %16f,%16f %16f,%16f %16f,%16f %16f,%16f %16f",
-    xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin);
-    return rep;
-    
-}
+//   QString rep = tmp.sprintf("%16f %16f,%16f %16f,%16f %16f,%16f %16f,%16f %16f",
+//     xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin);
+   QString rep;
+
+   QTextOStream foo( &rep );
+
+   foo.precision(8);
+   foo.setf(QTextStream::fixed);
+
+   foo <<  xmin << " " <<  ymin << ", " 
+       <<  xmin << " " <<  ymax << ", " 
+       <<  xmax << " " <<  ymax << ", " 
+       <<  xmax << " " <<  ymin ;
+
+   return rep;
+
+} // QgsRect::asPolygon() const
+
+
 bool QgsRect::operator==(const QgsRect & r1)
 {
-  return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() && r1.yMax() == this->yMax() && r1.yMin() == this->yMin());
+  return (r1.xMax() == xMax() && 
+          r1.xMin() == xMin() && 
+          r1.yMax() == yMax() && 
+          r1.yMin() == yMin());
 }
+
 
 QgsRect & QgsRect::operator=(const QgsRect & r)
 {
   if (&r != this)
-    {
+  {
       xmax = r.xMax();
       xmin = r.xMin();
       ymax = r.yMax();
       ymin = r.yMin();
     }
+
   return *this;
-
-
 }
