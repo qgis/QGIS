@@ -46,11 +46,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 
     //find out the numerical fields of mVectorLayer
     QgsVectorDataProvider *provider;
-#ifndef WIN32
     if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
-#else
-    if (provider = (QgsVectorDataProvider *)(mVectorLayer->getDataProvider()))
-#endif
     {
 	std::vector < QgsField > &fields = provider->fields();
 	int fieldnumber = 0;
@@ -84,19 +80,11 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
     if (mVectorLayer->propertiesDialog())
     {
-#ifndef WIN32
 	renderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
-#else
-	renderer = (QgsGraduatedSymRenderer *)(layer->propertiesDialog()->getBufferRenderer());
-#endif
     } 
     else
     {
-#ifndef WIN32
 	renderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
-#else
-	renderer = (QgsGraduatedSymRenderer *)(layer->renderer());
-#endif
     }
 
 
@@ -231,11 +219,7 @@ void QgsGraSyDialog::apply()
 	p.drawText(leftspace, topspace + fm.height(), name);
 	p.drawText(leftspace, topspace + 2 * fm.height(), classificationComboBox->currentText());
 	
-#ifndef WIN32	
 	QgsGraduatedSymRenderer *renderer = dynamic_cast < QgsGraduatedSymRenderer * >(mVectorLayer->renderer());
-#else
-	QgsGraduatedSymRenderer *renderer = (QgsGraduatedSymRenderer * )(mVectorLayer->renderer());
-#endif
 	
 	if (!renderer)
         {
@@ -342,11 +326,7 @@ void QgsGraSyDialog::adjustClassification()
 {
     mClassBreakBox->clear();
     QGis::VectorType m_type = mVectorLayer->vectorType();
-#ifndef WIN32
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
-#else
-    QgsVectorDataProvider *provider = (QgsVectorDataProvider *)(mVectorLayer->getDataProvider());
-#endif
     double minimum, maximum;
     
     //delete all previous entries
