@@ -271,6 +271,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
               {
                 myGrayValInt = static_cast<int>((255/myRangeDouble) * myGrayValInt);
               }
+              if (invertHistogramFlag) myGrayValInt=255-myGrayValInt;
               myQImage.setPixel( x, y, qRgba( myGrayValInt, myGrayValInt, myGrayValInt, transparencyLevelInt )); 
             }
             else //render no data as 100% transparent
