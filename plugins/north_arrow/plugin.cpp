@@ -119,6 +119,7 @@ void Plugin::run()
     myPluginGui->setRotation(mRotationInt);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
+  connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
   myPluginGui->show();
   
 }
@@ -165,14 +166,39 @@ void Plugin::renderNorthArrow()
 	const double PI = 3.14159265358979323846;
 	double myRadiansDouble = (PI/180) * mRotationInt;
         int xShift = static_cast<int>((
-	              (centerXDouble * cos(myRadiansDouble)) + 
+	              (centerXDouble * cos(myRadiansDouble)) +
 	              (centerYDouble * sin(myRadiansDouble))
 		     ) - centerXDouble);
         int yShift = static_cast<int>((
 	              (-centerXDouble * sin(myRadiansDouble)) + 
 	              (centerYDouble * cos(myRadiansDouble))
 		     ) - centerYDouble);	
-		     	     
+
+  	//Get canvas dimensions
+  	int myYOffset = qGisInterface->getMapCanvas()->height();
+  	int myXOffset = qGisInterface->getMapCanvas()->width();
+
+	//Determine placement of label from form combo box
+  	if (mPlacement==tr("Bottom Left"))
+  	{
+    		//Code required to shift to position
+
+  	}
+  	else if (mPlacement==tr("Top Right"))
+  	{
+    		//Code required to shift to position
+
+  	}
+  	else if (mPlacement==tr("Bottom Right"))
+  	{
+    		//Code required to shift to position
+
+    			
+  	}
+  	else // defaulting to top left
+  	{
+
+  	}
 		     
 
 	//draw the pixmap in the proper position
@@ -214,6 +240,11 @@ void Plugin::rotationChanged(int theInt)
   refreshCanvas();
 }
 
+//! set placement of north arrow
+  void Plugin::setPlacement(QString theQString)
+  {
+    mPlacement = theQString;
+  }
 
 
 
