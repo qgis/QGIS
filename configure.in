@@ -1,12 +1,12 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.176 2004/08/22 14:39:35 larsl Exp
+dnl configure.in,v 1.177 2004/08/26 16:48:24 mcoletti Exp
 
 
 
 AC_INIT
 
-#AC_CONFIG_SRCDIR([libtool])
+dnl AC_CONFIG_SRCDIR([libtool])
 
 dnl header sentinals for qgsconfig.h
 AH_TOP(
@@ -26,7 +26,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=4
 MICRO_VERSION=0
-EXTRA_VERSION=18
+EXTRA_VERSION=20
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
