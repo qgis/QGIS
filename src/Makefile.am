@@ -46,6 +46,7 @@ headers =	qgisapp.h					\
 		qgsattributedialog.h				\
 		qgsattributetabledisplay.h			\
 		qgsattributetable.h				\
+		qgsclipper.h					\
 		qgscolortable.h					\
 		qgscomposer.h					\
 		qgscomposition.h				\
@@ -272,6 +273,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsattributedialog.cpp		\
 		qgsattributetable.cpp		\
 		qgsattributetabledisplay.cpp	\
+		qgsclipper.cpp			\
 		qgscolortable.cpp		\
 		qgscomposer.cpp			\
 		qgscomposition.cpp		\
@@ -405,6 +407,7 @@ libqgis_la_SOURCES =				\
 		qgsacetateobject.cpp		\
 		qgsacetaterectangle.cpp		\
 		qgsattributeaction.cpp		\
+		qgsclipper.cpp			\
 		qgscolortable.cpp		\
 		qgscomposer.cpp			\
 		qgscomposer.moc.cpp		\
