@@ -11,18 +11,19 @@
 class GraticuleCreator
 {
     public:
-        GraticuleCreator::GraticuleCreator(QString theOutputFileName, QString theInputFileName ); 
+        GraticuleCreator(QString theOutputFileName, double theXIntervalDouble, double theYIntervalDouble);
         ~GraticuleCreator() {};
         DBFHandle GraticuleCreator::createDbf (QString theDbfName ) ;
         SHPHandle GraticuleCreator::createShapeFile(QString theFileName ); 
         void writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt, QString theLabel) ;
-        void writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXFloat, double y ); 
-        static void WriteLine(SHPHandle theShapeHandle, 
+        void writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double y ); 
+        static void writeLine(SHPHandle theShapeHandle, 
                 int theRecordInt, 
                 int theCoordinateCountInt, 
                 double * theXArrayDouble, 
                 double * theYArrayDouble ); 
-        void generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,float theXIntervalFloat,float theYIntervalFloat);
+        void generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,double theXIntervalDouble,double theYIntervalDouble);
+        void generatePoints (QString theInputFileName, DBFHandle theDbfHandle, SHPHandle theShapeHandle);
 
     private:
 };
