@@ -123,6 +123,7 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
     QDomNode classnode = rnode.namedItem("classificationfield");
     int classificationfield = classnode.toElement().text().toInt();
+   
     this->setClassificationField(classificationfield);
 
     QDomNode rangerendernode = rnode.namedItem("rangerenderitem");
