@@ -21,6 +21,8 @@
 #include <vector>
 #include <qstring.h>
 #include <ogrsf_frmts.h>
+#include <libpq++.h>
+#include <qprogressdialog.h>
 
 class OGRLayer;
 class OGRDataSource;
@@ -31,23 +33,23 @@ class QgsShapeFile
 
   QgsShapeFile(QString filename);
   ~QgsShapeFile();
-  const char * getFeatureCount();
+  int getFeatureCount();
   const char * getFeatureClass();
-  
+  bool insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, int tot);
+    
   bool is_valid();
   const char * getName();
   std::vector <const char *> column_names;
-  std::vector <char> column_types;
+  std::vector <const char *> column_types;
 
 
   private:
   OGRDataSource *ogrDataSource;
   OGRLayer * ogrLayer;
   bool valid;
+  int features;
   const char * filename;
-  const char * geom_type;
-  QString geometry;
-  
+  const char * geom_type;  
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include<qmessagebox.h>
 #include <libpq++.h>
 #include <iostream>
+#include <sstream>
 #include <qsettings.h>
 #include <qlistbox.h>
 #include <qlistview.h>
@@ -38,10 +39,12 @@
 QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   populateConnectionList();
   default_value = -1;
+  total_features = 0;
   setFixedSize(QSize(579, 504));
 }
 
-QgsSpit::~QgsSpit(){}
+QgsSpit::~QgsSpit(){  
+}
 
 void QgsSpit::populateConnectionList(){
 	QSettings settings;
@@ -101,7 +104,7 @@ void QgsSpit::addFile()
   QStringList files = QFileDialog::getOpenFileNames(
     "Shapefiles (*.shp);; All Files (*)", "", this, "add file dialog", "Add Shapefiles" );
   
-  for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it ){
+  for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it){
     exist = false;
     if(lstShapefiles->findItem(*it, 0)!=0)
       exist = true;
@@ -111,7 +114,11 @@ void QgsSpit::addFile()
         fileList.push_back(file);
         QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
         lvi->setText(1, file->getFeatureClass());
-        lvi->setText(2, file->getFeatureCount());
+        std::stringstream temp;
+        int count = file->getFeatureCount();
+        temp << count;
+        lvi->setText(2, temp.str());
+        total_features += count;
       }
       else{
         error += *it + "\n";
@@ -133,15 +140,24 @@ void QgsSpit::removeFile()
   QListViewItemIterator it(lstShapefiles);
   while(it.current())
     if ( it.current()->isSelected() ){
+      for(std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit!=fileList.end(); vit++)
+        if((*vit)->getName()==(const char *)it.current()->text(0)){
+          //QgsShapeFile *temp_it = *vit;
+          fileList.erase(vit);
+          //delete temp_it;
+        }
       delete it.current();
       it = lstShapefiles->firstChild();
     }
     else ++it;
+  std::cout << fileList.size() << std::endl;
 }
+
 void QgsSpit::removeAllFiles(){
   lstShapefiles->selectAll(true);
   removeFile();
 }
+
 void QgsSpit::useDefault(){
   if(chkUseDefault->isChecked()) {
     default_value = spinSrid->value();
@@ -173,7 +189,35 @@ void QgsSpit::helpInfo(){
 }
 
 void QgsSpit::import(){
-  QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 100, this, "Progress");
-  pro->setAutoClose(true);
-  pro->exec();
+  QString connName = cmbConnections->currentText();
+  if (!connName.isEmpty()) {
+    QSettings settings;
+    QString key = "/Qgis/connections/" + connName;
+    QString connInfo = "host=" + settings.readEntry(key + "/host") + " dbname=" + settings.readEntry(key + "/database") +
+	  " user=" + settings.readEntry(key + "/username") + " password=" + settings.readEntry(key + "/password");
+    PgDatabase *pd = new PgDatabase((const char *) connInfo);
+
+  	if (pd->Status() == CONNECTION_OK) {     
+      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 100, this, "Progress");
+      pro->setAutoClose(true);
+      pro->exec();
+
+      //pd->ExecTuplesOk("BEGIN");
+      for(int i=0; i<fileList.size(); i++){
+        std::stringstream temp;
+        temp << spinSrid->value();
+        if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, total_features)){
+          QMessageBox::warning(this, "Import Shapefiles", "Problem executing SQL query");
+          pd->ExecTuplesOk("ROLLBACK");
+          break;
+        }
+      }
+    }
+    else 
+      QMessageBox::warning(this, "Import Shapefiles", "Connection failed - Check settings and try again");
+  
+    delete pd;    
+  }
+  else
+    QMessageBox::warning(this, "Import Shapefiles", "You need to specify a Connection first");
 }

@@ -17,8 +17,8 @@
 
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
-#include <sstream>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -29,11 +29,13 @@
 
 QgsShapeFile::QgsShapeFile(QString name){
   filename = (const char*)name;
+  features = 0;
   OGRRegisterAll();
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) filename);
   if (ogrDataSource != NULL){
     valid = true;
     ogrLayer = ogrDataSource->GetLayer(0);
+    features = ogrLayer->GetFeatureCount();
   }
   else
     valid = false;
@@ -46,23 +48,16 @@ QgsShapeFile::~QgsShapeFile(){
   delete geom_type;
 }
 
-const char * QgsShapeFile::getFeatureCount(){
-  std::ostringstream res;
-  res << ogrLayer->GetFeatureCount();
-  return res.str().c_str();
+int QgsShapeFile::getFeatureCount(){
+  return features;
 }
 
 const char * QgsShapeFile::getFeatureClass(){
-  std::ostringstream out;
   OGRFeature *feat = ogrLayer->GetNextFeature();
   if(feat){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){
-
       geom_type = geom->getGeometryName();
-      int num = geom->WkbSize();
-      char * geo_temp = new char[num*3];
-      geom->exportToWkt(&geo_temp);
 
       QString file(filename);
       file.replace(file.length()-3, 3, "dbf");
@@ -75,18 +70,27 @@ const char * QgsShapeFile::getFeatureClass(){
       Fda fda;
       for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read += sizeof(fda)){
       	dbf.read((char *)&fda, sizeof(fda));
-        column_types.push_back(fda.field_type);
+        switch(fda.field_type){
+          case 'N': column_types.push_back("int");
+                    break;
+          case 'D': column_types.push_back("date");
+                    break;
+          case 'C': column_types.push_back("varchar(256)");
+                    break;
+          case 'F': column_types.push_back("float");
+                    break;
+          case 'L': column_types.push_back("boolean");
+                    break;
+          default:
+                    column_types.push_back("varchar(256)");
+                    break;
+        }
       }
       dbf.close();
       
       int numFields = feat->GetFieldCount();
-      for(int n=0; n<numFields; n++){
+      for(int n=0; n<numFields; n++)
         column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
-        std::cout << column_names[n] << "of type: " << column_types[n] << std::endl;
-      }
-
-      QString geometry(geo_temp);
-      delete[] geo_temp;
       
     }else{
       valid = false;
@@ -106,4 +110,44 @@ bool QgsShapeFile::is_valid(){
 
 const char * QgsShapeFile::getName(){
   return filename;
+}
+
+bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, int tot=0){
+  QString table(filename);
+  table = table.section('/', -1);
+  table = table.section('.', 0, 0);
+  QString query = "CREATE TABLE "+table+"(gid int4, ";
+  for(int n=0; n<column_names.size(); n++)
+    query += QString(column_names[n]).lower() + " " + QString(column_types[n]) + ",";
+  query += "the_geom geometry)";
+
+  //conn->ExecTuplesOk((const char *)query);
+  
+  query = QString("SELECT AddGeometryColumn(\'") + dbname + "\', \'" + table + "\', \'the_geom\', " + srid +
+    ", \'" + QString(geom_type) + "\', 2)";
+  //conn->ExecTuplesOk((const char *)query);
+
+  //adding the data into the table
+  for(int m=0;OGRFeature *feat = ogrLayer->GetNextFeature(); m++){
+    std::stringstream out;
+    out << m;
+    query = QString("INSERT INTO ")+table+QString("values( "+out.str());
+    OGRGeometry *geom = feat->GetGeometryRef();
+    
+    int num = geom->WkbSize();
+    char * geo_temp = new char[num*3];
+    geom->exportToWkt(&geo_temp);
+    QString geometry(geo_temp);
+    
+    int numFields = feat->GetFieldCount();
+    for(int n=0; n<numFields; n++)
+      query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
+    query += QString("GeometryFromText(\'")+QString(geom_type)+QString("(")+geometry+
+      QString(")\', ")+srid+QString("))");
+
+    std::cout << (const char *)query << std::endl;
+    delete[] geo_temp;
+  }   
+
+  return true;
 }
