@@ -12,7 +12,6 @@ docdatadir = $(datadir)/$(PACKAGE)/doc/install_guide
 
 docdata_DATA =  \
 								contents.png \
-								CVS \
 								index.html \
 								install.css \
 								install.html \
