@@ -10,6 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
+#include "qgsgpsdevicedialog.h"
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsdataprovider.h"
 
@@ -28,6 +29,7 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qfile.h>
+#include <qsettings.h>
 #include "waypointtoshape.h"
 
 //standard includes
@@ -36,22 +38,17 @@
 #include <iostream>
 
 
-PluginGui::PluginGui() : PluginGuiBase()
-{
-  populateDeviceComboBox();
+PluginGui::PluginGui(const BabelMap& importers, BabelMap& devices,
+		     std::vector<QgsVectorLayer*> gpxMapLayers, 
+		     QWidget* parent, const char* name, bool modal, WFlags fl)
+  : PluginGuiBase(parent, name, modal, fl), gpxLayers(gpxMapLayers),
+    mImporters(importers), mDevices(devices) {
+  populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
-  tabWidget->removePage(tabWidget->page(2));
-}
-PluginGui::PluginGui( std::vector<QgsVectorLayer*> gpxMapLayers, 
-		      QWidget* parent , const char* name , bool modal , 
-		      WFlags fl  )
-  : PluginGuiBase( parent, name, modal, fl ), gpxLayers(gpxMapLayers)
-{
-  populateDeviceComboBox();
-  populateULLayerComboBox();
-  populateIMPBabelFormats();
-  tabWidget->removePage(tabWidget->page(2));
+  
+  connect(pbULEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
+  connect(pbDLEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
 } 
 PluginGui::~PluginGui()
 {
@@ -97,7 +94,7 @@ void PluginGui::pbnOK_clicked()
   case 1: {
     const QString& typeString(cmbDLFeatureType->currentText());
     emit importGPSFile(leIMPInput->text(), 
-		       babelFormats.find(impFormat)->second.formatName,
+		       mImporters.find(impFormat)->second,
 		       typeString == "Waypoints", typeString == "Routes",
 		       typeString == "Tracks", leIMPOutput->text(),
 		       leIMPLayer->text());
@@ -107,9 +104,8 @@ void PluginGui::pbnOK_clicked()
   // or download GPS data from a device?
   case 2: {
     int featureType = cmbDLFeatureType->currentItem();
-    emit downloadFromGPS(cmbDLProtocol->currentText().lower(),
-			 cmbDLDevice->currentText(), featureType == 0,
-			 featureType == 1, featureType == 2, 
+    emit downloadFromGPS(cmbDLDevice->currentText(), cmbDLPort->currentText(),
+			 featureType == 0, featureType == 1, featureType == 2, 
 			 leDLOutput->text(), leDLBasename->text());
     break;
   }
@@ -117,52 +113,20 @@ void PluginGui::pbnOK_clicked()
   // or upload GPS data to a device?
   case 3:
     emit uploadToGPS(gpxLayers[cmbULLayer->currentItem()], 
-		     cmbULProtocol->currentText().lower(),
-		     cmbULDevice->currentText());
+		     cmbULDevice->currentText(), cmbULPort->currentText());
     break;
   }
 } 
 
 
-void PluginGui::pbnSelectInputFile_clicked()
-{
-  std::cout << " Gps File Importer::pbnSelectInputFile_clicked() " << std::endl;
-  QString myFileTypeQString;
-  QString myFilterString="Text File (*.txt)";
-  QString myFileNameQString = QFileDialog::getOpenFileName(
-          "." , //initial dir
-          myFilterString,  //filters to select
-          this , //parent dialog
-          "OpenFileDialog" , //QFileDialog qt object name
-          "Select GPS dump text file" , //caption
-          &myFileTypeQString //the pointer to store selected filter
-          );
-  std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
-  leInputFile->setText(myFileNameQString);
-}
-
-
-void PluginGui::pbnSelectOutputFile_clicked()
-{
-  std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
-  QString myOutputFileNameQString = QFileDialog::getSaveFileName(
-          ".",
-          "ESRI Shapefile (*.shp)",
-          this,
-          "save file dialog"
-          "Choose a filename to save under" );
-  leOutputShapeFile->setText(myOutputFileNameQString);
-}
-
-
 void PluginGui::pbnDLOutput_clicked()
 {
-  QString myFileNameQString = QFileDialog::getSaveFileName(
-          "." , //initial dir
-	  "GPS eXchange format (*.gpx)",
-          this , //parent dialog
-	  "Select GPX output",
-	  "Choose a filename to save under" );
+  QString myFileNameQString = 
+    QFileDialog::getSaveFileName("." , //initial dir
+				 "GPS eXchange format (*.gpx)",
+				 this , //parent dialog
+				 "Select GPX output",
+				 "Choose a filename to save under");
   leDLOutput->setText(myFileNameQString);
 }
 
@@ -193,18 +157,6 @@ void PluginGui::enableRelevantControls()
     }
   }
   
-  // import download file
-  else if (tabWidget->currentPageIndex() == 666) {
-    if ( (leOutputShapeFile->text()=="") || (leInputFile->text()=="") )
-    {
-      pbnOK->setEnabled(false);
-    }
-    else
-    {
-      pbnOK->setEnabled(true);
-    }
-  }
-  
   // import other file
   else if (tabWidget->currentPageIndex() == 1) {
     
@@ -224,7 +176,7 @@ void PluginGui::enableRelevantControls()
       pbnOK->setEnabled(true);
   }
 
-  // upload from device
+  // upload to device
   else if (tabWidget->currentPageIndex() == 3) {
     if (cmbULDevice->currentText() == "" || cmbULLayer->currentText() == "")
       pbnOK->setEnabled(false);
@@ -245,8 +197,12 @@ void PluginGui::pbnGPXSelectFile_clicked()
   std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
   QString myFileTypeQString;
   QString myFilterString="GPS eXchange format (*.gpx)";
+  QSettings settings;
+  QString dir = settings.readEntry("/qgis/gps/gpxdirectory");
+  if (dir.isEmpty())
+    dir = ".";
   QString myFileNameQString = QFileDialog::getOpenFileName(
-          "." , //initial dir
+          dir , //initial dir
           myFilterString,  //filters to select
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
@@ -269,9 +225,9 @@ void PluginGui::pbnIMPInput_clicked() {
           &myFileType //the pointer to store selected filter
           );
   impFormat = myFileType.left(myFileType.length() - 6);
-  std::map<QString, BabelFormatInfo>::const_iterator iter;
-  iter = babelFormats.find(impFormat);
-  if (iter == babelFormats.end()) {
+  std::map<QString, QgsBabelFormat*>::const_iterator iter;
+  iter = mImporters.find(impFormat);
+  if (iter == mImporters.end()) {
     std::cerr<<"Unknown file format selected: "
 	     <<myFileType.left(myFileType.length() - 6)<<std::endl;
   }
@@ -279,11 +235,11 @@ void PluginGui::pbnIMPInput_clicked() {
     std::cerr<<iter->first<<" selected"<<std::endl;
     leIMPInput->setText(myFileName);
     cmbIMPFeature->clear();
-    if (iter->second.hasWaypoints)
+    if (iter->second->supportsWaypoints())
       cmbIMPFeature->insertItem("Waypoints");
-    if (iter->second.hasRoutes)
+    if (iter->second->supportsRoutes())
       cmbIMPFeature->insertItem("Routes");    
-    if (iter->second.hasTracks)
+    if (iter->second->supportsTracks())
       cmbIMPFeature->insertItem("Tracks");
   }
 }
@@ -300,14 +256,15 @@ void PluginGui::pbnIMPOutput_clicked() {
 }
 
 
-void PluginGui::populateDeviceComboBox() {
+void PluginGui::populatePortComboBoxes() {
+  
 #ifdef linux
   // look for linux serial devices
   QString linuxDev("/dev/ttyS%1");
   for (int i = 0; i < 10; ++i) {
     if (QFileInfo(linuxDev.arg(i)).exists()) {
-      cmbDLDevice->insertItem(linuxDev.arg(i));
-      cmbULDevice->insertItem(linuxDev.arg(i));
+      cmbDLPort->insertItem(linuxDev.arg(i));
+      cmbULPort->insertItem(linuxDev.arg(i));
     }
     else
       break;
@@ -317,8 +274,8 @@ void PluginGui::populateDeviceComboBox() {
   linuxDev = "/dev/ttyUSB%1";
   for (int i = 0; i < 10; ++i) {
     if (QFileInfo(linuxDev.arg(i)).exists()) {
-      cmbDLDevice->insertItem(linuxDev.arg(i));
-      cmbULDevice->insertItem(linuxDev.arg(i));
+      cmbDLPort->insertItem(linuxDev.arg(i));
+      cmbULPort->insertItem(linuxDev.arg(i));
     }
     else
       break;
@@ -331,8 +288,8 @@ void PluginGui::populateDeviceComboBox() {
   QString freebsdDev("/dev/cuaa%1");
   for (int i = 0; i < 10; ++i) {
     if (QFileInfo(freebsdDev.arg(i)).exists()) {
-      cmbDLDevice->insertItem(freebsdDev.arg(i));
-      cmbULDevice->insertItem(freebsdDev.arg(i));
+      cmbDLPort->insertItem(freebsdDev.arg(i));
+      cmbULPort->insertItem(freebsdDev.arg(i));
     }
     else
       break;
@@ -344,8 +301,8 @@ void PluginGui::populateDeviceComboBox() {
   QString solarisDev("/dev/cua/%1");
   for (int i = 'a'; i < 'k'; ++i) {
     if (QFileInfo(solarisDev.arg(char(i))).exists()) {
-      cmbDLDevice->insertItem(solarisDev.arg(char(i)));
-      cmbULDevice->insertItem(solarisDev.arg(char(i)));
+      cmbDLPort->insertItem(solarisDev.arg(char(i)));
+      cmbULPort->insertItem(solarisDev.arg(char(i)));
     }
     else
       break;
@@ -353,14 +310,30 @@ void PluginGui::populateDeviceComboBox() {
 #endif
 
 #ifdef WIN32
-  cmbULDevice->insertItem("com1");
-  cmbULDevice->insertItem("com2");
-  cmbDLDevice->insertItem("com1");
-  cmbDLDevice->insertItem("com2");
+  cmbULPort->insertItem("com1");
+  cmbULPort->insertItem("com2");
+  cmbDLPort->insertItem("com1");
+  cmbDLPort->insertItem("com2");
 #endif
 
   // OSX, OpenBSD, NetBSD etc? Anyone?
-
+  
+  // remember the last ports used
+  QSettings settings;
+  QString lastDLPort = settings.readEntry("/qgis/gps/lastdlport", "");
+  QString lastULPort = settings.readEntry("/qgis/gps/lastulport", "");
+  for (int i = 0; i < cmbDLPort->count(); ++i) {
+    if (cmbDLPort->text(i) == lastDLPort) {
+      cmbDLPort->setCurrentItem(i);
+      break;
+    }
+  }
+  for (int i = 0; i < cmbULPort->count(); ++i) {
+    if (cmbULPort->text(i) == lastULPort) {
+      cmbULPort->setCurrentItem(i);
+      break;
+    }
+  }
 }
 
 
@@ -373,65 +346,49 @@ void PluginGui::populateULLayerComboBox() {
 
 
 void PluginGui::populateIMPBabelFormats() {
-  babelFormats["Geocaching.com .loc"] =
-    BabelFormatInfo("geo", true, false, false);
-  babelFormats["Magellan Mapsend"] = 
-    BabelFormatInfo("mapsend", true, true, true);
-  babelFormats["Garmin PCX5"] = 
-    BabelFormatInfo("pcx", true, false, true);
-  babelFormats["Garmin Mapsource"] = 
-    BabelFormatInfo("mapsource", true, true, true);
-  babelFormats["GPSUtil"] = 
-    BabelFormatInfo("gpsutil", true, false, false);
-  babelFormats["PocketStreets 2002/2003 Pushpin"] = 
-    BabelFormatInfo("psp", true, false, false);
-  babelFormats["CoPilot Flight Planner"] = 
-    BabelFormatInfo("copilot", true, false, false);
-  babelFormats["Magellan Navigator Companion"] = 
-    BabelFormatInfo("magnav", true, false, false);
-  babelFormats["Holux"] = 
-    BabelFormatInfo("holux", true, false, false);
-  babelFormats["Topo by National Geographic"] = 
-    BabelFormatInfo("tpg", true, false, false);
-  babelFormats["TopoMapPro"] = 
-    BabelFormatInfo("tmpro", true, false, false);
-  babelFormats["GeocachingDB"] = 
-    BabelFormatInfo("gcdb", true, false, false);
-  babelFormats["Tiger"] = 
-    BabelFormatInfo("tiger", true, false, false);
-  babelFormats["EasyGPS Binary Format"] = 
-    BabelFormatInfo("easygps", true, false, false);
-  babelFormats["Delorme Routes"] = 
-    BabelFormatInfo("saroute", false, false, true);
-  babelFormats["Navicache"] = 
-    BabelFormatInfo("navicache", true, false, false);
-  babelFormats["PSITrex"] = 
-    BabelFormatInfo("psitrex", true, true, true);
-  babelFormats["Delorme GPS Log"] = 
-    BabelFormatInfo("gpl", false, false, true);
-  babelFormats["OziExplorer"] = 
-    BabelFormatInfo("ozi", true, false, false);
-  babelFormats["NMEA Sentences"] = 
-    BabelFormatInfo("nmea", true, false, true);
-  babelFormats["Delorme Street Atlas 2004 Plus"] = 
-    BabelFormatInfo("saplus", true, false, false);
-  babelFormats["Microsoft Streets and Trips"] = 
-    BabelFormatInfo("s_and_t", true, false, false);
-  babelFormats["NIMA/GNIS Geographic Names"] = 
-    BabelFormatInfo("nima", true, false, false);
-  babelFormats["Maptech"] = 
-    BabelFormatInfo("mxf", true, false, false);
-  babelFormats["Mapopolis.com Mapconverter Application"] = 
-    BabelFormatInfo("mapconverter", true, false, false);
-  babelFormats["GPSman"] = 
-    BabelFormatInfo("gpsman", true, false, false);
-  babelFormats["GPSDrive"] = 
-    BabelFormatInfo("gpsdrive", true, false, false);
-  babelFormats["Fugawi"] = 
-    BabelFormatInfo("fugawi", true, false, false);
-  babelFormats["DNA"] = 
-    BabelFormatInfo("dna", true, false, false);
-  std::map<QString, BabelFormatInfo>::const_iterator iter;
-  for (iter = babelFormats.begin(); iter != babelFormats.end(); ++iter)
+  babelFilter = "";
+  cmbULDevice->clear();
+  cmbDLDevice->clear();
+  QSettings settings;
+  QString lastDLDevice = settings.readEntry("/qgis/gps/lastdldevice", "");
+  QString lastULDevice = settings.readEntry("/qgis/gps/lastuldevice", "");
+  BabelMap::const_iterator iter;
+  for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
     babelFilter.append((const char*)iter->first).append(" (*.*);;");
+  int u = -1, d = -1;
+  for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
+    if (iter->second->supportsExport()) {
+      cmbULDevice->insertItem(iter->first);
+      if (iter->first == lastULDevice)
+	u = cmbULDevice->count() - 1;
+    }
+    if (iter->second->supportsImport()) {
+      cmbDLDevice->insertItem(iter->first);
+      if (iter->first == lastDLDevice)
+	d = cmbDLDevice->count() - 1;
+    }
+  }
+  if (u != -1)
+    cmbULDevice->setCurrentItem(u);
+  if (d != -1)
+    cmbDLDevice->setCurrentItem(d);
 }
+
+
+void populatePortComboBoxes() {
+  
+}
+
+
+void PluginGui::openDeviceEditor() {
+  QgsGPSDeviceDialog* dlg = new QgsGPSDeviceDialog(mDevices);
+  dlg->show();
+  connect(dlg, SIGNAL(devicesChanged()), this, SLOT(slotDevicesUpdated()));
+}
+
+
+void PluginGui::slotDevicesUpdated() {
+  populateIMPBabelFormats();
+}
+
+
