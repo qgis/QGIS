@@ -1,0 +1,1 @@
+SUBDIRS = ogr postgres

@@ -1,0 +1,53 @@
+# Copyright (C) 2003 Gary Sherman <sherman at mrcc.com>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+if SPIT
+if POSTGRESDB
+lib_LTLIBRARIES = libspitplugin.la
+%.moc.cpp: %.h
+	$(MOC) -o $@ $<
+
+%.h: %.ui
+	$(UIC) -o $@ $<
+
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
+	
+libspitplugin_la_SOURCES =  qgsspit.cpp \
+	qgsconnectiondialog.cpp \
+	qgsshapefile.cpp \
+	qgsmessageviewer.cpp \
+				$(spit_UI)\
+				$(spit_MOC)
+        
+spit_MOC = 	qgsconnectiondialogbase.moc.cpp \
+  qgsshapefile.moc.cpp \
+  qgsmessageviewerbase.moc.cpp \
+  qgsspitbase.moc.cpp
+
+spit_UI = qgsconnectiondialogbase.h \
+    qgsconnectiondialogbase.cpp \
+    qgsspitbase.h \
+    qgsspitbase.cpp \
+    qgsmessageviewerbase.h \
+    qgsmessageviewerbase.cpp
+
+# UI dependencies			
+qgsconnectiondialogbase.h: qgsconnectiondialogbase.ui
+qgsconnectiondialogbase.cpp: qgsconnectiondialogbase.ui qgsconnectiondialogbase.h
+qgsspitbase.h: qgsspitbase.ui
+qgsspitbase.cpp: qgsspitbase.h qgsspitbase.ui
+qgsmessageviewerbase.h: qgsmessageviewerbase.ui
+qgsmessageviewerbase.cpp: qgsmessageviewerbase.h qgsmessageviewerbase.ui
+
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) -I../include $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
+
+libspitplugin_la_LIBADD = $(QT_LDADD) $(PG_LIB) 
+endif
+endif
