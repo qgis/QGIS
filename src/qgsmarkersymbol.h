@@ -35,7 +35,7 @@ class QgsMarkerSymbol : public QgsSymbol
     void setPicture(const QString& svgpath);
     /**Sets the scale factor*/
     void setScaleFactor(double factor);
-    /**Returns a pointer to the picture object*/
+    /**Returns the path of the picture object*/
     const QString& picture() const;
     /**Returns the scale factor*/
     double scaleFactor();

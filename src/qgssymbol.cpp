@@ -18,10 +18,15 @@
 /* $Id$ */
 #include "qgssymbol.h"
 
+QgsSymbol::QgsSymbol()
+{
+
+}
+
 QgsSymbol::QgsSymbol(QColor c)
 {
-  m_pen.setColor(c);
-  m_brush.setColor(c);
+  mPen.setColor(c);
+  mBrush.setColor(c);
 }
 
 QgsSymbol::~QgsSymbol()
@@ -29,30 +34,30 @@ QgsSymbol::~QgsSymbol()
 }
 QColor QgsSymbol::color() const
 {
-  return m_pen.color();
+  return mPen.color();
 }
 
 void QgsSymbol::setColor(QColor c)
 {
-  m_pen.setColor(c);
+  mPen.setColor(c);
 }
 
 QColor QgsSymbol::fillColor() const
 {
-  return m_brush.color();
+  return mBrush.color();
 }
 
 void QgsSymbol::setFillColor(QColor c)
 {
-  m_brush.setColor(c);
+  mBrush.setColor(c);
 }
 
 int QgsSymbol::lineWidth() const
 {
-  return m_pen.width();
+  return mPen.width();
 }
 
 void QgsSymbol::setLineWidth(int w)
 {
-  m_pen.setWidth(w);
+  mPen.setWidth(w);
 }
