@@ -64,6 +64,9 @@ public:
   //! Select features found within the search rectangle
   void select(QgsRect * rect, bool lock);
 
+  //!Select not selected features and deselect selected ones
+  void invertSelection();
+
   //! Display the attribute table
   void table();
 
