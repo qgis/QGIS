@@ -84,3 +84,8 @@ void QgisAppBase::identify()
 {
 
 }
+
+void QgisAppBase::zoomPrevious()
+{
+
+}

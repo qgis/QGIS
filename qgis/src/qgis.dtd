@@ -1,3 +1,7 @@
+<!-- DTD for QGIS project file
+* This DTD describes the maplayers and their symbology and
+* is used when saving/restoring a QGIS project.
+-->
 <!ELEMENT qgis (projectlayers) >
 <!ELEMENT projectlayers (maplayer) >
 <!ELEMENT maplayer (layername, datasource, zorder, symbol) >
@@ -9,7 +13,10 @@
 <!ELEMENT fillcolor EMPTY>
 <!ELEMENT outlinecolor EMPTY>
 <!ATTLIST qgis projectname CDATA #REQUIRED >
-<!ATTLIST maplayer type (vector|raster|database) "vector" >
+<!ATTLIST maplayer 
+	type (vector|raster|database) "vector"
+	visible (1|0) "0"
+	>
 <!ATTLIST projectlayers layercount CDATA #REQUIRED >
 <!ATTLIST fillcolor 
 	red CDATA #IMPLIED

@@ -251,11 +251,21 @@ void QgsMapCanvas::clear()
 
 void QgsMapCanvas::zoomFullExtent()
 {
+   previousExtent = currentExtent;
 	currentExtent = fullExtent;
 	clear();
 	render2();
 }
 
+void QgsMapCanvas::zoomPreviousExtent(){
+  if(previousExtent.width() > 0){
+      QgsRect tempRect = currentExtent;
+      currentExtent = previousExtent;
+      previousExtent = tempRect;
+      clear();
+      render2();
+    }
+  }
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
 	mouseButtonDown = true;
@@ -287,7 +297,6 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	QPainter paint;
 	QPen pen(Qt::gray);
 	QgsPoint ll, ur;
-   QgsRect *zoomRect ;
 	if (dragging) {
 		dragging = false;
 		switch (mapTool) {
@@ -305,6 +314,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
 			  ll = coordXForm->toMapCoordinates(zoomBox.left(), zoomBox.bottom());
 			  ur = coordXForm->toMapCoordinates(zoomBox.right(), zoomBox.top());
+            previousExtent = currentExtent;
 			  //QgsRect newExtent(ll.x(), ll.y(), ur.x(), ur.y());
 			  currentExtent.setXmin(ll.x());
 			  currentExtent.setYmin(ll.y());
@@ -315,6 +325,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  render2();
 			  break;
 		  case QGis::ZoomOut:
+      {
 			  // erase the rubber band box
 			  paint.begin(this);
 			  paint.setPen(pen);
@@ -327,17 +338,32 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  // scale the extent so the current view fits inside the zoomBox
 			  ll = coordXForm->toMapCoordinates(zoomBox.left(), zoomBox.bottom());
 			  ur = coordXForm->toMapCoordinates(zoomBox.right(), zoomBox.top());
-              zoomRect = new QgsRect( ll, ur);
+            previousExtent = currentExtent;
+              QgsRect tempRect = currentExtent;
+              currentExtent.setXmin(ll.x());
+			   currentExtent.setYmin(ll.y());
+			   currentExtent.setXmax(ur.x());
+			   currentExtent.setYmax(ur.y());
+			   currentExtent.normalize();
+          QgsPoint cer = currentExtent.center();
+          std::cout << "Current extent rectangle is " << tempRect << std::endl;
+            std::cout << "Center of zoom out rectangle is " << cer << std::endl;
+            std::cout << "Zoom out rectangle should have ll of " << ll << " and ur of " << ur << std::endl;
+            std::cout << "Zoom out rectangle is " << currentExtent << std::endl;
               double sf;
 			  if (zoomBox.width() > zoomBox.height()) {
-              sf = currentExtent.width()/zoomRect->width();
+              sf = tempRect.width()/currentExtent.width();
 			  } else {
-              sf = currentExtent.height()/zoomRect->height();
+              sf = tempRect.height()/currentExtent.height();
 			  }
-          delete zoomRect;
-			  currentExtent.scale(sf);
+          //center = new QgsPoint(zoomRect->center());
+        //  delete zoomRect;
+			  currentExtent.expand(sf);
+        std::cout << "Extent scaled by " << sf << " to " << currentExtent << std::endl;
+        std::cout << "Center of currentExtent after scaling is " << currentExtent.center() << std::endl;
 			  clear();
 			  render2();
+        }
 			  break;
 
 		  case QGis::Pan:
@@ -351,7 +377,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  double dx = fabs(end.x() - start.x());
 			  double dy = fabs(end.y() - start.y());
 			  // modify the extent
-
+             previousExtent = currentExtent;
 			  if (end.x() < start.x()) {
 				  currentExtent.setXmin(currentExtent.xMin() + dx);
 				  currentExtent.setXmax(currentExtent.xMax() + dx);

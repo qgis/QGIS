@@ -86,85 +86,72 @@
                 <attribute name="title">
                     <string>About</string>
                 </attribute>
-                <widget class="QLabel">
+                <grid>
                     <property name="name">
-                        <cstring>lblVersion</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>35</x>
-                            <y>40</y>
-                            <width>286</width>
-                            <height>21</height>
-                        </rect>
+                    <property name="margin">
+                        <number>11</number>
                     </property>
-                    <property name="text">
-                        <string>Version</string>
+                    <property name="spacing">
+                        <number>6</number>
                     </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel4</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>20</x>
-                            <y>10</y>
-                            <width>325</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Quantum GIS (qgis)</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
-                <widget class="QTextEdit">
-                    <property name="name">
-                        <cstring>lblUrls</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>15</x>
-                            <y>75</y>
-                            <width>330</width>
-                            <height>70</height>
-                        </rect>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>32767</width>
-                            <height>70</height>
-                        </size>
-                    </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>192</red>
-                            <green>192</green>
-                            <blue>192</blue>
-                        </color>
-                    </property>
-                    <property name="backgroundOrigin">
-                        <enum>WidgetOrigin</enum>
-                    </property>
-                    <property name="frameShape">
-                        <enum>PopupPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>lblVersion</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Version</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>TextLabel4</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Quantum GIS (qgis)</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                    </widget>
+                    <widget class="QTextEdit" row="2" column="0">
+                        <property name="name">
+                            <cstring>lblUrls</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>70</height>
+                            </size>
+                        </property>
+                        <property name="paletteBackgroundColor">
+                            <color>
+                                <red>192</red>
+                                <green>192</green>
+                                <blue>192</blue>
+                            </color>
+                        </property>
+                        <property name="backgroundOrigin">
+                            <enum>WidgetOrigin</enum>
+                        </property>
+                        <property name="frameShape">
+                            <enum>PopupPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                            <enum>Sunken</enum>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </grid>
             </widget>
             <widget class="QWidget">
                 <property name="name">
@@ -173,22 +160,25 @@
                 <attribute name="title">
                     <string>What's New</string>
                 </attribute>
-                <widget class="QTextEdit">
+                <grid>
                     <property name="name">
-                        <cstring>txtWhatsNew</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>8</x>
-                            <y>8</y>
-                            <width>336</width>
-                            <height>131</height>
-                        </rect>
+                    <property name="margin">
+                        <number>11</number>
                     </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
+                    <property name="spacing">
+                        <number>6</number>
                     </property>
-                </widget>
+                    <widget class="QTextEdit" row="0" column="0">
+                        <property name="name">
+                            <cstring>txtWhatsNew</cstring>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </grid>
             </widget>
             <widget class="QWidget">
                 <property name="name">
@@ -197,51 +187,83 @@
                 <attribute name="title">
                     <string>License</string>
                 </attribute>
-                <widget class="QLabel">
+                <grid>
                     <property name="name">
-                        <cstring>TextLabel1</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>30</x>
-                            <y>20</y>
-                            <width>293</width>
-                            <height>20</height>
-                        </rect>
+                    <property name="margin">
+                        <number>11</number>
                     </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>11</pointsize>
-                        </font>
+                    <property name="spacing">
+                        <number>6</number>
                     </property>
-                    <property name="text">
-                        <string>Quantum GIS is licensed under the GNU General Public License</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel2</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>80</x>
-                            <y>50</y>
-                            <width>194</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>11</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>http://www.gnu.org/licenses</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>TextLabel2</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <pointsize>11</pointsize>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>http://www.gnu.org/licenses</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>TextLabel1</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <pointsize>11</pointsize>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>Quantum GIS is licensed under the GNU General Public License</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                    </widget>
+                    <spacer row="3" column="0">
+                        <property name="name">
+                            <cstring>Spacer2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>0</width>
+                                <height>40</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <spacer row="0" column="0">
+                        <property name="name">
+                            <cstring>Spacer3</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>0</width>
+                                <height>16</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </grid>
             </widget>
         </widget>
     </grid>

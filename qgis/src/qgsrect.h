@@ -17,8 +17,8 @@
 
 #ifndef QGSRECT_H
 #define QGSRECT_H
-
-class QString;
+#include <iostream>
+#include <qstring.h>
 class QgsPoint;
 
 /*! \class QgsRect
@@ -57,8 +57,12 @@ class QgsRect{
     double width() const;
     //! Height of the rectangle
     double height() const;
+    //! Center point of the rectangle
+    QgsPoint center() const;
     //! Scale the rectangle around its center point
-    void scale(double);
+    void scale(double, QgsPoint *c =0);
+    //! Expand the rectangle to support zoom out scaling
+    void expand(double, QgsPoint *c = 0);
     //! returns string representation of form xmin,ymin xmax,ymax
     QString stringRep() const;
     /*! Comparison operator
@@ -76,4 +80,10 @@ class QgsRect{
     double xmax;
     double ymax;
 };
+
+inline std::ostream& operator << (std::ostream& os, const QgsRect &r)
+{
+    return os << r.stringRep();
+}
+  
 #endif // QGSRECT_H

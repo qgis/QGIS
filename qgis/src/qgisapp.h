@@ -54,6 +54,8 @@ public:
   	void zoomIn();
 	//! Zoom to full extent
 	void zoomFull();
+  //! Zoom to the previous extent
+  void zoomPrevious();
 	//! Set map tool to pan
 	void pan();
 	void identify();

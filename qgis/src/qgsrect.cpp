@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include <qstring.h>
 #include "qgspoint.h"
 #include "qgsrect.h"
@@ -79,7 +80,10 @@ double QgsRect::height() const
 {
 	return ymax - ymin;
 }
-
+QgsPoint QgsRect::center() const
+{
+  return QgsPoint(xmin + width() / 2 ,  ymin + height() / 2);
+}
 void QgsRect::normalize()
 {
 	double temp;
@@ -94,15 +98,42 @@ void QgsRect::normalize()
 		ymax = temp;
 	}
 }
-void QgsRect::scale(double scaleFactor)
+void QgsRect::scale(double scaleFactor, QgsPoint *cp)
 {
 	// scale from the center
-	double centerX = xmin + width() / 2;
-	double centerY = ymin + height() / 2;
-	xmin = centerX - (width() * scaleFactor) / 2;
-	xmax = xmin + width() * scaleFactor;
-	ymin = centerY - (height() * scaleFactor) / 2;
-	ymax = ymin + height() * scaleFactor;
+  double centerX, centerY;
+  if(cp){
+      centerX = cp->x();
+      centerY = cp->y();
+    }else{
+	  centerX = xmin + width() / 2;
+	  centerY = ymin + height() / 2;
+  }
+  double newWidth = width() * scaleFactor;
+  double newHeight = height() * scaleFactor;
+ 	xmin = centerX - newWidth/2.0;
+	xmax = centerX + newWidth/2.0;
+	ymin = centerY -  newHeight/2.0;
+	ymax = centerY +  newHeight/2.0;
+}
+void QgsRect::expand(double scaleFactor, QgsPoint *cp)
+{
+	// scale from the center
+  double centerX, centerY;
+  if(cp){
+      centerX = cp->x();
+      centerY = cp->y();
+    }else{
+	  centerX = xmin + width() / 2;
+	  centerY = ymin + height() / 2;
+  }
+  
+  double newWidth = width() * scaleFactor;
+  double newHeight = height() * scaleFactor;
+	xmin = centerX - newWidth;
+	xmax = centerX + newWidth;
+	ymin = centerY -  newHeight;
+	ymax = centerY +  newHeight;
 }
 
 QString QgsRect::stringRep() const
@@ -135,3 +166,4 @@ QgsRect & QgsRect::operator=(const QgsRect & r)
 
 
 }
+

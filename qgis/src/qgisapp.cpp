@@ -56,7 +56,7 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.5-alpha build 20020916";
+static const char *qgisVersion = "0.0.5-alpha";
 // cursors
 static unsigned char zoom_in_bits[] = {
    0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -154,9 +154,15 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n* Display name can be set from the layer properties dialog\n"
-	  "* Fixed multiple render bug when adding a layer\n"
-	  "* New icons for various actions\n";
+	watsNew += "\n*Removing a layer from the map no longer crashes the application\n"
+		"* Fixed multiple render bug when adding a layer\n"
+		"* Data source is shown in Layer Properties dialog\n"
+		"* Display name of a layer can be changed using the Layer Properties dialog\n"
+		"* Line widths can be set for a layer using the Layer Properties dialog\n"
+		"* Zoom out now works\n"
+		"* Zoom Previous added to toolbar\n"
+		"* Toolbar has been rearranged and new icons added\n"
+		"* Help|About QGis now contains Version, Whats New, and License information\n";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
@@ -323,6 +329,10 @@ void QgisApp::pan()
 void QgisApp::zoomFull()
 {
 	mapCanvas->zoomFullExtent();
+}
+
+void QgisApp::zoomPrevious(){
+    mapCanvas->zoomPreviousExtent();
 }
 
 void QgisApp::identify()
