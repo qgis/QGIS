@@ -32,10 +32,11 @@ class QgisApp;
 class QgsIdentifyResults;
 
 #include <map>
+
 #include "qgsmaplayer.h"
 #include "qvaluevector.h"
 #include "qgsattributetabledisplay.h"
-#include <map>
+
 
 /*! \class QgsVectorLayer
  * \brief Vector layer backed by a data source provider

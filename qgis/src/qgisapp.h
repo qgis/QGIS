@@ -36,11 +36,16 @@ class QgsMapLayer;
 class QSocket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
+class QgsMapCanvas;
+
 #include "qgisappbase.uic.h"
 #include "qgisiface.h"
-class QgsMapCanvas;
 #include "splashscreen.h"
+#include "qgsconfig.h"
+
 static SplashScreen * gSplashScreen ;
+
+
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
@@ -130,10 +135,10 @@ private:
         /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
         bool isValidVectorFileName (QString * theFileNameQString);
 
-  #ifdef HAVE_POSTGRESQL
+#ifdef HAVE_POSTGRESQL
   //! Add a databaselayer to the map
   void addDatabaseLayer();
-  #endif
+#endif
 
   //! Exit Qgis
   void fileExit();
