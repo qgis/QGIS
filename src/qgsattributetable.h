@@ -21,6 +21,7 @@
 
 #include <qtable.h>
 #include <qmap.h>
+#include <map>
 #include <set>
 
 class QPopupMenu;

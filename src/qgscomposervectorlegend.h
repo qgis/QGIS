@@ -44,7 +44,7 @@
 #include <qwidget.h>
 #include <qcanvas.h>
 #include <qobject.h>
-
+#include <map>
 #include "qgsrect.h"
 
 #include "qgscomposer.h"
