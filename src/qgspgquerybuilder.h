@@ -28,7 +28,7 @@ extern "C"
 #endif
 class QgsField;
 /*!
- * \class QgsPgQueryBuider
+ * \class QgsPgQueryBuilder
  * \brief Query Builder for PostgreSQL layers.
  *
  * The query builder allows interactive creation of a SQL for limiting the
