@@ -35,9 +35,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
 {
   //downcast the maplayer to rasterlayer
   rasterLayer = (QgsRasterLayer *) lyr;
+  
   //these properties (layername and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText(rasterLayer->source());
   leDisplayName->setText(lyr->name());
+  
+  //update the debug checkbox
+  cboxShowDebugInfo->setChecked(rasterLayer->getShowDebugOverlayFlag());
+  
   //update the legend pixmap
   pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
@@ -256,6 +261,15 @@ void QgsRasterLayerProperties::apply()
   pixmapLegend->repaint(false);
   
   rasterLayer->setlayerName(leDisplayName->text());
+  //see if the user would like debug overlays
+  if (cboxShowDebugInfo->isChecked()==true)
+  {
+    rasterLayer->setShowDebugOverlayFlag(true);
+  }
+  else
+  {
+    rasterLayer->setShowDebugOverlayFlag(false);
+  }
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();
 }
