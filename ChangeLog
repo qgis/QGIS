@@ -1,8 +1,15 @@
 QGIS Change Log
-ChangeLog,v 1.81 2004/05/17 10:32:19 larsl Exp
+ChangeLog,v 1.82 2004/05/18 23:06:17 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
+2004-05-18 [ts] 0.2.0devel24
+** Relax checking of raster filetype extensions to cater for filetypes where
+extension is unpredictable (e.g. grass).
+Now I use gdal to quickly check if a file is useable so pretty much anything
+gdal iscompile with should get through if you have chosen wildcard
+ filter in add raster dialog.
+ 
 2004-05-17 [larsl] 0.2.0devel23
 ** Added URL parsing and attribute fields for route and track GPX layers
 
