@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false),
-									 sort_ascending(true), mActionPopup(0)
+									 sort_ascending(true), mActionPopup(0), mEditable(false)
 {
   QFont f(font());
   f.setFamily("Helvetica");
@@ -309,4 +309,14 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
 void QgsAttributeTable::popupItemSelected(int id)
 {
   mActions.doAction(id, mActionValues, mClickedOnValue);
+}
+
+void QgsAttributeTable::addAttribute(const QString& name, const QString& type)
+{
+    //soon
+}
+
+void QgsAttributeTable::deleteAttribute(const QString& name)
+{
+    //soon
 }

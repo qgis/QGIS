@@ -278,6 +278,7 @@ protected:
   /**Vector holding the information which features are activated*/
   std::set<int> mSelected;
   std::set<int> mDeleted;
+  /**Features which are not commited*/
   std::list<QgsFeature*> mAddedFeatures;
   /**Color to and fill the selected features*/
   QColor selectionColor;

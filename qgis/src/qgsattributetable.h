@@ -21,6 +21,7 @@
 
 #include <qtable.h>
 #include <qmap.h>
+#include <set>
 
 class QPopupMenu;
 #include "qgsattributeaction.h"
@@ -49,6 +50,10 @@ class QgsAttributeTable:public QTable
 	 which are used when the user requests a popup menu */
       void setAttributeActions(const QgsAttributeAction& actions)
 	{ mActions = actions; }
+      /**Switches editing mode on and off*/
+      void setEditable(bool enabled){mEditable=enabled;}
+      void addAttribute(const QString& name, const QString& type);
+      void deleteAttribute(const QString& name);
       
       public slots:
       void columnClicked(int col);
@@ -65,6 +70,16 @@ class QgsAttributeTable:public QTable
       QMap<int,int> rowIdMap;
       /**Flag indicating, which sorting order should be used*/
       bool sort_ascending;
+      /**True if table is in editing mode*/
+      bool mEditable;
+      /**Map containing the added attributes. The key is the attribute name
+       and the value the attribute type*/
+      std::map<QString,QString> mAddedAttributes;
+      /**Set containing the attribute names of deleted attributes*/
+      std::set<QString> mDeletedFeatures;
+      /**Nested map containing the changed attribute values. The int is the feature id, 
+	 the first QString the attribute name and the second QString the new value*/
+      std::map<int,std::map<QString,QString> > mChangedValues;
       /**Compares the content of two cells either alphanumeric or numeric. If 'ascending' is true, -1 means s1 is less, 0 equal, 1 greater. If 'ascending' is false, -1 means s1 is more, 0 equal, 1 greater. This method is used mainly to sort a column*/
       int compareItems(QString s1, QString s2, bool ascending, bool alphanumeric);
       void keyPressEvent(QKeyEvent* ev);
