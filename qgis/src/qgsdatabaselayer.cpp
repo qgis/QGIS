@@ -43,7 +43,7 @@ tableName(table)
 	if (pd->Status() == CONNECTION_OK) {
 		// get the geometry column
 		QString sql = "select f_geometry_column,type from geometry_columns where f_table_name='" + tableName + "'";
-//      qWarning("Getting geometry column: " + sql);
+     // qWarning("Getting geometry column: " + sql);
 		int result = pd->ExecTuplesOk((const char *) sql);
 		if (result) {
 			// set the simple type for use with symbology operations
@@ -63,7 +63,7 @@ tableName(table)
 			result = pd->ExecTuplesOk((const char *) sql);
 
 			if (result) {
-				QString vRight = pd->GetValue(0, "right");
+				//QString vRight = pd->GetValue(0, "right");
 				layerExtent.setXmax(QString(pd->GetValue(0, "xmax")).toDouble());
 				layerExtent.setXmin(QString(pd->GetValue(0, "xmin")).toDouble());
 				layerExtent.setYmax(QString(pd->GetValue(0, "ymax")).toDouble());
@@ -73,7 +73,7 @@ tableName(table)
 				QTextOStream(&xMsg).width(18);
 				QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
 				  xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
-//              qWarning(xMsg);
+             // qWarning(xMsg);
 
 			} else {
 				QString msg = "Unable to access " + tableName;
@@ -430,7 +430,7 @@ void QgsDatabaseLayer::identify(QgsRect * r)
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + r->stringRep();
 	sql += ")'::box3d,-1)";
-	qWarning(sql);
+	//qWarning(sql);
 	// select the features
 	PgCursor pgs(dataSource, "identifyCursor");
 
@@ -467,7 +467,7 @@ void QgsDatabaseLayer::table()
 {
 	// display the attribute table
 	QString sql = "select * from " + tableName;
-	qWarning(sql);
+	//qWarning(sql);
 	// select the features
 	PgCursor pgs(dataSource, "attributeCursor");
 

@@ -256,7 +256,7 @@
                 <string>Identify</string>
             </property>
             <property name="toolTip">
-                <string>Identify a feature on the active layer (Not Implemented)</string>
+                <string>Identify a feature on the active layer</string>
             </property>
         </action>
     </actiongroup>
@@ -307,7 +307,7 @@
             <string>Attribute table</string>
         </property>
         <property name="toolTip">
-            <string>Open the attribute table for the selected layer (Not Implemented)</string>
+            <string>Open the attribute table for the selected layer</string>
         </property>
     </action>
     <action>

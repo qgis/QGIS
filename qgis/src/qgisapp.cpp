@@ -247,6 +247,7 @@ void QgisApp::addDatabaseLayer()
 
 		// add files to the map canvas
 		QStringList tables = dbs->selectedTables();
+		
 		QString connInfo = dbs->connInfo();
 		// for each selected table, connect to the datbase, parse the WKT geometry,
 		// and build a cavnasitem for it
@@ -255,12 +256,13 @@ void QgisApp::addDatabaseLayer()
 		while (it != tables.end()) {
 
 			// create the layer
+			//qWarning("creating lyr");
 			QgsDatabaseLayer *lyr = new QgsDatabaseLayer(connInfo, *it);
 			// give it a random color
 
 			// add it to the mapcanvas collection
 			mapCanvas->addLayer(lyr);
-
+			//qWarning("incrementing iterator");
 			++it;
 		}
 		//  qApp->processEvents();
@@ -367,12 +369,12 @@ void QgisApp::attributeTable()
 	QListViewItem *li = legendView->currentItem();
 	if(li){
 	QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
-	if (lyr) {
-		lyr->table();
-
-	} else {
-		QMessageBox::information(this, "No Layer Selected", "To open an attribute table, you must select a layer in the legend");
-	}
+		if (lyr) {
+			lyr->table();
+	
+		} else {
+			QMessageBox::information(this, "No Layer Selected", "To open an attribute table, you must select a layer in the legend");
+		}
 	}
 }
 
