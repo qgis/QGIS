@@ -30,6 +30,7 @@
 #include <qprogressdialog.h>
 #include <qmemarray.h>
 #include <qapplication.h>
+#include <iostream>
 extern "C"
 {
   #include <libpq-fe.h>
@@ -252,10 +253,17 @@ void QgsSpit::import(){
       pro->setAutoClose(true);
       qApp->processEvents();
       //pro->setAutoReset(true);
-
-      PQexec(pd, "BEGIN");
       
       for(int i=0; i<fileList.size() ; i++){
+        // if a name starts with invalid character
+        if(!(fileList[i]->getTable()[0]).isLetter()){
+          QMessageBox::warning(pro, "Import Shapefiles",
+          "Problem inserting file:\n"+fileList[i]->getName()+"\nInvalid table name.");
+          std::cout<<i<<std::endl;
+          continue;
+        }
+        PQexec(pd, "BEGIN");
+        
         fileList[i]->setTable(tblShapefiles->text(i, 3));
         pro->show();
         pro->setLabelText("Importing files\n"+fileList[i]->getName());
@@ -280,7 +288,7 @@ void QgsSpit::import(){
           QMessageBox::Warning,
           QMessageBox::Yes | QMessageBox::Default,
           QMessageBox::No  | QMessageBox::Escape,
-          QMessageBox::NoButton, this, "Relation Exists");
+          QMessageBox::NoButton, pro, "Relation Exists");
         }
         if ((!rel_exists1 && !rel_exists2) || del_confirm->exec() == QMessageBox::Yes){
           if(rel_exists1){
@@ -298,18 +306,13 @@ void QgsSpit::import(){
           if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), txtGeomName->text(),
             QString("%1").arg(spinSrid->value()), pd, pro, finished)){
             if(!finished){
-              pro->close();
-              QMessageBox::warning(this, "Import Shapefiles",
-                "Problem inserting features\nOne or more of your shapefiles may be corrupted");
+              QMessageBox::warning(pro, "Import Shapefiles",
+                "Problem inserting features from file:\n"+fileList[i]->getName());
+              PQexec(pd, "ROLLBACK");
             }
-            finished = true;
-            break;
-          }
-          else if(finished){
-            pro->close();
-            break;
           }
           else{  // if file has been imported, remove it from the list
+            PQexec(pd, "COMMIT");
             for(int j=0; j<tblShapefiles->numRows(); j++)
               if(tblShapefiles->text(j,0)==QString(fileList[i]->getName())){
                 tblShapefiles->selectRow(j);
@@ -321,13 +324,7 @@ void QgsSpit::import(){
         }
         else{
           pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
-        }
-      }
-      
-      if(finished)
-        PQexec(pd, "ROLLBACK");
-      else{
-        PQexec(pd, "COMMIT");
+        }        
       }
     }
     else 
