@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>563</width>
-            <height>365</height>
+            <width>600</width>
+            <height>398</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -48,7 +48,7 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="5" column="2">
+        <widget class="QLayoutWidget" row="5" column="3">
             <property name="name">
                 <cstring>layout5</cstring>
             </property>
@@ -143,7 +143,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="4" column="2">
+        <widget class="QLayoutWidget" row="4" column="3">
             <property name="name">
                 <cstring>layout6</cstring>
             </property>
@@ -225,7 +225,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTextEdit" row="1" column="2">
+        <widget class="QTextEdit" row="1" column="3">
             <property name="name">
                 <cstring>teInstructions</cstring>
             </property>
@@ -245,7 +245,93 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="3" column="2">
+        <widget class="Line" row="0" column="1" rowspan="6" colspan="1">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>VLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>txtHeading</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>24</pointsize>
+                    <bold>1</bold>
+                </font>
+            </property>
+            <property name="text">
+                <string>Delimited Text Layer</string>
+            </property>
+            <property name="alignment">
+                <set>AlignCenter</set>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="3" column="3">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Delimited text file</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>txtFilePath</cstring>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Full path to the delimited text file</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnBrowseForFile</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>30</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Browse to find the delimited text file to be processed</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="3">
             <property name="name">
                 <cstring>layout5</cstring>
             </property>
@@ -316,92 +402,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="Line" row="0" column="1" rowspan="6" colspan="1">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>VLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="2">
-            <property name="name">
-                <cstring>txtHeading</cstring>
-            </property>
-            <property name="font">
-                <font>
-                    <pointsize>24</pointsize>
-                    <bold>1</bold>
-                </font>
-            </property>
-            <property name="text">
-                <string>Delimited Text Layer</string>
-            </property>
-            <property name="alignment">
-                <set>AlignCenter</set>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="2" column="2">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Delimited text file</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>txtFilePath</cstring>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Full path to the delimited text file</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnBrowseForFile</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>30</width>
-                            <height>32767</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Browse to find the delimited text file to be processed</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
     </grid>
 </widget>
 <images>
@@ -451,13 +451,18 @@
     </connection>
 </connections>
 <tabstops>
+    <tabstop>txtLayerName</tabstop>
     <tabstop>txtDelimiter</tabstop>
     <tabstop>txtFilePath</tabstop>
     <tabstop>btnBrowseForFile</tabstop>
     <tabstop>cmbXField</tabstop>
     <tabstop>cmbYField</tabstop>
-    <tabstop>pbnCancel</tabstop>
+    <tabstop>pbnHelp</tabstop>
+    <tabstop>pbnParse</tabstop>
     <tabstop>pbnOK</tabstop>
+    <tabstop>pbnCancel</tabstop>
+    <tabstop>pbnCancel_2</tabstop>
+    <tabstop>teInstructions</tabstop>
 </tabstops>
 <slots>
     <slot>pbnOK_clicked()</slot>
