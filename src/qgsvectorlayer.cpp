@@ -62,8 +62,10 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
     :QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey), 
     tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0) 
 {
+#ifdef DEBUG
   std::cerr << "VECTORLAYERPATH: " << vectorLayerPath << std::endl;
   std::cerr << "BASENAME: " << baseName << std::endl;
+#endif  
 // load the plugin
 QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
 QString ogrlib = pReg->library(providerKey);
