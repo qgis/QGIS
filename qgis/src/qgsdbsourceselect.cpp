@@ -128,14 +128,19 @@ void QgsDbSourceSelect::dbConnect()
   connString += host;
   connString += " dbname=";
   QString database = settings.readEntry(key + "/database");
-  connString += database + " user=";
+  connString += database + " port=";
+  QString port = settings.readEntry(key + "/port");
+  if(port.length() == 0){
+      port = "5432";
+  }
+  connString += port + " user=";
   QString username = settings.readEntry(key + "/username");
   connString += username;
   QString password = settings.readEntry(key + "/password");
   bool makeConnection = true;
   if (password == QString::null)
     {
-      // get password from user
+      // get password from user 
       makeConnection = false;
       QString password = QInputDialog::getText(tr("Password for ") + database + "@" + host,
                                                tr("Please enter your password:"),
@@ -144,6 +149,9 @@ void QgsDbSourceSelect::dbConnect()
       //  allow null password entry in case its valid for the database
     }
   connString += " password=" + password;
+  #ifdef DEBUG
+  std::cout << "Connection info: " << connString << std::endl;
+  #endif
   if (makeConnection)
     {
       m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
