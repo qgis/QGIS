@@ -25,6 +25,7 @@
 #include <qpushbutton.h>
 #include "qgsmarkerdialog.h"
 #include "qgsdataprovider.h"
+#include "qgssvgcache.h"
 #include "qgsvectorlayer.h"
 
 QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer* vlayer): QScrollView(parent), mClassField(classfield), mWidget(new QWidget(viewport())), mGridLayout(new QGridLayout(mWidget, 1, 5)), mMode(mode), mNumberOfClasses(nofclasses), mVectorLayer(vlayer)
@@ -186,28 +187,10 @@ void QgsGraMaExtensionWidget::adjustMarkers()
 
 void QgsGraMaExtensionWidget::adjustMarker(int row)
 {
-    double scalefactor=((QLineEdit*)mWidgetVector[row*5+4])->text().toDouble();	
-    QPicture pic;
-    pic.load(((QPushButton*)mWidgetVector[row*5+3])->name(),"svg");
-    int width=(int)(pic.boundingRect().width()*scalefactor);
-    int height=(int)(pic.boundingRect().height()*scalefactor);
-	
-    //prevent 0 width or height, which would cause a crash
-    if(width==0)
-    {
-	width=1;
-    }
-    if(height==0)
-    {
-	height=1;
-    }
-
-    QPixmap pixmap(height,width);
-    pixmap.fill();
-    QPainter p(&pixmap);
-    p.scale(scalefactor,scalefactor);
-    p.drawPicture(0,0,pic);
-    ((QPushButton *)mWidgetVector[row*5+3])->setPixmap(pixmap); 
+    double scalefactor=((QLineEdit*)mWidgetVector[row*5+4])->text().toDouble();
+    QPixmap pix = QgsSVGCache::instance().
+      getPixmap(((QPushButton*)mWidgetVector[row*5+3])->name(), scalefactor);
+    ((QPushButton *)mWidgetVector[row*5+3])->setPixmap(pix); 
 }
 
 void QgsGraMaExtensionWidget::handleReturnPressed()
