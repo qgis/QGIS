@@ -1,5 +1,5 @@
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <qgsconfig.h>
 #endif
 
 #include <stdio.h>
