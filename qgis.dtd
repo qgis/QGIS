@@ -57,8 +57,6 @@
 <!ELEMENT rasterproperties (showDebugOverlayFlag, showGrayAsColorFlag, invertHistogramFlag, stdDevsToPlotDouble, transparencyLevelInt, redBandNameQString, greenBandNameQString, blueBandNameQString, grayBandNameQString) >
 <!--Raster flag to indicate whether debug infor overlay should be rendered onto the raster -->
 <!ELEMENT  showDebugOverlayFlag>
-<!--Raster flag indicating whether grayscale images should be rendered as pseudocolor -->
-<!ELEMENT  showGrayAsColorFlag>
 <!--Raster : flag indicating whether the histogram should be inverted or not -->
 <!ELEMENT  invertHistogramFlag>
 <!--Raster : Number of stddev to plot (0) to ignore -->
@@ -75,7 +73,6 @@
 <!ELEMENT grayBandNameQString (#CDATA)>
 <!--  Attribute Lists -->
 <!ATTLIST showDebugOverlayFlag boolean (1|0|true|false) "false">	
-<!ATTLIST showGrayAsColorFlag boolean (1|0|true|false) "false">
 <!ATTLIST invertHistogramFlag boolean (1|0|true|false) "false">
 <!ATTLIST stdDevsToPlotDouble value CDATA "0">
 <!ATTLIST transparencyLevelInt value CDATA "0">
