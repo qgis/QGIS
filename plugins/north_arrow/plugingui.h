@@ -39,6 +39,8 @@ signals:
    
 public slots:
     void setRotation(int);
+    void setPlacement(QString thePlacementQString);
+    
 private slots:
     //overides function byt the same name created in .ui
     void spinSize_valueChanged( int theInt);
