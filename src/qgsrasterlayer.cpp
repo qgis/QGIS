@@ -1,4 +1,4 @@
-/***************************************************************************
+/* **************************************************************************
   qgsrasterlayer.cpp -  description
   -------------------
 begin                : Sat Jun 22 2002
@@ -6,7 +6,7 @@ copyright            : (C) 2003 by Tim Sutton, Steve Halasz and Gary E.Sherman
 email                : tim at linfiniti.com
  ***************************************************************************/
 
-/***************************************************************************
+/* **************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -98,11 +98,10 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 
     if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
     {
-        printf( "Origin = (%.6f,%.6f)\n",
-                adfGeoTransform[0], adfGeoTransform[3] );
-
-        printf( "Pixel Size = (%.6f,%.6f)\n",
-                adfGeoTransform[1], adfGeoTransform[5] );
+#ifdef DEBUG
+        printf( "Origin = (%.6f,%.6f)\n", adfGeoTransform[0], adfGeoTransform[3] );
+        printf( "Pixel Size = (%.6f,%.6f)\n", adfGeoTransform[1], adfGeoTransform[5] );
+#endif
     }
 
     double myXMaxDouble = adfGeoTransform[0] + gdalDataset->GetRasterXSize() * adfGeoTransform[1] +
@@ -117,8 +116,8 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     //
     // Set up the x and y dimensions of this raster layer
     //
-    rasterXDimInt = gdalDataset->GetRasterBand( 1 )->GetXSize();
-    rasterYDimInt = gdalDataset->GetRasterBand( 1 )->GetYSize();
+    rasterXDimInt = gdalDataset->GetRasterXSize();
+    rasterYDimInt = gdalDataset->GetRasterYSize();
     //
     // Determin the no data value
     //
@@ -168,7 +167,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
         //for the third layer we cant be sure so..
         if (gdalDataset->GetRasterCount() > 2)
         {
-          blueBandNameQString=getRasterBandName(2); // sensible default
+          blueBandNameQString=getRasterBandName(3); // sensible default
         }
         else
         {
