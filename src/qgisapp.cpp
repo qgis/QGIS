@@ -3837,10 +3837,6 @@ void QgisApp::setupToolbarPopups(QString themeName)
                                  this, SLOT(deleteSelected()),0,3);
     tbtnCaptureTools->setPopup(toolPopupCapture);
     tbtnCaptureTools->setPopupDelay(0);
-    // connect the top overview tool to the appropriate slot
-    connect(tbtnCaptureTools, SIGNAL(clicked()), this, SLOT(capturePoint()));
-
-
 }
 
 
