@@ -1,8 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.104 2004/05/31 19:43:19 gsherman Exp
+ChangeLog,v 1.105 2004/05/31 20:08:53 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
+2004-05-31 [ts] 0.3.0devel10
+** Added basic print capability to qgis....consider this a work in progress.
 2004-05-31 [gsherman] 0.3.0devel9
 **Changed QgsIdentifyResultsBase to inherit from QWidget instead of QDialog
 	so window position can be saved/restored from user settings each time.
