@@ -36,10 +36,13 @@ signals:
    //void drawVectorrLayer(QString,QString,QString);
    void rotationChanged(int);
    void changePlacement(QString);
-   
+   // enable NorthArrow
+   void enableNorthArrow(bool);
+
 public slots:
     void setRotation(int);
     void setPlacement(QString thePlacementQString);
+    //void setEnable(bool);
     
 private slots:
     //overides function byt the same name created in .ui

@@ -19,6 +19,7 @@
 #include <qslider.h>
 #include <qtabwidget.h>
 #include <qcombobox.h>
+#include <qcheckbox.h>
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
@@ -51,8 +52,9 @@ void PluginGui::pbnOK_clicked()
   //close the dialog
   emit rotationChanged(sliderRotation->value());
   emit changePlacement(cboPlacement->currentText());
+  emit enableNorthArrow(cboxShow->isChecked());
   done(1);
-} 
+}
 void PluginGui::pbnCancel_clicked()
 {
   close(1);
@@ -68,6 +70,12 @@ void PluginGui::setPlacement(QString thePlacementQString)
 {
   cboPlacement->setCurrentText(tr(thePlacementQString));
 }
+
+//void PluginGui::setEnable(bool theBool)
+//{
+//  enableNorthArrow(theBool);
+//  cboxShow->isChecked(theBool);
+//}
 
 
 //overides function byt the same name created in .ui
@@ -156,7 +164,7 @@ void PluginGui::rotatePixmap(int theRotationInt)
 
 void PluginGui::paintEvent( QPaintEvent * thePaintEvent)
 {
-  rotatePixmap(sliderRotation->value());  
+  rotatePixmap(sliderRotation->value());
 }
 
 //
