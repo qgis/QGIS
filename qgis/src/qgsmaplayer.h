@@ -65,8 +65,6 @@ class QgsMapLayer:public QObject
 	 * based on the layer type
 	 */
 	virtual QgsRect calculateExtent();
-	/**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds DBL_MIN*/
-	virtual QgsRect bBoxOfSelected();
 	virtual void draw(QPainter *, QgsRect *, int);
 	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
 	/*! Identify the feature(s) in this layer that are contained in the search rectangle
