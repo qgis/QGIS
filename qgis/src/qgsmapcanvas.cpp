@@ -116,6 +116,7 @@ void QgsMapCanvas::render2 ()
     {
       QgsMapLayer *ml = (*mi).second;
       //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+      std::cout << "Rendering " << ml->name() << std::endl;
       ml->draw (paint, &currentExtent, coordXForm);
       mi++;
       //  mi.draw(p, &fullExtent);
