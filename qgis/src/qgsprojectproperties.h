@@ -15,34 +15,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 /* $Id$ */
+
 #ifdef WIN32
-#include "qgsprojectpropertiesbase.h"
+#include <qgsprojectpropertiesbase.h>
 #else
-#include "qgsprojectpropertiesbase.uic.h"
+#include <qgsprojectpropertiesbase.uic.h>
 #endif
-/**
- * \class QgsProjectProperties
- * \brief Dialog to set project level properties
+
+#include <qgsscalecalculator.h>
+
+/**  Dialog to set project level properties
+
+  @note actual state is stored in QgsProject singleton instance
+
  */
 class QgsProjectProperties : public QgsProjectPropertiesBase
 {
   Q_OBJECT
 public:
     //! Constructor
-  QgsProjectProperties(QWidget *parent=0, const char *name=0);
+  QgsProjectProperties(QWidget *parent = 0, const char * name = 0);
+
   //! Destructor
   ~QgsProjectProperties();
-  /**
-   * Gets the currently select map units
-   * @return int which matches a value in the units enum in QgsScaleCalculator::units
+
+  /** Gets the currently select map units
    */
-  int mapUnits();
+  QgsScaleCalculator::units mapUnits() const;
+
   /**
    * Set the map units
-   * @param int specifying units (matches a value in the units enum in QgsScaleCalculator::units)
    */
-  void setMapUnits(int);
+  void setMapUnits(QgsScaleCalculator::units);
 
   /**
      Every project has a title
@@ -57,8 +63,5 @@ public slots:
    * values in QgsScaleCalculator::units
    */
   void mapUnitChange(int);
-private:
-  //! private member to hold the currently selected map units (so we can fetch them later)
-  int mMapUnits;
-  
+
 };

@@ -959,6 +959,8 @@ QPixmap QgsSymbologyUtils::qString2LinePixmap(QString string)
     {
       return QPixmap(noPenLineData);
     }
+
+  return QPixmap();             // XXX I hope returning a blank one is ok
 }
 
 QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString string)
@@ -1015,7 +1017,7 @@ QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString string)
     }
 }
 
-const char *QgsSymbologyUtils::penStyle2Char(Qt::PenStyle penstyle)
+const char * QgsSymbologyUtils::penStyle2Char(Qt::PenStyle penstyle)
 {
   if (penstyle == Qt::NoPen)
     {
@@ -1357,4 +1359,6 @@ QPixmap QgsSymbologyUtils::brushStyle2Pixmap(Qt::BrushStyle brushstyle)
       default:
         qWarning("Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2Pixmap");
     }
+
+  return QPixmap();             // XXX I hope returning a blank one is ok
 }

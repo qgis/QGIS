@@ -16,102 +16,163 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <iostream>
-#include <cfloat>
+#include "qgsmapcanvas.h"
+
+#include <iosfwd>
 #include <cmath>
-#include <memory>
-#include <cassert>
 
-#include <qstring.h>
-#include <qpainter.h>
-#include <qrect.h>
-#include <qevent.h>
+// added double sentinals to take load off gcc 3.3.3 pre-processor, which was dying 
+
+// XXX actually that wasn't the problem, but left double sentinals in anyway as they
+// XXX don't hurt anything
+
+// #ifndef QGUARDEDPTR_H
+// #include <qguardedptr.h>
+// #endif
+
+#ifndef QLISTVIEW_H
 #include <qlistview.h>
-#include <qpixmap.h>
-#include <qmessagebox.h>
-#include <qsettings.h>
-#include <qpaintdevicemetrics.h>
-#include <qguardedptr.h>
+#endif
 
-#include "qgsrect.h"
+#ifndef QMESSAGEBOX_H
+#include <qmessagebox.h>
+#endif
+
+#ifndef QPAINTDEVICE_H
+#include <qpaintdevice.h>
+#endif
+
+#ifndef QPAINTDEVICEMETRICS_H
+#include <qpaintdevicemetrics.h>
+#endif
+
+#ifndef QPAINTER_H
+#include <qpainter.h>
+#endif
+
+#ifndef QPIXMAP_H
+#include <qpixmap.h>
+#endif
+
+#ifndef QRECT_H
+#include <qrect.h>
+#endif
+
+#ifndef QSETTINGS_H
+#include <qsettings.h>
+#endif
+
+#ifndef QSTRING_H
+#include <qstring.h>
+#endif
+
+
 #include "qgis.h"
-#include "qgsmaplayer.h"
+#include "qgsrect.h"
+#include "qgsacetaterectangle.h"
+#include "qgsattributedialog.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeature.h"
 #include "qgslegend.h"
 #include "qgslegenditem.h"
-#include "qgscoordinatetransform.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerinterface.h"
 #include "qgsmarkersymbol.h"
 #include "qgspolygonsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerinterface.h"
 #include "qgsvectorlayer.h"
-#include "qgsscalecalculator.h"
-#include "qgsacetaterectangle.h"
-#include "qgsfeature.h"
-#include "qgsattributedialog.h"
+
+
 
 /**
-  Implementation struct for QgsMapCanvas
-  */
-struct QgsMapCanvas::CanvasProperties
+
+   Implementation struct for QgsMapCanvas
+
+  @note
+
+  Changed to class from struct out of desperation to find workaround for g++ bug.
+
+*/
+class QgsMapCanvas::CanvasProperties
 {
-  CanvasProperties::CanvasProperties()
-    : mapWindow( new QRect ),
-  coordXForm( new QgsCoordinateTransform ),
-  bgColor( Qt::white ),
-  drawing( false ),
-  dirty( true ),
-  pmCanvas( new QPixmap),
-  scaleCalculator( new QgsScaleCalculator)
+public:
 
-  {
+  CanvasProperties( int width, int height )  
+    : mapWindow( 0x0 ), 
+      mapLegend( 0 ), 
+      coordXForm( 0x0 ), 
+      pmCanvas( 0x0 ), 
+      bgColor( Qt::white ), 
+      dragging( false ), 
+      drawing( false ), 
+      frozen( false ), 
+      dirty( true ), 
+      scaleCalculator( 0x0 )
+  { 
+      mapWindow = new QRect;
+      coordXForm = new QgsCoordinateTransform;
+      pmCanvas = new QPixmap(width, height);
+      scaleCalculator = new QgsScaleCalculator;
   }
 
-  CanvasProperties::CanvasProperties( int width, int height )
-    : mapWindow( new QRect ),
-  coordXForm( new QgsCoordinateTransform ),
-  bgColor( Qt::white ),
-  drawing( false ),
-  dirty( true ),
-  pmCanvas( new QPixmap(width, height)),
-  scaleCalculator( new QgsScaleCalculator)
-  {
+  CanvasProperties()
+    : mapWindow( 0x0 ), 
+      mapLegend( 0 ), 
+      coordXForm( 0x0 ), 
+      pmCanvas( 0x0 ), 
+      bgColor( Qt::white ), 
+      dragging( false ), 
+      drawing( false ), 
+      frozen( false ), 
+      dirty( true ), 
+      scaleCalculator( 0x0 )
+  { 
+      mapWindow = new QRect;
+      coordXForm = new QgsCoordinateTransform;
+      pmCanvas = new QPixmap;
+      scaleCalculator = new QgsScaleCalculator;
   }
 
-  CanvasProperties::~CanvasProperties()
+
+  ~CanvasProperties()
   {
-    delete coordXForm;
-    delete pmCanvas;
-    delete mapWindow;
-    delete scaleCalculator;
+     delete coordXForm;
+     delete pmCanvas;
+     delete mapWindow;
+     delete scaleCalculator;
+  } // ~CanvasProperties
+
+
+  void initMetrics(QPaintDeviceMetrics *pdm)
+  {
+      // set the logical dpi
+      mDpi = pdm->logicalDpiX();
+      scaleCalculator->setDpi(mDpi);
+
+      // set default map units
+      mMapUnits = QgsScaleCalculator::METERS;
+      scaleCalculator->setMapUnits(mMapUnits);
   }
 
-  void CanvasProperties::initMetrics(QPaintDeviceMetrics *pdm){
-    // set the logical dpi
-    mDpi = pdm->logicalDpiX();
-    scaleCalculator->setDpi(mDpi);
-    // set default map units
-    mMapUnits = QgsScaleCalculator::METERS;
+  void setMapUnits(QgsScaleCalculator::units u)
+  {
+    mMapUnits = u;
     scaleCalculator->setMapUnits(mMapUnits);
+  }
 
-  }
-  void CanvasProperties::setMapUnits(int units)
-  {
-    mMapUnits = units;
-    scaleCalculator->setMapUnits(mMapUnits);
-  }
-  int CanvasProperties::mapUnits()
+  QgsScaleCalculator::units mapUnits()
   {
     return mMapUnits;
   }
+
   //! map containing the layers by name
-  std::map < QString, QgsMapLayer * >layers;
+  std::map< QString, QgsMapLayer *> layers;
 
   //! map containing the acetate objects by key (name)
-  std::map <QString, QgsAcetateObject *> acetateObjects;
+  std::map< QString, QgsAcetateObject *> acetateObjects;
 
   //! list containing the names of layers in zorder
-  std::list < QString > zOrder;
+  std::list< QString > zOrder;
 
   //! Full extent of the map canvas
   QgsRect fullExtent;
@@ -123,14 +184,17 @@ struct QgsMapCanvas::CanvasProperties
   QgsRect previousExtent;
 
   //! Map window rectangle
+  //std::auto_ptr<QRect> mapWindow;
   QRect * mapWindow;
 
   //! Pointer to the map legend
-  QGuardedPtr<QgsLegend> mapLegend;
+  //std::auto_ptr<QgsLegend> mapLegend;
+  QgsLegend * mapLegend;
 
   /** Pointer to the coordinate transform object used to transform
     coordinates from real world to device coordinates
     */
+  //std::auto_ptr<QgsCoordinateTransform> coordXForm;
   QgsCoordinateTransform * coordXForm;
 
   /**
@@ -152,8 +216,9 @@ struct QgsMapCanvas::CanvasProperties
   QPoint boxStartPoint;
 
   //! Pixmap used for restoring the canvas.
-  /** @note using QGuardedPtr causes sefault for some reason */
+  /** @note using QGuardedPtr causes sefault for some reason -- XXX trying again */
   //QGuardedPtr<QPixmap> pmCanvas;
+  //std::auto_ptr<QPixmap> pmCanvas;
   QPixmap * pmCanvas;
 
   //! Background color for the map canvas
@@ -188,33 +253,66 @@ struct QgsMapCanvas::CanvasProperties
   // TODO - Do we need this?
   double radiusValue;
 
-  QgsScaleCalculator *scaleCalculator;
+  //std::auto_ptr<QgsScaleCalculator> scaleCalculator;
+  QgsScaleCalculator * scaleCalculator;
 
   //! DPI of physical display
   int mDpi;
 
   //! Map units for the data on the canvas
-  int mMapUnits;
+  QgsScaleCalculator::units mMapUnits;
 
   //! Map scale of the canvas at its current zool level
   double mScale;
+
+private:
+
+  /** not copyable
+  */
+  CanvasProperties( CanvasProperties const & rhs )
+  {
+      // XXX maybe should be NOP just like operator=() to be consistent
+      std::cerr << __FILE__ << ":" << __LINE__
+                << " should not be here since CanvasProperties shouldn't be copyable\n";
+  } // CanvasProperties copy ctor
+
+
+  /** not copyable
+  */
+  CanvasProperties & operator=( CanvasProperties const & rhs )
+  {
+      if ( this == &rhs )
+      { return *this; }
+
+      std::cerr << __FILE__ << ":" << __LINE__
+                << " should not be here since CanvasProperties shouldn't be copyable\n";
+
+      return *this;
+  } // CanvasProperties assignment operator
 
 }; // struct QgsMapCanvas::CanvasProperties
 
 
 
+/** note this is private and so shouldn't be accessible */
+QgsMapCanvas::QgsMapCanvas()
+{}
 
-  QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
-: QWidget(parent, name), mCanvasProperties( new CanvasProperties(width(), height()) )
+
+QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
+    : QWidget(parent, name), 
+      mCanvasProperties( new CanvasProperties(width(), height()) ),
+      mUserInteractionAllowed(true) // by default we allow a user to interact with the canvas
 {
   setEraseColor(mCanvasProperties->bgColor);
-  //by default we allow a user to interact with the canvas
-  mUserInteractionAllowed=true;
+
   setMouseTracking(true);
   setFocusPolicy(QWidget::StrongFocus);
+
   QPaintDeviceMetrics *pdm = new QPaintDeviceMetrics(this);
   mCanvasProperties->initMetrics(pdm);
   delete pdm;
+
 } // QgsMapCanvas ctor
 
 
@@ -581,7 +679,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #endif
           if (ml->visible())
           {
-            ml->draw(paint, &mCanvasProperties->currentExtent, mCanvasProperties->coordXForm, this);
+            ml->draw(paint, 
+                     &mCanvasProperties->currentExtent, 
+                     mCanvasProperties->coordXForm,
+                     this);
           }
 
           li++;
@@ -606,7 +707,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #endif
           if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))
           {
-            ml->drawLabels(paint, &mCanvasProperties->currentExtent, mCanvasProperties->coordXForm, this);
+            ml->drawLabels(paint, 
+                           &mCanvasProperties->currentExtent, 
+                           mCanvasProperties->coordXForm,
+                           this);
           }
 
           li++;
@@ -811,11 +915,12 @@ void QgsMapCanvas::zoomToSelected()
   {
     QgsRect rect = lyr->bBoxOfSelected();
 
-    //no selected features
-    if (rect.xMin() == DBL_MAX &&
-        rect.yMin() == DBL_MAX &&
-        rect.xMax() == -DBL_MAX &&
-        rect.yMax() == -DBL_MAX)
+    // no selected features
+    // XXX where is rectange set to "empty"? Shouldn't we use QgsRect::isEmpty()?
+    if (rect.xMin() == std::numeric_limits<double>::infinity() &&
+        rect.yMin() == std::numeric_limits<double>::infinity() &&
+        rect.xMax() == std::numeric_limits<double>::min() &&
+        rect.yMax() == std::numeric_limits<double>::min())
     {
       return;
     }
@@ -1165,7 +1270,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         --it;
         --it;
         QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-        paint.drawLine(lastpoint.x(),lastpoint.y(),e->x(),e->y());
+        paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
+                       e->x(),e->y());
     }
     if(e->button()==Qt::RightButton)
     {
@@ -1616,14 +1722,18 @@ double QgsMapCanvas::mupp() const
 {
   return mCanvasProperties->m_mupp;
 } // mupp
-void QgsMapCanvas::setMapUnits(int units)
+
+
+void QgsMapCanvas::setMapUnits(QgsScaleCalculator::units u)
 {
 #ifdef QGISDEBUG
-  std::cerr << "Setting map units to " << units << std::endl;
+  std::cerr << "Setting map units to " << static_cast<int>(u) << std::endl;
 #endif
-  mCanvasProperties->setMapUnits(units);
+  mCanvasProperties->setMapUnits(u);
 }
-int QgsMapCanvas::mapUnits()
+
+
+QgsScaleCalculator::units QgsMapCanvas::mapUnits() const
 {
   return mCanvasProperties->mapUnits();
 }

@@ -92,6 +92,12 @@ protected:
 
 private:
 
+  /// QgsLegends aren't copied
+  QgsLegend( QgsLegend const & );
+
+  /// QgsLegends aren't copied
+  QgsLegend & operator=( QgsLegend const & );
+
   /** handle to main QgisApp
       Necessary for binding properly binding context menu to new layers
    */

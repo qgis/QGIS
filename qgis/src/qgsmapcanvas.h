@@ -19,29 +19,40 @@
 #ifndef QGSMAPCANVAS_H
 #define QGSMAPCANVAS_H
 
-#include <map>
-#include <vector>
 #include <list>
 #include <memory>
 
-#include <qwidget.h>
-#include <qevent.h>
+// double sentinals to get round gcc 3.3.3 pre-processor bug
 
+#ifndef QWIDGET_H
+#include <qwidget.h>
+#endif
+
+#ifndef QGSRECT_H
 #include <qgsrect.h>
+#endif
+
+#ifndef QGSPOINT_H
 #include <qgspoint.h>
-#include <qpaintdevice.h>
+#endif
+
+#ifndef QGSSCALECALCULATOR_H
+#include <qgsscalecalculator.h>
+#endif
 
 class QRect;
+class QColor;
+class QPaintDevice;
+class QMouseEvent;
+
 class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsMapLayerInterface;
-class QMouseEvent;
 class QgsLegend;
 class QgsLegendView;
-class QColor;
-class QgsPoint;
-class QgsScaleCalculator;
 class QgsAcetateObject;
+
+
 
 /*! \class QgsMapCanvas
  * \brief Map canvas class for displaying all GIS data types.
@@ -137,9 +148,10 @@ class QgsMapCanvas : public QWidget
     std::list < QString > const & zOrders() const;
     std::list < QString >       & zOrders();
     //! Set map units (needed by project properties dialog)
-    void setMapUnits(int mapUnits);
+    void setMapUnits(QgsScaleCalculator::units mapUnits);
     //! Get the current canvas map units
-    int mapUnits();
+
+    QgsScaleCalculator::units mapUnits() const;
 
     //! Get the current coordinate transform 
     QgsCoordinateTransform * getCoordinateTransform();
@@ -233,12 +245,13 @@ signals:
     void extentsChanged(QgsRect);
 
     /** Emitted when the canvas has rendered.
-    /* Passes a pointer to the painter on
-    * which the map was drawn. This is useful for plugins
-    * that wish to draw on the map after it has been rendered.
-    * Passing the painter allows plugins to work when the
-    * map is being rendered onto a pixmap other than the mapCanvas
-    * own pixmap member. */
+
+     Passes a pointer to the painter on which the map was drawn. This is
+     useful for plugins that wish to draw on the map after it has been
+     rendered.  Passing the painter allows plugins to work when the map is
+     being rendered onto a pixmap other than the mapCanvas own pixmap member.
+
+    */
     void renderComplete(QPainter *);
 
     /** emitted whenever a layer is added to the map canvas */
@@ -266,13 +279,22 @@ private:
      */
     QgsMapCanvas( QgsMapCanvas const & );
 
+    /**
+       private to force use of ctor with arguments
+     */
+    QgsMapCanvas();
+
     /// implementation struct
-    struct CanvasProperties;
+    class CanvasProperties;
 
     /// Handle pattern for implementation object
     std::auto_ptr<CanvasProperties> mCanvasProperties;
 
-    /**List to store the points of digitised lines and polygons*/
+    /**
+       List to store the points of digitised lines and polygons
+
+       @todo XXX shouldn't this be in mCanvasProperties?
+    */
     std::list<QgsPoint> mCaptureList;
 
     //! Overridden mouse move event

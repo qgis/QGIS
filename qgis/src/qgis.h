@@ -65,7 +65,8 @@ namespace QGis
     WKBPolygon,
     WKBMultiPoint,
     WKBMultiLineString,
-    WKBMultiPolygon
+    WKBMultiPolygon,
+    WKBUnknown
   };
   enum VectorType
       {
