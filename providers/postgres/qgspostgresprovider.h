@@ -330,10 +330,6 @@ private:
    */
   QString primaryKey;
   /**
-   * Index (column number) of the primary key
-   */
-  int primaryKeyIndex;
-  /**
    * Data type for the primary key
    */
   QString primaryKeyType;
@@ -381,6 +377,12 @@ private:
 
   bool deduceEndian();
   bool getGeometryDetails();
+
+  typedef std::map<QString, std::pair<QString, QString> > table_cols;
+
+  QString chooseViewColumn(const table_cols& cols);
+
+  static void findTableColumns(QString select_cmd, table_cols& cols);
     
   bool ready;
   std::ofstream pLog;
