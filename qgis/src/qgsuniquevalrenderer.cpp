@@ -159,12 +159,11 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 void QgsUniqueValRenderer::writeXML(std::ofstream& xml)
 {
     xml << "\t\t<uniquevalue>\n";
-    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) +
-	"</classificationfield>\n";
+    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() << "</classificationfield>\n";
     for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
     {
 	xml << "\t\t\t<renderitem>\n";
-	xml << "\t\t\t\t<value>" << it->first << "</value>\n";
+	xml << "\t\t\t\t<value>" << QString(it->first).ascii() << "</value>\n";
 	xml << "\t\t\t\t<symbol>\n";
 	QgsSymbol *symbol = (it->second)->getSymbol();
 	xml << "\t\t\t\t\t<outlinecolor red=\"" << QString::number(symbol->pen().color().red()).ascii() << "\" green=\"" <<
