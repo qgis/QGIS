@@ -71,11 +71,10 @@ void PluginGui::setPlacement(QString thePlacementQString)
   cboPlacement->setCurrentText(tr(thePlacementQString));
 }
 
-//void PluginGui::setEnable(bool theBool)
-//{
-//  enableNorthArrow(theBool);
-//  cboxShow->isChecked(theBool);
-//}
+void PluginGui::setEnabled(bool theBool)
+{
+  cboxShow->setChecked(theBool);
+}
 
 
 //overides function byt the same name created in .ui

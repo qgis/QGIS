@@ -64,7 +64,7 @@ class Plugin:public QObject, public QgisPlugin
   //! set north arrow placement
   void setPlacement(QString);
   //! enable or disable north arrow
-  void setEnable(bool);
+  void setEnabled(bool);
 
     private:
 
