@@ -662,7 +662,7 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
       myGreenDouble = myMaxDouble;
       myBlueDouble = myMaxDouble;
     }
-    for (double myColInt = 99; myColInt >= 0; myColInt = myColInt - 1)
+    for (int myColInt = 99; myColInt >= 0; myColInt--)
     {
       if (theColor == "red")
       {

@@ -1870,7 +1870,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
         myLegendQPixmap = QPixmap(100, 1);
         myQPainter.begin(&myLegendQPixmap);
         int myPosInt = 0;
-        for (int myDouble = 0; myDouble < 255; myDouble += 2.55)
+        for (double myDouble = 0; myDouble < 255; myDouble += 2.55)
         {
             if (!invertHistogramFlag) //histogram is not inverted
             {

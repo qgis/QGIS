@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.100 2004/05/27 11:07:07 timlinux Exp
+ChangeLog,v 1.101 2004/05/27 15:05:06 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-27 [jobi] 0.3.0devel7
+** cleanup of gcc warnings
 
 2004-05-27 [petebr] 0.3.0devel6
 ** Altered buttons on GUI to a standardised layout - HELP - APPLY - OK - CANCEL

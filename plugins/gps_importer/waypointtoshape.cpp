@@ -57,7 +57,7 @@ void WayPointToShape::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt
     std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel;
     if (! DBFWriteIntegerAttribute(theDbfHandle, theRecordIdInt, 0, theRecordIdInt))
     {
-        std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt <<endl;
+        std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt << std::endl;
 
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
     }
@@ -65,7 +65,7 @@ void WayPointToShape::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt
     {
       if (! DBFWriteStringAttribute(theDbfHandle, theRecordIdInt, 1, theLabel))
       {
-        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel <<endl;
+        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel << std::endl;
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
       }
       std::cerr << " - OK! " << std::endl;
