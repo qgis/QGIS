@@ -135,7 +135,10 @@ void Plugin::projectRead()
     mPlacement = QgsProject::instance()->readEntry("ScaleBar","/Placement","Top Left");
     mEnabled = QgsProject::instance()->readBoolEntry("ScaleBar","/Enabled",true);
     mSnapping = QgsProject::instance()->readBoolEntry("ScaleBar","/Snapping",true);
-
+    int myRedInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorRedPart",0);
+    int myGreenInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorGreenPart",0);
+    int myBlueInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorBluePart",0);
+    mColour = QColor(myRedInt,myGreenInt,myBlueInt);
     refreshCanvas();
 }
 //method defined in interface
@@ -525,6 +528,9 @@ void Plugin::setStyle(QString theStyleQString)
 void Plugin::setColour(QColor theQColor)
 {
   mColour = theQColor;
+  QgsProject::instance()->writeEntry("ScaleBar","/ColorRedPart", mColour.red());
+  QgsProject::instance()->writeEntry("ScaleBar","/ColorGreenPart", mColour.green());
+  QgsProject::instance()->writeEntry("ScaleBar","/ColorBluePart", mColour.blue());
 }
 
 
