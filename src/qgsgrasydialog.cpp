@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+#include <iostream>
+
 #include "qgsgrasydialog.h"
 #include "qspinbox.h"
 #include "qpushbutton.h"
@@ -117,6 +119,8 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 		QgsRangeRenderItem* rritem=new QgsRangeRenderItem(sym,item->value(),item->upper_value(),item->label());
 		sym->setPen(item->getSymbol()->pen());
 		sym->setBrush(item->getSymbol()->brush());
+		sym->setPointSymbol(item->getSymbol()->pointSymbol());
+		sym->setPointSize(item->getSymbol()->pointSize());
 		mEntries.insert(std::make_pair(classbreak,rritem));
 		mClassBreakBox->insertItem(classbreak);
 	}
@@ -258,24 +262,23 @@ void QgsGraSyDialog::apply()
 	
 	    QgsSymbol* sy = new QgsSymbol();
 	    
-	    sy->pen().setColor(it->second->getSymbol()->pen().color());
-	    sy->pen().setStyle(it->second->getSymbol()->pen().style());
-	    sy->pen().setWidth(it->second->getSymbol()->pen().width());
+	    sy->setColor(it->second->getSymbol()->pen().color());
+	    sy->setLineStyle(it->second->getSymbol()->pen().style());
+	    sy->setLineWidth(it->second->getSymbol()->pen().width());
+	    
+	    if (mVectorLayer->vectorType() == QGis::Point)
+	    {
+		sy->setPointSymbol(it->second->getSymbol()->pointSymbol());
+		sy->setPointSize(it->second->getSymbol()->pointSize());
 	     
+	    }
 	    
 	    if (mVectorLayer->vectorType() != QGis::Line)
             {
-		sy->brush().setColor(it->second->getSymbol()->brush().color());
+		sy->setFillColor(it->second->getSymbol()->brush().color());
+		sy->setFillStyle(it->second->getSymbol()->brush().style());
             }
-	    
-	    if (mVectorLayer->vectorType() == QGis::Polygon)
-            {
-		sy->brush().setStyle(it->second->getSymbol()->brush().style());
-	    } 
-	    else if (mVectorLayer->vectorType() == QGis::Point)
-            {
-		sy->brush().setStyle(Qt::SolidPattern);
-            }
+
 	    QString lower_bound = it->second->value();
 	    QString upper_bound = it->second->upper_value();
 	    QString label = it->second->label();
@@ -319,7 +322,9 @@ void QgsGraSyDialog::apply()
 		} 
 		else if (mVectorLayer->vectorType() == QGis::Point)
                 {
-		    p.drawRect(leftspace + symbolwidth / 2, offset + (int) (rowincrement * (i + 0.5)), 5, 5);
+		    //p.drawRect(leftspace + symbolwidth / 2, offset + (int) (rowincrement * (i + 0.5)), 5, 5);
+		    QPixmap pm = sy->getPointSymbolAsPixmap();
+		    p.drawPixmap ( (int) (leftspace+symbolwidth/2-pm.width()/2), (int) (offset+rowincrement*(i+0.5)-pm.height()/2), pm );
                 }
 		p.setPen(Qt::black);
 		p.drawText(leftspace + symbolwidth + wordspace, offset + rowincrement * i + rowheight, legendstring);
@@ -455,18 +460,7 @@ void QgsGraSyDialog::changeCurrentValue()
 	std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
 	if(it!=mEntries.end())
 	{
-	    QPen& pen=it->second->getSymbol()->pen();
-	    QBrush& brush=it->second->getSymbol()->brush();
-	    QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
-	    QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
-	    if(mVectorLayer->vectorType()!=QGis::Line)
-	    {
-		sydialog.setFillColor(fcolor);
-		sydialog.setFillStyle(brush.style());
-	    }
-	    sydialog.setOutlineColor(ocolor);
-	    sydialog.setOutlineStyle(pen.style());
-	    sydialog.setOutlineWidth(pen.width());
+	    sydialog.set(it->second->getSymbol() );
 	    sydialog.setLabel(it->second->label());
 	}
     }
@@ -482,13 +476,7 @@ void QgsGraSyDialog::applySymbologyChanges()
 	std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
 	if(it!=mEntries.end())
 	{
-	    QPen& pen=it->second->getSymbol()->pen();
-	    QBrush& brush=it->second->getSymbol()->brush(); 
-	    pen.setWidth(sydialog.getOutlineWidth());
-	    pen.setColor(sydialog.getOutlineColor());
-	    pen.setStyle(sydialog.getOutlineStyle());
-	    brush.setColor(sydialog.getFillColor());
-	    brush.setStyle(sydialog.getFillStyle());
+	    sydialog.apply( it->second->getSymbol() );
 	    it->second->setLabel(sydialog.label());
 	}
     }

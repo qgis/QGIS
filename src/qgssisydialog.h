@@ -24,6 +24,7 @@
 #include "qgssisydialogbase.uic.h"
 #endif
 
+class QgsSymbol;
 class QgsVectorLayer;
 
 /**QgsSiSyDialog is a dialog to set symbology for the legend type 'single symbol'*/
@@ -50,8 +51,12 @@ public:
 protected:
     QgsVectorLayer* mVectorLayer;
 public slots:
+    /* set from QgsSymbol */
+    void set(QgsSymbol *sy);
     /**applies the changes to the vector layer*/
     void apply();
+    /**applies the changes to the QgsSymbol */
+    void apply( QgsSymbol *sy);
     /**emits the signal settingsChanged()*/
     void resendSettingsChanged();
 

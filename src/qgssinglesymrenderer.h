@@ -48,7 +48,7 @@ class QgsSingleSymRenderer: public QgsRenderer
      @param vl the vector layer which will be associated with the renderer*/
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
-    virtual void writeXML(std::ostream& xml);
+    /*virtual void writeXML(std::ostream& xml);*/
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
     virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );

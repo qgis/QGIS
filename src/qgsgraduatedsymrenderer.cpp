@@ -15,12 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgsgraduatedsymrenderer.h"
 #include <cfloat>
+#include "qgis.h"
+#include "qgsfeature.h"
+#include "qgsgraduatedsymrenderer.h"
 #include "qgsgrasydialog.h"
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
+#include "qgssvgcache.h"
 #include <qdom.h>
+#include <qpixmap.h>
+#include <qpicture.h>
 //XXX Inlining this destructor kills build on WIN32 - sorry
 QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
 {
@@ -72,18 +77,54 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
     else
     {
 	//set the qpen and qpainter to the right values
-	p->setPen((*it)->getSymbol()->pen());
-	p->setBrush((*it)->getSymbol()->brush());
-    }
-    
-    if(selected)
-    {
-	 QPen pen=(*it)->getSymbol()->pen();
-	 pen.setColor(mSelectionColor);
-	 QBrush brush=(*it)->getSymbol()->brush();
-	 brush.setColor(mSelectionColor);
-	 p->setPen(pen);
-	 p->setBrush(brush);
+	
+	QgsRenderItem *item = *it;
+
+	// Point 
+	if ( pic && mVectorType == QGis::Point ) {
+	    QPainter painter;
+	    painter.begin(pic);
+
+	    if ( QgsSVGCache::instance().getOversampling() > 1 ) {
+	        QPixmap pm = item->getSymbol()->getPointSymbolAsPixmap();
+		painter.drawPixmap(0,0,pm);
+		if(selected) {
+		    painter.setBrush(QColor(255,255,0));
+		    painter.drawRect(0,0,pm.width(),pm.height());
+		}
+	    } else { 
+		QPicture pic = item->getSymbol()->getPointSymbolAsPicture();
+		painter.drawPicture(0,0,pic);
+		if(selected) {
+		    painter.setBrush(QColor(255,255,0));
+		    QRect br = pic.boundingRect();
+		    painter.drawRect(-br.x(), -br.y(), br.width(), br.height());
+		}
+	    }
+	    
+	    if ( scalefactor ) *scalefactor = 1;
+
+	    painter.end();
+	} 
+
+        // Line, polygon
+ 	if ( mVectorType != QGis::Point )
+	{
+	    if( !selected ) 
+	    {
+		p->setPen(item->getSymbol()->pen());
+		p->setBrush(item->getSymbol()->brush());
+	    }
+	    else
+	    {
+		QPen pen=item->getSymbol()->pen();
+		pen.setColor(mSelectionColor);
+		QBrush brush=item->getSymbol()->brush();
+		brush.setColor(mSelectionColor);
+		p->setPen(pen);
+		p->setBrush(brush);
+	    }
+	}
     }
 }
 
@@ -99,6 +140,7 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlg
     
     if (layer)
     {
+        mVectorType = layer->vectorType();
 	
 	QgsGraSyDialog *dialog = new QgsGraSyDialog(layer);
 
@@ -121,6 +163,7 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlg
 
 void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
+    mVectorType = vl.vectorType();
     QDomNode classnode = rnode.namedItem("classificationfield");
     int classificationfield = classnode.toElement().text().toInt();
    
@@ -141,36 +184,12 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 	QDomNode synode = rangerendernode.namedItem("symbol");
 
-	QDomElement oulcelement = synode.namedItem("outlinecolor").toElement();
-	int red = oulcelement.attribute("red").toInt();
-	int green = oulcelement.attribute("green").toInt();
-	int blue = oulcelement.attribute("blue").toInt();
-	pen.setColor(QColor(red, green, blue));
-
-	QDomElement oustelement = synode.namedItem("outlinestyle").toElement();
-	pen.setStyle(QgsSymbologyUtils::qString2PenStyle(oustelement.text()));
-
-	QDomElement oulwelement = synode.namedItem("outlinewidth").toElement();
-	pen.setWidth(oulwelement.text().toInt());
-
-	QDomElement fillcelement = synode.namedItem("fillcolor").toElement();
-	red = fillcelement.attribute("red").toInt();
-	green = fillcelement.attribute("green").toInt();
-	blue = fillcelement.attribute("blue").toInt();
-	brush.setColor(QColor(red, green, blue));
-
-	QDomElement fillpelement = synode.namedItem("fillpattern").toElement();
-#ifdef QGISDEBUG
-	qWarning("readXML, brush style is: "+fillpelement.text());
-#endif
-	brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
+	sy->readXML ( synode );
 
 	QDomElement labelelement = rangerendernode.namedItem("label").toElement();
 	QString label = labelelement.text();
 
 	//create a renderitem and add it to the renderer
-	sy->setBrush(brush);
-	sy->setPen(pen);
 
 	QgsRangeRenderItem *ri = new QgsRangeRenderItem(sy, lowervalue, uppervalue, label);
 	this->addItem(ri);
@@ -187,37 +206,6 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     properties->setLegendType("Graduated Symbol");
 
     gdialog->apply();
-}
-
-void QgsGraduatedSymRenderer::writeXML(std::ostream& xml)
-{
-    xml << "\t\t<graduatedsymbol>\n";
-    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) <<
-	"</classificationfield>\n";
-    for (std::list < QgsRangeRenderItem * >::iterator it = this->items().begin(); it != this->items().end();
-	 ++it)
-    {
-	xml << "\t\t\t<rangerenderitem>\n";
-	xml << "\t\t\t\t<lowervalue>" << (*it)->value() << "</lowervalue>\n";
-	xml << "\t\t\t\t<uppervalue>" << (*it)->upper_value() << "</uppervalue>\n";
-	xml << "\t\t\t\t<symbol>\n";
-	QgsSymbol *symbol = (*it)->getSymbol();
-	xml << "\t\t\t\t\t<outlinecolor red=\"" << QString::number(symbol->pen().color().red()) << "\" green=\"" <<
-	    QString::number(symbol->pen().color().green()) << "\" blue=\"" << QString::number(symbol->pen().color().blue())  << 
-	    "\" />\n";
-	xml << "\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(symbol->pen().style())  << 
-	    "</outlinestyle>\n";
-	xml << "\t\t\t\t\t<outlinewidth>" << QString::number(symbol->pen().width()) << "</outlinewidth>\n";
-	xml << "\t\t\t\t\t<fillcolor red=\"" << QString::number(symbol->brush().color().red()) << "\" green=\""  << 
-	    QString::number(symbol->brush().color().green()) << "\" blue=\""  << 
-	    QString::number(symbol->brush().color().blue()) << "\" />\n";
-	xml << "\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(symbol->brush().style())  << 
-	    "</fillpattern>\n";
-	xml << "\t\t\t\t</symbol>\n";
-	xml << "\t\t\t\t<label>" << (*it)->label() << "</label>\n";
-	xml << "\t\t\t</rangerenderitem>\n";
-    }
-    xml << "\t\t</graduatedsymbol>\n";
 }
 
 std::list<int> QgsGraduatedSymRenderer::classificationAttributes()
