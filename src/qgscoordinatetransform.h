@@ -18,7 +18,7 @@
 #define QGSCOORDINATETRANSFORM_H
 class QgsPoint;
 class QPoint;
-/* \class QgsCoordinateTransform
+/*! \class QgsCoordinateTransform
 * \brief Class for doing transforms between map coordinates and device coordinates.
 *
 * This class can convert device coordinates to map coordinates and vice versa.
@@ -29,13 +29,13 @@ class QgsCoordinateTransform{
 			   double xmin = 0);
     ~QgsCoordinateTransform();
     /*! Transform the point from map (world) coordinates to device coordinates
-    *@ param p Point to transform
+    * @param p Point to transform
     * @return QgsPoint in device coordinates
     */
     QgsPoint transform(QgsPoint p);
     /*! Transform the point specified by x,y from map (world) coordinates to device coordinates
-    *@ param x x cordinate o point to transform
-	*@param y y coordinate of point to transform
+    * @param x x cordinate o point to transform
+	* @param y y coordinate of point to transform
     * @return QgsPoint in device coordinates
     */
     QgsPoint transform(double x, double y);
