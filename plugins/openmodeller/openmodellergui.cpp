@@ -32,6 +32,7 @@
 //openmodeller includes
 #include <openmodeller/om_control.hh>
 #include <openmodeller/om.hh>
+#include <om_alg_parameter.hh>
 //local in this plugin dir
 #include "file_parser.hh"
 
@@ -60,48 +61,39 @@ OpenModellerGui::~OpenModellerGui()
 void OpenModellerGui::getAlgorithmList()
 {
 
-  ControlInterface  myController;
-  QStringList * myQStringList = new QStringList();
+  OpenModeller  myOpenModeller;
   // Find out which model algorithm is to be used.
-  Algorithm **myAlgorithmsPointerArray = myController.availableAlgorithms();
-  Algorithm *myAlgorithm;
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
-  while ( myAlgorithm = *myAlgorithmsPointerArray++ )
-  {
-    std::cerr << "Found Algorithm: " << myAlgorithm->getID() << std::endl;
-    myQStringList->append(myAlgorithm->getID());
-  }
+  AlgMetadata **myAlgorithmMetadataArray = myOpenModeller.availableAlgorithms();
+  AlgMetadata *myAlgorithmMetadata;
   //loop through the algorithm names adding to the algs combo
-  QStringList::Iterator myIterator= myQStringList->begin();
-  while( myIterator!= myQStringList->end() ) 
+  while ( myAlgorithmMetadata = *myAlgorithmMetadataArray++ )
   {
-    QString myAlgorithmQString=*myIterator;
-    cboModelAlgorithm->insertItem(myAlgorithmQString);
-    ++myIterator;
+    std::cerr << "Found Algorithm: " << myAlgorithmMetadata->id << std::endl;
+    cboModelAlgorithm->insertItem(myAlgorithmMetadata->id);
   }     
-  delete myAlgorithmsPointerArray;
-  delete myAlgorithm;
+  delete myAlgorithmMetadataArray;
+  delete myAlgorithmMetadata;
   return ;
 
 }
 
 void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 {
-  ControlInterface  myController;
+  OpenModeller  myOpenModeller;
   // Find out which model algorithm is to be used.
-  Algorithm **myAlgorithmsPointerArray = myController.availableAlgorithms();
-  Algorithm *myAlgorithm;
+  AlgMetadata **myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
+  AlgMetadata *myAlgorithmMetadata;
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
-  while ( myAlgorithm = *myAlgorithmsPointerArray++ )
+  while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
   {
-    std::cerr << "Found Algorithm: " << myAlgorithm->getID() << std::endl;
-    QString myAlgorithmNameQString=myAlgorithm->getID();
+    std::cerr << "Found Algorithm: " << myAlgorithmMetadata->id << std::endl;
+    QString myAlgorithmNameQString=myAlgorithmMetadata->id;
     if (myAlgorithmNameQString==theAlgorithmNameQString)
     {
-      AlgorithmMetadata * myAlgorithmMetadata = myAlgorithm->getMetadata();
 
       int myParameterCountInt = myAlgorithmMetadata->nparam;
-      AlgorithmParameter * myParameter = myAlgorithmMetadata->param;
+      AlgParamMetadata * myParameter = myAlgorithmMetadata->param;
       //detailed list of parameters and their useage
       //to be placed in a textbox control on the algorithm selection page
 
@@ -123,39 +115,33 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
         myQString="";
         if ( myParameter->has_min && myParameter->has_max )
         {
-          myQString.sprintf( "<p><b>%s (>= %f and <= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
+          myQString.sprintf( "<p><b>%s (>= %f and <= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
         }
         //or just min constraint
         else if ( myParameter->has_min )
         {
-          myQString.sprintf( "%s (>= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->typical );
+          myQString.sprintf( "<p>%s (>= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->typical );
         }
         //or just max contraint
         if ( myParameter->has_max )
         {
-          myQString.sprintf( "%s (<= %f) default is %f</b></p>", myParameter->name, myParameter->max, myParameter->typical );
+          myQString.sprintf( "<p>%s (<= %f) default is %f</b></p>\n", myParameter->name, myParameter->max, myParameter->typical );
         }
         //or neither
         else
         {
-          myQString.sprintf( "%s default is %f</b></p>", myParameter->name, myParameter->typical);
+          myQString.sprintf( "<p>%s default is %f</b></p>\n", myParameter->name, myParameter->typical);
         }
 
         myHeadingQString.sprintf( "<p>%s</p>", myParameter->description );
         txtAlgorithmParameters->setText(txtAlgorithmParameters->text()+myQString+myDescriptionQString);
         std::cerr << txtAlgorithmParameters->text() << std::endl;
       }
-      delete myAlgorithmMetadata;
-      delete myParameter;
-      delete myAlgorithmsPointerArray;
-      delete myAlgorithm;
-      return ;
-
     }
   }
   // no matching algorthm was found :-(
-  delete myAlgorithmsPointerArray;
-  delete myAlgorithm;
+  delete myAlgorithmsMetadataArray;
+  delete myAlgorithmMetadata;
   return;
   
 }
@@ -259,98 +245,27 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
      @see pbnRun method which is run when model inputs have been obtained via the wizard. */
 void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 {
-  //
-  // Create a fileparser to read in the request file
-  // and a controlInterface to manage the model process
-  //
   
   //strdup is used to convert the qstring to a non const char *
   FileParser myFileParser( strdup(theParametersFileNameQString));
-  ControlInterface  myController;
-  
   //
-  // Parse the model paramter file...
-  //
-  
-  // Get the environmental variables (continuous and categorical)
-  char *myMaskFileNameCharArray = myFileParser.get( "Mask" );
-  char *myCategoricalMapCharArray = "Categorical map";
-  int myNumberOfCategoriesInt = myFileParser.count( myCategoricalMapCharArray );
-  //The key name in the paramters file that indicates its value is a map layer
-  char *myLayerLabelCharArray = "Map";
-  //find out the number of enviroinmental layers
-  int myNumberOfLayersInt = myFileParser.count( myLayerLabelCharArray );
-  //Find out the total layer count including environmental and mask layers
-  int myTotalLayerCountInt = myNumberOfLayersInt + myNumberOfCategoriesInt;
-  //create a char array and populate it with all layer names
-  char *myLayersCollectionCharArray[myTotalLayerCountInt];
-  myFileParser.getAll( myCategoricalMapCharArray, myLayersCollectionCharArray );
-  myFileParser.getAll( myLayerLabelCharArray, myLayersCollectionCharArray + myNumberOfCategoriesInt );
-  // Get the details for the output Map
-  char *myOutputFleNameCharArray       = myFileParser.get( "Output" );
-  char *myOutputFormatCharArray        = myFileParser.get( "Output format" );
-  //scale is used to scale the model results e.g. from 0-1 to 0-255 - useful for image gen
-  char *myScaleCharArray               = myFileParser.get( "Scale" );
-  // find out which model algorithm is to be used e,g. bioclim, cartesian etc
-  char *myAlgorithmNameCharArray       = myFileParser.get( "Algorithm" );
-  //obtain any model parameters that are specified in the request file
-  char *myAlgorithmParametersCharArray= myFileParser.get( "Parameters" );
-  // Obtain the Well Known Text string for the localities coordinate system
-  char *myLocalitiesCoordinateSystem   = myFileParser.get( "WKT coord system" );
-  // Get the name of the file containing localities
-  char *myLocalitiesFileCharArray      = myFileParser.get( "Species file" );
-  // Get the name of the taxon being modelled!
-  char *myTaxonNameCharArray           = myFileParser.get( "Species" );
-  
-  //
-  // Make sure the basic variables have been defined in the parameter file...
-  //  
-  if ( ! myOutputFleNameCharArray )
-  {
-      QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The 'Output file name' was not specified!"));
-      return;
-  }
-  if ( ! myOutputFormatCharArray )
-  {
-      QMessageBox::warning( this,"openModeller Wizard Error","The 'Output format' was not specified!");
-      return;
-  }
-  if ( ! myScaleCharArray )
-  {
-    myScaleCharArray = "255.0";
-  }
-  //
-  // Set up the output map builder
-  //
-  //RasterFile map( myOutputFormatCharArray );
-  //
-  // Set up the model controller
-  //
-  myController.setEnvironment(myNumberOfCategoriesInt, myTotalLayerCountInt, myLayersCollectionCharArray, myMaskFileNameCharArray );  
-  // Prepare the output map
-  
-  myController.setOutputMap( myOutputFleNameCharArray,myOutputFormatCharArray, atof(myScaleCharArray) );
-  // Set the model algorithm to be used by the controller
-  myController.setAlgorithm( myAlgorithmNameCharArray, myAlgorithmParametersCharArray );
-  // Populate the occurences list from the localities file
-  //myController.setOccurrences( myLocalitiesFileCharArray, myLocalitiesCoordinateSystem, myTaxonNameCharArray );
-
   //
   // Run the model
   //
-  if ( ! myController.run() )
+  /*
+  if ( ! myOpenModeller.run() )
   {
     QString myErrorQString;
-    QMessageBox::warning( this,"openModeller Wizard Error",myErrorQString.sprintf("Error: %s\nModel aborted.", myController.error()));
+    QMessageBox::warning( this,"openModeller Wizard Error",myErrorQString.sprintf("Error: %s\nModel aborted.", myOpenModeller.error()));
   }
   else
   {
     //if all went ok, send notification to the parent app that we are finished
     emit drawRasterLayer(QString( myOutputFleNameCharArray ));
   }
-
-} //end of parseAndRun
-
+  */
+ //end of parseAndRun
+}
 void OpenModellerGui::makeConfigFile()
 {
     QFile myQFile( outputFileNameQString+".cfg");
