@@ -249,7 +249,18 @@ void QgsGraSyDialog::apply()
 	m_vectorlayer->setLayerName(name);
 	p.drawText(leftspace,topspace+2*fm.height(),classificationComboBox->currentText());
 
-	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+
+	QgsGraduatedSymRenderer* renderer;
+	if(m_vectorlayer->propertiesDialog())
+	{
+	    renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+	}
+	else
+	{
+	    renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
+	}
+	
+
 	if(!renderer)
 	{
 	    qWarning("Warning, typecast failed in QgsGraSyDialog::apply()");
@@ -348,7 +359,10 @@ void QgsGraSyDialog::apply()
 	}
 	m_vectorlayer->setRenderer(renderer);
 	m_vectorlayer->setRendererDialog(this);
-	m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+	if(m_vectorlayer->propertiesDialog())
+	{
+	    m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+	}
 	m_vectorlayer->triggerRepaint();
     }
 
