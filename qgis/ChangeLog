@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.178 2004/09/02 01:50:34 mcoletti Exp
+ChangeLog,v 1.179 2004/09/02 01:54:53 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-01 [mcoletti] 0.4.0devel26
+Start of new qgs project file class.  Obviously work-in-progress.
+
+Committed for back-up sanity and to elicit comments from the bored.
 
 2004-09-01 [mcoletti] 0.4.0devel25
 QgsRect : 
