@@ -16,6 +16,7 @@
 #include <qlabel.h>
 #include <iostream>
 #include <qspinbox.h>
+#include <qslider.h>
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
@@ -42,7 +43,7 @@ void PluginGui::pbnOK_clicked()
   // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
   //close the dialog
-  emit rotationChanged(spinRotation->value());
+  emit rotationChanged(sliderRotation->value());
   done(1);
 } 
 void PluginGui::pbnCancel_clicked()
@@ -52,15 +53,14 @@ void PluginGui::pbnCancel_clicked()
 
 void PluginGui::setRotation(int theInt)
 {
-  spinRotation->setValue(theInt);
   rotatePixmap(theInt);
 }
   
 
 //overides function byt the same name created in .ui
-void PluginGui::spinRotation_valueChanged( int theInt)
+void PluginGui::spinSize_valueChanged( int theInt)
 {
-  rotatePixmap(theInt);
+  
 }
 
 //overides function byt the same name created in .ui
@@ -113,8 +113,11 @@ void PluginGui::rotatePixmap(int theRotationInt)
         //unrotate the canvase again
         myQPainter.restore();
         myQPainter.end();
-	
-	bitBlt ( pixmapLabel, 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
+
+        //determine the center of the canvas given that we will bitblt form the origin of the narrow
+        int myCenterXInt = static_cast<int>((pixmapLabel->width()-myQPixmap.width())/2);
+        int myCenterYInt = static_cast<int>((pixmapLabel->height()-myQPixmap.height())/2);
+	bitBlt ( pixmapLabel, myCenterXInt,myCenterYInt, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
 	 
 	
         //pixmapLabel1->setPixmap(myPainterPixmap);            

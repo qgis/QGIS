@@ -37,7 +37,7 @@ public slots:
     void setRotation(int);
 private slots:
     //overides function byt the same name created in .ui
-    void spinRotation_valueChanged( int theInt);
+    void spinSize_valueChanged( int theInt);
     //overides function byt the same name created in .ui
     void sliderRotation_valueChanged( int theInt);   
 };
