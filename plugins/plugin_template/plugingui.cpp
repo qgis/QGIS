@@ -36,6 +36,6 @@ void PluginGui::pbnOK_clicked()
   // add it to the view using:
   // emit drawRasterLayer(QString("layername"));
   // or for a vector layer
-  // emit drawVectorLayer(QString("layername"));
+  // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
 } 
