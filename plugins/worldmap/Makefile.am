@@ -59,7 +59,7 @@ libqgsworldmapimporter_la_SOURCES = qgsworldmapimporter.cpp \
 nodist_libqgsworldmapimporter_la_SOURCES =	$(plugin_MOC)
 
 libqgsworldmapimporter_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
-libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD)
+libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)

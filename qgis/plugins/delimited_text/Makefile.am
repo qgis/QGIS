@@ -46,7 +46,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
 
-delimitedtextlayerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
+delimitedtextlayerplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LADD) ../../src/libqgis.la
 delimitedtextlayerplugin_la_LDFLAGS = -avoid-version -module
 delimitedtextlayerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
 

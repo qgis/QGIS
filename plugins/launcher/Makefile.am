@@ -56,7 +56,7 @@ libQgsLauncherPlugin_la_SOURCES = qgslauncherplugin.cpp \
 nodist_libQgsLauncherPlugin_la_SOURCES =	$(plugin_MOC)
 
 libQgsLauncherPlugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(GDAL_CFLAGS) $(QGIS_CXXFLAGS)
-libQgsLauncherPlugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) -lqgis
+libQgsLauncherPlugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD)  $(GDAL_LADD) -lqgis
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)

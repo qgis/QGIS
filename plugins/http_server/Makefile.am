@@ -61,7 +61,7 @@ libHttpServer_la_SOURCES = plugin.cpp \
 	
 nodist_libHttpServer_la_SOURCES =	$(plugin_MOC)
 
-libHttpServer_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
+libHttpServer_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) $(GDAL_LADD) -lqgis
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
