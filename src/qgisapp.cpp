@@ -63,39 +63,46 @@
 static const char *qgisVersion = "0.0.6-alpha-dev";
 // cursors
 static unsigned char zoom_in_bits[] = {
-   0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
-   0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
-   0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0};
+	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
+	0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
+	0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0
+};
 
 static unsigned char zoom_in_mask_bits[] = {
-   0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
-   0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
-   0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0};
+	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
+	0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
+	0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0
+};
 
 static unsigned char zoom_out_bits[] = {
-   0xf8, 0x00, 0x06, 0x03, 0x02, 0x02, 0x01, 0x04, 0x01, 0x04, 0xfd, 0x05,
-   0x01, 0x04, 0x01, 0x04, 0x02, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
-   0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0};
+	0xf8, 0x00, 0x06, 0x03, 0x02, 0x02, 0x01, 0x04, 0x01, 0x04, 0xfd, 0x05,
+	0x01, 0x04, 0x01, 0x04, 0x02, 0x02, 0x06, 0x07, 0xf8, 0x0e, 0x00, 0x3c,
+	0x00, 0x78, 0x00, 0xf8, 0x00, 0xf0, 0x00, 0xe0
+};
 
 static unsigned char pan_bits[] = {
-   0xf0, 0x00, 0xf8, 0x01, 0x28, 0x07, 0x28, 0x05, 0x28, 0x1d, 0x28, 0x15,
-   0x2f, 0x15, 0x0d, 0x14, 0x09, 0x10, 0x03, 0x18, 0x06, 0x08, 0x04, 0x08,
-   0x0c, 0x0c, 0x18, 0x04, 0x30, 0x04, 0xe0, 0x07};
+	0xf0, 0x00, 0xf8, 0x01, 0x28, 0x07, 0x28, 0x05, 0x28, 0x1d, 0x28, 0x15,
+	0x2f, 0x15, 0x0d, 0x14, 0x09, 0x10, 0x03, 0x18, 0x06, 0x08, 0x04, 0x08,
+	0x0c, 0x0c, 0x18, 0x04, 0x30, 0x04, 0xe0, 0x07
+};
 
 static unsigned char pan_mask_bits[] = {
-   0xf0, 0x00, 0xf8, 0x01, 0xf8, 0x07, 0xf8, 0x07, 0xf8, 0x1f, 0xf8, 0x1f,
-   0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xfe, 0x0f, 0xfc, 0x0f,
-   0xfc, 0x0f, 0xf8, 0x07, 0xf0, 0x07, 0xe0, 0x07};
+	0xf0, 0x00, 0xf8, 0x01, 0xf8, 0x07, 0xf8, 0x07, 0xf8, 0x1f, 0xf8, 0x1f,
+	0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xfe, 0x0f, 0xfc, 0x0f,
+	0xfc, 0x0f, 0xf8, 0x07, 0xf0, 0x07, 0xe0, 0x07
+};
 
 static unsigned char identify_bits[] = {
-   0x00, 0x00, 0x06, 0x00, 0x1e, 0x00, 0x3c, 0x00, 0xfc, 0x00, 0xf8, 0x01,
-   0x78, 0x00, 0xd8, 0x1c, 0x88, 0x37, 0x80, 0x7f, 0x80, 0xf7, 0x80, 0xf7,
-   0x80, 0xf7, 0x00, 0x63, 0x00, 0x3e, 0x00, 0x1c};
+	0x00, 0x00, 0x06, 0x00, 0x1e, 0x00, 0x3c, 0x00, 0xfc, 0x00, 0xf8, 0x01,
+	0x78, 0x00, 0xd8, 0x1c, 0x88, 0x37, 0x80, 0x7f, 0x80, 0xf7, 0x80, 0xf7,
+	0x80, 0xf7, 0x00, 0x63, 0x00, 0x3e, 0x00, 0x1c
+};
 
 static unsigned char identify_mask_bits[] = {
-   0x00, 0x00, 0x06, 0x00, 0x1e, 0x00, 0x3c, 0x00, 0xfc, 0x00, 0xf8, 0x01,
-   0x78, 0x00, 0xd8, 0x1c, 0x88, 0x3f, 0x80, 0x7f, 0x80, 0xff, 0x80, 0xff,
-   0x80, 0xff, 0x00, 0x7f, 0x00, 0x3e, 0x00, 0x1c};
+	0x00, 0x00, 0x06, 0x00, 0x1e, 0x00, 0x3c, 0x00, 0xfc, 0x00, 0xf8, 0x01,
+	0x78, 0x00, 0xd8, 0x1c, 0x88, 0x3f, 0x80, 0x7f, 0x80, 0xff, 0x80, 0xff,
+	0x80, 0xff, 0x00, 0x7f, 0x00, 0x3e, 0x00, 0x1c
+};
 
 // constructor starts here   
 
@@ -106,10 +113,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	icon = QPixmap(qgis_xpm);
 	setIcon(icon);
 	QBitmap zoomincur;
-//	zoomincur = QBitmap(cursorzoomin);
+//  zoomincur = QBitmap(cursorzoomin);
 	QBitmap zoomincurmask;
-//	zoomincurmask = QBitmap(cursorzoomin_mask);
-	
+//  zoomincurmask = QBitmap(cursorzoomin_mask);
+
 	QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
 	QSplitter *split = new QSplitter(frameMain);
 	legendView = new QListView(split);
@@ -144,9 +151,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
 	mapCursor = 0;
 
- // connect the "cleanup" slot
- connect(qApp,SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
- restoreWindowState();  
+	// connect the "cleanup" slot
+	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
+	restoreWindowState();
 }
 
 QgisApp::~QgisApp()
@@ -163,14 +170,14 @@ void QgisApp::about()
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
 	watsNew += "\n*Removing a layer from the map no longer crashes the application\n"
-		"* Fixed multiple render bug when adding a layer\n"
-		"* Data source is shown in Layer Properties dialog\n"
-		"* Display name of a layer can be changed using the Layer Properties dialog\n"
-		"* Line widths can be set for a layer using the Layer Properties dialog\n"
-		"* Zoom out now works\n"
-		"* Zoom Previous added to toolbar\n"
-		"* Toolbar has been rearranged and new icons added\n"
-		"* Help|About QGis now contains Version, Whats New, and License information\n";
+	  "* Fixed multiple render bug when adding a layer\n"
+	  "* Data source is shown in Layer Properties dialog\n"
+	  "* Display name of a layer can be changed using the Layer Properties dialog\n"
+	  "* Line widths can be set for a layer using the Layer Properties dialog\n"
+	  "* Zoom out now works\n"
+	  "* Zoom Previous added to toolbar\n"
+	  "* Toolbar has been rearranged and new icons added\n"
+	  "* Help|About QGis now contains Version, Whats New, and License information\n";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
@@ -179,11 +186,11 @@ void QgisApp::about()
 
 void QgisApp::addLayer()
 {
-	
+
 	mapCanvas->freeze();
 	QStringList files = QFileDialog::getOpenFileNames("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
 													  "Select one or more layers to add");
-	QApplication::setOverrideCursor( Qt::WaitCursor );
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	QStringList::Iterator it = files.begin();
 	while (it != files.end()) {
 
@@ -212,12 +219,12 @@ void QgisApp::addLayer()
 	// update legend
 	/*! \todo Need legend scrollview and legenditem classes */
 	// draw the map
-	
+
 	mapLegend->update();
 	qApp->processEvents();
 	mapCanvas->freeze(false);
 	mapCanvas->render2();
-  QApplication::restoreOverrideCursor();
+	QApplication::restoreOverrideCursor();
 	statusBar()->message(mapCanvas->extent().stringRep());
 
 
@@ -228,16 +235,16 @@ void QgisApp::addDatabaseLayer()
 {
 	// only supports postgis layers at present
 	// show the postgis dialog
-	
+
 
 	QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
 	mapCanvas->freeze();
 	if (dbs->exec()) {
-		QApplication::setOverrideCursor( Qt::WaitCursor );
-    
-    
-	// repaint the canvas if it was covered by the dialog
-		
+		QApplication::setOverrideCursor(Qt::WaitCursor);
+
+
+		// repaint the canvas if it was covered by the dialog
+
 		// add files to the map canvas
 		QStringList tables = dbs->selectedTables();
 		QString connInfo = dbs->connInfo();
@@ -256,21 +263,21 @@ void QgisApp::addDatabaseLayer()
 
 			++it;
 		}
-	//	qApp->processEvents();
+		//  qApp->processEvents();
 		// update legend
 		/*! \todo Need legend scrollview and legenditem classes */
 		mapLegend->update();
-		
+
 		// draw the map
 		//mapCanvas->render2();
 		statusBar()->message(mapCanvas->extent().stringRep());
 
 	}
 	qApp->processEvents();
-		
-  mapCanvas->freeze(false);
-  mapCanvas->render2();
- 	QApplication::restoreOverrideCursor();
+
+	mapCanvas->freeze(false);
+	mapCanvas->render2();
+	QApplication::restoreOverrideCursor();
 
 }
 
@@ -290,10 +297,10 @@ void QgisApp::zoomIn()
 	mapTool = QGis::ZoomIn;
 	mapCanvas->setMapTool(mapTool);
 	// set the cursor
-	QBitmap zoomInBmp(16,16,zoom_in_bits,true);
-	QBitmap zoomInBmpMask(16,16,zoom_in_mask_bits,true);
+	QBitmap zoomInBmp(16, 16, zoom_in_bits, true);
+	QBitmap zoomInBmpMask(16, 16, zoom_in_mask_bits, true);
 	delete mapCursor;
-	mapCursor = new QCursor(zoomInBmp, zoomInBmpMask,5,5);
+	mapCursor = new QCursor(zoomInBmp, zoomInBmpMask, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
 	// scale the extent
 	/* QgsRect ext = mapCanvas->extent();
@@ -310,11 +317,11 @@ void QgisApp::zoomOut()
 	mapTool = QGis::ZoomOut;
 	mapCanvas->setMapTool(mapTool);
 
-  QBitmap zoomOutBmp(16,16,zoom_out_bits,true);
+	QBitmap zoomOutBmp(16, 16, zoom_out_bits, true);
 	delete mapCursor;
-	mapCursor = new QCursor(zoomOutBmp, zoomOutBmp,5,5);
+	mapCursor = new QCursor(zoomOutBmp, zoomOutBmp, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
-	
+
 	/*    QWMatrix m = mapCanvas->worldMatrix();
 	   m.scale( 0.5, 0.5 );
 	   mapCanvas->setWorldMatrix( m );
@@ -327,10 +334,10 @@ void QgisApp::pan()
 {
 	mapTool = QGis::Pan;
 	mapCanvas->setMapTool(mapTool);
-	QBitmap panBmp(16,16,pan_bits,true);
-	QBitmap panBmpMask(16,16,pan_mask_bits,true);
+	QBitmap panBmp(16, 16, pan_bits, true);
+	QBitmap panBmpMask(16, 16, pan_mask_bits, true);
 	delete mapCursor;
-	mapCursor = new QCursor(panBmp, panBmpMask,5,5);
+	mapCursor = new QCursor(panBmp, panBmpMask, 5, 5);
 	mapCanvas->setCursor(*mapCursor);
 }
 
@@ -339,20 +346,22 @@ void QgisApp::zoomFull()
 	mapCanvas->zoomFullExtent();
 }
 
-void QgisApp::zoomPrevious(){
-    mapCanvas->zoomPreviousExtent();
+void QgisApp::zoomPrevious()
+{
+	mapCanvas->zoomPreviousExtent();
 }
 
 void QgisApp::identify()
 {
 	mapTool = QGis::Identify;
 	mapCanvas->setMapTool(mapTool);
-	QBitmap idenitfyBmp(16,16,identify_bits,true);
-	QBitmap identifyBmpMask(16,16,identify_mask_bits,true);
+	QBitmap idenitfyBmp(16, 16, identify_bits, true);
+	QBitmap identifyBmpMask(16, 16, identify_mask_bits, true);
 	delete mapCursor;
-	mapCursor = new QCursor(idenitfyBmp, identifyBmpMask,1,1);
+	mapCursor = new QCursor(idenitfyBmp, identifyBmpMask, 1, 1);
 	mapCanvas->setCursor(*mapCursor);
 }
+
 //void QgisApp::readWKB (const char *connInfo, QStringList tables)
 //{
 //    PgCursor pgc (connInfo, "testcursor");
@@ -474,7 +483,7 @@ void QgisApp::drawPoint(double x, double y)
 
 void QgisApp::drawLayers()
 {
-//	std::cout << "In  QgisApp::drawLayers()" << std::endl;
+//  std::cout << "In  QgisApp::drawLayers()" << std::endl;
 	mapCanvas->render2();
 }
 
@@ -514,16 +523,16 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 	if (lp->exec()) {
 		mapCanvas->freeze();
 		lyr->setlayerName(lp->displayName());
-		if(currentName != lp->displayName())
+		if (currentName != lp->displayName())
 			mapLegend->update();
 		delete lp;
 		qApp->processEvents();
-		
+
 		// apply changes
 		mapCanvas->freeze(false);
 		mapCanvas->render2();
 	}
-	
+
 }
 void QgisApp::removeLayer()
 {
@@ -536,75 +545,88 @@ void QgisApp::removeLayer()
 	// draw the map
 	mapCanvas->clear();
 	mapCanvas->render2();
-	
-	
+
+
 }
-void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int )
+void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 {
 	if (lvi)
 		popMenu->exec(pt);
 }
 
 
-void QgisApp::testPluginFunctions(){
+void QgisApp::testPluginFunctions()
+{
 // try to load the class factory function
-    
 
-  QLibrary myLib( "../plugins/libqgisplugin.so.1.0.0");
-  bool loaded = myLib.load();
-  if(loaded){
-    std::cout << "Loaded test plugin library" << std::endl;
-    std::cout << "Attempting to resolve the classFactory function" << std::endl;
-  create_t *cf = (create_t * ) myLib.resolve( "classFactory" );
- 
-  if ( cf ) {
-               
-   QgisPlugin *pl = cf();
-   std::cout << "Plugin name is " << pl->pluginName() << std::endl;
-   std::cout << "Plugin version is " << pl->pluginVersion() << std::endl;
-   std::cout << "Plugin description is " << pl->pluginDescription() << std::endl;
 
-  }
-}else
-  std::cout << "Unable to load library" << std::endl;  
-  }
+	QLibrary myLib("../plugins/libqgisplugin.so.1.0.0");
+	bool loaded = myLib.load();
+	if (loaded) {
+		std::cout << "Loaded test plugin library" << std::endl;
+		std::cout << "Attempting to resolve the classFactory function" << std::endl;
+		create_t *cf = (create_t *) myLib.resolve("classFactory");
 
-void QgisApp::saveWindowState(){
-   // store window and toolbar positions
-        QSettings settings;
-       
-        QString dockStatus;
-        QTextStream ts(&dockStatus,IO_WriteOnly);
-        ts << *this;
-        settings.writeEntry("/qgis/Geometry/ToolBars", dockStatus);
-        // store window geometry
-        QPoint p = this->pos();
-        QSize s = this->size();
+		if (cf) {
+			std::cout << "Getting pointer to a QgisPlugin object from the library\n";
+			QgisPlugin *pl = cf();
+			std::cout << "Displaying name, version, and description\n";
+			std::cout << "Plugin name: " << pl->pluginName() << std::endl;
+			std::cout << "Plugin version: " << pl->pluginVersion() << std::endl;
+			std::cout << "Plugin description: " << pl->pluginDescription() << std::endl;
 
-        settings.writeEntry("/qgis/Geometry/maximized", this->isMaximized());
-        settings.writeEntry("/qgis/Geometry/x", p.x());
-        settings.writeEntry("/qgis/Geometry/y", p.y());
-        settings.writeEntry("/qgis/Geometry/w", s.width());
-        settings.writeEntry("/qgis/Geometry/h", s.height());
+			// unload the plugin (delete it)
+			std::cout << "Attempting to resolve the unload function" << std::endl;
+			unload_t *ul = (unload_t *) myLib.resolve("unload");
+			if (ul) {
+				ul(pl);
+				std::cout << "Unloaded the plugin\n";
+			} else {
+				std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
+			}
+		}
+	} else
+		std::cout << "Unable to load library" << std::endl;
+}
 
-  }
-void QgisApp::restoreWindowState(){
-    QSettings settings;
-        
-        QString dockStatus =  settings.readEntry("/qgis/Geometry/ToolBars");
-        QTextStream ts(&dockStatus, IO_ReadOnly);
-        ts >> *this;
+void QgisApp::saveWindowState()
+{
+	// store window and toolbar positions
+	QSettings settings;
 
-         
-     
-        // restore window geometry
-            QDesktopWidget *d = QApplication::desktop();
-            int dw = d->width();     // returns desktop width
-            int dh = d->height();    // returns desktop height
-        int w = settings.readNumEntry( "/qgis/Geometry/w",600);
-        int h  = settings.readNumEntry( "/qgis/Geometry/h",400);
-        int x =  settings.readNumEntry( "/qgis/Geometry/x",(dw-600)/2);
-        int y =  settings.readNumEntry( "/qgis/Geometry/y",(dh-400)/2);
-        setGeometry(x, y, w, h);        
-  }
-  
+	QString dockStatus;
+	QTextStream ts(&dockStatus, IO_WriteOnly);
+	ts << *this;
+	settings.writeEntry("/qgis/Geometry/ToolBars", dockStatus);
+	// store window geometry
+	QPoint p = this->pos();
+	QSize s = this->size();
+
+	settings.writeEntry("/qgis/Geometry/maximized", this->isMaximized());
+	settings.writeEntry("/qgis/Geometry/x", p.x());
+	settings.writeEntry("/qgis/Geometry/y", p.y());
+	settings.writeEntry("/qgis/Geometry/w", s.width());
+	settings.writeEntry("/qgis/Geometry/h", s.height());
+
+}
+
+void QgisApp::restoreWindowState()
+{
+	QSettings settings;
+
+	QString dockStatus = settings.readEntry("/qgis/Geometry/ToolBars");
+	QTextStream ts(&dockStatus, IO_ReadOnly);
+	ts >> *this;
+
+
+
+	// restore window geometry
+	QDesktopWidget *d = QApplication::desktop();
+	int dw = d->width();		// returns desktop width
+	int dh = d->height();		// returns desktop height
+	int w = settings.readNumEntry("/qgis/Geometry/w", 600);
+	int h = settings.readNumEntry("/qgis/Geometry/h", 400);
+	int x = settings.readNumEntry("/qgis/Geometry/x", (dw - 600) / 2);
+	int y = settings.readNumEntry("/qgis/Geometry/y", (dh - 400) / 2);
+	setGeometry(x, y, w, h);
+}
