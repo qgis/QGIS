@@ -150,9 +150,6 @@ QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
 
     mMap = layerMap(mLayerId);
 
-    // Extent
-    Vect_get_map_box ( mMap, &mMapBox );
-
     // Getting the total number of features in the layer
     mNumberFeatures = 0;
     mCidxFieldIndex = -1;
@@ -165,38 +162,97 @@ QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
     } else {
 	// TODO nofield layers
 	mNumberFeatures = 0;
+	mCidxFieldNumCats = 0;
     }
     mNextCidx = 0;
 
     #ifdef QGISDEBUG
-    std::cerr << "mNumberFeatures = " << mNumberFeatures << std::endl;
+    std::cerr << "mNumberFeatures = " << mNumberFeatures << " mCidxFieldIndex = " << mCidxFieldIndex
+              << " mCidxFieldNumCats = " << mCidxFieldNumCats << std::endl;
     #endif
+
 
     // Create selection array
-    int nlines = Vect_get_num_lines ( mMap );
-    int nareas = Vect_get_num_areas ( mMap );
-    #ifdef QGISDEBUG
-    std::cerr << "nlines = " << nlines << " nareas = " << nareas << std::endl;
-    #endif
+    mSelectionSize = allocateSelection ( mMap, &mSelection );
+    resetSelection(1); // TODO ? - where what reset
 
-    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == BOUNDARY ) {
-	mSelectionSize = nlines + 1;
-    } else if ( mLayerType == POLYGON ) {
-	mSelectionSize = nareas + 1;
-    }
-    mSelection = (char *) malloc ( mSelectionSize );
+    mMapVersion = mMaps[mLayers[mLayerId].mapId].version;
 
+    // Init structures
     mPoints = Vect_new_line_struct ();
     mCats = Vect_new_cats_struct ();
     mList = Vect_new_list ();
-
-    resetSelection(1); // TODO ? - where what reset
 
     mValid = true;
 
     #ifdef QGISDEBUG
     std::cerr << "New GRASS layer opened, time (ms): " << time.elapsed() << std::endl;
     #endif
+}
+
+void QgsGrassProvider::update ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "*** QgsGrassProvider::update ***" << std::endl;
+    #endif
+
+    mValid = false;
+    // TODO check if reopened map is valid
+
+    // Getting the total number of features in the layer
+    // It may happen that the field disappeares from the map (deleted features, new map without that field)
+    mNumberFeatures = 0;
+    mCidxFieldIndex = -1;
+    if ( mLayerField >= 0 ) {
+	mCidxFieldIndex = Vect_cidx_get_field_index ( mMap, mLayerField);
+	if ( mCidxFieldIndex >= 0 ) {
+	    mNumberFeatures = Vect_cidx_get_type_count ( mMap, mLayerField, mGrassType );
+	    mCidxFieldNumCats = Vect_cidx_get_num_cats_by_index ( mMap, mCidxFieldIndex );
+	}
+    } else {
+	// TODO nofield layers
+	mNumberFeatures = 0;
+	mCidxFieldNumCats = 0;
+    }
+    mNextCidx = 0;
+
+    #ifdef QGISDEBUG
+    std::cerr << "mNumberFeatures = " << mNumberFeatures << " mCidxFieldIndex = " << mCidxFieldIndex
+              << " mCidxFieldNumCats = " << mCidxFieldNumCats << std::endl;
+    #endif
+
+    // Create selection array
+    if ( mSelection ) free ( mSelection );
+    mSelectionSize = allocateSelection ( mMap, &mSelection );
+    resetSelection(1); 
+    
+    mMapVersion = mMaps[mLayers[mLayerId].mapId].version;
+
+    mValid = true;
+}
+
+int QgsGrassProvider::allocateSelection( struct Map_info *map, char **selection )
+{
+    int size;
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::allocateSellection" << std::endl;
+    #endif
+    
+    int nlines = Vect_get_num_lines ( map );
+    int nareas = Vect_get_num_areas ( map );
+    
+    if ( nlines > nareas ) {
+	size = nlines + 1;
+    } else {
+	size = nareas + 1;
+    }
+    #ifdef QGISDEBUG
+    std::cerr << "nlines = " << nlines << " nareas = " << nareas << " size = " << size << std::endl;
+    #endif
+
+    *selection = (char *) malloc ( size );
+
+    return size;
 }
 
 QgsGrassProvider::~QgsGrassProvider()
@@ -213,6 +269,13 @@ QgsGrassProvider::~QgsGrassProvider()
 */
 QgsFeature *QgsGrassProvider::getFirstFeature(bool fetchAttributes)
 {
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassProvider::getFirstFeature()" << std::endl;
+    #endif
+
+    if ( isEdited() )
+	return 0;
+
     mNextCidx = 0;
 	
     return ( getNextFeature(fetchAttributes) );
@@ -224,6 +287,13 @@ QgsFeature *QgsGrassProvider::getFirstFeature(bool fetchAttributes)
 */
 bool QgsGrassProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
 {
+    #if QGISDEBUG > 3
+    std::cout << "QgsGrassProvider::getNextFeature()" << std::endl;
+    #endif
+
+    if ( isEdited() )
+	return 0;
+
     // TODO once clear how to do that 
     return false;
 }
@@ -243,6 +313,9 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     std::cout << "QgsGrassProvider::getNextFeature() mNextCidx = " << mNextCidx 
     	      << " fetchAttributes = " << fetchAttributes << std::endl;
     #endif
+
+    if ( isEdited() )
+	return 0;
     
     // Get next line/area id
     int found = 0;
@@ -350,11 +423,21 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 
 QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
 {
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassProvider::getNextFeature()" << std::endl;
+    #endif
+
+    if ( isEdited() )
+	return 0;
+
     return 0;//soon
 }
 
 void QgsGrassProvider::resetSelection( bool sel)
 {
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassProvider::resetSelection()" << std::endl;
+    #endif
     memset ( mSelection, (int) sel, mSelectionSize );
     mNextCidx = 0;
 }
@@ -370,8 +453,20 @@ void QgsGrassProvider::select(QgsRect *rect, bool useIntersect)
     std::cout << "QgsGrassProvider::select() useIntersect = " << useIntersect << std::endl;
     #endif
 
-    resetSelection(0);
+    if ( isEdited() )
+	return;
 
+    // check if outdated and update if necessary
+    int mapId = mLayers[mLayerId].mapId;
+    if ( mapOutdated(mapId) ) {
+        updateMap ( mapId );
+    }
+    if ( mMapVersion < mMaps[mapId].version ) {
+        update();
+    }
+
+    resetSelection(0);
+    
     if ( !useIntersect ) { // select by bounding boxes only
 	BOUND_BOX box;
 	box.N = rect->yMax(); box.S = rect->yMin(); 
@@ -442,7 +537,15 @@ QString QgsGrassProvider::getDataSourceUri()
 */
 std::vector<QgsFeature>& QgsGrassProvider::identify(QgsRect * rect)
 {
-    select(rect, true);
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassProvider::identify()" << std::endl;
+    #endif
+
+    // TODO: does not return vector of features! Should it?
+
+    if ( !isEdited() ) {
+        select(rect, true);
+    }
 }
 
 /* set endian */
@@ -467,7 +570,10 @@ int QgsGrassProvider::endian()
 
 QgsRect *QgsGrassProvider::extent()
 {
-    return new QgsRect( mMapBox.W, mMapBox.S, mMapBox.E, mMapBox.N);
+    BOUND_BOX box;
+    Vect_get_map_box ( mMap, &box );
+
+    return new QgsRect( box.W, box.S, box.E, box.N);
 }
 
 /** 
@@ -487,7 +593,10 @@ long QgsGrassProvider::featureCount(){
 * Return the number of fields
 */
 int QgsGrassProvider::fieldCount(){
-      return mLayers[mLayerId].fields.size();
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::fieldCount() return:" << mLayers[mLayerId].fields.size() << std::endl;
+    #endif
+    return mLayers[mLayerId].fields.size();
 }
 
 /**
@@ -532,11 +641,17 @@ bool QgsGrassProvider::isValid(){
 
 bool QgsGrassProvider::addFeature(QgsFeature* f)
 {
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::addFeature()" << std::endl;
+    #endif
     return false;
 }
 
 bool QgsGrassProvider::deleteFeature(int id)
 {
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::deleteFeature()" << std::endl;
+    #endif
     return false;
 }
 
@@ -595,6 +710,40 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
     #endif
     layer.map = mMaps[layer.mapId].map;
 
+    layer.attributes = 0; // because loadLayerSourcesFromMap will release old
+    loadLayerSourcesFromMap ( layer );
+
+    layer.valid = true;
+
+    // Add new layer to layers
+    mLayers.push_back(layer);
+	
+    #ifdef QGISDEBUG
+    std::cerr << "New layer successfully opened" << layer.nAttributes << std::endl;
+    #endif
+        
+    return mLayers.size() - 1; 
+}
+
+void QgsGrassProvider::loadLayerSourcesFromMap ( GLAYER &layer )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::loadLayerSourcesFromMap" << std::endl;
+    #endif
+
+    // Reset and free 
+    layer.fields.clear();
+    if ( layer.attributes ) { 
+	for ( int i = 0; i < layer.nAttributes; i ++ ) {
+	    for ( int j = 0; j < layer.nColumns; j ++ ) {
+		if ( layer.attributes[i].values[j] )
+		    free ( layer.attributes[i].values[j] );
+	    }
+	    free ( layer.attributes[i].values );
+	}
+	free ( layer.attributes );
+    }
+    
     // Get field info
     layer.fieldInfo = Vect_get_field( layer.map, layer.field); // should work also with field = 0
 
@@ -681,7 +830,7 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 			layer.keyColumn = i;
 		    }
 		}
-
+    
 		if ( layer.keyColumn < 0 ) {
 		    layer.fields.clear();
                     layer.nColumns = 0;
@@ -748,12 +897,14 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 		db_free_string(&dbstr);
 
                 #ifdef QGISDEBUG
+		std::cerr << "fields.size = " << layer.fields.size() << std::endl;
 		std::cerr << "number of attributes = " << layer.nAttributes << std::endl;
                 #endif
 
 	    }
 	}
     }
+
     // Add cat if no attribute fields exist (otherwise qgis crashes)
     if ( layer.nColumns == 0 ) {
 	layer.fields.push_back ( QgsField( "cat", "integer", 10, 0) );
@@ -761,7 +912,7 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 	layer.minmax[0][0] = 0; 
 	layer.minmax[0][1] = 0; 
 
-	int cidx = Vect_cidx_get_field_index ( layer.map, field );
+	int cidx = Vect_cidx_get_field_index ( layer.map, layer.field );
 	if ( cidx >= 0 ) {
 	    int ncats, cat, type, id;
 	    
@@ -776,19 +927,8 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 	    }
 	}
     }
-
-    layer.valid = true;
-
-    // Add new layer to layers
-    mLayers.push_back(layer);
-	
-    #ifdef QGISDEBUG
-    std::cerr << "New layer successfully opened" << layer.nAttributes << std::endl;
-    #endif
-        
-    return mLayers.size() - 1; 
-    
 }
+
 void QgsGrassProvider::closeLayer( int layerId )
 {
     #ifdef QGISDEBUG
@@ -852,6 +992,8 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     map.mapName = mapName;
     map.path = tmpPath;
     map.nUsers = 1;
+    map.version = 1;
+    map.update = 0;
     map.map = (struct Map_info *) malloc ( sizeof(struct Map_info) );
 
     // Set GRASS location
@@ -867,6 +1009,11 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
         std::cerr << "Cannot find GRASS vector" << std::endl;
 	return -1;
     }
+
+    // Read the time of vector dir before Vect_open_old, because it may take long time (when the vector
+    // could be owerwritten)
+    QFileInfo di ( gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName );
+    map.lastModified = di.lastModified();
 
     // Open vector
     QgsGrass::resetError(); // to "catch" error after Vect_open_old()
@@ -887,6 +1034,55 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     return mMaps.size() - 1; // map id 
 }
 
+void QgsGrassProvider::updateMap ( int mapId )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::updateMap() mapId = " << mapId << std::endl;
+    #endif
+
+    /* Close map */
+    GMAP *map = &(mMaps[mapId]);
+
+    map->valid = false;
+    map->version++;
+
+    QgsGrass::setLocation ( (char *) map->gisdbase.ascii(), (char *) map->location.ascii() ); 
+
+    // TODO: Should be done better / in other place ?
+    // TODO: Is it necessary for close ?
+    G__setenv( "MAPSET", (char *) map->mapset.ascii() );
+    
+    Vect_close ( map->map );
+
+    QFileInfo di ( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName );
+    map->lastModified = di.lastModified();
+
+    // Reopen vector
+    QgsGrass::resetError(); // to "catch" error after Vect_open_old()
+    Vect_set_open_level (2);
+    Vect_open_old ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii());
+
+    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+
+	// TODO if reopen fails, mLayers should be also updated
+	return;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "GRASS map successfully reopened for reading." << std::endl;
+    #endif
+
+    for ( int i = 0; i <  mLayers.size(); i++) {
+	// if ( !(mLayers[i].valid) ) continue; // ?
+
+	if  ( mLayers[i].mapId == mapId ) {
+            loadLayerSourcesFromMap ( mLayers[i] );
+	}
+    }
+
+    map->valid = true;
+}
 
 void QgsGrassProvider::closeMap( int mapId )
 {
@@ -902,9 +1098,37 @@ void QgsGrassProvider::closeMap( int mapId )
         std::cerr << "No more users -> delete map" << std::endl;
         #endif
 
+        // TODO: do this better, probably maintain QgsGrassEdit as one user
+	if ( mMaps[mapId].update ) {
+	    QMessageBox::warning( 0, "Warning", "The vector was currently edited, "
+		                     "you can expect crash soon." );
+	}
+
         mMaps[mapId].valid = false;
 	Vect_close ( mMaps[mapId].map );
     }
+}
+
+bool QgsGrassProvider::mapOutdated( int mapId )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::mapOutdated()" << std::endl;
+    #endif
+
+    GMAP *map = &(mMaps[mapId]);
+    
+    QString dp = map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName;
+    QFileInfo di ( dp );
+
+    if ( map->lastModified < di.lastModified() ) {
+	#ifdef QGISDEBUG
+	std::cerr << "**** The map " << mapId << " was modified ****" << std::endl;
+	#endif
+	
+	return true;
+    }
+
+    return false;
 }
 
 /** Set feature attributes */
@@ -966,32 +1190,397 @@ struct Map_info *QgsGrassProvider::layerMap ( int layerId )
     return ( mMaps[mLayers[layerId].mapId].map );
 }
 
-//-------------------------------------------------------------------------------------------------------
+//-----------------------------------------  Edit -------------------------------------------------------
 
-/**
-* Class factory to return a pointer to a newly created 
-* QgsGrassProvider object
-*/
-extern "C" QgsGrassProvider * classFactory(const char *uri)
+bool QgsGrassProvider::isEditable ( void )
 {
-    return new QgsGrassProvider(uri);
-}
-/** Required key function (used to map the plugin to a data store type)
-*/
-extern "C" QString providerKey(){
-    return QString("grass");
-}
-/**
-* Required description function 
-*/
-extern "C" QString description(){
-    return QString("GRASS data provider");
-} 
-/**
-* Required isProvider function. Used to determine if this shared library
-* is a data provider plugin
-*/
-extern "C" bool isProvider(){
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::isEditable" << std::endl;
+    #endif
+
+    if ( !isValid() ) 
+	return false;
+
+    /* Check if current user is owner of mapset */
+    if ( G__mapset_permissions2((char*)mGisdbase.ascii(),(char*)mLocation.ascii(),(char*)mMapset.ascii()) != 1 )
+	return false;
+
+    // TODO: check format? (cannot edit OGR layers)
+
     return true;
 }
 
+bool QgsGrassProvider::isEdited ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::isEdited" << std::endl;
+    #endif
+
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+    return (map->update);
+}
+
+bool QgsGrassProvider::startEdit ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::startEdit" << std::endl;
+    std::cerr << "  uri = " << mDataSourceUri << std::endl;
+    std::cerr << "  mMaps.size() = " << mMaps.size() << std::endl;
+    #endif
+
+    if ( !isEditable() )
+	return false;
+
+    // Check number of maps (the problem may appear if static variables are not shared - runtime linker)
+    if ( mMaps.size() == 0 ) {
+	QMessageBox::warning( 0, "Warning", "No maps opened in mMaps, probably problem in runtime linking, " 
+			      "static variables are not shared by provider and plugin." );
+	return false;
+    }
+
+    /* Close map */
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+    map->valid = false;
+
+    QgsGrass::setLocation ( (char *) map->gisdbase.ascii(), (char *) map->location.ascii() ); 
+
+    // Set current mapset (mapset was previously checked by isEditable() )
+    // TODO: Should be done better / in other place ?
+    G__setenv( "MAPSET", (char *) map->mapset.ascii() );
+
+    Vect_close ( map->map );
+
+    // TODO: Catch error 
+     
+    int level = Vect_open_update ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii() );
+
+    if (  level < 2 ) { 
+	std::cerr << "Cannot open vector for update on level 2." << std::endl;
+	// TODO reopen vector for reading
+	return false;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Vector successfully reopened for update." << std::endl;
+    #endif
+
+    map->update = true;
+    map->valid = true;
+
+    return true;
+}
+
+bool QgsGrassProvider::closeEdit ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::closeEdit" << std::endl;
+    #endif
+
+    if ( !isValid() )
+	return false;
+
+    /* Close map */
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+    
+    if ( !(map->update) )
+	return false;
+
+    map->valid = false;
+    map->version++;
+
+    QgsGrass::setLocation ( (char *) map->gisdbase.ascii(), (char *) map->location.ascii() ); 
+
+    // Set current mapset (mapset was previously checked by isEditable() )
+    // TODO: Should be done better / in other place ?
+    // TODO: Is it necessary for build/close ?
+    G__setenv( "MAPSET", (char *) map->mapset.ascii() );
+    
+    Vect_build_partial ( map->map, GV_BUILD_NONE, NULL);
+    Vect_build ( map->map, stderr );
+    Vect_close ( map->map );
+
+    QFileInfo di ( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapName );
+    map->lastModified = di.lastModified();
+
+    // Reopen vector
+    QgsGrass::resetError(); // to "catch" error after Vect_open_old()
+    Vect_set_open_level (2);
+    Vect_open_old ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii());
+
+    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+	return -1;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "GRASS map successfully reopened for reading." << std::endl;
+    #endif
+
+    // Reload sources to layers
+    for ( int i = 0; i <  mLayers.size(); i++) {
+	// if ( !(mLayers[i].valid) ) continue; // ?
+
+	if  ( mLayers[i].mapId == mLayers[mLayerId].mapId ) {
+            loadLayerSourcesFromMap ( mLayers[i] );
+	}
+    }
+
+    map->update = false;
+    map->valid = true;
+
+    return true;
+}
+
+int QgsGrassProvider::numLines ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::numLines" << std::endl;
+    #endif
+
+    return ( Vect_get_num_lines(mMap) );
+}
+
+int QgsGrassProvider::numNodes ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::numNodes" << std::endl;
+    #endif
+
+    return ( Vect_get_num_nodes(mMap) );
+}
+
+int QgsGrassProvider::readLine ( struct line_pnts *Points, struct line_cats *Cats, int line )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::readLine" << std::endl;
+    #endif
+
+    if ( Points )
+	Vect_reset_line ( Points );
+
+    if ( Cats )
+	Vect_reset_cats ( Cats );
+
+    if ( !Vect_line_alive(mMap, line) ) return -1;
+
+    return ( Vect_read_line(mMap, Points, Cats, line) );
+}
+
+bool QgsGrassProvider::nodeCoor ( int node, double *x, double *y )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::nodeCoor" << std::endl;
+    #endif
+
+    if ( !Vect_node_alive ( mMap, node) ) {
+        *x = 0.0;
+        *y = 0.0;
+	return false;
+    }
+    
+    Vect_get_node_coor ( mMap, node, x, y, NULL);
+    return true;
+}
+
+bool QgsGrassProvider::lineNodes ( int line, int *node1, int *node2 )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::lineNodes" << std::endl;
+    #endif
+    
+    if ( !Vect_line_alive(mMap, line) ) {
+        *node1 = 0;
+        *node2 = 0;
+	return false;
+    }
+    
+    Vect_get_line_nodes ( mMap, line, node1, node2 );
+    return true;
+}
+
+long QgsGrassProvider::writeLine ( int type, struct line_pnts *Points, struct line_cats *Cats )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::writeLine n_points = " << Points->n_points 
+	      << " n_cats = " << Cats->n_cats << std::endl;
+    #endif
+
+    if ( !isEdited() )
+	return -1;
+
+    return ( Vect_write_line(mMap,type,Points,Cats) );
+}
+
+int QgsGrassProvider::rewriteLine ( int line, int type, struct line_pnts *Points, struct line_cats *Cats )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::rewriteLine n_points = " << Points->n_points 
+	      << " n_cats = " << Cats->n_cats << std::endl;
+    #endif
+
+    if ( !isEdited() )
+	return -1;
+
+    return ( Vect_rewrite_line(mMap,line,type,Points,Cats) );
+}
+
+
+int QgsGrassProvider::deleteLine ( int line )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::deleteLine" << std::endl;
+    #endif
+
+    if ( !isEdited() )
+	return -1;
+
+    return ( Vect_delete_line(mMap,line) );
+}
+
+int QgsGrassProvider::findLine ( double x, double y, int type, double threshold )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::findLine" << std::endl;
+    #endif
+
+    return ( Vect_find_line(mMap,x,y,0,type,threshold,0,0) );
+}
+
+int QgsGrassProvider::findNode ( double x, double y, double threshold )
+{
+    return ( Vect_find_node ( mMap, x, y, 0, threshold, 0 ) );
+}
+
+bool QgsGrassProvider::lineAreas ( int line, int *left, int *right )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::lineAreas" << std::endl;
+    #endif
+    
+    if ( !Vect_line_alive(mMap, line) ) {
+        *left = 0;
+        *right = 0;
+	return false;
+    }
+    
+    Vect_get_line_areas ( mMap, line, left, right );
+    return true;
+}
+
+int QgsGrassProvider::centroidArea ( int centroid )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::centroidArea" << std::endl;
+    #endif
+    
+    if ( !Vect_line_alive(mMap, centroid) ) {
+	return 0;
+    }
+    
+    return ( Vect_get_centroid_area(mMap,centroid) );
+}
+
+int QgsGrassProvider::nodeNLines ( int node )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::nodeNLines" << std::endl;
+    #endif
+    
+    if ( !Vect_node_alive(mMap, node) ) {
+	return 0;
+    }
+    
+    return ( Vect_get_node_n_lines(mMap,node) );
+}
+
+int QgsGrassProvider::nodeLine ( int node, int idx )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::nodeLine" << std::endl;
+    #endif
+    
+    if ( !Vect_node_alive(mMap, node) ) {
+	return 0;
+    }
+
+    return ( Vect_get_node_line(mMap,node,idx) );
+}
+
+int QgsGrassProvider::lineAlive ( int line )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::lineAlive" << std::endl;
+    #endif
+    
+    return ( Vect_line_alive(mMap, line) ) ;
+}
+
+int QgsGrassProvider::nodeAlive ( int node )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::nodeAlive" << std::endl;
+    #endif
+    
+    return ( Vect_node_alive(mMap, node) ) ;
+}
+
+int QgsGrassProvider::numUpdatedLines ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::numUpdatedLines" << std::endl;
+    std::cerr << "  numUpdatedLines = " << Vect_get_num_updated_lines(mMap) << std::endl;
+    #endif
+    
+    return ( Vect_get_num_updated_lines(mMap) ) ;
+}
+
+int QgsGrassProvider::numUpdatedNodes ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::numUpdatedNodes" << std::endl;
+    std::cerr << "  numUpdatedNodes = " << Vect_get_num_updated_nodes(mMap) << std::endl;
+    #endif
+    
+    return ( Vect_get_num_updated_nodes(mMap) ) ;
+}
+
+int QgsGrassProvider::updatedLine ( int idx )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::updatedLine idx = " << idx << std::endl;
+    std::cerr << "  updatedLine = " << Vect_get_updated_line( mMap, idx ) << std::endl;
+    #endif
+    
+    return ( Vect_get_updated_line( mMap, idx ) ) ;
+}
+
+int QgsGrassProvider::updatedNode ( int idx )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::updatedNode idx = " << idx << std::endl;
+    std::cerr << "  updatedNode = " << Vect_get_updated_node( mMap, idx ) << std::endl;
+    #endif
+    
+    return ( Vect_get_updated_node( mMap, idx ) ) ;
+}
+
+int QgsGrassProvider::cidxGetNumFields( void ) 
+{
+    return ( Vect_cidx_get_num_fields(mMap) );
+}
+
+int QgsGrassProvider::cidxGetFieldNumber( int idx ) 
+{
+    return ( Vect_cidx_get_field_number(mMap, idx) );
+}
+
+int QgsGrassProvider::cidxGetMaxCat( int idx ) 
+{
+    int ncats = Vect_cidx_get_num_cats_by_index ( mMap, idx);
+
+    int cat, type, id;
+    Vect_cidx_get_cat_by_index ( mMap, idx, ncats-1, &cat, &type, &id );
+    
+    return ( cat );
+}
+    
