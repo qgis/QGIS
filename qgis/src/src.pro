@@ -32,7 +32,9 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgslayerproperties.h \
            qgsidentifyresults.h \
 	   qgsattributetable.h \
-	   qgsattributetabledisplay.h
+	   qgsattributetabledisplay.h \
+	   qgsrenderer.h \
+	   qgsrenderitem.h
            
 INTERFACES += qgsdbsourceselectbase.ui \
 					 qgisappbase.ui \
@@ -64,4 +66,6 @@ SOURCES += main.cpp \
            qgslayerproperties.cpp \
 	   qgsidentifyresults.cpp \
 	   qgsattributetable.cpp \
-	   qgsattributetabledisplay.cpp
+	   qgsattributetabledisplay.cpp \
+	   qgsrenderer.cpp \
+	   qgsrenderitem.cpp
