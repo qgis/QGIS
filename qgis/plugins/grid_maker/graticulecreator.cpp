@@ -4,10 +4,10 @@
 #include <iostream>
 #include <qfileinfo.h>
 #include <qstringlist.h>
-GraticuleCreator::GraticuleCreator(QString theOutputFileName, float theXIntervalFloat, float theYIntervalFloat)
+GraticuleCreator::GraticuleCreator(QString theOutputFileName, double theXIntervalDouble, double theYIntervalDouble)
 {
     std::cout << "GraticuleCreator constructor called with " << theOutputFileName
-    << " for output file and " << theInputFileName << " for input file " << std::endl;
+    << " for output file and " << theXIntervalDouble << "," << theYIntervalDouble << " for x,y interval " << std::endl;
     DBFHandle myDbfHandle;		/* handle for dBase file */
     SHPHandle myShapeHandle;		/* handle for shape files .shx and .shp */
     /* Open and prepare output files */
@@ -15,7 +15,7 @@ GraticuleCreator::GraticuleCreator(QString theOutputFileName, float theXInterval
     myShapeHandle = createShapeFile(theOutputFileName);
     //test the write point routine....
     //generatePoints(theInputFileName,myDbfHandle,myShapeHandle);
-    generateGraticule(myDbfHandle,myShapeHandle,theXIntervalFloat,theYIntervalFloat);
+    generateGraticule(myDbfHandle,myShapeHandle,theXIntervalDouble,theYIntervalDouble);
     DBFClose( myDbfHandle );
     SHPClose( myShapeHandle );
     return;
@@ -46,7 +46,8 @@ DBFHandle GraticuleCreator::createDbf (QString theDbfName )
 SHPHandle GraticuleCreator::createShapeFile(QString theFileName )
 {
     SHPHandle myShapeHandle;
-    myShapeHandle = SHPCreate(theFileName, SHPT_POINT );
+    //myShapeHandle = SHPCreate(theFileName, SHPT_POINT );
+    myShapeHandle = SHPCreate(theFileName, SHPT_ARC );
     return myShapeHandle;
 }
 
@@ -74,15 +75,15 @@ void GraticuleCreator::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdIn
     //DBFWriteStringAttribute(theDbfHandle, theRecordIdInt, 1, theLabel);
 }
 
-void GraticuleCreator::writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXFloat, double theYFloat )
+void GraticuleCreator::writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double theYDouble )
 {
     SHPObject * myShapeObject;
-    myShapeObject = SHPCreateObject( SHPT_POINT, theRecordInt, 0, NULL, NULL, 1, &theXFloat, &theYFloat, NULL, NULL );
+    myShapeObject = SHPCreateObject( SHPT_POINT, theRecordInt, 0, NULL, NULL, 1, &theXDouble, &theYDouble, NULL, NULL );
     SHPWriteObject( theShapeHandle, -1, myShapeObject );
     SHPDestroyObject( myShapeObject );
 }
 
-void GraticuleCreator::WriteLine(SHPHandle theShapeHandle, 
+void GraticuleCreator::writeLine(SHPHandle theShapeHandle, 
         int theRecordInt, 
         int theCoordinateCountInt, 
         double * theXArrayDouble, 
@@ -104,59 +105,53 @@ void GraticuleCreator::WriteLine(SHPHandle theShapeHandle,
 }
 
 //TODO: check for rediculous intervals!
-void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,float theXIntervalFloat,float theYIntervalFloat)
+void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,double theXIntervalDouble,double theYIntervalDouble)
 {
   
   int myRecordInt=0;
+  //create the arrays for storing the coordinates
+  double * myXArrayDouble;
+  double * myYArrayDouble;
+  myXArrayDouble = (double *)malloc(2 * sizeof(double));
+  myYArrayDouble = (double *)malloc(2 * sizeof(double));
+  
   //
   //Longitude loop
   //
-  for (float myXFloat=-180.0;myXFloat <=180.0;myXFloat+=theXIntervalFloat)
+  for (double myXDouble=-180.0;myXDouble <=180.0;myXDouble+=theXIntervalDouble)
   {
-    //create the arrays for storing the coordinates
-    double * myXArrayDouble = NULL;
-    double * myYArrayDouble = NULL;
     
-    myXArrayDouble = realloc(myXArrayDouble, 2 * sizeof(double));
-    myYArrayDouble = realloc(myYArrayDouble, 2 * sizeof(double));
-    
-    myXArrayDouble[0]=myXFloat;
-    myXArrayDouble[1]=myXFloat;
+    myXArrayDouble[0]=myXDouble;
+    myXArrayDouble[1]=myXDouble;
     myYArrayDouble[0]=-90.0;
     myYArrayDouble[1]=90.0;
 
-    WriteDbf(theDbfHandle,myRecordInt,myRecordInt;"testing");
-    WriteLine(theShpHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
+    writeDbfRecord(theDbfHandle,myRecordInt,"testing");
+    writeLine(theShapeHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
     
-    delete myXArrayDouble;
-    delete myYArrayDouble;
+    ++myRecordInt;
   }
 
   //
   //Latitude loop
   //
-  for (float myYFloat=-90.0;myYFloat<=90.0;myYFloat+=theYIntervalFloat)
+  myRecordInt=0;
+  for (double myYDouble=-90.0;myYDouble<=90.0;myYDouble+=theYIntervalDouble)
   {
-    //create the arrays for storing the coordinates
-    double * myXArrayDouble = NULL;
-    double * myYArrayDouble = NULL;
     
-    myXArrayDouble = realloc(myXArrayDouble, 2 * sizeof(double));
-    myYArrayDouble = realloc(myYArrayDouble, 2 * sizeof(double));
-
     myXArrayDouble[0]=-180.0;
     myXArrayDouble[1]=180.0;
-    myYArrayDouble[0]=myYFloat;
-    myYArrayDouble[1]=myYFloat;
+    myYArrayDouble[0]=myYDouble;
+    myYArrayDouble[1]=myYDouble;
     
-    WriteDbf(theDbfHandle,myRecordInt,myRecordInt;"testing");
-    WriteLine(theShpHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
+    writeDbfRecord(theDbfHandle,myRecordInt,"testing");
+    writeLine(theShapeHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
 
-    delete myXArrayDouble;
-    delete myYArrayDouble;
+    ++myRecordInt;
   }
   
-  ++myRecordInt;
+  delete myXArrayDouble;
+  delete myYArrayDouble;
 }
 
 /* read from fp and generate point shapefile to theDbfHandle/theShapeHandle */
@@ -183,8 +178,8 @@ void GraticuleCreator::generatePoints (QString theInputFileName, DBFHandle theDb
 
                 //convert items 3 and 4 to lat and long...
                 //TODO - continue here...
-                float x=myLongQString.toFloat();
-                float y=myLatQString.toFloat();
+                double x=myLongQString.toDouble();
+                double y=myLatQString.toDouble();
                 //create the dbf and shape recs
                 std::cerr << "Writing record: " << myDateQString << " - " << x << " - " << y << std::endl;
                 writeDbfRecord(theDbfHandle, myRecordInt, myDateQString);

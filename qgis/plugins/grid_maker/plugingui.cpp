@@ -39,46 +39,20 @@ void PluginGui::pbnOK_clicked()
 {
   //check input file exists
   //
-  //WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
+  GraticuleCreator *  myGraticuleCreator = new GraticuleCreator(leOutputShapeFile->text(),1,1);
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
   // add it to the view using:
   // emit drawRasterLayer(QString("layername"));
   // or for a vector layer
-  // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
+  //emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
 
-  //delete myWayPointToShape;
+  delete myGraticuleCreator;
   emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
   //close the dialog
   done(1);
 } 
-
-
-void PluginGui::pbnSelectInputFile_clicked()
-{
-  std::cout << " Gps File Importer::pbnSelectInputFile_clicked() " << std::endl;
-  QString myFileTypeQString;
-  QString myFilterString="Text File (*.txt)";
-  QString myFileNameQString = QFileDialog::getOpenFileName(
-          "." , //initial dir
-          myFilterString,  //filters to select
-          this , //parent dialog
-          "OpenFileDialog" , //QFileDialog qt object name
-          "Select GPS dump text file" , //caption
-          &myFileTypeQString //the pointer to store selected filter
-          );
-  std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
-  //leInputFile->setText(myFileNameQString);
-  if ( (leOutputShapeFile->text()=="")  )
-  {
-    pbnOK->setEnabled(false);
-  }
-  else
-  {
-    pbnOK->setEnabled(true);
-  }
-}
 
 
 void PluginGui::pbnSelectOutputFile_clicked()
