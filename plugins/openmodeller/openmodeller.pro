@@ -14,8 +14,8 @@ INCLUDEPATH += . %GDAL%\include ..\..\qgis_win32\plugins ..\..\qgis_win32\src
 
 
 #libs for dll
-#LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
-LIBS += libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
+LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib libopenmodeller_static.lib
+#LIBS += libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
 
 # config for dll
 CONFIG += qt dll thread rtti 
