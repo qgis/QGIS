@@ -1,7 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.48 2004/04/02 17:34:15 stevehalasz Exp
+ChangeLog,v 1.49 2004/04/02 18:31:24 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-02 [mcoletti] 0.1.0devel25
+Compensating for QgsFeature::setGeometry() now accepting "size" parameter for
+the given binary geometry string.
+
+QgsShapeFileProvider::endian() now uses shorter, standard way of computing
+endian-ness.
 
 2004-04-02 [stevehalasz] 0.1.0devel25
 
