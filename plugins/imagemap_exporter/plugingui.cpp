@@ -17,6 +17,7 @@
 #include <qimage.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+#include <qregexp.h>
 #include <qspinbox.h>
 #include <qtextstream.h>
 
@@ -69,6 +70,29 @@ void PluginGui::pbnOK_clicked()
     QMessageBox::critical(this, "Error", "You must choose an output file.");
     return;
   }
+  if (leSelectTemplate->text() == "") {
+    QMessageBox::critical(this, "Error", "You must choose a template file.");
+    return;
+  }
+  
+  
+  // load the template
+  QFile tmpl(leSelectTemplate->text());
+  if (!tmpl.open(IO_ReadOnly)) {
+    QMessageBox::critical(this, "Error", 
+			  "Could not load the template file!");
+    return;
+  }
+  QTextStream tmplStream(&tmpl);
+  QString tmplString = tmplStream.read();
+  QRegExp regexp("\\[QIM-map\\]", false);
+  int mapStart = regexp.search(tmplString);
+  if (mapStart == -1) {
+    QMessageBox::critical(this, "Error", 
+			  "The template file does not contain [QIM-map]!");
+    return;
+  }
+  int mapEnd = mapStart + regexp.matchedLength();
   
   // open the HTML file
   QFile f(leSelectHTML->text());
@@ -96,11 +120,34 @@ void PluginGui::pbnOK_clicked()
 			  qgisIFace->getMapCanvas()->extent().xMin(),
 			  qgisIFace->getMapCanvas()->extent().yMin(),
 			  qgisIFace->getMapCanvas()->height());
-  file<<"<HTML>"<<endl
-      <<"  <BODY>"<<endl
-      <<"    <IMG src=\""<<imageFile
-      <<"\" usemap=\"#qgismap\" border=0>"<<endl
-      <<"    <MAP name=\"qgismap\">"<<endl;
+  
+  file<<tmplString.left(mapStart)
+
+      <<"<SCRIPT>"<<endl
+      <<"  function QIM_hideObj(objID) {"<<endl
+      <<"    document.getElementById(objID).style.visibility = 'hidden';"<<endl
+      <<"  }"<<endl
+      <<""<<endl
+      <<"  function QIM_getPos(el){"<<endl
+      <<"    for (var lx=0, ly=0; el != null; "<<endl
+      <<"         lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);"<<endl
+      <<"    return { x : lx, y : ly}"<<endl
+      <<"  }"<<endl
+      <<""<<endl
+      <<"  function QIM_showClusterIndex(indexID, xPos, yPos) {"<<endl
+      <<"    var obj = document.getElementById('QIM_cidx_' + indexID);"<<endl
+      <<"    var img = document.getElementById('QIM_img');"<<endl
+      <<"    obj.style.position = 'absolute';"<<endl
+      <<"    imgPos = QIM_getPos(img);"<<endl
+      <<"    obj.style.left = xPos + imgPos.x;"<<endl
+      <<"    obj.style.top = yPos + imgPos.y;"<<endl
+      <<"    obj.style.visibility = 'visible';"<<endl
+      <<"  }"<<endl
+      <<"</SCRIPT>"<<endl
+    
+      <<"    <DIV class=\"QIM_imgdiv\">"<<endl
+      <<"    <IMG id=\"QIM_img\" src=\""<<imageFile
+      <<"\" usemap=\"#qgismap\" border=\"0\">"<<endl;
   QgsRect extentRect((qgisIFace->getMapCanvas()->extent()));
   layer->select(&extentRect, false);
 
@@ -162,20 +209,48 @@ void PluginGui::pbnOK_clicked()
       }
     }
 
-    // sort the features so clusters are contiguous in the vector
-    //std::sort(features.begin(), features.end(), cluster_comp);
-    
     // get urls
     std::map<int, std::vector<QString> > urls, alts;
     for (int i = 0; i < n; ++i) {
       urls[features[i].second].
 	push_back(features[i].first->attributeMap()[urlIndex].fieldValue());
-      if (altIndex != -1)
+      if (altIndex != -1) {
 	alts[features[i].second].
 	  push_back(features[i].first->attributeMap()[altIndex].fieldValue());
+      }
+      else {
+	alts[features[i].second].push_back("");
+      }
     }
     
+    // create cluster indices
+    for (int i = 0; i < n; ++i) {
+      if (i == features[i].second && urls[features[i].second].size() > 1) {
+
+	QString ciName = basename + "_" + QString::number(features[i].second) +
+	  ".html";
+	QFile cif(dir + ciName);
+	if (!cif.open(IO_WriteOnly)) {
+	  QMessageBox::critical(this, "Error", 
+				QString("Could not write the index file "
+					"%1!").arg(dir + ciName));
+	  return;
+	}
+	QTextStream cIdx(&cif);
+	cIdx<<"<HTML>\n  <BODY>"<<endl;
+	writeClusterIndex(urls[i], alts[i], cIdx, i);
+	cIdx<<"  </BODY>\n</HTML>"<<endl;
+      }
+    }
+
+    for (int i = 0; i < n; ++i) {
+      if (i == features[i].second && urls[features[i].second].size() > 1) {
+	writeClusterIndex(urls[i], alts[i], file, i);
+      }
+    }
+      
     // print map areas
+    file<<"    <MAP name=\"qgismap\">"<<endl;
     for (int i = 0; i < n; ++i) {
       unsigned char* geo = features[i].first->getGeometry();
       double x = *((double*)(geo + 5));
@@ -184,32 +259,21 @@ void PluginGui::pbnOK_clicked()
       file<<"      <AREA shape=\"circle\" coords=\""
 	  <<int(p.x())<<","<<int(p.y())<<","<<radius<<"\" "
 	  <<"href=\"";
+      
+      // if this is part of a cluster, link to the cluster index
       if (urls[features[i].second].size() > 1) {
 	QString ciName = basename + "_" + QString::number(features[i].second) +
-	  ".html";
-	file<<ciName;
-	
-	// if this is a cluster head it needs a cluster index file
-	if (i == features[i].second) {
-	  QFile cif(dir + ciName);
-	  if (!cif.open(IO_WriteOnly)) {
-	    QMessageBox::critical(this, "Error", 
-				  QString("Could not write the index file "
-					  "%1!").arg(dir + ciName));
-	    return;
-	  }
-	  QTextStream cIdx(&cif);
-	  cIdx<<"<HTML>\n  <BODY>"<<endl;
-	  for (int j = 0; j < urls[i].size(); ++j) {
-	    cIdx<<"    <A href=\""<<(urls[i][j].isNull() ? "" : urls[i][j])
-		<<"\"><br>"<<(urls[i][j].isNull() ? "" : urls[i][j])<<"</A>\n";
-	  }
-	  cIdx<<"  </BODY>\n</HTML>"<<endl;
-	}
+	  ".html\"";
+	file<<ciName<<" onClick=\"QIM_showClusterIndex("<<features[i].second<<
+	  ","<<p.x()<<","<<p.y()<<"); return false;";
       }
+      
+      // else, just link to the URL
       else
 	file<<(urls[features[i].second][0].isNull() ? "" : 
 	       urls[features[i].second][0]);
+      
+      // add an ALT text
       file<<"\" alt=\"";
       if (alts[features[i].second].size() > 1)
 	file<<alts[features[i].second].size()<<" links";
@@ -226,6 +290,7 @@ void PluginGui::pbnOK_clicked()
     break;
     
   case QGis::Polygon: {
+    file<<"    <MAP name=\"qgismap\">"<<endl;
     QgsFeature* feature = layer->getFirstFeature(true);
     while (feature != 0) {
       unsigned char* geometry = feature->getGeometry();
@@ -267,9 +332,9 @@ void PluginGui::pbnOK_clicked()
 
   }
   
-  file<<"    </MAP>"<<endl
-      <<"  </BODY>"<<endl
-      <<"</HTML>"<<endl;
+  file<<"    </MAP>"<<endl    
+      <<"    </DIV>"<<endl
+      <<tmplString.mid(mapEnd);
   
   done(1);
 } 
@@ -295,6 +360,18 @@ void PluginGui::pbnSelectHTML_clicked()
 				 "Save file dialog"
 				 "Choose a filename to save under");
   leSelectHTML->setText(filename);
+}
+
+
+void PluginGui::pbnSelectTemplate_clicked()
+{
+  QString filename = 
+    QFileDialog::getSaveFileName(".",
+				 "HTML files (*.html)",
+				 this,
+				 "Choose template dialog"
+				 "Choose a HTML to use as template");
+  leSelectTemplate->setText(filename);
 }
 
 
@@ -328,3 +405,24 @@ bool PluginGui::polygonIsHole(const double* points, int nPoints)
   else
     return (points[h*2] < points[j*2]);
 }
+
+
+void PluginGui::writeClusterIndex(const std::vector<QString>& urls,
+				  const std::vector<QString>& alts,
+				  QTextStream& stream, int clusterID) {
+  stream<<"<DIV style=\"visibility: hidden; position:absolute;\" class=\"QIM_clusterindex\" "
+	<<"id=\"QIM_cidx_"<<clusterID<<"\">"<<endl
+	<<"  <DIV class=\"QIM_clusterindexheader\" align=\"right\">"<<endl
+	<<"    <A href=\"javascript:QIM_hideObj('QIM_cidx_"<<clusterID<<"')\""
+	<<">&nbsp;X&nbsp;</A>"<<endl
+	<<"  </DIV>"<<endl;
+  for (int j = 0; j < urls.size(); ++j) {
+    stream<<"  <DIV class=\"QIM_clusterindexentry\">"<<endl
+	  <<"    <A href=\""<<(urls[j].isNull() ? "" : urls[j])
+	  <<"\" onClick=\"QIM_hideObj('QIM_cidx_"<<clusterID<<"')\">"
+	  <<(alts[j].isEmpty() ? urls[j] : alts[j])<<"</A>"<<endl
+	  <<"  </DIV>"<<endl;
+  }
+  stream<<"</DIV>"<<endl;
+}
+  

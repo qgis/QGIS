@@ -40,6 +40,7 @@ public slots:
   void pbnCancel_clicked();
   void cmbSelectLayer_clicked();
   void pbnSelectHTML_clicked();
+  void pbnSelectTemplate_clicked();
   
 private:
   
@@ -57,6 +58,11 @@ private:
                      which should be equal to the first point).
   */
   bool polygonIsHole(const double* points, int nPoints);
+  
+  /** This function writes a cluster index. */
+  void writeClusterIndex(const std::vector<QString>& urls,
+			 const std::vector<QString>& alts,
+			 QTextStream& stream, int clusterID);
   
   /** This is used for internal sorting algorithms. */
   static bool cluster_comp(std::pair<QgsFeature*, int> i, 
