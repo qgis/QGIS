@@ -17,35 +17,45 @@
 /* $Id$ */
 #ifndef QGSFEATUREATTRIBUTE_H
 #define QGSFEATUREATTRIBUTE_H
+
 #include <qstring.h>
-class QString;
+
 /** \class QgsFeatureAttribute - Feature attribute class.
  * \brief Encapsulates a single feature attribute.
   *@author Gary E.Sherman
   */
 
-class QgsFeatureAttribute {
-
+class QgsFeatureAttribute
+{
 public:
-	//! Constructor
-	QgsFeatureAttribute(QString field=0, QString value=0);
-	//! Destructor
-	~QgsFeatureAttribute();
-	/**
+
+  //! Constructor
+  QgsFeatureAttribute(QString const & field = 0, QString const & value = 0);
+
+  //! Destructor
+  ~QgsFeatureAttribute();
+
+  /**
 	* Get the field name for this feature attribute
 	* @return Field name
 	*/
-	QString fieldName() const;
-	/**
+  QString const & fieldName() const;
+
+
+  /**
 	* Get the field value for this feature attribute
 	* @return Field value
 	*/
-	QString fieldValue() const;
+  QString const & fieldValue() const;
+
 private:
-	//! attribute field name
-	QString field;
-	//! attribute field value
-	QString value;
-};
+
+  //! attribute field name
+  QString field;
+
+  //! attribute field value
+  QString value;
+
+}; // class QgsFeatureAttribute
 
 #endif
