@@ -88,7 +88,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	sym->setColor(QColor(red, green, blue));
 	sym->setLineWidth(1);
 	lyr->setSymbol(sym);
-	layers[lyr->name()] = lyr;
+	layers[lyr->getLayerID()] = lyr;
 	// update extent if warranted
 	if (layers.size() == 1) {
 		fullExtent = lyr->extent();
@@ -102,7 +102,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	incrementZpos();
 	lyr->setZ(layers.size() - 1);
 	updateZpos();
-	zOrder.push_back(lyr->name());
+	zOrder.push_back(lyr->getLayerID());
 	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
 	//lyr->zpos = 0;
 }
@@ -535,8 +535,8 @@ void QgsMapCanvas::remove(QString key)
 	std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
 	while (mi != layers.end()) {
 		QgsMapLayer *ml = (*mi).second;
-		if (ml->name() != key)
-			newLayers[ml->name()] = ml;
+		if (ml->getLayerID() != key)
+			newLayers[ml->getLayerID()] = ml;
 
 		mi++;
 

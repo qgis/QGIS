@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
+#include <qdatetime.h>
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
@@ -26,7 +27,10 @@ QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):layerName(ly
 	valid = true;
 	m_visible = true;
 	// create a default symbol
-
+	
+	// Generate the unique ID of this layer
+	QDateTime dt = QDateTime::currentDateTime();
+	ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -35,6 +39,12 @@ QgsMapLayer::~QgsMapLayer()
 const int QgsMapLayer::type()
 {
 	return layerType;
+}
+
+/** Get this layer's unique ID */
+QString QgsMapLayer::getLayerID()
+{
+	return ID;
 }
 
 /** Write property of QString layerName. */
