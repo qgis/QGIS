@@ -10,7 +10,6 @@ public:
 MapLayerTest();
 void setQgisMainWindow(QMainWindow *app);
 void setCoordinateTransform(QgsCoordinateTransform *xform);
-int getInt();
 void initGui();
 public slots:
 void open();
