@@ -46,6 +46,7 @@ class QgsGraSyExtensionWidget: public QScrollView
     QgsVectorLayer* m_vectorlayer;
     /**Pointers to the widgets are stored so that they are accessible for other classes*/
     std::vector<QWidget*> m_widgetvector;
+    virtual void resizeEvent (QResizeEvent* e);
  protected slots:
     void selectColor();
     void selectFillPattern();

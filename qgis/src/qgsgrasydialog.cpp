@@ -41,6 +41,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
 #endif
 
   setOrientation(Qt::Vertical);
+  setSizeGripEnabled(true);
 
   //find out the numerical fields of m_vectorlayer
   QgsDataProvider *provider;
