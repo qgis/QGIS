@@ -1203,6 +1203,10 @@ void QgisApp::fileOpen()
     // loading a project will add all layers to the registry and return the
     // zorder for those layers.
 
+    // clear the map canvas
+    removeAllLayers(); // moved here from following if since this would stomp
+                       // on all layers read from pio
+
     std::list<QString> myZOrder = pio->read();
 
     if( ! myZOrder.empty() )
@@ -1210,10 +1214,6 @@ void QgisApp::fileOpen()
         mOverviewCanvas->freeze(true);
         mMapCanvas->freeze(true);
 
-        // clear the map canvas
-        removeAllLayers();
-
-        
         QgsRect myExtent = mMapCanvas->extent();
 
 #ifdef QGISDEBUG
@@ -1250,6 +1250,7 @@ void QgisApp::fileOpen()
         setOverviewZOrder(mMapLegend);
         // delete pio; auto_ptr automatically deletes
         mMapCanvas->setExtent(myExtent);
+
         mMapCanvas->refresh();
         mOverviewCanvas->freeze(false);
         mMapCanvas->freeze(false);
