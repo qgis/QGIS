@@ -222,10 +222,13 @@ void QgsGraSyDialog::apply()
 	int wordspace = 5;        //space between graphics/word
 	int symbolheight = 15;    //height of an area where a symbol is painted
 	int symbolwidth = 15;     //width of an area where a symbol is painted
+	int lowerupperwidth; //widht of the broadest lower-upper pair
 	int rowspace = 5;         //spaces between rows of symbols
 	int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
-	//find out the width of the widest label
+
+	//find out the width of the widest label and of the broadest lower-upper pair
 	QString widestlabel = "";
+	QString widestlu = "";
 	for (int i = 0; i < numberofclassesspinbox->value(); i++)
         {
 	    QString string = ((QLineEdit *) (ext->getWidget(2, i)))->text();
@@ -233,8 +236,15 @@ void QgsGraSyDialog::apply()
             {
 		widestlabel = string;
             }
+	    QString string2 = ((QLineEdit *) (ext->getWidget(0, i)))->text() + " - " + ((QLineEdit *) (ext->getWidget(1, i)))->text();
+	    if (string2.length() > widestlu.length())
+	    {
+		widestlu = string2;
+	    }
         }
 	int labelwidth = fm.width(widestlabel);
+	lowerupperwidth=fm.width(widestlu);
+
 	//create the pixmap for the render item
 	QPixmap *pix = mVectorLayer->legendPixmap();
 	QString name;
@@ -246,8 +256,8 @@ void QgsGraSyDialog::apply()
         {
 	    name = "";
         }
-	//query the name and the maximum upper value to estimate the necessary width of the pixmap (12 pixel width per letter seems to be appropriate)
-	int pixwidth = leftspace + rightspace + symbolwidth + 2 * wordspace + labelwidth + fm.width(((QLineEdit *) (ext->getWidget(1, numberofclassesspinbox->value() - 1)))->text() + " - " + ((QLineEdit *) (ext->getWidget(0, numberofclassesspinbox->value() - 1)))->text()); //width of the pixmap with symbol and values
+	//query the name and the maximum upper value to estimate the necessary width of the pixmap
+	int pixwidth = leftspace + rightspace + symbolwidth + 2 * wordspace + labelwidth + lowerupperwidth; //width of the pixmap with symbol and values
 	//consider 240 pixel for labels
 	int namewidth = leftspace + fm.width(name) + rightspace;
 	int width = (pixwidth > namewidth) ? pixwidth : namewidth;
