@@ -205,7 +205,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry("Gui","/SelectionColorRedPart",myColour.red());
     QgsProject::instance()->writeEntry("Gui","/SelectionColorGreenPart",myColour.green());
     QgsProject::instance()->writeEntry("Gui","/SelectionColorBluePart",myColour.blue()); 
-    QgsRenderer::mSelectionColor=QColor(0,0,0);
+    QgsRenderer::mSelectionColor=myColour;
             
 }
 
