@@ -31,7 +31,7 @@ docdatadir = $(datadir)/$(PACKAGE)/doc
 docdata_DATA = AUTHORS
 
 
-SUBDIRS = src providers plugins doc tools i18n designer_plugins
+SUBDIRS = src providers plugins doc tools i18n 
 
 pkginclude_HEADERS = qgsconfig.h
 
