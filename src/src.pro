@@ -3,7 +3,16 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.42 2004/08/15 00:52:47 gsherman Exp 
+# src.pro,v 1.43 2004/08/18 03:15:55 gsherman Exp 
+######################################################################
+#
+# For a WIN32 release build do the following:
+# 1. comment out the DEFINES += QGISDEBUG line 
+# 2. remove console and debug from the CONFIG += line
+# 3. qmake
+# 4. nmake clean
+# 5. nmake
+#
 ######################################################################
 
 TEMPLATE = app
@@ -17,6 +26,7 @@ LIBS += $(GDAL)\lib\gdal_i.lib \
 DEFINES+= QGISDEBUG
 DESTDIR = ../win_build
 CONFIG += qt thread rtti debug console
+#CONFIG += qt thread rtti 
 RC_FILE = qgis_win32.rc
 # Input
 HEADERS += qgis.h \
