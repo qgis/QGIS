@@ -61,7 +61,7 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.6-alpha-dev";
+static const char *qgisVersion = "0.0.6";
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -365,12 +365,14 @@ void QgisApp::identify()
 void QgisApp::attributeTable()
 {
 	QListViewItem *li = legendView->currentItem();
+	if(li){
 	QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
 	if (lyr) {
 		lyr->table();
 
 	} else {
 		QMessageBox::information(this, "No Layer Selected", "To open an attribute table, you must select a layer in the legend");
+	}
 	}
 }
 
