@@ -22778,6 +22778,7 @@ if test -n "\$CONFIG_FILES"; then
   # Protect against being on the right side of a sed subst in config.status.
   sed 's/,@/@@/; s/@,/@@/; s/,;t t\$/@;t t/; /@;t t\$/s/[\\\\&,]/\\\\&/g;
    s/@@/,@/; s/@@/@,/; s/@;t t\$/,;t t/' >\$tmp/subs.sed <<\\CEOF
+s,@USER_INCLUDES@,$USER_INCLUDES,;t t
 s,@SHELL@,$SHELL,;t t
 s,@PATH_SEPARATOR@,$PATH_SEPARATOR,;t t
 s,@PACKAGE_NAME@,$PACKAGE_NAME,;t t
@@ -22903,7 +22904,6 @@ s,@LIBPTHREAD@,$LIBPTHREAD,;t t
 s,@USE_THREADS@,$USE_THREADS,;t t
 s,@KDE_MT_LDFLAGS@,$KDE_MT_LDFLAGS,;t t
 s,@KDE_MT_LIBS@,$KDE_MT_LIBS,;t t
-s,@USER_INCLUDES@,$USER_INCLUDES,;t t
 s,@USER_LDFLAGS@,$USER_LDFLAGS,;t t
 s,@LIBZ@,$LIBZ,;t t
 s,@LIBPNG@,$LIBPNG,;t t
