@@ -39,10 +39,12 @@ email                : tim@linfiniti.com
 
 //non qt includes
 #include <iostream>
-#include <openmodellergui.h>
+
+//the gui subclass
+#include "plugingui.h"
 
 // xpm for creating the toolbar icon
-#include "icon_om.xpm"
+#include "icon.xpm"
 // 
 static const char *pluginVersion = "0.1";
 /**
@@ -130,12 +132,13 @@ void Plugin::drawRasterLayer(QString theQString)
 {
   qGisInterface->addRasterLayer(theQString);
 }
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void Plugin::drawVectorLayer(QString theQString)
+//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
+////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
+void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
-  qGisInterface->addVectorLayer(theQString);
+ qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
+
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
 {
