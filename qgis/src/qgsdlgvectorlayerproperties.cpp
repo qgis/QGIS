@@ -160,10 +160,11 @@ QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
     }
 }
 
-void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
+void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsDlgVectorLayerProperties::alterLayerDialog(" << string << ") " << std::endl;
+    qDebug( "%s:%d QgsDlgVectorLayerProperties::alterLayerDialog(%s)", 
+            __FILE__, __LINE__, dialogString.ascii() );
 #endif
   if (rendererDirty)
     {
@@ -172,16 +173,16 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
       delete bufferRenderer;
     }
   //create a new Dialog
-  if (string == tr("Single Symbol"))
+  if (dialogString == tr("Single Symbol"))
     {
       bufferRenderer = new QgsSingleSymRenderer();
-  } else if (string == tr("Graduated Symbol"))
+  } else if (dialogString == tr("Graduated Symbol"))
     {
       bufferRenderer = new QgsGraduatedSymRenderer();
-  } else if (string == tr("Continuous Color"))
+  } else if (dialogString == tr("Continuous Color"))
     {
       bufferRenderer = new QgsContinuousColRenderer();
-  } else if (string == tr("Single Marker"))
+  } else if (dialogString == tr("Single Marker"))
   {
     // On win32 we can't support svg without qt commercial
     // so we beg a bit (i know its tacky to repeat this for
@@ -200,13 +201,13 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
 #else
       bufferRenderer = new QgsSiMaRenderer();
 #endif
-  } else if (string == tr("Graduated Marker"))
+  } else if (dialogString == tr("Graduated Marker"))
   {
       bufferRenderer = new QgsGraduatedMaRenderer();
-  } else if(string == tr("Unique Value"))
+  } else if(dialogString == tr("Unique Value"))
   {
       bufferRenderer = new QgsUniqueValRenderer();
-  } else if(string == tr("Unique Value Marker"))
+  } else if(dialogString == tr("Unique Value Marker"))
   {
 #ifdef WIN32
     QMessageBox::warning(this, "No SVG Support",

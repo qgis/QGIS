@@ -787,27 +787,27 @@ QString QgsSymbologyUtils::penStyle2QString(Qt::PenStyle penstyle)
     }
 }
 
-Qt::PenStyle QgsSymbologyUtils::qString2PenStyle(QString string)
+Qt::PenStyle QgsSymbologyUtils::qString2PenStyle(QString penString)
 {
-  if (string == "NoPen")
+  if (penString == "NoPen")
     {
       return Qt::NoPen;
-  } else if (string == "SolidLine")
+  } else if (penString == "SolidLine")
     {
       return Qt::SolidLine;
-  } else if (string == "DashLine")
+  } else if (penString == "DashLine")
     {
       return Qt::DashLine;
-  } else if (string == "DotLine")
+  } else if (penString == "DotLine")
     {
       return Qt::DotLine;
-  } else if (string == "DashDotLine")
+  } else if (penString == "DashDotLine")
     {
       return Qt::DashDotLine;
-  } else if (string == "DashDotDotLine")
+  } else if (penString == "DashDotDotLine")
     {
       return Qt::DashDotDotLine;
-  } else if (string == "MPenStyle")
+  } else if (penString == "MPenStyle")
     {
       return Qt::MPenStyle;
   } else
@@ -873,54 +873,54 @@ QString QgsSymbologyUtils::brushStyle2QString(Qt::BrushStyle brushstyle)
     }
 }
 
-Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle(QString string)
+Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle(QString brushString)
 {
-  if (string == "NoBrush")
+  if (brushString == "NoBrush")
     {
       return Qt::NoBrush;
-  } else if (string == "SolidPattern")
+  } else if (brushString == "SolidPattern")
     {
       return Qt::SolidPattern;
-  } else if (string == "Dense1Pattern")
+  } else if (brushString == "Dense1Pattern")
     {
       return Qt::Dense1Pattern;
-  } else if (string == "Dense2Pattern")
+  } else if (brushString == "Dense2Pattern")
     {
       return Qt::Dense2Pattern;
-  } else if (string == "Dense3Pattern")
+  } else if (brushString == "Dense3Pattern")
     {
       return Qt::Dense3Pattern;
-  } else if (string == "Dense4Pattern")
+  } else if (brushString == "Dense4Pattern")
     {
       return Qt::Dense4Pattern;
-  } else if (string == "Dense5Pattern")
+  } else if (brushString == "Dense5Pattern")
     {
       return Qt::Dense5Pattern;
-  } else if (string == "Dense6Pattern")
+  } else if (brushString == "Dense6Pattern")
     {
       return Qt::Dense6Pattern;
-  } else if (string == "Dense7Pattern")
+  } else if (brushString == "Dense7Pattern")
     {
       return Qt::Dense7Pattern;
-  } else if (string == "HorPattern")
+  } else if (brushString == "HorPattern")
     {
       return Qt::HorPattern;
-  } else if (string == "VerPattern")
+  } else if (brushString == "VerPattern")
     {
       return Qt::VerPattern;
-  } else if (string == "CrossPattern")
+  } else if (brushString == "CrossPattern")
     {
       return Qt::CrossPattern;
-  } else if (string == "BDiagPattern")
+  } else if (brushString == "BDiagPattern")
     {
       return Qt::BDiagPattern;
-  } else if (string == "FDiagPattern")
+  } else if (brushString == "FDiagPattern")
     {
       return Qt::FDiagPattern;
-  } else if (string == "DiagCrossPattern")
+  } else if (brushString == "DiagCrossPattern")
     {
       return Qt::DiagCrossPattern;
-  } else if (string == "CustomPattern")
+  } else if (brushString == "CustomPattern")
     {
       return Qt::CustomPattern;
   } else                        //return a null string
@@ -929,33 +929,33 @@ Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle(QString string)
     }
 }
 
-QPixmap QgsSymbologyUtils::qString2LinePixmap(QString string)
+QPixmap QgsSymbologyUtils::qString2LinePixmap(QString lineString)
 {
-  if (string == "SolidLine")
+  if (lineString == "SolidLine")
     {
       return QPixmap(solidLineData);
     }
 
-  if (string == "DashLine")
+  if (lineString == "DashLine")
     {
       return QPixmap(dashLineData);
     }
 
-  if (string == "DotLine")
+  if (lineString == "DotLine")
     {
       return QPixmap(dotLineData);
     }
 
-  if (string == "DashDotLine")
+  if (lineString == "DashDotLine")
     {
       return QPixmap(dashDotLineData);
     }
 
-  if (string == "DashDotDotLine")
+  if (lineString == "DashDotDotLine")
     {
       return QPixmap(dashDotDotLineData);
     }
-  if(string =="NoPen")
+  if(lineString =="NoPen")
     {
       return QPixmap(noPenLineData);
     }
@@ -963,54 +963,54 @@ QPixmap QgsSymbologyUtils::qString2LinePixmap(QString string)
   return QPixmap();             // XXX I hope returning a blank one is ok
 }
 
-QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString string)
+QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString patternString)
 {
-  if (string == "SolidPattern")
+  if (patternString == "SolidPattern")
     {
       return QPixmap(solidData);
-  } else if (string == "Dense1Pattern")
+  } else if (patternString == "Dense1Pattern")
     {
       return QPixmap(dense1Data);
-  } else if (string == "Dense2Pattern")
+  } else if (patternString == "Dense2Pattern")
     {
       return QPixmap(dense2Data);
-  } else if (string == "Dense3Pattern")
+  } else if (patternString == "Dense3Pattern")
     {
       return QPixmap(dense3Data);
-  } else if (string == "Dense4Pattern")
+  } else if (patternString == "Dense4Pattern")
     {
       return QPixmap(dense4Data);
-  } else if (string == "Dense5Pattern")
+  } else if (patternString == "Dense5Pattern")
     {
       return QPixmap(dense5Data);
-  } else if (string == "Dense6Pattern")
+  } else if (patternString == "Dense6Pattern")
     {
       return QPixmap(dense6Data);
-  } else if (string == "Dense7Pattern")
+  } else if (patternString == "Dense7Pattern")
     {
       return QPixmap(dense7Data);
-  } else if (string == "HorPattern")
+  } else if (patternString == "HorPattern")
     {
       return QPixmap(horizontalData);
-  } else if (string == "VerPattern")
+  } else if (patternString == "VerPattern")
     {
       return QPixmap(verticalData);
-  } else if (string == "CrossPattern")
+  } else if (patternString == "CrossPattern")
     {
       return QPixmap(crossData);
-  } else if (string == "BDiagPattern")
+  } else if (patternString == "BDiagPattern")
     {
       return QPixmap(bdiagData);
-  } else if (string == "FDiagPattern")
+  } else if (patternString == "FDiagPattern")
     {
       return QPixmap(fdiagData);
-  } else if (string == "DiagCrossPattern")
+  } else if (patternString == "DiagCrossPattern")
     {
       return QPixmap(diagCrossData);
-  } else if (string == "NoBrush")
+  } else if (patternString == "NoBrush")
     {
       return QPixmap(nobrush);
-  } else                        //return a null string
+  } else                        //return a null patternString
     {
       qWarning("Warning, no matching pattern found in QgsSymbologyUtils::qString2PatternPixmap");
       return QPixmap();
