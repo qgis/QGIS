@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$  */
+ 
 #include <iostream>
 #include <strstream>
 #include <qapplication.h>
@@ -146,12 +147,16 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 		//if feature is selected, change the color of the painter
 		if((*selected)[fet->GetFID()]==true)
 		{
-		    p->setPen(selectionColor);
+			// must change color of pen since it holds not only color
+			// but line width
+			pen.setColor(selectionColor);
+		    p->setPen(pen);
 		    brush->setColor(selectionColor);
 		}
 		else
 		{
-		    p->setPen(sym->color());  
+			pen.setColor(sym->color());
+		    p->setPen(pen);  
 		    brush->setColor(sym->fillColor());
 		}
 

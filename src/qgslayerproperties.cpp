@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include <qframe.h>
 #include <qcolordialog.h>
 #include <qpushbutton.h>
@@ -43,6 +44,12 @@ QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 	btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
 	spinLineWidth->setValue(sym->lineWidth());
 	setCaption("Layer Properties - " + lyr->name());
+	// if this is a line layer, hide the fill properties
+	if(lyr->featureType() == QGis::WKBMultiLineString || lyr->featureType() == QGis::WKBLineString){
+		lblFillColor->hide();
+		btnSetFillColor->hide();
+		
+	}
 }
 
 QgsLayerProperties::~QgsLayerProperties()
