@@ -18,6 +18,8 @@
 
 #include <vector>
 
+class QString;
+
 #include <qpointarray.h>
 #include <qcursor.h>
 #include <qpen.h>
@@ -133,7 +135,7 @@ public slots:
     void mouseEventReceiverMove ( QgsPoint & ); 
     
     //! Mouse event receiver
-    void mouseEventReceiverClick ( QgsPoint & ); 
+    void mouseEventReceiverClick ( QgsPoint &p, Qt::ButtonState button ); 
     
     //! Called when rendering is finished
     void postRender ( QPainter * ); 
@@ -358,6 +360,11 @@ private:
     // Alter table
     void alterTable(void);
 
+    // Pront which should be displayed in status bar when mouse is in canvas
+    QString mCanvasPrompt;
+    
+    // Set prompt for mouse buttons
+    void setCanvasPropmt ( QString left, QString mid, QString rigth);
 };
 
 #endif // QGSGRASSEDIT_H

@@ -36,6 +36,7 @@
 #include <qlistview.h>
 #include <qcolordialog.h>
 #include <qtable.h>
+#include <qstatusbar.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -287,8 +288,8 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
 	}
     }
 
-    connect( mCanvas, SIGNAL(xyClickCoordinates(QgsPoint &)), 
-	     this, SLOT(mouseEventReceiverClick(QgsPoint &)));
+    connect( mCanvas, SIGNAL(xyClickCoordinates(QgsPoint &, Qt::ButtonState)), 
+	     this, SLOT(mouseEventReceiverClick(QgsPoint &, Qt::ButtonState)));
     connect( mCanvas, SIGNAL(xyCoordinates(QgsPoint &)), 
 	     this, SLOT(mouseEventReceiverMove(QgsPoint &)));
     connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
@@ -858,7 +859,7 @@ void QgsGrassEdit::startTool(int tool)
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassEdit::startTool() tool = " << tool << std::endl;
     #endif
-    
+
     // Delete last dynamic drawing from canvas
     eraseDynamic();
     if ( mSelectedLine > 0 )
@@ -889,6 +890,7 @@ void QgsGrassEdit::startTool(int tool)
 		}
 		mAttributes->show();
 	    }
+	    setCanvasPropmt( tr("New vertex"), "", "");
 	    break;
 	    
 	case QgsGrassEdit::NONE:
@@ -902,7 +904,6 @@ void QgsGrassEdit::startTool(int tool)
 	case QgsGrassEdit::DELETE_LINE:
 	case QgsGrassEdit::EDIT_CATS:
 	case QgsGrassEdit::EDIT_ATTRIBUTES:
-	    // Nothing to do
 	    break;
 	default:
 	    std::cerr << "Unknown tool" << std::endl;
@@ -924,17 +925,34 @@ void QgsGrassEdit::startTool(int tool)
 
     switch ( mTool ) {
 	case QgsGrassEdit::NONE:
+	    break;
 	case QgsGrassEdit::NEW_POINT:
+	    setCanvasPropmt( tr("New point"), "", "" );
+	    break;
+	case QgsGrassEdit::NEW_CENTROID:
+	    setCanvasPropmt( tr("New centroid"), "", "" );
+	    break;
 	case QgsGrassEdit::NEW_LINE:
 	case QgsGrassEdit::NEW_BOUNDARY:
-	case QgsGrassEdit::NEW_CENTROID:
+	    setCanvasPropmt( tr("New vertex"), "", "");
+	    break;
 	case QgsGrassEdit::MOVE_VERTEX:
+	    setCanvasPropmt( tr("Select vertex"), "", "" );
+	    break;
 	case QgsGrassEdit::ADD_VERTEX:
+	    setCanvasPropmt( tr("Select line segment"), "", "" );
+	    break;
 	case QgsGrassEdit::DELETE_VERTEX:
-	case QgsGrassEdit::MOVE_LINE:
+	    setCanvasPropmt( tr("Select vertex"), "", "" );
+	    break;
 	case QgsGrassEdit::SPLIT_LINE:
+	    setCanvasPropmt( tr("Select position on line"), "", "" );
+	    break;
+
+	case QgsGrassEdit::MOVE_LINE:
 	case QgsGrassEdit::DELETE_LINE:
 	case QgsGrassEdit::EDIT_ATTRIBUTES:
+	    setCanvasPropmt( tr("Select element"), "", "" );
 	    break;
 	case QgsGrassEdit::EDIT_CATS:
 	    mTool = QgsGrassEdit::NONE;
@@ -945,11 +963,11 @@ void QgsGrassEdit::startTool(int tool)
 	    break;
     }
     
-    mCanvas->setMapTool ( QGis::CapturePoint );
+    mCanvas->setMapTool ( QGis::EmitPoint );
     mCanvas->setCursor (  Qt::CrossCursor );
 }
 
-void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
+void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point, Qt::ButtonState button )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassEdit::mouseEventReceiverClick()" << std::endl;
@@ -986,258 +1004,418 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
 
 	case QgsGrassEdit::NEW_LINE:
 	case QgsGrassEdit::NEW_BOUNDARY:
-	    snap ( point ); 
-	    Vect_append_point ( mEditPoints, point.x(), point.y(), 0.0 );
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    snap ( point ); 
+		    Vect_append_point ( mEditPoints, point.x(), point.y(), 0.0 );
+	            break;
+		case Qt::MidButton:
+		    if ( mEditPoints->n_points > 0 ) {
+    		        eraseDynamic();
+			mEditPoints->n_points--;
+		    }
+	            break;
+		case Qt::RightButton:
+    		    eraseDynamic();
+		    if ( mEditPoints->n_points > 1 ) {
+			int type;
+			
+			if ( mTool == QgsGrassEdit::NEW_LINE )
+			    type = GV_LINE;
+			else // boundary
+			    type = GV_BOUNDARY;
+			
+			int line;
+			line = writeLine ( type, mEditPoints );
+			updateSymb();
+			displayUpdated();
+
+			if ( mAttributes ) delete mAttributes;
+			mAttributes = new QgsGrassAttributes ( this, mProvider, line, mQgisApp );
+			for ( int i = 0; i < mCats->n_cats; i++ ) {
+			    addAttributes ( mCats->field[i], mCats->cat[i] );
+			}
+			mAttributes->show();
+		    }
+                    Vect_reset_line ( mEditPoints );
+		    break;
+	    }
+	    if ( mEditPoints->n_points == 0 ) {
+	        setCanvasPropmt( tr("New point"), "", "");
+	    } else if ( mEditPoints->n_points == 1 ) {
+	        setCanvasPropmt( tr("New point"), tr("Undo last point"), "" );
+	    } else if ( mEditPoints->n_points > 1 ) {
+	        setCanvasPropmt( tr("New point"), tr("Undo last point"), tr("Close line"));
+	    }
 	    break;
 	    
 	case QgsGrassEdit::DELETE_LINE:
-	    // Delete previously selected line 
-	    if ( mSelectedLine > 0 ) {
-		eraseElement ( mSelectedLine );
-		mProvider->deleteLine ( mSelectedLine );
-		updateSymb();
-		displayUpdated();
-	    }
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    // Delete previously selected line 
+		    if ( mSelectedLine > 0 ) {
+			    eraseElement ( mSelectedLine );
+			    mProvider->deleteLine ( mSelectedLine );
+			    updateSymb();
+			    displayUpdated();
+		    }
 
-	    // Select new/next line
-            mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_POINT|GV_CENTROID, thresh );
+		    // Select new/next line
+		    mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_POINT|GV_CENTROID, thresh );
 
-            if ( mSelectedLine == 0 ) 
-                mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINE|GV_BOUNDARY, thresh );
+		    if ( mSelectedLine == 0 ) 
+			mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINE|GV_BOUNDARY, thresh );
 
-	    if ( mSelectedLine ) { // highlite
-		displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+		    if ( mSelectedLine ) { // highlite, propmt
+			displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+			setCanvasPropmt( tr("Delete selected / select next"), "", tr("Release selected") );
+		    } else {
+			setCanvasPropmt( tr("Select element"), "", "" );
+		    }
+		    break;
+		    
+		case Qt::RightButton:
+		    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+		    mSelectedLine = 0;
+		    setCanvasPropmt( tr("Select element"), "", "" );
+		    break;
+
+		case Qt::MidButton:
+		    break;
 	    }
 	    
 	    break;
 
 	case QgsGrassEdit::MOVE_LINE:
-	    // Move previously selected line 
-	    if ( mSelectedLine > 0 ) {
-		eraseDynamic();
-		eraseElement ( mSelectedLine );
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    // Move previously selected line 
+		    if ( mSelectedLine > 0 ) {
+			eraseDynamic();
+			eraseElement ( mSelectedLine );
 
-		// Transform coordinates
-		int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
-		for ( int i = 0; i < mPoints->n_points; i++ ) {
-		   mPoints->x[i] += point.x() - mLastPoint.x(); 
-		   mPoints->y[i] += point.y() - mLastPoint.y(); 
-		}
-		
-		mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
-		updateSymb();
-		displayUpdated();
+			// Transform coordinates
+			int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
+			for ( int i = 0; i < mPoints->n_points; i++ ) {
+			   mPoints->x[i] += point.x() - mLastPoint.x(); 
+			   mPoints->y[i] += point.y() - mLastPoint.y(); 
+			}
+			
+			mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
+			updateSymb();
+			displayUpdated();
 
-		mSelectedLine = 0;
-		Vect_reset_line ( mEditPoints );
-	    } else {
-		// Select new/next line
-		mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_POINT|GV_CENTROID, thresh );
+			mSelectedLine = 0;
+			Vect_reset_line ( mEditPoints );
+			
+			setCanvasPropmt( tr("Select element"), "", "" );
+		    } else {
+			// Select new/next line
+			mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_POINT|GV_CENTROID, thresh );
 
-		if ( mSelectedLine == 0 ) 
-		    mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINE|GV_BOUNDARY, thresh );
+			if ( mSelectedLine == 0 ) 
+			    mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINE|GV_BOUNDARY, thresh );
 
-		if ( mSelectedLine ) { // highlite
-		    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
-		    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
-		}
+			if ( mSelectedLine ) { // highlite
+			    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
+			    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+			    setCanvasPropmt( tr("New location"), "", tr("Release selected") );
+			} else { 
+			    setCanvasPropmt( tr("Select element"), "", "" );
+			}
+		    }
+		    break;
+
+		case Qt::RightButton:
+		    eraseDynamic();
+		    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+		    mSelectedLine = 0;
+		    setCanvasPropmt( tr("Select element"), "", "" );
+		    break;
+
+		case Qt::MidButton:
+		    break;
 	    }
 	    break;
 	    
 	case QgsGrassEdit::MOVE_VERTEX:
-	    // Move previously selected vertex 
-	    if ( mSelectedLine > 0 ) {
-		eraseDynamic();
-		eraseElement ( mSelectedLine );
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    // Move previously selected vertex 
+		    if ( mSelectedLine > 0 ) {
+			eraseDynamic();
+			eraseElement ( mSelectedLine );
 
-		// Move vertex
-		int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
-	        snap ( point ); 
-		mPoints->x[mSelectedPart] = point.x();
-		mPoints->y[mSelectedPart] = point.y();
+			// Move vertex
+			int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
+			snap ( point ); 
+			mPoints->x[mSelectedPart] = point.x();
+			mPoints->y[mSelectedPart] = point.y();
 
-                Vect_line_prune ( mPoints );
-		mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
-		updateSymb();
-		displayUpdated();
+			Vect_line_prune ( mPoints );
+			mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
+			updateSymb();
+			displayUpdated();
 
-		mSelectedLine = 0;
-		Vect_reset_line ( mEditPoints );
-	    } else {
-		// Select new line
-		mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
+			mSelectedLine = 0;
+			Vect_reset_line ( mEditPoints );
+	    
+			setCanvasPropmt( tr("Select vertex"), "", "" );
+		    } else {
+			// Select new line
+			mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
 
-		if ( mSelectedLine ) { // highlite
-		    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
-		    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+			if ( mSelectedLine ) { // highlite
+			    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
+			    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
 
-		    double xl, yl; // nearest point on the line
+			    double xl, yl; // nearest point on the line
 
-		    // Note first segment is 1!
-		    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
- 		                                         &xl, &yl, NULL, NULL, NULL, NULL );
-		    
-		    double dist1 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart-1], 
-			                                  mEditPoints->y[mSelectedPart-1], 0.0, 0);
-		    double dist2 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart], 
-			                                  mEditPoints->y[mSelectedPart], 0.0, 0);
+			    // Note first segment is 1!
+			    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
+								 &xl, &yl, NULL, NULL, NULL, NULL );
+			    
+			    double dist1 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart-1], 
+								  mEditPoints->y[mSelectedPart-1], 0.0, 0);
+			    double dist2 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart], 
+								  mEditPoints->y[mSelectedPart], 0.0, 0);
+				
+			    if ( dist1 < dist2 ) mSelectedPart--;
 			
-		    if ( dist1 < dist2 ) mSelectedPart--;
-		}
+			    setCanvasPropmt( tr("Select new position"), "", "Release vertex" );
+			}
+		    }
+		    break;
+	        
+		case Qt::RightButton:
+		    eraseDynamic();
+		    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+		    mSelectedLine = 0;
+		    Vect_reset_line ( mEditPoints );
+		
+		    setCanvasPropmt( tr("Select vertex"), "", "" );
+		    break;
+
+		case Qt::MidButton:
+		    break;
 	    }
 	    break;
 	    
 	case QgsGrassEdit::ADD_VERTEX:
-	    // Add vertex to previously selected line
-	    if ( mSelectedLine > 0 ) {
-		eraseDynamic();
-		eraseElement ( mSelectedLine );
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    // Add vertex to previously selected line
+		    if ( mSelectedLine > 0 ) {
+			eraseDynamic();
+			eraseElement ( mSelectedLine );
 
-		// Move vertex
-		int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
+			// Move vertex
+			int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
 
-		if ( mAddVertexEnd && mSelectedPart == mEditPoints->n_points-1 ) {
-	            snap ( point ); 
-		    Vect_append_point ( mPoints, point.x(), point.y(), 0.0 );
-		} else {
-		    Vect_line_insert_point ( mPoints, mSelectedPart, point.x(), point.y(), 0.0 );
-		}
+			if ( mAddVertexEnd && mSelectedPart == mEditPoints->n_points-1 ) {
+			    snap ( point ); 
+			    Vect_append_point ( mPoints, point.x(), point.y(), 0.0 );
+			} else {
+			    Vect_line_insert_point ( mPoints, mSelectedPart, point.x(), point.y(), 0.0 );
+			}
 
-                Vect_line_prune ( mPoints );
-		mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
-		updateSymb();
-		displayUpdated();
+			Vect_line_prune ( mPoints );
+			mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
+			updateSymb();
+			displayUpdated();
 
-		mSelectedLine = 0;
-		Vect_reset_line ( mEditPoints );
-	    } else {
-		// Select new line
-		mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
-
-		if ( mSelectedLine ) { // highlite
-		    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
-		    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
-
-		    double xl, yl; // nearest point on the line
-
-		    // Note first segment is 1!
-		    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
- 		                                         &xl, &yl, NULL, NULL, NULL, NULL );
-		    
-		    double dist1 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart-1], 
-			                                  mEditPoints->y[mSelectedPart-1], 0.0, 0);
-		    double dist2 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart], 
-			                                  mEditPoints->y[mSelectedPart], 0.0, 0);
-			
-		    double maxdist = (dist1 + dist2)/4;
-		    
-		    if ( mSelectedPart == 1 && dist1 < maxdist ) {
-			mSelectedPart = 0;
-			mAddVertexEnd = true;
-		    } else if ( mSelectedPart == mEditPoints->n_points-1 && dist2 < maxdist ) {
-			mAddVertexEnd = true;
+			mSelectedLine = 0;
+			Vect_reset_line ( mEditPoints );
+	    
+			setCanvasPropmt( tr("Select line segment"), "", "" );
 		    } else {
-			mAddVertexEnd = false;
+			// Select new line
+			mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
+
+			if ( mSelectedLine ) { // highlite
+			    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
+			    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+
+			    double xl, yl; // nearest point on the line
+
+			    // Note first segment is 1!
+			    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
+								 &xl, &yl, NULL, NULL, NULL, NULL );
+			    
+			    double dist1 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart-1], 
+								  mEditPoints->y[mSelectedPart-1], 0.0, 0);
+			    double dist2 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart], 
+								  mEditPoints->y[mSelectedPart], 0.0, 0);
+				
+			    double maxdist = (dist1 + dist2)/4;
+			    
+			    if ( mSelectedPart == 1 && dist1 < maxdist ) {
+				mSelectedPart = 0;
+				mAddVertexEnd = true;
+			    } else if ( mSelectedPart == mEditPoints->n_points-1 && dist2 < maxdist ) {
+				mAddVertexEnd = true;
+			    } else {
+				mAddVertexEnd = false;
+			    }
+		            
+			    setCanvasPropmt( tr("New vertex position"), "", tr("Release") );
+			} else {
+		            setCanvasPropmt( tr("Select line segment"), "", "" );
+			}
 		    }
-		}
+		    break;
+
+		case Qt::RightButton:
+		    eraseDynamic();
+		    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+		    mSelectedLine = 0;
+		    Vect_reset_line ( mEditPoints );
+		
+		    setCanvasPropmt( tr("Select line segment"), "", "" );
+		    break;
+
+		case Qt::MidButton:
+		    break;
 	    }
 	    break;
 	    
 	    
 	case QgsGrassEdit::DELETE_VERTEX:
-	    // Delete previously selected vertex 
-	    if ( mSelectedLine > 0 ) {
-		eraseDynamic();
-		eraseElement ( mSelectedLine );
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    // Delete previously selected vertex 
+		    if ( mSelectedLine > 0 ) {
+			eraseDynamic();
+			eraseElement ( mSelectedLine );
 
-		// Move vertex
-		int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
-		Vect_line_delete_point ( mPoints, mSelectedPart );
+			// Move vertex
+			int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
+			Vect_line_delete_point ( mPoints, mSelectedPart );
 
-		mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
-		updateSymb();
-		displayUpdated();
+			mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
+			updateSymb();
+			displayUpdated();
 
-		mSelectedLine = 0;
-		Vect_reset_line ( mEditPoints );
-	    } else {
-		// Select new/next line
-		mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
-
-		if ( mSelectedLine ) { // highlite
-		    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
+			mSelectedLine = 0;
+			Vect_reset_line ( mEditPoints );
 	    
-		    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+			setCanvasPropmt( tr("Select vertex"), "", "" );
+		    } else {
+			// Select new/next line
+			mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
 
-		    double xl, yl; // nearest point on the line
-
-		    // Note first segment is 1!
-		    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
- 		                                         &xl, &yl, NULL, NULL, NULL, NULL );
+			if ( mSelectedLine ) { // highlite
+			    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
 		    
-		    double dist1 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart-1], 
-			                                  mEditPoints->y[mSelectedPart-1], 0.0, 0);
-		    double dist2 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart], 
-			                                  mEditPoints->y[mSelectedPart], 0.0, 0);
-			
-		    if ( dist1 < dist2 ) mSelectedPart--;
-	
-		    displayDynamic ( mEditPoints->x[mSelectedPart], mEditPoints->y[mSelectedPart], 
-			             QgsGrassEdit::ICON_BOX, mSize );
-		}
+			    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
 
+			    double xl, yl; // nearest point on the line
+
+			    // Note first segment is 1!
+			    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
+								 &xl, &yl, NULL, NULL, NULL, NULL );
+			    
+			    double dist1 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart-1], 
+								  mEditPoints->y[mSelectedPart-1], 0.0, 0);
+			    double dist2 = Vect_points_distance ( xl, yl, 0.0, mEditPoints->x[mSelectedPart], 
+								  mEditPoints->y[mSelectedPart], 0.0, 0);
+				
+			    if ( dist1 < dist2 ) mSelectedPart--;
+		
+			    displayDynamic ( mEditPoints->x[mSelectedPart], mEditPoints->y[mSelectedPart], 
+					     QgsGrassEdit::ICON_BOX, mSize );
+
+			    setCanvasPropmt( tr("Delete vertex"), "", tr("Release vertex") );
+			} else {
+			    setCanvasPropmt( tr("Select vertex"), "", "" );
+			}
+		    }
+		    break;
+
+		case Qt::RightButton:
+		    eraseDynamic();
+		    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+		    mSelectedLine = 0;
+		    Vect_reset_line ( mEditPoints );
+		
+		    setCanvasPropmt( tr("Select vertex"), "", "" );
+		    break;
+
+		case Qt::MidButton:
+		    break;
 	    }
 	    break;
 
 	case QgsGrassEdit::SPLIT_LINE:
-	    // Split previously selected line 
-	    if ( mSelectedLine > 0 ) {
-		eraseDynamic();
-		eraseElement ( mSelectedLine );
+	    switch ( button ) {
+		case Qt::LeftButton:
+		    // Split previously selected line 
+		    if ( mSelectedLine > 0 ) {
+			eraseDynamic();
+			eraseElement ( mSelectedLine );
 
-		int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
+			int type = mProvider->readLine ( mPoints, mCats, mSelectedLine );
 
-		double xl, yl;
-		Vect_line_distance ( mPoints, mLastPoint.x(), mLastPoint.y(), 0.0, 0, 
- 		                     &xl, &yl, NULL, NULL, NULL, NULL );
-		
-		mPoints->n_points = mSelectedPart;
-		Vect_append_point ( mPoints, xl, yl, 0.0 );
-		mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
-		updateSymb();
-		displayUpdated();
+			double xl, yl;
+			Vect_line_distance ( mPoints, mLastPoint.x(), mLastPoint.y(), 0.0, 0, 
+					     &xl, &yl, NULL, NULL, NULL, NULL );
+			
+			mPoints->n_points = mSelectedPart;
+			Vect_append_point ( mPoints, xl, yl, 0.0 );
+			mProvider->rewriteLine ( mSelectedLine, type, mPoints, mCats );
+			updateSymb();
+			displayUpdated();
 
-		Vect_reset_line ( mPoints );
-		Vect_append_point ( mPoints, xl, yl, 0.0 );
-		for ( int i = mSelectedPart; i < mEditPoints->n_points; i++ ) {
-		    Vect_append_point ( mPoints, mEditPoints->x[i], mEditPoints->y[i], 0.0 );
-		}
+			Vect_reset_line ( mPoints );
+			Vect_append_point ( mPoints, xl, yl, 0.0 );
+			for ( int i = mSelectedPart; i < mEditPoints->n_points; i++ ) {
+			    Vect_append_point ( mPoints, mEditPoints->x[i], mEditPoints->y[i], 0.0 );
+			}
 
-		mProvider->writeLine ( type, mPoints, mCats );
-		
-		updateSymb();
-		displayUpdated();
+			mProvider->writeLine ( type, mPoints, mCats );
+			
+			updateSymb();
+			displayUpdated();
 
-		mSelectedLine = 0;
-		Vect_reset_line ( mEditPoints );
-	    } else {
-		// Select new/next line
-		mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
+			mSelectedLine = 0;
+			Vect_reset_line ( mEditPoints );
+	    		setCanvasPropmt( tr("Select position on line"), "", "" );
+		    } else {
+			// Select new/next line
+			mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINES, thresh );
 
-		if ( mSelectedLine ) { // highlite
-		    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
-	    
-		    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
-
-		    double xl, yl; // nearest point on the line
-
-		    // Note first segment is 1!
-		    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
- 		                                         &xl, &yl, NULL, NULL, NULL, NULL );
+			if ( mSelectedLine ) { // highlite
+			    mProvider->readLine ( mEditPoints, NULL, mSelectedLine );
 		    
-		    displayDynamic ( xl, yl, QgsGrassEdit::ICON_X, mSize );
-		}
+			    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
 
+			    double xl, yl; // nearest point on the line
+
+			    // Note first segment is 1!
+			    mSelectedPart = Vect_line_distance ( mEditPoints, point.x(), point.y(), 0.0, 0, 
+								 &xl, &yl, NULL, NULL, NULL, NULL );
+			    
+			    displayDynamic ( xl, yl, QgsGrassEdit::ICON_X, mSize );
+	    		
+			    setCanvasPropmt( tr("Split the line"), "", tr("Release the line") );
+			} else {
+	    		    setCanvasPropmt( tr("Select point on line"), "", "" );
+			}
+
+		    }
+		    break;
+
+		case Qt::RightButton:
+		    eraseDynamic();
+		    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+		    mSelectedLine = 0;
+		    Vect_reset_line ( mEditPoints );
+		
+	    	    setCanvasPropmt( tr("Select point on line"), "", "" );
+		    break;
+
+		case Qt::MidButton:
+		    break;
 	    }
 	    break;
 	    
@@ -1291,6 +1469,8 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
 
     // Set last click
     mLastPoint = point;
+
+    statusBar()->message(mCanvasPrompt);
     
     #ifdef QGISDEBUG
     std::cerr << "n_points = " << mEditPoints->n_points << std::endl;
@@ -1408,6 +1588,7 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
     #if QGISDEBUG > 3
     std::cerr << "QgsGrassEdit::mouseEventReceiverMove() mTool = " << mTool << std::endl;
     #endif
+    statusBar()->message(mCanvasPrompt);
     
     switch ( mTool ) {
 	case QgsGrassEdit::NEW_LINE:
@@ -1442,7 +1623,6 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
 	    if ( mSelectedLine > 0 ) {
 		// Transform coordinates
 		Vect_reset_line ( mPoints );
-		std::cerr << "mSelectedPart = " << mSelectedPart << std::endl;
 		if ( mSelectedPart == 0 ) {
 		    Vect_append_point ( mPoints, mEditPoints->x[1], mEditPoints->y[1], 0.0 );
 		    Vect_append_point ( mPoints, newPoint.x(), newPoint.y(), 0.0 );
@@ -1457,7 +1637,6 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
 		    Vect_append_point ( mPoints, mEditPoints->x[mSelectedPart+1], 
 			                mEditPoints->y[mSelectedPart+1], 0.0 );
 		}
-		std::cerr << "npoints = " << mPoints->n_points << std::endl;
 		for (int i = 0; i < mPoints->n_points; i++ ) {
 		    std::cerr << mPoints->x[i] << " " << mPoints->y[i] << std::endl;
 		}
@@ -1480,7 +1659,6 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
 		    Vect_append_point ( mPoints, mEditPoints->x[mSelectedPart], 
 			                mEditPoints->y[mSelectedPart], 0.0 );
 		}
-		std::cerr << "npoints = " << mPoints->n_points << std::endl;
 		for (int i = 0; i < mPoints->n_points; i++ ) {
 		    std::cerr << mPoints->x[i] << " " << mPoints->y[i] << std::endl;
 		}
@@ -1504,6 +1682,7 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
 	    break;
     }
     mCanvas->repaint(false);
+    statusBar()->message(mCanvasPrompt);
 }
 
 void QgsGrassEdit::postRender(QPainter *painter)
@@ -1685,6 +1864,7 @@ void QgsGrassEdit::displayDynamic ( double x, double y, int type, int size )
     
 void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y, int type, int size )
 {
+    std::cerr << "QgsGrassEdit::displayDynamic Points = " << Points << " type = " << type  << std::endl;
     #if QGISDEBUG > 3
     std::cerr << "QgsGrassEdit::displayDynamic Points = " << Points << " type = " << type  << std::endl;
     #endif
@@ -1821,5 +2001,14 @@ void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
 	mCanvas->repaint(false);
 	delete myPainter;
     }
+}
+
+void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString rigth)
+{
+    std::cerr << "QgsGrassEdit::setCanvasPropmt" << std::endl;
+    mCanvasPrompt = "";
+    if ( left.length() > 0 ) mCanvasPrompt.append ( tr("Left: ") + left + "   " );
+    if ( mid.length() > 0 ) mCanvasPrompt.append ( tr("Middle: ") + mid + "   " );
+    if ( rigth.length() > 0 ) mCanvasPrompt.append ( tr("Rigth: ") + rigth );
 }
 
