@@ -147,10 +147,7 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
         {
       layer->setRendererDialog(dialog);
       QgsLegendItem *item;
-      if (item = layer->legendItem())
-            {
-    item->setPixmap(0, (*pixmap));
-            }
+      layer->updateItemPixmap();
         }
     } 
     else
