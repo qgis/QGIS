@@ -18,11 +18,17 @@
 
 #ifndef QGSSISYDIALOG_H
 #define QGSSISYDIALOG_H
+
+#include <iostream>
+#include <vector>
+
 #ifdef WIN32
 #include "qgssisydialogbase.h"
 #else
 #include "qgssisydialogbase.uic.h"
 #endif
+
+class QString;
 
 class QgsSymbol;
 class QgsVectorLayer;
@@ -66,6 +72,9 @@ protected slots:
 private:
     /**Default constructor is privat to not use is*/
     QgsSiSyDialog();
+
+    /** vector of marker names for combo items */
+    std::vector<QString> mMarkers;
 
 signals:
     void settingsChanged();
