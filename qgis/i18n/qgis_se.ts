@@ -843,6 +843,10 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
         <source>Lars Luthman</source>
         <translation>Lars Luthman</translation>
     </message>
+    <message>
+        <source>Peter Brewer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableBase</name>
@@ -2360,6 +2364,26 @@ identifying features without zooming in very close.
     <message>
         <source>Pixel Size:</source>
         <translation>Pixelstorlek:</translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation type="unfinished">Röd</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation type="unfinished">Grön</translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation type="unfinished">Blå</translation>
+    </message>
+    <message>
+        <source>Raster Extent: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped area: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -204,11 +204,11 @@ int main(int argc, char *argv[])
   if (myTranslationFileName!="")
   {
     QString translation = "qgis_" + myTranslationFileName;
-    tor.load(translation, I18NPATH);
+    tor.load(translation, QString(PKGDATAPATH) + "/i18n");
   } 
   else
   {
-    tor.load(QString("qgis_") + QTextCodec::locale(), I18NPATH);
+    tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");
   }
 
   //tor.load("qgis_go", "." );
