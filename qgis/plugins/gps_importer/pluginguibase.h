@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Die Mär 23 15:00:22 2004
+** Created: Fre Mär 26 11:29:32 2004
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -34,7 +34,6 @@ public:
     ~PluginGuiBase();
 
     QFrame* line1;
-    QLabel* pixmapLabel1;
     QLabel* txtHeading;
     QTextEdit* teInstructions;
     QLabel* lblInputFile;
@@ -49,6 +48,7 @@ public:
     QPushButton* pbnOK;
     QLineEdit* leInputFile;
     QLineEdit* leOutputShapeFile;
+    QLabel* pixmapLabel1;
 
 public slots:
     virtual void pbnOK_clicked();
@@ -59,6 +59,8 @@ public slots:
     virtual void leOutputShapeFile_textChanged( const QString & theQString );
 
 protected:
+    QGridLayout* PluginGuiBaseLayout;
+    QSpacerItem* spacer2;
 
 protected slots:
     virtual void languageChange();
