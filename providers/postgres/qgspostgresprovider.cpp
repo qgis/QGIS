@@ -28,6 +28,11 @@
 #include "../../src/qgsrect.h"
 
 #include "qgspostgresprovider.h"
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
 QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 {
     // assume this is a valid layer until we determine otherwise
@@ -723,25 +728,25 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
 * Class factory to return a pointer to a newly created 
 * QgsPostgresProvider object
 */
-extern "C" QgsPostgresProvider * classFactory(const char *uri)
+QGISEXTERN QgsPostgresProvider * classFactory(const char *uri)
 {
     return new QgsPostgresProvider(uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */
-extern "C" QString providerKey(){
+QGISEXTERN QString providerKey(){
   return QString("postgres");
 }
 /**
 * Required description function 
 */
-extern "C" QString description(){
+QGISEXTERN QString description(){
   return QString("PostgreSQL/PostGIS data provider");
 } 
 /**
 * Required isProvider function. Used to determine if this shared library
 * is a data provider plugin
 */
-extern "C" bool isProvider(){
+QGISEXTERN bool isProvider(){
   return true;
 }
