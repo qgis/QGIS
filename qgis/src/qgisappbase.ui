@@ -125,7 +125,7 @@
             <bool>false</bool>
         </property>
         <property name="verticallyStretchable">
-            <bool>true</bool>
+            <bool>false</bool>
         </property>
         <property name="label">
             <string>File Management Toolbar</string>
@@ -141,7 +141,7 @@
             <cstring>DataToolbar</cstring>
         </property>
         <property name="verticallyStretchable">
-            <bool>true</bool>
+            <bool>false</bool>
         </property>
         <property name="label">
             <string>Data Toolbar</string>
