@@ -195,14 +195,20 @@ void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	QDomElement fillpelement = fillpnode.toElement();
 	brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
 
-	QDomNode lnode = rnode.namedItem("label");
+	QDomNode lnode = rangerendernode.namedItem("label");
 	QDomElement lnodee = lnode.toElement();
 	label = lnodee.text();
+
+#ifdef QGISDEBUG
+	qWarning("label is: ");
+	qWarning(label);
+#endif
 
 	//create a renderer and add it to the vector layer
 	msy->setBrush(brush);
 	msy->setPen(pen);
 	msy->setPicture(svgpath);
+
 #ifdef QGISDEBUG
 	qWarning("the svgpath: "+svgpath);
 #endif
