@@ -1,79 +1,12 @@
-TODO,v 1.19 2004/04/03 16:42:34 gsherman Exp
+TODO,v 1.20 2004/04/26 05:52:09 gsherman Exp
 #############################################################################
-TODO List for getting to version 0.2 (in no order of importance)
+TODO List for 0.3 (in no order of importance)
 #############################################################################
-1.  Add vector of view extents and replace the Previous Extent 
-    function with Forward and Back view buttons to allow user to move back and 
-    forth between views.
-2   [DONE (TS)] Can the loaded plugin list be remebered from one session 
-    to the next?
-3.  On the properties dialog for pg layer, can you make an apply button or 
-    wait cursor or progress bar. The gui is currently quite unresponsive when 
-    changing the layer type.
-4.  [DELAYED] PostgreSQL/PostGIS layer management plugin (create/delete layers)
-    Forward and Back view buttons to allow user to move back and forth between
-    views.
-5.  GRASS support tested and implemented.
-6.  Create SVG marker directory and supply a minimal set of markers for this
-    release.
-
-#############################################################################
-TODO List for getting to version 0.1 (in no order of importance)
-#############################################################################
- 1. [DONE TS/MH] Fix QgsProjectIo so that qgis projects can be saved and 
-    loaded. Major areas needing attention are customized raster settings and 
-    symbology for vector layers.
- 2. [DONE (GS)] Plugin manager needs to track which plugins are already 
-    loaded and allow user to unload a plugin from the plugin manager dialog.
- 3. [DONE (TS)] Raster legend items need to be fixed to properly display raster
-    name and a suitable pixmap.  Will improve later.
- 4. [DONE (TS/GS)] Implement context menus for raster and vector layers.
-    Will add advanced functions later.
- 5. [DONE (SH)] Toolbar buttons related to layer functions need to be disabled
-    when not appropriate (eg. table and select buttons when a raster is
-    selected in the legend)
- 6. [DONE DA/GS] SPIT integration needs to be completed. The libpq++ dependency must be
-    removed and the current open bugs (sf.net) need to be resolved.
- 7. [DONE (MAC)] Adjust the open dialog for "shapefiles" to allow other formats supported
-    by OGR.
- 8. [DONE (TS)] Move the "All rasters" filter to the top of the rasters 
-    open dialog. 
- 9. [DONE (TS)] Remove *.adf from all rasters filter  
-10. [DONE (GS)] Add options dialog to store user preferences (only browser
-    preference is stored at present).
-11. [PARTIALLY DONE (GS/TS) Add Help (HTML opened in user specified browser)
-12. [DONE (TS)] Modify cursors so the black cursor / transparency bounndaries 
-    are bordered with a 1 pixel wide white border (to prevent losing the cursor 
-    over all black image regions. 
-13. [DONE (MAC)] Update file open boxes to remember the last filter used in that session.
-14. [DELAYED TILL 0.2] Add vector of view extents and replace the Previous Extent 
-    function with Forward and Back view buttons to allow user to move back and 
-    forth between views.
-15. [DONE (GS)] Prompt user to save / are you sure before opening a new project 
-    and losing everything in the current one.
-16. [DONE (GS)]The geoprocessing menu, having the remove plugin option there 
-    does not make sense to me - it is better managed by your nice plugin manager
-    - otherwise if you have more then one geoprocessing plugin that menu will 
-    be very cluttered.   
-17. [DELAYED TILL 0.2] Can the loaded plugin list be remebered from one session 
-    to the next?
-18. [REJECTED - User may have more than one connection or wish to create a new
-    connection at startup] The postgres vector layer dialog, could it 
-    automatically do the connect and show list of layers?
-19. [DONE (GS)] The postgres vector layer dialog, could you make it that double 
-    clicking a layer loads it?
-20. [DONE (GS)] When loading a pg layer, can you make the default name just the 
-    table name and show schema and geom stuff in properties box only?
-21. [DONE (GS)] Can you upper case the first letter of a name in the legend 
-    (implemented separately in qgsvectorlayer and qgsrasterlayer)
-22. On the properties dialog for pg layer, can you make an apply button or 
-    wait cursor or progress bar. The gui is currently quite unresponsive when 
-    changing the layer type.
-23. [Done [TS and MH)] Go through all dialogs and neaten up field labels to mixed case - 
-    e.g. on symbolisation dialog for vectors
-
-For version 0.2
-1. PostgreSQL/PostGIS layer management plugin (create/delete layers)
-2. Add vector of view extents and replace the Previous Extent function with
-   Forward and Back view buttons to allow user to move back and forth between
-   views.
+ 1. Modify SVG marker dialogs to embed selector on the dialog
+ 2. Support for tile rasters 
+ 3. Load / save support for delimited text layers in project files 
+ 4. Layer definition query for PostGIS layers to define the features that make up a layer 
+ 5. Initial projection support 
+ 6. Review and clean up of vector dialog boxes 
+ 7. Translation support for plugins 
+ 8. Vector support on big-endian platforms (Mac OSX, Solaris)
