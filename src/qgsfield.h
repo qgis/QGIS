@@ -13,6 +13,10 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
+#ifndef QGSFIELD_H
+#define QGSFIELD_H
+
 class QString;
 /**
   \class QgsField
@@ -85,3 +89,5 @@ class QgsField{
     //! Precision
     int mPrecision;
 };
+
+#endif
