@@ -124,13 +124,10 @@ void Plugin::initGui()
   QAction *myQActionPointer = new QAction("EXIF Importer", QIconSet(icon), "&icon",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the toolbar
-  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "EXIF Importer");
-  mToolBarPointer->setLabel("EXIF Importer");
-  // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(mToolBarPointer);
-
+  // Add the tool to the toolbar
+  mQGisIface->addToolBarIcon(myQActionPointer);
 }
+
 //method defined in interface
 void Plugin::help()
 {
