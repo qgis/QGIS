@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #ifndef QGSNEWCONNECTION_H
 #define QGSNEWCONNECTION_H
 #include "qgsnewconnectionbase.h"
@@ -23,6 +24,7 @@
  */
 class QgsNewConnection : public QgsNewConnectionBase 
 {
+  Q_OBJECT
  public:
     //! Constructor
     QgsNewConnection(QString connName= QString::null);

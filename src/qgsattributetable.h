@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$  */
+/* $Id$ */
 #ifndef QGSATTRIBUTETABLE_H
 #define QGSATTRIBUTETABLE_H
 
@@ -35,12 +35,11 @@ class QgsAttributeTable:public QTable
       ~QgsAttributeTable();
 
       /**Inserts the feature with the specified id into rowIdMap. This function has to be called (e.g. from QgsShapeFileLayer) when a row is inserted into the table*/
-      void insertFeatureId(int id);
+      void insertFeatureId(int id, int row);
       /**Selects the row which belongs to the feature with the specified id*/
       void selectRowWithId(int id);
-      /**Sorts a column. This method replaces the one from QTable to allow alphanumeric sorting*/
+      /**Sorts a column. This method replaces the one from QTable to allow numeric sorting*/
       virtual void sortColumn(int col, bool ascending=true, bool wholeRows=false);
-
       public slots:
       void columnClicked(int col);
       protected slots:
@@ -58,7 +57,9 @@ class QgsAttributeTable:public QTable
       void keyReleaseEvent(QKeyEvent* ev);
       /**Method used by sortColumn (implementation of a quicksort)*/
       void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
-       signals:
+      void contentsMouseReleaseEvent(QMouseEvent* e);
+        signals:
+
       /**Is emitted when a row was selected*/
       void selected(int);
       /**Is emitted when all rows have been deselected*/

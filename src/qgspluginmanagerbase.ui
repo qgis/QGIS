@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsPluginManagerBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>410</width>
-            <height>304</height>
+            <width>564</width>
+            <height>307</height>
         </rect>
     </property>
     <property name="caption">
@@ -45,6 +45,17 @@
             <column>
                 <property name="text">
                     <string>Library Name</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Type</string>
                 </property>
                 <property name="clickable">
                     <bool>true</bool>

@@ -14,18 +14,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 /* $Id$ */
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
 #include <qwidget.h>
 #include <qobject.h>
-#include "qgsdatasource.h"
+/* #include "qgsdatasource.h" */
 #include "qgsrect.h"
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgssymbol.h"
-//Class QgsSymbol;
+#include <qpixmap.h>
+
+class QgsLegendItem;
+
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
@@ -67,12 +71,12 @@ class QgsMapLayer:public QObject
 	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
 	/*! Identify the feature(s) in this layer that are contained in the search rectangle
 	 */
-	virtual void identify(QgsRect *);
+	virtual void identify(QgsRect *)=0;
 	/*!Select features on the map canvas by dragging a rectangle*/
-	virtual void select(QgsRect *, bool lock);
+	virtual void select(QgsRect *, bool lock)=0;
 	/*! Display the attribute table for the layer
 	 */
-	virtual void table();
+	virtual void table()=0;
 	/*! Return the extent of the layer as a QRect
 	 */
 	const QgsRect extent();
@@ -107,7 +111,15 @@ class QgsMapLayer:public QObject
 		RASTER,
 		DATABASE
 	};
-	
+	/**Shows the properties dialog for the map layer*/
+	virtual void showLayerProperties()=0;
+	/**Returns a pointer to the legend pixmap*/
+	virtual QPixmap* legendPixmap();
+	/**Returns a pointer to the legend item*/
+	QgsLegendItem* legendItem();
+	/**Sets the pointer to the legend item*/
+	void setLegendItem(QgsLegendItem* li);
+
 	  signals:void visibilityChanged(void);
   protected:
 	//! Extent of the layer
@@ -115,13 +127,17 @@ class QgsMapLayer:public QObject
 	//! Indicates if the layer is valid and can be drawn
 	bool valid;
 	QString dataSource;
-	int feature;
+	//! Geometry type as defined in enum WKBTYPE (qgis.h)
+	int geometryType;
+	/**Pointer to the legend item for this layer*/
+	QgsLegendItem* m_legendItem;
+	/**Pixmap used in the legend item*/
+	QPixmap m_legendPixmap;
+	/** Name of the layer - used for display  */
+	QString layerName;
   private:						// Private attributes
 	/** Unique ID of this layer - used to refer to this layer  in QGIS code */
 	  QString ID;
-
-	/** Name of the layer - used for display  */
-	QString layerName;
 	/** Type of the layer (eg. vector, raster, database  */
 	int layerType;
 
@@ -136,6 +152,10 @@ class QgsMapLayer:public QObject
   public:						// Public attributes
   /**  */
 	  QString m_labelField;
+
+  signals:
+	  /**This signal should be connected with the slot QgsMapCanvas::refresh()*/
+	  void repaintRequested();
 };
 
 #endif

@@ -14,3 +14,6 @@ void QgsAbout::setURLs(QString urls){
 void QgsAbout::setWhatsNew(QString txt){
     txtWhatsNew->setText(txt);
 }
+void QgsAbout::setPluginInfo(QString txt){
+    txtBrowserPlugins->setText(txt);
+}

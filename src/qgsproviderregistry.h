@@ -1,8 +1,9 @@
 /***************************************************************************
-                         qgsrenderer.cpp  -  description
+                    qgsproviderregistry.h  -  Singleton class for
+                    registering data providers.
                              -------------------
-    begin                : Sat Jan 4 2003
-    copyright            : (C) 2003 by Gary E.Sherman
+    begin                : Sat Jan 10 2004
+    copyright            : (C) 2004 by Gary E.Sherman
     email                : sherman at mrcc.com
  ***************************************************************************/
 
@@ -14,17 +15,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qstring.h>
-#include "qgsrenderitem.h"
-#include "qgsrenderer.h"
+ /* $Id$ */
+ 
+#ifndef QGSPROVIDERREGISTRY_H
+#define QGSPROVIDERREGISTRY_H
+#include <map>
+class QgsProviderMetadata;
+class QString;
 
-QgsRenderer::QgsRenderer(int _type, QString _field) : type(_type), field(_field) {
-}
-
-void QgsRenderer::addItem(QString key, QgsRenderItem ri){
-items[key] = ri;
-}
-	
-
-
+class QgsProviderRegistry
+{
+public:
+ static QgsProviderRegistry* instance();
+ QString library(QString providerKey);
+ QString pluginList(bool asHtml=false);
+protected:
+ QgsProviderRegistry();
+private:
+ static QgsProviderRegistry* _instance;
+ std::map<QString,QgsProviderMetadata*> provider;
+};
+#endif //QGSPROVIDERREGISTRY_H
 

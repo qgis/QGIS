@@ -21,15 +21,18 @@ Class to contain information about a loadable plugin, including its name, descri
 */
 class QgsPluginItem{
 public:
-    QgsPluginItem(QString name=0, QString description=0, QString fullPath=0);
+    QgsPluginItem(QString name=0, QString description=0, QString fullPath=0, QString type=0);
     QString name();
     QString description();
     QString fullPath();
+    QString type();
     ~QgsPluginItem();
 private:
 	QString m_name;
 	QString m_description;
 	QString m_fullPath;
+  //! Plugin type (either ui or maplayer)
+  QString m_type;
 
 };
 

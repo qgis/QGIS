@@ -26,10 +26,7 @@
 #include <qregexp.h>
 #include <qstring.h>
 #include "qgsmaplayer.h"
-#ifdef POSTGRESQL
-#include "qgsdatabaselayer.h"
-#endif
-#include "qgsshapefilelayer.h"
+#include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsrect.h"
 #include "qgsmapserverexport.h"
@@ -196,7 +193,8 @@ void QgsMapserverExport::writeMapFile(){
 				case QgsMapLayer::VECTOR:
 					mapFile << "  DATA " << lyr->source() << std::endl;
 					break;
-#ifdef POSTGRESQL
+          //TODO FIX THIS TO DEAL WITH EXPORT USING QgsVectorLayer objects
+/* #ifdef POSTGRESQL
 				case QgsMapLayer::DATABASE:
 					QgsDatabaseLayer *dblyr = (QgsDatabaseLayer *)lyr;
 					mapFile << "  CONNECTION \"" << lyr->source() << "\"" 
@@ -206,7 +204,7 @@ void QgsMapserverExport::writeMapFile(){
 						" from " << dblyr->geometryTableName() << "\"" 
 						<< std::endl;
 					break;
-#endif
+#endif */
 			}
 			// create a simple class entry based on layer color
 			QgsSymbol *sym = lyr->symbol();

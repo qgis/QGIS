@@ -16,26 +16,25 @@
  ***************************************************************************/
 #ifndef QGSRENDERER_H
 #define QGSRENDERER_H
-#include <map>
-class QString;
 
-/*! \class QgsRenderer
-* \brief Base class for all renderers
-*/
-class QgsRenderer {
-	//! Type of renderer
-	int type;
-	//! Field name used to render layer
-	QString field;
-	//! map of render items (ie. classes)
-	std::map<QString, QgsRenderItem>items;
-	public:
-	//! Constructor
-	QgsRenderer(int _type, QString _field);
-	//! Add a render item (class) to the renderer
-	void addItem(QString key, QgsRenderItem ri);
-	
+class QgsFeature;
+class QgsCoordinateTransform;
+class QgsVectorLayer;
+class QPainter;
 
+
+
+/**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
+class QgsRenderer
+{
+ public:
+    /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn
+     @param layer the vector layer associated with the renderer*/
+    virtual void initializeSymbology(QgsVectorLayer* layer)=0;
+    /**Renders a feature. A vector layer passes features to a renderer object for display*/
+    virtual void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t)=0;
+    /** Returns true, if attribute values are used by the renderer and false otherwise*/
+    virtual bool needsAttributes()=0;
 };
 
 #endif // QGSRENDERER_H

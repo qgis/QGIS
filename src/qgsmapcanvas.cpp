@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #include <iostream>
 #include <cfloat>
 #include <cmath>
@@ -77,41 +77,44 @@ void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr){
 }	
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
-// give the layer a default symbol
-	QgsSymbol *sym;
-	QColor *fill;
-	int red, green, blue;
-	switch (lyr->featureType()) {
-	  case QGis::WKBPoint:
-	  case QGis::WKBMultiPoint:
-		  sym = new QgsMarkerSymbol();
-		  break;
-	  case QGis::WKBLineString:
-	  case QGis::WKBMultiLineString:
-		  sym = new QgsLineSymbol();
-		  break;
-	  case QGis::WKBPolygon:
-	  case QGis::WKBMultiPolygon:
-		  sym = new QgsPolygonSymbol();
-		  red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-		  green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-		  blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-		  fill = new QColor(red, green, blue);
-		  sym->setFillColor(*fill);
-		  break;
-	  // temporary hack to allow addition of raster layers
-	  // raster layers don't have symbology. should this symbol
-	  // related code be in qgsshapefilelayer.cpp?
-	  default:
-		  sym = new QgsMarkerSymbol();
-	}
-	red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-	green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-	blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-
-	sym->setColor(QColor(red, green, blue));
-	sym->setLineWidth(1);
-	lyr->setSymbol(sym);
+  if (lyr->type() != QgsMapLayer::RASTER){
+    std::cout << "Layer name is " << lyr->name() << std::endl;
+  // give the layer a default symbol
+    QgsSymbol *sym;
+    QColor *fill;
+    int red, green, blue;
+    switch (lyr->featureType()) {
+      case QGis::WKBPoint:
+      case QGis::WKBMultiPoint:
+        sym = new QgsMarkerSymbol();
+        break;
+      case QGis::WKBLineString:
+      case QGis::WKBMultiLineString:
+        sym = new QgsLineSymbol();
+        break;
+      case QGis::WKBPolygon:
+      case QGis::WKBMultiPolygon:
+        sym = new QgsPolygonSymbol();
+        red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+        green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+        blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+        fill = new QColor(red, green, blue);
+        sym->setFillColor(*fill);
+        break;
+      // temporary hack to allow addition of raster layers
+      // raster layers don't have symbology. should this symbol
+      // related code be in qgsshapefilelayer.cpp?
+      default:
+        sym = new QgsMarkerSymbol();
+    }
+    red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  
+    sym->setColor(QColor(red, green, blue));
+    sym->setLineWidth(1);
+    lyr->setSymbol(sym);
+  }
 	layers[lyr->getLayerID()] = lyr;
 	// update extent if warranted
 	if (layers.size() == 1) {
@@ -123,7 +126,8 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 
 	updateFullExtent(lyr->extent());
 	zOrder.push_back(lyr->getLayerID());
-	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+	QObject::connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+	QObject::connect(lyr,SIGNAL(repaintRequested()),this,SLOT(refresh()));
 	dirty = true;
 }
 
@@ -214,14 +218,14 @@ void QgsMapCanvas::render2()
 				QgsMapLayer *ml = layers[*li];
 				if (ml) {
 					//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-//          std::cout << "Rendering " << ml->name() << std::endl;
+          std::cout << "Rendering " << ml->name() << std::endl;
 					if (ml->visible())
 						ml->draw(paint, &currentExtent, coordXForm);
 					li++;
 					//  mi.draw(p, &fullExtent);
 				}
 			}
-
+      std::cout << "Done rendering map layers\n";
 			paint->end();
 			drawing = false;
 		}
@@ -515,7 +519,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			}
 			else
 			{
-			    QMessageBox::warning(this, "No active layer", "To select features, you must choose an layer active by clicking on its name in the legend");
+			    QMessageBox::warning(this, tr("No active layer"), tr("To select features, you must choose an layer active by clicking on its name in the legend"));
 			}
 		}
 	} else {
@@ -537,8 +541,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 				  lyr->identify(search);
 				  delete search;
 			  } else {
-				  QMessageBox::warning(this, "No active layer",
-									   "To identify features, you must choose an layer active by clicking on its name in the legend");
+				  QMessageBox::warning(this, tr("No active layer"),
+									   tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
 			  }
 			  break;
 

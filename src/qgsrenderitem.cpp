@@ -16,20 +16,26 @@
  ***************************************************************************/
 
 #include <qstring.h>
-#include "qgssymbol.h"
-
 #include "qgsrenderitem.h"
 
 QgsRenderItem::QgsRenderItem(){
 };
 
 QgsRenderItem::QgsRenderItem(QgsSymbol symbol, QString _value, QString _label) :
-sym(symbol), value(_value), label(_label){
+sym(symbol), m_value(_value), m_label(_label){
 
 }
-QgsSymbol *QgsRenderItem::getSymbol(){
-	return &sym;
+
+void QgsRenderItem::setLabel(QString label)
+{
+    m_label=label;
 }
+
 void QgsRenderItem::setSymbol(QgsSymbol s){
 	sym = s;
+}
+
+const QString& QgsRenderItem::label() const
+{
+    return m_label;
 }

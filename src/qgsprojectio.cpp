@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.14 2004/01/13 20:39:07 timlinux Exp */
+/* qgsprojectio.cpp,v 1.15 2004/01/19 17:59:41 gsherman Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -22,11 +22,8 @@
  #include <qcolor.h>
  #include "qgsmaplayer.h"
  #include "qvariant.h"
- #ifdef POSTGRESQL
- #include "qgsdatabaselayer.h"
- #endif
+ #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
- #include "qgsshapefilelayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsrect.h"
 #include "qgsprojectio.h"
@@ -52,8 +49,7 @@ bool QgsProjectIo::write(){
 	//QMessageBox::information(0,"Full Path",fullPath);
 	int okToSave = 0;
 	if(QFile::exists(fullPath) && (action == SAVEAS)){
-		okToSave = QMessageBox::warning(0,"Overwrite File?",fullPath + 
-			" exists. \nDo you want to overwrite it?", "Yes", "No");
+		okToSave = QMessageBox::warning(0,QObject::tr("Overwrite File?"),QObject::tr("%1 exists.%2Do you want to overwrite it?").arg(fullPath).arg("\n"), QObject::tr("Yes"), QObject::tr("No"));
 	}
 	if(okToSave == 0){
 	// write the project information to the selected file
@@ -163,15 +159,15 @@ bool QgsProjectIo::read(){
 			// add the layer to the maplayer
 			
 			if(type == "database"){
+
 #ifdef POSTGRESQL
-				QgsDatabaseLayer *dbl = new QgsDatabaseLayer(dataSource, layerName);
-				
+				QgsVectorLayer *dbl = new QgsVectorLayer(dataSource, layerName, "postgres");
 				map->addLayer(dbl);
 				dbl->setSymbol(sym);
 				dbl->setVisible(visible == "1");
 #endif
 			} else if ( type == "vector" ) {
-				QgsShapeFileLayer *shpl = new QgsShapeFileLayer(dataSource, layerName);
+				QgsVectorLayer *shpl = new QgsVectorLayer(dataSource, layerName, "ogr");
 				
 				map->addLayer(shpl);
 				shpl->setSymbol(sym);
@@ -235,13 +231,10 @@ if(action == SAVE && fullPath.isEmpty()){
 	}
 switch(action){
 	case OPEN:
-	fullPath = QFileDialog::getOpenFileName("./", "QGis files (*.qgs)", 0,  0, 
-		"Choose a file to open" );
-  
+	fullPath = QFileDialog::getOpenFileName("./", QObject::tr("QGis files (*.qgs)"), 0,  0, QObject::tr("Choose a file to open") );
 	break;
 	case SAVEAS:
-		fullPath = QFileDialog::getSaveFileName("./", "QGis files (*.qgs)", 0,
-			0, "Choose a filename  to save" );
+		fullPath = QFileDialog::getSaveFileName("./", QObject::tr("QGis files (*.qgs)"), 0,  0, QObject::tr("Choose a filename  to save") );
 	break;
 	}
 	return fullPath;

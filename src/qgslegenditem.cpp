@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include <qlabel.h>
 #include <qcheckbox.h>
 #include "qgssymbol.h"
@@ -23,7 +24,7 @@
 
 
 QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent)
-:QCheckListItem(parent, lyr->name(), QCheckListItem::CheckBox), m_layer(lyr)
+    :QCheckListItem(parent,"", QCheckListItem::CheckBox), m_layer(lyr)
 {
 	setOn(lyr->visible());
 
