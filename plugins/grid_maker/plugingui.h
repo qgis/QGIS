@@ -27,7 +27,6 @@ class PluginGui : public PluginGuiBase
 
     private:
 
-      void pbnSelectInputFile_clicked();
       void pbnSelectOutputFile_clicked();
       void pbnCancel_clicked();
       void pbnOK_clicked();
