@@ -16,6 +16,7 @@
  ***************************************************************************/
  /* $Id$ */
 #include <iostream>
+#include <cfloat>
 #include <cmath>
 #include <qstring.h>
 #include <qpainter.h>
@@ -305,6 +306,48 @@ void QgsMapCanvas::zoomPreviousExtent()
 		render2();
 	}
 }
+
+void QgsMapCanvas::zoomToSelected()
+{
+    QgsMapLayer * lyr = mapLegend->currentLayer();
+    if(lyr)
+    {
+	QgsRect rect=lyr->bBoxOfSelected();
+
+	//no selected features
+	if(rect.xMin()==DBL_MAX&&rect.yMin()==DBL_MAX&&rect.xMax()==DBL_MIN&&rect.yMax()==DBL_MIN)
+	{
+	    return;
+	}
+
+	//zoom to one single point
+	else if(rect.xMin()==rect.xMax()&&rect.yMin()==rect.yMax())
+	{
+	    previousExtent=currentExtent;
+	    currentExtent.setXmin(rect.xMin()-25);
+	    currentExtent.setYmin(rect.yMin()-25);
+	    currentExtent.setXmax(rect.xMax()+25);
+	    currentExtent.setYmax(rect.yMax()+25);
+	    clear();
+	    render2();
+	    return;
+	}
+
+	//zoom to an area
+	else
+	{
+	    previousExtent=currentExtent;
+	    currentExtent.setXmin(rect.xMin());
+	    currentExtent.setYmin(rect.yMin());
+	    currentExtent.setXmax(rect.xMax());
+	    currentExtent.setYmax(rect.yMax());
+	    clear();
+	    render2();
+	    return;
+	}
+    }
+}
+
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
 	mouseButtonDown = true;

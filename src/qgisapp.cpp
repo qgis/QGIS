@@ -433,6 +433,11 @@ void QgisApp::zoomOut()
 
 }
 
+void QgisApp::zoomToSelected()
+{
+	mapCanvas->zoomToSelected();
+}
+
 void QgisApp::pan()
 {
 	mapTool = QGis::Pan;

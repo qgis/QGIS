@@ -40,6 +40,8 @@ class QgsShapeFileLayer:public QgsMapLayer
 	  QgsShapeFileLayer(QString baseName = 0, QString path = 0);
 	//! Destructor
 	 ~QgsShapeFileLayer();
+	 /**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds DBL_MIN*/
+	QgsRect bBoxOfSelected();
 	//! Identify feature found within the search rectangle
 	void identify(QgsRect *);
 	//! Select features found within the search rectangle
