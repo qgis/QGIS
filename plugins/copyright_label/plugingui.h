@@ -28,10 +28,11 @@ public:
     ~PluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();    
+    void setText(QString);
 
 public slots:
     void setEnabled(bool); 
-    
+     
 private:
     
 signals:
