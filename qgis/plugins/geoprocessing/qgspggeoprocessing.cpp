@@ -39,10 +39,7 @@
 #include <qcursor.h>
 #include "qgsdlgpgbuffer.h"
 #include "qgspggeoprocessing.h"
-extern "C"
-{
-#include <libpq-fe.h>
-}
+
 // xpm for creating the toolbar icon
 #include "icon_buffer.xpm"
 
@@ -131,6 +128,13 @@ void QgsPgGeoprocessing::buffer()
             // create the connection string
             QString connInfo = dataSource.left(dataSource.find("table="));
             std::cerr << "Data source = " << QString("Datasource:%1\n\nConnectionInfo:%2").arg(dataSource).arg(connInfo) << std::endl;
+             // connect to the database and check the capabilities
+             PGconn *capTest = PQconnectdb((const char *) connInfo);
+             if (PQstatus(capTest) == CONNECTION_OK) {
+               postgisVersion(capTest);
+             }
+             PQfinish(capTest);
+             if(geosAvailable){
             // get the table name
             QStringList connStrings = QStringList::split(" ", dataSource);
             QStringList tables = connStrings.grep("table=");
@@ -321,7 +325,9 @@ void QgsPgGeoprocessing::buffer()
                 QString err = tr("Error connecting to the database");
                 QMessageBox::critical(0, err, PQerrorMessage(conn));
             }
-            
+        }else{
+          QMessageBox::critical(0,"No GEOS support","Buffer function required GEOS support in PostGIS");
+        }
         } else {
             QMessageBox::critical(0, "Not a PostgreSQL/PosGIS Layer",
                                   QString
@@ -331,6 +337,49 @@ void QgsPgGeoprocessing::buffer()
     } else {
         QMessageBox::warning(0, "No Active Layer", "You must select a layer in the legend to buffer");
     }
+}
+/* Functions for determining available features in postGIS */
+QString QgsPgGeoprocessing::postgisVersion(PGconn *connection){
+  PGresult *result = PQexec(connection, "select postgis_version()");
+  postgisVersionInfo = PQgetvalue(result,0,0);
+  std::cerr << "PostGIS version info: " << postgisVersionInfo << std::endl;
+  // assume no capabilities
+  geosAvailable = false;
+  gistAvailable = false;
+  projAvailable = false;
+  // parse out the capabilities and store them
+  QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
+  QStringList geos = postgisParts.grep("GEOS");
+  if(geos.size() == 1){
+    geosAvailable = (geos[0].find("=1"));  
+  }
+  QStringList gist = postgisParts.grep("STATS");
+  if(gist.size() == 1){
+    gistAvailable = (geos[0].find("=1"));
+  }
+  QStringList proj = postgisParts.grep("PROJ");
+  if(proj.size() == 1){
+    projAvailable = (proj[0].find("=1"));
+  }
+  return postgisVersionInfo;
+}
+bool QgsPgGeoprocessing::hasGEOS(PGconn *connection){
+  // make sure info is up to date for the current connection
+  postgisVersion(connection);
+  // get geos capability
+  return geosAvailable;
+}
+bool QgsPgGeoprocessing::hasGIST(PGconn *connection){
+  // make sure info is up to date for the current connection
+  postgisVersion(connection);
+  // get gist capability
+  return gistAvailable;
+}
+bool QgsPgGeoprocessing::hasPROJ(PGconn *connection){
+   // make sure info is up to date for the current connection
+  postgisVersion(connection);
+  // get proj4 capability
+  return projAvailable;
 }
 
 // Unload the plugin by cleaning up the GUI
