@@ -227,7 +227,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 //#ifdef QGISDEBUG
         std::cout << "Leaving file selection page" << std::endl;
 //#endif
-
+        /** @todo Add some checking to make sure each file exists and is readable and valid for its type */
         climateDataProcessor->setMeanTempFileName(leMeanTemp->text());
         climateDataProcessor->setMinTempFileName(leMinTemp->text());
         climateDataProcessor->setMaxTempFileName(leMaxTemp->text());

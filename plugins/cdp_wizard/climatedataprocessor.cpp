@@ -747,7 +747,7 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
     std::cout << "Total Solar Radiation FileName : " << getTotalSolarRadFileName() << std::endl;
     std::cout << "Wind Speed FileName : " << getWindSpeedFileName() << std::endl;
 
-    if (diurnalTempFileGroup && diurnalTempFileNameString != "")
+    if (diurnalTempFileNameString != "")
     {
         //declare the key value
         myString=QString("Annual mean diurnal temperature range");
@@ -755,7 +755,7 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         availableCalculationsMap[myString]=myBool;
     }
 
-    if (frostDaysFileGroup && frostDaysFileNameString != "")
+    if (frostDaysFileNameString != "")
     {
         //declare the key value
         myString=QString("Annual mean number of frost days");
@@ -763,7 +763,7 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         availableCalculationsMap[myString]=myBool;
     }
 
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != "")
+    if (totalSolarRadFileNameString != "")
     {
         std::cout << "Solar incident radiation : " <<    totalSolarRadFileNameString << std::endl;
         //declare the key value
@@ -772,7 +772,7 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         availableCalculationsMap[myString]=myBool;
     }
 
-    if ( minTempFileGroup &&  maxTempFileGroup && minTempFileNameString  != "" && maxTempFileNameString != "" )
+    if (maxTempFileGroup && minTempFileNameString  != "" && maxTempFileNameString != "" )
     {
         //declare the key value
         myString=QString("Annual temperature range");
@@ -780,7 +780,7 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         availableCalculationsMap[myString]=myBool;
     }
 
-    if (maxTempFileGroup && maxTempFileNameString != "")
+    if (maxTempFileNameString != "")
     {
         //declare the key value
         myString=QString("Highest temperature in warmest month");
@@ -788,217 +788,217 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         availableCalculationsMap[myString]=myBool;
     }
 
-    if (minTempFileGroup && minTempFileNameString != "")
+    if (minTempFileNameString != "")
     {
         //declare the key value
         myString=QString("Lowest temperature in coolest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup && meanPrecipFileNameString != "")
+    if (meanPrecipFileNameString != "")
     {
         //declare the key value
         myString=QString("Mean daily precipitation");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if ( meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != "" && minTempFileNameString != "" )
+    if (meanPrecipFileNameString != "" && minTempFileNameString != "" )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in coolest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != "" && minTempFileNameString != "" )
+    if (meanPrecipFileNameString != "" && minTempFileNameString != "" )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in coolest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != "" )
+    if (meanPrecipFileNameString != "" )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in driest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != "" )
+    if (meanPrecipFileNameString != "" )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in driest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && maxTempFileGroup &&  maxTempFileNameString != ""  )
+    if (meanPrecipFileNameString != ""  &&  maxTempFileNameString != ""  )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in warmest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && maxTempFileGroup &&  maxTempFileNameString != ""  )
+    if (meanPrecipFileNameString != ""  && maxTempFileNameString != ""  )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in warmest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  )
+    if (meanPrecipFileNameString != ""  )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in wettest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  )
+    if (meanPrecipFileNameString != ""  )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in wettest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (diurnalTempFileGroup && diurnalTempFileNameString != "" && meanTempFileGroup && meanTempFileNameString !="")
+    if (diurnalTempFileNameString != "" && meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean diurnal temperature range in coolest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (diurnalTempFileGroup && diurnalTempFileNameString != "" && meanTempFileGroup && meanTempFileNameString !="")
+    if ( diurnalTempFileNameString != "" && meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean diurnal temperature range in warmest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && frostDaysFileGroup && frostDaysFileNameString != "")
+    if (  meanPrecipFileNameString != ""  &&  frostDaysFileNameString != "")
     {
         //declare the key value
         myString=QString("Mean precipitation in frost free months");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString !="")
+    if ( meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean temperature");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString !="")
+    if (meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean temperature in coolest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString !="")
+    if ( meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean temperature in coolest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString !="" && frostDaysFileGroup && frostDaysFileNameString != "")
+    if ( meanTempFileNameString !="" &&  frostDaysFileNameString != "")
     {
         //declare the key value
         myString=QString("Mean temperature in frost free months");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString !="")
+    if ( meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean temperature in warmest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString !="")
+    if ( meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Mean temperature in warmest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (windSpeedFileGroup && windSpeedFileNameString != "")
+    if ( windSpeedFileNameString != "")
     {
         //declare the key value
         myString=QString("Mean wind speed");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (minTempFileGroup && minTempFileNameString !="")
+    if ( minTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Number of months with minimum temperature above freezing");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != "" && meanTempFileGroup && meanTempFileNameString !="")
+    if ( totalSolarRadFileNameString != "" && meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Radiation in coolest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != "" && meanTempFileGroup && meanTempFileNameString !="")
+    if ( totalSolarRadFileNameString != ""  && meanTempFileNameString !="")
     {
         //declare the key value
         myString=QString("Radiation in coolest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""  && meanPrecipFileGroup && meanPrecipFileNameString != "")
+    if ( totalSolarRadFileNameString != "" && meanPrecipFileNameString != "")
     {
         //declare the key value
         myString=QString("Radiation in driest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""  && meanPrecipFileGroup && meanPrecipFileNameString != "")
+    if (totalSolarRadFileNameString != "" && meanPrecipFileNameString != "")
     {
         //declare the key value
         myString=QString("Radiation in driest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""  && meanTempFileGroup && meanTempFileNameString != "")
+    if ( totalSolarRadFileNameString != ""  && meanTempFileNameString != "")
     {
         //declare the key value
         myString=QString("Radiation in warmest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""  && meanTempFileGroup && meanTempFileNameString != "")
+    if ( totalSolarRadFileNameString != ""  && meanTempFileNameString != "")
     {
         //declare the key value
         myString=QString("Radiation in warmest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""  && meanPrecipFileGroup && meanPrecipFileNameString != "")
+    if ( totalSolarRadFileNameString != "" && meanPrecipFileNameString != "")
     {
         //declare the key value
         myString=QString("Radiation in wettest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""  && meanPrecipFileGroup && meanPrecipFileNameString != "")
+    if ( totalSolarRadFileNameString != ""  && meanPrecipFileNameString != "")
     {
         //declare the key value
         myString=QString("Radiation in wettest quarter");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileGroup && meanPrecipFileNameString != "")
+    if ( meanPrecipFileNameString != "")
     {
         //declare the key value
         myString=QString("Standard deviation of mean precipitation");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanTempFileGroup && meanTempFileNameString != "")
+    if (meanTempFileNameString != "")
     {
         //declare the key value
         myString=QString("Standard deviation of mean temperature");
