@@ -1,7 +1,15 @@
 QGIS Change Log
-ChangeLog,v 1.145 2004/06/21 13:50:35 larsl Exp
+ChangeLog,v 1.146 2004/06/21 20:07:11 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-21 [ts] 0.3.0devel49
+
+** Revised raster stats emiting of progress update to not do it when stats are 
+   fetched from cache. QGisApp progress bar now updates as each layer is rendered 
+   in the mapCanvas.
+   
+** Some minor updates to projectio   
 
 2004-06-21 [larsl] 0.3.0devel48
 ** Hooked up the GPS gui to code that uses gpsbabel to import lots of GPS file
