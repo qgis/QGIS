@@ -42,7 +42,8 @@ QgsFeature::QgsFeature( QgsFeature const & feature )
       fieldNames( feature.fieldNames ),
       mWKT( feature.mWKT ),
       mValid( feature.mValid ),
-      geometrySize( feature.geometrySize )
+      geometrySize( feature.geometrySize ),
+      mTypeName( feature.mTypeName )
 {
     if ( geometry )
     {
@@ -71,6 +72,7 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & feature )
     mWKT =  feature.mWKT ;
     mValid =  feature.mValid ;
     geometrySize =  feature.geometrySize;
+    mTypeName = feature.mTypeName;
 
     if ( geometry )
     {
