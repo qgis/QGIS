@@ -143,7 +143,7 @@ void QgsSiSyDialog::apply()
     sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
     sy.pen().setWidth(outlinewidthspinbox->value());
     sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
-    QgsRenderItem ri(sy, "blabla", "blabla");
+    QgsRenderItem* ri = new QgsRenderItem(sy, "blabla", "blabla");
     
     QgsSingleSymRenderer *renderer = dynamic_cast < QgsSingleSymRenderer * >(mVectorLayer->renderer());
     

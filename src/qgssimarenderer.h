@@ -29,22 +29,22 @@ class QgsSiMaRenderer: public QgsRenderer
     QgsSiMaRenderer();
     ~QgsSiMaRenderer();
     /**Replaces the current mItem by ri*/
-    void addItem(QgsRenderItem ri);
+    void addItem(QgsRenderItem* ri);
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
     bool needsAttributes();
  protected:
-    QgsRenderItem mItem;
+    QgsRenderItem* mItem;
 };
 
-inline QgsSiMaRenderer::QgsSiMaRenderer()
+inline QgsSiMaRenderer::QgsSiMaRenderer(): mItem(new QgsRenderItem())
 {
    
 }
 
 inline QgsSiMaRenderer::~QgsSiMaRenderer()
 {
-
+    delete mItem;
 }
 
 inline bool QgsSiMaRenderer::needsAttributes()
@@ -52,8 +52,9 @@ inline bool QgsSiMaRenderer::needsAttributes()
     return false;
 }
 
-inline void QgsSiMaRenderer::addItem(QgsRenderItem ri)
+inline void QgsSiMaRenderer::addItem(QgsRenderItem* ri)
 {
+    delete mItem;
     mItem=ri;
 }
 

@@ -43,6 +43,7 @@ email                : sherman at mrcc.com
 #include "qgsfield.h"
 #include <qlistview.h>
 #include <qlibrary.h>
+#include <qpicture.h>
 #include "qgsrenderer.h"
 #include "qgslegenditem.h"
 #include "qgsdlgvectorlayerproperties.h"
@@ -276,9 +277,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       
 	QPen pen;
 	/**Pointer to a marker image*/
-	QPicture* marker=0;
+	QPicture marker;
 	/**Scale factor of the marker image*/
-	double* markerScaleFactor=0;
+	double markerScaleFactor=1;
 
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
@@ -343,7 +344,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	      {
                  
                   //pass the feature to the renderer
-                  m_renderer->renderFeature(p, fet, marker, markerScaleFactor);
+                  m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor);
 	      }
 	      
 	      /* OGRGeometry *geom = fet->GetGeometryRef();
@@ -374,15 +375,11 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                         pt = cXf->transform(*x, *y);
                         //std::cout << "drawing marker for feature " << featureCount << "\n";
                         p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
-			if(marker)
-			{
-                            #ifdef QGISDEBUG
-			    qWarning("drawing marker");
-			    #endif
-			    p->drawPicture(pt.xToInt(), pt.yToInt(), *marker);//todo: add scale factor and other stuff later
-			    
-			}
-                        //std::cout << "marker draw complete\n";
+	  
+			p->scale(markerScaleFactor,markerScaleFactor);
+			p->drawPicture(pt.xToInt()/markerScaleFactor-marker.boundingRect().width()/2, pt.yToInt()/markerScaleFactor-marker.boundingRect().height()/2, marker);
+			p->resetXForm(); 
+			
                         break;
 
                       case WKBLineString:

@@ -34,7 +34,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     QgsSingleSymRenderer();
     ~QgsSingleSymRenderer();
     /**Replaces the current mItem by ri*/
-    void addItem(QgsRenderItem ri);
+    void addItem(QgsRenderItem* ri);
     /**Returns a pointer to mItem*/
     QgsRenderItem* item();
     /**Renders an OGRFeature*/
@@ -46,12 +46,12 @@ class QgsSingleSymRenderer: public QgsRenderer
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes();
  protected:
-    QgsRenderItem mItem;
+    QgsRenderItem* mItem;
 };
 
 inline QgsRenderItem* QgsSingleSymRenderer::item()
 {
-    return &mItem;
+    return mItem;
 }
 inline bool QgsSingleSymRenderer::needsAttributes(){
   return false;

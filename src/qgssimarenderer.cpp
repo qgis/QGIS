@@ -39,7 +39,7 @@ void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLay
 	sy.pen().setStyle(Qt::NoPen);
 	sy.pen().setWidth(1);//set width 1 as default instead of width 0
 
-	QgsRenderItem ri(sy, "", "");
+	QgsRenderItem* ri = new QgsRenderItem(sy, "", "");
 	addItem(ri);
 	
 	//todo: add a pixmap for the legend
@@ -59,14 +59,17 @@ void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLay
 
 void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor)
 {
-    p->setPen(mItem.getSymbol()->pen());
-    p->setBrush(mItem.getSymbol()->brush());
+    p->setPen(mItem->getSymbol()->pen());
+    p->setBrush(mItem->getSymbol()->brush());
 
-    QgsSymbol* testsymbol=mItem.getSymbol();
-    QgsMarkerSymbol* ms=dynamic_cast<QgsMarkerSymbol*>(mItem.getSymbol());
-    if(ms)
+    QgsMarkerSymbol* ms=dynamic_cast<QgsMarkerSymbol*>(mItem->getSymbol());
+    if(ms&&pic)
     {
-	pic=ms->picture();
+	pic->load(ms->picture(),"svg");
+	//debugging: remove later
+	//std::cout << pic << std::endl << std::flush;
+	//p->drawPicture(50,50,(*pic));
+	//qWarning("scale factor: "+QString::number(ms->scaleFactor()));
 	(*scalefactor)=ms->scaleFactor();//does not work, but why?
     }
 }

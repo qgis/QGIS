@@ -21,7 +21,7 @@
 
 void QgsMarkerSymbol::setPicture(const QString& svgpath)
 {
-    mPicture.load(svgpath,"svg");
+    mSvgPath=svgpath;
 }
     
 
