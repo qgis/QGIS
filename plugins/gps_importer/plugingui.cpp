@@ -267,7 +267,10 @@ void PluginGui::enableRelevantControls()
   
   // import other file
   else if (tabWidget->currentPageIndex() == 1) {
-
+    if ((leIMPInput->text() == "") || (leIMPOutput->text() == ""))
+      pbnOK->setEnabled(false);
+    else
+      pbnOK->setEnabled(true);
   }
   
   // download from device
@@ -311,6 +314,34 @@ void PluginGui::pbnGPXSelectFile_clicked()
           );
   std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
   leGPXFile->setText(myFileNameQString);
+}
+
+
+void PluginGui::pbnIMPInput_clicked() {
+  QString myFileTypeQString;
+  QString myFilterString = 
+    "GPS eXchange format (*.gpx);;"
+    "Geocaching waypoints (*.loc)";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          "." , //initial dir
+          myFilterString,  //filters to select
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select file to import" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );
+  leIMPInput->setText(myFileNameQString);
+}
+
+
+void PluginGui::pbnIMPOutput_clicked() {
+  QString myFileNameQString = 
+    QFileDialog::getSaveFileName("." , //initial dir
+				 "GPS eXchange format (*.gpx)",
+				 this , //parent dialog
+				 "Select GPX output",
+				 "Choose a filename to save under" );
+  leIMPOutput->setText(myFileNameQString);
 }
 
 

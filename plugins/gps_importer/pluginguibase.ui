@@ -811,6 +811,30 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
         <receiver>PluginGuiBase</receiver>
         <slot>pbnDLOutput_clicked()</slot>
     </connection>
+    <connection>
+        <sender>leIMPInput</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>leIMPOutput</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>pbIMPInput</sender>
+        <signal>clicked()</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>pbnIMPInput_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbIMPOutput</sender>
+        <signal>clicked()</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>pbnIMPOutput_clicked()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>pbnOK_clicked()</slot>
@@ -826,6 +850,8 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
     <slot>cbGPXTracks_toggled( bool )</slot>
     <slot>enableRelevantControls()</slot>
     <slot>pbnDLOutput_clicked()</slot>
+    <slot>pbnIMPInput_clicked()</slot>
+    <slot>pbnIMPOutput_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
