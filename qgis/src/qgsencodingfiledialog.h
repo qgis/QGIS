@@ -27,7 +27,8 @@ class QgsEncodingFileDialog: public QFileDialog
  public:
     QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name);
     ~QgsEncodingFileDialog();
-    QgsVectorDataProvider::Encoding encoding() const;
+    /**Returns a string describing the choosen encoding*/
+    QString encoding() const;
  private:
     /**Box to choose the encoding type*/
     QComboBox* mEncodingComboBox;
