@@ -13,6 +13,8 @@
 #define PLUGINGUI_H
 
 #include <pluginguibase.h>
+#include <qfont.h>
+#include <qcolor.h>
 
 /**
 @author Tim Sutton
@@ -30,8 +32,11 @@ public:
 private:
     
 signals:
-   void drawRasterLayer(QString);
-   void drawVectorrLayer(QString,QString,QString);
+   //void drawRasterLayer(QString);
+   //void drawVectorrLayer(QString,QString,QString);
+   void changeFont(QFont);
+   void changeLabel(QString);
+   void changeColor(QColor);
 };
 
 #endif

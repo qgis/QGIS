@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
-
+#include <qtextedit.h>
 //qt includes
 
 //standard includes
@@ -40,6 +40,10 @@ void PluginGui::pbnOK_clicked()
   //
   //close the dialog
   //emit refreshCanvas();
+  emit changeFont(txtCopyrightText->currentFont());
+  emit changeLabel(txtCopyrightText->text());
+  emit changeColor(txtCopyrightText->color());
+  
   done(1);
 } 
 void PluginGui::pbnCancel_clicked()
