@@ -697,7 +697,10 @@ static bool isSupportedRasterDriver_(QString const &driverName)
       // whereby GDAL slightly changes driver description string case,
       // in which case we'd catch it here.  Not that that would likely
       // happen, but if it does, we'll already compensate.
-      if ( driverName.startsWith(supportedRasterFormats_[i], false) )
+      // GS - At Qt 3.1.2, the case sensitive argument. So we change the
+      // driverName to lower case before testing
+      QString format = supportedRasterFormats_[i];
+      if ( driverName.lower().startsWith(format.lower()) )
         {
           return true;
         }
