@@ -23,13 +23,14 @@
 #include "qgsfeatureattribute.h"
 #include "qgsuniquevalrenderer.h"
 #include "qgssisydialog.h"
+#include "qgssymbol.h"
 #include "qgsrenderitem.h"
 #include <qwidgetstack.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
 #include <qpainter.h>
 
-QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLayer(vl)
+QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLayer(vl), sydialog(vl)
 {
 
     //find out the fields of mVectorLayer
@@ -53,12 +54,15 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
     }
 
     QObject::connect(mClassificationComboBox, SIGNAL(activated(int)), this, SLOT(changeClassificationAttribute(int)));
-    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeSymbologyDialog()));
+    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+    QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
+    mSymbolWidgetStack->addWidget(&sydialog);
+    mSymbolWidgetStack->raiseWidget(&sydialog);
 }
 
 QgsUValDialog::~QgsUValDialog()
 {
-    for(std::map<QString,QgsSiSyDialog*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
 	delete it->second;
     }
@@ -88,16 +92,13 @@ void QgsUValDialog::apply()
     if(renderer)
     {
 	renderer->clearValues();
-	for(std::map<QString,QgsSiSyDialog*>::iterator it=mValues.begin();it!=mValues.end();++it)
+	for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
 	{
-	    QgsSiSyDialog* sdialog=it->second;
-	    QgsRenderItem* ritem=new QgsRenderItem();
-	    QgsSymbol* symbol=new QgsSymbol();
-	    QPen pen(sdialog->getOutlineColor(),sdialog->getOutlineWidth(),sdialog->getOutlineStyle());
-	    QBrush brush(sdialog->getFillColor(), sdialog->getFillStyle());
-	    symbol->setPen(pen);
-	    symbol->setBrush(brush);
-	    ritem->setSymbol(symbol);
+	    QgsSymbol* symbol=it->second;
+	    QgsSymbol* newsymbol=new QgsSymbol();
+	    newsymbol->setPen(symbol->pen());
+	    newsymbol->setBrush(symbol->brush());
+	    QgsRenderItem* ritem=new QgsRenderItem(newsymbol,it->first,"");
 	    renderer->insertValue(it->first,ritem);
 	    //find out the width of the string
 	    labelwidth=fm.width(it->first);
@@ -151,13 +152,11 @@ void QgsUValDialog::apply()
     int intermheight=topspace+2*fm.height()+rowspace;
     int row=0;
 
-    for(std::map<QString,QgsSiSyDialog*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
-	QgsSiSyDialog* sdialog=it->second;
-	QPen pen(sdialog->getOutlineColor(),sdialog->getOutlineWidth(),sdialog->getOutlineStyle());
-	QBrush brush(sdialog->getFillColor(), sdialog->getFillStyle());
-	p.setPen(pen);
-	p.setBrush(brush);
+	QgsSymbol* sym=it->second;
+	p.setPen(sym->pen());
+	p.setBrush(sym->brush());
 
 	if (mVectorLayer->vectorType() == QGis::Polygon)
 	{
@@ -187,14 +186,16 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 #ifdef QGISDEBUG
     qWarning("in changeClassificationAttribute, nr is: "+QString::number(nr));
 #endif
-    mValues.clear();
 
-    //delete the old dialogs
-    for(std::map<QString,QgsSiSyDialog*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    //todo: reset sdialog
+
+    //delete old entries
+    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
 	delete it->second;
     }
-
+    mValues.clear();
+    
     QgsDataProvider *provider = mVectorLayer->getDataProvider();
     if (provider)
     {
@@ -202,7 +203,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 	std::list<int> attlist;
 	attlist.push_back(nr);
 	std::vector < QgsFeatureAttribute > vec;
-	QgsSiSyDialog* dialog;
+	QgsSymbol* symbol;
 
 	provider->reset();
 	QgsFeature* f;
@@ -216,66 +217,83 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 	   
 	    if(mValues.find(value)==mValues.end())
 	    {
-		dialog=new QgsSiSyDialog(mVectorLayer);
-		mValues.insert(std::make_pair(value,dialog));
-		//mClassBreakBox->insertItem(value);
-		if(mSymbolWidgetStack->addWidget(dialog)==-1)
-		{
-		    //failed
-#ifdef QGISDEBUG
-		    qWarning("adding widget to the stack failed");
-#endif
-		}
+		symbol=new QgsSymbol();
+		mValues.insert(std::make_pair(value,symbol));
 	    }
 	}
-	
+
 	//set symbology for all QgsSiSyDialogs
 	QColor thecolor;
 	double number=0;
 	double frac;
 
-	for(std::map<QString,QgsSiSyDialog*>::iterator it=mValues.begin();it!=mValues.end();++it)
+	for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
 	{
 	    ++number;
 	    //color range from blue to red
 	    frac=number/mValues.size();
 	    thecolor.setRgb(int(255*frac),0,int(255-(255*frac)));
 	    mClassBreakBox->insertItem(it->first);
-	    QgsSiSyDialog* dia=it->second;
+	    QgsSymbol* sym=it->second;
+	    QPen pen;
+	    QBrush brush;
 	    if(mVectorLayer->vectorType() == QGis::Line)
 	    {
-		dia->setOutlineColor(thecolor);
-		dia->setOutlineStyle(Qt::SolidLine);
-		QColor black(0,0,0);
-		dia->setFillColor(black);
+		pen.setColor(thecolor);
+		pen.setStyle(Qt::SolidLine);
+		pen.setWidth(1);
 	    }
 	    else
 	    {
-		dia->setFillColor(thecolor);
-		dia->setFillStyle(Qt::SolidPattern);
-		QColor black(0,0,0);
-		dia->setOutlineColor(black);
-		dia->setOutlineStyle(Qt::SolidLine);		  
+		brush.setColor(thecolor);
+		brush.setStyle(Qt::SolidPattern);
+		pen.setColor(Qt::black);
+		pen.setStyle(Qt::SolidLine);
+		pen.setWidth(1);
 	    }
+	    sym->setPen(pen);
+	    sym->setBrush(brush);
 	}
-	
     }
-    
+    mClassBreakBox->setCurrentItem(0);
 }
 
-void QgsUValDialog::changeSymbologyDialog()
+void QgsUValDialog::changeCurrentValue()
 {
     QListBoxItem* item=mClassBreakBox->selectedItem();
     QString value=item->text();
-    std::map<QString,QgsSiSyDialog*>::iterator it=mValues.find(value);
+    std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
     if(it!=mValues.end())
     {
-	mSymbolWidgetStack->raiseWidget(it->second);
-	QgsSiSyDialog* dialog=it->second;
-	dialog->show();
+	QPen& pen=it->second->pen();
+	QBrush& brush=it->second->brush();
+	QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
+	QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
+	sydialog.setFillColor(fcolor);
+	sydialog.setFillStyle(brush.style());
+	sydialog.setOutlineColor(ocolor);
+	sydialog.setOutlineStyle(pen.style());
+	sydialog.setOutlineWidth(pen.width());
     }
     else
     {
 	//no entry found
     }
+}
+
+void QgsUValDialog::applySymbologyChanges()
+{
+  QListBoxItem* item=mClassBreakBox->selectedItem();
+  QString value=item->text();
+  std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
+  if(it!=mValues.end())
+  {
+      QPen& pen=it->second->pen();
+      QBrush& brush=it->second->brush(); 
+      pen.setWidth(sydialog.getOutlineWidth());
+      pen.setColor(sydialog.getOutlineColor());
+      pen.setStyle(sydialog.getOutlineStyle());
+      brush.setColor(sydialog.getFillColor());
+      brush.setStyle(sydialog.getFillStyle());
+  }
 }

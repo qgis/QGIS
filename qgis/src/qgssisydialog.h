@@ -50,6 +50,8 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
  public slots:
      /**applies the changes to the vector layer*/
     void apply();
+    /**emits the signal settingsChanged()*/
+    void resendSettingsChanged();
  protected slots:
     void selectOutlineColor();
     void selectOutlineStyle();
@@ -58,6 +60,9 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
  private:
     /**Default constructor is privat to not use is*/
      QgsSiSyDialog();
+
+ signals:
+     void settingsChanged();
 };
 
 #endif
