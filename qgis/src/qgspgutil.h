@@ -17,6 +17,11 @@
 #define QGSPGUTIL_H
 #include <map>
 #include <qstringlist.h>
+extern "C"
+{
+  #include <libpq-fe.h>
+}
+
 /*!
  * \class QgsPgUtil
  * \brief Class containing utility functions for working with PostgreSQL
@@ -34,6 +39,16 @@ class QgsPgUtil
      * @return True if word is a PG reserved word
      */
     bool isReserved(QString word);
+    /*!
+     * Set the connection to be used in database operations
+     * @param con Pointer to an active PostgreSQL connection
+     */
+    void setConnection(PGconn *con);
+    /*!
+     * Get the connection currently in use for database operations
+     * @return Pointer to the PostgreSQL connection object
+     */
+    PGconn *connection();
   protected:
     //! Protected constructor
     QgsPgUtil();
@@ -46,5 +61,7 @@ class QgsPgUtil
     static QgsPgUtil* mInstance;
     //! Reserved word list
     QStringList mReservedWords;
+    //! PostgreSQL connection
+    PGconn *mPgConnection;
 };
 #endif // QGSPGUTIL_H
