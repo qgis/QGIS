@@ -126,13 +126,13 @@ QString QgsRect::stringRep() const
 // Return a string representation of the rectangle with high precision
 QString QgsRect::stringRep(int thePrecision) const
 {
-  QString spacer = " ";
+  
   QString rep = QString::number(xmin,'f',thePrecision) + 
-                spacer +
+                QString(",") +
                 QString::number(ymin,'f',thePrecision) +
-                spacer +
+                QString(" : ") +
                 QString::number(xmax,'f',thePrecision) +
-                spacer +
+                QString(",") +
                 QString::number(ymax,'f',thePrecision) ;
 #ifdef QGISDEBUG
   std::cout << "Extents : " << rep << std::endl;
