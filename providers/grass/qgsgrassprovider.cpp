@@ -1597,10 +1597,10 @@ QString *QgsGrassProvider::key ( int field )
     return key;
 }
 
-std::vector<QgsField> *QgsGrassProvider::columns ( int field, int cat )
+std::vector<QgsField> *QgsGrassProvider::columns ( int field )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassProvider::columns() field = " << field << " cat = " << cat << std::endl;
+    std::cerr << "QgsGrassProvider::columns() field = " << field << std::endl;
     #endif
 
     std::vector<QgsField> *col = new std::vector<QgsField>;
@@ -1660,7 +1660,7 @@ std::vector<QgsField> *QgsGrassProvider::columns ( int field, int cat )
 		type = "datetime";
 		break;
 	}
-        col->push_back ( QgsField( db_get_column_name (column), type, 0, 0) );
+        col->push_back ( QgsField( db_get_column_name (column), type, db_get_column_length(column), 0) );
     }
 	
     db_close_database_shutdown_driver ( driver );
@@ -1790,6 +1790,162 @@ QString *QgsGrassProvider::updateAttributes ( int field, int cat, const QString 
     QString query;
     
     query.sprintf("update %s set %s where %s = %d", fi->table, values.latin1(), fi->key, cat );
+    db_set_string (&dbstr, (char *)query.latin1());
+    
+    #ifdef QGISDEBUG
+    std::cerr << "SQL: " << db_get_string(&dbstr) << std::endl;
+    #endif
+
+    int ret = db_execute_immediate (driver, &dbstr);
+
+    if ( ret != DB_OK) { 
+        std::cerr << "Error: " <<  db_get_error_msg() << std::endl;
+	error->setLatin1( db_get_error_msg() );
+    }
+
+    db_close_database_shutdown_driver ( driver );
+    db_free_string(&dbstr);
+
+    return error;
+}
+
+int QgsGrassProvider::numDbLinks ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::numDbLinks()" << std::endl;
+    #endif
+
+    return ( Vect_get_num_dblinks(mMap) );
+}
+
+int QgsGrassProvider::dbLinkField ( int link )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::dbLinkField()" << std::endl;
+    #endif
+
+    struct  field_info *fi = Vect_get_dblink ( mMap, link );
+
+    if ( fi == NULL ) return 0;
+
+    return ( fi->number );
+}
+
+
+
+QString *QgsGrassProvider::createTable ( int field, const QString &key, const QString &columns )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::createTable() field = " << field << std::endl;
+    #endif
+
+    QString *error = new QString();
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    // Read attributes
+    if ( fi != NULL ) {
+	#ifdef QGISDEBUG
+	std::cerr << "The table for this field already exists" << std::endl;
+	#endif
+	error->setLatin1( "The table for this field already exists" );
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Field info not found -> create new table" << std::endl;
+    #endif
+
+    int nLinks = Vect_get_num_dblinks( mMap );
+    if ( nLinks == 0 ) {
+        fi = Vect_default_field_info ( mMap, field, NULL, GV_1TABLE );
+    } else {
+        fi = Vect_default_field_info ( mMap, field, NULL, GV_MTABLE );
+    }
+    
+    dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
+
+    if ( driver == NULL ) {
+	std::cerr << "Cannot open database " << fi->database << " by driver " << fi->driver << std::endl;
+	error->setAscii("Cannot open database");
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Database opened -> create table" << std::endl;
+    #endif
+
+    dbString dbstr; 
+    db_init_string (&dbstr);
+    QString query;
+    
+    query.sprintf("create table %s ( %s )", fi->table, columns.latin1() );
+    db_set_string (&dbstr, (char *)query.latin1());
+    
+    #ifdef QGISDEBUG
+    std::cerr << "SQL: " << db_get_string(&dbstr) << std::endl;
+    #endif
+
+    int ret = db_execute_immediate (driver, &dbstr);
+
+    if ( ret != DB_OK) { 
+        std::cerr << "Error: " <<  db_get_error_msg() << std::endl;
+	error->setLatin1( db_get_error_msg() );
+    }
+
+    db_close_database_shutdown_driver ( driver );
+    db_free_string(&dbstr);
+
+    if ( !error->isEmpty() ) return error;
+
+    ret = Vect_map_add_dblink ( mMap, field, NULL, fi->table, (char *)key.latin1(), 
+	                            fi->database, fi->driver);
+
+    if ( ret == -1 ) { 
+        std::cerr << "Error: Cannot add dblink" << std::endl;
+	error->setLatin1( "Cannot create link to the table. The table was created!" );
+    }
+
+    return error;
+}
+
+QString *QgsGrassProvider::addColumn ( int field, const QString &column )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::addColumn() field = " << field << std::endl;
+    #endif
+
+    QString *error = new QString();
+    struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
+
+    // Read attributes
+    if ( fi == NULL ) {
+        #ifdef QGISDEBUG
+	std::cerr << "No field info" << std::endl;
+        #endif
+	error->setLatin1( "Cannot get field info" );
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Field info found -> open database" << std::endl;
+    #endif
+    dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
+
+    if ( driver == NULL ) {
+	std::cerr << "Cannot open database " << fi->database << " by driver " << fi->driver << std::endl;
+	error->setAscii("Cannot open database");
+	return error;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "Database opened -> add column" << std::endl;
+    #endif
+
+    dbString dbstr; 
+    db_init_string (&dbstr);
+    QString query;
+    
+    query.sprintf("alter table %s add column %s", fi->table, column.latin1() );
     db_set_string (&dbstr, (char *)query.latin1());
     
     #ifdef QGISDEBUG

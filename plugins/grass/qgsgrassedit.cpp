@@ -35,6 +35,7 @@
 #include <qnamespace.h>
 #include <qlistview.h>
 #include <qcolordialog.h>
+#include <qtable.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -235,7 +236,39 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     
     connect( symbologyList, SIGNAL(pressed(QListViewItem *, const QPoint &, int)), 
 	                           this, SLOT(changeSymbology(QListViewItem *, const QPoint &, int)));
+
+    // Init table tab
+    mAttributeTable->setLeftMargin(0); // hide row labels
+    mAttributeTable->horizontalHeader()->setLabel( 0, "Column" );
+    mAttributeTable->horizontalHeader()->setLabel( 1, "Type" );
+    mAttributeTable->horizontalHeader()->setLabel( 2, "Length" );
+
+    int ndblinks = mProvider->numDbLinks();
+
+    if ( ndblinks > 0 ) {
+	for ( int i = 0; i < ndblinks; i++ ) {
+	    int f = mProvider->dbLinkField ( i ); 
+
+	    QString str;
+	    str.sprintf ( "%d", f );	
+	    mTableField->insertItem ( str );
+            mFieldBox->insertItem( str );
+	    if ( i == 0 ) {
+		setAttributeTable( f );
+	    }
+	}
+	mTableField->setCurrentItem ( 0 ); 
+        mFieldBox->setCurrentItem ( 0 );
+    } else { 
+	mTableField->insertItem ( "1" );
+	setAttributeTable ( 1 );
     
+	mFieldBox->insertItem("1");
+    }
+    
+    connect( mAttributeTable, SIGNAL(valueChanged(int,int)), this, SLOT(columnTypeChanged(int,int)) );
+
+    // Set variables
     mSize = 9;
     mLastDynamicIcon = ICON_NONE;
     mLastDynamicPoints.resize(0);
@@ -263,8 +296,6 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     mPixmap = mCanvas->canvasPixmap();
 
     // Init GUI values
-    mFieldBox->insertItem("1");
-
     mCatModeBox->insertItem( "Next not used", CAT_MODE_NEXT );
     mCatModeBox->insertItem( "Manual entry", CAT_MODE_MANUAL );
     mCatModeBox->insertItem( "No category", CAT_MODE_NOCAT );
@@ -275,6 +306,183 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     restorePosition();
     
     mValid = true; 
+}
+
+void QgsGrassEdit::attributeTableFieldChanged ( void )
+{
+    int field = mTableField->currentText().toInt();
+
+    setAttributeTable ( field );
+}
+
+void QgsGrassEdit::setAttributeTable ( int field )
+{
+    mAttributeTable->setNumRows ( 0 );
+    
+    QString *key = mProvider->key ( field );
+
+    if ( !key->isEmpty() ) { // Database link defined
+	std::vector<QgsField> *cols = mProvider->columns ( field );
+
+	mAttributeTable->setNumRows ( cols->size() );
+
+
+	for ( int c = 0; c < cols->size(); c++ ) {
+	    QgsField col = (*cols)[c];
+
+	    QTableItem *ti;
+	    
+	    ti = new QTableItem( mAttributeTable, QTableItem::Never, col.name() );
+	    ti->setEnabled( false );
+	    mAttributeTable->setItem ( c, 0, ti );
+	    
+	    ti = new QTableItem( mAttributeTable, QTableItem::Never, col.type() );
+	    ti->setEnabled( false );
+	    mAttributeTable->setItem ( c, 1, ti );
+	    
+	    QString str;
+	    str.sprintf("%d", col.length() );
+	    ti = new QTableItem( mAttributeTable, QTableItem::Never, str );
+	    ti->setEnabled( false );
+	    mAttributeTable->setItem ( c, 2, ti );
+	}
+    } else {
+        mAttributeTable->setNumRows ( 1 );
+
+	QTableItem *ti;
+	
+	ti = new QTableItem( mAttributeTable, QTableItem::Always, "cat" );
+	mAttributeTable->setItem ( 0, 0, ti );
+
+	ti = new QTableItem( mAttributeTable, QTableItem::Never, "integer" );
+	ti->setEnabled( false );
+	mAttributeTable->setItem ( 0, 1, ti );
+	
+	ti = new QTableItem( mAttributeTable, QTableItem::Never, "" );
+	ti->setEnabled( false );
+	mAttributeTable->setItem ( 0, 2, ti );
+    }
+}
+
+void QgsGrassEdit::addColumn ( void )
+{
+    int r = mAttributeTable->numRows();
+    mAttributeTable->setNumRows( r+1 );
+    mAttributeTable->setRowReadOnly ( r, false );
+
+    QString cn;
+    cn.sprintf ( "column%d", r+1 );
+
+    QTableItem *ti;
+    
+    ti = new QTableItem( mAttributeTable, QTableItem::Always, cn );
+    mAttributeTable->setItem ( r, 0, ti );
+
+    QStringList types;
+    types.push_back ( "integer" );
+    types.push_back ( "double precision" );
+    types.push_back ( "varchar" );
+
+    QComboTableItem *cti = new QComboTableItem ( mAttributeTable, types ); 
+    cti->setCurrentItem(0);
+    mAttributeTable->setItem ( r, 1, cti );
+
+    ti = new QTableItem( mAttributeTable, QTableItem::Never, "20" );
+    ti->setEnabled(false);
+    mAttributeTable->setItem ( r, 2, ti );
+}
+
+void QgsGrassEdit::columnTypeChanged ( int row, int col )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::columnChanged() row = " << row << " col = " << col << std::endl;
+    #endif
+
+    if ( col != 1 ) return;
+
+    QComboTableItem *cti = (QComboTableItem *) mAttributeTable->item ( row, 1 ); 
+    
+    QTableItem *ti = mAttributeTable->item ( row, 2 );
+
+    if ( cti->currentText().compare( "varchar" ) != 0 ) {
+        QTableItem *nti = new QTableItem( mAttributeTable, QTableItem::Never, ti->text() );
+	nti->setEnabled(false);
+        mAttributeTable->setItem ( row, 2, nti );
+	//delete ti;
+    } else {
+        QTableItem *nti = new QTableItem( mAttributeTable, QTableItem::Always, ti->text() );
+	nti->setEnabled(true);
+        mAttributeTable->setItem ( row, 2, nti );
+	//delete ti;
+    }
+    mAttributeTable->updateCell ( row, 2 );
+}
+
+void QgsGrassEdit::alterTable ( void )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::alterTable()" << std::endl;
+    #endif
+
+    // Create new table if first column name is editable otherwise alter table
+    int field = mTableField->currentText().toInt();
+
+    QTableItem *ti;
+    ti = mAttributeTable->item ( 0, 0 );
+
+    QString sql;
+    
+    if ( mAttributeTable->item(0,0)->isEnabled() ) {
+	#ifdef QGISDEBUG
+	std::cerr << "Create new table" << std::endl;
+	#endif
+
+	for ( int i = 0; i < mAttributeTable->numRows(); i++ ) {
+	    if ( i > 0 ) sql.append(", " );
+
+	    
+	    sql.append ( mAttributeTable->item(i,0)->text() + " " + mAttributeTable->item(i,1)->text() );
+
+	    if ( mAttributeTable->item(i,1)->text().compare("varchar") == 0 ) {
+		sql.append ( " (" + mAttributeTable->item(i,2)->text() + ")" );
+	    }
+	}
+	
+	QString *error = mProvider->createTable ( field, mAttributeTable->item(0,0)->text(), sql );  
+
+	if ( !error->isEmpty() ) {
+	    QMessageBox::warning( 0, "Warning", *error );
+	} else {
+	    QMessageBox::information( 0, "Info", "The table was created" );
+	    QString str;
+	    str.sprintf ( "%d", field );
+            mFieldBox->insertItem( str );
+	}
+	delete error;
+    } else { 
+	#ifdef QGISDEBUG
+	std::cerr << "Alter table" << std::endl;
+	#endif
+
+	for ( int i = 0; i < mAttributeTable->numRows(); i++ ) {
+       	    if ( !(mAttributeTable->item(i,0)->isEnabled()) ) continue;
+	    
+	    sql = mAttributeTable->item(i,0)->text() + " " + mAttributeTable->item(i,1)->text();
+
+	    if ( mAttributeTable->item(i,1)->text().compare("varchar") == 0 ) {
+		sql.append ( " (" + mAttributeTable->item(i,2)->text() + ")" );
+	    }
+
+	    QString *error = mProvider->addColumn ( field, sql );  
+
+	    if ( !error->isEmpty() ) {
+		QMessageBox::warning( 0, "Warning", *error );
+	    }
+	    delete error;
+	}
+    }
+
+    setAttributeTable ( field );
 }
 
 void QgsGrassEdit::changeSymbology(QListViewItem * item, const QPoint & pnt, int col)
@@ -1102,7 +1310,7 @@ void QgsGrassEdit::addAttributes ( int field, int cat )
     mAttributes->setCat ( tab, catLabel, cat );
 
     if ( !key->isEmpty() ) { // Database link defined 
-	std::vector<QgsField> *cols = mProvider->columns ( field, cat );
+	std::vector<QgsField> *cols = mProvider->columns ( field );
 
 	if ( cols->size() == 0 ) {
 	    QString str;

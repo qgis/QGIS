@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>431</width>
-            <height>220</height>
+            <width>419</width>
+            <height>272</height>
         </rect>
     </property>
     <property name="caption">
@@ -69,7 +69,7 @@
                             <cstring>textLabel2</cstring>
                         </property>
                         <property name="text">
-                            <string>Field</string>
+                            <string>Field (layer)</string>
                         </property>
                     </widget>
                     <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="3">
@@ -183,6 +183,182 @@
                         </property>
                     </widget>
                 </hbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Table</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QFrame">
+                        <property name="name">
+                            <cstring>frame9</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>0</width>
+                                <height>30</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>30</height>
+                            </size>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                            <enum>Plain</enum>
+                        </property>
+                        <property name="lineWidth">
+                            <number>0</number>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>2</y>
+                                    <width>93</width>
+                                    <height>26</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Field (layer)</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>mTableField</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>119</x>
+                                    <y>1</y>
+                                    <width>65</width>
+                                    <height>29</height>
+                                </rect>
+                            </property>
+                            <property name="editable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="duplicatesEnabled">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                    </widget>
+                    <widget class="QTable">
+                        <property name="name">
+                            <cstring>mAttributeTable</cstring>
+                        </property>
+                        <property name="lineWidth">
+                            <number>2</number>
+                        </property>
+                        <property name="resizePolicy">
+                            <enum>Manual</enum>
+                        </property>
+                        <property name="numRows">
+                            <number>0</number>
+                        </property>
+                        <property name="numCols">
+                            <number>3</number>
+                        </property>
+                    </widget>
+                    <widget class="QFrame">
+                        <property name="name">
+                            <cstring>frame3</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>0</width>
+                                <height>35</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>35</height>
+                            </size>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                            <enum>Plain</enum>
+                        </property>
+                        <property name="lineWidth">
+                            <number>0</number>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>3</number>
+                            </property>
+                            <property name="spacing">
+                                <number>3</number>
+                            </property>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>mAddColumnButton</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>7</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Add Column</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>mAlterTableButton</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>7</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Create / Alter Table</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
             </widget>
         </widget>
     </vbox>
@@ -535,6 +711,24 @@
         <receiver>QgsGrassEditBase</receiver>
         <slot>catModeChanged()</slot>
     </connection>
+    <connection>
+        <sender>mAddColumnButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>addColumn()</slot>
+    </connection>
+    <connection>
+        <sender>mAlterTableButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>alterTable()</slot>
+    </connection>
+    <connection>
+        <sender>mTableField</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassEditBase</receiver>
+        <slot>attributeTableFieldChanged()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsgrasseditbase.ui.h</include>
@@ -555,6 +749,9 @@
     <slot>editAttributes()</slot>
     <slot>catModeChanged()</slot>
     <slot>fieldChanged()</slot>
+    <slot>addColumn()</slot>
+    <slot>alterTable()</slot>
+    <slot>attributeTableFieldChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
