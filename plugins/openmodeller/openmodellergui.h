@@ -19,6 +19,8 @@
 /**
 @author Tim Sutton
 */
+#include <om_log.hh>
+extern Log _log;
 class OpenModellerGui : public OpenModellerGuiBase
 {
 Q_OBJECT

@@ -27,10 +27,10 @@
 #include <qlabel.h>
 //
 //openmodeller includes
-#include "control_interface.hh"
+#include <om_control.hh>
 #include <om.hh>
-#include <log.hh>
-#include <file_parser.hh>
+#include <om_log.hh>
+#include "file_parser.hh"
 
 //standard includes
 #include <stdlib.h>
@@ -129,8 +129,6 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   char *myLayersCollectionCharArray[myTotalLayerCountInt];
   myFileParser.getAll( myCategoricalMapCharArray, myLayersCollectionCharArray );
   myFileParser.getAll( myLayerLabelCharArray, myLayersCollectionCharArray + myNumberOfCategoriesInt );
-  //get the coordinate system that point data should be transformed into
-  char *myCoordinateSystem = GeoTransform::cs_default;
   // Get the details for the output Map
   char *myOutputFleNameCharArray       = myFileParser.get( "Output" );
   char *myOutputFormatCharArray        = myFileParser.get( "Output format" );
@@ -167,14 +165,14 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   //
   // Set up the output map builder
   //
-  RasterFile map( myOutputFormatCharArray );
+  //RasterFile map( myOutputFormatCharArray );
   //
   // Set up the model controller
   //
-  myController.setEnvironment( myCoordinateSystem, myNumberOfCategoriesInt, myTotalLayerCountInt, myLayersCollectionCharArray, myMaskFileNameCharArray );  
+  myController.setEnvironment(myNumberOfCategoriesInt, myTotalLayerCountInt, myLayersCollectionCharArray, myMaskFileNameCharArray );  
   // Prepare the output map
   
-  myController.setOutputMap( myOutputFleNameCharArray, map.header(), atof(myScaleCharArray) );
+  myController.setOutputMap( myOutputFleNameCharArray,myOutputFormatCharArray, atof(myScaleCharArray) );
   // Set the model algorithm to be used by the controller
   myController.setAlgorithm( myAlgorithmNameCharArray, myAlgorithmParametersCharArray );
   // Populate the occurences list from the localities file
@@ -285,7 +283,15 @@ void OpenModellerGui::accept()
   {
     modelNameQString="Bioclim";
   }
-  else if (cboModelAlgorithm->currentText()==tr("Cartesian Distance"))
+  else if (cboModelAlgorithm->currentText()==tr("Climate Space Model"))
+  {
+    modelNameQString="Csm";
+  }
+  else if (cboModelAlgorithm->currentText()==tr("Euclidian Distance"))
+  {
+    modelNameQString="Distance";
+  }
+  else if (cboModelAlgorithm->currentText()==tr("Min Distance"))
   {
     modelNameQString="MinDistance";
   }
