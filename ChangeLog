@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.164 2004/08/13 04:42:34 gsherman Exp
+ChangeLog,v 1.165 2004/08/14 19:26:02 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-14 [gsherman] 0.4.0devel9
+** Added mouse wheel zoom. Moving wheel forward zooms in by a factor of 2.
 
 2004-08-12 [gsherman] 0.4.0devel8
 ** Rearranged capture icons and added them to the MapNavigation action group
