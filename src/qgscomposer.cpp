@@ -252,7 +252,7 @@ void QgsComposer::print(void)
 
 	double scale = resolution / 25.4 / mComposition->scale();
 
-	mComposition->setPlotStyle ( QgsComposition::Print );
+	mComposition->setPlotStyle ( QgsComposition::Postscript );
 	
 	if ( mPrinter->outputToFile() ) {
 	    std::cout << "Print to file" << std::endl;

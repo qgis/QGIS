@@ -211,21 +211,20 @@ QRect QgsComposerScalebar::render ( QPainter *p )
     
 
     // Font size in canvas units
-    int size = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
+    float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
 
     // Metrics 
     QFont font ( mFont );
-    font.setPointSize ( size );
+    font.setPointSizeFloat ( size );
     QFontMetrics metrics ( font );
     
     // Fonts for rendering
 
-    // It seems that font pointSize is used in points in Postscript, that means it depends 
-    // on resolution!
-    if ( plotStyle() == QgsComposition::Print ) {
-	size = (int) ( 72.0 * size / mComposition->resolution() );
+    // I have no idea why 2.54 - it is an empirical value
+    if ( plotStyle() == QgsComposition::Postscript ) {
+	size = 2.54 * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
     }
-    font.setPointSize ( size );
+    font.setPointSizeFloat ( size );
 
     // Not sure about Style Strategy, QFont::PreferMatch?
     font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
