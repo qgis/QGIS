@@ -22,7 +22,7 @@
 #include "qfont.h"
 
 //splashscreen image
-#include "images/splash.xpm"
+#include "xpm/splash.xpm"
 
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash), splashImage((const char **) splash_xpm)
 {
