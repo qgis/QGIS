@@ -20,6 +20,7 @@
 #define QGSVECTORLAYER_H
 class QPainter;
 class QgsRect;
+class QLibrary;
 class QgsCoordinateTransform;
 class OGRLayer;
 class OGRDataSource;
@@ -28,6 +29,7 @@ class QgsRenderer;
 class QgsLegendItem;
 class QgsDlgVectorLayerProperties;
 class QgisApp;
+class QgsIdentifyResults;
 
 #include <map>
 #include "qgsmaplayer.h"
@@ -142,7 +144,10 @@ class QgsVectorLayer:public QgsMapLayer
 	};
   private:						// Private methods
 	int endian();
-	
+  // pointer for loading the provider library
+  QLibrary *myLib;
+  //! Pointer to the identify results dialog
+	QgsIdentifyResults *ir;
 
 };
 
