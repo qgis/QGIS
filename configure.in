@@ -271,6 +271,7 @@ AC_CONFIG_FILES([
 	plugins/north_arrow/Makefile
 	plugins/copyright_label/Makefile
 	plugins/scale_bar/Makefile
+	plugins/test/Makefile
 ])
 
 AC_OUTPUT
