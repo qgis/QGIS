@@ -126,7 +126,7 @@ void Plugin::help()
   //implement me!
 }
 
-// Slot called when the buffer menu item is activated
+// Slot called when the  menu item is activated
 void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
@@ -167,6 +167,7 @@ void Plugin::refreshCanvas()
 // Actual drawing of Scale Bar
 void Plugin::renderScaleBar(QPainter * theQPainter)
 {
+  int myBufferSize=1; //softcode this later
   // Exit if there are no layers loaded otherwise QGIS will freeze
   int myLayerCount=qGisInterface->getMapCanvas()->layerCount();          
   if (!myLayerCount) return;
@@ -333,9 +334,9 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     myFontWidth = myFontMetrics.width( "0" );
     myFontHeight = myFontMetrics.height();
 
-    for (int i = -2; i <= 2; i++)
+    for (int i = 0-myBufferSize; i <= myBufferSize; i++)
     {
-      for (int j = -2; j <= 2; j++) 
+      for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
       {
         theQPainter->drawText( i +(myOriginX-(myFontWidth/2)), 
                               j + (myOriginY-(myFontHeight/4)), 
@@ -358,9 +359,9 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     myFontWidth = myFontMetrics.width( myScaleBarMaxLabel );
     myFontHeight = myFontMetrics.height();  
     //first the buffer
-    for (int i = -2; i <= 2; i++)
+    for (int i = 0-myBufferSize; i <= myBufferSize; i++)
     {
-      for (int j = -2; j <= 2; j++) 
+      for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
       {
         theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt-(myFontWidth/2)), 
                               j + (myOriginY-(myFontHeight/4)), 
@@ -381,9 +382,9 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
     myFontHeight = myFontMetrics.height();
     //first the buffer
-    for (int i = -2; i <= 2; i++)
+    for (int i = 0-myBufferSize; i <= myBufferSize; i++)
     {
-      for (int j = -2; j <= 2; j++) 
+      for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
       {
         theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX), 
                               j + (myOriginY+myMajorTickSize), 
