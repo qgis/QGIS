@@ -725,10 +725,11 @@ bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
   return inBounds;
 }
 
-bool QgsDelimitedTextProvider::supportsSaveAsShapefile() const
+int QgsDelimitedTextProvider::capabilities() const
 {
-  return true;
+    return QgsVectorDataProvider::SaveAsShapefile;
 }
+
 
 bool QgsDelimitedTextProvider::saveAsShapefile()
 {
