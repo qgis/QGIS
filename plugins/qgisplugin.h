@@ -50,9 +50,9 @@ public:
 	*/
 }; 
 
-// Typedefs
+// Typedefs used by qgis main app
 
-//! Typedef for function that returns a generic pointer to a plugin object
+//! Typedef for the function that returns a generic pointer to a plugin object
 typedef QgisPlugin* create_t(QgisApp *, QgisInterface *);
 //! Typedef for the function to unload a plugin and free its resources
 typedef void unload_t(QgisPlugin *);
