@@ -166,6 +166,33 @@ QString QgsProject::filename() const
 
 
 
+/// basically a debugging tool to dump property list values
+static
+void
+_dump( QMap< QString, QgsProject::Properties > const & property_list )
+{
+    for ( QMap< QString, QgsProject::Properties >::const_iterator curr_scope =
+              property_list.begin();
+          curr_scope != property_list.end();
+          curr_scope++ )
+    {
+        qDebug( "<%s>", curr_scope.key().ascii() );
+
+        for ( QgsProject::Properties::const_iterator curr_property = curr_scope.data().begin();
+              curr_property != curr_scope.data().end();
+              curr_property ++ )
+        {
+            qDebug( "\t<%s>%s</%s>", 
+                    (*curr_property).first.ascii(),
+                    (*curr_property).second.toString().ascii(),
+                    (*curr_property).first.ascii() );
+        }
+
+        qDebug( "</%s>", curr_scope.key().ascii() );
+    }
+} // _dump
+
+
 
 /**
    Fetches extents, or area of interest, saved in project.
@@ -220,6 +247,144 @@ _getExtents( QDomDocument const & doc, QgsRect & aoi )
     return true;
 
 } // _getExtents
+
+
+
+/**
+
+  Used by _getProperties() to fetch individual properties for the given scope
+
+*/
+static
+void
+_getScopeProperties( QDomNode const & scopeNode,
+                     QMap< QString, QgsProject::Properties > & project_properties )
+{
+    QString scopeName = scopeNode.nodeName(); // syntactic short-cut
+
+    size_t i = 0;
+    QDomNodeList properties = scopeNode.childNodes();
+
+    while ( i < properties.count() )
+    {
+        QDomNode currentProperty = properties.item(i);
+        QDomNode currentValue    = currentProperty.firstChild(); // should only have one child
+
+        qDebug( "Got property %s:%s (%s)", 
+                currentProperty.nodeName().ascii(), 
+                currentValue.nodeValue().ascii(),
+                currentProperty.toElement().attributeNode("type").value().ascii() );
+
+        // the values come in as strings; we need to restore them to their
+        // original values *and* types
+        QVariant restoredValue;
+
+        // XXX instead of using "QString" or whatever, maybe we should be
+        // XXX using the strings returned from QVariant
+        if ( "QString" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = currentValue.nodeValue(); // no translating necessary
+        }
+        else if ( "Bool" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = QVariant(currentValue.nodeValue()).asBool();
+        }
+        else if ( "Int" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = QVariant(currentValue.nodeValue()).asInt();
+        }
+        else if ( "UInt" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = QVariant(currentValue.nodeValue()).asUInt();
+        }
+        else if ( "LongLong" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = QVariant(currentValue.nodeValue()).asLongLong();
+        }
+        else if ( "ULongLong" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = QVariant(currentValue.nodeValue()).asULongLong();
+        }
+        else if ( "Double" == currentProperty.toElement().attributeNode("type").value() )
+        {
+            restoredValue = QVariant(currentValue.nodeValue()).asDouble();
+        }
+        else                    // unsupported value, so reset to null
+        {
+            qDebug( "unsupported value type %s .. needs to be added to qgsproject.cpp:%d",
+                    currentProperty.toElement().attributeNode("type").value().ascii(),
+                    __LINE__ );
+
+            restoredValue.clear();
+        }
+
+        project_properties[ scopeName ].append( QgsProject::PropertyValue( "layer", restoredValue ) );
+
+        ++i;
+    }
+
+    _dump( project_properties );
+
+} // _getScopeProperties()
+
+
+
+
+/**
+
+  Restore any optional properties found in "doc" to "properties".
+
+  <properties> tags for all optional properties.  Within that there will be
+  scope tags.  In the following example there exist two properties in the
+  "fsplugin" scope.
+
+    <properties>
+        <fsplugin>
+            <layer type="QString" >railroad</layer>
+            <layer type="QString" >athen-road</layer>
+        </fsplugin>
+    </properties>
+ */
+static
+void
+_getProperties( QDomDocument const & doc, QMap< QString, QgsProject::Properties > & project_properties )
+{
+    QDomNodeList properties = doc.elementsByTagName("properties");
+
+    if ( properties.count() > 1 )
+    {
+        qDebug( "there appears to be more than one ``properties'' XML tag ... bailing" );
+        return;
+    }
+    else if ( properties.count() < 1 ) // no properties found, so we're done
+    {
+        return;
+    }
+
+    size_t i = 0;
+    QDomNodeList scopes = properties.item(0).childNodes(); // item(0) because there should only be ONE
+                                                           // "properties" node
+    if ( scopes.count() < 1 )
+    {
+        qDebug( "empty ``properties'' XML tag ... bailing" );
+        return;
+    }
+
+    while ( i < scopes.count() )
+    {
+        QDomNode curr_scope_node = scopes.item( i );
+
+        qDebug( "found %d property node(s) for scope %s", 
+                curr_scope_node.childNodes().count(),
+                curr_scope_node.nodeName().ascii() );
+
+        _getScopeProperties( curr_scope_node, project_properties );
+
+        ++i;
+    }
+
+} // _getProperties
+
 
 
 
@@ -734,8 +899,8 @@ QgsProject::read( )
     _getMapUnits( *doc );
 
 
-    // XXX insert code for setting the properties
-
+    // now get any properties
+    _getProperties( *doc, imp_->properties_ );
 
     // can't be dirty since we're allegedly in pristine state
     dirty( false );
@@ -743,6 +908,7 @@ QgsProject::read( )
     return true;
 
 } // QgsProject::read
+
 
 
 bool 
