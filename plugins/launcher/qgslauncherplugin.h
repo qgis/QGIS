@@ -39,11 +39,11 @@ class QgsLauncherPlugin:public QObject, public QgisPlugin
        * @param qI Pointer to the QgisIface object. 
        */
       QgsLauncherPlugin(QgisApp * , QgisIface * );
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ QgsLauncherPlugin();
   public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //!draw a raster layer in the qui

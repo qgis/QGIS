@@ -40,11 +40,11 @@ class Plugin:public QObject, public QgisPlugin
        * @param qI Pointer to the QgisIface object. 
        */
       Plugin(QgisApp * , QgisIface * );
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ Plugin();
 public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //! Used to clear the current map view

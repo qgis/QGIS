@@ -75,12 +75,12 @@ class Plugin:public QObject, public QgisPlugin
   * @param theQGisIface -  to the QgisIface object. 
    */
   Plugin(QgisApp * theQGisApp, QgisIface * theQGisIface);
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ Plugin();
 
 public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //! unload the plugin

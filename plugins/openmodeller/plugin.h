@@ -39,11 +39,11 @@ class Plugin:public QObject, public QgisPlugin
        * @param qI Pointer to the QgisIface object. 
        */
       Plugin(QgisApp * , QgisIface * );
-
-  virtual void initGui();
   //! Destructor
   virtual ~ Plugin();
   public slots:
+
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //!draw a raster layer in the qui
