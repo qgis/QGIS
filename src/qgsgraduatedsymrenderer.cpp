@@ -185,7 +185,7 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     gdialog->apply();
 }
 
-void QgsGraduatedSymRenderer::writeXML(std::ofstream& xml)
+void QgsGraduatedSymRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<graduatedsymbol>\n";
     xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() <<

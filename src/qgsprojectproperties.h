@@ -44,6 +44,12 @@ public:
    */
   void setMapUnits(int);
 
+  /**
+     Every project has a title
+  */
+  QString title() const;
+  void title( QString const & title );
+
 public slots:
   /** 
    * Slot called when a new button (unit) is selected

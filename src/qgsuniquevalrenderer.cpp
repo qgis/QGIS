@@ -156,7 +156,7 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     uvaldialog->apply();
 }
 
-void QgsUniqueValRenderer::writeXML(std::ofstream& xml)
+void QgsUniqueValRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<uniquevalue>\n";
     xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() << "</classificationfield>\n";

@@ -19,6 +19,7 @@
 
 #include <memory>
 
+#include "qgisapp.h"
 #include "qgsrect.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -54,6 +55,17 @@ struct QgsProject::Imp
 
     /// set of plug-in (and possibly qgis) related properties
     QgsProject::Properties properties_;
+
+    /// project title
+    QString title;
+
+    /// true if project has been modified since it has been read or saved
+    bool dirty;
+
+    Imp()
+        : title(""), dirty(false)
+    {}
+
 }; // struct QgsProject::Imp
 
 
@@ -85,29 +97,52 @@ QgsProject::instance()
 } // QgsProject * instance()
 
 
-void QgsProject::name( QString const & name )
+
+
+void QgsProject::title( QString const & title )
+{
+    imp_->title = title;
+
+    dirty(true);
+} // void QgsProject::title
+
+
+QString const & QgsProject::title() const
+{
+    return imp_->title;
+} // QgsProject::title() const
+
+
+
+
+bool QgsProject::dirty() const
+{
+    return imp_->dirty;
+} // bool QgsProject::dirty() const
+
+
+void QgsProject::dirty( bool b ) 
+{
+    imp_->dirty = b;
+} // bool QgsProject::dirty()
+
+
+
+
+
+void QgsProject::filename( QString const & name )
 {
     imp_->file.setName( name );
-} // void QgsProject::name( QString const & name )
+
+    dirty(true);
+} // void QgsProject::filename( QString const & name )
 
 
-QString QgsProject::name() const
+QString QgsProject::filename() const
 {
     return imp_->file.name();
-} // QString QgsProject::name() const
+} // QString QgsProject::filename() const
 
-
-
-/**
-   Please note that most of the contents were copied from qgsproject
-*/
-bool
-QgsProject::read( QFileInfo const & file )
-{
-    imp_->file.setName( file.filePath() );
-
-    return read();
-} // QgsProject::read( QFile & file )
 
 
 
@@ -165,6 +200,75 @@ _getExtents( QDomDocument const & doc, QgsRect & aoi )
 
 } // _getExtents
 
+
+
+/**
+   Get the project title
+
+   XML in file has this form:
+     <qgis projectname="default project">
+ */
+static
+void
+_getTitle( QDomDocument const & doc, QString & title )
+{
+    QDomNodeList nl = doc.elementsByTagName("qgis");
+
+    QDomNode    node    = nl.item(0); // there should only be one, so zeroth element ok
+    QDomElement element = node.toElement();
+
+    title = element.attribute("projectname");
+
+} // _getTitle
+
+
+
+
+/**
+   locate the qgis app object
+*/
+static
+QgisApp *
+_findQgisApp()
+{
+    QgisApp * qgisApp;
+
+    QWidgetList  * list = QApplication::allWidgets();
+    QWidgetListIt it( *list );  // iterate over the widgets
+    QWidget * w;
+
+    while ( (w=it.current()) != 0 ) 
+    {   // for each top level widget...
+
+        if ( "QgisApp" == w->name() )
+        { 
+            qgisApp = dynamic_cast<QgisApp*>(w);
+            break;
+        }
+                                // "QgisApp" canonical name assigned in main.cpp
+        qgisApp = dynamic_cast<QgisApp*>(w->child( "QgisApp", 0, true ));
+
+        if ( qgisApp )
+        { break; }
+
+        ++it;
+    }
+    delete list;                // delete the list, not the widgets
+
+
+//     if ( ! qgisApp )            // another tactic for finding qgisapp
+//     {
+//         if ( "QgisApp" == QApplication::mainWidget().name() )
+//         { qgisApp = QApplication::mainWidget(); }
+//     }
+
+    if( ! qgisApp )
+    {
+        qDebug( "Unable to find QgisApp" );
+
+        return 0x0;             // XXX some sort of error value?  Exception?
+    }
+} // _findQgisApp
 
 
 
@@ -228,89 +332,55 @@ _getMapLayers( QDomDocument const & doc )
 
         QString type = element.attribute("type");
 
-	// QString myNewLayerId="";
+
+        QgsMapLayer * mapLayer;
 
 	if (type == "vector")
 	{
+	    mapLayer = new QgsVectorLayer;
+        }
+        else if (type == "raster")
+        {
+	    mapLayer = new QgsRasterLayer;
+        }
 
-	    QgsVectorLayer * vectorLayer = new QgsVectorLayer;
+        Q_CHECK_PTR( mapLayer );
 
-	    Q_CHECK_PTR( vectorLayer );
-
-	    if ( ! vectorLayer )
-	    {
+        if ( ! mapLayer )
+        {
 #ifdef QGISDEBUG
-		std::cerr << __FILE__ << " : " << __LINE__
-			  << " unable to create vector layer\n";
+            std::cerr << __FILE__ << " : " << __LINE__
+                      << " unable to create layer\n";
 #endif                  
-		return false;
-	    }
-            
-            // have the vector layer restore state that is stored in DOM node
-            vectorLayer->readXML( node );
+            return false;
+        }
+        
+        // have the layer restore state that is stored in DOM node
+        mapLayer->readXML( node );
 
-	    QgsMapLayerRegistry::instance()->addMapLayer( vectorLayer );
+        mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
 
-            // XXX set z order here?  Or in readXML()?  Leaning to latter.
-            // XXX Or, how about Z order being implicit in order of layer
-            // XXX information stored in project file?
-	} 
-	else if (type == "raster")
-	{
-#ifdef TEMPORARILYDISABLED
-	    QgsRasterLayer *myRasterLayer = new QgsRasterLayer(dataSource, layerName);
-	    // myNewLayerId=myRasterLayer->getLayerID();
+        // XXX kludge for ensuring that overview canvas updates happen correctly;
+        // XXX eventually this should be replaced by mechanism whereby overview
+        // XXX canvas implicitly knows about all new layers
+//         if ( mapLayer )         // if successfully added to registry
+//         {
+//             // find canonical Qgis application object
+//             QgisApp * qgisApp = _findQgisApp();
 
-	    myRasterLayer->setVisible(visible == "1");
-	    if (showInOverview == "1")
-	    {
-		myRasterLayer->toggleShowInOverview();
-	    }
+//             // make connection
+//             if ( qgisApp )
+//             { 
+//                 QObject::connect(mapLayer, 
+//                                  SIGNAL(showInOverview(QString,bool)), 
+//                                  qgisApp, 
+//                                  SLOT(setLayerOverviewStatus(QString,bool)));
+//             }
+//         }
 
-	    mnl = node.namedItem("rasterproperties");
-
-	    QDomNode snode = mnl.namedItem("showDebugOverlayFlag");
-	    QDomElement myElement = snode.toElement();
-	    QVariant myQVariant = (QVariant) myElement.attribute("boolean");
-	    myRasterLayer->setShowDebugOverlayFlag(myQVariant.toBool());
-
-	    snode = mnl.namedItem("drawingStyle");
-	    myElement = snode.toElement();
-	    myRasterLayer->setDrawingStyle(myElement.text());
-
-	    snode = mnl.namedItem("invertHistogramFlag");
-	    myElement = snode.toElement();
-	    myQVariant = (QVariant) myElement.attribute("boolean");
-	    myRasterLayer->setInvertHistogramFlag(myQVariant.toBool());
-
-	    snode = mnl.namedItem("stdDevsToPlotDouble");
-	    myElement = snode.toElement();
-	    myRasterLayer->setStdDevsToPlot(myElement.text().toDouble());
-
-	    snode = mnl.namedItem("transparencyLevelInt");
-	    myElement = snode.toElement();
-	    myRasterLayer->setTransparency(myElement.text().toInt());
-
-	    snode = mnl.namedItem("redBandNameQString");
-	    myElement = snode.toElement();
-	    myRasterLayer->setRedBandName(myElement.text());
-	    snode = mnl.namedItem("greenBandNameQString");
-	    myElement = snode.toElement();
-	    myRasterLayer->setGreenBandName(myElement.text());
-
-	    snode = mnl.namedItem("blueBandNameQString");
-	    myElement = snode.toElement();
-	    myRasterLayer->setBlueBandName(myElement.text());
-
-	    snode = mnl.namedItem("grayBandNameQString");
-	    myElement = snode.toElement();
-	    myRasterLayer->setGrayBandName(myElement.text());
-
-	    QgsMapLayerRegistry::instance()->addMapLayer(myRasterLayer);
-	    // XXX myZOrder.push_back(myRasterLayer->getLayerID());
-#endif
-	}
-
+        // XXX set z order here?  Or in readXML()?  Leaning to latter.
+        // XXX Or, how about Z order being implicit in order of layer
+        // XXX information stored in project file?
     }
 
     return true;
@@ -320,16 +390,184 @@ _getMapLayers( QDomDocument const & doc )
 
 
 
+/**
+   Sets the given canvas' extents
+
+   @param canonicalName will be "theMapCanvas" or "theOverviewCanvas"; these
+   are set when those are created in qgisapp ctor
+ */
+static
+void
+_setCanvasExtent( QString const & canonicalMapCanvasName, QgsRect const & newExtent )
+{
+                                // first find the canonical map canvas
+
+    QgsMapCanvas * theMapCanvas;
+
+    QWidgetList  * list = QApplication::topLevelWidgets();
+    QWidgetListIt it( *list );  // iterate over the widgets
+    QWidget * w;
+
+    while ( (w=it.current()) != 0 ) 
+    {   // for each top level widget...
+        ++it;
+        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( canonicalMapCanvasName, 0, true ));
+
+        if ( theMapCanvas )
+        { break; }
+    }
+    delete list;                // delete the list, not the widgets
+
+
+    if( ! theMapCanvas )
+    {
+        qDebug( "Unable to find canvas widget " + canonicalMapCanvasName );
+
+        return;                 // XXX some sort of error value?  Exception?
+    }
+
+    theMapCanvas->setExtent( newExtent );
+
+    // XXX sometimes the canvases are frozen here, sometimes not; this is a
+    // XXX worrisome inconsistency; regardless, unfreeze the canvases to ensure
+    // XXX a redraw
+    theMapCanvas->freeze( false );
+
+} // _setCanvasExtent()
+
+
+
+/**
+   Get the full extent for the given canvas.
+
+   This is used to get the full extent of the main map canvas so that we can
+   set the overview canvas to that instead of stupidly setting the overview
+   canvas to the *same* extent that's in the main map canvas.
+
+   @param canonicalMapCanvasName will be "theMapCanvas" or "theOverviewCanvas"; these
+   are set when those are created in qgisapp ctor
+
+ */
+static
+QgsRect _getFullExtent( QString const & canonicalMapCanvasName )
+{
+    // XXX since this is a cut-n-paste from above, maybe generalize to a
+    // XXX separate function?
+                                // first find the canonical map canvas
+
+    QgsMapCanvas * theMapCanvas;
+
+    QWidgetList  * list = QApplication::topLevelWidgets();
+    QWidgetListIt it( *list );  // iterate over the widgets
+    QWidget * w;
+
+    while ( (w=it.current()) != 0 ) 
+    {   // for each top level widget...
+        ++it;
+        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( canonicalMapCanvasName, 0, true ));
+
+        if ( theMapCanvas )
+        { break; }
+    }
+    delete list;                // delete the list, not the widgets
+
+
+    if( ! theMapCanvas )
+    {
+        qDebug( "Unable to find canvas widget " + canonicalMapCanvasName );
+
+        return QgsRect();       // XXX some sort of error value?  Exception?
+    }
+    
+
+    return theMapCanvas->fullExtent();
+
+} // _getFullExtent( QString const & canonicalMapCanvasName )
+
+
+
+
+
+
+/**
+   Get the  extent for the given canvas.
+
+   This is used to get the  extent of the main map canvas so that we can
+   set the overview canvas to that instead of stupidly setting the overview
+   canvas to the *same* extent that's in the main map canvas.
+
+   @param canonicalMapCanvasName will be "theMapCanvas" or "theOverviewCanvas"; these
+   are set when those are created in qgisapp ctor
+
+ */
+static
+QgsRect _getExtent( QString const & canonicalMapCanvasName )
+{
+    // XXX since this is a cut-n-paste from above, maybe generalize to a
+    // XXX separate function?
+                                // first find the canonical map canvas
+
+    QgsMapCanvas * theMapCanvas;
+
+    QWidgetList  * list = QApplication::topLevelWidgets();
+    QWidgetListIt it( *list );  // iterate over the widgets
+    QWidget * w;
+
+    while ( (w=it.current()) != 0 ) 
+    {   // for each top level widget...
+        ++it;
+        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( canonicalMapCanvasName, 0, true ));
+
+        if ( theMapCanvas )
+        { break; }
+    }
+    delete list;                // delete the list, not the widgets
+
+
+    if( ! theMapCanvas )
+    {
+        qDebug( "Unable to find canvas widget " + canonicalMapCanvasName );
+
+        return QgsRect();       // XXX some sort of error value?  Exception?
+    }
+    
+
+    return theMapCanvas->extent();
+
+} // _getExtent( QString const & canonicalMapCanvasName )
+
+
+
+
+/**
+   Please note that most of the contents were copied from qgsproject
+*/
+bool
+QgsProject::read( QFileInfo const & file )
+{
+    imp_->file.setName( file.filePath() );
+
+    return read();
+} // QgsProject::read( QFile & file )
+
+
+
+/**
+   @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+*/
 bool
 QgsProject::read( )
 {
-    // purge current state first
     std::auto_ptr<QDomDocument> doc = 
-	std::auto_ptr<QDomDocument>(new QDomDocument("qgisdocument"));
+	std::auto_ptr<QDomDocument>(new QDomDocument("qgis"));
 
     if ( ! imp_->file.open(IO_ReadOnly) )
     {
+        imp_->file.close();     // even though we got an error, let's make
+                                // sure it's closed anyway
+
         throw QgsIOException( "Unable to open " + imp_->file.name() );
+
 	return false;		// XXX raise exception? Ok now superfluous 
                                 // XXX because of exception.
     }
@@ -360,16 +598,18 @@ QgsProject::read( )
 
     imp_->file.close();
 
-    // enable the hourglass -- no, this should be done be the caller
 
-    qWarning("opened document" + imp_->file.name());
+#ifdef QGISDEBUG
+    qWarning("opened document " + imp_->file.name());
+#endif
 
 
     // first get the map layers
     if ( ! _getMapLayers( *doc ) )
     {
+#ifdef QGISDEBUG
         qDebug( "Unable to get map layers from project file." );
-
+#endif
         throw QgsException( "Cannot get map layers from " + imp_->file.name() );
 
         return false;
@@ -380,49 +620,40 @@ QgsProject::read( )
 
     // restore the canvas' area of interest
 
-                                // first find the canonical map canvas
-
-    QgsMapCanvas * theMapCanvas;
-
-    QWidgetList  * list = QApplication::topLevelWidgets();
-    QWidgetListIt it( *list );  // iterate over the widgets
-    QWidget * w;
-
-    while ( (w=it.current()) != 0 ) 
-    {   // for each top level widget...
-        ++it;
-        theMapCanvas = dynamic_cast<QgsMapCanvas*>(w->child( "theMapCanvas", 0, true ));
-
-        if ( theMapCanvas )
-        { break; }
-    }
-    delete list;                // delete the list, not the widgets
-
-
-    if( ! theMapCanvas )
-    {
-        qDebug( "Unable to find main canvas widget" );
-
-        return false;
-    }
-
     // restor the area of interest, or extent
     QgsRect savedExtent;
 
     if ( ! _getExtents( *doc, savedExtent ) )
     {
+#ifdef QGISDEBUG
         qDebug( "Unable to get extents from project file." );
+#endif
 
         throw QgsException( "Cannot get extents from " + imp_->file.name() );
 
         return false;
     }
 
-    theMapCanvas->setExtent( savedExtent );
+    // now restore the extent for the main canvas
+
+    _setCanvasExtent( "theMapCanvas", savedExtent );
+
+    // ensure that overview map canvas is set to *entire* extent
+    QgsRect mapCanvasFullExtent =  _getFullExtent( "theMapCanvas" );
+    _setCanvasExtent( "theOverviewCanvas", mapCanvasFullExtent );
 
 
+    // now get project title
+    _getTitle( *doc, imp_->title );
+#ifdef QGISDEBUG
+        qDebug( "Project title: " + imp_->title );
+#endif
 
     // XXX insert code for setting the properties
+
+
+    // can't be dirty since we're allegedly in pristine state
+    dirty( false );
 
     return true;
 
@@ -441,7 +672,102 @@ QgsProject::write( QFileInfo const & file )
 bool 
 QgsProject::write( )
 {
+    // if we have problems creating or otherwise writing to the project file,
+    // let's find out up front before we go through all the hand-waving
+    // necessary to create all the DOM objects
+    if ( ! imp_->file.open( IO_WriteOnly | IO_Translate | IO_Truncate ) )
+    {
+        imp_->file.close();     // even though we got an error, let's make
+                                // sure it's closed anyway
+
+        throw QgsIOException( "Unable to open " + imp_->file.name() );
+
+	return false;		// XXX raise exception? Ok now superfluous 
+                                // XXX because of exception.
+    }
+
+    QDomImplementation DOMImplementation;
+
+    QDomDocumentType documentType = DOMImplementation.createDocumentType("qgis","http://mrcc.com/qgis.dtd","SYSTEM");
+    std::auto_ptr<QDomDocument> doc = 
+	std::auto_ptr<QDomDocument>( new QDomDocument( documentType ) );
+
     // XXX add guts from QgsProjectIO write
+
+    QDomElement qgis = doc->createElement( "qgis" );
+    qgis.setAttribute( "projectname", title() );
+
+    doc->appendChild( qgis );
+
+    // title
+    QDomElement titleNode = doc->createElement( "title" );
+    qgis.appendChild( titleNode );
+
+    QDomText titleText = doc->createTextNode( title() ); // XXX why have title TWICE?
+    titleNode.appendChild( titleText );
+
+    // extent
+
+    // XXX there should eventually be a QgsMapCanvas::writeXML() that does this
+    QDomElement extentNode = doc->createElement( "extent" );
+    qgis.appendChild( extentNode );
+
+    QDomElement xMin = doc->createElement( "xmin" );
+    QDomElement yMin = doc->createElement( "ymin" );
+    QDomElement xMax = doc->createElement( "xmax" );
+    QDomElement yMax = doc->createElement( "ymax" );
+
+    QgsRect mapCanvasExtent =  _getExtent( "theMapCanvas" );
+    QDomText xMinText = doc->createTextNode( QString::number(mapCanvasExtent.xMin(),'f') );
+    QDomText yMinText = doc->createTextNode( QString::number(mapCanvasExtent.yMin(),'f') );
+    QDomText xMaxText = doc->createTextNode( QString::number(mapCanvasExtent.xMax(),'f') );
+    QDomText yMaxText = doc->createTextNode( QString::number(mapCanvasExtent.yMax(),'f') );
+
+    xMin.appendChild( xMinText );
+    yMin.appendChild( yMinText );
+    xMax.appendChild( xMaxText );
+    yMax.appendChild( yMaxText );
+
+    extentNode.appendChild( xMin );
+    extentNode.appendChild( yMin );
+    extentNode.appendChild( xMax );
+    extentNode.appendChild( yMax );
+
+    // layers
+
+    // XXX QgsMapLayerRegistry should have a writeXML(), which then calls
+    // XXX QgsMapLayer::writeXML()
+    QDomElement projectLayersNode = doc->createElement( "projectlayers" );
+    projectLayersNode.setAttribute( "layercount", 
+                                    QgsMapLayerRegistry::instance()->mapLayers().size() );
+
+    qgis.appendChild( projectLayersNode );
+
+
+    for ( std::map<QString,QgsMapLayer*>::iterator i =
+              QgsMapLayerRegistry::instance()->mapLayers().begin();
+          i != QgsMapLayerRegistry::instance()->mapLayers().end();
+          i++ )
+    {
+        if ( i->first )
+        { i->second->writeXML( projectLayersNode, *doc ); }
+    }
+
+    doc->normalize();           // XXX I'm not entirely sure what this does
+
+    QString xml = doc->toString( 8 ); // write to string with indentation of eight characters
+
+    // const char * xmlString = xml.ascii(); // debugger probe point
+    // qDebug( "project file output:\n\n" + xml );
+
+    QTextStream projectFileStream( &imp_->file );
+
+    projectFileStream << xml << endl;
+
+    imp_->file.close();
+
+
+    dirty( false );             // reset to pristine state
 
     return true;
 } // QgsProject::write

@@ -23,11 +23,11 @@
 #include <qlistview.h>
 
 
-class QgsMapCanvas;
-class QgsMapLayer;
-class QListView;
 class QPainter;
 
+class QgsMapCanvas;
+class QgsMapLayer;
+class QgisApp;
 
 /**
    \class QgsLegend
@@ -44,8 +44,9 @@ class QgsLegend : public QListView
   /*! Constructor.
    * @param parent Parent widget
    * @param name Name of the widget
+   * @param qgis_app link to qgisapp
    */
-  QgsLegend(QWidget * parent = 0, const char *name = 0);
+  QgsLegend(QWidget * parent = 0, const char *name = 0, QgisApp * qgis_app = 0);
 
   //! Destructor
    ~QgsLegend();
@@ -73,13 +74,29 @@ public slots:
   */
   void removeLayer( QString layer_key );
 
+  /** remove all layer references
+     
+      @note usually connected to QgsMapCanvas "theMapCanvas"
+   */
+  void removeAll();
+
+  /** used to update the overview toggle for the newly selected legend item */
+  void updateLegendItem( QListViewItem * );
+
 protected:
   // override these to handle layer order manipulation
   void contentsMouseMoveEvent(QMouseEvent * e);
   void contentsMousePressEvent(QMouseEvent * e);
   void contentsMouseReleaseEvent(QMouseEvent * e);
 
+
 private:
+
+  /** handle to main QgisApp
+      Necessary for binding properly binding context menu to new layers
+   */
+  QgisApp * mQgisApp;
+
   /// the map canvas this legend refers to
   QgsMapCanvas * map;
 
@@ -97,6 +114,11 @@ private:
 
   /// return position of item in the list
   int getItemPos(QListViewItem * item);
+
+  /** debugging member
+      invoked when a connect() is made to this object 
+  */
+  void connectNotify( const char * signal );
 
 signals:
 

@@ -7,6 +7,11 @@
 *****************************************************************************/
 #include <iostream>
 
+
+void QgisAppBase::init()
+{
+}
+
 void QgisAppBase::fileExit()
 {
 
@@ -44,17 +49,6 @@ void QgisAppBase::zoomToSelected()
 }
 
 
-
-void QgisAppBase::init()
-{
-    /*
-    // set  popupmenu fonts since there doesn't seem to be any other way to do it in designer...
- QFont menubar_font(  menubar->font() );
-    menubar_font.setPointSize( 10 );
-   PopupMenu->setFont( menubar_font ); 
-   PopupMenu_2->setFont( menubar_font ); 
-   */
-}
 
 
 void QgisAppBase::drawLayers()
@@ -259,7 +253,28 @@ void QgisAppBase::about()
 }
 
 
-void QgisAppBase::newVectorLayer()
+void QgisAppBase::removeLayer()
+{
+#ifdef QGISDEBUG
+    qDebug("QgisAppBase::removeLayer()");
+#endif
+}
+
+
+void QgisAppBase::inOverview( bool )
+{
+
+}
+
+
+void QgisAppBase::menubar_activated( int )
+{
+
+}
+
+
+
+void QgisAppBase::menubar_highlighted(int)
 {
 
 }

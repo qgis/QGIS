@@ -1416,7 +1416,8 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
 		/* Draw the line with new segment */
 		Vect_reset_line ( mPoints );
 		Vect_append_points ( mPoints, mEditPoints, GV_FORWARD );
-		Vect_append_point ( mPoints, newPoint.xToInt(), newPoint.yToInt(), 0.0 );
+		Vect_append_point ( mPoints, static_cast<int>(newPoint.x()), 
+                                             static_cast<int>(newPoint.y()), 0.0 );
                 displayDynamic ( mPoints );
 	    }
 	    break;
@@ -1622,7 +1623,8 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
 	    point.setX(mPoints->x[i]);
 	    point.setY(mPoints->y[i]);
 	    mTransform->transform(&point);
-	    pointArray.setPoint( i, point.xToInt(), point.yToInt() ); 
+	    pointArray.setPoint( i, static_cast<int>(point.x()), 
+                                    static_cast<int>(point.y()) ); 
 	}
 
 	myPainter->setPen ( pen );
@@ -1700,7 +1702,8 @@ void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y
 	    point.setX(Points->x[i]);
 	    point.setY(Points->y[i]);
 	    mTransform->transform(&point);
-	    mLastDynamicPoints.setPoint( i, point.xToInt(), point.yToInt() ); 
+	    mLastDynamicPoints.setPoint( i, static_cast<int>(point.x()), 
+                                            static_cast<int>(point.y()) ); 
 	}
     } else {
 	mLastDynamicPoints.resize(0);
@@ -1769,8 +1772,8 @@ void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
     point.setY(y);
     mTransform->transform(&point);
 
-    int px = point.xToInt();
-    int py = point.yToInt();
+    int px = static_cast<int>(point.x());
+    int py = static_cast<int>(point.y());
     int m = (size-1)/2;
 
     QPainter *myPainter;

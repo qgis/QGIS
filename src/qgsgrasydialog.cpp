@@ -46,7 +46,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 
     //find out the numerical fields of mVectorLayer
     QgsVectorDataProvider *provider;
-    if (provider = mVectorLayer->getDataProvider())
+    if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
     {
 	std::vector < QgsField > &fields = provider->fields();
 	int fieldnumber = 0;
@@ -327,7 +327,7 @@ void QgsGraSyDialog::adjustClassification()
 {
     mClassBreakBox->clear();
     QGis::VectorType m_type = mVectorLayer->vectorType();
-    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
     double minimum, maximum;
     
     //delete all previous entries

@@ -52,28 +52,49 @@ class QgsVectorLayer:public QgsMapLayer
 
   //! Constructor
     QgsVectorLayer(QString baseName = 0, QString path = 0, QString providerLib = 0);
+
   //! Destructor
    virtual ~QgsVectorLayer();
+
   //! Identify feature found within the search rectangle
   void identify(QgsRect *);
+
   //! Select features found within the search rectangle
   void select(QgsRect * rect, bool lock);
+
   //! Display the attribute table
   void table();
+
   //! Set the primary display field to be used in the identify results dialog 
   void setDisplayField(QString fldName=0);
+
   //! Initialize the context menu
   void initContextMenu(QgisApp * app);
+
   enum SHAPETYPE
   {
     Point,
     Line,
     Polygon
   };
-  void setDataProvider(QgsDataProvider * dp);
-  QgsVectorDataProvider *getDataProvider();
+
+  /** bind layer to a specific data provider
+
+     @param provider should be "postgres", "ogr", or ??
+
+     @todo XXX should this return bool?  Throw exceptions?
+  */
+  void setDataProvider( QString const & provider );
+
+  QgsDataProvider * getDataProvider();
+
+
   QgsLabel *label();
+
   public slots:
+
+  void inOverview( bool );
+
    /**Sets the 'tabledisplay' to 0 again*/
   void invalidateTableDisplay();
   void select(int number);
@@ -106,6 +127,25 @@ class QgsVectorLayer:public QgsMapLayer
   {
     return valid;
   }
+
+  /** reads vector layer specific state from project file DOM node.
+
+      @note
+
+      Called by QgsMapLayer::readXML().
+
+  */
+  /* virtual */ bool readXML_( QDomNode & layer_node );
+
+
+  /** write vector layer specific state to project file DOM node.
+
+      @note
+
+      Called by QgsMapLayer::writeXML().
+
+  */
+  /* virtual */ bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
 
 
   /** 
@@ -200,8 +240,16 @@ protected:
   void stopEditing();
 
 private:                       // Private attributes
+
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
+
+    /** tailor the right-click context menu with vector layer only stuff 
+
+      @note called by QgsMapLayer::initContextMenu();
+     */
+    void initContextMenu_(QgisApp *);
+
   //! Draws the layer using coordinate transformation
   void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
   //! Pointer to data provider derived from the abastract base class QgsDataProvider

@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
+
 
 #include "qgsrasterlayerproperties.h"
 #include <qlabel.h>
@@ -37,290 +37,143 @@
 #include <qlistview.h>
 #include <qlistbox.h>
 #include <qtextbrowser.h>
-QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterLayerPropertiesBase()
+
+
+const char * const ident = 
+   "$Id";
+
+
+QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr)
+    : rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
-  //
-  //
-  //
-  // Remove the advanced symbology widget and debug overlay for 0.1 release
-  //
-  //
-  //
-  tabSymbology->removePage(TabPage);
-  cboxShowDebugInfo->hide();
-  //downcast the maplayer to rasterlayer
-  rasterLayer = (QgsRasterLayer *) lyr;
+    // build GUI components
 
-  //get the thumbnail for the layer
-  QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
-  rasterLayer->drawThumbnail(&myQPixmap);
-  pixmapThumbnail->setPixmap(myQPixmap);
+    cboColorMap->insertItem(tr("Grayscale"));
+    cboColorMap->insertItem(tr("Pseudocolor"));
+    cboColorMap->insertItem(tr("Freak Out"));
 
-  //populate the metadata tab's text browser widget with gdal metadata info
-  txtbMetadata->setText(rasterLayer->getMetadata());
-  //tabSymbology->removePage(tabMetadata);
-  //display the raster dimensions and no data value
-  lblColumns->setText(tr("Columns:") + QString::number(rasterLayer->getRasterXDim()));
-  lblRows->setText(tr("Rows:") + QString::number(rasterLayer->getRasterYDim()));
-  lblNoData->setText(tr("No Data:") + QString::number(rasterLayer->getNoDataValue()));
-  //these properties (layername and label) are provided by the qgsmaplayer superclass
-  leLayerSource->setText(rasterLayer->source());
-  leDisplayName->setText(lyr->name());
+    //set the std deviations to be plotted combo box
+    cboStdDev->insertItem("0");
+    cboStdDev->insertItem("0.5");
+    cboStdDev->insertItem("0.75");
+    cboStdDev->insertItem("1");
+    cboStdDev->insertItem("1.25");
+    cboStdDev->insertItem("1.5");
+    cboStdDev->insertItem("1.75");
+    cboStdDev->insertItem("2");
+    cboStdDev->insertItem("2.25");
+    cboStdDev->insertItem("2.5");
+    cboStdDev->insertItem("2.75");
+    cboStdDev->insertItem("3");
 
-  //update the debug checkbox
-  cboxShowDebugInfo->setChecked(rasterLayer->getShowDebugOverlayFlag());
+    //
+    // Set up the combo boxes that contain band lists using the qstring list generated above
+    //
 
-  //update the legend pixmap on this dialog
-  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
-  pixmapLegend->setScaledContents(true);
-  pixmapLegend->repaint(false);
-
-  //set the palette pixmap
-  pixmapPalette->setPixmap(rasterLayer->getPaletteAsPixmap());
-  pixmapPalette->setScaledContents(true);
-  pixmapPalette->repaint(false);
-
-  //set the transparency slider
-  sliderTransparency->setValue(255 - rasterLayer->getTransparency());
-  //update the transparency percentage label
-  sliderTransparency_valueChanged(255 - rasterLayer->getTransparency());
-  //decide whether user can change rgb settings
-
-  switch (rasterLayer->getDrawingStyle())
-  {
-      case QgsRasterLayer::SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
-          rbtnThreeBand->setEnabled(false);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
-          rbtnThreeBand->setEnabled(false);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::PALETTED_MULTI_BAND_COLOR:
-          rbtnThreeBand->toggle();
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      case QgsRasterLayer::MULTI_BAND_COLOR:
-          rbtnThreeBand->toggle();
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          break;
-      default:
-          break;
-  }
-  if (rasterLayer->getRasterLayerType() == QgsRasterLayer::MULTIBAND)
-  {
-    //multiband images can also be rendered as single band (using only one of the bands)
-    txtSymologyNotes->
-        setText(tr
-                ("<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>"));
-  }
-  else if (rasterLayer->getRasterLayerType() == QgsRasterLayer::PALETTE)
-  {
-    //paletted images (e.g. tif) can only be rendered as three band rgb images
-    txtSymologyNotes->
-        setText(tr
-                ("<h3>Paletted Image Notes</h3> <p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.</p><ul><li>Red - blue in image</li><li>Green - blue in image</li><li>Blue - green in image</li></ul>"));
-  }
-  else                        //only grayscale settings allowed
-  {
-    //grayscale images can only be rendered as singleband
-    txtSymologyNotes->
-        setText(tr
-                ("<h3>Grayscale Image Notes</h3> <p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.</p>"));
-  }
-  //
-  // Populate the various controls on the form
-  //
-  cboColorMap->insertItem(tr("Grayscale"));
-  cboColorMap->insertItem(tr("Pseudocolor"));
-  cboColorMap->insertItem(tr("Freak Out"));
-  if (rasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
-          rasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
-          rasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR)
-  {
-    if(rasterLayer->getColorRampingType()==QgsRasterLayer::BLUE_GREEN_RED)
+    if (rasterLayer->getRasterLayerType()
+        == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
     {
-      cboColorMap->setCurrentText(tr("Pseudocolor"));
+        cboRed->insertItem("Red");
+        cboGreen->insertItem("Red");
+        cboBlue->insertItem("Red");
+
+        cboRed->insertItem("Green");
+        cboGreen->insertItem("Green");
+        cboBlue->insertItem("Green");
+
+        cboRed->insertItem("Blue");
+        cboGreen->insertItem("Blue");
+        cboBlue->insertItem("Blue");
+
+        cboRed->insertItem("Not Set");
+        cboGreen->insertItem("Not Set");
+        cboBlue->insertItem("Not Set");
+
+        cboGray->insertItem("Red");
+        cboGray->insertItem("Green");
+        cboGray->insertItem("Blue");
+        cboGray->insertItem("Not Set");
     }
-    else
+    else                   // all other layer types use band name entries only
     {
-      cboColorMap->setCurrentText(tr("Freak Out"));
-    }
-
-  }
-  else
-  {
-    cboColorMap->setCurrentText(tr("Grayscale"));
-  }
-  //set whether the layer histogram should be inverted
-  if (rasterLayer->getInvertHistogramFlag())
-  {
-    cboxInvertColorMap->setChecked(true);
-  }
-  else
-  {
-    cboxInvertColorMap->setChecked(false);
-  }
-  //set the std deviations to be plotted combo
-  cboStdDev->insertItem("0");
-  cboStdDev->insertItem("0.5");
-  cboStdDev->insertItem("0.75");
-  cboStdDev->insertItem("1");
-  cboStdDev->insertItem("1.25");
-  cboStdDev->insertItem("1.5");
-  cboStdDev->insertItem("1.75");
-  cboStdDev->insertItem("2");
-  cboStdDev->insertItem("2.25");
-  cboStdDev->insertItem("2.5");
-  cboStdDev->insertItem("2.75");
-  cboStdDev->insertItem("3");
-  double myStdDevsDouble = rasterLayer->getStdDevsToPlot();
-  cboStdDev->setCurrentText(QString::number(myStdDevsDouble));
-  //
-  // Set up the sliders on the advanced symbology tab
-  //
-  sliderMinRed->setValue(static_cast < int >(rasterLayer->getMinRedDouble()));
-  sliderMaxRed->setValue(static_cast < int >(255 - rasterLayer->getMaxRedDouble()));
-  sliderMinGreen->setValue(static_cast < int >(rasterLayer->getMinGreenDouble()));
-  sliderMaxGreen->setValue(static_cast < int >(255 - rasterLayer->getMaxGreenDouble()));
-  sliderMinBlue->setValue(static_cast < int >(rasterLayer->getMinBlueDouble()));
-  sliderMaxBlue->setValue(static_cast < int >(255 - rasterLayer->getMaxBlueDouble()));
-  sliderMinGray->setValue(static_cast < int >(rasterLayer->getMinGrayDouble()));
-  sliderMaxGray->setValue(static_cast < int >(255 - rasterLayer->getMaxGrayDouble()));
-  //
-  // Get a list of band names
-  //
-  QStringList myBandNameQStringList;
-  int myBandCountInt = rasterLayer->getBandCount();
-  for (int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt)
-  {
-    //find out the name of this band
-    QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt)
-        ;
-    //keep a list of band names for later use
-    myBandNameQStringList.append(myRasterBandNameQString);
-  }
-  //
-  // Set up the combo boxes that contain band lists using the qstring list generated above
-  //
-  if (rasterLayer->getRasterLayerType()
-          == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
-  {
-    cboRed->insertItem("Red");
-    cboGreen->insertItem("Red");
-    cboBlue->insertItem("Red");
-
-    cboRed->insertItem("Green");
-    cboGreen->insertItem("Green");
-    cboBlue->insertItem("Green");
-
-    cboRed->insertItem("Blue");
-    cboGreen->insertItem("Blue");
-    cboBlue->insertItem("Blue");
-
-    cboRed->insertItem("Not Set");
-    cboGreen->insertItem("Not Set");
-    cboBlue->insertItem("Not Set");
-
-    cboGray->insertItem("Red");
-    cboGray->insertItem("Green");
-    cboGray->insertItem("Blue");
-    cboGray->insertItem("Not Set");
-  }
-
-  else                          //all other layer types use band name entries only
-  {
 #ifdef QGISDEBUG
-    std::cout << "Populating combos for non paletted layer" << std::endl;
+        std::cout << "Populating combos for non paletted layer" << std::endl;
 #endif
 
-    int myBandCountInt = 1;
-    for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); myIterator != myBandNameQStringList.end(); ++myIterator)
-    {
-      QString myQString = *myIterator;
+        //
+        // Get a list of band names
+        //
+        QStringList myBandNameQStringList;
+
+        int myBandCountInt = rasterLayer->getBandCount();
+
+        for (int myIteratorInt = 1;
+             myIteratorInt <= myBandCountInt;
+             ++myIteratorInt)
+        {
+            //find out the name of this band
+            QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt)
+                ;
+            //keep a list of band names for later use
+            myBandNameQStringList.append(myRasterBandNameQString);
+        }
+
+        myBandCountInt = 1;
+
+        for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
+             myIterator != myBandNameQStringList.end(); 
+             ++myIterator)
+        {
+            QString myQString = *myIterator;
 #ifdef QGISDEBUG
 
-      std::cout << "Inserting : " << myQString << std::endl;
+            std::cout << "Inserting : " << myQString << std::endl;
 #endif
 
-      cboGray->insertItem(myQString);
-      cboRed->insertItem(myQString);
-      cboGreen->insertItem(myQString);
-      cboBlue->insertItem(myQString);
+            cboGray->insertItem(myQString);
+            cboRed->insertItem(myQString);
+            cboGreen->insertItem(myQString);
+            cboBlue->insertItem(myQString);
+        }
+        cboRed->insertItem("Not Set");
+        cboGreen->insertItem("Not Set");
+        cboBlue->insertItem("Not Set");
+        cboGray->insertItem("Not Set");
     }
-    cboRed->insertItem("Not Set");
-    cboGreen->insertItem("Not Set");
-    cboBlue->insertItem("Not Set");
-    cboGray->insertItem("Not Set");
-  }
-  //now set the combos to the correct values
-  cboRed->setCurrentText(rasterLayer->getRedBandName());
-  cboGreen->setCurrentText(rasterLayer->getGreenBandName());
-  cboBlue->setCurrentText(rasterLayer->getBlueBandName());
-  cboGray->setCurrentText(rasterLayer->getGrayBandName());
-  //
-  // Set up the colour scaling previews
-  //
-  makeScalePreview("red");
-  makeScalePreview("green");
-  makeScalePreview("blue");
-  makeScalePreview("gray");
 
-  //
-  // Set up the pyramiding tab
-  //
+    //
+    // Set up the pyramiding tab
+    //
 #ifdef WIN32
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-  QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
-  QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
-  RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
-  RasterPyramidList::iterator myRasterPyramidIterator;
-  for ( myRasterPyramidIterator=myPyramidList.begin();
+    QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
+    QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
+
+    RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+    RasterPyramidList::iterator myRasterPyramidIterator;
+
+    for ( myRasterPyramidIterator=myPyramidList.begin();
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
-  {
-    if ((*myRasterPyramidIterator).existsFlag==true)
     {
-      lbxPyramidResolutions->insertItem(myPyramidPixmap,
-              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-              QString::number((*myRasterPyramidIterator).yDimInt)); 
+        if ((*myRasterPyramidIterator).existsFlag==true)
+        {
+            lbxPyramidResolutions->insertItem(myPyramidPixmap,
+                                              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+                                              QString::number((*myRasterPyramidIterator).yDimInt)); 
+        }
+        else
+        {
+            lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+                                              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+                                              QString::number((*myRasterPyramidIterator).yDimInt)); 
+        }
     }
-    else
-    {
-      lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
-              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-              QString::number((*myRasterPyramidIterator).yDimInt)); 
-    }
-  }
 
-}
+    sync();                     // update based on lyr's current state
+} // QgsRasterLayerProperties ctor
+
 
 QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
@@ -805,3 +658,188 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   txtbMetadata->setText(rasterLayer->getMetadata());
 }
 
+
+/**
+   @note moved from ctor
+
+   Previously this dialog was created anew with each right-click pop-up menu
+   invokation.  Changed so that the dialog always exists after first
+   invocation, and is just re-synchronized with its layer's state when
+   re-shown.
+
+*/
+void QgsRasterLayerProperties::sync()
+{
+  // XXX Remove the advanced symbology widget and debug overlay for 0.1 release
+
+  tabSymbology->removePage(TabPage);
+  cboxShowDebugInfo->hide();
+
+  //get the thumbnail for the layer
+  QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
+  rasterLayer->drawThumbnail(&myQPixmap);
+  pixmapThumbnail->setPixmap(myQPixmap);
+
+  //populate the metadata tab's text browser widget with gdal metadata info
+  txtbMetadata->setText(rasterLayer->getMetadata());
+  //tabSymbology->removePage(tabMetadata);
+  //display the raster dimensions and no data value
+  lblColumns->setText(tr("Columns:") + QString::number(rasterLayer->getRasterXDim()));
+  lblRows->setText(tr("Rows:") + QString::number(rasterLayer->getRasterYDim()));
+  lblNoData->setText(tr("No Data:") + QString::number(rasterLayer->getNoDataValue()));
+
+  //these properties (layername and label) are provided by the qgsmaplayer superclass
+  leLayerSource->setText(rasterLayer->source());
+  leDisplayName->setText(rasterLayer->name());
+
+  //update the debug checkbox
+  cboxShowDebugInfo->setChecked(rasterLayer->getShowDebugOverlayFlag());
+
+  //update the legend pixmap on this dialog
+  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
+  pixmapLegend->setScaledContents(true);
+  pixmapLegend->repaint(false);
+
+  //set the palette pixmap
+  pixmapPalette->setPixmap(rasterLayer->getPaletteAsPixmap());
+  pixmapPalette->setScaledContents(true);
+  pixmapPalette->repaint(false);
+
+  //set the transparency slider
+  sliderTransparency->setValue(255 - rasterLayer->getTransparency());
+  //update the transparency percentage label
+  sliderTransparency_valueChanged(255 - rasterLayer->getTransparency());
+  //decide whether user can change rgb settings
+
+  switch (rasterLayer->getDrawingStyle())
+  {
+      case QgsRasterLayer::SINGLE_BAND_GRAY:
+          rbtnSingleBand->toggle();
+          rbtnThreeBand->setEnabled(false);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR:
+          rbtnSingleBand->toggle();
+          rbtnThreeBand->setEnabled(false);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
+          rbtnSingleBand->toggle();
+          rbtnThreeBand->setEnabled(true);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
+          rbtnSingleBand->toggle();
+          rbtnThreeBand->setEnabled(true);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::PALETTED_MULTI_BAND_COLOR:
+          rbtnThreeBand->toggle();
+          rbtnThreeBand->setEnabled(true);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY:
+          rbtnSingleBand->toggle();
+          rbtnThreeBand->setEnabled(true);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
+          rbtnSingleBand->toggle();
+          rbtnThreeBand->setEnabled(true);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      case QgsRasterLayer::MULTI_BAND_COLOR:
+          rbtnThreeBand->toggle();
+          rbtnThreeBand->setEnabled(true);
+          rbtnSingleBand->setEnabled(true);
+          break;
+      default:
+          break;
+  }
+
+
+  if (rasterLayer->getRasterLayerType() == QgsRasterLayer::MULTIBAND)
+  {
+    //multiband images can also be rendered as single band (using only one of the bands)
+    txtSymologyNotes->
+        setText(tr
+                ("<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>"));
+  }
+  else if (rasterLayer->getRasterLayerType() == QgsRasterLayer::PALETTE)
+  {
+    //paletted images (e.g. tif) can only be rendered as three band rgb images
+    txtSymologyNotes->
+        setText(tr
+                ("<h3>Paletted Image Notes</h3> <p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.</p><ul><li>Red - blue in image</li><li>Green - blue in image</li><li>Blue - green in image</li></ul>"));
+  }
+  else                        //only grayscale settings allowed
+  {
+    //grayscale images can only be rendered as singleband
+    txtSymologyNotes->
+        setText(tr
+                ("<h3>Grayscale Image Notes</h3> <p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.</p>"));
+  }
+
+
+  //
+  // Populate the various controls on the form
+  //
+  if (rasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
+          rasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
+          rasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR)
+  {
+    if(rasterLayer->getColorRampingType()==QgsRasterLayer::BLUE_GREEN_RED)
+    {
+      cboColorMap->setCurrentText(tr("Pseudocolor"));
+    }
+    else
+    {
+      cboColorMap->setCurrentText(tr("Freak Out"));
+    }
+
+  }
+  else
+  {
+    cboColorMap->setCurrentText(tr("Grayscale"));
+  }
+  //set whether the layer histogram should be inverted
+  if (rasterLayer->getInvertHistogramFlag())
+  {
+    cboxInvertColorMap->setChecked(true);
+  }
+  else
+  {
+    cboxInvertColorMap->setChecked(false);
+  }
+
+  double myStdDevsDouble = rasterLayer->getStdDevsToPlot();
+  cboStdDev->setCurrentText(QString::number(myStdDevsDouble));
+
+  //
+  // Set up the sliders on the advanced symbology tab
+  //
+  sliderMinRed->setValue(static_cast < int >(rasterLayer->getMinRedDouble()));
+  sliderMaxRed->setValue(static_cast < int >(255 - rasterLayer->getMaxRedDouble()));
+  sliderMinGreen->setValue(static_cast < int >(rasterLayer->getMinGreenDouble()));
+  sliderMaxGreen->setValue(static_cast < int >(255 - rasterLayer->getMaxGreenDouble()));
+  sliderMinBlue->setValue(static_cast < int >(rasterLayer->getMinBlueDouble()));
+  sliderMaxBlue->setValue(static_cast < int >(255 - rasterLayer->getMaxBlueDouble()));
+  sliderMinGray->setValue(static_cast < int >(rasterLayer->getMinGrayDouble()));
+  sliderMaxGray->setValue(static_cast < int >(255 - rasterLayer->getMaxGrayDouble()));
+
+  //now set the combos to the correct values
+  cboRed->setCurrentText(rasterLayer->getRedBandName());
+  cboGreen->setCurrentText(rasterLayer->getGreenBandName());
+  cboBlue->setCurrentText(rasterLayer->getBlueBandName());
+  cboGray->setCurrentText(rasterLayer->getGrayBandName());
+
+  //
+  // Set up the colour scaling previews
+  //
+  makeScalePreview("red");
+  makeScalePreview("green");
+  makeScalePreview("blue");
+  makeScalePreview("gray");
+
+
+} // QgsRasterLayerProperties::sync()

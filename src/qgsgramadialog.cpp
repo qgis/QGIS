@@ -42,7 +42,7 @@ QgsGraMaDialog::QgsGraMaDialog(QgsVectorLayer* layer): QgsGraMaDialogBase(), ext
 
     //find out the numerical fields of mVectorLayer
     QgsVectorDataProvider *provider;
-    if (provider = mVectorLayer->getDataProvider())
+    if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
     {
 	std::vector < QgsField > &fields = provider->fields();
 	int fieldnumber = 0;

@@ -22,10 +22,12 @@
 /*  $Id$ */
 
 #include <iostream>
+#include <iosfwd>
 #include <cfloat>
 #include <cstring>
 #include <sstream>
 #include <memory>
+
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qpainter.h>
@@ -34,6 +36,10 @@
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
 #include <qlabel.h>
+#include <qlistview.h>
+#include <qlibrary.h>
+#include <qpicture.h>
+#include <qsettings.h>
 
 #include "qgisapp.h"
 #include "qgsrect.h"
@@ -44,14 +50,14 @@
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include <qlistview.h>
-#include <qlibrary.h>
-#include <qpicture.h>
-#include <qsettings.h>
-#include "qgsrenderer.h"
 #include "qgslegenditem.h"
 #include "qgsdlgvectorlayerproperties.h"
+#include "qgsrenderer.h"
 #include "qgssinglesymrenderer.h"
+#include "qgsgraduatedsymrenderer.h"
+#include "qgscontinuouscolrenderer.h"
+#include "qgsgraduatedmarenderer.h"
+#include "qgssimarenderer.h"
 #include "qgsrenderitem.h"
 #include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
@@ -65,120 +71,34 @@
 #include <dlfcn.h>
 #endif
 
+
+static const char * const ident_ = "$Id$";
+
 // typedef for the QgsDataProvider class factory
-typedef QgsVectorDataProvider *create_it(const char *uri);
+typedef QgsDataProvider * create_it(const char * uri);
 
-QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey):QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey), tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0)
+
+
+QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, 
+                               QString baseName, 
+                               QString providerKey)
+    : QgsMapLayer(VECTOR, baseName, vectorLayerPath), 
+      providerKey(providerKey), 
+      tabledisplay(0), 
+      m_renderer(0), 
+      m_propertiesDialog(0), 
+      m_rendererDialog(0),
+      ir(0)			// initialize the identify results pointer
 {
-  // initialize the identify results pointer
-  ir = 0;
-
 #ifdef QGISDEBUG
   std::cerr << "VECTORLAYERPATH: " << vectorLayerPath.ascii() << std::endl;
   std::cerr << "BASENAME: " << baseName.ascii() << std::endl;
 #endif
-  // load the plugin
-  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
-  QString ogrlib = pReg->library(providerKey);
-  //QString ogrlib = libDir + "/libpostgresprovider.so";
-  const char *cOgrLib = (const char *) ogrlib;
-#ifdef TESTPROVIDERLIB
-  // test code to help debug provider loading problems
-  //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
-  void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
-  if (!handle)
+
+  // if we're given a provider type, try to create and bind one to this layer
+  if ( ! providerKey.isEmpty() )
   {
-    std::cout << "Error in dlopen: " << dlerror() << std::endl;
-
-  } else
-  {
-    std::cout << "dlopen suceeded" << std::endl;
-    dlclose(handle);
-  }
-
-#endif
-  // load the data provider
-  myLib = new QLibrary((const char *) ogrlib);
-#ifdef QGISDEBUG
-  std::cout << "Library name is " << myLib->library() << std::endl;
-#endif
-  bool loaded = myLib->load();
-  if (loaded)
-  {
-#ifdef QGISDEBUG
-    std::cout << "Loaded data provider library" << std::endl;
-    std::cout << "Attempting to resolve the classFactory function" << std::endl;
-#endif
-    create_it *cf = (create_it *) myLib->resolve("classFactory");
-    valid = false;            // assume the layer is invalid until we determine otherwise
-    if (cf)
-    {
-#ifdef QGISDEBUG
-      std::cout << "Getting pointer to a dataProvider object from the library\n";
-#endif
-      dataProvider = cf(vectorLayerPath);
-      if (dataProvider)
-      {
-#ifdef QGISDEBUG
-        std::cout << "Instantiated the data provider plugin\n";
-#endif
-
-        if (dataProvider->isValid())
-        {
-          valid = true;
-          // get the extent
-          QgsRect *mbr = dataProvider->extent();
-          // show the extent
-          QString s = mbr->stringRep();
-#ifdef QGISDEBUG
-          std::cout << "Extent of layer: " << s << std::endl;
-#endif
-          // store the extent
-          layerExtent.setXmax(mbr->xMax());
-          layerExtent.setXmin(mbr->xMin());
-          layerExtent.setYmax(mbr->yMax());
-          layerExtent.setYmin(mbr->yMin());
-          // get and store the feature type
-          geometryType = dataProvider->geometryType();
-          // look at the fields in the layer and set the primary
-          // display field using some real fuzzy logic
-          setDisplayField();
-          QString layerTitle = baseName;
-
-          if (providerKey == "postgres")
-          {
-#ifdef QGISDEBUG
-            std::cout << "Beautifying layer name " << layerTitle << std::endl;
-#endif
-            // adjust the display name for postgres layers
-            layerTitle = layerTitle.mid(layerTitle.find(".") + 1);
-            layerTitle = layerTitle.left(layerTitle.find("("));
-#ifdef QGISDEBUG
-            std::cout << "Beautified name is " << layerTitle << std::endl;
-#endif
-          }
-          // upper case the first letter of the layer name
-          layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
-          setLayerName(layerTitle);
-
-          // label
-          mLabel = new QgsLabel ( dataProvider->fields() ); 
-          mLabelOn = false;
-        }
-      } else
-      {
-#ifdef QGISDEBUG
-        std::cout << "Unable to instantiate the data provider plugin\n";
-#endif
-        valid = false;
-      }
-    }
-  } else
-  {
-    valid = false;
-#ifdef QGISDEBUG
-    std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
-#endif
+      setDataProvider( providerKey );
   }
 
   //TODO - fix selection code that formerly used
@@ -197,7 +117,9 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
   // have no effect on existing layers
   QSettings settings;
   updateThreshold = settings.readNumEntry("qgis/map/updateThreshold", 1000);
-}
+} // QgsVectorLayer ctor
+
+
 
 QgsVectorLayer::~QgsVectorLayer()
 {
@@ -474,9 +396,11 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             pt.setY(*y);
             cXf->transform(&pt);
             //std::cout << "drawing marker for feature " << featureCount << "\n";
-            p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
+            p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
             p->scale(markerScaleFactor,markerScaleFactor);
-            p->drawPicture((int)(pt.xToInt()/markerScaleFactor-marker.boundingRect().width()/2), (int)(pt.yToInt()/markerScaleFactor-marker.boundingRect().height()/2), marker);
+            p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker.boundingRect().width() / 2), 
+                           (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker.boundingRect().height() / 2),
+                           marker);
             p->resetXForm(); 
 
             break;
@@ -498,9 +422,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
               pt.setY(*y);
               cXf->transform(&pt);
               if (idx == 0)
-                p->moveTo(pt.xToInt(), pt.yToInt());
+                p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
               else
-                p->lineTo(pt.xToInt(), pt.yToInt());
+                p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
             }
             break;
 
@@ -526,17 +450,23 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 pt.setY(*y);
                 cXf->transform(&pt);
                 if (idx == 0)
-                  p->moveTo(pt.xToInt(), pt.yToInt());
+                  p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
                 else
-                  p->lineTo(pt.xToInt(), pt.yToInt());
+                  p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
               }
             }
             break;
 
           case WKBPolygon:
 
+          {
             // get number of rings in the polygon
             numRings = (int *) (feature + 1 + sizeof(int));
+
+            if ( ! *numRings )  // sanity check for zero rings in polygon
+            {
+                break;
+            }
 
             int *ringStart; // index of first point for each ring
             int *ringNumPoints; // number of points in each ring
@@ -569,14 +499,11 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 pt.setX(*x);
                 pt.setY(*y);
                 cXf->transform(&pt);
-#ifdef QGISX11DEBUG
-                std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
-#endif
-                pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
+                pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
               }
               if ( idx == 0 ) { // remember last outer ring point
-                x0 = pt.xToInt();
-                y0 = pt.yToInt();
+                x0 = static_cast<int>(pt.x());
+                y0 = static_cast<int>(pt.y());
               } else { // return to x0,y0 (inner rings - islands)
                 pa->setPoint(pdx++, x0, y0);
               }
@@ -594,11 +521,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             }
 
             delete pa;
-            delete ringStart;
-            delete ringNumPoints;
+            delete [] ringStart;
+            delete [] ringNumPoints;
 
             break;
 
+          }
           case WKBMultiPolygon:
 
             // get the number of polygons
@@ -631,11 +559,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                   pt.setX(*x);
                   pt.setY(*y);
                   cXf->transform(&pt);
-#ifdef QGISX11DEBUG
-                  std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
-#endif
-                  pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
-
+                  pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
                 }
                 // draw the ring
                 p->drawPolygon(*pa);
@@ -685,7 +609,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       retVal = NDR;
     else
       retVal = XDR;
-    delete[]chkEndian;
+
+    delete [] chkEndian;
+
     return retVal;
   }
 
@@ -879,25 +805,24 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       tabledisplay = 0;
     }
 
-    QgsVectorDataProvider *QgsVectorLayer::getDataProvider()
+    QgsDataProvider * QgsVectorLayer::getDataProvider()
     {
       return dataProvider;
     }
 
+
     void QgsVectorLayer::showLayerProperties()
     {
-      if (m_propertiesDialog)
-      {
-        m_propertiesDialog->reset();
-        m_propertiesDialog->raise();
-        m_propertiesDialog->show();
-      } else
+      if (! m_propertiesDialog)
       {
         m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
-        m_propertiesDialog->reset();
-        m_propertiesDialog->show();
       }
-    }
+
+      m_propertiesDialog->reset();
+      m_propertiesDialog->raise();
+      m_propertiesDialog->show();
+    } // QgsVectorLayer::showLayerProperties()
+
 
     QgsRenderer *QgsVectorLayer::renderer()
     {
@@ -967,28 +892,23 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       return m_propertiesDialog;
     }
 
-    void QgsVectorLayer::initContextMenu(QgisApp * app)
+
+    void QgsVectorLayer::initContextMenu_(QgisApp * app)
     {
-      popMenu = new QPopupMenu();
-      QLabel *myPopupLabel = new QLabel( popMenu );
-      myPopupLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
       myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
-      popMenu->insertItem(myPopupLabel,0);
-      popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
+
       popMenu->insertItem(tr("&Open attribute table"), app, SLOT(attributeTable()));
-      popMenu->insertSeparator();
-      popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
-      //show in overview slot is implemented in maplayer superclass!
-      mShowInOverviewItemId = popMenu->insertItem(tr("Show In &Overview"), this, SLOT(toggleShowInOverview()));
+
+      popMenu->insertSeparator(); // XXX should this move to QgsMapLayer::initContextMenu()?
+
       popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
       popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
 
-      popMenu->insertSeparator();
-      popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
+    } // QgsVectorLayer::initContextMenu_(QgisApp * app)
 
-    }
 
-    //
+
+    // XXX why is this here?  This should be generalized up to QgsMapLayer
     QPopupMenu *QgsVectorLayer::contextMenu()
     {
       return popMenu;
@@ -1424,6 +1344,7 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       return mScaleDependentRender;
     }
 
+
     // Return the minimum scale at which the layer is rendered
     int QgsVectorLayer::minimumScale()
     {
@@ -1434,3 +1355,406 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
     {
       return mMaximumScale;
     }
+
+
+
+bool QgsVectorLayer::readXML_( QDomNode & layer_node )
+{
+    //process provider key
+    QDomNode pkeyNode = layer_node.namedItem("provider");
+
+    if (pkeyNode.isNull())
+    {
+        providerKey = "";
+    }
+    else
+    {
+        QDomElement pkeyElt = pkeyNode.toElement();
+        providerKey = pkeyElt.text();
+    }
+	
+    // determine type of vector layer
+    if ( ! providerKey.isNull() )
+    {
+        // if the provider string isn't empty, then we successfully
+        // got the stored provider
+    } else if ((dataSource.find("host=") > -1) && 
+               (dataSource.find("dbname=") > -1))
+    {
+        providerKey = "postgres";
+    } else
+    {
+        providerKey = "ogr";
+    }
+
+    setDataProvider( providerKey );
+
+    // create and bind a renderer to this layer
+
+    QDomNode singlenode = layer_node.namedItem("singlesymbol");
+    QDomNode graduatednode = layer_node.namedItem("graduatedsymbol");
+    QDomNode continuousnode = layer_node.namedItem("continuoussymbol");
+    QDomNode singlemarkernode = layer_node.namedItem("singlemarker");
+    QDomNode graduatedmarkernode = layer_node.namedItem("graduatedmarker");
+
+    //std::auto_ptr<QgsRenderer> renderer; actually the renderer SHOULD NOT be
+    //deleted when this function finishes, otherwise the application will
+    //crash
+    // XXX this seems to be a dangerous implementation; should re-visit design
+    QgsRenderer * renderer;
+
+    if (!singlenode.isNull())
+    {
+        // renderer.reset( new QgsSingleSymRenderer );
+        renderer = new QgsSingleSymRenderer;
+        renderer->readXML(singlenode, *this);
+    }
+    else if (!graduatednode.isNull())
+    {
+        //renderer.reset( new QgsGraduatedSymRenderer );
+        renderer =  new QgsGraduatedSymRenderer;
+        renderer->readXML(graduatednode, *this);
+    }
+    else if (!continuousnode.isNull())
+    {
+        //renderer.reset( new QgsContinuousColRenderer );
+        renderer =  new QgsContinuousColRenderer;
+        renderer->readXML(continuousnode, *this);
+    }
+    else if(!singlemarkernode.isNull())
+    {
+        //renderer.reset( new QgsSiMaRenderer );
+        renderer =  new QgsSiMaRenderer;
+        renderer->readXML(singlemarkernode, *this);
+    }
+    else if(!graduatedmarkernode.isNull())
+    {
+        //renderer.reset( new QgsGraduatedMaRenderer );
+        renderer =  new QgsGraduatedMaRenderer;
+        renderer->readXML(graduatedmarkernode, *this);
+    }
+
+    return valid;               // should be true if read successfully
+
+} // void QgsVectorLayer::readXML_
+
+
+
+void
+QgsVectorLayer:: setDataProvider( QString const & provider )
+{
+    // XXX should I check for and possibly delete any pre-existing providers?
+    // XXX How often will that scenario occur?
+
+    providerKey = provider;     // XXX is this necessary?  Usually already set
+                                // XXX when execution gets here.
+
+    // load the plugin
+    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+    QString ogrlib = pReg->library(provider);
+
+    //QString ogrlib = libDir + "/libpostgresprovider.so";
+
+    const char *cOgrLib = (const char *) ogrlib;
+
+#ifdef TESTPROVIDERLIB
+    // test code to help debug provider loading problems
+//  void *handle = dlopen(cOgrLib, RTLD_LAZY);
+    void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
+    if (!handle)
+    {
+        std::cout << "Error in dlopen: " << dlerror() << std::endl;
+
+    } else
+    {
+        std::cout << "dlopen suceeded" << std::endl;
+        dlclose(handle);
+    }
+
+#endif
+
+    // load the data provider
+    myLib = new QLibrary((const char *) ogrlib);
+#ifdef QGISDEBUG
+    std::cout << "Library name is " << myLib->library() << std::endl;
+#endif
+    bool loaded = myLib->load();
+
+    if (loaded)
+    {
+#ifdef QGISDEBUG
+        std::cout << "Loaded data provider library" << std::endl;
+        std::cout << "Attempting to resolve the classFactory function" << std::endl;
+#endif
+        create_it * classFactory = (create_it *) myLib->resolve("classFactory");
+
+        valid = false;            // assume the layer is invalid until we
+                                  // determine otherwise
+        if (classFactory)
+        {
+#ifdef QGISDEBUG
+            std::cout << "Getting pointer to a dataProvider object from the library\n";
+#endif
+            dataProvider = dynamic_cast<QgsVectorDataProvider*>(classFactory(dataSource));
+
+            if (dataProvider)
+            {
+#ifdef QGISDEBUG
+                std::cout << "Instantiated the data provider plugin\n";
+#endif
+                if (dataProvider->isValid())
+                {
+                    valid = true;
+
+                    // get the extent
+                    QgsRect *mbr = dataProvider->extent();
+
+                    // show the extent
+                    QString s = mbr->stringRep();
+#ifdef QGISDEBUG
+                    std::cout << "Extent of layer: " << s << std::endl;
+#endif
+                    // store the extent
+                    layerExtent.setXmax(mbr->xMax());
+                    layerExtent.setXmin(mbr->xMin());
+                    layerExtent.setYmax(mbr->yMax());
+                    layerExtent.setYmin(mbr->yMin());
+
+                    // get and store the feature type
+                    geometryType = dataProvider->geometryType();
+
+                    // look at the fields in the layer and set the primary
+                    // display field using some real fuzzy logic
+                    setDisplayField();
+
+                    if (providerKey == "postgres")
+                    {
+#ifdef QGISDEBUG
+                        std::cout << "Beautifying layer name " << layerName << std::endl;
+#endif
+                        // adjust the display name for postgres layers
+                        layerName = layerName.mid(layerName.find(".") + 1);
+                        layerName = layerName.left(layerName.find("("));
+#ifdef QGISDEBUG
+                        std::cout << "Beautified name is " << layerName << std::endl;
+#endif
+                    }
+
+                    // upper case the first letter of the layer name
+                    layerName = layerName.left(1).upper() + layerName.mid(1);
+  
+                    // label
+                    mLabel = new QgsLabel ( dataProvider->fields() ); 
+                    mLabelOn = false;
+                }
+            } else
+            {
+#ifdef QGISDEBUG
+                std::cout << "Unable to instantiate the data provider plugin\n";
+#endif
+                valid = false;
+            }
+        }
+    } else
+    {
+        valid = false;
+#ifdef QGISDEBUG
+        std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
+#endif
+    }
+
+} // QgsVectorLayer:: setDataProvider
+
+
+
+
+/* virtual */ bool QgsVectorLayer::writeXML_( QDomNode & layer_node, 
+                                              QDomDocument & document )
+{
+    // first get the layer element so that we can append the type attribute
+
+    QDomElement mapLayerNode = layer_node.toElement();
+
+    if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
+    {
+        const char * nn = mapLayerNode.nodeName().ascii(); // debugger probe
+
+        qDebug( "QgsVectorLayer::writeXML() can't find <maplayer>" );
+
+        return false;
+    }
+
+    mapLayerNode.setAttribute( "type", "vector" );
+
+    // add provider node
+
+    QDomElement provider  = document.createElement( "provider" );
+    QDomText providerText = document.createTextNode( providerType() ); 
+    provider.appendChild( providerText );
+
+    layer_node.appendChild( provider );
+
+    // add label node
+
+    QDomElement label  = document.createElement( "label" );
+    QDomText labelText = document.createTextNode( "" ); 
+
+    if ( labelOn() )
+    {
+        labelText.setData( "1" );
+    }
+    else
+    {
+        labelText.setData( "0" );
+    }
+    label.appendChild( labelText );
+
+    layer_node.appendChild( label );
+
+
+    // renderer specific settings
+
+    QgsRenderer * myRenderer;
+
+    if( myRenderer = renderer() )
+    {
+        std::stringstream rendererXML;
+	
+        myRenderer->writeXML(rendererXML);
+
+        // because the renderer writeXML() deals with streams and not DOM
+        // objects directly, we'll make a separate DOM document and populate
+        // it with the objects from the stream, and then import the DOM
+        // document
+
+        // #    #                                    ###
+        // #   #  #      #    # #####   ####  ###### ###
+        // #  #   #      #    # #    # #    # #      ###
+        // ###    #      #    # #    # #      #####   #
+        // #  #   #      #    # #    # #  ### #
+        // #   #  #      #    # #    # #    # #      ###
+        // #    # ######  ####  #####   ####  ###### ###
+
+        // XXX this is a *HUGE* kludge -- the renderers *SHOULD* eventually
+        // XXX use DOM objects instead of streams; but there's no time to go
+        // XXX through all N renderers to make those changes
+
+        QDomDocument rendererDOM;
+
+        std::string rawXML, temp_str;
+        QString errorMsg;
+        int     errorLine; 
+        int     errorColumn; 
+
+        // start with bogus XML header
+        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                  "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">\n";
+
+        while ( getline( rendererXML, temp_str ) )
+        {
+            rawXML += temp_str + '\n';
+        }
+
+        // const char * s = rawXML.c_str(); // debugger probe
+
+        if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
+        {
+            //qDebug( s );
+            qDebug( "XML import error at %d %d " + errorMsg, errorLine, errorColumn );
+
+            return false;
+        }
+
+        // lastChild() because the first two nodes are the <xml> and
+        // <!DOCTYPE> nodes; the renderer node follows that, and is (hopefully)
+        // the last node.
+        QDomNode rendererDOMNode = document.importNode( rendererDOM.lastChild(), true );
+
+        if ( ! rendererDOMNode.isNull() )
+        {
+            layer_node.appendChild( rendererDOMNode );
+        }
+        else
+        {
+            qDebug( "not able to import renderer DOM node" );
+
+            // XXX return false?
+        }
+
+    }
+    else
+    {
+        std::cerr << __FILE__ << ":" << __LINE__
+                  << " no renderer\n";
+
+        // XXX return false?
+    }
+
+    // Now we get to do all that all over again for QgsLabel
+
+    // XXX Since this is largely a cut-n-paste from the previous, this
+    // XXX therefore becomes a candidate to be generalized into a separate
+    // XXX function.  I think.
+
+    QgsLabel * myLabel;
+
+    if ( myLabel = this->label() )
+    {
+        std::stringstream rendererXML;
+
+        myLabel->writeXML(rendererXML);
+
+        QDomDocument rendererDOM;
+
+        std::string rawXML, temp_str;
+        QString errorMsg;
+        int     errorLine; 
+        int     errorColumn; 
+
+        // start with bogus XML header
+        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">\n";
+
+        while ( getline( rendererXML, temp_str ) )
+        {
+            rawXML += temp_str + '\n';
+        }
+
+        // const char * s = rawXML.c_str(); // debugger probe
+
+        if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
+        {
+            //qDebug( s );
+            qDebug( "XML import error at %d %d " + errorMsg, errorLine, errorColumn );
+
+            return false;
+        }
+
+        // lastChild() because the first two nodes are the <xml> and
+        // <!DOCTYPE> nodes; the renderer node follows that, and is (hopefully)
+        // the last node.
+        QDomNode rendererDOMNode = document.importNode( rendererDOM.lastChild(), true );
+
+        if ( ! rendererDOMNode.isNull() )
+        {
+            layer_node.appendChild( rendererDOMNode );
+        }
+        else
+        {
+            qDebug( "not able to import renderer DOM node" );
+
+            // XXX return false?
+        }
+
+    }
+
+    return true;
+} // bool QgsVectorLayer::writeXML_
+
+
+/** we wouldn't have to do this if slots were inherited */
+void QgsVectorLayer::inOverview( bool b )
+{
+    QgsMapLayer::inOverview( b );
+}
+

@@ -165,7 +165,7 @@ void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     smdialog->apply();
 }
 
-void QgsSiMaRenderer::writeXML(std::ofstream& xml)
+void QgsSiMaRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<singlemarker>\n";
     xml << "\t\t\t<renderitem>\n";
