@@ -26,7 +26,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=6
 MICRO_VERSION=0
-EXTRA_VERSION=5
+EXTRA_VERSION=6
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -70,6 +70,12 @@ dnl ---------------------------------------------------------------------------
 AC_C_BIGENDIAN
 AC_CHECK_HEADERS([endian.h])
 AC_CHECK_HEADERS([machine/endian.h])
+
+
+dnl ---------------------------------------------------------------------------
+dnl check lib64 environment
+dnl ---------------------------------------------------------------------------
+AQ_CHECK_LIB64
 
 
 dnl ---------------------------------------------------------------------------
@@ -168,6 +174,12 @@ AM_CONDITIONAL([HAVE_SPIT], [test "$ac_spit" = "yes"])
 dnl ---------------------------------------------------------------------------
 dnl GRASS package
 dnl ---------------------------------------------------------------------------
+if test "$libdir" = "/usr/lib64"; then
+  _lib="lib64"
+else
+  _lib="lib"
+fi
+
 AC_ARG_WITH(grass,
     AC_HELP_STRING([--with-grass=DIR],[GRASS Support (full path to GRASS binary package, e.g. --with-grass=/usr1/grass57/dist.i686-pc-linux-gnu)]))
 
@@ -176,19 +188,19 @@ AC_ARG_WITH(grass,
 if test -n "$with_grass" -a x"$with_grass" != "xno"; then
     # I don't know how to add library path to AC_CHECK_LIB()
     if test ! -f "$GISLIB"; then
-      GISLIB=`ls $with_grass/lib/libgrass_gis.dylib 2> /dev/null`
+      GISLIB=`ls $with_grass/${_lib}/libgrass_gis.dylib 2> /dev/null`
     fi
     if test ! -f "$GISLIB"; then
-      GISLIB=`ls $with_grass/lib/libgrass_gis.so 2> /dev/null`
+      GISLIB=`ls $with_grass/${_lib}/libgrass_gis.so 2> /dev/null`
     fi
     if test ! -f "$GISLIB"; then
-      GISLIB=`ls $with_grass/lib/libgrass_gis.a 2> /dev/null`
+      GISLIB=`ls $with_grass/${_lib}/libgrass_gis.a 2> /dev/null`
     fi
 
     if test ! -f "$GISLIB"; then
 	AC_MSG_ERROR( [GRASS library not found] )
     fi
-    GRASS_LIB="-L$with_grass/lib/ -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj"
+    GRASS_LIB="-L$with_grass/${_lib} -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj"
 
     GISINC=`ls $with_grass/include/gis.h`
     if test ! -f "$GISINC"; then
