@@ -36,7 +36,7 @@
 class GPSObject {
  public:
   virtual bool parseNode(const QDomNode& node) = 0;
-  std::string name, cmt, desc, src, url, urlname;
+  QString name, cmt, desc, src, url, urlname;
 };
 
 
@@ -138,18 +138,18 @@ class GPSData {
   /** This function tries to add a new waypoint. If the waypoint was added
       successfully its index will be returned, otherwise a negative number
       will be returned. */
-  int addWaypoint(double lat, double lon, std::string name = "", 
+  int addWaypoint(double lat, double lon, QString name = "", 
 		  double ele = -std::numeric_limits<double>::max());
 
   /** This function tries to add a new route. If the route was added
       successfully its index will be returned, otherwise a negative number
       will be returned. */
-  int addRoute(std::string name = "");
+  int addRoute(QString name = "");
 
   /** This function tries to add a new track. If the track was added
       successfully its index will be returned, otherwise a negative number
       will be returned. */
-  int addTrack(std::string name = "");
+  int addTrack(QString name = "");
   
   
   /** This function removes the waypoint with index @c index. If 
