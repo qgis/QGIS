@@ -1,6 +1,6 @@
-dnl ---------------------------------------------------------------------------
-dnl GDAL/OGR
-dnl ---------------------------------------------------------------------------
+dnl Detect GDAL/OGR
+dnl
+dnl AQ_CHECK_GDAL
 
 # Check for GDAL and OGR compiler and linker flags
 
@@ -41,9 +41,9 @@ AC_SUBST(GDAL_CFLAGS)
 AC_SUBST(GDAL_LDADD)
 ])
 
-dnl ---------------------------------------------------------------------------
-dnl QT3
-dnl ---------------------------------------------------------------------------
+dnl Detect QT3
+dnl
+dnl AQ_CHECK_QT
 
 # Check for Qt compiler flags, linker flags, and binary packages
 
