@@ -1,6 +1,11 @@
+dnl ------------------------------------------------------------------------
 dnl Detect QGIS
 dnl
-dnl AQ_CHECK_QGIS
+dnl use AQ_CHECK_QGIS to detect QGIS
+dnl it sets:
+dnl   QGIS_CXXFLAGS
+dnl   QGIS_LDADD
+dnl ------------------------------------------------------------------------
 
 # Check for QGIS compiler and linker flags
 # Jens Oberender <j.obi@troja.net> 2004

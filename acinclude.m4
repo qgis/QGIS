@@ -1,6 +1,11 @@
+dnl ------------------------------------------------------------------------
 dnl Detect GDAL/OGR
 dnl
-dnl AQ_CHECK_GDAL
+dnl use AQ_CHECK_GDAL to detect GDAL and OGR
+dnl it sets:
+dnl   GDAL_CFLAGS
+dnl   GDAL_LDADD
+dnl ------------------------------------------------------------------------
 
 # Check for GDAL and OGR compiler and linker flags
 
@@ -41,9 +46,16 @@ AC_SUBST(GDAL_CFLAGS)
 AC_SUBST(GDAL_LDADD)
 ])
 
+dnl ------------------------------------------------------------------------                                                                             
 dnl Detect QT3
 dnl
-dnl AQ_CHECK_QT
+dnl use AQ_CHECK_QT to detect QT3
+dnl it sets:
+dnl   QT_CXXFLAGS
+dnl   QT_LDADD
+dnl   QT_GUILINK
+dnl   QASSISTANTCLIENT_LDADD
+dnl ------------------------------------------------------------------------                                                                             
 
 # Check for Qt compiler flags, linker flags, and binary packages
 
