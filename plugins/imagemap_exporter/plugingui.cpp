@@ -274,7 +274,7 @@ void PluginGui::pbnOK_clicked()
 	       urls[features[i].second][0]);
       
       // add an ALT text
-      file<<"\" alt=\"";
+      file<<"\" title=\"";
       if (alts[features[i].second].size() > 1)
 	file<<alts[features[i].second].size()<<" links";
       else if (altIndex != -1)
