@@ -135,7 +135,6 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, SHPHandle theSh
   //
   //Latitude loop
   //
-  myRecordInt=0;
   for (double myYDouble=-90.0;myYDouble<=90.0;myYDouble+=theYIntervalDouble)
   {
     
