@@ -151,7 +151,7 @@ QString fld;
 QString val;
 			switch (wkbType) { 
 			  case WKBPoint:
-			  
+			         p->setBrush(*brush);
 			//	fldDef = fet->GetFieldDefnRef(1);
 			//	 fld = fldDef->GetNameRef();
 				val = fet->GetFieldAsString(1);
