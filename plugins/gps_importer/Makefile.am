@@ -13,7 +13,7 @@
 plugindir = ${pkglibdir}
 
 #for plugin so
-plugin_LTLIBRARIES = libgpsimporterplugin.la
+plugin_LTLIBRARIES = gpsimporterplugin.la
 
 #for standalon executable
 bin_PROGRAMS = gpsimporter 
@@ -31,7 +31,7 @@ bin_PROGRAMS = gpsimporter
 ##  For plugin lib
 ##
 
-libgpsimporterplugin_la_SOURCES = plugin.cpp \
+gpsimporterplugin_la_SOURCES = plugin.cpp \
 	waypointtoshape.cpp \
 	waypointtoshape.h \
 	utils.c \
@@ -57,10 +57,10 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-libgpsimporterplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LADD) ../../src/libqgis.la
-libgpsimporterplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-libgpsimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
-libgpsimporterplugin_la_LDFLAGS = -avoid-version -module
+gpsimporterplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) ../../src/libqgis.la
+gpsimporterplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
+gpsimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+gpsimporterplugin_la_LDFLAGS = -avoid-version -module
 
 ##
 ##  For standalone executable
@@ -77,7 +77,7 @@ gpsimporter_SOURCES = main.cpp \
 	pluginguibase.cpp \
 	$(standalone_MOC) 
 
-gpsimporter_LDADD = $(QT_LDADD)  $(GDAL_LADD)
+gpsimporter_LDADD = $(QT_LDADD)  $(GDAL_LDADD)
 gpsimporter_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 gpsimporter_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
 
