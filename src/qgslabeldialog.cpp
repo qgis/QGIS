@@ -63,7 +63,7 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) : QgsLabelD
 void QgsLabelDialog::init ( void )
 {
 #ifdef QGISDEBUG
-  std::cerr << "QgsLabelDialog::reset" << std::endl;
+  std::cerr << "QgsLabelDialog::init" << std::endl;
 #endif
   QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
   //populate a string list with all the field names which will be used to set up the 
