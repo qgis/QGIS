@@ -126,7 +126,7 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 	QObject::connect(outlinestylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
 
 	QSpinBox *outlinewidthspinbox = new QSpinBox(viewport());
-	outlinewidthspinbox->setValue(1);
+	outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
 	m_gridlayout->addWidget(outlinewidthspinbox, i, 5);
 	m_widgetvector[8 * (i - 1) + 5] = outlinewidthspinbox;
 
