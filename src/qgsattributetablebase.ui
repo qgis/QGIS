@@ -77,7 +77,7 @@
 <customwidgets>
     <customwidget>
         <class>QgsAttributeTable</class>
-        <header location="global">/home/gsherman/development/qgis/src/qgsattributetable.h</header>
+        <header location="local">qgsattributetable.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
