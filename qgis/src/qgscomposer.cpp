@@ -410,8 +410,10 @@ void QgsComposer::print(void)
                 std::cout << "Printing ... " << std::endl;
 		QPainter p(mPrinter);
 		p.scale ( scale, scale); 
-		mComposition->canvas()->drawArea ( QRect(0,0, (int)mComposition->paperWidth(),
-						    (int)mComposition->paperHeight() ), &p, FALSE );
+	        mComposition->canvas()->drawArea ( QRect(0,0, 
+			        (int) (mComposition->paperWidth() * mComposition->scale()),
+			        (int) (mComposition->paperHeight() * mComposition->scale()) ), 
+	                                       &p, FALSE );
 		p.end();
                 std::cout << "... printing finished" << std::endl;
 	    }
