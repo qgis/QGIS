@@ -1,8 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.121 2004/06/09 21:36:33 mcoletti Exp
+ChangeLog,v 1.122 2004/06/10 15:38:53 sbr00pwb Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
+2004-06-10 [petebr] 0.3.0devel26
+Tidied up the SPIT gui to match the plugin template.
+Fixed bug in scale bar which displayed the bar the wrong size!
+Fixed all the plugins so they do not do multiple refreshes on exit.
+Added colour selection for scale bar.
 
 2004-06-09 [mcoletti] 0.3.0devel25
 Added support for a feature type name in QgsFeature.  The GDAL/OGR shape file
