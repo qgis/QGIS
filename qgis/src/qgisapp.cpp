@@ -897,6 +897,7 @@ static const char *const supportedRasterFormats_[] = {
   "USGSDEM",
   "HFA",
   "GRASS",
+  "DTED",
   ""                            // used to indicate end of list
 };
 
@@ -1077,7 +1078,11 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
           if (driverDescription.startsWith("USGSDEM"))
             {
               fileFilters += createFileFilter_(driverLongName, "*.dem");
-          } else
+            } else if (driverDescription.startsWith("DTED"))
+            {
+              // DTED use "*.dt0"
+              fileFilters += createFileFilter_(driverLongName, "*.dt0");
+            } else
             {
               catchallFilter += QString(driver->GetDescription()) + " ";
             }
@@ -1111,10 +1116,10 @@ void QgisApp::addRasterLayer()
 
   if (selectedFiles.isEmpty())
     {
-      // no files were selected, so just bail
+      // no files were selected, so just bail		
        return;
     }
-
+ 
    addRasterLayer(selectedFiles);
 
 }                               // QgisApp::addRasterLayer()
@@ -1124,7 +1129,7 @@ void QgisApp::addRasterLayer()
 
 
 bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
-{
+{	
    // let the user know we're going to possibly be taking a while
    QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -1272,6 +1277,8 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
             }
         }else
         {
+          QString msg(*myIterator + " is not a supported raster data source");
+          QMessageBox::critical(this, "Unsupported Data Source", msg);
           returnValue = false;
         }
     }
@@ -1305,7 +1312,8 @@ bool QgisApp::isValidRasterFileName(QString theFileNameQString)
           name.endsWith(".asc") ||
           name.endsWith(".grd") ||
           name.endsWith(".img") ||
-          name.endsWith(".tif") || name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".dem") || name.endsWith(".ddf"));
+          name.endsWith(".tif") || name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".dem") || name.endsWith(".ddf")) ||
+          name.endsWith(".dt0");
 }
 
 /** Overloaded of the above function provided for convenience that takes a qstring pointer */
