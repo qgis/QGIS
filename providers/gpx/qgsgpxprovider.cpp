@@ -422,6 +422,9 @@ std::vector<QgsFeature>& QgsGPXProvider::identify(QgsRect * rect) {
 	    <<rect->stringRep()<<std::endl; 
   // select the features
   select(rect);
+  // temporary fix to get this to compile under windows
+  std::vector<QgsFeature> features;
+  return features;
 }
 
 
