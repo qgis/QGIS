@@ -39,6 +39,7 @@
 
 // xpm for creating the toolbar icon
 #include "add_vector.xpm"
+#include "add_raster.xpm"
 static const char *pluginVersion = "0.1";
 
 /**
@@ -91,29 +92,34 @@ void QgsGrassPlugin::initGui()
 {
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-    pluginMenu->insertItem(QIconSet(icon_add_vector),"&GrassVector", this, SLOT(run()));
+    pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this, SLOT(addVector()));
+    pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
 
     menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
     menuIdInt = qGisInterface->addMenu("&GRASS", pluginMenu);
 
     // Create the action for tool
-    QAction *myQActionPointer = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
-	                                    "&Wmi",0, this, "run");
+    QAction *addVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
+	                                   "Add GRASS vector layer",0, this, "addVector");
+    QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
+	                                   "Add GRASS raster layer",0, this, "addRaster");
 
-    // Connect the action to the run
-    connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+    // Connect the action 
+    connect(addVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
+    connect(addRasterAction, SIGNAL(activated()), this, SLOT(addRaster()));
 
     // Add the toolbar
     toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "GRASS");
-    toolBarPointer->setLabel("Add GRASS vector layer");
+    toolBarPointer->setLabel("Add GRASS layer");
 
-    // Add the zoom previous tool to the toolbar
-    myQActionPointer->addTo(toolBarPointer);
+    // Add to the toolbar
+    addVectorAction->addTo(toolBarPointer);
+    addRasterAction->addTo(toolBarPointer);
 }
 
-// Slot called when the buffer menu item is activated
-void QgsGrassPlugin::run()
+// Slot called when the "Add GRASS vector layer" menu item is activated
+void QgsGrassPlugin::addVector()
 {
     QString uri;
 
@@ -140,6 +146,45 @@ void QgsGrassPlugin::run()
         qGisInterface->addVectorLayer( uri, name, "grass");
     }
 }
+
+// Slot called when the "Add GRASS raster layer" menu item is activated
+void QgsGrassPlugin::addRaster()
+{
+    QString uri;
+
+    std::cerr << "QgsGrassPlugin::addRaster" << std::endl;
+
+    QgsGrassSelect *sel = new QgsGrassSelect(QgsGrassSelect::RASTER );
+    if ( sel->exec() ) {
+	QString element;
+	if ( sel->selectedType == QgsGrassSelect::RASTER ) {
+	    element = "cellhd";
+	} else { // GROUP
+	    element = "group";
+	}
+	    
+	uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
+    }
+    #ifdef QGISDEBUG
+    std::cerr << "plugin URI: " << uri << std::endl;
+    #endif
+    if ( uri.length() == 0 ) {
+	std::cerr << "Nothing was selected" << std::endl;
+	return;
+    } else {
+        #ifdef QGISDEBUG
+	std::cout << "Add new raster layer" << std::endl;
+        #endif
+	// create raster name
+	int pos = uri.findRev('/');
+	pos = uri.findRev('/', pos-1);
+	QString name = uri.right( uri.length() - pos - 1 );
+	name.replace('/', ' ');
+
+        qGisInterface->addRasterLayer( uri );
+    }
+}
+
 
 // Unload the plugin by cleaning up the GUI
 void QgsGrassPlugin::unload()

@@ -59,8 +59,10 @@ Q_OBJECT public:
   virtual ~ QgsGrassPlugin();
 
 public slots:
-  //! Show the dialog box
-  void run();
+  //! Show the dialog box for new vector
+  void addVector();
+  //! Show the dialog box for new raster
+  void addRaster();
   //! unload the plugin
   void unload();
   //! show the help document
