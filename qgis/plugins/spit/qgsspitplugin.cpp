@@ -36,6 +36,12 @@
 // xpm for creating the toolbar icon
 #include "spiticon.xpm"
 
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
+
 static const char * const ident_ = "$Id$";
 
 static const char * const name_ = "SPIT";
@@ -114,38 +120,38 @@ void QgsSpitPlugin::unload()
 * of the plugin class
 */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
+QGISEXTERN QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
 {
     return new QgsSpitPlugin(qgis, qI);
 }
 
 // Return the name of the plugin
-extern "C" QString name()
+QGISEXTERN QString name()
 {
     return name_;
 }
 
 // Return the description
-extern "C" QString description()
+QGISEXTERN QString description()
 {
     return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
-extern "C" int type()
+QGISEXTERN int type()
 {
     return type_;
 }
 
 // Return the version
-extern "C" QString version()
+QGISEXTERN QString version()
 {
   return version_;
 }
 
 
 // Delete ourself
-extern "C" void unload(QgisPlugin * p)
+QGISEXTERN void unload(QgisPlugin * p)
 {
     delete p;
 }
