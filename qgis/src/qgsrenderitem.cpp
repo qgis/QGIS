@@ -20,17 +20,16 @@
 
 QgsRenderItem::QgsRenderItem(): mSymbol(new QgsSymbol())
 {
-};
+}
 
 QgsRenderItem::~QgsRenderItem()
 {
     delete mSymbol;
 }
 
-QgsRenderItem::QgsRenderItem(QgsSymbol symbol, QString _value, QString _label):
-    mSymbol(new QgsSymbol()),mValue(_value), mLabel(_label)
+QgsRenderItem::QgsRenderItem(QgsSymbol* symbol, QString _value, QString _label):
+    mSymbol(symbol),mValue(_value), mLabel(_label)
 {
-    (*mSymbol)=symbol;
 }
 
 void QgsRenderItem::setLabel(QString label)

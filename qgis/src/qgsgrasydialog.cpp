@@ -274,33 +274,33 @@ void QgsGraSyDialog::apply()
 	int rowincrement = rowheight + rowspace;
 	for (int i = 0; i < numberofclassesspinbox->value(); i++)
         {
-	    QgsSymbol sy(QColor(255, 0, 0));
+	    QgsSymbol* sy = new QgsSymbol();
 	    
 	    if (mVectorLayer->vectorType() == QGis::Polygon)
             {
-		sy.pen().setColor(((QPushButton *) (ext->getWidget(3, 0)))->paletteBackgroundColor());
-		sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton *) (ext->getWidget(4, 0)))->name())));
-		sy.pen().setWidth(((QSpinBox *) (ext->getWidget(5, 0)))->value());
+		sy->pen().setColor(((QPushButton *) (ext->getWidget(3, 0)))->paletteBackgroundColor());
+		sy->pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton *) (ext->getWidget(4, 0)))->name())));
+		sy->pen().setWidth(((QSpinBox *) (ext->getWidget(5, 0)))->value());
 	    } 
 	    else
             {
-		sy.pen().setColor(((QPushButton *) (ext->getWidget(3, i)))->paletteBackgroundColor());
-		sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton *) (ext->getWidget(4, i)))->name())));
-		sy.pen().setWidth(((QSpinBox *) (ext->getWidget(5, i)))->value());
+		sy->pen().setColor(((QPushButton *) (ext->getWidget(3, i)))->paletteBackgroundColor());
+		sy->pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton *) (ext->getWidget(4, i)))->name())));
+		sy->pen().setWidth(((QSpinBox *) (ext->getWidget(5, i)))->value());
             }
 	    
 	    if (mVectorLayer->vectorType() != QGis::Line)
             {
-		sy.brush().setColor(((QPushButton *) (ext->getWidget(6, i)))->paletteBackgroundColor());
+		sy->brush().setColor(((QPushButton *) (ext->getWidget(6, i)))->paletteBackgroundColor());
             }
 	    
 	    if (mVectorLayer->vectorType() == QGis::Polygon)
             {
-		sy.brush().setStyle(QgsSymbologyUtils::char2BrushStyle((((QPushButton *) (ext->getWidget(7, i)))->name())));
+		sy->brush().setStyle(QgsSymbologyUtils::char2BrushStyle((((QPushButton *) (ext->getWidget(7, i)))->name())));
 	    } 
 	    else if (mVectorLayer->vectorType() == QGis::Point)
             {
-		sy.brush().setStyle(Qt::SolidPattern);
+		sy->brush().setStyle(Qt::SolidPattern);
             }
 	    QString lower_bound = ((QLineEdit *) (ext->getWidget(0, i)))->text();
 	    QString upper_bound = ((QLineEdit *) (ext->getWidget(1, i)))->text();
@@ -333,8 +333,8 @@ void QgsGraSyDialog::apply()
 		//add the symbol to the picture
 
 		QString legendstring = lower_bound + " - " + upper_bound;
-		p.setPen(sy.pen());
-		p.setBrush(sy.brush());
+		p.setPen(sy->pen());
+		p.setBrush(sy->brush());
 		if (mVectorLayer->vectorType() == QGis::Polygon)
                 {
 		    p.drawRect(leftspace, offset + rowincrement * i + (rowheight - symbolheight), symbolwidth, symbolheight); //implement different painting for lines and points here
