@@ -23,6 +23,7 @@ email                : tim@linfiniti.com
 // includes
 
 #include "../../src/qgisapp.h"
+#include "../../src/qgsmaplayerregistry.h"
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsrasterlayer.h"
 #include "plugin.h"
@@ -114,7 +115,7 @@ void Plugin::initGui()
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Gps");
   toolBarPointer->setLabel("Gps Tools");
-  // Add the zoom previous tool to the toolbar
+  // Add the tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
 
 
@@ -129,7 +130,8 @@ void Plugin::help()
 // Slot called when the buffer menu item is activated
 void Plugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"GPS Tools",true,0);
+  std::vector<QgsMapLayer*> gpxLayers;
+  PluginGui *myPluginGui=new PluginGui(gpxLayers, qgisMainWindowPointer, "GPS Tools", true, 0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

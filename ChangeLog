@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.132 2004/06/14 11:03:58 timlinux Exp
+ChangeLog,v 1.133 2004/06/14 22:37:36 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-15 [larsl] 0.3.0devel37
+** More preparation for GPS upload code
+** New function in QgisInterface - getLayerRegistry()
 
 2004-06-14 [ts] 0.3.0devel36
 ** Added capability for plugins to clear the current project ignoring 

@@ -14,6 +14,11 @@
 
 #include <pluginguibase.h>
 
+#include <vector>
+
+
+class QgsMapLayer;
+
 /**
 @author Tim Sutton
 */
@@ -22,7 +27,8 @@ class PluginGui : public PluginGuiBase
   Q_OBJECT
     public:
       PluginGui();
-      PluginGui( QWidget* parent , const char* name , bool modal , WFlags );
+      PluginGui( std::vector<QgsMapLayer*> gpxMapLayers, QWidget* parent , 
+		 const char* name , bool modal , WFlags );
       ~PluginGui();
 
     private:
@@ -39,10 +45,15 @@ class PluginGui : public PluginGuiBase
       void pbnOK_clicked();
 
       void populateDeviceComboBox();
+      void populateULLayerComboBox();
       
 signals:
       void drawRasterLayer(QString);
       void drawVectorLayer(QString,QString,QString);
+
+private:
+      std::vector<QgsMapLayer*> gpxLayers;
+
 };
 
 #endif

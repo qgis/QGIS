@@ -79,6 +79,8 @@ class QgisIface : public QgisInterface{
         std::map<int,QString> menuMapById();
         /** Return a pointer to the map canvas used by qgisapp */
         QgsMapCanvas * getMapCanvas();	
+        /** Return a pointer to the map layer registry */
+        QgsMapLayerRegistry * getLayerRegistry();	
     private:
         //! Pointer to the QgisApp object
         QgisApp *qgis;
