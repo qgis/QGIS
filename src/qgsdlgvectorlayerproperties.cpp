@@ -162,6 +162,9 @@ QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
 
 void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsDlgVectorLayerProperties::alterLayerDialog(" << string << ") " << std::endl;
+#endif
   if (rendererDirty)
     {
       widgetStackRenderers->removeWidget(bufferDialog);
@@ -376,14 +379,14 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
   // from the provider
 
   // get the data provider
-  QgsVectorDataProvider *dp = 
+  QgsVectorDataProvider *dp =
     dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   // cast to postgres provider type
   QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) dp;
   // create the query builder object using the table name
   // and postgres connection from the provider
-  QgsPgQueryBuilder *pqb = 
-    new QgsPgQueryBuilder(myPGProvider->getTableName(), 
+  QgsPgQueryBuilder *pqb =
+    new QgsPgQueryBuilder(myPGProvider->getTableName(),
         myPGProvider->pgConnection());
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
