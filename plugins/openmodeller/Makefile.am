@@ -55,12 +55,11 @@ openmodellerguibase.cpp: openmodellerguibase.h openmodellerguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src -I/usr/local/include -I/usr/local/include/openmodeller
 
 libopenmodellerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la -L/usr/lib -lopenmodeller
 
-libopenmodellerplugin_la_LDFLAGS = -avoid-version -module
-
+libopenmodellerplugin_la_LDFLAGS = -avoid-version -module 
 ##
 ##  For standalone executable
 ##
