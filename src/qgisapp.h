@@ -118,6 +118,7 @@ class QgisApp:public QgisAppBase
 	void socketConnectionClosed();
 	void socketReadyRead();
 	void socketError(int e);
+/* 	void urlData(); */
   private:
 //! Popup menu
 	  QPopupMenu * popMenu;

@@ -26,6 +26,7 @@
 #include <qscrollview.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
+#include <qerrormessage.h>
 #include <qstatusbar.h>
 #include <qlabel.h>
 #include <qfiledialog.h>
@@ -61,7 +62,7 @@
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
 #endif
-
+#include "qgsmessageviewer.h"
 #include "qgsshapefilelayer.h"
 #include "qgslayerproperties.h"
 #include "qgsabout.h"
@@ -74,6 +75,7 @@
 
 // version
 static const char *qgisVersion = "0.0.11pre1 June 2, 2003";
+static const int qgisVersionInt = 10;
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -782,8 +784,12 @@ void QgisApp::restoreWindowState()
 	setGeometry(x, y, w, h);
 }
 void QgisApp::checkQgisVersion(){
+QApplication::setOverrideCursor(Qt::WaitCursor);
+/* QUrlOperator op = new QUrlOperator( "http://mrcc.com/qgis/version.txt" );
+connect(op, SIGNAL(data()), SLOT(urlData()));
+connect(op, SIGNAL(finished(QNetworkOperation)), SLOT(urlFinished(QNetworkOperation)));
 
-
+op.get(); */
 		socket = new QSocket( this );
         connect( socket, SIGNAL(connected()),
                 SLOT(socketConnected()) );
@@ -793,22 +799,55 @@ void QgisApp::checkQgisVersion(){
                 SLOT(socketReadyRead()) );
 		connect( socket, SIGNAL(error(int)),
                 SLOT(socketError(int)) );
-		socket->connectToHost("mrcc.com", 4444);
+		socket->connectToHost("mrcc.com", 80);
 }
-
 void QgisApp::socketConnected(){
 		QTextStream os(socket);
 		versionMessage = "";
 		// send the qgis version string
-        os << qgisVersion << "\r\n";
+       // os << qgisVersion << "\r\n";
+	   os << "GET /qgis/version.txt HTTP/1.0\n\n";
 		
 	
 }
 void QgisApp::socketConnectionClosed(){
-	// show version message from server
-	QMessageBox::information(this, "QGIS Version Information", versionMessage);
+	QApplication::restoreOverrideCursor();
+	// strip the header
+	QString contentFlag = "#QGIS Version";
+	int pos = versionMessage.find(contentFlag);
+	if(pos >-1){
+		pos += contentFlag.length();
+		/* std::cout << versionMessage << "\n ";
+		std::cout << "Pos is " << pos <<"\n"; */
+		versionMessage = versionMessage.mid(pos);
+		QStringList parts = QStringList::split("|",versionMessage);
+		// check the version from the  server against our version
+		QString versionInfo;
+		int currentVersion = parts[0].toInt();
+		if(currentVersion > qgisVersionInt){
+		// show version message from server
+			versionInfo = "There is a new version of QGIS available\n";
+		}else{
+			versionInfo = "You are running the current version of QGIS\n";
+		}
+		if(parts.count() > 1){
+			versionInfo += parts[1] + "\n\nWould you like more information?";;
+			int result = QMessageBox::information(this,"QGIS Version Information", versionInfo, "Yes", "No");
+			if(result ==0){
+				// show more info
+				QgsMessageViewer *mv = new QgsMessageViewer(this);
+				mv->setMessage(parts[2]);
+				mv->exec();
+			}	
+		}else{
+			QMessageBox::information(this, "QGIS Version Information", versionInfo);
+		}
+	}else{
+		QMessageBox::warning(this, "QGIS Version Information", "Unable to get current version information from server");
+	}
 }
 void QgisApp::socketError(int e){
+		QApplication::restoreOverrideCursor();
 // get errror type
 QString detail;
 switch(e){

@@ -65,7 +65,8 @@ FORMS += qgisappbase.ui \
          qgslayerpropertiesbase.ui \
          qgsidentifyresultsbase.ui \
          qgsattributetablebase.ui \
-         qgspluginmanagerbase.ui 
+         qgspluginmanagerbase.ui  \
+		 qgsmessageviewer.ui
 TEMPLATE = app 
 CONFIG += debug \
           warn_on \
