@@ -5,9 +5,15 @@
 #
 # $Id$
 ####################################################################
+
+#
+# Note this plugin should not nwd to link against gdal - but wont build without it :-(
+#      although even when it does build it wont load
+#
+
 TEMPLATE = lib or app for a standalone exe
-INCLUDEPATH += . ..\..\qgis_win32 ..\..\qgis_win32\src ..\..\qgis_win32\plugins 
-LIBS += ..\..\qgis_win32\src\libqgis.lib 
+INCLUDEPATH += . %GDAL%\include ..\..\qgis_win32 ..\..\qgis_win32\src ..\..\qgis_win32\plugins 
+LIBS += ..\..\qgis_win32\src\libqgis.lib $(GDAL)\lib\gdal_i.lib 
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\qgis_win32\win_build\lib\qgis
 

@@ -67,8 +67,6 @@ public slots:
   void loadVectorFile(QString theVectorFile);
   //! Load a vector file over a project
   void loadVectorFile(QString theVectorFile, QString theProjectFile);
-  //! Zoom to full extents of all layers
-  void zoomToFullExtents();
   //! Change the enabled status of the http server
   void setEnabled (bool);
   //! Return the status of the http server
@@ -86,7 +84,9 @@ public slots:
   //! Stop the server
   void stopServer();
   //! Passed by the http daemon when it receives a new request
-  void requestReceived(QString);
+  void requestReceived(QString){};
+  //! Zoom to full extents of all layers
+  void zoomToFullExtents(){};
 
 private:
   //! The instance of the http server used by this plugin
