@@ -199,6 +199,12 @@ void QgsComposer::zoomOut(void)
     mView->repaintContents();
 }
 
+void QgsComposer::refresh(void)
+{
+    mComposition->refresh();
+    mView->repaintContents();
+}
+
 void QgsComposer::print(void)
 {
     /* Uff!!! It is impossible to set a custom page size for QPrinter.

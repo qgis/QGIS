@@ -545,6 +545,22 @@ double QgsComposition::viewScale ( void )
     return scale; 
 }
 
+void QgsComposition::refresh()
+{
+    // TODO add signals to map canvas
+    for (std::list < QgsComposerItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it)    {
+	QgsComposerItem *ci = (*it);
+	if (  typeid (*ci) == typeid(QgsComposerMap) ) {
+	    QgsComposerMap *cm = dynamic_cast<QgsComposerMap*>(ci);
+	    cm->setCacheUpdated(false);
+	} else if (  typeid (*ci) == typeid(QgsComposerVectorLegend) ) {
+	    QgsComposerVectorLegend *vl = dynamic_cast<QgsComposerVectorLegend*>(ci);
+	    vl->recalculate();
+	}
+    }
+
+}
+
 int QgsComposition::id ( void ) { return mId; }
 
 QgsComposer *QgsComposition::composer(void) { return mComposer; }

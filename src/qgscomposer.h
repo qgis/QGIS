@@ -68,6 +68,9 @@ public:
     //! Zoom out 
     void zoomOut();
 
+    //! Refresh view 
+    void refresh();
+
     //! Return pointer to map canvas
     QgsMapCanvas *mapCanvas( void );
     
