@@ -32,8 +32,9 @@ spitplugin_la_SOURCES =  qgsspit.cpp \
 	qgsshapefile.h \
 	qgsmessageviewer.cpp \
 	qgsmessageviewer.h \
-	$(spit_UI)\
-	$(spit_MOC)
+	$(spit_UI)
+  
+nodist_spitplugin_la_SOURCES = $(spit_MOC)
 
 spit_MOC = qgsspit.moc.cpp \
 	qgsspitplugin.moc.cpp \
@@ -63,7 +64,7 @@ qgsspitbase.h: qgsspitbase.ui
 qgsmessageviewerbase.cpp: qgsmessageviewerbase.h qgsmessageviewerbase.ui
 qgsmessageviewerbase.h: qgsmessageviewerbase.ui
 
-BUILT_SOURCES = $(spit_MOC) $(spit_UI)
+#BUILT_SOURCES = $(spit_MOC) $(spit_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 

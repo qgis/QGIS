@@ -125,12 +125,14 @@ qgis_SOURCES =  qgisapp.cpp \
 		qgsvectorlayerproperties.h \
 		splashscreen.cpp \
 		splashscreen.h \
-		$(qgis_UI) \
-		$(qgis_MOC)
+		$(qgis_UI)
+
+nodist_qgis_SOURCES	=	$(qgis_MOC)
 
 qgis_MOC = 	splashscreen.moc.cpp \
 						qgisappbase.moc.cpp \
           	qgisapp.moc.cpp \
+						qgisinterface.moc.cpp \
 						qgsabout.moc.cpp \
           	qgsattributetable.moc.cpp \
 						qgsattributetablebase.moc.cpp \
@@ -149,7 +151,6 @@ qgis_MOC = 	splashscreen.moc.cpp \
 						qgslinestyledialogbase.moc.cpp \
 						qgsmapcanvas.moc.cpp \
 						qgsmaplayer.moc.cpp \
-						qgisinterface.moc.cpp \
 						qgsmaplayerinterface.moc.cpp \
 						qgsmapserverexport.moc.cpp \
 						qgsmapserverexportbase.moc.cpp \
@@ -167,7 +168,7 @@ qgis_MOC = 	splashscreen.moc.cpp \
 						qgsdlgvectorlayerpropertiesbase.moc.cpp \
 						qgshelpviewerbase.moc.cpp \
             qgsoptionsbase.moc.cpp \
-						qgsvectorlayer.moc.cpp \
+		        qgsvectorlayer.moc.cpp \
 						qgsvectorlayerproperties.moc.cpp \
 						qgsvectorlayerpropertiesbase.moc.cpp
 
@@ -315,4 +316,4 @@ qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
 AM_CXXFLAGS = $(PREFIX) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(postgresUIC) $(qgis_UIC) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm
+EXTRA_DIST = $(postgresUIC) $(qgis_UIC) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm images/splash.xpm
