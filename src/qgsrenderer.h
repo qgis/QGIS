@@ -32,10 +32,15 @@ class QColor;
 #include <qstring.h>
 #include <qdom.h>
 
+#include "qgsproject.h"
+#include <qcolor.h>
+
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
 class QgsRenderer
 {
  public:
+    /** Default ctor sets up selection colour from project properties */
+    QgsRenderer();
     /**Sets the initial symbology configuration for a layer. Besides of applying default symbology settings, an instance of the corresponding renderer dialog is created and associated with the layer (or with the property dialog, if pr is not 0). Finally, a pixmap for the legend is drawn (or, if pr is not 0, it is stored in the property dialog, until the settings are applied).
      @param layer the vector layer associated with the renderer
      @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
@@ -60,7 +65,19 @@ class QgsRenderer
     /**Returns a list with indexes of classification attributes*/
     virtual std::list<int> classificationAttributes()=0;
     /**Returns the renderers name*/
-    virtual QString name()=0;
+    virtual QString name()=0;    
+    /** Set up the selection color by reading approriate values from project props */
+    void initialiseSelectionColor();         
+    /**Color to draw selected features - static so we can change it in proj props and automatically 
+       all renderers are updated*/
+    static QColor mSelectionColor;
+    
 };
-
+inline void QgsRenderer::initialiseSelectionColor()
+{
+    int myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
+    int myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",255);
+    int myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
+    mSelectionColor = QColor(myRedInt,myGreenInt,myBlueInt);
+}
 #endif // QGSRENDERER_H

@@ -54,7 +54,10 @@ class QgsSiMaRenderer: public QgsRenderer
 
 inline QgsSiMaRenderer::QgsSiMaRenderer()
 {
-    mItem=new QgsRenderItem(new QgsMarkerSymbol(),"","");
+  //call superclass method to set up selection colour
+  initialiseSelectionColor();
+
+  mItem=new QgsRenderItem(new QgsMarkerSymbol(),"","");
 }
 
 inline QgsSiMaRenderer::~QgsSiMaRenderer()

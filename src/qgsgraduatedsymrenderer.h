@@ -77,14 +77,13 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     int mClassificationField;
     /**List holding the render items for the individual classes*/
     std::list<QgsRangeRenderItem*> mItems;
-    /**Color to draw selected features*/
-    QColor mSelectionColor;
     
 };
 
-inline QgsGraduatedSymRenderer::QgsGraduatedSymRenderer(): mSelectionColor(QColor(255,255,0))
+inline QgsGraduatedSymRenderer::QgsGraduatedSymRenderer()
 {
-
+  //call superclass method to set up selection colour
+  initialiseSelectionColor();
 }
 
 inline void QgsGraduatedSymRenderer::addItem(QgsRangeRenderItem* ri)

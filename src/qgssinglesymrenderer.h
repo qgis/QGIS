@@ -60,8 +60,6 @@ class QgsSingleSymRenderer: public QgsRenderer
     virtual QString name();
  protected:
     QgsRenderItem* mItem;
-    /**Color to draw selected features*/
-    QColor mSelectionColor;
 };
 
 inline QgsRenderItem* QgsSingleSymRenderer::item()

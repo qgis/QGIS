@@ -25,9 +25,11 @@
 #include "qgssymbologyutils.h"
 #include <qdom.h>
 
-QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem()), mSelectionColor(QColor(255,255,0))
+QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem())
 {
-    
+  //call superclass method to set up selection colour
+  initialiseSelectionColor();
+
 }
 
 QgsSingleSymRenderer::~QgsSingleSymRenderer()

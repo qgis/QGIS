@@ -28,8 +28,10 @@
 #include <qpainter.h>
 #include <vector>
 
-QgsUniqueValRenderer::QgsUniqueValRenderer(): mClassificationField(0),mSelectionColor(QColor(255,255,0))
+QgsUniqueValRenderer::QgsUniqueValRenderer(): mClassificationField(0)
 {
+  //call superclass method to set up selection colour
+  initialiseSelectionColor();
 
 }
 
