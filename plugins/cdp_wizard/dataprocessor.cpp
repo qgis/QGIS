@@ -258,7 +258,7 @@ int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
                 }
             }
 
-            //Check whether value is highest so far.  If this is the first quarter always keep value.
+            //Check whether value is lowest so far.  If this is the first quarter always keep value.
             if (myFirstTimeFlag == true)
             {
                 myLowestMonthInt = myInt;
@@ -267,7 +267,7 @@ int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
             }
             else
             {
-                //Test to see whether current value is the highest so far. If so store month number
+                //Test to see whether current value is the lowest so far. If so store month number
                 if (myCurrentFloat < myLowestFloat)
                 {
                     myLowestMonthInt = myInt;
@@ -376,8 +376,8 @@ int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
     {
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the firstMonthOfHighestQ method " << std::endl;
-        myHighestMonthInt = -9999;
 #endif
+        myHighestMonthInt = -9999;
     }
 
 
@@ -439,8 +439,8 @@ float DataProcessor::meanOverQuarter (QValueVector <float> theClimateVector, int
     {
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the meanOverQuarter method " << std::endl;
-        myMeanFloat = -9999;
 #endif
+        myMeanFloat = -9999;
     }
     return myMeanFloat;
 }
@@ -464,13 +464,13 @@ float DataProcessor::lowestValue (QValueVector <float> theClimateVector)
         for (myInt=0; myInt < myVectorLengthInt; myInt++)
         {
             //If this is the first run store value as lowest
-            if (myFirstTimeFlag == true)
+            if (myFirstTimeFlag)
             {
                 myLowestFloat = theClimateVector[myInt];
 #ifdef QGISDEBUG
                 std::cout << "Lowest value set to " << myLowestFloat << " on first iteration." << std::endl;
-                myFirstTimeFlag = false;
 #endif
+                myFirstTimeFlag = false;
 
             }
             //Test to see whether value is lowest so far
@@ -482,13 +482,14 @@ float DataProcessor::lowestValue (QValueVector <float> theClimateVector)
                 }
             }
         }
+        //std::cout <<  "Lowest value was : " << myLowestFloat << std::endl;
     }
     catch (...)
     {
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the lowestValue method " << std::endl;
-        myLowestFloat = -9999;
 #endif
+        myLowestFloat = -9999;
     }
     //Return lowest value
     return myLowestFloat;
@@ -518,11 +519,11 @@ float DataProcessor::highestValue (QValueVector <float> theClimateVector)
                 myHighestFloat = theClimateVector[myInt];
 #ifdef QGISDEBUG
                 std::cout << "Highest value set to " << myHighestFloat << " on first iteration." << std::endl;
-                myFirstTimeFlag = false;
 #endif
+                myFirstTimeFlag = false;
 
             }
-            //Test to see whether value is lowest so far
+            //Test to see whether value is highest so far
             else
             {
                 if (myHighestFloat < theClimateVector[myInt])
@@ -589,8 +590,8 @@ float DataProcessor::greatestTotalRange (QValueVector <float> theClimateVector1,
     {
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the greatestTotalRange method " << std::endl;
-        myRangeFloat = -9999;
 #endif
+        myRangeFloat = -9999;
 
     }
     return myRangeFloat;

@@ -1070,12 +1070,13 @@ bool ClimateDataProcessor::run()
     int myCurrentYearInt = jobStartYearInt; //this will be changed on each iteration
 
     //send singals so progress monitors can set themselves up
-    emit numberOfYearsToCalc(myNumberOfIterationsInt);
-    emit numberOfVariablesToCalc(myNumberOfVariablesInt);
     emit numberOfCellsToCalc(myNumberOfCells);
+    emit numberOfVariablesToCalc(myNumberOfVariablesInt);
+    emit numberOfYearsToCalc(myNumberOfIterationsInt);
 
     //This is the MAIN OUTER LOOP:
     //cycle through each year block, doing all the requested calculations for that year
+
     bool myFirstLoopFlag = true;
     for (int myCDPMainLoopInt = jobStartYearInt;
             myCDPMainLoopInt < (jobEndYearInt +1);
@@ -1150,13 +1151,32 @@ bool ClimateDataProcessor::run()
                 //Otherwise calculate one dynamically
                 else
                 {
-                 QString myHeaderString=
-                 QString ("ncols         720\n")+
-                 QString ("nrows         360\n")+
-                 QString ("xllcorner     -180\n")+
-                 QString ("yllcorner     -90\n")+
-                 QString ("cellsize      0.5\n")+
-                 QString ("nodata_value  -9999\n");                    myFileWriter->writeString(myHeaderString);
+		  // Use the matrix dimensions to create the ascii file
+		  // Warning: this assumes a GLOBAL dataset
+		  // Warning: this screws up cellsizes that are not square
+		  // Warning: this only works for integers at present
+		  QString myHeaderString=
+		    QString ("ncols         ") +
+		    QString::number (myXDimInt) + 
+		    QString ("\n")+
+		    QString ("nrows         ") + 
+		    QString::number (myYDimInt) + 
+		    QString ("\n")+
+		    QString ("xllcorner     -180\n")+
+		    QString ("yllcorner     -90\n")+
+		    QString ("cellsize      ") + 
+		    QString::number (360/static_cast<float>(myXDimInt)) +
+		    QString ("\n")+
+		    QString ("nodata_value  -9999\n");                    myFileWriter->writeString(myHeaderString);
+		  // Formerly this was fixed to the following
+		  //QString myHeaderString=
+		  //QString ("ncols         720\n")+
+		  //QString ("nrows         360\n")+
+		  //QString ("xllcorner     -180\n")+
+		  //QString ("yllcorner     -90\n")+
+		  //QString ("cellsize      0.5\n")+
+		  //QString ("nodata_value  -9999\n");                    myFileWriter->writeString(myHeaderString);
+
                 }
 
                 std::cout << "Added " << myFileWriter->getFileNameString() << std::endl;

@@ -126,12 +126,12 @@ bool CDPWizard::initialise()
     climateDataProcessor = new ClimateDataProcessor();
 
     //hook uo signals and slots
-    connect(climateDataProcessor,SIGNAL(numberOfYearsToCalc(int)),
-                                 this,SLOT(numberOfYearsToCalc(int)));
-    connect(climateDataProcessor,SIGNAL(numberOfVariablesToCalc(int)),
-                                 this,SLOT(numberOfVariablesToCalc(int)));
     connect(climateDataProcessor,SIGNAL(numberOfCellsToCalc(int)),
                                  this,SLOT(numberOfCellsToCalc(int)));
+    connect(climateDataProcessor,SIGNAL(numberOfVariablesToCalc(int)),
+                                 this,SLOT(numberOfVariablesToCalc(int)));
+    connect(climateDataProcessor,SIGNAL(numberOfYearsToCalc(int)),
+                                 this,SLOT(numberOfYearsToCalc(int)));
     connect(climateDataProcessor,SIGNAL(yearStart(QString)),
                                  this,SLOT(yearStart(QString )));
     connect(climateDataProcessor,SIGNAL(yearDone()),
@@ -455,47 +455,51 @@ void CDPWizard::run()
 // emitted by climatedataprocessor
 //
 
-void CDPWizard::numberOfYearsToCalc(int theNumberInt)
-{
-  progressTotalJob->setTotalSteps(progressCurrentYear->totalSteps()* theNumberInt);
-}
-void CDPWizard::numberOfVariablesToCalc(int theNumberInt)
-{
-  progressCurrentYear->setTotalSteps(theNumberInt);
-}
 void CDPWizard::numberOfCellsToCalc(int theNumberInt)
 {
    progressCurrentTask->setTotalSteps(theNumberInt);
 }
+void CDPWizard::numberOfVariablesToCalc(int theNumberInt)
+{
+  //progressCurrentYear->setTotalSteps(theNumberInt);
+  progressCurrentYear->setTotalSteps(progressCurrentTask->totalSteps()* theNumberInt);
+}
+void CDPWizard::numberOfYearsToCalc(int theNumberInt)
+{
+  //progressTotalJob->setTotalSteps(theNumberInt);
+  progressTotalJob->setTotalSteps(progressCurrentYear->totalSteps()* theNumberInt);
+}
 void CDPWizard::yearStart(QString theNameQString)
 {
-  progressCurrentYear->setProgress(1);
+  progressCurrentYear->setProgress(0);
   lblCurrentYear->setText("<p align=\"right\">Calculating variables for " + theNameQString + "</p>");
+  qApp->processEvents();
 }
 void CDPWizard::yearDone()
 {
    //dont set progress to 0 - 0 has a special qt meaning of 'busy'
-  progressCurrentTask->setProgress(1);
-  progressCurrentYear->setProgress(0);
-  progressTotalJob->setProgress(progressTotalJob->progress()+1);
+  //progressCurrentTask->setProgress(0);
+  //progressCurrentYear->setProgress(0);
+  //progressTotalJob->setProgress(progressTotalJob->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::variableStart(QString theNameQString)
 {
   lblCurrentTask->setText("<p align=\"right\">" + theNameQString + "</p>");
-
+  progressCurrentTask->setProgress(0);
 }
 void CDPWizard::variableDone()
 {
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
-  progressCurrentTask->setProgress(1);
-  progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
-  progressTotalJob->setProgress(progressTotalJob->progress()+1);
+  //progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
+  //progressTotalJob->setProgress(progressTotalJob->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::cellDone(float theResultFloat)
 {
   progressCurrentTask->setProgress(progressCurrentTask->progress()+1);
+  progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
+  progressTotalJob->setProgress(progressTotalJob->progress()+1);
   //update the elapsed time
   QString myLabelString;
   myLabelString.sprintf("<p align=\"right\">Time elapsed: %d s</p>", startTime.elapsed()/1000);
