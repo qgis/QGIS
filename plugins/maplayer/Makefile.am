@@ -8,8 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I../../src
-
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = maplayerplugin.la
 
@@ -35,3 +33,4 @@ maplayerplugin_la_SOURCES =  maplayertest.cpp \
 
 maplayerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
 maplayerplugin_la_LDFLAGS = -avoid-version -module
+maplayerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I../../src

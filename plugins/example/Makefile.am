@@ -30,7 +30,7 @@ example_UI =
 
 # UI dependencies			
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I../../src
 
 exampleplugin_la_LIBADD = $(QT_LDADD) 
 exampleplugin_la_LDFLAGS = -avoid-version -module
+exampleplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I../../src

@@ -11,10 +11,6 @@
 PREFIX=-DPREFIX=\"$(prefix)\"
 PLUGINPATH=-DPLUGINPATH=\"$(libdir)/qgis\"
 
-AM_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
-
-
-
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -248,10 +244,12 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 
 
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 
 libqgis_la_SOURCES = qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp qgsfield.cpp
 #libqgis_la_LIBFLAGS = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
 libqgis_la_LIBFLAGS =  $(QT_LDADD)
+libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 
 ## for installing headers in $(includedir)/qgis
 pkginclude_HEADERS = $(headers) $(qgis_UIHEADERS) $(qgis_UIH) $(postgresHEADERS) $(postgresUIH)

@@ -10,8 +10,6 @@
 #
 # $Id$
 
-AM_CXXFLAGS := $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC) -I../../src/
-
 plugindir = ${pkglibdir}
 
 %.moc.cpp: %.h
@@ -51,5 +49,6 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 grassplugin_la_LIBADD = $(QT_LDADD) $(GRASS_LIB) $(PG_LIB)
 grassplugin_la_LDFLAGS = -avoid-version -module
+grassplugin_la_CXXFLAGS = $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC) -I../../src/
 
 EXTRA_DIST = $(plugin_UIC) # add_vector.xpm

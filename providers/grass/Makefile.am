@@ -20,7 +20,6 @@ grassprovider_la_SOURCES = qgsgrassprovider.cpp \
 			../../src/qgspoint.cpp \
 			../../src/qgsfield.cpp 
 
-AM_CXXFLAGS := $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
-
 grassprovider_la_LIBADD = $(QT_LDADD)  $(GRASS_LIB)
 grassprovider_la_LDFLAGS = -avoid-version -module
+grassprovider_la_CXXFLAGS = $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
