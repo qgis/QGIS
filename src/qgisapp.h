@@ -30,7 +30,7 @@ class QListView;
 class QListViewItem;
 class QgsMapLayer;
 #include "qgisappbase.h"
-
+#include "qgisiface.h"
 class QgsMapCanvas;
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -42,6 +42,10 @@ class QgisApp:public QgisAppBase
 	QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
 
 	 ~QgisApp();
+	 private:
+	 QgisInterface *getInterface();
+	 int getInt();
+	 //private:
 	//public slots:
 	//! Add a layer to the map
 	void addLayer();
@@ -77,7 +81,7 @@ class QgisApp:public QgisAppBase
 	//! About QGis
 	void about();
 
-	public slots:
+	private slots:
 //! Slot to show the map coordinate position of the mouse cursor
 	void showMouseCoordinate(QgsPoint &);
 	//! Show layer properties for the selected layer
@@ -124,6 +128,8 @@ class QgisApp:public QgisAppBase
 	QString startupPath;
 	//! full path name of the current map file (if it has been saved or loaded)
 	QString fullPath;
+	QgisIface *qgisInterface;
+	friend class QgisIface;
 };
 
 #endif

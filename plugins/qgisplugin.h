@@ -22,6 +22,7 @@
 #include <qstring.h>
 #include <qwidget.h>
 #include <qmainwindow.h>
+#include "../src/qgisapp.h"
 
 //#include "qgisplugingui.h"
 
@@ -52,7 +53,7 @@ public:
 // Typedefs
 
 //! Typedef for function that returns a generic pointer to a plugin object
-typedef QgisPlugin* create_t(QMainWindow *);
+typedef QgisPlugin* create_t(QgisApp *, QgisInterface *);
 //! Typedef for the function to unload a plugin and free its resources
 typedef void unload_t(QgisPlugin *);
 
