@@ -33,62 +33,63 @@ bin_PROGRAMS = qgis
 ## ancillary library for plug-ins
 lib_LTLIBRARIES = libqgis.la
 
-headers =  qgis.h				\
-	   qgisiface.h				\
-	   qgisinterface.h			\
-	   qgsattributetable.h			\
-	   qgsattributetabledisplay.h		\
-	   qgscontcoldialog.h			\
-	   qgscontinuouscolrenderer.h		\
-	   qgscoordinatetransform.h		\
-	   qgscustomsymbol.h			\
-	   qgsdatabaselayer.h			\
-	   qgsdataprovider.h			\
-	   qgsdatasource.h			\
-	   qgsdlgvectorlayerproperties.h	\
-	   qgsfeature.h				\
-	   qgsfeatureattribute.h		\
-	   qgsfield.h				\
-	   qgsgraduatedsymrenderer.h		\
-	   qgsgrasydialog.h			\
-	   qgsgrasyextensionwidget.h		\
-	   qgshelpviewer.h			\
-	   qgsidentifyresults.h			\
-	   qgslegend.h				\
-	   qgslegenditem.h			\
-	   qgslinestyledialog.h			\
-	   qgslinesymbol.h			\
-	   qgsmapcanvas.h			\
-	   qgsmaplayer.h			\
-	   qgsmaplayerinterface.h		\
-	   qgsmapserverexport.h			\
-	   qgsmarkersymbol.h			\
-	   qgspatterndialog.h			\
-	   qgspluginitem.h			\
-	   qgspluginmanager.h			\
-	   qgspluginmetadata.h			\
-	   qgspluginregistry.h			\
-	   qgspoint.h				\
-	   qgspolygonsymbol.h			\
-	   qgsprojectio.h			\
-	   qgsprovidermetadata.h		\
-	   qgsproviderregistry.h		\
-	   qgsrangerenderitem.h			\
-	   qgsrasterlayer.h			\
-	   qgsrasterlayerproperties.h		\
-	   qgsrect.h				\
-	   qgsrenderer.h			\
-	   qgsrenderitem.h			\
-	   qgssinglesymrenderer.h		\
-	   qgssimarenderer.h			\
-	   qgssimadialog.h			\
-	   qgssisydialog.h			\
-	   qgssymbol.h				\
-	   qgssymbologyutils.h			\
-	   qgsvectorlayer.h			\
-	   qgsvectorlayerproperties.h		\
-	   splashscreen.h			\
-	   qgisapp.h
+headers =  	qgis.h					\
+	   	qgisiface.h				\
+	   	qgisinterface.h				\
+	   	qgsattributetable.h			\
+	   	qgsattributetabledisplay.h		\
+	   	qgscontcoldialog.h			\
+	   	qgscontinuouscolrenderer.h		\
+	   	qgscoordinatetransform.h		\
+	   	qgscustomsymbol.h			\
+	   	qgsdatabaselayer.h			\
+	   	qgsdataprovider.h			\
+	   	qgsdatasource.h				\
+	   	qgsdlgvectorlayerproperties.h		\
+	   	qgsfeature.h				\
+	   	qgsfeatureattribute.h			\
+	   	qgsfield.h				\
+	   	qgsgraduatedsymrenderer.h		\
+	   	qgsgrasydialog.h			\
+	   	qgsgrasyextensionwidget.h		\
+	   	qgshelpviewer.h				\
+	   	qgsidentifyresults.h			\
+	   	qgslegend.h				\
+	   	qgslegenditem.h				\
+	   	qgslinestyledialog.h			\
+	   	qgslinesymbol.h				\
+	   	qgsmapcanvas.h				\
+	   	qgsmaplayer.h				\
+	   	qgsmaplayerinterface.h			\
+		qgsmapserverexport.h			\
+		qgsmarkerdialog.h			\
+	   	qgsmarkersymbol.h			\
+	   	qgspatterndialog.h			\
+	   	qgspluginitem.h				\
+	   	qgspluginmanager.h			\
+	   	qgspluginmetadata.h			\
+	   	qgspluginregistry.h			\
+	   	qgspoint.h				\
+	   	qgspolygonsymbol.h			\
+	   	qgsprojectio.h				\
+	   	qgsprovidermetadata.h			\
+	   	qgsproviderregistry.h			\
+	   	qgsrangerenderitem.h			\
+	   	qgsrasterlayer.h			\
+	   	qgsrasterlayerproperties.h		\
+	   	qgsrect.h				\
+	   	qgsrenderer.h				\
+	   	qgsrenderitem.h				\
+	   	qgssinglesymrenderer.h			\
+	   	qgssimarenderer.h			\
+	   	qgssimadialog.h				\
+	   	qgssisydialog.h				\
+	   	qgssymbol.h				\
+	   	qgssymbologyutils.h			\
+	   	qgsvectorlayer.h			\
+	   	qgsvectorlayerproperties.h		\
+	   	splashscreen.h				\
+	   	qgisapp.h
 
 
 ## qt designer files for all the GUI stuff
@@ -103,6 +104,7 @@ qgis_UIC = 	qgisappbase.ui					\
 		qgslegenditembase.ui				\
 		qgslinestyledialogbase.ui			\
 		qgsmapserverexportbase.ui			\
+		qgsmarkerdialogbase.ui				\
 		qgsmessageviewer.ui				\
 		qgsoptionsbase.ui				\
 		qgspatterndialogbase.ui				\
@@ -148,6 +150,7 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgsmaplayer.moc.cpp			\
 		qgsmaplayerinterface.moc.cpp		\
 		qgsmapserverexport.moc.cpp		\
+		qgsmarkerdialog.moc.cpp			\
 		qgspatterndialog.moc.cpp		\
 		qgspluginmanager.moc.cpp		\
 		qgsrasterlayer.moc.cpp			\
@@ -186,6 +189,7 @@ qgis_SOURCES =  main.cpp			\
 		qgsmapcanvas.cpp		\
 		qgsmaplayer.cpp			\
 		qgsmapserverexport.cpp		\
+		qgsmarkerdialog.cpp		\
 		qgsmarkersymbol.cpp		\
 		qgspatterndialog.cpp		\
 		qgspluginitem.cpp		\
