@@ -245,8 +245,15 @@ void QgsGraSyDialog::apply()
 	int rowincrement = rowheight + rowspace;
 	int i=0;
 
-	for (std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+	for (int item=0;item<mClassBreakBox->count();++item)
         {
+	    QString classbreak=mClassBreakBox->text(item);
+	    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(classbreak);
+	    if(it==mEntries.end())
+	    {
+		continue;
+	    }
+	
 	    QgsSymbol* sy = new QgsSymbol();
 	    
 	    sy->pen().setColor(it->second->getSymbol()->pen().color());

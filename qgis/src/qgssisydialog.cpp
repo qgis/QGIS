@@ -183,7 +183,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
                     dense7->setOn(true);
                     break;
                 case Qt::NoBrush :
-                    solid->setOn(true);
+                    nopen->setOn(true);
                     break;
                 default :
                     solid->setOn(true);
