@@ -17,3 +17,9 @@ void QgsAbout::setWhatsNew(QString txt){
 void QgsAbout::setPluginInfo(QString txt){
     txtBrowserPlugins->setText(txt);
 }
+
+
+void QgsAbout::showAuthorPic( QListBoxItem * )
+{
+
+}
