@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Chose a marker symbol</string>
+        <string>Choose a marker symbol</string>
     </property>
     <grid>
         <property name="name">
