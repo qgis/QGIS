@@ -21,11 +21,10 @@
 #include "splashscreen.h"
 #include "qfont.h"
 #include "qgis.h"
-//splashscreen image
-#include "xpm/splash.xpm"
 
-SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash), splashImage((const char **) splash_xpm)
+SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
+  splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"));
   setErasePixmap(splashImage);
   resize(splashImage.size());
   QRect scr = QApplication::desktop()->screenGeometry();
