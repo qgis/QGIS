@@ -1726,6 +1726,9 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
 */
 QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 {
+#ifdef DEBUG
+    std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString() << ")" << std::endl;
+#endif    
     //
     // Get the adjusted matrix stats
     //
