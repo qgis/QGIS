@@ -1219,11 +1219,13 @@ void QgisApp::fileNew()
       mMapCanvas->clear();
       mOverviewCanvas->clear();
       setCaption(tr("Quantum GIS -- Untitled"));
-      // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
-      // mFullPathName = "";
+
       QgsProject::instance()->filename("");
-      // mProjectIsDirtyFlag = false;
+      QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
       QgsProject::instance()->dirty(false);
+
+      emit newProject();
+
       mMapCanvas->freeze(false);
       mOverviewCanvas->freeze(false);
     }
@@ -1244,14 +1246,17 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
       mMapCanvas->clear();
       mOverviewCanvas->removeAll();
       mOverviewCanvas->clear();
+
       setCaption(tr("Quantum GIS -- Untitled"));
-      // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
-      //mFullPathName = "";
+
       QgsProject::instance()->filename("");
-      // mProjectIsDirtyFlag = false;
+      QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
       QgsProject::instance()->dirty(false);
+
+      emit newProject();
   }
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
+
 
 void QgisApp::newVectorLayer()
 {
@@ -1382,16 +1387,14 @@ void QgisApp::fileOpen()
 
     QgsProject::instance()->filename( fullPath );
 
-    QgsProject::instance()->read(); // XXX filename set in saveDirty()?
+    if ( QgsProject::instance()->read() )
+    {
+        setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title());
 
-    setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title());
-    // mFullPathName = pio->fullPathName();
-
-    // not needed?  setZOrder(myZOrder);
-    // not needed?  setOverviewZOrder(mMapLegend);
-
-    // mMapCanvas->refresh();      // XXX refresh() necessary?
-    // mOverviewCanvas->refresh(); XXX I think QgsProject::read() generates appropriate refreshes
+        emit projectRead();     // let plug-ins know that we've read in a new
+                                // project so that they can check any project
+                                // specific plug-in state
+    }
 
   }
 
@@ -1414,6 +1417,10 @@ bool QgisApp::addProject(QString projectFile)
   if ( QgsProject::instance()->read( projectFile ) )
   {
       setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title() );
+
+      emit projectRead();       // let plug-ins know that we've read in a new
+                                // project so that they can check any project
+                                // specific plug-in state
   }
   else
   {
@@ -1430,7 +1437,7 @@ void QgisApp::fileSave()
     // if we don't have a filename, then obviously we need to get one; note
     // that the project file name is reset to null in fileNew()
 
-    if ( "" == QgsProject::instance()->filename() )
+    if ( QgsProject::instance()->filename().isNull() )
     {
         // XXX maybe as a convenience have it remember the last directory we
         // XXX saved project files to to use that instead of "./"
