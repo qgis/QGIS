@@ -15,6 +15,7 @@
 #include <qtimer.h>
 #include <qregexp.h>
 #include <qlineedit.h>
+#include <qtextedit.h>
 #include <qmessagebox.h>
 //standard includes
 #include <iostream>
@@ -195,35 +196,125 @@ void PluginGui::requestGetFinished(int id)
   assert(!myPageQString.isEmpty());
 
   //now we parse the file looking for lat long occurrences
-  QRegExp myQRegExp( leRecordRegex->text(),false,false ); // match using regex in our dialog
-  //check if valid and not bail out
-  if (!myQRegExp.isValid()) 
+  QRegExp myRecordQRegExp( leRecordRegex->text(),false,false ); // match using regex in our dialog
+  QRegExp myLabelQRegExp( leLabelRegex->text(),false,false ); // match using regex in our dialog
+  QRegExp myLatitudeQRegExp( leLatitudeRegex->text(),false,false ); // match using regex in our dialog
+  QRegExp myLongitudeQRegExp( leLongitudeRegex->text(),false,false ); // match using regex in our dialog
+  //
+  //check each regex is valid and if not bail out
+  //
+  //
+  // Record
+  //
+  if (!myRecordQRegExp.isValid()) 
   {
     QMessageBox::warning( this, "Fishing spots",
-                "The regex " + leRecordRegex->text() + " is invalid.\n"
+                "The record regex " + leRecordRegex->text() + " is invalid.\n"
                     "Fix it and try again" );
   }
   else
   {
-    //make sure greedy matches are off so id you have a string like
+    //make sure greedy matches are off so if you have a string like
     // <b>blah</b><b>blahblah</b>
     // and your regex is <b>.*</b>
     // non greedy match will return <b>blah</b>
-    myQRegExp.setMinimal(true);
-    std::cerr << "Using regex : " << leRecordRegex->text() << std::endl;
+    myRecordQRegExp.setMinimal(true);
+    std::cerr << "Using record regex : " << leRecordRegex->text() << std::endl;
   }
+  //
+  // Label
+  //
+  if (!myLabelQRegExp.isValid()) 
+  {
+    QMessageBox::warning( this, "Fishing spots",
+                "The label regex " + leRecordRegex->text() + " is invalid.\n"
+                    "Fix it and try again" );
+  }
+  else
+  {
+    //make sure greedy matches are off so if you have a string like
+    // <b>blah</b><b>blahblah</b>
+    // and your regex is <b>.*</b>
+    // non greedy match will return <b>blah</b>
+    myLabelQRegExp.setMinimal(true);
+    std::cerr << "Using label regex : " << leLabelRegex->text() << std::endl;
+  }
+  //
+  // Latitude
+  //
+  if (!myLatitudeQRegExp.isValid()) 
+  {
+    QMessageBox::warning( this, "Fishing spots",
+                "The latidude regex " + leLatitudeRegex->text() + " is invalid.\n"
+                    "Fix it and try again" );
+  }
+  else
+  {
+    //make sure greedy matches are off so if you have a string like
+    // <b>blah</b><b>blahblah</b>
+    // and your regex is <b>.*</b>
+    // non greedy match will return <b>blah</b>
+    myLatitudeQRegExp.setMinimal(true);
+    std::cerr << "Using latitude regex : " << leLatitudeRegex->text() << std::endl;
+  }
+  //
+  // Longitude
+  //
+  if (!myLongitudeQRegExp.isValid()) 
+  {
+    QMessageBox::warning( this, "Fishing spots",
+                "The regex " + leLongitudeRegex->text() + " is invalid.\n"
+                    "Fix it and try again" );
+  }
+  else
+  {
+    //make sure greedy matches are off so if you have a string like
+    // <b>blah</b><b>blahblah</b>
+    // and your regex is <b>.*</b>
+    // non greedy match will return <b>blah</b>
+    myLongitudeQRegExp.setMinimal(true);
+    std::cerr << "Using Longitude regex : " << leLongitudeRegex->text() << std::endl;
+  }
+  
+  //
+  // Main parsing loop
+  //
   int myPosInt = 0;    // where we are in the string
   int myCountInt = 0;  // how many matches we find
   while ( myPosInt >= 0 ) 
   {
-    myPosInt = myQRegExp.search( myPageQString, myPosInt );
+    myPosInt = myRecordQRegExp.search( myPageQString, myPosInt );
     if ( myPosInt >= 0 ) 
     {
       std::cerr << "************************************* " << std::endl;
-      std::cerr << "Match found from pos " << myPosInt << " to " << myPosInt + myQRegExp.matchedLength() << std::endl;
-      std::cerr << myPageQString.mid(myPosInt,myQRegExp.matchedLength()) << std::endl;
-      myPosInt += myQRegExp.matchedLength(); //skip the length of the matched string
+      std::cerr << "Match found from pos " << myPosInt << " to " << myPosInt + myRecordQRegExp.matchedLength() << std::endl;
+      QString myRecordQString =  myPageQString.mid(myPosInt,myRecordQRegExp.matchedLength());
+      myPosInt += myRecordQRegExp.matchedLength(); //skip the length of the matched string
       myCountInt++;    // count the number of matches
+      int myLastPosInt=0; //for keeping track of where we have searched up to within the record
+      
+      // now extract the location name
+      myLastPosInt = myLabelQRegExp.search(myRecordQString, myLastPosInt);
+      QString myLabelQString = myRecordQString.mid(myLastPosInt+3,myLabelQRegExp.matchedLength()-4); //+3 to skip the <p> tag, -4 that and newline
+      
+      // now extract the lat
+      
+      myLastPosInt = myLatitudeQRegExp.search(myRecordQString, myLastPosInt);
+      QString myLatitudeQString = myRecordQString.mid(myLastPosInt,myLatitudeQRegExp.matchedLength()); 
+      myLatitudeQString.replace("&#176; ",","); //replace the html degree symbol with a comma
+      myLatitudeQString.replace("'",""); //replace the minutes symbol with nothing
+      // now extract the long
+      
+      myLastPosInt = myLongitudeQRegExp.search(myRecordQString, myLastPosInt);
+      QString myLongitudeQString = myRecordQString.mid(myLastPosInt,myLongitudeQRegExp.matchedLength()); 
+      myLongitudeQString.replace("&#176; ",","); //replace the html degree symbol with a comma
+      myLongitudeQString.replace("'",""); //replace the minutes symbol with nothing
+      
+      // Show some info to stdout
+
+      teResults->append( myLabelQString + ", " + myLatitudeQString  + ", " + myLongitudeQString + "\n");;
+      //std::cerr << myLabelQString << " :: " << myLatitudeQString << " :: " << myLongitudeQString << std::endl;
+      //std::cerr << myRecordQString << std::endl;
     }
   }
   std::cerr << "************************************* " << std::endl;
@@ -245,7 +336,7 @@ void PluginGui::finish()
 
   mQhttp.closeConnection();
   //close the dialog
-  done(1);
+  //done(1);
 }
 
 
