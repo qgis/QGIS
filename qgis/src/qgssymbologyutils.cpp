@@ -671,7 +671,7 @@ static const char* dense3Data[] = {
 ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
 "###.###.###.###.###.###.###.###.###.###.###.###.###.###.##"};
 
-static const char *nopen[]={
+static const char *nobrush[]={
 "58 30 2 1",
 "# c None",
 ". c #3155c5",
@@ -1009,9 +1009,9 @@ QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString string)
     {
 	return QPixmap(diagCrossData);
     }
-    else if(string=="CustomPattern")
+    else if(string=="NoBrush")
     {
-	
+	return QPixmap(nobrush);
     }
     else//return a null string
     {
@@ -1219,6 +1219,10 @@ QPixmap QgsSymbologyUtils::char2PatternPixmap(const char* c)
     {
 	return QPixmap(diagCrossData);
     }
+    else if(strcmp(c,"NoBrush")==0)
+    {
+	return QPixmap(nobrush);
+    }
     else
     {
 	qWarning("Warning, no matching pattern found in QgsSymbologyUtils::char2PatternPixmap");
@@ -1405,7 +1409,7 @@ QPixmap QgsSymbologyUtils::brushStyle2Pixmap(Qt::BrushStyle brushstyle)
 	    return QPixmap(diagCrossData);
 	    break;
 	case (Qt::NoBrush):
-	    return QPixmap();
+	    return QPixmap(nobrush);
 	default:
 	    qWarning("Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2Pixmap");
     }
