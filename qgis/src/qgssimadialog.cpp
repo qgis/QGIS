@@ -18,9 +18,13 @@
  /* $Id$ */
 
 #include "qgssimadialog.h"
+#include "qgssimarenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsrenderitem.h"
 #include <qfiledialog.h>
 #include <qpushbutton.h>
+#include <qlineedit.h>
 
 
 QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer)
@@ -40,7 +44,23 @@ QgsSiMaDialog::~QgsSiMaDialog()
 
 void QgsSiMaDialog::apply()
 {
+    QgsMarkerSymbol ms;
+    ms.setPicture(mImageButton->name());
+    ms.setScaleFactor(mScaleEdit->text().toDouble());
+
+    QgsRenderItem ri(ms,"","");
+
+    QgsSiMaRenderer *renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->renderer());
     
+    if( renderer )
+    {
+	renderer->addItem(ri);
+    } 
+    else
+    {
+	qWarning("typecast failed in QgsSiMaDialog::apply()");
+	return;
+    }
 }
 
 void QgsSiMaDialog::selectMarker()

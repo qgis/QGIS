@@ -58,9 +58,7 @@ email                : sherman at mrcc.com
 // typedef for the QgsDataProvider class factory
 typedef QgsDataProvider *create_it(const char *uri);
 
-QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey):QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey),
-tabledisplay(0), m_renderer(0), m_propertiesDialog(0),
-m_rendererDialog(0)
+QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey):QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey), tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0)
 {
   // initialize the identify results pointer
   ir = 0;
@@ -277,6 +275,10 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
        */
       
 	QPen pen;
+	/**Pointer to a marker image*/
+	QPicture* marker=0;
+	/**Scale factor of the marker image*/
+	double* markerScaleFactor=0;
 
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
@@ -341,7 +343,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	      {
                  
                   //pass the feature to the renderer
-                  m_renderer->renderFeature(p, fet);
+                  m_renderer->renderFeature(p, fet, marker, markerScaleFactor);
 	      }
 	      
 	      /* OGRGeometry *geom = fet->GetGeometryRef();

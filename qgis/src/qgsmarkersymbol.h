@@ -30,16 +30,15 @@ class QgsMarkerSymbol : public QgsSymbol
     QgsMarkerSymbol();
     /**Destructor*/
     ~QgsMarkerSymbol();
-    /**Renders the symbol at position x/y scaled by mScaleFactor
-       @param x the x-coordinate of the painting position
-       @param y the y-coordinate of the painting position
-       @param p the painter object used for rendering*/
-    void render(int x, int y, QPainter* p);
     /**Loads the QPainter commands from an svg file
        @param svgpath the pathe to the svg file which stores the picture*/
     void setPicture(const QString& svgpath);
     /**Sets the scale factor*/
     void setScaleFactor(double factor);
+    /**Returns a pointer to the picture object*/
+    QPicture* picture();
+    /**Returns the scale factor*/
+    double scaleFactor();
  protected:
     /**QPicture object storing the QPainter commands*/
     QPicture mPicture;
@@ -57,14 +56,19 @@ inline QgsMarkerSymbol::~QgsMarkerSymbol()
 
 }
 
-inline void QgsMarkerSymbol::setPicture(const QString& svgpath)
-{
-    mPicture.load(svgpath,"svg");
-}
-
 inline void QgsMarkerSymbol::setScaleFactor(double factor)
 {
     mScaleFactor=factor;
+}
+
+inline QPicture* QgsMarkerSymbol::picture()
+{
+    return &mPicture;
+}
+
+inline double QgsMarkerSymbol::scaleFactor()
+{
+    return mScaleFactor;
 }
 
 #endif

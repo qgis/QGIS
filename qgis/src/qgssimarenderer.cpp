@@ -18,13 +18,23 @@
  /* $Id$ */
 
 #include "qgssimarenderer.h"
+#include "qgsmarkersymbol.h"
+#include <qpainter.h>
 
 void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties*)
 {
     
 }
 
-void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f)
+void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor)
 {
+    p->setPen(mItem.getSymbol()->pen());
+    p->setBrush(mItem.getSymbol()->brush());
 
+    QgsMarkerSymbol* ms=(QgsMarkerSymbol*)mItem.getSymbol();
+    if(ms)
+    {
+	pic=ms->picture();
+	(*scalefactor)=ms->scaleFactor();
+    }
 }

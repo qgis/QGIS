@@ -23,6 +23,7 @@ class QgsCoordinateTransform;
 class QgsVectorLayer;
 class QPainter;
 class QgsDlgVectorLayerProperties;
+class QPicture;
 
 
 
@@ -34,8 +35,12 @@ class QgsRenderer
      @param layer the vector layer associated with the renderer
      @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
     virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0)=0;
-    /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter*/
-    virtual void renderFeature(QPainter* p, QgsFeature* f)=0;
+    /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
+     @param p the painter storing brush and pen
+     @param f a pointer to the feature to be rendered
+     @param pic pointer to a marker from SVG (is only used by marker renderers
+     @param scalefactor pointer to the scale factor for the marker image*/
+    virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor)=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     virtual bool needsAttributes()=0;
 };
