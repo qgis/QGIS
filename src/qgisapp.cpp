@@ -355,13 +355,20 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     connect(mMapLegend, SIGNAL(zOrderChanged(QgsLegend *)), this, SLOT(setOverviewZOrder(QgsLegend *)));
     connect(mMapLegend, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(currentLayerChanged(QListViewItem *)));
 
-    // add the whats this toolbar button
+    // Add the whats this toolbar button
     //TODO Fix this ToolBar pointer to be named consistently
     QWhatsThis::whatsThisButton(helpToolbar);
 
-    // add the empty plugin menu
+    // Add the empty plugin menu
     mPluginMenu = new QPopupMenu(this);
+    // Add the plugin manager action to it
+    actionPluginManager->addTo(mPluginMenu);
+    // Add separator. Plugins will add their menus to this
+    // menu when they are loaded by the plugin manager
+    mPluginMenu->insertSeparator();
+    // Add to the menubar
     menuBar()->insertItem("&Plugins", mPluginMenu, -1, menuBar()->count() - 1);
+    
 
     // create the layer popup menu
     mMapCursor = 0;
