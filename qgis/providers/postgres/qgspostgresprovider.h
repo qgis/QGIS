@@ -178,7 +178,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   virtual bool rollBack();
 
   /**Returns true if the provider is in editing mode*/
-  virtual bool isEditable() const {return false;}
+  virtual bool isEditable() const {return mEditable;}
 
   /**Returns true if the provider has been modified since the last commit*/
   virtual bool isModified() const {return false;}

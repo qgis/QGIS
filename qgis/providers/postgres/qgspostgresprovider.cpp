@@ -895,12 +895,13 @@ bool QgsPostgresProvider::isValid(){
 
 bool QgsPostgresProvider::startEditing()
 {
-  return false;
+  mEditable=true;
+  return true;
 }
 
 void QgsPostgresProvider::stopEditing()
 {
-
+  mEditable = false; 
 }
 
 bool QgsPostgresProvider::commitChanges()
