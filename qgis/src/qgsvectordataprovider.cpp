@@ -18,7 +18,7 @@
 #include "qgsfeature.h"
 
 
-QgsVectorDataProvider::QgsVectorDataProvider()
+QgsVectorDataProvider::QgsVectorDataProvider(): mEncoding(QgsVectorDataProvider::Utf8)
 {
 
 }
