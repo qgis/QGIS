@@ -32,7 +32,6 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstringlist.h>
-#include <qdom.h>
 #include <qrect.h>
 
 #include "../../src/qgis.h"
@@ -553,13 +552,11 @@ bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
   }
   
   // write back to file
-  QDomDocument qdd;
-  data->fillDom(qdd);
   QFile file(mFileName);
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
-  ostr<<qdd.toString();
+  data->writeXML(ostr);
   return true;
 }
 
@@ -722,13 +719,11 @@ bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
     data->removeTracks(id);
 
   // write back to file
-  QDomDocument qdd;
-  data->fillDom(qdd);
   QFile file(mFileName);
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
-  ostr<<qdd.toString();
+  data->writeXML(ostr);
   return true;
 }
 
@@ -765,13 +760,11 @@ bool QgsGPXProvider::changeAttributeValues(std::map<int,std::map<QString,QString
   }
 
   // write back to file
-  QDomDocument qdd;
-  data->fillDom(qdd);
   QFile file(mFileName);
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
-  ostr<<qdd.toString();
+  data->writeXML(ostr);
   return true;
 }
 
