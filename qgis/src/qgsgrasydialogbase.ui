@@ -72,7 +72,7 @@
                 </size>
             </property>
             <property name="text">
-                <string>Classification Variable:</string>
+                <string>Classification Field:</string>
             </property>
         </widget>
         <widget class="QLabel" row="1" column="0">
