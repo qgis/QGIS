@@ -60,17 +60,13 @@ void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLay
 
 void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor)
 {
-    p->setPen(mItem->getSymbol()->pen());
-    p->setBrush(mItem->getSymbol()->brush());
+    p->setPen(Qt::NoPen);
+    p->setBrush(Qt::NoBrush);
 
     QgsMarkerSymbol* ms=dynamic_cast<QgsMarkerSymbol*>(mItem->getSymbol());
     if(ms&&pic)
     {
 	pic->load(ms->picture(),"svg");
-	//debugging: remove later
-	//std::cout << pic << std::endl << std::flush;
-	//p->drawPicture(50,50,(*pic));
-	//qWarning("scale factor: "+QString::number(ms->scaleFactor()));
-	(*scalefactor)=ms->scaleFactor();//does not work, but why?
+	(*scalefactor)=ms->scaleFactor();
     }
 }

@@ -57,7 +57,21 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
 		QString svgfile=sy->picture();
 		mImageButton->setName(svgfile);
 		pic.load(svgfile,"svg");
-		QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+
+		int width=(int)(pic.boundingRect().width()*scalefactor);
+		int height=(int)(pic.boundingRect().height()*scalefactor);
+
+//prevent 0 width or height, which would cause a crash
+		if(width==0)
+		{
+		    width=1;
+		}
+		if(height==0)
+		{
+		    height=1;
+		}
+
+		QPixmap pixmap(width,height);
 		pixmap.fill();
 		QPainter p(&pixmap);
 		p.scale(scalefactor,scalefactor);
@@ -139,19 +153,30 @@ void QgsSiMaDialog::apply()
 
     QPixmap *pix = mVectorLayer->legendPixmap();
 
-    int width = 20+pic.boundingRect().width()*ms->scaleFactor()+fm.width(name);
-    int height = (pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor() +10 : fm.height()+10;
+    int width = (int)(20+pic.boundingRect().width()*ms->scaleFactor()+fm.width(name));
+    int height = (int)((pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor() +10 : fm.height()+10);
+
+    //prevent 0 width or height, which would cause a crash
+    if(width==0)
+    {
+	width=1;
+    }
+    if(height==0)
+    {
+	height=1;
+    }
+
     pix->resize(width, height);
     pix->fill();
 
     QPainter p(pix);
     p.scale(ms->scaleFactor(),ms->scaleFactor());
-    p.drawPicture(10/ms->scaleFactor(),5/ms->scaleFactor(),pic);
+    p.drawPicture((int)(10/ms->scaleFactor()),(int)(5/ms->scaleFactor()),pic);
     p.resetXForm(); 
 
     p.setPen(Qt::black);
     p.setFont(f);
-    p.drawText(15+pic.boundingRect().width()*ms->scaleFactor(), pix->height() - 10, name);
+    p.drawText((int)(15+pic.boundingRect().width()*ms->scaleFactor()), (int)(pix->height() - 10), name);
 
     if (mVectorLayer->legendItem())
     {
@@ -177,7 +202,21 @@ void QgsSiMaDialog::selectMarker()
     QPicture pic;
     double scalefactor=mScaleEdit->text().toDouble();
     pic.load(svgfile,"svg");
-    QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+
+    int width=(int)(pic.boundingRect().width()*scalefactor);
+    int height=(int)(pic.boundingRect().height()*scalefactor);
+
+    //prevent 0 width or height, which would cause a crash
+    if(width==0)
+    {
+	width=1;
+    }
+    if(height==0)
+    {
+	height=1;
+    }
+
+    QPixmap pixmap(height,width);
     pixmap.fill();
     QPainter p(&pixmap);
     p.scale(scalefactor,scalefactor);
@@ -196,7 +235,21 @@ void QgsSiMaDialog::updateMarkerSize()
 	    QPicture pic;
 	    double scalefactor=mScaleEdit->text().toDouble();
 	    pic.load(svgfile,"svg");
-	    QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+
+	    int width=(int)(pic.boundingRect().width()*scalefactor);
+	    int height=(int)(pic.boundingRect().height()*scalefactor);
+	    
+//prevent 0 width or height, which would cause a crash
+	    if(width==0)
+	    {
+		width=1;
+	    }
+	    if(height==0)
+	    {
+		height=1;
+	    }
+
+	    QPixmap pixmap(width,height);
 	    pixmap.fill();
 	    QPainter p(&pixmap);
 	    p.scale(scalefactor,scalefactor);
