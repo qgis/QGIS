@@ -1,5 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
+  plugin.cpp
   Plugin to draw scale bar on map
 Functions:
 
@@ -30,7 +30,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include "plugin.h"
-
+#include "qgsproject.h"
 
 #include <qtoolbar.h>
 #include <qmenubar.h>
@@ -40,17 +40,17 @@ email                : sbr00pwb@users.sourceforge.net
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qpen.h> 
+#include <qpen.h>
 #include <qgspoint.h>
 #include <qpointarray.h>
 #include <qgscoordinatetransform.h>
-#include <qstring.h> 
-#include <qfontmetrics.h> 
-#include <qfont.h> 
-#include <qpaintdevicemetrics.h> 
-#include <qspinbox.h> 
-#include <qcolor.h> 
-#include <qcolordialog.h> 
+#include <qstring.h>
+#include <qfontmetrics.h>
+#include <qfont.h>
+#include <qpaintdevicemetrics.h>
+#include <qspinbox.h>
+#include <qcolor.h>
+#include <qcolordialog.h>
 
 //non qt includes
 #include <iostream>
@@ -60,7 +60,7 @@ email                : sbr00pwb@users.sourceforge.net
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
-// 
+//
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
 #else
@@ -82,7 +82,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-qgisMainWindowPointer(theQGisApp), 
+qgisMainWindowPointer(theQGisApp),
     qGisInterface(theQgisInterFace),
 QgisPlugin(name_,description_,version_,type_)
 {
@@ -99,7 +99,7 @@ Plugin::~Plugin()
 }
 
 /*
- * Initialize the GUI interface for the plugin 
+ * Initialize the GUI interface for the plugin
  */
 void Plugin::initGui()
 {
@@ -117,12 +117,27 @@ void Plugin::initGui()
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the scale bar each time the map is rendered
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderScaleBar(QPainter *)));
-
+  //this resets this plugin up if a project is loaded
+  connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
 }
 
+void Plugin::projectRead()
+{
+#ifdef QGISDEBUG
+    std::cout << "+++++++++ scalebar plugin - project read slot called...." << std::endl;
+#endif    //default text to start with - try to fetch it from qgsproject
 
+
+    mPreferredSize = QgsProject::instance()->readNumEntry("ScaleBar","/PreferredSize",30);
+    mStyle = QgsProject::instance()->readEntry("ScaleBar","/Style","Tick Down");
+    mPlacement = QgsProject::instance()->readEntry("ScaleBar","/Placement","Top Left");
+    mEnabled = QgsProject::instance()->readBoolEntry("ScaleBar","/Enabled",true);
+    mSnapping = QgsProject::instance()->readBoolEntry("ScaleBar","/Snapping",true);
+
+    refreshCanvas();
+}
 //method defined in interface
 void Plugin::help()
 {
@@ -155,8 +170,8 @@ void Plugin::run()
       case 0: myPluginGui->spnSize->setSuffix(tr(" metres/km")); break;
       case 1: myPluginGui->spnSize->setSuffix(tr(" feet")); break;
       case 2: myPluginGui->spnSize->setSuffix(tr(" degrees")); break;
-      default: std::cout << "Error: not picked up map units - actual value = " << myUnits << std::endl; 
-  }; 
+      default: std::cout << "Error: not picked up map units - actual value = " << myUnits << std::endl;
+  };
 }
 
 
@@ -177,16 +192,16 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
   int myCanvasHeight = myMetrics.height();
   int myCanvasWidth = myMetrics.width();
 
-  //Get map units per pixel   
-  double myMuppDouble=qGisInterface->getMapCanvas()->mupp();   
+  //Get map units per pixel
+  double myMuppDouble=qGisInterface->getMapCanvas()->mupp();
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  int myLayerCount=qGisInterface->getMapCanvas()->layerCount();          
+  int myLayerCount=qGisInterface->getMapCanvas()->layerCount();
   if (!myLayerCount || !myCanvasWidth || !myMuppDouble) return;
 
   //Large if statement which determines whether to render the scale bar
   if (mEnabled)
-  { 
+  {
     // Hard coded sizes
     int myMajorTickSize=8;
     int myTextOffsetX=3;
@@ -234,14 +249,14 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
         case 0: myScaleBarUnitLabel=tr(" metres"); break;
         case 1: myScaleBarUnitLabel=tr(" feet"); break;
         case 2: myScaleBarUnitLabel=tr(" degrees"); break;
-        default: std::cout << "Error: not picked up map units - actual value = " << myMapUnits << std::endl; 
-    };  
+        default: std::cout << "Error: not picked up map units - actual value = " << myMapUnits << std::endl;
+    };
     //use km if units are larget and scale bar width is larger then 1000
-    if (myMapUnits==0 && myActualSize > 1000) 
+    if (myMapUnits==0 && myActualSize > 1000)
     {
       myScaleBarUnitLabel=tr(" km");
       myActualSize = myActualSize/1000;
-      
+
     }
     //Set font and calculate width of unit label
     int myFontSize = 10; //we use this later for buffering
@@ -261,14 +276,14 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     int myOriginX=myMargin;
     int myOriginY=myMargin;
     if (mPlacement==tr("Top Left"))
-    { 
+    {
       myOriginX=myMargin;
       myOriginY=myMargin;
     }
     else if (mPlacement==tr("Bottom Left"))
     {
       myOriginX=myMargin;
-      myOriginY=myCanvasHeight - myMargin; 
+      myOriginY=myCanvasHeight - myMargin;
     }
     else if (mPlacement==tr("Top Right"))
     {
@@ -286,99 +301,99 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     }
 
     //Set pen to draw with
-    QPen myForegroundPen( mColour, 2 );             
-    QPen myBackgroundPen( Qt::white, 4 );             
+    QPen myForegroundPen( mColour, 2 );
+    QPen myBackgroundPen( Qt::white, 4 );
 
     //Cast myScaleBarWidth to int for drawing
     int myScaleBarWidthInt = (int) myScaleBarWidth;
 
-    //Create array of vertices for scale bar depending on style    
+    //Create array of vertices for scale bar depending on style
     if (mStyle==tr("Tick Down"))
-    {    
+    {
       QPointArray myTickDownArray(4);
       //draw a buffer first so bar shows up on dark images
-      theQPainter->setPen( myBackgroundPen ); 
+      theQPainter->setPen( myBackgroundPen );
       myTickDownArray.putPoints(0,4,
-              myOriginX                    , (myOriginY + myMajorTickSize) ,  
+              myOriginX                    , (myOriginY + myMajorTickSize) ,
               myOriginX                    ,  myOriginY                    ,
               (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
               (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
-              ); 	 
-      theQPainter->drawPolyline(myTickDownArray);    
+              );
+      theQPainter->drawPolyline(myTickDownArray);
       //now draw the bar itself in user selected color
-      theQPainter->setPen( myForegroundPen ); 
+      theQPainter->setPen( myForegroundPen );
       myTickDownArray.putPoints(0,4,
-              myOriginX                    , (myOriginY + myMajorTickSize) ,  
+              myOriginX                    , (myOriginY + myMajorTickSize) ,
               myOriginX                    ,  myOriginY                    ,
               (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
               (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
-              ); 	 
-      theQPainter->drawPolyline(myTickDownArray);    
+              );
+      theQPainter->drawPolyline(myTickDownArray);
     }
     else if (mStyle==tr("Tick Up"))
     {
       QPointArray myTickUpArray(4);
       //draw a buffer first so bar shows up on dark images
-      theQPainter->setPen( myBackgroundPen ); 
+      theQPainter->setPen( myBackgroundPen );
       myTickUpArray.putPoints(0,4,
-              myOriginX                    ,  myOriginY                    ,  
+              myOriginX                    ,  myOriginY                    ,
               myOriginX                    ,  myOriginY + myMajorTickSize  ,
               (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
               (myScaleBarWidthInt + myOriginX),  myOriginY
-              ); 
+              );
       theQPainter->drawPolyline(myTickUpArray);
       //now draw the bar itself in user selected color
-      theQPainter->setPen( myForegroundPen ); 
+      theQPainter->setPen( myForegroundPen );
       myTickUpArray.putPoints(0,4,
-              myOriginX                    ,  myOriginY                    ,  
+              myOriginX                    ,  myOriginY                    ,
               myOriginX                    ,  myOriginY + myMajorTickSize  ,
               (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
               (myScaleBarWidthInt + myOriginX),  myOriginY
-              ); 
+              );
       theQPainter->drawPolyline(myTickUpArray);
-    }	    
+    }
     else if (mStyle==tr("Bar"))
     {
       QPointArray myBarArray(2);
       //draw a buffer first so bar shows up on dark images
-      theQPainter->setPen( myBackgroundPen ); 
+      theQPainter->setPen( myBackgroundPen );
       myBarArray.putPoints(0,2,
-              myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),  
+              myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),
               (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
-              ); 
+              );
       theQPainter->drawPolyline(myBarArray);
       //now draw the bar itself in user selected color
-      theQPainter->setPen( myForegroundPen ); 
+      theQPainter->setPen( myForegroundPen );
       myBarArray.putPoints(0,2,
-              myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),  
+              myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),
               (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
-              ); 
+              );
       theQPainter->drawPolyline(myBarArray);
-    }	     
+    }
     else if (mStyle==tr("Box"))
     {
       QPointArray myBoxArray(5);
       //draw a buffer first so bar shows up on dark images
-      theQPainter->setPen( myBackgroundPen ); 
+      theQPainter->setPen( myBackgroundPen );
       myBoxArray.putPoints(0,5,
-              myOriginX                    ,  myOriginY,  
+              myOriginX                    ,  myOriginY,
               (myScaleBarWidthInt + myOriginX),  myOriginY,
               (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
               myOriginX                    , (myOriginY+myMajorTickSize),
               myOriginX                    ,  myOriginY
-              ); 
+              );
       theQPainter->drawPolyline(myBoxArray);
       //now draw the bar itself in user selected color
-      theQPainter->setPen( myForegroundPen ); 
+      theQPainter->setPen( myForegroundPen );
       myBoxArray.putPoints(0,5,
-              myOriginX                    ,  myOriginY,  
+              myOriginX                    ,  myOriginY,
               (myScaleBarWidthInt + myOriginX),  myOriginY,
               (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
               myOriginX                    , (myOriginY+myMajorTickSize),
               myOriginX                    ,  myOriginY
-              ); 
+              );
       theQPainter->drawPolyline(myBoxArray);
-    }	    
+    }
 
     //Do actual drawing of scale bar
 
@@ -396,10 +411,10 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
 
     for (int i = 0-myBufferSize; i <= myBufferSize; i++)
     {
-      for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
+      for (int j = 0-myBufferSize; j <= myBufferSize; j++)
       {
-        theQPainter->drawText( int(i +(myOriginX-(myFontWidth/2))), 
-                              int(j + (myOriginY-(myFontHeight/4))), 
+        theQPainter->drawText( int(i +(myOriginX-(myFontWidth/2))),
+                              int(j + (myOriginY-(myFontHeight/4))),
                               "0");
       }
     }
@@ -411,21 +426,21 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
             int(myOriginX-(myFontWidth/2)),
             int(myOriginY-(myFontHeight/4)),
             "0"
-            );    
-    
+            );
+
     //
-    //Draw maximum label      
+    //Draw maximum label
     //
     theQPainter->setPen( myBackColor );
     myFontWidth = myFontMetrics.width( myScaleBarMaxLabel );
-    myFontHeight = myFontMetrics.height();  
+    myFontHeight = myFontMetrics.height();
     //first the buffer
     for (int i = 0-myBufferSize; i <= myBufferSize; i++)
     {
-      for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
+      for (int j = 0-myBufferSize; j <= myBufferSize; j++)
       {
         theQPainter->drawText( int(i + (myOriginX+myScaleBarWidthInt-(myFontWidth/2))),
-                              int(j + (myOriginY-(myFontHeight/4))), 
+                              int(j + (myOriginY-(myFontHeight/4))),
                               myScaleBarMaxLabel);
       }
     }
@@ -433,10 +448,10 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     theQPainter->setPen( myForeColor );
     theQPainter->drawText(
             int(myOriginX+myScaleBarWidthInt-(myFontWidth/2)),
-	    int(myOriginY-(myFontHeight/4)),
+            int(myOriginY-(myFontHeight/4)),
             myScaleBarMaxLabel
             );
-    
+
     //
     //Draw unit label
     //
@@ -446,10 +461,10 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     //first the buffer
     for (int i = 0-myBufferSize; i <= myBufferSize; i++)
     {
-      for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
+      for (int j = 0-myBufferSize; j <= myBufferSize; j++)
       {
-        theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX), 
-                              j + (myOriginY+myMajorTickSize), 
+        theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX),
+                              j + (myOriginY+myMajorTickSize),
                               myScaleBarUnitLabel);
       }
     }
@@ -477,30 +492,35 @@ void Plugin::unload()
 void Plugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
+  QgsProject::instance()->writeEntry("ScaleBar","/Placement",mPlacement);
 }
 
 //! set preferred size of scale bar
 void Plugin::setPreferredSize(int thePreferredSize)
 {
   mPreferredSize = thePreferredSize;
+  QgsProject::instance()->writeEntry("ScaleBar","/PreferredSize",mPreferredSize);
 }
 
 //! set whether the scale bar length should snap to the closes A*10^B
 void Plugin::setSnapping(bool theSnapping)
 {
   mSnapping = theSnapping;
+  QgsProject::instance()->writeEntry("ScaleBar","/Snapping",mSnapping);
 }
 
 //! set scale bar enable
 void Plugin::setEnabled(bool theBool)
 {
   mEnabled = theBool;
+  QgsProject::instance()->writeEntry("ScaleBar","/Enabled",mEnabled);
 }
 //! set scale bar enable
 void Plugin::setStyle(QString theStyleQString)
 {
   mStyle = theStyleQString;
-}  
+   QgsProject::instance()->writeEntry("ScaleBar","/Style",mStyle);
+}
 //! set the scale bar colour
 void Plugin::setColour(QColor theQColor)
 {
@@ -508,8 +528,8 @@ void Plugin::setColour(QColor theQColor)
 }
 
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
