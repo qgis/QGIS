@@ -707,3 +707,9 @@ void QgsVectorLayer::initContextMenu(QgisApp *app){
 QPopupMenu *QgsVectorLayer::contextMenu(){
   return popMenu;
 }
+
+QgsRect QgsVectorLayer::bBoxOfSelected()
+{
+    QgsRect myrect;//soon
+    return myrect;
+}

@@ -39,6 +39,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerinterface.h"
+#include "qgsvectorlayer.h"
 
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 :QWidget(parent, name)
@@ -326,7 +327,8 @@ void QgsMapCanvas::zoomPreviousExtent()
 
 void QgsMapCanvas::zoomToSelected()
 {
-    QgsMapLayer * lyr = mapLegend->currentLayer();
+    QgsVectorLayer* lyr = dynamic_cast<QgsVectorLayer*>(mapLegend->currentLayer());
+ 
     if(lyr)
     {
 	QgsRect rect=lyr->bBoxOfSelected();

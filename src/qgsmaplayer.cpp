@@ -71,11 +71,6 @@ const QgsRect QgsMapLayer::extent()
 	return layerExtent;
 }
 
-QgsRect QgsMapLayer::bBoxOfSelected()
-{
-
-}
-
 QgsRect QgsMapLayer::calculateExtent()
 {
     //just to prevent any crashes

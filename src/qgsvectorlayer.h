@@ -85,8 +85,10 @@ class QgsVectorLayer:public QgsMapLayer
 	QGis::VectorType vectorType();
 	/**Returns a pointer to the properties dialog*/
 	QgsVectorLayerProperties* propertiesDialog();
-  /** Return the context menu for the layer */
-  QPopupMenu *contextMenu();
+	/** Return the context menu for the layer */
+	QPopupMenu *contextMenu();
+  	/**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds DBL_MIN*/
+	virtual QgsRect bBoxOfSelected();
   protected:
 	/**Pointer to the table display object if there is one, else a pointer to 0*/
 	QgsAttributeTableDisplay* tabledisplay;
