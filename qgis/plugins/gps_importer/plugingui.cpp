@@ -16,6 +16,8 @@
 #include <qlineedit.h>
 #include <qspinbox.h>
 #include <qfiledialog.h>
+#include <qmessagebox.h>
+#include <qfile.h>
 #include "waypointtoshape.h"
 //standard includes
 #include <iostream>
@@ -35,15 +37,25 @@ PluginGui::~PluginGui()
 
 void PluginGui::pbnOK_clicked()
 {
+  //check input file exists
+  //
+  if (!QFile::exists ( leInputFile->text() ))
+  {
+   QMessageBox::warning( this, "GPS Importer",
+               "Unable to find the input file.\n"
+                   "Please reselect a valid file." );
+   return;
+  }
+  WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
   // add it to the view using:
   // emit drawRasterLayer(QString("layername"));
-  WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
   // or for a vector layer
   // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
   delete myWayPointToShape;
+  emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
   //close the dialog
   done(1);
 } 
