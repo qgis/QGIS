@@ -27,6 +27,17 @@ email                : t.sutton@reading.ac.uk
 #include <qmap.h>
 #include <qstring.h>
 
+/**
+* This struct is simple container used in the 'run' method.
+* @todo Remove this if possible
+*/
+struct FileWriterStruct
+{
+    /** A filewriter pointer */
+    FileWriter * structFileWriter;
+    /** The fill path and file name of the file refenced */
+    QString structFullFileName;
+};
 
 
 /**The ClimateDataProcessor calculates specific climate variables using
@@ -166,8 +177,6 @@ class ClimateDataProcessor {
         /** This method is intended for debugging purposes only */
         void printVectorAndResult(QValueVector<float> theVector, float theResultFloat);
 
-        bool meanTempOverCoolestQ();
-
         /**This is a private method. It is a simple method to populate the
          * inputFileTypeMap attribute - this will usually be called by the
          * constructor(s). All keys (file type strings) will be  stored in upper case.*/
@@ -234,28 +243,60 @@ class ClimateDataProcessor {
 
         /** A filegroup containing files with mean temperature data. */
         FileGroup *  meanTempFileGroup;
+        /** The file name that contains mean temp data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString meanTempFileNameString;
+
         /** A filegroup containing files with minimum temperature data. */
         FileGroup * minTempFileGroup;
+        /** The file name that contains min temp data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString minTempFileNameString;
+
         /** A filegroup containing files with maximum temperature data. */
         FileGroup *  maxTempFileGroup;
+        /** The file name that contains max temp data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString maxTempFileNameString;
+
         /** A filegroup containing files with diurnal temperature data. */
         FileGroup *  diurnalTempFileGroup;
+        /** The file name that contains diurnal temp data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString diurnalTempFileNameString;
+
         /** A filegroup containing files with mean precipitation data. */
         FileGroup *  meanPrecipFileGroup;
+        /** The file name that contains mean precipitation data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString meanPrecipFileNameString;
+
         /** A filegroup containing files with number of frost days data. */
         FileGroup *  frostDaysFileGroup;
+        /** The file name that contains mean frost data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString frostDaysFileNameString;
+
         /** A filegroup containing files with solar radiation data. */
         FileGroup *  totalSolarRadFileGroup;
+        /** The file name that contains mean solar radiation data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString totalSolarRadFileNameString;
+
         /** A filegroup containing files with wind speed data. */
         FileGroup *  windSpeedFileGroup;
+        /** The file name that contains wind speed data. If the file type is
+        * one where the data is stored in series (a single file per month),
+        * this member will store the name of the first file in the series. */
         QString windSpeedFileNameString;
+
         /** For certain input types (notably cres, arcinfo and Reading paleoclimate),
          * each months data is stored in a discrete file. Files should be numbered
          * e.g. meantemp01.asc, meantemp2.asc...meantemp12.asc for each month.
@@ -263,8 +304,6 @@ class ClimateDataProcessor {
          * or can all be found in the same file. */
         bool filesInSeriesFlag;
 
-
-        bool debugModeFlag;
         /** This is a standard header (e.g. arc/info header) that will be appended to any output grids. */
         QString outputHeaderString;
 };

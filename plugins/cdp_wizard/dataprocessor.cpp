@@ -18,26 +18,23 @@
 #include "dataprocessor.h"
 #include <iostream>
 #include <math.h>
-using namespace std;
 
 const int QUARTER = 3;
 const float FREEZING_POINT=0;
 
 DataProcessor::DataProcessor()
 {
-
-   debugModeFlag=false;
-
 }
+
 DataProcessor::~DataProcessor()
 {}
 
-/** This method calculates the mean value over the quarter with the lowest values
-*    (i.e. the three consecutive months with the minimum combined total). */
 float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
 {
-    if (debugModeFlag) cout << "DataProcessor::meanOverLowestQ () called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::meanOverLowestQ () called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
 
     float myLowestMeanFloat;
     float myCurrentMeanFloat;
@@ -54,7 +51,9 @@ float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
     for (myInt=0; myInt < theClimateVector.size(); myInt++)
     {
         myCurrentMeanFloat = 0;
-        if (debugModeFlag) cout << "Processing element " <<    myInt << endl;
+#ifdef QGISDEBUG
+        std::cout << "Processing element " <<    myInt << std::endl;
+#endif
         //Check to see whether you are near end of vector and it is necessary to start reading
         //from the beginning again.
         if (myInt <= (myVectorLengthInt - (QUARTER)))
@@ -62,7 +61,9 @@ float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
             for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
             {
                 myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+#ifdef QGISDEBUG
+                std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
             }
             myCurrentMeanFloat = myCurrentMeanFloat / QUARTER;
         }
@@ -72,13 +73,17 @@ float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
             for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt ; mySegmentInt++)
             {
                 myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+#ifdef QGISDEBUG
+                std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
             }
             //Read remainding months from beginning of vector
             for (mySegmentInt = 0; mySegmentInt<=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
             {
                 myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+#ifdef QGISDEBUG
+                std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
             }
             myCurrentMeanFloat = myCurrentMeanFloat / QUARTER;
         }
@@ -98,30 +103,35 @@ float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
             }
         }
 
-    if (debugModeFlag) cout << "Iteration " << myInt << " - current lowest mean over quarter is : " << myLowestMeanFloat << endl;
+#ifdef QGISDEBUG
+        std::cout << "Iteration " << myInt << " - current lowest mean over quarter is : " << myLowestMeanFloat << std::endl;
+#endif
     }
-    if (debugModeFlag) cout << "Completed - lowest mean over quarter is : " << myLowestMeanFloat << endl;
-    if (debugModeFlag) cout << "----------------------------------------------------------------------------------------------" << endl;
+#ifdef QGISDEBUG
+    std::cout << "Completed - lowest mean over quarter is : " << myLowestMeanFloat << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
+#endif
     //Return lowest value over the quarter
     return myLowestMeanFloat;
 
 }
 
-
-/** This method calculates the mean value over the quarter with the highest values
-* (i.e. the three consecutive months with the maximum combined total). */
 float DataProcessor::meanOverHighestQ ( QValueVector <float> theClimateVector)
 {
-    if (debugModeFlag) cout << "DataProcessor::meanOverHighestQ ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::meanOverHighestQ ( ) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
 
     float myHighestMeanFloat;
     float myCurrentMeanFloat;
     int myInt;
     int mySegmentInt;
     bool myFirstTimeFlag;
-int myVectorLengthInt = theClimateVector.size();
-    if (debugModeFlag) cout << "Vector length : " << myVectorLengthInt << endl;
+    int myVectorLengthInt = theClimateVector.size();
+#ifdef QGISDEBUG
+    std::cout << "Vector length : " << myVectorLengthInt << std::endl;
+#endif
     myHighestMeanFloat = 0;
     myFirstTimeFlag = true;
 
@@ -130,7 +140,9 @@ int myVectorLengthInt = theClimateVector.size();
     for (myInt=0; myInt<myVectorLengthInt; myInt++)
     {
         myCurrentMeanFloat = 0;
-        if (debugModeFlag) cout << "Processing element " <<    myInt << endl;
+#ifdef QGISDEBUG
+        std::cout << "Processing element " <<    myInt << std::endl;
+#endif
         //Check to see whether you are near end of vector and it is necessary to start reading
         //from the beginning again.
         if (myInt <= (myVectorLengthInt - (QUARTER)))
@@ -138,7 +150,9 @@ int myVectorLengthInt = theClimateVector.size();
             for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
             {
                 myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+#ifdef QGISDEBUG
+                std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
             }
             myCurrentMeanFloat = myCurrentMeanFloat / QUARTER;
         }
@@ -148,13 +162,17 @@ int myVectorLengthInt = theClimateVector.size();
             for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt ; mySegmentInt++)
             {
                 myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+#ifdef QGISDEBUG
+                std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
             }
             //Read remainding months from beginning of vector
             for (mySegmentInt = 0; mySegmentInt<=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
             {
                 myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+#ifdef QGISDEBUG
+                std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
             }
             myCurrentMeanFloat = myCurrentMeanFloat / QUARTER;
         }
@@ -174,10 +192,14 @@ int myVectorLengthInt = theClimateVector.size();
             }
         }
 
-    if (debugModeFlag) cout << "Iteration " << myInt << " - current highest mean over quarter is : " << myHighestMeanFloat << endl;
+#ifdef QGISDEBUG
+        std::cout << "Iteration " << myInt << " - current highest mean over quarter is : " << myHighestMeanFloat << std::endl;
+#endif
     }
-    if (debugModeFlag) cout << "Completed - highest mean over quarter is : " << myHighestMeanFloat << endl;
-    if (debugModeFlag) cout << "----------------------------------------------------------------------------------------------" << endl;
+#ifdef QGISDEBUG
+    std::cout << "Completed - highest mean over quarter is : " << myHighestMeanFloat << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
+#endif
     //Return Highest value over the quarter
     return myHighestMeanFloat;
 }
@@ -192,74 +214,83 @@ Then the return from this method would be 6 because
 5,6 and 8 combined form the lowest quarter. */
 int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
 {
-    if (debugModeFlag) cout << "DataProcessor::firstMonthOfLowestQ ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
-
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::firstMonthOfLowestQ ( float *theClimateVector, int myVectorLengthInt) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
     float myLowestFloat=0;
     float myCurrentFloat=0;
     int myInt=0;
     int mySegmentInt=0;
     bool myFirstTimeFlag=true;
     int myLowestMonthInt=0;
-int myVectorLengthInt = theClimateVector.size();
-  try
-  {
-    //Loop from first quarter - i.e. months 1, 2 and 3 to
-    //last quarter - i.e. months 12, 1 and 2.
-    for (myInt = 0; myInt < myVectorLengthInt; myInt++)
+    int myVectorLengthInt = theClimateVector.size();
+    try
     {
-        myCurrentFloat = 0;
-        //Check to see whether you are near end of vector and it is necessary to start reading
-        //from the beginning again.
+        //Loop from first quarter - i.e. months 1, 2 and 3 to
+        //last quarter - i.e. months 12, 1 and 2.
+        for (myInt = 0; myInt < myVectorLengthInt; myInt++)
+        {
+            myCurrentFloat = 0;
+            //Check to see whether you are near end of vector and it is necessary to start reading
+            //from the beginning again.
 
-        if (myInt <= (myVectorLengthInt - (QUARTER)))
-        {
-            for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
+            if (myInt <= (myVectorLengthInt - (QUARTER)))
             {
-                myCurrentFloat += theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+                for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
+                {
+                    myCurrentFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                    std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
+                }
             }
-        }
-        else
-        {
-            //Near end of vector so read last month(s)
-            for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt; mySegmentInt++)
+            else
             {
-                myCurrentFloat += theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+                //Near end of vector so read last month(s)
+                for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt; mySegmentInt++)
+                {
+                    myCurrentFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                    std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
+                }
+                //Read remainding months from beginning of vector
+                //for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - myInt) - 1); mySegmentInt++)
+                for (mySegmentInt = 0; mySegmentInt <=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
+                {
+                    myCurrentFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                    std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
+                }
             }
-            //Read remainding months from beginning of vector
-            //for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - myInt) - 1); mySegmentInt++)
-            for (mySegmentInt = 0; mySegmentInt <=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
-            {
-                myCurrentFloat += theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
-            }
-        }
 
-        //Check whether value is highest so far.  If this is the first quarter always keep value.
-        if (myFirstTimeFlag == true)
-        {
-            myLowestMonthInt = myInt;
-            myLowestFloat = myCurrentFloat;
-            myFirstTimeFlag = false;
-        }
-        else
-        {
-            //Test to see whether current value is the highest so far. If so store month number
-            if (myCurrentFloat < myLowestFloat)
+            //Check whether value is highest so far.  If this is the first quarter always keep value.
+            if (myFirstTimeFlag == true)
             {
                 myLowestMonthInt = myInt;
                 myLowestFloat = myCurrentFloat;
+                myFirstTimeFlag = false;
+            }
+            else
+            {
+                //Test to see whether current value is the highest so far. If so store month number
+                if (myCurrentFloat < myLowestFloat)
+                {
+                    myLowestMonthInt = myInt;
+                    myLowestFloat = myCurrentFloat;
+                }
             }
         }
     }
-  }
-  catch (...)
-  {
-          if (debugModeFlag) cout << "A fatal error occured in the firstMonthOfLowestQ method " << endl;
-          myLowestMonthInt = -9999;
-  }
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the firstMonthOfLowestQ method " << std::endl;
+        myLowestMonthInt = -9999;
+#endif
+    }
 
 
     //Return lowest value over the quarter (add 1 to get it into base 1 instead of base0)
@@ -278,8 +309,10 @@ Then the return from this method would be 12 because
 12,1 and 2 combined form the highest quarter. */
 int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
 {
-    if (debugModeFlag) cout << "DataProcessor::firstMonthOfHighestQ ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::firstMonthOfHighestQ ( float *theClimateVector, int myVectorLengthInt) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
 
     float myHighestFloat=0;
     float myCurrentFloat=0;
@@ -287,65 +320,73 @@ int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
     int mySegmentInt=0;
     bool myFirstTimeFlag=true;
     int myHighestMonthInt=0;
-int myVectorLengthInt = theClimateVector.size();
-  try
-  {
-    //Loop from first quarter - i.e. months 1, 2 and 3 to
-    //last quarter - i.e. months 12, 1 and 2.
-    for (myInt = 0; myInt < myVectorLengthInt; myInt++)
+    int myVectorLengthInt = theClimateVector.size();
+    try
     {
-        myCurrentFloat = 0;
-        //Check to see whether you are near end of vector and it is necessary to start reading
-        //from the beginning again.
+        //Loop from first quarter - i.e. months 1, 2 and 3 to
+        //last quarter - i.e. months 12, 1 and 2.
+        for (myInt = 0; myInt < myVectorLengthInt; myInt++)
+        {
+            myCurrentFloat = 0;
+            //Check to see whether you are near end of vector and it is necessary to start reading
+            //from the beginning again.
 
-        if (myInt <= (myVectorLengthInt - (QUARTER)))
-        {
-            for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
+            if (myInt <= (myVectorLengthInt - (QUARTER)))
             {
-                myCurrentFloat += theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+                for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
+                {
+                    myCurrentFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                    std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
+                }
             }
-        }
-        else
-        {
-            //Near end of vector so read last month(s)
-            for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt; mySegmentInt++)
+            else
             {
-                myCurrentFloat += theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
+                //Near end of vector so read last month(s)
+                for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt; mySegmentInt++)
+                {
+                    myCurrentFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                    std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
+                }
+                //Read remainding months from beginning of vector
+                //for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - myInt) - 1); mySegmentInt++)
+                for (mySegmentInt = 0; mySegmentInt <=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
+                {
+                    myCurrentFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                    std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
+#endif
+                }
             }
-            //Read remainding months from beginning of vector
-            //for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - myInt) - 1); mySegmentInt++)
-            for (mySegmentInt = 0; mySegmentInt <=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
-            {
-                myCurrentFloat += theClimateVector[mySegmentInt];
-                if (debugModeFlag) cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << endl;
-            }
-        }
 
-        //Check whether value is highest so far.  If this is the first quarter always keep value.
-        if (myFirstTimeFlag == true)
-        {
-            myHighestMonthInt = myInt;
-            myHighestFloat = myCurrentFloat;
-            myFirstTimeFlag = false;
-        }
-        else
-        {
-            //Test to see whether current value is the highest so far. If so store month number
-            if (myCurrentFloat > myHighestFloat)
+            //Check whether value is highest so far.  If this is the first quarter always keep value.
+            if (myFirstTimeFlag == true)
             {
                 myHighestMonthInt = myInt;
                 myHighestFloat = myCurrentFloat;
+                myFirstTimeFlag = false;
+            }
+            else
+            {
+                //Test to see whether current value is the highest so far. If so store month number
+                if (myCurrentFloat > myHighestFloat)
+                {
+                    myHighestMonthInt = myInt;
+                    myHighestFloat = myCurrentFloat;
+                }
             }
         }
     }
-  }
-  catch (...)
-  {
-          if (debugModeFlag) cout << "A fatal error occured in the firstMonthOfHighestQ method " << endl;
-          myHighestMonthInt = -9999;
-  }
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the firstMonthOfHighestQ method " << std::endl;
+        myHighestMonthInt = -9999;
+#endif
+    }
 
 
     //Return highest value over the quarter (add 1 to get it into base 1 instead of base0)
@@ -356,48 +397,58 @@ theClimateVector, starting at theStartMonth. */
 float DataProcessor::meanOverQuarter (QValueVector <float> theClimateVector, int theStartMonth)
 {
 
-    if (debugModeFlag) cout << "DataProcessor::meanOverQuarter (float *theClimateVector, int myVectorLengthInt, int theStartMonth) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::meanOverQuarter (float *theClimateVector, int myVectorLengthInt, int theStartMonth) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
 
 
     int myInt=0;
     float myMeanFloat=0;
     int mySegmentInt=0;
-int myVectorLengthInt = theClimateVector.size();
+    int myVectorLengthInt = theClimateVector.size();
     try
     {
 
-      //Check to see whether months need to wrap
-      if (theStartMonth + QUARTER < myVectorLengthInt)
-      {
-        //No wrapping necessary
-        for (myInt = theStartMonth-1; myInt < (theStartMonth-1 + (QUARTER)); myInt++)
+        //Check to see whether months need to wrap
+        if (theStartMonth + QUARTER < myVectorLengthInt)
         {
-            myMeanFloat += theClimateVector[myInt];
-            if (debugModeFlag) cout << "Added " << theClimateVector[myInt] << ", total is now : " << myMeanFloat << endl;
+            //No wrapping necessary
+            for (myInt = theStartMonth-1; myInt < (theStartMonth-1 + (QUARTER)); myInt++)
+            {
+                myMeanFloat += theClimateVector[myInt];
+#ifdef QGISDEBUG
+                std::cout << "Added " << theClimateVector[myInt] << ", total is now : " << myMeanFloat << std::endl;
+#endif
+            }
         }
-      }
-      else
-      {
-        //Wrapping necessary so read last month(s) as normal
-        for (mySegmentInt=theStartMonth-1; mySegmentInt < myVectorLengthInt; mySegmentInt++)
+        else
         {
-            myMeanFloat += theClimateVector[mySegmentInt];
-            if (debugModeFlag) cout << "Wrap Added from end " << theClimateVector[mySegmentInt] << ", total is now : " << myMeanFloat << endl;
+            //Wrapping necessary so read last month(s) as normal
+            for (mySegmentInt=theStartMonth-1; mySegmentInt < myVectorLengthInt; mySegmentInt++)
+            {
+                myMeanFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                std::cout << "Wrap Added from end " << theClimateVector[mySegmentInt] << ", total is now : " << myMeanFloat << std::endl;
+#endif
+            }
+            //Read remainding months from beginning of vector
+            for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - theStartMonth) - 1); mySegmentInt++)
+            {
+                myMeanFloat += theClimateVector[mySegmentInt];
+#ifdef QGISDEBUG
+                std::cout << "Wrap Added from start " << theClimateVector[mySegmentInt] << ", total is now : " << myMeanFloat << std::endl;
+#endif
+            }
         }
-        //Read remainding months from beginning of vector
-        for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - theStartMonth) - 1); mySegmentInt++)
-        {
-            myMeanFloat += theClimateVector[mySegmentInt];
-            if (debugModeFlag) cout << "Wrap Added from start " << theClimateVector[mySegmentInt] << ", total is now : " << myMeanFloat << endl;
-        }
-      }
-      myMeanFloat = (myMeanFloat / QUARTER);
+        myMeanFloat = (myMeanFloat / QUARTER);
     }
     catch (...)
     {
-          if (debugModeFlag) cout << "A fatal error occured in the meanOverQuarter method " << endl;
-          myMeanFloat = -9999;
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the meanOverQuarter method " << std::endl;
+        myMeanFloat = -9999;
+#endif
     }
     return myMeanFloat;
 }
@@ -406,40 +457,46 @@ element in the vector. */
 float DataProcessor::lowestValue (QValueVector <float> theClimateVector)
 {
 
-    if (debugModeFlag) cout << "DataProcessor::lowestValue ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::lowestValue ( float *theClimateVector, int myVectorLengthInt) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
 
 
     float myLowestFloat=0;
     int myInt=0;
     bool myFirstTimeFlag=true;
-int myVectorLengthInt = theClimateVector.size();
+    int myVectorLengthInt = theClimateVector.size();
     try
     {
-      for (myInt=0; myInt < myVectorLengthInt; myInt++)
-      {
-        //If this is the first run store value as lowest
-        if (myFirstTimeFlag == true)
+        for (myInt=0; myInt < myVectorLengthInt; myInt++)
         {
-            myLowestFloat = theClimateVector[myInt];
-            if (debugModeFlag) cout << "Lowest value set to " << myLowestFloat << " on first iteration." << endl;
-            myFirstTimeFlag = false;
-
-        }
-        //Test to see whether value is lowest so far
-        else
-        {
-            if (myLowestFloat > theClimateVector[myInt])
+            //If this is the first run store value as lowest
+            if (myFirstTimeFlag == true)
             {
-              myLowestFloat = theClimateVector[myInt];
+                myLowestFloat = theClimateVector[myInt];
+#ifdef QGISDEBUG
+                std::cout << "Lowest value set to " << myLowestFloat << " on first iteration." << std::endl;
+                myFirstTimeFlag = false;
+#endif
+
+            }
+            //Test to see whether value is lowest so far
+            else
+            {
+                if (myLowestFloat > theClimateVector[myInt])
+                {
+                    myLowestFloat = theClimateVector[myInt];
+                }
             }
         }
-      }
     }
     catch (...)
     {
-          if (debugModeFlag) cout << "A fatal error occured in the lowestValue method " << endl;
-          myLowestFloat = -9999;
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the lowestValue method " << std::endl;
+        myLowestFloat = -9999;
+#endif
     }
     //Return lowest value
     return myLowestFloat;
@@ -449,40 +506,46 @@ in the vector. */
 float DataProcessor::highestValue (QValueVector <float> theClimateVector)
 {
 
-    if (debugModeFlag) cout << "DataProcessor::highestValue ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::highestValue ( float *theClimateVector, int myVectorLengthInt) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
 
 
     float myHighestFloat=0;
     int myInt=0;
     bool myFirstTimeFlag=true;
-int myVectorLengthInt = theClimateVector.size();
+    int myVectorLengthInt = theClimateVector.size();
     try
     {
-      for (myInt=0; myInt < myVectorLengthInt; myInt++)
-      {
-        //If this is the first run store value as lowest
-        if (myFirstTimeFlag == true)
+        for (myInt=0; myInt < myVectorLengthInt; myInt++)
         {
-            myHighestFloat = theClimateVector[myInt];
-            if (debugModeFlag) cout << "Highest value set to " << myHighestFloat << " on first iteration." << endl;
-            myFirstTimeFlag = false;
-
-        }
-        //Test to see whether value is lowest so far
-        else
-        {
-            if (myHighestFloat < theClimateVector[myInt])
+            //If this is the first run store value as lowest
+            if (myFirstTimeFlag == true)
             {
-              myHighestFloat = theClimateVector[myInt];
+                myHighestFloat = theClimateVector[myInt];
+#ifdef QGISDEBUG
+                std::cout << "Highest value set to " << myHighestFloat << " on first iteration." << std::endl;
+                myFirstTimeFlag = false;
+#endif
+
+            }
+            //Test to see whether value is lowest so far
+            else
+            {
+                if (myHighestFloat < theClimateVector[myInt])
+                {
+                    myHighestFloat = theClimateVector[myInt];
+                }
             }
         }
-      }
     }
     catch (...)
     {
-          if (debugModeFlag) cout << "A fatal error occured in the highest value method " << endl;
-          myHighestFloat = -9999;
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the highest value method " << std::endl;
+#endif
+        myHighestFloat = -9999;
     }
     //Return highest value
     return myHighestFloat;
@@ -496,39 +559,46 @@ month or not.
 @see greatestMonthlyRange
 */
 float DataProcessor::greatestTotalRange (QValueVector <float> theClimateVector1,
-                                         QValueVector <float> theClimateVector2)
+        QValueVector <float> theClimateVector2)
 {
 
-    if (debugModeFlag) cout << "DataProcessor::greatestTotalRange (float *theClimateVector1, int theArrayLength1, float *theClimateVector2, int theArrayLength2) called" << endl;
-    if (debugModeFlag) cout << "==========================================================" << endl;
-
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::greatestTotalRange (float *theClimateVector1, int theArrayLength1, float *theClimateVector2, int theArrayLength2) called" << std::endl;
+    std::cout << "==========================================================" << std::endl;
+#endif
     //dont default to 0 as it may be lower (or higher) than any existing value in each vector
     float myHighestFloat=theClimateVector1[0]; //default to a valid value in the set
     float myLowestFloat=theClimateVector1[0];  //default to a valid value in the set
     float myRangeFloat=-9999;
     int myInt=0;
-int myVectorLengthInt1 = theClimateVector1.size();
-int myVectorLengthInt2 = theClimateVector2.size();
+    int myVectorLengthInt1 = theClimateVector1.size();
+    int myVectorLengthInt2 = theClimateVector2.size();
     try
     {
         //process array1 first
         for (myInt = 0; myInt < myVectorLengthInt1; myInt++)
         {
-          if (myHighestFloat < theClimateVector1[myInt]) myHighestFloat = theClimateVector1[myInt];
-          if (myLowestFloat > theClimateVector1[myInt]) myLowestFloat = theClimateVector1[myInt];
+            if (myHighestFloat < theClimateVector1[myInt])
+                myHighestFloat = theClimateVector1[myInt];
+            if (myLowestFloat > theClimateVector1[myInt])
+                myLowestFloat = theClimateVector1[myInt];
         }
         //now the second vector
         for (myInt = 0; myInt < myVectorLengthInt2; myInt++)
         {
-          if (myHighestFloat < theClimateVector2[myInt]) myHighestFloat = theClimateVector2[myInt];
-          if (myLowestFloat > theClimateVector2[myInt]) myLowestFloat = theClimateVector2[myInt];
+            if (myHighestFloat < theClimateVector2[myInt])
+                myHighestFloat = theClimateVector2[myInt];
+            if (myLowestFloat > theClimateVector2[myInt])
+                myLowestFloat = theClimateVector2[myInt];
         }
         myRangeFloat = myHighestFloat - myLowestFloat;
     }
     catch (...)
     {
-          if (debugModeFlag) cout << "A fatal error occured in the greatestTotalRange method " << endl;
-          myRangeFloat = -9999;
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the greatestTotalRange method " << std::endl;
+        myRangeFloat = -9999;
+#endif
 
     }
     return myRangeFloat;
@@ -539,47 +609,58 @@ The value of the max-min difference for a given month that is the
 greatest is returned.
 @see greatestTotalRange */
 float DataProcessor::greatestMonthlyRange (QValueVector <float> theClimateVector1,
-                                           QValueVector <float> theClimateVector2)
+        QValueVector <float> theClimateVector2)
 {
 
-  return 0;
+    return 0;
 
 }
 /** This function will return the sum of theClimateVector divided by the
 number of elements in theClimateVector. */
 float DataProcessor::meanOverYear (QValueVector <float> theClimateVector)
 {
-    if (debugModeFlag) cout << "DataProcessor::meanOverYear ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==============================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::meanOverYear ( float *theClimateVector, int myVectorLengthInt) called" << std::endl;
+    std::cout << "==============================================================" << std::endl;
+#endif
 
     float myRunningTotFloat=0;
     float myMeanOverYearFloat;
-int myVectorLengthInt = theClimateVector.size();
+    int myVectorLengthInt = theClimateVector.size();
     try
     {
         for (int myInt = 0; myInt <= myVectorLengthInt-1; myInt++)
         {
             myRunningTotFloat += theClimateVector[myInt];
-            if (debugModeFlag) cout << "Iteration " << myInt << ", running total is : " << myRunningTotFloat << endl;
+#ifdef QGISDEBUG
+            std::cout << "Iteration " << myInt << ", running total is : " << myRunningTotFloat << std::endl;
+#endif
         }
         myMeanOverYearFloat = myRunningTotFloat / myVectorLengthInt;
     }
-   catch (...)
-   {
-          if (debugModeFlag) cout << "A fatal error occured in the meanOverYear method " << endl;
-          myMeanOverYearFloat = -9999;
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the meanOverYear method " << std::endl;
+#endif
+        myMeanOverYearFloat = -9999;
     }
-    if (debugModeFlag) cout << "Completed - mean over year is : " << myMeanOverYearFloat << endl;
-    if (debugModeFlag) cout << "----------------------------------------------------------------------------------------------" << endl;
-  return myMeanOverYearFloat;
+#ifdef QGISDEBUG
+    std::cout << "Completed - mean over year is : " << myMeanOverYearFloat << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" <<
+     std::endl;
+#endif
+    return myMeanOverYearFloat;
 
 }
 /** This function will return the standard deviation of the climate vector. */
 float DataProcessor::stddevOverYear (QValueVector <float> theClimateVector)
 {
 
-    if (debugModeFlag) cout << "DataProcessor::stddevOverYear ( float *theClimateVector, int myVectorLengthInt) called" << endl;
-    if (debugModeFlag) cout << "==============================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::stddevOverYear ( float *theClimateVector, int myVectorLengthInt) called" << std::endl;
+    std::cout << "==============================================================" << std::endl;
+#endif
     int myInt=0;
     float myRunningTotFloat=0;
     float myMeanOverYearFloat=0;
@@ -591,28 +672,34 @@ float DataProcessor::stddevOverYear (QValueVector <float> theClimateVector)
         for (myInt = 0; myInt <= myVectorLengthInt-1; myInt++)
         {
             myRunningTotFloat += theClimateVector[myInt];
-            if (debugModeFlag) cout << "Iteration " << myInt << ", running total is : " << myRunningTotFloat << endl;
+#ifdef QGISDEBUG
+            std::cout << "Iteration " << myInt << ", running total is : " << myRunningTotFloat << std::endl;
+#endif
         }
         myMeanOverYearFloat = myRunningTotFloat / myVectorLengthInt;
 
         //Calculate the sum of the squared deviations
         for (myInt = 0; myInt <  myVectorLengthInt; myInt++)
         {
-          mySumSqdDevFloat += static_cast<float>(pow((theClimateVector[myInt] - myMeanOverYearFloat),2));
+            mySumSqdDevFloat += static_cast<float>(pow((theClimateVector[myInt] - myMeanOverYearFloat),2));
         }
 
         //divide result by sample size - 1 and get square root to get stdev
         myStddevOverYearFloat = static_cast<float>(sqrt(mySumSqdDevFloat / (myVectorLengthInt - 1)));
     }
-   catch (...)
-   {
-          if (debugModeFlag) cout << "A fatal error occured in the stddevOverYear method " << endl;
-          myStddevOverYearFloat = -9999;
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the stddevOverYear method " << std::endl;
+#endif
+        myStddevOverYearFloat = -9999;
     }
-    if (debugModeFlag) cout << "Completed - stddev over year is : " << myMeanOverYearFloat << endl;
-    if (debugModeFlag) cout << "----------------------------------------------------------------------------------------------" << endl;
+#ifdef QGISDEBUG
+    std::cout << "Completed - stddev over year is : " << myMeanOverYearFloat << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
+#endif
 
-  return myStddevOverYearFloat;
+    return myStddevOverYearFloat;
 }
 /** This function will return an integer between 1 and 12 corresponding to
 the month with the lowest value. */
@@ -622,20 +709,25 @@ int DataProcessor::monthWithLowestValue(QValueVector <float> theClimateVector)
     int myVectorLengthInt = theClimateVector.size();
     try
     {
-       for (int myInt = 0; myInt < myVectorLengthInt; myInt++)
-       {
-          //Test to see whether current value is the lowest so far.
-          if (theClimateVector[myInt] < theClimateVector[myLowestInt]) myLowestInt = myInt ;
+        for (int myInt = 0; myInt < myVectorLengthInt; myInt++)
+        {
+            //Test to see whether current value is the lowest so far.
+            if (theClimateVector[myInt] < theClimateVector[myLowestInt])
+                myLowestInt = myInt ;
         }
-      }
-      catch (...)
-      {
-          if (debugModeFlag) cout << "A fatal error occured in the monthWithLowestValue method " << endl;
-          myLowestInt = 0;
-      }
-    if (debugModeFlag) cout << "Completed - month with lowest value is : " << myLowestInt << endl;
-    if (debugModeFlag) cout << "----------------------------------------------------------------------------------------------" << endl;
-  return myLowestInt+1;
+    }
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the monthWithLowestValue method " << std::endl;
+#endif
+        myLowestInt = 0;
+    }
+#ifdef QGISDEBUG
+    std::cout << "Completed - month with lowest value is : " << myLowestInt << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
+#endif
+    return myLowestInt+1;
 
 
 }
@@ -648,49 +740,59 @@ int DataProcessor::monthWithHighestValue (QValueVector <float> theClimateVector)
     int myVectorLengthInt = theClimateVector.size();
     try
     {
-       for (int myInt = 0; myInt < myVectorLengthInt; myInt++)
-       {
-          //Test to see whether current value is the lowest so far.
-          if (theClimateVector[myInt] > theClimateVector[myHighestInt]) myHighestInt = myInt ;
+        for (int myInt = 0; myInt < myVectorLengthInt; myInt++)
+        {
+            //Test to see whether current value is the lowest so far.
+            if (theClimateVector[myInt] > theClimateVector[myHighestInt])
+                myHighestInt = myInt ;
         }
-      }
-      catch (...)
-      {
-          if (debugModeFlag) cout << "A fatal error occured in the monthWithHighestValue method " << endl;
-          myHighestInt = 0;
-      }
-    if (debugModeFlag) cout << "Completed - month with highest value is : " << myHighestInt << endl;
-    if (debugModeFlag) cout << "----------------------------------------------------------------------------------------------" << endl;
-  return myHighestInt+1;
+    }
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the monthWithHighestValue method " << std::endl;
+#endif
+        myHighestInt = 0;
+    }
+#ifdef QGISDEBUG
+    std::cout << "Completed - month with highest value is : " << myHighestInt << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
+#endif
+    return myHighestInt+1;
 
 }
 /** This function will return the value of the element in theClimateVector
 that corresponds to theMonth. */
 float DataProcessor::valueGivenMonth (QValueVector <float> theClimateVector,int theMonth)
 {
-  float myValueFloat=0;
-  int myVectorLengthInt = theClimateVector.size();
-  try
-  {
-    if (theMonth < 1 || theMonth > 12) throw "Month out of bounds";
-    myValueFloat = theClimateVector[theMonth-1];
-  }
-  catch (...)
-  {
-    if (debugModeFlag) cout << "A fatal error occured in the valueGivenMonth function" << endl;
-    myValueFloat = -9999;
-  }
-  return myValueFloat;
+    float myValueFloat=0;
+    int myVectorLengthInt = theClimateVector.size();
+    try
+    {
+        if (theMonth < 1 || theMonth > 12)
+            throw "Month out of bounds";
+        myValueFloat = theClimateVector[theMonth-1];
+    }
+    catch (...)
+    {
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the valueGivenMonth function" << std::endl;
+#endif
+        myValueFloat = -9999;
+    }
+    return myValueFloat;
 }
 /** This value will return the mean value (normally temperature or precipitation) of months in theClimateVector where the corresponding months in
 theFrostArray have frost free days. The frost vector should contain the number of frost days
 per month, so a value of 0 in the frost vector means there were no frost days that month. If there
 are no frost free months, -9999 will be returned.*/
 float DataProcessor::meanValueOverFrostFreeMonths (QValueVector<float> theFrostVector,
-                                                   QValueVector <float> theClimateVector)
+        QValueVector <float> theClimateVector)
 {
-    if (debugModeFlag) cout << "DataProcessor::meanValueOverFrostFreeMonths (float *theFrostArray, int theFrostArrayLength, float *theClimateVector, int theClimateVectorLength)" << endl;
-    if (debugModeFlag) cout << "==============================================================" << endl;
+#ifdef QGISDEBUG
+    std::cout << "DataProcessor::meanValueOverFrostFreeMonths (float *theFrostArray, int theFrostArrayLength, float *theClimateVector, int theClimateVectorLength)" << std::endl;
+    std::cout << "==============================================================" << std::endl;
+#endif
 
     int myInt =0;
     float myRunningTotalFloat =0;
@@ -701,32 +803,35 @@ float DataProcessor::meanValueOverFrostFreeMonths (QValueVector<float> theFrostV
 
     try
     {
-      //Check that the frost and climate arrays are the same size
-      if (myFrostVectorLengthInt != myClimateVectorLengthInt) throw ("Vector sizes must be equal!");
-      for (myInt = 0; myInt < myFrostVectorLengthInt; myInt++)
-      {
-        //iterate through frost vector looking for frost free months
-        if (theFrostVector[myInt] == 0)
+        //Check that the frost and climate arrays are the same size
+        if (myFrostVectorLengthInt != myClimateVectorLengthInt)
+            throw ("Vector sizes must be equal!");
+        for (myInt = 0; myInt < myFrostVectorLengthInt; myInt++)
         {
-            //If month is frost free add value to myRunningTotalDbl and add month to monthcounter
-            myRunningTotalFloat += theClimateVector[myInt];
-            myMonthCountInt += 1;
+            //iterate through frost vector looking for frost free months
+            if (theFrostVector[myInt] == 0)
+            {
+                //If month is frost free add value to myRunningTotalDbl and add month to monthcounter
+                myRunningTotalFloat += theClimateVector[myInt];
+                myMonthCountInt += 1;
+            }
         }
-      }
 
-      //return average value
-      if (myMonthCountInt > 0)
-      {
-         myMeanFloat = myRunningTotalFloat / myMonthCountInt;
-      }
+        //return average value
+        if (myMonthCountInt > 0)
+        {
+            myMeanFloat = myRunningTotalFloat / myMonthCountInt;
+        }
     }
     catch (...)
     {
-      if (debugModeFlag) cout << "A fatal error occured in the meanValueOverFrostFreeMonths function" << endl;
-      myMeanFloat = -9999;
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the meanValueOverFrostFreeMonths function" << std::endl;
+#endif
+        myMeanFloat = -9999;
     }
 
-  return myMeanFloat;
+    return myMeanFloat;
 }
 
 
@@ -740,16 +845,20 @@ int DataProcessor::numberOfMonthsAboveZero (QValueVector <float> theClimateVecto
 
     try
     {
-      for (myInt=0; myInt < theClimateVector.size(); myInt++)
-      {
-        if (theClimateVector[myInt] == -9999) return -9999;
-        if (theClimateVector[myInt] > FREEZING_POINT) myMonthCountInt += 1;
-      }
+        for (myInt=0; myInt < theClimateVector.size(); myInt++)
+        {
+            if (theClimateVector[myInt] == -9999)
+                return -9999;
+            if (theClimateVector[myInt] > FREEZING_POINT)
+                myMonthCountInt += 1;
+        }
     }
     catch (...)
     {
-      if (debugModeFlag) cout << "A fatal error occured in the numberOfMonthsAboveZero function" << endl;
-      myMonthCountInt = -9999;
+#ifdef QGISDEBUG
+        std::cout << "A fatal error occured in the numberOfMonthsAboveZero function" << std::endl;
+#endif
+        myMonthCountInt = -9999;
     }
     return myMonthCountInt;
 }

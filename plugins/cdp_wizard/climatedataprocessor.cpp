@@ -20,19 +20,9 @@ email                : t.sutton@reading.ac.uk
 #include "filereader.h"
 #include "filegroup.h"
 #include <iostream>
-#include <qtextstream.h> //used to convert from a string to an int
+//QT Includes
+#include <qtextstream.h>
 #include <qmessagebox.h>
-//#include <algorithm>
-//#include <cctype>
-
-// using namespace std; --- dont use this - stl transforms will break, rather use the namespace like this std::
-
-//this struct is used in the 'run' method
-struct FileWriterStruct
-{
-    FileWriter * structFileWriter;
-    QString structFullFileName;
-};
 
 
 
