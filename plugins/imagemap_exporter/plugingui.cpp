@@ -24,7 +24,6 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <fstream>
 #include <map>
 #include <queue>
 #include <valarray>
@@ -164,7 +163,7 @@ void PluginGui::pbnOK_clicked()
     }
 
     // sort the features so clusters are contiguous in the vector
-    std::sort(features.begin(), features.end(), cluster_comp);
+    //std::sort(features.begin(), features.end(), cluster_comp);
     
     // get urls
     std::map<int, std::vector<QString> > urls, alts;
@@ -189,14 +188,23 @@ void PluginGui::pbnOK_clicked()
 	QString ciName = basename + "_" + QString::number(features[i].second) +
 	  ".html";
 	file<<ciName;
+	
+	// if this is a cluster head it needs a cluster index file
 	if (i == features[i].second) {
-	  std::ofstream cIdx(dir + ciName);
-	  cIdx<<"<HTML>\n  <BODY>"<<std::endl;
+	  QFile cif(dir + ciName);
+	  if (!cif.open(IO_WriteOnly)) {
+	    QMessageBox::critical(this, "Error", 
+				  QString("Could not write the index file "
+					  "%1!").arg(dir + ciName));
+	    return;
+	  }
+	  QTextStream cIdx(&cif);
+	  cIdx<<"<HTML>\n  <BODY>"<<endl;
 	  for (int j = 0; j < urls[i].size(); ++j) {
 	    cIdx<<"    <A href=\""<<(urls[i][j].isNull() ? "" : urls[i][j])
 		<<"\"><br>"<<(urls[i][j].isNull() ? "" : urls[i][j])<<"</A>\n";
 	  }
-	  cIdx<<"  </BODY>\n</HTML>"<<std::endl;
+	  cIdx<<"  </BODY>\n</HTML>"<<endl;
 	}
       }
       else
