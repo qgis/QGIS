@@ -44,6 +44,7 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
  protected:
 	QgsVectorLayer* mLayer;
 	QPopupMenu* edit;
+
  protected slots:
      void deleteAttributes();
      void addAttribute();

@@ -1150,6 +1150,16 @@ bool QgsPostgresProvider::supportsSaveAsShapefile() const
 {
   return false;
 }
+
+int QgsPostgresProvider::capabilities()
+{
+    return ( QgsVectorDataProvider::AddFeatures | 
+	     QgsVectorDataProvider::DeleteFeatures |
+	     QgsVectorDataProvider::ChangeAttributes |
+	     QgsVectorDataProvider::AddAttributes |
+	     QgsVectorDataProvider::DeleteAttributes );
+}
+
 void QgsPostgresProvider::setSubsetString(QString theSQL)
 {
   sqlWhereClause=theSQL;

@@ -40,12 +40,13 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
     edit = new QPopupMenu(this);
     QPopupMenu* selection = new QPopupMenu(this);
 
-    edit->insertItem(tr("&Add Attribute..."), this, SLOT(addAttribute()), CTRL+Key_A);
-    edit->insertItem(tr("&Delete Attributes..."), this, SLOT(deleteAttributes()), CTRL+Key_D);
+    edit->insertItem(tr("&Add Attribute..."), this, SLOT(addAttribute()), CTRL+Key_A,0);
+    edit->insertItem(tr("&Delete Attributes..."), this, SLOT(deleteAttributes()), CTRL+Key_D,1);
     selection->insertItem(tr("&Bring selected to top"), this, SLOT(selectedToTop()), CTRL+Key_T);
     mMenuBar->insertItem(tr("&Edit"), edit);
     mMenuBar->insertItem(tr("&Selected"),selection);
-    edit->setEnabled(false);
+    edit->setItemEnabled(0,false);
+    edit->setItemEnabled(1,false);
 
     btnStopEditing->setEnabled(false);
     if(!layer->getDataProvider()->supportsAttributeEditing())
@@ -97,12 +98,34 @@ void QgsAttributeTableDisplay::addAttribute()
 
 void QgsAttributeTableDisplay::startEditing()
 {
-    btnStartEditing->setEnabled(false);
-    btnStopEditing->setEnabled(true);
-    btnClose->setEnabled(false);
-    edit->setEnabled(true);
-    table()->setReadOnly(false);
-    table()->setColumnReadOnly(0,true);//id column is not editable
+    QgsVectorDataProvider* provider=mLayer->getDataProvider();
+    bool editing=false;
+
+    if(provider)
+    {
+	if(provider->capabilities()&QgsVectorDataProvider::AddAttributes)
+	{
+	    edit->setItemEnabled(0,true);
+	    editing=true;
+	}
+	if(provider->capabilities()&QgsVectorDataProvider::DeleteAttributes)
+	{
+	   edit->setItemEnabled(1,true); 
+	   editing=true;
+	}
+	if(provider->capabilities()&QgsVectorDataProvider::ChangeAttributes)
+	{
+	    table()->setReadOnly(false);
+	    table()->setColumnReadOnly(0,true);//id column is not editable
+	    editing=true;
+	}
+	if(editing)
+	{
+	   btnStartEditing->setEnabled(false);
+	   btnStopEditing->setEnabled(true);
+	   btnClose->setEnabled(false); 
+	}
+    }
 }
 
 void QgsAttributeTableDisplay::stopEditing()
@@ -123,7 +146,8 @@ void QgsAttributeTableDisplay::stopEditing()
     btnStartEditing->setEnabled(true);
     btnStopEditing->setEnabled(false);
     btnClose->setEnabled(true); 
-    edit->setEnabled(false);
+    edit->setItemEnabled(0,false);
+    edit->setItemEnabled(1,false);
     table()->setReadOnly(true);
 }
 
