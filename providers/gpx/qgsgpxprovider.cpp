@@ -143,14 +143,14 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	
 	// add attributes if they are wanted
 	if (fetchAttributes) {
-	  result->addAttribute("name", wpt.name);
+	  result->addAttribute("name", wpt.name.c_str());
 	  result->addAttribute("lat", QString("%1").arg(wpt.lat));
 	  result->addAttribute("lon", QString("%1").arg(wpt.lon));
 	  if (isnan(wpt.ele))
 	    result->addAttribute("ele", "");
 	  else
 	    result->addAttribute("ele", QString("%1").arg(wpt.ele));
-	  result->addAttribute("url", wpt.url);
+	  result->addAttribute("url", wpt.url.c_str());
 	}
 	
 	++mFid;
@@ -188,8 +188,8 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	
 	// add attributes if they are wanted
 	if (fetchAttributes) {
-	  result->addAttribute("name", rte.name);
-	  result->addAttribute("url", rte.url);
+	  result->addAttribute("name", rte.name.c_str());
+	  result->addAttribute("url", rte.url.c_str());
 	}
 	
 	++mFid;
@@ -229,8 +229,8 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	
 	// add attributes if they are wanted
 	if (fetchAttributes) {
-	  result->addAttribute("name", trk.name);
-	  result->addAttribute("url", trk.url);
+	  result->addAttribute("name", trk.name.c_str());
+	  result->addAttribute("url", trk.url.c_str());
 	}
 	
 	++mFid;
@@ -269,7 +269,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  switch (*iter) {
 	  case 0:
-	    result->addAttribute("name", wpt.name);
+	    result->addAttribute("name", wpt.name.c_str());
 	    break;
 	  case 1:
 	    result->addAttribute("lat", QString("%1").arg(wpt.lat));
@@ -284,7 +284,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	      result->addAttribute("ele", QString("%1").arg(wpt.ele));
 	    break;
 	  case 4:
-	    result->addAttribute("url", wpt.url);
+	    result->addAttribute("url", wpt.url.c_str());
 	    break;
 	  }
 	}
@@ -325,9 +325,9 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
-	    result->addAttribute("name", rte.name);
+	    result->addAttribute("name", rte.name.c_str());
 	  else if (*iter == 1)
-	    result->addAttribute("url", rte.url);
+	    result->addAttribute("url", rte.url.c_str());
 	}
 	
 	++mFid;
@@ -368,9 +368,9 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
-	    result->addAttribute("name", trk.name);
+	    result->addAttribute("name", trk.name.c_str());
 	  else if (*iter == 1)
-	    result->addAttribute("url", trk.url);
+	    result->addAttribute("url", trk.url.c_str());
 	}
 	
 	++mFid;

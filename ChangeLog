@@ -1,7 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.96 2004/05/26 11:30:43 larsl Exp
+ChangeLog,v 1.97 2004/05/26 15:25:06 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-26 [larsl] 0.3.0devel3
+** Added some calls to std::string::c_str() to hopefully make Qt without STL 
+   happy
+
+2004-05-26 [larsl] 0.3.0devel2
+
 
 2004-05-26 [larsl] 0.3.0devel1
 ** Fixed a bug that caused the legend checkboxes to always be unchecked when
