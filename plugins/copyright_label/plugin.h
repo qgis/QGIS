@@ -71,6 +71,7 @@ class Plugin:public QObject, public QgisPlugin
   void setPlacement(QString);
   //! set copyright label enabled
   void setEnable(bool);
+  
 
   
     private:

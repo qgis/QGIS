@@ -29,6 +29,9 @@ public:
     void pbnOK_clicked();
     void pbnCancel_clicked();    
 
+public slots:
+    void setEnabled(bool); 
+    
 private:
     
 signals:
@@ -39,7 +42,7 @@ signals:
    void changeColor(QColor);
    void changePlacement(QString);
    void enableCopyrightLabel(bool);
-   
+  
 };
 
 #endif

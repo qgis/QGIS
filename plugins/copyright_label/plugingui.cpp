@@ -14,19 +14,25 @@
 #include <qsimplerichtext.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
+#include <qlabel.h>
+
 //qt includes
 
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
 {
-  
+  //programmatically hide orientation selection for now
+  cboOrientation->hide();
+  textLabel15->hide();
 }
 
 PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : PluginGuiBase( parent, name, modal, fl )
 {
-   
+  //programmatically hide orientation selection for now
+  cboOrientation->hide();
+  textLabel15->hide();
 }  
 PluginGui::~PluginGui()
 {
@@ -56,4 +62,8 @@ void PluginGui::pbnCancel_clicked()
  close(1);
 }
 
+void PluginGui::setEnabled(bool theBool)
+{
+  cboxEnabled->setChecked(theBool);
+}
 
