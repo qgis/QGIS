@@ -28,13 +28,10 @@
 
 int main(int argc, char *argv[])
 {
-  QString myArgString;
-  QFile myQFile;
-  QStringList myFileStringList;
-  bool myFileExistsFlag;
 
   QApplication a(argc, argv);
   // a.setFont(QFont("helvetica", 11));
+
   QTranslator tor(0);
   // set the location where your .qm files are in load() below as the last parameter instead of "."
   // for development, use "/" to use the english original as
@@ -56,41 +53,34 @@ int main(int argc, char *argv[])
   a.setMainWidget(qgis);
 
   qgis->show();
+
   // 
   // autoload any filenames that were passed in on the command line
   // 
-  for (int myIteratorInt = 1; myIteratorInt < argc; myIteratorInt++)
+  for (int i = 1; i < argc; i++)
     {
 #ifdef QGISDEBUG
-      printf("%d: %s\n", myIteratorInt, argv[myIteratorInt]);
+      printf("%d: %s\n", i, argv[i]);
 #endif
-      myQFile.setName(argv[myIteratorInt]);
-      myFileExistsFlag = myQFile.open(IO_ReadOnly);
-      myQFile.close();
-      if (myFileExistsFlag)
-        {
+      // try to add all these layers - any unsupported file types will
+      // be refected automatically
+      if ( qgis->addRasterLayer(argv[i]) )
+      {
+         // NOP
+         continue;
+      }
+      else if ( qgis->addLayer(argv[i]) )
+      {
+         // NOP
+         continue;
+      }
+      else
+      {
+         // XXX should have complaint here about file not being valid
 #ifdef QGISDEBUG
-          printf("OK\n");
+         std::cerr << argv[i] << " is not a recognized file\n"; 
 #endif
-          myArgString = argv[myIteratorInt];
-#ifdef QGISDEBUG
-          printf("Layer count: %d\n", myFileStringList.count());
-#endif
-          myFileStringList.append(myArgString);
-
-        }
-    }
-#ifdef QGISDEBUG
-  printf("rCount: %d\n", myFileStringList.count());
-#endif
-  if (!myFileStringList.isEmpty())
-    {
-#ifdef QGISDEBUG
-      printf("Loading vector files...\n");
-#endif
-      //try to add all these layers - any unsupported file types will be refected automatically
-      qgis->addRasterLayer(myFileStringList);
-      qgis->addLayer(myFileStringList);
+      }
     }
 
   a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
