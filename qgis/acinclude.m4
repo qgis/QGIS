@@ -26,8 +26,6 @@ dnl
 dnl Single-module modifications are best placed in configure.in for kdelibs
 dnl and kdebase or configure.in.in if present.
 
-
-AC_SUBST(USER_INCLUDES,$PGSQL/include)
 dnl ------------------------------------------------------------------------
 dnl Forward compatibility macros (make autoconf 2.13 look like 2.50),
 dnl thanks to Raja R Harinath.
