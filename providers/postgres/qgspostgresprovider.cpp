@@ -972,6 +972,7 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
   QString sql, key;
   table_cols suitable;
 
+  std::vector<table_cols::const_iterator> oids;
   table_cols::const_iterator iter = cols.begin();
   for (; iter != cols.end(); ++iter)
   {
@@ -1010,18 +1011,34 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
       std::cout << " is not suitable.\n";
 #endif
     PQclear(result);
+    if (table_col == "oid")
+      oids.push_back(iter);
+  }
+
+  // 'oid' columns in tables don't have a constraint on them, but
+  // they are useful to consider, so add them in if not already
+  // here.
+  for (int i = 0; i < oids.size(); ++i)
+  {
+    if (suitable.find(oids[i]->first) == suitable.end())
+    {
+      suitable[oids[i]->first] = oids[i]->second;
+#ifdef QGISDEBUG
+      std::cout << "Adding column " << oids[i]->first 
+		<< " as it may be suitable." << std::endl;
+#endif
+    }
   }
 
   // If there is more than one suitable column pick one that is
-  // indexed, else pick the one called 'oid' if it exists, else
-  // pick the first one in suitable. 
+  // indexed, else pick one called 'oid' if it exists, else
+  // pick the first one. If there are none we return an empty string. 
   if (suitable.size() == 1)
   {
     key = suitable.begin()->first;
 #ifdef QGISDEBUG
     std::cout << "Picked column " << key
-	      << " as it is the only column with a unique"
-	      << " constraint.\n";
+	      << " as it is the only one that was suitable.\n";
 #endif
   }
   else if (suitable.size() > 1)
@@ -1038,12 +1055,13 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
 	i->second.first + "') and attname = '" + 
 	i->second.second + "')";
       PGresult* result = PQexec(connection, (const char*)sql);
+
       if (PQntuples(result) > 0)
       { // Got one. Use it.
 	key = i->first;
 #ifdef QGISDEBUG
 	std::cout << "Picked column '" << key
-		  << "' as the key because it has an index.\n";
+		  << "' because it has an index.\n";
 #endif
 	break;
       }
@@ -1052,8 +1070,9 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
 
     if (key.isEmpty())
     {
-      // If none have indices, search for one named 'oid'. This is
-      // legacy support. Could be removed in the future.
+      // If none have indices, choose one that is called 'oid' (if it
+      // exists). This is legacy support and could be removed in
+      // future. 
       i = suitable.find("oid");
       if (i != suitable.end())
       {
@@ -1083,6 +1102,7 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
   // allow for none of the above working due to the
   // findTableColumns() function currently not detecting
   // underlying tables if a view refers to a second view.
+
   if (key == "" && cols.find("oid") != cols.end())
     key = "oid";
 
