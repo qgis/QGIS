@@ -30,7 +30,7 @@ class QgsVectorLayer;
 class QgsSiSyDialog: public QgsSiSyDialogBase
 {
     Q_OBJECT
- public:
+public:
     QgsSiSyDialog(QgsVectorLayer* layer);
     ~QgsSiSyDialog();
     QColor getOutlineColor();
@@ -47,22 +47,48 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     QString label();
 
 
- protected:
+protected:
     QgsVectorLayer* mVectorLayer;
- public slots:
-     /**applies the changes to the vector layer*/
+public slots:
+    /**applies the changes to the vector layer*/
     void apply();
     /**emits the signal settingsChanged()*/
     void resendSettingsChanged();
- protected slots:
+
+
+    void solid_clicked();
+    void fdiag_clicked();
+    void dense4_clicked();
+    void horizontal_clicked();
+    void diagcross_clicked();
+    void dense5_clicked();
+    void vertical_clicked();
+    void dense1_clicked();
+    void dense6_clicked();
+    void cross_clicked();
+    void dense2_clicked();
+    void dense7_clicked();
+    void bdiag_clicked();
+    void dense3_clicked();
+    void nopen_clicked();
+    void pbnLineSolid_clicked();
+    void pbnLineDashDot_clicked();
+    void pbnLineDash_clicked();
+    void pbnLineDashDotDot_clicked();
+    void pbnLineDot_clicked();
+    void pbnLineNoPen_clicked();
+
+
+
+protected slots:
     void selectOutlineColor();
     void selectFillColor();
- private:
+private:
     /**Default constructor is privat to not use is*/
-     QgsSiSyDialog();
+    QgsSiSyDialog();
 
- signals:
-     void settingsChanged();
+signals:
+    void settingsChanged();
 };
 
 #endif

@@ -77,7 +77,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
     dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
     dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
     nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
-    
+
 
     if (layer)
     {
@@ -111,7 +111,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
             //stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
             //stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
             //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
-            
+
             QPen myPen = renderer->item()->getSymbol()->pen();
             if (myPen==Qt::NoPen)
                 (pbnLineNoPen->setOn(true));
@@ -546,4 +546,157 @@ QString QgsSiSyDialog::label()
 void QgsSiSyDialog::setLabel(QString label)
 {
     mLabelEdit->setText(label);
+}
+
+
+//
+// These are simple event triggers off the various pattern and line
+// style buttons
+//
+
+
+void QgsSiSyDialog::solid_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::fdiag_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::dense4_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::horizontal_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::diagcross_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::dense5_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::vertical_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::dense1_clicked()
+{
+
+    emit settingsChanged();
+}
+
+
+void QgsSiSyDialog::dense6_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::cross_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::dense2_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::dense7_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::bdiag_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::dense3_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::nopen_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::pbnLineSolid_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::pbnLineDashDot_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::pbnLineDash_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::pbnLineDashDotDot_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::pbnLineDot_clicked()
+{
+    emit settingsChanged();
+
+}
+
+
+void QgsSiSyDialog::pbnLineNoPen_clicked()
+{
+    emit settingsChanged();
+
 }
