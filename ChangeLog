@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.173 2004/08/22 12:23:47 larsl Exp
+ChangeLog,v 1.174 2004/08/22 14:39:35 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-22 [larsl] 0.4.0devel18
+** Fixed a bug that caused SVG markers to be huge when oversampling was turned on
 
 2004-08-22 [larsl] 0.4.0devel17
 ** Fixed transparency in SVG sumbols
