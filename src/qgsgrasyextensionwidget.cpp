@@ -257,3 +257,41 @@ void QgsGraSyExtensionWidget::selectOutlineStyle()
 	((QPushButton *) sender())->setPixmap(QgsSymbologyUtils::penStyle2Pixmap(linestyledialog.style()));
     }
 }
+
+void QgsGraSyExtensionWidget::setClassification(QgsGraSyDialog::mode mode,int field)
+{
+    double minimum=0;
+    double maximum=0;
+    
+    m_classfield=field;
+    mMode=mode;
+
+    QgsDataProvider *provider=mVectorLayer->getDataProvider();
+
+    if (provider)
+    {
+	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
+	{
+	    double minimum=0;
+	    double maximum=0;
+
+	    minimum = provider->minValue(m_classfield).toDouble();
+	    maximum = provider->maxValue(m_classfield).toDouble();
+	    
+	    for(int i=0;i<mNumberOfClasses;++i)
+	    {
+		((QLineEdit*)getWidget(0,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', 2));
+		((QLineEdit*)getWidget(1,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i+1), 'f', 2));
+	    }
+	    
+	} 
+	else if (mMode == QgsGraSyDialog::EMPTY)                    //don't waste performance if mMode is QgsGraSyDialog::EMPTY
+	{
+	    for(int i=0;i<mNumberOfClasses;++i)
+	    {
+		((QLineEdit*)getWidget(0,i))->clear();
+		((QLineEdit*)getWidget(1,i))->clear();
+	    }
+	}
+    }
+}

@@ -45,6 +45,8 @@ class QgsGraSyExtensionWidget: public QScrollView
     int classfield();
     /**Access to the widget objects. In QgsGraSyDialog, the widgets have to be casted to the proper subclasses to retrieve their information*/
     QWidget* getWidget(int column, int row);
+    /**Changes the classification*/
+    void setClassification(QgsGraSyDialog::mode mode,int field);
  protected:
     /**Number of the field to classify*/
     int m_classfield;

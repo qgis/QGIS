@@ -42,7 +42,9 @@ public slots:
      void apply();
 protected slots:
      /**Creates a new extension widget*/
-     void adjustNumberOfClasses();
+     void adjustNumberOfClasses();  
+     /**Tells the extensionwidget to change the values of the lower and upper text fields*/ 
+     void adjustClassification(); 
 private:
      /**Default constructor is privat to not use is*/
      QgsGraMaDialog();
