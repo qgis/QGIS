@@ -6,7 +6,7 @@ if HAVE_POSTGRESQL
 GEOPROCESSING = geoprocessing
 endif
 
-SUBDIRS = $(GEOPROCESSING) $(SPIT)
+SUBDIRS = $(GEOPROCESSING) $(SPIT) delimited_text
 
 EXTRA_DIST = qgisplugin.h \
   plugin_builder.pl \
