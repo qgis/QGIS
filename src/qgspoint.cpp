@@ -35,6 +35,10 @@ QString QgsPoint::stringRep(int thePrecision) const
   QString::number( m_y,'f',thePrecision);
   return rep;
 }
+QString QgsPoint::wellKnownText()
+{
+  return QString("POINT(%1 %2)".arg(m_x).arg(m_y));
+}
 // operators
 bool QgsPoint::operator==(const QgsPoint & other)
 {
