@@ -33,3 +33,15 @@ void QgsLabelDialogBase::changeFontColor()
 {
 
 }
+
+
+void QgsLabelDialogBase::chkUseBuffer_toggled( bool )
+{
+
+}
+
+
+void QgsLabelDialogBase::cbxUseCollisionDetection_toggled( bool )
+{
+
+}

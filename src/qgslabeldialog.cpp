@@ -37,6 +37,7 @@
 #include <qcolordialog.h>
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
+#include <qcheckbox.h>
 
 #include "qgsfield.h"
 #include "qgspatterndialog.h"
@@ -226,7 +227,8 @@ void QgsLabelDialog::init ( void )
   if ( myLabelAttributes->alignment() == Qt::AlignCenter                   ) radioOver->setChecked(true)        ;  
 
   mBufferColor = myLabelAttributes->bufferColor(); 
-  if (myLabelAttributes->bufferSizeIsSet())
+  //note that it could be that buffer properties are set, but the bufer is disabled
+  if (myLabelAttributes->bufferSizeIsSet() )
   {
     int myTypeInt = myLabelAttributes->bufferSizeType();
     if ( myTypeInt == QgsLabelAttributes::PointUnits )
@@ -243,7 +245,10 @@ void QgsLabelDialog::init ( void )
   {
     spinBufferSize->setValue(0);
   }
+  //set the state of the buffer enabled checkbox
+  chkUseBuffer->setChecked(myLabelAttributes->bufferEnabled());   
   
+  //NOTE: do we need this line too? TS
   spinBufferSize->setValue(static_cast<int>(myLabelAttributes->bufferSize()));
   //TODO - transparency attributes for buffers
 
@@ -357,6 +362,7 @@ void QgsLabelDialog::apply()
     if (radioBelow->isChecked())       myLabelAttributes->setAlignment(Qt::AlignTop   | Qt::AlignHCenter); 
     if (radioOver->isChecked())        myLabelAttributes->setAlignment(Qt::AlignCenter);
       
+    myLabelAttributes->setBufferEnabled(chkUseBuffer->isChecked());
     myLabelAttributes->setBufferColor(mBufferColor); 
     myTypeInt = 0;
     if ( radioBufferUnitsPoints->isChecked() )
