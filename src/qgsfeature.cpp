@@ -1,6 +1,6 @@
 /***************************************************************************
-  qgsfeature.cpp - Spatial Feature Implementation
-  --------------------------------------
+                qgsfeature.cpp - Spatial Feature Implementation
+                     --------------------------------------
 Date                 : 09-Sep-2003
 Copyright            : (C) 2003 by Gary E.Sherman
 email                : sherman at mrcc.com
