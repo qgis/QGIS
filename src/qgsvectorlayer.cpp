@@ -75,8 +75,8 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
   ir = 0;
 
 #ifdef QGISDEBUG
-  std::cerr << "VECTORLAYERPATH: " << vectorLayerPath << std::endl;
-  std::cerr << "BASENAME: " << baseName << std::endl;
+  std::cerr << "VECTORLAYERPATH: " << vectorLayerPath.ascii() << std::endl;
+  std::cerr << "BASENAME: " << baseName.ascii() << std::endl;
 #endif
   // load the plugin
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();

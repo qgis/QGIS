@@ -23,7 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include <qpainter.h>
-#include <vector.h>
+#include <vector>
 
 QgsUniqueValRenderer::QgsUniqueValRenderer(): mClassificationField(-1),mSelectionColor(QColor(255,255,0))
 {
