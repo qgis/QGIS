@@ -41,6 +41,7 @@ class QgsLegendView;
 class QColor;
 class QgsPoint;
 class QgsScaleCalculator;
+class QgsAcetateObject;
 
 /*! \class QgsMapCanvas
  * \brief Map canvas class for displaying all GIS data types.
@@ -78,7 +79,7 @@ class QgsMapCanvas : public QWidget
     //! Returns the mupp (map units per pixel) for the canvas
     double mupp() const;
 
-    //! Returns the exent for all layers on the map canvased
+    //! Returns the exent for all layers on the map canvas
     QgsRect const & extent() const;
 
     //! Set the extent of the map canvas
@@ -135,6 +136,8 @@ class QgsMapCanvas : public QWidget
     //! Get the current canvas map units
     int mapUnits();
 
+    //! Get the current coordinate transform 
+    QgsCoordinateTransform * getCoordinateTransform();
     //! Declare the legend class as a friend of the map canvas
     //friend class QgsLegend;
 
@@ -159,6 +162,12 @@ public slots:
 
     /**Sets dirty=true and calls render()*/
     void refresh();
+    /** 
+     * Add an acetate object to the collection
+     * @param key Key used to identify the object
+     * @param obj Acetate object to add to the collection
+     */
+     void addAcetateObject(QString key, QgsAcetateObject *obj);
 
     //! The painter device parameter is optional - if ommitted it will default
     // to the pmCanvas (ie the gui map display). The idea is that you can pass
@@ -184,7 +193,7 @@ signals:
     void scaleChanged(QString);
 
     //! Emitted when the extents of the map change
-    void extentsChanged(QString);
+    void extentsChanged(QgsRect);
 
     /** Emitted when the canvas has rendered.
     /* Passes a pointer to the painter on
