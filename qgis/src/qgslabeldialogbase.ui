@@ -247,11 +247,6 @@
                                 <property name="enabled">
                                     <bool>false</bool>
                                 </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Application</family>
-                                    </font>
-                                </property>
                                 <property name="text">
                                     <string>Transparency:</string>
                                 </property>
@@ -317,11 +312,6 @@
                                 <property name="name">
                                     <cstring>radioAbove</cstring>
                                 </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
-                                </property>
                                 <property name="text">
                                     <string>Above</string>
                                 </property>
@@ -329,11 +319,6 @@
                             <widget class="QRadioButton" row="1" column="2">
                                 <property name="name">
                                     <cstring>radioOver</cstring>
-                                </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
                                 </property>
                                 <property name="text">
                                     <string>Over</string>
@@ -346,11 +331,6 @@
                                 <property name="name">
                                     <cstring>radioLeft</cstring>
                                 </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
-                                </property>
                                 <property name="text">
                                     <string>Left</string>
                                 </property>
@@ -358,11 +338,6 @@
                             <widget class="QRadioButton" row="2" column="2">
                                 <property name="name">
                                     <cstring>radioBelow</cstring>
-                                </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
                                 </property>
                                 <property name="text">
                                     <string>Below</string>
@@ -372,11 +347,6 @@
                                 <property name="name">
                                     <cstring>radioRight</cstring>
                                 </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
-                                </property>
                                 <property name="text">
                                     <string>Right</string>
                                 </property>
@@ -384,11 +354,6 @@
                             <widget class="QRadioButton" row="0" column="3">
                                 <property name="name">
                                     <cstring>radioAboveRight</cstring>
-                                </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
                                 </property>
                                 <property name="text">
                                     <string>Above Right</string>
@@ -398,11 +363,6 @@
                                 <property name="name">
                                     <cstring>radioBelowRight</cstring>
                                 </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
-                                </property>
                                 <property name="text">
                                     <string>Below Right</string>
                                 </property>
@@ -411,11 +371,6 @@
                                 <property name="name">
                                     <cstring>radioAboveLeft</cstring>
                                 </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
-                                </property>
                                 <property name="text">
                                     <string>Above Left</string>
                                 </property>
@@ -423,11 +378,6 @@
                             <widget class="QRadioButton" row="2" column="1">
                                 <property name="name">
                                     <cstring>radioBelowLeft</cstring>
-                                </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Andale Sans Ui</family>
-                                    </font>
                                 </property>
                                 <property name="text">
                                     <string>Below Left</string>
@@ -657,11 +607,6 @@
                                 </property>
                                 <property name="enabled">
                                     <bool>false</bool>
-                                </property>
-                                <property name="font">
-                                    <font>
-                                        <family>Application</family>
-                                    </font>
                                 </property>
                                 <property name="text">
                                     <string>Transparency:</string>

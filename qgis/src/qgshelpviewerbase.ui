@@ -55,12 +55,6 @@
                     <property name="name">
                         <cstring>buttonHome</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica</family>
-                            <pointsize>10</pointsize>
-                        </font>
-                    </property>
                     <property name="text">
                         <string>&amp;Home</string>
                     </property>
@@ -74,12 +68,6 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>buttonForward</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica</family>
-                            <pointsize>10</pointsize>
-                        </font>
                     </property>
                     <property name="text">
                         <string>&amp;Forward</string>
@@ -95,12 +83,6 @@
                     <property name="name">
                         <cstring>buttonBack</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica</family>
-                            <pointsize>10</pointsize>
-                        </font>
-                    </property>
                     <property name="text">
                         <string>&amp;Back</string>
                     </property>
@@ -114,12 +96,6 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>buttonCancel</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica</family>
-                            <pointsize>10</pointsize>
-                        </font>
                     </property>
                     <property name="text">
                         <string>&amp;Close</string>

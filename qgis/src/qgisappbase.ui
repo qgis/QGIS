@@ -12,11 +12,6 @@
             <height>473</height>
         </rect>
     </property>
-    <property name="font">
-        <font>
-            <family>Helvetica [Urw]</family>
-        </font>
-    </property>
     <property name="caption">
         <string>Quantum GIS</string>
     </property>
@@ -52,11 +47,6 @@
 <menubar>
     <property name="name">
         <cstring>menubar</cstring>
-    </property>
-    <property name="font">
-        <font>
-            <family>Lucida</family>
-        </font>
     </property>
     <property name="frameShape">
         <enum>MenuBarPanel</enum>

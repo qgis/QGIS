@@ -254,11 +254,6 @@
                     <property name="name">
                         <cstring>txtSample</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                            <family>Courier New</family>
-                        </font>
-                    </property>
                     <property name="textFormat">
                         <enum>PlainText</enum>
                     </property>

@@ -100,10 +100,6 @@
                     <height>22</height>
                 </size>
             </property>
-            <property name="font">
-                <font>
-                </font>
-            </property>
             <property name="text">
                 <string>Layer source</string>
             </property>
