@@ -10,4 +10,8 @@
 #
 # $Id$
 
-SUBDIRS = icon symbol geometric biology north_arrows gpsicons
+svgdir = ${pkgdatadir}/svg/gpsicons
+
+svg_DATA = *.svg
+
+EXTRA_DIST = $(svg_DATA)
