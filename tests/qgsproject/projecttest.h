@@ -15,6 +15,8 @@ class ProjectTest : public CppUnit::TestFixture
 
     CPPUNIT_TEST( testFileName );
     CPPUNIT_TEST( testTitle );
+    CPPUNIT_TEST( testMapUnits );
+    CPPUNIT_TEST( testDirtyFlag );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -43,6 +45,27 @@ class ProjectTest : public CppUnit::TestFixture
         QgsProject::instance()->title( title );
 
         CPPUNIT_ASSERT( title == QgsProject::instance()->title() );
+    }
+
+    void testMapUnits()
+    {
+        QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
+        CPPUNIT_ASSERT( QgsScaleCalculator::METERS == QgsProject::instance()->mapUnits() );
+
+        QgsProject::instance()->mapUnits( QgsScaleCalculator::FEET );
+        CPPUNIT_ASSERT( QgsScaleCalculator::FEET == QgsProject::instance()->mapUnits() );
+
+        QgsProject::instance()->mapUnits( QgsScaleCalculator::DEGREES );
+        CPPUNIT_ASSERT( QgsScaleCalculator::DEGREES == QgsProject::instance()->mapUnits() );
+    }
+
+    void testDirtyFlag()
+    {
+        QgsProject::instance()->dirty( true );
+        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+
+        QgsProject::instance()->dirty( false );
+        CPPUNIT_ASSERT( ! QgsProject::instance()->dirty() );
     }
     
 private:
