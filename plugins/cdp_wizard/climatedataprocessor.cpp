@@ -49,70 +49,14 @@ ClimateDataProcessor::ClimateDataProcessor()
   windSpeedFileNameString=myString;
 
   outputFilePathString = myString;
-  int fileStartYearInt=0;
-  int jobStartYearInt=0;
-  int jobEndYearInt=0;  
+  fileStartYearInt=0;
+  jobStartYearInt=0;
+  jobEndYearInt=0;  
   inputFileType=FileReader::ARCINFO_GRID;
-  outputFileType;
 
-
-  /** This is a map (associative array) that stores the key/value pairs
-   * for the OUTPUT filetype. The key is the verbose name for the file type
-   * (as will typically appear in the user interface, and the value
-   * is the FileWriter::FileTypeEnum equivalent.
-   * @see makeInputFileTypeMap()
-   * @see makeOutputFileTypeMap()
-   */
-  std::map <std::string, FileWriter::FileTypeEnum > outputFileTypeMap;
-
-  /** This is a map (associative array) that stores which calculations can be performed
-  *   given the input files that have been registered with this climatedataprocessor.
-  *   The boolean flag will be used to indicate whether the user actually wants to
-  *   perform the calculation on the input dataset(s).
-  *   @see makeAvailableCalculationsMap
-  *   @see addUserCalculation
-  */
-  
-  std::map <std::string, bool > availableCalculationsMap;
-
-      
-  /** A filegroup containing files with mean temperature data. */
-  FileGroup *  meanTempFileGroup;
-  std::string meanTempFileNameString;
-  /** A filegroup containing files with minimum temperature data. */
-  FileGroup * minTempFileGroup;
-  std::string minTempFileNameString;
-  /** A filegroup containing files with maximum temperature data. */
-  FileGroup *  maxTempFileGroup;
-  std::string maxTempFileNameString;  
-  /** A filegroup containing files with diurnal temperature data. */
-  FileGroup *  diurnalTempFileGroup;
-  std::string diurnalTempFileNameString;  
-  /** A filegroup containing files with mean precipitation data. */
-  FileGroup *  meanPrecipFileGroup;
-  std::string meanPrecipFileNameString;  
-  /** A filegroup containing files with number of frost days data. */
-  FileGroup *  frostDaysFileGroup;
-  std::string frostDaysFileNameString;
-  /** A filegroup containing files with solar radiation data. */
-  FileGroup *  totalSolarRadFileGroup;
-  std::string totalSolarRadFileNameString;  
-  /** A filegroup containing files with wind speed data. */
-  FileGroup *  windSpeedFileGroup;
-  std::string windSpeedFileNameString;
-  /** For certain input types (notably cres, arcinfo and Reading paleoclimate),
-  * each months data is stored in a discrete file. Files should be numbered
-  * e.g. meantemp01.asc, meantemp2.asc...meantemp12.asc for each month.
-  * This flag lets us know whether data is in a series of seperate files for each month
-  * or can all be found in the same file. */
-  bool filesInSeriesFlag;
- 
-
-  bool debugModeFlag;
-  /** This is a standard header (e.g. arc/info header) that will be appended to any output grids. */
-  std::string outputHeaderString;
 
 }
+/*
 ClimateDataProcessor::ClimateDataProcessor(
         int theFileStartYear,
         int theJobStartYear,
@@ -122,7 +66,10 @@ ClimateDataProcessor::ClimateDataProcessor(
 {
 
   std::cout << "Climate Data Processor constructoror (with initial values) called." << std::endl;
+  
 }
+*/
+
 /** Destructor */
 ClimateDataProcessor::~ClimateDataProcessor(){
 }
@@ -165,7 +112,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("ESRI & ASCII raster");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::ARCINFO_GRID;
   //add it to the associative array
@@ -174,7 +121,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("Hadley Centre HadCM3 SRES Scenario");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::HADLEY_SRES;
   //add it to the associative array
@@ -183,7 +130,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("Hadley Centre HadCM3 IS92a Scenario");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::HADLEY_IS92;
   //add it to the associative array
@@ -192,7 +139,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("IPCC Observed Climatology");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::IPCC_OBSERVED;
   //add it to the associative array
@@ -201,7 +148,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("University of Reading Palaeoclimate data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::VALDES;
   //add it to the associative array
@@ -210,7 +157,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::ECHAM4;
   //add it to the associative array
@@ -219,7 +166,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("CSIRO-Mk2 Model data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::CSIRO_MK2;
   //add it to the associative array
@@ -228,7 +175,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::NCAR_CSM_PCM;
   //add it to the associative array
@@ -237,7 +184,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::GFDL_R30;
   //add it to the associative array
@@ -246,7 +193,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::CGCM2;
   //add it to the associative array
@@ -255,7 +202,7 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
   //declare the key value
   myString=std::string("CCSR/NIES AGCM model data and CCSR OGCM model data");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileReader::CCSR_AGCM_OGCM;
   //add it to the associative array
@@ -280,7 +227,7 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
   //declare the key value
   myString=std::string("CSM for Matlab");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileWriter::CSM_MATLAB;
   //add it to the associative array
@@ -289,7 +236,7 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
   //declare the key value
   myString=std::string("CSM for Octave");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileWriter::CSM_OCTAVE;
   //add it to the associative array
@@ -298,7 +245,7 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
   //declare the key value
   myString=std::string("Desktop GARP");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileWriter::GARP;
   //add it to the associative array
@@ -307,7 +254,7 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
   //declare the key value
   myString=std::string("ESRI ASCII Grid");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileWriter::ESRI_ASCII;
   //add it to the associative array
@@ -316,7 +263,7 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
   //declare the key value
   myString=std::string("Plain matrix with no header");
   //convert it to upper case
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //set its associated enum
   myEnum=FileWriter::PLAIN;
   //add it to the associative array
@@ -385,8 +332,9 @@ void ClimateDataProcessor::setMeanPrecipFileName( std::string theFileNameString)
 /** Read property of FileNameString  frostDaysFileNameString. */
 const std::string  ClimateDataProcessor::getFrostDaysFileName()
 {
-  return frostDaysFileNameString;
+  
   std::cout << "frostDaysFileNameString set to : " << frostDaysFileNameString << std::endl;
+  return frostDaysFileNameString;
 }
 /** Write property of FileNameString  frostDaysFileNameString. */
 void ClimateDataProcessor::setFrostDaysFileName( std::string theFileNameString)
@@ -592,14 +540,16 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(std::string theFileNameStr
       myPosInt = myPosInt - 2; //big time kludge here :-)
       myCurrentFileNameString.replace(myPosInt,sizeof(myNumberPartString)-1,myNumberPartString);
       std::cout << "initialiseFileGroup - opening file : " << myCurrentFileNameString << std::endl;
-      FileReader *myFileReader = new FileReader(myCurrentFileNameString,inputFileType);
-      myFileReader->setFileName( myCurrentFileNameString.c_str() );
+      FileReader *myFileReader = new FileReader();
+      myFileReader->openFile(myCurrentFileNameString.c_str());
+      myFileReader->setFileType(inputFileType);
+      //myFileReader->setFileName( myCurrentFileNameString.c_str() );
       myFileReader->getBlockMarkers();
 
       myFileReader->moveToDataStart();        
       std::cout << "initialiseFileGroup - *** Adding " << myCurrentFileNameString
           << " to file group *********************" << std::endl;
-      myFileGroup->addFileReader(myFileReader);                        
+      myFileGroup->addFileReader(myFileReader,myInt);                        
 
     }
 
@@ -614,7 +564,9 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(std::string theFileNameStr
     std::cout << "initialiseFileGroup - theFileNameString = " << theFileNameString << std::endl;
     //need to add some error handling here...
     //create a separate filereader object so we can get the blockmarkers
-    FileReader *myFileReader = new FileReader(theFileNameString,inputFileType);
+    FileReader *myFileReader = new FileReader();
+    myFileReader->openFile(theFileNameString.c_str());
+    myFileReader->setFileType(inputFileType);
     //when we open the first filereader in the, we find
     //the block markers which will then be  assicgned to all other
     //filereaders we open as the filereaders all use the same file
@@ -633,10 +585,12 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(std::string theFileNameStr
     //block for the required year, for the current month.
     for (int myInt=myCurrentBlockInt; myInt <= myEndBlockInt; ++myInt)
     {
-      FileReader *myFileReader2 = new FileReader(theFileNameString.c_str(),FileReader::HADLEY_SRES);
+      FileReader *myFileReader2 = new FileReader();
+      myFileReader2->openFile(theFileNameString.c_str());
+      myFileReader2->setFileType(FileReader::HADLEY_SRES);
       myFileReader2->setBlockMarkers(myDataBlockMarkersVector);
-      myFileReader2->setCurrentBlock(myInt);
-      myFileGroup->addFileReader(myFileReader2);
+      myFileReader2->setStartMonth(myInt);
+      myFileGroup->addFileReader(myFileReader2,myInt);
       std::cout << "Adding block " << myInt << " to the block list to be processed" << std::endl;
     }
 
@@ -704,7 +658,7 @@ void ClimateDataProcessor::setInputFileType( const std::string theInputFileTypeS
   //make sure the fileTypeMap exists
   makeInputFileTypeMap();
   //convert the input string to ucase
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //look up the filetype enum given the string
   myInputFileTypeEnum = inputFileTypeMap[myString];
   //set the filetype given the enum
@@ -733,7 +687,7 @@ void ClimateDataProcessor::setOutputFileType( const std::string theOutputFileTyp
   //make sure the fileTypeMap exists
   makeOutputFileTypeMap();
   //convert the Output string to ucase
-  transform (myString.begin(),myString.end(), myString.begin(), toupper);
+  std::transform (myString.begin(),myString.end(), myString.begin(), toupper);
   //look up the filetype enum given the string
   myOutputFileTypeEnum = outputFileTypeMap[myString];
   //set the filetype given the enum
@@ -1153,7 +1107,7 @@ bool ClimateDataProcessor::run()
         FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
         //write a standard header if one is available
 
-        myFileWriter->writeHeader(outputHeaderString);
+        //myFileWriter->writeHeader(outputHeaderString);
 
 
         std::cout << "Added " << myFileWriter->getFileNameString() << std::endl;

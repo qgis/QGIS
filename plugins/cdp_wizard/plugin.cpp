@@ -75,8 +75,10 @@
 // 
 #include "icon.xpm"
 
+
 #ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
+//#define QGISEXTERN extern "C" __declspec( dllexport )
+
 #else
 #define QGISEXTERN extern "C"
 #endif
@@ -202,10 +204,12 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
  */
 // Class factory to return a new instance of the plugin class
 #ifdef WIN32
+/*
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
   return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
+*/
 #else
 extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
@@ -215,10 +219,12 @@ extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * th
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 #ifdef WIN32
+/*
 QGISEXTERN QString name()
 {
   return sName;
 }
+*/
 #else
 extern "C" QString name()
 {
@@ -228,10 +234,12 @@ extern "C" QString name()
 
 // Return the description
 #ifdef WIN32
+/*
 QGISEXTERN QString description()
 {
   return sDescription;
 }
+*/
 #else
 extern "C" QString description()
 {
@@ -241,10 +249,12 @@ extern "C" QString description()
 
 // Return the type (either UI or MapLayer plugin)
 #ifdef WIN32
+/*
 QGISEXTERN int type()
 {
   return sType();
 }
+*/
 #else
 extern "C" int type()
 {
@@ -254,10 +264,12 @@ extern "C" int type()
 
 // Return the version number for the plugin
 #ifdef WIN32
+/*
 QGISEXTERN QString version()
 {
   return pluginVersion;
 }
+*/
 #else
 extern "C" QString version()
 {
@@ -267,10 +279,12 @@ extern "C" QString version()
 
 // Delete ourself
 #ifdef WIN32
+/*
 QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
   delete thePluginPointer;
 }
+*/
 #else
 extern "C" void unload(QgisPlugin * thePluginPointer)
 {

@@ -55,10 +55,10 @@ average values. */
   /**Overloaded version that takes a vector */
   virtual int firstMonthOfLowestQ (std::vector <float> theClimateVector);
   /** This method will return the mean over three months in
-theClimateArray, starting at theCurrentBlock. */
-  virtual float meanOverQuarter (float *theClimateArray, int theArrayLength, int theCurrentBlock);
+theClimateArray, starting at theStartMonth. */
+  virtual float meanOverQuarter (float *theClimateArray, int theArrayLength, int theStartMonth);
   /**Overloaded version that takes a vector */
-  virtual float meanOverQuarter (std::vector <float> theClimateVector, int theCurrentBlock);
+  virtual float meanOverQuarter (std::vector <float> theClimateVector, int theStartMonth);
   /** Given an array, this method will return the value of the smallest
 element in the array. */
   virtual float lowestValue (float *theClimateArray, int theArrayLength);

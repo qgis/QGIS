@@ -29,9 +29,7 @@ public:
 	FileGroup();
 	virtual ~FileGroup();
   /** Add a new file reader object to the filegroup and position the fpos_t at the start of the data block requested. */
-  virtual bool addFileReader(FileReader *theFileReader) ;
-  /** Return the number of filereaders associated with this filegroup. */
-  int getFileReaderCount();
+  virtual bool addFileReader(FileReader *theFileReader, int theDataBlockNo) ;
   /** Get the next element from each fileReader and return the result as a vector. */
   std::vector<float> getElementVector();
   /** Read property of bool endOfMatrixFlag. */

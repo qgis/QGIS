@@ -1,9 +1,9 @@
 /***************************************************************************
-                          cdpwizard.h  -  description
-                             -------------------
-    begin                : Wed May 14 2003
-    copyright            : (C) 2003 by Tim Sutton
-    email                : t.sutton@reading.ac.uk
+  cdpwizard.h  -  description
+  -------------------
+begin                : Wed May 14 2003
+copyright            : (C) 2003 by Tim Sutton
+email                : t.sutton@reading.ac.uk
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #ifndef WIZARD_H
 #define WIZARD_H
 
-using namespace std;
 // include files for Qt
 #include <qwidget.h>
 #include <qpushbutton.h>
@@ -32,7 +32,13 @@ using namespace std;
 #include "dataprocessor.h"
 #include "filereader.h"
 #include "filewriter.h"
+
+#ifdef WIN32
+#include "cdpwizardbase.h"
+#else
 #include "cdpwizardbase.uic.h"
+#endif
+
 //other libs
 #include <sstream>
 #include <vector>
@@ -51,12 +57,12 @@ class CDPWizard : public CDPWizardBase
       CDPWizard();
       CDPWizard( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
       ~CDPWizard();
-      
-      
-    void saveDefaults();
-    void loadDefaults();
-    void accept();
-      
+
+
+      void saveDefaults();
+      void loadDefaults();
+      void accept();
+
     private:
       bool initialise();
 

@@ -242,8 +242,8 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     // and then update the list box
 
     //List the calculations in  availableCalculationsMap  using an iterator
-    map<std::string, bool> myAvailableCalculationsMap = climateDataProcessor->getAvailableCalculationsMap();
-    map<std::string, bool>::const_iterator myIter;
+	std::map<std::string, bool> myAvailableCalculationsMap = climateDataProcessor->getAvailableCalculationsMap();
+    std::map<std::string, bool>::const_iterator myIter;
 #ifdef QGISDEBUG
     std::cout << myAvailableCalculationsMap.size() << " available calculations in list which are:" << std::endl;
     std::cout << climateDataProcessor->getDescription() << std::endl;

@@ -18,7 +18,7 @@
 #ifndef FILEWRITER_H
 #define FILEWRITER_H
 
-//#include <stdio.h>   //Paul reckons we dont need to explicitly include this
+#include <stdio.h>   //Paul reckons we dont need to explicitly include this
 #include <string>
 /**A FileWriter is used to store the results of the climate data processor in a persistant manner.
   *@author Tim Sutton
@@ -31,21 +31,14 @@ public:
 	FileWriter();
   /** constructor */
 	FileWriter(const char *theFileName, FileWriter::FileTypeEnum theFileFormat);
-	FileWriter(const char *theFileName, FileWriter::FileTypeEnum theFileFormat, bool theFlag);
   /** Alternate constructor that takes a string for the filename rather than a char array. */
    FileWriter(std::string theFileNameString, FileWriter::FileTypeEnum theFileFormat);
-   FileWriter(std::string theFileNameString, FileWriter::FileTypeEnum theFileFormat, bool theFlag);
   /** destrctor */
   ~FileWriter();
   /** Write a float element to the output file. */
   bool writeElement(float theElementFloat);
   /** Read property of std::string fileNameString. */
-   const std::string getFileNameString();
-  /**
-  * Write an arbitary header at start of the file. 
-  * You must call this before writeElement 
-  */
-  bool writeHeader (std::string theHeaderString);
+  virtual const std::string getFileNameString();
   /**
   * Close the currently open file.
   */
@@ -55,17 +48,12 @@ public:
   */
   bool sendLineBreak();
 
-  bool getAppendModeFlag();
-  
-  void setAppendModeFlag(bool theFlag);
-
 private:
   /**  The FILE handle containing our output data matrix. */
   FILE *filePointer;
   /** The filename that is being written to */
   std::string fileNameString;
-  /**  To determine whether new data will overwrite an existing file*/
-  bool appendModeFlag;
+
   
 };
 
