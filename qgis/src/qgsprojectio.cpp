@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.50 2004/08/15 00:52:47 gsherman Exp */
+/* qgsprojectio.cpp,v 1.51 2004/08/26 18:57:37 mcoletti Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -98,7 +98,9 @@ std::list<QString> QgsProjectIo::read(QString path)
   // it will be the same registry data as used by the map canvas)
   QgsMapLayerRegistry * myMapLayerRegistry = QgsMapLayerRegistry::instance();
   std::list<QString> myZOrder;
-  myZOrder.clear();
+
+  // myZOrder.clear(); should be empty by default
+
   if(path.isNull())
   {
     // no project file selected - get one using a QFileDialog

@@ -1,7 +1,21 @@
 QGIS Change Log
-ChangeLog,v 1.175 2004/08/26 16:48:24 mcoletti Exp
+ChangeLog,v 1.176 2004/08/26 18:57:27 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-26 [mcoletti] 0.4.0devel22
+qgisapp.cpp:
+
+ - fixed bug 1017079, where loading projects would cause app to crash
+
+qgsprojectio.cpp:
+
+ - minor code change; commented out superfluous code
+
+2004-08-26 [mcoletti] 0.4.0devel21
+Now explicitly check for command line arguments via $# instead of $@.  Using
+$@ caused the script to crash when more than one command line argument was
+passed in.  (E.g., specifying multiple files for CVS commits.)
 
 2004-08-25 [mcoletti] 0.4.0devel20
 Now explicitly use QgsMapLayerRegistry instance instead of data members.  (Of
