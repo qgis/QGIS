@@ -38,6 +38,7 @@ signals:
    void changeLabel(QString);
    void changeColor(QColor);
    void changePlacement(QString);
+   void enableCopyrightLabel(bool);
    
 };
 

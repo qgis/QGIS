@@ -42,6 +42,7 @@ email                : tim@linfiniti.com
 #include <qrect.h>
 #include <qbrush.h>
 #include <qbutton.h>
+#include <qcheckbox.h>
 
 
 //non qt includes
@@ -104,7 +105,7 @@ void Plugin::initGui()
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
   toolBarPointer->setLabel("Copyright Label");
   mLabelQString = QString("© QGIS 2004");
-  mQFont = QFont("time", 24, QFont::Bold);
+  mQFont = QFont("time", 12, QFont::Bold);
   mLabelQColor = QColor(Qt::black);
 
   // Add the zoom previous tool to the toolbar
@@ -131,6 +132,7 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(changeLabel(QString )), this, SLOT(setLabel(QString )));
   connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+  connect(myPluginGui, SIGNAL(enableCopyrightLabel(bool)), this, SLOT(setEnable(bool)));
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -154,6 +156,9 @@ void Plugin::refreshCanvas()
 
 void Plugin::renderLabel()
 { 
+//Large IF statement to enable/disable copyright label
+if (mEnable)
+{
   //@todo softcode this!myQSimpleText.height()
   int myRotationInt = 90;
   QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
@@ -211,6 +216,7 @@ void Plugin::renderLabel()
   
   //myQPainter.rotate(myRotationInt);
 }
+}
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
 {
@@ -242,6 +248,11 @@ void Plugin::unload()
     mPlacement = theQString;
   }
 
+  //! set whether copyright label is enabled
+  void Plugin::setEnable(bool theBool)
+  {
+    mEnable = theBool;
+  }
 
 
 
