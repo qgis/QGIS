@@ -1,12 +1,8 @@
-TODO,v 1.20 2004/04/26 05:52:09 gsherman Exp
+TODO,v 1.21 2004/06/03 18:36:46 gsherman Exp
 #############################################################################
-TODO List for 0.3 (in no order of importance)
+TODO List for 0.4 (in no order of importance)
 #############################################################################
- 1. Modify SVG marker dialogs to embed selector on the dialog
- 2. Support for tile rasters 
- 3. Load / save support for delimited text layers in project files 
- 4. Layer definition query for PostGIS layers to define the features that make up a layer 
- 5. Initial projection support 
- 6. Review and clean up of vector dialog boxes 
- 7. Translation support for plugins 
- 8. Vector support on big-endian platforms (Mac OSX, Solaris)
+ 1. Support for tile rasters 
+ 2. Load / save support for delimited text layers in project files 
+ 3. Layer definition query for PostGIS layers to define the features that make up a layer 
+ 4. Translation support for plugins 
