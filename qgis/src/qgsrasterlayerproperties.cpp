@@ -139,7 +139,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
             myIteratorInt <= myBandCountInt;
             ++myIteratorInt)
     {
-
+        //TODO change this so that is does not do a full stats parse for every band!
+        //otherwise it takes very long - possibly we can just impement a getRasterBandName() method 
+        //in raster
         RasterBandStats myRasterBandStats=rasterLayer->getRasterBandStats(myIteratorInt);
         //keep a list of band names for later use
         myBandNameQStringList.append(myRasterBandStats.bandName);
@@ -173,14 +175,19 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
 
     else //all other layer types use band name entries only
     {
+        std::cout << "Populating combos for non paletted layer" << std::endl;
+        int myBandCountInt = 1;
         for ( QStringList::Iterator myIterator = myBandNameQStringList.begin();
                 myIterator != myBandNameQStringList.end();
                 ++myIterator )
         {
-            cboGray->insertItem(*myIterator);
-            cboRed->insertItem(*myIterator);
-            cboGreen->insertItem(*myIterator);
-            cboBlue->insertItem(*myIterator);
+            QString myQString=*myIterator;
+            myQString = QString::number(myBandCountInt) + " - " + myQString;
+            std::cout << "Inserting : " << myQString <<  std::endl;
+            cboGray->insertItem(myQString);
+            cboRed->insertItem(myQString);
+            cboGreen->insertItem(myQString);
+            cboBlue->insertItem(myQString);
         }
         cboRed->insertItem("Not Set");
         cboGreen->insertItem("Not Set");
@@ -605,7 +612,7 @@ void QgsRasterLayerProperties::fillStatsTable()
         ++myRowInt;
 
         tblStats->setText(myRowInt,0,"Band No");
-        tblStats->setText(myRowInt,1,QString::number(myRasterBandStats.bandNo));
+        tblStats->setText(myRowInt,1,QString::number(myRasterBandStats.bandNoInt));
         ++myRowInt;
         tblStats->setText(myRowInt,0,"minValDouble");
         tblStats->setText(myRowInt,1,QString::number(myRasterBandStats.minValDouble));
