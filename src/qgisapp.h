@@ -103,6 +103,11 @@ class QgisApp:public QgisAppBase
 	void layerProperties(QListViewItem *);
 	//! Show layer properties for selected layer (called by right-click menu)
 	void layerProperties();
+  //! new layer properties dialog -- to replace existing suite of dialogs
+  void newLayerProperties();
+  //! new layer properties dialog -- to replace existing suite of dialogs
+  void newLayerProperties(QListViewItem *);
+ 
 	//! Show the right-click menu for the legend
 	void rightClickLegendMenu(QListViewItem *, const QPoint &, int);
 	//! Remove a layer from the map and legend
