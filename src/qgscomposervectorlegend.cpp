@@ -28,6 +28,7 @@
 #include <qpainter.h>
 #include <qstring.h>
 #include <qpixmap.h>
+#include <qpicture.h>
 #include <qimage.h>
 #include <qlineedit.h>
 #include <qpointarray.h>
@@ -64,6 +65,7 @@
 #include "qgsuniquevalrenderer.h"
 #include "qgsuvalmarenderer.h"
 #include "qgssvgcache.h"
+#include "qgsmarkercatalogue.h"
 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id, 
 	                                            int x, int y, int fontSize )
@@ -284,7 +286,16 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		
 		QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer2);
 		QgsRenderer *renderer = vector->renderer();
-		if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) ) continue;
+
+		// QgsContinuousColRenderer is not supported yet
+		// QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
+		if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) ||
+		     typeid (*renderer) == typeid(QgsSiMaRenderer) ||
+		     typeid (*renderer) == typeid(QgsGraduatedMaRenderer) ||
+		     typeid (*renderer) == typeid(QgsUValMaRenderer) )
+		{ 
+		    continue;
+		}
 
 		if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
                     std::cout << "add to group" << std::endl;
@@ -308,23 +319,18 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 			double scale = map->symbolScale() * mComposition->scale();
 		    
 			QgsRenderItem *ri = (*it);
+		        QgsSymbol *sym = ri->getSymbol();
 			
 			// height
-			if ( typeid (*renderer) == typeid(QgsSiMaRenderer) ||
-			     typeid (*renderer) == typeid(QgsGraduatedMaRenderer) ||
-			     typeid (*renderer) == typeid(QgsUValMaRenderer) ) 
-			{
-			    QgsMarkerSymbol* ms = dynamic_cast<QgsMarkerSymbol*>(ri->getSymbol());
-			    scale *= ms->scaleFactor();
+			if ( itemHeights[icnt] < mSymbolHeight ) { // init first
+			    itemHeights[icnt] = mSymbolHeight;
+			}
+			QPicture pic = sym->getPointSymbolAsPicture();
+			QRect br = pic.boundingRect();
 
-			    QPixmap pm = QgsSVGCache::instance().getPixmap( ms->picture(), scale);
-			    if ( pm.height() > mSymbolHeight && pm.height() > itemHeights[icnt] ) {
-				itemHeights[icnt] = pm.height();
-			    }
-			} else {
-			    if ( itemHeights[icnt] < mSymbolHeight ) {  // init if first
-				itemHeights[icnt] = mSymbolHeight;
-			    }
+			int h = (int) ( scale * br.height() );
+			if ( h > itemHeights[icnt] ) {
+			    itemHeights[icnt] = h;
 			}
 
 			if ( itemLabels[icnt].length() == 0 ) {
@@ -394,24 +400,17 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		    if ( vector->vectorType() == QGis::Point ) {
 			double scale = map->symbolScale() * mComposition->scale();
 
-			if ( typeid (*renderer) == typeid(QgsSiMaRenderer) ||
-			     typeid (*renderer) == typeid(QgsGraduatedMaRenderer) ||
-			     typeid (*renderer) == typeid(QgsUValMaRenderer) ) 
-			{
-			    QgsMarkerSymbol* ms = dynamic_cast<QgsMarkerSymbol*>(ri->getSymbol());
-			    scale *= ms->scaleFactor();
+			// Get the picture of appropriate size directly from catalogue
+			QPicture pic = QgsMarkerCatalogue::instance()->marker (
+					sym->pointSymbolName(), (int) (scale * sym->pointSize()),
+					pen, sym->brush() );
+					
+			QRect br = pic.boundingRect();
+			    
+			painter->drawPicture ( static_cast<int>( (mMargin+mSymbolWidth/2)-br.width()/2),
+					       static_cast<int>( (localHeight+symbolHeight/2)-br.height()/2),
+					       pic );
 
-			    QPixmap pm = QgsSVGCache::instance().getPixmap( ms->picture(), scale);
-
-			    painter->drawPixmap ( static_cast<int>( (mMargin+mSymbolWidth/2)-pm.width()/2),
-						  static_cast<int>( (localHeight+symbolHeight/2)-pm.height()/2),
-						  pm );
-
-			} else {
-			    painter->drawRect( (int)(mMargin+mSymbolWidth/2-(scale*3)), 
-					       (int)(localHeight+symbolHeight/2-(scale*3)), 
-					       (int)(scale*6), (int)(scale*6) );
-			}
 		    } else if ( vector->vectorType() == QGis::Line ) {
 			painter->drawLine ( mMargin, localHeight+mSymbolHeight/2, 
 					    mMargin+mSymbolWidth, localHeight+mSymbolHeight/2 );
