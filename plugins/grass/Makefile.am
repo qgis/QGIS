@@ -10,7 +10,7 @@
 #
 # $Id$
 
-AM_CXXFLAGS := $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
+AM_CXXFLAGS := $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC) -I../../src/
 
 plugindir = ${pkglibdir}
 
@@ -49,8 +49,7 @@ qgsgrassselectbase.h: qgsgrassselectbase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
-grassplugin_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)
+grassplugin_la_LIBADD = $(QT_LDADD) $(GRASS_LIB) $(PG_LIB)
 grassplugin_la_LDFLAGS = -avoid-version -module
 
-EXTRA_DIST = $(plugin_UIC) add_vector.xpm
-
+EXTRA_DIST = $(plugin_UIC) # add_vector.xpm

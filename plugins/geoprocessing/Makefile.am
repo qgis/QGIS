@@ -10,7 +10,7 @@
 #
 # $Id$
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
 
 plugindir = ${pkglibdir}
 

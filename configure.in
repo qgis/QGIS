@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.41 2004/03/28 00:05:12 timlinux Exp
+dnl configure.in,v 1.42 2004/03/30 22:23:04 jobi Exp
 
 AC_INIT
 
@@ -23,9 +23,9 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=18
+EXTRA_VERSION=19
 if test $EXTRA_VERSION -eq 0; then
-    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${EXTRA_VERSION}
 fi
@@ -243,7 +243,6 @@ AC_CONFIG_FILES([
   plugins/geoprocessing/Makefile
   plugins/gps_importer/Makefile
   plugins/grass/Makefile
-  plugins/openmodeller/Makefile
   doc/Makefile
   doc/skin/Makefile
   doc/skin/images/Makefile
@@ -254,6 +253,7 @@ AC_CONFIG_FILES([
   doc/plugins/delimited_text/Makefile
   qgis.spec
   plugins/delimited_text/Makefile
+  tools/Makefile
   tools/qgis_config/Makefile
 ])
 
