@@ -145,8 +145,14 @@ void Plugin::addGPXLayer() {
 				 qgisMainWindowPointer,
 				 "Select a GPX or LOC file",
 				 "Select a GPX or LOC file");
-  if (gpxFileName != 0)
-    qGisInterface->addVectorLayer(gpxFileName, "GPS Data", "gpx");
+  if (gpxFileName != 0) {
+    qGisInterface->addVectorLayer(gpxFileName + "?type=track", 
+				  "Tracks", "gpx");
+    qGisInterface->addVectorLayer(gpxFileName + "?type=route",
+				  "Routes", "gpx");
+    qGisInterface->addVectorLayer(gpxFileName + "?type=waypoint", 
+				  "Waypoints", "gpx");
+  }
 }
 
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
