@@ -10,6 +10,8 @@
 #
 # $Id$
 
+PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+
 plugindir = ${pkglibdir}
 
 #for plugin so
@@ -79,7 +81,7 @@ gpsimporter_SOURCES = main.cpp \
 
 gpsimporter_LDADD = $(QT_LDADD)  $(GDAL_LDADD)
 gpsimporter_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-gpsimporter_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
+gpsimporter_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH) $(DEBUG_QGIS) -I../../src 
 
 standalone_MOC = plugingui.moc.cpp \
 	     pluginguibase.moc.cpp 
