@@ -153,7 +153,7 @@ void QgsSiSyDialog::apply()
     pix->fill();
 
     QPainter p(pix);
-    m_vectorlayer->setlayerName(displaynamefield->text());
+    m_vectorlayer->setLayerName(displaynamefield->text());
     p.setPen(sy.pen());
     p.setBrush(sy.brush());
     //paint differently in case of point, lines, polygones
