@@ -25,7 +25,6 @@
 #include <cpl_error.h>
 
 class QgsPoint;
-class QPoint;
 class QString;
 
 /*! \class QgsCoordinateTransform
@@ -85,16 +84,16 @@ inline QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QSt
   //Searchf for this phrase in each wkt:  "unit[\"degree\"" 
 }
 
-inline QgsMapToPixel::~QgsMapToPixel()
+inline QgsCoordinateTransform::~QgsCoordinateTransform()
 {
   delete gSourceToDestXForm;
 }
-inline QgsPoint QgsMapToPixel::transform(double x, double y)
+inline QgsPoint QgsCoordinateTransform::transform(double x, double y)
 {
   return (transform(QgsPoint(x, y)));
 }
 
-inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint) throws QgsCsException
+inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint) throws QgsCsException
 {
   // transform x
   double x = thePoint.x(); 
@@ -109,7 +108,7 @@ inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint) throws QgsCsExceptio
     return QgsPoint(x, y);
   } 
 }
-inline QgsPoint QgsMapToPixel::transform(double theX, double theY)
+inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
 {
   // transform x
   double x = theX; 
