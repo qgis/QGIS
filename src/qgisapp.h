@@ -35,6 +35,7 @@ public:
 	void fileExit();
  	void zoomOut();
   	void zoomIn();
+	void readWKB(const char *);
 private:
 QCanvasView *cv;
 QCanvas *canvas;
