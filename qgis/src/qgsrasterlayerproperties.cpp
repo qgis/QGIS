@@ -48,6 +48,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
     //downcast the maplayer to rasterlayer
     rasterLayer = (QgsRasterLayer *) lyr;
 
+    
+    //display the raster dimensions and no data value
+    lblColumns->setText(tr("<p align=\"center\">Columns:") + QString::number(rasterLayer->getRasterXDim()) + "</p>");
+    lblRows->setText(tr("<p align=\"right\">Rows:") + QString::number(rasterLayer->getRasterYDim()) + "</p>");
+    lblNoData->setText(tr("No Data:") + QString::number(rasterLayer->getNoDataValue()));
     //these properties (layername and label) are provided by the qgsmaplayer superclass
     leLayerSource->setText(rasterLayer->source());
     leDisplayName->setText(lyr->name());
