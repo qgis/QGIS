@@ -67,6 +67,7 @@ headers =  qgis.h				\
 		qgsrenderer.h			\
 		qgsrenderitem.h			\
 		qgssinglesymrenderer.h		\
+		qgssimadialog.h			\
 		qgssisydialog.h			\
 		qgssymbol.h			\
 		qgssymbologyutils.h		\
@@ -119,6 +120,7 @@ qgis_SOURCES =  main.cpp			\
 		qgsrasterlayerproperties.cpp	\
 		qgsrect.cpp			\
 		qgsrenderitem.cpp		\
+		qgssimadialog.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
 		qgssymbol.cpp			\
@@ -165,6 +167,7 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgsrasterlayer.moc.cpp			\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrasterlayerpropertiesbase.moc.cpp	\
+		qgssimadialog.moc.cpp			\
 		qgssimadialogbase.moc.cpp		\
 		qgssisydialog.moc.cpp			\
 		qgssisydialogbase.moc.cpp		\
