@@ -78,10 +78,10 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
       }
     }
   }
-  if (scaleFactor != 1)
+  if (oversampling != 1)
     osImage = osImage.smoothScale(width, height);
   QPixmap pixmap = QPixmap(osImage);
-  
+ 
   // cache it if possible, and remove other pixmaps from the cache
   // if it grows too large
   if (width * height < pixelLimit) {
