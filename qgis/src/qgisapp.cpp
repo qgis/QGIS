@@ -498,7 +498,7 @@ void QgisApp::about()
 #endif
 #ifdef WIN32
   // special version stuff for windows (if required)
-  versionString += "\nThis is a Windows preview release - not for production use";
+//  versionString += "\nThis is a Windows preview release - not for production use";
 #endif
   abt->setVersion(versionString);
   QString urls = "<p align=\"center\">" +
@@ -511,17 +511,15 @@ void QgisApp::about()
   watsNew += QGis::qgisVersion;
   watsNew += "<h3>New features</h3>";
   watsNew += "<ul>"
-          "<li>Map Overview</li>"
-          "<li>Preliminary printing support</li>"
-          "<li>Menu cleanups</li>"
-          "<li>User interface improvements</li>"
-          "<li>Icon Themes (only default theme currently available)</li>"
-          "<li>Capture point to clipboard</li>"
-        "</ul>"
-        "<h3>Core Plugins</h3>"
-        "<ul>"
-        "<li>Scale bar plugin</li>"
-        "<li>Improved GPS tools plugin</li>"
+        "<li>Windows version"
+        "<li>Feature labeling with optional buffering"
+        "<li>Preliminary digitizing support for shapefiles"
+        "<li>GRASS digitizing support"
+        "<li>GPS SVG icons"
+        "<li>Unique value renderers"
+        "<li>User interface improvements"
+        "<li>Specify a query when loading a PostGIS layer"
+        "<li>Italian translation"
       "</ul>"
 "</body></html>";
 
