@@ -17,9 +17,9 @@
 
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
-
+#include <qcolor.h>
 class QString;
-class QColor;
+
 
 /*! \class QgsSymbol
  * \brief Base class for symbols used in rendering map layers.

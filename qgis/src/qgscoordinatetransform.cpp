@@ -21,7 +21,7 @@
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 
-QgsCoordinateTransform::QgsCoordinateTransform(double mupp=0, double ymax = 0, double ymin=0, double xmin = 0) : 
+QgsCoordinateTransform::QgsCoordinateTransform(double mupp, double ymax, double ymin, double xmin) : 
   mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin){
 }
 QgsCoordinateTransform::~QgsCoordinateTransform(){

@@ -87,6 +87,8 @@ QgisApp::addLayer ()
 
 	  // create the layer
 	  QgsDatabaseLayer *lyr = new QgsDatabaseLayer (connInfo, *it);
+	  // give it a random color
+	  
 	  // add it to the mapcanvas collection
 	  mapCanvas->addLayer (lyr);
 	  // no drawing done -- need to pass the layer collection
@@ -147,9 +149,8 @@ void QgisApp::pan(){
 void QgisApp::zoomFull(){
   mapCanvas->zoomFullExtent();
 }
-void
-QgisApp::readWKB (const char *connInfo, QStringList tables)
-{
+//void QgisApp::readWKB (const char *connInfo, QStringList tables)
+//{
 //    PgCursor pgc (connInfo, "testcursor");
 //   // get "endianness"
 //   char *chkEndian = new char[4];
@@ -251,11 +252,10 @@ QgisApp::readWKB (const char *connInfo, QStringList tables)
 //       paint.end ();
 //     }
   
-}
+//}
 
 
-void
-QgisApp::drawPoint (double x, double y)
+void QgisApp::drawPoint (double x, double y)
 {
   QPainter paint;
   //  QWMatrix mat (scaleFactor, 0, 0, scaleFactor, 0, 0);
@@ -269,7 +269,7 @@ QgisApp::drawPoint (double x, double y)
 }
 
 void QgisApp::drawLayers(){
-  cout << "In  QgisApp::drawLayers()" << endl;
+  std::cout << "In  QgisApp::drawLayers()" << std::endl;
   mapCanvas->render2();
 }
 void QgisApp::showMouseCoordinate(QgsPoint &p){

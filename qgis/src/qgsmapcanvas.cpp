@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qrect.h>
@@ -46,7 +47,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
     currentExtent = fullExtent;
     
   }
-
+  updateFullExtent(lyr->extent());
   // set zpos to something...
   //lyr->zpos = 0;
 }
@@ -58,7 +59,7 @@ void QgsMapCanvas::render2(){
   double muppX, muppY;
       muppY = currentExtent.height()/height();
       muppX = currentExtent.width()/width();
-      cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << endl;
+      std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
       m_mupp = muppY > muppX?muppY:muppX;
       // calculate the actual extent of the mapCanvas
       double dxmin,dxmax,dymin,dymax,whitespace;
@@ -76,7 +77,7 @@ void QgsMapCanvas::render2(){
 	dymax = currentExtent.yMax() + whitespace;
 
       }
-      cout << "dxmin: " << dxmin << endl << "dymin: " << dymin << endl << "dymax: " << dymax << endl << "whitespace: " << whitespace << endl;
+      std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
       coordXForm->setParameters(m_mupp, dxmin,dymin,height()); //currentExtent.xMin(), 	    currentExtent.yMin(), currentExtent.yMax());
       // update the currentExtent to match the device coordinates
       currentExtent.setXmin(dxmin);
@@ -84,7 +85,7 @@ void QgsMapCanvas::render2(){
       currentExtent.setYmin(dymin);
       currentExtent.setYmax(dymax);
   // render all layers in the stack, starting at the base
-  map<QString,QgsMapLayer *>::iterator mi = layers.begin();
+  std::map<QString,QgsMapLayer *>::iterator mi = layers.begin();
   while(mi != layers.end()){
     QgsMapLayer *ml = (*mi).second;
     //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
@@ -290,4 +291,15 @@ void QgsMapCanvas::setMapTool(int tool){
 /** Write property of QColor bgColor. */
 void QgsMapCanvas::setbgColor( const QColor& _newVal){
 	bgColor = _newVal;
+}
+/** Updates the full extent to include the mbr of the rectangle r */
+void QgsMapCanvas::updateFullExtent(QgsRect r){
+	if(r.xMin() < fullExtent.xMin())
+		fullExtent.setXmin(r.xMin());
+	if(r.xMax() > fullExtent.xMax())
+		fullExtent.setXmax(r.xMax());
+	if(r.yMin() < fullExtent.yMin())
+		fullExtent.setYmin(r.yMin());
+	if(r.yMax() > fullExtent.yMax())
+		fullExtent.setYmax(r.yMax());	
 }
