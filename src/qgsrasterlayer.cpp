@@ -2385,67 +2385,75 @@ RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
   int myWidth=rasterXDimInt;
   int myHeight=rasterYDimInt;
   int myDivisorInt=2;
+  GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
+
   mPyramidList.clear();
   std::cout << "Building initial pyramid list" << std::endl;
-  while((myWidth/myDivisorInt > 64) && ((myHeight/myDivisorInt)>64))
+  while((myWidth/myDivisorInt > 32) && ((myHeight/myDivisorInt)>32)) 
   {
+
     RasterPyramid myRasterPyramid;
     myRasterPyramid.levelInt=myDivisorInt;
-    myRasterPyramid.xDimInt = myWidth/myDivisorInt;
-    myRasterPyramid.yDimInt = myHeight/myDivisorInt;
+    myRasterPyramid.xDimInt = (int)(0.5 + (myWidth/(double)myDivisorInt));
+    myRasterPyramid.yDimInt = (int)(0.5 + (myHeight/(double)myDivisorInt));
     myRasterPyramid.existsFlag=false;
-    mPyramidList.append(myRasterPyramid);
-    std::cout << "Appended " << myRasterPyramid.levelInt << " "
+    std::cout << "Pyramid:  " << myRasterPyramid.levelInt << " "
         << myRasterPyramid.xDimInt << " "
         << myRasterPyramid.yDimInt << " "
-        << " to pyramid list" << std::endl;
-    //sqare the divisor each step
-    myDivisorInt=(myDivisorInt *2);
-  }
+        << std::endl;
 
-  //
-  // Now we mark which ones actually exist in the raster
-  //
-  std::cout << "Marking pyramids in list that are built" << std::endl;
-  GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
-  if( GDALGetOverviewCount(myGDALBand) > 0 )
-  {
-    int myOverviewInt;
-    for( myOverviewInt = 0;
-            myOverviewInt < GDALGetOverviewCount(myGDALBand);
-            myOverviewInt++ )
+
+
+
+    //
+    // Now we check if it actually exists in the raster layer
+    // and also adjust the dimensions if the dimensions calculated
+    // above are only a near match.
+    //
+    const int myNearMatchLimitInt=5;
+    if( GDALGetOverviewCount(myGDALBand) > 0 )
     {
-      GDALRasterBandH myOverview;
-      myOverview = GDALGetOverview( myGDALBand, myOverviewInt );
-      int myOverviewXDim = GDALGetRasterBandXSize( myOverview );
-      int myOverviewYDim = GDALGetRasterBandYSize( myOverview );
-      //
-      // Iterate through the PyramidList looking to see if there are any matches...
-      //
-      RasterPyramidList::iterator myRasterPyramidIterator;
-      for ( myRasterPyramidIterator=mPyramidList.begin(); 
-              myRasterPyramidIterator != mPyramidList.end(); 
-              ++myRasterPyramidIterator )
+      int myOverviewInt;
+      for( myOverviewInt = 0;
+              myOverviewInt < GDALGetOverviewCount(myGDALBand);
+              myOverviewInt++ )
       {
-        std::cout << "buildPyramidList -> checking whether " <<
-            (*myRasterPyramidIterator).xDimInt << " x " <<
-            (*myRasterPyramidIterator).yDimInt << " matches " << 
+        GDALRasterBandH myOverview;
+        myOverview = GDALGetOverview( myGDALBand, myOverviewInt );
+        int myOverviewXDim = GDALGetRasterBandXSize( myOverview );
+        int myOverviewYDim = GDALGetRasterBandYSize( myOverview );
+        //
+        // here is where we check if its a near match:
+        // we will see if its within 5 cells either side of
+        //
+        std::cout << "Checking whether " <<
+            myRasterPyramid.xDimInt << " x " <<
+            myRasterPyramid.yDimInt << " matches " << 
             myOverviewXDim << " x " << myOverviewYDim ;
 
-        if ((myOverviewXDim==(*myRasterPyramidIterator).xDimInt ) && 
-                (myOverviewYDim==(*myRasterPyramidIterator).yDimInt))
+        if ((myOverviewXDim <= (myRasterPyramid.xDimInt+ myNearMatchLimitInt)) && 
+                (myOverviewXDim >= (myRasterPyramid.xDimInt- myNearMatchLimitInt)) &&
+                (myOverviewYDim <= (myRasterPyramid.yDimInt+ myNearMatchLimitInt)) &&
+                (myOverviewYDim >= (myRasterPyramid.yDimInt- myNearMatchLimitInt)))
         {
-          (*myRasterPyramidIterator).existsFlag=true;
+          //right we have a match so adjust the a / y before they get added to the list
+          myRasterPyramid.xDimInt=myOverviewXDim;
+          myRasterPyramid.yDimInt=myOverviewYDim;
+          myRasterPyramid.existsFlag=true;
           std::cout << ".....YES!" << std::endl;
         }
         else
         {
-          (*myRasterPyramidIterator).existsFlag=false;
+          //no match
           std::cout << ".....no." << std::endl;
         }
       }
     }
+    mPyramidList.append(myRasterPyramid);
+    //sqare the divisor each step
+    myDivisorInt=(myDivisorInt *2);
   }
+
   return mPyramidList;
 }
 /*
