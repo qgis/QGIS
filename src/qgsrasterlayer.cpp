@@ -941,8 +941,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
   // read entire clipped area of raster band
   // treat myGdalScanData as a pseudo-multidimensional array
   // RasterIO() takes care of scaling down image
-  uint *myGdalScanData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalScanData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
   CPLErr myResultCPLerr = myGdalBand->RasterIO(GF_Read, theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
           theRasterViewPort->clippedWidthInt,
@@ -950,7 +950,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
           myGdalScanData,
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
 
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
@@ -980,10 +980,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
       //if (myColumnInt==0)
       //std::cout << "Checking if " << myGrayValInt << " = " << noDataValueDouble << std::endl;
 
-      //dont draw this point if it is no data !
-      //gdal should return -9999 when a cell is null, but it seems to return 0 rather
-      //when this is resolved the first clause below should be removed.
-      if ((myGrayValInt != 0) && (myGrayValInt != noDataValueDouble))
+      //don't draw this point if it is no data !
+      if (myGrayValInt != noDataValueDouble)
       {
         // We need to make sure the values are 0-255
         myGrayValInt = static_cast < int >((255 / myRangeDouble) * myGrayValInt);
@@ -1020,8 +1018,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
   // read entire clipped area of raster band
   // treat myGdalScanData as a pseudo-multidimensional array
   // RasterIO() takes care of scaling down image
-  uint *myGdalScanData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalScanData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
   CPLErr myResultCPLerr = myGdalBand->RasterIO(GF_Read, theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
           theRasterViewPort->clippedWidthInt,
@@ -1029,7 +1027,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
           myGdalScanData,
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
 
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
@@ -1090,8 +1088,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
       myGreenInt = 255;
       int myInt = myGdalScanData[myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt];
       // draw this point if it is not  no_data !
-      //gdal should return -9999 when a cell is null, but it seems to return 0 rather
-      if ((myInt != noDataValueDouble) && (myInt != 0)) //should not need the second clause!
+      if (myInt != noDataValueDouble)
       {
         //double check that myInt >= min and <= max
         //this is relevant if we are plotting within stddevs
@@ -1229,8 +1226,8 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
   // treat myGdalScanData as a pseudo-multidimensional array
   // RasterIO() takes care of scaling down image
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
-  uint *myGdalScanData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalScanData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
   CPLErr myResultCPLerr = myGdalBand->RasterIO(GF_Read, theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
           theRasterViewPort->clippedWidthInt,
@@ -1238,7 +1235,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
           myGdalScanData,
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
 
   // print each point in myGdalScanData using color looked up in color table
   GDALColorTable *colorTable = myGdalBand->GetColorTable();
@@ -1314,8 +1311,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
   // treat myGdalScanData as a pseudo-multidimensional array
   // RasterIO() takes care of scaling down image
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1); //always one!
-  uint *myGdalScanData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalScanData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
   CPLErr myResultCPLerr = myGdalBand->RasterIO(GF_Read, theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
           theRasterViewPort->clippedWidthInt,
@@ -1323,7 +1320,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
           myGdalScanData,
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
 
   // print each point in myGdalScanData using color looked up in color table
   GDALColorTable *colorTable = myGdalBand->GetColorTable();
@@ -1545,8 +1542,8 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   // treat myGdalScanData as a pseudo-multidimensional array
   // RasterIO() takes care of scaling down image
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
-  uint *myGdalScanData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalScanData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
   CPLErr myResultCPLerr = myGdalBand->RasterIO(GF_Read,
           theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
@@ -1555,7 +1552,7 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
           myGdalScanData,
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
 
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
@@ -1655,12 +1652,12 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   // but this is a replacement of the old method implemented by Steve which xored the color components
   // into the pixels
   // RasterIO() takes care of scaling down image
-  uint *myGdalRedData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
-  uint *myGdalGreenData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
-  uint *myGdalBlueData =
-      (uint *) CPLMalloc(sizeof(uint) * theRasterViewPort->drawableAreaXDimInt * sizeof(uint) * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalRedData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalGreenData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
+  int *myGdalBlueData =
+      (int *) CPLMalloc(sizeof(int) * theRasterViewPort->drawableAreaXDimInt * theRasterViewPort->drawableAreaYDimInt);
 
   CPLErr myRedCPLerr = myGdalRedBand->RasterIO(GF_Read,
           theRasterViewPort->rectXOffsetInt,
@@ -1670,7 +1667,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
           myGdalRedData, // <----- Red Layer
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
   CPLErr myGreenCPLerr = myGdalGreenBand->RasterIO(GF_Read,
           theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
@@ -1679,7 +1676,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
           myGdalGreenData, // <----- Green Layer
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
   CPLErr myBlueCPLerr = myGdalBlueBand->RasterIO(GF_Read,
           theRasterViewPort->rectXOffsetInt,
           theRasterViewPort->rectYOffsetInt,
@@ -1688,7 +1685,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
           myGdalBlueData,  // <----- Blue Layer
           theRasterViewPort->drawableAreaXDimInt,
           theRasterViewPort->drawableAreaYDimInt,
-          GDT_UInt32, 0, 0);
+          GDT_Int32, 0, 0);
   //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
   int myRedInt, myGreenInt, myBlueInt;
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
