@@ -13,7 +13,10 @@
 
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
+#include <ogr_spatialref.h>
 #include <cpl_error.h>
+#include "ogr_api.h"//only for a test
+
 #include <qmessagebox.h>
 
 //TODO Following ifndef can be removed once WIN32 GEOS support
@@ -24,7 +27,7 @@
 //    appears that the windows version of GEOS may be compiled with 
 //    MINGW rather than VC++.
 #endif 
-#include "ogr_api.h"//only for a test
+
 
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
@@ -132,12 +135,19 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
 }
 QString QgsShapeFileProvider::getProjectionWKT()
 { 
-  //TODO add some decent behaviour here for when no spatial ref sys has been defined for a layer!
-  char    *pszWKT = NULL;
-  ogrLayer->GetSpatialRef()->exportToWkt( &pszWKT );
-  QString myWKTString = QString(pszWKT);
-  OGRFree(pszWKT);  
-  return myWKTString;
+  OGRSpatialReference * mySpatialRefSys = ogrLayer->GetSpatialRef();
+  if (mySpatialRefSys == NULL)
+  {
+    return NULL;
+  }
+  else
+  {
+    char    *pszWKT = NULL;
+    mySpatialRefSys->exportToWkt( &pszWKT );
+    QString myWKTString = QString(pszWKT);
+    OGRFree(pszWKT);  
+    return myWKTString;
+  }
 }
 
 
