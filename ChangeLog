@@ -1,9 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.68 2004/05/11 23:08:45 timlinux Exp
+ChangeLog,v 1.69 2004/05/12 08:28:04 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... developement version
 
-2004-05-12 0.2.0devel8
+2004-05-12 [jobi] 0.2.0devel9
+** Added endian checks in configure
+** decreased versions in the auto* checks
+
+2004-05-12 [ts] 0.2.0devel8
 ** Added addProject(QString) to plugin interface.
 
 2004-05-05 [jobi] 0.2.0devel7
