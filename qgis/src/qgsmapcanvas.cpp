@@ -43,6 +43,7 @@ void QgsMapCanvas::render(){
   currentExtent = fullExtent;
   mapWindow->setLeft(currentExtent.xMin());
   mapWindow->setBottom(currentExtent.yMin());
+  
     // determine the dominate direction for the mapcanvas
       if (width () > height ())
 	{
@@ -54,7 +55,9 @@ void QgsMapCanvas::render(){
 	  mapWindow->setWidth(currentExtent.height());
 	  mapWindow->setHeight(currentExtent.height());
 	}
+     
       paint->setWindow(*mapWindow);
+     
  QRect v = paint->viewport ();
       int d = QMIN (v.width (), v.height ());
       int dm = QMAX(v.width(), v.height());
