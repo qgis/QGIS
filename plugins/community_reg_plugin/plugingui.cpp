@@ -20,6 +20,7 @@
 #include <qcursor.h> 
 #include <qapplication.h> 
 
+#include <iostream>
 //plugin includes
 #include "qgslocationcapturewidget.h"
 
@@ -72,6 +73,7 @@ void PluginGui::pbnCancel_clicked()
 
 void PluginGui::pbnGetCoords_clicked()
 {
+  std::cout << "Get coords clicked" << std::endl;
   QgsLocationCaptureWidget * myWidget = new QgsLocationCaptureWidget();
   myWidget->show();
   delete myWidget;

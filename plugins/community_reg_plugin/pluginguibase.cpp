@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Tue Mar 15 01:31:07 2005
+** Created: Wed Mar 16 23:39:35 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!

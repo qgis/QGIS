@@ -10,4 +10,16 @@
 ** destructor.
 *****************************************************************************/
 
+#include <qgspoint.h>
 
+
+void QgsLocationCaptureWidgetBase::qgsMapCanvas_xyClickCoordinates( QgsPoint & )
+{
+
+}
+
+
+void QgsLocationCaptureWidgetBase::qgsMapCanvas_xyCoordinates( QgsPoint & )
+{
+
+}

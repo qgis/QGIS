@@ -88,9 +88,27 @@
         </widget>
     </grid>
 </widget>
+<connections>
+    <connection>
+        <sender>qgsMapCanvas</sender>
+        <signal>xyClickCoordinates(QgsPoint&amp;)</signal>
+        <receiver>QgsLocationCaptureWidgetBase</receiver>
+        <slot>qgsMapCanvas_xyClickCoordinates(QgsPoint&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>qgsMapCanvas</sender>
+        <signal>xyCoordinates(QgsPoint&amp;)</signal>
+        <receiver>QgsLocationCaptureWidgetBase</receiver>
+        <slot>qgsMapCanvas_xyCoordinates(QgsPoint&amp;)</slot>
+    </connection>
+</connections>
 <includes>
     <include location="local" impldecl="in implementation">qgslocationcapturewidgetbase.ui.h</include>
 </includes>
+<slots>
+    <slot>qgsMapCanvas_xyClickCoordinates( QgsPoint &amp; )</slot>
+    <slot>qgsMapCanvas_xyCoordinates( QgsPoint &amp; )</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>qgsmapcanvas.h</includehint>

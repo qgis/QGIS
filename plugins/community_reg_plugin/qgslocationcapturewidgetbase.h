@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'qgslocationcapturewidgetbase.ui'
 **
-** Created: Tue Mar 15 01:18:44 2005
+** Created: Wed Mar 16 23:03:37 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -12,6 +12,7 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include <qgspoint.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -37,6 +38,10 @@ public:
     QPushButton* pushButton5;
     QLabel* lblCapturePos;
     QLabel* lblCurrentPos;
+
+public slots:
+    virtual void qgsMapCanvas_xyClickCoordinates( QgsPoint & );
+    virtual void qgsMapCanvas_xyCoordinates( QgsPoint & );
 
 protected:
     QGridLayout* QgsLocationCaptureWidgetBaseLayout;
