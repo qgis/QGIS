@@ -397,6 +397,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
+  PQfinish(connection);
   //pLog.flush();
 }
 
