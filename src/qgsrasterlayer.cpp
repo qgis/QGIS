@@ -63,6 +63,9 @@ email                : tim at linfiniti.com
 
 
 
+#ifdef WIN32
+#include <qapplication.h>
+#endif
 #include <qpainter.h>
 #include <qimage.h>
 #include <qfont.h>
