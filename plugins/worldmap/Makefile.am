@@ -10,44 +10,59 @@
 #
 # $Id$
 
-plugindir = ${pkglibdir}
+# Ganked from qgis/plugins/plugin_template/Makefile.am
 
+
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS)
+
+libdir    = ${prefix}/lib/qgis
+pkglibdir = ${libdir}
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+%.moc.uic.cpp: %.uic.h
+	$(MOC) -o $@ $<
+
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+
+## target plug-in 
+lib_LTLIBRARIES = libqgsworldmapimporter.la
+
+## qt designer user-interface files
+plugin_UI = qgsworldmapimporterguibase.ui
+
+## uic created headers
+plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
+
+## uic created source files
+plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
+
+## uic created MOC files
+plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
+
+## source NOT automatically generated from ANYTHING
+headers = qgsworldmapimporter.h qgsworldmapimportergui.h
+
+## MOC files
+plugin_MOC = qgsworldmapimporter.moc.cpp qgsworldmapimportergui.moc.cpp
 
 
-plugin_LTLIBRARIES = worldmapimporterplugin.la
+libqgsworldmapimporter_la_SOURCES =  qgsworldmapimporter.cpp qgsworldmapimportergui.cpp $(plugin_UISOURCES) $(plugin_UIMOC)  $(plugin_MOC) 
+libqgsworldmapimporter_la_LIBADD  = $(prefix)/lib/libqgis.la
+libqgsworldmapimporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS)  $(QT_LDADD)
 
-plugin_MOC = qgsworldmapimporter.moc.cpp		\
-	     qgsworldmapimportergui.moc.cpp		\
-	     qgsworldmapimporterguibase.moc.cpp
 
-plugin_UI = qgsworldmapimporterguibase.h \
-	    qgsworldmapimporterguibase.cpp 
+BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
+CLEANFILES = $(BUILT_SOURCES)
 
-plugin_UIC = qgsworldmapimporterguibase.ui
-
-worldmapimporterplugin_la_SOURCES =  qgsworldmapimporter.cpp	\
-			      	       qgsworldmapimporter.h		\
-				       qgsworldmapimportergui.cpp	\
-				       qgsworldmapimportergui.h	\
-				       $(plugin_UI)			\
-				       $(plugin_MOC)
-
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+EXTRA_DIST = $(plugin_UI) $(headers) icon.xpm
 
 
 
-worldmapimporterplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
-worldmapimporterplugin_la_LDFLAGS = -avoid-version -module
-worldmapimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
 
-EXTRA_DIST = $(plugin_UIC) icon.xpm
 

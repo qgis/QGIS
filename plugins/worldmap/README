@@ -1,0 +1,12 @@
+This provides a plug-in for QuantumGIS (http://qgis.sourceforge.net/) for
+creating and analyzing feature spaces.
+
+The current version as of 3/10/2004 is 0.0.
+
+You have to hack variable as the top of ``Makefile.am'' to point to the qgis
+source hierarchy; eventually this hack will be eliminated when qgis has a
+separate library.
+
+
+Mark Coletti
+mcoletti@usgs.gov
