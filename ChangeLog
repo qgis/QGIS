@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.176 2004/08/26 18:57:27 mcoletti Exp
+ChangeLog,v 1.177 2004/08/28 16:34:37 gsherman Exp
 ------------------------------------------------------------------------------
-Version 0.4 'Baby' .... development version
+Version 0.5 'Bandit' .... development version
+
+2004-08-14 [gsherman] 0.4.0devel23
+** Moved plugin toolbar to the qgisappbase toolbar container rather than
+  dynamically allocating it. This allows the state/docking position gets
+  restored each time the app starts.
 
 2004-08-26 [mcoletti] 0.4.0devel22
 qgisapp.cpp:
