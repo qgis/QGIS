@@ -1,4 +1,0 @@
-Instructions for building this plugin from CVS:
-				./autogen.sh --prefix=<your QGIS install directory>
-				make
-				make install
