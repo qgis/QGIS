@@ -303,6 +303,10 @@ public:
     QPixmap getLegendQPixmap(bool);
     //similar to above but returns a pointer. Implemented for qgsmaplayer interface
     QPixmap * legendPixmap(); 
+    // Initialise the right click popup menu
+    void initContextMenu(QgisApp *);
+    /** Accessor for the superclass popmenu var - implements pure virtual fn*/
+    QPopupMenu *contextMenu();
     // emit a signal asking for a repaint
     void triggerRepaint();
     
@@ -332,9 +336,9 @@ private:
                                 RasterViewPort * theRasterViewPort,
                                 GDALRasterBand * theGdalBand);
 
-    void drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
+    void drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand);
 
-    void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
+    void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand);
 
     void drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
 
@@ -384,6 +388,7 @@ private:
     double minGrayDouble;
     // maximum gray value - used in scaling procedure
     double maxGrayDouble;
+
 };
 
 #endif
