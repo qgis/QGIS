@@ -1,4 +1,4 @@
-TODO,v 1.17 2004/02/13 22:08:46 timlinux Exp
+TODO,v 1.18 2004/02/13 22:15:30 mcoletti Exp
 TODO List for getting to version 0.1 (in no order of importance)
  1. [DONE TS/MH] Fix QgsProjectIo so that qgis projects can be saved and 
     loaded. Major areas needing attention are customized raster settings and 
@@ -25,7 +25,7 @@ TODO List for getting to version 0.1 (in no order of importance)
 12. [DONE (TS)] Modify cursors so the black cursor / transparency bounndaries 
     are bordered with a 1 pixel wide white border (to prevent losing the cursor 
     over all black image regions. 
-13. Update file open boxes to remember the last filter used in that session.
+13. [DONE (MAC)] Update file open boxes to remember the last filter used in that session.
 14. [DELAYED TILL 0.2] Add vector of view extents and replace the Previous Extent 
     function with Forward and Back view buttons to allow user to move back and 
     forth between views.
