@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>491</width>
-            <height>431</height>
+            <height>435</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -32,6 +32,14 @@
         <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
             <property name="name">
                 <cstring>pixmapLabel2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
             </property>
             <property name="maximumSize">
                 <size>
@@ -107,23 +115,18 @@
             <property name="wordWrap">
                 <enum>WidgetWidth</enum>
             </property>
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
         </widget>
         <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
             <property name="name">
-                <cstring>layout1</cstring>
+                <cstring>layout73</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnCancel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>spacer2</cstring>
@@ -136,7 +139,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>441</width>
+                            <width>320</width>
                             <height>21</height>
                         </size>
                     </property>
@@ -145,8 +148,28 @@
                     <property name="name">
                         <cstring>pbnOK</cstring>
                     </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
                     <property name="text">
-                        <string>OK</string>
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                 </widget>
             </hbox>
