@@ -113,6 +113,16 @@ const char *cOgrLib = (const char *)ogrlib;
         // look at the fields in the layer and set the primary
         // display field using some real fuzzy logic
         setDisplayField();
+        QString layerTitle = baseName;
+       
+        if(providerKey == "postgres"){
+          // adjust the display name for postgres layers
+          layerTitle = layerTitle.mid(layerTitle.find(".") +1);
+          layerTitle = layerTitle.left(layerTitle.find("("));
+        }
+        // upper case the first letter of the layer name
+         layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
+         setLayerName(layerTitle);
          }
 			} else {
 				std::cout << "Unable to instantiate the data provider plugin\n";
