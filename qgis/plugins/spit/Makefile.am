@@ -32,7 +32,8 @@ spit_MOC = qgsspit.moc.cpp \
 	qgsspitbase.moc.cpp \
 	qgsmessageviewerbase.moc.cpp \
 	qgseditreservedwordsbase.moc.cpp \
-	qgseditreservedwordsdialog.moc.cpp
+	qgseditreservedwordsdialog.moc.cpp \
+	qgsscangeometries.moc.cpp
 
 spit_UI = qgsconnectiondialogbase.h \
 	qgsconnectiondialogbase.cpp \
@@ -41,12 +42,16 @@ spit_UI = qgsconnectiondialogbase.h \
 	qgsmessageviewerbase.h \
 	qgsmessageviewerbase.cpp \
 	qgseditreservedwordsbase.cpp \
-	qgseditreservedwordsbase.h
+	qgseditreservedwordsbase.h \
+	qgsscangeometries.h \
+	qgsscangeometries.ui.h \
+	qgsscangeometries.cpp
 
 spit_UIC = qgsconnectiondialogbase.ui \
 	qgsmessageviewerbase.ui \
 	qgsspitbase.ui \
-	qgseditreservedwordsbase.ui
+	qgseditreservedwordsbase.ui \
+	qgsscangeometries.ui
 
 
 spitplugin_la_SOURCES =  qgsspit.cpp \
