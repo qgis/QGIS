@@ -2750,18 +2750,9 @@ void QgisApp::saveWindowState()
     // store window geometry
     QPoint p = this->pos();
     QSize s = this->size();
-    QRect fg = this->frameGeometry();
-    int y = this->y();
     settings.writeEntry("/qgis/Geometry/maximized", this->isMaximized());
     settings.writeEntry("/qgis/Geometry/x", p.x());
-#ifdef WIN32
-    // y value creeps under win32 by the value of the title bar height
-    settings.writeEntry("/qgis/Geometry/y", p.y() + 30);
-#else
-
     settings.writeEntry("/qgis/Geometry/y", p.y());
-#endif
-
     settings.writeEntry("/qgis/Geometry/w", s.width());
     settings.writeEntry("/qgis/Geometry/h", s.height());
 
@@ -2775,8 +2766,6 @@ void QgisApp::restoreWindowState()
     QTextStream ts(&dockStatus, IO_ReadOnly);
     ts >> *this;
 
-
-
     // restore window geometry
     QDesktopWidget *d = QApplication::desktop();
     int dw = d->width();          // returns desktop width
@@ -2785,7 +2774,8 @@ void QgisApp::restoreWindowState()
     int h = settings.readNumEntry("/qgis/Geometry/h", 400);
     int x = settings.readNumEntry("/qgis/Geometry/x", (dw - 600) / 2);
     int y = settings.readNumEntry("/qgis/Geometry/y", (dh - 400) / 2);
-    setGeometry(x, y, w, h);
+    resize(w, h);
+    move(x, y);
 }
 
 void QgisApp::checkQgisVersion()
