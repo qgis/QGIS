@@ -29,22 +29,28 @@ class QgsField;
 class QgsDataProvider {
 
 public: 
-	/** 
-	* Get the first feature resulting from a select operation
-	* @return QgsFeature
-	*/
-	virtual QgsFeature * QgsDataProvider::getFirstFeature(bool fetchAttributes=false)=0;
-	/** 
-	* Get the next feature resutling from a select operation
-	* @return QgsFeature
-	*/
-	virtual QgsFeature * QgsDataProvider::getNextFeature(bool fetchAttributes=false)=0;
+  /** 
+  * Get the first feature resulting from a select operation
+  * @return QgsFeature
+  */
+  virtual QgsFeature * QgsDataProvider::getFirstFeature(bool fetchAttributes=false)=0;
+  /** 
+  * Get the next feature resutling from a select operation
+  * @return QgsFeature
+  */
+  virtual QgsFeature * QgsDataProvider::getNextFeature(bool fetchAttributes=false)=0;
+  /**
+   * Get the next feature using new method
+   * TODO - make this pure virtual once it works and change existing providers
+   *        to use this method of fetching features
+   */
 
-	/** Get feature type.
-	* Gets the feature type as defined in WKBTYPE (qgis.h).
-	* @return int representing the feature type
-	*/
-	virtual int geometryType()=0; 
+  virtual bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false)=0;
+  /** Get feature type.
+  * Gets the feature type as defined in WKBTYPE (qgis.h).
+  * @return int representing the feature type
+  */
+  virtual int geometryType()=0; 
     /**
     * Number of features in the layer
     * @return long containing number of features
@@ -54,49 +60,49 @@ public:
     * Number of attribute fields for a feature in the layer
     */
   virtual int fieldCount()=0;
-	/**
-	* Select features based on a bounding rectangle. Features can be retrieved 
-	* with calls to getFirstFeature and getNextFeature. Request for features 
+  /**
+  * Select features based on a bounding rectangle. Features can be retrieved 
+  * with calls to getFirstFeature and getNextFeature. Request for features 
   * for use in drawing the map canvas should set useIntersect to false.
-	* @param mbr QgsRect containing the extent to use in selecting features
+  * @param mbr QgsRect containing the extent to use in selecting features
   * @param useIntersect If true, use the intersects function to select features
   * rather than the PostGIS && operator that selects based on bounding box
   * overlap.
   *
-	*/
-	virtual void QgsDataProvider::select(QgsRect *mbr, bool useIntersect=false)=0;
-	/** 
-		* Set the data source specification. This may be a path or database
-	* connection string
-	* @param data source specification
-	*/
-	virtual void QgsDataProvider::setDataSourceUri(QString uri) = 0;
-	
-		/** 
-	* Get the data source specification. This may be a path or database
-	* connection string
-	* @return data source specification
-	*/
-	virtual QString QgsDataProvider::getDataSourceUri() = 0;
+  */
+  virtual void QgsDataProvider::select(QgsRect *mbr, bool useIntersect=false)=0;
+  /** 
+    * Set the data source specification. This may be a path or database
+  * connection string
+  * @param data source specification
+  */
+  virtual void QgsDataProvider::setDataSourceUri(QString uri) = 0;
+  
+    /** 
+  * Get the data source specification. This may be a path or database
+  * connection string
+  * @return data source specification
+  */
+  virtual QString QgsDataProvider::getDataSourceUri() = 0;
 
   /**
   * Get the extent of the layer
   * @return QgsRect containing the extent of the layer
   */
   virtual QgsRect * QgsDataProvider::extent() = 0;
-   	
-	/**
-	* Identify features within the search radius specified by rect
-	* @param rect Bounding rectangle of search radius
-	* @return std::vector containing QgsFeature objects that intersect rect
-	*/
-	virtual std::vector<QgsFeature>& QgsDataProvider::identify(QgsRect *rect)=0;
+    
+  /**
+  * Identify features within the search radius specified by rect
+  * @param rect Bounding rectangle of search radius
+  * @return std::vector containing QgsFeature objects that intersect rect
+  */
+  virtual std::vector<QgsFeature>& QgsDataProvider::identify(QgsRect *rect)=0;
 
    /**
    * Return the endian of this layer.
    * @return 0 for NDR (little endian), 1 for XDR (big endian
    */
-	virtual int QgsDataProvider::endian()=0;
+  virtual int QgsDataProvider::endian()=0;
 
   /**
   * Return a list of field names for this layer
