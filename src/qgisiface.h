@@ -60,6 +60,8 @@ class QgisIface : public QgisInterface{
         QString activeLayerSource();
         //! Add a menu to the main menu bar of the application, positioned to the left of Help
         int addMenu(QString menuText, QPopupMenu *menu);
+        //! Add an icon to the plugins toolbar
+        int addToolBarIcon(QAction *qAction);
         /** Open a url in the users browser. By default the QGIS doc directory is used
          * as the base for the URL. To open a URL that is not relative to the installed
          * QGIS documentation, set useQgisDocDirectory to false.
