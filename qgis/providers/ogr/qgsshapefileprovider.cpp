@@ -607,7 +607,7 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 
 bool QgsShapeFileProvider::deleteFeature(int id)
 {
-#ifdef QGISDEBUG
+/*#ifdef QGISDEBUG
     int test=ogrLayer->TestCapability("OLCDeleteFeature");
     if(!test)
     {
@@ -628,7 +628,8 @@ bool QgsShapeFileProvider::deleteFeature(int id)
 #endif
 	    break;
     }
-   return true;
+    return true;*/
+    return false;
 }
 
 /**
