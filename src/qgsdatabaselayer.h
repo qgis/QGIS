@@ -17,7 +17,7 @@
 
 #ifndef QGSDATABASELAYER_H
 #define QGSDATABASELAYER_H
-
+class QString;
 #include "qgsmaplayer.h"
 
 /**
@@ -26,7 +26,7 @@
 
 class QgsDatabaseLayer : public QgsMapLayer  {
 public: 
-	QgsDatabaseLayer();
+	QgsDatabaseLayer(const char *conninfo=0, QString table=QString::null);
 	~QgsDatabaseLayer();
  private:
 	
