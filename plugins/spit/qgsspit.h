@@ -46,6 +46,7 @@ class QgsSpit :public QgsSpitBase{
 	void getSchema();
 	void updateSchema();
   void import();
+  void editColumns(int, int, int, const QPoint &);
 
   private:
 	PGconn* checkConnection();
