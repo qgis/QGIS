@@ -316,7 +316,10 @@
                     </widget>
                     <widget class="QGroupBox" row="3" column="0" rowspan="1" colspan="4">
                         <property name="name">
-                            <cstring>groupBox31</cstring>
+                            <cstring>grpSubset</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
                         </property>
                         <property name="title">
                             <string>Subset:</string>
@@ -327,12 +330,15 @@
                             </property>
                             <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="2">
                                 <property name="name">
-                                    <cstring>textEdit5</cstring>
+                                    <cstring>txtSubsetSQL</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
                                 </property>
                             </widget>
                             <widget class="QPushButton" row="1" column="1">
                                 <property name="name">
-                                    <cstring>pushButton84</cstring>
+                                    <cstring>pbnQueryBuilder</cstring>
                                 </property>
                                 <property name="text">
                                     <string>Query Builder</string>
@@ -645,6 +651,12 @@
         <receiver>QgsDlgVectorLayerPropertiesBase</receiver>
         <slot>pbnCancel_pressed()</slot>
     </connection>
+    <connection>
+        <sender>pbnQueryBuilder</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDlgVectorLayerPropertiesBase</receiver>
+        <slot>pbnQueryBuilder_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsdlgvectorlayerpropertiesbase.ui.h</include>
@@ -655,6 +667,7 @@
     <slot>pbnApply_clicked()</slot>
     <slot>btnHelp_clicked()</slot>
     <slot>pbnCancel_pressed()</slot>
+    <slot>pbnQueryBuilder_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
