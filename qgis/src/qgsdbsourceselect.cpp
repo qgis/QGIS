@@ -147,7 +147,8 @@ void QgsDbSourceSelect::dbConnect()
 		pxPoly = QPixmap(polygon_layer_xpm);
 		//qDebug("Connection succeeded");
 		// get the list of tables
-		QString sql = "select * from geometry_columns where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
+		QString sql = "select * from geometry_columns";
+// where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
 		sql += " order by f_table_name";
 		//qDebug("Fetching tables using: " + sql);
 		int result = pd->ExecTuplesOk((const char *) sql);
@@ -156,7 +157,20 @@ void QgsDbSourceSelect::dbConnect()
 			QTextOStream(&msg) << "Fetched " << pd->Tuples() << " tables from database";
 			//qDebug(msg);
 			for (int idx = 0; idx < pd->Tuples(); idx++) {
-				QString v = pd->GetValue(idx, "f_table_name");
+				QString v = "";
+				if ( strlen(pd->GetValue(idx, "f_table_catalog") )) {
+					v +=  pd->GetValue(idx, "f_table_catalog");
+					v +=  ".";
+				}
+				if ( strlen(pd->GetValue(idx, "f_table_schema") )) {
+					v += 	pd->GetValue(idx, "f_table_schema");
+					v +=  ".";
+				}
+				v +=	pd->GetValue(idx, "f_table_name");
+				v +=  " (";
+				v += 	pd->GetValue(idx, "f_geometry_column");
+				v +=  ")";
+
 				QString type = pd->GetValue(idx, "type");
 				QPixmap *p;
 				if (type == "POINT" || type == "MULTIPOINT")
@@ -167,15 +181,16 @@ void QgsDbSourceSelect::dbConnect()
 					p = &pxLine;
 				else
 					p = 0;
-				lstTables->insertItem(*p, v);
+                                if ( p != 0 )
+					lstTables->insertItem(*p, v);
 			}
 // BEGIN CHANGES ECOS
             if( cmbConnections->count() > 0 )
                 btnAdd->setEnabled(true);
 // END CHANGES ECOS
 		} else {
-			//qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
-			//qDebug(pd->ErrorMessage());
+			qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
+			qDebug(pd->ErrorMessage());
 		}
 	} else {
 		QMessageBox::warning(this, "Connection failed",

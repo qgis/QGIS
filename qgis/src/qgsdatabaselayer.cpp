@@ -38,12 +38,34 @@ tableName(table)
 {
 	// create the database layer and get the needed information
 	// about it from the database
+    qWarning("Incoming table name: " + tableName);
+    // get the schema
+    schema = tableName.left(tableName.find("."));
+    geometryColumn = tableName.mid(tableName.find(" (") +2);
+    geometryColumn.truncate(geometryColumn.length()-1);
+    tableName = tableName.mid(tableName.find(".")+1, tableName.find(" (") - (tableName.find(".")+1));
+  //  geometryColumn = tableName.copy();
+  //  geometryColumn.remove((int) 0,(int) tableName.find(" (",0)+2);
+    
+   // geometryColumn.remove(geometryColumn.length()-1,1);
+    qWarning("Geometry column is: " + geometryColumn);
+  //  tableName.remove((int) tableName.find(" (",0),geometryColumn.length()+2);
+
+   // schema = tableName.copy();
+  //  schema.remove(schema.find(".",0),80);
+  //  tableName.remove(0,(int) tableName.find(".",0)+1);
+  qWarning("Schema is: " + schema);
+   qWarning("Table name is: " + tableName);
 
 	PgDatabase *pd = new PgDatabase(conninfo);
 	if (pd->Status() == CONNECTION_OK) {
 		// get the geometry column
-		QString sql = "select f_geometry_column,type,srid from geometry_columns where f_table_name='" + tableName + "'";
-     // qWarning("Getting geometry column: " + sql);
+		QString sql = "select f_geometry_column,type,srid from geometry_columns where f_table_name='" + tableName + "' and f_geometry_column = '" + geometryColumn + "' and f_table_schema = '" + schema + "'";
+      qWarning("Getting geometry column: " + sql);
+
+//		reset tableName to include schema
+		tableName.prepend(schema+".");
+
 		int result = pd->ExecTuplesOk((const char *) sql);
 		if (result) {
 			// store the srid 
@@ -57,14 +79,41 @@ tableName(table)
 				feature = QGis::WKBLineString;
 			else if (fType == "POLYGON" || fType == "MULTIPOLYGON")
 				feature = QGis::WKBPolygon;
-			geometryColumn = pd->GetValue(0, "f_geometry_column");
+
 			// set the extent of the layer
 			QString sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
 			  "xmin(extent(" + geometryColumn + ")) as xmin,"
 			  "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
-//          qWarning("Getting extents: " + sql);
+          qWarning("Getting extents using schema.table: " + sql);
 			result = pd->ExecTuplesOk((const char *) sql);
 
+//			if that failed, and databasename == schema retry without 
+//			the schema part
+			if (result < 1  && schema == pd->DBName() ) {
+				qWarning("Failed to get extents using schema.table -- trying without schema");
+				tableName.remove(0,(int) tableName.find(".",0)+1);
+				sql = "select xmax(extent(" + geometryColumn + 
+				  ")) as xmax,"
+				  "xmin(extent(" + geometryColumn + ")) as xmin,"
+				  "ymax(extent(" + geometryColumn + 
+				  ")) as ymax," "ymin(extent(" + geometryColumn + 
+				  ")) as ymin" " from " + tableName;
+				result = pd->ExecTuplesOk((const char *) sql);
+			}
+
+//			if that failed, and databasename == schema retry without 
+//			the schema part
+		/*	if (result < 1  && schema == pd->DBName() ) {
+				tableName.remove(0,(int) tableName.find(".",0)+1);
+				sql = "select xmax(extent(" + geometryColumn + 
+				  ")) as xmax,"
+				  "xmin(extent(" + geometryColumn + ")) as xmin,"
+				  "ymax(extent(" + geometryColumn + 
+				  ")) as ymax," "ymin(extent(" + geometryColumn + 
+				  ")) as ymin" " from " + tableName;
+				result = pd->ExecTuplesOk((const char *) sql);
+			}
+*/
 			if (result) {
 				//QString vRight = pd->GetValue(0, "right");
 				layerExtent.setXmax(QString(pd->GetValue(0, "xmax")).toDouble());
@@ -80,13 +129,15 @@ tableName(table)
 
 			} else {
 				QString msg = "Unable to access " + tableName;
-				//QMessageBox::warning(this,"Connection Problem",msg); 
+				qWarning(msg);
+//				QMessageBox::warning(this,"Connection Problem",msg); 
 				valid = false;
 			}
 
 		} else {
 			QString msg = "Unable to get geometry information for " + tableName;
-			//QMessageBox::warning(this,"Connection Problem",msg); 
+			qWarning(msg);
+//			QMessageBox::warning(this,"Connection Problem",msg); 
 			valid = false;
 		}
 
@@ -118,8 +169,9 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, int yTransform)
 	p->setPen(sym->color());
 	//std::cout << "Drawing layer using view extent " << viewExtent->stringRep() << " with a y transform of " << yTransform << std::endl;
 	PgCursor pgs(dataSource, "drawCursor");
-	QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
-	sql += "') as features from " + tableName;
+	QString sql = "select asbinary(" + geometryColumn + ",'" + endianString() + "'";
+//	QString sql = "select asbinary(" + geometryColumn;
+	sql += ") as features from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
 	sql += ")'::box3d,";
@@ -127,7 +179,7 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, int yTransform)
 	sql += ")";
 //  qWarning(sql);
 	pgs.Declare((const char *) sql, true);
-	//! \todo Check return from Fecth();
+	//! \todo Check return from Fetch();
 	int res = pgs.Fetch();
 
 	//std::cout << "Number of matching records: " << pgs.Tuples() << std::endl;
@@ -136,7 +188,7 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, int yTransform)
 		char *feature = new char[pgs.GetLength(idx, 0) + 1];
 		memset(feature, '\0', pgs.GetLength(idx, 0) + 1);
 		memcpy(feature, pgs.GetValue(idx, 0), pgs.GetLength(idx, 0));
-		wkbType = (int) feature[1];
+		wkbType = *(int *) (feature + 1);
 		//std::cout << "Feature type: " << wkbType << std::endl;
 		// read each feature based on its type
 		double *x;
@@ -175,7 +227,7 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, int yTransform)
 			  }
 			  break;
 		  case QGis::WKBMultiLineString:
-			  numLineStrings = (int) (feature[5]);
+			  numLineStrings = *((int *) (feature + 5));
 			  ptr = feature + 9;
 			  for (jdx = 0; jdx < numLineStrings; jdx++) {
 				  // each of these is a wbklinestring so must handle as such
@@ -273,8 +325,9 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 	pen.setWidth(sym->lineWidth());
 	p->setPen(pen);
 	PgCursor pgs(dataSource, "drawCursor");
-	QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
-	sql += "') as features from " + tableName;
+	QString sql = "select asbinary(" + geometryColumn + ",'" + endianString() + "'";
+//	QString sql = "select asbinary(" + geometryColumn;
+	sql += ") as features from " + tableName;
 	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
 	sql += ")'::box3d,";
@@ -292,7 +345,8 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 		char *feature = new char[pgs.GetLength(idx, 0) + 1];
 		memset(feature, '\0', pgs.GetLength(idx, 0) + 1);
 		memcpy(feature, pgs.GetValue(idx, 0), pgs.GetLength(idx, 0));
-		wkbType = (int) feature[1];
+//      this is platform specific 
+		wkbType = *((int *) (feature + 1));
 		//std::cout << "Feature type: " << wkbType << std::endl;
 		// read each feature based on its type
 		double *x;
@@ -339,7 +393,7 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 			  break;
 		  case QGis::WKBMultiLineString:
 
-			  numLineStrings = (int) (feature[5]);
+			  numLineStrings = *((int *) (feature + 5));
 			  ptr = feature + 9;
 			  for (jdx = 0; jdx < numLineStrings; jdx++) {
 				  // each of these is a wbklinestring so must handle as such
