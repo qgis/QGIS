@@ -2426,10 +2426,10 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     //
     // Overlay the status icon which shows if a layer is in the overview or not
     //
-    if (mShowInOverview)
+    /*if (mShowInOverview)
     {
       myQPainter.drawPixmap(0,0,mInOverviewPixmap);
-    }
+      }*/
     
     //
     // Overlay the layername
@@ -2459,8 +2459,8 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 //similar to above but returns a pointer. Implemented for qgsmaplayer interface
 QPixmap *QgsRasterLayer::legendPixmap()
 {
-  QPixmap myQPixmap = getLegendQPixmap(true);
-  return new QPixmap(myQPixmap);
+    m_legendPixmap=getLegendQPixmap(true);
+    return &m_legendPixmap;
 }
 
 /** Accessor for the superclass popmenu var*/
@@ -2894,6 +2894,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   emit setProgress(0,0);
   QApplication::restoreOverrideCursor();
 }
+
 RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
 {
   //

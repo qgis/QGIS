@@ -201,10 +201,7 @@ void QgsSiSyDialog::apply()
     p.setFont(f);
     p.drawText(35, pix->height() - 10, name);
 
-    if (mVectorLayer->legendItem())
-    {
-	mVectorLayer->legendItem()->setPixmap(0, (*pix));
-    }
+    mVectorLayer->updateItemPixmap();
     
     if (mVectorLayer->propertiesDialog())
     {
