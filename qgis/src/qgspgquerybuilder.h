@@ -49,8 +49,14 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase { Q_OBJECT public:
   * @param name Name of the widget
   */
   QgsPgQueryBuilder(QString tableName, PGconn *con, QWidget *parent = 0,
-      const char *name=0); ~QgsPgQueryBuilder(); void setConnection(PGconn
-        *con); 
+      const char *name=0); ~QgsPgQueryBuilder(); 
+ 
+ /*!
+  * Set the connection used the by query builder
+  * @param con Active PostgreSQL connection
+  */ 
+  void setConnection(PGconn *con); 
+
   private:
   /*! 
    * Populate the field list for the selected table
@@ -59,8 +65,8 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase { Q_OBJECT public:
 
   /*! 
    * Get sample distinct values for the selected field. The sample size is
-   * limited to an arbitrary value (currently set to 25). The fields
-   * are inserted into the field list box.
+   * limited to an arbitrary value (currently set to 25). The values
+   * are inserted into the values list box.
    */
   void getSampleValues();
   
