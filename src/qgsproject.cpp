@@ -730,7 +730,7 @@ public:
         else
         {
             qDebug( "%s:%d PropertyKey has null child", __FILE__, __LINE__ );
-
+	    qDebug("key is: "+currentKey);
             return QVariant();  // just return an QVariant::Invalid
         }
     }

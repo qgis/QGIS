@@ -108,14 +108,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   {
     setDataProvider( providerKey );
   }
-  // XXXX Is it just me or is selection colour not actually used anywhere? TS
-  //there is the mSelectionColor that is widely used by renderers
-  //draw the selected features the colour set in project file
-  //(defaults to yellow)
-  int myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
-  int myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",0);
-  int myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
-  selectionColor.setRgb(myRedInt,myGreenInt,myBlueInt);
 
   // Default for the popup menu
   popMenu = 0;
@@ -397,6 +389,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     QPointArray *pa;
     int wkbType;
 
+    bool projectionsEnabledFlag = projectionsEnabled();
     std::list<int> attributes=m_renderer->classificationAttributes();
 
     mDrawingCancelled=false; //pressing esc will change this to true
@@ -430,7 +423,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
           bool sel=mSelected.find(fet->featureId()) != mSelected.end();
           m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
 
-          drawFeature(p,fet,theMapToPixelTransform,&marker, markerScaleFactor);
+          drawFeature(p,fet,theMapToPixelTransform,&marker, markerScaleFactor, projectionsEnabledFlag);
           ++featureCount;
           delete fet;
         }
@@ -441,7 +434,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     {
       bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
       m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
-      drawFeature(p,*it,theMapToPixelTransform,&marker,markerScaleFactor);
+      drawFeature(p,*it,theMapToPixelTransform,&marker,markerScaleFactor, projectionsEnabledFlag);
     }
 
 #ifdef QGISDEBUG
@@ -2003,7 +1996,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   point.setY(mindisty);
 }
 
-void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor)
+void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
 {
   unsigned char *feature;
   bool attributesneeded = m_renderer->needsAttributes();
@@ -2016,7 +2009,6 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   QPen pen;
   feature = fet->getGeometry();
 
-  bool projectionsEnabledFlag = projectionsEnabled();
   memcpy(&wkbType, (feature+1), sizeof(wkbType));
 
   switch (wkbType)
