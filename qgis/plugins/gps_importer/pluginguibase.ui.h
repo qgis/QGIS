@@ -87,3 +87,9 @@ void PluginGuiBase::cbGPXTracks_toggled( bool )
 {
 
 }
+
+
+void PluginGuiBase::enableRelevantControls()
+{
+
+}
