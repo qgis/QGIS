@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.75 2004/05/15 00:28:52 timlinux Exp
+ChangeLog,v 1.76 2004/05/15 14:11:47 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-13 [ts] 0.2.0devel18
+** Raster properties changes: Switched order of general tab and symbology tab - as you normally change
+straight to symbology tab anyway. Removed stats tab and consolidated stats
+into metadata tab. Clean ups on metadata tab.
 
 2004-05-13 [ts] 0.2.0devel17
 ** Raster stats tab now displays pyramid/overview info
