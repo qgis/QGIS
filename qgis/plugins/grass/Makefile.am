@@ -28,21 +28,28 @@ plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrasseditbase.moc.cpp \
 	     qgsgrassedit.moc.cpp \
 	     qgsgrassattributesbase.moc.cpp \
-	     qgsgrassattributes.moc.cpp 
+	     qgsgrassattributes.moc.cpp \
+	     qgsgrassregionbase.moc.cpp \
+	     qgsgrassregion.moc.cpp
+
 
 plugin_UI = qgsgrassselectbase.h \
 	    qgsgrassselectbase.cpp \
 	    qgsgrasseditbase.h \
 	    qgsgrasseditbase.cpp \
 	    qgsgrassattributesbase.h \
-	    qgsgrassattributesbase.cpp 
+	    qgsgrassattributesbase.cpp \
+	    qgsgrassregionbase.h \
+	    qgsgrassregionbase.cpp 
 
 plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrassselectbase.ui.h \
 	     qgsgrasseditbase.ui \
 	     qgsgrasseditbase.ui.h \
 	     qgsgrassattributesbase.ui \
-	     qgsgrassattributesbase.ui.h 
+	     qgsgrassattributesbase.ui.h \
+	     qgsgrassaregionbase.ui \
+	     qgsgrassaregionbase.ui.h 
 
 grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassplugin.h \
@@ -52,6 +59,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassedit.h \
 			 qgsgrassattributes.cpp \
 			 qgsgrassattributes.h \
+			 qgsgrassregion.cpp \
+			 qgsgrassregion.h \
 			 ../../providers/grass/qgsgrass.h \
 			 ../../providers/grass/qgsgrassprovider.h \
 			 $(plugin_UI) \
@@ -66,6 +75,8 @@ qgsgrasseditbase.cpp: qgsgrasseditbase.h qgsgrasseditbase.ui
 qgsgrasseditbase.h: qgsgrasseditbase.ui
 qgsgrassattributesbase.cpp: qgsgrassattributesbase.h qgsgrassattributesbase.ui
 qgsgrassattributesbase.h: qgsgrassattributesbase.ui
+qgsgrassregionbase.cpp: qgsgrassregionbase.h qgsgrassregionbase.ui
+qgsgrassregionbase.h: qgsgrassregionbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -74,4 +85,4 @@ grassplugin_la_LIBADD = $(QT_LDADD)  -L../../providers/grass/${objdir} -lgrasspr
 grassplugin_la_LDFLAGS = -avoid-version -module
 grassplugin_la_CXXFLAGS = $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC) -I../../src/
 
-EXTRA_DIST = $(plugin_UIC) add_vector.xpm add_raster.xpm
+EXTRA_DIST = $(plugin_UIC) add_vector.xpm add_raster.xpm grass_edit.xpm grass_region.xpm grass_region_edit.xpm
