@@ -426,15 +426,13 @@ void QgsLabel::readXML( const QDomNode& node )
 
     /* X,Y offset */
     double xoffset, yoffset;
-    el = node.namedItem("xoffset").toElement();
+    el = node.namedItem("offset").toElement();
     type = QgsLabelAttributes::unitsCode( el.attribute("units") );
-    xoffset = el.attribute("value").toDouble();
-    setLabelField ( XOffset, el.attribute("field") );
-
-    el = node.namedItem("yoffset").toElement();
-    yoffset = el.attribute("value").toDouble();
+    xoffset = el.attribute("x").toDouble();
+    yoffset = el.attribute("y").toDouble();
     mLayerAttributes->setOffset ( xoffset, yoffset, type );
-    setLabelField ( YOffset, el.attribute("field") );
+    setLabelField ( XOffset, el.attribute("xfield") );
+    setLabelField ( YOffset, el.attribute("yfield") );
 
     /* Angle */
     el = node.namedItem("angle").toElement();
@@ -483,14 +481,10 @@ void QgsLabel::writeXML(std::ofstream& xml)
     /* Y */
     xml << "\t\t\t<y field=\"" << mLabelField[YCoordinate] << "\" />\n";
 
-    /* X offset */
-    xml << "\t\t\t<xoffset value=\"" << a->xOffset() << "\" units=\"" 
-	<< QgsLabelAttributes::unitsName(a->offsetType()) << "\" field=\"" << mLabelField[XOffset] 
-	<< "\" />\n";
-
-    /* Y offset */
-    xml << "\t\t\t<yoffset value=\"" << a->yOffset() << "\" units=\"" 
-	<< QgsLabelAttributes::unitsName(a->offsetType()) << "\" field=\"" << mLabelField[YOffset] 
+    /* Offset */
+    xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(a->offsetType())
+        << "\" x=\"" << a->xOffset() << "\" xfield=\"" << mLabelField[XOffset]
+        << "\" y=\"" << a->yOffset() << "\" yfield=\"" << mLabelField[YOffset]
 	<< "\" />\n";
 
     /* Angle */
