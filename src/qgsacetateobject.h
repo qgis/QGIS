@@ -43,6 +43,12 @@ public:
    */
   QgsAcetateObject(QgsPoint &origin);
 
+  /** Constructs an acetate object without an origin point. This is appropriate for
+   * objects that are not point-centric, such as polygons or collections of acetate
+   * objects.
+   */
+  QgsAcetateObject();
+
   /** 
    * Destructor
    */

@@ -68,6 +68,7 @@ headers =							\
 		qgslabel.h					\
 		qgslegend.h					\
 		qgslegenditem.h					\
+		qgsline.h             \
 		qgslinestyledialog.h				\
 		qgslinesymbol.h					\
 		qgsludialog.h					\
@@ -240,6 +241,7 @@ qgis_SOURCES =					\
 		qgslabeldialog.cpp		\
 		qgslegend.cpp			\
 		qgslegenditem.cpp		\
+		qgsline.cpp         \
 		qgslinestyledialog.cpp		\
 		qgslinesymbol.cpp		\
 		qgsludialog.cpp			\

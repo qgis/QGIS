@@ -26,6 +26,15 @@ QgsAcetateObject::QgsAcetateObject(QgsPoint &origin) :
 {
 }
 
+QgsAcetateObject::QgsAcetateObject()
+{
+  /* Create default origin at 0,0. The origin may
+   * be used in the future to calculate the centroid of
+   * an object or collection of objects
+   */
+  mOrigin = QgsPoint(0,0);
+}
+
 QgsAcetateObject::~QgsAcetateObject()
 {
 }
