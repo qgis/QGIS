@@ -900,9 +900,9 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
         }
         else if (driverName.startsWith("GML"))
         {
-//             // XXX not yet supported; post 0.1 release task
-//             myFileFilters += createFileFilter_( "Geography Markup Language",
-//                                                 "*.gml" );
+            // XXX not yet supported; post 0.1 release task
+            myFileFilters += createFileFilter_( "Geography Markup Language",
+                                                "*.gml" );
         }
         else
         {
