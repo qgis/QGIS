@@ -817,9 +817,6 @@ void QgsGPXProvider::changeAttributeValues(GPSObject& obj,
 	ext->number = number;
     }
   }
-  
-  for (aIter = attrs.begin(); aIter != attrs.end(); ++aIter)
-    std::cerr<<"   ******   "<<aIter->first<<" -> "<<aIter->second<<std::endl;
 }
 
 
