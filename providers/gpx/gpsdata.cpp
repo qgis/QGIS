@@ -334,6 +334,11 @@ int GPSData::addWaypoint(double lat, double lon, QString name,
   wpt.lon = lon;
   wpt.name = name;
   wpt.ele = ele;
+  return addWaypoint(wpt);
+}
+
+
+int GPSData::addWaypoint(const Waypoint& wpt) {
   xMax = xMax > wpt.lon ? xMax : wpt.lon;
   xMin = xMin < wpt.lon ? xMin : wpt.lon;
   yMax = yMax > wpt.lat ? yMax : wpt.lat;
@@ -343,21 +348,18 @@ int GPSData::addWaypoint(double lat, double lon, QString name,
 }
 
 
-int GPSData::addWaypoint(const Waypoint& wpt) {
-  waypoints.push_back(wpt);
-  return waypoints.size() - 1;
-}
-
-
 int GPSData::addRoute(QString name) {
   Route rte;
   rte.name = name;
-  routes.push_back(rte);
-  return routes.size() - 1;
+  return addRoute(rte);
 }
 
 
 int GPSData::addRoute(const Route& rte) {
+  xMax = xMax > rte.xMax ? xMax : rte.xMax;
+  xMin = xMin < rte.xMin ? xMin : rte.xMin;
+  yMax = yMax > rte.yMax ? yMax : rte.yMax;
+  yMin = yMin < rte.yMin ? yMin : rte.yMin;
   routes.push_back(rte);
   return routes.size() - 1;
 }
@@ -366,12 +368,15 @@ int GPSData::addRoute(const Route& rte) {
 int GPSData::addTrack(QString name) {
   Track trk;
   trk.name = name;
-  tracks.push_back(trk);
-  return tracks.size() - 1;
+  return addTrack(trk);
 }
   
 
 int GPSData::addTrack(const Track& trk) {
+  xMax = xMax > trk.xMax ? xMax : trk.xMax;
+  xMin = xMin < trk.xMin ? xMin : trk.xMin;
+  yMax = yMax > trk.yMax ? yMax : trk.yMax;
+  yMin = yMin < trk.yMin ? yMin : trk.yMin;
   tracks.push_back(trk);
   return tracks.size() - 1;
 }
