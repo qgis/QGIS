@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.186 2004/09/15 09:28:50 larsl Exp
+ChangeLog,v 1.187 2004/09/20 17:20:03 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-20 [larsl] 0.4.0devel34
+** Fixed bug 987874 which caused QGIS to crash when showing the attribute
+   table for shapefile layers with features with NULL geometry 
+   (GetGeometryRef() returns NULL) - the OGR provider now treats features
+   with NULL geometry as NULL features, i.e. EOF
 
 2004-09-15 [larsl] 0.4.0devel33
 ** Fixed QgsUValMaDialogBase so the listbox doesn't take up all of the space

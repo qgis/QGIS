@@ -193,7 +193,7 @@ bool QgsShapeFileProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
   if(valid){
     //std::cerr << "getting next feature\n";
     OGRFeature *fet = ogrLayer->GetNextFeature();
-    if(fet){
+    if(fet && fet->GetGeometryRef()){
       OGRGeometry *geom = fet->GetGeometryRef();
 
       // get the wkb representation
@@ -247,7 +247,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
   if(valid){
     //std::cerr << "getting next feature\n";
     OGRFeature *fet = ogrLayer->GetNextFeature();
-    if(fet){
+    if(fet && fet->GetGeometryRef()){
       OGRGeometry *geom = fet->GetGeometryRef();
 
       // get the wkb representation
@@ -292,7 +292,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
    if(valid)
    {
        OGRFeature *fet = ogrLayer->GetNextFeature();
-       if(fet)
+       if(fet && fet->GetGeometryRef())
        {
 	 OGRGeometry *geom = fet->GetGeometryRef();
          // get the wkb representation
