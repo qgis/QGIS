@@ -625,6 +625,12 @@ void QgsShapeFileProvider::reset()
 {
   ogrLayer->SetSpatialFilter(0);
   ogrLayer->ResetReading();
+  // Reset the use intersect flag on a provider reset, otherwise only the last
+  // selected feature(s) will be displayed when the attribute table
+  // is opened. 
+  //XXX In a future release, this "feature" can be used to implement
+  // the display of only selected records in the attribute table.
+  mUseIntersect = false;
 }
 
 QString QgsShapeFileProvider::minValue(int position)
