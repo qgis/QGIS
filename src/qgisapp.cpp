@@ -22,6 +22,7 @@
 #include <qstringlist.h>
 #include <qmessagebox.h>
 #include <qstatusbar.h>
+#include <qlabel.h>
 #include <qfiledialog.h>
 #include <qfileinfo.h>
 #include <qpixmap.h>
@@ -33,6 +34,7 @@
 #include <qwmatrix.h>
 #include <qfiledialog.h>
 #include <qvbox.h>
+#include <qlistview.h>
 #include <libpq++.h>
 #include <iostream>
 #include <iomanip>
@@ -56,7 +58,13 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   QGridLayout *FrameLayout =
     new QGridLayout (frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter (frameMain);
-  mapLegend = new QgsLegend (split);	//frameMain);
+  lv = new QListView(split);
+  lv->addColumn("Layers");
+  lv->setSorting(-1);
+ 
+  
+  mapLegend = new QgsLegend(lv);	//frameMain);
+ // mL = new QScrollView(split);
   //add a canvas
   mapCanvas = new QgsMapCanvas (split);
   // resize it to fit in the frame
@@ -67,6 +75,7 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   FrameLayout->addWidget (split, 0, 0);
   mapLegend->setBackgroundColor (QColor (192, 192, 192));
   mapLegend->setMapCanvas(mapCanvas);
+  lv->setResizeMode(QListView::AllColumns);
  
 
   connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
