@@ -63,6 +63,9 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ostream& xml);
+    /**Writes the contents of the renderer to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
     /** Returns true*/
     bool needsAttributes();
     /**Returns a list with the index to the classification field*/

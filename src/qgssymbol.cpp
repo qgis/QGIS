@@ -17,7 +17,9 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgssymbol.h"
+#include "qgssymbologyutils.h"
 #include <qpainter.h>
+
 QgsSymbol::QgsSymbol()
 {
 
@@ -73,4 +75,34 @@ QPixmap  QgsSymbol::getSymbolAsPixmap(int xDim, int yDim)
         myQPainter.end();
         return myQPixmap;
 
+}
+
+bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document )
+{
+    bool returnval=false;
+    QDomElement symbol=document.createElement("symbol");
+    item.appendChild(symbol);
+    QDomElement outlinecolor=document.createElement("outlinecolor");
+    outlinecolor.setAttribute("red",QString::number(mPen.color().red()));
+    outlinecolor.setAttribute("green",QString::number(mPen.color().green()));
+    outlinecolor.setAttribute("blue",QString::number(mPen.color().blue()));
+    symbol.appendChild(outlinecolor);
+    QDomElement outlinestyle=document.createElement("outlinestyle");
+    QDomText outlinestyletxt=document.createTextNode(QgsSymbologyUtils::penStyle2QString(mPen.style()));
+    outlinestyle.appendChild(outlinestyletxt);
+    symbol.appendChild(outlinestyle);
+    QDomElement outlinewidth=document.createElement("outlinewidth");
+    QDomText outlinewidthtxt=document.createTextNode(QString::number(mPen.width()));
+    outlinewidth.appendChild(outlinewidthtxt);
+    symbol.appendChild(outlinewidth);
+    QDomElement fillcolor=document.createElement("fillcolor");
+    fillcolor.setAttribute("red",QString::number(mBrush.color().red()));
+    fillcolor.setAttribute("green",QString::number(mBrush.color().green()));
+    fillcolor.setAttribute("blue",QString::number(mBrush.color().blue()));
+    symbol.appendChild(fillcolor);
+    QDomElement fillpattern=document.createElement("fillpattern");
+    QDomText fillpatterntxt=document.createTextNode(QgsSymbologyUtils::brushStyle2QString(mBrush.style()));
+    fillpattern.appendChild(fillpatterntxt);
+    symbol.appendChild(fillpattern);
+    fillpattern.appendChild(fillpatterntxt);
 }

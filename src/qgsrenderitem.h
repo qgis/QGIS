@@ -63,7 +63,9 @@ class QgsRenderItem {
     const QString& label() const;
     /**Returns the value of the field*/
     const QString& value() const; 
-
+    /**Writes the contents of the item to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & parent, QDomDocument & document );
 };
 
 

@@ -280,3 +280,22 @@ QString QgsGraduatedMaRenderer::name()
 {
     return "Graduated Marker";
 }
+
+bool QgsGraduatedMaRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnvalue=true;
+    QDomNode graduatedmarker=document.createElement("graduatedmarker");
+    layer_node.appendChild(graduatedmarker);
+    QDomNode classificationfield=document.createElement("classificationfield");
+    QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
+    classificationfield.appendChild(classificationfieldtxt);
+    graduatedmarker.appendChild(classificationfield);
+    for(std::list<QgsRangeRenderItem*>::iterator it=mItems.begin();it!=mItems.end();++it)
+    {
+	if(!(*it)->writeXML(graduatedmarker,document))
+	{
+	    returnvalue=false;
+	}
+    }
+    return returnvalue;
+}

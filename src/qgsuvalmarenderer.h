@@ -37,6 +37,9 @@ class QgsUValMaRenderer: public QgsRenderer
     void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     void writeXML(std::ostream& xml);
+    /**Writes the contents of the renderer to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     bool needsAttributes();
     /**Returns a list with indexes of classification attributes*/
