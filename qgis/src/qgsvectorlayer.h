@@ -163,7 +163,7 @@ protected:
     QgsAttributeTableDisplay * tabledisplay;
   /**Vector holding the information which features are activated*/
   std::map < int, bool > selected;
-  /**Color to draw and fill the selected features*/
+  /**Color to and fill the selected features*/
   QColor selectionColor;
   /**Renderer object which holds the information about how to display the features*/
   QgsRenderer *m_renderer;
@@ -178,7 +178,9 @@ protected:
 
 
 private:                       // Private attributes
-//! Draws the layer using coordinate transformation
+  //! Draws the layer labels using coordinate transformation
+  void drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
+  //! Draws the layer using coordinate transformation
   void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
   //! Pointer to data provider derived from the abastract base class QgsDataProvider
   QgsDataProvider *dataProvider;

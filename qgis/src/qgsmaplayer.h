@@ -93,7 +93,7 @@ public:
   
   virtual void draw(QPainter *, QgsRect *, int);
   virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * ,QPaintDevice *);
-
+  virtual void drawLabels(QPainter *, QgsRect *, QgsCoordinateTransform * ,QPaintDevice *);
   /*! Identify the feature(s) in this layer that are contained in the search rectangle
    */
   virtual void identify(QgsRect *)
