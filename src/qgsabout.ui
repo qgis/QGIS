@@ -275,7 +275,7 @@
                             <cstring>textBrowser1</cstring>
                         </property>
                         <property name="text">
-                            <string>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;
+                            <string>&lt;h3&gt;QGIS Contributors&lt;/h3&gt;
 &lt;b&gt;&lt;font color="#550000"&gt;&lt;font size="+1"&gt;Code&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;&lt;br&gt;
 Gary E. Sherman&lt;br&gt;
 Steve Halasz&lt;br&gt;
