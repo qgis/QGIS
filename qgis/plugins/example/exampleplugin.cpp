@@ -25,10 +25,10 @@
 #include <qpopupmenu.h>
 #include <qaction.h>
 #include "exampleplugin.h"
-
 // xpm for creating the toolbar icon
 #include "matrix1.xpm"
-
+// qgis includes
+#include "../../src/qgsmaplayer.h"
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
 * and an interface object that provides access to exposed functions in QGIS.
@@ -54,8 +54,8 @@ ExamplePlugin::ExamplePlugin(QgisApp * qgis, QgisIface * _qI):qgisMainWindow(qgi
     qI->zoomPrevious();
   
     // call a function defined in the QgisIface class and send its value to stdout
-    int foo = qI->getInt();
-    std::cout << "Result of getInt is: " << foo << std::endl;
+    QgsMapLayer * myMapLayer = qI->activeLayer();
+    std::cout << "Current map layer is: " << myMapLayer->name() << std::endl;
 
 }
 
