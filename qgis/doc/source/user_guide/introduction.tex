@@ -1,0 +1,66 @@
+\section{Introduction}
+Quantum GIS (QGIS) is designed to be a Geographic Information System
+(GIS) built for Linux/Unix, Mac OSX, and Windows. QGIS currently offers basic support for
+vector (both disk-based and database) and raster formats. 
+
+QGIS is released under the GNU Public License. You should have received a full copy of the license with your copy of QGIS.
+\begin{quote}
+\begin{singlespace}
+\textsl{Note - The latest version of this document can always be found at\\
+http://qgis.sourceforge.net/docs/userguide.html }
+\end{singlespace}
+\end{quote}
+\section{Whats New in 0.6}
+New features in version 0.6 include:
+\begin{compactenum}
+\item GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.
+\item PostGIS editing support in provider
+\item Vector dialog redesign to improve usability
+\item Improvement in project handling (loading and saving)
+\item Scale dependent rendering
+\item User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete
+\item Interrupt drawing of features by hitting ESC
+\item Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer
+\item Create new vector layer (shapefile) for editing
+\item Windows installer
+ Mac OSX binary
+\item New options in the graticule builder plugin
+\item Enhancements to the GPS plugin
+\item Man page
+\item Save delimited text as shapefile
+\item Improved Delimited Text plugin, including preview of text file
+\item Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types
+\item Display SQL query used to create a PostGIS layer
+\item PostgreSQL query builder
+\item Ability to redefine the query used for PostgreSQL layers from the layer properties dialog
+\item North arrow, scalebar, and copyright plugins save their state in the project file
+\item Datasets with UTF8, Kanjii and CJK filenames now load properly
+
+\end{compactenum}
+
+\subsection{Major Features}
+
+QGIS has many common GIS features and functions. The major features
+are listed below. 
+
+\begin{compactenum}
+\item Support for spatially enabled PostgreSQL tables using PostGIS 
+\item Support for ESRI shapefiles and other vector formats support by the
+OGR library, including MapInfo files 
+\item Identify features 
+\item Display attribute table 
+\item Select features 
+\item Label features
+\item Persistent selections 
+\item Save and restore projects
+\item Support for raster formats supported by the GDAL library 
+\item Change vector symbology (single, graduated, unique value, and continuous) 
+\item SVG markers symbology (single, unique value, and graduated) 
+\item Display raster data such as digital elevation models, aerial photography
+or landsat imagery 
+\item Change raster symbology (grayscale, pseudocolor and multiband RGB) 
+\item Export to Mapserver map file 
+\item Preliminary digitizing support
+\item Map overview
+\item Plugins 
+\end{compactenum}
