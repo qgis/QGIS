@@ -155,12 +155,11 @@
     </toolbar>
     <toolbar dock="2">
         <property name="name">
-            <cstring>Toolbar</cstring>
+            <cstring>helpToolbar</cstring>
         </property>
         <property name="label">
             <string>Toolbar</string>
         </property>
-        <action name="actionWhatsThis"/>
     </toolbar>
 </toolbars>
 <actions>
@@ -229,7 +228,7 @@
             <string>Refresh </string>
         </property>
         <property name="whatsThis">
-          <string>Refresh the map by clearing the map canvas and redrawing all visible layers</string>
+            <string>Refresh the map by clearing the map canvas and redrawing all visible layers</string>
         </property>
     </action>
     <action>
@@ -246,7 +245,7 @@
             <string>Zoom to full extent</string>
         </property>
         <property name="whatsThis">
-          <string>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</string>
+            <string>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</string>
         </property>
     </action>
     <actiongroup>
@@ -299,7 +298,7 @@
                 <string>&amp;Pan</string>
             </property>
             <property name="whatsThis">
-              <string>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</string>
+                <string>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</string>
             </property>
         </action>
         <action>
@@ -319,7 +318,7 @@
                 <string>Zoom &amp;out</string>
             </property>
             <property name="whatsThis">
-              <string>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to "fit" in the rectangle.</string>
+                <string>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to "fit" in the rectangle.</string>
             </property>
         </action>
         <action>
@@ -339,7 +338,7 @@
                 <string>Zoom to selected features in active layer</string>
             </property>
             <property name="whatsThis">
-              <string>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</string>
+                <string>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</string>
             </property>
         </action>
         <action>
@@ -365,7 +364,7 @@
                 <string>Identify a feature on the active layer</string>
             </property>
             <property name="whatsThis">
-              <string>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</string>
+                <string>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</string>
             </property>
         </action>
         <action>
@@ -388,7 +387,7 @@
                 <string>select features</string>
             </property>
             <property name="whatsThis">
-              <string>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</string>
+                <string>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</string>
             </property>
         </action>
     </actiongroup>
@@ -406,7 +405,7 @@
             <string>&amp;About Quantum GIS</string>
         </property>
         <property name="whatsThis">
-          <string>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</string>
+            <string>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</string>
         </property>
     </action>
     <action>
@@ -440,7 +439,7 @@
             <string>Add a vector layer (e.g. Shapefile)</string>
         </property>
         <property name="whatsThis">
-          <string>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</string>
+            <string>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</string>
         </property>
     </action>
     <action>
@@ -463,7 +462,7 @@
             <string>Open the attribute table for the selected layer</string>
         </property>
         <property name="whatsThis">
-          <string>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</string>
+            <string>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</string>
         </property>
     </action>
     <action>
@@ -483,7 +482,7 @@
             <string>Zoom to last extent</string>
         </property>
         <property name="whatsThis">
-          <string>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</string>
+            <string>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</string>
         </property>
     </action>
     <action>
@@ -520,7 +519,7 @@
             <string>QGIS User Preferences</string>
         </property>
         <property name="whatsThis">
-          <string>Open the options dialog to set QGIS preferences like web browser and identify search radius.</string>
+            <string>Open the options dialog to set QGIS preferences like web browser and identify search radius.</string>
         </property>
     </action>
     <action>
@@ -537,7 +536,7 @@
             <string>Save Project</string>
         </property>
         <property name="whatsThis">
-          <string>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</string>
+            <string>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</string>
         </property>
     </action>
     <action>
@@ -554,7 +553,7 @@
             <string>Save Project As...</string>
         </property>
         <property name="whatsThis">
-          <string>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</string>
+            <string>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</string>
         </property>
     </action>
     <action>
@@ -574,7 +573,7 @@
             <string>Start a new QGIS project</string>
         </property>
         <property name="whatsThis">
-          <string>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</string>
+            <string>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</string>
         </property>
     </action>
     <action>
@@ -590,11 +589,11 @@
         <property name="menuText">
             <string>Plugin Manager</string>
         </property>
+        <property name="whatsThis">
+            <string>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</string>
+        </property>
         <property name="visible">
             <bool>true</bool>
-        </property>
-        <property name="whatsThis">
-          <string>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</string>
         </property>
     </action>
     <action>
@@ -611,7 +610,7 @@
             <string>Check QGIS Version</string>
         </property>
         <property name="whatsThis">
-          <string>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</string>
+            <string>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</string>
         </property>
     </action>
     <action>
@@ -628,7 +627,7 @@
             <string>Export current view as a Mapserver file</string>
         </property>
         <property name="whatsThis">
-          <string>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</string>
+            <string>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</string>
         </property>
     </action>
     <action>
@@ -656,7 +655,7 @@
             <string>Add a Raster Layer</string>
         </property>
         <property name="whatsThis">
-          <string>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</string>
+            <string>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</string>
         </property>
     </action>
     <action>
@@ -676,7 +675,7 @@
             <string>QGIS Help (HTML)</string>
         </property>
         <property name="whatsThis">
-          <string>Open the QGIS Help Contents in a web browser</string>
+            <string>Open the QGIS Help Contents in a web browser</string>
         </property>
     </action>
     <action>
@@ -693,7 +692,7 @@
             <string>QGIS Home Page</string>
         </property>
         <property name="whatsThis">
-          <string>Open the QGIS home page in a web browser</string>
+            <string>Open the QGIS home page in a web browser</string>
         </property>
     </action>
     <action>
@@ -710,7 +709,7 @@
             <string>QGIS SourceForge Page</string>
         </property>
         <property name="whatsThis">
-          <string>Open the QGIS SourceForge project page in a web browser</string>
+            <string>Open the QGIS SourceForge project page in a web browser</string>
         </property>
     </action>
     <action>
@@ -727,7 +726,7 @@
             <string>Save Map As Image</string>
         </property>
         <property name="whatsThis">
-          <string>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</string>
+            <string>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</string>
         </property>
     </action>
     <action>
@@ -780,7 +779,7 @@
         <data format="XPM.GZ" length="650">789c5dd04b4ec3301006e07d4e61d5bb0aa5cd53ae2a8e006289845878fc889334690b65811077c733e394821d25fe46bf3d72366bf1fcf420d69becfda22fbd1126e837b1b61fd3f4f9f27aff95ad8a56e0b313c5ea2e5be5c288c7e3ec701de25a6e69203b64555475454989ac756d6a8d9c904dd96c9b12a991aaaa8daa9086a90ae69908ca2a408e48b0aa008bb4cc9d657aa4694c6b1ae411e95be75c8b1c88de95de23fbc496794a744cc7f4a5a30b1e125b4f47cd899ac390e899f9bf41ff40d2f2faa19b4ba0a98126d572093743d2de1cc0d86502e4296738e3c0dfe4a8d4857e48392961c4d2a183e0615afa626e860e20c426bfe7cd708cb558bc3def84b9585cfa8e7e889372d7be3c628f65af4c7783d085730c725fbe3cc45748b53f3f2ac41edffbec07c88ea4bc</data>
     </image>
     <image name="image11">
-        <data format="XPM.GZ" length="12504">789cb598d97222c91586efe7293a26ef261c396c0555e1f005421b5a016d480e5f9cdc40422c0224010ebfbb933aff296ba67b3c92a63bba89eeaf72fdcf9659f5eb2f5ffa9dd32fbffcfad36249cb7bfbc50e69fee517f73c1eaffff9af7ffcfba79f6be997eddf46f6a5f2f3df7efa59d317fbe56c3af139a837d05dbe015b8ba04aa54aa954da325d806bcc2a03a7600db6ccbacf5c95f143b08c97768cd71bb08c1f33d7305e1f81657c0a96f17b608c277022e3b17e9260fc0d3843fb1cecc02be67a197c0ac678fd0496f103b08c1f313764fc1a2ce3db6019ff0ac678aa32a732fe112ce35fc0186fb0ff14e3d56dcea9f8cf0dc1b5529af75f80c57ff382f376bf0fb6e019b3f8cf61bcf82f0430fa07b48b7f08f38b7da9c72cf6f4e760b1c70918fd0ddb3f15fb58c72cf6a05d30c6bbdcffe592e8310e2cfbdb304b7c9a5ac179bbdb0563bcad82315e196689478dfea2d79f3117f1770896f898318b7e77c35cc4cb0358fc79cd5cf89bd74baba532b72b708d99eec1e25f0b96fc3a2b38d7a36f996bd04f2db0e8bb17e6f9dd002cf182f109c6ab0658fc89f5259fcc1358e299f5a7921f542998f7f70cc67c1e7a63bcb33ff3fcaa14fea57de6225eaf99459f9e82610f9f16cced8159ea85b5ccb25feb99c51fea893993fde5fa2b59b556e1fcf0e094ed676e84b95d1d832db39e30d74a65decf025c63f653b0d4bf63616eb7c996abe5387f96afb764ae95984983510ff43e18ebabdcded5627df502c6fa5413e6f9d41518ebfb3be16a399f9fd7cf241f1481135ecf0e991b09e239cff75adc2f8f0f4d30f4e803b0c5fa0be16ace61c99c2458bf0576b0cf80392b23dffb60c493e2f9a91605e7fc0a4e797eb72f8cf6ff31e5f33f81614fb712e6fd28278cf12705e7e33dc62719f7f77561f43f628ef1c77a0273a127f74f52a921be424b98f7af779813c483aa0b637d2d9ce4d7065705c35f2611e6fe6e2accfded033843fc8d84797de385b9bfef83c53f2d61e8cf84597f1833d7cbccf61e0c7f9b6ece24fbf37b60b1dfa130afafafc10ef941c2dcdf487fc7fdd565c1f9fc86ed47f532e27500c6fab46096fa6e8fc1d0ab595ff427c7bfc7fa19f2c1e4f954afc8fad42d389f5f1be67a19f5e34e98f7e34e84a167af601eef8531ffa0e0bc3dac84ebdc7e09167bf784e18f8e30e2e71e2cfe7f16867d647fb0bfc3f806f4d80a730a7b843c7eeb24f553379963bcb23fdacc75f8db64c2dcee0f85598fda2b98c76fc08ef7a75ac2acc7ac0be6f65d619ecfbd16ccf6653dd1ff88e75d61d8ab5e30dbe35118f9745530cfe7c08817cbf6a314f632f9f9dea8d66abcbe6f31d711cf76ccdc2873bbdd80e14f52c2b0df4c18f6ad0ab3dea0c1f0af3f614ea157e5f5b8616a69a39adb2761167ffb0b66b1876981e10f7f23cce3d5082c7a8c30ec93df27e37548eaed1d73dd354c3edf81709acf67a7cc29ecadda05f3fa3530f4eb1e18f58d4ac2888f5030f7bf044b3d7b15e6fd3bec272bf37cf68899caa8870b6643f0771e7f69b41fdbc3ce981b65d6e3ae0acef5ba2e3861fde185394d787cb0609c37aa0776ec4f3516463eec3067f02f7584598f7f06237ec2a4608eefbe30e209fbcd329c970e2cf191fb238bafb1ac87cac2592ddf4f893945bed947e60cf16857c2bc1f4a8491af2db0437d190a43cfa2603eefb430eae50333a13ed979c17c1fcaf56736ee9fe3f702eca0674798f5f8a4609bf398399e0f1c0f07cc19fc494db0f8cf0be33e720e863fe9959924de6e85717ecd85915f04861ef728ccf31bec9f08f55a0be3fc09cca6cee343ee5faa49bd5409b3d43763c1383fcc8330eacd23739a20de4998ed155ec119b32d3167c83f73c01cf7cbe7d12dd88335b3a9e07e5413c6f8fb82f9bc2a83eb88b74330ece173ff902dde67af99a5beb90958ce8f63e63481bfc05999e3c3bd80e17fc5fb89fec07e57608ff37bc42cfbb7d7c2a83facdf5a8f78cdfb9b9abc8fbb0ab3d42bbbc39c493c3f82514fc3b330db5f5f3113ce1b0ac2a8c73db0c4d7068c7ae72e8571be0cc09eed4b47cca24f9d09737ed93db0c77c4a18fe34ccb682fb582a8cf8851e5bc77a793e1a97a2bef917e6a2fecd85d9feae01c6fb85ee0ab33dd40373cc3fd6770fc67ef58530eaedad30c78b2e331beccfafc1b09fd9078b5ecc17f570bc4cc1c8579d80910f8eedeb1cece3bd30ea473ebf4d32dc5f6c178cfb845f15ccfa8ec1a8477e298cfbfab530ee3f77cc94b03f4d058cfc72a7cc06f96c9bcc16f5465785e1bf2b30e2ddf485911fd88fe83503619c471d61c48705d7f1fe75268cf3605430b7e7feb1313e90df2fcc24f5ee84d9207f291346bddb61b684f58c30ee231330f48519b3937a250c7bd83330c15e0d61f87f0e96fa70250c7b627c44fe3ef02c0cbd8760e8f7f9fe5dd2c079ab4bcc725e9b0eb3417cab09b3ad70bd701918fb375330f6ebabccd15facaf07463ed03973dc1f730ac6fe0c81615fba1346fd10863d5c7e7f773ede5778be03668bf96d4318f7934b30f2cfa460d4377b0a96f368c52cfe0b062cf1352998ed2bedc4f1632f980bbd3330c61bec47f4ba3618f5476d0ae6f63173c07c3eaf5fbe2edfe3e889b9c8979230fbcf08d751cf460573bc7930e2cb8d0ae6f92e8561af36b3c49b5560e4235d83a51e369965ff6608863d7cb760b6677ebef9ed709ebfcf5cd8bf0c46fef8200cfbbf82515fc25418f7e15366d9bf2f18f51aeb7bd84bcdc0582f107390fa9ffb2bd433dc377c9959ee33bec2ec70fedb17b0e8b5c2b0ff0558f40d85917fe7c278dfad81e1aff0c4ecb11e1961bc9f60bce41fdd0863fd8782391f5e84112f32bfc4674918f9bf5b309f77d01feaf8fe949f6f2114f99a3217f5bf0c86bf9db4235fec8d30e2690246fe9017869e2673512f0f85916f8382f97b6410463c1c09e37c5883657fcb82b99e5784e1af63b0bc4f66c2a85f2b30f66f5e0be6fd0c85315fa360febe5817c67ec7cc926ff6b960f6574f18df9f9b05f3796685912f584ff2953605f3fe3ac2c8075730c7a312c6f95b17863d61bf20e745bb609e7f2d8c78ea0ae3be7d2f8cef655370803d55c13c5f5518df6b1f0ae6fdc9fe03be379d0bf3fd5a95856db2e5ee52ab1ff9cb7d4cf17fdfeb67be7ef69d7558edb4ff713a74d0033dd4f73f4e877ed023fda8c77af223fca1a77a16e71fe9273d8f6b2cbebb8ea57e8e73bfc4dfab5ee9b5dee8e677d6b1a35b7a57efc5fdaff23f5b1dfbdfdf1ffa401fea769cbf9deb38d2c73fc41f27fa34d7308c7f8ef4d95fd3a1cf754777754f5fe84b7da5aff36737d1dbaf71853ddd8fded8e8dbbfa0e34e977459577455d774a2ebba117fa9cef2785ae9a1d24a29524659e53ea7437915d4400dd5bd7a5023f5a8c66aa2a66aa6b631b5f5c358cdd5422dd5b37a51af9fd1a1566aad36aaa976544bedaa3db5af0ed4a16aaba368a5ad2ff6a28a637592f73dfd8c3fd4993a571dd5553d75a12edf3cbf52d7d14e6d75a3faea56dd7dbeeeaa922aab8aaaaa9a4a54fd6d9b6a445f9ceab94a554611ff788effaf83880c5972e429d0e077ed83589f567a4443baa7071ad1e3e774d0982634a5193de533bc69a37954b1cd8aa3a862414b7aa6974fea78a515ad69434ddaf9cdf316ed6e7d41d1dbb44f0774486d3aa26fe4f89fe9a0133aa5b3a8e39c3ad4fd8dbe5eb4d4a9bad11bbaa04bba8a7daee986fa1fd741b76a10ad70a73a54a2f29be715bda66a1eb319d5e2a5a44e8db84a4a993afca80ea38d32440d638cfd4ddb28aa58a91b1a6ebf2b996006b1df30feeecdc3c77498917934639a9a89999ad99be74f661e63b6ad52b330cbc8cfe6c58ce30aaf6665d61fd3613666105768d2d2ec98d69b3abbe60aa5fb66571dc47e7b663ff7c7d41c98c30fea689b2373bcf5b839312d796e4e5167c72a336779bf3d731ee36aabb763ba1fd4d1331751c3651c7d65aedfe4763cb763cc66e6a6e8d78f966ac67eb7e6eea371654af9fecaa662aa78b68e7536fa428f4dcd24d05b378daddf686552937d34aeacde1e07666cc99a9cedf67b950d766087f65e7bee671fec68ebb7d8f7d18e3faa435fc5fc98d29d9dd8a99dd9273bb70b35b34bfb6c5fecab5dd9f5b69fdda8e1d66fb66977ded6e577ea68d9ddad9ded9eddb707f17768dbf6c81edb137b6acf74c59edb4ed4d1b5bdd8e7c25edaab8fe7795ce55a55ed8deddb5b7b674bb66c2bb66a6bdb2f9ab661539bc563f5d8c50336faa34d1d479faabbca196a3bab66ce39ef821bd0851b2ad75dba7bf740776ee41e55c76d3355bb899b7e4647bc084cdc2c46ccc43db9b96dba85ada963c4538c08b78cb56c15ff7d762feeab73fc7d3ae27e576eed36aee97668ed5a6ed7edb97d6e73072e46b66bc7df913b56bb7f3cc79f9fe7eec49dba33a3e8d09dbb8eebba7d7eae7aae976bb870972673579f3fcfe37eafdd8debbbdb38db9d2bb9b2abb8aaabb9c4d55dc3a5b6e732b3f1faffcdf18efbd56a9bdb5e79f2c65bbffdcc17fcc00ffdbd7ff023ffe8c7fe1bef1cefd7e1a7fa946f1f7acfcffc939ffb855ffa67ffe25ffdcaaffdc637fd8e6f717fbfebf73e9ce7cf717eae4fb1cefa7d7fa0eab4e30f7d5b5dd20ef5bd8bfe18fb239f9fe3fec49fc67c29bf5f873ff3e7f91d70184fedf9f6cc53c7bfed63ebbea3aabe6b94eff90bd3f397feca5ffb9bf7eaf07d7fabc76ea1fb348cef2d233d740b7ff7fb7ebe14efa7d5786b59fbb2aff86af453cd271fd051f777be6113b3f4e9f6cd42f57df6fb3e41071528ae724dab60d420d8f0d59dfd7d7115bc3ea1bd10c2efef89dbb661b88f25e621668a0ba3f0f8d55df29df911b3cdc437984df8e6d91026611a66e129cc8df5879fce8fed7e176e1196df6eb39df01c5ec26b587d2e3fe417d661139a7fdeefafe8d02aec84d67bfa7d5ec75ffbfdfc9fbffff45fa2663185</data>
+        <data format="XPM.GZ" length="12440">789cb598d96e22491686effb294a1577ad51344b26646a3417dec12b78b74773716249b0318b011bcc68de7d8238ff49b9ba56bbaad48dba3fc776feb345c05f7f7eb8ee1c7df8f3af3f66739adfd90fb64fd30f7fbaa7e1f0e5dffff9d77ffff898641fd6ff36d30fb58ffff8e3a3a60ff6c3f178e423a857d09dbf025b0ba02a955aa55259339d821366958333b0065b667dcd5c97f57db0ac9771acd72bb0ac1f322758aff7c1b23e03cbfa1d30d6d336732aeb717e9a62fd1538c7f814ecc04be646157c04c67afd0896f53db0ac1f3037b19e30de94f52f6059df06cbfa057326eb118f4cd63f8065fd3318ebcd8439c77a7513399378ba029c54b238ff112cf19c961cc7fd26d882f9fc4ce2e9305fe2595830e6176366891761bef89bbacce25f7f00167d8760cc2f0cb3f8d760bef8cbe27cf1176d81b1dec5fca856449fb160b1f79959f2d7d44a8ee36e0b8cf5b60ac67a6598255f35ce13fd7e9fb9cccf1658e23f61167fb80b66d1abef9945afba044bfc63bcaa59bd52e571054e98e90e2cf1b660a9bfe392a31e7dc39c403f61ff52df9d30efef3c58f287ed5f8783fdd3044b7c71bed49b198325dfaf98a55ea85a32dbf70496f866cc21ff399e71bc56c6977698cbfc3d67167d7a0c863f7c52328f17ccd24fac61167bad6396fa548fcc39d8d723e7f5a4c6f94ce08cfd672e84795c1d802db31e3127952adb330327cc7e0096fe7820cce3369e5faf86fdf378de9439a9309306a33fe85d30ce57d19ff5f27cf50cc6f95417e6fdd40518e7fb4be17a35ee3f67967a50044ef93cdb636ea6c8e7d88f93602faf2f1660e8d17b608bf367c2f5c8c584394d71fe16d8c13f05b3e48fbb043be42fef4f49101c7901ce787fb7238cf1dd9229ee3f01c39f4ed65bb6473961ac3f2c39aef743e634e7f9be268cf9fbcc19eac37ae6524fac9fb49620bf8a1761b65f6f32a7c807d510e6f35d53388dcf0a5701235ea62e8cf943619e6fefc039f2ef5e98cf374e98e7fb73b0c447ec73d09f0ab3fe02fb37aaccb60f46bccd496412fbfc0658fcd712e6f3f525d8a13e4898e79b5d619eafce4b8efb9b84b95145be3a30cea719b3f477db0643afce99d70d2dfa139ca31e4c7c4f356a723e754a8efb6bc3dca8a27fdc0ab33dee40187ab64ae6f55e18fb1725c7f1622edce0f133b0f8bb238c781c0b237f7a6089ff4c18fe11fbe07f77c2dc841e5b61cec41fb13e1bd4403c4d26ccf6fa6d61b657ed94ccf15a821d9fafb684d95eb32899c7653fc7fbb9e792d97fac3fc417f9ba12863f929259ef8330eae5ac64ee1ffbcc19f417d1de665dee0bbdc19c56d81effc2dc40beda07e66695edb3186f225ea484e1bf9130f2b92a8cfd1b60c44f3bb0e378f8167306fd26f6b3a64992663dfaabc62cf1f527cce21fb301467cfc9930af5703b0e82361c427e66778fe644d13c747cc19fcabda25f3fe1530f4ea5330fa15dd0a231f7cc93cff1c2cfd6926ccf6b95de6bccafbd9163355d1dfa6cc86d87f3afa2333e5fdc0e707ff6451bfdf2a39ea2b78bdc952f64fa1c1b82fd429d871bcd45018f9bec99c235e7422ccf6fb4730f2a3b82f99f3f75218f97206ce71df1930e26d63fee649b38af88cc129eb7167c27912b903ce59bfaa3067a8373b60ce918f7621ccf652228c7add04235f0b2f0cbde39279ff4c18fdf09e99d07f7cec27b96d3ab6972a25db387ec71cfa39c71bf3f394f5d30a2cf1f2c238ff088cf8d13333493e5d09e3be1909a33e1438e5f3ddbd30f67f04138f9b9530eef75c18f78763360dbcefe27e94341dc74f9d316755f863a364f6475598e2b8bd61ce513f6687399ccff7c315d8a31e736653c37b2511c6fa7ec97c7f607fd3407eec82a1cfc77c215b7edf54c2b82f5266e9c7c680719f993b619e5ff0f921dec8672dcc7a8b19d8312baca7147a96608ffbb6c72cfaecb930fa0bfbc75a8f78c4f92691efd3e69c59faa97b00cbfdb5cf9ca5c82f709e72bcdc1318f5e78f99cb7c7a01a37f7907f6ec5f6a338bfdea5898fd63b7c09ed7db5c18f124665bc3fb2813463ecec10df49bd82f8d2bfb6fc22cef79bb218c7c657f38927efa28ccf1d11760f457f2c2f08730ec77a7c2b81fabcc06f6f92730fc65b6c1a2b7cb1cf4703e8cc1a83f9d82510f8efdeb1cfce38d30ea25f67b9b66e8df7eca5cf6f79130eeb32e335571dfde83911ffa8c59e24957c2e8c72b668bfea0ebc2c8877330f2d55c0a23bf67cca2c714c2782f1c0a23fe046ee0fbce9130f2e9be648e7ff4b77539de5ff6048cf7909f97cce74dc0b80ffca930beafec3187fecbfde51a4cdcff4c058c7a706c7f8837e2b7c16c09f63f0aa3be9430e23902c37fc503b3937e8771077f5b9ce7b09f6e0ae37ce873d23fbac28817fb738dfc7d7f2e0cfba0dfc3bf2ef62f17f209fde48999a45fee33db1abe3f64c25c7ffe9639c49bedef80512f74cc1cce676e8271bed160f893ae85519fc2a297edf5f27ed51566794f183ecf5be4b71a811b5cffae0196fb7208467c7dce5ce66397b9b47f02c6b839054b3eb4c0e82f6a55328f0f980bece762bdf946786ff1febbcc56ce4f85b9beed2958eedb2618fdcb1e304bfd9967b0dca74330f2cb6bb0e7f85ab0477dd20558fadf0bb3d86f7a60d8eb8f4ae6fd633ff05e7edfa04766877ee9af84393ee6068cfe49839239ff2db347beb9bb9279bf8e30f4ee81c59e8cb990fe1eefffa24129ee9b4b66c95f7b0b96fcb3c2f0d733b3477f2b06c2786f1f82e5fcb630ee0f990fbd6a02c679aac65c34d0bff8bc22c7fbc75f33cbfbcaef325bc4c73698cbfe7c0b96fc7a2a99ed53c2f0cf8d30dea71760a9cf6ec99cdf29d8e3f7fb0761d48f1346fd1d09e3bede63967a53bd92b91f26c2e8872bb0e4eb5218f6cd4a667f16c288d75018df675bc2e8774618f7431b2cfa8f4b66fb6ac2c8cf7ec95c8f7361f42bc447fa85792a99f3b1298cfeb0602efbc7b864d6d717867fd392f93dd010467d5961e4ab8c4b7ecc4be6fd3bc2f8bd79a364d683fc29a4ffbf94ccf1b911467e51c99cbf4d61dc47623f211ea2b7c0fead92d9beba30ec7b2999df675d61bcff8b92f9be3811c67bbf2a6cdd9abb73ad7ee727c688c2fffdaa8ff9fc6fbf5887d54efbdfa74317baa7fbfaeef7e9d0f77aa01ff4508f7e473cf4584fc2fe03fda8a7e18cd92fd731d74f61efe7f059e8a57ed12bbdf18b756cea2dbdad7782fdcbf8cf5ac7eeaf8f87ded32ddd0efbb7a38e7d7df05be271a88fa2867ef8675f1fff9c0e7da23bbaab4ff5993ed717fa32feed2a447b114ed8d1d7211a2b7df3133a6e754557754dd775a253ddd0cdf0c9741ef369a9fb4a2ba5481965957b9f0ee555a17aaaafeed4bd1aa807355423355613b5cea9751c866aaa666aae9ed4b35abc47875aaa17b5521b6a536da96db5a376d59e6aa9b6da0f915ec76227a838508771eed17be2a18ed589eaa8ae3a5567eafcd5df2fd465f0535b5da96b75a36edfdf77554555554dd555a252d5783da69a2116477aaa329553c0afeff16d1d4464c8aa2e85ef9e54fc6dbc17fad3927ad4a73bbaa7013dbc4f070d6944639ad063dce1d5184d838a7555ec0715b330674e4fefd4f14c0b5ad20bade8933e449bb4b58e056d2b4d3bb44b7bd4a236edbf5d071dd0211d051b8fe9843a9fe8eb064f1da92bbda2533aa3f330e742d7e8f2ed3ae84af5c2ea6bbaa15baabcfa7b3544a1167336a73a25945223cc6b52a65a6fd69153cb68a30c19f3c9d820a858aa2bea1bbbfea5c914615e2f7cfae6ee6d3accbd1984688ccd83199ad1abbf8fcd24e46c5b65e6d14c03cfcc3ccc6b9927f36c3eabf16feb30cb60dfd8bc84cfca6cbc8a458f3b94be369b6a2fccdb32dbeb7884793b66f78d3af64ccbb4d71137fb6643fe6e0ed067872a378771de96390a79b5d67b6c4edea8a363ba61e569f89c99f357b51deeed90b3b9b928e75d064fadf55e99ebb7e695b989f6dd9a8aa9a22e7aa1cf8658e8a1a9993af426268d716b98a6c9de9a5726e495d5d4b0cad29aadb176fd0b942d6ccff6b5e779f6cedec7b8b5ecc03ebc5587bee0fab0433bb2633bb18f76aa267666e7f6c93edb855daee7d917d55fc7cdaeecc6ebbefc633aeca649d77eb65b76dbee84cfaeddb32ddbb6fbf6c01eea9a3db2c741c789ed84395d7b6acfde5ee7e1947355b717f6d25ed96b7b636f6dc5566dcdd66db2fe15d4366d46fb3678745d1f74e2f4bbfaae728a5a8ed4c419679d739e4e5da15c77ee7aae4fd7eeceddd38d1b048fe6eec10ddfa3233c04466e440bf3e0c66ee21eddd4d6d401722cd8ef6674631ae1bf73f7e49ebfb6c7f7ee41b7704bf7e2566ec3b4dda6db72db6e87c7dcae0b99ed5ae1d376fb6afbeb7b7cff3e7707eed01d057fefb96377e23a6e87ff1eeef74ed4d075a7267367efbfcf83bde7eec25dbaabb0dbb5eabb1b77eb2aaeea6aaeee1297da8e6b98a56b7e6b8f1f785f2dd7b5ed32977bed95276fbcf58ed63f0716bee7fbfecedf7f73fd7774f8f5cb23be3ef48e7ff0433ff2633ff18f7eea677eee9ffcb35ff8a57fe1f97ee537deaa237cb718a03f853eeb37fd966ad086dff63bea9c36e8d2538847c3effabdf57cdff2ed502f951fd7e1f7fd417c03f6c3ad3d5ddf79eae0d33936f187aaee4336f8637f623abee3bbfed47fa1d6bfacc39ffb0b3d74537d4d7d3d0cddb6efa6fef2eff3fc9549431f989bb6bff637fe36c4a9e2ab6fd051f397be6eeb66ea93f5370b75edd3cfe6347cd367aa1eeec085cfddacd0857a5f5e155418da2e6ce1be30e68b22bcb543e755dda257f43f7b4bfe607d846a33e11bccaaf8e29ba3b82f06c543312c46c6f8afd4fa8f7dff28c66e5a4cbe3c668f8bc7625acc8af9fbea433ec553f15c2cbe3fef677468552c8b971f99f77e1d3ff7f9f8bf7ffef17f98e023ae</data>
     </image>
     <image name="image12">
         <data format="XPM.GZ" length="1241">789cb593cd0ac2300c80ef7b8ab0dc86387517417c04c5a3201ee226e8610a3a0f22bebbebb6dab44d990cec0fa4f4cb2f499ac076b382248dee1555e71cf213dd20291e65f9dced97af28ce66a00e4ce351148f2187f5f5725432d6324eea35cfd493f4f3503464cf1ac020e91d64ea4fd45766b8369719c35515e4334816c221c378e990cbb856b896667cc4674c1466cb0caf0f7af1c8b9098c8c387516118bc11f989fec503fe3f68d1c8fdd3702d35647a891d53fa4ad997fb418a3cfa26a24c370175f8764fbb232ea2cb56868be1aa8b3169c41d641e1393545f8d3bc0f67de8be8035f81e3bd</data>
