@@ -10,7 +10,7 @@ CONFIG += qt thread debug
 # Input
 HEADERS += qgsdbsourceselectbase.ui.h \
            qgisapp.h \
-           QgisAppBase.ui.h \
+           qgisappbase.ui.h \
            qgsdatabaselayer.h \
            qgsdatasource.h \
            qgsmapcanvas.h \
@@ -20,7 +20,7 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgstable.h \
            qgsdbsourceselect.h \
            qgsnewconnection.h
-INTERFACES += qgsdbsourceselectbase.ui QgisAppBase.ui qgsnewconnectionbase.ui
+INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgsdatabaselayer.cpp \
