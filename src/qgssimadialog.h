@@ -15,33 +15,42 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #ifndef QGSSIMADIALOG_H
 #define QGSSIMADIALOG_H
 
 #include "qgssimadialogbase.uic.h"
 
+#include <qiconview.h>
+
 class QgsVectorLayer;
 
 class QgsSiMaDialog: public QgsSiMaDialogBase
 {
     Q_OBJECT
- public:
+public:
     QgsSiMaDialog(QgsVectorLayer* vectorlayer);
     ~QgsSiMaDialog();
- public slots:
-     void apply();
- protected:
+    static QString defaultDir();
+    void apply();
+
+protected:
     QgsVectorLayer* mVectorLayer;
-    bool mMarkerSizeDirty;
- protected slots:
-     void selectMarker();
-     void updateMarkerSize();
-     void setMarkerSizeDirty();
- private:
-    /**Default constructor is privat to not use is*/
-     QgsSiMaDialog();
+    QString mCurrentDir;
+
+
+public slots:
+    /**Brings up the file dialog and triggers visualizeMarkers*/
+    void mBrowseDirectoriesButton_clicked();
+
+private:
+    /**File name of the selected marker*/
+    QString mSelectedMarker;
+    void mIconView_selectionChanged(QIconViewItem *);
+    /**Renders the SVG pictures of directory to mIconView*/
+    void visualizeMarkers(QString directory);
+    void mScaleSpin_valueChanged( int theSize);
 };
 
 #endif
