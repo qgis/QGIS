@@ -169,10 +169,10 @@ void Plugin::renderNorthArrow()
   }
   else
   {
-    std::cout << " *************** North Arrow png failed to load **************\n" << myFileNameQString << endl;
+    std::cout << " *************** North Arrow svg failed to load **************\n" << myFileNameQString << std::endl;
   }
   
-  myFileNameQString = QString(PKGDATAPATH)+QString("/svg/north_arrows/default.png");
+  myFileNameQString = QString(PKGDATAPATH)+QString("/images/north_arrows/default.png");
   //try to load the narrow as a pixmap
   if (myNarrowPixmap.load(myFileNameQString))
   {
@@ -180,7 +180,7 @@ void Plugin::renderNorthArrow()
   }
   else
   {
-    std::cout << " *************** North Arrow png failed to load **************\n" << myFileNameQString << endl;
+    std::cout << " *************** North Arrow png failed to load **************\n" << myFileNameQString << std::endl;
   }
   /* This is how you write some text to the qpainter */
   //QFont myQFont("time", 24, QFont::Bold);
