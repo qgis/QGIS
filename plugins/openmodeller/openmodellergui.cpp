@@ -115,17 +115,17 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
         myQString="";
         if ( myParameter->has_min && myParameter->has_max )
         {
-          myQString.sprintf( "<p><b>%s (>= %f and <= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
+          myQString.sprintf( "<p><b>%s (&gt;= %f and &lt;= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
         }
         //or just min constraint
         else if ( myParameter->has_min )
         {
-          myQString.sprintf( "<p>%s (>= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->typical );
+          myQString.sprintf( "<p>%s (&gt;= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->typical );
         }
         //or just max contraint
         if ( myParameter->has_max )
         {
-          myQString.sprintf( "<p>%s (<= %f) default is %f</b></p>\n", myParameter->name, myParameter->max, myParameter->typical );
+          myQString.sprintf( "<p>%s (&lt;= %f) default is %f</b></p>\n", myParameter->name, myParameter->max, myParameter->typical );
         }
         //or neither
         else
