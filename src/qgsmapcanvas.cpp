@@ -757,8 +757,14 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                             if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale)
                                     || (!ml->scaleBasedVisibility()))
                             {
+			        //we need to find out the extent of the canvas in the layer's
+				//native coordinate system :. inverseProjection of the extent
+				//must be done....
+				QgsRect myProjectedRect = 
+				     ml->coordinateTransform()->inverseTransform(
+				                 mCanvasProperties->currentExtent);
                                 ml->draw(paint,
-                                         &mCanvasProperties->currentExtent,
+                                         &myProjectedRect,
                                          mCanvasProperties->coordXForm,
                                          this);
                             }
@@ -1016,7 +1022,7 @@ void QgsMapCanvas::zoomToSelected()
 
     if (lyr)
     {
-        QgsRect rect = lyr->bBoxOfSelected();
+        QgsRect rect = lyr->coordinateTransform()->transform(lyr->bBoxOfSelected());
 
         // no selected features
         // XXX where is rectange set to "empty"? Shouldn't we use QgsRect::isEmpty()?
