@@ -59,7 +59,8 @@
 typedef QgsDataProvider *create_it(const char *uri);
 
 QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
-    :QgsMapLayer(VECTOR, baseName, vectorLayerPath), tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0) 
+    :QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey), 
+    tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0) 
 {
 // load the plugin
 QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
@@ -144,9 +145,9 @@ QgsVectorLayer::~QgsVectorLayer()
 	}
 }
 
-/** No descriptions */
-void QgsVectorLayer::registerFormats()
+QString QgsVectorLayer::providerType()
 {
+  return providerKey;
 }
 /** 
 * sets the preferred display field based on some fuzzy logic

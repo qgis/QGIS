@@ -89,6 +89,8 @@ class QgsVectorLayer:public QgsMapLayer
 	QPopupMenu *contextMenu();
   	/**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds DBL_MIN*/
 	virtual QgsRect bBoxOfSelected();
+   //! Return the provider type for this layer
+  QString providerType();
   protected:
 	/**Pointer to the table display object if there is one, else a pointer to 0*/
 	QgsAttributeTableDisplay* tabledisplay;
@@ -102,6 +104,7 @@ class QgsVectorLayer:public QgsMapLayer
 	QgsVectorLayerProperties* m_propertiesDialog;
 	/**Widget to set the symbology properties*/
 	QDialog* m_rendererDialog;
+ 
   private:						// Private attributes
 //! Draws the layer using coordinate transformation
 	void draw_old(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf);
@@ -111,8 +114,11 @@ class QgsVectorLayer:public QgsMapLayer
   //  OGRDataSource *ogrDataSource;
    // OGRLayer *ogrLayer;
   /**  */
-  // index of the primary label field
+  //! index of the primary label field
   QString fieldIndex;
+  //! Data provider key
+  QString providerKey;
+  
 	bool registered;
   QPopupMenu *popMenu;
 	enum ENDIAN
@@ -130,8 +136,6 @@ class QgsVectorLayer:public QgsMapLayer
 		WKBMultiPolygon
 	};
   private:						// Private methods
-  /** No descriptions */
-	void registerFormats();
 	int endian();
 	signals:void repaintRequested();
 

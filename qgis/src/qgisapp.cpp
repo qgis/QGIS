@@ -790,63 +790,6 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 {
 	QgsMapLayer *lyr;
 	if (lvi)
-/* <<<<<<< qgisapp.cpp
-		lyr = ((QgsLegendItem *) lvi)->layer();
-	else {
-		// get the selected item
-		QListViewItem *li = legendView->currentItem();
-
-		lyr = ((QgsLegendItem *) li)->layer();
-	}
-	QString currentName = lyr->name();
-        //test if we have a raster or vector layer and show the appropriate dialog
-        if (lyr->type()==QgsMapLayer::RASTER)
-        {
-          QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(lyr);
-          // The signals to change the raster layer properties will only be emitted
-          // when the user clicks ok or apply
-          //connect(rlp, SIGNAL(setTransparency(unsigned int)), SLOT(lyr(slot_setTransparency(unsigned int))));
-          if (rlp->exec()) {
-          //this code will be called it the user selects ok
-            mapCanvas->setDirty(true);
-            mapCanvas->refresh();
-            mapCanvas->render2();
-            mapLegend->update();
-            delete rlp;
-            qApp->processEvents();
-          }
-        }
-        else if ((lyr->type()==QgsMapLayer::VECTOR) || (lyr->type()==QgsMapLayer::DATABASE))
-        {
-          QgsLayerProperties *lp = new QgsLayerProperties(lyr);
-          if (lp->exec()) {
-            // update the symbol
-            lyr->setSymbol(lp->getSymbol());
-            mapCanvas->freeze();
-            lyr->setlayerName(lp->displayName());
-            if (currentName != lp->displayName())
-              mapLegend->update();
-            delete lp;
-            qApp->processEvents();
-
-            // apply changes
-            mapCanvas->freeze(false);
-            mapCanvas->setDirty(true);
-            mapCanvas->render2();
-          }
-        }
-        else if (lyr->type()==QgsMapLayer::DATABASE)
-        {
-           //do me!
-          QMessageBox::information( this, "QGis",
-          "Properties box not yet implemented for database layer");
-        }
-        else 
-        {
-          QMessageBox::information( this, "QGis",
-          "Unknown Layer Type");
-        }
-======= */
 	{
 	    lyr = ((QgsLegendItem *) lvi)->layer();
 	}
@@ -1298,3 +1241,75 @@ switch(e){
 	}
            
     }
+    
+void QgisApp::helpContents(){
+  // open help in user browser
+  // find a browser
+  // find the installed location of the help files
+  // open index.html using browser
+}
+/** Get a pointer to the currently selected map layer */
+QgsMapLayer *QgisApp::activeLayer(){
+  QListViewItem *lvi = legendView->currentItem();
+  QgsMapLayer *lyr =0;
+	if (lvi)
+	{
+	     lyr = ((QgsLegendItem *) lvi)->layer();
+	}
+  return lyr;
+}
+QString QgisApp::activeLayerSource(){
+  QString source;
+   QListViewItem *lvi = legendView->currentItem();
+  QgsMapLayer *lyr =0;
+	if (lvi)
+	{
+	     lyr = ((QgsLegendItem *) lvi)->layer();
+       source = lyr->source();
+	}
+  return source;
+}
+/** Add a vector layer directly without prompting user for location */
+void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
+{
+  // check to see if the appropriate provider is available
+  QString providerName;
+
+  QString pProvider = providerRegistry->library(providerKey);
+  if(pProvider.length() > 0){
+    mapCanvas->freeze();
+		QApplication::setOverrideCursor(Qt::WaitCursor);
+			// create the layer
+      QgsVectorLayer *lyr;
+      if(providerKey == "postgres"){
+        lyr = new QgsVectorLayer(vectorLayerPath + " table=" + baseName, baseName, "postgres");
+      }else{
+        if(providerKey == "ogr"){
+          lyr = new QgsVectorLayer(vectorLayerPath, baseName, "ogr");
+        }
+      }
+      
+      // init the context menu so it can connect to slots in main app
+      lyr->initContextMenu(this);
+      
+			// give it a random color
+			QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();//add single symbol renderer as default
+			lyr->setRenderer(renderer);
+			renderer->initializeSymbology(lyr);
+			// add it to the mapcanvas collection
+			mapCanvas->addLayer(lyr);
+			//qWarning("incrementing iterator");
+		/*! \todo Need legend scrollview and legenditem classes */
+		mapLegend->update();
+
+		// draw the map
+		//mapCanvas->render2();
+		statusBar()->message(mapCanvas->extent().stringRep());
+
+	}
+	qApp->processEvents();
+
+	mapCanvas->freeze(false);
+	mapCanvas->render2();
+	QApplication::restoreOverrideCursor();
+}
