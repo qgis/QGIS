@@ -617,6 +617,23 @@ void QgsMapCanvas::refresh()
 // saving a map view as an image file.
 void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
+  // Don't allow zooms where the current extent is so small that it
+  // can't be accurately represented using a double (which is what
+  // currentExtent uses). Excluding 0 avoids an infinite loop when
+  // rendering to a new canvas.
+  static const double minExtent = 1e-12;
+  if ((mCanvasProperties->currentExtent.width() > 0 &&
+       mCanvasProperties->currentExtent.width() < minExtent) ||
+      (mCanvasProperties->currentExtent.height() > 0 &&
+       mCanvasProperties->currentExtent.height() < minExtent)
+    {
+      // Go back to the previous extent
+      mCanvasProperties->currentExtent = 
+	mCanvasProperties->previousExtent; 
+      repaint();
+      return;
+    }
+
 #ifdef QGISDEBUG
   QString msg = mCanvasProperties->frozen ? "frozen" : "thawed";
   std::cout << ".............................." << std::endl;
