@@ -38,6 +38,9 @@ public:
 	virtual QString version() =0;
 	//! A brief description of the plugin
 	virtual QString description() = 0;
+  //! Plugin type, either UI or map layer
+  virtual int type()=0;
+  virtual void initGui()=0;
 	//! Interface to gui element collection object
 	//virtual QgisPluginGui *gui()=0;
 	//! Element types that can be added to the interface
@@ -48,6 +51,10 @@ public:
 		TOOLBAR_BUTTON,
 	};
 	*/
+  enum PLUGINTYPE{
+    UI,
+    MAPLAYER
+  };
 }; 
 
 // Typedefs used by qgis main app
@@ -60,4 +67,6 @@ typedef void unload_t(QgisPlugin *);
 typedef QString name_t();
 //! Typedef for getting the description without instantiating the plugin
 typedef QString description_t();
+//! Typedef for getting the plugin type without instantiating the plugin
+typedef int type_t();
 #endif //qgisplugin_h
