@@ -2,11 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(plugin, 0.1, tim@linfiniti.com)
+AC_INIT(plugin.cpp)
 
 AC_CONFIG_SRCDIR([plugingui.h])
 
-AM_INIT_AUTOMAKE(plugin, 0.1)
+AM_INIT_AUTOMAKE(qgis-exif-importer, 0.1)
 
 # Checks for programs.
 AC_PROG_CXX

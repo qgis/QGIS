@@ -62,7 +62,7 @@ libImageMapExporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(plugin_UI) icon_wmi.xpm
+EXTRA_DIST = $(plugin_UI) icon.xpm
 
 
 

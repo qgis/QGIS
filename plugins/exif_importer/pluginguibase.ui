@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>497</width>
-            <height>542</height>
+            <height>544</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -174,6 +174,9 @@
                     <property name="name">
                         <cstring>leGPXOut</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Choose the name of the GPX file where you want to store the new waypoints</string>
+                    </property>
                 </widget>
                 <widget class="QPushButton" row="1" column="2">
                     <property name="name">
@@ -240,7 +243,7 @@
                         <string>00:00:00</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Enter the time difference between the camera clock and UTC. Don't forget day saving time!</string>
+                        <string>Enter the time difference between your camera clock and UTC. Don't forget day saving time!</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="1" column="1" rowspan="1" colspan="2">
@@ -254,7 +257,7 @@
                         <string>Interpolate</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Use linear interpolation to calculate the position of the pictures</string>
+                        <string>Use linear interpolation to calculate the position of the pictures. Not implemented yet.</string>
                     </property>
                 </widget>
             </grid>
@@ -282,6 +285,9 @@
                     <property name="name">
                         <cstring>leGPXIn</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Select the GPX file that you want to use to calculate the positions for your pictures</string>
+                    </property>
                 </widget>
                 <widget class="QLineEdit" row="0" column="1">
                     <property name="name">
@@ -295,6 +301,9 @@
                     </property>
                     <property name="readOnly">
                         <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Click the button to the right to select the pictures you want to convert to GPS waypoints</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0" rowspan="2" colspan="1">
