@@ -315,7 +315,6 @@ postgresUIMOC     = $(postgresUIC:.ui=.moc.uic.cpp)
 postgresMOC       = $(postgresHEADERS:.h=.moc.cpp)
 
 qgis_SOURCES     += $(postgresSOURCES)
-postgresLIBSOURCES = qgspgutil.cpp
 endif
 
 
@@ -367,8 +366,11 @@ libqgis_la_SOURCES =				\
 		qgsvectorfilewriter.cpp \
 		qgsvectordataprovider.cpp \
 		qgsvectorlayer.cpp \
-		qgsvectorlayer.moc.cpp \
-		$(postgresLIBSOURCES) 
+		qgsvectorlayer.moc.cpp 
+
+if HAVE_POSTGRESQL
+	libqgis_la_SOURCES += qgspgutil.cpp
+endif
 
 libqgis_la_LIBFLAGS = $(QT_LDADD) $(GEOS_LDADD)
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
