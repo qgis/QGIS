@@ -28,6 +28,7 @@ public:
     void pbnCancel_clicked();
     void setPlacement(QString);
     void setPreferredSize(int);
+    void setSnapping(bool);
     void setEnabled(bool);
     void setStyle(QString);
     void setColour(QColor);
@@ -41,6 +42,7 @@ signals:
    void drawVectorrLayer(QString,QString,QString);
    void changePlacement(QString);
    void changePreferredSize(int);
+   void changeSnapping(bool);
    void changeEnabled(bool);
    void changeStyle(QString);
    void changeColour(QColor);

@@ -131,11 +131,13 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
   myPluginGui->setPreferredSize(mPreferredSize);
+  myPluginGui->setSnapping(mSnapping);
   myPluginGui->setPlacement(mPlacement);
   myPluginGui->setEnabled(mEnabled);
   myPluginGui->setStyle(mStyle);
   myPluginGui->setColour(mColour);
   connect(myPluginGui, SIGNAL(changePreferredSize(int)), this, SLOT(setPreferredSize(int)));
+  connect(myPluginGui, SIGNAL(changeSnapping(bool)), this, SLOT(setSnapping(bool)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
   connect(myPluginGui, SIGNAL(changeEnabled(bool)), this, SLOT(setEnabled(bool)));
   connect(myPluginGui, SIGNAL(changeStyle(QString)), this, SLOT(setStyle(QString)));
@@ -201,8 +203,15 @@ if (mEnabled)
     while (myScaleBarWidth > myCanvasWidth/2)
     {
       myScaleBarWidth = myScaleBarWidth /2;
-      myActualSize = myScaleBarWidth * myMuppDouble;
-    };    
+    };
+    myActualSize = myScaleBarWidth * myMuppDouble;
+    
+    // snap to integer < 10 times power of 10
+    if (mSnapping) {
+      int myPowerOf10 = pow(10, int(log(myActualSize) / log(10)));
+      myActualSize = round(myActualSize / myPowerOf10) * myPowerOf10;
+      myScaleBarWidth = myActualSize / myMuppDouble;
+    }
     
     //Get type of map units and set scale bar unit label text
     int myMapUnits=qGisInterface->getMapCanvas()->mapUnits();
@@ -364,6 +373,13 @@ void Plugin::unload()
   {
     mPreferredSize = thePreferredSize;
   }
+
+  //! set whether the scale bar length should snap to the closes A*10^B
+  void Plugin::setSnapping(bool theSnapping)
+  {
+    mSnapping = theSnapping;
+  }
+
   //! set scale bar enable
   void Plugin::setEnabled(bool theBool)
   {
