@@ -6,7 +6,7 @@
     email                : sherman at mrcc.com
              Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
 ***************************************************************************/
-
+/* $Id$ */
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -67,14 +67,19 @@
 #include "qgslayerproperties.h"
 #include "qgsabout.h"
 #include "qgspluginmanager.h"
+#include "qgsmaplayerinterface.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgspluginitem.h"
 #include "../plugins/qgisplugin.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
+typedef QgsMapLayerInterface* create_it();
+typedef QString name_t();
+typedef QString description_t();
 
 // version
-static const char *qgisVersion = "0.0.11 - June 10, 2003";
+static const char *qgisVersion = "0.0.12 pre 1 - July 4, 2003";
 static const int qgisVersionInt = 11;
 // cursors
 static unsigned char zoom_in_bits[] = {
@@ -675,13 +680,96 @@ void QgisApp::actionPluginManager_activated(){
 	QgsPluginManager *pm = new QgsPluginManager(this);
 	if(pm->exec()){
 		// load selected plugins
+		std::vector<QgsPluginItem> pi = pm->getSelectedPlugins();
+		std::vector<QgsPluginItem>::iterator it = pi.begin();
+		while(it != pi.end()){
+			QgsPluginItem plugin = *it;
+			loadPlugin(plugin.name(), plugin.description(), plugin.fullPath());
+			it++;
+		}
+
 		
 	}
 	
 
 }
+void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
+	QLibrary *myLib = new QLibrary(fullPath);
+		std::cout << "Library name is " << myLib->library() << std::endl;
+		bool loaded = myLib->load();
+		if (loaded) {
+			std::cout << "Loaded test plugin library" << std::endl;
+			std::cout << "Attempting to resolve the classFactory function" << std::endl;
+			create_it *cf = (create_it *) myLib->resolve("classFactory");
+	
+			if (cf) {
+				std::cout << "Getting pointer to a MapLayerInterface object from the library\n";
+				QgsMapLayerInterface *pl = cf();
+				if(pl){
+					std::cout << "Instantiated the maplayer test plugin\n";
+					// set the main window pointer for the plugin
+					pl->setQgisMainWindow(this);
+					std::cout << "getInt returned " << pl->getInt() << " from map layer plugin\n";
+					// set up the gui
+					pl->initGui();
+				}else{
+					std::cout << "Unable to instantiate the maplayer test plugin\n";
+				}
+			}
+		}else{
+			std::cout << "Failed to load " << fullPath << "\n";
+		}
+}
+void QgisApp::testMapLayerPlugins(){
+	// map layer plugins live in their own directory (somewhere to be determined)
+	QDir mlpDir("../plugins/maplayer", "*.so.1.0.0", QDir::Name | QDir::IgnoreCase, QDir::Files );
+	if(mlpDir.count() == 0){
+		QMessageBox::information(this,"No MapLayer Plugins", "No MapLayer plugins in ../plugins/maplayer");
+	}else{
+		for(unsigned i = 0; i < mlpDir.count(); i++){
+		std::cout << "Getting information for plugin: " << mlpDir[i] << std::endl;
+		std::cout << "Attempting to load the plugin using dlopen\n";
+		void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
+	             if (!handle) {
+			std::cout << "Error in dlopen: " <<  dlerror() << std::endl;
+		     }else{
+			std::cout << "dlopen suceeded" << std::endl;
+			dlclose(handle);
+		     }
+		
+		QLibrary *myLib = new QLibrary("../plugins/maplayer/" + mlpDir[i]);
+		std::cout << "Library name is " << myLib->library() << std::endl;
+		bool loaded = myLib->load();
+		if (loaded) {
+			std::cout << "Loaded test plugin library" << std::endl;
+			std::cout << "Attempting to resolve the classFactory function" << std::endl;
+			create_it *cf = (create_it *) myLib->resolve("classFactory");
+	
+			if (cf) {
+				std::cout << "Getting pointer to a MapLayerInterface object from the library\n";
+				QgsMapLayerInterface *pl = cf();
+				if(pl){
+					std::cout << "Instantiated the maplayer test plugin\n";
+					// set the main window pointer for the plugin
+					pl->setQgisMainWindow(this);
+					std::cout << "getInt returned " << pl->getInt() << " from map layer plugin\n";
+					// set up the gui
+					pl->initGui();
+				}else{
+					std::cout << "Unable to instantiate the maplayer test plugin\n";
+				}
+			}
+		}else{
+			std::cout << "Failed to load " << mlpDir[i] << "\n";
+		}
+	}
+}
+}
 void QgisApp::testPluginFunctions()
 {
+	// test maplayer plugins first
+	testMapLayerPlugins();
+	if(false){
 // try to load plugins from the plugin directory and test each one
 
 	QDir pluginDir("../plugins", "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
@@ -745,6 +833,7 @@ void QgisApp::testPluginFunctions()
 			std::cout << "Unable to load library" << std::endl;
 		}
 		}
+	}
 	}
 }
 

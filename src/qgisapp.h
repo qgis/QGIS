@@ -98,8 +98,12 @@ class QgisApp:public QgisAppBase
 	void zoomToLayerExtent();
 	//! test plugin functionality
 	void testPluginFunctions();
+	//! test maplayer plugins
+	void testMapLayerPlugins();
 	//! plugin manager
 	void actionPluginManager_activated();
+	//! plugin loader
+	void loadPlugin(QString name, QString description, QString fullPath);
 	//! Save window state
 	void saveWindowState();
 	//! Restore the window and toolbar state

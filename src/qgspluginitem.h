@@ -10,6 +10,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+/* $Id$ */
 #ifndef QGSPLUGINITEM_H
 #define QGSPLUGINITEM_H
 class QString;
@@ -21,12 +22,14 @@ Class to contain information about a loadable plugin, including its name, descri
 class QgsPluginItem{
 public:
     QgsPluginItem(QString name=0, QString description=0, QString fullPath=0);
-
+    QString name();
+    QString description();
+    QString fullPath();
     ~QgsPluginItem();
 private:
-	QString name;
-	QString description;
-	QString fullPath;
+	QString m_name;
+	QString m_description;
+	QString m_fullPath;
 
 };
 
