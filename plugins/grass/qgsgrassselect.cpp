@@ -25,6 +25,7 @@
 #include <qcombobox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
+#include <qsettings.h>
 
 extern "C" {
 #include <gis.h>
@@ -36,17 +37,23 @@ extern "C" {
 
 QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 {
-    if ( first ) {
-	if ( QgsGrass::activeMode() ) {
-	    lastGisdbase = QgsGrass::getDefaultGisdbase();
-	    lastLocation = QgsGrass::getDefaultLocation();
-	    lastMapset = QgsGrass::getDefaultMapset();
-	} else {
-	    QDir home = QDir::home();
-	    lastGisdbase = QString( home.path() );
-	}
-	first = false;
+  if ( first ) {
+    if ( QgsGrass::activeMode() ) {
+      lastGisdbase = QgsGrass::getDefaultGisdbase();
+      lastLocation = QgsGrass::getDefaultLocation();
+      lastMapset = QgsGrass::getDefaultMapset();
+    } else {
+      QSettings settings;
+      lastGisdbase = settings.readEntry("/qgis/grass/lastGisdbase");
+      //check we got something from qsettings otherwise default to users home dir
+      if (lastGisdbase.isEmpty())
+      {
+        QDir home = QDir::home();
+        lastGisdbase = QString( home.path() );
+      }
     }
+    first = false;
+  }
     QgsGrassSelect::type = type;
 
     if ( type == QgsGrassSelect::RASTER ) {
@@ -332,6 +339,9 @@ void QgsGrassSelect::accept()
 	QMessageBox::warning(this, "Wrong GISDBASE", msg);
 	return;
     }
+       //write to qgsettings as gisdbase seems to be valid
+      QSettings settings;
+      settings.writeEntry("/qgis/grass/lastGisdbase",lastGisdbase );
 
     location = elocation->currentText();
     lastLocation = location;
