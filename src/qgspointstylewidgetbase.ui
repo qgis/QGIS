@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsPointStyleWidgetBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>178</width>
+            <width>180</width>
             <height>326</height>
         </rect>
     </property>
@@ -84,7 +84,7 @@
                 </spacer>
                 <widget class="QPushButton" row="3" column="0">
                     <property name="name">
-                        <cstring>colSymbolFirstColour</cstring>
+                        <cstring>btnSymbolFirstColour</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -174,8 +174,22 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="PNG" length="512">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000001c7494441545885bd973d92c2201cc51f8e87d8220547b04e13ca141e20ce6c61e989ac2d76460f6091121ace41e13dd82212012181047d334e4824bedffff19148a49430aaeb5a9bb69492e00bdafa17b8e6030c19603e0d42a4944ee5e0006ff878ca08c3274136a6a1b546d775001b4c99188cb9e6e09aa3ae6bed8016d29880d6afdf3e1c0eb8dd6ec3099f4ec440ed763b9ccfe7ec948200392066ce84e05603a480849403b299eb0000d7eb353a4742b25399d364024208344d0321040040a90700e078fc053c8f502a8cb0d914261330e64dd3000028ad40693526e19809367e7214043015db0918080068dbfd0be2e9c7ecf613c42cdf6c00dbd48631a2b4c2e974c2e5f23782fc74dd1b548a9c39e057ec434c49a90728ada0d4037d7f1f560d7f7ec9e22bc24960aef290a96f4e69e50ed18c1c80d898c7649bdac71c8d006b2bb7af2f02585bf9523909d8c790722b67390029caad9ce70028f588565272cca3007d7f47dfdf832025c7dcd7161836097fcb6cdb7dd01c2853b903602000bceddd0664e93a4f064801296d1e044801f90ac0b74066014a8198fbfca76232c0a740b2014a824829c962803990d4fb5603c440baae9bec6744ecbfe725e527127b25fb07931f90f4a06dcb260000000049454e44ae426082</data>
+        <data format="XPM.GZ" length="1347">789c7dd3c14ac4301405d07dbf22f4ed8a743ace0882f8098a4b415ca4c92475310a3a2e44fc777393a64df2dabed7452e1c6eb368778d787e7a10cdaefabac8cb9b126a909fa2d1dfe7f3cfcbebfd6f551fae857bf69dd8d75755dd0a251e3fde4f38933b53e707b10f518df18478e8b08803e271c21af1e6168b681165e7f688681055874594211a13a242347efc95da9688dad58946ca75e58d6be9e5ba0a46e92d351a952aa2d3b2495459989849f949546632b5688c32c65aeadde428ed0132da23306e4c5863f1ba017042738f6fc138a5fdbd0a135b2203ec7bca7b723022e23d19628601cb0d6f59e8612dce0c2b2641658fb5650b375a0795a2c2b8afcaaba4859ba852c4cda4364da9964daed64caa60c2475d9a590503c54d54d1d0a2096abb67541bf79955fc0debbfbbea1f81b84f0e</data>
     </image>
 </images>
+<connections>
+    <connection>
+        <sender>btnSymbolFirstColour</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointStyleWidgetBase</receiver>
+        <slot>btnSymbolFirstColour_clicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgspointstylewidgetbase.ui.h</include>
+</includes>
+<slots>
+    <slot>btnSymbolFirstColour_clicked()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
