@@ -14,7 +14,11 @@
 
 #include <qstringlist.h>
 
+#ifdef WIN32
+#include <pluginguibase.h>
+#else
 #include <pluginguibase.uic.h>
+#endif
 
 /**
 @author Tim Sutton

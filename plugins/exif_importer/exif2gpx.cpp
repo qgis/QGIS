@@ -13,7 +13,12 @@
 #include <cstring>
 #include <iostream>
 
+#ifdef WIN32
+#include <libexif\exif-data.h>
+#else
 #include <exif-data.h>
+#endif
+
 #include <qdir.h>
 #include <qdom.h>
 #include <qfile.h>

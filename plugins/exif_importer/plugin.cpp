@@ -182,7 +182,6 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
   mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 //
 //
@@ -200,79 +199,38 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-#ifdef WIN32
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
   return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
-#else
-extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
-{
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
-}
-#endif
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-#ifdef WIN32
 QGISEXTERN QString name()
 {
   return sName;
 }
-#else
-extern "C" QString name()
-{
-  return sName;
-}
-#endif
 
 // Return the description
-#ifdef WIN32
 QGISEXTERN QString description()
 {
   return sDescription;
 }
-#else
-extern "C" QString description()
-{
-  return sDescription;
-}
-#endif
 
 // Return the type (either UI or MapLayer plugin)
-#ifdef WIN32
 QGISEXTERN int type()
-{
-  return sType();
-}
-#else
-extern "C" int type()
 {
   return sType;
 }
-#endif
 
 // Return the version number for the plugin
-#ifdef WIN32
 QGISEXTERN QString version()
-{
-  return pluginVersion;
-}
-#else
-extern "C" QString version()
 {
   return sVersion;
 }
-#endif
 
 // Delete ourself
-#ifdef WIN32
 QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
   delete thePluginPointer;
 }
-#else
-extern "C" void unload(QgisPlugin * thePluginPointer)
-{
-  delete thePluginPointer;
-}
-#endif
+

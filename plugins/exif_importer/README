@@ -16,3 +16,12 @@ New versions will be available at http://community.qgis.org.
 
 
 -- Lars Luthman <larsl@users.sourceforge.net>
+
+Windows Build Notes (Tim Sutton):
+
+This plugin requires libexif. Obtain the binary and devel packages
+from http://www.gimp.org/~tml/gimp/win32/downloads.html and extract
+them into this folder before doing:
+
+qmake
+nmake
