@@ -305,14 +305,14 @@ void QgisApp::addRasterLayer()
   QString myArcInfoBinaryGridFilterString="Arc Info Binary Grid (*.adf)";
   QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
   QString myGeoTiffFilterString="Geo tiff (*.tif)";
-  QString myBilFilterString="Band Interleaved by Line (*.bil)";
-  QString myJpgFilterString="Geo jpg (*.jpg)";
+  //QString myBilFilterString="Band Interleaved by Line (*.bil)";
+  //QString myJpgFilterString="Geo jpg (*.jpg)";
   QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
           myArcInfoBinaryGridFilterString + ";;" +
           myArcInfoAsciiGridFilterString + ";;" +
-          myGeoTiffFilterString + ";;" +
-          myBilFilterString + ";;" +
-          myJpgFilterString,  //filters to select
+          //myBilFilterString + ";;" +
+          //myJpgFilterString + ";;" +  
+          myGeoTiffFilterString, //filters to select
           "." , //initial dir
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
@@ -755,7 +755,18 @@ void QgisApp::layerProperties(QListViewItem * lvi)
         if (lyr->type()==QgsMapLayer::RASTER)
         {
           QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(lyr);
-          rlp->exec();
+          // The signals to change the raster layer properties will only be emitted
+          // when the user clicks ok or apply
+          //connect(rlp, SIGNAL(setTransparency(unsigned int)), SLOT(lyr(slot_setTransparency(unsigned int))));
+          if (rlp->exec()) {
+          //this code will be called it the user selects ok
+            mapCanvas->setDirty(true);
+            mapCanvas->refresh();
+            mapCanvas->render2();
+            mapLegend->update();
+            delete rlp;
+            qApp->processEvents();
+          }
         }
         else if (lyr->type()==QgsMapLayer::VECTOR)
         {
