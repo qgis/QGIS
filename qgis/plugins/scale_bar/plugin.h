@@ -1,5 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
+  plugin.cpp
   Plugin to draw scale bar on map
 Functions:
 
@@ -37,21 +37,24 @@ email                : sbr00pwb@users.sourceforge.net
 class Plugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
-      /** 
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+      /**
+       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
        * QGIS when it attempts to instantiate the plugin.
        * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object. 
+       * @param qI Pointer to the QgisIface object.
        */
       Plugin(QgisApp * , QgisIface * );
-      
 
-        
+
+
   //! Destructor
   virtual ~ Plugin();
   public slots:
   //! init the gui
   virtual void initGui();
+  //!set values on the gui when a project is read or the gui first loaded
+  void projectRead();
+  //!this does the meaty bit of the work
   void renderScaleBar(QPainter *);
   //! Show the dialog box
   void run();
@@ -73,10 +76,10 @@ class Plugin:public QObject, public QgisPlugin
   void setStyle(QString);
   //! set the scale bar colour
   void setColour(QColor);
-  
+
     private:
-    
-  
+
+
 
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
