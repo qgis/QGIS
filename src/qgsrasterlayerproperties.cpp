@@ -769,7 +769,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   //
   // Ask raster layer to build the pyramids
   //
-  rasterLayer->buildPyramids(myPyramidList);  
+  rasterLayer->buildPyramids(myPyramidList,cboResamplingMethod->currentText());  
   //
   // repopulate the pyramids list
   //

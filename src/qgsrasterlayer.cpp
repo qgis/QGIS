@@ -966,7 +966,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
   RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
 #ifdef QGISDEBUG
 
-  std::cout << "draw gray band Git stats" << std::endl;
+  std::cout << "draw gray band Get stats" << std::endl;
 #endif
 
   double myRangeDouble = myRasterBandStats.rangeDouble;
@@ -2789,7 +2789,7 @@ QString QgsRasterLayer::getMetadata()
   return myMetadataQString;
 }
 
-void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
+void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QString theResamplingMethod)
 {
   emit setProgress(0,0);
   //first test if the file is writeable
@@ -2846,11 +2846,38 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
        */
 #ifdef QGISDEBUG 
       //build the pyramid and show progress to console
-      gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+      if(theResamplingMethod==tr("Average Magphase"))
+      {
+        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
               GDALTermProgress, NULL );
+      }
+      else if(theResamplingMethod==tr("Average"))
+
+      {
+        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
+              GDALTermProgress, NULL );
+      }
+      else // fall back to nearest neighbor
+      {
+        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+              GDALTermProgress, NULL );
+      }
 #else      
-      //build the pyramid and suppress  progress to console
-      gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+      //build the pyramid and show progress to console
+      if(theResamplingMethod==tr("Average Magphase"))
+      {
+        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
+              GDALDummyProgress, NULL );
+      }
+      else if(theResamplingMethod==tr("Average"))
+
+      {
+        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
+              GDALDummyProgress, NULL );
+      }
+      else // fall back to nearest neighbor
+      {
+        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
               GDALDummyProgress, NULL );
 #endif      
       myCountInt++;
