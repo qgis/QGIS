@@ -31,9 +31,11 @@ class QgsSiMaDialog: public QgsSiMaDialogBase
      void apply();
  protected:
     QgsVectorLayer* mVectorLayer;
+    bool mMarkerSizeDirty;
  protected slots:
      void selectMarker();
      void updateMarkerSize();
+     void setMarkerSizeDirty();
  private:
     /**Default constructor is privat to not use is*/
      QgsSiMaDialog();
