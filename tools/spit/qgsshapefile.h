@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <qstring.h>
+#include <qobject.h>
 #include <ogrsf_frmts.h>
 #include <libpq++.h>
 #include <qprogressdialog.h>
@@ -28,7 +29,7 @@
 class OGRLayer;
 class OGRDataSource;
  
-class QgsShapeFile
+class QgsShapeFile : public QObject
 {
   Q_OBJECT
   public:
@@ -37,15 +38,19 @@ class QgsShapeFile
   ~QgsShapeFile();
   int getFeatureCount();
   const char * getFeatureClass();
-  bool insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro);
+  bool insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin);
     
   bool is_valid();
   const char * getName();
+  QString getTable();
+  void setTable(QString new_table);
+  void setDefaultTable();
   std::vector <QString> column_names;
   std::vector <QString> column_types;
 
 
   private:
+  QString table_name;
   OGRDataSource *ogrDataSource;
   OGRLayer * ogrLayer;
   bool import_cancelled;

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 
-#include<qmessagebox.h>
+#include <qmessagebox.h>
 #include <libpq++.h>
 #include <iostream>
 #include <sstream>
@@ -118,6 +118,7 @@ void QgsSpit::addFile()
         int count = file->getFeatureCount();
         temp << count;
         lvi->setText(2, temp.str());
+        lvi->setText(3, fileList.back()->getTable());
         total_features += count;
       }
       else{
@@ -190,7 +191,7 @@ void QgsSpit::helpInfo(){
 
 void QgsSpit::import(){
   QString connName = cmbConnections->currentText();
-  bool error = false;
+  bool finished = false;
   if (!connName.isEmpty()) {
     QSettings settings;
     QString key = "/Qgis/connections/" + connName;
@@ -202,21 +203,29 @@ void QgsSpit::import(){
       QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", total_features, this, "Progress");
       pro->setProgress(0);
       pro->setAutoClose(true);
-      pro->setAutoReset(true);
+      //pro->setAutoReset(true);
       pro->show();
 
       pd->ExecTuplesOk("BEGIN");
+
+      Q
       for(int i=0; i<fileList.size() ; i++){
         std::stringstream temp;
         temp << spinSrid->value();
-        if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro)){
-          QMessageBox::warning(this, "Import Shapefiles", "Problem inserting features");
-          error = true;
+        if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, finished)){
+          if(!finished){
+            pro->close();
+            QMessageBox::warning(this, "Import Shapefiles",
+            "Problem inserting features\nOne or more of your shapefiles may be corrupted");
+          }
+          finished = true;
           break;
         }
+        else if(finished)
+          break;
       }
       
-      if(error)
+      if(finished)
         pd->ExecCommandOk("ROLLBACK");
       else{
         pd->ExecCommandOk("COMMIT");
