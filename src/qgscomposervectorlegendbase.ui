@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>212</width>
+            <width>216</width>
             <height>419</height>
         </rect>
     </property>
@@ -86,6 +86,14 @@
             </property>
             <property name="text">
                 <string>Font</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>mFrameCheckBox</cstring>
+            </property>
+            <property name="text">
+                <string>Box</string>
             </property>
         </widget>
         <widget class="QListView">
@@ -168,12 +176,19 @@
         <receiver>QgsComposerVectorLegendBase</receiver>
         <slot>titleChanged()</slot>
     </connection>
+    <connection>
+        <sender>mFrameCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>QgsComposerVectorLegendBase</receiver>
+        <slot>frameChanged()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>changeFont()</slot>
     <slot>previewModeChanged(int)</slot>
     <slot>mapSelectionChanged(int)</slot>
     <slot>titleChanged()</slot>
+    <slot>frameChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -173,6 +173,9 @@ public slots:
     // Combine selected layers
     void groupLayers( void );
 
+    // Frame settings changed
+    void frameChanged ( void );
+
 private:
     // Pointer to composition
     QgsComposition *mComposition;
@@ -228,6 +231,9 @@ private:
 
     /** \brief Layers list popup menu */
     QPopupMenu *mLayersPopupMenu;
+
+    /** \brief Draw frame  */
+    bool mFrame;
 };
 
 #endif
