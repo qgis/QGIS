@@ -41,12 +41,19 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
 
   //! Constructor - takes it own copy of the QgsAttributeAction so
   // that it is independent of whoever created it.
-  QgsIdentifyResults(const QgsAttributeAction&);
+  QgsIdentifyResults(const QgsAttributeAction&, QWidget *parent = 0, const char * name = 0, 
+	             WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title 
+		     | Qt::WStyle_Dialog | Qt::WStyle_Tool);
+
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */
   void addAttribute(QListViewItem *parent, QString field, QString value);
   /** Add an attribute */
   void addAttribute(QString field, QString value);
+
+  /** Add an action to the feature display node */
+  void addAction(QListViewItem *parent, int id, QString field, QString value);
+
   /** Add a feature node to the feature display */
   QListViewItem * addNode(QString label);
   /** Set the title for the identify results dialog */
@@ -59,12 +66,25 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   void closeEvent(QCloseEvent *e);
   void popupContextMenu(QListViewItem*, const QPoint&, int);
   void showAllAttributes();
+
+  /** Remove results */
+  void clear();
+  
+  /** Set "No features ... " */
+  void setMessage( QString shortMsg, QString longMsg );
+
+  /** Set actions */
+  void setActions ( const QgsAttributeAction& actions );
+  
   //void accept();
   //void reject();
 
   public slots:
 
     void popupItemSelected(int id);
+
+    /* Item in tree was clicked */
+    void clicked ( QListViewItem *lvi );
 
  private:
   

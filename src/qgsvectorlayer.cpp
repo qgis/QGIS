@@ -48,6 +48,8 @@
 #include <qlibrary.h>
 #include <qpicture.h>
 #include <qsettings.h>
+#include <qwidget.h>
+#include <qwidgetlist.h>
 
 #include "qgisapp.h"
 #include "qgsproject.h"
@@ -163,6 +165,11 @@ QgsVectorLayer::~QgsVectorLayer()
   delete popMenu;
   // delete the provider lib pointer
   delete myLib;
+
+  if ( ir )
+  {
+      delete ir;
+  }
 }
 
 bool QgsVectorLayer::projectionsEnabled()
@@ -498,19 +505,34 @@ void QgsVectorLayer::identify(QgsRect * r)
 
   if ( !isEditable() ) {
       // display features falling within the search radius
-      if(ir)
+      if( !ir )
       {
-	delete ir;
+	  // TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget available 
+
+	  QWidgetList *list = QApplication::topLevelWidgets ();
+	  QWidgetListIt it( *list ); 
+          QWidget *w;
+          QWidget *top = 0;
+          while ( (w=it.current()) != 0 ) {
+	      ++it;
+	      if ( typeid(*w) == typeid(QgisApp) ) {
+		  top = w;
+		  break;
+	      }
+	  }
+	  delete list;     
+	  ir = new QgsIdentifyResults(mActions, top);
+          
+	  // restore the identify window position and show it
+	  ir->restorePosition();
+      } else {
+          ir->clear();
+	  ir->setActions ( mActions );
       }
 
-      ir = 0;
       while ((fet = dataProvider->getNextFeature(true)))
       {
 	featureCount++;
-	if (featureCount == 1)
-	{
-	  ir = new QgsIdentifyResults(mActions);
-	}
 
 	QListViewItem *featureNode = ir->addNode("foo");
 	featureNode->setText(0, fieldIndex);
@@ -526,6 +548,15 @@ void QgsVectorLayer::identify(QgsRect * r)
 	  }
 	  ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
 	}
+
+	// Add actions 
+	
+	QgsAttributeAction::aIter iter = mActions.begin();
+	for (int i = 0; iter != mActions.end(); ++iter, ++i)
+	{
+	    ir->addAction( featureNode, i, tr("action"), iter->name() );
+	}
+	
 	delete fet;
       }
 
@@ -561,19 +592,18 @@ void QgsVectorLayer::identify(QgsRect * r)
 	  }
 	  }*/
 
-      if (ir)
-      {
-	  ir->setTitle(name());
-	  if (featureCount == 1)
-	      ir->showAllAttributes();
-	  // restore the identify window position and show it
-	  ir->restorePosition();
-      }
+      ir->setTitle(name());
+      if (featureCount == 1)
+	  ir->showAllAttributes();
       
       if (featureCount == 0)
       {
-	  QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
+	  //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
+
+	  ir->setTitle(name() + " - " + tr("No features found") );
+	  ir->setMessage ( tr("No features found"), tr("No features were found in the active layer at the point you clicked") );
       }
+      ir->show();
   } 
   else { // Edit attributes 
       // TODO: what to do if more features were selected? - nearest?
