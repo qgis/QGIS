@@ -2,35 +2,46 @@
 #include <qsettings.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+#include "libpq++.h"
 #include "qgsnewconnection.h"
 
-QgsNewConnection::QgsNewConnection():QgsNewConnectionBase(){
+QgsNewConnection::QgsNewConnection(QString connName):QgsNewConnectionBase(){
+  if(!connName.isEmpty()){
+    // populate the dialog with the information stored for the connection
+    // populate the fields with the stored setting parameters
+    QSettings settings;
+
+    QString key = "/Qgis/connections/" +connName;
+    txtHost->setText(settings.readEntry(key+"/host"));
+    txtDatabase->setText(settings.readEntry(key+"/database"));
+    txtUsername->setText(settings.readEntry(key+"/username"));
+    txtPassword->setText(settings.readEntry(key+"/password"));
+    txtName->setText(connName);
+  }
 }
 QgsNewConnection::~QgsNewConnection(){
 }
 void QgsNewConnection::testConnection(){
-  QSqlDatabase *testCon = QSqlDatabase::addDatabase("QPSQL7","testconnection");
-  if(testCon){
-    testCon->setDatabaseName(txtDatabase->text());
-    testCon->setUserName(txtUsername->text());
-    testCon->setPassword(txtPassword->text());
-    testCon->setHostName(txtHost->text());
-    if ( testCon->open() ) {
-      // Database successfully opened; we can now issue SQL commands.
-      QMessageBox::information(this,"Test connection","Connection to " + 
-			       txtDatabase->text() +  " was successfull");
-    }else{
-      QMessageBox::information(this,"Test connection",
-			       "Connection failed - Check settings and try again ");
-    }
+  // following line uses Qt SQL plugin - currently not used
+  // QSqlDatabase *testCon = QSqlDatabase::addDatabase("QPSQL7","testconnection");
 
-
+  QString connInfo = "host=" + txtHost->text() +" dbname=" + txtDatabase->text() + " user=" + txtUsername->text() + " password=" + txtPassword->text();
+  PgDatabase *pd = new PgDatabase((const char *)connInfo);
+cout << pd->ErrorMessage();
+  if(pd->Status()==CONNECTION_OK){
+    // Database successfully opened; we can now issue SQL commands.
+    QMessageBox::information(this,"Test connection","Connection to " + 
+			     txtDatabase->text() +  " was successfull");
+  }else{
+    QMessageBox::information(this,"Test connection",
+			     "Connection failed - Check settings and try again ");
   }
-  //  testCon->close();
-  //delete testCon;
+  delete pd;
 
-  // 
+
 }
+ 
+
 
 void QgsNewConnection::saveConnection(){
   QSettings settings;
