@@ -65,7 +65,7 @@ class ProjectTest : public CppUnit::TestFixture
 
         mBoolValueKey = "/values/myBool";
 
-        mStringValueKey = "/values/myStrings/myString";
+        mStringValueKey = "/values/very/nested/myString";
 
         mStringListValueKey = "/values/myStrings/myStringlist";
 
