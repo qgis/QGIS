@@ -33023,8 +33023,15 @@ SplashScreen::SplashScreen(  )
     resize( image0.size() );
     QRect scr = QApplication::desktop()->screenGeometry();
     move( scr.center() - rect().center() );
-    show();
+    
+    QPainter painter( &image0 );
+    painter.setPen( Qt::red );
+    QFont myQFont( "arial", 36, QFont::Bold );
+    painter.setFont( myQFont );
+    painter.drawText( 50,200, "Version 0.1 'Moroz'" );
     repaint();
+    
+    show();
 }
 
 void SplashScreen::repaint()
@@ -33058,7 +33065,7 @@ void SplashScreen::setStatus( const QString &message, int alignment, const QColo
     QFont myQFont( "arial", 18, QFont::Bold );
     painter.setFont( myQFont );
     QRect r = rect();
-    r.setRect( r.x() + 50, r.y() + 200, r.width() - 20, r.height() - 20 );
+    r.setRect( r.x() + 50, r.y() + 250, r.width() - 20, r.height() - 20 );
     painter.drawText( r, alignment, message );
     setErasePixmap( textPix );
     repaint();
