@@ -105,5 +105,13 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<functions>
+    <function access="protected" specifier="non
+    virtual">closeEvent(QCloseEvent* ev)</function>
+</functions>
+<signals>
+    <signal>deleted()</signal>
+</signals>
+
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

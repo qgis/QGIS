@@ -41,6 +41,8 @@ class QgsShapeFileLayer:public QgsMapLayer
 	 ~QgsShapeFileLayer();
 	//! Identify feature found within the search rectangle
 	void identify(QgsRect *);
+	//! Select features found within the search rectangle
+	void select(QgsRect* rect, bool lock);
 	//! Display the attribute table
 	void table();
 	enum SHAPETYPE

@@ -19,7 +19,8 @@ namespace QGis
 		Pan,
 		Distance,
 		Identify,
-		Table
+		Table,
+		Select
 	};
 //! Used for symbology operations
 	enum WKBTYPE
