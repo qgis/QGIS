@@ -84,7 +84,6 @@ headers =							\
 		qgsmarkersymbol.h \
 		qgsoptions.h \
 		qgspatterndialog.h \
-		qgspgquerybuilder.h \
 		qgspluginitem.h \
 		qgspluginmanager.h \
 		qgspluginmetadata.h \
@@ -142,7 +141,6 @@ qgis_UIC =						\
 		qgsmessageviewer.ui \
 		qgsoptionsbase.ui \
 		qgspatterndialogbase.ui \
-		qgspgquerybuilderbase.ui \
 		qgspluginmanagerbase.ui \
 		qgsprojectpropertiesbase.ui \
 		qgsrasterlayerpropertiesbase.ui \
@@ -166,7 +164,6 @@ qgis_UIH =						\
 		qgsmapserverexportbase.ui.h \
 		qgsmessageviewer.ui.h \
 		qgsoptionsbase.ui.h \
-		qgspgquerybuilderbase.ui.h \
 		qgsrasterlayerpropertiesbase.ui.h \
 		qgslabeldialogbase.ui.h \
 		qgsprojectpropertiesbase.ui.h
@@ -265,7 +262,6 @@ qgis_SOURCES =					\
 		qgsmarkersymbol.cpp \
 		qgsoptions.cpp \
 		qgspatterndialog.cpp \
-		qgspgquerybuilder.cpp \
 		qgspluginitem.cpp \
 		qgspluginmanager.cpp \
 		qgspluginmetadata.cpp \
