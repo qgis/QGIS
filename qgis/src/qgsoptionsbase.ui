@@ -18,7 +18,7 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -28,163 +28,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QTabWidget">
-            <property name="name">
-                <cstring>tabWidget</cstring>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>TabPage</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Map</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QGroupBox" row="0" column="0">
-                        <property name="name">
-                            <cstring>groupBox1</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Search Radius for Identifying Features</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QSpinBox" row="0" column="1">
-                                <property name="name">
-                                    <cstring>spinBoxIdentifyValue</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>100</number>
-                                </property>
-                                <property name="minValue">
-                                    <number>1</number>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_3</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Value</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>textLabel2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;html&gt;Specify the value in thousandths.  
-The search radius is calculated as:
-&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
-&lt;/ul&gt;
-By default QGIS uses a value of 5. Increase the value if you have trouble
-identifying features without zooming in very close.
-&lt;/html&gt;</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>Widget8</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Preferences</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QComboBox" row="1" column="0">
-                        <item>
-                            <property name="text">
-                                <string>epiphany</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>firebird</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>galeon</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>konqueror</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>mozilla</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>opera</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>cmbBrowser</cstring>
-                        </property>
-                        <property name="editable">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="0">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Preferred browser (used to open Help documents)</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel1_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>The browser must be in your PATH or you can specify &lt;br&gt;the full path above</string>
-                        </property>
-                    </widget>
-                    <spacer row="4" column="0">
-                        <property name="name">
-                            <cstring>spacer2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>21</width>
-                                <height>30</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QCheckBox" row="3" column="0">
-                        <property name="name">
-                            <cstring>cbxHideSplash</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Hide splash screen at startup</string>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
-        </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
                 <cstring>Layout1</cstring>
             </property>
@@ -248,7 +92,213 @@ identifying features without zooming in very close.
                 </widget>
             </hbox>
         </widget>
-    </vbox>
+        <widget class="QTabWidget" row="0" column="0">
+            <property name="name">
+                <cstring>tabWidget</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>Widget8</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Preferences</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QComboBox" row="1" column="0" rowspan="1" colspan="2">
+                        <item>
+                            <property name="text">
+                                <string>epiphany</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>firebird</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>galeon</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>konqueror</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>mozilla</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>opera</string>
+                            </property>
+                        </item>
+                        <property name="name">
+                            <cstring>cmbBrowser</cstring>
+                        </property>
+                        <property name="editable">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Preferred browser (used to open Help documents)</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>textLabel1_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>The browser must be in your PATH or you can specify &lt;br&gt;the full path above</string>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>cbxHideSplash</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Hide splash screen at startup</string>
+                        </property>
+                    </widget>
+                    <spacer row="5" column="1">
+                        <property name="name">
+                            <cstring>spacer2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>21</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLayoutWidget" row="4" column="0">
+                        <property name="name">
+                            <cstring>layout3</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1_4</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>0</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Theme</string>
+                                </property>
+                            </widget>
+                            <widget class="QComboBox">
+                                <item>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>cmbTheme</cstring>
+                                </property>
+                                <property name="duplicatesEnabled">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLabel" row="4" column="1">
+                        <property name="name">
+                            <cstring>textLabel1_5</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Theme changes take effect the next time QGIS is started</string>
+                        </property>
+                        <property name="alignment">
+                            <set>WordBreak|AlignVCenter</set>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Map</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QGroupBox" row="0" column="0">
+                        <property name="name">
+                            <cstring>groupBox1</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Search Radius for Identifying Features</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QSpinBox" row="0" column="1">
+                                <property name="name">
+                                    <cstring>spinBoxIdentifyValue</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>100</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel1_3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Value</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>textLabel2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&lt;html&gt;Specify the value in thousandths.  
+The search radius is calculated as:
+&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&lt;/ul&gt;
+By default QGIS uses a value of 5. Increase the value if you have trouble
+identifying features without zooming in very close.
+&lt;/html&gt;</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                </grid>
+            </widget>
+        </widget>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -270,6 +320,7 @@ identifying features without zooming in very close.
 <slots>
     <slot>saveOptions()</slot>
     <slot>cbxHideSplash_toggled( bool )</slot>
+    <slot>addTheme( QString )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

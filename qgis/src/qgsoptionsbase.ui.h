@@ -19,9 +19,10 @@ void QgsOptionsBase::init()
     bool hideSplashFlag = false;
     if (settings.readEntry("/qgis/hideSplash")=="true")
     {
-	hideSplashFlag =true;
+      hideSplashFlag =true;
     }
     cbxHideSplash->setChecked(hideSplashFlag);
+    cmbTheme->setCurrentText(settings.readEntry("/qgis/theme"));
 }
 void QgsOptionsBase::saveOptions()
 {
@@ -29,6 +30,7 @@ void QgsOptionsBase::saveOptions()
  settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
  settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
  settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
+ settings.writeEntry("/qgis/theme",cmbTheme->currentText());
  accept();
 }
 
@@ -36,4 +38,8 @@ void QgsOptionsBase::saveOptions()
 void QgsOptionsBase::cbxHideSplash_toggled( bool )
 {
 
+}
+void QgsOptionsBase::addTheme(QString item)
+{
+  cmbTheme->insertItem(item);
 }
