@@ -45,8 +45,10 @@ class QgisApp:public QgisAppBase
 	//public slots:
 	//! Add a layer to the map
 	void addLayer();
+	#ifdef PGDB
 	//! Add a databaselayer to the map
 	void addDatabaseLayer();
+	#endif
 	//! Exit Qgis
 	void fileExit();
 	//! Set map tool to Zoom out
