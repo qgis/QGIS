@@ -128,7 +128,7 @@ void QgsSiMaDialog::apply()
 
 void QgsSiMaDialog::selectMarker()
 {
-    QString svgfile=QFileDialog::getOpenFileName();
+    QString svgfile=QFileDialog::getOpenFileName(QString::null,"Pictures (*.svg)",0,0,"Choose a marker picture");
     mImageButton->setName(svgfile);
     
     //draw the SVG-Image on the button
