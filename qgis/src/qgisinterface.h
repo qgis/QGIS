@@ -60,7 +60,7 @@ class QgisInterface : public QWidget{
     //! Add a raster layer given a raster layer file name
     virtual bool addRasterLayer(QString rasterLayerPath)=0;
     //! Add a raster layer given a QgsRasterLayer object
-    virtual bool addRasterLayer(QgsRasterLayer * theRasterLayer)=0;
+    virtual bool addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRenderFlag=false)=0;
     //! Add a project
     virtual bool addProject(QString theProject)=0; 
     //! Start a blank project

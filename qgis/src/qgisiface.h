@@ -49,7 +49,7 @@ class QgisIface : public QgisInterface{
         //! Add a raster layer given its file name
         bool addRasterLayer(QString rasterLayerPath);
         //! Add a raster layer given a raster layer obj
-        bool addRasterLayer(QgsRasterLayer * theRasterLayer);
+        bool addRasterLayer(QgsRasterLayer * theRasterLayer,bool theForceRenderFlag=false);
         //! Add a project
         bool addProject(QString theProjectName);
         //! Start a new blank project
