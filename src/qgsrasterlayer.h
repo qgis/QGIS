@@ -2,7 +2,7 @@
 		 gsrasterlayer.h  -  description
 			 -------------------
 	begin                : Fri Jun 28 2002
-	copyright            : (C) 2004 by T.Sutton, Gary E.Sherman, Steve Halsatz
+	copyright            : (C) 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 	email                : tim@linfiniti.com
 ***************************************************************************/
 
@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 /** \file qgsrasterlayer.h
  *  \brief This class provides qgis with the ability to render raster datasets

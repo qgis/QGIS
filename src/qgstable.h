@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSTABLE_H
 #define QGSTABLE_H

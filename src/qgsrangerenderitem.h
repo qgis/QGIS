@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSRANGERENDERITEM_H
 #define QGSRANGERENDERITEM_H

@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgsattributetabledisplay.h"
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay():QgsAttributeTableBase()

@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSSINGLESYMRENDERER_H
 #define QGSSINGLESYMRENDERER_H

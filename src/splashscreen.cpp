@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *    Based on an example provided by Trolltech                                                                     *
  ***************************************************************************/
-
+/* $Id$ */
 #include <qapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>

@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgssymbol.h"
 
 QgsSymbol::QgsSymbol(QColor c)

@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSGRADUATEDSYMRENDERER_H
 #define QGSGRADUATEDSYMRENDERER_H

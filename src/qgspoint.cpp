@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include <iostream>
 #include <qstring.h>
 #include <qtextstream.h>
