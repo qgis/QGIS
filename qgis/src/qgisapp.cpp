@@ -2979,8 +2979,12 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     {
         // ask user for browser and use it
         bool ok;
-        QString text = QInputDialog::getText("QGIS Browser Selection",
-                                             "Enter the name of a web browser to use (eg. konqueror).\nEnter the full path if the browser is not in your PATH.\nYou can change this option later by selection Options from the Tools menu.",
+        QString myHeading = "QGIS Browser Selection";
+        QString myMessage = "Enter the name of a web browser to use (eg. konqueror).\n";
+        myMessage += "Enter the full path if the browser is not in your PATH.\n";
+        myMessage += "You can change this option later by selecting Preferences from the Settings menu.";
+        QString text = QInputDialog::getText(tr(myHeading),
+                                             tr(myMessage),
                                              QLineEdit::Normal,
                                              QString::null, &ok, this);
         if (ok && !text.isEmpty())
