@@ -29,6 +29,8 @@
 #include <qlineedit.h>
 #include <qtable.h>
 #include <qtextedit.h>
+#include <qpainter.h>
+#include <qfont.h>
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRasterLayerPropertiesBase()
 {
   //downcast the maplayer to rasterlayer
@@ -254,6 +256,7 @@ void QgsRasterLayerProperties::accept()
   close();
 }
 
+
 void QgsRasterLayerProperties::sliderMaxRed_valueChanged( int )
 {
   //the 255- is used because a vertical qslider has its max value at the bottom and
@@ -386,36 +389,66 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
     myMinDouble=sliderMinGray->value();
     myMaxDouble=255-sliderMaxGray->value();
   }
-  QImage myQImage = QImage(100,1,32); //32bpp
+  QImage myQImage = QImage(100,100,32); //32bpp
   double myRangeDouble = myMaxDouble - myMinDouble;
   double myDecrementDouble = myRangeDouble/100;
   //std::cout << "Decrementing " << theColor << " by : " << myDecrementDouble << std::endl;
   if (myDecrementDouble==0) return; 
-  for (double myDouble=99; myDouble >= 0; myDouble=myDouble-myDecrementDouble)
+  for (int myRowInt=99; myRowInt >=0; myRowInt=myRowInt-1)
   {
+    //reset the max value that the scale starts at
     if (theColor=="red")
     {
-      myRedDouble-= myDecrementDouble;
+      myRedDouble=myMaxDouble;
     }
     else if (theColor=="green")
     {
-      myGreenDouble -= myDecrementDouble; 
+      myGreenDouble=myMaxDouble; 
     }
     else if (theColor=="blue")
     {
-      myBlueDouble -= myDecrementDouble;
+      myBlueDouble=myMaxDouble;
     }
     else if (theColor=="gray")
     {
-      myRedDouble -= myDecrementDouble;
-      myGreenDouble -= myDecrementDouble;
-      myBlueDouble -= myDecrementDouble;
+      myRedDouble = myMaxDouble;
+      myGreenDouble=myMaxDouble; 
+      myBlueDouble=myMaxDouble;
     }
-    //std::cout << "R " << myRedDouble << " G " << myGreenDouble << " B " << myBlueDouble << std::endl;
-    myQImage.setPixel(static_cast<unsigned int>(myDouble),0,qRgb((unsigned int)myRedDouble, (unsigned int)myGreenDouble, (unsigned int)myBlueDouble));
+    for (double myColInt=99; myColInt >= 0; myColInt=myColInt-1)
+    {
+      if (theColor=="red")
+      {
+        myRedDouble-= myDecrementDouble;
+      }
+      else if (theColor=="green")
+      {
+        myGreenDouble -= myDecrementDouble; 
+      }
+      else if (theColor=="blue")
+      {
+        myBlueDouble -= myDecrementDouble;
+      }
+      else if (theColor=="gray")
+      {
+        myRedDouble -= myDecrementDouble;
+        myGreenDouble -= myDecrementDouble;
+        myBlueDouble -= myDecrementDouble;
+      }
+      //std::cout << "R " << myRedDouble << " G " << myGreenDouble << " B " << myBlueDouble << std::endl;
+      myQImage.setPixel(myColInt,myRowInt,qRgb((unsigned int)myRedDouble, (unsigned int)myGreenDouble, (unsigned int)myBlueDouble));
+    }
   }
+  //now convert the qimage to a pixmap so we can set the pixmap label with it
   QPixmap *myQPixmap = new QPixmap(100,100);
   myQPixmap->convertFromImage(myQImage,36);
+  // Draw a text alabel onto the pixmap showing the min max value
+  QPainter myQPainter(myQPixmap);
+  QFont myQFont( "time", 18, QFont::Bold );
+  myQPainter.setFont( myQFont );
+  myQPainter.setPen( Qt::white );
+  myQPainter.drawText(10,50,  QString::number(static_cast<unsigned int>(myMinDouble)) + " - " + QString::number(static_cast<unsigned int>(myMaxDouble)) );
+  //now draw the image into the relevant pixmap label
   if (theColor=="red")
   {
     pixmapScaleRed->setScaledContents(true);
