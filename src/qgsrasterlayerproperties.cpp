@@ -231,30 +231,13 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setBlueBandName(cboBlue->currentText());
     rasterLayer->setGrayBandName(cboGray->currentText());
     //set the appropriate render style
-    if (grpBoxGrayscale->isEnabled()
-       )
+    if ((grpBoxGrayscale->isEnabled())
+            && (rbtnSingleBand->isChecked()))
     {
-        //set the grayscale color table type if the groupbox is enabled
-
-        if (rasterLayer->rasterLayerType==QgsRasterLayer::PALETTE)
-        {
-
-            if (rbtnSingleBand->isChecked()) //render in gray or pseudocolor
-            {
-                if(cboColorMap->currentText()=="Pseudocolor")
-                {
-                    std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" << std::endl;
-                    rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR);
-                }
-                else
-                {
-                    std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_GRAY" << std::endl;
-                    rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
-                }
-            }
-
-        }
-        else if (rasterLayer->rasterLayerType==QgsRasterLayer::GRAY_OR_UNDEFINED)
+        //
+        // Grayscale
+        //
+        if (rasterLayer->rasterLayerType==QgsRasterLayer::GRAY_OR_UNDEFINED)
         {
 
             if(cboColorMap->currentText()=="Pseudocolor")
@@ -268,28 +251,56 @@ void QgsRasterLayerProperties::apply()
                 rasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_GRAY);
             }
         }
+        //
+        // Paletted Image
+        //        
+        else if (rasterLayer->rasterLayerType==QgsRasterLayer::PALETTE)
+        {
+            if(cboColorMap->currentText()=="Pseudocolor")
+            {
+                std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" << std::endl;
+                rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR);
+            }
+            else
+            {
+                std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_GRAY" << std::endl;
+                rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
+            }
+
+
+        }        
+        //
+        // Mutltiband
+        //
+        else if (rasterLayer->rasterLayerType==QgsRasterLayer::MULTIBAND)
+        {
+            if(cboColorMap->currentText()=="Pseudocolor")
+            {
+                std::cout << "Setting Raster Drawing Style to ::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR " << std::endl;
+                rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR);
+            }
+            else
+            {
+                std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
+                rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
+            }
+        }
+    } //end of grayscale box enabled and rbtnsingleband checked
+    else //assume that rbtnThreeBand is checked and render in rgb color
+    {
+        //set the grayscale color table type if the groupbox is enabled
+
+        if (rasterLayer->rasterLayerType==QgsRasterLayer::PALETTE)
+        {
+            std::cout << "Setting Raster Drawing Style to :: PALETTED_MULTI_BAND_COLOR" << std::endl;
+            rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_MULTI_BAND_COLOR);
+        }
         else if (rasterLayer->rasterLayerType==QgsRasterLayer::MULTIBAND)
         {
 
-            if (rbtnSingleBand->isChecked()) //render in gray or pseudocolor
-            {
-                if(cboColorMap->currentText()=="Pseudocolor")
-                {
-                    std::cout << "Setting Raster Drawing Style to ::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR " << std::endl;
-                    rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR);
-                }
-                else
-                {
-                    std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
-                    rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
-                }
-            }
-
-        }        
-    }
-    else //render in rgb color
-    {
-        rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_MULTI_BAND_COLOR);
+            std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_COLOR" << std::endl;
+            rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_COLOR);
+        }
 
     }
 
@@ -331,9 +342,9 @@ void QgsRasterLayerProperties::accept()
 }
 void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
 {
-  //set the transparency percentage label to a suitable value
-  int myInt = static_cast<int>((theValue/255.0)*100); //255.0 to prevent integer division
-  lblTransparencyPercent->setText(QString::number(myInt)+"%");
+    //set the transparency percentage label to a suitable value
+    int myInt = static_cast<int>((theValue/255.0)*100); //255.0 to prevent integer division
+    lblTransparencyPercent->setText(QString::number(myInt)+"%");
 }
 
 void QgsRasterLayerProperties::sliderMaxRed_valueChanged( int )

@@ -56,6 +56,8 @@ The [type] part of the variable should be the type class of the variable written
 #include <qpainter.h>
 #include <qimage.h>
 #include <qfont.h>
+#include <qfontmetrics.h>
+#include <qwmatrix.h>
 #include <stdio.h>
 #include "qgsrasterlayer.h"
 #include "qgsrect.h"
@@ -145,7 +147,8 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     stdDevsToPlotDouble = 0; // sensible default
     transparencyLevelInt = 255; //sensible default 0 is transparent
     showDebugOverlayFlag=false; //sensible default
-    
+    // emit a signal asking for a repaint
+    emit repaintRequested();
 }
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -191,7 +194,7 @@ bool QgsRasterLayer::hasBand(QString theBandName)
         std::cout << "band : " << i << std::endl;
         if  (myColorQString==theBandName)
         {
-        std::cout << "band : " << i << std::endl;
+            std::cout << "band : " << i << std::endl;
             std::cout << "Found band : " << theBandName << std::endl;
             return true;
         }
@@ -354,6 +357,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
         //a layer containing 2 or more bands, mapped to the three RGBcolors.
         //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
     case MULTI_BAND_COLOR:
+        drawMultiBandColor(theQPainter,myRasterViewPort);    
         break;
 
     default:
@@ -411,6 +415,10 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
         for (int myRowInt =0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
         {
             int myGrayValInt=myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
+            //remove these lines!
+            //if (myColumnInt==0)
+            //std::cout << "Checking if " << myGrayValInt << " = " << myRasterBandStats.noDataDouble << std::endl;
+
             //dont draw this point if it is no data !
             if (myGrayValInt != myRasterBandStats.noDataDouble)
             {
@@ -511,76 +519,81 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
     {
         for (int myRowInt =0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
         {
+            //hardcoding to white to start with
+            myRedInt   = 255;
+            myBlueInt  = 255;
+            myGreenInt = 255;
             int myInt=myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
-            //dont draw this point if it is no data !
-            //double check that myInt >= min and <= max
-            //this is relevant if we are plotting within stddevs
-            if ((myInt < myAdjustedRasterBandStats.minValDouble ) && (myInt != myAdjustedRasterBandStats.noDataDouble))
+            // draw this point if it is not  no_data !
+            if (myInt!=myAdjustedRasterBandStats.noDataDouble)
             {
-                myInt = static_cast<int>(myAdjustedRasterBandStats.minValDouble);
-            }
-            if ((myInt > myAdjustedRasterBandStats.maxValDouble)   && (myInt != myAdjustedRasterBandStats.noDataDouble))
+                //double check that myInt >= min and <= max
+                //this is relevant if we are plotting within stddevs
+                if (myInt < myAdjustedRasterBandStats.minValDouble )
+                {
+                    myInt = static_cast<int>(myAdjustedRasterBandStats.minValDouble);
+                }
+                if (myInt > myAdjustedRasterBandStats.maxValDouble)
+                {
+                    myInt = static_cast<int>(myAdjustedRasterBandStats.maxValDouble);
+                }
+                if(!invertHistogramFlag)
+                {
+                    //check if we are in the first class break
+                    if ((myInt >= myClassBreakMin1) &&  (myInt < myClassBreakMax1) )
+                    {
+                        myRedInt = 0;
+                        myBlueInt = 255;
+                        myGreenInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * (myInt-myClassBreakMin1))*3);
+                    }
+                    //check if we are in the second class break
+                    else if ((myInt >= myClassBreakMin2) &&  (myInt < myClassBreakMax2) )
+                    {
+                        myRedInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3);
+                        myBlueInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3));
+                        myGreenInt = 255;
+                    }
+                    //otherwise we must be in the third classbreak
+                    else
+                    {
+                        myRedInt = 255;
+                        myBlueInt = 0;
+                        myGreenInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin3)/1)*3)));
+                    }
+                }
+                else  //invert histogram toggle is on
+                {
+                    //check if we are in the first class break
+                    if ((myInt >= myClassBreakMin1) &&  (myInt < myClassBreakMax1) )
+                    {
+                        myRedInt = 255;
+                        myBlueInt = 0;
+                        myGreenInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin1)/1)*3));
+                    }
+                    //check if we are in the second class break
+                    else if ((myInt >= myClassBreakMin2) &&  (myInt < myClassBreakMax2) )
+                    {
+                        myRedInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3));
+                        myBlueInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3);
+                        myGreenInt = 255;
+                    }
+                    //otherwise we must be in the third classbreak
+                    else
+                    {
+                        myRedInt = 0;
+                        myBlueInt = 255;
+                        myGreenInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * (myInt-myClassBreakMin3))*3));
+                    }
+                }
+                myQImage.setPixel( myRowInt, myColumnInt, qRgba( myRedInt, myGreenInt, myBlueInt, transparencyLevelInt ));
+            } //end of nodata=false check
+            else //nodata so draw transparent
             {
-                myInt = static_cast<int>(myAdjustedRasterBandStats.maxValDouble);
+                //0 alpha = completely transparent
+                myQImage.setPixel( myRowInt, myColumnInt, qRgba( 255, 255, 255, 0 ));
             }
-            if (myInt==myAdjustedRasterBandStats.noDataDouble)
-            {
-                //hardcoding to white for now
-                myRedInt = 255;
-                myBlueInt = 255;
-                myGreenInt =255;
-            }
-            else if(!invertHistogramFlag)
-            {
-                //check if we are in the first class break
-                if ((myInt >= myClassBreakMin1) &&  (myInt < myClassBreakMax1) )
-                {
-                    myRedInt = 0;
-                    myBlueInt = 255;
-                    myGreenInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * (myInt-myClassBreakMin1))*3);
-                }
-                //check if we are in the second class break
-                else if ((myInt >= myClassBreakMin2) &&  (myInt < myClassBreakMax2) )
-                {
-                    myRedInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3);
-                    myBlueInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3));
-                    myGreenInt = 255;
-                }
-                //otherwise we must be in the third classbreak
-                else
-                {
-                    myRedInt = 255;
-                    myBlueInt = 0;
-                    myGreenInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin3)/1)*3)));
-                }
-            }
-            else  //invert histogram toggle is on
-            {
-                //check if we are in the first class break
-                if ((myInt >= myClassBreakMin1) &&  (myInt < myClassBreakMax1) )
-                {
-                    myRedInt = 255;
-                    myBlueInt = 0;
-                    myGreenInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin1)/1)*3));
-                }
-                //check if we are in the second class break
-                else if ((myInt >= myClassBreakMin2) &&  (myInt < myClassBreakMax2) )
-                {
-                    myRedInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3));
-                    myBlueInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myInt-myClassBreakMin2)/1))*3);
-                    myGreenInt = 255;
-                }
-                //otherwise we must be in the third classbreak
-                else
-                {
-                    myRedInt = 0;
-                    myBlueInt = 255;
-                    myGreenInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * (myInt-myClassBreakMin3))*3));
-                }
-            }
-            myQImage.setPixel( myRowInt, myColumnInt, qRgba( myRedInt, myGreenInt, myBlueInt, transparencyLevelInt ));
-        }
-    }
+        }//end of columnwise loop
+    }//end of towwise loop
     //draw with the experimental transaparency support
     theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(),myQImage);
 }
@@ -868,7 +881,15 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter,
     // RasterIO() takes care of scaling down image
     uint *myGdalScanData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
     CPLErr myResultCPLerr = theGdalBand->RasterIO(
-                                GF_Read, theRasterViewPort->rectXOffsetInt, theRasterViewPort->rectYOffsetInt, theRasterViewPort->clippedWidthInt, theRasterViewPort->clippedHeightInt, myGdalScanData, theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, GDT_UInt32, 0, 0 );
+                                GF_Read, 
+                                theRasterViewPort->rectXOffsetInt, 
+                                theRasterViewPort->rectYOffsetInt, 
+                                theRasterViewPort->clippedWidthInt, 
+                                theRasterViewPort->clippedHeightInt, 
+                                myGdalScanData, 
+                                theRasterViewPort->drawableAreaXDimInt, 
+                                theRasterViewPort->drawableAreaYDimInt, 
+                                GDT_UInt32, 0, 0 );
 
     QString myColorInterpretation = GDALGetColorInterpretationName(theGdalBand->GetColorInterpretation());
     //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
@@ -935,6 +956,88 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter,
     theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(),myQImage);
 
 }
+
+void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter,
+        RasterViewPort * theRasterViewPort)
+{
+    std::cout << "QgsRasterLayer::drawMultiBandColor called" << std::endl;
+    //TODO check band / colour mappings when assigning bands
+    
+    GDALRasterBand  *myGdalRedBand = gdalDataset->GetRasterBand( 1 );
+    GDALRasterBand  *myGdalGreenBand = gdalDataset->GetRasterBand( 2 );
+    GDALRasterBand  *myGdalBlueBand = gdalDataset->GetRasterBand( 3 );    
+    //
+    // I dont know how much overhead there is in opening three matricies at the same time....
+    // but this is a replacement of the old method implemented by Steve which xored the color components
+    // into the pixels
+    // RasterIO() takes care of scaling down image
+    uint *myGdalRedData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
+    uint *myGdalGreenData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
+    uint *myGdalBlueData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
+    
+    CPLErr myRedCPLerr = myGdalRedBand->RasterIO(
+                                GF_Read, 
+                                theRasterViewPort->rectXOffsetInt, 
+                                theRasterViewPort->rectYOffsetInt, 
+                                theRasterViewPort->clippedWidthInt, 
+                                theRasterViewPort->clippedHeightInt, 
+                                myGdalRedData, // <----- Red Layer
+                                theRasterViewPort->drawableAreaXDimInt, 
+                                theRasterViewPort->drawableAreaYDimInt, 
+                                GDT_UInt32, 0, 0 );
+    CPLErr myGreenCPLerr = myGdalGreenBand->RasterIO(
+                                GF_Read, 
+                                theRasterViewPort->rectXOffsetInt, 
+                                theRasterViewPort->rectYOffsetInt, 
+                                theRasterViewPort->clippedWidthInt, 
+                                theRasterViewPort->clippedHeightInt, 
+                                myGdalGreenData, // <----- Green Layer 
+                                theRasterViewPort->drawableAreaXDimInt, 
+                                theRasterViewPort->drawableAreaYDimInt, 
+                                GDT_UInt32, 0, 0 );
+    CPLErr myBlueCPLerr = myGdalBlueBand->RasterIO(
+                                GF_Read, 
+                                theRasterViewPort->rectXOffsetInt, 
+                                theRasterViewPort->rectYOffsetInt, 
+                                theRasterViewPort->clippedWidthInt, 
+                                theRasterViewPort->clippedHeightInt, 
+                                myGdalBlueData,  // <----- Blue Layer
+                                theRasterViewPort->drawableAreaXDimInt, 
+                                theRasterViewPort->drawableAreaYDimInt, 
+                                GDT_UInt32, 0, 0 );                                
+    //std::cout << "Colour Interpretation for this band is : " << myColorInterpretation << std::endl;
+    int myRedInt, myGreenInt, myBlueInt;
+    QImage myQImage=QImage(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt,32);
+    myQImage.setAlphaBuffer(true);
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    {
+        for (int myRowInt =0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        {
+            //pull the rgb values from each band
+            int myRedValueInt   = myGdalRedData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
+            int myGreenValueInt = myGdalGreenData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
+            int myBlueValueInt  = myGdalBlueData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
+            
+            //TODO check for nodata values
+            if (invertHistogramFlag)
+            {
+                myRedValueInt   = 255-myRedValueInt;
+                myGreenValueInt = 255-myGreenValueInt;
+                myBlueValueInt  = 255-myBlueValueInt;
+            }
+            //set the pixel based on the above color mappings
+            myQImage.setPixel( myRowInt, myColumnInt, qRgba( myRedValueInt,myGreenValueInt,myBlueValueInt, transparencyLevelInt ));            
+        }
+    }
+    //part of the experimental transaparency support
+    theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(),myQImage);
+
+    //free the scanline memory
+    CPLFree(myGdalRedData);
+    CPLFree(myGdalGreenData);
+    CPLFree(myGdalBlueData);        
+}
+
 /**
   Print some debug info to the qpainter
 */
@@ -1007,15 +1110,16 @@ void QgsRasterLayer::calculateStats(QString theBandNameQString)
                 )
            )
         {
-	    //check if we have previously gathered stats for this band...
-	    rasterStatsMap[myColorInterpretation];
+            //check if we have previously gathered stats for this band...
+            rasterStatsMap[myColorInterpretation];
             //declare a colorTable to hold a palette - will only be used of the layer color interp is palette
             GDALColorTable *colorTable;
             if ( myColorInterpretation=="Palette" )
             {
-	    	//check if we have previously gathered stats for this band...
-	        RasterBandStats myTempRasterBandrStats = rasterStatsMap[theBandNameQString];
-		if (myTempRasterBandrStats.statsGatheredFlag) continue; //should revert to outer loop if true
+                //check if we have previously gathered stats for this band...
+                RasterBandStats myTempRasterBandrStats = rasterStatsMap[theBandNameQString];
+                if (myTempRasterBandrStats.statsGatheredFlag)
+                    continue; //should revert to outer loop if true
                 colorTable = myGdalBand->GetColorTable();
                 myRasterBandStats.bandName=theBandNameQString;
             }
@@ -1281,8 +1385,17 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
 
 }
 
-//return a pixmap representing a legend image
+/** Return a pixmap representing a legend image. This is an overloaded
+ * version of the method below and assumes false for the legend name flag.
+*/
 QPixmap QgsRasterLayer::getLegendQPixmap()
+{
+    return getLegendQPixmap(false);
+}
+/** Return a pixmap representing a legend image
+* @param theWithNameFlag - boolena flag whether to overlay the legend name in the text
+*/
+QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 {
     //
     // Get the adjusted matrix stats
@@ -1290,134 +1403,129 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
     GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( 1 );
     double noDataDouble = myGdalBand->GetNoDataValue();
     QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-    if ( myColorInterpretation == "Gray" || myColorInterpretation == "Undefined")
+    QPixmap myLegendQPixmap; //will be initialised once we know what drawing style is active
+    QPainter myQPainter;
+    //
+    // Create the legend pixmap - note it is generated on the preadjusted stats
+    //
+    if (drawingStyle==MULTI_BAND_SINGLE_BAND_GRAY ||
+            drawingStyle==PALETTED_SINGLE_BAND_GRAY ||
+            drawingStyle==SINGLE_BAND_GRAY )
     {
-        RasterBandStats myAdjustedRasterBandStats = rasterStatsMap[myColorInterpretation];
-        myAdjustedRasterBandStats.noDataDouble=0;//hard coding for now
-        //to histogram stretch to a given number of std deviations
-        //see if we are using histogram stretch using stddev and plot only within the selected number of deviations if we are
-        //cout << "stdDevsToPlotDouble: " << cboStdDev->currentText() << " converted to " << stdDevsToPlotDouble << endl;
-        if (stdDevsToPlotDouble > 0)
+
+        myLegendQPixmap = QPixmap(100,1);
+        myQPainter.begin(&myLegendQPixmap);
+        int myPosInt = 0;
+        for (int  myDouble=0; myDouble < 255; myDouble+=2.55)
         {
-            //work out how far on either side of the mean we should include data
-            float myTotalDeviationDouble = stdDevsToPlotDouble * myAdjustedRasterBandStats.stdDevDouble;
-            //printf("myTotalDeviationDouble: %i\n" , myTotalDeviationDouble );
-            //adjust min and max accordingly
-            //only change min if it is less than mean  -  (n  x  deviations)
-            if (myAdjustedRasterBandStats.minValDouble < (myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble))
+            if (!invertHistogramFlag) //histogram is not inverted
             {
-                myAdjustedRasterBandStats.minValDouble=(myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble);
-                //cout << "Adjusting minValDouble to: " << myAdjustedRasterBandStats.minValDouble << endl;
+                //draw legend as grayscale
+                int myGrayInt = static_cast<int>(myDouble);
+                myQPainter.setPen( QPen( QColor(myGrayInt, myGrayInt, myGrayInt, QColor::Rgb), 0) );
             }
-            //only change max if it is greater than mean  +  (n  x  deviations)
-            if (myAdjustedRasterBandStats.maxValDouble > (myAdjustedRasterBandStats.meanDouble + myTotalDeviationDouble))
+            else //histogram is inverted
             {
-                myAdjustedRasterBandStats.maxValDouble=(myAdjustedRasterBandStats.meanDouble+myTotalDeviationDouble);
-                //cout << "Adjusting maxValDouble to: " << myAdjustedRasterBandStats.maxValDouble << endl;
-            }
-            //update the range
-            myAdjustedRasterBandStats.rangeDouble = myAdjustedRasterBandStats.maxValDouble-myAdjustedRasterBandStats.minValDouble;
+                //draw legend as inverted grayscale
+                int myGrayInt = 255-static_cast<int>(myDouble);
+                myQPainter.setPen( QPen( QColor(myGrayInt, myGrayInt, myGrayInt, QColor::Rgb), 0) );
+            } //end of invert histogram  check
+            myQPainter.drawPoint( myPosInt++,0);
         }
+    } //end of gray check
+    else if (drawingStyle==MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR ||
+             drawingStyle==PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
+             drawingStyle==SINGLE_BAND_PSEUDO_COLOR)
+    {
+ 
         //set up the three class breaks for pseudocolour mapping
-        double myBreakSizeDouble = myAdjustedRasterBandStats.rangeDouble / 3;
-        double myClassBreakMin1 = myAdjustedRasterBandStats.minValDouble;
-        double myClassBreakMax1 = myAdjustedRasterBandStats.minValDouble + myBreakSizeDouble;
+        double myRangeSizeDouble = 90; //hard coded for now
+        double myBreakSizeDouble = myRangeSizeDouble/3;
+        double myClassBreakMin1 = 0;
+        double myClassBreakMax1 = myClassBreakMin1 + myBreakSizeDouble;
         double myClassBreakMin2 = myClassBreakMax1;
         double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
         double myClassBreakMin3 = myClassBreakMax2;
-        double myClassBreakMax3 = myAdjustedRasterBandStats.maxValDouble;
+        double myClassBreakMax3 = myClassBreakMin3 + myBreakSizeDouble;
 
         //
         // Create the legend pixmap - note it is generated on the preadjusted stats
         //
-        QPixmap myLegendQPixmap = QPixmap(100,1);
-        QPainter myQPainter;
+        myLegendQPixmap = QPixmap(100,1);
         myQPainter.begin(&myLegendQPixmap);
         int myPosInt = 0;
-        for (double myDouble=myAdjustedRasterBandStats.minValDouble ;
-                myDouble < myAdjustedRasterBandStats.maxValDouble ;
-                myDouble+=myAdjustedRasterBandStats.rangeDouble/100)
+        for (double myDouble=0 ;
+                myDouble < myRangeSizeDouble ;
+                myDouble+=myRangeSizeDouble/100.0)
         {
-            if (drawingStyle!=MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR &&
-                    drawingStyle!=PALETTED_SINGLE_BAND_PSEUDO_COLOR &&
-                    drawingStyle!=SINGLE_BAND_PSEUDO_COLOR)
+            //draw pseudocolor legend
+            if (!invertHistogramFlag)
             {
-                //draw legend as grayscale
-                int myGrayInt = static_cast<int>((255/myAdjustedRasterBandStats.rangeDouble) * myDouble);
-                myQPainter.setPen( QPen( QColor(myGrayInt, myGrayInt, myGrayInt, QColor::Rgb), 0) );
-            }
-            else
-            {
-                //draw pseudocolor legend
-                if (!invertHistogramFlag)
+                //check if we are in the first class break
+                if ((myDouble >= myClassBreakMin1) &&  (myDouble < myClassBreakMax1) )
                 {
-                    //check if we are in the first class break
-                    if ((myDouble >= myClassBreakMin1) &&  (myDouble < myClassBreakMax1) )
-                    {
-                        int myRedInt = 0;
-                        int myBlueInt = 255;
-                        int myGreenInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * (myDouble-myClassBreakMin1))*3);
-                        myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
-                    }
-                    //check if we are in the second class break
-                    else if ((myDouble >= myClassBreakMin2) &&  (myDouble < myClassBreakMax2) )
-                    {
-                        int myRedInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myDouble-myClassBreakMin2)/1))*3);
-                        int myBlueInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myDouble-myClassBreakMin2)/1))*3));
-                        int myGreenInt = 255;
-                        myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
-                    }
-                    //otherwise we must be in the third classbreak
-                    else
-                    {
-                        int myRedInt = 255;
-                        int myBlueInt = 0;
-                        int myGreenInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myDouble-myClassBreakMin3)/1)*3)));
-                        myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
-                    }
-                }//end of invert histogram == false check
-                else  //invert histogram toggle is off
-                {
-                    //check if we are in the first class break
-                    if ((myDouble >= myClassBreakMin1) &&  (myDouble < myClassBreakMax1) )
-                    {
-                        int myRedInt = 255;
-                        int myBlueInt = 0;
-                        int myGreenInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myDouble-myClassBreakMin1)/1)*3));
-                        myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
-                    }
-                    //check if we are in the second class break
-                    else if ((myDouble >= myClassBreakMin2) &&  (myDouble < myClassBreakMax2) )
-                    {
-                        int myRedInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * ((myDouble-myClassBreakMin2)/1))*3));
-                        int myBlueInt = static_cast<int>(((255/myAdjustedRasterBandStats.rangeDouble) * ((myDouble-myClassBreakMin2)/1))*3);
-                        int myGreenInt = 255;
-                        myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
-                    }
-                    //otherwise we must be in the third classbreak
-                    else
-                    {
-                        int myRedInt = 0;
-                        int myBlueInt = 255;
-                        int myGreenInt = static_cast<int>(255-(((255/myAdjustedRasterBandStats.rangeDouble) * (myDouble-myClassBreakMin3))*3));
-                        myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
-                    }
+                    int myRedInt = 0;
+                    int myBlueInt = 255;
+                    int myGreenInt = static_cast<int>(((255/myRangeSizeDouble) * (myDouble-myClassBreakMin1))*3);
+                    myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
                 }
-            } //end of show as gray check
+                //check if we are in the second class break
+                else if ((myDouble >= myClassBreakMin2) &&  (myDouble < myClassBreakMax2) )
+                {
+                    int myRedInt = static_cast<int>(((255/myRangeSizeDouble) * ((myDouble-myClassBreakMin2)/1))*3);
+                    int myBlueInt = static_cast<int>(255-(((255/myRangeSizeDouble) * ((myDouble-myClassBreakMin2)/1))*3));
+                    int myGreenInt = 255;
+                    myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
+                }
+                //otherwise we must be in the third classbreak
+                else
+                {
+                    int myRedInt = 255;
+                    int myBlueInt = 0;
+                    int myGreenInt = static_cast<int>(255-(((255/myRangeSizeDouble) * ((myDouble-myClassBreakMin3)/1)*3)));
+                    myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
+                }
+            }//end of invert histogram == false check
+            else  //invert histogram toggle is off
+            {
+                //check if we are in the first class break
+                if ((myDouble >= myClassBreakMin1) &&  (myDouble < myClassBreakMax1) )
+                {
+                    int myRedInt = 255;
+                    int myBlueInt = 0;
+                    int myGreenInt = static_cast<int>(((255/myRangeSizeDouble) * ((myDouble-myClassBreakMin1)/1)*3));
+                    myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
+                }
+                //check if we are in the second class break
+                else if ((myDouble >= myClassBreakMin2) &&  (myDouble < myClassBreakMax2) )
+                {
+                    int myRedInt = static_cast<int>(255-(((255/myRangeSizeDouble) * ((myDouble-myClassBreakMin2)/1))*3));
+                    int myBlueInt = static_cast<int>(((255/myRangeSizeDouble) * ((myDouble-myClassBreakMin2)/1))*3);
+                    int myGreenInt = 255;
+                    myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
+                }
+                //otherwise we must be in the third classbreak
+                else
+                {
+                    int myRedInt = 0;
+                    int myBlueInt = 255;
+                    int myGreenInt = static_cast<int>(255-(((255/myRangeSizeDouble) * (myDouble-myClassBreakMin3))*3));
+                    myQPainter.setPen( QPen( QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0) );
+                }
+
+            } //end of invert histogram check
             myQPainter.drawPoint( myPosInt++,0);
         }
-        myQPainter.end();
-        return myLegendQPixmap;
-    } //end of colour interpretation is palette or gray or undefined check
 
-    else if (myColorInterpretation == "Palette")
+    }//end of pseudocolor check
+    else if (drawingStyle==PALETTED_MULTI_BAND_COLOR ||
+             drawingStyle==MULTI_BAND_COLOR)
     {
         //
         // Create the legend pixmap showing red green and blue band mappings
         //
         // TODO update this so it actually shows the mappings for paletted images
-        QPixmap myLegendQPixmap = QPixmap(3,1);
-        QPainter myQPainter;
+        myLegendQPixmap = QPixmap(3,1);
         myQPainter.begin(&myLegendQPixmap);
         //draw legend red part
         myQPainter.setPen( QPen( QColor(255,0,0, QColor::Rgb), 0) );
@@ -1428,31 +1536,57 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
         //draw legend blue part
         myQPainter.setPen( QPen( QColor(0,0,255, QColor::Rgb), 0) );
         myQPainter.drawPoint( 2,0);
-        myQPainter.end();
-        return myLegendQPixmap;
     }
 
-    else
-    {
-        //
-        // Create the legend pixmap showing red green and blue band mappings
-        //
-        //TODO update this so it show the colour band mappins rather than just an rgb swatch
-        QPixmap myLegendQPixmap = QPixmap(3,1);
-        QPainter myQPainter;
-        myQPainter.begin(&myLegendQPixmap);
-        //draw legend red part
-        myQPainter.setPen( QPen( QColor(255,0,0, QColor::Rgb), 0) );
-        myQPainter.drawPoint( 0,0);
-        //draw legend green part
-        myQPainter.setPen( QPen( QColor(0,255,0, QColor::Rgb), 0) );
-        myQPainter.drawPoint( 1,0);
-        //draw legend blue part
-        myQPainter.setPen( QPen( QColor(0,0,255, QColor::Rgb), 0) );
-        myQPainter.drawPoint( 2,0);
-        myQPainter.end();
-        return myLegendQPixmap;
 
-    } //end of mulitband
+    myQPainter.end();
+
+
+    //see if the caller wants the name of the layer in the pixmap (used for legend bar
+    if (theWithNameFlag)
+    {
+        QFont myQFont( "times", 12, QFont::Normal );
+        QFontMetrics myQFontMetrics(myQFont);
+
+        int myWidthInt=40+myQFontMetrics.width(this->name());
+        int myHeightInt=(myQFontMetrics.height()+10>35) ? myQFontMetrics.height()+10 : 35;
+
+        //create a matrix to
+        QWMatrix myQWMatrix;
+        //scale the raster legend up a bit bigger to the legend item size
+        //note that scaling parameters are factors, not absolute values,
+        // so scale (0.25,1) scales the painter to a quarter of its size in the x direction
+        //TODO We need to decide how much to scale by later especially for rgb images which are only 3x1 pix
+        //hard coding thes values for now.
+        if (myLegendQPixmap.width()==3)
+        {
+            //scale width by factor of 40
+            myQWMatrix.scale(40,myHeightInt);
+        }
+        else //assume 100px so scale by factor of 1.2
+        {
+            myQWMatrix.scale(1.2,myHeightInt);
+        }
+        //apply the matrix
+        QPixmap myQPixmap2 =  myLegendQPixmap.xForm(myQWMatrix);
+        QPainter myQPainter(&myQPixmap2);
+        myQPainter.setPen( Qt::black );
+        myQPainter.setFont( myQFont );
+        myQPainter.drawText(5,myHeightInt-10,this->name());
+        myQPainter.end();
+        myLegendQPixmap = myQPixmap2;
+    }
+    //finish up
+
+    return myLegendQPixmap;
 
 }//end of getLegendQPixmap function
+
+//similar to above but returns a pointer. Implemented for qgsmaplayer interface
+QPixmap * QgsRasterLayer::legendPixmap()
+{
+    QPixmap myQPixmap = getLegendQPixmap(true);
+
+
+    return new QPixmap(myQPixmap);
+}
