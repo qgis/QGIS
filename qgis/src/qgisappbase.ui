@@ -63,6 +63,7 @@
         <action name="actionFileExit"/>
     </item>
     <item text="View" name="PopupMenu_2">
+        <action name="actionAddNonDbLayer"/>
         <action name="actionAddLayer"/>
     </item>
     <item text="&amp;Help" name="PopupMenu_3">
@@ -248,7 +249,10 @@
             <iconset>image8</iconset>
         </property>
         <property name="text">
-            <string>Add a layer</string>
+            <string>Add a vector layer</string>
+        </property>
+        <property name="toolTip">
+            <string>Add a vector layer (e.g. Shapefile)</string>
         </property>
     </action>
 </actions>
@@ -353,18 +357,18 @@
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
 </includes>
 <slots>
-    <slot>about()</slot>
-    <slot>addDatabaseLayer()</slot>
-    <slot>drawLayers()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
-    <slot>init()</slot>
-    <slot>addLayer()</slot>
-    <slot>pan()</slot>
-    <slot>testButton()</slot>
-    <slot>zoomFull()</slot>
+    <slot>addDatabaseLayer()</slot>
     <slot>zoomIn()</slot>
     <slot>zoomOut()</slot>
+    <slot>init()</slot>
+    <slot>drawLayers()</slot>
+    <slot>zoomFull()</slot>
+    <slot>pan()</slot>
+    <slot>about()</slot>
+    <slot>testButton()</slot>
+    <slot>addLayer()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
