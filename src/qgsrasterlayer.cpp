@@ -136,6 +136,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
         redBandNameQString="Not Set"; //sensible default
         greenBandNameQString="Not Set"; //sensible default
         blueBandNameQString="Not Set"; //sensible default
+        drawingStyle=SINGLE_BAND_GRAY; //sensible default
         if (hasBand("Gray"))
         {
             grayBandNameQString="Gray"; // sensible default
