@@ -351,8 +351,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   // store the application dir
   appDir = PREFIX;
+  // get the users theme preference from the settings
+  QString themeName = settings.readEntry("/qgis/theme","default");
+  
   // set the theme 
-  setTheme();
+  setTheme(themeName);
   // Get pointer to the provider registry singleton
   QString plib = PLUGINPATH;
   providerRegistry = QgsProviderRegistry::instance(plib);
@@ -2546,6 +2549,18 @@ void QgisApp::socketReadyRead()
 void QgisApp::options()
 {
   QgsOptionsBase *optionsDialog = new QgsOptionsBase(this);
+
+  // add the themes to the combo box on the option dialog
+  QDir themeDir(appDir + "/share/qgis/themes");
+  themeDir.setFilter(QDir::Dirs);
+  QStringList dirs = themeDir.entryList("*");
+  for(int i=0; i < dirs.count(); i++)
+  {
+    if(dirs[i] != "." && dirs[i] != "..")
+    {
+      optionsDialog->addTheme(dirs[i]);
+    }
+  }
   optionsDialog->exec();
 }
 
@@ -2838,17 +2853,13 @@ void QgisApp::setTheme(QString themeName)
 // PNG names must match those defined for the default theme. The
 // default theme is installed in <prefix>/share/qgis/themes/default.
 // 
-// TODO:Next step is to allow user specified icon sets by loading the
-// images from a theme directory other than "default". This will require
-// adding information to preferences to allow selecting the theme.
-//
 // New core themes can be added by creating a subdirectory under src/themes
 // and modifying the appropriate Makefile.am files. User contributed themes
 // will be installed directly into <prefix>/share/qgis/themes/<themedir>.
 //
-// TODO: Create a theme preferences dialog that parses the themes directory
-// and builds a list of themes (ie subdirectories) for the user to 
-// choose from.
+// Themes can be selected from the preferences dialog. The dialog parses 
+// the themes directory and builds a list of themes (ie subdirectories) 
+// for the user to choose from.
 */
   QString iconPath = appDir +"/share/qgis/themes/" + themeName;
   actionFileNew->setIconSet(QIconSet(QPixmap(iconPath + "/file_new.png")));
