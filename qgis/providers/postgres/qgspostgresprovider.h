@@ -28,16 +28,16 @@ class OGRDataSource;
 class OGRLayer;
 /**
 \class QgsPostgresProvider
-\brief Data provider for PostgrSQL/PostGIS layers. 
+\brief Data provider for PostgrSQL/PostGIS layers.
 
 This provider implements the
 interface defined in the QgsDataProvider class to provide access to spatial
-data residing in a PostgreSQL/PostGIS enabled database. 
+data residing in a PostgreSQL/PostGIS enabled database.
 */
 class QgsPostgresProvider:public QgsVectorDataProvider
 {
   public:
-/** 
+/**
 * Constructor for the provider. The uri must be in the following format:
 * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
 * @param uri String containing the required parameters to connect to the database
@@ -51,7 +51,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   * @return QgsFeature
   */
     QgsFeature *getFirstFeature(bool fetchAttributes = false);
-    /** 
+    /**
   * Get the next feature resulting from a select operation
   * @return QgsFeature
   */
@@ -62,7 +62,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      *@param getnotcommited flag indicating if not commited features should be returned
      */
     QgsFeature* getNextFeature(std::list<int>& attlist);
-    /** Get the feature type. This corresponds to 
+    /** Get the feature type. This corresponds to
     * WKBPoint,
     * WKBLineString,
     * WKBPolygon,
@@ -72,21 +72,21 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   * as defined in qgis.h
   */
     int geometryType();
-    /** 
+    /**
     * Get the number of features in the layer
     */
     long featureCount();
-    /** 
+    /**
     * Get the number of fields in the layer
     */
     int fieldCount();
     /**
-  * Select features based on a bounding rectangle. Features can be retrieved 
+  * Select features based on a bounding rectangle. Features can be retrieved
   * with calls to getFirstFeature and getNextFeature.
   * @param mbr QgsRect containing the extent to use in selecting features
   */
     void select(QgsRect * mbr, bool useIntersect=false);
-    /** 
+    /**
     * Set the data source specification. This must be a valid database
   * connection string:
   * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
@@ -94,9 +94,9 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   */
     void setDataSourceUri(QString uri);
 
-   /** 
-  * Get the data source specification. 
-  * @return data source specification as a string containing the host, user, 
+   /**
+  * Get the data source specification.
+  * @return data source specification as a string containing the host, user,
   * dbname, password, and table
   * @see setDataSourceUri
   */
@@ -109,28 +109,28 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   */
     virtual std::vector<QgsFeature>& identify(QgsRect * rect);
 
-  /** 
+  /**
   * Return endian-ness for this layer
   * @see ENDIAN
   */
     int endian();
-  /** 
+  /**
   * Return a string representation of the endian-ness for the layer
   */
    QString endianString();
-   
+
   /** Return the extent for this data layer
   */
     virtual QgsRect *extent();
   /**
   * Get the attributes associated with a feature
   */
-    void getFeatureAttributes(int oid, QgsFeature *f); 
+    void getFeatureAttributes(int oid, QgsFeature *f);
     /**Get the attributes with indices contained in attlist*/
     void getFeatureAttributes(int oid, QgsFeature *f, std::list<int>& attlist);
   /**
   * Get the name of the primary key for the layer
-*/  
+*/
     QString getPrimaryKey();
  /**
  * Get the field information for the layer
@@ -142,7 +142,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
  * pointer and setting it to 0
  */
     void reset();
-    
+
 /**Returns the minimum value of an attributs
      @param position the number of the attribute*/
   QString minValue(int position);
@@ -173,11 +173,15 @@ class QgsPostgresProvider:public QgsVectorDataProvider
        @param id list of feature ids
        @return true in case of success and false in case of failure*/
   bool deleteFeatures(std::list<int> id);
-  
+
   bool supportsFeatureAddition(){return true;}
 
   bool supportsFeatureDeletion(){return true;}
 
+  /** Accessor for sql where clause used to limit dataset */
+  QString subsetString() {return sqlWhereClause;};
+  /** mutator for sql where clause used to limit dataset size */
+  void setSubsetString(QString theSQL) {sqlWhereClause=theSQL;};
 private:
       std::vector < QgsFeature > features;
       std::vector < bool > *selected;
@@ -194,7 +198,7 @@ private:
     * Flag indicating if the layer data source is a valid PostgreSQL layer
     */
     bool valid;
-    /** 
+    /**
     * Name of the table with no schema
     */
     QString tableName;
@@ -208,15 +212,15 @@ private:
     QString sqlWhereClause;
     /**
     * Primary key column for fetching features. If there is no primary key
-    * the oid is used to fetch features. 
+    * the oid is used to fetch features.
     */
     QString primaryKey;
-    /** 
+    /**
     * Index (column number) of the primary key
     */
     int primaryKeyIndex;
     /**
-     * Data type for the primary key 
+     * Data type for the primary key
      */
     QString primaryKeyType;
     /**
@@ -232,14 +236,14 @@ private:
     */
     QString selectSQL;
     /**
-    * Connection pointer 
+    * Connection pointer
     */
     PGconn *connection;
     /**
     * Spatial reference id of the layer
     */
     QString srid;
-    /** 
+    /**
     * Rectangle that contains the extent (bounding box) of the layer
     */
     QgsRect layerExtent;
@@ -267,7 +271,7 @@ private:
     bool swapEndian;
     bool ready;
     std::ofstream pLog;
- 
+
   //! PostGIS version string
   QString postgisVersionInfo;
   //! GEOS capability
