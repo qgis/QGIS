@@ -282,6 +282,7 @@ qgis_SOURCES =					\
 		qgsuvaldialog.cpp		\
 		qgsuvalmadialog.cpp		\
 		qgsuvalmarenderer.cpp		\
+		qgsvectordataprovider.cpp	\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
 		splashscreen.cpp 

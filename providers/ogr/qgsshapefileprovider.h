@@ -139,55 +139,14 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     */
     bool isValid();
 
-    /**Adds a feature
-       @return true in case of success and false in case of failure*/
-    bool addFeature(QgsFeature* f);
-
-    /**Deletes a feature
-       @param id the number of the feature
-       @return true in case of success and false in case of failure*/
-    bool deleteFeature(int id);
-
     /**
-     Enables editing capabilities of the provider (if supported)
-     @return false in case of error or if the provider does not support editing
+     *Enables editing capabilities of the provider (if supported)
+     *@return false in case of error or if the provider does not support editing
     */
     virtual bool startEditing();
 
-    /**
-       Disables the editing capabilities of the provider
-    */
-    virtual void stopEditing();
-
-    /**
-       Commits changes
-       @return false in case of problems
-    */
-    virtual bool commitChanges();
-
-    /**
-     Discards changes
-     @return false in case of problems
-    */
-    virtual bool rollBack();
-
-    /**Returns true if the provider is in editing mode*/
-    virtual bool isEditable() const {return mEditable;}
-
-    /**Returns true if the provider has been modified since the last commit*/
-    virtual bool isModified() const {return mModified;}
-
  protected:
-    
-     /**Commits a feature
-       @return true in case of success and false in case of failure*/
-    virtual bool commitFeature(QgsFeature* f);
-    /**Features which are added but not yet commited*/
-    std::list<QgsFeature*> mAddedFeatures;
-    /**Flag indicating wheter the provider is in editing mode or not*/
-    bool mEditable;
-    /**Flag indicating wheter the provider has been modified since the last commit*/
-    bool mModified;
+    bool commitFeature(QgsFeature* f);
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
@@ -206,9 +165,6 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
       NDR = 1,
       XDR = 0
     };
-    /**If getNextFeature needs to returns pointers to not commited features, 
-    this member points to the latest feature*/
-    std::list<QgsFeature*>::iterator mAddedFeaturesIt;
     /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
     bool minmaxcachedirty;
     /**Matrix storing the minimum and maximum values*/
