@@ -158,8 +158,8 @@ void QgsSpit::addFile()
   
   tblShapefiles->adjustColumn(0);
   tblShapefiles->adjustColumn(1);
+  tblShapefiles->adjustColumn(2);
   tblShapefiles->adjustColumn(3);
-  tblShapefiles->adjustColumn(4);
   tblShapefiles->setCurrentCell(-1, 0);  
 }
 
