@@ -374,6 +374,14 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                         pt = cXf->transform(*x, *y);
                         //std::cout << "drawing marker for feature " << featureCount << "\n";
                         p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
+			if(marker)
+			{
+                            #ifdef QGISDEBUG
+			    qWarning("drawing marker");
+			    #endif
+			    p->drawPicture(pt.xToInt(), pt.yToInt(), *marker);//todo: add scale factor and other stuff later
+			    
+			}
                         //std::cout << "marker draw complete\n";
                         break;
 
