@@ -295,9 +295,10 @@ AC_CONFIG_FILES([
   tools/Makefile
   tools/qgis_config/Makefile
   i18n/Makefile
-	plugins/north_arrow/Makefile
-	plugins/copyright_label/Makefile
-	plugins/scale_bar/Makefile
+  plugins/north_arrow/Makefile
+  plugins/copyright_label/Makefile
+  plugins/scale_bar/Makefile
+  designer_plugins/Makefile
 ])
 
 AC_OUTPUT
