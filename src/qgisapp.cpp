@@ -1629,22 +1629,23 @@ void QgisApp::filePrint()
   if(myQPrinter.setup(this))
   {
 #ifdef QGISDEBUG
-    std::cout << "Printing......" << std::endl;
+    std::cout << ".............................." << std::endl;
+    std::cout << "...........Printing..........." << std::endl;
+    std::cout << ".............................." << std::endl;
 #endif
     // Ithought we could just do this:
     //mapCanvas->render(&myQPrinter);
     //but it doesnt work so now we try this....
     QPaintDeviceMetrics myMetrics( &myQPrinter ); // need width/height of printer surface
+    std::cout << "Print device width: " << myMetrics.width() << std::endl;
+    std::cout << "Print device height: " << myMetrics.height() << std::endl;
     QPainter myQPainter;
     myQPainter.begin( &myQPrinter ); 
-    
     QPixmap myQPixmap(myMetrics.width(),myMetrics.height());
     myQPixmap.fill();
     mapCanvas->freeze(false);
     mapCanvas->setDirty(true);
     mapCanvas->render(&myQPixmap);
-
-
     myQPainter.drawPixmap(0,0, myQPixmap);
     myQPainter.end();
   }
