@@ -86,7 +86,7 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):mEditable(false), mModif
       delete feat;
     } else {
       valid = false;
-    }
+      }
 
     ogrLayer->ResetReading();
 #ifdef QGISDEBUG
@@ -339,7 +339,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
 	   {
 #ifdef QGISDEBUG
 	       qWarning("accessing feature in the cache");
-#endif QGISDEBUG
+#endif //QGISDEBUG
 	       QgsFeature* addedfeature=*mAddedFeaturesIt;
 	       ++mAddedFeaturesIt;
 	       //copy the feature because it will be deleted in QgsVectorLayer::draw()
@@ -736,7 +736,7 @@ bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
 		feature->SetGeometry(multipol);
 	    }
 	}
-
+	
 	if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
 	{
 	    //writing failed
