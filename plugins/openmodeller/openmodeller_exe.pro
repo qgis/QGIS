@@ -8,8 +8,8 @@
 TEMPLATE = app
 
 # config for standalone mode
-# CONFIG += qt rtti thread release
-CONFIG += qt rtti thread debug console
+CONFIG += qt rtti thread release
+#CONFIG += qt rtti thread debug console
 
 # for icon file under windows
 # see http://www.qiliang.net/qt/appicon.html#1

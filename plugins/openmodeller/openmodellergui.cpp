@@ -90,7 +90,10 @@ OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool moda
   //temporarily make a layout
   //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
-  
+
+  cboInputMaskLayer->setDuplicatesEnabled(false);
+  cboOutputMaskLayer->setDuplicatesEnabled(false);
+  cboOutputFormatLayer->setDuplicatesEnabled(false);
 }
 
  
@@ -302,7 +305,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             //add label and control to form
             mLayout->addWidget(myLabel, i,0);
             mLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Expanding),i,1);
-	    mLayout->addWidget(myLineEdit,i,2);
+	        mLayout->addWidget(myLineEdit,i,2);
             //mLayout->setRowSpacing(i,30);
             myLineEdit->show();
 
@@ -471,9 +474,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   if (thePageNameQString==tr("Step 6 of 9"))
   {
     //MASK AND FORMAT LAYERS 
-    cboInputMaskLayer->setDuplicatesEnabled(false);
-    cboOutputMaskLayer->setDuplicatesEnabled(false);
-    cboOutputFormatLayer->setDuplicatesEnabled(false);
+
     QString myInputMask = settings.readEntry("/openmodeller/inputMaskFile");
     QString myOutputMask = settings.readEntry("/openmodeller/outputMaskFile");
     QString myOutputFormat = settings.readEntry("/openmodeller/outputFormatFile");
@@ -846,8 +847,21 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
     myQStringList=myLayerSelector->getSelectedLayers();
 
     mySettings.writeEntry("/openmodeller/layersDirectory",myLayerSelector->getBaseDir());
-    lstLayers->insertStringList( myQStringList ,0 );
-    cboInputMaskLayer->insertStringList(myQStringList);
+    QStringList::Iterator myIterator= myQStringList.begin();
+    QString myLastFileNameQString="";
+    while( myIterator!= myQStringList.end() ) 
+    {
+		QString myString = *myIterator;
+		//make sure this layer is not already in the list
+		if (!lstLayers->findItem(myString, Qt::ExactMatch))
+		{
+    	  lstLayers->insertItem( myString ,0 );
+		  cboInputMaskLayer->insertItem(myString);
+		}
+		++myIterator;
+	}
+
+    
 
     lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
     if (lstLayers->count() > 0) 
@@ -1133,12 +1147,24 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
   if(myLayerSelector->exec())
   {
     std::cout << "LayerSelector ok pressed" << std::endl;
-    myQStringList=myLayerSelector->getSelectedLayers();
+    
+	myQStringList=myLayerSelector->getSelectedLayers();
+	QStringList::Iterator myIterator= myQStringList.begin();
+    while( myIterator!= myQStringList.end() ) 
+    {
+		//make sure this layer is not already in the list
+		QString myString = *myIterator;
+		if (!lstProjLayers->findItem(myString, Qt::ExactMatch))
+		{
+		  lstProjLayers->insertItem( myString ,0 );
+          cboOutputMaskLayer->insertItem(myString);
+          cboOutputFormatLayer->insertItem(myString);		 
+		}
+		++myIterator;
+	}
+    
 
-    lstProjLayers->insertStringList( myQStringList ,0 );
 
-    cboOutputMaskLayer->insertStringList(myQStringList);
-    cboOutputFormatLayer->insertStringList(myQStringList);
 
     mySettings.writeEntry("/openmodeller/projectionLayersDirectory",myLayerSelector->getBaseDir());
     lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");

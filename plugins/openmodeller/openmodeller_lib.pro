@@ -8,8 +8,8 @@
 TEMPLATE = lib   # to build as a dll
 
 # config for dll
-#CONFIG += qt dll thread rtti #release version without debug symbols
-CONFIG += qt dll thread rtti debug console #debug version
+CONFIG += qt dll thread rtti #release version without debug symbols
+#CONFIG += qt dll thread rtti debug console #debug version
 
 #inc path for qgis plugin
 INCLUDEPATH += . 
