@@ -27,6 +27,7 @@
 #include "qgsrenderer.h"
 
 //qt includes
+#include <qapplication.h>
 #include <qcombobox.h>
 #include <qfile.h>
 #include <qtextedit.h>
