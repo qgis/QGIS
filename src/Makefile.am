@@ -34,13 +34,13 @@ bin_PROGRAMS = qgis
 lib_LTLIBRARIES = libqgis.la
 
 headers =	qgisapp.h					\
+		qgsaddattrdialog.h \
 		qgis.h						\
 		qgisiface.h					\
 		qgisinterface.h					\
 		qgsacetatelines.h				\
 		qgsacetateobject.h				\
 		qgsacetaterectangle.h				\
-		qgsaddattrdialog.h				\
 		qgsattributeaction.h				\
 		qgsattributeactiondialog.h			\
 		qgsattributedialog.h				\
@@ -104,6 +104,7 @@ headers =	qgisapp.h					\
 		qgspoint.h					\
 		qgspolygonsymbol.h				\
 		qgsproject.h					\
+		qgsprojectproperty.h				\
 		qgsprojectproperties.h				\
 		qgsprovidermetadata.h				\
 		qgsproviderregistry.h				\
@@ -310,6 +311,7 @@ qgis_SOURCES =	main.cpp			\
 		qgspolygonsymbol.cpp		\
 		qgsproject.cpp			\
 		qgsprojectproperties.cpp	\
+		qgsprojectproperty.cpp		\
 		qgsprovidermetadata.cpp		\
 		qgsproviderregistry.cpp		\
 		qgsrangerenderitem.cpp		\
@@ -400,6 +402,7 @@ libqgis_la_SOURCES =				\
 		qgsfield.cpp			\
 		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
+		qgslabel.cpp			\
 		qgsmapcanvas.cpp		\
 		qgsmapcanvas.moc.cpp		\
 		qgsmaplayer.cpp			\
@@ -410,6 +413,7 @@ libqgis_la_SOURCES =				\
 		qgspoint.cpp			\
 		qgspoint.moc.cpp		\
 		qgsproviderregistry.cpp		\
+		qgsprojectproperty.cpp		\
 		qgsrangerenderitem.cpp		\
 		qgsrasterlayer.cpp		\
 		qgsrasterlayer.moc.cpp		\
