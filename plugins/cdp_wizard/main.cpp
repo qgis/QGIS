@@ -9,7 +9,8 @@
 //qt includes
 #include <qapplication.h>
 #include <cdpwizard.h>
-
+#include <qvaluevector.h>
+#include <qstring.h>
 int main(int argc, char *argv[])
 {
   std::cout << "+---------------------------------------------------+" << std::endl;
@@ -17,14 +18,14 @@ int main(int argc, char *argv[])
   std::cout << "|                   Tim Sutton                      |" << std::endl;
   std::cout << "|                      2004                         |" << std::endl;
   std::cout << "+---------------------------------------------------+" << std::endl;
-  
+
   QApplication myApp(argc, argv);
   CDPWizard *myCDPWizard = new CDPWizard(0);
   myApp.setMainWidget(myCDPWizard);
   myCDPWizard->show();
   return myApp.exec();
-  
-  
+
+
 }
 
 
@@ -43,9 +44,9 @@ int produceAverages(int argc, char *argv[])
   {
    std::cout << "useage: " << argv[0]  << " <input sres file> <ouput file prefix> [debug]" << endl;
     return 0;
-  }	
+  }
   std::string myInputFileName;
-  myInputFileName = argv[1];	
+  myInputFileName = argv[1];
   //check we have reasonable arguments
 
   if (myInputFileName=="" || myInputFileName=="/?" || myInputFileName=="--help")
@@ -68,11 +69,11 @@ int produceAverages(int argc, char *argv[])
   FileReader *myFileReader = new FileReader(myInputFileName);
 
   myFileReader->setFileType(FileReader::HADLEY_SRES);
-  std::vector <fpos_t>* myDataBlockMarkersVector =  
+  QValueVector <QFile::Offset>  myDataBlockMarkersVector =
       myFileReader->getBlockMarkers();
-  int myNumberOfBlocksInt = myDataBlockMarkersVector->size();
+  int myNumberOfBlocksInt = myDataBlockMarkersVector.size();
   if (myDebugModeFlag)
-    std::cout << "There are " << myNumberOfBlocksInt << 
+    std::cout << "There are " << myNumberOfBlocksInt <<
         "  blocks in the input file." << std::endl;
   const int myNumberOfYearsInt = myNumberOfBlocksInt / 12; //modulus will be trimmed!
 
@@ -83,13 +84,13 @@ int produceAverages(int argc, char *argv[])
   for (int myCurrentMonthInt = 1; myCurrentMonthInt<13 ; myCurrentMonthInt++)
   {
     //construct a filename for this months output
-    std::ostringstream myOStringStream; 
-    myOStringStream << myOutputFileName << "_" << myCurrentMonthInt << ".asc"; 
-    std::string myCurrentFileNameString=myOStringStream.str(); 
+    std::ostringstream myOStringStream;
+    myOStringStream << myOutputFileName << "_" << myCurrentMonthInt << ".asc";
+    std::string myCurrentFileNameString=myOStringStream.str();
    std::cout << "Output filename for month " <<
-        myCurrentMonthInt << " set to " << myCurrentFileNameString << endl;	
+        myCurrentMonthInt << " set to " << myCurrentFileNameString << endl;
     //now make a filewriter using the filename string
-    FileWriter *myFileWriter = 
+    FileWriter *myFileWriter =
         new FileWriter(myCurrentFileNameString,FileWriter::ESRI_ASCII);
 
     //construct a filegroup containing each fileblock that corresponds
@@ -109,14 +110,14 @@ int produceAverages(int argc, char *argv[])
     for (int myInt=1; myInt < myElementsInBlockInt; myInt++)
     {
       DataProcessor *myDataProcessor = new DataProcessor();
-      float myMeanFloat =	myDataProcessor->meanOverYear(myFileGroup->getElementVector());
+      float myMeanFloat =       myDataProcessor->meanOverYear(myFileGroup->getElementVector());
       /*
-         printf("Mean over (%i) datablocks is %f. Element %i of %i for month %i\n", 
-         myNumberOfYearsInt, 
+         printf("Mean over (%i) datablocks is %f. Element %i of %i for month %i\n",
+         myNumberOfYearsInt,
          myMeanFloat,
          myInt,
          myElementsInBlockInt,
-         myCurrentMonthInt);	
+         myCurrentMonthInt);
          */
       myFileWriter->writeElement(myMeanFloat);
     }
@@ -125,7 +126,7 @@ int produceAverages(int argc, char *argv[])
     delete myFileWriter;
   }
   /*
-     std::vector<fpos_t>::iterator myFposIterator;
+     QValueVector<fpos_t>::iterator myFposIterator;
      int myBlockCounterInt=0;
      for (myFposIterator = myDataBlockMarkersVector->begin(); myFposIterator != myDataBlockMarkersVector->end(); myFposIterator++)
      {
@@ -140,6 +141,6 @@ int produceAverages(int argc, char *argv[])
      */
 
 
-  system("PAUSE");	
+  system("PAUSE");
   return 0;
 }

@@ -19,7 +19,7 @@
 #define FILEWRITER_H
 
 #include <stdio.h>   //Paul reckons we dont need to explicitly include this
-#include <string>
+#include <qstring.h>
 /**A FileWriter is used to store the results of the climate data processor in a persistant manner.
   *@author Tim Sutton
   */
@@ -28,17 +28,15 @@ class FileWriter {
 public:
     enum FileTypeEnum { CSM_MATLAB , CSM_OCTAVE ,  GARP ,  ESRI_ASCII ,  PLAIN };
   /** constructor */
-	FileWriter();
+        FileWriter();
   /** constructor */
-	FileWriter(const char *theFileName, FileWriter::FileTypeEnum theFileFormat);
-  /** Alternate constructor that takes a string for the filename rather than a char array. */
-   FileWriter(std::string theFileNameString, FileWriter::FileTypeEnum theFileFormat);
+        FileWriter(const QString theFileName, FileWriter::FileTypeEnum theFileFormat);
   /** destrctor */
   ~FileWriter();
   /** Write a float element to the output file. */
   bool writeElement(float theElementFloat);
-  /** Read property of std::string fileNameString. */
-  virtual const std::string getFileNameString();
+  /** Read property of QString fileNameString. */
+  virtual const QString getFileNameString();
   /**
   * Close the currently open file.
   */
@@ -52,9 +50,9 @@ private:
   /**  The FILE handle containing our output data matrix. */
   FILE *filePointer;
   /** The filename that is being written to */
-  std::string fileNameString;
+  QString fileNameString;
 
-  
+
 };
 
 #endif

@@ -17,7 +17,13 @@
 
 #ifndef FILEGROUP_H
 #define FILEGROUP_H
+
+
 #include "filereader.h"
+#include <qvaluevector.h>
+#include <qptrvector.h>
+//forward declarations
+
 
 /**A file group manages a collection of FileReader objects and is used
   * to steop through several filereaders simultaneously.
@@ -25,23 +31,24 @@
   */
 
 class FileGroup {
-public: 
-	FileGroup();
-	virtual ~FileGroup();
+public:
+        FileGroup();
+         ~FileGroup();
   /** Add a new file reader object to the filegroup and position the fpos_t at the start of the data block requested. */
-  virtual bool addFileReader(FileReader *theFileReader, int theDataBlockNo) ;
+   bool addFileReader(FileReader *theFileReader, int theDataBlockNo) ;
   /** Get the next element from each fileReader and return the result as a vector. */
-  std::vector<float> getElementVector();
+  QValueVector<float> getElementVector();
   /** Read property of bool endOfMatrixFlag. */
-  virtual const bool getEndOfMatrixFlag();
+   const bool getEndOfMatrixFlag();
   /** Move to the start of the active data block */
-  virtual bool moveToDataStart();
+   bool moveToDataStart();
   /** Increment the currently active datablock by theIncrementAmount.
   This allows you to move to a new  datablock in SRES type continuous files.
   The file pointer will be moved to the start of the datablock */
   bool incrementDataBlocks(int theIncrementAmountInt);
 private:
-  std::vector <FileReader> fileReaderVector;
+  typedef QPtrVector <FileReader> FileReaderVector;
+  FileReaderVector * fileReaderVector;
   /** A flag to show whether the end of the matrix has been reached.
   * Note the first fileReader in the fileGroup is used to determine this. */
   bool endOfMatrixFlag;

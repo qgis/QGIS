@@ -20,105 +20,113 @@ using namespace std;
 
 FileGroup::FileGroup()
 {
-  debugModeFlag=false;
-  endOfMatrixFlag=false;
+    debugModeFlag=false;
+    endOfMatrixFlag=false;
+    fileReaderVector = new FileReaderVector();
+    //automatically delete any filereader as it is removed from the collection
+    fileReaderVector->setAutoDelete(true);
 }
-FileGroup::~FileGroup(){
-}
+FileGroup::~FileGroup()
+{}
 /** Add a new file reader object to the filegroup and position the
-* fpos_t at the start of the data block requested. */
-bool FileGroup::addFileReader(FileReader* theFileReader, int theDataBlockNo) 
+*   offset at the start of the data block requested. */
+bool FileGroup::addFileReader(FileReader* theFileReader, int theDataBlockNo)
 {
 
-  //if the program crashes at this point it is most likely because
-  //of an unintialised pointer! (Thanks Paul!)
-  //so check for uninitialised FileReader param:
-  if (!theFileReader)
-  {
-    if (debugModeFlag) cout << "FileGroup::addFileReader(FileReader* theFileReader, int theDataBlockNo) error - theFileReader is uninitialised!" << endl;
-    return false;
-  }
-  fileReaderVector.push_back(*theFileReader);
-  if (debugModeFlag) cout << "File group size: " << fileReaderVector.size() << endl;
-  return true;
-  
+    //if the program crashes at this point it is most likely because
+    //of an unintialised pointer! (Thanks Paul!)
+    //so check for uninitialised FileReader param:
+    if (!theFileReader)
+    {
+        if (debugModeFlag)
+            cout << "FileGroup::addFileReader(FileReader* theFileReader, int theDataBlockNo) error - theFileReader is uninitialised!" << endl;
+        return false;
+    }
+    int mySizeInt = fileReaderVector->size();
+    fileReaderVector->resize(mySizeInt+1);
+    fileReaderVector->insert(mySizeInt,theFileReader);
+    if (debugModeFlag)
+        cout << "File group size: " << fileReaderVector->size() << endl;
+    return true;
+
 
 }
 
 /** Get the next element from each fileReader and return the result as a vector. */
-std::vector<float> FileGroup::getElementVector()
+QValueVector<float> FileGroup::getElementVector()
 {
 
-  std::vector<float> myFloatVector;
-  //test that there are some files in our filereader group
-  if ( fileReaderVector.size()==0)
-  {
+    QValueVector<float> myFloatVector;
+    //test that there are some files in our filereader group
+    if ( fileReaderVector->size()==0)
+    {
+        return myFloatVector;
+    }
+    //test we are not at the end of the matrix
+    if (endOfMatrixFlag)
+    {
+        return myFloatVector;
+    }
+    //retrieve the each FileReader from the colelction and get its current element
+    for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
+    {
+        FileReader * myCurrentFileReader = fileReaderVector->at(myIteratorInt);
+        //test if we are at the end of the matrix
+        if ( myIteratorInt==0)
+        {
+            endOfMatrixFlag=myCurrentFileReader->getEndOfMatrixFlag();
+        }
+
+        float myFloat = myCurrentFileReader->getElement();
+        myFloatVector.push_back(myFloat);
+        myCurrentFileReader = fileReaderVector->at(myIteratorInt);
+    }
+
     return myFloatVector;
-  }
-  //test we are not at the end of the matrix
-  if (endOfMatrixFlag)
-  {
-     return myFloatVector;
-  }
-  //this bit works
-  /*
-  FileReader *myFileReader;
-  myFileReader= &fileReaderVector[0];
-  if (debugModeFlag) cout << "Colums per row in first filereader: " << myFileReader->getColumnsPerRow() << endl;
-  */
-    
-  //lets hope this does too  
-   for ( vector<FileReader>::iterator myIterator = fileReaderVector.begin();
-           myIterator != fileReaderVector.end();
-           myIterator++)
-  {
-      myFloatVector.push_back(myIterator->getElement());
-  }
-  //test if we are at the end of the matrix
-  if ( fileReaderVector[0].getEndOfMatrixFlag())
-  {
-    endOfMatrixFlag=true;
-  }
-    
-  
-  return myFloatVector;
 }
+
 /** Read property of bool endOfMatrixFlag. */
-const bool FileGroup::getEndOfMatrixFlag(){
-	return endOfMatrixFlag;
+const bool FileGroup::getEndOfMatrixFlag()
+{
+    return endOfMatrixFlag;
 }
 
 /** Move to the start of the active data block */
 bool FileGroup::moveToDataStart()
 {
-  for ( vector<FileReader>::iterator myIterator = fileReaderVector.begin();
-           myIterator != fileReaderVector.end();
-           myIterator++)
-  {
-     myIterator->moveToDataStart();
-  }
-  //
+    if (fileReaderVector->isNull())
+    {
+      return false;
+    }
+    for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
+    {
+        FileReader * myCurrentFileReader = fileReaderVector->at(myIteratorInt);
+        myCurrentFileReader->moveToDataStart();
+    }
+    //
 
-  endOfMatrixFlag=false;
-  //add better error checking
-  return true;
+    endOfMatrixFlag=false;
+    //add better error checking
+    return true;
 }
-  /** Increment the currently active datablock by theIncrementAmount.
-  This allows you to move to a new  datablock in SRES type continuous files.
-  The file pointer will be moved to the start of the datablock */
+/** Increment the currently active datablock by theIncrementAmount.
+This allows you to move to a new  datablock in SRES type continuous files.
+The file pointer will be moved to the start of the datablock */
 bool FileGroup::incrementDataBlocks(int theIncrementAmountInt)
 {
-    for ( vector<FileReader>::iterator myIterator = fileReaderVector.begin();
-           myIterator != fileReaderVector.end();
-           myIterator++)
-  {
-    
-     myIterator->setStartMonth(myIterator->getStartMonth()+theIncrementAmountInt);
-     myIterator->moveToDataStart();
-  }
-  //
+    if (fileReaderVector->isNull())
+    {
+      return false;
+    }
+    for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
+    {
+        FileReader * myCurrentFileReader = fileReaderVector->at(myIteratorInt);
+        myCurrentFileReader->setStartMonth(myCurrentFileReader->getStartMonth()+theIncrementAmountInt);
+        myCurrentFileReader->moveToDataStart();
+    }
+    //
 
-  endOfMatrixFlag=false;
-  //add better error checking
-  return true;
+    endOfMatrixFlag=false;
+    //add better error checking
+    return true;
 }

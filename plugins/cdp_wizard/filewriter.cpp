@@ -22,60 +22,20 @@ using namespace std;
 FileWriter::FileWriter(){
 }
 
-FileWriter::FileWriter(const char *theFileNameChar, FileWriter::FileTypeEnum theFileFormat)
-{
-  //cout << "FileWriter constructor called..." << endl;
-  //replace any spaces in the filename with underscores and suffix the correct filename
-  //extension
-  std::string myFileNameString(theFileNameChar);
-  try
-  {
-    bool endOfStringFlag=false;
-    while(!endOfStringFlag)
-    {
-      int myInt =  myFileNameString.find(" ");
-      if(myInt != std::string::npos)    //string::npos means no match found
-      {
-        myFileNameString.replace(myInt,1,"_");
-        //cout << "FileWriter::Filename after space replacement (myInt " << myInt << "):" << myFileNameString << endl;
-      }
-      else
-      {
-        endOfStringFlag=true;
-      } 
-    }
-  }
-  catch (...)
-  {
-    cout << "Space replacement threw an error! " <<  endl;
-  }
-
-  if ((filePointer=fopen(myFileNameString.c_str(),"wb"))==NULL)  //try to open in binary mode
-  {
-    cout << "FileWriter::Cannot open file : " << myFileNameString << endl;
-  }
-  else
-  {
-    fileNameString = myFileNameString;
-    //cout << "FileWriter::Opened file : " << fileNameString << " successfully." << endl;
-
-  }
-}
-
 /** Alternate constructor that takes a string for the filename rather than a char array. */
-FileWriter::FileWriter(std::string theFileNameString, FileWriter::FileTypeEnum theFileFormat)
+FileWriter::FileWriter(QString theFileNameString, FileWriter::FileTypeEnum theFileFormat)
 {
   //cout << "FileWriter constructor called..." << endl;
   //replace any spaces in the filename with underscores and suffix the correct filename
   //extension
-  std::string myFileNameString=theFileNameString;
+  QString myFileNameString=theFileNameString;
   try
   {
     bool endOfStringFlag=false;
     while(!endOfStringFlag)
     {
       int myInt =  myFileNameString.find(" ");
-      if(myInt != std::string::npos)    //string::npos means no match found
+      if(myInt != -1)    //-1 means no match found
       {
         myFileNameString.replace(myInt,1,"_");
         //cout << "FileWriter::Filename after space replacement (myInt " << myInt << "):" << myFileNameString << endl;
@@ -91,7 +51,7 @@ FileWriter::FileWriter(std::string theFileNameString, FileWriter::FileTypeEnum t
     cout << "Space replacement threw an error! " <<  endl;
   }
 
-  if ((filePointer=fopen(myFileNameString.c_str(),"wb"))==NULL)  //try to open in binary mode
+  if ((filePointer=fopen(myFileNameString,"wb"))==NULL)  //try to open in binary mode
   {
     //cout << "FileWriter::Cannot open file : " << myFileNameString << endl;
   }
@@ -120,8 +80,8 @@ bool FileWriter::writeElement(float theElementFloat){
   }
 }
 
-/** Read property of std::string fileNameString. */
-const std::string FileWriter::getFileNameString()
+/** Read property of QString fileNameString. */
+const QString FileWriter::getFileNameString()
 {
   return fileNameString;
 }

@@ -24,8 +24,8 @@ email                : t.sutton@reading.ac.uk
 #include "filewriter.h"
 #include "filereader.h"
 #include "filegroup.h"
-#include <map>
-#include <string>
+#include <qmap.h>
+#include <qstring.h>
 
 
 
@@ -35,7 +35,7 @@ email                : t.sutton@reading.ac.uk
  */
 
 class ClimateDataProcessor {
-    public: 
+    public:
         ClimateDataProcessor();
 
         /*
@@ -43,8 +43,8 @@ class ClimateDataProcessor {
                 int theFileStartYear,
                 int theJobStartYear,
                 int theJobEndYear,
-                std::string theInputFileTypeString,
-                std::string theOutputFileTypeString
+                QString theInputFileTypeString,
+                QString theOutputFileTypeString
                 );
         */
         ~ClimateDataProcessor();
@@ -53,50 +53,50 @@ class ClimateDataProcessor {
 
         // Getters and setters
 
-        /** Write property of std::string meanTempFileGroup. */
-        void setMeanTempFileName ( std::string theFileNameString);
-        /** Read property of std::string meanTempFileGroup. */
-        const std::string  getMeanTempFileName ();
+        /** Write property of QString meanTempFileGroup. */
+        void setMeanTempFileName ( QString theFileNameString);
+        /** Read property of QString meanTempFileGroup. */
+        const QString  getMeanTempFileName ();
 
-        /** Write property of std::string minTempFileGroup. */
-        void setMinTempFileName ( std::string theFileNameString);
-        /** Read property of std::string minTempFileGroup. */
-        const std::string  getMinTempFileName ();
+        /** Write property of QString minTempFileGroup. */
+        void setMinTempFileName ( QString theFileNameString);
+        /** Read property of QString minTempFileGroup. */
+        const QString  getMinTempFileName ();
 
-        /** Write property of std::string maxTempFileGroup. */
-        void setMaxTempFileName ( std::string theFileNameString);
-        /** Read property of std::string maxTempFileGroup. */
-        const std::string  getMaxTempFileName ();
+        /** Write property of QString maxTempFileGroup. */
+        void setMaxTempFileName ( QString theFileNameString);
+        /** Read property of QString maxTempFileGroup. */
+        const QString  getMaxTempFileName ();
 
-        /** Write property of std::string diurnalTempFileGroup. */
-        void setDiurnalTempFileName ( std::string theFileNameString);
-        /** Read property of std::string diurnalTempFileGroup. */
-        const std::string  getDiurnalTempFileName ();
+        /** Write property of QString diurnalTempFileGroup. */
+        void setDiurnalTempFileName ( QString theFileNameString);
+        /** Read property of QString diurnalTempFileGroup. */
+        const QString  getDiurnalTempFileName ();
 
-        /** Write property of std::string meanPrecipFileGroup. */
-        void setMeanPrecipFileName ( std::string theFileNameString);
-        /** Read property of std::string meanPrecipFileGroup. */
-        const std::string  getMeanPrecipFileName ();
+        /** Write property of QString meanPrecipFileGroup. */
+        void setMeanPrecipFileName ( QString theFileNameString);
+        /** Read property of QString meanPrecipFileGroup. */
+        const QString  getMeanPrecipFileName ();
 
-        /** Write property of std::string frostDaysFileGroup. */
-        void setFrostDaysFileName ( std::string theFileNameString);
-        /** Read property of std::string frostDaysFileGroup. */
-        const std::string  getFrostDaysFileName ();
+        /** Write property of QString frostDaysFileGroup. */
+        void setFrostDaysFileName ( QString theFileNameString);
+        /** Read property of QString frostDaysFileGroup. */
+        const QString  getFrostDaysFileName ();
 
-        /** Write property of std::string totalSolarRadFileGroup. */
-        void setTotalSolarRadFileName ( std::string theFileNameString);
-        /** Read property of std::string totalSolarRadFileGroup. */
-        const std::string  getTotalSolarRadFileName ();
+        /** Write property of QString totalSolarRadFileGroup. */
+        void setTotalSolarRadFileName ( QString theFileNameString);
+        /** Read property of QString totalSolarRadFileGroup. */
+        const QString  getTotalSolarRadFileName ();
 
-        /** Write property of std::string windSpeedFileGroup. */
-        void setWindSpeedFileName ( std::string theFileNameString);
-        /** Read property of std::string windSpeedFileGroup. */
-        const std::string  getWindSpeedFileName ();
+        /** Write property of QString windSpeedFileGroup. */
+        void setWindSpeedFileName ( QString theFileNameString);
+        /** Read property of QString windSpeedFileGroup. */
+        const QString  getWindSpeedFileName ();
 
-        /** Write property of std::string * outputFilePathString. */
-        void setOutputFilePathString( std::string theFilePathString);
-        /** Read property of std::string * outputFilePathString. */
-        const std::string getOutputFilePathString();
+        /** Write property of QString * outputFilePathString. */
+        void setOutputFilePathString( QString theFilePathString);
+        /** Read property of QString * outputFilePathString. */
+        const QString getOutputFilePathString();
 
         /** Write property of int fileStartYearInt. */
         void setFileStartYearInt( const int theYearInt);
@@ -116,14 +116,14 @@ class ClimateDataProcessor {
         /** Write property of FileReader::FileType inputFileType. */
         void setInputFileType( const FileReader::FileTypeEnum theInputFileType);
         /** Overloaded version of above that taks a string and looks up the enum */
-        void setInputFileType( const std::string theInputFileTypeString);  
+        void setInputFileType( const QString theInputFileTypeString);
         /** Read property of FileReader::FileType inputFileType. */
         const FileReader::FileTypeEnum getInputFileType();
 
         /** Write property of FileWriter::FileType outputFileType. */
         void setOutputFileType( const FileWriter::FileTypeEnum theOutputFileType);
         /** Overloaded version of above that takes a string and looks up the enum */
-        void setOutputFileType( const std::string theOutputFileTypeString);
+        void setOutputFileType( const QString theOutputFileTypeString);
         /** Read property of FileWriter::FileType outputFileType. */
         const FileWriter::FileTypeEnum getOutputFileType();
 
@@ -132,33 +132,33 @@ class ClimateDataProcessor {
         bool makeFileGroups(int theStartYearInt);
         /** Set up an individual file group (called by makeFileGroups for
          *   each filegroup that needs to be initialised) */
-        FileGroup * initialiseFileGroup(std::string theFileNameString,int theStartYearInt);
+        FileGroup * initialiseFileGroup(QString theFileNameString,int theStartYearInt);
         /**  Build a list of which calculations can be performed given the input files
          *    that have been registered. The boolean field indicates whether the user actually
          *    want to perform this calculation
          *    @see addUserCalculation */
         bool  makeAvailableCalculationsMap();
         /** Get the list of available calculations */
-        std::map <std::string, bool > getAvailableCalculationsMap();
+        QMap <QString, bool > getAvailableCalculationsMap();
 
         /**  Add a calculation to the list of those requested to be carried out by the user */
-        bool addUserCalculation(std::string theCalculationNameString);
+        bool addUserCalculation(QString theCalculationNameString);
 
         /** Start the data analysis process. When everything else is set up, this is the method to call! */
         bool run();
 
         /** get a Description of the ClimateDataProcessor vars. */
-        std::string getDescription();
+        QString getDescription();
 
         /** Write property of bool filesInSeriesFlag. */
         void setFilesInSeriesFlag( const bool theFlagl);
         /** Read property of bool filesInSeriesFlag. */
         const bool getFilesInSeriesFlag();
 
-        /** Write property of std::string outputHeaderString. */
-        void setOutputHeaderString( const std::string& theOutputHeaderString);
-        /** Read property of std::string outputHeaderString. */
-        const std::string& getOutputHeaderString();
+        /** Write property of QString outputHeaderString. */
+        void setOutputHeaderString( const QString& theOutputHeaderString);
+        /** Read property of QString outputHeaderString. */
+        const QString getOutputHeaderString();
 
     private:
 
@@ -176,11 +176,11 @@ class ClimateDataProcessor {
         bool makeOutputFileTypeMap();
 
         /** Little utility method to convert from int to string */
-        std::string intToString(int theInt);
+        QString intToString(int theInt);
 
         // Private attributes
         /** The directory where the processed results will be stored. */
-        std::string outputFilePathString;
+        QString outputFilePathString;
         /** This is the FILE START year (must be common to all files used!)
          *   in the files provided to the climate data processor. */
         int fileStartYearInt;
@@ -192,7 +192,7 @@ class ClimateDataProcessor {
          *   (must be common to all files used!) in the files provided
          *   to the climate data proccessor. */
 
-        int jobEndYearInt;  
+        int jobEndYearInt;
         /** The type of input files to be processed by the climate date processor. */
         FileReader::FileTypeEnum inputFileType;
 
@@ -206,7 +206,7 @@ class ClimateDataProcessor {
          * @see makeInputFileTypeMap()
          * @see makeOutputFileTypeMap()
          */
-        std::map <std::string, FileReader::FileTypeEnum > inputFileTypeMap;
+        QMap <QString, FileReader::FileTypeEnum > inputFileTypeMap;
 
 
         /** This is a map (associative array) that stores the key/value pairs
@@ -216,7 +216,7 @@ class ClimateDataProcessor {
          * @see makeInputFileTypeMap()
          * @see makeOutputFileTypeMap()
          */
-        std::map <std::string, FileWriter::FileTypeEnum > outputFileTypeMap;
+        QMap <QString, FileWriter::FileTypeEnum > outputFileTypeMap;
 
         /** This is a map (associative array) that stores which calculations can be performed
          *   given the input files that have been registered with this climatedataprocessor.
@@ -226,33 +226,33 @@ class ClimateDataProcessor {
          *   @see addUserCalculation
          */
 
-        std::map <std::string, bool > availableCalculationsMap;
+        QMap <QString, bool > availableCalculationsMap;
 
 
         /** A filegroup containing files with mean temperature data. */
         FileGroup *  meanTempFileGroup;
-        std::string meanTempFileNameString;
+        QString meanTempFileNameString;
         /** A filegroup containing files with minimum temperature data. */
         FileGroup * minTempFileGroup;
-        std::string minTempFileNameString;
+        QString minTempFileNameString;
         /** A filegroup containing files with maximum temperature data. */
         FileGroup *  maxTempFileGroup;
-        std::string maxTempFileNameString;  
+        QString maxTempFileNameString;
         /** A filegroup containing files with diurnal temperature data. */
         FileGroup *  diurnalTempFileGroup;
-        std::string diurnalTempFileNameString;  
+        QString diurnalTempFileNameString;
         /** A filegroup containing files with mean precipitation data. */
         FileGroup *  meanPrecipFileGroup;
-        std::string meanPrecipFileNameString;  
+        QString meanPrecipFileNameString;
         /** A filegroup containing files with number of frost days data. */
         FileGroup *  frostDaysFileGroup;
-        std::string frostDaysFileNameString;
+        QString frostDaysFileNameString;
         /** A filegroup containing files with solar radiation data. */
         FileGroup *  totalSolarRadFileGroup;
-        std::string totalSolarRadFileNameString;  
+        QString totalSolarRadFileNameString;
         /** A filegroup containing files with wind speed data. */
         FileGroup *  windSpeedFileGroup;
-        std::string windSpeedFileNameString;
+        QString windSpeedFileNameString;
         /** For certain input types (notably cres, arcinfo and Reading paleoclimate),
          * each months data is stored in a discrete file. Files should be numbered
          * e.g. meantemp01.asc, meantemp2.asc...meantemp12.asc for each month.
@@ -263,7 +263,7 @@ class ClimateDataProcessor {
 
         bool debugModeFlag;
         /** This is a standard header (e.g. arc/info header) that will be appended to any output grids. */
-        std::string outputHeaderString;
+        QString outputHeaderString;
 };
 
 #endif
