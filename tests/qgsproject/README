@@ -1,5 +1,7 @@
-This directory contains cppunit tests  related to projection
-classes and implementation in QGIS
+This directory contains cppunit tests related to projection classes and
+implementation in QGIS. The cppunit library can be obtained from
+http://cppunit.sourceforge.net/cgi-bin/moin.cgi.
+
 
 To build and run the test suite:
 1. run qmake
