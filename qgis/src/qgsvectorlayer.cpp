@@ -75,6 +75,7 @@
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
 #include "qgscoordinatetransform.h"
+#include "qgsattributedialog.h"
 //#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
@@ -477,54 +478,91 @@ void QgsVectorLayer::identify(QgsRect * r)
   int featureCount = 0;
   QgsFeature *fet;
   unsigned char *feature;
-  // display features falling within the search radius
-  if(ir)
-  {
-    delete ir;
-  }
-  ir = 0;
-  while ((fet = dataProvider->getNextFeature(true)))
-  {
-    featureCount++;
-    if (featureCount == 1)
-    {
-      ir = new QgsIdentifyResults(mActions);
-    }
 
-    QListViewItem *featureNode = ir->addNode("foo");
-    featureNode->setText(0, fieldIndex);
-    std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-    for (int i = 0; i < attr.size(); i++)
-    {
-#ifdef QGISDEBUG
-      std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
-#endif
-      if (attr[i].fieldName().lower() == fieldIndex)
+  if ( !isEditable() ) {
+      // display features falling within the search radius
+      if(ir)
       {
-        featureNode->setText(1, attr[i].fieldValue());
+	delete ir;
       }
-      ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-    }
-    delete fet;
-  }
+
+      ir = 0;
+      while ((fet = dataProvider->getNextFeature(true)))
+      {
+	featureCount++;
+	if (featureCount == 1)
+	{
+	  ir = new QgsIdentifyResults(mActions);
+	}
+
+	QListViewItem *featureNode = ir->addNode("foo");
+	featureNode->setText(0, fieldIndex);
+	std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+	for (int i = 0; i < attr.size(); i++)
+	{
+#ifdef QGISDEBUG
+	  std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+#endif
+	  if (attr[i].fieldName().lower() == fieldIndex)
+	  {
+	    featureNode->setText(1, attr[i].fieldValue());
+	  }
+	  ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
+	}
+	delete fet;
+      }
 
 #ifdef QGISDEBUG
-  std::cout << "Feature count on identify: " << featureCount << std::endl;
+      std::cout << "Feature count on identify: " << featureCount << std::endl;
 #endif
-  if (ir)
-  {
-    ir->setTitle(name());
-    if (featureCount == 1)
-      ir->showAllAttributes();
-    // restore the identify window position and show it
-    ir->restorePosition();
+      if (ir)
+      {
+	ir->setTitle(name());
+	if (featureCount == 1)
+	  ir->showAllAttributes();
+	// restore the identify window position and show it
+	ir->restorePosition();
+      }
+      
+      if (featureCount == 0)
+      {
+	QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
+      }
+  } else { // Edit attributes
+      // TODO: what to do if more features were selected? - nearest?
+      if ( (fet = dataProvider->getNextFeature(true)) ) {
+	  // Was already changed?
+	  std::map<int,std::map<QString,QString> >::iterator it = mChangedAttributes.find(fet->featureId());
+
+	  std::vector < QgsFeatureAttribute > old;
+	  if ( it != mChangedAttributes.end() ) {
+	      std::map<QString,QString> oldattr = (*it).second;
+	      for( std::map<QString,QString>::iterator ait = oldattr.begin(); ait!=oldattr.end(); ++ait ) {
+		  old.push_back ( QgsFeatureAttribute ( (*ait).first, (*ait).second ) );
+	      }
+	  } else {
+	      old = fet->attributeMap();
+	  }
+	  QgsAttributeDialog ad( &old );
+
+	  if ( ad.exec()==QDialog::Accepted ) {
+	      std::map<QString,QString> attr;
+	      for(int i=0;i<old.size();++i) {
+		  attr.insert ( std::make_pair( old[i].fieldName(), ad.value(i) ) );
+	      }
+	      // Remove old if exists
+	      it = mChangedAttributes.find(fet->featureId());
+
+	      if ( it != mChangedAttributes.end() ) { // found
+		  mChangedAttributes.erase ( it );
+	      }
+		  
+	      mChangedAttributes.insert ( std::make_pair( fet->featureId(), attr ) );
+              mModified=true;
+	  }
+      }
   }
   QApplication::restoreOverrideCursor();
-  if (featureCount == 0)
-  {
-    QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
-  }
-
 }
 
 void QgsVectorLayer::table()
@@ -1915,6 +1953,13 @@ bool QgsVectorLayer::commitChanges()
       delete *it;
     }
     mAddedFeatures.clear();
+
+    if( mChangedAttributes.size() > 0 ) {
+        if ( !dataProvider->changeAttributeValues ( mChangedAttributes ) ) {
+          QMessageBox::warning(0,"Warning","Could change attributes");
+	}
+	mChangedAttributes.clear();
+    }
 
     if(mDeleted.size()>0)
     {
