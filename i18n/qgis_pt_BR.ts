@@ -497,15 +497,15 @@ ferramenta não funcionará corretamente.&lt;/p&gt;
     </message>
     <message>
         <source>QGIS Http Server</source>
-        <translation>Servidor Http do QGIS</translation>
+        <translation type="obsolete">Servidor Http do QGIS</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation>Aplicar</translation>
+        <translation type="obsolete">Aplicar</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>Geral</translation>
+        <translation type="obsolete">Geral</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
@@ -517,7 +517,7 @@ ferramenta não funcionará corretamente.&lt;/p&gt;
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:14pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Este plugin executa um servidor web simples (por padrão na porta 8081) que
 retorna requisições por mapas.&lt;/p&gt;
@@ -531,55 +531,55 @@ forma básica e ainda cheia de problemas e pode tornar o QGIS instável.&lt;/spa
     </message>
     <message>
         <source>Server Options:</source>
-        <translation>Opções do Servidor:</translation>
+        <translation type="obsolete">Opções do Servidor:</translation>
     </message>
     <message>
         <source>Always start plugin with server enabled</source>
-        <translation>Sempre iniciar o plugin com o servidor habilitado</translation>
+        <translation type="obsolete">Sempre iniciar o plugin com o servidor habilitado</translation>
     </message>
     <message>
         <source>Enable Server</source>
-        <translation>Habilitar Servidor</translation>
+        <translation type="obsolete">Habilitar Servidor</translation>
     </message>
     <message>
         <source>Server Name:</source>
-        <translation>Nome do Servidor:</translation>
+        <translation type="obsolete">Nome do Servidor:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation>Porta:</translation>
+        <translation type="obsolete">Porta:</translation>
     </message>
     <message>
         <source>Additional Options:</source>
-        <translation>Opções Adicionais:</translation>
+        <translation type="obsolete">Opções Adicionais:</translation>
     </message>
     <message>
         <source>Projects Directory:</source>
-        <translation>Diretórios dos Projetos:</translation>
+        <translation type="obsolete">Diretórios dos Projetos:</translation>
     </message>
     <message>
         <source>Default Project:</source>
-        <translation>Projeto Padrão:</translation>
+        <translation type="obsolete">Projeto Padrão:</translation>
     </message>
     <message>
         <source>Layers Directory:</source>
-        <translation>Diretório das Camadas:</translation>
+        <translation type="obsolete">Diretório das Camadas:</translation>
     </message>
     <message>
         <source>CSS File:</source>
-        <translation>Arquivo CSS:</translation>
+        <translation type="obsolete">Arquivo CSS:</translation>
     </message>
     <message>
         <source>Log File:</source>
-        <translation>Arquivo de Log:</translation>
+        <translation type="obsolete">Arquivo de Log:</translation>
     </message>
     <message>
         <source>Logs</source>
-        <translation>Logs</translation>
+        <translation type="obsolete">Logs</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation>Debug</translation>
+        <translation type="obsolete">Debug</translation>
     </message>
     <message>
         <source>Scale Bar Plugin</source>
