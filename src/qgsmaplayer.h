@@ -86,6 +86,8 @@ class QgsMapLayer:public QObject
 	bool visible();
 	//! set visibility
 	void setVisible(bool vis);
+	//! Returns the source for the layer
+	QString source();
   /** Write property of int featureType. */
 	virtual void setFeatureType(const int &_newVal);
   /** Read property of int featureType. */

@@ -48,7 +48,9 @@ const QString QgsMapLayer::name()
 {
 	return layerName;
 }
-
+QString QgsMapLayer::source(){
+	return dataSource;
+	}
 const QgsRect QgsMapLayer::extent()
 {
 	return layerExtent;
