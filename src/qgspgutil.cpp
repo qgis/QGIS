@@ -40,6 +40,14 @@ bool QgsPgUtil::isReserved(QString word)
   QStringList::iterator it = mReservedWords.find(word.upper());
   return (it != mReservedWords.end());
 }
+void QgsPgUtil::setConnection(PGconn *con)
+{
+  mPgConnection = con;
+}
+PGconn *QgsPgUtil::connection()
+{
+  return mPgConnection;
+}
 void QgsPgUtil::initReservedWords()
 {
   // create the reserved word list by loading
