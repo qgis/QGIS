@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.8 2003/11/09 06:15:31 gsherman Exp */
+/* qgsprojectio.cpp,v 1.9 2003/11/11 06:23:40 gsherman Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -225,7 +225,7 @@ void QgsProjectIo::writeXML(){
 		// write the layers
 		for(int i = 0; i < map->layerCount(); i++){
 			QgsMapLayer *lyr = map->getZpos(i);
-			
+			bool isDatabase = false;
 			xml << "\t<maplayer type=\"";
 			switch(lyr->type()){
 				case QgsMapLayer::VECTOR:
@@ -236,16 +236,26 @@ void QgsProjectIo::writeXML(){
 					break;
 				case QgsMapLayer::DATABASE:
 					xml << "database";
+					isDatabase = true;
 					break;
 			}
 			xml << "\" visible=\"";
 			if(lyr->visible()){
-				xml << "1";
+				xml << "1";d
 			}else{
 				xml << "0";
 			}
 			xml << "\">\n";
-			xml << "\t\t<layername>" + lyr->name() + "</layername>\n";
+			if(isDatabase){
+				// cast the layer to a qgsdatabaselayer
+				// TODO fix this so database layers are properly saved/restored when name is changed in legend
+				/* QgsDatabaseLayer *dblyr = (QgsDatabaseLayer *)lyr;
+				xml << "\t\t<layername>" + dblyr->schemaName() << "." <<
+					dblyr->geometryTableName() << "</layername>\n"; */
+				xml << "\t\t<layername>" + lyr->name() + "</layername>\n";
+			}else{            
+				xml << "\t\t<layername>" + lyr->name() + "</layername>\n";
+			}
 			xml << "\t\t<datasource>" + lyr->source() + "</datasource>\n";
 			xml << "\t\t<zorder>" << i << "</zorder>\n";
 			xml << "\t\t<symbol>\n";

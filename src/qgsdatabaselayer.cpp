@@ -595,7 +595,18 @@ void QgsDatabaseLayer::table()
 	}
 }
 
-
+QString QgsDatabaseLayer::geometryColumnName(){
+	return geometryColumn;
+}
+QString QgsDatabaseLayer::geometryTableName(){
+	return tableName;
+}
+QString QgsDatabaseLayer::databaseName(){
+	return database;
+}
+QString QgsDatabaseLayer::schemaName(){
+	return schema;
+}
 int QgsDatabaseLayer::endian()
 {
 	char *chkEndian = new char[4];

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>610</width>
-            <height>465</height>
+            <height>468</height>
         </rect>
     </property>
     <property name="font">
@@ -524,70 +524,16 @@
 </images>
 <connections>
     <connection>
-        <sender>actionFileExit</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>fileExit()</slot>
-    </connection>
-    <connection>
-        <sender>actionFileOpen</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>fileOpen()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomOut</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>zoomOut()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomIn</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>zoomIn()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomToSelected</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>zoomToSelected()</slot>
-    </connection>
-    <connection>
-        <sender>drawAction</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>drawLayers()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomFullExtent</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>zoomFull()</slot>
-    </connection>
-    <connection>
-        <sender>actionPan</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>pan()</slot>
-    </connection>
-    <connection>
         <sender>actionHelpAbout</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
         <slot>about()</slot>
     </connection>
     <connection>
-        <sender>actionTestButton</sender>
+        <sender>actionPluginManager</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>testButton()</slot>
-    </connection>
-    <connection>
-        <sender>actionAddNonDbLayer</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>addLayer()</slot>
+        <slot>actionPluginManager_activated()</slot>
     </connection>
     <connection>
         <sender>actionAddLayer</sender>
@@ -596,22 +542,10 @@
         <slot>addDatabaseLayer()</slot>
     </connection>
     <connection>
-        <sender>actionIdentify</sender>
+        <sender>actionAddNonDbLayer</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>identify()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomLast</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>zoomPrevious()</slot>
-    </connection>
-    <connection>
-        <sender>actionTestPlugin</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>testPluginFunctions()</slot>
+        <slot>addLayer()</slot>
     </connection>
     <connection>
         <sender>actionOpenTable</sender>
@@ -620,10 +554,40 @@
         <slot>attributeTable()</slot>
     </connection>
     <connection>
-        <sender>actionOptions</sender>
+        <sender>actionCheckQgisVersion</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>options()</slot>
+        <slot>checkQgisVersion()</slot>
+    </connection>
+    <connection>
+        <sender>drawAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>drawLayers()</slot>
+    </connection>
+    <connection>
+        <sender>actionExportMapServer</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>exportMapServer()</slot>
+    </connection>
+    <connection>
+        <sender>actionFileExit</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>fileExit()</slot>
+    </connection>
+    <connection>
+        <sender>actionFileNew</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>fileNew()</slot>
+    </connection>
+    <connection>
+        <sender>actionFileOpen</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>fileOpen()</slot>
     </connection>
     <connection>
         <sender>actionFileSave</sender>
@@ -638,22 +602,22 @@
         <slot>fileSaveAs()</slot>
     </connection>
     <connection>
-        <sender>actionFileNew</sender>
+        <sender>actionIdentify</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>fileNew()</slot>
+        <slot>identify()</slot>
     </connection>
     <connection>
-        <sender>actionPluginManager</sender>
+        <sender>actionOptions</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>actionPluginManager_activated()</slot>
+        <slot>options()</slot>
     </connection>
     <connection>
-        <sender>actionCheckQgisVersion</sender>
+        <sender>actionPan</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>checkQgisVersion()</slot>
+        <slot>pan()</slot>
     </connection>
     <connection>
         <sender>actionSelect</sender>
@@ -662,16 +626,46 @@
         <slot>select()</slot>
     </connection>
     <connection>
-        <sender>actionExportMapServer</sender>
+        <sender>actionTestButton</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>exportMapServer()</slot>
+        <slot>testButton()</slot>
     </connection>
     <connection>
-        <sender>actionAddLayer</sender>
+        <sender>actionTestPlugin</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>addDatabaseLayer()</slot>
+        <slot>testPluginFunctions()</slot>
+    </connection>
+    <connection>
+        <sender>actionZoomFullExtent</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomFull()</slot>
+    </connection>
+    <connection>
+        <sender>actionZoomIn</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomIn()</slot>
+    </connection>
+    <connection>
+        <sender>actionZoomOut</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomOut()</slot>
+    </connection>
+    <connection>
+        <sender>actionZoomLast</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomPrevious()</slot>
+    </connection>
+    <connection>
+        <sender>actionZoomToSelected</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomToSelected()</slot>
     </connection>
 </connections>
 <slots>
