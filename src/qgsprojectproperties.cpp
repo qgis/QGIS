@@ -129,12 +129,12 @@ void QgsProjectProperties::getProjList()
   //...etc
 
   std::cout << "Getting proj list " << std::endl;
-#ifdef WIN32
-  QString theFileNameQString = "wkt_defs.txt";
-#else
-  QString theFileNameQString = PKGDATAPATH;
-  theFileNameQString += "/wkt_defs.txt";
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
+  QString theFileNameQString = PKGDATAPATH;
+  theFileNameQString += "resources/wkt_defs.txt";
+
   
   QFile myQFile( theFileNameQString );
   if ( myQFile.open( IO_ReadOnly ) ) 
