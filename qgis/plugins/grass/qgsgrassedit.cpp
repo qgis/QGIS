@@ -40,6 +40,8 @@
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgscoordinatetransform.h"
+#include "../../src/qgsfield.h"
+#include "../../src/qgsfeatureattribute.h"
 
 extern "C" {
 #include <gis.h>
@@ -48,11 +50,13 @@ extern "C" {
 
 #include "../../providers/grass/qgsgrass.h"
 #include "../../providers/grass/qgsgrassprovider.h"
+#include "qgsgrassattributes.h"
 #include "qgsgrassedit.h"
 
 bool QgsGrassEdit::mRunning = false;
 
-QgsGrassEdit::QgsGrassEdit ( QgisIface *iface, QWidget * parent, const char * name, WFlags f )
+QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+	                     QWidget * parent, const char * name, WFlags f )
              :QgsGrassEditBase ( parent, name, f )
 {
     #ifdef QGISDEBUG
@@ -63,6 +67,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisIface *iface, QWidget * parent, const char * na
     mValid = false;
     mTool = QgsGrassEdit::NONE;
     mSuspend = false;
+    mQgisApp = qgisApp;
     mIface = iface;
 
     mCanvas = mIface->getMapCanvas();
@@ -147,6 +152,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisIface *iface, QWidget * parent, const char * na
     mLastDynamicIcon = ICON_NONE;
     mLastDynamicPoints.resize(0);
     mSelectedLine = 0;
+    mAttributes = 0;
 
     // Read max cats
     for (int i = 0; i < mProvider->cidxGetNumFields(); i++ ) {
@@ -181,8 +187,32 @@ QgsGrassEdit::QgsGrassEdit ( QgisIface *iface, QWidget * parent, const char * na
 	
     // TODO: how to get keyboard events from canvas (shortcuts)
     
+    restorePosition();
+    
     mValid = true; 
 }
+
+void QgsGrassEdit::restorePosition()
+{
+  QSettings settings;
+  int ww = settings.readNumEntry("/qgis/grass/windows/edit/w", 420);
+  int wh = settings.readNumEntry("/qgis/grass/windows/edit/h", 150);
+  int wx = settings.readNumEntry("/qgis/grass/windows/edit/x", 100);
+  int wy = settings.readNumEntry("/qgis/grass/windows/edit/y", 100);
+  resize(ww,wh);
+  move(wx,wy);
+}
+
+void QgsGrassEdit::saveWindowLocation()
+{
+  QSettings settings;
+  QPoint p = this->pos();
+  QSize s = this->size();
+  settings.writeEntry("/qgis/grass/windows/edit/x", p.x());
+  settings.writeEntry("/qgis/grass/windows/edit/y", p.y());
+  settings.writeEntry("/qgis/grass/windows/edit/w", s.width());
+  settings.writeEntry("/qgis/grass/windows/edit/h", s.height());
+} 
 
 void QgsGrassEdit::updateSymb ( void )
 {
@@ -290,6 +320,7 @@ int QgsGrassEdit::lineSymbFromMap ( int line )
 QgsGrassEdit::~QgsGrassEdit()
 {
     eraseDynamic();
+    saveWindowLocation();
     mRunning = false;
 }
 
@@ -308,6 +339,10 @@ void QgsGrassEdit::closeEdit(void)
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassEdit::close()" << std::endl;
     #endif
+    
+    if ( mAttributes ) {
+	delete mAttributes;
+    }
 
     mProvider->closeEdit();
     
@@ -319,7 +354,6 @@ void QgsGrassEdit::closeEdit(void)
 void QgsGrassEdit::catModeChanged ( void )
 {
     int mode = mCatModeBox->currentItem();
-    std::cerr << "Cat mode = " << mode << std::endl;
 
     int field = mFieldBox->currentText().toInt();
 
@@ -361,7 +395,7 @@ void QgsGrassEdit::fieldChanged ( void )
     }
 }
 
-void QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
+int QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
 {
     int mode = mCatModeBox->currentItem();
     int field = mFieldBox->currentText().toInt();
@@ -370,11 +404,38 @@ void QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
     Vect_reset_cats ( mCats );
     if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
 	Vect_cat_set ( mCats, field, cat );
+
+	// Insert new DB record if link is defined and the record for this cat does not exist
+	QString *key = mProvider->key ( field );
+	
+	if ( !key->isEmpty() ) { // Database link defined 
+	    std::vector<QgsFeatureAttribute> *atts = mProvider->attributes ( field, cat );
+
+	    if ( atts->size() == 0 ) { // Nothing selected
+		QString *error = mProvider->insertAttributes ( field, cat );
+
+		if ( !error->isEmpty() ) {
+		     QMessageBox::warning( 0, "Warning", *error );
+		}
+		delete error;
+	    }
+
+	    delete atts;
+	}
     }
     Vect_line_prune ( Points );
-    mProvider->writeLine ( type, Points, mCats );
+    int line = mProvider->writeLine ( type, Points, mCats );
 
-    // Increase maxCat
+    increaseMaxCat();
+    return line;
+}
+
+void QgsGrassEdit::increaseMaxCat ( void )
+{
+    int mode = mCatModeBox->currentItem();
+    int field = mFieldBox->currentText().toInt();
+    int cat = mCatEntry->text().toInt();
+
     if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
 	int found = 0;
 	for (int i = 0; i < mMaxCats.size(); i++ ) {
@@ -399,6 +460,7 @@ void QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
 	    mCatEntry->setText ( c );
 	}
     }
+
 }
 
 double QgsGrassEdit::threshold ( void )
@@ -478,9 +540,17 @@ void QgsGrassEdit::startTool(int tool)
 		else // boundary
 		    type = GV_BOUNDARY;
 		
-		writeLine ( type, mEditPoints );
+		int line;
+	        line = writeLine ( type, mEditPoints );
 		updateSymb();
 	        displayUpdated();
+
+		if ( mAttributes ) delete mAttributes;
+		mAttributes = new QgsGrassAttributes ( this, mProvider, line, mQgisApp );
+		for ( int i = 0; i < mCats->n_cats; i++ ) {
+		    addAttributes ( mCats->field[i], mCats->cat[i] );
+		}
+		mAttributes->show();
 	    }
 	    break;
 	    
@@ -505,6 +575,12 @@ void QgsGrassEdit::startTool(int tool)
     // All necessary data were written -> reset mEditPoints etc.
     Vect_reset_line ( mEditPoints );
     mSelectedLine = 0;
+    
+    // TODO: mTool != NEW_LINE is a hack for lines until more buttons can be recieved
+    if ( mAttributes && mTool != QgsGrassEdit::NEW_LINE && mTool != QgsGrassEdit::NEW_BOUNDARY ) {
+	delete mAttributes;
+	mAttributes = 0;
+    }
 
     // Start new tool
     mTool = tool;
@@ -521,9 +597,9 @@ void QgsGrassEdit::startTool(int tool)
 	case QgsGrassEdit::MOVE_LINE:
 	case QgsGrassEdit::SPLIT_LINE:
 	case QgsGrassEdit::DELETE_LINE:
+	case QgsGrassEdit::EDIT_ATTRIBUTES:
 	    break;
 	case QgsGrassEdit::EDIT_CATS:
-	case QgsGrassEdit::EDIT_ATTRIBUTES:
 	    mTool = QgsGrassEdit::NONE;
 	    QMessageBox::warning( 0, "Warning", "Tool not yet implemented." );
 	    break;
@@ -558,9 +634,17 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
 	    else // centroid
 		type = GV_CENTROID;
 
-	    writeLine ( type, mEditPoints );
+	    int line;
+	    line = writeLine ( type, mEditPoints );
 	    updateSymb();
 	    displayUpdated();
+
+	    if ( mAttributes ) delete mAttributes;
+	    mAttributes = new QgsGrassAttributes ( this, mProvider, line, mQgisApp );
+	    for ( int i = 0; i < mCats->n_cats; i++ ) {
+		addAttributes ( mCats->field[i], mCats->cat[i] );
+	    }
+	    mAttributes->show();
 	    break;
 
 	case QgsGrassEdit::NEW_LINE:
@@ -818,9 +902,43 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
 
 	    }
 	    break;
+	    
+	case QgsGrassEdit::EDIT_ATTRIBUTES:
+	    // Redraw previously selected line 
+	    if ( mSelectedLine > 0 ) {
+		displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+	    }
+
+	    // Select new/next line
+            mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_POINT|GV_CENTROID, thresh );
+
+            if ( mSelectedLine == 0 ) 
+                mSelectedLine = mProvider->findLine ( point.x(), point.y(), GV_LINE|GV_BOUNDARY, thresh );
+	    
+	    #ifdef QGISDEBUG
+	    std::cerr << "mSelectedLine = " << mSelectedLine << std::endl;
+	    #endif
+
+	    if ( mAttributes ) {
+		delete mAttributes;
+		mAttributes = 0;
+	    }
+
+	    if ( mSelectedLine ) { // highlite
+		displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+		
+		mProvider->readLine ( NULL, mCats, mSelectedLine );
+
+		mAttributes = new QgsGrassAttributes ( this, mProvider, mSelectedLine, mQgisApp );
+		for ( int i = 0; i < mCats->n_cats; i++ ) {
+		    addAttributes ( mCats->field[i], mCats->cat[i] );
+		}
+		mAttributes->show();
+	    }
+	    
+	    break;
 
 	case QgsGrassEdit::EDIT_CATS:
-	case QgsGrassEdit::EDIT_ATTRIBUTES:
 	    std::cerr << "Tool not yet implemented." << std::endl;
 	    break;
 
@@ -840,6 +958,111 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
     std::cerr << "n_points = " << mEditPoints->n_points << std::endl;
     #endif
 
+}
+
+void QgsGrassEdit::addAttributes ( int field, int cat )
+{
+    QString *key = mProvider->key ( field );
+
+    QString lab;
+    lab.sprintf ( "%d:%d", field, cat );
+    int tab = mAttributes->addTab( lab );
+    mAttributes->setField ( tab, field );
+
+    QString catLabel;
+    if ( key->isEmpty() ) {
+	catLabel = "Category";
+    } else {
+	catLabel = *key;
+    }
+    mAttributes->setCat ( tab, catLabel, cat );
+
+    if ( !key->isEmpty() ) { // Database link defined 
+	std::vector<QgsField> *cols = mProvider->columns ( field, cat );
+
+	if ( cols->size() == 0 ) {
+	    QString str;
+	    str.setNum( field );
+	    QMessageBox::warning( 0, "Warning", "Cannot describe table for field " + str );
+	} else {
+	    std::vector<QgsFeatureAttribute> *atts = 
+			 mProvider->attributes ( field, cat );
+
+	    if ( atts->size() == 0 ) { // cannot select attributes
+		 mAttributes->addTextRow ( tab, "WARNING: ATTRIBUTES MISSING" );
+	    } else {
+		int size;
+		if ( atts->size() < cols->size() )
+		    size = atts->size();
+		else
+		    size = cols->size();
+		    
+		for ( int j = 0; j < cols->size(); j++ ) {
+		    QgsField col = (*cols)[j];
+		    QgsFeatureAttribute att = (*atts)[j];
+		    std::cerr << " name = " << col.name() <<  std::endl;
+
+		    if ( col.name() != *key ) {
+			std::cerr << " value = " << att.fieldValue() <<  std::endl;
+			mAttributes->addAttribute ( tab, col.name(), att.fieldValue(), col.type() );
+		    }
+		}
+	    }
+	    delete atts;
+	}
+	delete cols;
+    }
+}
+
+void QgsGrassEdit::addCat ( int line )
+{
+    int mode = mCatModeBox->currentItem();
+    int field = mFieldBox->currentText().toInt();
+    int cat = mCatEntry->text().toInt();
+
+    int type = mProvider->readLine ( mPoints, mCats, line );
+    if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
+	Vect_cat_set ( mCats, field, cat );
+    }
+
+    line = mProvider->rewriteLine ( line, type, mPoints, mCats );
+    if ( mAttributes ) mAttributes->setLine ( line );
+    updateSymb();
+    increaseMaxCat();
+
+    // Insert new DB record if link is defined and the record for this cat does not exist
+    QString *key = mProvider->key ( field );
+    
+    if ( !key->isEmpty() ) { // Database link defined 
+	std::vector<QgsFeatureAttribute> *atts = mProvider->attributes ( field, cat );
+
+	if ( atts->size() == 0 ) { // Nothing selected
+            QString *error = mProvider->insertAttributes ( field, cat );
+
+	    if ( !error->isEmpty() ) {
+		 QMessageBox::warning( 0, "Warning", *error );
+	    }
+	    delete error;
+	}
+
+	delete atts;
+    }
+
+    addAttributes( field, cat );
+}
+
+void QgsGrassEdit::deleteCat ( int line, int field, int cat )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::deleteCat" << std::endl;
+    #endif
+
+    int type = mProvider->readLine ( mPoints, mCats, line );
+    Vect_field_cat_del ( mCats, field, cat );
+
+    line = mProvider->rewriteLine ( line, type, mPoints, mCats );
+    if ( mAttributes ) mAttributes->setLine ( line );
+    updateSymb();
 }
 
 void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
@@ -1173,7 +1396,6 @@ void QgsGrassEdit::displayLastDynamic ( void )
     }
 
     myPainter.end();
-    mCanvas->repaint(false);
 }
 
 void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter *painter )

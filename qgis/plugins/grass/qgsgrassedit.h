@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgrassselect.h  -  Select GRASS layer dialog
+    qgsgrassedit.h  -    GRASS Edit
                              -------------------
     begin                : March, 2004
     copyright            : (C) 2004 by Radim Blazek
@@ -22,13 +22,15 @@
 #include <qpainter.h>
 
 // Must be here, so that it is included to moc file
+#include "../../src/qgisapp.h"
 #include "../../src/qgspoint.h"
 #include "../../src/qgisiface.h"
 #include "../../src/qgscoordinatetransform.h"
 
 class QgsGrassProvider;
 #include "qgsgrasseditbase.h"
-#include "qgsgrassselectbase.h"
+#include "qgsgrassselect.h"
+#include "qgsgrassattributes.h"
 
 typedef struct {
     int field;
@@ -39,7 +41,6 @@ typedef struct {
  *  \brief GRASS vector edit.
  *
  */
-//class QgsGrassEdit: public QgsGrassSelectBase
 class QgsGrassEdit: public QgsGrassEditBase
 {
     Q_OBJECT;
@@ -96,7 +97,8 @@ public:
     };
 
     //! Constructor
-    QgsGrassEdit ( QgisIface *iface, QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+    QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassEdit();
@@ -109,6 +111,18 @@ public:
 
     //! Set new tool and close old one if any
     void startTool (int); 
+
+    //! Add category to selected line 
+    void addCat ( int line ); 
+
+    //! Delete category from selected line 
+    void deleteCat ( int line, int field, int cat ); 
+
+    //! Add attributes to current mAttributes 
+    void addAttributes ( int field, int cat ); 
+
+    //! Increase max cat
+    void increaseMaxCat ( void );
 
 public slots:
     // TODO: once available in QGIS, use only one reciver for all signals
@@ -219,6 +233,9 @@ private:
     //! Status: true - active vector was successfully opened for editing
     bool mValid;
     
+    //! QGIS application
+    QgisApp *mQgisApp; 
+    
     //! Pointer to the QGIS interface object
     QgisIface *mIface;
 
@@ -297,8 +314,10 @@ private:
      */
     void displayUpdated ( void );
 
-    /** Write new element. Current field category is taken. */
-    void writeLine (  int type, struct line_pnts *Points );
+    /** Write new element. Current field category is taken. 
+     * return line number
+     */
+    int writeLine (  int type, struct line_pnts *Points );
 
     /** Get Current threshold in map units */
     double threshold ( void );
@@ -307,6 +326,12 @@ private:
     void snap ( QgsPoint & point );
     void snap ( double *x, double *y);
 
+    /** Attributes */
+    QgsGrassAttributes *mAttributes;
+
+    void restorePosition(void);
+
+    void saveWindowLocation(void);
 };
 
 #endif // QGSGRASSEDIT_H

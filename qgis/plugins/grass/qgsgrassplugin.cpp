@@ -24,7 +24,7 @@
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsdataprovider.h"
-
+#include "../../src/qgsfeatureattribute.h"
 
 #include <qtoolbar.h>
 #include <qmenubar.h>
@@ -49,6 +49,7 @@ extern "C" {
 #include "../../providers/grass/qgsgrassprovider.h"
 
 //the gui subclass
+#include "qgsgrassattributes.h"
 #include "qgsgrassselect.h"
 #include "qgsgrassedit.h"
 
@@ -238,7 +239,7 @@ void QgsGrassPlugin::edit()
 	return;
     }
 
-    QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qgisMainWindowPointer, 0, 
+    QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, 
 	                                 Qt::WType_Dialog | Qt::WStyle_Customize | Qt::WStyle_Tool  );
 
     if ( ed->isValid() ) {

@@ -26,17 +26,23 @@ plugin_LTLIBRARIES = grassplugin.la
 plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassselectbase.moc.cpp \
 	     qgsgrasseditbase.moc.cpp \
-	     qgsgrassedit.moc.cpp
+	     qgsgrassedit.moc.cpp \
+	     qgsgrassattributesbase.moc.cpp \
+	     qgsgrassattributes.moc.cpp 
 
 plugin_UI = qgsgrassselectbase.h \
 	    qgsgrassselectbase.cpp \
 	    qgsgrasseditbase.h \
-	    qgsgrasseditbase.cpp
+	    qgsgrasseditbase.cpp \
+	    qgsgrassattributesbase.h \
+	    qgsgrassattributesbase.cpp 
 
 plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrassselectbase.ui.h \
 	     qgsgrasseditbase.ui \
-	     qgsgrasseditbase.ui.h
+	     qgsgrasseditbase.ui.h \
+	     qgsgrassattributesbase.ui \
+	     qgsgrassattributesbase.ui.h 
 
 grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassplugin.h \
@@ -44,6 +50,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassselect.h \
 			 qgsgrassedit.cpp \
 			 qgsgrassedit.h \
+			 qgsgrassattributes.cpp \
+			 qgsgrassattributes.h \
 			 ../../providers/grass/qgsgrass.h \
 			 ../../providers/grass/qgsgrassprovider.h \
 			 $(plugin_UI) \
@@ -52,10 +60,12 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 nodist_grassplugin_la_SOURCES = $(plugin_MOC)
 
 # UI dependencies      
-qgsgrassselectbase.cpp: qgsgrassselectbase.h qgsgrassselectbase.ui
+qgsgrassselectbase.cpp: qgsgrassselectbase.h qgsgrassselectbase.ui 
 qgsgrassselectbase.h: qgsgrassselectbase.ui
 qgsgrasseditbase.cpp: qgsgrasseditbase.h qgsgrasseditbase.ui
 qgsgrasseditbase.h: qgsgrasseditbase.ui
+qgsgrassattributesbase.cpp: qgsgrassattributesbase.h qgsgrassattributesbase.ui
+qgsgrassattributesbase.h: qgsgrassattributesbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
