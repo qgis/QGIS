@@ -42,7 +42,7 @@ email                : tim@linfiniti.com
 #include "icon_om.xpm"
 // 
 #ifdef WIN32
-#define QGISEXTERN __declspec( dllexport )
+#define QGISEXTERN extern "C" __declspec( dllexport )
 #else
 #define QGISEXTERN extern "C"
 #endif
