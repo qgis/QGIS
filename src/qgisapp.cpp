@@ -62,6 +62,7 @@
 #include "qgslegendview.h"
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
+
 #ifdef POSTGRESQL
 #include <libpq++.h>
 #include "qgsdbsourceselect.h"
@@ -84,8 +85,8 @@ typedef QString name_t();
 typedef QString description_t();
 
 // version
-static const char *qgisVersion = "0.0.13 Development - September-October 2003";
-static const int qgisVersionInt = 13;
+//static const char *qgisVersion = "0.0.13 Development - September-October 2003";
+//static const int qgisVersionInt = 13;
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -181,7 +182,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	mapLegend->setMapCanvas(mapCanvas);
 	legendView->setResizeMode(QListView::AllColumns);
 	QString caption = "Quantum GIS - ";
-	caption += qgisVersion;
+	caption += QGis::qgisVersion;
 	setCaption(caption);
 	connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
 	connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
@@ -220,7 +221,7 @@ void QgisApp::about()
 {
 	QgsAbout *abt = new QgsAbout();
 	QString versionString = "Version ";
-	versionString += qgisVersion;
+	versionString += QGis::qgisVersion;
 	#ifdef POSTGRESQL
 		versionString += " with PostgreSQL support";
 	#else
@@ -230,7 +231,7 @@ void QgisApp::about()
 	QString urls = "Web Page: http://qgis.sourceforge.net\nSourceforge Project Page: http://sourceforge.net/projects/qgis";
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
-	watsNew += qgisVersion;
+	watsNew += QGis::qgisVersion;
 	watsNew += "\n"
 	"**Multiple features displayed with the Identify tool\n" 
 	"**Identify function returns and displays attributes for multiple\n"
@@ -398,9 +399,13 @@ void QgisApp::fileSaveAs(){
 }
 
 void QgisApp::exportMapServer(){
-	QgsMapServerExport *mse = new QgsMapServerExport(mapCanvas, QgsProjectIo::SAVEAS);
-	mse->write();
+	
+	QgsMapserverExport *mse = new QgsMapserverExport(mapCanvas, this);
+	if(mse->exec()){
+		mse->write();
+	}
 	delete mse;
+	
 }
 void QgisApp::zoomIn()
 {
@@ -966,11 +971,11 @@ void QgisApp::socketConnectionClosed(){
 		// check the version from the  server against our version
 		QString versionInfo;
 		int currentVersion = parts[0].toInt();
-		if(currentVersion > qgisVersionInt){
+		if(currentVersion > QGis::qgisVersionInt){
 		// show version message from server
 			versionInfo = "There is a new version of QGIS available\n";
 		}else{
-			if(qgisVersionInt > currentVersion){
+			if(QGis::qgisVersionInt > currentVersion){
 				versionInfo = "You are running a development version of QGIS\n";
 			}else{
 			versionInfo = "You are running the current version of QGIS\n";
