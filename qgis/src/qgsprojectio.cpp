@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.37 2004/05/06 19:39:46 mcoletti Exp */
+/* qgsprojectio.cpp,v 1.38 2004/06/09 15:02:33 timlinux Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -138,6 +138,7 @@ bool QgsProjectIo::read(QString path)
           QDomElement element = node.toElement();
           QString type = element.attribute("type");
           QString visible = element.attribute("visible");
+          QString showInOverview = element.attribute("showInOverviewFlag");
 
           //QMessageBox::information(0,"Type of map layer", type);
           // process layer name
@@ -371,6 +372,9 @@ void QgsProjectIo::writeXML()
                 isDatabase = true;
                 break;
             }
+          //
+          // layer visibility
+          //
           xml << "\" visible=\"";
           if (lyr->visible())
             {
@@ -379,7 +383,19 @@ void QgsProjectIo::writeXML()
             {
               xml << "0";
             }
+          //
+          // layer is shown in overview?
+          //
+          xml << "\" showInOverviewFlag=\"";
+          if (lyr->showInOverviewStatus())
+            {
+              xml << "1";
+          } else
+            {
+              xml << "0";
+            }
           xml << "\">\n";
+          
           if (isDatabase)
             {
               // cast the layer to a qgsdatabaselayer
