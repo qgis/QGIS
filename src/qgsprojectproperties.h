@@ -85,4 +85,7 @@ private:
   typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
   //stores a list of available projection definitions 
   ProjectionWKTMap mProjectionsMap;
+  //XXX List view items for the tree view of projections
+  QListViewItem *geoList;
+  QListViewItem *projList;
 };
