@@ -1374,7 +1374,7 @@ void QgisApp::helpContents(){
   // find the installed location of the help files
   // open index.html using browser
   helpViewer = new QgsHelpViewer(this,"helpviewer",false);
-  //helpViewer->showContent(appDir +"/share/doc","index.html");
+  helpViewer->showContent(appDir +"/share/doc","index.html");
   helpViewer->show();
 }
 /** Get a pointer to the currently selected map layer */
