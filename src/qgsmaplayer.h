@@ -71,6 +71,14 @@ class QgsMapLayer : public QgsDataSource  {
   virtual void setSymbol( QgsSymbol * _newVal);
   /** Read property of QgsSymbol * symbol. */
   virtual const QgsSymbol * symbol();
+  /** Write property of QString labelField. */
+  virtual void setlabelField( const QString& _newVal);
+  /** Read property of QString labelField. */
+  virtual const QString& labelField();
+  /** No descriptions */
+  void setZ(int zorder);
+  /** No descriptions */
+  int z();
 
  public: // Public attributes
     //! Layers enum defining the types of layers that can be added to a map
@@ -97,6 +105,9 @@ class QgsMapLayer : public QgsDataSource  {
   /**  */
   QgsSymbol * m_symbol;
  
+public: // Public attributes
+  /**  */
+  QString m_labelField;
 };
 
 #endif

@@ -91,12 +91,13 @@ QgisApp::addLayer ()
 	  
 	  // add it to the mapcanvas collection
 	  mapCanvas->addLayer (lyr);
-	  // no drawing done -- need to pass the layer collection
-	  // to the rendering engine (yet to be written)
-	 
+	  
 	  ++it;
 	}
       qApp->processEvents();
+      // update legend
+			/*! \todo Need legend scrollview and legenditem classes */
+      // draw the map
       mapCanvas->render2();
       statusBar()->message(mapCanvas->extent().stringRep());
 

@@ -56,7 +56,7 @@ public:
 public slots:
 	void showMouseCoordinate(QgsPoint &);	
 private:
-	//! Map canvase 
+	//! Map canvas
 QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
 QWidget *mapToc;
