@@ -18,6 +18,7 @@
  /* $Id$ */
 #include <qstring.h>
 #include <qlineedit.h>
+#include <qtextedit.h>
 #include <qlabel.h>
 #include <qlistview.h>
 #include <qcombobox.h>
@@ -30,12 +31,15 @@
 #include <qwidgetstack.h>
 #include <qpushbutton.h>
 #include <qwidget.h>
+#include <qgroupbox.h>
+
 
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsfield.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsvectordataprovider.h"
+#include "../providers/postgres/qgspostgresprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsgraduatedmarenderer.h"
@@ -64,6 +68,8 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, Q
 bufferRenderer(layer->
                renderer())
 {
+
+
   // populate the general information
   QString source = layer->source();
   source = source.left(source.find("password"));
@@ -72,6 +78,20 @@ bufferRenderer(layer->
   // display type and feature count
   lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  //see if we are dealing with a pg layer here so that we can enable the sql box
+  if(lyr->providerType() == "postgres")
+  {
+    grpSubset->setEnabled(true);
+    QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) dp;
+    txtSubsetSQL->setText(myPGProvider->subsetString());
+    txtSubsetSQL->setEnabled(true);
+    pbnQueryBuilder->setEnabled(true);
+  }
+  else
+  {
+    // disable sql subset group box
+    grpSubset->setEnabled(false);
+  }
   QString numFeatures;
   numFeatures = numFeatures.setNum(dp->featureCount());
   lblFeatureCount->setText(numFeatures);
@@ -274,7 +294,22 @@ void QgsDlgVectorLayerProperties::pbnOK_clicked()
 }
 void QgsDlgVectorLayerProperties::pbnApply_clicked()
 {
+  //
+  // Set up sql subset query if applicable
+  //
 
+  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  //see if we are dealing with a pg layer here
+  if(layer->providerType() == "postgres")
+  {
+    grpSubset->setEnabled(true);
+    QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) dp;
+    myPGProvider->setSubsetString(txtSubsetSQL->text());
+  }
+  else
+  {
+    //do nothing
+  }
   // set up the scale based layer visibility stuff....
   layer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
   layer->setMinScale(spinMinimumScale->value());
@@ -332,4 +367,9 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
   }
 
   rendererDirty = false;
+}
+
+void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
+{
+
 }
