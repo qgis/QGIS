@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.177 2004/08/28 16:34:37 gsherman Exp
+ChangeLog,v 1.178 2004/09/02 01:50:34 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-01 [mcoletti] 0.4.0devel25
+QgsRect : 
+
+  - no longer waste copy of QgsPoint in ctor
 
 2004-08-14 [gsherman] 0.4.0devel23
 ** Moved plugin toolbar to the qgisappbase toolbar container rather than
