@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman@mrcc.com
+    email                : sherman at mrcc.com
              Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
 ***************************************************************************/
 
@@ -70,7 +70,7 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.9";
+static const char *qgisVersion = "0.0.10";
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -199,8 +199,8 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*Preliminary project save/open support\n"
-		"*Streamlined build system\n";
+	watsNew += "\n*Fixes to project save/open support\n"
+		;
 
 
 	abt->setWhatsNew(watsNew);
