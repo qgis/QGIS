@@ -36,6 +36,8 @@ public:
   
 private:
     
+    void traverseDirectories(const QString& dirname, QListViewItem* theListViewItem);
+    QListViewItem * listParent; 
 signals:
 };
 
