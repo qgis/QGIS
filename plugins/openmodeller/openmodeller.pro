@@ -24,7 +24,7 @@ LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\l
 # config for standalone mode
 # CONFIG += qt thread rtti debug console
 # config for dll
-# CONFIG += qt thread rtti dll #debug console
+CONFIG += qt dll thread rtti  #debug console
 
 
 #qgis plugin mode
@@ -54,7 +54,7 @@ HEADERS += algorithm_factory.hh \
 INTERFACES += openmodellerguibase.ui
 
 #exe mode
-SOURCES += main.cpp 
+#SOURCES += main.cpp 
 #plugin mode
 SOURCES += plugin.cpp 
 #used by both
