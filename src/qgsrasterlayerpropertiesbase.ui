@@ -1084,6 +1084,12 @@
         <receiver>QgsRasterLayerPropertiesBase</receiver>
         <slot>apply()</slot>
     </connection>
+    <connection>
+        <sender>sliderTransparency</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>QgsRasterLayerPropertiesBase</receiver>
+        <slot>sliderTransparency_valueChanged(int)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsrasterlayerpropertiesbase.ui.h</include>
