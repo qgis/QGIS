@@ -91,7 +91,19 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     if (renderer)
     {
 	std::list < QgsRangeRenderItem * >list = renderer->items();
-	classificationComboBox->setCurrentItem(renderer->classificationField());
+	
+	//display the classification field
+	QString classfield="";
+	for(std::map<QString,int>::iterator it=mFieldMap.begin();it!=mFieldMap.end();++it)
+	{
+	    if(it->second==renderer->classificationField())
+	    {
+		classfield=it->first;
+		break;
+	    }
+	}
+	classificationComboBox->setCurrentText(classfield);
+
 	QGis::VectorType m_type = mVectorLayer->vectorType();
 	numberofclassesspinbox->setValue(list.size());
 	//fill the items of the renderer into mValues
