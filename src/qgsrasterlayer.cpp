@@ -108,6 +108,7 @@ static const char *const mSupportedRasterFormats[] = {
   "AAIGrid",
   "AIG",
   "DTED",
+  "ECW",
   "GRASS",
   "GTiff",
   "HFA",
