@@ -121,6 +121,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
 
     mEditPoints = Vect_new_line_struct ();
     mPoints = Vect_new_line_struct ();
+    mLastDynamicPoints = Vect_new_line_struct ();
     mCats = Vect_new_cats_struct ();
 
     // Set lines symbology from map
@@ -273,7 +274,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     // Set variables
     mSize = 9;
     mLastDynamicIcon = ICON_NONE;
-    mLastDynamicPoints.resize(0);
+    Vect_reset_line ( mLastDynamicPoints );
     mSelectedLine = 0;
     mAttributes = 0;
 
@@ -1600,6 +1601,9 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
     #if QGISDEBUG > 3
     std::cerr << "QgsGrassEdit::mouseEventReceiverMove() mTool = " << mTool << std::endl;
     #endif
+
+    if ( mCanvas->mapTool() != QGis::EmitPoint ) return;
+
     statusBar()->message(mCanvasPrompt);
     
     switch ( mTool ) {
@@ -1709,7 +1713,8 @@ void QgsGrassEdit::postRender(QPainter *painter)
     if ( mSelectedLine ) {
 	displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
     }
-    // Redisplay current dynamics
+    
+    // Redisplay current dynamic
     displayLastDynamic ( );
 }
 
@@ -1886,19 +1891,9 @@ void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y
     // Delete last drawing
     displayLastDynamic ( );
 
+    Vect_reset_line ( mLastDynamicPoints );
     if ( Points ) {
-	mLastDynamicPoints.resize (Points->n_points);
-
-	for ( int i = 0; i < Points->n_points; i++ ) {
-	    QgsPoint point;
-	    point.setX(Points->x[i]);
-	    point.setY(Points->y[i]);
-	    mTransform->transform(&point);
-	    mLastDynamicPoints.setPoint( i, static_cast<int>(point.x()), 
-                                            static_cast<int>(point.y()) ); 
-	}
-    } else {
-	mLastDynamicPoints.resize(0);
+	Vect_append_points ( mLastDynamicPoints, Points, GV_FORWARD );
     }
 
     if ( type != ICON_NONE ) {
@@ -1925,7 +1920,15 @@ void QgsGrassEdit::displayLastDynamic ( void )
     myPainter.setRasterOp(Qt::XorROP);  // Must be after begin()
     myPainter.setPen ( mSymb[SYMB_DYNAMIC] );
 		
-    myPainter.drawPolyline ( mLastDynamicPoints );
+    QPointArray pa ( mLastDynamicPoints->n_points );
+    for ( int i = 0; i < mLastDynamicPoints->n_points; i++ ) {
+	QgsPoint point;
+	point.setX(mLastDynamicPoints->x[i]);
+	point.setY(mLastDynamicPoints->y[i]);
+	mTransform->transform(&point);
+	pa.setPoint( i, static_cast<int>(point.x()), static_cast<int>(point.y()) ); 
+    }
+    myPainter.drawPolyline ( pa );
 
     if ( mLastDynamicIcon != ICON_NONE ) {
         displayIcon ( mLastDynamicIconX, mLastDynamicIconY, mSymb[SYMB_DYNAMIC], mLastDynamicIcon, 

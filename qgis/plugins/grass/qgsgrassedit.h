@@ -195,8 +195,8 @@ private:
     void displayIcon (double x, double y, const QPen & pen, int type, int size, QPainter *painter = 0); 
 
     //! Last dynamicaly drawn points
-    //struct line_pnts *mLastDynamicPoints;
-    QPointArray mLastDynamicPoints;
+    struct line_pnts *mLastDynamicPoints;
+    //QPointArray mLastDynamicPoints;
 
     //! Last dynamicaly drawn icon type
     int mLastDynamicIcon;
