@@ -332,7 +332,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     int wkbType;
     //std::list<int> attributes=m_renderer->classificationAttributes();
     while ((fet = dataProvider->getNextFeature(attributesneeded)))
-      //while((fet = dataProvider->getNextFeature(attributes)))
+	//while((fet = dataProvider->getNextFeature(attributes)))
     {
       // If update threshold is greater than 0, check to see if
       // the threshold has been exceeded
