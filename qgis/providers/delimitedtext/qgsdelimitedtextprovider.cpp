@@ -297,7 +297,7 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature &feature, bool fetchAtt
           geometry->wkbType = 1;
           geometry->x = x;
           geometry->y = y;
-          feature.setGeometry((unsigned char *)geometry);
+          feature.setGeometry((unsigned char *)geometry, sizeof(wkbPoint));
           feature.setValid(true);
           // get the attributes if requested
           if(fetchAttributes){
@@ -421,7 +421,7 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
              geometry->y = y;
              */
           f = new QgsFeature();
-          f->setGeometry(geometry);
+          f->setGeometry(geometry, sizeof(wkbPt));
           //std::cerr << "Setting feature id to " << mFid << std::endl; 
           f->setFeatureId(mFid++);
           // get the attributes if requested

@@ -369,7 +369,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       int wkbType = *((int *) (feature + 1));
       //--std::cout << "WKBtype is: " << wkbType << std::endl;
       f = new QgsFeature(*noid);
-      f->setGeometry(feature);
+      f->setGeometry(feature, returnedLength + 1);
         if (fetchAttributes) {
           getFeatureAttributes(*noid, f);
         }
