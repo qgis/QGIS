@@ -98,6 +98,9 @@ public:
     /** \brief Maximum value */
     double max ( void );
 
+    /** \brief Clear the color table */
+    void clear();
+
 private:
     /** \brief vector of discrete values */
     std::vector<DISCRETE> mDiscrete;
