@@ -59,7 +59,7 @@ class QgsVectorLayer:public QgsMapLayer
   //! Display the attribute table
   void table();
   //! Set the primary display field to be used in the identify results dialog 
-  void setDisplayField();
+  void setDisplayField(QString fldName=0);
   //! Initialize the context menu
   void initContextMenu(QgisApp * app);
   enum SHAPETYPE

@@ -97,7 +97,8 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & feature )
 QgsFeature::~QgsFeature()
 {
 #ifdef QGISDEBUG
-  std::cerr << "In QgsFeature destructor" << std::endl;
+  // disabled this - it causes too much output!!
+//  std::cerr << "In QgsFeature destructor" << std::endl;
 #endif
   if (geometry)
   {
