@@ -38,9 +38,6 @@ QgsShapeFileLayer::QgsShapeFileLayer(){
 			delete ds;
     }
     
-
-
-	
 }
 QgsShapeFileLayer::~QgsShapeFileLayer(){
 }
