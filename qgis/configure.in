@@ -195,6 +195,7 @@ if test -n "$with_grass" -a x"$with_grass" != "xno"; then
 	AC_MSG_ERROR( [GRASS headers not found] )
     fi
 
+    GRASS_BASE="$with_grass"
     GRASS_INC="$with_grass/include/"
     HAVE_GRASS=1
     AC_MSG_RESULT([yes])
@@ -204,6 +205,7 @@ else
     ac_grass="no"
 fi
 
+AC_SUBST(GRASS_BASE)
 AC_SUBST(HAVE_GRASS)
 AC_SUBST(GRASS_LIB)
 AC_SUBST(GRASS_INC)
