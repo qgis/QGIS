@@ -1246,18 +1246,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     {
         if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
         {
-//       QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-//       break;
-          QPainter paint(this);
-          paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
-          std::list<QgsPoint>::iterator it=mCaptureList.end();
-          --it;
-          --it;
-          QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-          paint.drawLine(static_cast<int>(lastpoint.x()),
-                         static_cast<int>(lastpoint.y()),
-                         e->x(),
-                         e->y());
+	    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+	    break;
         }
     }
     else
