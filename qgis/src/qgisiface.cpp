@@ -97,3 +97,8 @@ std::map<int, QString> QgisIface::menuMapById()
 {
   return qgis->menuMapById();
 }
+  
+QgsMapCanvas * QgisIface::getMapCanvas()
+{
+  return qgis->getMapCanvas();
+}

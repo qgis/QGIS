@@ -19,6 +19,7 @@
 #ifndef QGISIFACE_H
 #define QGISIFACE_H
 #include "qgisinterface.h"
+#include "qgsmapcanvas.h"
 
 class QgsMapLayer;
 /** \class QgisIface
@@ -70,6 +71,8 @@ class QgisIface : public QgisInterface{
          * Get the menu info mapped by menu id (key is menu id, value is name)
          */
         std::map<int,QString> menuMapById();
+        /** Return a pointer to the map canvas used by qgisapp */
+        QgsMapCanvas * getMapCanvas();	
     private:
         //! Pointer to the QgisApp object
         QgisApp *qgis;
