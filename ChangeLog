@@ -1,8 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.130 2004/06/13 22:04:47 timlinux Exp
+ChangeLog,v 1.131 2004/06/14 00:10:28 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
+2004-06-14 [ts] 0.3.0devel35
+** Added addRasterLayer(QgsRasterLayer *) to the plugin interface. This allows plugins 
+   to construct their own raster object, set its symbolisation and the pass it over 
+   to the app to be loaded into the canvas.
 
 2004-06-13 [ts] 0.3.0devel34
 ** Removed gdal deps in qgisapp.
