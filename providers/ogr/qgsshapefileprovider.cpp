@@ -102,7 +102,7 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
 {
   for(int i=0;i<fieldCount();i++)
   {
-    delete minmaxcache[i];
+    delete[] minmaxcache[i];
   }
   delete[] minmaxcache;
 }
@@ -539,6 +539,7 @@ void QgsShapeFileProvider::fillMinMaxCash()
         minmaxcache[i][1]=value;  
       }
     }
+    delete[] f->getGeometry();
   }while(f=getNextFeature(true));
 
   minmaxcachedirty=false;
