@@ -40,8 +40,10 @@
 #include <qregexp.h>
 #include <qlistview.h>
 
+
 //stdc++ includes
 #include <iostream>
+#include <cstdlib>
 
     const QString GEOWKT =    "GEOGCS[\"WGS 84\", "
     "  DATUM[\"WGS_1984\", "
@@ -237,10 +239,11 @@ void QgsProjectProperties::getProjList()
     QTextStream myQTextStream( &myQFile );
     QString myCurrentLineQString;
     QStringList myQStringList;
-    //XXX setup the nodes for the list view
+    // setup the nodes for the list view
     geoList = new QListViewItem(lstCoordinateSystems,"Geographic Coordinate System");
     projList = new QListViewItem(lstCoordinateSystems,"Projected Coordinate System");
 
+    // Read the QGIS-supplied CS file 
     while ( !myQTextStream.atEnd() ) 
     {
       myCurrentLineQString = myQTextStream.readLine(); // line of text excluding '\n'
@@ -253,47 +256,118 @@ void QgsProjectProperties::getProjList()
       mProjectionsMap[myShortName]=myCurrentLineQString;
     }
     myQFile.close();
-    
-    
+
+    // Read the users custom coordinate system (CS) file
+    // Get the user home dir. On Unix, this is $HOME. On Windows and MacOSX we
+    // will use the application directory.
+    //
+    // Note that the global cs file must exist or the user file will never
+    // be read.
+    //
+    // XXX Check to make sure this works on OSX
+
+    // construct the path to the users custom CS file
+    #if defined(WIN32) || defined(Q_OS_MACX)
+    customCsFile = PKGDATAPATH + "/share/qgis/user_defined_cs.txt";
+#else
+
+    customCsFile = getenv("HOME");
+    customCsFile += "/.qgis/user_defined_cs.txt";
+#endif
+    QFile csQFile( customCsFile );
+    if ( csQFile.open( IO_ReadOnly ) ) 
+    {
+      QTextStream userCsTextStream( &csQFile );
+
+      // Read the user-supplied CS file 
+      while ( !userCsTextStream.atEnd() ) 
+      {
+        myCurrentLineQString = userCsTextStream.readLine(); // line of text excluding '\n'
+        //get the user friendly name for the WKT
+        QString myShortName = getWKTShortName(myCurrentLineQString);
+        mProjectionsMap[myShortName]=myCurrentLineQString;
+      }
+      csQFile.close();
+    }
+
+    // end of processing users custom CS file
+
     //determine the current project projection so we can select the correct entry in the combo
     QString myProjectionName = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",GEOWKT);
     QString mySelectedKey = getWKTShortName(myProjectionName);
-    QListViewItem * mySelectedItem = NULL;
+    QListViewItem * mySelectedItem = 0;
     //make sure we dont allow duplicate entries into the combo
     //cboProjection->setDuplicatesEnabled(false);
     //no add each key to our list view
     ProjectionWKTMap::Iterator myIterator;
+    QListViewItem *newItem;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       //cboProjection->insertItem(myIterator.key());
-      
+
       //XXX Add to the tree view
-      if(myIterator.key().find("LatLong") > -1)
+      if(myIterator.key().find("Lat/Long") > -1)
       {
+        // this is a geographic coordinate system
+        // Add it to the tree
+        newItem = new QListViewItem(geoList, myIterator.key());
         if (myIterator.key()==mySelectedKey)
         {
-          mySelectedItem = new QListViewItem(geoList, myIterator.key());
+          // this is the selected item -- store it for future use
+          mySelectedItem = newItem;
         }
-        else
-        {
-          new QListViewItem(geoList, myIterator.key());
-        }        
       }
       else
       {
-        if (myIterator.key()==mySelectedKey)
+        // coordinate system is projected...
+        QListViewItem *node; // node that we will add this cs to...
+
+        // projected coordinate systems are stored by projection type
+        QStringList projectionInfo = QStringList::split(" - ", myIterator.key());
+        if(projectionInfo.size() == 2)
         {
-          mySelectedItem = new QListViewItem(projList, myIterator.key());
+          // Get the projection name and strip white space from it so we
+          // don't add empty nodes to the tree
+          QString projName = projectionInfo[1].stripWhiteSpace();
+          if(projName.length() == 0)
+          {
+            // If the projection name is blank, set the node to 
+            // 0 so it won't be inserted
+            node = projList;
+          }
+          else
+          {
+
+            // Replace the underscores with blanks
+            projName = projName.replace('_', ' ');
+            // Get the node for this type and add the projection to it
+            // If the node doesn't exist, create it
+            node = lstCoordinateSystems->findItem(projName, 0);
+            if(node == 0)
+            {
+              // the node doesn't exist -- create it
+              node = new QListViewItem(projList, projName);
+            }
+          }
         }
         else
         {
-          new QListViewItem(projList, myIterator.key());
-        }        
-      }
-      
+          // No projection type is specified so add it to the top-level
+          // projection node
+          //XXX This should never happen
+          node = projList;
+        }
 
-    }
+        // now add the coordinate system to the appropriate node
+
+        newItem = new QListViewItem(node, myIterator.key());
+        if (myIterator.key()==mySelectedKey)
+          mySelectedItem = newItem;
+      }
+    } //else = proj coord sys        
+
+
     /**
     //make sure all the loaded layer WKT's and the active project projection exist in the 
     //combo box too....
@@ -301,20 +375,20 @@ void QgsProjectProperties::getProjList()
     std::map<QString, QgsMapLayer *>::iterator myMapIterator;
     for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
     {
-      QgsMapLayer * myMapLayer = myMapIterator->second;
-      QString myWKT = myMapLayer->getProjectionWKT();
-      QString myWKTShortName = getWKTShortName(myWKT);
-      //TODO add check here that CS is not already in the projections map
-      //and if not append to wkt_defs file
-      cboProjection->insertItem(myIterator.key());
-      mProjectionsMap[myWKTShortName]=myWKT;
+    QgsMapLayer * myMapLayer = myMapIterator->second;
+    QString myWKT = myMapLayer->getProjectionWKT();
+    QString myWKTShortName = getWKTShortName(myWKT);
+    //TODO add check here that CS is not already in the projections map
+    //and if not append to wkt_defs file
+    cboProjection->insertItem(myIterator.key());
+    mProjectionsMap[myWKTShortName]=myWKT;
     }    
-    
+
     //set the combo entry to the current entry for the project
     cboProjection->setCurrentText(mySelectedKey);
     */
     lstCoordinateSystems->setCurrentItem(mySelectedItem);
-            lstCoordinateSystems->ensureItemVisible(mySelectedItem);
+    lstCoordinateSystems->ensureItemVisible(mySelectedItem);
   }
   else
   {
@@ -325,7 +399,7 @@ void QgsProjectProperties::getProjList()
     {
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       //cboProjection->insertItem(myIterator.key());
-      if(myIterator.key().find("LatLong") > -1)
+      if(myIterator.key().find("Lat/Long") > -1)
       {
         new QListViewItem(geoList, myIterator.key());
       }
@@ -392,16 +466,16 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
   QString myProjection,myDatum,myCoordinateSystem,myName;
   if(theWKT.find(QRegExp("^GEOGCS")) == 0)
   {
-    myProjection = "LatLong";
+    myProjection = "Lat/Long";
     myCoordinateSystem = mySpatialRefSys.GetAttrValue("GEOGCS",0);
-    myName = myProjection + " - " + myCoordinateSystem;
+    myName = myProjection + " - " + myCoordinateSystem.replace('_', ' ');
   }  
   else
   {    
   
     myProjection = mySpatialRefSys.GetAttrValue("PROJCS",0);
     myCoordinateSystem = mySpatialRefSys.GetAttrValue("PROJECTION",0);
-    myName = myProjection + " - " + myCoordinateSystem;
+    myName = myProjection + " - " + myCoordinateSystem.replace('_', ' ');
   } 
   //std::cout << "Projection short name " << myName << std::endl;
   return myName; 

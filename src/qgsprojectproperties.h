@@ -93,4 +93,7 @@ private:
   //XXX List view items for the tree view of projections
   QListViewItem *geoList;
   QListViewItem *projList;
+  //! Users custom coordinate system file
+  QString customCsFile;
+
 };
