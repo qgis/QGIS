@@ -586,7 +586,7 @@ void QgsVectorLayer::table()
 		tabledisplay->table()->setSorting(true);
 
 
-		tabledisplay->setTitle(tr("Tabledisplaytribute table - ") + name());
+		tabledisplay->setTitle(tr("Attribute table - ") + name());
 		tabledisplay->show();
 		tabledisplay->table()->clearSelection();	//deselect the first row
 
