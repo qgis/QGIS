@@ -124,7 +124,8 @@ private:
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
   QgisIface *mQGisIface;
-
+  //!pointer to the qaction for this plugin
+  QAction * mQActionPointer;
   ////////////////////////////////////////////////////////////////////
   //
   // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....

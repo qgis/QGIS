@@ -84,8 +84,8 @@
 static const char * const sIdent = "$Id$";
 static const char * const sName = "e002shp";
 static const char * const sDescription = "Convert an e00 file to a shape file. Based on the e002shp command line tool by Adrian Gutarra Sebastian.";
-static const char * const sVersion = "Version 0.1";
-static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
+static const char * const sPluginVersion = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -102,7 +102,7 @@ static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
                  mQGisApp(theQGisApp), 
                  mQGisIface(theQgisInterface),
-                 QgisPlugin(sName,sDescription,sVersion,sType)
+                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType)
 {
 }
 
@@ -121,14 +121,14 @@ void Plugin::initGui()
   mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
   mMenuId = mQGisIface->addMenu("&e002shp", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("e002shp", QIconSet(icon), "&icon",0, this, "run");
+  mQActionPointer = new QAction("e002shp", QIconSet(icon), "&icon",0, this, "run");
   // Connect the action to the run
-  connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
   mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "e002shp");
   mToolBarPointer->setLabel("e002shp");
-  // Add the zoom previous tool to the toolbar
-  qGisInterface->addToolBarIcon(myQActionPointer);
+  // Add the to the toolbar
+  mQGisIface->addToolBarIcon(mQActionPointer);
 
 }
 //method defined in interface
@@ -151,9 +151,9 @@ void Plugin::run()
 void Plugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
-  qGisInterface->removeToolBarIcon(myQActionPointer);
-  delete myQActionPointer;
+  mMenuBarPointer->removeItem(mMenuId);
+  mQGisIface->removeToolBarIcon(mQActionPointer);
+  delete mQActionPointer;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -209,25 +209,25 @@ QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * th
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-  return mName;
+  return sName;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-  return mDescription;
+  return sDescription;
 }
 
 // Return the type (either UI or MapLayer plugin)
 QGISEXTERN int type()
 {
-  return mPluginType;
+  return sPluginType;
 }
 
 // Return the version number for the plugin
 QGISEXTERN QString version()
 {
-  return mPluginVersion;
+  return sPluginVersion;
 }
 
 // Delete ourself
