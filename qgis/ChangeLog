@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.107 2004/06/03 14:05:00 jobi Exp
+ChangeLog,v 1.108 2004/06/04 10:23:46 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-04 [jobi] 0.3.0devel13
+** fixed tims typo with GDAL_LDADD
+** cleaned pluginnames
 
 2004-06-03 [jobi] 0.3.0devel12
 ** fixed bug #965720 by adding math.h for gcc 3.4 problems

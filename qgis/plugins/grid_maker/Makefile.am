@@ -13,7 +13,7 @@
 plugindir = ${pkglibdir}
 
 #for plugin so
-plugin_LTLIBRARIES = libgridmakerplugin.la
+plugin_LTLIBRARIES = gridmakerplugin.la
 
 #for standalon executable
 bin_PROGRAMS = gridmaker 
@@ -31,7 +31,7 @@ bin_PROGRAMS = gridmaker
 ##  For plugin lib
 ##
 
-libgridmakerplugin_la_SOURCES = plugin.cpp \
+gridmakerplugin_la_SOURCES = plugin.cpp \
 	graticulecreator.cpp \
 	graticulecreator.h \
 	utils.c \
@@ -57,10 +57,10 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-libgridmakerplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LADD)../../src/libqgis.la
-libgridmakerplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-libgridmakerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
-libgridmakerplugin_la_LDFLAGS = -avoid-version -module
+gridmakerplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
+gridmakerplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
+gridmakerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+gridmakerplugin_la_LDFLAGS = -avoid-version -module
 
 ##
 ##  For standalone executable

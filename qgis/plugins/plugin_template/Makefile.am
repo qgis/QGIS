@@ -12,7 +12,7 @@
 
 plugindir = ${pkglibdir}
 #[pluginname] below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = lib[pluginname]plugin.la
+plugin_LTLIBRARIES = [pluginname]plugin.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -23,7 +23,7 @@ plugin_LTLIBRARIES = lib[pluginname]plugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-lib[pluginname]plugin_la_SOURCES =  plugin.cpp \
+[pluginname]plugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
 			      plugingui.cpp \
 			      plugingui.h \
@@ -45,9 +45,9 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
-lib[pluginname]plugin_la_LIBADD = $(QT_LDADD) $(GDAL_LADD) ../../src/libqgis.la
-lib[pluginname]plugin_la_LDFLAGS = -avoid-version -module
-lib[pluginname]plugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+[pluginname]plugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
+[pluginname]plugin_la_LDFLAGS = -avoid-version -module
+[pluginname]plugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm
 

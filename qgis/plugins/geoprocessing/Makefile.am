@@ -50,7 +50,7 @@ qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
 
-pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LADD) $(PG_LIB) ../../src/libqgis.la
+pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) $(PG_LIB) ../../src/libqgis.la
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
 pggeoprocessingplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
 
