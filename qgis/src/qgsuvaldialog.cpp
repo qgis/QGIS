@@ -84,9 +84,6 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	
 	if(renderer->items().size()==0)
 	{
-#ifdef QGISDEBUG
-	    qWarning("Number of items in the renderer is "+QString::number(renderer->items().size()));
-#endif
 	    changeClassificationAttribute(classattr);
 	}
 	
@@ -96,9 +93,9 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	    QgsRenderItem* item=(*iter).second;
 	    QString itemvalue=item->value();
 	    QgsSymbol* sym=new QgsSymbol();
-	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
 	    sym->setPen(item->getSymbol()->pen());
 	    sym->setBrush(item->getSymbol()->brush());
+	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
 	    mValues.insert(std::make_pair(itemvalue,ritem));
 	    mClassBreakBox->insertItem(itemvalue);
 	}
