@@ -5,32 +5,24 @@
 #
 # $Id$
 ####################################################################
-#TEMPLATE = app  # to build as a standalone app
 TEMPLATE = lib   # to build as a dll
 
-TARGET = omgui #will produce omgui.dll or omgui.exe depending on standalone or dll mode
+TARGET = omgui #will produce omgui.dll 
 
-#inc path for standalone app:
-#INCLUDEPATH += . %GDAL%\include 
 #inc path for qgis plugin
 INCLUDEPATH += . %GDAL%\include ..\..\qgis_win32\plugins ..\..\qgis_win32\src
 
 
-#libs for standalone mode
-#LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib 
 #libs for dll
 #LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
 LIBS += libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
 
-# config for standalone mode
-# CONFIG += qt thread rtti debug console
 # config for dll
-CONFIG += qt dll thread rtti  #debug console
+CONFIG += qt dll thread rtti 
 
 
 #qgis plugin mode
 HEADERS += plugin.h 
-#used by both plugin and exe
 HEADERS += algorithm_factory.hh \
            file_parser.hh \
            list.hh \
@@ -54,11 +46,8 @@ HEADERS += algorithm_factory.hh \
            request_file.hh
 INTERFACES += openmodellerguibase.ui
 
-#exe mode
-#SOURCES += main.cpp 
 #plugin mode
 SOURCES += plugin.cpp 
-#used by both
 SOURCES += list.cpp \
            occurrences_file.cpp \
            openmodellergui.cpp \
