@@ -4,7 +4,7 @@ INCLUDEPATH += . $(GDAL)\include \
                 $(POSTGRESQL)\src\interfaces\libpq \
                 $(POSTGRESQL)\src\include
 LIBS += $(GDAL)\lib\gdal_i.lib
-CONFIG += qt thread
+CONFIG += qt thread rtti
 DLLDESTDIR= ..\..\src\lib\qgis
 # Input
 SOURCES += moc_qgisapp.cpp \
@@ -24,7 +24,6 @@ moc_qgsgramadialogbase.cpp \
 moc_qgsgramaextensionwidget.cpp \
 moc_qgsgrasydialog.cpp \
 moc_qgsgrasydialogbase.cpp \
-moc_qgsgrasyextensionwidget.cpp \
 moc_qgshelpviewer.cpp \
 moc_qgshelpviewerbase.cpp \
 moc_qgsidentifyresults.cpp \
@@ -67,6 +66,8 @@ moc_qgsludialogbase.cpp \
 moc_qgsludialog.cpp \
 moc_qgsvectorlayer.cpp \
 moc_splashscreen.cpp \
+moc_qgsuvalmadialog.cpp \
+moc_qgsuvalmadialogbase.cpp \
 qgisapp.cpp \
 qgisappbase.cpp \
 qgisiface.cpp \
@@ -97,7 +98,6 @@ qgsgramadialogbase.cpp \
 qgsgramaextensionwidget.cpp \
 qgsgrasydialog.cpp \
 qgsgrasydialogbase.cpp \
-qgsgrasyextensionwidget.cpp \
 qgshelpviewer.cpp \
 qgshelpviewerbase.cpp \
 qgsidentifyresults.cpp \
@@ -161,4 +161,7 @@ qgsuvaldialogbase.cpp \
 qgsvectorfilewriter.cpp \
 qgsludialogbase.cpp \
 qgsludialog.cpp \
-qgsvectorlayer.cpp 
+qgsvectorlayer.cpp \
+qgsuvalmadialog.cpp \
+qgsuvalmadialogbase.cpp \
+qgsuvalmarenderer.cpp

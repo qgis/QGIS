@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsAbout</class>
 <widget class="QDialog">
     <property name="name">
@@ -79,6 +79,16 @@
             <property name="name">
                 <cstring>tabWidget</cstring>
             </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>235</red>
+                    <green>235</green>
+                    <blue>235</blue>
+                </color>
+            </property>
+            <property name="backgroundOrigin">
+                <enum>ParentOrigin</enum>
+            </property>
             <widget class="QWidget">
                 <property name="name">
                     <cstring>Widget2</cstring>
@@ -112,7 +122,18 @@
                             <set>AlignCenter</set>
                         </property>
                     </widget>
-                    <widget class="QTextEdit" row="2" column="0">
+                    <widget class="QPushButton" row="2" column="0">
+                        <property name="name">
+                            <cstring>btnQgisUser</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Subscribe to the QGIS-User mailing list</string>
+                        </property>
+                        <property name="flat">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <widget class="QTextEdit" row="3" column="0">
                         <property name="name">
                             <cstring>lblUrls</cstring>
                         </property>
@@ -127,13 +148,13 @@
                         </property>
                         <property name="paletteBackgroundColor">
                             <color>
-                                <red>192</red>
-                                <green>192</green>
-                                <blue>192</blue>
+                                <red>255</red>
+                                <green>255</green>
+                                <blue>255</blue>
                             </color>
                         </property>
                         <property name="backgroundOrigin">
-                            <enum>WidgetOrigin</enum>
+                            <enum>WindowOrigin</enum>
                         </property>
                         <property name="frameShape">
                             <enum>PopupPanel</enum>
@@ -710,6 +731,12 @@
         <receiver>widgetStack1</receiver>
         <slot>raiseWidget(int)</slot>
     </connection>
+    <connection>
+        <sender>btnQgisUser</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAbout</receiver>
+        <slot>qgisUserMailingList()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsabout.ui.h</include>
@@ -720,6 +747,7 @@
     <slot>setWhatsNew( QString txt )</slot>
     <slot>setPluginInfo( QString txt )</slot>
     <slot>showAuthorPic( QListBoxItem * )</slot>
+    <slot>qgisUserMailingList()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
