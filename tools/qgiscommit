@@ -49,3 +49,5 @@ mv ChangeLog.tmp ChangeLog
 #
 
 cvs commit -m "${MSG}"
+
+rm ${TMPFILE}
