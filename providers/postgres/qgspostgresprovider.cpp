@@ -853,7 +853,15 @@ QString QgsPostgresProvider::getPrimaryKey(){
 QString QgsPostgresProvider::minValue(int position){
   // get the field name 
   QgsField fld = attributeFields[position];
-  QString sql = QString("select min(%1) from %2").arg(fld.name()).arg(tableName);
+  QString sql;
+  if(sqlWhereClause.isEmpty())
+  {
+      sql = QString("select min(%1) from %2").arg(fld.name()).arg(tableName);
+  }
+  else
+  {
+      sql = QString("select min(%1) from %2").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
+  }
   PGresult *rmin = PQexec(connection,(const char *)sql);
   QString minValue = PQgetvalue(rmin,0,0);
   PQclear(rmin);
@@ -865,7 +873,15 @@ QString QgsPostgresProvider::minValue(int position){
 QString QgsPostgresProvider::maxValue(int position){
   // get the field name 
   QgsField fld = attributeFields[position];
-  QString sql = QString("select max(%1) from %2").arg(fld.name()).arg(tableName);
+  QString sql;
+  if(sqlWhereClause.isEmpty())
+  {
+      sql = QString("select max(%1) from %2").arg(fld.name()).arg(tableName);
+  }
+  else
+  {
+      sql = QString("select max(%1) from %2").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
+  } 
   PGresult *rmax = PQexec(connection,(const char *)sql);
   QString maxValue = PQgetvalue(rmax,0,0);
   PQclear(rmax);
