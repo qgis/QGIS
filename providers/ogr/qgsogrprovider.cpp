@@ -135,6 +135,9 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
   //    std::cerr << "Creating the wktReader\n";
   wktReader = new geos::WKTReader(geometryFactory);
 
+  mNumericalTypes.push_back("OFTInteger");
+  mNumericalTypes.push_back("OFTReal");
+  mNonNumericalTypes.push_back("OFTString");
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -869,6 +872,56 @@ bool QgsOgrProvider::addFeatures(std::list<QgsFeature*> const flist)
     }
   }
   return returnvalue;
+}
+
+bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
+{
+    bool returnvalue=true;
+
+    for(std::map<QString,QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
+    {
+	if(iter->second=="OFTInteger")
+	{
+	    OGRFieldDefn fielddefn(iter->first,OFTInteger);
+	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
+	    {
+#ifdef QGISDEBUG
+		qWarning("QgsOgrProvider.cpp: writing of the field failed");	
+#endif
+		returnvalue=false;
+	    }
+	}
+	else if(iter->second=="OFTReal")
+	{
+	    OGRFieldDefn fielddefn(iter->first,OFTReal);
+	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
+	    {
+#ifdef QGISDEBUG
+		qWarning("QgsOgrProvider.cpp: writing of the field failed");
+#endif
+		returnvalue=false;
+	    }
+	}
+	else if(iter->second=="OFTString")
+	{
+	    OGRFieldDefn fielddefn(iter->first,OFTString);
+	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
+	    {
+#ifdef QGISDEBUG
+		qWarning("QgsOgrProvider.cpp: writing of the field failed");
+#endif
+		returnvalue=false;
+	    }
+	}
+	else
+	{
+#ifdef QGISDEBUG
+	    qWarning("QgsOgrProvider.cpp: type not found");
+#endif
+	    returnvalue=false;
+	}
+    }
+    return returnvalue;
 }
 
 bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
