@@ -37,6 +37,8 @@ qgis_SOURCES =  qgisapp.cpp \
 				qgsidentifyresults.h \
 				qgslayerproperties.cpp \
 				qgslayerproperties.h \
+				qgsrasterlayerproperties.cpp \
+				qgsrasterlayerproperties.h \
 				qgslegend.cpp \
 				qgslegend.h \
 				qgslegenditem.cpp \
@@ -87,6 +89,7 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 			qgsattributetable.moc.cpp\
 			qgsidentifyresultsbase.moc.cpp\
 			qgslayerpropertiesbase.moc.cpp\
+			qgsrasterlayerpropertiesbase.moc.cpp\
 			qgslegend.moc.cpp\
 			qgslegenditembase.moc.cpp\
 			qgslegenditem.moc.cpp\
@@ -109,6 +112,8 @@ qgis_UI = qgisappbase.h\
 			qgsabout.cpp\
 			qgslayerpropertiesbase.h\
 			qgslayerpropertiesbase.cpp\
+			qgsrasterlayerpropertiesbase.h\
+			qgsrasterlayerpropertiesbase.cpp\
 			qgsidentifyresultsbase.h\
 			qgsidentifyresultsbase.cpp\
 			qgsattributetablebase.h\
@@ -125,6 +130,7 @@ qgis_UI = qgisappbase.h\
 qgis_UIC = qgisappbase.ui \
 	qgslegenditembase.ui \
 	qgslayerpropertiesbase.ui \
+	qgsrasterlayerpropertiesbase.ui \
 	qgsabout.ui \
 	qgsidentifyresultsbase.ui \
 	qgsattributetablebase.ui \
@@ -140,6 +146,8 @@ qgslegenditembase.h: qgslegenditembase.ui
 qgslegenditembase.cpp: qgslegenditembase.h qgslegenditembase.ui
 qgslayerpropertiesbase.h: qgslayerpropertiesbase.ui
 qgslayerpropertiesbase.cpp: qgslayerpropertiesbase.h qgslayerpropertiesbase.ui
+qgsrasterlayerpropertiesbase.h: qgsrasterlayerpropertiesbase.ui
+qgsrasterlayerpropertiesbase.cpp: qgsrasterlayerpropertiesbase.h qgsrasterlayerpropertiesbase.ui
 qgsabout.h: qgsabout.ui
 qgsabout.cpp: qgsabout.h qgsabout.ui
 qgsidentifyresultsbase.h: qgsidentifyresultsbase.ui
