@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.32 2004/03/23 01:01:51 timlinux Exp
+dnl configure.in,v 1.33 2004/03/23 06:21:15 gsherman Exp
 
 AC_INIT
 
@@ -256,6 +256,7 @@ AC_CONFIG_FILES([
   doc/plugins/delimited_text/Makefile
   qgis.spec
 	plugins/delimited_text/Makefile
+  tools/qgis_config/Makefile
 ])
 
 AC_OUTPUT
