@@ -217,11 +217,6 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
     const char * layerNameStr = mne.text(); // debugger probe
 
-    // process zorder
-    mnl = layer_node.namedItem("zorder");
-    mne = mnl.toElement();
-    // XXX and do what with it?
-
     // now let the children grab what they need from the DOM node.
     return readXML_( layer_node );
 
