@@ -1536,6 +1536,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	QgsPoint  idPoint = mCanvasProperties->coordXForm->
 	  toMapCoordinates(e->x(), e->y());
 	emit xyClickCoordinates(idPoint);
+	emit xyClickCoordinates(idPoint,e->button());
 	break;
       }
 
