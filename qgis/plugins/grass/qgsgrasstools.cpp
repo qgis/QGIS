@@ -47,6 +47,7 @@
 #include <qlayout.h>
 #include <qcheckbox.h>
 #include <qprocess.h>
+#include <qiconset.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -111,9 +112,15 @@ void QgsGrassTools::moduleClicked( QListViewItem * item )
     
     if ( name.length() == 0 ) return;  // Section
     
-    QString path = mAppDir + "/share/qgis/grass/modules/" + name + ".qgm";
+    QString path = mAppDir + "/share/qgis/grass/modules/" + name;
     QgsGrassModule *m = new QgsGrassModule ( this, mQgisApp, mIface, path, mTabWidget );
-    mTabWidget->addTab ( m, item->text(0) );
+    //mTabWidget->addTab ( m, item->text(0) );
+    
+    QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
+    QIconSet is;
+    is.setPixmap ( pixmap, QIconSet::Small, QIconSet::Normal );
+    mTabWidget->addTab ( (QWidget*)m, is, "" );
+		
     mTabWidget->setCurrentPage ( mTabWidget->count()-1 );
 }
 
@@ -199,9 +206,12 @@ void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
 		QString name = e.attribute("name");
 	        std::cout << "name = " << name << std::endl;
 
-                QString path = mAppDir + "/share/qgis/grass/modules/" + name + ".qgm";
+                QString path = mAppDir + "/share/qgis/grass/modules/" + name;
                 QString label = QgsGrassModule::label ( path );
+		QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
+
 		item->setText( 0, label );
+		item->setPixmap( 0, pixmap );
 		item->setText( 1, name );
 		lastItem = item;
 	    }
