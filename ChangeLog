@@ -1,8 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.157 2004/07/05 18:07:26 timlinux Exp
+ChangeLog,v 1.158 2004/07/10 06:45:34 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
+2004-07-09 [gsherman] 0.4.0devel3
+** First pass at defining PostgreSQL layers using a where clause in the
+   data provider. UI may need some work. When adding a PG layer, double-
+   click on the layer name to define the where clause. Do not include the
+   where keyword
 2004-07-05 [ts] 0.4.0devel2
 ** Added option for forcing redraw when adding a raster - intended for use by
    plugins.

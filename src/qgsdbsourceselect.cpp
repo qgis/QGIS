@@ -19,6 +19,7 @@
 #include <qsettings.h>
 #include <qpixmap.h>
 #include <qlistbox.h>
+#include <qlistview.h>
 #include <qstringlist.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
@@ -43,7 +44,7 @@ qgisApp(app)
   // connect the double-click signal to the addSingleLayer slot in the parent
 
   //disable the 'where clause' box for 0.4 release
-  groupBox3->hide();
+//  groupBox3->hide();
 
 }
 
@@ -106,18 +107,24 @@ void QgsDbSourceSelect::deleteConnection()
 void QgsDbSourceSelect::addTables()
 {
   //store the table info
-  for (int idx = 0; idx < lstTables->numRows(); idx++)
-    {
-      if (lstTables->isSelected(idx))
-        m_selectedTables += lstTables->text(idx);
-    }
+  QListViewItemIterator it( lstTables );
+  while ( it.current() ) 
+  {
+    QListViewItem *item = it.current();
+    ++it;
 
-// BEGIN CHANGES ECOS
+    if ( item->isSelected() )
+    {
+      m_selectedTables += item->text(1) + " sql=" + item->text(2);
+    }
+  }
+
+  // BEGIN CHANGES ECOS
   if (m_selectedTables.empty() == true)
     QMessageBox::information(this, tr("Select Table"), tr("You must select a table in order to add a Layer."));
   else
     accept();
-// END CHANGES ECOS
+  // END CHANGES ECOS
 }
 
 void QgsDbSourceSelect::dbConnect()
@@ -213,7 +220,12 @@ void QgsDbSourceSelect::dbConnect()
                   else
                     p = 0;
                   if (p != 0)
-                    lstTables->insertItem(*p, v);
+                  {
+                    QListViewItem *lItem = new QListViewItem(lstTables);
+                    lItem->setText(1,v);
+                    lItem->setPixmap(0,*p);
+                    lstTables->insertItem(lItem);
+                  }
                 }
 // BEGIN CHANGES ECOS
               if (cmbConnections->count() > 0)
@@ -244,9 +256,12 @@ QString QgsDbSourceSelect::connInfo()
 {
   return m_connInfo;
 }
-
+void QgsDbSourceSelect::setSql(QListViewItem *item)
+{
+  item->setText(2,QInputDialog::getText("Define SQL Layer","Enter the SQL where clause (without the where keyword) to define the layer"));
+}
 void QgsDbSourceSelect::addLayer(QListBoxItem * item)
 {
   qgisApp->addVectorLayer(m_connInfo, item->text(), "postgres");
-  lstTables->setSelected(item, false);
+//  lstTables->setSelected(item, false);
 }

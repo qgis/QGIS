@@ -44,12 +44,22 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     // string:
     //  host=192.168.1.5 dbname=test user=gsherman password=xxx table=tablename
     //--std::cout << "Data source uri is " << uri << std::endl;
-    // strip the table name off
-    tableName = uri.mid(uri.find("table=") + 6);
-   
+    // strip the table and sql statement name off and store them
+    int sqlStart = uri.find(" sql");
+    int tableStart = uri.find("table=");
+#ifdef QGISDEBUG
+    std::cout << "URI: " << uri << std::endl;
+    std::cout << "tableStart: " << tableStart << std::endl;
+    std::cout << "sqlStart: " << sqlStart << std::endl;
+#endif 
+    tableName = uri.mid(tableStart + 6, sqlStart - tableStart -6);
+    sqlWhereClause = uri.mid(sqlStart + 5);
     QString connInfo = uri.left(uri.find("table="));
-    //--std::cout << "Table name is " << tableName << std::endl;
-    //--std::cout << "Connection info is " << connInfo << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "Table name is " << tableName << std::endl;
+    std::cout << "SQL is " << sqlWhereClause << std::endl;
+    std::cout << "Connection info is " << connInfo << std::endl;
+#endif
     // calculate the schema if specified
     QString schema = "";
     if (tableName.find(".") > -1) {
@@ -164,6 +174,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             // get the extents
            
             sql = "select extent(" + geometryColumn + ") from " + tableName;
+            if(sqlWhereClause.length() > 0)
+            {
+              sql += " where " + sqlWhereClause;
+            }
 
 #if WASTE_TIME
             sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
@@ -175,10 +189,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
               std::cerr << "Getting extents using schema.table: " + sql << std::endl;
               #endif
             result = PQexec(pd, (const char *) sql);
-	    std::string box3d = PQgetvalue(result, 0, 0);
-	    std::string s;
+      std::string box3d = PQgetvalue(result, 0, 0);
+      std::string s;
 
-	    box3d = box3d.substr(box3d.find_first_of("(")+1);
+      box3d = box3d.substr(box3d.find_first_of("(")+1);
             box3d = box3d.substr(box3d.find_first_not_of(" "));
             s = box3d.substr(0, box3d.find_first_of(" "));
             double minx = strtod(s.c_str(), NULL);
@@ -212,6 +226,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             PQclear(result);
             // get total number of features
             sql = "select count(*) from " + tableName;
+            if(sqlWhereClause.length() > 0)
+            {
+              sql += " where " + sqlWhereClause;
+            }
             result = PQexec(pd, (const char *) sql);
             numberFeatures = QString(PQgetvalue(result, 0, 0)).toLong();
             //--std::cout << "Feature count is " << numberFeatures << std::endl;
@@ -263,6 +281,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             PQclear(result);
             // get the total number of features in the layer
             sql = "select count(*) from " + tableName;
+            if(sqlWhereClause.length() > 0)
+            {
+              sql += " where " + sqlWhereClause;
+            }
             result = PQexec(pd, (const char *) sql);
             numberFeatures = QString(PQgetvalue(result, 0, 0)).toLong();
             #ifdef QGISDEBUG
@@ -350,8 +372,8 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
    /*    if(!ready) {
         // set up the 
         QString declare = QString("declare qgisf binary cursor for select oid," 
-          "asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
-        //--std::cout << "Selecting features using: " << declare << std::endl;
+          "asbinary(%1,'%2') as qgs_feature_geometry from %3 %4").arg(geometryColumn).arg(endianString()).arg(tableName).arg(sqlWhereClause);
+        std::cerr << << "Selecting features using: " << declare << std::endl;
         // set up the cursor
         PQexec(connection,"begin work");
         PQexec(connection, (const char *)declare);
@@ -421,57 +443,57 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist)
     QgsFeature *f = 0;
     if (valid)
     {
-	QString fetch = "fetch forward 1 from qgisf";
+  QString fetch = "fetch forward 1 from qgisf";
         queryResult = PQexec(connection, (const char *)fetch);
-	if(PQntuples(queryResult) == 0)
-	{
-	    PQexec(connection, "end work");
-	    ready = false;
-	    return 0;
+  if(PQntuples(queryResult) == 0)
+  {
+      PQexec(connection, "end work");
+      ready = false;
+      return 0;
         } 
-	int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
-	int *noid;
-	if(swapEndian)
-	{
-	    char *temp  = new char[sizeof(oid)];
-	    char *ptr = (char *)&oid + sizeof(oid) -1;
-	    int cnt = 0;
-	    while(cnt < sizeof(oid))
-	    {
-		temp[cnt] = *ptr--;
-		cnt++;
-	    }  
-	    noid = (int *)temp;
+  int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
+  int *noid;
+  if(swapEndian)
+  {
+      char *temp  = new char[sizeof(oid)];
+      char *ptr = (char *)&oid + sizeof(oid) -1;
+      int cnt = 0;
+      while(cnt < sizeof(oid))
+      {
+    temp[cnt] = *ptr--;
+    cnt++;
+      }  
+      noid = (int *)temp;
         }
-	else
-	{
-	    noid = &oid;
-	}
-	int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry"));	
-	if(returnedLength > 0)
-	{
-	  unsigned char *feature = new unsigned char[returnedLength + 1];
-	  memset(feature, '\0', returnedLength + 1);
-	  memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
-	  int wkbType = *((int *) (feature + 1));
-	  f = new QgsFeature(*noid);
-	  f->setGeometry(feature, returnedLength + 1);
-	  if(!attlist.empty())
-	  {
-	      getFeatureAttributes(*noid, f, attlist);
-	  } 
-	  
-	}
-	else
-	{
-	    //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
-	}
+  else
+  {
+      noid = &oid;
+  }
+  int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry")); 
+  if(returnedLength > 0)
+  {
+    unsigned char *feature = new unsigned char[returnedLength + 1];
+    memset(feature, '\0', returnedLength + 1);
+    memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
+    int wkbType = *((int *) (feature + 1));
+    f = new QgsFeature(*noid);
+    f->setGeometry(feature, returnedLength + 1);
+    if(!attlist.empty())
+    {
+        getFeatureAttributes(*noid, f, attlist);
+    } 
+    
+  }
+  else
+  {
+      //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
+  }
     }
     else 
     {
         //--std::cout << "Read attempt on an invalid postgresql data source\n";
     }
-    return f;	  
+    return f;   
 }
 
     /**
@@ -490,6 +512,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
     QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
       + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
+    std::cout << "Binary cursor: " << declare << std::endl; 
       if(useIntersect){
         declare += " where intersects(" + geometryColumn;
         declare += ", GeometryFromText('BOX3D(" + rect->stringRep();
@@ -503,6 +526,11 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
         declare += srid;
         declare += ")";
       }
+      if(sqlWhereClause.length() > 0)
+      {
+        declare += " and " + sqlWhereClause;
+      }
+
 #ifdef QGISDEBUG
     std::cout << "Selecting features using: " << declare << std::endl;
 #endif
@@ -642,10 +670,10 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f, std::list
       // results
       if(fld != geometryColumn)
       {
-	  // Add the attribute to the feature
-	  QString val = PQgetvalue(attr,0, i);
-	  //qWarning(val);
-	  f->addAttribute(fld, val);
+    // Add the attribute to the feature
+    QString val = PQgetvalue(attr,0, i);
+    //qWarning(val);
+    f->addAttribute(fld, val);
       }
   }
 }
@@ -661,7 +689,12 @@ void QgsPostgresProvider::reset()
   //--std::cout << "Resetting the cursor to the first record " << std::endl;
    QString declare = QString("declare qgisf binary cursor for select " +
     primaryKey + 
-    ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
+    ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn)
+        .arg(endianString()).arg(tableName);
+   if(sqlWhereClause.length() > 0)
+   {
+     declare += " where " + sqlWhereClause;
+   }
         //--std::cout << "Selecting features using: " << declare << std::endl;
         #ifdef QGISDEBUG
         std::cerr << "Setting up binary cursor: " << declare << std::endl;
