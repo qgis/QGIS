@@ -45,6 +45,8 @@ class QgsGraMaExtensionWidget: public QScrollView
     QWidget* getWidget(int column, int row);
     /**Resizes all marker images (in case the scale factors may have changed)*/
     void adjustMarkers();
+    /**Adjusts the marker size in one row*/
+    void adjustMarker(int row);
 
  protected:
     /**Number of the field to classify*/
@@ -62,7 +64,8 @@ class QgsGraMaExtensionWidget: public QScrollView
     virtual void resizeEvent (QResizeEvent* e);
 
 protected slots:
-     void selectMarker();
+    void selectMarker();
+    void handleReturnPressed(); 
 
  private:
     /**Do not use the default constructor*/
