@@ -296,10 +296,12 @@ qgis_SOURCES =					\
 
 postgresHEADERS = qgsdbsourceselect.h \
 									qgsnewconnection.h \
-									qgspgquerybuilder.h
+									qgspgquerybuilder.h \
+									qgspgutil.h
 postgresSOURCES = qgsdbsourceselect.cpp \
 									qgsnewconnection.cpp \
-									qgspgquerybuilder.cpp
+									qgspgquerybuilder.cpp \
+									qgspgutil.cpp
 postgresUIC     = qgsdbsourceselectbase.ui \
 									qgsnewconnectionbase.ui \
 									qgspgquerybuilderbase.ui	
@@ -350,6 +352,7 @@ libqgis_la_SOURCES =				\
 		qgsmaplayer.moc.cpp \
 		qgsmaplayerregistry.cpp \
 		qgsmaplayerregistry.moc.cpp \
+		qgspgutil.cpp \
 		qgspoint.cpp \
 		qgspoint.moc.cpp \
 		qgsproviderregistry.cpp \
