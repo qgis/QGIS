@@ -488,39 +488,61 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist, bool ge
 	PQexec(connection, "end work");
 	ready = false;
 	return 0;
-    } 
+    }
+
     int *noid;
-    int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
+    bool cont=false;//flag for repeating the loop in case of deleted features
+    while(cont==false)
+    {
+	int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
 #ifdef QGISDEBUG 
-    std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
+	std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
 #endif  
-    // We don't support primary keys that are not int4 so if
-    // the key is int8 we use the oid as the id instead.
-    // TODO Throw a warning to let the user know that the layer
-    // is not using a primary key and that performance will suffer
-    if(primaryKeyType == "int8")
-    {
-      noid = &oid;
+	// We don't support primary keys that are not int4 so if
+	// the key is int8 we use the oid as the id instead.
+	// TODO Throw a warning to let the user know that the layer
+	// is not using a primary key and that performance will suffer
+	if(primaryKeyType == "int8")
+	{
+	    noid = &oid;
+	}
+	else
+	{
+	    if(swapEndian)
+	    {
+		char *temp  = new char[sizeof(oid)];
+		char *ptr = (char *)&oid + sizeof(oid) -1;
+		int cnt = 0;
+		while(cnt < sizeof(oid))
+		{
+		    temp[cnt] = *ptr--;
+		    cnt++;
+		}  
+		noid = (int *)temp;
+	    }
+	    else
+	    {
+		noid = &oid;
+	    }
+	}
+	//block feature if oid is contained in mDeletedFeatures
+	std::set<int>::iterator iter=mDeletedFeatures.find(*noid);
+	if(iter==mDeletedFeatures.end())
+	{
+	    cont=true;
+	}
+	else
+	{
+	    //we hit deleted feature, fetch the next
+	    fetch = "fetch forward 1 from qgisf";
+	    queryResult = PQexec(connection, (const char *)fetch);
+	    if(PQntuples(queryResult) == 0)
+	    {
+		cont=true;
+	    }
+	}
     }
-    else
-    {
-      if(swapEndian)
-      {
-        char *temp  = new char[sizeof(oid)];
-        char *ptr = (char *)&oid + sizeof(oid) -1;
-        int cnt = 0;
-        while(cnt < sizeof(oid))
-        {
-          temp[cnt] = *ptr--;
-          cnt++;
-        }  
-        noid = (int *)temp;
-      }
-      else
-      {
-        noid = &oid;
-      }
-    }
+    
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry")); 
     if(returnedLength > 0)
     {
@@ -1002,11 +1024,13 @@ bool QgsPostgresProvider::commitFeature(QgsFeature* f)
 	if(result==0)
 	{
 	    QMessageBox::information(0,"INSERT error","An error occured during feature insertion",QMessageBox::Ok);
+	    return false;
 	}
 	ExecStatusType message=PQresultStatus(result);
 	if(message==PGRES_FATAL_ERROR)
 	{
 	    QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+	    return false;
 	}
 	
 	return true;
@@ -1017,6 +1041,37 @@ bool QgsPostgresProvider::commitFeature(QgsFeature* f)
 QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 {
     return "NULL";
+}
+
+bool QgsPostgresProvider::deleteFeature(int id)
+{
+    mDeletedFeatures.insert(id);
+    mModified=true;
+    return true;
+}
+
+bool QgsPostgresProvider::eraseFeature(int id)
+{
+    QString sql("DELETE FROM "+tableName+" WHERE "+primaryKey+" = "+QString::number(id));
+#ifdef QGISDEBUG
+    qWarning("delete sql: "+sql);
+#endif
+
+    //send DELETE statement and do error handling
+    PGresult* result=PQexec(connection, (const char *)sql);
+    if(result==0)
+    {
+	QMessageBox::information(0,"DELETE error","An error occured during deletion from disk",QMessageBox::Ok);
+	return false;
+    }
+    ExecStatusType message=PQresultStatus(result);
+    if(message==PGRES_FATAL_ERROR)
+    {
+	QMessageBox::information(0,"DELETE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+	return false;
+    }
+	
+    return true;
 }
 
 /**
