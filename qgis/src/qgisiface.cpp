@@ -57,6 +57,11 @@ void QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QStrin
   qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
 }
 
+void QgisIface::addRasterLayer(QString rasterLayerPath)
+{
+  qgis->addRasterLayer(rasterLayerPath);
+}
+
 QgsMapLayer *QgisIface::activeLayer()
 {
   return qgis->activeLayer();
