@@ -18,6 +18,7 @@
 #include "qgsuvaldialog.h"
 #include "qgsdataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsdlgvectorlayerproperties.h"
 #include "qgsfeature.h"
 #include "qgsfeatureattribute.h"
 #include "qgsuniquevalrenderer.h"
@@ -26,6 +27,7 @@
 #include <qwidgetstack.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
+#include <qpainter.h>
 
 QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLayer(vl)
 {
@@ -64,7 +66,24 @@ QgsUValDialog::~QgsUValDialog()
 
 void QgsUValDialog::apply()
 {
+    //font tor the legend text
+    QFont f("arial", 10, QFont::Normal);
+    QFontMetrics fm(f);
+
+    int symbolheight = 15;    //height of an area where a symbol is painted
+    int symbolwidth = 15;     //width of an area where a symbol is painted
+    int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
+    int topspace = 5;
+    int bottomspace = 5;
+    int leftspace = 5;
+    int rightspace = 5;
+    int rowspace = 5;
+    int wordspace = 5;        //space between graphics/word
+    int widestlabel = 0;
+    int labelwidth;
+
     QgsUniqueValRenderer *renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
+
     //go through mValues and add the entries to the renderer
     if(renderer)
     {
@@ -80,6 +99,12 @@ void QgsUValDialog::apply()
 	    symbol->setBrush(brush);
 	    ritem->setSymbol(symbol);
 	    renderer->insertValue(it->first,ritem);
+	    //find out the width of the string
+	    labelwidth=fm.width(it->first);
+	    if(labelwidth>widestlabel)
+	    {
+		widestlabel=labelwidth;
+	    }
 	}
 	renderer->setClassificationField(mClassificationComboBox->currentItem());
     }
@@ -89,6 +114,71 @@ void QgsUValDialog::apply()
 	qWarning("Warning, typecast failed in qgsuvaldialog.cpp, l. 61"); 
 #endif
     }
+
+    //render the legend item
+    QPixmap *pix = mVectorLayer->legendPixmap();
+    QString name;
+    QString field=mClassificationComboBox->currentText();
+    int fieldwidth=fm.width(field);
+    if(fieldwidth>widestlabel)
+    {
+	widestlabel=fieldwidth;
+    }
+    if (mVectorLayer->propertiesDialog())
+    {
+	name = mVectorLayer->propertiesDialog()->displayName();
+    } 
+    else
+    {
+	name = "";
+    }
+    int namewidth=fm.width(name);
+    if(namewidth>widestlabel)
+    {
+	widestlabel=namewidth;
+    }
+    int pixwidth = leftspace+wordspace+symbolwidth+widestlabel+rightspace;
+    int pixheight = topspace+2*fm.height()+rowspace+(rowheight+rowspace)*mValues.size()+bottomspace;
+    
+    pix->resize(pixwidth,pixheight);
+    pix->fill();
+    QPainter p(pix);
+    p.setFont(f);
+    
+    //draw the layer name and the name of the classification field into the pixmap
+    p.drawText(leftspace, topspace + fm.height(), name);
+    p.drawText(leftspace, topspace + 2 * fm.height(), field);
+    int intermheight=topspace+2*fm.height()+rowspace;
+    int row=0;
+
+    for(std::map<QString,QgsSiSyDialog*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    {
+	QgsSiSyDialog* sdialog=it->second;
+	QPen pen(sdialog->getOutlineColor(),sdialog->getOutlineWidth(),sdialog->getOutlineStyle());
+	QBrush brush(sdialog->getFillColor(), sdialog->getFillStyle());
+	p.setPen(pen);
+	p.setBrush(brush);
+
+	if (mVectorLayer->vectorType() == QGis::Polygon)
+	{
+	    p.drawRect(leftspace,intermheight+row*(rowheight+rowspace)+rowheight-symbolheight,symbolwidth,symbolheight); 
+	}
+	else if (mVectorLayer->vectorType() == QGis::Line)
+	{
+	    p.drawLine(leftspace,intermheight+row*(rowheight+rowspace)+rowheight-symbolheight,leftspace+symbolwidth,intermheight+row*(rowheight+rowspace)+rowheight);
+	}
+	else if (mVectorLayer->vectorType() == QGis::Point)
+	{
+	    p.drawRect(leftspace + symbolwidth / 2, intermheight + (int) ((rowheight+rowspace) * (row + 0.5)),5,5);
+	}
+	p.setPen(Qt::black);
+	p.drawText(leftspace+symbolwidth+wordspace, intermheight+row*(rowheight+rowspace)+rowheight, it->first);
+	++row;
+    }
+
+    
+    
+    mVectorLayer->updateItemPixmap();
     mVectorLayer->triggerRepaint();
 }
 
