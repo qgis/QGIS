@@ -33,10 +33,20 @@ LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , 
   : LayerSelectorBase( parent, name, modal, fl )
 {
   QSettings mySettings;
-  baseDirString = mySettings.readEntry("/openmodeller/projectionLayersDirectory"), //initial dir
-  listParent = new QListViewItem(listFileTree,baseDirString);
+  baseDirString = mySettings.readEntry("/openmodeller/projectionLayersDirectory","/tmp"), //initial dir
   lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
+  listFileTree->clear();
+  listFileTree->setRootIsDecorated(true);
+  listFileTree->setColumnWidthMode(0,QListView::Maximum);
+  listFileTree->setColumnWidth(0,10);
+  listFileTree->setColumnWidthMode(1,QListView::Maximum);
+  listFileTree->setColumnWidth(1,10);
+  listFileTree->setColumnWidthMode(2,QListView::Maximum);
+  listFileTree->setColumnWidth(2,10);
+  listParent = new QListViewItem(listFileTree,baseDirString);
   traverseDirectories(baseDirString,listParent);
+  listParent->setOpen(true);
+  listFileTree->triggerUpdate();
 }
 
 void LayerSelector::pbnDirectorySelector_clicked()
@@ -44,14 +54,22 @@ void LayerSelector::pbnDirectorySelector_clicked()
 
   QSettings mySettings;
 
-  QString baseDirString = QFileDialog::getExistingDirectory(
+  baseDirString = QFileDialog::getExistingDirectory(
           baseDirString, //initial dir
           this,
           "get existing directory",
           "Choose a directory",
           TRUE );
+  mySettings.writeEntry("/openmodeller/projectionLayersDirectory",baseDirString);
   lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
+  listFileTree->clear();
+  listParent = new QListViewItem(listFileTree,baseDirString);
+  listFileTree->setColumnWidth(0,10);
+  listFileTree->setColumnWidth(1,10);
+  listFileTree->setColumnWidth(2,10);
   traverseDirectories(baseDirString,listParent);
+  listParent->setOpen(true);
+  listFileTree->triggerUpdate();
   
 }
 
@@ -83,7 +101,9 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
     //a new tree node will be created each time
     if(myFileInfo->isDir() && myFileInfo->isReadable() )
     {
-      traverseDirectories(myFileInfo->absFilePath(), new QListViewItem(theParentListViewItem,myFileInfo->absFilePath()));
+      QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->absFilePath());
+      myItem->setText(1,"DIR");
+      traverseDirectories(myFileInfo->absFilePath(),myItem );
     }
 
     //check to see if its an adf file type
@@ -92,8 +112,8 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
     {
       if (myFileInfo->fileName()=="hdr.adf")
       {
-        std::cout << "Current filename is: " <<myFileInfo->dirPath(true).ascii() << std::endl;
-        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->dirPath(true));
+        std::cout << "Current filename is: " <<myFileInfo->filePath().ascii() << std::endl;
+        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->fileName());
         myItem->setText(1,"AIG");
       }
     }
@@ -110,7 +130,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
       {
         //GOOD FILE AND GOOD PROJ
         std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file and contains projection info" << std::endl;
-        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->dirPath(true));
+        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->fileName());
         myItem->setText(1,myFileInfo->extension(false));
         myItem->setText(2,"Valid");
       }
@@ -118,7 +138,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
       {
         //GOOD FILE AND BAD PROJ
         std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file but contains no projection info" << std::endl;
-        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->dirPath(true));
+        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->fileName());
         myItem->setText(2,"Invalid");
         myInvalidFileProjFlag = true;	  
         myInvalidFileProjList +=myFileInfo->absFilePath()+"\n"; 	
