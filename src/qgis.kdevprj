@@ -36,7 +36,7 @@ User Interface=*.kdevdlg,*.ui,*.rc,*.dlg
 groups=Headers,Sources,User Interface,Others
 
 [Makefile.am]
-files=main.cpp,qgisapp.cpp,qgscoordinatetransform.cpp,qgsdatabaselayer.cpp,qgsdatasource.cpp,qgsdbsourceselect.cpp,qgsmapcanvas.cpp,qgsmaplayer.cpp,qgsnewconnection.cpp,qgspoint.cpp,qgsrasterlayer.cpp,qgsrect.cpp,qgisapp.h,qgscoordinatetransform.h,qgsdatabaselayer.h,qgsdatasource.h,qgsdbsourceselect.h,qgslinesymbol.h,qgsmapcanvas.h,qgsmaplayer.h,qgsmarkersymbol.h,qgsnewconnection.h,qgspoint.h,qgspolygonsymbol.h,qgsrasterlayer.h,qgsrect.h,qgsshapefilelayer.h,qgisappbase.ui,qgsdbsourceselectbase.ui,qgsnewconnectionbase.ui,qgscustomsymbol.cpp,qgscustomsymbol.h,qgslegend.h,qgslegend.cpp,qgslegenditem.cpp,qgslegenditem.h,qgssymbol.h,qgstable.h,qgsshapefilelayer.cpp,qgslegenditembase.h,qgsabout.ui,qgsabout.ui.h,qgsaboutqgis.cpp,qgsaboutqgis.h,QgsSymbol.cpp,qgsmarkersymbol.cpp,qgslinesymbol.cpp,qgspolygonsymbol.cpp,qgslayerproperties.cpp,qgslayerproperties.h
+files=main.cpp,qgisapp.cpp,qgscoordinatetransform.cpp,qgsdatabaselayer.cpp,qgsdatasource.cpp,qgsdbsourceselect.cpp,qgsmapcanvas.cpp,qgsmaplayer.cpp,qgsnewconnection.cpp,qgspoint.cpp,qgsrasterlayer.cpp,qgsrect.cpp,qgisapp.h,qgscoordinatetransform.h,qgsdatabaselayer.h,qgsdatasource.h,qgsdbsourceselect.h,qgslinesymbol.h,qgsmapcanvas.h,qgsmaplayer.h,qgsmarkersymbol.h,qgsnewconnection.h,qgspoint.h,qgspolygonsymbol.h,qgsrasterlayer.h,qgsrect.h,qgsshapefilelayer.h,qgisappbase.ui,qgsdbsourceselectbase.ui,qgsnewconnectionbase.ui,qgscustomsymbol.cpp,qgscustomsymbol.h,qgslegend.h,qgslegend.cpp,qgslegenditem.cpp,qgslegenditem.h,qgssymbol.h,qgstable.h,qgsshapefilelayer.cpp,qgslegenditembase.h,qgsabout.ui,qgsabout.ui.h,QgsSymbol.cpp,qgsmarkersymbol.cpp,qgslinesymbol.cpp,qgspolygonsymbol.cpp,qgslayerproperties.cpp,qgslayerproperties.h
 sharedlib_LDFLAGS=-version-info 0:0:0
 sharedlib_rootname=src
 sub_dirs=
@@ -93,18 +93,6 @@ install_location=
 type=SOURCE
 
 [qgsabout.ui.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgsaboutqgis.cpp]
-dist=true
-install=false
-install_location=
-type=SOURCE
-
-[qgsaboutqgis.h]
 dist=true
 install=false
 install_location=

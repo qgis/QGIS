@@ -51,7 +51,8 @@ void QgsLegend::update()
 
 	for (int idx = 0; idx < map->layerCount(); idx++) {
 		QgsMapLayer *lyr = map->getZpos(idx);
-		QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);	// lyr->name(), QCheckListItem::CheckBox );
+		if(lyr)
+			QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);	// lyr->name(), QCheckListItem::CheckBox );
 		//lvi->setOn(lyr->visible());
 //  QgsLegendItem *li = new QgsLegendItem(lyr, legendContainer);
 		//addChild(li,0,idx*60);

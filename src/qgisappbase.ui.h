@@ -79,3 +79,8 @@ void QgisAppBase::addLayer()
 {
 
 }
+
+void QgisAppBase::identify()
+{
+
+}

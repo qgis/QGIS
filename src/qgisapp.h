@@ -35,7 +35,8 @@ class QgsMapCanvas;
  */
 class QgisApp : public QgisAppBase  {
 	Q_OBJECT
-public: 
+public:
+//! Constructor
 	QgisApp(QWidget *parent=0, const char * name=0, WFlags fl = WType_TopLevel );
 	
 	~QgisApp();
@@ -65,27 +66,33 @@ public:
 	//! About QGis
 	void about();
 public slots:
+//! Slot to show the map coordinate position of the mouse cursor
 	void showMouseCoordinate(QgsPoint &);
+	//! Show layer properties for the selected layer
 	void layerProperties(QListViewItem *);
+	//! Show layer properties for selected layer (called by right-click menu)
 	void layerProperties();
+	//! Show the right-click menu for the legend
 	void rightClickLegendMenu(QListViewItem *, const QPoint &, int );
+	//! Remove a layer from the map and legend
 	void removeLayer();
 private:
 //! Popup menu
 QPopupMenu *popMenu;
+//! Legend list view control
 QListView *legendView;
 	//! Map canvas
 QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
 QgsLegend *mapLegend;
-QScrollView *mL;
+
 //! scale factor
  double scaleFactor;
  //! Current map window extent in real-world coordinates
  QRect *mapWindow;
  //! Current map tool
  int mapTool;
-     QListView *lv;
+ QCursor *cursorZoomIn;
 };
 
 #endif

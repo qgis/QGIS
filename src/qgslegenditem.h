@@ -23,19 +23,33 @@ class QgsMapLayer;
 
 class QgsSymbol;
 /**
+* \class QgsLegendItem
+* \brief An item in a QgsLegend
+
   *@author Gary E.Sherman
   */
 
 class QgsLegendItem : public QCheckListItem{
 //Q_OBJECT
-public: 
+public:
+/*! Constructor
+* @param lyr Map layer this legend item represents
+* @param parent The parent listview
+*/
 	QgsLegendItem(QgsMapLayer *lyr=0, QListView * parent=0);
+	//! Destructor
 	~QgsLegendItem();
   /** Write property of QString layerName. */
   virtual void setLayerName( const QString& _newVal);
   /** Write property of QString displayName. */
   virtual void setDisplayName( const QString& _newVal);
-  void stateChange(bool);
+  /*! Responds to changes in the layer state (eg. visible vs non visible)
+  *@param v True if layer is visible
+  */
+  void stateChange(bool v);
+  /*! Gets the layer associated with this legend item
+  * @return Pointer to the layer
+  */
   virtual QgsMapLayer * layer();
 private: // Private attributes
   /**  */
