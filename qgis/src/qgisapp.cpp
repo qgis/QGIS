@@ -633,6 +633,22 @@ void QgisApp::about()
                + tr("Enhancements to the GPS plugin")
                + "<li>"
                + tr("Man page")
+               + "<li>"
+               + tr("Save delimited text as shapefile")
+               + "<li>"
+               + tr("Improved Delimited Text plugin, including preview of text file")
+               + "<li>"
+               + tr("Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types")
+               + "<li>"
+               + tr("Display SQL query used to create a PostGIS layer")
+               + "<li>"
+               + tr("PostgreSQL query builder")
+               + "<li>"
+               + tr("Ability to redefine the query used for PostgreSQL layers from the layer properties dialog")
+               + "<li>"
+               + tr("North arrow, scalebar, and copyright plugins save their state in the project file")
+               + "<li>"
+               + tr("Datasets with UTF8, Kanjii and CJK filenames now load properly")
                + "</ul></body></html>";
 
 
