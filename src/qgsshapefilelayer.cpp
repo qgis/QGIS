@@ -375,6 +375,7 @@ void QgsShapeFileLayer::identify(QgsRect * r)
 		} else {
 			QMessageBox::information(0, "No features found", "No features were found in the active layer at the point you clicked");
 		}
+		ogrLayer->ResetReading();	
 	}
 
 }
@@ -432,18 +433,133 @@ void QgsShapeFileLayer::table()
 
 
 	tabledisplay->setTitle("Tabledisplaytribute table - " + name());
-	QApplication::restoreOverrideCursor();
+	tabledisplay->show();
+
+	//select the rows of the already selected features
+	QObject::disconnect(tabledisplay->table(),SIGNAL(selectionChanged()),tabledisplay->table(),SLOT(handleChangedSelections()));
+	for(int i=0;i<ogrLayer->GetFeatureCount();i++)
+	{
+	    if((*selected)[i]==true)
+	    {
+		tabledisplay->table()->selectRow(i);
+	    }
+	}
+	QObject::connect(tabledisplay->table(),SIGNAL(selectionChanged()),tabledisplay->table(),SLOT(handleChangedSelections()));
+
+	//etablish the necessary connections between the table and the shapefilelayer
 	QObject::connect(tabledisplay->table(),SIGNAL(selected(int)),this,SLOT(select(int)));
 	QObject::connect(tabledisplay->table(),SIGNAL(selectionRemoved()),this,SLOT(removeSelection()));
-	QObject::connect(tabledisplay->table(),SIGNAL(repaintRequested()),this,SLOT(triggerRepaint()));
-	tabledisplay->show();
+	QObject::connect(tabledisplay->table(),SIGNAL(repaintRequested()),this,SLOT(triggerRepaint()));	
+	QApplication::restoreOverrideCursor();
     }
 }
 
 void QgsShapeFileLayer::select(int number)
 {
+    std::cout << "bin in QgsShapeFileLayer::select(int) " << number << std::endl;
     (*selected)[number]=true;
 }
+
+void QgsShapeFileLayer::select(QgsRect* rect, bool lock)
+{
+  
+    if(tabledisplay)
+    {
+	QObject::disconnect(tabledisplay->table(),SIGNAL(selectionChanged()),tabledisplay->table(),SLOT(handleChangedSelections()));
+	QObject::disconnect(tabledisplay->table(),SIGNAL(selected(int)),this,SLOT(select(int)));//disconnecting because of performance reason
+	tabledisplay->raise();
+    }
+    std::cout << "bin in QgsShapeFileLayer::select(QgsRect)" << std::endl;
+    
+    if(lock==false)
+    {
+	removeSelection();//only if ctrl-button is not pressed
+	if(tabledisplay)
+	{
+	    tabledisplay->table()->clearSelection();
+	}
+    }
+    
+    OGRGeometry *filter = 0;
+    filter = new OGRPolygon();
+    std::ostrstream wktExtent;
+    wktExtent << "POLYGON ((" << rect->stringRep() << "))" << std::ends;
+    char *wktText = wktExtent.str();
+    
+    OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&wktText);
+    if (result == OGRERR_NONE)
+    {
+	ogrLayer->SetSpatialFilter(filter);
+	int featureCount = 0;
+	while (OGRFeature * fet = ogrLayer->GetNextFeature())
+	{
+	    if(fet)
+	    {
+		select(fet->GetFID());
+		std::cout << "rufe die Methode selectRow auf" << fet->GetFID() << std::endl;
+		if(tabledisplay)
+		{
+		    tabledisplay->table()->selectRowWithId(fet->GetFID());
+		    (*selected)[fet->GetFID()]=true;
+		}
+	    }
+	}
+	ogrLayer->ResetReading();
+    }
+    
+    if(tabledisplay)
+    {
+	QObject::connect(tabledisplay->table(),SIGNAL(selectionChanged()),tabledisplay->table(),SLOT(handleChangedSelections()));
+	QObject::connect(tabledisplay->table(),SIGNAL(selected(int)),this,SLOT(select(int)));//disconnecting because of performance reason
+    }
+    triggerRepaint();
+}
+    
+
+
+/*
+OGRGeometry *filter = 0;
+	filter = new OGRPolygon();
+	std::ostrstream wktExtent;
+	wktExtent << "POLYGON ((" << r->stringRep() << "))" << std::ends;
+	char *wktText = wktExtent.str();
+
+	OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&wktText);
+	if (result == OGRERR_NONE) {
+
+		ogrLayer->SetSpatialFilter(filter);
+		int featureCount = 0;
+		// just id the first feature for now
+		//while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
+		//}
+
+		OGRFeature *fet = ogrLayer->GetNextFeature();
+		if (fet) {
+			// found feature - show it in the identify box
+			QgsIdentifyResults *ir = new QgsIdentifyResults();
+			// just show one result - modify this later
+			int numFields = fet->GetFieldCount();
+			for (int i = 0; i < numFields; i++) {
+				// get the field definition
+				OGRFieldDefn *fldDef = fet->GetFieldDefnRef(i);
+				QString fld = fldDef->GetNameRef();
+				OGRFieldType fldType = fldDef->GetType();
+				QString val;
+				//if(fldType ==  16604 )    // geometry
+				val = "(geometry column)";
+				// else
+				val = fet->GetFieldAsString(i);
+				ir->addAttribute(fld, val);
+			}
+			ir->setTitle(name());
+			ir->show();
+			ogrLayer->ResetReading();//remove this, if it is not a success
+
+		} else {
+			QMessageBox::information(0, "No features found", "No features were found in the active layer at the point you clicked");
+		}
+	}
+*/
 
 void QgsShapeFileLayer::removeSelection()
 {

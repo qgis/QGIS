@@ -121,6 +121,7 @@
         <action name="actionZoomLast"/>
         <separator/>
         <action name="actionIdentify"/>
+	<action name="actionSelect"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -269,8 +270,22 @@
                 <string>Identify a feature on the active layer</string>
             </property>
         </action>
-    </actiongroup>
-    <action>
+        <action>
+        <property name="name">
+            <cstring>actionSelect</cstring>
+        </property>
+	<property name="toggleAction">
+                <bool>true</bool>
+         </property>
+	 <property name="enabled">
+                <bool>true</bool>
+         </property>   
+         <property name="text">
+            <string>select features</string>
+        </property>
+	</action>
+	</actiongroup>
+	<action>
         <property name="name">
             <cstring>actionHelpAbout</cstring>
         </property>
@@ -577,6 +592,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>checkQgisVersion()</slot>
     </connection>
+    <connection>
+        <sender>actionSelect</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>select()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
@@ -605,6 +626,7 @@
     <slot>fileNew()</slot>
     <slot>actionPluginManager_activated()</slot>
     <slot>checkQgisVersion()</slot>
+    <slot>select()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

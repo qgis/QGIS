@@ -34,6 +34,7 @@ SOURCES += main.cpp \
 HEADERS += qgisapp.h \
            qgisinterface.h \
            qgisappbase.ui.h \
+           qgsattributetablebase.ui.h \
            qgsdatasource.h \
            qgsmapcanvas.h \
            qgsmaplayer.h \

@@ -30,8 +30,11 @@ class QgsAttributeTable:public QTable
   Q_OBJECT 
 
       public:
-  QgsAttributeTable(QWidget * parent = 0, const char *name = 0);
-  ~QgsAttributeTable();
+      QgsAttributeTable(QWidget * parent = 0, const char *name = 0);
+      ~QgsAttributeTable();
+
+      /**Selects the row which belongs to the feature with the specified id*/
+      void selectRowWithId(int id);
 
       public slots:
       void columnClicked(int col);
