@@ -1,9 +1,27 @@
+/***************************************************************************
+               QgsCoordinateTransform.cpp  - Coordinate Transforms
+                             -------------------
+    begin                : Dec 2004
+    copyright            : (C) 2004 Tim Sutton
+    email                : tim at linfiniti.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+ /* $Id$ */
 #include "qgscoordinatetransform.h"
 
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString theDestWKT ) : QObject()
 {
   mSourceWKT = theSourceWKT;
   mDestWKT = theDestWKT;
+  //XXX Who spells initialize initialise?
   initialise();
 }
 
@@ -66,10 +84,8 @@ void QgsCoordinateTransform::initialise()
   
   OGRSpatialReference myInputSpatialRefSys, myOutputSpatialRefSys;
   //this is really ugly but we need to get a QString to a char**
-  const char * mySourceCharArray =  mSourceWKT.ascii();
-  char *mySourceCharArrayPointer = (char *)mySourceCharArray;
-  const char * myDestCharArray =  mDestWKT.ascii();
-  char *myDestCharArrayPointer = (char *)myDestCharArray;
+  char *mySourceCharArrayPointer = (char *)mSourceWKT.ascii();
+  char *myDestCharArrayPointer = (char *)mDestWKT.ascii();
   
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
