@@ -32,8 +32,6 @@
 #include <vector>
 #include <utility>
 
-#include "qgsrunprocess.h"
-
 class QDomNode;
 class QDomDocument;
 class QgsMessageViewer;
