@@ -18,13 +18,15 @@
 /* $Id$ */
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qpopupmenu.h>
+#include <qlabel.h>
 #include <qfont.h>
 #include "qgsattributetable.h"
 #include <iostream>
 #include <stdlib.h>
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false),
-sort_ascending(true)
+									 sort_ascending(true), mActionPopup(0)
 {
   QFont f(font());
   f.setFamily("Helvetica");
@@ -32,6 +34,7 @@ sort_ascending(true)
   setFont(f);
   setSelectionMode(QTable::MultiRow);
   QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
+  connect(this, SIGNAL(contextMenuRequested(int, int, const QPoint&)), this, SLOT(popupMenu(int, int, const QPoint&)));
   setFocus();
 }
 
@@ -254,4 +257,56 @@ void QgsAttributeTable::contentsMouseReleaseEvent(QMouseEvent * e)
 {
   contentsMouseMoveEvent(e);    //send out a move event to keep the selections updated 
   emit repaintRequested();
+}
+
+void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
+{
+  std::cerr << "context menu requested" << std::endl;
+
+  // Duplication of code in qgsidentufyresults.cpp. Consider placing
+  // in a seperate class
+  if (mActionPopup == 0)
+  {
+    mActionPopup = new QPopupMenu();
+
+    QLabel* popupLabel = new QLabel( mActionPopup );
+    popupLabel->setText( tr("<center>Run action</center>") );
+    mActionPopup->insertItem(popupLabel);
+    mActionPopup->insertSeparator();
+
+    QgsAttributeAction::aIter	iter = mActions.begin();
+    for (int j = 0; iter != mActions.end(); ++iter, ++j)
+    {
+      int id = mActionPopup->insertItem(iter->name(), this, 
+					SLOT(popupItemSelected(int)));
+      mActionPopup->setItemParameter(id, j);
+    }
+  }
+
+  // Get and store the attribute values and their column names are
+  // these are needed for substituting into the actions if the user
+  // chooses one.
+  mActionValues.clear();
+  QHeader* header = horizontalHeader();
+
+#ifdef QGISDEBUG
+  if (header->count() != numCols())
+    std::cerr << "Something wrong with the table (file " 
+	      << __FILE__<< ", line " << __LINE__ 
+	      << ")." << std::endl;
+#endif
+
+  for (int i = 0; i < numCols(); ++i)
+    mActionValues.push_back(std::make_pair(header->label(i), text(row, i)));
+
+  // The item that was clicked on, stored as an index into the
+  // mActionValues vector.
+  mClickedOnValue = col;
+
+  mActionPopup->popup(pos);  
+}
+
+void QgsAttributeTable::popupItemSelected(int id)
+{
+  mActions.doAction(id, mActionValues, mClickedOnValue);
 }
