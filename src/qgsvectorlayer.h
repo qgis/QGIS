@@ -30,6 +30,7 @@ class QgsLegendItem;
 class QgsDlgVectorLayerProperties;
 class QgisApp;
 class QgsIdentifyResults;
+class QgsLabel;
 
 #include <map>
 
@@ -70,6 +71,7 @@ class QgsVectorLayer:public QgsMapLayer
   };
   void setDataProvider(QgsDataProvider * dp);
   QgsDataProvider *getDataProvider();
+  QgsLabel *label();
   public slots:
    /**Sets the 'tabledisplay' to 0 again*/
   void invalidateTableDisplay();
@@ -150,7 +152,11 @@ class QgsVectorLayer:public QgsMapLayer
      @return true in case of success and false otherwise*/
   bool deleteSelectedFeatures();
   
+  /**Set labels on */
+  void setLabelOn( bool on );
 
+  /**Label is on */
+  bool labelOn( void );
 
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
@@ -161,6 +167,10 @@ protected:
   QColor selectionColor;
   /**Renderer object which holds the information about how to display the features*/
   QgsRenderer *m_renderer;
+  /**Label */
+  QgsLabel *mLabel;
+  /**Display labels */ 
+  bool mLabelOn;
   /**Dialog to set the properties*/
   QgsDlgVectorLayerProperties *m_propertiesDialog;
   /**Widget to set the symbology properties*/

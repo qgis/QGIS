@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.48 2004/07/20 21:40:11 mcoletti Exp */
+/* qgsprojectio.cpp,v 1.49 2004/08/13 11:37:56 rabla Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -44,6 +44,8 @@ email                : sherman at mrcc.com
 #include "qgisapp.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmaplayerregistry.h"
+#include "qgslabelattributes.h"
+#include "qgslabel.h"
 #include <map>
 
     QgsProjectIo::QgsProjectIo(int _action, QgsMapCanvas * theMapCanvas)
@@ -285,6 +287,13 @@ std::list<QString> QgsProjectIo::read(QString path)
           renderer->readXML(graduatedmarkernode,*dbl);
         }
 
+	// Label
+	dbl->setLabelOn ( (bool) node.namedItem("label").toElement().text().toInt() );
+        
+	QDomNode labelnode = node.namedItem("labelattributes");
+	QgsLabel *label = dbl->label();
+	label->readXML(labelnode);
+
         dbl->setVisible(visible == "1");
         if (showInOverview == "1")
         {
@@ -487,6 +496,10 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
           renderer->writeXML(xml);
         }
 
+ 	xml << "\t\t<label>" << layer->labelOn() << "</label>\n";
+        QgsLabel* label = layer->label();
+        label->writeXML(xml);
+	
       } else                //raster layer properties
       {
         //cast the maplayer to rasterlayer

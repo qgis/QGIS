@@ -28,6 +28,7 @@
 #include "qlineedit.h"
 
 class QgsVectorLayer;
+class QgsLabelDialog;
 
 class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   Q_OBJECT
@@ -54,6 +55,8 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   void alterLayerDialog(const QString& string);
   void apply();
   void close();
+  /** Reset to original (vector layer) values */
+  void reset();
 
   protected:
   QgsVectorLayer *layer;
@@ -63,6 +66,8 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   QDialog* bufferDialog;
   /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
   QgsRenderer* bufferRenderer;
+  /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
+  QgsLabelDialog* labelDialog;
   /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
   QPixmap bufferPixmap;
   void closeEvent(QCloseEvent* e);
