@@ -169,72 +169,51 @@ void QgsDbSourceSelect::dbConnect()
     //  std::cout << pd->ErrorMessage();
     if (PQstatus(pd) == CONNECTION_OK)
     {
+      // create the pixmaps for the layer types
+      QPixmap pxPoint(point_layer_xpm);
+      QPixmap pxLine(line_layer_xpm);
+      QPixmap pxPoly(polygon_layer_xpm);
+      //qDebug("Connection succeeded");
+
       // clear the existing entries
       lstTables->clear();
-      // create the pixmaps for the layer types
-      QPixmap pxPoint;
-      pxPoint = QPixmap(point_layer_xpm);
-      QPixmap pxLine;
-      pxLine = QPixmap(line_layer_xpm);
-      QPixmap pxPoly;
-      pxPoly = QPixmap(polygon_layer_xpm);
-      //qDebug("Connection succeeded");
-      // get the list of tables
-      QString sql = "select * from geometry_columns";
-      // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
-      sql += " order by f_table_name";
-      //qDebug("Fetching tables using: " + sql);
-      PGresult *result = PQexec(pd, (const char *) sql);
-      if (result)
+      // get the list of suitable tables and columns and populate the UI
+      geomCol details;
+      if (getGeometryColumnInfo(pd, details))
       {
-        QString msg;
-        QTextOStream(&msg) << "Fetched " << PQntuples(result) << " tables from database";
-        //qDebug(msg);
-        for (int idx = 0; idx < PQntuples(result); idx++)
-        {
-          QString v = "";
-          if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
-          {
-            v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
-            v += ".";
-          }
-          if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
-          {
-            v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
-            v += ".";
-          }
-          v += PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
-          v += " (";
-          v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-          v += ")";
+	geomCol::const_iterator iter = details.begin();
+	for (; iter != details.end(); ++iter)
+	{
+	  QPixmap *p = 0;
+	  if (iter->second == "POINT" || iter->second == "MULTIPOINT")
+	    p = &pxPoint;
+	  else if (iter->second == "MULTIPOLYGON" || iter->second == "POLYGON")
+	    p = &pxPoly;
+	  else if (iter->second == "LINESTRING" || iter->second == "MULTILINESTRING")
+	    p = &pxLine;
 
-          QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
-          QPixmap *p;
-          if (type == "POINT" || type == "MULTIPOINT")
-            p = &pxPoint;
-          else if (type == "MULTIPOLYGON" || type == "POLYGON")
-            p = &pxPoly;
-          else if (type == "LINESTRING" || type == "MULTILINESTRING")
-            p = &pxLine;
-          else
-            p = 0;
-          if (p != 0)
-          {
-            QListViewItem *lItem = new QListViewItem(lstTables);
-            lItem->setText(1,v);
-            lItem->setPixmap(0,*p);
-            lstTables->insertItem(lItem);
-          }
-        }
-        // BEGIN CHANGES ECOS
-        if (cmbConnections->count() > 0)
-          btnAdd->setEnabled(true);
-        // END CHANGES ECOS
-      } else
+	  if (p != 0)
+	  {
+	    QListViewItem *lItem = new QListViewItem(lstTables);
+	    lItem->setText(1,iter->first);
+	    lItem->setPixmap(0,*p);
+	    lstTables->insertItem(lItem);
+	  }
+	  else
+	  {
+	    qDebug("Unknown geometry type of " + iter->second);
+	  }
+	}
+      }
+      else
       {
-        qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
+        qDebug("Unable to get list of spatially enabled tables from the database");
         qDebug(PQerrorMessage(pd));
       }
+      // BEGIN CHANGES ECOS
+      if (cmbConnections->count() > 0)
+	btnAdd->setEnabled(true);
+      // END CHANGES ECOS
     } else
     {
       QMessageBox::warning(this, tr("Connection failed"),
@@ -281,3 +260,93 @@ void QgsDbSourceSelect::addLayer(QListBoxItem * item)
   qgisApp->addVectorLayer(m_connInfo, item->text(), "postgres");
   //  lstTables->setSelected(item, false);
 }
+
+bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
+					      geomCol& details)
+{
+  QString sql = "select * from geometry_columns";
+  // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
+  sql += " order by f_table_name";
+  //qDebug("Fetching tables using: " + sql);
+  PGresult *result = PQexec(pg, (const char *) sql);
+  if (result)
+  {
+    QString msg;
+    QTextOStream(&msg) << "Fetched " << PQntuples(result) << " tables from database";
+    //qDebug(msg);
+    for (int idx = 0; idx < PQntuples(result); idx++)
+    {
+      QString v = "";
+      if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
+      {
+	v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
+	v += ".";
+      }
+      if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
+      {
+	v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+	v += ".";
+      }
+      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
+      v += " (";
+      v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
+      v += ")";
+
+      QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+
+      details.push_back(geomPair(v, type));
+    }
+  }
+  PQclear(result);
+
+  // Now have a look for geometry columns that aren't in the
+  // geometry_columns table. This code is specific to postgresql,
+  // but an equivalent query should be possible in other
+  // databases.
+  sql = "select pg_class.relname, pg_attribute.attname from "
+    "pg_attribute, pg_class where pg_type.typname = 'geometry' and "
+    "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid "
+    "and cast(pg_class.relname as character varying) not in "
+    "(select f_table_name from geometry_columns)";
+  
+  result = PQexec(pg, (const char *) sql);
+  if (result)
+  {
+    for (int i = 0; i < PQntuples(result); i++)
+    {
+      // Have the column name and the table name. The concept of a
+      // catalog doesn't exist in postgresql so we ignore that, but we
+      // do need to get the schema name and geometry type.
+
+      // Make the assumption that the geometry type for the first
+      // row is the same as for all other rows. 
+
+      // There may be more than one geometry column per table, so need
+      // to deal with that. Currently just take the first column
+      // returned. XXXX
+      
+      // Flag these not geometry_columns table tables so that the UI
+      // can indicate this????
+
+      QString table  = PQgetvalue(result, i, PQfnumber(result, "relname"));
+      QString column = PQgetvalue(result, i, PQfnumber(result, "attname"));
+      
+      QString query = "select GeometryType(" + 
+	column + "), current_schema() from " + table + " limit 1";
+      PGresult* gresult = PQexec(pg, (const char*) query);
+      if (gresult)
+      {
+	QString type = PQgetvalue(gresult, 0, PQfnumber(gresult, "geometrytype"));
+	QString schema = PQgetvalue(gresult, 0, PQfnumber(gresult, "current_schema"));
+	QString full_desc = "";
+	if (schema.length() > 0)
+	  full_desc = schema + ".";
+	full_desc += table + " (" + column + ")";
+	details.push_back(geomPair(full_desc, type));
+      }
+      PQclear(gresult);
+    }
+  }
+  PQclear(result);
+}
+
