@@ -3,13 +3,13 @@
 #include <qmainwindow.h>
 #include <qmenubar.h>
 #include "../../src/qgsmaplayerinterface.h"
-#include "../../src/qgscoordinatetransform.h"
+#include "../../src/qgsmaptopixel.h"
 class MapLayerTest : public QgsMapLayerInterface{
 Q_OBJECT
 public:
 MapLayerTest();
 void setQgisMainWindow(QMainWindow *app);
-void setCoordinateTransform(QgsCoordinateTransform *xform);
+void setCoordinateTransform(QgsMapToPixel *xform);
 public slots:
 void initGui();
 void open();
@@ -19,7 +19,7 @@ private:
 	QMainWindow *qgisApp;
 	QMenuBar *menu;
 	int menuId;
-	QgsCoordinateTransform *coordTransform;
+	QgsMapToPixel *coordTransform;
 };
 
 

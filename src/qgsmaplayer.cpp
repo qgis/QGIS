@@ -129,12 +129,12 @@ void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDevice * )
+void QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *,QPaintDevice * )
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDevice * )
+void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsMapToPixel *,QPaintDevice * )
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }

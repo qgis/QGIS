@@ -325,7 +325,7 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
     points[3].setX(window.west); points[3].setY(window.north);
     points[4].setX(window.west); points[4].setY(window.south);
 
-    QgsCoordinateTransform *transform = mCanvas->getCoordinateTransform();
+    QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
     QPointArray pointArray(5);
 
     for ( int i = 0; i < 5; i++ ) {

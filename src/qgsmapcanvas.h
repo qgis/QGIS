@@ -49,7 +49,7 @@ class QColor;
 class QPaintDevice;
 class QMouseEvent;
 
-class QgsCoordinateTransform;
+class QgsMapToPixel;
 class QgsMapLayer;
 class QgsMapLayerInterface;
 class QgsLegend;
@@ -166,7 +166,7 @@ class QgsMapCanvas : public QWidget
     QgsScaleCalculator::units mapUnits() const;
 
     //! Get the current coordinate transform
-    QgsCoordinateTransform * getCoordinateTransform();
+    QgsMapToPixel * getCoordinateTransform();
     //! Declare the legend class as a friend of the map canvas
     //friend class QgsLegend;
 

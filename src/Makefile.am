@@ -49,7 +49,7 @@ headers =							\
 		qgscolortable.h \
 		qgscontcoldialog.h \
 		qgscontinuouscolrenderer.h \
-		qgscoordinatetransform.h \
+		qgsmaptopixel.h \
 		qgscustomsymbol.h \
 		qgsdataprovider.h \
 		qgsdatasource.h \
@@ -231,7 +231,7 @@ qgis_SOURCES =					\
 		qgscolortable.cpp \
 		qgscontcoldialog.cpp \
 		qgscontinuouscolrenderer.cpp \
-		qgscoordinatetransform.cpp \
+		qgsmaptopixel.cpp \
 		qgscustomsymbol.cpp \
 		qgsdatasource.cpp \
 		qgsdlgvectorlayerproperties.cpp \
@@ -341,7 +341,7 @@ libqgis_la_SOURCES =				\
 		qgsacetaterectangle.cpp \
 		qgscolortable.cpp \
 		qgscontinuouscolrenderer.cpp \
-		qgscoordinatetransform.cpp \
+		qgsmaptopixel.cpp \
 		qgsfeatureattribute.cpp \
 		qgsfeature.cpp \
 		qgsfield.cpp \

@@ -43,7 +43,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <qpen.h>
 #include <qgspoint.h>
 #include <qpointarray.h>
-#include <qgscoordinatetransform.h>
+#include <qgsmaptopixel.h>
 #include <qstring.h>
 #include <qfontmetrics.h>
 #include <qfont.h>

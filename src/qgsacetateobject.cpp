@@ -18,7 +18,7 @@
 /* $Id$ */
 #include <qgspoint.h>
 #include <qpainter.h>
-#include <qgscoordinatetransform.h>
+#include <qgsmaptopixel.h>
 #include "qgsacetateobject.h"
 
 QgsAcetateObject::QgsAcetateObject(QgsPoint &origin) :
@@ -38,7 +38,7 @@ QgsAcetateObject::QgsAcetateObject()
 QgsAcetateObject::~QgsAcetateObject()
 {
 }
-/*void QgsAcetateObject::draw(QPainter * painter, QgsCoordinateTransform * cXf)
+/*void QgsAcetateObject::draw(QPainter * painter, QgsMapToPixel * cXf)
 {
 }
 */
