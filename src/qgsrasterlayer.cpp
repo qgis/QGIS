@@ -1581,7 +1581,14 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
         //apply the matrix
         QPixmap myQPixmap2 =  myLegendQPixmap.xForm(myQWMatrix);
         QPainter myQPainter(&myQPixmap2);
-        myQPainter.setPen( Qt::black );
+        if (drawingStyle==MULTI_BAND_SINGLE_BAND_GRAY ||
+                 drawingStyle==PALETTED_SINGLE_BAND_GRAY ||
+                 drawingStyle==SINGLE_BAND_GRAY )
+        {
+            myQPainter.setPen( Qt::white );
+        } else {
+            myQPainter.setPen( Qt::black );
+        }
         myQPainter.setFont( myQFont );
         myQPainter.drawText(5,myHeightInt-10,this->name());
         myQPainter.end();
