@@ -76,6 +76,7 @@ typedef GPSPoint Trackpoint;
 /** This is the waypoint class. It is a GPSPoint with an ID. */
 class Waypoint : public GPSPoint {
  public:
+  virtual void writeXML(QTextStream& stream);
   int id;
 };
 
