@@ -1,2 +1,2 @@
--npsl -nbfda -l135 -i4 -ci2 -cbi4 -cp4 -ts4 -cli2 -bl -ce -lp -npcs -nut
+-npsl -nbfda -l135 -i2 -ci2 -cbi2 -cp2 -ts2 -cli2 -bl -ce -lp -npcs -nut
 
