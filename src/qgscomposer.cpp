@@ -226,7 +226,12 @@ void QgsComposer::print(void)
 	mPrinter->setFullPage ( true );
 	mPrinter->setOutputToFile (true ) ;
 	mPrinter->setOutputFileName ( QDir::convertSeparators ( QDir::home().path() + "/" + "qgis.eps") );
-	mPrinter->setOrientation ( QPrinter::Landscape );
+
+	if ( mComposition->paperOrientation() == QgsComposition::Portrait ) {
+	    mPrinter->setOrientation ( QPrinter::Portrait );
+	} else {
+	    mPrinter->setOrientation ( QPrinter::Landscape );
+        }
 	mPrinter->setColorMode ( QPrinter::Color );
 	mPrinter->setPageSize ( QPrinter::A4 );
     }
