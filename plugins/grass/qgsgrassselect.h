@@ -68,6 +68,9 @@ private:
     static QString lastVectorMap;
     static QString lastRasterMap;
     static QString lastLayer; // vector layer
+
+    void restorePosition(void);
+    void saveWindowLocation(void);
 };
 
 

@@ -69,11 +69,36 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
     egisdbase->setText(lastGisdbase);
 
     setLocations();
+
+    restorePosition();
 }
 
 QgsGrassSelect::~QgsGrassSelect()
 {
+    saveWindowLocation();
 }
+
+void QgsGrassSelect::restorePosition()
+{
+  QSettings settings;
+  int ww = settings.readNumEntry("/qgis/grass/windows/select/w", 500);
+  int wh = settings.readNumEntry("/qgis/grass/windows/select/h", 100);
+  int wx = settings.readNumEntry("/qgis/grass/windows/select/x", 100);
+  int wy = settings.readNumEntry("/qgis/grass/windows/select/y", 100);
+  resize(ww,wh);
+  move(wx,wy);
+}
+
+void QgsGrassSelect::saveWindowLocation()
+{
+  QSettings settings;
+  QPoint p = this->pos();
+  QSize s = this->size();
+  settings.writeEntry("/qgis/grass/windows/select/x", p.x());
+  settings.writeEntry("/qgis/grass/windows/select/y", p.y());
+  settings.writeEntry("/qgis/grass/windows/select/w", s.width());
+  settings.writeEntry("/qgis/grass/windows/select/h", s.height());
+} 
 
 bool QgsGrassSelect::first = true;
 QString QgsGrassSelect::lastGisdbase;
@@ -331,6 +356,8 @@ void QgsGrassSelect::getGisdbase()
 
 void QgsGrassSelect::accept()
 {
+    saveWindowLocation();
+
     gisdbase = egisdbase->text();
     lastGisdbase = QString( gisdbase );
     
@@ -339,9 +366,10 @@ void QgsGrassSelect::accept()
 	QMessageBox::warning(this, "Wrong GISDBASE", msg);
 	return;
     }
-       //write to qgsettings as gisdbase seems to be valid
-      QSettings settings;
-      settings.writeEntry("/qgis/grass/lastGisdbase",lastGisdbase );
+
+    //write to qgsettings as gisdbase seems to be valid
+    QSettings settings;
+    settings.writeEntry("/qgis/grass/lastGisdbase",lastGisdbase );
 
     location = elocation->currentText();
     lastLocation = location;
@@ -356,7 +384,6 @@ void QgsGrassSelect::accept()
 	QMessageBox::warning(0, "No map", msg);
 	return;
     }
-    
 
     if ( type == QgsGrassSelect::VECTOR ) {
         lastVectorMap = map;
@@ -371,11 +398,11 @@ void QgsGrassSelect::accept()
 	    selectedType = QgsGrassSelect::RASTER;
 	}
     }
-    
     QDialog::accept();
 }
 
 void QgsGrassSelect::reject()
 {
+    saveWindowLocation();
     QDialog::reject();
 }
