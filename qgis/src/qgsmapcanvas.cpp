@@ -20,6 +20,7 @@
 #include <cfloat>
 #include <cmath>
 #include <memory>
+#include <cassert>
 
 #include <qstring.h>
 #include <qpainter.h>
@@ -45,6 +46,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerinterface.h"
 #include "qgsvectorlayer.h"
+#include "qgsscalecalculator.h"
 
 
 /**
@@ -58,8 +60,11 @@ struct QgsMapCanvas::Imp
           bgColor( Qt::white ),
           drawing( false ),
           dirty( true ),
-          pmCanvas( new QPixmap)
-    {  }
+          pmCanvas( new QPixmap),
+          scaleCalculator( new QgsScaleCalculator)
+          
+    {  
+    }
 
     Imp::Imp( int width, int height )
         : mapWindow( new QRect ),
@@ -67,17 +72,37 @@ struct QgsMapCanvas::Imp
           bgColor( Qt::white ),
           drawing( false ),
           dirty( true ),
-          pmCanvas( new QPixmap(width, height))
-    {  }
+          pmCanvas( new QPixmap(width, height)),
+          scaleCalculator( new QgsScaleCalculator)
+    { 
+    }
 
     Imp::~Imp()
     {
         delete coordXForm;
         delete pmCanvas;
         delete mapWindow;
+        delete scaleCalculator;
     }
 
+    void Imp::initMetrics(QPaintDeviceMetrics *pdm){
+      // set the logical dpi 
+          mDpi = pdm->logicalDpiX();
+          scaleCalculator->setDpi(mDpi);
+     // set default map units
+          mMapUnits = QgsScaleCalculator::METERS;
+          scaleCalculator->setMapUnits(mMapUnits);
 
+    }
+    void Imp::setMapUnits(int units)
+    {
+        mMapUnits = units;
+        scaleCalculator->setMapUnits(mMapUnits);
+    }
+    int Imp::mapUnits()
+    {
+      return mMapUnits;
+    }
     //! map containing the layers by name
     std::map < QString, QgsMapLayer * >layers;
 
@@ -159,6 +184,14 @@ struct QgsMapCanvas::Imp
     // TODO - Do we need this?
     double radiusValue;
 
+    QgsScaleCalculator *scaleCalculator;
+
+    //! DPI of physical display
+    int mDpi;
+
+    //! Map units for the data on the canvas
+    int mMapUnits;
+
 }; // struct QgsMapCanvas::Imp
 
 
@@ -170,6 +203,9 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
   setEraseColor(imp_->bgColor);
   setMouseTracking(true);
   setFocusPolicy(QWidget::StrongFocus);
+  QPaintDeviceMetrics *pdm = new QPaintDeviceMetrics(this);
+  imp_->initMetrics(pdm);
+  delete pdm;
 } // QgsMapCanvas ctor
 
 
@@ -240,7 +276,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     {
         imp_->fullExtent = lyr->extent();
         imp_->fullExtent.scale(1.1); 
-				// XXX why magic number of 1.1? - TO GET SOME WHITESPACE AT THE EDGES OF THE MAP
+        // XXX why magic number of 1.1? - TO GET SOME WHITESPACE AT THE EDGES OF THE MAP
         imp_->currentExtent = imp_->fullExtent;
     }
     else
@@ -370,7 +406,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           }
 
         //update the scale shown on the statusbar
-	currentScale(0);
+  currentScale(0);
 
           //std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
           // endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
@@ -433,7 +469,7 @@ void QgsMapCanvas::currentScale(int thePrecision)
           muppY = imp_->currentExtent.height() / height();
           muppX = imp_->currentExtent.width() / width();
           imp_->m_mupp = muppY > muppX ? muppY : muppX;
-
+#ifdef QGISDEBUG
           std::cout << "Current extent is " <<
             imp_->currentExtent.stringRep() << std::endl; std::cout << "MuppX is: " <<
             muppX << "\nMuppY is: " << muppY << std::endl; 
@@ -446,8 +482,8 @@ void QgsMapCanvas::currentScale(int thePrecision)
             pdm.logicalDpiY() << std::endl; 
           std::cout << "widthMM " << pdm.widthMM() << ", heightMM " 
             << pdm.heightMM() << std::endl; 
-	    
-
+      
+#endif
           // calculate the actual extent of the mapCanvas
           double dxmin, dxmax, dymin, dymax, whitespace;
           if (muppY > muppX)
@@ -465,14 +501,17 @@ void QgsMapCanvas::currentScale(int thePrecision)
               dymin = imp_->currentExtent.yMin() - whitespace;
               dymax = imp_->currentExtent.yMax() + whitespace;
 
-            }	    
-	    
+            }     
+      QgsRect paddedExtent(dxmin, dymin, dxmax, dymax);
+      double mapScale = imp_->scaleCalculator->calculate(paddedExtent, width());
           std::cout << "Scale (assuming meters as map units) = 1:" 
-          << ((dxmax-dxmin) * 3.28 * 12)/(width()/pdm.logicalDpiX()) << std::endl; 
+          << mapScale << std::endl; 
+          // return scale based on geographic
+          // 
 
-	    //@todo return a proper value
-	    QString myScaleString = QString("Scale 1: ")+QString::number(((dxmax-dxmin) * 3.28 * 12)/(width()/pdm.logicalDpiX()),'f',thePrecision);
-	    emit scaleChanged(myScaleString) ;
+      //@todo return a proper value
+      QString myScaleString = QString("Scale 1: ")+QString::number(mapScale,'f',thePrecision);
+      emit scaleChanged(myScaleString) ;
 }
 
 
@@ -589,7 +628,7 @@ void QgsMapCanvas::zoomToSelected()
           imp_->currentExtent.setYmax(rect.yMax() + 25);
           clear();
           render();
-	  emit extentsChanged(imp_->currentExtent.stringRep(2));
+    emit extentsChanged(imp_->currentExtent.stringRep(2));
           return;
         }
       //zoom to an area
@@ -602,7 +641,7 @@ void QgsMapCanvas::zoomToSelected()
           imp_->currentExtent.setYmax(rect.yMax());
           clear();
           render();
-	  emit extentsChanged(imp_->currentExtent.stringRep(2));
+    emit extentsChanged(imp_->currentExtent.stringRep(2));
           return;
         }
     }
@@ -662,7 +701,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             imp_->currentExtent.setXmax(ur.x());
             imp_->currentExtent.setYmax(ur.y());
             imp_->currentExtent.normalize();
-	    emit extentsChanged(imp_->currentExtent.stringRep(2));
+      emit extentsChanged(imp_->currentExtent.stringRep(2));
             clear();
             render();
             
@@ -711,9 +750,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               std::cout << "Extent scaled by " << sf << " to " << imp_->currentExtent << std::endl;
               std::cout << "Center of currentExtent after scaling is " << imp_->currentExtent.center() << std::endl;
 #endif
-              clear();	
+              clear();  
               render();
-	      emit extentsChanged(imp_->currentExtent.stringRep(2));
+        emit extentsChanged(imp_->currentExtent.stringRep(2));
             }
             break;
 
@@ -750,9 +789,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                   imp_->currentExtent.setYmin(imp_->currentExtent.yMin() - dy);
 
                 }
-              clear();	
+              clear();  
               render();
-	      emit extentsChanged(imp_->currentExtent.stringRep(2));
+        emit extentsChanged(imp_->currentExtent.stringRep(2));
             }
             break;
 
@@ -805,7 +844,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
             if (lyr)
               {
-								
+                
                 // create the search rectangle
                 double searchRadius = extent().width() * calculateSearchRadiusValue();
                 QgsRect * search = new QgsRect;
@@ -1110,3 +1149,14 @@ double QgsMapCanvas::mupp() const
 {
     return imp_->m_mupp;
 } // mupp
+void QgsMapCanvas::setMapUnits(int units)
+{
+#ifdef QGISDEBUG
+  std::cerr << "Setting map units to " << units << std::endl;
+#endif
+  imp_->setMapUnits(units);
+}
+int QgsMapCanvas::mapUnits()
+{
+  return imp_->mapUnits();
+}

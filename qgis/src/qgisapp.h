@@ -249,6 +249,8 @@ private slots:
     void socketConnectionClosed();
     void socketReadyRead();
     void socketError(int e);
+    //! Set project properties, including map untis
+    void projectProperties();
     /*  void urlData(); */
 public slots:
     void showProgress(int theProgress, int theTotalSteps);

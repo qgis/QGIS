@@ -195,3 +195,10 @@ void QgisAppBase::whatsThis()
 {
 
 }
+
+
+
+void QgisAppBase::projectProperties()
+{
+
+}

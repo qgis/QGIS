@@ -92,7 +92,9 @@ headers =  	qgis.h					\
 	   	qgsvectorlayer.h			\
 	   	qgsvectorlayerproperties.h		\
 	   	splashscreen.h				\
-	   	qgisapp.h
+	   	qgisapp.h \
+	   	qgsscalecalculator.h \
+	   	qgsprojectproperties.h
 
 
 ## qt designer files for all the GUI stuff
@@ -116,7 +118,8 @@ qgis_UIC = 	qgisappbase.ui					\
 		qgsrasterlayerpropertiesbase.ui			\
 		qgssimadialogbase.ui				\
 		qgssisydialogbase.ui				\
-		qgsvectorlayerpropertiesbase.ui
+		qgsvectorlayerpropertiesbase.ui \
+		qgsprojectpropertiesbase.ui
 
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
@@ -132,7 +135,8 @@ qgis_UIH = 	qgisappbase.ui.h				\
 		qgsmapserverexportbase.ui.h			\
 		qgsmessageviewer.ui.h				\
 		qgsoptionsbase.ui.h				\
-		qgsrasterlayerpropertiesbase.ui.h
+		qgsrasterlayerpropertiesbase.ui.h \
+		qgsprojectpropertiesbase.ui.h
 
 ## these generated files need MOC files, too
 qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
@@ -165,7 +169,8 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgssisydialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp			\
 		qgsvectorlayerproperties.moc.cpp	\
-		splashscreen.moc.cpp
+		splashscreen.moc.cpp \
+		qgsprojectproperties.moc.cpp
 
 
 qgis_SOURCES =  main.cpp			\
@@ -223,7 +228,9 @@ qgis_SOURCES =  main.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayerproperties.cpp	\
-		splashscreen.cpp
+		splashscreen.cpp \
+		qgsscalecalculator.cpp  \
+		qgsprojectproperties.cpp 
 
 postgresHEADERS = qgsdbsourceselect.h qgsnewconnection.h
 postgresSOURCES = qgsdbsourceselect.cpp qgsnewconnection.cpp

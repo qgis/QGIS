@@ -40,6 +40,7 @@ class QgsLegend;
 class QgsLegendView;
 class QColor;
 class QgsPoint;
+class QgsScaleCalculator;
 
 /*! \class QgsMapCanvas
  * \brief Map canvas class for displaying all GIS data types.
@@ -126,7 +127,10 @@ class QgsMapCanvas : public QWidget
 
     std::list < QString > const & zOrders() const;
     std::list < QString >       & zOrders();
-
+    //! Set map units (needed by project properties dialog)
+    void setMapUnits(int mapUnits);
+    //! Get the current canvas map units
+    int mapUnits();
 
     //! Declare the legend class as a friend of the map canvas
     //friend class QgsLegend;
