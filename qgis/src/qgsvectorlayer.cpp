@@ -107,28 +107,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   {
       setDataProvider( providerKey );         
   }
-  //
-  // Get the layers project info and set up the QgsCoordinateTransform for this layer
-  //
-  QString mySourceWKT = getProjectionWKT();
-  //hard coding to geo/wgs84 for now
-  /*
-  QString myDestWKT =    "PROJCS[\"Alaska_Albers_Equal_Area_Conic\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"False_Easting\",0.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"longitude_of_center\",-154.0],PARAMETER[\"Standard_Parallel_1\",55.0],PARAMETER[\"Standard_Parallel_2\",65.0],PARAMETER[\"latitude_of_center\",50.0],UNIT[\"Meter\",1.0]]";
-  */
-  QString myDestWKT =     "GEOGCS[\"WGS 84\", "
-    "  DATUM[\"WGS_1984\", "
-    "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-    "      AUTHORITY[\"EPSG\",7030]], "
-    "    TOWGS84[0,0,0,0,0,0,0], "
-    "    AUTHORITY[\"EPSG\",6326]], "
-    "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-    "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-    "  AXIS[\"Lat\",NORTH], "
-    "  AXIS[\"Long\",EAST], "
-    "  AUTHORITY[\"EPSG\",4326]]";
-  
-  mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
-  
   
   //draw the selected features in yellow
   selectionColor.setRgb(255, 255, 0);
@@ -1665,6 +1643,29 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
                     // label
                     mLabel = new QgsLabel ( dataProvider->fields() );
                     mLabelOn = false;
+
+		    //
+		    // Get the layers project info and set up the QgsCoordinateTransform for this layer
+		    //
+		    QString mySourceWKT = getProjectionWKT();
+		    //hard coding to geo/wgs84 for now
+		    /*
+		      QString myDestWKT =    "PROJCS[\"Alaska_Albers_Equal_Area_Conic\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"False_Easting\",0.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"longitude_of_center\",-154.0],PARAMETER[\"Standard_Parallel_1\",55.0],PARAMETER[\"Standard_Parallel_2\",65.0],PARAMETER[\"latitude_of_center\",50.0],UNIT[\"Meter\",1.0]]";
+		    */
+		    QString myDestWKT =     "GEOGCS[\"WGS 84\", "
+		      "  DATUM[\"WGS_1984\", "
+		      "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+		      "      AUTHORITY[\"EPSG\",7030]], "
+		      "    TOWGS84[0,0,0,0,0,0,0], "
+		      "    AUTHORITY[\"EPSG\",6326]], "
+		      "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+		      "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+		      "  AXIS[\"Lat\",NORTH], "
+		      "  AXIS[\"Long\",EAST], "
+		      "  AUTHORITY[\"EPSG\",4326]]";
+		    
+		    mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+  
                 }
             } else
             {
