@@ -30,6 +30,7 @@ moc_qgshelpviewerbase.cpp \
 moc_qgsidentifyresults.cpp \
 moc_qgsidentifyresultsbase.cpp \
 moc_qgslabeldialog.cpp \
+moc_qgslabeldialogbase.cpp \
 moc_qgslegend.cpp \
 moc_qgslegenditembase.cpp \
 moc_qgslinestyledialog.cpp \
@@ -63,6 +64,7 @@ moc_qgssisydialogbase.cpp \
 moc_qgsuvaldialog.cpp \
 moc_qgsuvaldialogbase.cpp \
 moc_qgsludialogbase.cpp \
+moc_qgsludialog.cpp \
 moc_qgsvectorlayer.cpp \
 moc_splashscreen.cpp \
 qgisapp.cpp \
@@ -103,6 +105,7 @@ qgsidentifyresultsbase.cpp \
 qgslabel.cpp \
 qgslabelattributes.cpp \
 qgslabeldialog.cpp \
+qgslabeldialogbase.cpp \
 qgslegend.cpp \
 qgslegenditem.cpp \
 qgslegenditembase.cpp \
@@ -157,4 +160,5 @@ qgsuvaldialog.cpp \
 qgsuvaldialogbase.cpp \
 qgsvectorfilewriter.cpp \
 qgsludialogbase.cpp \
+qgsludialog.cpp \
 qgsvectorlayer.cpp 
