@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'qgsgrassregionbase.ui'
 **
-** Created: Wed Aug 4 17:07:48 2004
+** Created: Sat Aug 14 10:43:40 2004
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -16,6 +16,7 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QSpacerItem;
 class QFrame;
 class QLabel;
 class QLineEdit;
@@ -65,13 +66,22 @@ public slots:
     virtual void reject();
 
 protected:
-    QVBoxLayout* QgsGrassRegionBaseLayout;
+    QGridLayout* QgsGrassRegionBaseLayout;
     QHBoxLayout* frame4Layout;
+    QSpacerItem* spacer1;
+    QSpacerItem* spacer2;
     QHBoxLayout* frame19Layout;
+    QSpacerItem* spacer3;
     QHBoxLayout* frame20Layout;
+    QSpacerItem* spacer4;
+    QSpacerItem* spacer5;
     QGridLayout* frame5Layout;
     QHBoxLayout* frame6Layout;
+    QSpacerItem* spacer6;
     QHBoxLayout* frame8Layout;
+    QSpacerItem* spacer7;
+    QSpacerItem* spacer8;
+    QSpacerItem* spacer9;
 
 protected slots:
     virtual void languageChange();
