@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <qimage.h>
 #include <qpainter.h>
 #include <stdio.h>
 
@@ -62,18 +61,10 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 {
 	//std::cout << "QgsRasterLayer::draw()" << std::endl;
 	//std::cout << "gdalDataset->GetRasterCount(): " << gdalDataset->GetRasterCount() << std::endl;
-	std::cout << "Layer extent: " << layerExtent.stringRep() << std::endl;
+	//std::cout << "Layer extent: " << layerExtent.stringRep() << std::endl;
 	
 	// clip raster extent to view extent
 	QgsRect rasterExtent = viewExtent->intersect(&layerExtent);
-	std::cout << "viewXMin: " << viewExtent->xMin() <<std::endl;
-	std::cout << "viewYMax: " << viewExtent->yMax() <<std::endl;
-	std::cout << "viewXMax: " << viewExtent->xMax() <<std::endl;
-	std::cout << "viewYMin: " << viewExtent->yMin() <<std::endl;
-	std::cout << "rasterXMin: " << rasterExtent.xMin() <<std::endl;
-	std::cout << "rasterYMax: " << rasterExtent.yMax() <<std::endl;
-	std::cout << "rasterXMax: " << rasterExtent.xMax() <<std::endl;
-	std::cout << "rasterYMin: " << rasterExtent.yMin() <<std::endl;
 	if (rasterExtent.isEmpty()) {
 		// nothing to do
 		return;
@@ -87,9 +78,6 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	int rYOff = static_cast<int>((layerExtent.yMax() - viewExtent->yMax()) / fabs(adfGeoTransform[5]));
 	rYOff = rYOff >? 0;
 	
-	std::cout << "rXOff: " << rXOff <<std::endl;
-	std::cout << "rYOff: " << rYOff <<std::endl;
-	
 	// get dimensions of clipped raster image in raster pixel space
 	double rXmin = (rasterExtent.xMin() - adfGeoTransform[0]) / adfGeoTransform[1];
 	double rXmax = (rasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
@@ -101,54 +89,73 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	// get dimensions of clipped raster image in device coordinate space
 	QgsPoint topLeft = cXf->transform(rasterExtent.xMin(), rasterExtent.yMax());
 	QgsPoint bottomRight = cXf->transform(rasterExtent.xMax(), rasterExtent.yMin());
-	
 	int lXSize = bottomRight.xToInt() - topLeft.xToInt();
 	int lYSize = bottomRight.yToInt() - topLeft.yToInt();
 	
-	std::cout << "xMin: " << layerExtent.xMin() <<std::endl;
-	std::cout << "yMax: " << layerExtent.yMax() <<std::endl;
-	std::cout << "xMax: " << layerExtent.xMax() <<std::endl;
-	std::cout << "yMin: " << layerExtent.yMin() <<std::endl;
-	std::cout << "lXSize: " << lXSize <<std::endl;
-	std::cout << "lYSize: " << lYSize <<std::endl;
-	
-	// if there is more than one raster band they can be for red, green, blue, etc.
-	// so this loop doesn't make much sense right now
-	// only handling the case of 1 raster band that uses a palette
-	// to index the rgb color values
-	// this works for GeoTIFFs from:
-	// http://cugir.mannlib.cornell.edu/browse_map/quad_map.html
+	// loop through raster bands
+	// a band can have color values that correspond to colors in a palette
+	// or it can contain the red, green or blue value for an rgb image
+	// HLS, CMYK, or RGB alpha bands are silently ignored for now
 	for (int i = 1; i <= gdalDataset->GetRasterCount(); i++) {
 		GDALRasterBand  *gdalBand = gdalDataset->GetRasterBand( i );
 		
 		//std::cout << "gdalBand->GetOverviewCount(): " << gdalBand->GetOverviewCount() <<std::endl;
 		
-		//int nXSize = gdalBand->GetXSize() - nXOff;
-		//int nYSize = gdalBand->GetYSize() - nYOff;
 		// make sure we don't exceed size of raster
 		rXSize = rXSize <? gdalBand->GetXSize();
 		rYSize = rYSize <? gdalBand->GetYSize();		
-		std::cout << "rXSize: " << rXSize <<std::endl;
-		std::cout << "rYSize: " << rYSize <<std::endl;
 		
-		// read entire clipped area of raster
+		// read entire clipped area of raster band
 		// treat scandata as a pseudo-multidimensional array
 		// RasterIO() takes care of scaling down image
 		uint *scandata = (uint*) CPLMalloc(sizeof(uint)*lXSize * sizeof(uint)*lYSize);
 		CPLErr result = gdalBand->RasterIO( 
 				GF_Read, rXOff, rYOff, rXSize, rYSize, scandata, lXSize, lYSize, GDT_UInt32, 0, 0 );
+							
+		QString colorInterp = GDALGetColorInterpretationName(gdalBand->GetColorInterpretation());
+		if ( colorInterp == "Palette") {
+			// print each point in scandata using color looked up in color table
+			GDALColorTable *colorTable = gdalBand->GetColorTable();
 			
-		GDALColorTable *colorTable = gdalBand->GetColorTable();
-			
-		// print each point in scandata using color looked up in color table
-		for (int y = 0; y < lYSize; y++) {
-			for (int x =0; x < lXSize; x++) {
-				const GDALColorEntry *colorEntry = GDALGetColorEntry(colorTable, scandata[y*lXSize + x]);
-				p->setPen(QColor(colorEntry->c1, colorEntry->c2, colorEntry->c3));
-				p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
+			for (int y = 0; y < lYSize; y++) {
+				for (int x =0; x < lXSize; x++) {
+					const GDALColorEntry *colorEntry = GDALGetColorEntry(colorTable, scandata[y*lXSize + x]);
+					p->setPen(QColor(colorEntry->c1, colorEntry->c2, colorEntry->c3));
+					p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
+				}
+			}			
+		} else if ( colorInterp == "Red" ) {
+			// print each point in scandata as the red part of an rgb value
+			for (int y = 0; y < lYSize; y++) {
+				for (int x =0; x < lXSize; x++) {					
+					p->setPen(QColor(scandata[y*lXSize + x], 0, 0));
+					p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
+				}
+			}			
+		} else if ( colorInterp == "Green" ) {
+			// print each point in scandata as the green part of an rgb value
+			p->setRasterOp(Qt::XorROP);
+			for (int y = 0; y < lYSize; y++) {
+				for (int x =0; x < lXSize; x++) {					
+					p->setPen(QColor(0, scandata[y*lXSize + x], 0));
+					p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
+				}
 			}
+			p->setRasterOp(Qt::CopyROP);
+		} else if ( colorInterp == "Blue" ) {
+			// print each point in scandata as the blue part of an rgb value
+			p->setRasterOp(Qt::XorROP);
+			for (int y = 0; y < lYSize; y++) {
+				for (int x =0; x < lXSize; x++) {					
+					p->setPen(QColor(0, 0, scandata[y*lXSize + x]));
+					p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
+				}
+			}
+			p->setRasterOp(Qt::CopyROP);
+		} else {
+			// do nothing
 		}
-			
+		
 		CPLFree(scandata);
 	}
 }
