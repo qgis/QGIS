@@ -212,7 +212,7 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
 
   layer->initContextMenu(mQgisApp);
 
-  const char * layerName = layer->name().ascii(); // debugger probe
+  const char * layerName = layer->name(); // debugger probe
 
   QgsLegendItem *legend_item = new QgsLegendItem(layer, this, mQgisApp->actionInOverview);
 

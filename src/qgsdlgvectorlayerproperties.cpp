@@ -164,7 +164,7 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 {
 #ifdef QGISDEBUG
     qDebug( "%s:%d QgsDlgVectorLayerProperties::alterLayerDialog(%s)", 
-            __FILE__, __LINE__, dialogString.ascii() );
+            __FILE__, __LINE__, dialogString );
 #endif
   if (rendererDirty)
     {

@@ -328,7 +328,7 @@ void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl
 void QgsContinuousColRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<continuoussymbol>\n";
-    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() <<
+    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) <<
   "</classificationfield>\n";
 
 
@@ -336,24 +336,24 @@ void QgsContinuousColRenderer::writeXML(std::ostream& xml)
     QgsSymbol *lsymbol = lowestitem->getSymbol();
     xml << "\t\t\t<lowestitem>\n";
     xml << "\t\t\t\t<renderitem>\n";
-    xml << "\t\t\t\t<value>" << lowestitem->value().ascii() << "</value>\n";
+    xml << "\t\t\t\t<value>" << lowestitem->value() << "</value>\n";
     xml << "\t\t\t\t\t<symbol>\n";
     xml << "\t\t\t\t\t\t<outlinecolor red=\"" 
-      << QString::number(lsymbol->pen().color().red()).ascii() 
+      << QString::number(lsymbol->pen().color().red()) 
       << "\" green=\"" 
-      << QString::number(lsymbol->pen().color().green()).ascii()
+      << QString::number(lsymbol->pen().color().green())
       <<  "\" blue=\"" 
-      << QString::number(lsymbol->pen().color().blue()).ascii() 
+      << QString::number(lsymbol->pen().color().blue()) 
       << "\" />\n";
-    xml << "\t\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(lsymbol->pen().style()).ascii() << "</outlinestyle>\n";
-    xml << "\t\t\t\t\t\t<outlinewidth>" << QString::number(lsymbol->pen().width()).ascii() << "</outlinewidth>\n";
-    xml << "\t\t\t\t\t\t<fillcolor red=\"" << QString::number(lsymbol->brush().color().red()).ascii() << "\" green=\"" <<
-  QString::number(lsymbol->brush().color().green()).ascii() << "\" blue=\"" <<
-  QString::number(lsymbol->brush().color().blue()).ascii() << "\" />\n";
-    xml << "\t\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(lsymbol->brush().style()).ascii() <<
+    xml << "\t\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(lsymbol->pen().style()) << "</outlinestyle>\n";
+    xml << "\t\t\t\t\t\t<outlinewidth>" << QString::number(lsymbol->pen().width()) << "</outlinewidth>\n";
+    xml << "\t\t\t\t\t\t<fillcolor red=\"" << QString::number(lsymbol->brush().color().red()) << "\" green=\"" <<
+  QString::number(lsymbol->brush().color().green()) << "\" blue=\"" <<
+  QString::number(lsymbol->brush().color().blue()) << "\" />\n";
+    xml << "\t\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(lsymbol->brush().style()) <<
   "</fillpattern>\n";
     xml << "\t\t\t\t\t</symbol>\n";
-    xml << "\t\t\t\t\t<label>" << lowestitem->label().ascii() << "</label>\n";
+    xml << "\t\t\t\t\t<label>" << lowestitem->label() << "</label>\n";
     xml << "\t\t\t\t</renderitem>\n";
     xml << "\t\t\t</lowestitem>\n";
 
@@ -363,19 +363,19 @@ void QgsContinuousColRenderer::writeXML(std::ostream& xml)
     xml << "\t\t\t\t<renderitem>\n";
     xml << "\t\t\t\t<value>" << highestitem->value() << "</value>\n";
     xml << "\t\t\t\t\t<symbol>\n";
-    xml << "\t\t\t\t\t\t<outlinecolor red=\"" << QString::number(hsymbol->pen().color().red()).ascii() << "\" green=\"" <<
-  QString::number(hsymbol->pen().color().green()).ascii() << "\" blue=\"" << QString::number(hsymbol->pen().color().blue()).ascii() <<
+    xml << "\t\t\t\t\t\t<outlinecolor red=\"" << QString::number(hsymbol->pen().color().red()) << "\" green=\"" <<
+  QString::number(hsymbol->pen().color().green()) << "\" blue=\"" << QString::number(hsymbol->pen().color().blue()) <<
   "\" />\n";
-    xml << "\t\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(hsymbol->pen().style()).ascii() <<
+    xml << "\t\t\t\t\t\t<outlinestyle>" << QgsSymbologyUtils::penStyle2QString(hsymbol->pen().style()) <<
   "</outlinestyle>\n";
-    xml << "\t\t\t\t\t\t<outlinewidth>" << QString::number(hsymbol->pen().width()).ascii() << "</outlinewidth>\n";
-    xml << "\t\t\t\t\t\t<fillcolor red=\"" << QString::number(hsymbol->brush().color().red()).ascii() << "\" green=\"" <<
-  QString::number(hsymbol->brush().color().green()).ascii() << "\" blue=\"" <<
-  QString::number(hsymbol->brush().color().blue()).ascii() << "\" />\n";
-    xml << "\t\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(hsymbol->brush().style()).ascii() <<
+    xml << "\t\t\t\t\t\t<outlinewidth>" << QString::number(hsymbol->pen().width()) << "</outlinewidth>\n";
+    xml << "\t\t\t\t\t\t<fillcolor red=\"" << QString::number(hsymbol->brush().color().red()) << "\" green=\"" <<
+  QString::number(hsymbol->brush().color().green()) << "\" blue=\"" <<
+  QString::number(hsymbol->brush().color().blue()) << "\" />\n";
+    xml << "\t\t\t\t\t\t<fillpattern>" << QgsSymbologyUtils::brushStyle2QString(hsymbol->brush().style()) <<
   "</fillpattern>\n";
     xml << "\t\t\t\t\t</symbol>\n";
-    xml << "\t\t\t\t\t<label>" << highestitem->label().ascii() << "</label>\n";
+    xml << "\t\t\t\t\t<label>" << highestitem->label() << "</label>\n";
     xml << "\t\t\t\t</renderitem>\n";
     xml << "\t\t\t</highestitem>\n";
     xml << "\t\t</continuoussymbol>\n";

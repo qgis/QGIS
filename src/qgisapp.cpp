@@ -621,7 +621,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
             QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
 #ifdef QGISDEBUG
 
-            std::cerr << "Examining " << myFullPath.ascii() << std::endl;
+            std::cerr << "Examining " << myFullPath << std::endl;
 #endif
 
             QLibrary *myLib = new QLibrary(myFullPath);
@@ -629,7 +629,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
             if (loaded)
             {
                 //purposely leaving this one to stdout!
-                std::cout << "Loaded " << myLib->library().ascii() << std::endl;
+                std::cout << "Loaded " << myLib->library() << std::endl;
                 name_t * myName =(name_t *) myLib->resolve("name");
                 description_t *  myDescription = (description_t *)  myLib->resolve("description");
                 version_t *  myVersion =  (version_t *) myLib->resolve("version");
@@ -643,7 +643,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
                     if (mySettings.readBoolEntry("/qgis/Plugins/" + myEntryName))
                     {
 #ifdef QGISDEBUG
-                        std::cerr << " -------------------- loading " << myEntryName.ascii() << std::endl;
+                        std::cerr << " -------------------- loading " << myEntryName << std::endl;
 #endif
 
                         loadPlugin(myName(), myDescription(), myFullPath);
@@ -652,14 +652,14 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
                 else
                 {
 #ifdef QGISDEBUG
-                    std::cerr << "Failed to get name, description, or type for " << myLib->library().ascii() << std::endl;
+                    std::cerr << "Failed to get name, description, or type for " << myLib->library() << std::endl;
 #endif
 
                 }
             }
             else
             {
-                std::cerr << "Failed to load " << myLib->library().ascii() << std::endl;
+                std::cerr << "Failed to load " << myLib->library() << std::endl;
             }
         }
     }
@@ -2432,7 +2432,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
         QLibrary *myLib = new QLibrary(theFullPathName);
 #ifdef QGISDEBUG
 
-        std::cerr << "Library name is " << myLib->library().ascii() << std::endl;
+        std::cerr << "Library name is " << myLib->library() << std::endl;
 #endif
 
         bool loaded = myLib->load();
