@@ -46,6 +46,7 @@
 #include "qgsrenderer.h"
 #include "qgslegenditem.h"
 #include "qgsvectorlayerproperties.h"
+#include "qgsdlgvectorlayerproperties.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsrenderitem.h"
 #include "qgssisydialog.h"
@@ -665,6 +666,10 @@ void QgsVectorLayer::showLayerProperties()
 	m_propertiesDialog = new QgsVectorLayerProperties(this);
 	m_propertiesDialog->show();
     }
+    //TODO FIX THIS NEW PROPERTIES DIALOG WHICH REPLACES ALL EXISTING PROPERTY
+    //TODO AND SYMBOLOGY DIALOGS 
+  /*   QgsDlgVectorLayerProperties *vlp = new QgsDlgVectorLayerProperties(this);
+    vlp->show(); */
 }
 
 QgsRenderer* QgsVectorLayer::renderer()
