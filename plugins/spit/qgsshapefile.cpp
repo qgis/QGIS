@@ -246,6 +246,12 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
       delete feat;
     }
   }
+  // create the GIST index if the the load was successful
+  if(result)
+  {
+    // prompt user to see if they want to build the index and warn
+    // them about the potential time-cost
+  }
   ogrLayer->ResetReading();
   return result;
 }
