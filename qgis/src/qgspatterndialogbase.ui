@@ -316,7 +316,7 @@
                 <cstring>cancelbutton</cstring>
             </property>
             <property name="text">
-                <string>cancel</string>
+                <string>Cancel</string>
             </property>
         </widget>
         <widget class="QPushButton" row="1" column="1">
@@ -324,7 +324,7 @@
                 <cstring>okbutton</cstring>
             </property>
             <property name="text">
-                <string>ok</string>
+                <string>Ok</string>
             </property>
             <property name="default">
                 <bool>true</bool>
