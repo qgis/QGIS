@@ -611,7 +611,11 @@ std::vector<QgsField> const & QgsGrassProvider::fields() const
       return mLayers[mLayerId].fields;
 }
 
-void QgsGrassProvider::reset(){
+void QgsGrassProvider::reset()
+{
+    if ( isEdited() )
+	return;
+
     int mapId = mLayers[mLayerId].mapId;
     if ( mapOutdated(mapId) ) {
         updateMap ( mapId );
