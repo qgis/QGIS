@@ -218,6 +218,13 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName):QgsMapLayer(RASTE
   stdDevsToPlotDouble = 0;      // sensible default
   transparencyLevelInt = 255;   //sensible default 0 is transparent
   showDebugOverlayFlag = false; //sensible default
+  //  Transparency slider for popup meni
+  //  QSlider ( int minValue, int maxValue, int pageStep, int value, Orientation orientation, QWidget * parent, const char * name = 0 )
+  mTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,QSlider::Horizontal,popMenu);
+  mTransparencySlider->setTickmarks(QSlider::Both);
+  mTransparencySlider->setTickInterval(25);
+  mTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
+  connect(mTransparencySlider, SIGNAL(valueChanged(int)), this, SLOT(popupTransparencySliderMoved(int)));
   // emit a signal asking for a repaint
   emit repaintRequested();
 }
@@ -336,6 +343,7 @@ void QgsRasterLayer::setTransparency(int theInt)
   {
     transparencyLevelInt = theInt;
   }
+  mTransparencySlider->setValue(transparencyLevelInt);
 }
 unsigned int QgsRasterLayer::getTransparency()
 {
@@ -2181,40 +2189,47 @@ void QgsRasterLayer::initContextMenu(QgisApp * theApp)
   popMenu = new QPopupMenu();
   popMenu->setCheckable ( true );
   //create a heading label for the menu:
+  //If a widget is not focus-enabled (see QWidget::isFocusEnabled()), the menu treats it as a separator; 
+  //this means that the item is not selectable and will never get focus. In this way you can, for example, 
+  //simply insert a QLabel if you need a popup menu with a title. 
   QLabel *myPopupLabel = new QLabel( popMenu );
   myPopupLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
   myPopupLabel->setText( tr("<center><b>Raster Layer</b></center>") );
-  popMenu->insertItem(myPopupLabel,0);
+  popMenu->insertItem(myPopupLabel);
   //
   popMenu->insertItem(tr("&Zoom to extent of selected layer"), theApp, SLOT(zoomToLayerExtent()));
   popMenu->insertItem(tr("&Properties"), theApp, SLOT(layerProperties()));
   //show in overview slot is implemented in maplayer superclass!
-  popMenu->insertItem(tr("Show In &Overview"), theApp, SLOT(showInOverview(bool)),1);//1 is a user assigned id for the menu item
-  popMenu->setItemChecked(1,true);
+  int myShowInOverviewItemId = popMenu->insertItem(tr("Show In &Overview"), this, SLOT(showInOverview(bool)));
+  //set the checkbox using the property in the maplayer superclass
+  popMenu->setItemChecked(myShowInOverviewItemId,mShowInOverview);
+  popMenu->insertItem(tr("&Remove"), theApp, SLOT(removeLayer()));
   popMenu->insertSeparator();
-  //If a widget is not focus-enabled (see QWidget::isFocusEnabled()), the menu treats it as a separator; 
-  //this means that the item is not selectable and will never get focus. In this way you can, for example, 
-  //simply insert a QLabel if you need a popup menu with a title. 
   QLabel * myTransparencyLabel = new QLabel( popMenu );
   myTransparencyLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
   myTransparencyLabel->setText( tr("<center><b>Transparency</b></center>") );
-  popMenu->insertItem(myTransparencyLabel,2);
-  popMenu->setItemEnabled(2,false);
-  //  QSlider ( int minValue, int maxValue, int pageStep, int value, Orientation orientation, QWidget * parent, const char * name = 0 )
-  QSlider * myTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,QSlider::Horizontal,popMenu);
-  myTransparencySlider->setTickmarks(QSlider::Both);
-  myTransparencySlider->setTickInterval(25);
-  myTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
-  connect(myTransparencySlider, SIGNAL(valueChanged(int)), this, SLOT(popupTransparencySliderMoved(int)));
-  popMenu->insertItem(myTransparencySlider,3);
+  popMenu->insertItem(myTransparencyLabel);
+  popMenu->insertItem(mTransparencySlider);
 
-  popMenu->insertSeparator();
-  popMenu->insertItem(tr("&Remove"), theApp, SLOT(removeLayer()));
 }
 
 void QgsRasterLayer::popupTransparencySliderMoved(int theInt)
 {
-  setTransparency(255-theInt);
+#ifdef QGISDEBUG
+  std::cout << "popupTransparencySliderMoved called with : " << theInt << std::endl;
+#endif
+  if (theInt > 255)
+  {
+    transparencyLevelInt = 255;
+  }
+  else if (theInt < 0)
+  {
+    transparencyLevelInt = 0;
+  }
+  else
+  {
+    transparencyLevelInt = 255-theInt;
+  }
   triggerRepaint();
 }
 

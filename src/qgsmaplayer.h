@@ -224,6 +224,8 @@ signals:
   /** This signal should be connected with the slot QgsMapCanvas::refresh() */
   virtual void repaintRequested();
 
+  /** This is used to notify the application whether this layer should be shown in overview or not. */
+  void showInOverview(QString theLayerId, bool);
 
 protected:
 
@@ -253,6 +255,9 @@ protected:
 
   //! context menu
   QPopupMenu *popMenu;
+
+  /** Whether this layer is to be shown in the overview map or not */
+  bool mShowInOverview;
 
 private:                       // Private attributes
 

@@ -30,6 +30,7 @@ m_legendItem(0)
   // until we learn otherwise
   valid = true;
   m_visible = true;
+  mShowInOverview = false;
   // Set the display name = internal name
   layerName = internalName;
 
@@ -127,12 +128,19 @@ void QgsMapLayer::showInOverview(bool theFlag)
 {
   if (theFlag)
   {
-    //do me
+#ifdef QGISDEBUG
+    std::cout << "Map layer " << ID << " requested to be added to the overview " << std::endl;
+#endif
+    mShowInOverview=true;
   }
   else
   {
-    //do me
+#ifdef QGISDEBUG
+    std::cout << "Map layer " << ID << " requested to be removed from the overview " << std::endl;
+#endif
+    mShowInOverview=false;
   }
+  emit showInOverview(ID,mShowInOverview);
 }
 
 const int &QgsMapLayer::featureType()

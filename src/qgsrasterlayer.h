@@ -168,6 +168,7 @@ The [type] part of the variable should be the type class of the variable written
  
 #include <qvaluevector.h>
 #include <qvaluelist.h> 
+#include <qslider.h>
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
@@ -862,6 +863,8 @@ private:
     /** \brief This list holds a series of RasterPyramid structs
      * which store infomation for each potential pyramid level for this raster.*/
     RasterPyramidList mPyramidList;
+    //Transparency slider for popup menu
+    QSlider * mTransparencySlider; 
     //we need to do the tr() stuff outside of the main drawing loops becauses tr() is a 
     //time consuming operation nd we dont want to do it in the loop!
     QString redTranslatedQString;
