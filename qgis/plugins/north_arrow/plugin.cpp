@@ -108,8 +108,6 @@ void Plugin::initGui()
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderNorthArrow(QPainter *)));
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
-  // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(toolBarPointer);
   refreshCanvas();
 
 }
