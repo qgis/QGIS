@@ -19,7 +19,6 @@
 
 #include "qgsclipper.h"
 
-#include <cmath>
 #include <iostream>
 
 bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to, 
@@ -76,16 +75,17 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
     tTo = to;
     
     // Check the top boundary
-    double r_n = (from.y() -     minY)  * (maxX - minX);
-    double dTB = - (to.y() - from.y())  * (maxX - minX);
+    double r_n = (from.y() -     minY) * (maxX - minX);
+    double dTB = - (to.y() - from.y()) * (maxX - minX);
     double s_n;
 
-    if (std::fabs(dTB) > SMALL_NUM && std::fabs(r_n) > SMALL_NUM)
+    if (std::abs(dTB) > SMALL_NUM && std::abs(r_n) > SMALL_NUM)
     {
       s_n = (from.y() -     minY)  * (to.x() - from.x()) 
           - (from.x() -     minX)  * (to.y() - from.y());
       double r_nOverd = r_n / dTB;
       double s_nOverd = s_n / dTB;
+
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
 	  s_nOverd >= 0.0 && s_nOverd <= 1.0)
       {
@@ -107,15 +107,16 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
     }
 
     // the right border
-    r_n = -(from.x() - maxX)     * (maxY   - minY);
+    r_n = -(from.x() - maxX) * (maxY - minY);
     double dLR =  (to.x()   - from.x()) * (maxY   - minY);
 
-    if (fabs(dLR) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
+    if (std::abs(dLR) > SMALL_NUM && std::abs(r_n) > SMALL_NUM)
     {
       s_n = (from.y()  - minY)     * (to.x() - from.x()) 
           - (from.x()  - maxX)     * (to.y() - from.y());
       double r_nOverd = r_n / dLR;
       double s_nOverd = s_n / dLR;
+
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
 	  s_nOverd >= 0.0 && s_nOverd <= 1.0)
       {
@@ -141,15 +142,17 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
       return true;
 
     // the left border
-    r_n = - (from.x() - minX)     * (maxY   - minY);
+    r_n = - (from.x() - minX) * (maxY - minY);
     // d is the same as dLR
 
-    if (fabs(dLR) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
+    if (std::abs(dLR) > SMALL_NUM && std::abs(r_n) > SMALL_NUM)
     {
       s_n =   (from.y() - minY)     * (to.x() - from.x()) 
 	    - (from.x() - minX)     * (to.y() - from.y());
+
       double r_nOverd = r_n / dLR;
       double s_nOverd = s_n / dLR;
+
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
 	  s_nOverd >= 0.0 && s_nOverd <= 1.0)
       {
@@ -175,15 +178,16 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
       return true;
 
     // the bottom border
-    r_n = (from.y() - maxY)     * (maxX   - minX);
-    // d is the same as for the top bounadry check
+    r_n = (from.y() - maxY) * (maxX - minX);
+    // d is the same as for the top boundary check
 
-    if (fabs(dTB) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
+    if (std::abs(dTB) > SMALL_NUM && std::abs(r_n) > SMALL_NUM)
     {
       s_n = (from.y() - maxY)     * (to.x() - from.x())
           - (from.x() - minX)     * (to.y() - from.y());
       double r_nOverd = r_n/dTB;
       double s_nOverd = s_n/dTB;
+
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
 	  s_nOverd >= 0.0 && s_nOverd <= 1.0)
       {
@@ -225,60 +229,101 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
   return true;
 }
 
-/*
+
+// Trim the polygon using Sutherland and Hodgman's
+// polygon-clipping algorithm. See J. D. Foley, A. van Dam,
+// S. K. Feiner, and J. F. Hughes, Computer Graphics, Principles and
+// Practice. Addison-Wesley Systems Programming Series,
+// Addison-Wesley, 2nd ed., 1991. 
+
+// I understand that this is not the most efficient algorithm, but is
+// one (the only?) that is guaranteed to always give the correct
+// result. 
+
 void QgsClipper::trimPolygon(QPointArray* pa)
 {
-  // See if we need to trim the polygon
+  // std::cerr << "Trimming polygon...\n";
 
+  // Trim the polygon against the four boundaries in turn.
+  QPointArray* tmp = new QPointArray();
+  trimPolygonToBoundary(pa, tmp, Xmax);
+  pa->resize(0);
+  trimPolygonToBoundary(tmp, pa, Ymax);
+  tmp->resize(0);
+  trimPolygonToBoundary(pa, tmp, Xmin);
+  pa->resize(0);
+  trimPolygonToBoundary(tmp, pa, Ymin);
+  delete tmp;
+  /*
+  for (int i = 0; i < pa->size(); ++i)
+    std::cerr << pa->point(i).x() << ", "
+	      << pa->point(i).y() << "; ";
+  std::cerr <<'\n';
+  */
+}
 
-  QPointArray* newPa = new QPointArray(pa->size(), QGArray::SpeedOptim);
+// An auxilary function that is part of the polygon trimming
+// code. Will trim the given polygon to the given boundary and return
+// the trimmed polygon in the out pointer. Uses Sutherland and
+// Hodgman's polygon-clipping algorithm.
+
+void QgsClipper::trimPolygonToBoundary(QPointArray* in, 
+				       QPointArray* out, boundary b)
+{
   QPoint i;
 
-  int p1 = pa->size()-1; // start with last point
+  int i1 = in->size()-1; // start with last point
 
-  for (int p2 = 0; p2 < pa->size()-1 ; ++p2)
-  {
-    if (inside(pa, p2, boundary))
+  // and compare to the first point initially.
+  for (int i2 = 0; i2 < in->size() ; ++i2)
+    { // look at each edge of the polygon in turn
+    if (inside(in, i2, b)) // end point of edge is inside boundary
     {
-      if (inside(pa, p1, boundary))
-	newPa->setPoint(newPa->size(), pa->point(p2));
+      if (inside(in, i1, b)) // edge is entirely inside boundary, so pass-thru
+	out->putPoints(out->size(), 1, in->point(i2).x(), in->point(i2).y());
       else
       {
-	i = intersect(pa, p1, p2, boundary);
- 	newPa->setPoint(newPa->size(), i);
-	newPa->setPoint(newPa->size(), pa->point(p2));
+	// edge crosses into the boundary, so trim back to the boundary, and
+	// store both ends of the new edge
+	i = intersect(in, i1, i2, b);
+ 	out->putPoints(out->size(), 1, i.x(), i.y());
+	out->putPoints(out->size(), 1, in->point(i2).x(), in->point(i2).y());
       }
     }
-    else
+    else // end point of edge is outside boundary
     {
-      if (inside(pa, p1, boundary))
-      {
-	i = intersect(pa, p1, p2, boundary);
-	newPa->setPoint(newPa->size(), i);
+      if (inside(in, i1, b))
+      { // start point is in boundary, so need to trim back
+	i = intersect(in, i1, i2, b);
+	out->putPoints(out->size(), 1, i.x(), i.y());
       }
     }
-    p1 = p2;
+    i1 = i2;
   }
+  //  std::cerr << in->size() << " -> " << out->size() << '\n';
 }
 
 
-bool inside(QPointArray* pa, int p, int boundary)
+// An auxilary function to trimPolygonToBoundarY() that returns
+// whether a point is inside or outside the given boundary. 
+
+bool QgsClipper::inside(QPointArray* pa, int p, boundary b)
 {
-  switch (boundary)
+  switch (b)
   {
-  case 1: // x < maxX is inside
+  case Xmax: // x < maxX is inside
     if ((pa->point(p)).x() < maxX)
       return true;
     break;
-  case 2: // x > minX is inside
+  case Xmin: // x > minX is inside
     if ((pa->point(p)).x() > minX)
       return true;
     break;
-  case 3: // y < maxY is inside
+  case Ymax: // y < maxY is inside
     if ((pa->point(p)).y() < maxY)
       return true;
     break;
-  case 4: // y > minY is inside
+  case Ymin: // y > minY is inside
     if ((pa->point(p)).y() > minY)
       return true;
     break;
@@ -286,30 +331,60 @@ bool inside(QPointArray* pa, int p, int boundary)
   return false;
 }
 
-QPoint intersect(QPointArray* pa, int p1, int p2, boundary)
+
+// An auxilary function to trimPolygonToBoundarY() that calculates and
+// returns the intersection of the line defined by the given points
+// and the given boundary.
+
+QPoint QgsClipper::intersect(QPointArray* pa, int i1, int i2, boundary b)
 {
-  switch (boundary)
+  // This function assumes that the two given points cross the given
+  // boundary. Making this assumption allows some optimisations.
+
+  QPoint p1 = pa->point(i1);
+  QPoint p2 = pa->point(i2);
+  QPoint p;
+  double r_n, r_d;
+
+  /*
+  std::cerr << pa->point(i1).x() << ", " << pa->point(i1).y() << ", "
+	    << pa->point(i2).x() << ", " << pa->point(i2).y() << '\n';
+  */
+
+  switch (b)
   {
-  case 1: // x = maxX boundary
-    QPoint p1 = pa->point(p1);
-    QPoint p2 = pa->point(p2);
-    double r_n = -(p1.x() - minY) * (maxY - minY);
-    double r_d = (p2.x() - p1.x()) * (maxY - minY);
-    if (fabs(r_d) > SMALL_NUM)
-    {
-
-    }
+  case Xmax: // x = maxX boundary
+    r_n = -(p1.x() - maxX)   * (maxY - minY);
+    r_d =  (p2.x() - p1.x()) * (maxY - minY);
     break;
-  case 2: // x = minX boundary
-
+  case Xmin: // x = minX boundary
+    r_n = -(p1.x() - minX)   * (maxY - minY);
+    r_d =  (p2.x() - p1.x()) * (maxY - minY);
     break;
-  case 3: // y = maxY boundary
-
+  case Ymax: // y = maxY boundary
+    r_n =   (p1.y() - maxY)   * (maxX - minX);
+    r_d = - (p2.y() - p1.y()) * (maxX - minX);
     break;
-  case 4: // y = minY boundary
-
+  case Ymin: // y = minY boundary
+    r_n =   (p1.y() - minY)   * (maxX - minX);
+    r_d = - (p2.y() - p1.y()) * (maxX - minX);
     break;
   }
+
+  if (std::abs(r_d) > SMALL_NUM && std::abs(r_n) > SMALL_NUM)
+  { // they cross
+    double r = r_n / r_d;
+    p.setX(static_cast<int>(round(p1.x() + r*(p2.x() - p1.x()))));
+    p.setY(static_cast<int>(round(p1.y() + r*(p2.y() - p1.y()))));
+  }
+  else
+  {
+    // Should never get here, but if we do for some reason, cause a
+    // clunk because something else is wrong if we do.
+    Q_ASSERT(std::abs(r_d) > SMALL_NUM && std::abs(r_n) > SMALL_NUM);
+  }
+
+  return p;
 }
 
-*/
+
