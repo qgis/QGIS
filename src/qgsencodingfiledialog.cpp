@@ -14,18 +14,62 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
+#include <qcombobox.h>
 #include <qlabel.h>
+#include <qtextcodec.h>
+
 
 QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name): QFileDialog(dirName, filter, parent, name)
 {
     mEncodingComboBox=new QComboBox(this);
     QLabel* l=new QLabel(tr("Encoding:"),this);
     addWidgets(l,mEncodingComboBox,0);
-    mEncodingComboBox->insertItem("Ascii",0);
-    mEncodingComboBox->insertItem("Latin1",1);
-    mEncodingComboBox->insertItem("Local8Bit",2);
-    mEncodingComboBox->insertItem("Utf8",3);
-    mEncodingComboBox->setCurrentItem(3);//make Utf8 the default
+    mEncodingComboBox->insertItem("BIG5"); 
+    mEncodingComboBox->insertItem("BIG5-HKSCS"); 
+    mEncodingComboBox->insertItem("EUCJP"); 
+    mEncodingComboBox->insertItem("EUCKR"); 
+    mEncodingComboBox->insertItem("GB2312"); 
+    mEncodingComboBox->insertItem("GBK"); 
+    mEncodingComboBox->insertItem("GB18030"); 
+    mEncodingComboBox->insertItem("JIS7"); 
+    mEncodingComboBox->insertItem("SHIFT-JIS"); 
+    mEncodingComboBox->insertItem("TSCII"); 
+    mEncodingComboBox->insertItem("UTF-8"); 
+    mEncodingComboBox->insertItem("UTF-16"); 
+    mEncodingComboBox->insertItem("KOI8-R"); 
+    mEncodingComboBox->insertItem("KOI8-U"); 
+    mEncodingComboBox->insertItem("ISO8859-1"); 
+    mEncodingComboBox->insertItem("ISO8859-2");
+    mEncodingComboBox->insertItem("ISO8859-3"); 
+    mEncodingComboBox->insertItem("ISO8859-4"); 
+    mEncodingComboBox->insertItem("ISO8859-5"); 
+    mEncodingComboBox->insertItem("ISO8859-6");
+    mEncodingComboBox->insertItem("ISO8859-7"); 
+    mEncodingComboBox->insertItem("ISO8859-8"); 
+    mEncodingComboBox->insertItem("ISO8859-8-I"); 
+    mEncodingComboBox->insertItem("ISO8859-9"); 
+    mEncodingComboBox->insertItem("ISO8859-10"); 
+    mEncodingComboBox->insertItem("ISO8859-13"); 
+    mEncodingComboBox->insertItem("ISO8859-14"); 
+    mEncodingComboBox->insertItem("ISO8859-15"); 
+    mEncodingComboBox->insertItem("IBM 850"); 
+    mEncodingComboBox->insertItem("IBM 866"); 
+    mEncodingComboBox->insertItem("CP874"); 
+    mEncodingComboBox->insertItem("CP1250"); 
+    mEncodingComboBox->insertItem("CP1251"); 
+    mEncodingComboBox->insertItem("CP1252"); 
+    mEncodingComboBox->insertItem("CP1253"); 
+    mEncodingComboBox->insertItem("CP1254"); 
+    mEncodingComboBox->insertItem("CP1255"); 
+    mEncodingComboBox->insertItem("CP1256"); 
+    mEncodingComboBox->insertItem("CP1257"); 
+    mEncodingComboBox->insertItem("CP1258"); 
+    mEncodingComboBox->insertItem("Apple Roman"); 
+    mEncodingComboBox->insertItem("TIS-620"); 
+    mEncodingComboBox->setCurrentText(QTextCodec::codecForLocale()->name());//make local encoding the default
+#ifdef QGISDEBUG
+    qWarning("name of locale is: "+QString(QTextCodec::codecForLocale()->name()));
+#endif
 }
 
 QgsEncodingFileDialog::~QgsEncodingFileDialog()
@@ -33,17 +77,7 @@ QgsEncodingFileDialog::~QgsEncodingFileDialog()
     
 }
 
-QgsVectorDataProvider::Encoding QgsEncodingFileDialog::encoding() const
+QString QgsEncodingFileDialog::encoding() const
 {
-    switch(mEncodingComboBox->currentItem())
-    {
-	case 0:
-	    return QgsVectorDataProvider::Ascii;
-	case 1:
-	    return QgsVectorDataProvider::Latin1;
-	case 2:
-	    return QgsVectorDataProvider::Local8Bit;
-	case 3:
-	    return QgsVectorDataProvider::Utf8;
-    }
+    return mEncodingComboBox->currentText();
 }

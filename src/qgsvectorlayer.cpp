@@ -1407,9 +1407,8 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
     }
     else
     {
-      std::list<QgsFeature*>::iterator it=mAddedFeatures.end();
-      --it;
-      tempid=(*it)->featureId()+1;
+      std::list<QgsFeature*>::const_reverse_iterator rit=mAddedFeatures.rbegin();
+      tempid=(*rit)->featureId()+1;
     }
 #ifdef QGISDEBUG
     qWarning("assigned feature id "+QString::number(tempid));

@@ -945,7 +945,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
    with the current filter name.
 
 */
-static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles, QgsVectorDataProvider::Encoding& enc)
+static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles, QString& enc)
 {
 
     bool haveLastUsedFilter = false;  // by default, there is no last
@@ -1028,7 +1028,7 @@ void QgisApp::addLayer()
         std::cerr << "Vector file filters: " << fileFilters << std::endl;
 #endif
 
-	QgsVectorDataProvider::Encoding enc=QgsVectorDataProvider::Utf8;
+	QString enc;
         openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc);
         if (selectedFiles.isEmpty())
         {
@@ -1174,7 +1174,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
   XXX yah know, this could be changed to just iteratively call the above
 
  */
-bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QgsVectorDataProvider::Encoding enc)
+bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& enc)
 {
     // check to see if we have an ogr provider available
     QString pOgr = mProviderRegistry->library("ogr");
@@ -4034,7 +4034,7 @@ void QgisApp::addRasterLayer()
     QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
 
     QStringList selectedFiles;
-    QgsVectorDataProvider::Encoding e;//only for parameter correctness
+    QString e;//only for parameter correctness
 
     openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles,e);
 
