@@ -1,4 +1,4 @@
-TODO,v 1.5 2004/01/20 17:32:40 gsherman Exp
+TODO,v 1.6 2004/01/21 13:19:51 timlinux Exp
 TODO List for getting to version 0.1 (in no order of importance)
  1. Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
     needing attention are customized raster settings and symbology for vector
@@ -21,3 +21,6 @@ TODO List for getting to version 0.1 (in no order of importance)
  9. Remove *.adf from all rasters filter
 10. Add options dialog to store user preferences.
 11. Add Help (HTML opened in user specified browser)
+12. Modify cursors so the black cursor / transparency bounndaries are bordered with a 
+    1 pixel wide white border (to prevent losing the cursor over all black image regions.
+13. Update file open boxes to remember the last filter used in that session.
