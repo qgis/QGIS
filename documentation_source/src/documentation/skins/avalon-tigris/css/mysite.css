@@ -1,0 +1,88 @@
+/*
+ * Other colors:
+ *  - dark blue: #036
+ *  - bluish: #269
+ *
+ */
+
+/*
+ * The Banner section.
+ */
+.banner, .projectLogo, .groupLogo, .projectLogo a, .groupLogo a,
+    .groupLogo a:visited, .projectLogo a:visited,
+    .groupLogo a:link, .projectLogo a:link {
+}
+
+/*
+ * The Status + Footer section.
+ */
+.status, .breadcrumb, .searcher, .tabs {
+}
+
+.selectedTab {
+}
+
+/*
+ * The Menu section.
+ */
+.menuColumn {
+}
+.menubar {
+}
+.menu {
+}
+.menuLabel {
+}
+.menuItem {
+}
+
+/*
+ * The Content section.
+ */
+.contentColumn {
+}
+
+h1, h2, h3, h4 {
+}
+
+h3, h4 {
+ }
+h3 {
+  }
+h4 {  
+}
+
+.code {
+}
+
+.section {
+}
+
+.subsection {
+}
+
+/*
+ * The Footer section.
+ */
+.footer, .copyright, .host, .credit {
+}
+
+/*
+ * General Settings
+ */
+body {
+}
+
+a:link, .menuItem a:visited, .status a:visited {
+ color: #036;
+}
+
+a:active, a:hover {
+
+}
+
+body, th, td {
+}
+
+.logoImage {
+}

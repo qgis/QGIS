@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document>
+   <header>
+      <title>Page generated from a subdirectory</title>
+
+      <authors>
+        <person name="Joe Bloggs" email="joe@joescompany.org" />
+       </authors>
+   </header>
+
+   <body>
+     <section>
+       <title>A subdirectory</title>
+       <p>This was generated from a subdirectory.</p>
+       <p>When creating new subdirectories, remember that each <em>must</em>
+         have a book.xml file</p>
+      </section>
+   </body>
+</document>
+

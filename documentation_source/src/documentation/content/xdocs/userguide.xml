@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" 
+"/data1/development/qgis_doc/build/webapp/resources/schema/dtd/document-v12.dtd">
+<document>
+	<header>
+		<title>QGIS User Guide</title>
+		<subtitle>Version 0.1pre1 (Moroz)</subtitle>
+		<authors>
+			<person name="Gary Sherman" email="sherman at mrcc.com"/>
+		</authors>
+		<notice>This document is under development</notice>
+	</header>
+	<body>
+		<section>
+			<title>Introduction</title>
+		
+			<p>Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
+     built for Linux/Unix. QGIS will ultimately offer support for vector, raster,
+     and database formats.
+     </p>
+		</section>
+		<section>
+			<title>Current Features</title>
+			<ul>
+				<li>Support for spatially enabled PostgreSQL tables using PostGIS</li>
+				<li>Support for ESRI shapefiles and other vector formats support by the OGR library</li>
+        <li>Support for raster formats supported by the GDAL library</li>
+				<li>Identify features</li>
+				<li>Display attribute table</li>
+				<li>Select features</li>
+				<li>Persistent selections</li>
+				<li>Save projects</li>
+				<li>Change vector symbology (single, graduated, and continuous)</li>
+				<li>Export to Mapserver map file</li>
+			</ul>
+		</section>
+		<section>
+		<title>Getting Started</title>
+		<p>This section gives you a quick overview of running QGIS and examining data in
+		a set of shapefiles.
+		</p>
+		<section>
+		<title>Installation</title>
+		<p>Installation of QGIS is documented in the <link href="site:install">Installation Guide</link>.
+		</p>
+		</section>
+		<section>
+		<title>Starting QGIS</title>
+		<p>
+		Assuming the QGIS is installed in the PATH, you can start QGIS by typing:
+		<code>qgis</code>.</p>
+		<p>
+		When QGIS starts, an empty window is displayed as shown below.
+		<img alt="QGIS Main Window" src="images/qgis_mainwindow01.png"/>
+		</p>
+		<note>Your window decorations (title bar, etc.) may appear different depending on your operating system
+		and window manager</note>
+		</section>
+		</section>
+		<section>
+		<title>Loading a Shapefile</title>
+		<p>
+		To load one or more shapefiles, click on the Add Layer button 
+		<img alt="Add Layer" src="images/btn_add_layer.gif"/>. </p>
+		<p>The <em>Select one or more layers to add</em> dialog box will be displayed.
+		<img alt="Select layers" src="images/add_layer_dialog.gif"/></p>
+		<p>Navigate to the directory where the shapefiles reside. Select one or
+		more files and click ok to load them.</p>
+		<p>When QGIS loads a layer, it assigns a random color to it as shown 
+		below.</p>
+		<p><img alt="Shapefiles loaded into QGIS" src="images/loaded_shapefiles.gif"/>
+		</p>
+		<p>
+		Obviously QGIS's choice of colors is not very pleasing in this case.
+		</p>
+		</section>
+		<section>
+		<title>Changing Symbology</title>
+		<p>
+		To make the layer more appealing, open the Layer Properties 
+		dialog by right-clicking on a layer name
+		in the table of contents (left side of the QGIS window) and
+		selecting <em>Properties</em>.
+		</p>
+		<p>
+		<img alt="Layer Properties" src="images/layer_properties.gif"/>
+		</p>
+		<p>
+		If you like, change the display name of the layer by editing
+		the <em>Display name</em> field. Click on the <em>Symbology</em>
+		tab and click on the <em>Outline color</em> and <em>Fill color</em>
+		and select a new color from the color chooser. You can also change the
+		line width if desired.</p>
+		<p>
+		<img alt="Changing colors" src="images/change_symbology.gif"/>
+		</p>
+		<p>After making the changes, click Ok to apply the changes to
+		the layer. Note that the alaska layer has been renamed to Alaska and the
+		color has been changed to a light green:</p>
+		<p>
+		<img alt="Changing colors" src="images/changed_symbology.gif"/>
+		</p>
+		</section>
+		<section>
+		<title>Identifying a Feature</title>
+		<p>
+		</p>
+		
+		<p>
+		<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>
+	
+		</p>
+		</section>
+		
+	</body>
+	<footer>
+		<legal>© 2003 Gary Sherman</legal>
+	</footer>
+</document>

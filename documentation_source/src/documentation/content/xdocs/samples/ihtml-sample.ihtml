@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+	<body>
+		
+<h1>Test iHTML page</h1>
+		
+<p> 		This HTML is used to render the page instead of using the Forrest
+XML DTD directly.</p>
+		
+<p>All linked-to pages, like <a href="../test2.html">this one</a>, are
+		also available. 		</p>
+<hr> 		[<a href="index.html">Index</a>] 	
+</body>
+</html>

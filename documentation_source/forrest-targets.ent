@@ -1,0 +1,174 @@
+<!--
+This build.xml snippet contains Forrest targets for Ant 1.5+.  It checks that
+the user has set ${forrest.home}, either in one of:
+  build.properties
+  project.properties
+  ant.properties
+  .ant.properties
+or with the FORREST_HOME environment variable, and prints an informative error
+message if not found.
+
+Usage:
+1) Copy this file to somewhere in your project.
+2) Add the following to the top of your project's Ant build.xml script
+(adjusting the path):
+
+  <!DOCTYPE project [
+    <!ENTITY forrest-targets SYSTEM "file:./forrest-targets.ent">
+  ]>
+
+3) Before the closing '</project>' in your build.xml, add this:
+
+  &forrest-targets;
+  
+This is like expanding a macro: it pulls in the contents of this file.
+
+A minimal build.xml would thus be:
+
+<!DOCTYPE project [
+<!ENTITY forrest-targets SYSTEM "file:./forrest-targets.ent">
+]>
+
+<project default="site">
+    &forrest-targets;
+</project>
+-->
+
+  <target name="site" depends="forrest.init" description="Generates static HTML documentation">
+    <ant antfile="${forrest.home}/forrest.antproxy.xml" target="site"/>
+  </target>
+
+  <target name="webapp" depends="forrest.init" description="Generates an unpackaged webapp of the website">
+    <ant antfile="${forrest.home}/forrest.antproxy.xml" target="webapp"/>
+  </target>
+
+  <target name="war" depends="forrest.init" description="Generates a .war file containing the website">
+    <ant antfile="${forrest.home}/forrest.antproxy.xml" target="war"/>
+  </target>
+
+  <target name="validate" depends="forrest.init" description="Validates XML documentation files">
+    <ant antfile="${forrest.home}/forrest.antproxy.xml" target="validate"/>
+  </target>
+
+  <target name="forrest.init" depends="forrest.sethome, forrest.home.defined"/>
+
+  <target name="forrest.sethome" depends="forrest.loadenv,
+  forrest.checkenv, forrest.checkhome, forrest.check-build.properties,
+  forrest.check-project.properties, forrest.check-ant.properties,
+  forrest.check-.ant.properties"/>
+
+  <target name="forrest.loadenv" unless="forrest.home.present">
+    <property environment="env"/>
+    <echo level="verbose">Forrest: Got ${env.FORREST_HOME}</echo>
+  </target>
+
+  <target name="forrest.checkenv" if="env.FORREST_HOME">
+    <echo level="verbose">Found $FORREST_HOME..</echo>
+    <property name="forrest.home" location="${env.FORREST_HOME}"/>
+    <echo level="verbose">forrest.home set to ${forrest.home}</echo>
+    <available file="${forrest.home}" type="dir" property="forrest.home.present"/>
+  </target>
+
+
+  <target name="forrest.checkhome">
+    <available file="${forrest.home}" type="dir" property="forrest.home.present"/>
+    <available file="build.properties" type="file" property="build.properties.present"/>
+    <available file="project.properties" type="file" property="project.properties.present"/>
+    <available file="ant.properties" type="file" property="ant.properties.present"/>
+    <available file=".ant.properties" type="file" property=".ant.properties.present"/>
+  </target>
+
+  <!-- No we can't extract the commonalities below into an antcall'ed target,
+  because it wouldn't be able to set forrest.home -->
+  <target name="forrest.check-build.properties" unless="forrest.home.present"
+  if="build.properties.present">
+    <echo level="verbose">Forrest: Checking build.properties..</echo>
+    <loadproperties srcfile="build.properties">
+      <filterchain>
+        <linecontains>
+          <contains value="forrest.home"/>
+        </linecontains>
+      </filterchain>
+    </loadproperties>
+    <available file="${forrest.home}" type="dir" property="forrest.home.present"/>
+
+  </target>
+
+  <target name="forrest.check-project.properties" unless="forrest.home.present"
+  if="project.properties.present">
+    <echo level="verbose">Forrest: Checking project.properties..</echo>
+    <loadproperties srcfile="project.properties">
+      <filterchain>
+        <linecontains>
+          <contains value="forrest.home"/>
+        </linecontains>
+      </filterchain>
+    </loadproperties>
+    <available file="${forrest.home}" type="dir" property="forrest.home.present"/>
+  </target>
+
+  <target name="forrest.check-ant.properties" unless="forrest.home.present"
+  if="ant.properties.present">
+    <echo level="verbose">Forrest: Checking ant.properties..</echo>
+    <loadproperties srcfile="ant.properties">
+      <filterchain>
+        <linecontains>
+          <contains value="forrest.home"/>
+        </linecontains>
+      </filterchain>
+    </loadproperties>
+    <available file="${forrest.home}" type="dir" property="forrest.home.present"/>
+  </target>
+
+  <target name="forrest.check-.ant.properties" unless="forrest.home.present"
+  if=".ant.properties.present">
+    <echo level="verbose">Forrest: Checking .ant.properties..</echo>
+    <loadproperties srcfile=".ant.properties">
+      <filterchain>
+        <linecontains>
+          <contains value="forrest.home"/>
+        </linecontains>
+      </filterchain>
+    </loadproperties>
+    <available file="${forrest.home}" type="dir" property="forrest.home.present"/>
+  </target>
+
+  <target name="forrest.home.defined" depends="forrest.sethome" unless="forrest.home.present">
+    <property name="path" value="${user.home}/xml-forrest/build/dist/shbat"/>
+    <pathconvert targetos="windows" property="winpath">
+      <path>
+        <pathelement location="${path}"/>
+      </path>
+    </pathconvert>
+    <pathconvert targetos="unix" property="unixpath">
+      <path>
+        <pathelement
+          location="${path}"/>
+      </path>
+    </pathconvert>
+
+    <echo>
+      ----------------------------------------------
+      To run this target, you need Forrest installed.
+      Please do the following:
+
+      export CVSROOT=:pserver:anoncvs@cvs.apache.org:/home/cvspublic
+      cvs checkout xml-forrest
+      cd xml-forrest
+      build      (Windows)
+      ./build.sh (Unix)
+
+      Then either:
+
+      - Set FORREST_HOME as the Forrest build instructions describe
+      - Create a build.properties, with the forrest.home property pointing to
+        the forrest shbat directory, eg:
+
+        forrest.home=${winpath}  (Windows)
+        forrest.home=${unixpath}  (Unix)
+
+        (adjusting the path according to where your xml-forrest is)
+      ----------------------------------------------
+    </echo>
+    <fail message="Need to define $${forrest.home}"/>
+  </target>
