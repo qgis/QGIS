@@ -39,12 +39,14 @@ public:
 	void addLayer();
 	//! Exit Qgis
 	void fileExit();
-	//! Zoom out
+	//! Set map tool to Zoom out
  	void zoomOut();
-	//! Zoom int
+	//! Set map tool to Zoom in
   	void zoomIn();
 	//! Zoom to full extent
 	void zoomFull();
+	//! Set map tool to pan
+	void pan();
 	//! Read Well Known Binary stream from PostGIS
 	void readWKB(const char *, QStringList tables);
 	//! Draw a point on the map canvas
@@ -62,7 +64,9 @@ QWidget *mapToc;
  double scaleFactor;
  //! Current map window extent in real-world coordinates
  QRect *mapWindow;
-
+ //! Current map tool
+ int mapTool;
+ 
 };
 
 #endif

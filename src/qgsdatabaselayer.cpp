@@ -247,7 +247,9 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
   qWarning(sql);
   pgs.Declare((const char *)sql, true);
   int res = pgs.Fetch();
-  cout << "Number of matching records: " << pgs.Tuples() << endl;
+  QString msg;
+  QTextOStream(&msg) << "Number of matching records: " << pgs.Tuples() << endl;
+  qWarning(msg);
   cout << "Using following transform parameters:\n" << cXf->showParameters() 
        << endl;
   for (int idx = 0; idx < pgs.Tuples (); idx++)
