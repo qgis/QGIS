@@ -1,4 +1,4 @@
-README for QGIS version 0.3 'Madison'
+README for QGIS version 0.4 'Baby'
 Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
 built for Linux/Unix. QGIS offers support for vector and raster formats. 
 Currently QGIS supports many common vector and raster formats shapefiles
@@ -6,19 +6,19 @@ and PostgreSQL/PostGIS layers.
 
 This release adds:
   Features
-    Raster pyramids
-    Scale display
-    Map units can be specified (meters, feet, decimal degrees)
-    Desktop icons (installed in share/qgis/images/icons)
-    Mac OS X vector support now works
+    Map Overview
+    Preliminary printing support
+    Menu cleanups
+    User interface improvements
+    Icon Themes (only default theme currently available)
+    Capture point to clipboard
+   
   Core Plugins
-    New North Arrow plugin
+    Scale bar plugin
     Improved GPS tools plugin
-    New Copyright plugin
-    Improved Grass plugin with raster and vector loaders
-  Contributed Plugins (available from community.qgis.org)
-    HTTP server (simple map server implementation)
-
+   
+  Known Issues
+   Map units are not stored when a QGIS project is saved
 
 Supported raster formats include:
   Grass
