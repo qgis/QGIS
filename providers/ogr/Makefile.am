@@ -10,6 +10,7 @@ ogrprovider_la_SOURCES = qgsshapefileprovider.cpp \
 												../../src/qgsfield.cpp
 
 
-ogrprovider_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) -lgeos
+ogrprovider_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) $(GEOS_LDADD)
 ogrprovider_la_LDFLAGS = -avoid-version -module
-ogrprovider_la_CXXFLAGS := $(CXXFLAGS) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS)
+ogrprovider_la_CXXFLAGS := $(CXXFLAGS) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+

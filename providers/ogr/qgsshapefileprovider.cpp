@@ -454,6 +454,11 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
     mSelectionRectangle = new OGRPolygon();
     mSelectionRectangle->importFromWkt((char **)&wktText);
   }
+  // reset the extent for the ogr filter
+  //
+  wktExtent = QString("POLYGON ((%1))").arg(rect->stringRep());
+  wktText = (const char *)wktExtent;
+
   OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
