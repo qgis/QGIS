@@ -12,6 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
+#include <qlistbox.h>
+#include "qgsfield.h"
 #include "qgspgquerybuilder.h"
 
 QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name)
@@ -19,24 +22,129 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name)
 {
 }
 
+QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con, 
+    QWidget *parent, const char *name) : QgsPgQueryBuilderBase(parent, name),
+                                         mTableName(tableName), mPgConnection(con)
+{
+  populateFields();
+}
 QgsPgQueryBuilder::~QgsPgQueryBuilder()
 {
 }
 
 void QgsPgQueryBuilder::populateFields()
 {
+  // Populate the field vector for this layer. The field vector contains
+  // field name, type, length, and precision (if numeric)
+  QString sql = "select * from " + mTableName + " limit 1";
+  PGresult *result = PQexec(mPgConnection, (const char *) sql);
+  qWarning("Query executed: " + sql);
+  if (PQresultStatus(result) == PGRES_TUPLES_OK) 
+  {
+  //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
+  for (int i = 0; i < PQnfields(result); i++) {
+
+    QString fieldName = PQfname(result, i);
+    int fldtyp = PQftype(result, i);
+    QString typOid = QString().setNum(fldtyp);
+    std::cerr << "typOid is: " << typOid << std::endl; 
+    int fieldModifier = PQfmod(result, i);
+    QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
+    //  //--std::cout << sql << std::endl;
+    PGresult *oidResult = PQexec(mPgConnection, (const char *) sql);
+  if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
+    std::cerr << "Ok fetching typelem using\n" << sql << std::endl; 
+
+    // get the oid of the "real" type
+    QString poid = PQgetvalue(oidResult, 0, PQfnumber(oidResult, "typelem"));
+    std::cerr << "poid is: " << poid << std::endl; 
+    PQclear(oidResult);
+    sql = "select typname, typlen from pg_type where oid = " + poid;
+    // //--std::cout << sql << std::endl;
+    oidResult = PQexec(mPgConnection, (const char *) sql);
+  if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
+    std::cerr << "Ok fetching typenam,etc\n";
+
+    QString fieldType = PQgetvalue(oidResult, 0, 0);
+    QString fieldSize = PQgetvalue(oidResult, 0, 1);
+    PQclear(oidResult);
+    /*
+    sql = "select oid from pg_class where relname = '" + mTableName + "'";
+    PGresult *tresult= PQexec(mPgConnection, (const char *)sql);
+    QString tableoid = PQgetvalue(tresult, 0, 0);
+    PQclear(tresult);
+    sql = "select attnum from pg_attribute where attrelid = " + tableoid + " and attname = '" + fieldName + "'";
+    tresult = PQexec(mPgConnection, (const char *)sql);
+    QString attnum = PQgetvalue(tresult, 0, 0);
+    PQclear(tresult);
+#ifdef QGISDEBUG
+    std::cerr << "Field: " << attnum << " maps to " << i << " " << fieldName << ", " 
+      << fieldType << " (" << fldtyp << "),  " << fieldSize << ", "  
+      << fieldModifier << std::endl;
+#endif
+*/
+    mFieldMap[fieldName] = QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier);
+    lstFields->insertItem(fieldName);
+  }
+}else
+{
+  std::cerr << "Error fetching a row from " + mTableName << std::endl; 
+}
+  PQclear(result);
 }
 
 void QgsPgQueryBuilder::getSampleValues()
 {
+  QString sql = "select distinct " + lstFields->currentText() 
+    + " from " + mTableName + " order by " + lstFields->currentText()
+    + " limit 25";
+  // clear the values list 
+  lstValues->clear();
+  PGresult *result = PQexec(mPgConnection, (const char *) sql);
+
+  if (PQresultStatus(result) == PGRES_TUPLES_OK) 
+  {
+    int rowCount =  PQntuples(result);
+    for(int i=0; i < rowCount; i++)
+    {
+      lstValues->insertItem(PQgetvalue(result, i, 0));
+    }
+
+  }else
+  {
+    std::cerr << "Failed to get sample of field values\n";
+  }
+  // free the result set
+  PQclear(result);
 }
 
 void QgsPgQueryBuilder::getAllValues()
 {
+  QString sql = "select distinct " + lstFields->currentText() 
+    + " from " + mTableName + " order by " + lstFields->currentText();
+  // clear the values list 
+  lstValues->clear();
+  PGresult *result = PQexec(mPgConnection, (const char *) sql);
+
+  if (PQresultStatus(result) == PGRES_TUPLES_OK) 
+  {
+    int rowCount =  PQntuples(result);
+    for(int i=0; i < rowCount; i++)
+    {
+      lstValues->insertItem(PQgetvalue(result, i, 0));
+    }
+
+  }else
+  {
+    std::cerr << "Failed to get sample of field values\n";
+  }
+  // free the result set
+  PQclear(result);
 }
 
 void QgsPgQueryBuilder::testSql()
 {
+
 }
 
 void QgsPgQueryBuilder::setConnection(PGconn *con)

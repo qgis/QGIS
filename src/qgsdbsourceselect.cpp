@@ -255,8 +255,10 @@ QString QgsDbSourceSelect::connInfo()
 }
 void QgsDbSourceSelect::setSql(QListViewItem *item)
 {
+  // Parse out the table name
+  QString table = item->text(1).left(item->text(1).find("("));
   // create a query builder object
-  QgsPgQueryBuilder * pgb = new QgsPgQueryBuilder(this);
+  QgsPgQueryBuilder * pgb = new QgsPgQueryBuilder(table, pd, this);
   // set the current sql in the query builder sql box
   pgb->setSql(item->text(2));
   // set the PG connection object so it can be used to fetch the
