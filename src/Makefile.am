@@ -39,6 +39,8 @@ qgis_SOURCES =  qgisapp.cpp \
 				qgsgraduatedsymrenderer.cpp \
 				qgsgrasydialog.cpp \
 				qgsgrasyextensionwidget.cpp \
+        qgshelpviewer.cpp \
+        qgshelpviewer.h \
 				qgsidentifyresults.cpp \
 				qgsidentifyresults.h \
 				qgslayerproperties.cpp \
@@ -87,12 +89,21 @@ qgis_SOURCES =  qgisapp.cpp \
 				splashscreen.h \
 				splashscreen.cpp \
 				qgssymbologyutils.cpp\
+        qgssymbologyutils.h \
 				qgsvectorlayerproperties.cpp\
+        qgsvectorlayerproperties.h \
 				qgsfeature.cpp \
+        qgsfeature.h \
 				qgsfeatureattribute.cpp \
+        qgsfeatureattribute.h \
         qgsfield.cpp \
+        qgsfield.h \
         qgsproviderregistry.cpp \
+        qgsproviderregistry.h \
         qgsprovidermetadata.cpp \
+        qgsprovidermetadata.h \
+        qgsdlgvectorlayerproperties.cpp \
+        qgsdlgvectorlayerproperties.h \
 				$(qgis_UI) \
 				$(qgis_MOC)
 qgis_MOC = 	qgisappbase.moc.cpp \
@@ -133,9 +144,12 @@ qgis_MOC = 	qgisappbase.moc.cpp \
           qgsvectorlayer.moc.cpp \
           qgsvectorlayerproperties.moc.cpp\
           qgsvectorlayerpropertiesbase.moc.cpp \
-          splashscreen.moc.cpp
+          splashscreen.moc.cpp \
+          qgsdlgvectorlayerpropertiesbase.moc.cpp \
+          qgsdlgvectorlayerproperties.moc.cpp \
+          qgshelpviewerbase.moc.cpp
 					
-qgis_UI = qgisappbase.cpp\
+qgis_UI = qgisappbase.cpp \
           qgisappbase.h \
           qgsabout.cpp \
           qgsabout.h \
@@ -145,8 +159,8 @@ qgis_UI = qgisappbase.cpp\
           qgscontcoldialogbase.h \
           qgsgrasydialogbase.cpp \
           qgsgrasydialogbase.h \
-          qgshelpviewer.cpp \
-          qgshelpviewer.h \
+          qgshelpviewerbase.cpp \
+          qgshelpviewerbase.h \
           qgsidentifyresultsbase.cpp \
           qgsidentifyresultsbase.h \
           qgslayerpropertiesbase.cpp \
@@ -168,18 +182,21 @@ qgis_UI = qgisappbase.cpp\
           qgssisydialogbase.cpp \
           qgssisydialogbase.h \
           qgsvectorlayerpropertiesbase.cpp \
-          qgsvectorlayerpropertiesbase.h
+          qgsvectorlayerpropertiesbase.h \
+          qgsdlgvectorlayerpropertiesbase.cpp \
+          qgsdlgvectorlayerpropertiesbase.h
 qgis_UIC = qgisappbase.ui \
           qgsabout.ui \
           qgsattributetablebase.ui \
-          qgshelpviewer.ui \
+          qgshelpviewerbase.ui \
           qgsidentifyresultsbase.ui \
           qgslayerpropertiesbase.ui \
           qgslegenditembase.ui \
           qgsmapserverexportbase.ui \
           qgsmessageviewer.ui \
           qgspatterndialogbase.h \
-          qgsrasterlayerpropertiesbase.ui 
+          qgsrasterlayerpropertiesbase.ui \
+          qgsdlgvectorlayerpropertiesbase.ui
 # UI dependencies			
 gsattributetablebase.cpp: gsattributetablebase.h qgsattributetablebase.ui
 gsattributetablebase.h: qgsattributetablebase.ui
@@ -191,8 +208,8 @@ qgscontcoldialogbase.cpp: qgscontcoldialogbase.h qgscontcoldialogbase.ui
 qgscontcoldialogbase.h: qgscontcoldialogbase.ui
 qgsgrasydialogbase.cpp: qgsgrasydialogbase.h qgsgrasydialogbase.ui
 qgsgrasydialogbase.h: qgsgrasydialogbase.ui
-qgshelpviewer.cpp: qgshelpviewer.h qgshelpviewer.ui 
-qgshelpviewer.h: qgshelpviewer.ui
+qgshelpviewerbase.cpp: qgshelpviewerbase.h qgshelpviewerbase.ui 
+qgshelpviewerbase.h: qgshelpviewerbase.ui
 qgsidentifyresultsbase.cpp: qgsidentifyresultsbase.h qgsidentifyresultsbase.ui
 qgsidentifyresultsbase.h: qgsidentifyresultsbase.ui
 qgslayerpropertiesbase.cpp: qgslayerpropertiesbase.h qgslayerpropertiesbase.ui
@@ -215,6 +232,8 @@ qgssisydialogbase.cpp: qgssisydialogbase.h qgssisydialogbase.ui
 qgssisydialogbase.h: qgssisydialogbase.ui
 qgsvectorlayerpropertiesbase.cpp: qgsvectorlayerpropertiesbase.h qgsvectorlayerpropertiesbase.ui
 qgsvectorlayerpropertiesbase.h: qgsvectorlayerpropertiesbase.ui
+qgsdlgvectorlayerpropertiesbase.cpp: qgsdlgvectorlayerpropertiesbase.h qgsdlgvectorlayerpropertiesbase.ui
+qgsdlgvectorlayerpropertiesbase.h: qgsdlgvectorlayerpropertiesbase.ui
 
 #PostgreSQL UI dependencies
 qgsdbsourceselectbase.h: qgsdbsourceselectbase.ui
@@ -244,8 +263,8 @@ qgis_MOC += $(postgresMOC)
 # add required defines for compiling PostgreSQL
 PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
 endif
-PLUGINS=-DPLUGINS=\"$(libdir)\"
+PREFIX=-DPREFIX=\"$(prefix)\"
 BUILT_SOURCES = $(qgis_MOC) $(qgis_UI)
 qgis_LDADD := $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
-AM_CXXFLAGS := $(PLUGINS) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) -I../include $(QT_CXXFLAGS) -I$(PG_INC) -g 
+AM_CXXFLAGS := $(PREFIX) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) -I../include $(QT_CXXFLAGS) -I$(PG_INC) -g 
 CLEANFILES = $(BUILT_SOURCES)
