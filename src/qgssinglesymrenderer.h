@@ -51,6 +51,8 @@ class QgsSingleSymRenderer: public QgsRenderer
     virtual void writeXML(std::ofstream& xml);
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes();
+    /**Returns an empty list, since no classification attributes are used*/
+    virtual std::list<int> classificationAttributes();
  protected:
     QgsRenderItem* mItem;
 };

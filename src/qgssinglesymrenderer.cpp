@@ -223,3 +223,9 @@ void QgsSingleSymRenderer::writeXML(std::ofstream& xml)
     xml << "\t\t\t</renderitem>\n";
     xml << "\t\t</singlesymbol>\n";
 }
+
+std::list<int> QgsSingleSymRenderer::classificationAttributes()
+{
+    std::list<int> list;
+    return list;//return an empty list
+}

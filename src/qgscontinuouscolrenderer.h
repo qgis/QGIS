@@ -60,6 +60,8 @@ class QgsContinuousColRenderer: public QgsRenderer
     virtual void writeXML(std::ofstream& xml);
     /** Returns true*/
     bool needsAttributes();
+    /**Returns a list with the index of the classification attribute*/
+    virtual std::list<int> classificationAttributes();
  protected:
     /**Number of the classification field (it must be a numerical field)*/
     int mClassificationField;
