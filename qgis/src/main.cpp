@@ -267,10 +267,23 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   if(mySnapshotFileName!="")
   {
-   // qgis->show();
+
+    /*You must have at least one paintEvent() delivered for the window to be
+      rendered properly.
+
+      It looks like you don't run the event loop in non-interactive mode, so the
+      event is never occuring.
+
+      To achieve this without runing the event loop: show the window, then call
+      qApp->processEvents(), grab the pixmap, save it, hide the window and exit.
+      */
+    //qgis->show();
+    a.processEvents();
     QPixmap * myQPixmap = new QPixmap(800,600);
     myQPixmap->fill();
     qgis->saveMapAsImage(mySnapshotFileName,myQPixmap);
+    a.processEvents();
+    qgis->hide();
     return 1;
   }
 
