@@ -1,0 +1,23 @@
+<!ELEMENT qgis (projectlayers) >
+<!ELEMENT projectlayers (maplayer) >
+<!ELEMENT maplayer (layername, datasource, zorder, symbol) >
+<!ELEMENT layername (#PCDATA) >
+<!ELEMENT datasource (#PCDATA) >
+<!ELEMENT zorder (#PCDATA) >
+<!ELEMENT symbol (linewidth, outlinecolor, fillcolor) >
+<!ELEMENT linewidth (#PCDATA) >
+<!ELEMENT fillcolor EMPTY>
+<!ELEMENT outlinecolor EMPTY>
+<!ATTLIST qgis projectname CDATA #REQUIRED >
+<!ATTLIST maplayer type (vector|raster|database) "vector" >
+<!ATTLIST projectlayers layercount CDATA #REQUIRED >
+<!ATTLIST fillcolor 
+	red CDATA #IMPLIED
+	green CDATA #IMPLIED
+	blue CDATA #IMPLIED
+	>
+<!ATTLIST outlinecolor 
+	red CDATA #IMPLIED
+	green CDATA #IMPLIED
+	blue CDATA #IMPLIED
+	>	
