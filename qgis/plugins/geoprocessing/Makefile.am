@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 # $Id$
-
+if POSTGRESDB
 lib_LTLIBRARIES = libpggeoprocessingplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -48,3 +48,4 @@ BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 
 libpggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) 
+endif
