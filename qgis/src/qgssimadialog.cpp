@@ -25,8 +25,10 @@
 #include "qgsrenderitem.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgslegenditem.h"
+#include "qgssvgcache.h"
 #include <qapplication.h>
 #include <qfiledialog.h>
+#include <qimage.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qpainter.h>
@@ -55,33 +57,12 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
             QgsMarkerSymbol* sy=dynamic_cast < QgsMarkerSymbol* >(renderer->item()->getSymbol());
             if(sy)
             {
-                QPicture pic;
                 double scalefactor=sy->scaleFactor();
                 mScaleSpin->setValue((int)(scalefactor*100.0));
                 QString svgfile=sy->picture();
-                pic.load(svgfile,"svg");
-
-                int width=(int)(pic.boundingRect().width()*scalefactor);
-                int height=(int)(pic.boundingRect().height()*scalefactor);
-
-                //prevent 0 width or height, which would cause a crash
-                if(width==0)
-                {
-                    width=1;
-                }
-                if(height==0)
-                {
-                    height=1;
-                }
-
-                QPixmap pixmap(width,height);
-                pixmap.fill();
-                QPainter p(&pixmap);
-                p.scale(scalefactor,scalefactor);
-                p.drawPicture(0,0,pic);
-                pmPreview->setPixmap(pixmap);
-    pmPreview->setName(svgfile);
-
+                pmPreview->setPixmap(QgsSVGCache::instance().
+				     getPixmap(svgfile, scalefactor));
+		pmPreview->setName(svgfile);
             }
             else
             {
@@ -162,8 +143,6 @@ void QgsSiMaDialog::apply()
         name = "";
     }
 
-    QPicture pic;
-    pic.load(string,"svg");
 
     QPixmap *pix = mVectorLayer->legendPixmap();
 
@@ -173,31 +152,25 @@ void QgsSiMaDialog::apply()
     int bottomspace=5;
     int betweenspace=5;
     int rightspace=5;
-
-    int width = (int)(pic.boundingRect().width()*ms->scaleFactor()+fm.width(name)+leftspace+betweenspace+rightspace);
-    int height = (int)((pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor()+topspace+bottomspace : fm.height()+topspace+bottomspace);
-
-    //prevent 0 width or height, which would cause a crash
-    if(width==0)
-    {
-        width=1;
-    }
-    if(height==0)
-    {
-        height=1;
-    }
-
+    
+    // get the marker used, calculate width and height of the legend pixmap
+    QPixmap symbolPix = 
+      QgsSVGCache::instance().getPixmap(string, ms->scaleFactor());
+    int width = symbolPix.width() + fm.width(name) + leftspace + 
+      betweenspace + rightspace;
+    int height = (symbolPix.height() > fm.height() ? 
+		  symbolPix.height() + topspace+bottomspace : 
+		  fm.height() + topspace+bottomspace);
     pix->resize(width, height);
     pix->fill();
-
+    
+    // paint symbol and layer name
     QPainter p(pix);
-    p.scale(ms->scaleFactor(),ms->scaleFactor());
-    p.drawPicture((int)(leftspace/ms->scaleFactor()),(int)(topspace/ms->scaleFactor()),pic);
-    p.resetXForm();
-
+    p.drawPixmap(leftspace, topspace, symbolPix);
     p.setPen(Qt::black);
     p.setFont(f);
-    p.drawText((int)(leftspace+betweenspace+pic.boundingRect().width()*ms->scaleFactor()), pix->height()-bottomspace,name);
+    p.drawText(leftspace + betweenspace + symbolPix.width(), 
+	       pix->height() - bottomspace,name);
 
     mVectorLayer->updateItemPixmap();
 
@@ -215,31 +188,11 @@ void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
     pmPreview->setName(svgfile);
 
     //draw the SVG-Image on the button
-    QPicture pic;
     double scalefactor=mScaleSpin->value()/100.0;
-    pic.load(svgfile,"svg");
-
-    int width=(int)(pic.boundingRect().width()*scalefactor);
-    int height=(int)(pic.boundingRect().height()*scalefactor);
-
-    //prevent 0 width or height, which would cause a crash
-    if(width==0)
-    {
-        width=1;
-    }
-    if(height==0)
-    {
-        height=1;
-    }
-
-    QPixmap pixmap(height,width);
-    pixmap.fill();
-    QPainter p(&pixmap);
-    p.scale(scalefactor,scalefactor);
-    p.drawPicture(0,0,pic);
-    pmPreview->setPixmap(pixmap);
-
+    pmPreview->setPixmap(QgsSVGCache::instance().
+			 getPixmap(svgfile, scalefactor));    
 }
+
 void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
 {
 #ifdef QGISDEBUG
@@ -249,31 +202,10 @@ void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
     QString svgfile(pmPreview->name());
     if(!svgfile.isEmpty())
     {
-        QPicture pic;
         //user enters scaling factor as a percentage
         double scalefactor=mScaleSpin->value()/100.0;
-        pic.load(svgfile,"svg");
-
-        int width=pic.boundingRect().width();
-  width=static_cast<int>(static_cast<double>(width)*scalefactor);
-        int height=pic.boundingRect().height();
-  height=static_cast<int>(static_cast<double>(height)*scalefactor);
-        //prevent 0 width or height, which would cause a crash
-        if(width==0)
-        {
-            width=1;
-        }
-        if(height==0)
-        {
-            height=1;
-        }
-
-        QPixmap pixmap(width,height);
-        pixmap.fill();
-        QPainter p(&pixmap);
-        p.scale(scalefactor,scalefactor);
-        p.drawPicture(0,0,pic);
-        pmPreview->setPixmap(pixmap);
+	pmPreview->setPixmap(QgsSVGCache::instance().
+			     getPixmap(svgfile, scalefactor));
     }
 
 }
@@ -301,17 +233,9 @@ void QgsSiMaDialog::visualizeMarkers(QString directory)
 #ifdef QGISDEBUG
         qWarning(*it);
 #endif
-
-        //use the QPixmap way, as the QPicture version does not seem to work properly
-        QPicture pic;
-        pic.load(mCurrentDir+"/"+(*it),"svg");
-        QPixmap pix;
-        pix.resize(pic.boundingRect().width(),pic.boundingRect().height());
-        pix.fill();
-        QPainter p(&pix);
-        p.drawPicture(0,0,pic);
+	QPixmap pix = QgsSVGCache::instance().getPixmap(mCurrentDir + 
+							"/" + (*it), 1);
         QIconViewItem* ivi=new QIconViewItem(mIconView,*it,pix);
-
     }
 }
 
