@@ -42,7 +42,7 @@
 
 // xpm for creating the toolbar icon
 #include "icon_buffer.xpm"
-
+static const char *pluginVersion = "0.1";
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
 * and an interface object that provides access to exposed functions in QGIS.
@@ -444,6 +444,12 @@ extern "C" QString description()
 extern "C" int type()
 {
     return QgisPlugin::UI;
+}
+
+// Return the version number for the plugin
+extern "C" QString version()
+{
+  return pluginVersion;
 }
 
 // Delete ourself
