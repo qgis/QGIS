@@ -36,6 +36,9 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qpixmap.h>
+#include <qpainter.h>
+#include <qfont.h>
 
 //non qt includes
 #include <iostream>
@@ -89,12 +92,14 @@ void Plugin::initGui()
   QAction *myQActionPointer = new QAction("North Arrow", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  //render the arrow each time the map is rendered
+  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete()), this, SLOT(renderNorthArrow()));
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
   toolBarPointer->setLabel("North Arrow");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
-
+  refreshCanvas();
 
 }
 //method defined in interface
@@ -111,6 +116,7 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
   myPluginGui->show();
+  
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
@@ -123,6 +129,29 @@ void Plugin::drawRasterLayer(QString theQString)
 void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
  qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
+}
+
+//! Refresh the map display using the mapcanvas exported via the plugin interface
+void Plugin::refreshCanvas()
+{
+ qGisInterface->getMapCanvas()->refresh();
+}
+
+void Plugin::renderNorthArrow()
+{
+  QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
+  // Draw a text alabel onto the pixmap 
+  //
+  QPainter myQPainter(myQPixmap);
+  myQPainter.rotate(-45);
+  //could use somthing like next line to draw a pic instead of text
+  //myQPainter.drawImage(-70, 0, myQImage);
+  myQPainter.rotate(45);
+  QFont myQFont("time", 24, QFont::Bold);
+  myQPainter.setFont(myQFont);
+  myQPainter.setPen(Qt::white);
+  myQPainter.drawText(15, 50, QString("N"));
+
 }
 
 // Unload the plugin by cleaning up the GUI
