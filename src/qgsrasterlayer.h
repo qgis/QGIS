@@ -694,6 +694,8 @@ signals:
     
     /** \brief emit a signal to notify of a progress event */
     void setProgress(int theProgress, int theTotalSteps);   
+    /** \brief emit a signal to be caught by gisapp and display a msg on status bar */
+    void setStatus(QString theStatusQString);
     
 public slots:    
     /** \brief Create 3 gdal pyramid overviews (2,4,8) for this layer.
