@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.63 2004/05/03 11:02:56 timlinux Exp
+ChangeLog,v 1.64 2004/05/03 23:24:15 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... developement version
+
+2004-05-03 [ts] 0.2.0devel4
+** qgisApp->mapCanvas is now exposed through the plugin interface.
 
 2004-05-03 [ts] 0.2.0devel3
 **Added three new widgets to status bar:
