@@ -30,17 +30,19 @@
 #include <qpainter.h>
 
 
-QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer)
+QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer), mMarkerSizeDirty(false)
 {
     QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));  
     QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
+    QObject::connect(mScaleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setMarkerSizeDirty()));
     mScaleEdit->setText("1.0");
 }
 
-QgsSiMaDialog::QgsSiMaDialog(): QgsSiMaDialogBase(), mVectorLayer(0)
+QgsSiMaDialog::QgsSiMaDialog(): QgsSiMaDialogBase(), mVectorLayer(0), mMarkerSizeDirty(false)
 {
     QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));
     QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
+    QObject::connect(mScaleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setMarkerSizeDirty()));
     mScaleEdit->setText("1.0");
 }
 
@@ -51,6 +53,8 @@ QgsSiMaDialog::~QgsSiMaDialog()
 
 void QgsSiMaDialog::apply()
 {
+    updateMarkerSize();
+    
     qWarning("in QgsSiMaDialog::apply()");
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
     QString string(mImageButton->name());
@@ -141,18 +145,27 @@ void QgsSiMaDialog::selectMarker()
 
 void QgsSiMaDialog::updateMarkerSize()
 {
-    //draw the SVG-Image on the button
-    QString svgfile(mImageButton->name());
-    if(!svgfile.isEmpty())
+    if(mMarkerSizeDirty)
     {
-	QPicture pic;
-	double scalefactor=mScaleEdit->text().toDouble();
-	pic.load(svgfile,"svg");
-	QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
-	pixmap.fill();
-	QPainter p(&pixmap);
-	p.scale(scalefactor,scalefactor);
-	p.drawPicture(0,0,pic);
-	mImageButton->setPixmap(pixmap);
-    } 
+	//draw the SVG-Image on the button
+	QString svgfile(mImageButton->name());
+	if(!svgfile.isEmpty())
+	{
+	    QPicture pic;
+	    double scalefactor=mScaleEdit->text().toDouble();
+	    pic.load(svgfile,"svg");
+	    QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+	    pixmap.fill();
+	    QPainter p(&pixmap);
+	    p.scale(scalefactor,scalefactor);
+	    p.drawPicture(0,0,pic);
+	    mImageButton->setPixmap(pixmap);
+	} 
+	mMarkerSizeDirty=false;
+    }
+}
+
+void QgsSiMaDialog::setMarkerSizeDirty()
+{
+    mMarkerSizeDirty=true;
 }
