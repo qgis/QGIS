@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.114 2004/06/08 13:28:34 jobi Exp
+ChangeLog,v 1.115 2004/06/08 14:16:34 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-08 [larsl] 0.3.0devel19
+** Started adding GPS data download capability. Only tracklogs from Garmin
+   devices for now, routes and waypoints and Magellan support will come in
+   the near future.
 
 2004-06-08 [jobi] 0.3.0devel18
 ** updated ts files

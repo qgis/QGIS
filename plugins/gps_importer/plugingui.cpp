@@ -13,6 +13,7 @@
 
 //qt includes
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qfileinfo.h>
 #include <qpushbutton.h>
 #include <qtabwidget.h>
@@ -22,17 +23,19 @@
 #include <qmessagebox.h>
 #include <qfile.h>
 #include "waypointtoshape.h"
+
 //standard includes
+#include <cstdlib>
 #include <iostream>
 
 PluginGui::PluginGui() : PluginGuiBase()
 {
-  
+  populateDeviceComboBox();
 }
 PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : PluginGuiBase( parent, name, modal, fl )
 {
-   
+  populateDeviceComboBox();
 } 
 PluginGui::~PluginGui()
 {
@@ -68,7 +71,7 @@ void PluginGui::pbnOK_clicked()
   }
   
   // or import a download file?
-  else {
+  else if (tabWidget->currentPageIndex() == 1) {
     
     //check input file exists
     //
@@ -89,6 +92,25 @@ void PluginGui::pbnOK_clicked()
     //
     delete myWayPointToShape;
     emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
+  }
+  
+  // or download GPS data from a device?
+  else {
+    
+    // try to download the data using GPSBabel
+    QString command("gpsbabel -t -i garmin -o gpx %1 %2");
+    command = command.arg(cmbDLDevice->currentText()).arg(leDLOutput->text());
+    std::cerr<<command<<std::endl;
+    int babelStatus = std::system((const char*)command);
+    if (WEXITSTATUS(babelStatus) != 0) {
+      QMessageBox::warning( this, "Data Download Error",
+			    "Unable to download data from the device.");
+      return;
+    }
+    
+    // try to load the GPX file
+    emit drawVectorLayer(leDLOutput->text() + "?type=track", 
+			 leDLBasename->text() + ", tracks", "gpx");
   }
   
   //close the dialog
@@ -127,8 +149,21 @@ void PluginGui::pbnSelectOutputFile_clicked()
 }
 
 
+void PluginGui::pbnDLOutput_clicked()
+{
+  QString myFileNameQString = QFileDialog::getSaveFileName(
+          "." , //initial dir
+	  "GPS eXchange format (*.gpx)",
+          this , //parent dialog
+	  "Select GPX output",
+	  "Choose a filename to save under" );
+  leDLOutput->setText(myFileNameQString);
+}
+
+
 void PluginGui::enableRelevantControls() 
 {
+  // load GPX/LOC
   if (tabWidget->currentPageIndex() == 0) {
     if ((leGPXFile->text()==""))
     {
@@ -160,8 +195,8 @@ void PluginGui::enableRelevantControls()
     }
   }
   
-  else
-  {
+  // import download file
+  else if (tabWidget->currentPageIndex() == 1) {
     if ( (leOutputShapeFile->text()=="") || (leInputFile->text()=="") )
     {
       pbnOK->setEnabled(false);
@@ -170,6 +205,15 @@ void PluginGui::enableRelevantControls()
     {
       pbnOK->setEnabled(true);
     }
+  }
+  
+  // download from device
+  else {
+    if (cmbDLDevice->currentText() == "" || leDLBasename->text() == "" ||
+	leDLOutput->text() == "")
+      pbnOK->setEnabled(false);
+    else
+      pbnOK->setEnabled(true);
   }
 }
 
@@ -199,3 +243,40 @@ void PluginGui::pbnGPXSelectFile_clicked()
 }
 
 
+void PluginGui::populateDeviceComboBox() {
+  // look for linux serial devices
+#ifdef linux
+  QString linuxDev("/dev/ttyS%1");
+  for (int i = 0; i < 10; ++i) {
+    if (QFileInfo(linuxDev.arg(i)).exists())
+      cmbDLDevice->insertItem(linuxDev.arg(i));
+    else
+      break;
+  }
+#endif
+
+  // and freebsd devices (untested)
+#ifdef freebsd
+  QString freebsdDev("/dev/cuaa%1");
+  for (int i = 0; i < 10; ++i) {
+    if (QFileInfo(freebsdDev.arg(i)).exists())
+      cmbDLDevice->insertItem(freebsdDev.arg(i));
+    else
+      break;
+  }
+#endif
+  
+  // and solaris devices (also untested)
+#ifdef sparc
+  QString solarisDev("/dev/cua/%1");
+  for (int i = 'a'; i < 'k'; ++i) {
+    if (QFileInfo(solarisDev.arg(char(i))).exists())
+      cmbDLDevice->insertItem(solarisDev.arg(char(i)));
+    else
+      break;
+  }
+#endif
+
+  // OSX, OpenBSD, NetBSD etc? Anyone?
+
+}
