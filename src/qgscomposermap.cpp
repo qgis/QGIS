@@ -133,7 +133,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 		widthScale *= mComposition->viewScale();
 	    }
 	    double symbolScale = mSymbolScale * mComposition->scale();
-	    vector->draw( painter, extent, transform, device, widthScale, symbolScale );
+	    vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
 
 	    if ( vector->labelOn() ) {
 	        double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
@@ -478,6 +478,8 @@ void QgsComposerMap::setOptions ( void )
     mFontScaleLineEdit->setText ( QString("%1").arg(mFontScale,0,'g',2) );
 
     mFrameCheckBox->setChecked ( mFrame );
+    
+    mPreviewModeComboBox->setCurrentItem( mPreviewMode );
 }
 
 void QgsComposerMap::setCurrentExtent ( void )

@@ -22,6 +22,7 @@
 #include "qgslegenditem.h"
 #include "qgscontcoldialog.h"
 #include "qgssymbologyutils.h"
+#include "qgsmarkercatalogue.h"
 #include <qdom.h>
 
 QgsContinuousColRenderer::~QgsContinuousColRenderer()
@@ -56,6 +57,7 @@ void QgsContinuousColRenderer::setMaximumItem(QgsRenderItem * it)
 
 void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)
 {
+    mVectorType = layer->vectorType();
     bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
     if (pr)
     {
@@ -156,7 +158,8 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
     }
 }
 
-void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor, bool selected)
+void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
+	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
     if ((mMinimumItem && mMaximumItem))
     {
@@ -170,27 +173,17 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
   
   QColor mincolor, maxcolor;
   
-  unsigned char *feature = f->getGeometry();
-  int wkbType;
-  // FIX for the endian problem on osx (possibly sparc?)
-  // TODO Restructure this whole wkb reading code to use
-  // wkb structures as defined at (among other places):
-  // http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
-  memcpy(&wkbType, (feature+1), sizeof(wkbType));
-
-
-  
-  if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString || wkbType == QGis::WKBPoint)
-        {
+  if ( mVectorType == QGis::Line || mVectorType == QGis::Point )
+  {
       mincolor = mMinimumItem->getSymbol()->pen().color();
       maxcolor = mMaximumItem->getSymbol()->pen().color();
   } 
-  else                    //if(point or polygon)
-        {
+  else                    //if polygon
+  {
       p->setPen(mMinimumItem->getSymbol()->pen());
       mincolor = mMinimumItem->getSymbol()->fillColor();
       maxcolor = mMaximumItem->getSymbol()->fillColor();
-        }
+  }
 
   int red,green,blue;
 
@@ -206,10 +199,39 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
       green = int (mincolor.green());
       blue = int (mincolor.blue());
   }
+      
+  if ( mVectorType == QGis::Point && pic) {
+      // TODO we must get always new marker -> slow, but continuous color for points 
+      // probably is not used frequently
 
-  if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString ||wkbType == QGis::WKBPoint)
-        {
-      p->setPen(QPen(QColor(red, green, blue),mMinimumItem->getSymbol()->pen().width()));//make sure the correct line width is used
+      QgsSymbol *sym = mMinimumItem->getSymbol();
+
+      // Use color for both pen and brush (user can add another layer with outpine)
+      // later add support for both pen and brush to dialog
+      QPen pen = sym->pen();
+      pen.setColor ( QColor(red, green, blue) );
+      pen.setWidth ( (int) ( widthScale * pen.width() ) );
+
+      QBrush brush = sym->brush();
+
+      if ( selected ) {
+          pen.setColor ( mSelectionColor );
+          brush.setColor ( mSelectionColor );
+      } else {
+          brush.setColor ( QColor(red, green, blue) );
+      }
+      brush.setStyle ( Qt::SolidPattern );
+      
+      // Always with oversampling 0
+      *pic = QgsMarkerCatalogue::instance()->marker ( sym->pointSymbolName(), sym->pointSize(),
+	                                      pen, brush, 0 );
+
+      if ( scalefactor ) *scalefactor = 1;
+  } 
+  else if ( mVectorType == QGis::Line )
+  {
+      p->setPen( QPen(QColor(red, green, blue),
+		 (int)(widthScale*mMinimumItem->getSymbol()->pen().width()) ));//make sure the correct line width is used
   } 
   else
         {
@@ -231,6 +253,8 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 
 void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
+    mVectorType = vl.vectorType();
+
     QgsSymbol* lsy = new QgsSymbol(); 
     QgsSymbol* usy = new QgsSymbol();
     QPen lpen, upen;

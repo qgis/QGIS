@@ -245,7 +245,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	
 	int nlayers = mMapCanvas->layerCount();
 	for ( int i = nlayers - 1; i >= 0; i-- ) {
-            std::cout << "layer = " << i << std::endl;
 	    QgsMapLayer *layer = mMapCanvas->getZpos(i);
 	    if ( !layer->visible() ) continue;
 	    if ( layer->type() != QgsMapLayer::VECTOR ) continue;
@@ -254,14 +253,11 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    if( ! layerOn(layerId) ) continue;
 		    
 	    int group = layerGroup ( layerId );
-            std::cout << "group = " << group << std::endl;
 	    if ( group > 0 ) { 
 		//std::map<int,int>::iterator it= doneGroups.find();
 	        if ( doneGroups.find(group) != doneGroups.end() ) {
-                    std::cout << "already done" << std::endl;
 		    continue; 
 		} else {
-                    std::cout << "do the group" << std::endl;
 		    doneGroups.insert(std::make_pair(group,1));
 		}
 	    }
@@ -274,7 +270,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    QString sectionTitle;
 
 	    for ( int j = nlayers - 1; j >= 0; j-- ) {
-                std::cout << "layer = " << j << std::endl;
 		QgsMapLayer *layer2 = mMapCanvas->getZpos(j);
 		if ( !layer2->visible() ) continue;
 		if ( layer2->type() != QgsMapLayer::VECTOR ) continue;
@@ -298,8 +293,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		}
 
 		if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
-                    std::cout << "add to group" << std::endl;
-
 		    groupLayers.push_back(j);
 
 		    std::list<QgsRenderItem*> items = renderer->items();
@@ -313,10 +306,16 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		        itemHeights.resize(sectionItemsCount);
 		        itemLabels.resize(sectionItemsCount);	
 		    }
-		
+
+		    double widthScale = map->widthScale() * mComposition->scale();
+		    if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+			widthScale *= mComposition->viewScale();
+		    }
+		    
+		    double scale = map->symbolScale() * mComposition->scale();
+
 		    int icnt = 0;
 		    for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
-			double scale = map->symbolScale() * mComposition->scale();
 		    
 			QgsRenderItem *ri = (*it);
 		        QgsSymbol *sym = ri->getSymbol();
@@ -325,7 +324,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 			if ( itemHeights[icnt] < mSymbolHeight ) { // init first
 			    itemHeights[icnt] = mSymbolHeight;
 			}
-			QPicture pic = sym->getPointSymbolAsPicture();
+			QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
 			QRect br = pic.boundingRect();
 
 			int h = (int) ( scale * br.height() );
@@ -345,8 +344,8 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		    }
 		}
 	    }
-            std::cout << "group size = " << groupLayers.size() << std::endl;
-            std::cout << "sectionItemsCount = " << sectionItemsCount << std::endl;
+            //std::cout << "group size = " << groupLayers.size() << std::endl;
+            //std::cout << "sectionItemsCount = " << sectionItemsCount << std::endl;
 
 	    // Section title 
 	    if ( sectionItemsCount > 1 ) {
@@ -401,15 +400,16 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 			double scale = map->symbolScale() * mComposition->scale();
 
 			// Get the picture of appropriate size directly from catalogue
-			QPicture pic = QgsMarkerCatalogue::instance()->marker (
-					sym->pointSymbolName(), (int) (scale * sym->pointSize()),
-					pen, sym->brush() );
+			QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
 					
 			QRect br = pic.boundingRect();
-			    
-			painter->drawPicture ( static_cast<int>( (mMargin+mSymbolWidth/2)-br.width()/2),
-					       static_cast<int>( (localHeight+symbolHeight/2)-br.height()/2),
+		
+			painter->save();
+			painter->scale(scale,scale);
+			painter->drawPicture ( static_cast<int>( (1.*mMargin+mSymbolWidth/2)/scale-br.x()-1.*br.width()/2),
+					       static_cast<int>( (1.*localHeight+symbolHeight/2)/scale-br.y()-1.*br.height()/2),
 					       pic );
+			painter->restore();
 
 		    } else if ( vector->vectorType() == QGis::Line ) {
 			painter->drawLine ( mMargin, localHeight+mSymbolHeight/2, 
@@ -681,6 +681,8 @@ void QgsComposerVectorLegend::setOptions ( void )
 	    }
 	}
     }
+
+    mPreviewModeComboBox->setCurrentItem( mPreviewMode );
 }
 
 void QgsComposerVectorLegend::setSelected (  bool s ) 
@@ -872,6 +874,9 @@ bool QgsComposerVectorLegend::readSettings ( void )
     mFont.setUnderline(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/underline", false, &ok) );
     mFont.setStrikeOut(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/strikeout", false, &ok) );
 
+    // Preview mode
+    mPreviewMode = (PreviewMode) QgsProject::instance()->readNumEntry("Compositions", path+"previewmode", Render, &ok);
+    
     // Layers
     path.sprintf("/composition_%d/vectorlegend_%d/layers/", mComposition->id(), mId );
     QStringList el = QgsProject::instance()->subkeyList ( "Compositions", path );
@@ -890,8 +895,6 @@ bool QgsComposerVectorLegend::readSettings ( void )
 	if ( group >= mNextLayerGroup ) mNextLayerGroup = group+1;
     }
     
-    // Preview mode
-    mPreviewMode = (PreviewMode) QgsProject::instance()->readNumEntry("Compositions", path+"previewmode", Render, &ok);
     
     recalculate();
     
