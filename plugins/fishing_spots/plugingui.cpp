@@ -302,7 +302,7 @@ void PluginGui::requestGetFinished(int id)
       
       myLastPosInt = myLabelQRegExp.search(myRecordQString, myLastPosInt);
       QString myLabelQString = myRecordQString.mid(myLastPosInt,myLabelQRegExp.matchedLength());
-      myLabelQString.replace("<P> ","");
+      myLabelQString.replace("<P>","");
       myLabelQString.replace("\n","");
       std::cerr << "\t label match from " << myLastPosInt << " : " << myLabelQRegExp.matchedLength() << std::endl; 
       myLastPosInt += myLabelQRegExp.matchedLength();
@@ -338,8 +338,13 @@ void PluginGui::requestGetFinished(int id)
       // Show some info to stdout
 
       teResults->append( myLabelQString + ", " + QString::number(myLatitudeFloat)  + ", " + QString::number(myLongitudeFloat) + "\n");;
-      std::cerr << myLabelQString << " :: " << myLatitudeQString << " :: " << myLongitudeQString << std::endl;
-      //std::cerr << myRecordQString << std::endl;
+
+      //create a FishingSpot struct and add it to the vector
+      FishingSpot myFishingSpot;
+      myFishingSpot.label=myLabelQString;
+      myFishingSpot.latitude=myLatitudeFloat;
+      myFishingSpot.longitude=myLongitudeFloat;
+      mFishingSpotsVector.push_back(myFishingSpot);
     }
   }
   std::cerr << "************************************* " << std::endl;
@@ -347,6 +352,11 @@ void PluginGui::requestGetFinished(int id)
   std::cout << myCountInt << " records found" << std::endl;
   //std::cerr << myPageQString << std::endl;
   std::cerr << "************************************* " << std::endl;
+
+  //
+  // Now build the shapefile
+  //
+  createShapefile(QString(""));
   finish();
 }
 
@@ -365,3 +375,15 @@ void PluginGui::finish()
 }
 
 
+
+
+void PluginGui::createShapefile(QString theShapefileName)
+{
+
+  for (int myIteratorInt = 0; myIteratorInt <= mFishingSpotsVector.size(); ++myIteratorInt)
+  {
+        FishingSpot myFishingSpot = mFishingSpotsVector[myIteratorInt];
+        std::cerr << myFishingSpot.label << " :: " << myFishingSpot.latitude << " :: " << myFishingSpot.longitude << std::endl;
+  }
+
+}

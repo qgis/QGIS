@@ -20,10 +20,36 @@
 #include <qobject.h>
 #include <qurl.h>
 #include <qhttp.h>
+#include <qvaluevector.h>
 
 /**
 @author Tim Sutton
 */
+
+//
+//// Structs
+//
+
+/** \brief The Fishing spot struct stores data for one location listed on the http://www.marlinnut.com/latlon.shtml site.
+  */
+struct FishingSpot
+{
+  /** \brief The name of the fishing spot. */
+  QString label;
+  /** \brief The Latitude*/
+  float latitude;
+  /** \brief The Longitude */
+  float longitude;
+
+};
+
+//
+// Typedefs
+//
+
+/** \brief  A vector type for storing multiple typedefs.*/
+typedef QValueVector<FishingSpot> FishingSpotsVector;
+
 class PluginGui : public PluginGuiBase
 {
 Q_OBJECT
@@ -61,7 +87,9 @@ private:
   int mGetIdInt;
   QString mRequestQString;
   QHttpResponseHeader mQHttpResponseHeader;
+  FishingSpotsVector mFishingSpotsVector;
 
+  void createShapefile(QString theShapefileName);
   void requestHeadFinished(int id);
   void requestGetFinished(int id);
   void finish();
