@@ -78,9 +78,9 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), 
-          qGisInterface(theQgisInterFace),
-          QgisPlugin(name_,description_,version_,type_)
+qgisMainWindowPointer(theQGisApp), 
+    qGisInterface(theQgisInterFace),
+QgisPlugin(name_,description_,version_,type_)
 {
   mPreferredSize = 100;
   mPlacement = "Top Left";
@@ -144,22 +144,22 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(changeColour(QColor)), this, SLOT(setColour(QColor)));
   connect(myPluginGui, SIGNAL(refreshCanvas()), this, SLOT(refreshCanvas()));
   myPluginGui->show();
-  
+
   //set the map units in the spin box
   int myUnits=qGisInterface->getMapCanvas()->mapUnits();
   switch (myUnits)
-    {
+  {
       case 0: myPluginGui->spnSize->setSuffix(tr(" metres")); break;
       case 1: myPluginGui->spnSize->setSuffix(tr(" feet")); break;
       case 2: myPluginGui->spnSize->setSuffix(tr(" degrees")); break;
       default: std::cout << "Error: not picked up map units - actual value = " << myUnits << std::endl; 
-    }; 
+  }; 
 }
 
 
 void Plugin::refreshCanvas()
 {
- qGisInterface->getMapCanvas()->refresh();
+  qGisInterface->getMapCanvas()->refresh();
 }
 
 
@@ -167,13 +167,13 @@ void Plugin::refreshCanvas()
 // Actual drawing of Scale Bar
 void Plugin::renderScaleBar(QPainter * theQPainter)
 {
-    // Exit if there are no layers loaded otherwise QGIS will freeze
-    int myLayerCount=qGisInterface->getMapCanvas()->layerCount();          
-    if (!myLayerCount) return;
-    
-//Large if statement which determines whether to render the scale bar
-if (mEnabled)
-{ 
+  // Exit if there are no layers loaded otherwise QGIS will freeze
+  int myLayerCount=qGisInterface->getMapCanvas()->layerCount();          
+  if (!myLayerCount) return;
+
+  //Large if statement which determines whether to render the scale bar
+  if (mEnabled)
+  { 
     // Hard coded sizes
     int myMajorTickSize=8;
     int myTextOffsetX=3;
@@ -183,12 +183,12 @@ if (mEnabled)
 
     //Get canvas dimensions
     QPaintDeviceMetrics myMetrics( theQPainter->device() );
-      int myCanvasHeight = myMetrics.height();
-      int myCanvasWidth = myMetrics.width();
-      
+    int myCanvasHeight = myMetrics.height();
+    int myCanvasWidth = myMetrics.width();
+
     //Get map units per pixel   
     double myMuppDouble=qGisInterface->getMapCanvas()->mupp();   
-    
+
     //Calculate size of scale bar for preferred number of map units
     double myScaleBarWidth = mPreferredSize / myMuppDouble;
 
@@ -198,42 +198,43 @@ if (mEnabled)
       myScaleBarWidth = myMuppDouble * (myCanvasWidth/4);
       myActualSize = myScaleBarWidth * myMuppDouble;
     };
-    
+
     //if scale bar is more than half the canvas wide keep halving until not
     while (myScaleBarWidth > myCanvasWidth/2)
     {
       myScaleBarWidth = myScaleBarWidth /2;
     };
     myActualSize = myScaleBarWidth * myMuppDouble;
-    
+
     // snap to integer < 10 times power of 10
     if (mSnapping) {
       int myPowerOf10 = pow(10, int(log(myActualSize) / log(10)));
       myActualSize = round(myActualSize / myPowerOf10) * myPowerOf10;
       myScaleBarWidth = myActualSize / myMuppDouble;
     }
-    
+
     //Get type of map units and set scale bar unit label text
     int myMapUnits=qGisInterface->getMapCanvas()->mapUnits();
     QString myScaleBarUnitLabel;
     switch (myMapUnits)
     {
-      case 0: myScaleBarUnitLabel=tr(" metres"); break;
-      case 1: myScaleBarUnitLabel=tr(" feet"); break;
-      case 2: myScaleBarUnitLabel=tr(" degrees"); break;
-      default: std::cout << "Error: not picked up map units - actual value = " << myMapUnits << std::endl; 
+        case 0: myScaleBarUnitLabel=tr(" metres"); break;
+        case 1: myScaleBarUnitLabel=tr(" feet"); break;
+        case 2: myScaleBarUnitLabel=tr(" degrees"); break;
+        default: std::cout << "Error: not picked up map units - actual value = " << myMapUnits << std::endl; 
     };  
 
     //Set font and calculate width of unit label
-    QFont myFont( "helvetica", 10 );
+    int myFontSize = 10; //we use this later for buffering
+    QFont myFont( "helvetica", myFontSize );
     theQPainter->setFont(myFont);
-    QFontMetrics fm( myFont );
-    double myFontWidth = fm.width( myScaleBarUnitLabel );
-    double myFontHeight = fm.height();
-      
+    QFontMetrics myFontMetrics( myFont );
+    double myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
+    double myFontHeight = myFontMetrics.height();
+
     //Set the maximum label
     QString myScaleBarMaxLabel=QString::number(myActualSize);
-     
+
     //Calculate total width of scale bar and label
     double myTotalScaleBarWidth = myScaleBarWidth + myFontWidth;
 
@@ -242,108 +243,160 @@ if (mEnabled)
     int myOriginY=myMargin;
     if (mPlacement==tr("Top Left"))
     { 
-    	myOriginX=myMargin;
-	myOriginY=myMargin;
+      myOriginX=myMargin;
+      myOriginY=myMargin;
     }
     else if (mPlacement==tr("Bottom Left"))
     {
-        myOriginX=myMargin;
-	myOriginY=myCanvasHeight - myMargin; 
+      myOriginX=myMargin;
+      myOriginY=myCanvasHeight - myMargin; 
     }
     else if (mPlacement==tr("Top Right"))
     {
-        myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
-	myOriginY=myMargin;
+      myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
+      myOriginY=myMargin;
     }
     else if (mPlacement==tr("Bottom Right"))
     {
-        myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
-	myOriginY=myCanvasHeight - myMargin;
+      myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
+      myOriginY=myCanvasHeight - myMargin;
     }
     else
     {
       std::cout << "Unable to determine where to put scale bar so defaulting to top left" << std::endl;
     }
-    
+
     //Set pen to draw with
     //Perhaps enable colour selection in future?
     QPen pen( mColour, 2 );             
     theQPainter->setPen( pen ); 
-    
+
     //Cast myScaleBarWidth to int for drawing
     int myScaleBarWidthInt = (int) myScaleBarWidth;
-          
+
     //Create array of vertices for scale bar depending on style    
     if (mStyle==tr("Tick Down"))
     {    
-         QPointArray myTickDownArray(4);
-         myTickDownArray.putPoints(0,4,
-    	   myOriginX                    , (myOriginY + myMajorTickSize) ,  
-    	   myOriginX                    ,  myOriginY                    ,
-    	   (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
-    	   (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
-    	 ); 	 
-	 theQPainter->drawPolyline(myTickDownArray);    
+      QPointArray myTickDownArray(4);
+      myTickDownArray.putPoints(0,4,
+              myOriginX                    , (myOriginY + myMajorTickSize) ,  
+              myOriginX                    ,  myOriginY                    ,
+              (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
+              (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
+              ); 	 
+      theQPainter->drawPolyline(myTickDownArray);    
     }
     else if (mStyle==tr("Tick Up"))
     {
-         QPointArray myTickUpArray(4);
-	 myTickUpArray.putPoints(0,4,
-    	   myOriginX                    ,  myOriginY                    ,  
-    	   myOriginX                    ,  myOriginY + myMajorTickSize  ,
-    	   (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
-    	   (myScaleBarWidthInt + myOriginX),  myOriginY
-    	 ); 
-	 theQPainter->drawPolyline(myTickUpArray);
+      QPointArray myTickUpArray(4);
+      myTickUpArray.putPoints(0,4,
+              myOriginX                    ,  myOriginY                    ,  
+              myOriginX                    ,  myOriginY + myMajorTickSize  ,
+              (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
+              (myScaleBarWidthInt + myOriginX),  myOriginY
+              ); 
+      theQPainter->drawPolyline(myTickUpArray);
     }	    
     else if (mStyle==tr("Bar"))
     {
-         QPointArray myBarArray(2);
-	 myBarArray.putPoints(0,2,
-    	   myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),  
-    	   (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
-    	 ); 
-	 theQPainter->drawPolyline(myBarArray);
+      QPointArray myBarArray(2);
+      myBarArray.putPoints(0,2,
+              myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),  
+              (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
+              ); 
+      theQPainter->drawPolyline(myBarArray);
     }	     
     else if (mStyle==tr("Box"))
     {
-         QPointArray myBoxArray(5);
-	 myBoxArray.putPoints(0,5,
-    	   myOriginX                    ,  myOriginY,  
-    	   (myScaleBarWidthInt + myOriginX),  myOriginY,
-	   (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
-	   myOriginX                    , (myOriginY+myMajorTickSize),
-	   myOriginX                    ,  myOriginY
-    	 ); 
-	 theQPainter->drawPolyline(myBoxArray);
+      QPointArray myBoxArray(5);
+      myBoxArray.putPoints(0,5,
+              myOriginX                    ,  myOriginY,  
+              (myScaleBarWidthInt + myOriginX),  myOriginY,
+              (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
+              myOriginX                    , (myOriginY+myMajorTickSize),
+              myOriginX                    ,  myOriginY
+              ); 
+      theQPainter->drawPolyline(myBoxArray);
     }	    
-    
+
     //Do actual drawing of scale bar
-   
-    
+
+    //
     //Do drawing of scale bar text
+    //
+
+    QColor myBackColor = Qt::white;
+    QColor myForeColor = Qt::black;
+
+    //Draw the minimum label buffer
+    theQPainter->setPen( myBackColor );
+    myFontWidth = myFontMetrics.width( "0" );
+    myFontHeight = myFontMetrics.height();
+
+    for (int i = -2; i <= 2; i++)
+    {
+      for (int j = -2; j <= 2; j++) 
+      {
+        theQPainter->drawText( i +(myOriginX-(myFontWidth/2)), 
+                              j + (myOriginY-(myFontHeight/4)), 
+                              "0");
+      }
+    }
+
     //Draw minimum label
-    myFontWidth = fm.width( "0" );
-    myFontHeight = fm.height();
+    theQPainter->setPen( myForeColor );
+
     theQPainter->drawText(
-    (myOriginX-(myFontWidth/2)),(myOriginY-(myFontHeight/4)),
-    "0"
-    );    
+            (myOriginX-(myFontWidth/2)),(myOriginY-(myFontHeight/4)),
+            "0"
+            );    
+    
+    //
     //Draw maximum label      
-    myFontWidth = fm.width( myScaleBarMaxLabel );
-    myFontHeight = fm.height();  
+    //
+    theQPainter->setPen( myBackColor );
+    myFontWidth = myFontMetrics.width( myScaleBarMaxLabel );
+    myFontHeight = myFontMetrics.height();  
+    //first the buffer
+    for (int i = -2; i <= 2; i++)
+    {
+      for (int j = -2; j <= 2; j++) 
+      {
+        theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt-(myFontWidth/2)), 
+                              j + (myOriginY-(myFontHeight/4)), 
+                              myScaleBarMaxLabel);
+      }
+    }
+    //then the text itself
+    theQPainter->setPen( myForeColor );
     theQPainter->drawText(
-    (myOriginX+myScaleBarWidthInt-(myFontWidth/2)),(myOriginY-(myFontHeight/4)),
-    myScaleBarMaxLabel
-    );
+            (myOriginX+myScaleBarWidthInt-(myFontWidth/2)),(myOriginY-(myFontHeight/4)),
+            myScaleBarMaxLabel
+            );
+    
+    //
     //Draw unit label
-    myFontWidth = fm.width( myScaleBarUnitLabel );
-    myFontHeight = fm.height();
+    //
+    theQPainter->setPen( myBackColor );
+    myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
+    myFontHeight = myFontMetrics.height();
+    //first the buffer
+    for (int i = -2; i <= 2; i++)
+    {
+      for (int j = -2; j <= 2; j++) 
+      {
+        theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX), 
+                              j + (myOriginY+myMajorTickSize), 
+                              myScaleBarUnitLabel);
+      }
+    }
+    //then the text itself
+    theQPainter->setPen( myForeColor );
     theQPainter->drawText(
-    (myOriginX+myScaleBarWidthInt+myTextOffsetX),(myOriginY+myMajorTickSize),
-    myScaleBarUnitLabel
-    );
-}
+            (myOriginX+myScaleBarWidthInt+myTextOffsetX),(myOriginY+myMajorTickSize),
+            myScaleBarUnitLabel
+            );
+  }
 }
 
 
@@ -356,47 +409,41 @@ void Plugin::unload()
   delete toolBarPointer;
 }
 
+//! set placement of scale bar
+void Plugin::setPlacement(QString theQString)
+{
+  mPlacement = theQString;
+}
+
+//! set preferred size of scale bar
+void Plugin::setPreferredSize(int thePreferredSize)
+{
+  mPreferredSize = thePreferredSize;
+}
+
+//! set whether the scale bar length should snap to the closes A*10^B
+void Plugin::setSnapping(bool theSnapping)
+{
+  mSnapping = theSnapping;
+}
+
+//! set scale bar enable
+void Plugin::setEnabled(bool theBool)
+{
+  mEnabled = theBool;
+}
+//! set scale bar enable
+void Plugin::setStyle(QString theStyleQString)
+{
+  mStyle = theStyleQString;
+}  
+//! set the scale bar colour
+void Plugin::setColour(QColor theQColor)
+{
+  mColour = theQColor;
+}
 
 
-
-
-
-
-  //! set placement of scale bar
-  void Plugin::setPlacement(QString theQString)
-  {
-    mPlacement = theQString;
-  }
-
-  //! set preferred size of scale bar
-  void Plugin::setPreferredSize(int thePreferredSize)
-  {
-    mPreferredSize = thePreferredSize;
-  }
-
-  //! set whether the scale bar length should snap to the closes A*10^B
-  void Plugin::setSnapping(bool theSnapping)
-  {
-    mSnapping = theSnapping;
-  }
-
-  //! set scale bar enable
-  void Plugin::setEnabled(bool theBool)
-  {
-    mEnabled = theBool;
-  }
-  //! set scale bar enable
-  void Plugin::setStyle(QString theStyleQString)
-  {
-    mStyle = theStyleQString;
-  }  
-  //! set the scale bar colour
-  void Plugin::setColour(QColor theQColor)
-  {
-    mColour = theQColor;
-  }
-  
-  
 /** 
  * Required extern functions needed  for every plugin 
  * These functions can be called prior to creating an instance
@@ -412,19 +459,19 @@ QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * th
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-    return name_;
+  return name_;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-    return description_;
+  return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 QGISEXTERN int type()
 {
-    return type_;
+  return type_;
 }
 
 // Return the version number for the plugin
