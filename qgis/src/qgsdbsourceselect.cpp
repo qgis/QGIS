@@ -278,25 +278,38 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     //qDebug(msg);
     for (int idx = 0; idx < PQntuples(result); idx++)
     {
-      QString v = "";
-      if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
-      {
-	v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
-	v += ".";
-      }
-      if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
-      {
-	v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
-	v += ".";
-      }
-      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
-      v += " (";
-      v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-      v += ")";
+      // Be a bit paranoid and check that the table actually
+      // exists. This is not done as a subquery in the query above
+      // because I can't get it to work correctly when there are tables
+      // with capital letters in the name.
+      QString tableName = PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
+      sql = "select oid from pg_class where relname = '" + tableName + "'";
 
-      QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+      PGresult* exists = PQexec(pg, (const char*)sql);
+      if (PQntuples(exists) == 1)
+	{
+	  QString v = "";
+	  if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
+	  {
+	    v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
+	    v += ".";
+	  }
 
-      details.push_back(geomPair(v, type));
+	  if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
+	  {
+	    v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+	    v += ".";
+	  }
+
+	  v += tableName;
+	  v += " (";
+	  v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
+	  v += ")";
+
+	  QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+	  details.push_back(geomPair(v, type));
+	}
+      PQclear(exists);
     }
     ok = true;
   }
@@ -313,45 +326,42 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     "(select f_table_name from geometry_columns)";
   
   result = PQexec(pg, (const char *) sql);
-  if (result)
+
+  for (int i = 0; i < PQntuples(result); i++)
   {
-    for (int i = 0; i < PQntuples(result); i++)
-    {
-      // Have the column name and the table name. The concept of a
-      // catalog doesn't exist in postgresql so we ignore that, but we
-      // do need to get the schema name and geometry type.
+    // Have the column name and the table name. The concept of a
+    // catalog doesn't exist in postgresql so we ignore that, but we
+    // do need to get the schema name and geometry type.
 
-      // Make the assumption that the geometry type for the first
-      // row is the same as for all other rows. 
+    // Make the assumption that the geometry type for the first
+    // row is the same as for all other rows. 
 
-      // There may be more than one geometry column per table, so need
-      // to deal with that. Currently just take the first column
-      // returned. XXXX
+    // There may be more than one geometry column per table, so need
+    // to deal with that. Currently just take the first column
+    // returned. XXXX
       
-      // Flag these not geometry_columns table tables so that the UI
-      // can indicate this????
+    // Flag these not geometry_columns table tables so that the UI
+    // can indicate this????
+    QString table  = PQgetvalue(result, i, 0); // relname
+    QString column = PQgetvalue(result, i, 1); // attname
 
-      QString table  = PQgetvalue(result, i, PQfnumber(result, "relname"));
-      QString column = PQgetvalue(result, i, PQfnumber(result, "attname"));
-      
-      QString query = "select GeometryType(" + 
-	column + "), current_schema() from " + table + 
-	" where " + column + " is not null limit 1";
-      PGresult* gresult = PQexec(pg, (const char*) query);
-      if (gresult)
-      {
-	QString type = PQgetvalue(gresult, 0, PQfnumber(gresult, "geometrytype"));
-	QString schema = PQgetvalue(gresult, 0, PQfnumber(gresult, "current_schema"));
-	QString full_desc = "";
-	if (schema.length() > 0)
-	  full_desc = schema + ".";
-	full_desc += table + " (" + column + ")";
-	details.push_back(geomPair(full_desc, type));
-      }
-      PQclear(gresult);
-    }
-    ok = true;
+    QString query = "select GeometryType(" + 
+      column + "), current_schema() from \"" + table + 
+      "\" where " + column + " is not null limit 1";
+
+    PGresult* gresult = PQexec(pg, (const char*) query);
+    Q_ASSERT(PQntuples(gresult) == 1);
+
+    QString type = PQgetvalue(gresult, 0, 0); // GeometryType
+    QString schema = PQgetvalue(gresult, 0, 1); // current_schema
+    QString full_desc = "";
+    if (schema.length() > 0)
+      full_desc = schema + ".";
+    full_desc += table + " (" + column + ")";
+    details.push_back(geomPair(full_desc, type));
+    PQclear(gresult);
   }
+  ok = true;
 
   PQclear(result);
 
