@@ -168,3 +168,15 @@ void QgisAppBase::helpContents()
 {
 
 }
+
+
+void QgisAppBase::helpQgisSourceForge()
+{
+
+}
+
+
+void QgisAppBase::helpQgisHomePage()
+{
+
+}
