@@ -30,7 +30,7 @@
     </message>
     <message>
         <source>Output (Shape) File:</source>
-        <translation>Arquivo de saída:</translation>
+        <translation>Arquivo (Shape) de saída:</translation>
     </message>
     <message>
         <source>Minimum time gap (s):</source>
@@ -54,7 +54,7 @@
     </message>
     <message>
         <source>Graticule Builder</source>
-        <translation>Contrutor de shapefiles quadriculados (graticule)</translation>
+        <translation>Construtor de shapefiles quadriculados (graticule)</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
@@ -64,7 +64,7 @@
 </source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Este plugin irá auxiliar na preparação de um shapefile quadriculado (graticule) que você poderá usar como um overlay dentro do visualizador de mapas do qgis.&lt;/p&gt;
+&lt;p&gt;Este plugin irá auxiliar na preparação de um shapefile quadriculado (graticule) que você poderá usar como uma folha de provas dentro do visualizador de mapas do qgis.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -77,7 +77,7 @@
     </message>
     <message>
         <source>This is a template for your plugin gui. Please modify this as needed.</source>
-        <translation>Este é um modelo para a interface gráfica do seu plugin. Modifique de acordo com suas necessidades.</translation>
+        <translation>Este é um modelo para a interface do seu plugin. Modifique de acordo com suas necessidades.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -87,14 +87,20 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Selecione o arquivo GPS que gostaria que fosse convertido para shapefile e este plugin fará todo o trabalho! &lt;/p&gt;
+&lt;p&gt;Utilize o intervalo de distância mínimo para definir qual distância entre duas leituras devem ser consideradas o início de uma nova feição.&lt;/p&gt;
+&lt;p&gt;Utilize o intervalo de tempo mínimo para definir qual distância entre duas leituras devem ser consideradas o início de uma nova feição.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
-        <translation>janela para abrir arquivos</translation>
+        <translation>diálogo para abertura de arquivos</translation>
     </message>
 </context>
 <context>
@@ -121,7 +127,7 @@
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>Escolha um projeto do QGIS a ser aberto</translation>
+        <translation>Escolha um projeto QGIS a ser aberto</translation>
     </message>
     <message>
         <source>Choose a filename to save</source>
@@ -130,19 +136,19 @@
     <message>
         <source>No Data Provider Plugins</source>
         <comment>No QGIS data provider plugins found in:</comment>
-        <translation>Nenhum Plugin de dados encontrado</translation>
+        <translation>Nenhum Plugin de acesso a dados encontrado</translation>
     </message>
     <message>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
-        <translation>Nenhuma camada de vetores pôde ser carregada. Verifique sua instalação do QGIS</translation>
+        <translation>Nenhuma camada vetorial pôde ser carregada. Verifique sua instalação do QGIS</translation>
     </message>
     <message>
         <source>No Data Providers</source>
-        <translation>Sem Mecanismo de Acesso a Dados</translation>
+        <translation>Nenhum mecanismo de acesso a dados</translation>
     </message>
     <message>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Nenhum Plugin de acesso a dados disponível. Nenhuma camada de vetores pôde ser carregada</translation>
+        <translation>Nenhum Plugin de acesso a dados disponível. Nenhuma camada vetorial pôde ser carregada</translation>
     </message>
 </context>
 <context>
@@ -177,7 +183,7 @@
     </message>
     <message>
         <source> (no PostgreSQL support)</source>
-        <translation>(sem suporte a PostgreSQL0</translation>
+        <translation>(sem suporte a PostgreSQL)</translation>
     </message>
     <message>
         <source>Web Page: http://qgis.sourceforge.net</source>
@@ -185,7 +191,7 @@
     </message>
     <message>
         <source>Sourceforge Project Page: http://sourceforge.net/projects/qgis</source>
-        <translation>Página do Projeto no Sourceforce: http://sourceforge.net/projects/qgis</translation>
+        <translation>Página do Projeto no Sourceforge: http://sourceforge.net/projects/qgis</translation>
     </message>
     <message>
         <source>Version</source>
@@ -193,7 +199,7 @@
     </message>
     <message>
         <source>Available Data Provider Plugins</source>
-        <translation>Plugins de Acesso a Dados disponíveis</translation>
+        <translation>Plugins de Acesso a Dados Disponíveis</translation>
     </message>
     <message>
         <source>open files dialog</source>
@@ -217,7 +223,7 @@
     </message>
     <message>
         <source>No OGR data provider was found in the QGIS lib directory</source>
-        <translation>Nenhum Mecanismo de Acesso a OGR encontrado no diretório lib do QGIS</translation>
+        <translation>Nenhum Mecanismo de Acesso a OGR encontrado no diretório de bibliotecas do QGIS</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
@@ -233,7 +239,7 @@
     </message>
     <message>
         <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
-        <translation>Nenhum Mecanismo de Acesso a PostgreSQL encontrado no diretório lib do QGIS</translation>
+        <translation>Nenhum Mecanismo de Acesso a PostgreSQL encontrado no diretório de bibliotecas do QGIS</translation>
     </message>
     <message>
         <source>Quantum GIS -- Untitled</source>
@@ -369,11 +375,11 @@
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagem de mapa salvo para</translation>
     </message>
     <message>
         <source>QGIS - Changes in CVS Since Last Release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - Mudanças no CVS Desde Último Lançamento</translation>
     </message>
 </context>
 <context>
@@ -456,7 +462,7 @@
     </message>
     <message>
         <source>&amp;Pan</source>
-        <translation>M&amp;ovimentar</translation>
+        <translation>&amp;Movimentar</translation>
     </message>
     <message>
         <source>Zoom out</source>
@@ -484,7 +490,7 @@
     </message>
     <message>
         <source>select features</source>
-        <translation>Selecionar feições</translation>
+        <translation>selecionar feições</translation>
     </message>
     <message>
         <source>&amp;About Quantum GIS</source>
@@ -552,7 +558,7 @@
     </message>
     <message>
         <source>Export current view as a Mapserver file</source>
-        <translation>Exportar as camadas atuais para arquivo Mapserver</translation>
+        <translation>Exportar a visão atual para arquivo Mapserver</translation>
     </message>
     <message>
         <source>Export to MapServer</source>
@@ -584,7 +590,7 @@
     </message>
     <message>
         <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation>Abrir um arquivo de projeto QGIS previamente salvo. Os layers (raster e vetor) armazenados no projeto serão carregados e exibidos nas opções de mapas</translation>
+        <translation>Abrir um arquivo de projeto QGIS previamente salvo. As camadas (raster e vetor) armazenadas no projeto serão carregadas e exibidas no visualizador de mapas</translation>
     </message>
     <message>
         <source>Close all layers and exit QGIS</source>
@@ -596,95 +602,95 @@
     </message>
     <message>
         <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation>Atualizar o mapa limpando as opções de mapas e redesenhando todos os layers visíveis</translation>
+        <translation>Atualizar o mapa limpando o visualizador de mapas e redesenhando todas as camadas visíveis</translation>
     </message>
     <message>
         <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation>Zoom máximo em todos os layers do mapa. Isto mostra com o máximo de detalhes tudo que está no mapa</translation>
+        <translation>Zoom máximo em todos os layers do mapa. Isto traz tudo no mapa dentro de uma visão completa</translation>
     </message>
     <message>
         <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mais zoom no mapa. Arraste o mouse (segure clicado o botão esquerdo) para desenhar um retângulo em volta da área que deseja dar zoom, então solte o mouse.</translation>
     </message>
     <message>
         <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
-        <translation type="unfinished"></translation>
+        <translation>Movimente a visão do mapa arrastando o mouse (segure apertado o botão esquerdo do mouse). A área exibida irá mudar assim que o botão do mouse for solto.</translation>
     </message>
     <message>
         <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menos zoom para ver mais do mapa. Arraste o mouse (segure apertado o botão esquerdo) para desenhar um retângulo em volta da área. A visão atual terá menos zoom e será redimensionada para &quot;encaixar&quot; no retângulo.</translation>
     </message>
     <message>
         <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom para a extensão das feições selecionadas na camada ativa. A visão vai sofrer um zoom deixando todas as feições selecionadas visíveis. Se não houver feições selecionadas, a visão não será mudada.</translation>
     </message>
     <message>
         <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifica uma feição na camada ativa (a camada ativa é a camada destacada na legenda). Identifica buscas por feições perto de onde o mouse foi clicado e exibe informações sobre os resultados. O raio de busca pode ser customizado do diálogo de preferências do QGIS.</translation>
     </message>
     <message>
         <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecione feições na camada ativa movendo o mouse para criar uma caixa em torno das feições de interesse. Quando o mouse é solto, as feiçoes são selecionadas e desenhadas em uma cor diferente (o padrão é amarelo)</translation>
     </message>
     <message>
         <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir o diálogo Sobre QGIS. Sobre QGIS contém informação sobre a versão atual, contribuidores, e provedores de plugins disponíveis.</translation>
     </message>
     <message>
         <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar uma camada vetorial ao visualizador de mapas. Os formatos suportados são providenciados pela biblioteca OGR. Para uma lista de formatos suportados, acesse: http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
     </message>
     <message>
         <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir a tabela de atributos para a camada vetorial selecionada. As fileiras podem ser classificadas clicando nos nomes das colunas do cabeçalho da fileira.</translation>
     </message>
     <message>
         <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom para a última visão. O QGIS guarda apenas uma visão prévia então repetidos cliques neste botão trocam as visões.</translation>
     </message>
     <message>
         <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
-        <translation type="unfinished"></translation>
+        <translation>Abre o diálogo de opções para definir as preferências do QGIS como o navegador web e identificar o raio de busca.</translation>
     </message>
     <message>
         <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar o mapa atual como um projeto QGIS. Um projeto QGIS pode ser aberto mais tarde e todas as camadas e opções serão restauradas.</translation>
     </message>
     <message>
         <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar o mapa atual como um novo projeto QGIS. Um projeto QGIS pode ser aberto mais tarde e todas as camadas e opções serão restauradas.</translation>
     </message>
     <message>
         <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar um novo, projeto QGIS vazio. Todas as camadas serão removidas do visualizador de mapas e um visualizador em branco será criado.</translation>
     </message>
     <message>
         <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
-        <translation type="unfinished"></translation>
+        <translation>Abre o administrador de plugins e possibilita a visão de plugins carregados ou carregar um novo. O administrador de plugins lista os plugins disponíveis e a descrição das feições que cada um providencia.</translation>
     </message>
     <message>
         <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Contacta o servidor de versões do QGIS e providencia informações sobre a versão atual e quaisquer novas feições/mudanças disponíveis na versão em desenvolvimento.</translation>
     </message>
     <message>
         <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar um arquivo Mapserver (.map) da visão atual no QGIS. O arquivo .map pode ser utilizado para criar um projeto Mapserver.</translation>
     </message>
     <message>
         <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar uma camada raster ao visualizador de mapas. Formatos de raster suportados incluem a maioria dos providos pela biblioteca GDAL. Acesse, http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>Open the QGIS Help Contents in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir os Índices de Ajuda do QGIS em um navegdor web</translation>
     </message>
     <message>
         <source>Open the QGIS home page in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir a página home do QGIS em um navegador web</translation>
     </message>
     <message>
         <source>Open the QGIS SourceForge project page in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir a página do projeto QGIS no SourceForge em um navegador web</translation>
     </message>
     <message>
         <source>Save Map As Image</source>
@@ -692,7 +698,7 @@
     </message>
     <message>
         <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
-        <translation>Salvar a visão do mapa atual como imagem PNG. O tamanho da imagem será exatamente o mesmo que está sendo visto.</translation>
+        <translation>Salvar a visão do mapa atual como imagem PNG. O tamanho da imagem será exatamente do mesmo tamanho do visualizador de mapas.</translation>
     </message>
     <message>
         <source>Whats this?</source>
@@ -1152,7 +1158,7 @@
     </message>
     <message>
         <source>Add layer using the delimiter, file, and x/y fields specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar camada utilizando o delimitador, arquivo, e campos x/y specificados</translation>
     </message>
 </context>
 <context>
@@ -1456,7 +1462,7 @@ preenchimento</translation>
     </message>
     <message>
         <source>Gisdbase</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonte de Dados</translation>
     </message>
     <message>
         <source>Location</source>
@@ -1659,7 +1665,7 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation>Para selecionar feiçoes, deve-se escolher uma camada ativa clicando em seu nome na legenda</translation>
+        <translation>Para selecionar feições, deve-se escolher uma camada ativa clicando em seu nome na legenda</translation>
     </message>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
@@ -1996,7 +2002,7 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Search Radius for Identifying Features</source>
-        <translation>Raio de busca para identificação de padrões</translation>
+        <translation>Raio de busca para identificação de Feições</translation>
     </message>
     <message>
         <source>Value</source>
@@ -2014,8 +2020,8 @@ identifying features without zooming in very close.
 O raio de busca é calculado assim:
 &lt;ul&gt; &lt;i&gt;(Largura de visualização do mapa) * ( Valor/1000.0)&lt;/i&gt;
 &lt;/ul&gt;
-Por default o QGIS usa o valor 5. Aumente o valor caso tenha problemas 
-na identificação de padrões sem ter que usar muito o zoom.
+Por padrão o QGIS usa o valor 5. Aumente o valor caso tenha problemas 
+identificando feições sem executar um zoom muito perto.
 &lt;/html&gt;</translation>
     </message>
     <message>
@@ -2413,7 +2419,7 @@ na identificação de padrões sem ter que usar muito o zoom.
     <name>QgsSiMaDialogBase</name>
     <message>
         <source>QgsSiMaDialogBase</source>
-        <translation type="unfinished"></translation>
+        <translation>QgsSiMaDialogBase</translation>
     </message>
     <message>
         <source>Image</source>
