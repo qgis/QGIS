@@ -1,4 +1,5 @@
 #include <qstring.h>
+#include <qpainter.h>
 #include "qgsrect.h"
 #include <libpq++.h>
 #include <qmessagebox.h>
@@ -59,7 +60,7 @@ QgsDatabaseLayer::~QgsDatabaseLayer(){
 QgsRect QgsDatabaseLayer::calculateExtent(){
   return layerExtent;
 }
-void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent){
+void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
   // painter is active (begin has been called
   /* Steps to draw the layer
      1. get the features in the view extent by SQL query
@@ -68,16 +69,82 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent){
      4. draw
   */
   PgCursor pgs(dataSource, "drawCursor");
-  QString sql = "select asbinary(" + geometryColumn + ",'" + endianString() +
-    "') as features from " + tableName + " where " + geometryColumn + 
-    " && GeometryFromText('BOX3D(" + viewExtent->xMin() + " " + viewExtent->yMin() 
-    + "," + viewExtent->xMax() + " " + viewExtent->yMax() + ")'::box3d,-1)";
+  QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
+  sql +=   "') as features from " + tableName;
+  sql += " where " + geometryColumn;
+  sql +=  " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
+  sql += ")'::box3d,-1)";
+  qWarning(sql);
   pgs.Declare((const char *)sql, true);
   int res = pgs.Fetch();
   cout << "Number of matching records: " << pgs.Tuples() << endl;
   for (int idx = 0; idx < pgs.Tuples (); idx++)
     {
+      // allocate memory for the item
+      char *feature = new char[pgs.GetLength (idx, 0) + 1];
+      memset (feature, '\0', pgs.GetLength (idx, 0) + 1);
+      memcpy (feature, pgs.GetValue (idx, 0), pgs.GetLength (idx, 0));
+      wkbType = (int)feature[1];
+      cout << "Feature type: " << wkbType << endl;
       // read each feature based on its type
+      double *x;
+      double *y;
+      int *nPoints;
+      int numPoints;
+      int numLineStrings;
+      int idx,jdx;
+      char *ptr;
+      char lsb;
+      int ttype;
+      switch(wkbType){
+      case WKBPoint:
+	x = (double *) (feature + 5);
+	y = (double *) (feature + 5 + sizeof (double));
+	  p->drawRect ((int) *x, yTransform - (int) *y, 15000,
+			  15000);
+	break;
+      case WKBLineString:
+	// get number of points in the line
+	numPoints = (int)(feature + 1 + sizeof(int));
+	ptr = feature + 1 + 2 * sizeof(int);
+	for(idx = 0; idx < numPoints; idx++){
+	  x = (double *) ptr;
+	  ptr += sizeof(double);
+	  y = (double *) ptr;
+	  ptr += sizeof(double);
+	  if(idx == 0)
+	    p->moveTo((int) *x, yTransform - (int) *y);
+	  else
+	    p->lineTo((int) *x, yTransform - (int) *y);
+	    
+	}
+	break;
+      case WKBMultiLineString:
+	numLineStrings =  (int)(feature[5]);
+	ptr = feature+9;
+	for(jdx = 0; jdx < numLineStrings; jdx++){
+	  // each of these is a wbklinestring so must handle as such
+	  lsb = *ptr;
+	  ptr += 5; // skip type since we know its 2
+	  nPoints = (int *)ptr;
+	  ptr += sizeof(int);
+	for(idx = 0; idx < *nPoints; idx++){
+	  x = (double *) ptr;
+	  ptr += sizeof(double);
+	  y = (double *) ptr;
+	  ptr += sizeof(double);
+	  if(idx == 0)
+	    p->moveTo((int) *x, yTransform - (int) *y);
+	  else
+	    p->lineTo((int) *x, yTransform - (int) *y);
+	    
+	}
+	}
+	break;
+      case WKBPolygon:
+	break;
+      }
+ 
     }
 
 

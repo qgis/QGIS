@@ -95,6 +95,7 @@
             <string>Toolbar_2</string>
         </property>
         <action name="actionAddLayer"/>
+        <action name="drawAction"/>
     </toolbar>
 </toolbars>
 <actions>
@@ -173,6 +174,17 @@
             <string>Add Layer</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>drawAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image5</iconset>
+        </property>
+        <property name="text">
+            <string>Draw</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -189,6 +201,9 @@
     </image>
     <image name="image4">
         <data format="XPM.GZ" length="661">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022630543251d2e253d856405bffcbc54105b19c8563600020b03103711c44d0303b04aac005546593911b74ce2d09151c60089046512a100641a14109419789f522203f6082e19385ba9d69a0b008e2682ef</data>
+    </image>
+    <image name="image5">
+        <data format="XPM.GZ" length="1226">789cc5d3c10ac2300c00d07bbf222cb722dd9c1741fc04c5a3201e4615f430059d0711ffdd2ada364d8a3010c30e813cb2a4b4a586e56206ba54e7aee9f616ecae3981de5cdaf6ba5a4f6faa18d5e0be1a86c54015062ccc8f87ed33479763e5625cbd4a5fa287411f598328a1d8c485388f0ce96f244347202818b60e336917d130c24d98826f9f3f9f8c61bb894622c9398be48f465e8c190191bb81463c23660ced85c4840ac629355177afd064cda7292686c67bfe74e614f91fe6df6998fc47efbdbfb94fd403df21d37e</data>
     </image>
 </images>
 <connections>
@@ -222,17 +237,24 @@
         <receiver>QgisAppBase</receiver>
         <slot>zoomIn()</slot>
     </connection>
+    <connection>
+        <sender>drawAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>drawLayers()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
 </includes>
 <slots>
+    <slot>addLayer()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
-    <slot>addLayer()</slot>
+    <slot>init()</slot>
+    <slot>drawLayers()</slot>
     <slot>zoomIn()</slot>
     <slot>zoomOut()</slot>
-    <slot>init()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

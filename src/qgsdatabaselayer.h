@@ -38,7 +38,7 @@ class QgsDatabaseLayer : public QgsMapLayer  {
     QgsDatabaseLayer(const char *conninfo=0, QString table=QString::null);
     //! Destructor
     ~QgsDatabaseLayer();
-    void draw(QPainter *p, QgsRect *viewExtent=0);
+    virtual void draw(QPainter *, QgsRect *, int );
  private:
     //! Calculates extent of the layer using SQL and PostGIS functions
     QgsRect calculateExtent();
