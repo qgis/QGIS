@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsuvaldialog.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsfeature.h"
@@ -37,7 +37,7 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
     setSizeGripEnabled(true); 
 
     //find out the fields of mVectorLayer
-    QgsDataProvider *provider;
+    QgsVectorDataProvider *provider;
     if (provider = mVectorLayer->getDataProvider())
     {
 	std::vector < QgsField > &fields = provider->fields();
@@ -254,7 +254,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
     }
     mValues.clear();
     
-    QgsDataProvider *provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
     if (provider)
     {
 	QString value;

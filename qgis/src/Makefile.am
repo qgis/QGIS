@@ -78,6 +78,7 @@ headers =		qgis.h					\
 			qgsprovidermetadata.h			\
 			qgsproviderregistry.h			\
 			qgsrangerenderitem.h			\
+			qgscolortable.h				\
 			qgsrasterlayer.h			\
 			qgsrasterlayerproperties.h		\
 			qgsrect.h				\
@@ -94,6 +95,7 @@ headers =		qgis.h					\
 			qgsuvalmarenderer.h			\
 			qgsuvaldialog.h				\
 			qgsuvalmadialog.h			\
+			qgsvectordataprovider.h			\
 			qgsvectorlayer.h			\
 			splashscreen.h				\
 			qgisapp.h \
@@ -236,6 +238,7 @@ qgis_SOURCES =  main.cpp			\
 		qgsprovidermetadata.cpp		\
 		qgsproviderregistry.cpp		\
 		qgsrangerenderitem.cpp		\
+		qgscolortable.cpp		\
 		qgsrasterlayer.cpp		\
 		qgsrasterlayerproperties.cpp	\
 		qgsrect.cpp			\
@@ -301,6 +304,7 @@ libqgis_la_SOURCES = qgsmapcanvas.cpp \
 										 qgsmapcanvas.moc.cpp \
 										 qgssymbol.cpp \
 										 qgsmaplayer.cpp \
+										 qgscolortable.cpp \
 										 qgsrasterlayer.cpp \
 										 qgsvectorlayer.cpp \
 										 qgsmaplayer.moc.cpp \

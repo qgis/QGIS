@@ -26,7 +26,7 @@ email                : sherman at mrcc.com
 #include "../../src/qgisapp.h"
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsdataprovider.h"
+#include "../../src/qgsvectordataprovider.h"
 #include "../../src/qgsfield.h"
 
 #include <qtoolbar.h>
@@ -147,7 +147,7 @@ void QgsPgGeoprocessing::buffer()
         // set a default output table name
         bb->setBufferLayerName(tableName.mid(tableName.find(".") + 1) + "_buffer");
         // set the fields on the dialog box drop-down
-        QgsDataProvider *dp = lyr->getDataProvider();
+        QgsVectorDataProvider *dp = lyr->getDataProvider();
         std::vector < QgsField > flds = dp->fields();
         for (int i = 0; i < flds.size(); i++) {
           // check the field type -- if its int we can use it

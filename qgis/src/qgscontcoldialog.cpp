@@ -28,7 +28,7 @@
 #include "qgslegenditem.h"
 #include <qlineedit.h>
 #include "qgsdlgvectorlayerproperties.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 #include <qspinbox.h>
 #include <qtoolbutton.h>
@@ -44,7 +44,7 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
     QObject::connect(btnMaxValue, SIGNAL(clicked()), this, SLOT(selectMaximumColor()));
 
     //find out the numerical fields of mVectorLayer
-    QgsDataProvider *provider;
+    QgsVectorDataProvider *provider;
     if (provider = mVectorLayer->getDataProvider())
     {
 	std::vector < QgsField > &fields = provider->fields();
@@ -130,7 +130,7 @@ void QgsContColDialog::apply()
     
     //find the minimum and maximum for the classification variable
     double minimum, maximum;
-    QgsDataProvider *provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
     if (provider)
     {
 	minimum = provider->minValue(classfield).toDouble();

@@ -19,7 +19,7 @@
 
 #include <map>
 
-#include "../../src/qgsdataprovider.h"
+#include "../../src/qgsvectordataprovider.h"
 #include "gpsdata.h"
 
 
@@ -36,7 +36,7 @@ class GPSData;
 * This provider adds the ability to load GPX files as vector layers.
 * 
 */
-class QgsGPXProvider : public QgsDataProvider {
+class QgsGPXProvider : public QgsVectorDataProvider {
 public:
   QgsGPXProvider(QString uri=0);
   virtual ~QgsGPXProvider();
@@ -128,6 +128,35 @@ public:
   /**Returns true if this is a valid delimited file
    */
   bool isValid();
+
+  /**
+     Enables editing capabilities of the provider (if supported)
+     @return false in case of error or if the provider does not support editing
+  */
+  virtual bool startEditing();
+
+  /**
+     Disables the editing capabilities of the provider
+  */
+  virtual void stopEditing();
+
+  /**
+     Commits changes
+     @return false in case of problems
+  */
+  virtual bool commitChanges();
+
+  /**
+     Discards changes
+     @return false in case of problems
+  */
+  virtual bool rollBack();
+
+  /**Returns true if the provider is in editing mode*/
+  virtual bool isEditable() const {return false;}
+
+  /**Returns true if the provider has been modified since the last commit*/
+  virtual bool isModified() const {return false;}
 
   /**Adds a feature
      @return true in case of success and false in case of failure*/

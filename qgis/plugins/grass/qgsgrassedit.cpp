@@ -105,7 +105,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     //TODO dynamic_cast ?
     mProvider = (QgsGrassProvider *) vector->getDataProvider();
 
-    if ( !(mProvider->isEditable()) ) {
+    if ( !(mProvider->isGrassEditable()) ) {
 	QMessageBox::warning( 0, "Warning", "You are not owner of the mapset, "
 		                 "cannot open the vector for editing." );
 	return;
@@ -650,7 +650,13 @@ int QgsGrassEdit::lineSymbFromMap ( int line )
 
 QgsGrassEdit::~QgsGrassEdit()
 {
-    eraseDynamic();
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::~QgsGrassEdit()" << std::endl;
+    #endif
+
+    if ( mValid ) 
+        eraseDynamic();
+
     saveWindowLocation();
     mRunning = false;
 }

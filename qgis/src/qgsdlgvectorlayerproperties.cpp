@@ -25,12 +25,13 @@
 #include <qtextstream.h>
 #include <qtable.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
 
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsfield.h"
 #include "qgsdlgvectorlayerproperties.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsgraduatedmarenderer.h"
@@ -67,7 +68,7 @@ bufferRenderer(layer->
   txtDisplayName->setText(layer->name());
   // display type and feature count
   lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
-  QgsDataProvider *dp = layer->getDataProvider();
+  QgsVectorDataProvider *dp = layer->getDataProvider();
   QString numFeatures;
   numFeatures = numFeatures.setNum(dp->featureCount());
   lblFeatureCount->setText(numFeatures);
@@ -143,7 +144,23 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
       bufferRenderer = new QgsContinuousColRenderer();
   } else if (string == tr("Single Marker"))
   {
+    // On win32 we can't support svg without qt commercial
+    // so we beg a bit (i know its tacky to repeat this for
+    // each case, but i'm in a hurry to get the 0.5 release 
+    // out - besides this will go away when the money roles in...)
+#ifdef WIN32
+    QMessageBox::warning(this, "No SVG Support", 
+  "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n" 
+  " using the commercial version of Qt. As this project is developed by volunteers\n"
+  " donating their time, we don't have the financial resources to purchase Qt\n"
+  " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
+  " home page to make a donation");
+    // use the single symbol renderer
+      bufferRenderer = new QgsSingleSymRenderer();
+      legendtypecombobox->setCurrentText("Single Symbol");
+#else
       bufferRenderer = new QgsSiMaRenderer();
+#endif
   } else if (string == tr("Graduated Marker"))
   {
       bufferRenderer = new QgsGraduatedMaRenderer();
@@ -152,7 +169,19 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
       bufferRenderer = new QgsUniqueValRenderer();
   } else if(string == tr("Unique Value Marker"))
   {
+#ifdef WIN32
+    QMessageBox::warning(this, "No SVG Support", 
+  "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n"
+  " using the commercial version of Qt. As this project is developed by volunteers\n"
+  " donating their time, we don't have the financial resources to purchase Qt\n"
+  " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
+  " home page to make a donation");
+    // use the single symbol renderer
+      bufferRenderer = new QgsSingleSymRenderer();
+      legendtypecombobox->setCurrentText("Single Symbol");
+#else
       bufferRenderer = new QgsUValMaRenderer();
+#endif
   }
   bufferRenderer->initializeSymbology(layer, this);
 

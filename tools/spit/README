@@ -1,3 +1,0 @@
-SPIT - Shapefile to PostgreSQL Import Tool
-
-SPIT is a GUI tool for importing Shapefiles into PostgreSQL databse. It resembles the functionality of shp2pgsql command line tool.
