@@ -36,9 +36,9 @@ class QgsContColDialog: public QgsContColDialogBase
     void selectMinimumColor();
     void selectMaximumColor();
  protected:
-    QgsVectorLayer* m_vectorlayer;
+    QgsVectorLayer* mVectorLayer;
     /**Stores the names and numbers of the fields with numeric values*/
-     std::map<QString,int> m_fieldmap;
+     std::map<QString,int> mFieldMap;
  private:
     QgsContColDialog();
 };

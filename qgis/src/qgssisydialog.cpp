@@ -31,186 +31,187 @@
 #include "qgsvectorlayerproperties.h"
 #include <qlineedit.h>
 
-QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), m_vectorlayer(0)
+QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), mVectorLayer(0)
 {
 #ifdef QGISDEBUG
-  qWarning("constructor QgsSiSyDialog");
+    qWarning("constructor QgsSiSyDialog");
 #endif
 }
 
-QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), m_vectorlayer(layer)
+QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVectorLayer(layer)
 {
 #ifdef QGISDEBUG
-  qWarning("constructor QgsSiSyDialog");
+    qWarning("constructor QgsSiSyDialog");
 #endif
-
-  if (layer)
+    
+    if (layer)
     {
-      QgsSingleSymRenderer *renderer;
-
-      //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
-      if (m_vectorlayer->propertiesDialog())
+	QgsSingleSymRenderer *renderer;
+	
+	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
+	if (mVectorLayer->propertiesDialog())
         {
-          renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
-      } else
+	    renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
+	} 
+	else
         {
-          renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
+	    renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
         }
 
-      if (renderer)
+	if (renderer)
         {
-          outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
-	  outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
-          fillcolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
-          patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(renderer->item()->getSymbol()->brush().style()));
-          patternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap(patternbutton->name()));
-          stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
-          stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
-          outlinecolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
+	    outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
+	    outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
+	    fillcolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
+	    patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(renderer->item()->getSymbol()->brush().style()));
+	    patternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap(patternbutton->name()));
+	    stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
+	    stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
+	    outlinecolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
         }
 
-      if (m_vectorlayer && m_vectorlayer->vectorType() == QGis::Line)
+	if (mVectorLayer && mVectorLayer->vectorType() == QGis::Line)
         {
-          fillcolorbutton->unsetPalette();
-          fillcolorbutton->setEnabled(false);
-          patternbutton->setText("");
-          patternbutton->setEnabled(false);
+	    fillcolorbutton->unsetPalette();
+	    fillcolorbutton->setEnabled(false);
+	    patternbutton->setText("");
+	    patternbutton->setEnabled(false);
         }
-      //do the signal/slot connections
-      QObject::connect(outlinecolorbutton, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
-      QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
-      QObject::connect(fillcolorbutton, SIGNAL(clicked()), this, SLOT(selectFillColor()));
-      QObject::connect(patternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
-  } else
+	//do the signal/slot connections
+	QObject::connect(outlinecolorbutton, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
+	QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
+	QObject::connect(fillcolorbutton, SIGNAL(clicked()), this, SLOT(selectFillColor()));
+	QObject::connect(patternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
+    } 
+    else
     {
-      qWarning("Warning, layer is a null pointer in QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer)");
+	qWarning("Warning, layer is a null pointer in QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer)");
     }
 }
 
 QgsSiSyDialog::~QgsSiSyDialog()
 {
 #ifdef QGISDEBUG
-  qWarning("destructor QgsSiSyDialog");
+    qWarning("destructor QgsSiSyDialog");
 #endif
 }
 
 void QgsSiSyDialog::selectOutlineColor()
 {
-  outlinecolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
-  m_vectorlayer->propertiesDialog()->raise();
-  raise();
+    outlinecolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
+    mVectorLayer->propertiesDialog()->raise();
+    raise();
 }
 
 void QgsSiSyDialog::selectOutlineStyle()
 {
-  QgsLineStyleDialog linestyledialog;
-  if (linestyledialog.exec() == QDialog::Accepted)
+    QgsLineStyleDialog linestyledialog;
+    if (linestyledialog.exec() == QDialog::Accepted)
     {
-      stylebutton->setName(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()).ascii());
-      stylebutton->setPixmap(QgsSymbologyUtils::qString2LinePixmap(QString::fromAscii(stylebutton->name())));
+	stylebutton->setName(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()).ascii());
+	stylebutton->setPixmap(QgsSymbologyUtils::qString2LinePixmap(QString::fromAscii(stylebutton->name())));
     }
-  m_vectorlayer->propertiesDialog()->raise();
-  raise();
+    mVectorLayer->propertiesDialog()->raise();
+    raise();
 }
 
 void QgsSiSyDialog::selectFillColor()
 {
-  fillcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
-  m_vectorlayer->propertiesDialog()->raise();
-  raise();
+    fillcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
+    mVectorLayer->propertiesDialog()->raise();
+    raise();
 }
 
 void QgsSiSyDialog::selectFillPattern()
 {
-  QgsPatternDialog patterndialog;
-  if (patterndialog.exec() == QDialog::Accepted)
+    QgsPatternDialog patterndialog;
+    if (patterndialog.exec() == QDialog::Accepted)
     {
-      patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
-      patternbutton->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
+	patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
+	patternbutton->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
     }
-  m_vectorlayer->propertiesDialog()->raise();
-  raise();
+    mVectorLayer->propertiesDialog()->raise();
+    raise();
 }
 
 void QgsSiSyDialog::apply()
 {
-  //query the values of the widgets and set the symbology of the vector layer
-  QgsSymbol sy(QColor(255, 0, 0));
-  sy.brush().setColor(fillcolorbutton->paletteBackgroundColor());
-  sy.brush().setStyle(QgsSymbologyUtils::char2BrushStyle(patternbutton->name()));
-  sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
-  sy.pen().setWidth(outlinewidthspinbox->value());
-  sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
-  QgsRenderItem ri(sy, "blabla", "blabla");
-
-  QgsSingleSymRenderer *renderer = dynamic_cast < QgsSingleSymRenderer * >(m_vectorlayer->renderer());
-
-  if (renderer)
+    //query the values of the widgets and set the symbology of the vector layer
+    QgsSymbol sy(QColor(255, 0, 0));
+    sy.brush().setColor(fillcolorbutton->paletteBackgroundColor());
+    sy.brush().setStyle(QgsSymbologyUtils::char2BrushStyle(patternbutton->name()));
+    sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
+    sy.pen().setWidth(outlinewidthspinbox->value());
+    sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
+    QgsRenderItem ri(sy, "blabla", "blabla");
+    
+    QgsSingleSymRenderer *renderer = dynamic_cast < QgsSingleSymRenderer * >(mVectorLayer->renderer());
+    
+    if (renderer)
     {
-      renderer->addItem(ri);
-  } else
+	renderer->addItem(ri);
+    } 
+    else
     {
-      qWarning("typecast failed in QgsSiSyDialog::apply()");
-      return;
+	qWarning("typecast failed in QgsSiSyDialog::apply()");
+	return;
+    }
+    
+    //add a pixmap to the legend item
+    
+    //font tor the legend text
+    QFont f("times", 12, QFont::Normal);
+    QFontMetrics fm(f);
+    
+    QPixmap *pix = mVectorLayer->legendPixmap();
+
+    QString name;
+    if (mVectorLayer->propertiesDialog())
+    {
+	name = mVectorLayer->propertiesDialog()->displayName();
+    } 
+    else
+    {
+	name = "";
     }
 
-  //add a pixmap to the legend item
+    int width = 40 + fm.width(name);  //problem, how do we determine the width of the displaynamefield now?
+    int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
+    pix->resize(width, height);
+    pix->fill();
 
-  //font tor the legend text
-  //TODO Make the font a user option
-  QFont f("times", 12, QFont::Normal);
-  QFontMetrics fm(f);
-
-
-  QPixmap *pix = m_vectorlayer->legendPixmap();
-
-
-  QString name;
-  if (m_vectorlayer->propertiesDialog())
+    QPainter p(pix);
+    p.setPen(sy.pen());
+    p.setBrush(sy.brush());
+    //paint differently in case of point, lines, polygones
+    switch (mVectorLayer->vectorType())
     {
-      name = m_vectorlayer->propertiesDialog()->displayName();
-  } else
-    {
-      name = "";
+	case QGis::Polygon:
+	    p.drawRect(10, pix->height() - 25, 20, 15);
+	    break;
+	case QGis::Line:
+	    p.drawLine(10, pix->height() - 25, 25, pix->height() - 10);
+	    break;
+	case QGis::Point:
+	    p.drawRect(20, pix->height() - 17, 5, 5);
     }
 
-  int width = 40 + fm.width(name);  //problem, how do we determine the width of the displaynamefield now?
-  int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
-  pix->resize(width, height);
-  pix->fill();
+    p.setPen(Qt::black);
+    p.setFont(f);
+    p.drawText(35, pix->height() - 10, name); //the problem again
 
-  QPainter p(pix);
-  p.setPen(sy.pen());
-  p.setBrush(sy.brush());
-  //paint differently in case of point, lines, polygones
-  switch (m_vectorlayer->vectorType())
+    if (mVectorLayer->legendItem())
     {
-      case QGis::Polygon:
-        p.drawRect(10, pix->height() - 25, 20, 15);
-        break;
-      case QGis::Line:
-        p.drawLine(10, pix->height() - 25, 25, pix->height() - 10);
-        break;
-      case QGis::Point:
-        p.drawRect(20, pix->height() - 17, 5, 5);
+	mVectorLayer->legendItem()->setPixmap(0, (*pix));
     }
-
-  p.setPen(Qt::black);
-  p.setFont(f);
-  p.drawText(35, pix->height() - 10, name); //the problem again
-
-  if (m_vectorlayer->legendItem())
+    
+    mVectorLayer->setRenderer(renderer);
+    mVectorLayer->setRendererDialog(this);
+    
+    if (mVectorLayer->propertiesDialog())
     {
-      m_vectorlayer->legendItem()->setPixmap(0, (*pix));
+	mVectorLayer->propertiesDialog()->setRendererDirty(false);
     }
-
-  m_vectorlayer->setRenderer(renderer);
-  m_vectorlayer->setRendererDialog(this);
-
-  if (m_vectorlayer->propertiesDialog())
-    {
-      m_vectorlayer->propertiesDialog()->setRendererDirty(false);
-    }
-  //repaint the map canvas
-  m_vectorlayer->triggerRepaint();
+    //repaint the map canvas
+    mVectorLayer->triggerRepaint();
 }

@@ -31,7 +31,7 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     QgsSiSyDialog(QgsVectorLayer* layer);
     ~QgsSiSyDialog();
  protected:
-    QgsVectorLayer* m_vectorlayer;
+    QgsVectorLayer* mVectorLayer;
  public slots:
      /**applies the changes to the vector layer*/
     void apply();
