@@ -302,7 +302,7 @@
 protocol, the device your GPS is connected to, the feature type you want 
 to download, a name for your new layer, and the GPX file where 
 you want to store the data.&lt;/p&gt;
-&lt;p&gt;This tool uses the program GPSBabel to transfer the data. If you don't 
+&lt;p&gt;This tool uses the program &lt;a href="http://gpsbabel.sf.net"&gt;GPSBabel&lt;/a&gt; to transfer the data. If you don't 
 have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
@@ -457,7 +457,7 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
 &lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
 Choose the layer you want to upload, your protocol, and the device your 
 GPS is connected to.&lt;/p&gt;
-&lt;p&gt;This tool uses the program GPSBabel to transfer the data. If you don't 
+&lt;p&gt;This tool uses the program &lt;a href="http://gpsbabel.sf.net"&gt;GPSBabel&lt;/a&gt; to transfer the data. If you don't 
 have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
