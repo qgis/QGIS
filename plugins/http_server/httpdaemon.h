@@ -41,7 +41,8 @@ public:
   QString basePath();
 signals:
   void requestReceived(QString); //used to notify listeners when a web client connects
-  void loadProject(QString); //loads the project file
+  void showProject(QString); //loads the project file and sends result to browser
+  void loadProject(QString); //loads the project file but doesnt close connection so other stuff can be loaded
   void loadRasterFile(QString);//loads a rasterfile on its own using defaults 
   void loadRasterFile(QString,QString);//loads a rasterfile (arg1) over the current project (arg2)
   void loadVectorFile(QString);//loads a vector file on its own using defaults

@@ -48,7 +48,9 @@ class Plugin:public QObject, public QgisPlugin
 public slots:
   //! Show the dialog box
   void run();
-  //! Load a project file
+  //! Load and show a project file
+  void showProject(QString theProjectFile);
+  //! Load a project file but dont return it to browser yet
   void loadProject(QString theProjectFile);
   //! Load a raster file on its own
   void loadRasterFile(QString theRasterFile);

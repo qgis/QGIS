@@ -133,6 +133,7 @@ void Plugin::unload()
 void Plugin::startServer()
 { 
   mHttpDaemon = new HttpDaemon( this );
+  connect(mHttpDaemon, SIGNAL(showProject(QString)), this, SLOT(showProject(QString)));
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString)), this, SLOT(loadRasterFile(QString)));
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString,QString)), this, SLOT(loadRasterFile(QString,QString)));
   connect(mHttpDaemon, SIGNAL(loadVectorFile(QString)),this, SLOT(loadVectorFile(QString))) ;
@@ -147,7 +148,23 @@ void Plugin::stopServer()
   delete mHttpDaemon;
   
 }
-
+//load the project in qgis and send image to browser
+void Plugin::showProject(QString theProjectFile)
+{
+  std::cout << "Render called " << std::endl;
+  //do all the stuff needed to open the project and take a snapshot of it
+  if (!qGisInterface->addProject(theProjectFile))
+  {
+    //let the httpdserver know we are finished and pass it back the output filename
+    mHttpDaemon->requestCompleted(QString("Failed opening project!"));
+  }
+  else
+  {
+    //let the httpdserver know we are finished and pass it back the canvas image
+    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+  }
+}
+//load project in qgis but dont send image back yet
 void Plugin::loadProject(QString theProjectFile)
 {
   std::cout << "Recevied loadProject request to open " << theProjectFile << std::endl;

@@ -119,7 +119,19 @@ void HttpDaemon::readClient()
           requestCompleted(QString("Project now set to ") + myTokenString);
           return;
         }
+
+        // Command : showProject
         //
+        // This command will show the active project - it needs no parameters
+        //
+        else if (myTokenString == "showProject")
+        {
+          emit clearMap();
+          emit showProject(mProject);
+          return;
+        }
+
+
         // Command : showRasterLayer
         //
         // The show raster layer command is used to show a raster layer that exists
@@ -187,14 +199,14 @@ void HttpDaemon::readClient()
     }
     else
     {
-        closeStreamWithError(QString("No get request passed"));
-        return;
+      closeStreamWithError(QString("No get request passed"));
+      return;
     }
   }
   else //just close the socket again because we cant do anything with it
   {
-        closeStreamWithError(QString("Cant read line from socket!"));
-        return;
+    closeStreamWithError(QString("Cant read line from socket!"));
+    return;
   }
 }
 void HttpDaemon::discardClient()
@@ -252,8 +264,8 @@ void HttpDaemon::closeStreamWithError(QString theErrorQString)
   myOutputStream << "<h2>Error was: <font color=\"red\">" << theErrorQString << "</font></h2>\n";
   QTime myTime  = QTime::currentTime();
   QString myTimeQString = myTime.toString("hh:mm:ss") + 
-                          QString(": Error - No no request processed\n") + 
-                          theErrorQString;
+      QString(": Error - No no request processed\n") + 
+      theErrorQString;
   emit wroteToClient(myTimeQString);
   myQSocket->close();
 }
