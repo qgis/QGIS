@@ -39,6 +39,7 @@ public slots:
     void pbnOK_clicked();
     void pbnCancel_clicked();
     QStringList getSelectedLayers() {return selectedLayersList;};
+	QString getBaseDir() {return baseDirString;};
     static bool isValidGdalFile(const QString theFilename);
     static bool isValidGdalProj(const QString theFilename); 
 private:

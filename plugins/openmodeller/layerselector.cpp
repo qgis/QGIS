@@ -18,9 +18,8 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qlistview.h>
-#include <qsettings.h>
 #include <qlabel.h>
-
+#include <qdir.h>
 //for the is valid gdal file functions
 #include "openmodellergui.h"
 
@@ -33,29 +32,33 @@
 LayerSelector::LayerSelector( QString theBaseDir, QWidget* parent , const char* name , bool modal , WFlags fl  )
   : LayerSelectorBase( parent, name, modal, fl )
 {
-  QSettings mySettings;
+
   baseDirString = theBaseDir;
-  lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
-  listFileTree->clear();
   listFileTree->setRootIsDecorated(true);
   listFileTree->setColumnWidthMode(0,QListView::Maximum);
-  listFileTree->setColumnWidth(0,10);
-  listFileTree->setColumnWidthMode(1,QListView::Maximum);
-  listFileTree->setColumnWidth(1,10);
-  listFileTree->setColumnWidthMode(2,QListView::Maximum);
-  listFileTree->setColumnWidth(2,10);
+  listFileTree->setColumnWidth(0,300);
+  listFileTree->setColumnWidth(1,30);
+  listFileTree->setColumnWidth(2,30);
   listFileTree->setResizeMode(QListView::AllColumns);
-  listParent = new QListViewItem(listFileTree,baseDirString);
-  std::cout << "Recursing directories" << std::endl;
-  traverseDirectories(baseDirString,listParent);
-  listParent->setOpen(true);
-  listFileTree->triggerUpdate();
+  QDir myDir;
+  if (myDir.exists(baseDirString))
+  {
+    listParent = new QListViewItem(listFileTree,baseDirString);
+    lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
+    listFileTree->clear();
+    traverseDirectories(baseDirString,listParent);
+    listParent->setOpen(true);
+    listFileTree->triggerUpdate();
+  }
+  else
+  {
+    std::cout << "Provided directory does not exist - prompting for director" << std::endl;
+    pbnDirectorySelector_clicked();
+  }
 }
 
 void LayerSelector::pbnDirectorySelector_clicked()
 {
-
-  QSettings mySettings;
 
   baseDirString = QFileDialog::getExistingDirectory(
           baseDirString, //initial dir
@@ -63,7 +66,6 @@ void LayerSelector::pbnDirectorySelector_clicked()
           "get existing directory",
           "Choose a directory",
           TRUE );
-  mySettings.writeEntry("/openmodeller/projectionLayersDirectory",baseDirString);
   lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
   listFileTree->clear();
   listParent = new QListViewItem(listFileTree,baseDirString);

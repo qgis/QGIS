@@ -408,7 +408,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
         {
           lstLayers->insertItem(myFileNameQString);
           //also add the layer to the mask combo
-          cboMaskLayer->insertItem(myFileNameQString);
+          cboInputMaskLayer->insertItem(myFileNameQString);
         }
         myLastFileNameQString=*myIterator;
         ++myIterator;
@@ -448,6 +448,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
           lstProjLayers->insertItem(myProjFileNameQString);
 	  //also add the layer to the mask combo
           cboOutputMaskLayer->insertItem(myProjFileNameQString);
+		  cboOutputFormatLayer->insertItem(myProjFileNameQString);
         }
         myProjLastFileNameQString=*myProjIterator;
         ++myProjIterator;
@@ -469,20 +470,29 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }
   if (thePageNameQString==tr("Step 6 of 9"))
   {
-  //MASK AND FORMAT LAYERS 
-  
-  for ( unsigned int i = 0; i < cboOutputMaskLayer->count(); i++ )
-  {
-     cboOutputMaskLayer->setCurrentItem( i );
-     QString item = cboOutputMaskLayer->currentText();
-     cboOutputFormatLayer->insertItem(item);
-  }	
-    
+    //MASK AND FORMAT LAYERS 
+    cboInputMaskLayer->setDuplicatesEnabled(false);
+	cboOutputMaskLayer->setDuplicatesEnabled(false);
+	cboOutputFormatLayer->setDuplicatesEnabled(false);
+	QString myInputMask = settings.readEntry("/openmodeller/inputMaskFile");
+    QString myOutputMask = settings.readEntry("/openmodeller/outputMaskFile");
+    QString myOutputFormat = settings.readEntry("/openmodeller/outputFormatFile");
+    cboInputMaskLayer->insertItem(myInputMask);
+	cboOutputMaskLayer->insertItem(myOutputMask);
+	cboOutputFormatLayer->insertItem(myOutputFormat);
+    cboInputMaskLayer->setCurrentText(myInputMask);
+	cboOutputMaskLayer->setCurrentText(myOutputMask);
+	cboOutputFormatLayer->setCurrentText(myOutputFormat);    
   
   }
 
   if (thePageNameQString==tr("Step 8 of 9")) 
   {  
+    
+	//persist values for masks and output format  
+	settings.writeEntry("/openmodeller/inputMaskFile",cboInputMaskLayer->currentText());
+    settings.writeEntry("/openmodeller/outputMaskFile",cboOutputMaskLayer->currentText());
+    settings.writeEntry("/openmodeller/outputFormatFile",cboOutputFormatLayer->currentText());
     //
     // Extract parameters and their values from map and add to QStringList ready for reading 
     //
@@ -750,7 +760,7 @@ void OpenModellerGui::accept()
   myQSettings.writeEntry("/openmodeller/projectionLayerNames",projLayerNamesQStringList);  
   
   
-  maskNameQString=cboMaskLayer->currentText();
+  maskNameQString=cboInputMaskLayer->currentText();
   outputMaskNameQString=cboOutputMaskLayer->currentText();
   outputFormatQString=cboOutputFormatLayer->currentText();
   taxonNameQString=cboTaxon->currentText();
@@ -800,7 +810,7 @@ void OpenModellerGui::pbnRemoveLayerFile_clicked()
       //remove the item if it is selected
       lstLayers->removeItem(myInt);
       //also remove the item from the mask layer combo
-      cboMaskLayer->removeItem(myInt);
+      cboInputMaskLayer->removeItem(myInt);
       myInt--;
       myLayersCount--;
     }
@@ -827,6 +837,7 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
     std::cout << "LayerSelector ok pressed" << std::endl;
     myQStringList=myLayerSelector->getSelectedLayers();
 
+    mySettings.writeEntry("/openmodeller/layersDirectory",myLayerSelector->getBaseDir());
     lstLayers->insertStringList( myQStringList ,0 );
 
     lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
@@ -1116,7 +1127,7 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
     myQStringList=myLayerSelector->getSelectedLayers();
 
     lstProjLayers->insertStringList( myQStringList ,0 );
-
+    mySettings.writeEntry("/openmodeller/projectionLayersDirectory",myLayerSelector->getBaseDir());
     lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
     if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
     {
@@ -1129,31 +1140,7 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
   }
 }
 
-/*void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
-{
-  QSettings settings;
 
-  QString myLayersDirectoryQString = QFileDialog::getExistingDirectory(
-          settings.readEntry("/openmodeller/projectionLayersDirectory"), //initial dir
-          this,
-          "get existing directory",
-          "Choose a directory",
-          TRUE );
-
-  if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
-
-  settings.writeEntry("/openmodeller/projectionLayersDirectory",myLayersDirectoryQString);
-  traverseDirectories(myLayersDirectoryQString, lstProjLayers, cboOutputMaskLayer);
-
-
-
-  //lstLayers->insertItem(myFileNameQString);
-  //also add the layer to the mask combo
-  //cboMaskLayer->insertItem(myFileNameQString);
-  //enable the user to carry on to the next page...
-  setNextEnabled(currentPage(),true);	    
-}
-*/
 
 void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
 {  
@@ -1169,6 +1156,7 @@ void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
       lstProjLayers->removeItem(myInt);
       //also remove the item from the mask layer combo
       cboOutputMaskLayer->removeItem(myInt);
+	  cboOutputFormatLayer->removeItem(myInt);
       myInt--;
       myLayersCount--;
     }
@@ -1258,8 +1246,8 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
 	QSettings settings;
 	settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
 	
-	cboMaskLayer->insertItem(myFileNameQString);
-	cboMaskLayer->setCurrentItem(cboMaskLayer->count()-1);
+	cboInputMaskLayer->insertItem(myFileNameQString);
+	cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
   }
   else
   {
