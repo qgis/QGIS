@@ -17,3 +17,5 @@ and make sure the libpq++ headers are available in $(PGSQL)/include
 3. Build QGIS by typing: make
 
 The QGIS executable (qgis) will be built in the ./qgis/src directory
+
+For more detailed instructions, see http://qgis.sourceforge.net/qgis_howto.html
