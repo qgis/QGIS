@@ -8,6 +8,7 @@
 *****************************************************************************/
 #include <qsettings.h>
 #include <qfiledialog.h>
+#include <qcombobox.h>
 
 #include "qgssvgcache.h"
 
@@ -26,7 +27,6 @@ void QgsOptionsBase::init()
       hideSplashFlag =true;
     }
     cbxHideSplash->setChecked(hideSplashFlag);
-    cmbTheme->setCurrentText(settings.readEntry("/qgis/theme"));
 }
 void QgsOptionsBase::saveOptions()
 {
@@ -34,7 +34,12 @@ void QgsOptionsBase::saveOptions()
  settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
  settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
  settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
- settings.writeEntry("/qgis/theme",cmbTheme->currentText());
+ if(cmbTheme->currentText().length() == 0)
+ {
+   settings.writeEntry("/qgis/theme", "default");
+ }else{
+   settings.writeEntry("/qgis/theme",cmbTheme->currentText());
+ }
  settings.writeEntry("/qgis/map/updateThreshold", spinBoxUpdateThreshold->value());
  QgsSVGCache::instance().setOversampling(spbSVGOversampling->value());
  settings.writeEntry("/qgis/svgoversampling", spbSVGOversampling->value());
@@ -57,6 +62,11 @@ void QgsOptionsBase::themeChanged(const QString & )
 
 }
 
+void QgsOptionsBase::setCurrentTheme()
+{
+    QSettings settings;
+    cmbTheme->setCurrentText(settings.readEntry("/qgis/theme","default"));
+}
 
 void QgsOptionsBase::findBrowser()
 {
