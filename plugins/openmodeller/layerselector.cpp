@@ -64,9 +64,6 @@ void LayerSelector::pbnDirectorySelector_clicked()
   lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
   listFileTree->clear();
   listParent = new QListViewItem(listFileTree,baseDirString);
-  listFileTree->setColumnWidth(0,10);
-  listFileTree->setColumnWidth(1,10);
-  listFileTree->setColumnWidth(2,10);
   traverseDirectories(baseDirString,listParent);
   listParent->setOpen(true);
   listFileTree->triggerUpdate();
@@ -104,6 +101,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
       QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->absFilePath());
       myItem->setText(1,"DIR");
       traverseDirectories(myFileInfo->absFilePath(),myItem );
+      myItem->setOpen(true);
     }
 
     //check to see if its an adf file type
