@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.180 2004/09/08 15:31:01 larsl Exp
+ChangeLog,v 1.181 2004/09/12 10:05:53 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-12 [larsl] 0.4.0devel28
+** The device lists in the GPS plugin should show /dev/ttyUSB* devices too
+   now (for serial USB adapters) on Linux
 
 2004-09-08 [larsl] 0.4.0devel27
 ** Fixed bug that crashed QGIS when the user selected records in the attribute
