@@ -248,6 +248,12 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
         }
       
       dirty = false;
+      
+      // notify any listeners that rendering is complete
+      //note that pmCanvas is not draw to gui yet
+      
+      emit renderComplete();
+      
       repaint();
     }
 }
