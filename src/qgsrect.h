@@ -71,6 +71,8 @@ class QgsRect{
     bool isEmpty();
     //! returns string representation of form xmin,ymin xmax,ymax
     QString stringRep() const;
+    //! returns rectangle s a polygon 
+    QString asPolygon() const;
     /*! Comparison operator
       @return True if rectangles are equal
     */
