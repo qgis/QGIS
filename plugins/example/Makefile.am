@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-plugindir = ${phglibdir}/qgis
+plugindir = ${pkglibdir}/qgis
 plugin_LTLIBRARIES = exampleplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
