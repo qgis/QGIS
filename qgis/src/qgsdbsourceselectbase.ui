@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsDbSourceSelectBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>327</width>
-            <height>338</height>
+            <width>390</width>
+            <height>344</height>
         </rect>
     </property>
     <property name="font">
@@ -52,6 +52,11 @@
                     <property name="name">
                         <cstring>btnAdd</cstring>
                     </property>
+                    <property name="font">
+                        <font>
+                            <family>Lucida</family>
+                        </font>
+                    </property>
                     <property name="text">
                         <string>Add</string>
                     </property>
@@ -69,6 +74,11 @@
                     <property name="name">
                         <cstring>btnCancel</cstring>
                     </property>
+                    <property name="font">
+                        <font>
+                            <family>Lucida</family>
+                        </font>
+                    </property>
                     <property name="text">
                         <string>Cancel</string>
                     </property>
@@ -82,6 +92,11 @@
                 <widget class="QPushButton" row="3" column="0">
                     <property name="name">
                         <cstring>btnHelp</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <family>Lucida</family>
+                        </font>
                     </property>
                     <property name="text">
                         <string>Help</string>
@@ -118,6 +133,7 @@
             </property>
             <property name="font">
                 <font>
+                    <family>Lucida</family>
                     <pointsize>11</pointsize>
                 </font>
             </property>
@@ -129,6 +145,12 @@
             <property name="name">
                 <cstring>lstTables</cstring>
             </property>
+            <property name="font">
+                <font>
+                    <family>Lucida</family>
+                    <pointsize>11</pointsize>
+                </font>
+            </property>
             <property name="selectionMode">
                 <enum>Extended</enum>
             </property>
@@ -136,6 +158,11 @@
         <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>GroupBox1</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <family>Lucida</family>
+                </font>
             </property>
             <property name="title">
                 <string>Connection Information</string>
@@ -159,6 +186,11 @@
                     <property name="name">
                         <cstring>btnConnect</cstring>
                     </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
+                    </property>
                     <property name="text">
                         <string>Connect</string>
                     </property>
@@ -166,6 +198,11 @@
                 <widget class="QPushButton" row="1" column="1">
                     <property name="name">
                         <cstring>btnNew</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
                     </property>
                     <property name="text">
                         <string>New</string>
@@ -175,6 +212,11 @@
                     <property name="name">
                         <cstring>btnEdit</cstring>
                     </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
+                    </property>
                     <property name="text">
                         <string>Edit</string>
                     </property>
@@ -182,6 +224,11 @@
                 <widget class="QPushButton" row="1" column="3">
                     <property name="name">
                         <cstring>btnDelete</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
                     </property>
                     <property name="text">
                         <string>Delete</string>
