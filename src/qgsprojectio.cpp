@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.29 2004/02/22 06:54:07 gsherman Exp */
+/* qgsprojectio.cpp,v 1.30 2004/03/04 20:58:13 mcoletti Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -83,10 +83,12 @@ bool QgsProjectIo::read(QString path)
   {
     path = selectFileName();
   }
-  QDomDocument *doc;
+
+  std::auto_ptr<QDomDocument> doc;
+
   if (!path.isEmpty())
     {
-      doc = new QDomDocument("qgisdocument");
+      doc = std::auto_ptr<QDomDocument>(new QDomDocument("qgisdocument"));
       QFile file(path);
       if (!file.open(IO_ReadOnly))
         {
@@ -98,7 +100,7 @@ bool QgsProjectIo::read(QString path)
           return false;
         }
       file.close();
-      qWarning("opened document");
+      qWarning("opened document" + file.name());
       // clear the map canvas
       map->removeAll();
       // get the extent
@@ -153,6 +155,10 @@ bool QgsProjectIo::read(QString path)
           mne = mnl.toElement();
           //QMessageBox::information(0,"Zorder", mne.text());
 
+          // XXX I strongly suggest that much of this be pushed into the
+          // XXX provider objects.  There just be just enough here to dispatch the
+          // XXX read to a provider.  --MAC
+
           // add the layer to the maplayer
 
           if (type == "vector")
@@ -167,6 +173,35 @@ bool QgsProjectIo::read(QString path)
                   provider = "ogr";
                 }
               QgsVectorLayer *dbl = new QgsVectorLayer(dataSource, layerName, provider);
+
+              Q_CHECK_PTR( dbl );
+
+              if ( ! dbl )
+              {
+#ifdef QGISDEBUG
+                  std::cerr << __FILE__ << ":" << __LINE__
+                            << " unable to create vector layer for "
+                            << dataSource << "\n"; 
+#endif                  
+                  return false;
+              }
+
+              if ( ! dbl->isValid() )
+              {
+#ifdef QGISDEBUG
+                  std::cerr << __FILE__ << ":" << __LINE__
+                            << " created vector layer for "
+                            << dataSource << "is invalid ... skipping\n"; 
+#endif
+                  delete dbl;   // discard bogus layer
+
+                  // XXX naturally we could be smart and ask the user for the
+                  // XXX new location of the data, but for now we'll just
+                  // XXX ignore the missing data and move on.  Perhaps this
+                  // XXX will be revisited when the architecture is refactored.
+
+                  return false;
+              }
 
               QDomNode singlenode = node.namedItem("singlesymbol");
               QDomNode graduatednode = node.namedItem("graduatedsymbol");
