@@ -71,7 +71,12 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 {
     popMenu=0;
     //std::cout << "QgsRasterLayer::QgsRasterLayer()" << std::endl;
-
+    
+    // set the layer name (uppercase first character)
+    QString layerTitle = baseName;
+    layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
+    setLayerName(layerTitle);
+    
     GDALAllRegister();
     gdalDataset = (GDALDataset *) GDALOpen( path, GA_ReadOnly );
     if ( gdalDataset == NULL )
