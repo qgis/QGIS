@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>192</width>
-            <height>167</height>
+            <height>143</height>
         </rect>
     </property>
     <property name="caption">
@@ -25,8 +25,8 @@
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                 </sizepolicy>
@@ -53,15 +53,7 @@
                         <cstring>txtFillColour</cstring>
                     </property>
                     <property name="text">
-                        <string>Colour</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>txtFillPattern</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Pattern</string>
+                        <string>Colour:</string>
                     </property>
                 </widget>
                 <spacer row="3" column="1">
