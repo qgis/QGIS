@@ -57,16 +57,18 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
     std::cerr<<"Bad URI - you need to specify the feature type"<<std::endl;
     return;
   }
-  mFeatureType = uri.mid(fileNameEnd + 6);
+  QString typeStr = uri.mid(fileNameEnd + 6);
+  mFeatureType = (typeStr == "waypoint" ? WaypointType :
+		  (typeStr == "route" ? RouteType : TrackType));
   
   // set up the attributes and the geometry type depending on the feature type
   attributeFields.push_back(QgsField("name", "text"));
-  if (mFeatureType == "waypoint") {
+  if (mFeatureType == WaypointType) {
     mGeomType = 1;
     attributeFields.push_back(QgsField("ele", "text"));
     attributeFields.push_back(QgsField("sym", "text"));
   }
-  else if (mFeatureType == "route" || mFeatureType == "track") {
+  else if (mFeatureType == RouteType || mFeatureType == TrackType) {
     mGeomType = 2;
     attributeFields.push_back(QgsField("number", "text"));
   }
@@ -135,7 +137,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes){
 QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   QgsFeature* result = 0;
   
-  if (mFeatureType == "waypoint") {
+  if (mFeatureType == WaypointType) {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
     for (; mFid < data->getNumberOfWaypoints()+mAddedFeatures.size(); ++mFid) {
@@ -179,7 +181,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
     }
   }
   
-  else if (mFeatureType == "route") {
+  else if (mFeatureType == RouteType) {
     // go through the routes and return the first one that is in the bounds
     // rectangle
     for (; mFid < data->getNumberOfRoutes(); ++mFid) {
@@ -226,7 +228,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
     }
   }
   
-  else if (mFeatureType == "track") {
+  else if (mFeatureType == TrackType) {
     // go through the tracks and return the first one that is in the bounds
     // rectangle
     for (; mFid < data->getNumberOfTracks(); ++mFid) {
@@ -283,7 +285,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
   QgsFeature* result = 0;
   std::list<int>::const_iterator iter;
   
-  if (mFeatureType == "waypoint") {
+  if (mFeatureType == WaypointType) {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
     int maxFid = data->getNumberOfWaypoints() +
@@ -349,7 +351,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
     }
   }
   
-  else if (mFeatureType == "route") {
+  else if (mFeatureType == RouteType) {
     // go through the routes and return the first one that is in the bounds
     // rectangle
     int maxFid = data->getNumberOfRoutes() +
@@ -413,7 +415,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
     }
   }
   
-  else if (mFeatureType == "track") {
+  else if (mFeatureType == TrackType) {
     // go through the tracks and return the first one that is in the bounds
     // rectangle
     int maxFid = data->getNumberOfTracks() +
@@ -565,11 +567,11 @@ int QgsGPXProvider::geometryType() {
  * Return the feature type
  */
 long QgsGPXProvider::featureCount() {
-  if (mFeatureType == "waypoint")
+  if (mFeatureType == WaypointType)
     return data->getNumberOfWaypoints();
-  if (mFeatureType == "route")
+  if (mFeatureType == RouteType)
     return data->getNumberOfRoutes();
-  if (mFeatureType == "track")
+  if (mFeatureType == TrackType)
     return data->getNumberOfTracks();
   return 0;
 }
@@ -671,11 +673,11 @@ void QgsGPXProvider::stopEditing() {
 
 bool QgsGPXProvider::commitChanges() {
   for (int i = 0; i < mAddedFeatures.size(); ++i) {
-    if (mFeatureType == "waypoint")
+    if (mFeatureType == WaypointType)
       data->addWaypoint(*dynamic_cast<Waypoint*>(mAddedFeatures[i]));
-    else if (mFeatureType == "route")
+    else if (mFeatureType == RouteType)
       data->addRoute(*dynamic_cast<Route*>(mAddedFeatures[i]));
-    else if (mFeatureType == "track")
+    else if (mFeatureType == TrackType)
       data->addTrack(*dynamic_cast<Track*>(mAddedFeatures[i]));
     
     delete mAddedFeatures[i];
@@ -728,7 +730,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     
     // the user is trying to add a point feature
   case QGis::WKBPoint: {
-    if (mFeatureType != "waypoint") {
+    if (mFeatureType != WaypointType) {
       std::cerr<<"Tried to write point feature to non-point layer!"<<std::endl;
       return false;
     }
@@ -760,7 +762,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     
     // the user is trying to add a line feature
   case QGis::WKBLineString: {
-    if (mFeatureType == "waypoint") {
+    if (mFeatureType == WaypointType) {
       std::cerr<<"Tried to write line feature to point layer!"<<std::endl;
       return false;
     }
@@ -775,7 +777,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     GPSExtended* ext = NULL;
     
     // add route
-    if (mFeatureType == "route") {
+    if (mFeatureType == RouteType) {
       mAddedFeatures.push_back(new Route);
       Route* rte(dynamic_cast<Route*>(mAddedFeatures[mAddedFeatures.size() - 1]));
       for (int i = 0; i < length; ++i) {
@@ -796,7 +798,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     }
     
     // add track
-    else if (mFeatureType == "track") {
+    else if (mFeatureType == TrackType) {
       mAddedFeatures.push_back(new Track);
       Track* trk(dynamic_cast<Track*>(mAddedFeatures[mAddedFeatures.size() - 1]));
       TrackSegment trkSeg;

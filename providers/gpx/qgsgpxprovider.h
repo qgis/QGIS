@@ -188,7 +188,7 @@ public:
   std::map<QString, int> fieldPositions;
   QString mDataSourceUri;
   QString mFileName;
-  QString mFeatureType;
+  enum { WaypointType, RouteType, TrackType } mFeatureType;
   //! Current selection rectangle
   QgsRect *mSelectionRectangle;
   bool mValid;
