@@ -48,6 +48,69 @@ ClimateDataProcessor::ClimateDataProcessor()
   totalSolarRadFileNameString=myString;
   windSpeedFileNameString=myString;
 
+  outputFilePathString = myString;
+  int fileStartYearInt=0;
+  int jobStartYearInt=0;
+  int jobEndYearInt=0;  
+  inputFileType=FileReader::ARCINFO_GRID;
+  outputFileType;
+
+
+  /** This is a map (associative array) that stores the key/value pairs
+   * for the OUTPUT filetype. The key is the verbose name for the file type
+   * (as will typically appear in the user interface, and the value
+   * is the FileWriter::FileTypeEnum equivalent.
+   * @see makeInputFileTypeMap()
+   * @see makeOutputFileTypeMap()
+   */
+  std::map <std::string, FileWriter::FileTypeEnum > outputFileTypeMap;
+
+  /** This is a map (associative array) that stores which calculations can be performed
+  *   given the input files that have been registered with this climatedataprocessor.
+  *   The boolean flag will be used to indicate whether the user actually wants to
+  *   perform the calculation on the input dataset(s).
+  *   @see makeAvailableCalculationsMap
+  *   @see addUserCalculation
+  */
+  
+  std::map <std::string, bool > availableCalculationsMap;
+
+      
+  /** A filegroup containing files with mean temperature data. */
+  FileGroup *  meanTempFileGroup;
+  std::string meanTempFileNameString;
+  /** A filegroup containing files with minimum temperature data. */
+  FileGroup * minTempFileGroup;
+  std::string minTempFileNameString;
+  /** A filegroup containing files with maximum temperature data. */
+  FileGroup *  maxTempFileGroup;
+  std::string maxTempFileNameString;  
+  /** A filegroup containing files with diurnal temperature data. */
+  FileGroup *  diurnalTempFileGroup;
+  std::string diurnalTempFileNameString;  
+  /** A filegroup containing files with mean precipitation data. */
+  FileGroup *  meanPrecipFileGroup;
+  std::string meanPrecipFileNameString;  
+  /** A filegroup containing files with number of frost days data. */
+  FileGroup *  frostDaysFileGroup;
+  std::string frostDaysFileNameString;
+  /** A filegroup containing files with solar radiation data. */
+  FileGroup *  totalSolarRadFileGroup;
+  std::string totalSolarRadFileNameString;  
+  /** A filegroup containing files with wind speed data. */
+  FileGroup *  windSpeedFileGroup;
+  std::string windSpeedFileNameString;
+  /** For certain input types (notably cres, arcinfo and Reading paleoclimate),
+  * each months data is stored in a discrete file. Files should be numbered
+  * e.g. meantemp01.asc, meantemp2.asc...meantemp12.asc for each month.
+  * This flag lets us know whether data is in a series of seperate files for each month
+  * or can all be found in the same file. */
+  bool filesInSeriesFlag;
+ 
+
+  bool debugModeFlag;
+  /** This is a standard header (e.g. arc/info header) that will be appended to any output grids. */
+  std::string outputHeaderString;
 
 }
 ClimateDataProcessor::ClimateDataProcessor(
@@ -58,7 +121,7 @@ ClimateDataProcessor::ClimateDataProcessor(
         std::string theOutputFileTypeString)
 {
 
-  std::cout << "Climate Data Processor constructoror called." << std::endl;
+  std::cout << "Climate Data Processor constructoror (with initial values) called." << std::endl;
 }
 /** Destructor */
 ClimateDataProcessor::~ClimateDataProcessor(){
@@ -685,6 +748,9 @@ void ClimateDataProcessor::setOutputFileType( const std::string theOutputFileTyp
  */
 bool  ClimateDataProcessor::makeAvailableCalculationsMap()
 {
+#ifdef QGISDEBUG
+  std::cout << "ClimateDataProcessor::makeAvailableCalculationsMap() called!" << std::endl;
+#endif
   std::string myString;
   bool myBool=false;  //default is not to perform any eligible  calculation
   availableCalculationsMap.clear();
@@ -700,6 +766,14 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
        windSpeedFileNameString;
        -----------------------------------------------------------------
        */
+  std::cout << "Mean Temp FileName : " <<  getMeanTempFileName() << std::endl;
+  std::cout << "Max Temp FileName : " << getMaxTempFileName() << std::endl;
+  std::cout << "Min Temp FileName : " << getMinTempFileName() << std::endl;
+  std::cout << "Diurnal Temp FileName : " << getDiurnalTempFileName() << std::endl;
+  std::cout << "Mean Precipitation FileName : " << getMeanPrecipFileName() << std::endl;
+  std::cout << "Frost Days FileName : " << getFrostDaysFileName() << std::endl;
+  std::cout << "Total Solar Radiation FileName : " << getTotalSolarRadFileName() << std::endl;
+  std::cout << "Wind Speed FileName : " << getWindSpeedFileName() << std::endl;
 
   if (diurnalTempFileGroup && diurnalTempFileNameString != "")
   {

@@ -29,6 +29,9 @@ pkglibdir = ${libdir}
 ## target plug-in 
 lib_LTLIBRARIES = climatedataprocessingwizard.la
 
+## target binary file
+bin_PROGRAMS = cdpwizard
+
 ## qt designer user-interface files
 plugin_UI = cdpwizardbase.ui
 
@@ -65,10 +68,36 @@ climatedataprocessingwizard_la_SOURCES = plugin.cpp \
 	
 nodist_climatedataprocessingwizard_la_SOURCES =	$(plugin_MOC)
 
-climatedataprocessingwizard_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(GSL_FLAGS)
+climatedataprocessingwizard_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(GSL_FLAGS) $(DEBUG_QGIS)
 climatedataprocessingwizard_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) $(GSL_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
+
+
+
+
+##
+##  For standalone executable
+##
+
+cdpwizard_SOURCES = 	main.cpp \
+			filereader.cpp \
+			filewriter.cpp \
+			filegroup.cpp \
+			climatedataprocessor.cpp \
+			dataprocessor.cpp \
+			cdpwizard.cpp \
+			$(plugin_UISOURCES) \
+			$(plugin_UIHEADERS) \
+			$(plugin_UIMOC)
+
+nodist_cdpwizard_SOURCES = cdpwizard.moc.cpp	
+
+cdpwizard_LDADD = $(QT_LDADD) $(GDAL_LDADD) -lgsl -lgslcblas
+cdpwizard_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GSL_FLAGS)
+
+
+
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(plugin_UI) icon.xpm

@@ -26,6 +26,8 @@ email                : t.sutton@reading.ac.uk
 #include <qsettings.h> 
 
 
+//#define QGISDEBUG true
+
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : CDPWizardBase( parent, name, modal, fl )
 {
@@ -39,7 +41,7 @@ CDPWizard::CDPWizard()
 
 CDPWizard::~CDPWizard()
 {
-
+ delete climateDataProcessor;
 }
 
 bool CDPWizard::initialise()
@@ -63,7 +65,9 @@ bool CDPWizard::initialise()
   //
   // set up the lstVariablesToCalc combo box
   //
+#ifdef QGISDEBUG
   std::cout << "Adding items into the lstVariablesToCalc list box" << std::endl;
+#endif
   lstVariablesToCalc->insertItem(tr("Annual mean diurnal temperature range"));
   lstVariablesToCalc->insertItem(tr("Annual mean number of frost days"));
   lstVariablesToCalc->insertItem(tr("Annual mean total incident solar radiation"));
@@ -104,7 +108,9 @@ bool CDPWizard::initialise()
   //
   //set up the output formats combo 
   //
-  cout << "Adding items into the output filetype combo box" << endl;
+#ifdef QGISDEBUG
+  std::cout << "Adding items into the output filetype combo box" << endl;
+#endif
   cboOutputFormat->insertItem(tr("CSM for Matlab"));
   cboOutputFormat->insertItem(tr("CSM for Octave"));
   cboOutputFormat->insertItem(tr("Desktop GARP"));
@@ -176,7 +182,9 @@ void CDPWizard::loadDefaults()
 /** This method overrides the virtual CDPWizardBase method of the same name. */
 void CDPWizard::cboFileType_activated( const QString &myQString )
 {
+#ifdef QGISDEBUG
   std::cout << "cboFileType text changed" << std::endl;
+#endif
   if (myQString==tr("CRES African climate data") || myQString==tr("University of Reading Palaeoclimate data"))
   {
     //show the user some instructions about how the files must be on disk
@@ -203,6 +211,9 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
   QLineEdit *myLineEdit;
   if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
   {
+#ifdef QGISDEBUG
+    std::cout << "Leaving file selection page" << std::endl;
+#endif
     climateDataProcessor->setMeanTempFileName(leMeanTemp->text());
     climateDataProcessor->setMinTempFileName(leMinTemp->text());
     climateDataProcessor->setMaxTempFileName(leMaxTemp->text());
@@ -221,31 +232,40 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     //
     // get the input file type
     //
-      std::string myInputFileTypeString =  cboFileType->currentText().latin1();
-      climateDataProcessor->setInputFileType(myInputFileTypeString);
+    climateDataProcessor->setInputFileType(cboFileType->currentText().latin1());
     //Should not need to have the next line here - it slows everythinf down!
     //climateDataProcessor->makeFileGroups(0);
+#ifdef QGISDEBUG
+    std::cout << "Getting available calculations list" << std::endl;
+#endif
     climateDataProcessor->makeAvailableCalculationsMap();
     // and then update the list box
 
     //List the calculations in  availableCalculationsMap  using an iterator
     map<std::string, bool> myAvailableCalculationsMap = climateDataProcessor->getAvailableCalculationsMap();
     map<std::string, bool>::const_iterator myIter;
-    cout << "******** updated available calculations list **********" << endl;
+#ifdef QGISDEBUG
+    std::cout << myAvailableCalculationsMap.size() << " available calculations in list which are:" << std::endl;
+    std::cout << climateDataProcessor->getDescription() << std::endl;
+#endif
     //clear the current entries from the box
     lstVariablesToCalc->clear();
     for (myIter=myAvailableCalculationsMap.begin(); myIter != myAvailableCalculationsMap.end(); myIter++)
     {
       if (myIter->second)
       {
-        cout << myIter->first << std::string(": true\n");
+#ifdef QGISDEBUG
+        std::cout << myIter->first << std::string(": true\n");
+#endif
         QString * myQString = new  QString(    myIter->first.c_str() );
         //need to add some logic here to select the inserted item
         lstVariablesToCalc->insertItem(*myQString);
       }
       else
       {
-        cout << myIter->first <<  std::string(": false\n");
+#ifdef QGISDEBUG
+        std::cout << myIter->first <<  std::string(": false\n");
+#endif
         QString * myQString = new  QString(    myIter->first.c_str() );
         //need to add some logic here to select the inserted item
         lstVariablesToCalc->insertItem(*myQString);           
@@ -255,7 +275,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
   } //end of test for page 3
 
-  if (thePageNameQString=="Summary of processing to be performed") //we do this when  we arrive at the summary of variables to be calculated
+  if (thePageNameQString==tr("Summary of processing to be performed")) //we do this when  we arrive at the summary of variables to be calculated
   {
     //update the summary of vars to calculate
     txtVariableSummary->clear();
@@ -291,7 +311,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     txtInputFileSummary->append(leTotalSolarRadiation->text());
   } //end of test for page 5
 
-  if (thePageNameQString=="Progress") //we do this when we start the calculation
+  if (thePageNameQString==tr("Progress")) //we do this when we start the calculation
   {
     int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
     std::string myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
@@ -326,18 +346,24 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     // find out if datafiles are in series (discrete files for each month)
     // We are using the isVisible property for the label, but we cant guarantee
     // that the wizard page on which the label occurs will be visible so we need
-    //' to use the isVisibleTo(parent) property, with a reference to the wzard page as parent
+    // to use the isVisibleTo(parent) property, with a reference to the wzard page as parent
     //
     QWidget *  myPageWidget = page(1);
-    std::cout << "\nMyLabel visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "\nFile in series label visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
+#endif
     if (lblFileSeriesNote->isVisibleTo(myPageWidget))
     {
+#ifdef QGISDEBUG
       std::cout << "Setting files in series flag to true" << std::endl;
+#endif
       climateDataProcessor->setFilesInSeriesFlag(true);
     }
     else
     {
+#ifdef QGISDEBUG
       std::cout << "Setting files in series flag to false" << std::endl;
+#endif
       climateDataProcessor->setFilesInSeriesFlag(false);
     }
 
@@ -358,7 +384,9 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     }
 
     //get a summary of the climate dataprocessor class now
-    cout << climateDataProcessor->getDescription() << endl;
+#ifdef QGISDEBUG
+    std::cout << climateDataProcessor->getDescription() << endl;
+#endif
     //
     //now we let the climatedataprocessor run!
     //
