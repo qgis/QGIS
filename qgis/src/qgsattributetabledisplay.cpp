@@ -17,6 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgsaddattrdialog.h"
 #include "qgsattributetable.h"
 #include "qgsattributetabledisplay.h"
 #include "qgsdelattrdialog.h"
@@ -80,7 +81,14 @@ void QgsAttributeTableDisplay::deleteAttributes()
 
 void QgsAttributeTableDisplay::addAttribute()
 {
-    //soon
+    QgsAddAttrDialog dialog(mLayer->getDataProvider());
+    if(dialog.exec()==QDialog::Accepted)
+    {
+	if(!table()->addAttribute(dialog.name(),dialog.type()))
+	{
+	    QMessageBox::information(0,"Name conflict","The attribute could not be inserted. The name already exists in the table",QMessageBox::Ok);
+	}
+    }
 }
 
 void QgsAttributeTableDisplay::startEditing()
@@ -90,6 +98,7 @@ void QgsAttributeTableDisplay::startEditing()
     btnClose->setEnabled(false);
     mMenuBar->setEnabled(true);
     table()->setReadOnly(false);
+    table()->setColumnReadOnly(0,true);//id column is not editable
 }
 
 void QgsAttributeTableDisplay::stopEditing()
