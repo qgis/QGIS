@@ -98,7 +98,7 @@ headers =		qgis.h					\
 			qgsprojectproperties.h \
 			qgsoptions.h \
 			qgsacetateobject.h \
-			qgsacetaterectangle.h \ 
+			qgsacetaterectangle.h \
 			qgsvectorfilewriter.h
 
 ## qt designer files for all the GUI stuff
