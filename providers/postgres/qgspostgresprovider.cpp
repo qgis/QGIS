@@ -1121,10 +1121,10 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
   return postgisVersionInfo;
 }
 
-bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> flist)
+bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> const flist)
 {
     bool returnvalue=true;
-    for(std::list<QgsFeature*>::iterator it=flist.begin();it!=flist.end();++it)
+    for(std::list<QgsFeature*>::const_iterator it=flist.begin();it!=flist.end();++it)
     {
   if(!addFeature(*it))
   {
@@ -1134,10 +1134,10 @@ bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> flist)
     return returnvalue;
 }
 
-bool QgsPostgresProvider::deleteFeatures(std::list<int> id)
+bool QgsPostgresProvider::deleteFeatures(std::list<int> const & id)
 {
     bool returnvalue=true; 
-    for(std::list<int>::iterator it=id.begin();it!=id.end();++it)
+    for(std::list<int>::const_iterator it=id.begin();it!=id.end();++it)
     {
   if(!deleteFeature(*it))
   {
