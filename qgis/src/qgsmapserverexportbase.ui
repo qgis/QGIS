@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>511</width>
-            <height>393</height>
+            <height>396</height>
         </rect>
     </property>
     <property name="caption">
@@ -584,6 +584,12 @@
         <receiver>QgsMapserverExportBase</receiver>
         <slot>chooseMapFile()</slot>
     </connection>
+    <connection>
+        <sender>buttonHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>showHelp()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsmapserverexportbase.ui.h</include>
@@ -591,6 +597,7 @@
 <slots>
     <slot>exportLayersOnly()</slot>
     <slot>chooseMapFile()</slot>
+    <slot>showHelp()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

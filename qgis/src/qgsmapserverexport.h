@@ -47,6 +47,8 @@ public:
 	SAVEAS,
 	OPEN
 	};
+  public slots:
+	void showHelp();
   private:
   void writeMapFile(void);
   QString fileName;
