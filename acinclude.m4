@@ -28,14 +28,14 @@ QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 AC_MSG_CHECKING([Qt version])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTDIR/include/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-    2*)
-        QT_MAJOR="2"
+    32*)
+        QT_MAJOR="3"
     ;;
-    3*)
+    31*)
         QT_MAJOR="3"
     ;;
     *)
-        AC_MSG_ERROR([*** Don't know how to handle this Qt major version])
+        AC_MSG_ERROR([*** Qt version 3.1.x or higher is required])
     ;;
 esac
 AC_MSG_RESULT([$QT_VER ($QT_MAJOR)])
