@@ -1,0 +1,109 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>QgsAttributeTableBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsAttributeTableBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>482</width>
+            <height>368</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Attribute Table</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>btnClose</cstring>
+            </property>
+            <property name="text">
+                <string>Close</string>
+            </property>
+        </widget>
+        <spacer row="1" column="2">
+            <property name="name">
+                <cstring>Spacer2_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>184</width>
+                    <height>0</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="1" column="0">
+            <property name="name">
+                <cstring>Spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>184</width>
+                    <height>0</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QgsAttributeTable" row="0" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>tblAttributes</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>QgsAttributeTable</class>
+        <header location="global">/home/gsherman/development/qgis/src/qgsattributetable.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="5230">789c9597db4e1d4b0e86eff31428be8b46b5fb54dd551acd051020211c4320c0682eecaa5e9ccf90005bf3ee53cbbfe9d9c9c548a38ea27c2977b5cbfe6dd7fae3c3c2e1cee6c2873fde3d3cf2e3595a48a77cbff0213f5d5dbdfcf35ffff8f3ddfba65998fff161a179ffb777ef771f17d2c2d6cdf53807c705a889cdac6ee72c47736eebd637b5f2b672d70ecd30e744ca7d9b9a4ad7579587363433e527e5d072abefbb03636978ceb4a31c5bc13a91716ad41f89e0aec2fe74abcc6d6ad5f9e4945357375ef75f997357751dd61d19c71afb61bdef421b951f274ebaffb6716cb3f2b2f230f18d3183dd95b1b441d7d59f2e94757ccf1b27eceff69563618d0f5dcfd9d7beeb7a5dd7f3fac6fb4ee32b87c619f1168d976f7d6ff6df26d6ef4b301e1bac7f54f63e747a5e87f5c173276aff605c22a8fefc540e5e3af5972f956359577bf2c6d978cb78d6697edc9eb2f8b143fed7945359d778b0e6c3e7be81bf7465dce23cf4ac3c16567f19fecefaae53bd081b7baccbb131b7d05f679ca03f27c6b9d1f388c6bbaffab7f80dca4d1fed7bfafdbeedb9533d490f1e2ae8d5693ccacb83d77cd027e3d4416faa97beefa3d7f8f086f168f9d9020f43a3f5c5aa877e28eb88f74fe319becfaa873e0c15de775f95639f3dec37c143d361bf2be3cef4b76bdcb7d84ff5d2cbd0227facf1ecd360fa67d54b9f078ffcd10f636e11ff53e3847853ad3c1b668837e9fe43358c2df45a81430b3db2e6676842d368fd48abdc068b87e0fd2e788bf792b21f861e7afd0e0e5ce37dcdd7d0872218e5d789f57b3218a71ae7bb501eca3af67b510e21c05fd27a1b6218ac3ef17d0ed68fe8cb1be3fc6e5159863ca0bfed824340fe687d62c4838c23f677f0370de380fcdd2be7e03dfab1d6cf300bcd80fa80bfb358dbf9547fa18abe413d68fe421d63ade7737aded094cf63fdcc38f4d0bfee17dac2d08380a3a0dff24cb90bdc23ffaa87e0636c912fed87612e38d4df1e982bc4dbdd29872001f14aca319413eb793e83cbfbe8af27606e4c0f5f8d3bcb7763ec6b8da73b57e69083d61f9d82b9b5fada31f635fcaf8d7b7b5ffb41f16e34ff34fe214dfc0c8e1ef1a22330bfcdc345e31e4c33e3c1e6e181b1609e3ac43f8759803e8cd9f2e7e0ff18ab80ef5d8239e2fc0ef129f90ff0bf0773347fee8d13ce279bc6b34af5c61abf58157bf4b765b05435f4abfec726968c2b67e536fa80fe388279067f680d2c750dff75fe9766da07e44bc02521ba4e1d584c1fb261dcc23fd97f63f8c3af136bfc687362c4e76962ed8fac7a2ecdb7853f7c63ec6bf467bd3fc421c680780c60b6f9275fc045aea84fadaf18a2e0fc04ff0237bd9e8fefc0d236e8ef3f8d83c57fdd38daf94edeb886be74fec618b3ed7f3731e66b0fe67a403e76c0454ef8de9231dbfe9f8dc5fc47be38a6887ad2f950964d2fdc1a27d3c7b6710693f6ef9864b4fdb4ffc6cc5540fea0972c339c87afc1c9f4443a5fe2c84d40bd2f82cb3ae6c7b1716dbc37b1e68bf5be118b7e3dead78125d87d0bfa99bd7d8fb78c1bdb4fcfcfd51bcb9d716bebda3fb8966cf7cf57709103f2e327c6fe5a2fdc4ab4fb01deef5283fa65d50ffb54c13fd67ec37d61e845fb070f8571df7c341eec7e7a691c6ae453fb771937d1fa999ebfa43358bf573d3327c6fdd0a9de59b87414e59f60911ef3ff07380d16bf0b63b6fbb8ce0f4e523a80ee8ff8a5f21fe83f384f2e8cf9d419db7d4bb4bff32cb1dd871ae38c79417962dd9f8f2786bfaa3fa992ddbf68d5d8d6797d62dc27b4bf4a9bdeee5be7c619efbb169c2b9bb7aa67e972857a67d59bf8943cf4a6f5237dae3b9c3f4f8cef5713637e6a3c6548e546a7eb87e0b28e7cf7c68ddd2fb15f28acf166bd2f484c19f921f8cbc57de84ff52c397b8f7e178d7bbb7f7e9f18f743d593ccd210d12f9e8c05fd8417c1e5e704e2afefa7aa5cf850ff4fc6a1473debfc4d7561c4ebd3c48897f69fd4e4d8eb7e4efb736a0b23fe9adfd465bb3f388d6ff22933fa1df6f7597ad483c62371f6e6ff8671b6f89e198fb8cfb0ea3f49619c6f6562cc27d5474a7906e6b589d1df549f29e78479450fe0b1c2fc67d5731a0ba33ffc97a167fd7d92ebb1b1f9a87acdcdd8a23ff2e3c4a81fed0fb91bbb88f8e9f772f9b9c6b8bfac187bd41febbcc8c35831f4bb6edc227eeec8b847bc58ef0f398d91a1179d6f391746bdebfd60ac4716b0180bd8a97e473f8ea2dfdb7d9c3f8e1cff8f8760057b27e57f92cb6e743377e24efff29cb97377e12edd55b190c99eddb5bb71b7eeceddbb07f7e89edc0ff7d33dbb17f7ea16dd925b761fdd8a63d8174f52b15e756bee93fbecd6dd17b7e136dd96db763b6ed77d2dd67bee9bdb77078ed49e8b27b7c5fabb3b7447eed855ae768d6bcbd339ef7a37b8e022392a2734fbd1dd119350a24c23cde8844ee98ccee9c2f9c2977445d77443b793fd8ceee89e1ee8919ee807fdb4e7995ee8b5d82fd252b15ffe8bfd097da4155aa535fa34597fa6f5f2f717da28f69bb445dbb433d99fd22e7da53dfa3659efd3017da7c3f2af233aa68aeadfec1b6aa9236fd63d0d14ca15c0719913737b965fedcbf0c83cc29a677cc2a77cc6e77cc1977cc5d7c5fee637fbdbb2db9d5adff343b17ee427fec1737ee69762fffa9bfd222ff17259fdc82bbcca6bfc893ff33a7fe10ddee42ddee69ddfec77f92beff137dee703fece877cc4c7aee58a6b6ee8b8fc10ed7eb13f635f9a4bc5e54719477152ba671977a505c84845c57222a7bfd89fcb999ccb855cca955cbfc5546ee456ee68b14cf67b799047799aec2fdc92fc28999cef567224cff222afb2c85b32e36d599265f9282bb23ad95fba6559934f2593f3e798b74acc8fd5f6b3accb17d9904dd9926db3a7520d1fdd37d9915df95a72599e1291566df7e49beccb817c974339829eb55e56dc7e51ec0d2dcbb1545297a791563af1c5eff2d3beb4faf8562f568f0744745b9e9d5f1f7992d5e412a186ffef7afff7dfdffd077c99ae99</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>btnClose</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAttributeTableBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
