@@ -82,6 +82,8 @@
 #include <qlabel.h>
 #include <qdom.h>
 #include <qlistview.h>
+#include <qwidget.h>
+#include <qwidgetlist.h>
 
 #include "qgsrect.h"
 #include "qgisapp.h"
@@ -3865,11 +3867,28 @@ void QgsRasterLayer::inOverview( bool b )
 
 void QgsRasterLayer::identify(QgsRect * r)
 {
-    if(mIdentifyResults) { delete mIdentifyResults; mIdentifyResults = 0; }
+    if( !mIdentifyResults) { 
+	
+	// TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget availabl
+	QWidgetList *list = QApplication::topLevelWidgets ();
+	QWidgetListIt it( *list );
+	QWidget *w;
+	QWidget *top = 0;
+	while ( (w=it.current()) != 0 ) {
+	    ++it;
+	    if ( typeid(*w) == typeid(QgisApp) ) {
+		top = w;
+		break;
+	    }
+	}
+	delete list;
+	QgsAttributeAction aa;
+	mIdentifyResults = new QgsIdentifyResults(aa, top);
+	mIdentifyResults->restorePosition();
+    } else{
+	mIdentifyResults->clear();
+    }
 
-    QgsAttributeAction aa;
-
-    mIdentifyResults = new QgsIdentifyResults(aa);
     mIdentifyResults->setTitle( name() );
     mIdentifyResults->setColumnText ( 0, tr("Band") );
     
@@ -3924,7 +3943,6 @@ void QgsRasterLayer::identify(QgsRect * r)
     }
 
     mIdentifyResults->showAllAttributes();
-    mIdentifyResults->restorePosition();
 
 } // void QgsRasterLayer::identify(QgsRect * r)
 
