@@ -32,6 +32,7 @@
 #include <qdir.h>
 #include <qerrormessage.h>
 #include <qfiledialog.h>
+#include <qfile.h>
 #include <qfileinfo.h>
 #include <qinputdialog.h>
 #include <qlabel.h>
@@ -404,7 +405,37 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // Add the whats this toolbar button
     //TODO Fix this ToolBar pointer to be named consistently
     QWhatsThis::whatsThisButton(helpToolbar);
-
+    
+    // Add the recently accessed project file paths to the File menu
+    mRecentProjectPaths = settings.readListEntry("/qgis/UI/recentProjectsList");
+    // Exit is the last item. Find it and insert these just before it
+    uint count = popupMenuFile->count();
+    // Remember the items before and after the paths so we can manipulate them later
+    popupMenuFile->setId(count - 2, 123); // item before paths
+    popupMenuFile->setId(count - 1, 321); // Exit - comes after paths
+    uint currentIndex = count - 1;
+    popupMenuFile->insertSeparator(currentIndex++);
+    if (mRecentProjectPaths.size() > 0)
+    {
+        uint IdCounter = 1;
+        for ( QStringList::Iterator it = mRecentProjectPaths.begin();
+                it != mRecentProjectPaths.end();
+                ++it )
+        {
+            int myId = IdCounter++;
+            popupMenuFile->insertItem((*it), this, SLOT(openProject(int)), 0, myId, currentIndex++);
+            // This parameter corresponds to this path's index
+            // in mRecentProjectPaths
+            popupMenuFile->setItemParameter(myId, myId - 1);
+            // Disable this menu item if the file has been removed
+            if (!QFile::exists((*it)))
+            {
+                popupMenuFile->setItemEnabled(myId, FALSE);
+            }
+        }
+        popupMenuFile->insertSeparator(currentIndex);
+    }
+    
     // Add the empty plugin menu
     mPluginMenu = new QPopupMenu(this);
     // Add the plugin manager action to it
@@ -1633,6 +1664,9 @@ void QgisApp::fileOpen()
                 emit projectRead();     // let plug-ins know that we've read in a new
                 // project so that they can check any project
                 // specific plug-in state
+                
+                // add this to the list of recently used project files
+                saveRecentProjectPath(fullPath, settings);
             }
         }
         catch ( std::exception & e )
@@ -1775,6 +1809,8 @@ void QgisApp::fileSaveAs()
     if ( QgsProject::instance()->write() )
     {
         statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        // add this to the list of recently used project files
+        saveRecentProjectPath(fullPath, settings);
     }
     else
     {
@@ -4130,4 +4166,72 @@ void QgisApp::keyPressEvent ( QKeyEvent * e )
 {
     std::cout << e->ascii() << " (keypress recevied)" << std::endl;
     emit keyPressed (e);
+}
+
+
+// add this file to the recently opened/saved projects list
+void QgisApp::saveRecentProjectPath(QString projectPath, QSettings & settings)
+{
+    // If this file is already in the list, remove it
+    mRecentProjectPaths.remove(projectPath);
+    
+    // Prepend this file to the list
+    mRecentProjectPaths.prepend(projectPath);
+    
+    // Keep the list to 8 items by trimming excess off the bottom
+    while (mRecentProjectPaths.count() > 8)
+    {
+        mRecentProjectPaths.pop_back();
+    }
+    
+    // Persist the list
+    settings.writeEntry("/qgis/UI/recentProjectsList", mRecentProjectPaths);
+    
+    // Update the file menu with the changed list
+    // Find the item before the paths in the menu
+    uint currentIndex = popupMenuFile->indexOf(123);
+    currentIndex++;
+    // Remove existing paths from the file menu
+    while (currentIndex != popupMenuFile->indexOf(321))
+    {
+        popupMenuFile->removeItemAt(currentIndex);
+    }
+    // Add back in the updated list of paths
+    uint IdCounter = 1;
+    popupMenuFile->insertSeparator(currentIndex++);
+    for ( QStringList::Iterator it = mRecentProjectPaths.begin();
+            it != mRecentProjectPaths.end();
+            ++it )
+    {
+        int myId = IdCounter++;
+        popupMenuFile->insertItem((*it), this, SLOT(openProject(int)), 0, myId, currentIndex++);
+        // This parameter corresponds to this path's index
+        // in mRecentProjectPaths
+        popupMenuFile->setItemParameter(myId, myId - 1);
+        // Disable this menu item if the file has been removed
+        if (!QFile::exists((*it)))
+        {
+            popupMenuFile->setItemEnabled(myId, FALSE);
+        }
+    }
+    popupMenuFile->insertSeparator(currentIndex);
+}
+
+
+// Open the project file corresponding to the
+// path at the given index in mRecentProjectPaths
+void QgisApp::openProject(int pathIndex)
+{
+    // possibly save any pending work before opening a different project
+    int answer = saveDirty();
+
+    if (answer != QMessageBox::Cancel)
+    {
+        QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
+        addProject((*it));
+        
+        // move to the top of the list of recently used project files
+        QSettings settings;
+        saveRecentProjectPath((*it), settings);
+    }
 }

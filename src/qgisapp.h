@@ -35,6 +35,7 @@ class QListViewItem;
 class QProgressBar;
 class QFileInfo;
 class QgsMapLayer;
+class QSettings;
 class QSocket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
@@ -222,6 +223,10 @@ private:
     void select();
     //! check to see if file is dirty and if so, prompt the user th save it
     int saveDirty();
+    //! add this file to the recently opened/saved projects list
+    //  pass settings by reference since creating more than one
+    //! instance simultaneously results in data loss.
+    void saveRecentProjectPath(QString projectPath, QSettings & settings);
 
 private slots:
 
@@ -298,6 +303,9 @@ private slots:
     void hideAllLayers();
     //reimplements method from base (gui) class
     void showAllLayers();
+    //! Open the project file corresponding to the
+    //! path at the given index in mRecentProjectPaths
+    void openProject(int pathIndex);
 
 
 
@@ -445,6 +453,8 @@ private:
     std::map<QString, int>mMenuMapByName;
     //! menu map (key is menu id, value is name)
     std::map<int, QString>mMenuMapById;
+    //! list of recently opened/saved project files
+    QStringList mRecentProjectPaths;
 };
 
 #endif
