@@ -18,21 +18,30 @@
 #include <qcolor.h>
 #include "qgssymbol.h"
 
-QgsSymbol::QgsSymbol(QColor c) : m_color(c){
-	
-}
-QgsSymbol::~QgsSymbol(){
-}
-QColor QgsSymbol::color(){
-	return m_color;
-	}
-void QgsSymbol::setColor(QColor c){
-	m_color = c;
-	}
+QgsSymbol::QgsSymbol(QColor c):m_color(c)
+{
 
-QColor QgsSymbol::fillColor(){
+}
+
+QgsSymbol::~QgsSymbol()
+{
+}
+QColor QgsSymbol::color()
+{
+	return m_color;
+}
+
+void QgsSymbol::setColor(QColor c)
+{
+	m_color = c;
+}
+
+QColor QgsSymbol::fillColor()
+{
 	return m_fillColor;
 }
-void QgsSymbol::setFillColor(QColor c){
+
+void QgsSymbol::setFillColor(QColor c)
+{
 	m_fillColor = c;
 }

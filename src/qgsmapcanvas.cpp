@@ -32,137 +32,141 @@
 #include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
 
-QgsMapCanvas::QgsMapCanvas (QWidget * parent,
-			    const char *name):QWidget (parent, name)
+QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name):QWidget(parent, name)
 {
-  mapWindow = new QRect ();
-  coordXForm = new QgsCoordinateTransform ();
-  bgColor = QColor (Qt::white);
-  setMouseTracking (true);
+	mapWindow = new QRect();
+	coordXForm = new QgsCoordinateTransform();
+	bgColor = QColor(Qt::white);
+	setMouseTracking(true);
+	drawing = false;
 }
 
-QgsMapCanvas::~QgsMapCanvas ()
+QgsMapCanvas::~QgsMapCanvas()
 {
-  delete coordXForm;
-  delete mapWindow;
+	delete coordXForm;
+	delete mapWindow;
 }
 
-void QgsMapCanvas::addLayer (QgsMapLayer * lyr)
+void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 // give the layer a default symbol
-QgsSymbol *sym;
-QColor *fill;
-int red,green,blue;
-switch(lyr->featureType()){
-	case QGis::WKBPoint:
-	case QGis::WKBMultiPoint:
-		sym= new QgsMarkerSymbol();
-		break;
-	case QGis::WKBLineString:
-	case QGis::WKBMultiLineString:
-		sym = new QgsLineSymbol();
-		break;
-	case QGis::WKBPolygon:
-	case QGis::WKBMultiPolygon:
-		sym = new QgsPolygonSymbol();
-		  red = 1+(int) (255.0*rand()/(RAND_MAX+1.0));
-     green =  1+(int) (255.0*rand()/(RAND_MAX+1.0));
-     blue =    1+(int) (255.0*rand()/(RAND_MAX+1.0));
-     fill = new QColor(red,green,blue);
-     sym->setFillColor(*fill);
-		break;
-		
-}
-     red = 1+(int) (255.0*rand()/(RAND_MAX+1.0));
-     green =  1+(int) (255.0*rand()/(RAND_MAX+1.0));
-     blue =    1+(int) (255.0*rand()/(RAND_MAX+1.0));
+	QgsSymbol *sym;
+	QColor *fill;
+	int red, green, blue;
+	switch (lyr->featureType()) {
+	  case QGis::WKBPoint:
+	  case QGis::WKBMultiPoint:
+		  sym = new QgsMarkerSymbol();
+		  break;
+	  case QGis::WKBLineString:
+	  case QGis::WKBMultiLineString:
+		  sym = new QgsLineSymbol();
+		  break;
+	  case QGis::WKBPolygon:
+	  case QGis::WKBMultiPolygon:
+		  sym = new QgsPolygonSymbol();
+		  red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+		  green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+		  blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+		  fill = new QColor(red, green, blue);
+		  sym->setFillColor(*fill);
+		  break;
 
-	sym->setColor(QColor(red,green,blue));
+	}
+	red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+
+	sym->setColor(QColor(red, green, blue));
 	lyr->setSymbol(sym);
-  layers[lyr->name ()] = lyr;
-  // update extent if warranted
-  if (layers.size () == 1)
-    {
-      fullExtent = lyr->extent ();
-      fullExtent.scale (1.1);
-      currentExtent = fullExtent;
+	layers[lyr->name()] = lyr;
+	// update extent if warranted
+	if (layers.size() == 1) {
+		fullExtent = lyr->extent();
+		fullExtent.scale(1.1);
+		currentExtent = fullExtent;
 
-    }
-    
-  updateFullExtent (lyr->extent ());
-  // increment zpos for all layers in the map
-  incrementZpos();
-  lyr->setZ(layers.size()-1);
+	}
+
+	updateFullExtent(lyr->extent());
+	// increment zpos for all layers in the map
+	incrementZpos();
+	lyr->setZ(layers.size() - 1);
 	updateZpos();
 	zOrder.push_back(lyr->name());
-	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));	
-  //lyr->zpos = 0;
+	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+	//lyr->zpos = 0;
 }
-void QgsMapCanvas::incrementZpos(){
-}
-void QgsMapCanvas::updateZpos(){
-}
-QgsMapLayer * QgsMapCanvas::getZpos(int index){
-	    QString name =   zOrder[index];
-	    return layers[name];
-}
-void QgsMapCanvas::render2 ()
+
+void QgsMapCanvas::incrementZpos()
 {
-  QPainter *paint = new QPainter ();
-  paint->begin (this);
+}
+void QgsMapCanvas::updateZpos()
+{
+}
+QgsMapLayer *QgsMapCanvas::getZpos(int index)
+{
+	QString name = zOrder[index];
+	return layers[name];
+}
 
-  // calculate the translation and scaling parameters
-  double muppX, muppY;
-  muppY = currentExtent.height () / height ();
-  muppX = currentExtent.width () / width ();
-  std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
-  m_mupp = muppY > muppX ? muppY : muppX;
-  // calculate the actual extent of the mapCanvas
-  double dxmin, dxmax, dymin, dymax, whitespace;
-  if (muppY > muppX)
-    {
-      dymin = currentExtent.yMin ();
-      dymax = currentExtent.yMax ();
-      whitespace = ((width () * m_mupp) - currentExtent.width ()) / 2;
-      dxmin = currentExtent.xMin () - whitespace;
-      dxmax = currentExtent.xMax () + whitespace;
-    }
-  else
-    {
-      dxmin = currentExtent.xMin ();
-      dxmax = currentExtent.xMax ();
-      whitespace = ((height () * m_mupp) - currentExtent.height ()) / 2;
-      dymin = currentExtent.yMin () - whitespace;
-      dymax = currentExtent.yMax () + whitespace;
+void QgsMapCanvas::render2()
+{
+	if (!drawing) {
+		drawing = true;
+		QPainter *paint = new QPainter();
+		paint->begin(this);
 
-    }
-  std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
-    endl << "dymax: " << dymax << std::
-    endl << "whitespace: " << whitespace << std::endl;
-  coordXForm->setParameters (m_mupp, dxmin, dymin, height ());	//currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
-  // update the currentExtent to match the device coordinates
-  currentExtent.setXmin (dxmin);
-  currentExtent.setXmax (dxmax);
-  currentExtent.setYmin (dymin);
-  currentExtent.setYmax (dymax);
-  // render all layers in the stack, starting at the base
-  std::map < QString, QgsMapLayer * >::iterator mi = layers.begin ();
-  std::cout << "MAP LAYER COUNT: " << layers.size () << std::endl;
-  while (mi != layers.end ())
-    {
-      QgsMapLayer *ml = (*mi).second;
-      //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-      std::cout << "Rendering " << ml->name() << std::endl;
-      if(ml->visible())
-	      ml->draw (paint, &currentExtent, coordXForm);
-      mi++;
-      //  mi.draw(p, &fullExtent);
-    }
-  paint->end ();
+		// calculate the translation and scaling parameters
+		double muppX, muppY;
+		muppY = currentExtent.height() / height();
+		muppX = currentExtent.width() / width();
+		std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
+		m_mupp = muppY > muppX ? muppY : muppX;
+		// calculate the actual extent of the mapCanvas
+		double dxmin, dxmax, dymin, dymax, whitespace;
+		if (muppY > muppX) {
+			dymin = currentExtent.yMin();
+			dymax = currentExtent.yMax();
+			whitespace = ((width() * m_mupp) - currentExtent.width()) / 2;
+			dxmin = currentExtent.xMin() - whitespace;
+			dxmax = currentExtent.xMax() + whitespace;
+		} else {
+			dxmin = currentExtent.xMin();
+			dxmax = currentExtent.xMax();
+			whitespace = ((height() * m_mupp) - currentExtent.height()) / 2;
+			dymin = currentExtent.yMin() - whitespace;
+			dymax = currentExtent.yMax() + whitespace;
+
+		}
+		std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
+		  endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
+		coordXForm->setParameters(m_mupp, dxmin, dymin, height());	//currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
+		// update the currentExtent to match the device coordinates
+		currentExtent.setXmin(dxmin);
+		currentExtent.setXmax(dxmax);
+		currentExtent.setYmin(dymin);
+		currentExtent.setYmax(dymax);
+		// render all layers in the stack, starting at the base
+		std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
+		std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+		while (mi != layers.end()) {
+			QgsMapLayer *ml = (*mi).second;
+			//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+			std::cout << "Rendering " << ml->name() << std::endl;
+			if (ml->visible())
+				ml->draw(paint, &currentExtent, coordXForm);
+			mi++;
+			//  mi.draw(p, &fullExtent);
+		}
+
+		paint->end();
+		drawing = false;
+	}
 
 }
 
-void QgsMapCanvas::render ()
+void QgsMapCanvas::render()
 {
 /*  QPainter *paint = new QPainter();
   paint->begin(this);
@@ -203,215 +207,205 @@ void QgsMapCanvas::render ()
   paint->end();
   */
 }
-void QgsMapCanvas::paintEvent (QPaintEvent *)
+void QgsMapCanvas::paintEvent(QPaintEvent * pe)
 {
-  render2 ();
+//  if (!drawing)
+	//render2();
 }
 
-QgsRect QgsMapCanvas::extent ()
+QgsRect QgsMapCanvas::extent()
 {
-  return currentExtent;
+	return currentExtent;
 }
 
-void QgsMapCanvas::setExtent (QgsRect r)
+void QgsMapCanvas::setExtent(QgsRect r)
 {
-  currentExtent = r;
+	currentExtent = r;
 }
 
-void QgsMapCanvas::clear ()
+void QgsMapCanvas::clear()
 {
-  QPainter *p = new QPainter ();
-  p->begin (this);
-  p->eraseRect (this->rect ());
-  p->end ();
+	QPainter *p = new QPainter();
+	p->begin(this);
+	p->eraseRect(this->rect());
+	p->end();
 
 }
 
-void QgsMapCanvas::zoomFullExtent ()
+void QgsMapCanvas::zoomFullExtent()
 {
-  currentExtent = fullExtent;
-  clear ();
-  render2 ();
+	currentExtent = fullExtent;
+	clear();
+	render2();
 }
 
-void QgsMapCanvas::mousePressEvent (QMouseEvent * e)
+void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
-  mouseButtonDown = true;
-  boxStartPoint = e->pos ();
-  switch (mapTool)
-    {
-    case QGis::ZoomIn:
-      zoomBox.setRect (0, 0, 0, 0);
-      break;
-    case QGis::Pan:
-      // create a pixmap to use in panning the map canvas
-      tempPanImage = new QPixmap ();
-      *tempPanImage = QPixmap::grabWidget (this);
-      backgroundFill =
-	new QPixmap (tempPanImage->width (), tempPanImage->height ());
-      backgroundFill->fill (bgColor);
-      break;
-    case QGis::Distance:
+	mouseButtonDown = true;
+	boxStartPoint = e->pos();
+	switch (mapTool) {
+	  case QGis::ZoomIn:
+		  zoomBox.setRect(0, 0, 0, 0);
+		  break;
+	  case QGis::Pan:
+		  // create a pixmap to use in panning the map canvas
+		  tempPanImage = new QPixmap();
+		  *tempPanImage = QPixmap::grabWidget(this);
+		  backgroundFill = new QPixmap(tempPanImage->width(), tempPanImage->height());
+		  backgroundFill->fill(bgColor);
+		  break;
+	  case QGis::Distance:
 //              distanceEndPoint = e->pos();
-      break;
-    }
-}
-void QgsMapCanvas::mouseReleaseEvent (QMouseEvent * e)
-{
-  QPainter paint;
-  QPen pen (Qt::gray);
-  QgsPoint ll, ur;
-  if (dragging)
-    {
-      dragging = false;
-      switch (mapTool)
-	{
-	case QGis::ZoomIn:
-	  // erase the rubber band box
-	  paint.begin (this);
-	  paint.setPen (pen);
-	  paint.setRasterOp (Qt::XorROP);
-	  paint.drawRect (zoomBox);
-	  paint.end ();
-	  // store the rectangle
-	  zoomBox.setRight (e->pos ().x ());
-	  zoomBox.setBottom (e->pos ().y ());
-	  // set the extent to the zoomBox
-
-	  ll =
-	    coordXForm->toMapCoordinates (zoomBox.left (), zoomBox.bottom ());
-	  ur =
-	    coordXForm->toMapCoordinates (zoomBox.right (), zoomBox.top ());
-	  //QgsRect newExtent(ll.x(), ll.y(), ur.x(), ur.y());
-	  currentExtent.setXmin (ll.x ());
-	  currentExtent.setYmin (ll.y ());
-	  currentExtent.setXmax (ur.x ());
-	  currentExtent.setYmax (ur.y ());
-	  currentExtent.normalize ();
-	  clear ();
-	  render2 ();
-	  break;
-	case QGis::Pan:
-	  // new extent based on offset
-	  delete tempPanImage;
-	  delete backgroundFill;
-
-	  // use start and end box points to calculate the extent
-	  QgsPoint start = coordXForm->toMapCoordinates (boxStartPoint);
-	  QgsPoint end = coordXForm->toMapCoordinates (e->pos ());
-	  double dx = abs (end.x () - start.x ());
-	  double dy = abs (end.y () - start.y ());
-	  // modify the extent
-
-	  if (end.x () < start.x ())
-	    {
-	      currentExtent.setXmin (currentExtent.xMin () + dx);
-	      currentExtent.setXmax (currentExtent.xMax () + dx);
-	    }
-	  else
-	    {
-	      currentExtent.setXmin (currentExtent.xMin () - dx);
-	      currentExtent.setXmax (currentExtent.xMax () - dx);
-	    }
-
-	  if (end.y () < start.y ())
-	    {
-	      currentExtent.setYmax (currentExtent.yMax () + dy);
-	      currentExtent.setYmin (currentExtent.yMin () + dy);
-
-	    }
-	  else
-	    {
-	      currentExtent.setYmax (currentExtent.yMax () - dy);
-	      currentExtent.setYmin (currentExtent.yMin () - dy);
-
-	    }
-	  clear ();
-	  render2 ();
-	  break;
+		  break;
 	}
-    }
 }
-void QgsMapCanvas::mouseMoveEvent (QMouseEvent * e)
+void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 {
-  if (e->state () == Qt::LeftButton)
-    {
-      int dx, dy;
-      QPainter paint;
-      QPen pen (Qt::gray);
-      // this is a drag-type operation (zoom, pan or other maptool)
-      switch (mapTool)
-	{
-	case QGis::ZoomIn:
-	  // draw the rubber band box as the user drags the mouse
-	  dragging = true;
+	QPainter paint;
+	QPen pen(Qt::gray);
+	QgsPoint ll, ur;
+	if (dragging) {
+		dragging = false;
+		switch (mapTool) {
+		  case QGis::ZoomIn:
+			  // erase the rubber band box
+			  paint.begin(this);
+			  paint.setPen(pen);
+			  paint.setRasterOp(Qt::XorROP);
+			  paint.drawRect(zoomBox);
+			  paint.end();
+			  // store the rectangle
+			  zoomBox.setRight(e->pos().x());
+			  zoomBox.setBottom(e->pos().y());
+			  // set the extent to the zoomBox
 
-	  paint.begin (this);
-	  paint.setPen (pen);
-	  paint.setRasterOp (Qt::XorROP);
-	  paint.drawRect (zoomBox);
+			  ll = coordXForm->toMapCoordinates(zoomBox.left(), zoomBox.bottom());
+			  ur = coordXForm->toMapCoordinates(zoomBox.right(), zoomBox.top());
+			  //QgsRect newExtent(ll.x(), ll.y(), ur.x(), ur.y());
+			  currentExtent.setXmin(ll.x());
+			  currentExtent.setYmin(ll.y());
+			  currentExtent.setXmax(ur.x());
+			  currentExtent.setYmax(ur.y());
+			  currentExtent.normalize();
+			  clear();
+			  render2();
+			  break;
+		  case QGis::Pan:
+			  // new extent based on offset
+			  delete tempPanImage;
+			  delete backgroundFill;
 
-	  zoomBox.setLeft (boxStartPoint.x ());
-	  zoomBox.setTop (boxStartPoint.y ());
-	  zoomBox.setRight (e->pos ().x ());
-	  zoomBox.setBottom (e->pos ().y ());
+			  // use start and end box points to calculate the extent
+			  QgsPoint start = coordXForm->toMapCoordinates(boxStartPoint);
+			  QgsPoint end = coordXForm->toMapCoordinates(e->pos());
+			  double dx = abs(end.x() - start.x());
+			  double dy = abs(end.y() - start.y());
+			  // modify the extent
 
-	  paint.drawRect (zoomBox);
-	  paint.end ();
-	  break;
-	case QGis::Pan:
-	  // show the temporary image as the user drags the mouse
-	  dragging = true;
-	  // bitBlt the pixmap on the screen, offset by the
-	  // change in mouse coordinates
-	  dx = e->pos ().x () - boxStartPoint.x ();
-	  dy = e->pos ().y () - boxStartPoint.y ();
-	  bitBlt (this, 0, 0, backgroundFill);
-	  bitBlt (this, dx, dy, tempPanImage);
-	  break;
+			  if (end.x() < start.x()) {
+				  currentExtent.setXmin(currentExtent.xMin() + dx);
+				  currentExtent.setXmax(currentExtent.xMax() + dx);
+			  } else {
+				  currentExtent.setXmin(currentExtent.xMin() - dx);
+				  currentExtent.setXmax(currentExtent.xMax() - dx);
+			  }
+
+			  if (end.y() < start.y()) {
+				  currentExtent.setYmax(currentExtent.yMax() + dy);
+				  currentExtent.setYmin(currentExtent.yMin() + dy);
+
+			  } else {
+				  currentExtent.setYmax(currentExtent.yMax() - dy);
+				  currentExtent.setYmin(currentExtent.yMin() - dy);
+
+			  }
+			  clear();
+			  render2();
+			  break;
+		}
 	}
+}
+void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
+{
+	if (e->state() == Qt::LeftButton) {
+		int dx, dy;
+		QPainter paint;
+		QPen pen(Qt::gray);
+		// this is a drag-type operation (zoom, pan or other maptool)
+		switch (mapTool) {
+		  case QGis::ZoomIn:
+			  // draw the rubber band box as the user drags the mouse
+			  dragging = true;
 
-    }
-  // show x y on status bar
-  QPoint xy = e->pos ();
-  QgsPoint coord = coordXForm->toMapCoordinates (xy);
-  emit xyCoordinates (coord);
+			  paint.begin(this);
+			  paint.setPen(pen);
+			  paint.setRasterOp(Qt::XorROP);
+			  paint.drawRect(zoomBox);
+
+			  zoomBox.setLeft(boxStartPoint.x());
+			  zoomBox.setTop(boxStartPoint.y());
+			  zoomBox.setRight(e->pos().x());
+			  zoomBox.setBottom(e->pos().y());
+
+			  paint.drawRect(zoomBox);
+			  paint.end();
+			  break;
+		  case QGis::Pan:
+			  // show the temporary image as the user drags the mouse
+			  dragging = true;
+			  // bitBlt the pixmap on the screen, offset by the
+			  // change in mouse coordinates
+			  dx = e->pos().x() - boxStartPoint.x();
+			  dy = e->pos().y() - boxStartPoint.y();
+			  bitBlt(this, 0, 0, backgroundFill);
+			  bitBlt(this, dx, dy, tempPanImage);
+			  break;
+		}
+
+	}
+	// show x y on status bar
+	QPoint xy = e->pos();
+	QgsPoint coord = coordXForm->toMapCoordinates(xy);
+	emit xyCoordinates(coord);
 }
 
 /** Sets the map tool currently being used on the canvas */
-void QgsMapCanvas::setMapTool (int tool)
+void QgsMapCanvas::setMapTool(int tool)
 {
-  mapTool = tool;
+	mapTool = tool;
 }
 
 /** Write property of QColor bgColor. */
-void QgsMapCanvas::setbgColor (const QColor & _newVal)
+void QgsMapCanvas::setbgColor(const QColor & _newVal)
 {
-  bgColor = _newVal;
+	bgColor = _newVal;
 }
 
 /** Updates the full extent to include the mbr of the rectangle r */
-void QgsMapCanvas::updateFullExtent (QgsRect r)
+void QgsMapCanvas::updateFullExtent(QgsRect r)
 {
-  if (r.xMin () < fullExtent.xMin ())
-    fullExtent.setXmin (r.xMin ());
-  if (r.xMax () > fullExtent.xMax ())
-    fullExtent.setXmax (r.xMax ());
-  if (r.yMin () < fullExtent.yMin ())
-    fullExtent.setYmin (r.yMin ());
-  if (r.yMax () > fullExtent.yMax ())
-    fullExtent.setYmax (r.yMax ());
+	if (r.xMin() < fullExtent.xMin())
+		fullExtent.setXmin(r.xMin());
+	if (r.xMax() > fullExtent.xMax())
+		fullExtent.setXmax(r.xMax());
+	if (r.yMin() < fullExtent.yMin())
+		fullExtent.setYmin(r.yMin());
+	if (r.yMax() > fullExtent.yMax())
+		fullExtent.setYmax(r.yMax());
 }
+
 /*const std::map<QString,QgsMapLayer *> * QgsMapCanvas::mapLayers(){
        return &layers;
 }
 */
-int QgsMapCanvas::layerCount(){
+int QgsMapCanvas::layerCount()
+{
 	int numLayers = layers.size();
 	return layers.size();
 }
 
-void QgsMapCanvas::layerStateChange(){
+void QgsMapCanvas::layerStateChange()
+{
 	clear();
 	render2();
 }

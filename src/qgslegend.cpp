@@ -26,35 +26,36 @@
 #include "qgslegenditem.h"
 #include "qgslegend.h"
 
-QgsLegend::QgsLegend (QListView *lv, QWidget * parent, const char *name):QWidget (parent,
-	     name), listView(lv)
+QgsLegend::QgsLegend(QListView * lv, QWidget * parent, const char *name):QWidget(parent, name), listView(lv)
 {
 }
 
-QgsLegend::~QgsLegend ()
+QgsLegend::~QgsLegend()
 {
 }
 
 
-void QgsLegend::setMapCanvas(QgsMapCanvas *canvas){
+void QgsLegend::setMapCanvas(QgsMapCanvas * canvas)
+{
 	map = canvas;
-	}
-void QgsLegend::update(){
+}
+
+void QgsLegend::update()
+{
 // clear the legend
-listView->clear();
+	listView->clear();
 
 // Get the list of layers in order from the
 // map canvas and add legenditems to the legend
 
 
-for(int idx=0; idx < map->layerCount(); idx++){
-	QgsMapLayer *lyr = map->getZpos(idx);
-	QgsLegendItem *lvi = new QgsLegendItem(lyr,listView); // lyr->name(), QCheckListItem::CheckBox );
-	//lvi->setOn(lyr->visible());
-//	QgsLegendItem *li = new QgsLegendItem(lyr, legendContainer);
-	//addChild(li,0,idx*60);
-	int foo = 1;
-	//repaint();
+	for (int idx = 0; idx < map->layerCount(); idx++) {
+		QgsMapLayer *lyr = map->getZpos(idx);
+		QgsLegendItem *lvi = new QgsLegendItem(lyr, listView);	// lyr->name(), QCheckListItem::CheckBox );
+		//lvi->setOn(lyr->visible());
+//  QgsLegendItem *li = new QgsLegendItem(lyr, legendContainer);
+		//addChild(li,0,idx*60);
+		int foo = 1;
+		//repaint();
+	}
 }
-}
-
