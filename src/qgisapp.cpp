@@ -303,6 +303,7 @@ void QgisApp::addRasterLayer()
   QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
   QString myGeoTiffFilterString="Geo tiff (*.tif)";
   QString myUsgsAsciiDemFilterString="USGS ASCII DEM (*.dem)";
+  QString myGrassFilterString="Grass raster (*.*)";
   QString myAllRasterFormats = "All Rasters (*.adf;*.asc;*.grd;*.tif;*.png;*.jpg;*.dem)";
   //QString myBilFilterString="Band Interleaved by Line (*.bil)";
   //QString myJpgFilterString="Geo jpg (*.jpg)";
@@ -312,9 +313,10 @@ void QgisApp::addRasterLayer()
           //myBilFilterString + ";;" +
           //myJpgFilterString + ";;" +  
           myGeoTiffFilterString + ";;" +
+          myGrassFilterString + ";;" +
           myUsgsAsciiDemFilterString + ";;" + 
 	  myAllRasterFormats, //filters to select
-          "." , //initial dir
+          "" , //initial dir
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
           "Select file name and type" , //caption
