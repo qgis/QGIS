@@ -12,9 +12,6 @@
 
 # Ganked from qgis/plugins/plugin_template/Makefile.am
 
-
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS)
-
 libdir    = ${prefix}/lib/qgis
 pkglibdir = ${libdir}
 
@@ -59,7 +56,8 @@ libMapCanvasDemo_la_SOURCES = plugin.cpp \
 	
 nodist_libMapCanvasDemo_la_SOURCES =	$(plugin_MOC)
 
-libMapCanvasDemo_la_LDFLAGS = -avoid-version -module $(QGIS_LDFLAGS) $(QT_LDADD) -lqgis
+libMapCanvasDemo_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
+libMapCanvasDemo_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
