@@ -428,6 +428,12 @@
         <receiver>QgsProjectPropertiesBase</receiver>
         <slot>pbnDigitisedLineColour_clicked()</slot>
     </connection>
+    <connection>
+        <sender>lstCoordinateSystems</sender>
+        <signal>currentChanged(QListViewItem*)</signal>
+        <receiver>QgsProjectPropertiesBase</receiver>
+        <slot>coordinateSystemSelected(QListViewItem*)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsprojectpropertiesbase.ui.h</include>
@@ -438,6 +444,7 @@
     <slot>apply()</slot>
     <slot>pbnSelectionColour_clicked()</slot>
     <slot>pbnDigitisedLineColour_clicked()</slot>
+    <slot>coordinateSystemSelected( QListViewItem * )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -77,6 +77,11 @@ public slots:
   void accept();
   //! Populate the wkts map with projection names...
   void getProjList();
+  
+  //! Slot called when user selects a different item in the projections tree 
+  void coordinateSystemSelected( QListViewItem * );
+
+  
 signals:
   /** Used to notify all coordinateTransform objects to update their dest wkt because the project
       output projection system is changed */
