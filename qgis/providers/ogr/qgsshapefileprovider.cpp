@@ -48,11 +48,11 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri): QgsVectorDataProvider()
   std::cerr << "Data source uri is " << uri << std::endl;
 #endif
   // try to open for update
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,TRUE);
+  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),TRUE);
   if(ogrDataSource == NULL)
   {
     // try to open read-only
-    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,FALSE);
+    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),FALSE);
   //TODO Need to set a flag or something to indicate that the layer
   //TODO is in read-only mode, otherwise edit ops will fail
   }
@@ -865,7 +865,7 @@ bool QgsShapeFileProvider::addFeatures(std::list<QgsFeature*> flist)
  */
 QGISEXTERN QgsShapeFileProvider * classFactory(const char *uri)
 {
-  return new QgsShapeFileProvider(uri);
+  return new QgsShapeFileProvider(QString::fromUtf8(uri));
 }
 /** Required key function (used to map the plugin to a data store type)
 */
