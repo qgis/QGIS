@@ -2174,8 +2174,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         }
         if ( idx == 0 )
         { // remember last outer ring point
-          x0 = static_cast<int>(pt.x());
-          y0 = static_cast<int>(pt.y());
+	    x0 = static_cast<int>(myProjectedPoint.x());
+	    y0 = static_cast<int>(myProjectedPoint.y());
         }
         else
         { // return to x0,y0 (inner rings - islands)
