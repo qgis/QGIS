@@ -1483,7 +1483,8 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
     Note that this is a cpu intensive /slow task!*/
 const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
-
+//reset the main app progress bar
+emit setProgress(0,0);
 #ifdef QGISDEBUG
     std::cout << "QgsRasterLayer::calculate stats for band " << theBandNoInt << std::endl;
 #endif
@@ -1556,10 +1557,13 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     //unfortunately we need to make two passes through the data to calculate stddev
     for (int myCurrentRowInt = 0; myCurrentRowInt < rasterYDimInt; myCurrentRowInt++)
     {
+       //we loop through the dataset twice for stats so ydim is doubled!
+       emit setProgress(myCurrentRowInt,rasterYDimInt*2);
         CPLErr myResult =
             myGdalBand->RasterIO(GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0);
         for (int myCurrentColInt = 0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
         {
+	
             double myDouble = 0;
             //get the nth element from the current row
             if (myColorInterpretation != "Palette") //dont translate this its a gdal string
@@ -1630,6 +1634,8 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     //for the second pass we will get the sum of the squares / mean
     for (int myCurrentRowInt = 0; myCurrentRowInt < rasterYDimInt; myCurrentRowInt++)
     {
+        //we loop through the dataset twice for stats so ydim is doubled (this is loop2)!
+        emit setProgress(myCurrentRowInt+rasterYDimInt,rasterYDimInt*2);
         CPLErr myResult =
             myGdalBand->RasterIO(GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0);
         for (int myCurrentColInt = 0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
@@ -1675,6 +1681,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     myRasterBandStats.statsGatheredFlag = true;
     //add this band to the class stats map
     rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
+    emit setProgress(0,0); //reset progress
     return myRasterBandStats;
 }                               //end of getRasterBandStats
 

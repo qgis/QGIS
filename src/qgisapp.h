@@ -32,6 +32,7 @@ class QCursor;
 class QLabel;
 class QListView;
 class QListViewItem;
+class QProgressBar;
 class QFileInfo;
 class QgsMapLayer;
 class QSocket;
@@ -177,6 +178,8 @@ private:
   private slots:        
     //! Slot to show the map coordinate position of the mouse cursor
   void showMouseCoordinate(QgsPoint &);
+  //! Slot to show current map scale;
+  void showScale(QString theScale);
   //! Show layer properties for the selected layer
   void layerProperties(QListViewItem *);
   //! Show layer properties for selected layer (called by right-click menu)
@@ -246,7 +249,16 @@ private:
   void socketReadyRead();
   void socketError(int e);
 /*  void urlData(); */
+public slots:
+  void showProgress(int theProgress, int theTotalSteps);
+  void showExtents(QString theExtents);
   private:
+  //! Widget that will live on the statusbar to display scale
+  QLabel * mScaleLabel;
+  //! Widget that will live in the statusbar to display coords
+  QLabel * mCoordsLabel;
+  //! Widget that will live in the statusbar to show progress of operations
+  QProgressBar * mProgressBar;
   //! Overview label where the map overview is shown
   QLabel * mOverviewLabel;
 //! Popup menu
