@@ -1,24 +1,19 @@
-README for QGIS version 0.4 'Baby'
+README for QGIS version 0.5 'Bandit'
 Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
 built for Linux/Unix. QGIS offers support for vector and raster formats. 
 Currently QGIS supports many common vector and raster formats shapefiles
 and PostgreSQL/PostGIS layers. 
 
 This release adds:
-  Features
-    Map Overview
-    Preliminary printing support
-    Menu cleanups
-    User interface improvements
-    Icon Themes (only default theme currently available)
-    Capture point to clipboard
-   
-  Core Plugins
-    Scale bar plugin
-    Improved GPS tools plugin
-   
-  Known Issues
-   Map units are not stored when a QGIS project is saved
+  * Windows version
+  * Feature labeling with optional buffering
+  * Preliminary digitizing support for shapefiles
+  * GRASS digitizing support
+  * GPS SVG icons 
+  * Unique value renderers
+  * User interface improvements
+  * Specify a query when loading a PostGIS layer
+  * Italian translation 
 
 Supported raster formats include:
   Grass
