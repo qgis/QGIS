@@ -25,6 +25,7 @@
 #include <qlistview.h>
 #include <qpixmap.h>
 #include <qmessagebox.h>
+#include <qsettings.h>
 #include "qgsrect.h"
 #include "qgis.h"
 
@@ -584,8 +585,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             QgsMapLayer * lyr = mapLegend->currentLayer();
             if (lyr)
               {
+								
                 // create the search rectangle
-                double searchRadius = extent().width() * .005;
+                double searchRadius = extent().width() * calculateSearchRadiusValue();
                 QgsRect *search = new QgsRect();
                 // convert screen coordinates to map coordinates
                 QgsPoint idPoint = coordXForm->toMapCoordinates(e->x(), e->y());
@@ -768,4 +770,13 @@ void QgsMapCanvas::removeAll()
 {
   layers.clear();
   zOrder.clear();
+}
+/* Calculates the search radius for identifying features
+* using the radius value stored in the users settings
+*/
+double QgsMapCanvas::calculateSearchRadiusValue()
+{
+  QSettings settings;
+	int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", 5);
+	return(identifyValue/1000.0);
 }

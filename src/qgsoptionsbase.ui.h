@@ -14,10 +14,13 @@ void QgsOptionsBase::init()
     QSettings settings;
     QString browser = settings.readEntry("/qgis/browser");
     cmbBrowser->setCurrentText(browser);
+    int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius");
+    spinBoxIdentifyValue->setValue(identifyValue);
 }
 void QgsOptionsBase::saveOptions()
 {
  QSettings settings;
  settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
+ settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
  accept();
 }
