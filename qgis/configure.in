@@ -1,11 +1,20 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.28 2004/03/12 16:44:41 gsherman Exp
+dnl configure.in,v 1.29 2004/03/22 20:00:54 mcoletti Exp
 
 AC_INIT
 
 #AC_CONFIG_SRCDIR([libtool])
 
-AC_CONFIG_HEADERS([config.h])
+dnl header sentinals for qgsconfig.h
+AH_TOP(
+[#ifndef QGSCONFIG_H
+ #define QGSCONFIG_H
+])
+AH_BOTTOM(
+[#endif]
+)
+
+AC_CONFIG_HEADERS([qgsconfig.h])
  
 dnl ---------------------------------------------------------------------------
 dnl version number

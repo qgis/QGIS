@@ -29,7 +29,7 @@ class QGridLayout;
 class QPushButton;
 class QTextBrowser;
 class QString;
-#include "qgshelpviewerbase.h"
+#include "qgshelpviewerbase.uic.h"
 class QgsHelpViewer : public QgsHelpViewerBase
 {
     Q_OBJECT

@@ -22,7 +22,8 @@
 
 
 #include <qstring.h>
-#include "../src/qgisapp.h"
+
+#include <qgisapp.h>
 
 //#include "qgisplugingui.h"
 

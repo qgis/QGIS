@@ -10,8 +10,11 @@
 #
 # $Id$
 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
+
 plugindir = ${pkglibdir}
-plugin_LTLIBRARIES = pggeoprocessingplugin.la
+
+
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -22,38 +25,36 @@ plugin_LTLIBRARIES = pggeoprocessingplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
-				qgspggeoprocessing.h \
-        qgsdlgpgbuffer.cpp \
-        qgsdlgpgbuffer.h \
-				../../src/qgsmaplayer.cpp \
-        ../../src/qgsvectorlayer.cpp \
-        ../../src/qgsfield.cpp \
-        ../../src/qgssymbol.cpp \
-				$(pggeoprocessing_UI)
 
-nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
+plugin_LTLIBRARIES = pggeoprocessingplugin.la
+
 
 pggeoprocessing_MOC = 	qgspggeoprocessing.moc.cpp \
-        ../../src/qgsmaplayer.moc.cpp \
-        ../../src/qgsvectorlayer.moc.cpp \
-        qgsdlgpgbufferbase.moc.cpp \
-        qgsdlgpgbuffer.moc.cpp
+		        qgsdlgpgbufferbase.moc.cpp \
+		        qgsdlgpgbuffer.moc.cpp
 
 pggeoprocessing_UI = qgsdlgpgbufferbase.h \
-        qgsdlgpgbufferbase.cpp 
+                     qgsdlgpgbufferbase.cpp 
 
 pggeoprocessing_UIC = qgsdlgpgbufferbase.ui
+
+pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
+				    qgspggeoprocessing.h \
+				    qgsdlgpgbuffer.cpp \
+				    qgsdlgpgbuffer.h \
+				    $(pggeoprocessing_UI)
+
+nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
 
 # UI dependencies			
 qgsdlgpgbufferbase.cpp: qgsdlgpgbufferbase.h qgsdlgpgbufferbase.ui
 qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 
+
 BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
 
-pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB)
+pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) ../../src/libqgis.la
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
 
 EXTRA_DIST = $(pggeoprocessing_UIC) icon_buffer.xpm

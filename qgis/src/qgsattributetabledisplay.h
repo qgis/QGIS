@@ -20,7 +20,7 @@
 #ifndef QGSATTRIBUTETABLEDISPLAY_H
 #define QGSATTRIBUTETABLEDISPLAY_H
 
-#include "qgsattributetablebase.h"
+#include "qgsattributetablebase.uic.h"
 class QgsAttributeTable;
 /**
   *@author Gary E.Sherman

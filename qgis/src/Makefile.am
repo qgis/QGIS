@@ -8,74 +8,155 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-bin_PROGRAMS = qgis
+PREFIX=-DPREFIX=\"$(prefix)\"
+
+AM_CXXFLAGS = $(PREFIX) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
+
+
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+%.moc.uic.cpp: %.uic.h
+	$(MOC) -o $@ $<
+
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+
+
+## main app
+bin_PROGRAMS = qgis
+
+## ancillary library for plug-ins
+lib_LTLIBRARIES = libqgis.la
 
 headers =  qgis.h				\
-		qgisiface.h			\
-		qgisinterface.h			\
-		qgsattributetable.h		\
-		qgsattributetabledisplay.h	\
-		qgscontcoldialog.h		\
-		qgscontinuouscolrenderer.h	\
-		qgscoordinatetransform.h	\
-		qgscustomsymbol.h		\
-		qgsdatabaselayer.h		\
-		qgsdataprovider.h		\
-		qgsdatasource.h			\
-		qgsdlgvectorlayerproperties.h	\
-		qgsfeature.h			\
-		qgsfeatureattribute.h		\
-		qgsfield.h			\
-		qgsgraduatedsymrenderer.h	\
-		qgsgrasydialog.h		\
-		qgsgrasyextensionwidget.h	\
-		qgshelpviewer.cpp		\
-		qgshelpviewer.h			\
-		qgsidentifyresults.h		\
-		qgslegend.h			\
-		qgslegenditem.h			\
-		qgslinestyledialog.h		\
-		qgslinesymbol.h			\
-		qgsmapcanvas.h			\
-		qgsmaplayer.h			\
-		qgsmaplayerinterface.h		\
-		qgsmapserverexport.h		\
-		qgsmarkersymbol.h		\
-		qgspatterndialog.h		\
-		qgspluginitem.h			\
-		qgspluginmanager.h		\
-		qgspluginmetadata.h		\
-		qgspluginregistry.h		\
-		qgspoint.h			\
-		qgspolygonsymbol.h		\
-		qgsprojectio.h			\
-		qgsprovidermetadata.h		\
-		qgsproviderregistry.h		\
-		qgsrangerenderitem.h		\
-		qgsrasterlayer.h		\
-		qgsrasterlayerproperties.h	\
-		qgsrect.h			\
-		qgsrenderer.h			\
-		qgsrenderitem.h			\
-		qgssinglesymrenderer.h		\
-		qgssimadialog.h			\
-		qgssimarenderer.h		\
-		qgssisydialog.h			\
-		qgssymbol.h			\
-		qgssymbologyutils.h		\
-		qgsvectorlayer.h		\
-		qgsvectorlayerproperties.h	\
-		splashscreen.h			\
-	        qgisapp.h
+	   qgisiface.h				\
+	   qgisinterface.h			\
+	   qgsattributetable.h			\
+	   qgsattributetabledisplay.h		\
+	   qgscontcoldialog.h			\
+	   qgscontinuouscolrenderer.h		\
+	   qgscoordinatetransform.h		\
+	   qgscustomsymbol.h			\
+	   qgsdatabaselayer.h			\
+	   qgsdataprovider.h			\
+	   qgsdatasource.h			\
+	   qgsdlgvectorlayerproperties.h	\
+	   qgsfeature.h				\
+	   qgsfeatureattribute.h		\
+	   qgsfield.h				\
+	   qgsgraduatedsymrenderer.h		\
+	   qgsgrasydialog.h			\
+	   qgsgrasyextensionwidget.h		\
+	   qgshelpviewer.h			\
+	   qgsidentifyresults.h			\
+	   qgslegend.h				\
+	   qgslegenditem.h			\
+	   qgslinestyledialog.h			\
+	   qgslinesymbol.h			\
+	   qgsmapcanvas.h			\
+	   qgsmaplayer.h			\
+	   qgsmaplayerinterface.h		\
+	   qgsmapserverexport.h			\
+	   qgsmarkersymbol.h			\
+	   qgspatterndialog.h			\
+	   qgspluginitem.h			\
+	   qgspluginmanager.h			\
+	   qgspluginmetadata.h			\
+	   qgspluginregistry.h			\
+	   qgspoint.h				\
+	   qgspolygonsymbol.h			\
+	   qgsprojectio.h			\
+	   qgsprovidermetadata.h		\
+	   qgsproviderregistry.h		\
+	   qgsrangerenderitem.h			\
+	   qgsrasterlayer.h			\
+	   qgsrasterlayerproperties.h		\
+	   qgsrect.h				\
+	   qgsrenderer.h			\
+	   qgsrenderitem.h			\
+	   qgssinglesymrenderer.h		\
+	   qgssimarenderer.h			\
+	   qgssimadialog.h			\
+	   qgssisydialog.h			\
+	   qgssymbol.h				\
+	   qgssymbologyutils.h			\
+	   qgsvectorlayer.h			\
+	   qgsvectorlayerproperties.h		\
+	   splashscreen.h			\
+	   qgisapp.h
+
+
+## qt designer files for all the GUI stuff
+qgis_UIC = 	qgisappbase.ui					\
+		qgsabout.ui					\
+		qgsattributetablebase.ui			\
+		qgscontcoldialogbase.ui				\
+		qgsdlgvectorlayerpropertiesbase.ui		\
+		qgsgrasydialogbase.ui				\
+		qgshelpviewerbase.ui				\
+		qgsidentifyresultsbase.ui			\
+		qgslegenditembase.ui				\
+		qgslinestyledialogbase.ui			\
+		qgsmapserverexportbase.ui			\
+		qgsmessageviewer.ui				\
+		qgsoptionsbase.ui				\
+		qgspatterndialogbase.ui				\
+		qgspluginmanagerbase.ui				\
+		qgsrasterlayerpropertiesbase.ui			\
+		qgssimadialogbase.ui				\
+		qgssisydialogbase.ui				\
+		qgsvectorlayerpropertiesbase.ui
+
+## all the ui files generate a corresponding header file
+qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
+
+## similarly all the ui files generate a corresponding implementation file
+qgis_UISOURCES = $(qgis_UIC:.ui=.uic.cpp)
+
+## these are optional ancillary user-defined qtdesigner-based headers
+qgis_UIH = 	qgisappbase.ui.h				\
+		qgsabout.ui.h					\
+		qgsattributetablebase.ui.h			\
+		qgshelpviewerbase.ui.h				\
+		qgsmapserverexportbase.ui.h			\
+		qgsmessageviewer.ui.h				\
+		qgsoptionsbase.ui.h				\
+		qgsrasterlayerpropertiesbase.ui.h
+
+## these generated files need MOC files, too
+qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
+
+
+## non-uic files generated from MOC
+qgis_MOC = 	qgisapp.moc.cpp				\
+		qgisinterface.moc.cpp			\
+		qgsattributetable.moc.cpp		\
+		qgscontcoldialog.moc.cpp		\
+		qgsdlgvectorlayerproperties.moc.cpp	\
+		qgsgrasydialog.moc.cpp			\
+		qgsgrasyextensionwidget.moc.cpp		\
+		qgshelpviewer.moc.cpp			\
+		qgslegend.moc.cpp			\
+		qgslegenditem.moc.cpp			\
+		qgslinestyledialog.moc.cpp		\
+		qgsmapcanvas.moc.cpp			\
+		qgsmaplayer.moc.cpp			\
+		qgsmaplayerinterface.moc.cpp		\
+		qgsmapserverexport.moc.cpp		\
+		qgspatterndialog.moc.cpp		\
+		qgspluginmanager.moc.cpp		\
+		qgsrasterlayer.moc.cpp			\
+		qgsrasterlayerproperties.moc.cpp	\
+		qgssimadialog.moc.cpp			\
+		qgssisydialog.moc.cpp			\
+		qgsvectorlayer.moc.cpp			\
+		qgsvectorlayerproperties.moc.cpp	\
+		splashscreen.moc.cpp
 
 
 qgis_SOURCES =  main.cpp			\
@@ -129,201 +210,53 @@ qgis_SOURCES =  main.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayerproperties.cpp	\
-		splashscreen.cpp		\
-		$(qgis_UI)
+		splashscreen.cpp
 
-nodist_qgis_SOURCES	=	$(qgis_MOC)
-
-qgis_MOC = 	qgisapp.moc.cpp				\
-		qgisappbase.moc.cpp			\
-		qgisinterface.moc.cpp			\
-		qgsabout.moc.cpp			\
-		qgsattributetable.moc.cpp		\
-		qgsattributetablebase.moc.cpp		\
-		qgscontcoldialog.moc.cpp		\
-		qgscontcoldialogbase.moc.cpp		\
-		qgsdlgvectorlayerproperties.moc.cpp	\
-		qgsdlgvectorlayerpropertiesbase.moc.cpp	\
-		qgsgrasydialog.moc.cpp			\
-		qgsgrasydialogbase.moc.cpp		\
-		qgsgrasyextensionwidget.moc.cpp		\
-		qgshelpviewer.moc.cpp			\
-		qgshelpviewerbase.moc.cpp		\
-		qgsidentifyresultsbase.moc.cpp		\
-		qgslegend.moc.cpp			\
-		qgslegenditem.moc.cpp			\
-		qgslegenditembase.moc.cpp		\
-		qgslinestyledialog.moc.cpp		\
-		qgslinestyledialogbase.moc.cpp		\
-		qgsmapcanvas.moc.cpp			\
-		qgsmaplayer.moc.cpp			\
-		qgsmaplayerinterface.moc.cpp		\
-		qgsmapserverexport.moc.cpp		\
-		qgsmapserverexportbase.moc.cpp		\
-		qgsmessageviewer.moc.cpp		\
-		qgsoptionsbase.moc.cpp			\
-		qgspatterndialog.moc.cpp		\
-		qgspatterndialogbase.moc.cpp		\
-		qgspluginmanager.moc.cpp		\
-		qgspluginmanagerbase.moc.cpp		\
-		qgsrasterlayer.moc.cpp			\
-		qgsrasterlayerproperties.moc.cpp	\
-		qgsrasterlayerpropertiesbase.moc.cpp	\
-		qgssimadialog.moc.cpp			\
-		qgssimadialogbase.moc.cpp		\
-		qgssisydialog.moc.cpp			\
-		qgssisydialogbase.moc.cpp		\
-		qgsvectorlayer.moc.cpp			\
-		qgsvectorlayerproperties.moc.cpp	\
-		qgsvectorlayerpropertiesbase.moc.cpp 	\
-		splashscreen.moc.cpp
-
-qgis_UIHEADERS = \
-         	qgisappbase.h				\
-          	qgsabout.h				\
-          	qgsattributetablebase.h			\
-          	qgscontcoldialogbase.h			\
-          	qgsgrasydialogbase.h			\
-          	qgshelpviewerbase.cpp			\
-          	qgshelpviewerbase.h			\
-          	qgsidentifyresultsbase.h		\
-          	qgslegenditembase.h			\
-          	qgslinestyledialogbase.h		\
-          	qgsmapserverexportbase.h		\
-          	qgsmessageviewer.h			\
-          	qgspatterndialogbase.h			\
-          	qgspluginmanagerbase.h			\
-          	qgsrasterlayerpropertiesbase.h		\
-		qgssimadialogbase.h			\
-          	qgssisydialogbase.h			\
-          	qgsdlgvectorlayerpropertiesbase.h	\
-          	qgsoptionsbase.h			\
-          	qgsvectorlayerpropertiesbase.h
-
-qgis_UI = 	qgisappbase.cpp			\
-          	qgsabout.cpp				\
-          	qgsattributetablebase.cpp		\
-          	qgscontcoldialogbase.cpp		\
-          	qgsgrasydialogbase.cpp		\
-          	qgshelpviewerbase.cpp			\
-          	qgsidentifyresultsbase.cpp		\
-          	qgslegenditembase.cpp			\
-          	qgslinestyledialogbase.cpp		\
-          	qgsmapserverexportbase.cpp		\
-          	qgsmessageviewer.cpp			\
-          	qgspatterndialogbase.cpp		\
-          	qgspluginmanagerbase.cpp		\
-          	qgsrasterlayerpropertiesbase.cpp	\
-		qgssimadialogbase.cpp			\
-          	qgssisydialogbase.cpp			\
-          	qgsdlgvectorlayerpropertiesbase.cpp	\
-          	qgsoptionsbase.cpp			\
-          	qgsvectorlayerpropertiesbase.cpp
-
-qgis_UIC = 	qgisappbase.ui					\
-		qgisappbase.ui.h				\
-		qgsabout.ui					\
-		qgsabout.ui.h					\
-		qgsattributetablebase.ui			\
-		qgsattributetablebase.ui.h			\
-		qgscontcoldialogbase.ui				\
-		qgsdbsourceselectbase.ui			\
-		qgsdbsourceselectbase.ui.h			\
-		qgsdlgvectorlayerpropertiesbase.ui		\
-		qgsgrasydialogbase.ui				\
-		qgshelpviewerbase.ui				\
-		qgshelpviewerbase.ui.h				\
-		qgsidentifyresultsbase.ui			\
-		qgslegenditembase.ui				\
-		qgslinestyledialogbase.ui			\
-		qgsmapserverexportbase.ui			\
-		qgsmapserverexportbase.ui.h			\
-		qgsmessageviewer.ui				\
-		qgsmessageviewer.ui.h				\
-		qgsoptionsbase.ui				\
-		qgsoptionsbase.ui.h				\
-		qgspatterndialogbase.ui				\
-		qgspluginmanagerbase.ui				\
-		qgsrasterlayerpropertiesbase.ui			\
-		qgsrasterlayerpropertiesbase.ui.h		\
-		qgssimadialogbase.ui				\
-		qgssisydialogbase.ui				\
-		qgsvectorlayerpropertiesbase.ui
-
-# XXX Actually the general pattern matching rules should already do these dependencies
-# UI dependencies			
-qgsattributetablebase.cpp: qgsattributetablebase.h qgsattributetablebase.ui
-qgsattributetablebase.h: qgsattributetablebase.ui
-qgisappbase.cpp: qgisappbase.ui qgisappbase.h
-qgisappbase.h: qgisappbase.ui
-qgsabout.cpp: qgsabout.h qgsabout.ui
-qgsabout.h: qgsabout.ui
-qgscontcoldialogbase.cpp: qgscontcoldialogbase.h qgscontcoldialogbase.ui
-qgscontcoldialogbase.h: qgscontcoldialogbase.ui
-qgsgrasydialogbase.cpp: qgsgrasydialogbase.h qgsgrasydialogbase.ui
-qgsgrasydialogbase.h: qgsgrasydialogbase.ui
-qgshelpviewerbase.cpp: qgshelpviewerbase.h qgshelpviewerbase.ui 
-qgshelpviewerbase.h: qgshelpviewerbase.ui
-qgsidentifyresultsbase.cpp: qgsidentifyresultsbase.h qgsidentifyresultsbase.ui
-qgsidentifyresultsbase.h: qgsidentifyresultsbase.ui
-qgslegenditembase.cpp: qgslegenditembase.h qgslegenditembase.ui
-qgslegenditembase.h: qgslegenditembase.ui
-qgslinestyledialogbase.cpp: qgslinestyledialogbase.h qgslinestyledialogbase.ui
-qgslinestyledialogbase.h: qgslinestyledialogbase.ui
-qgsmapserverexportbase.cpp: qgsmapserverexportbase.h qgsmapserverexportbase.ui
-qgsmapserverexportbase.h: qgsmapserverexportbase.ui
-qgsmessageviewer.cpp: qgsmessageviewer.h qgsmessageviewer.ui
-qgsmessageviewer.h: qgsmessageviewer.ui
-qgspatterndialogbase.cpp: qgspatterndialogbase.h qgspatterndialogbase.ui
-qgspatterndialogbase.h: qgspatterndialogbase.ui
-qgspluginmanagerbase.cpp: qgspluginmanagerbase.h qgspluginmanagerbase.ui
-qgspluginmanagerbase.h: qgspluginmanagerbase.ui
-qgsrasterlayerpropertiesbase.cpp: qgsrasterlayerpropertiesbase.h qgsrasterlayerpropertiesbase.ui
-qgsrasterlayerpropertiesbase.h: qgsrasterlayerpropertiesbase.ui
-qgssimadialogbase.cpp: qgssimadialogbase.h qgssimadialogbase.ui
-qgssimadialogbase.h: qgssimadialogbase.ui
-qgssisydialogbase.cpp: qgssisydialogbase.h qgssisydialogbase.ui
-qgssisydialogbase.h: qgssisydialogbase.ui
-qgsvectorlayerpropertiesbase.cpp: qgsvectorlayerpropertiesbase.h qgsvectorlayerpropertiesbase.ui
-qgsvectorlayerpropertiesbase.h: qgsvectorlayerpropertiesbase.ui
-qgsdlgvectorlayerpropertiesbase.cpp: qgsdlgvectorlayerpropertiesbase.h qgsdlgvectorlayerpropertiesbase.ui
-qgsdlgvectorlayerpropertiesbase.h: qgsdlgvectorlayerpropertiesbase.ui
-
-#PostgreSQL UI dependencies
-qgsdbsourceselectbase.h: qgsdbsourceselectbase.ui
-qgsdbsourceselectbase.cpp: qgsdbsourceselectbase.h qgsdbsourceselectbase.ui
-qgsnewconnectionbase.h: qgsnewconnectionbase.ui
-qgsnewconnectionbase.cpp: qgsnewconnectionbase.h qgsnewconnectionbase.ui
-
-#PostgreSQL files
-postgresHEADERS = qgsnewconnection.h qgsdbsourceselect.h
-
+postgresHEADERS = qgsdbsourceselect.h qgsnewconnection.h
 postgresSOURCES = qgsdbsourceselect.cpp qgsnewconnection.cpp
+postgresUIC     = qgsdbsourceselectbase.ui qgsnewconnectionbase.ui	
+postgresUIH     = 
 
-postgresUIHEADERS = qgsdbsourceselectbase.h qgsnewconnectionbase.h
 
-postgresUI = 	qgsdbsourceselectbase.cpp qgsnewconnectionbase.cpp
-
-postgresUIC =   qgsdbsourceselectbase.ui qgsnewconnectionbase.ui	
-
-postgresMOC =   qgsdbsourceselect.moc.cpp	\
-		qgsdbsourceselectbase.moc.cpp	\
-		qgsnewconnection.moc.cpp	\
-		qgsnewconnectionbase.moc.cpp
-
-# if PostgreSQL support requested, add PostgreSQL files				
 if HAVE_POSTGRESQL
-qgis_SOURCES += $(postgresSOURCES)
-qgis_UI += $(postgresUI) 
-qgis_MOC += $(postgresMOC)
+postgresUIHEADERS = $(postgresUIC:.ui=.uic.h)
+postgresUISOURCES = $(postgresUIC:.ui=.uic.cpp)
+postgresUIMOC     = $(postgresUIC:.ui=.moc.uic.cpp)
+
+postgresMOC       = $(postgresHEADERS:.h=.moc.cpp)
+
+qgis_SOURCES     += $(postgresSOURCES)
+# qgis_MOC       += $(postgresMOC)
+# qgis_UIHEADERS += $(postgresUIHEADERS) 
+# qgis_UISOURCES += $(postgresUISOURCES) 
+# qgis_UIMOC     += $(postgresUIMOC)
+
 # add required defines for compiling PostgreSQL
 #PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
+
 endif
 
-PREFIX=-DPREFIX=\"$(prefix)\"
-BUILT_SOURCES = $(qgis_MOC) $(qgis_UI) $(postgresMOC) $(postgresUI)
+
+nodist_qgis_SOURCES = $(qgis_MOC) $(qgis_UISOURCES) $(qgis_UIMOC) \
+                      $(postgresMOC) $(postgresUISOURCES) $(postgresUIMOC)
+
+
+BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
+	        $(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
+
+
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
-AM_CXXFLAGS = $(PREFIX) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
+
+libqgis_la_SOURCES = qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp
+#libqgis_la_LIBFLAGS = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
+libqgis_la_LIBFLAGS =  $(QT_LDADD)
+
+## for installing headers in $(includedir)/qgis
+pkginclude_HEADERS = $(headers) $(qgis_UIHEADERS) $(qgis_UIH) $(postgresHEADERS) $(postgresUIH)
+pkginclude_dir = $(includedir)/qgis
+
+
+
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(postgresUIC) $(qgis_UIC) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png
+EXTRA_DIST = $(postgresHEADERS) $(postgresSOURCES) $(postgresUIC) $(qgis_UIC) $(qgis_UIH) $(postgresUIH) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png
