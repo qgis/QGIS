@@ -162,6 +162,33 @@ dialog by double-clicking on the layer in the legend and click on the
 \ref{sec:vectorprops} for more information.}
 \end{Tip}
 
+\subsection{Some details about PostgreSQL layers}\label{sec:postgis_details}
+\index{PostgreSQL!layer details}
+This section contains some details on how QGIS accesses PostgreSQL
+layers. Most of the time QGIS should simply provide you with a list of
+database tables that can be loaded, and load them on request. However,
+if you have trouble 
+loading a PostgreSQL table into QGIS, the information below may help
+you understand any QGIS messages and give you direction on changing
+the PostgreSQL table or view defintion to allow QGIS to load it.
+
+QGIS requires that PostgreSQL layers contain a column that can be
+used as a unique key into the layer. For tables this usually means
+that the table needs a primary key, or has a column with a unique
+constraint on it. QGIS additionally requires that this column be of
+type int4 (an integer of size 4 bytes). If a table lacks these items,
+the tables' oid column will 
+be used instead. Performance will be improved if the column is
+indexed (note than primary keys are automatically indexed in PostgreSQL). 
+
+If the PostgreSQL layer is a view the same requirements exist, but
+views don't have primary keys or columns with unique constraints on
+them. In this case QGIS will try to find a column in the view that is
+derived from a table column that is suitable. If one cannot be found,
+QGIS will not load the layer. If this occurs, the solution is to alter
+the view so that it does include a suitable column (a type of int4
+and either a primary key or with a unique constraint, preferably indexed).
+
 \subsection{Importing Data into PostgreSQL}\label{sec:loading_postgis_data}
 \index{SPIT!importing data}
 Data can be imported into PostgreSQL using a number of methods. PostGIS includes a utility called shp2pgsql that can be used to import shapefiles into a PostGIS enabled database. 
