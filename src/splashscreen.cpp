@@ -24,6 +24,8 @@
 #ifdef WIN32
 QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
+#define STATUS_TEXT_X 10
+#define STATUS_TEXT_Y 10
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
   splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"));
@@ -40,7 +42,7 @@ SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
   QString myCaption = tr("Quantum GIS - ");
   myCaption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
    
-  painter.drawText(5, 25, myCaption);
+  painter.drawText(STATUS_TEXT_X, 25, myCaption);
   repaint();
 
   show();
@@ -76,7 +78,7 @@ void SplashScreen::setStatus(const QString & message, int alignment, const QColo
   painter.setPen(color);
   QFont myQFont("arial", 12, QFont::Bold);
   painter.setFont(myQFont);
-  painter.drawText(5,textPix.height()-5, message);
+  painter.drawText(STATUS_TEXT_X, textPix.height() - STATUS_TEXT_Y, message);
   setErasePixmap(textPix);
   repaint();
 }

@@ -296,7 +296,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   //  zoomincurmask = QBitmap(cursorzoomin_mask);
   if (!myHideSplashFlag)
   {
-
     gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
   }
   QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
@@ -1725,38 +1724,38 @@ void QgisApp::deleteSelected()
 
 void QgisApp::capturePoint()
 {
-    {
-	// set current map tool to select
-	mMapCanvas->setMapTool(QGis::CapturePoint);
-	QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
-	delete mMapCursor;
-	mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
-	mMapCanvas->setCursor(*mMapCursor);
-    }
+  {
+    // set current map tool to select
+    mMapCanvas->setMapTool(QGis::CapturePoint);
+    QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+    delete mMapCursor;
+    mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+    mMapCanvas->setCursor(*mMapCursor);
+  }
 }
 
 void QgisApp::captureLine()
 {
-    {
-	mMapCanvas->setMapTool(QGis::CaptureLine); 
+  {
+    mMapCanvas->setMapTool(QGis::CaptureLine); 
 
-	QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
-	delete mMapCursor;
-	mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
-	mMapCanvas->setCursor(*mMapCursor);
-    }
+    QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+    delete mMapCursor;
+    mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+    mMapCanvas->setCursor(*mMapCursor);
+  }
 }
 
 void QgisApp::capturePolygon()
 {
-    {
-	mMapCanvas->setMapTool(QGis::CapturePolygon); 
+  {
+    mMapCanvas->setMapTool(QGis::CapturePolygon); 
 
-	QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
-	delete mMapCursor;
-	mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
-	mMapCanvas->setCursor(*mMapCursor);
-    }
+    QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+    delete mMapCursor;
+    mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+    mMapCanvas->setCursor(*mMapCursor);
+  }
 }
 
 void QgisApp::select()
@@ -1764,7 +1763,6 @@ void QgisApp::select()
 
   // set current map tool to select
   mMapCanvas->setMapTool(QGis::Select);
-
 
   QPixmap mySelectQPixmap = QPixmap((const char **) select_cursor);
   delete mMapCursor;
@@ -1823,40 +1821,40 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 {
   QgsMapLayer *layer;
   if (lvi)
-    {
-      layer = ((QgsLegendItem *) lvi)->layer();
+  {
+    layer = ((QgsLegendItem *) lvi)->layer();
   } else
-    {
-      // get the selected item
-      QListViewItem *li = mMapLegend->currentItem();
-      layer = ((QgsLegendItem *) li)->layer();
-    }
+  {
+    // get the selected item
+    QListViewItem *li = mMapLegend->currentItem();
+    layer = ((QgsLegendItem *) li)->layer();
+  }
 
 
 
   QString currentName = layer->name();
   //test if we have a raster or vector layer and show the appropriate dialog
   if (layer->type() == QgsMapLayer::RASTER)
+  {
+    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(layer);
+    // The signals to change the raster layer properties will only be emitted
+    // when the user clicks ok or apply
+    //connect(rlp, SIGNAL(setTransparency(unsigned int)), SLOT(layer(slot_setTransparency(unsigned int))));
+    if (rlp->exec())
     {
-      QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(layer);
-      // The signals to change the raster layer properties will only be emitted
-      // when the user clicks ok or apply
-      //connect(rlp, SIGNAL(setTransparency(unsigned int)), SLOT(layer(slot_setTransparency(unsigned int))));
-      if (rlp->exec())
-        {
-          //this code will be called it the user selects ok
-          mMapCanvas->setDirty(true);
-          mMapCanvas->refresh();
-          mMapCanvas->render();
-          // mMapLegend->update(); XXX WHY CALL UPDATE HERE?
-          delete rlp;
-          qApp->processEvents();
-        }
+      //this code will be called it the user selects ok
+      mMapCanvas->setDirty(true);
+      mMapCanvas->refresh();
+      mMapCanvas->render();
+      // mMapLegend->update(); XXX WHY CALL UPDATE HERE?
+      delete rlp;
+      qApp->processEvents();
+    }
   } 
   else
-    {
-      layer->showLayerProperties();
-    }
+  {
+    layer->showLayerProperties();
+  }
 
   //TODO Fix this area below and above
   //this is a very hacky way to force the legend entry to refresh - the call above does ne happen for some reason
@@ -1868,41 +1866,40 @@ void QgisApp::layerProperties(QListViewItem * lvi)
      {
      QgsLayerProperties *lp = new QgsLayerProperties(layer);
      if (lp->exec()) {
-     // update the symbol
-     layer->setSymbol(lp->getSymbol());
-     mMapCanvas->freeze();
-     layer->setlayerName(lp->displayName());
-     if (currentName != lp->displayName())
-     mMapLegend->update();
-     delete lp;
-     qApp->processEvents();
+  // update the symbol
+  layer->setSymbol(lp->getSymbol());
+  mMapCanvas->freeze();
+  layer->setlayerName(lp->displayName());
+  if (currentName != lp->displayName())
+  mMapLegend->update();
+  delete lp;
+  qApp->processEvents();
 
-     // apply changes
-     mMapCanvas->freeze(false);
-     mMapCanvas->setDirty(true);
-     mMapCanvas->render();
-     }
-     }
-     else if (layer->type()==QgsMapLayer::DATABASE)
-     {
-     //do me!
-     QMessageBox::information( this, "QGis",
-     "Properties box not yet implemented for database layer");
-     }
-     else 
-     {
-     QMessageBox::information( this, "QGis",
-     "Unknown Layer Type");
-     }
+  // apply changes
+  mMapCanvas->freeze(false);
+  mMapCanvas->setDirty(true);
+  mMapCanvas->render();
+  }
+  }
+  else if (layer->type()==QgsMapLayer::DATABASE)
+  {
+  //do me!
+  QMessageBox::information( this, "QGis",
+  "Properties box not yet implemented for database layer");
+  }
+  else 
+  {
+  QMessageBox::information( this, "QGis",
+  "Unknown Layer Type");
+  }
 
-   */
+*/
 
 
 
   //  layer->showLayerProperties();
 }
 
-//>>>>>>> 1.97.2.17
 
 void QgisApp::removeLayer()
 {

@@ -997,30 +997,30 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
           if(vlayer)
           {
-	      if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
-	      {
-		  QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-		  break;
-	      }
+        if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
+        {
+      QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+      break;
+        }
 
-	      QgsFeature* f = new QgsFeature(0,"WKBPoint");
-	      int size=5+2*sizeof(double);
-	      unsigned char *wkb = new unsigned char[size];
-	      int wkbtype=QGis::WKBPoint;
-	      double x=idPoint.x();
-	      double y=idPoint.y();
-	      memcpy(&wkb[1],&wkbtype, sizeof(int));
-	      memcpy(&wkb[5], &x, sizeof(double));
-	      memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
-	      f->setGeometry(&wkb[0],size);
-	      // also need to store the well known text so feature
-	      // can be inserted into postgis layer if applicable.
-	      // We set the geometry but not the SRID. The provider
-	      // will add the SRID when setting the WKT
-	      QString wkt = idPoint.wellKnownText();
-	      f->setWellKnownText(wkt);
-	      vlayer->addFeature(f);
-	      refresh();
+        QgsFeature* f = new QgsFeature(0,"WKBPoint");
+        int size=5+2*sizeof(double);
+        unsigned char *wkb = new unsigned char[size];
+        int wkbtype=QGis::WKBPoint;
+        double x=idPoint.x();
+        double y=idPoint.y();
+        memcpy(&wkb[1],&wkbtype, sizeof(int));
+        memcpy(&wkb[5], &x, sizeof(double));
+        memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+        f->setGeometry(&wkb[0],size);
+        // also need to store the well known text so feature
+        // can be inserted into postgis layer if applicable.
+        // We set the geometry but not the SRID. The provider
+        // will add the SRID when setting the WKT
+        QString wkt = idPoint.wellKnownText();
+        f->setWellKnownText(wkt);
+        vlayer->addFeature(f);
+        refresh();
           }
           else
           {
@@ -1037,85 +1037,85 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       case QGis::CaptureLine:
       case QGis::CapturePolygon:
 
-	  QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-	  if(vlayer)
-	  {
-	      if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
-	      {
-		  QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-		  break;
-	      }
-	  }
-	  else
-	  {
-	      QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
-	  }
+    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+    if(vlayer)
+    {
+        if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
+        {
+      QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+      break;
+        }
+    }
+    else
+    {
+        QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+    }
 
-	  mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
-	  if(mCaptureList.size()>1)
-	  {
-	      QPainter paint(this);
-	      paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
-	      std::list<QgsPoint>::iterator it=mCaptureList.end();
-	      --it;
-	      --it;
-	      QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-	      paint.drawLine(lastpoint.x(),lastpoint.y(),e->x(),e->y());
-	  }
-	  if(e->button()==Qt::RightButton)
-	  {
-		  //create QgsFeature with wkb representation
-		  QgsFeature* f=new QgsFeature(0,"WKBLineString");
-		  unsigned char* wkb;
-		  int size;
-		  if(mCanvasProperties->mapTool==QGis::CaptureLine)
-		  {
-		      size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
-		      wkb= new unsigned char[size];
-		      int wkbtype=QGis::WKBLineString;
-		      int length=mCaptureList.size();
-		      memcpy(&wkb[1],&wkbtype, sizeof(int));
-		      memcpy(&wkb[5],&length, sizeof(int));
-		      int position=1+2*sizeof(int);
-		      double x,y;
-		      for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
-		      {
-			  x=it->x();
-			  memcpy(&wkb[position],&x,sizeof(double));
-			  position+=sizeof(double);
-			  y=it->y();
-			  memcpy(&wkb[position],&y,sizeof(double));
-			  position+=sizeof(double);
-		      }
-		  }
-		  else//polygon
-		  {
-		      size=1+3*sizeof(int)+2*mCaptureList.size()*sizeof(double);
-		      wkb= new unsigned char[size];
-		      int wkbtype=QGis::WKBPolygon;
-		      int length=mCaptureList.size();
-		      int numrings=1;
-		      memcpy(&wkb[1],&wkbtype, sizeof(int));
-		      memcpy(&wkb[5],&numrings,sizeof(int));
-		      memcpy(&wkb[9],&length, sizeof(int));
-		      int position=1+3*sizeof(int);
-		      double x,y;
-		      for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
-		      {
-			  x=it->x();
-			  memcpy(&wkb[position],&x,sizeof(double));
-			  position+=sizeof(double);
-			  y=it->y();
-			  memcpy(&wkb[position],&y,sizeof(double));
-			  position+=sizeof(double);
-		      } 
-		  }
-		  f->setGeometry(&wkb[0],size);
-		  vlayer->addFeature(f);
-		  mCaptureList.clear();
-		  refresh();
-	  }
-	  break;
+    mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
+    if(mCaptureList.size()>1)
+    {
+        QPainter paint(this);
+        paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
+        std::list<QgsPoint>::iterator it=mCaptureList.end();
+        --it;
+        --it;
+        QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+        paint.drawLine(lastpoint.x(),lastpoint.y(),e->x(),e->y());
+    }
+    if(e->button()==Qt::RightButton)
+    {
+      //create QgsFeature with wkb representation
+      QgsFeature* f=new QgsFeature(0,"WKBLineString");
+      unsigned char* wkb;
+      int size;
+      if(mCanvasProperties->mapTool==QGis::CaptureLine)
+      {
+          size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+          wkb= new unsigned char[size];
+          int wkbtype=QGis::WKBLineString;
+          int length=mCaptureList.size();
+          memcpy(&wkb[1],&wkbtype, sizeof(int));
+          memcpy(&wkb[5],&length, sizeof(int));
+          int position=1+2*sizeof(int);
+          double x,y;
+          for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+          {
+        x=it->x();
+        memcpy(&wkb[position],&x,sizeof(double));
+        position+=sizeof(double);
+        y=it->y();
+        memcpy(&wkb[position],&y,sizeof(double));
+        position+=sizeof(double);
+          }
+      }
+      else//polygon
+      {
+          size=1+3*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+          wkb= new unsigned char[size];
+          int wkbtype=QGis::WKBPolygon;
+          int length=mCaptureList.size();
+          int numrings=1;
+          memcpy(&wkb[1],&wkbtype, sizeof(int));
+          memcpy(&wkb[5],&numrings,sizeof(int));
+          memcpy(&wkb[9],&length, sizeof(int));
+          int position=1+3*sizeof(int);
+          double x,y;
+          for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+          {
+        x=it->x();
+        memcpy(&wkb[position],&x,sizeof(double));
+        position+=sizeof(double);
+        y=it->y();
+        memcpy(&wkb[position],&y,sizeof(double));
+        position+=sizeof(double);
+          } 
+      }
+      f->setGeometry(&wkb[0],size);
+      vlayer->addFeature(f);
+      mCaptureList.clear();
+      refresh();
+    }
+    break;
     }
   }
 } // mouseReleaseEvent
