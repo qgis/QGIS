@@ -91,7 +91,7 @@ int QgsDelimitedTextPlugin::type()
   return QgisPlugin::UI;
 }
 //method defined in interface
-void Plugin::help()
+void QgsDelimitedTextPlugin::help()
 {
   //implement me!
 }
