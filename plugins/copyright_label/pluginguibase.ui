@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>578</width>
-            <height>476</height>
+            <height>478</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -127,7 +127,6 @@
 &lt;p style="margin-top:18px"&gt;&lt;span style="font-size:23pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
 &lt;p&gt;&lt;span style="font-family:Courier New"&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style="font-family:Courier New;font-weight:600"&gt;Bold text&lt;/span&gt;&lt;span style="font-family:Courier New"&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style="font-family:Courier New;font-style:italic"&gt;Italics&lt;/span&gt;&lt;span style="font-family:Courier New"&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Selected text can also be formatted using the 'Font' button.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
             </property>
