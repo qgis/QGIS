@@ -7,3 +7,5 @@ CONFIG += qt thread debug
 TEMPLATE = subdirs
 SUBDIRS += src \
            plugins 
+SOURCES += qgsmaplayerinterface.cpp 
+HEADERS += qgsmaplayerinterface.h 

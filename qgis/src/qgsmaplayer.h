@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* Id */
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 

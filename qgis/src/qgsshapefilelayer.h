@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
 #ifndef QGSSHAPEFILELAYER_H
 #define QGSSHAPEFILELAYER_H
 class QPainter;

@@ -15,6 +15,7 @@
 // includes
 #include <iostream>
 #include "../src/qgisapp.h"
+
 #include "qgistestplugin.h" 
 #include <qaction.h>
 // xpm for creating the toolbar icon
@@ -28,7 +29,9 @@ QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI)
 	pName = "Test Plugin";
 	pVersion = "Version 0.0";
 	pDescription = "This test plugin does nothing but tell you its name, version, and description";
-
+	// instantiate a map layer
+	//QgsMapLayer *mlyr = new QgsMapLayer();
+	
 	// see if we can popup a message box in qgis on load
 	QMessageBox::information(qgisMainWindow,"Message From Plugin", "This message is from within the test plugin");
 	// add a test menu
