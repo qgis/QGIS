@@ -347,10 +347,12 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mMapLegend = new QgsLegend(legendOverviewSplit, "theMapLegend", this);
     mMapLegend->addColumn(tr("Layers"));
     mMapLegend->setSorting(-1);
+    QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
 
     // "theOverviewCanvas" used to find canonical
     // instance later
     mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit, "theOverviewCanvas");
+    QWhatsThis::add(mOverviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
     //tell the overview canvas it is an overview canvas so it will suppress labels etc
     mOverviewCanvas->setIsOverviewCanvas(true);
     // lock the canvas to prevent user interaction
@@ -362,6 +364,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // "theMapCanvas" used to find this canonical
     // instance later
     mMapCanvas = new QgsMapCanvas(canvasLegendSplit, "theMapCanvas" );
+    QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
     // we need to cache the layer registry instance so plugins can get to it
     // now explicitly refer to Singleton -- mLayerRegistry = QgsMapLayerRegistry::instance();
     // resize it to fit in the frame
@@ -423,6 +426,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // set the legend control for the map canvas
     mMapCanvas->setLegend(mMapLegend);
 
+
     // disable functions based on build type
 #ifndef HAVE_POSTGRESQL
 
@@ -440,15 +444,19 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
 
     mProgressBar = new QProgressBar(100,this);
     mProgressBar->setMaximumWidth(100);
+    QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
     statusBar()->addWidget(mProgressBar, 1,true);
     mScaleLabel = new QLabel(QString("Scale"),this);
     mScaleLabel->setMinimumWidth(100);
+    QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
     statusBar()->addWidget(mScaleLabel, 0,true);
     mCoordsLabel = new QLabel(QString("Coordinates:"), this);
     mCoordsLabel->setMinimumWidth(200);
+    QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
     statusBar()->addWidget(mCoordsLabel, 0, true);
     mRenderSuppresionCBox = new QCheckBox(tr("Render"),this);
     mRenderSuppresionCBox->setChecked(true);
+    QWhatsThis::add(mRenderSuppresionCBox, tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
     statusBar()->addWidget(mRenderSuppresionCBox,0,true);
 
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
