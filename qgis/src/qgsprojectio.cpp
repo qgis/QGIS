@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.16 2004/01/19 23:58:58 timlinux Exp */
+/* qgsprojectio.cpp,v 1.17 2004/01/25 07:37:00 gsherman Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -158,20 +158,18 @@ bool QgsProjectIo::read(){
 			
 			// add the layer to the maplayer
 			
-			if(type == "database"){
-
-#ifdef POSTGRESQL
-				QgsVectorLayer *dbl = new QgsVectorLayer(dataSource, layerName, "postgres");
+			if(type == "vector"){
+        QString provider;
+        // determine type of vector layer
+        if((dataSource.find("host=") > -1) && (dataSource.find("dbname=") > -1)){
+          provider = "postgres";
+        }else{
+          provider = "ogr";
+        }
+				QgsVectorLayer *dbl = new QgsVectorLayer(dataSource, layerName, provider);
 				map->addLayer(dbl);
 				dbl->setSymbol(sym);
 				dbl->setVisible(visible == "1");
-#endif
-			} else if ( type == "vector" ) {
-				QgsVectorLayer *shpl = new QgsVectorLayer(dataSource, layerName, "ogr");
-				
-				map->addLayer(shpl);
-				shpl->setSymbol(sym);
-				shpl->setVisible(visible == "1");
 			} else if ( type == "raster" ) {
 				QgsRasterLayer *myRasterLayer = new QgsRasterLayer(dataSource, layerName);
 				
