@@ -13,6 +13,7 @@
 
 //qt includes
 #include <qtextedit.h>
+#include <qcheckbox.h>
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
@@ -31,13 +32,11 @@ PluginGui::~PluginGui()
 
 void PluginGui::pbnOK_clicked()
 {
-  //
-  // If you have a produced a raster layer using your plugin, you can ask qgis to 
-  // add it to the view using:
-  // emit drawRasterLayer(QString("layername"));
-  // or for a vector layer
-  // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
-  //
+  //bool myFlag = cboxEnableServer->isChecked();
+  bool myFlag=true;
+  emit setServerEnabled(myFlag);
+  //disconnect any connections to this dialog
+  disconnect( this, 0, 0, 0 );
   //close the dialog
   done(1);
 } 

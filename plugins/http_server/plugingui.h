@@ -29,8 +29,7 @@ public:
 private:
 
 signals:
-   void drawRasterLayer(QString);
-   void drawVectorrLayer(QString,QString,QString);
+   void setServerEnabled(bool);
 public slots:
     void newConnect(QString);
     void endConnect(QString);

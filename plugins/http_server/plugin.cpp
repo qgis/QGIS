@@ -109,11 +109,11 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"QGis Http Server",true,0);
   //listen for when the layer has been made so we can draw it
-
   connect(mHttpDaemon, SIGNAL(newConnect(QString)), myPluginGui, SLOT(newConnect(QString)));
   connect(mHttpDaemon, SIGNAL(endConnect(QString)), myPluginGui, SLOT(endConnect(QString)));
   connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToClient(QString)));
   connect(mHttpDaemon, SIGNAL(requestReceived(QString)), myPluginGui, SLOT(requestReceived(QString)));
+  connect(myPluginGui, SIGNAL(setServerEnabled(bool)),this, SLOT(setEnabled(bool)));
   myPluginGui->show();
 }
 
@@ -130,6 +130,18 @@ void Plugin::unload()
   disconnect( this, 0, 0, 0 );
 }
 
+void Plugin::setEnabled (bool theFlag)
+{
+ if (theFlag)
+ {
+   stopServer();
+ }
+ else
+ {
+   startServer();
+ }
+}
+
 void Plugin::startServer()
 { 
   mHttpDaemon = new HttpDaemon( this );
@@ -138,6 +150,7 @@ void Plugin::startServer()
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString,QString)), this, SLOT(loadRasterFile(QString,QString)));
   connect(mHttpDaemon, SIGNAL(loadVectorFile(QString)),this, SLOT(loadVectorFile(QString))) ;
   connect(mHttpDaemon, SIGNAL(loadVectorFile(QString,QString)), this, SLOT(loadVectorFile(QString,QString)));
+  mEnabled=true;
 
 }
 
@@ -146,6 +159,7 @@ void Plugin::stopServer()
   //break all connections to httpdeamon signals
   disconnect( mHttpDaemon, 0, 0, 0 );
   delete mHttpDaemon;
+  mEnabled=false;
   
 }
 //load the project in qgis and send image to browser

@@ -160,23 +160,20 @@
                                     <string>Port:</string>
                                 </property>
                             </widget>
+                            <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>cboxEnableServer</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Enable server</string>
+                                </property>
+                            </widget>
                             <widget class="QSpinBox" row="0" column="1">
                                 <property name="name">
                                     <cstring>spinBox1</cstring>
                                 </property>
                                 <property name="maxValue">
                                     <number>65535</number>
-                                </property>
-                            </widget>
-                            <widget class="QCheckBox" row="1" column="0">
-                                <property name="name">
-                                    <cstring>cboEnableServer</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Enable Server</string>
-                                </property>
-                                <property name="checked">
-                                    <bool>false</bool>
                                 </property>
                             </widget>
                         </grid>

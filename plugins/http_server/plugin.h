@@ -19,12 +19,10 @@ email                : tim@linfiniti.com
 /*  $Id$ */
 #ifndef PLUGIN
 #define PLUGIN
-#include <qgisplugin.h>
 #include <qwidget.h>
-
 #include <qgisapp.h>
-
-#include <qwidget.h>
+// non qt includes
+#include <qgisplugin.h>
 #include "httpdaemon.h"
 /**
  * \class Plugin
@@ -60,7 +58,10 @@ public slots:
   void loadVectorFile(QString theVectorFile);
   //! Load a vector file over a project
   void loadVectorFile(QString theVectorFile, QString theProjectFile);
-
+  //! Change the enabled status of the http server
+  void setEnabled (bool);
+  //! Return the status of the http server
+  bool enabled () {return mEnabled; } ;
 
 
   //! unload the plugin
@@ -80,6 +81,8 @@ public slots:
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
+  //! whether the server is enabled or not
+  bool mEnabled;
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
   //! Pointer to our menu
