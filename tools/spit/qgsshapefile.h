@@ -18,7 +18,8 @@
 #ifndef QGSSHAPEFILE_H
 #define QGSSHAPEFILE_H
 
-#include<qstring.h>
+#include <vector>
+#include <qstring.h>
 #include <ogrsf_frmts.h>
 
 class OGRLayer;
@@ -26,14 +27,17 @@ class OGRDataSource;
  
 class QgsShapeFile
 {
-  public:  
+  public:
+
   QgsShapeFile(QString filename);
   ~QgsShapeFile();
-
   const char * getFeatureCount();
   const char * getFeatureClass();
+  
   bool is_valid();
   const char * getName();
+  std::vector <const char *> column_names;
+  std::vector <const char *> column_types;
 
 
   private:
@@ -41,8 +45,9 @@ class QgsShapeFile
   OGRLayer * ogrLayer;
   bool valid;
   const char * filename;
-  //const char *featureType = {"null", "Point", "Line", "Polygon", "MultiPoint", "MultiLine", "MultiPolygon"};
-
+  const char * geom_type;
+  char * geometry;
+  
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include <ogr_geometry.h>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 #include "cpl_error.h"
 #include "qgsshapefile.h"
@@ -38,6 +39,9 @@ QgsShapeFile::QgsShapeFile(QString name){
 QgsShapeFile::~QgsShapeFile(){
   delete ogrLayer;
   delete ogrDataSource;
+  delete filename;
+  delete geom_type;
+  delete[] geometry;
 }
 
 const char * QgsShapeFile::getFeatureCount(){
@@ -47,12 +51,28 @@ const char * QgsShapeFile::getFeatureCount(){
 }
 
 const char * QgsShapeFile::getFeatureClass(){
-  const char * res;
+  std::ostringstream out;
   OGRFeature *feat = ogrLayer->GetNextFeature();
   if(feat){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){
-      res = geom->getGeometryName();
+
+      geom_type = geom->getGeometryName();
+      int num = geom->WkbSize();
+      //geometry = new char[num];
+      //geom->exportToWkt(&geometry);
+
+      int numFields = feat->GetFieldCount();
+      for(int n=0; n<numFields; n++){
+        column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
+        column_types.push_back(OGRFieldDefn::GetFieldTypeName(feat->GetFieldDefnRef(n)->GetType()));
+        out << feat->GetFieldDefnRef(n)->GetType();
+        qWarning(QString(column_names[n]) + " of type: " + out.str() + " " + QString(column_types[n]));
+      }
+
+      //for(int k=0; k<num; k++)
+      //  std::cout<< (const char *)geometry[0] << "**";
+      
     }else{
       valid = false;
       delete geom;
@@ -62,7 +82,7 @@ const char * QgsShapeFile::getFeatureClass(){
     delete feat;
   }
   ogrLayer->ResetReading();    
-  return valid?res:NULL;
+  return valid?geom_type:NULL;
 }
 
 bool QgsShapeFile::is_valid(){
