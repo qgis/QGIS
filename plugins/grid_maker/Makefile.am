@@ -57,7 +57,7 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-libgridmakerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
+libgridmakerplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LADD)../../src/libqgis.la
 libgridmakerplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 libgridmakerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 libgridmakerplugin_la_LDFLAGS = -avoid-version -module
