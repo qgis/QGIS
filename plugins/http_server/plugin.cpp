@@ -22,9 +22,9 @@ email                : tim@linfiniti.com
 
 // includes
 
-#include <qgisapp.h>
 #include <qgsmaplayer.h>
 //#include <qgsrasterlayer.h>
+#include <qgisapp.h>
 #include "plugin.h"
 
 
@@ -161,10 +161,10 @@ void Plugin::requestReceived(QString theQString)
 {
   std::cout << "Recevied request to open " << theQString << std::endl;
   //do all the stuff needed to open the project and take a snapshot of it
-  if (qgisMainWindowPointer->addProject(theQString))
+  if (qGisInterface->addProject(theQString))
   {
     //let the httpdserver know we are finished and pass it back the output filename
-    mHttpDaemon->requestCompleted(QString("Projet opened successfully!"));
+    mHttpDaemon->requestCompleted(QString("Project opened successfully!"));
 
   }
   else
