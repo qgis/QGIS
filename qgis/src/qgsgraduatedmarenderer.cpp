@@ -88,7 +88,7 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
 
     //first find out the value for the classification attribute
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-    double value = vec[mClassificationField].fieldValue().toDouble();
+    double value = vec[0].fieldValue().toDouble();
 
     std::list < QgsRangeRenderItem * >::iterator it;
     //first find the first render item which contains the feature
