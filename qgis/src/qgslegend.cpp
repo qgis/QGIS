@@ -371,13 +371,13 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
     {
        // scroll view if we're near the edge
        QPoint p(contentsToViewport(e->pos()));
-       if (p.y() < 15)
-         {
-           scrollBy(0, -(15 - p.y()));
-       } else if (p.y() > visibleHeight() - 15)
-		  {
-		    scrollBy(0, p.y() - visibleHeight() - 15)
-		  }
+       //if (p.y() < 15)
+       //  {
+       //    scrollBy(0, -(15 - p.y()));
+       //} else if (p.y() > visibleHeight() - 15)
+		//  {
+		//    scrollBy(0, p.y() - visibleHeight() - 15)
+		//  }
       
 		
       // move item in list if we're dragging over another item
