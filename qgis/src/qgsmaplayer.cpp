@@ -14,19 +14,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include <cfloat>
 #include <iostream>
 
 #include <qapplication.h>
 #include <qdatetime.h>
-#include <qdom.h> 
-#include <qfileinfo.h> 
+#include <qdom.h>
+#include <qfileinfo.h>
 #include <qlabel.h>
 #include <qlistview.h>
 #include <qpainter.h>
 #include <qpopupmenu.h>
+#include <qevent.h>
 
 #include "qgsrect.h"
 #include "qgssymbol.h"
@@ -35,111 +36,112 @@
 
 
 
-QgsMapLayer::QgsMapLayer(int type, 
-                         QString lyrname, 
+QgsMapLayer::QgsMapLayer(int type,
+                         QString lyrname,
                          QString source)
-    : internalName(lyrname),
-      ID(""),
-      layerType(type), 
-      dataSource(source),
-      m_legendItem(0),
-      m_visible(true),
-      mShowInOverview(false),
-      mShowInOverviewItemId(0),
-      valid(true) // assume the layer is valid (data source exists and can be
-                  // used) until we learn otherwise
+        : internalName(lyrname),
+        ID(""),
+        layerType(type),
+        dataSource(source),
+        m_legendItem(0),
+        m_visible(true),
+        mShowInOverview(false),
+        mShowInOverviewItemId(0),
+        valid(true) // assume the layer is valid (data source exists and can be
+        // used) until we learn otherwise
 
 {
-  // Set the display name = internal name
-  layerName = internalName;
+    // Set the display name = internal name
+    layerName = internalName;
 
-  // Generate the unique ID of this layer
-  QDateTime dt = QDateTime::currentDateTime();
-  ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
+    // Generate the unique ID of this layer
+    QDateTime dt = QDateTime::currentDateTime();
+    ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
 
 #if defined(WIN32) || defined(Q_OS_MACX)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-  mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
-  mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
 
-  //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
+    mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
+    mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
 
-  //set some generous  defaults for scale based visibility
-  mMinScale = 0;
-  mMaxScale = 100000000;
-  mScaleBasedVisibility = false;
+    //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
+
+    //set some generous  defaults for scale based visibility
+    mMinScale = 0;
+    mMaxScale = 100000000;
+    mScaleBasedVisibility = false;
 
 }
 
 
 
 QgsMapLayer::~QgsMapLayer()
-{
-}
+{}
 const int QgsMapLayer::type()
 {
-  return layerType;
+    return layerType;
 }
 
 /** Get this layer's unique ID */
 QString const & QgsMapLayer::getLayerID() const
 {
-  return ID;
+    return ID;
 }
 
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
-  layerName = _newVal;
+    layerName = _newVal;
 }
 
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  return layerName;
+    return layerName;
 }
 
 QString const & QgsMapLayer::source() const
 {
-  return dataSource;
+    return dataSource;
 }
 
 QString const & QgsMapLayer::sourceName() const
 {
-  return internalName;
+    return internalName;
 }
 
 const QgsRect QgsMapLayer::extent()
 {
-  return layerExtent;
+    return layerExtent;
 }
 
 QgsRect QgsMapLayer::calculateExtent()
 {
-  //just to prevent any crashes
-  QgsRect rect(DBL_MAX, DBL_MAX, DBL_MIN, DBL_MIN);
-  return rect;
+    //just to prevent any crashes
+    QgsRect rect(DBL_MAX, DBL_MAX, DBL_MIN, DBL_MIN);
+    return rect;
 }
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
-//  std::cout << "In QgsMapLayer::draw" << std::endl;
+    //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDevice * )
 {
-//  std::cout << "In QgsMapLayer::draw" << std::endl;
+    //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDevice * )
 {
-//  std::cout << "In QgsMapLayer::draw" << std::endl;
+    //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 /** Read property of QString labelField. */
 const QString & QgsMapLayer::labelField()
 {
-  return m_labelField;
+    return m_labelField;
 }
 
 
@@ -171,15 +173,15 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
         mShowInOverview = false;
     }
 
-    // use scale dependent visibility flag 
+    // use scale dependent visibility flag
     QString scaleBasedVisibility = element.attribute("scaleBasedVisibilityFlag");
     if ( "1" == scaleBasedVisibility )
     {
-      setScaleBasedVisibility(true);
+        setScaleBasedVisibility(true);
     }
     else
     {
-      setScaleBasedVisibility(false);
+        setScaleBasedVisibility(false);
     }
     setMinScale(element.attribute("minScale").toFloat());
     setMaxScale(element.attribute("maxScale").toFloat());
@@ -246,8 +248,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     {
         maplayer.setAttribute( "showInOverviewFlag", 0 );
     }
-    
-    // use scale dependent visibility flag 
+
+    // use scale dependent visibility flag
     if ( scaleBasedVisibility() )
     {
         maplayer.setAttribute( "scaleBasedVisibilityFlag", 1 );
@@ -301,27 +303,27 @@ bool QgsMapLayer::writeXML_( QDomNode & layer_node, QDomDocument & document )
 /** Write property of QString labelField. */
 void QgsMapLayer::setLabelField(const QString & _newVal)
 {
-  m_labelField = _newVal;
+    m_labelField = _newVal;
 }
 
 bool QgsMapLayer::isValid()
 {
-  return valid;
+    return valid;
 }
 
 bool QgsMapLayer::visible()
 {
-  return m_visible;
+    return m_visible;
 }
 
 void QgsMapLayer::setVisible(bool vis)
 {
-  if (m_visible != vis)
-  {
-      // XXX should this happen automatically via signals/slots? ((QCheckListItem *) m_legendItem)->setOn(vis);
-    m_visible = vis;
-    emit visibilityChanged();
-  }
+    if (m_visible != vis)
+    {
+        // XXX should this happen automatically via signals/slots? ((QCheckListItem *) m_legendItem)->setOn(vis);
+        m_visible = vis;
+        emit visibilityChanged();
+    }
 }  /** Read property of int featureType. */
 
 
@@ -369,63 +371,63 @@ void QgsMapLayer::inOverview( bool b )
 
 void QgsMapLayer::updateItemPixmap()
 {
-  if (m_legendItem)             // XXX should we know about our legend?
-  {
-      QPixmap pix=*(this->legendPixmap());
-      if(mShowInOverview)
-      {
-	  //add overview glasses to the pixmap
-	  QPainter p(&pix);
-	  p.drawPixmap(0,0,mInOverviewPixmap);
-      }
-      if(isEditable())
-      {
-	  //add editing icon to the pixmap
-	  QPainter p(&pix);
-	  p.drawPixmap(30,0,mEditablePixmap);
-      }
-      ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
-  }  
+    if (m_legendItem)             // XXX should we know about our legend?
+    {
+        QPixmap pix=*(this->legendPixmap());
+        if(mShowInOverview)
+        {
+            //add overview glasses to the pixmap
+            QPainter p(&pix);
+            p.drawPixmap(0,0,mInOverviewPixmap);
+        }
+        if(isEditable())
+        {
+            //add editing icon to the pixmap
+            QPainter p(&pix);
+            p.drawPixmap(30,0,mEditablePixmap);
+        }
+        ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
+    }
 }
 
 void QgsMapLayer::updateOverviewPopupItem()
 {
     if (mShowInOverviewItemId != 0)
     {
-	popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
+        popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
     }
-   
+
 }
 
 const int &QgsMapLayer::featureType()
 {
-  return geometryType;
+    return geometryType;
 }
 
 /** Write property of int featureType. */
 void QgsMapLayer::setFeatureType(const int &_newVal)
 {
-  geometryType = _newVal;
+    geometryType = _newVal;
 }
 
 QPixmap *QgsMapLayer::legendPixmap()
 {
-  return &m_legendPixmap;
+    return &m_legendPixmap;
 }
 
 QgsLegendItem *QgsMapLayer::legendItem()
 {
-  return m_legendItem;
+    return m_legendItem;
 }
 
 void QgsMapLayer::setLegendItem(QgsLegendItem * li)
 {
-  m_legendItem = li;
+    m_legendItem = li;
 }
 
 QPopupMenu *QgsMapLayer::contextMenu()
 {
-  return 0;
+    return 0;
 }
 
 
@@ -452,7 +454,7 @@ long QgsMapLayer::featureCount() const
     return 0;
 } // QgsMapLayer::featureCount
 
-  
+
 
 int QgsMapLayer::fieldCount() const
 {
@@ -504,3 +506,9 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     initContextMenu_( app );
 
 } // QgsMapLayer::initContextMenu(QgisApp * app)
+
+void QgsMapLayer::keyPressed ( QKeyEvent * e )
+{
+  if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
+  std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
+}

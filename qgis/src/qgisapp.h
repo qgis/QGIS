@@ -42,6 +42,7 @@ class QgsMapCanvas;
 class QgsMapLayerRegistry;
 class QgsRasterLayer;
 class QCheckBox;
+class QEvent;
 #ifdef WIN32
 #include "qgisappbase.h"
 #else
@@ -224,6 +225,8 @@ private:
 
 private slots:
 
+    //! reimplements widget keyPress event so we can check if cancel was pressed
+    void keyPressEvent ( QKeyEvent * e );
 
    /** for when a menu bar item is activated
        Used to dynamically update pop-up menu items
@@ -344,6 +347,9 @@ public slots:
     void drawExtentRectangle(QPainter *);
 
 signals:
+    /** emitted when a key is pressed and we want non widget sublasses to be able
+        to pick up on this (e.g. maplayer) */
+    void keyPressed (QKeyEvent *e);
 
     /** emitted when a project file is successfully read
 
