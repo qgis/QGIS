@@ -5948,7 +5948,7 @@ med att identifiera objekt utan att zooma in väldigt nära.
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
-        <translation>GDT_CFloat64 - Komplex Float64 </translation>
+        <translation>Quantum GIS - </translation>
     </message>
 </context>
 </TS>
