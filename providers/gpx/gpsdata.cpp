@@ -423,13 +423,13 @@ GPSData* GPSData::getData(const QString& filename) {
   if (dataObjects.find(filename) == dataObjects.end()) {
     QDomDocument qdd;
     QFile file(filename);
-    GPSData data;
+    GPSData* data = new GPSData;
     std::cerr<<"Loading file "<<filename<<std::endl;
-    if (!(qdd.setContent(&file) && data.parseDom(qdd))) {
+    if (!(qdd.setContent(&file) && data->parseDom(qdd))) {
       std::cerr<<filename<<"is not valid GPX!"<<std::endl;
       return 0;
     }
-    dataObjects[filename] = std::pair<GPSData, unsigned>(data, 0);
+    dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
     std::cerr<<filename<<" is already loaded"<<std::endl;
@@ -437,7 +437,7 @@ GPSData* GPSData::getData(const QString& filename) {
   // return a pointer and increase the reference count for that filename
   DataMap::iterator iter = dataObjects.find(filename);
   ++(iter->second.second);
-  return (GPSData*)&(iter->second.first);
+  return (GPSData*)(iter->second.first);
 }
 
 
@@ -450,6 +450,7 @@ void GPSData::releaseData(const QString& filename) {
     std::cerr<<"unrefing "<<filename<<std::endl;
     if (--(iter->second.second) == 0) {
       std::cerr<<"No one's using "<<filename<<", I'll erase it"<<std::endl;
+      delete iter->second.first;
       dataObjects.erase(iter);
     }
   }
