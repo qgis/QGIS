@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.31 2004/03/06 11:58:19 timlinux Exp
+ChangeLog,v 1.32 2004/03/09 12:32:51 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-06 [ts] 0.1.0devel6
+** Completed session management of plugins (so active plugins are remembered
+   when qgis closes and reloaded in the next session).
 
 2004-03-06 [ts] 0.1.0devel6
 ** Save state of plugins in ~/.qt/qtrc file (in progress). State is saved,
