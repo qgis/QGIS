@@ -38,6 +38,7 @@ class ProjectTest : public CppUnit::TestFixture
     CPPUNIT_TEST( readNullEntries );
     CPPUNIT_TEST( testWriteEntries );
     CPPUNIT_TEST( testRemoveEntry );
+    CPPUNIT_TEST( testClearProperties );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -214,6 +215,19 @@ class ProjectTest : public CppUnit::TestFixture
         readNullEntries();
         
     } // testRemoveEntry
+
+
+    void testClearProperties()
+    {   // rebuild the properties deleted in testRemoveEntry()
+        testWriteEntries();
+
+        // remove all in one fell swoop
+        QgsProject::instance()->clearProperties();
+
+        // since we've removed everything, re-run this test to verify that
+        readNullEntries();
+    } // testClearProperties
+
 
 private:
 
