@@ -1,8 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.112 2004/06/07 16:45:02 larsl Exp
+ChangeLog,v 1.113 2004/06/08 04:08:47 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 
+2004-06-07 [gsherman] 0.3.0devel17
+** Added update threshold to user options. Update threshold defines the number
+   features to read before updating the map display (canvas). If set to zero
+   the display is not updated until all features have been read.
+        
 2004-06-07 [larsl] 0.3.0devel16
 ** Changed some calls to QMessageBox::question() to QMessageBox::information()
    since Qt 3.1.2 doesn't have question()
@@ -10,13 +15,21 @@ Version 0.3 'Madison' .... development version
 2004-06-07 [ts] 0.3.0devel15
 ** Implemented map overview using maplayers rather than snapshots of a raster layer.
 
-** Implemented QgsMapLayerRegistry  - s singleton object that keeps track of loaded layers. When a layer is added an entry is made in the registry. When a layer is removed, the registry emits a layerWillBeRemoved signal that is connected to any mapvcanvas, legend etc that may be using the layer. The objects using the layer can then remove any reference they make to the layer - after which the registry deletes the layer object.
+** Implemented QgsMapLayerRegistry  - s singleton object that keeps track of
+	 loaded layers. When a layer is added an entry is made in the registry. When a
+	 layer is removed, the registry emits a layerWillBeRemoved signal that is
+	 connected to any mapvcanvas, legend etc that may be using the layer. The
+	 objects using the layer can then remove any reference they make to the layer -
+	 after which the registry deletes the layer object.
 
-** This fixes a problem with adding an overview map which caused qgis to crash when a layer was removed because it was trying to delete the same pointer twice.
+** This fixes a problem with adding an overview map which caused qgis to crash
+	 when a layer was removed because it was trying to delete the same pointer
+	 twice.
 
 ** Added a better implementation of the overview map below map legend.
 
-** Refactoring in qgis app - all private members now adhere to qgis naming conventions (prefixed with m).
+** Refactoring in qgis app - all private members now adhere to qgis naming
+	 conventions (prefixed with m).
 
 
 ** Import Note *** ONLY THE MAPLAYER REGISTRY SHOULD DELETE LAYERS NOW ***
