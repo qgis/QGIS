@@ -1,7 +1,15 @@
 QGIS Change Log
-ChangeLog,v 1.51 2004/04/02 22:14:27 jobi Exp
+ChangeLog,v 1.52 2004/04/03 11:05:34 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-03 [ts] 0.1.0devel28
+** Bug fix (still unconfirmed if it cures the bug!) for raster layer rendering
+artifacts.
+
+** Added new color ramper for grayscale and pseudcolor grayscale image called
+freak out (its a bit psycadellic at the moment). Last class break ne
+eds some work!
 
 2004-04-02 [jobi] 0.1.0devel27
 ** Added version checks for autoconf, automake and libtool                                                                                                     
