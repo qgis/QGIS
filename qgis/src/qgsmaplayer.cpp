@@ -58,6 +58,7 @@ QgsMapLayer::QgsMapLayer(int type,
     // Generate the unique ID of this layer
     QDateTime dt = QDateTime::currentDateTime();
     ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
+    ID.replace(" ", "_");
 
 #if defined(WIN32) || defined(Q_OS_MACX)
 
