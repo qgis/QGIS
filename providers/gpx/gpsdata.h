@@ -172,6 +172,9 @@ class GPSData {
       QDomDocument and return true, otherwise it will return false. */
   bool parseDom(QDomDocument& qdd);
   
+  /** This function will fill the given QDomDocument with child nodes that
+      represent the data in this GPSData object as a GPX tree. */
+  void fillDom(QDomDocument& qdd);
   
   /** This function returns a pointer to the GPSData object associated with
       the file @c filename. If the file does not exist or can't be parsed,

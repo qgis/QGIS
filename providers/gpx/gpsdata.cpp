@@ -306,6 +306,22 @@ bool GPSData::parseDom(QDomDocument& qdd) {
 }
 
 
+void GPSData::fillDom(QDomDocument& qdd) {
+  QDomElement gpxElt = qdd.createElement("gpx");
+  qdd.appendChild(gpxElt);
+  gpxElt.setAttribute("version", "1.0");
+  for (int i = 0; i < waypoints.size(); ++i) {
+    QDomElement wptElt = qdd.createElement("wpt");
+    wptElt.setAttribute("lat", QString("%1").arg(waypoints[i].lat, 0, 'f'));
+    wptElt.setAttribute("lon", QString("%1").arg(waypoints[i].lon, 0, 'f'));
+    QDomElement nameElt = qdd.createElement("name");
+    nameElt.appendChild(qdd.createTextNode(waypoints[i].name));
+    wptElt.appendChild(nameElt);
+    gpxElt.appendChild(wptElt);
+  }
+}
+
+
 bool GPSData::parseGPX(QDomNode& node) {
   // start parsing child nodes
   node = node.firstChild();
