@@ -145,6 +145,10 @@ void QgsIdentifyResults::addAttribute(QListViewItem * fnode, QString field, QStr
 {
   new QListViewItem(fnode, field, value);
 }
+void QgsIdentifyResults::addAttribute(QString field, QString value)
+{
+  new QListViewItem(lstResults, field, value);
+}
 
 /** Add a feature node to the list */
 QListViewItem *QgsIdentifyResults::addNode(QString label)
@@ -155,6 +159,11 @@ QListViewItem *QgsIdentifyResults::addNode(QString label)
 void QgsIdentifyResults::setTitle(QString title)
 {
   setCaption("Identify Results - " + title);
+}
+
+void QgsIdentifyResults::setColumnText ( int column, const QString & label )
+{
+    lstResults->setColumnText ( column, label );
 }
 
 // Run the action that was selected in the popup menu
