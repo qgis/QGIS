@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
@@ -82,10 +83,12 @@ const char * QgsShapeFile::getFeatureClass(){
                     break;                    
           case 'D': column_types.push_back("date");
                     break;
-          case 'C': num << (int)fda.field_length << std::ends;
-                    str_type += QString(num.str());
-                    str_type += ")";
-                    column_types.push_back((const char *)str_type);
+          case 'C': 
+                    str_type= QString("varchar(%1)").arg(fda.field_length);
+                    qWarning(str_type);
+                 //   str_type += QString(num.str());
+                 //   str_type += ")";
+                    column_types.push_back(str_type);
                     break;
           case 'L': column_types.push_back("boolean");
                     break;
@@ -123,9 +126,9 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
   table = table.section('.', 0, 0);
   QString query = "CREATE TABLE "+table+"(gid int4, "; 
   for(int n=0; n<column_names.size(); n++){
-    query += QString(column_names[n]).lower();
+    query += column_names[n].lower();
     query += " ";
-    query += QString(column_types[n]);
+    query += column_types[n];
     if(n < column_names.size() -1)
       query += ", ";
   }

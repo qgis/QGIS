@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #ifndef QGSSHAPEFILE_H
 #define QGSSHAPEFILE_H
@@ -39,8 +40,8 @@ class QgsShapeFile
     
   bool is_valid();
   const char * getName();
-  std::vector <const char *> column_names;
-  std::vector <const char *> column_types;
+  std::vector <QString> column_names;
+  std::vector <QString> column_types;
 
 
   private:
