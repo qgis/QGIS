@@ -66,7 +66,8 @@ public:
    //! return number of layers on the map
    int layerCount();
    void freeze(bool frz=true);
-   
+	//! remove the layer defined by key
+	void remove(QString key);   
 public slots:
 	void render2();
 	//! This slot is connected to the visibility change of one or more layers

@@ -426,3 +426,10 @@ if(!frozen){
 void QgsMapCanvas::freeze(bool frz){
 	frozen = frz;
 }
+
+void QgsMapCanvas::remove(QString key){
+	QgsMapLayer *l = layers[key];
+	
+	layers.erase(key);
+	delete l;
+}
