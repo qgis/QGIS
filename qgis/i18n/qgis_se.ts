@@ -17,6 +17,42 @@
         <source>Top Right</source>
         <translation>Uppe till höger</translation>
     </message>
+    <message>
+        <source> metres/km</source>
+        <translation>meter/km</translation>
+    </message>
+    <message>
+        <source> feet</source>
+        <translation>feet</translation>
+    </message>
+    <message>
+        <source> degrees</source>
+        <translation>grader</translation>
+    </message>
+    <message>
+        <source> metres</source>
+        <translation>meter</translation>
+    </message>
+    <message>
+        <source> km</source>
+        <translation>km</translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation>Upptick</translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation>Nertick</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation>Streck</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation>Låda</translation>
+    </message>
 </context>
 <context>
     <name>PluginGuiBase</name>
@@ -181,7 +217,7 @@
     </message>
     <message>
         <source>GPX and LOC loader</source>
-        <translation>GPX- och LOC-laddare</translation>
+        <translation type="obsolete">GPX- och LOC-laddare</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -306,27 +342,222 @@
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Skriv din copyright-text nedan. Du kan använda enkel HTML-formattering i din text, t.ex:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Fet text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Kursiv text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation type="unfinished">Alt+O</translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Avbryt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished">Alt+C</translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <source>Enable North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivera nordpil</translation>
+    </message>
+    <message>
+        <source>Load GPX or LOC</source>
+        <translation>Ladda GPX / LOC</translation>
+    </message>
+    <message>
+        <source>Import other file</source>
+        <translation>Importera annan fil</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX and LOC files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS kan bara ladda GPX- och LOC-filer, men många andra format  
+kan konverteras till GPX med GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). Detta kräver att du har GPSBabel installerat där QGIS 
+kan hitta det.&lt;/p&gt;
+&lt;p&gt;Välj en GPS-fil som du vill importera, detaljtypen som du vill använda, 
+ett filnamn som du vill spara den konverterade GPX-filen som 
+och ett namn för det nya lagret. Alla filformat kan inte lagra waypoints, rutter och spår, 
+så några detaljtyper är inaktiverade för en del filformat.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>File to import:</source>
+        <translation>Fil att importera:</translation>
+    </message>
+    <message>
+        <source>Feature type:</source>
+        <translation>Detaljtyp:</translation>
+    </message>
+    <message>
+        <source>GPX output file:</source>
+        <translation>GPX-fil (utdata):</translation>
+    </message>
+    <message>
+        <source>Layer name:</source>
+        <translation>Lagernamn:</translation>
+    </message>
+    <message>
+        <source>Download from GPS</source>
+        <translation>Hämta från GPS</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
+protocol, the device your GPS is connected to, the feature type you want 
+to download, a name for your new layer, and the GPX file where 
+you want to store the data.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
+don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Det här verktyget hjälper dig att hämta data från en GPS-enhet.. Välj ditt protokoll, 
+porten som din GPS är kopplad till, detaljtypen du vill ladda ner, 
+ett namn för ditt nya lager och namnet på den nya GPX-filen där du vill lagra datan.&lt;/p&gt;
+&lt;p&gt;Detta verktyg använder GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
+för att överföra data. Om du inte har GPSBabel installerat där QGIS kan hitta det så kommer
+detta verktyg inte att fungera.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation>Protokoll:</translation>
+    </message>
+    <message>
+        <source>Device file:</source>
+        <translation>Port:</translation>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation>Utdatafil:</translation>
+    </message>
+    <message>
+        <source>Garmin</source>
+        <translation>Garmin</translation>
+    </message>
+    <message>
+        <source>Magellan</source>
+        <translation>Magellan</translation>
+    </message>
+    <message>
+        <source>Upload to GPS</source>
+        <translation>Skicka till GPS</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
+Choose the layer you want to upload, your protocol, and the device your 
+GPS is connected to.&lt;/p&gt;
+&lt;p&gt;This tool uses the program &lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;GPSBabel&lt;/a&gt; to transfer the data. If you don&apos;t 
+have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Det här verktyget hjälper dig att ladda upp data till en GPS-enhet. 
+Välj det GPS-lager du vill ladda upp, ditt protokoll och porten som din GPS 
+är kopplad till.&lt;/p&gt;
+&lt;p&gt;Detta verktyg använder programmet GPSBabel &lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;GPSBabel&lt;/a&gt; för att överföra 
+data. Om du inte har GPSBabel installerat där QGIS kan hitta det så kommer det här verktyget inte att fungera.
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Data layer:</source>
+        <translation>Datalager:</translation>
+    </message>
+    <message>
+        <source>Scale Bar Plugin</source>
+        <translation>Skalplugin</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Detta plugin ritar en skala på kartan. Notera att storleksinställningen nedan är en &apos;önskad&apos; storlek och kan behöva ändras 
+av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i projektinställningarna.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Size of bar:</source>
+        <translation>Storlek:</translation>
+    </message>
+    <message>
+        <source>Select Colour</source>
+        <translation>Välj färg</translation>
+    </message>
+    <message>
+        <source>Placement:</source>
+        <translation>Placering:</translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation>Nertick</translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation>Upptick</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation>Låda</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation>Streck</translation>
+    </message>
+    <message>
+        <source>Select the style of the scale bar</source>
+        <translation>Välj typ av skala</translation>
+    </message>
+    <message>
+        <source>Colour of bar:</source>
+        <translation>Färg på skala:</translation>
+    </message>
+    <message>
+        <source>Scale bar style:</source>
+        <translation>Typ av skala:</translation>
+    </message>
+    <message>
+        <source>Enable scale bar</source>
+        <translation>Aktivera skala</translation>
+    </message>
+    <message>
+        <source>Automatically snap to round number on resize</source>
+        <translation>Runda av till vettig storlek</translation>
     </message>
 </context>
 <context>
@@ -656,23 +887,7 @@
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add to overview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Would you like to add this layer to the overview map?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>Websida: http://qgis.org</translation>
     </message>
 </context>
 <context>
@@ -1031,167 +1246,187 @@
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Arkiv</translation>
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lager</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vy</translation>
     </message>
     <message>
         <source>&amp;Open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Öppna Projekt</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Add a &amp;PostGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ett &amp;PostGIS-lager</translation>
     </message>
     <message>
         <source>&amp;Refresh </source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uppdatera</translation>
     </message>
     <message>
         <source>Zoom to &amp;full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa &amp;allt</translation>
     </message>
     <message>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma in</translation>
     </message>
     <message>
         <source>Zoom &amp;Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma u&amp;t</translation>
     </message>
     <message>
         <source>&amp;Zoom to selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa &amp;markering</translation>
     </message>
     <message>
         <source>I&amp;dentify</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;dentifiera</translation>
     </message>
     <message>
         <source>Add a &amp;Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ett &amp;Vektorlager</translation>
     </message>
     <message>
         <source>&amp;Attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Attributtabell</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Föregående</translation>
     </message>
     <message>
         <source>Zoom to &amp;previous extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma till &amp;föregående vy</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Inställningar</translation>
     </message>
     <message>
         <source>&amp;Save Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Spara Projekt</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save Project &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara Projekt  &amp;Som...</translation>
     </message>
     <message>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt Projekt</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nytt Projekt</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Plugin &amp;Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pluginhanterare</translation>
     </message>
     <message>
         <source>Check QGIS &amp;Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrollera QGIS-&amp;Version</translation>
     </message>
     <message>
         <source>Export As Mapserver file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportera Som Mapserver-fil</translation>
     </message>
     <message>
         <source>Export As &amp;Mapserver file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportera Som &amp;Mapserver-fil</translation>
     </message>
     <message>
         <source>Add a &amp;Raster Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ett &amp;Rasterlager</translation>
     </message>
     <message>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportera Som Bild</translation>
     </message>
     <message>
         <source>E&amp;xport As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xportera Som Bild</translation>
     </message>
     <message>
         <source>&amp;Whats this?</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vad är det här?</translation>
     </message>
     <message>
         <source>Shift+F1</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+F1</translation>
     </message>
     <message>
         <source>Project &amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt&amp;egenskaper</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">Egenskaper</translation>
+        <translation>Egenskaper</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation type="unfinished">&amp;Egenskaper</translation>
+        <translation>&amp;Egenskaper</translation>
     </message>
     <message>
         <source>Properties for the selected layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Egenskaper för det markerade lagret</translation>
     </message>
     <message>
         <source>Zoom to layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma till lager</translation>
     </message>
     <message>
         <source>Zoom to &amp;layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma till &amp;lager</translation>
     </message>
     <message>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv ut</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;kriv ut</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Capture Point</source>
+        <translation>Kopiera Punkt</translation>
+    </message>
+    <message>
+        <source>Add All To Overview</source>
+        <translation>Lägg till Allt i Översikten</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <source>Remove All From Overview</source>
+        <translation>Ta Bort Allt från Översikten</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
     </message>
 </context>
 <context>
@@ -1453,6 +1688,10 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
         <source>Outline Width:</source>
         <translation>Kantbredd:</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
 </context>
 <context>
     <name>QgsDbSourceSelect</name>
@@ -1525,11 +1764,11 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Tables</source>
-        <translation>Tabeller</translation>
+        <translation type="obsolete">Tabeller</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation>Uppkopplingsinformation</translation>
+        <translation type="obsolete">Uppkopplingsinformation</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -1550,6 +1789,18 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <message>
         <source>Close</source>
         <translation>Stäng</translation>
+    </message>
+    <message>
+        <source>PostgreSQL Connections</source>
+        <translation>PostgreSQL-uppkopplingar</translation>
+    </message>
+    <message>
+        <source>Where Clause:</source>
+        <translation>Where-sats:</translation>
+    </message>
+    <message>
+        <source>Tables:</source>
+        <translation>Tabeller:</translation>
     </message>
 </context>
 <context>
@@ -1704,35 +1955,35 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Hjälp</translation>
+        <translation>&amp;Hjälp</translation>
     </message>
     <message>
         <source>Alt+H</source>
-        <translation type="unfinished">Alt+H</translation>
+        <translation>Alt+H</translation>
     </message>
     <message>
         <source>&amp;Parse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Parsa</translation>
     </message>
     <message>
         <source>Alt+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+P</translation>
     </message>
     <message>
         <source>&amp;Add Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lägg Till Lager</translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation type="unfinished">Alt+V</translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Stäng</translation>
+        <translation>&amp;Stäng</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished">Alt+C</translation>
+        <translation>Alt+C</translation>
     </message>
 </context>
 <context>
@@ -2205,7 +2456,7 @@ Pattern</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
 </context>
 <context>
@@ -2694,51 +2945,83 @@ med att identifiera detaljer utan att zooma in väldigt nära.
     </message>
     <message>
         <source>&amp;Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Utseende</translation>
     </message>
     <message>
         <source>&amp;Splash Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Splashbild</translation>
     </message>
     <message>
         <source>&amp;Icon Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ikontema</translation>
     </message>
     <message>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;
-&lt;b&gt;Note:&lt;/b&gt; 
-Specify the value in thousandths.  
-The search radius is calculated as:
-&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
-&lt;/ul&gt;
-By default QGIS uses a value of 5. Increase the value if you have trouble
-identifying features without zooming in very close.
-&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Not: &lt;/b&gt;Temaändringar sker inte förrän nästa gång QGIS startas</translation>
     </message>
     <message>
         <source>Help &amp;Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Hjälp&amp;läsare</translation>
     </message>
     <message>
         <source>Open help documents with</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna hjälpdokument med</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Not:&lt;/b&gt; Läsaren måste finnas i din PATH, eller så kan du ange &lt;br&gt;hela sökvägen ovan</translation>
+    </message>
+    <message>
+        <source>&amp;Rendering</source>
+        <translation>&amp;Rendering</translation>
+    </message>
+    <message>
+        <source>&amp;Update During Drawing</source>
+        <translation>&amp;Uppdatera Under Ritning</translation>
+    </message>
+    <message>
+        <source>Update display after reading</source>
+        <translation>Uppdatera skärmbild efter läsning</translation>
+    </message>
+    <message>
+        <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
+        <translation>Kartbilden kommer att uppdateras efter att såhär många detaljer har lästs från datakällan</translation>
+    </message>
+    <message>
+        <source>features</source>
+        <translation>detaljer</translation>
+    </message>
+    <message>
+        <source>(Set to 0 to not update the display until all features have been read)</source>
+        <translation>(Sätt till 0 för att inte uppdatera förrän alla detaljer har lästs)</translation>
+    </message>
+    <message>
+        <source>&amp;Selection</source>
+        <translation>&amp;Markering</translation>
+    </message>
+    <message>
+        <source>Search Radius</source>
+        <translation>Sökradie</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&lt;br&gt;
+By default QGIS uses a value of 5. Increase the value if you have trouble
+identifying features without zooming in very close.
+&lt;/html&gt;</source>
+        <translation>&lt;html&gt;
+&lt;b&gt;Notera:&lt;/b&gt; Ange värdet i tusendelar.  Formeln för sökradien är:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Kartvyns bredd) * ( Värde/1000.0)&lt;/i&gt;
+&lt;br&gt;
+QGIS använder värdet 5 som standard. Öka värdet om du har problem 
+med att identifiera detaljer utan att zooma in väldigt nära.
+&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3078,55 +3361,75 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Data Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datatyp:</translation>
     </message>
     <message>
         <source>GDT_Byte - Eight bit unsigned integer</source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Byte - Åttabitars ickenegativt heltal</translation>
     </message>
     <message>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_UInt16 - Sextonbitars ickenegativt heltal</translation>
     </message>
     <message>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Int16 - Sextonbitars heltal</translation>
     </message>
     <message>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_UInt32 - Trettiotvåbitars ickenegativt heltal</translation>
     </message>
     <message>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Int32 - Trettiotvåbitars heltal</translation>
     </message>
     <message>
         <source>GDT_Float32 - Thirty two bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Float32 - Trettiotvåbitars flyttal</translation>
     </message>
     <message>
         <source>GDT_Float64 - Sixty four bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Float64 - Sextiofyrabitars flyttal</translation>
     </message>
     <message>
         <source>GDT_CInt16 - Complex Int16 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CInt16 - Komplex Int16 </translation>
     </message>
     <message>
         <source>GDT_CInt32 - Complex Int32 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CInt32 - Komplex Int32 </translation>
     </message>
     <message>
         <source>GDT_CFloat32 - Complex Float32 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CFloat32 - Komplex Float32 </translation>
     </message>
     <message>
         <source>GDT_CFloat64 - Complex Float64 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CFloat64 - Komplex Float64 </translation>
     </message>
     <message>
         <source>Could not determine raster data type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte bestämma rastertyp.</translation>
+    </message>
+    <message>
+        <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
+        <translation>&lt;center&gt;&lt;b&gt;Rasterlager&lt;/b&gt;&lt;/center&gt;</translation>
+    </message>
+    <message>
+        <source>Show In &amp;Overview</source>
+        <translation>Visa i &amp;Översikt</translation>
+    </message>
+    <message>
+        <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
+        <translation>&lt;center&gt;&lt;b&gt;Genomskinlighet&lt;/b&gt;&lt;/center&gt;</translation>
+    </message>
+    <message>
+        <source>Average Magphase</source>
+        <translation>Average Magphase</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation>Average</translation>
     </message>
 </context>
 <context>
@@ -3169,11 +3472,11 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumner:</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rader:</translation>
     </message>
 </context>
 <context>
@@ -3372,7 +3675,7 @@ identifying features without zooming in very close.
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Anteckningar&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
@@ -3408,7 +3711,7 @@ identifying features without zooming in very close.
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:24pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Stora rasterlager kan försämra navigationshastigheten i QGIS. Genom att skapa kopior av datan i mindre upplösningar (pyramider) så kan prestandan förbättras avsevärt när QGIS väljer den upplösning som passar bäst till den nuvarande zoom-nivån. Du måste ha skrivrättigheter i den katalogen där datan lagras för att kunna bygga pyramider. &lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Notera att pyramidbyggande kan ändra datafilerna, och när de väl har byggts så kan de inte tas bort.&lt;/span&gt;&lt;/p&gt;
@@ -3421,19 +3724,43 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild</translation>
     </message>
     <message>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumner:</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rader:</translation>
     </message>
     <message>
         <source>Palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Palett:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Anteckningar&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Stora raster kan göra navigeringen i QGIS långsammare. Genom att skapa kopior i lägre upplösning (pyramider) så kan navigeringen göras avsevärt snabbare eftersom QGIS väljer den besta upplösningen beroende av zoomnivån. Du måste ha skrivrättigheter i katalogen som originaldatan är lagrad i för att kunna skapa pyramider. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Notera att pyramidbyggande kan ändra originaldatan, och när pyramiderna väl har skapats så kan de inte tas bort.&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -3516,6 +3843,18 @@ identifying features without zooming in very close.
         <source>Close</source>
         <translation type="obsolete">Stäng</translation>
     </message>
+    <message>
+        <source>Outline</source>
+        <translation>Kant</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation>Fyllning</translation>
+    </message>
 </context>
 <context>
     <name>QgsSpitBase</name>
@@ -3533,15 +3872,15 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Edit ...</source>
-        <translation>Redigera ...</translation>
+        <translation type="obsolete">Redigera ...</translation>
     </message>
     <message>
         <source>New ...</source>
-        <translation>Ny ...</translation>
+        <translation type="obsolete">Ny ...</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Uppkoppling</translation>
+        <translation type="obsolete">Uppkoppling</translation>
     </message>
     <message>
         <source>Import</source>
@@ -3549,7 +3888,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Quit</source>
-        <translation>Avsluta</translation>
+        <translation type="obsolete">Avsluta</translation>
     </message>
     <message>
         <source>Help</source>
@@ -3581,7 +3920,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Use Default</source>
-        <translation>Använd Standard</translation>
+        <translation type="obsolete">Använd Standard</translation>
     </message>
     <message>
         <source>Geometry Column Name</source>
@@ -3593,7 +3932,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Add ...</source>
-        <translation>Lägg till ...</translation>
+        <translation type="obsolete">Lägg till ...</translation>
     </message>
     <message>
         <source>Remove All</source>
@@ -3602,6 +3941,74 @@ identifying features without zooming in very close.
     <message>
         <source>Global Schema</source>
         <translation>Globalt Schema</translation>
+    </message>
+    <message>
+        <source>Shapefile to PostGIS Import Tool</source>
+        <translation>Shapefile-till-PostGIS-verktyg</translation>
+    </message>
+    <message>
+        <source>Import the defined shapefiles to PostGIS</source>
+        <translation>Importera de definierade shapefilerna till PostGIS</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Stäng</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Lägg till</translation>
+    </message>
+    <message>
+        <source>Add a shapefile to the list of files to be imported</source>
+        <translation>Lägg till en shapefile till listan av filer som ska importeras</translation>
+    </message>
+    <message>
+        <source>Remove the selected shapefile from the import list</source>
+        <translation>Ta bort en shapefile från importeringslistan</translation>
+    </message>
+    <message>
+        <source>Remove all the shapefiles from the import list</source>
+        <translation>Ta bort alla shapefiles från importeringslistan</translation>
+    </message>
+    <message>
+        <source>Use Default SRID</source>
+        <translation>Använd standardvärde för SRID</translation>
+    </message>
+    <message>
+        <source>Set the SRID to the default value</source>
+        <translation>Sätt SRID till standardvärde</translation>
+    </message>
+    <message>
+        <source>Use Default Geometry Column Name</source>
+        <translation>Använd Standardkolumnnamn för Geometri</translation>
+    </message>
+    <message>
+        <source>Set the geometry column name to the default value</source>
+        <translation>Sätt kolumnnamnet för geometri till standardvärde</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Ny</translation>
+    </message>
+    <message>
+        <source>Create a new PostGIS connection</source>
+        <translation>Skapa en PostGIS-uppkoppling</translation>
+    </message>
+    <message>
+        <source>Remove the current PostGIS connection</source>
+        <translation>Ta bort nuvarande PostGIS-uppkoppling</translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation>Koppla upp</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Redigera</translation>
+    </message>
+    <message>
+        <source>Edit the current PostGIS connection</source>
+        <translation>Ändra den nuvarande PostGIS-uppkopplingen</translation>
     </message>
 </context>
 <context>
@@ -3637,6 +4044,14 @@ identifying features without zooming in very close.
     <message>
         <source>&amp;Remove</source>
         <translation>&amp;Radera</translation>
+    </message>
+    <message>
+        <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
+        <translation>&lt;center&gt;&lt;b&gt;Vektorlager&lt;/b&gt;&lt;/center&gt;</translation>
+    </message>
+    <message>
+        <source>Show In &amp;Overview</source>
+        <translation>Visa I &amp;Översikt</translation>
     </message>
 </context>
 <context>
@@ -3691,6 +4106,13 @@ identifying features without zooming in very close.
     <message>
         <source>TextLabel2</source>
         <translation>TextEtikett2</translation>
+    </message>
+</context>
+<context>
+    <name>SplashScreen</name>
+    <message>
+        <source>Quantum GIS - </source>
+        <translation>GDT_CFloat64 - Komplex Float64 </translation>
     </message>
 </context>
 </TS>
