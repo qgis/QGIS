@@ -136,7 +136,12 @@ QgsFeature * QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
       return 0x0;               // so return a null feature indicating that we got a null feature
     }
 
-    f = new QgsFeature(feat->GetFID());
+    // get the feature type name, if any
+    OGRFeatureDefn * featureDefinition = feat->GetDefnRef();
+    QString featureTypeName =   
+        featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+
+    f = new QgsFeature(feat->GetFID(), featureTypeName );
 
     Q_CHECK_PTR( f );
 

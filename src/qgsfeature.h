@@ -35,7 +35,7 @@ class QgsFeature {
 
     //! Constructor
     QgsFeature();
-    QgsFeature(int id);
+    QgsFeature(int id, QString const & typeName = "" );
 
 
     /** copy ctor needed due to internal pointer */
@@ -58,6 +58,16 @@ class QgsFeature {
      * @param id Feature id
      */
      void setFeatureId(int id);
+
+
+    /** returns the feature's type name
+     */
+     QString const & typeName() const;
+
+
+    /** sets the feature's type name
+     */
+     void typeName( QString const & typeName );
 
     /**
      * Get the attributes for this feature.
@@ -130,6 +140,10 @@ class QgsFeature {
 
     //! Flag to indicate if this feature is valid
     bool mValid;
-};
+
+    /// feature type name
+    QString mTypeName;
+
+}; // class QgsFeature
 
 #endif

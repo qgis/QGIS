@@ -30,8 +30,8 @@ QgsFeature::QgsFeature()
 }
 
 
-QgsFeature::QgsFeature(int id)
-    : mFid(id), geometry(0), geometrySize(0)
+QgsFeature::QgsFeature(int id, QString const & typeName )
+    : mFid(id), geometry(0), geometrySize(0), mTypeName(typeName)
 {
 }
 
@@ -168,6 +168,23 @@ void QgsFeature::setFeatureId(int id)
   mFid = id;
 
 }
+
+
+QString const & QgsFeature::typeName() const
+{
+  return mTypeName;
+} // QgsFeature::typeName
+
+
+
+/** sets the feature's type name
+ */
+void QgsFeature::typeName( QString const & typeName )
+{
+    mTypeName = typeName;
+} // QgsFeature::typeName
+
+
 
 /** Set the pointer to the feature geometry
 */
