@@ -93,6 +93,7 @@ void QgsSpit::newConnection()
 
 	if (con->exec()) {
 		populateConnectionList();
+		getSchema();
 	}
 }
 
@@ -101,6 +102,7 @@ void QgsSpit::editConnection()
 	QgsConnectionDialog *con = new QgsConnectionDialog(this, cmbConnections->currentText());
 	if (con->exec()) {
 		con->saveConnection();
+		getSchema();
 	}
 }
 
@@ -159,6 +161,7 @@ void QgsSpit::addFile()
       	  tblShapefiles->setText(row, 2, QString("%1").arg(file->getFeatureCount()));        
 	        tblShapefiles->setText(row, 3, file->getTable());
 					QComboTableItem* schema = new QComboTableItem(tblShapefiles, schema_list);
+					schema->setCurrentItem(cmbSchema->currentText());
 					tblShapefiles->setItem(row, 4, schema);
     	    total_features += file->getFeatureCount();
       	}
@@ -287,6 +290,8 @@ PGconn* QgsSpit::checkConnection(){
 
 void QgsSpit::getSchema(){
 	QSettings settings;
+	schema_list.clear();
+	schema_list<<"public";
 	PGconn* pd = checkConnection();
 	if(pd!=NULL){
 	  QString connName = cmbConnections->currentText();	
@@ -295,15 +300,10 @@ void QgsSpit::getSchema(){
     PGresult *schemas = PQexec(pd, (const char *) schemaSql);
 		// get the schema names
     if (PQresultStatus(schemas) == PGRES_TUPLES_OK) {
-			schema_list.clear();
-			bool pub_trigger = false;
     	for (int i = 0; i < PQntuples(schemas); i++) {
-        schema_list << QString(PQgetvalue(schemas, i, 0));
-				if(schema_list[i]=="public")
-					pub_trigger = true;
-      }
-			if(!pub_trigger)
-				schema_list<<"public";
+				if(QString(PQgetvalue(schemas, i, 0))!="public")
+        	schema_list << QString(PQgetvalue(schemas, i, 0));
+      }				
     }
     PQclear(schemas);
 	}
@@ -313,6 +313,20 @@ void QgsSpit::getSchema(){
 		tblShapefiles->clearCell(i,4);
 		QComboTableItem* temp_schemas = new QComboTableItem(tblShapefiles, schema_list);
 		temp_schemas->setCurrentItem("public");
+		tblShapefiles->setItem(i,4, temp_schemas);
+		
+	}
+	
+	cmbSchema->clear();
+	cmbSchema->insertStringList(schema_list);
+	cmbSchema->setCurrentText("public");
+}
+
+void QgsSpit::updateSchema(){
+	for(int i=0; i<tblShapefiles->numRows(); i++){
+		tblShapefiles->clearCell(i,4);
+		QComboTableItem* temp_schemas = new QComboTableItem(tblShapefiles, schema_list);
+		temp_schemas->setCurrentItem(cmbSchema->currentText());
 		tblShapefiles->setItem(i,4, temp_schemas);
 		
 	}

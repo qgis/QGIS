@@ -44,6 +44,7 @@ class QgsSpit :public QgsSpitBase{
   void useDefaultGeom();
   void helpInfo();
 	void getSchema();
+	void updateSchema();
   void import();
 
   private:
