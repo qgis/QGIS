@@ -31,7 +31,7 @@ class QgsDatabaseLayer : public QgsMapLayer  {
  public: 
     /*! Constructor
      * @param conninfo Pointer to the connection information required to
-     * connect to PostgresQl
+     * connect to PostgresQL
      *@param table Name of the table in the database that this layer
      * represents
      */
@@ -50,7 +50,7 @@ class QgsDatabaseLayer : public QgsMapLayer  {
     QString database;
     //! Name of the table containing the features
     QString tableName;
-    //! Name of the columen in the table that contains the geometry for the features
+    //! Name of the column in the table that contains the geometry for the features
     QString geometryColumn;
     //OGIS WKB types
     enum WKBTYPE{
