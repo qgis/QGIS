@@ -250,9 +250,14 @@ QRect QgsComposerScalebar::render ( QPainter *p )
 	
 	int barLx = (int) ( cx - width/2 );
 
+	int rectadd = 0;
+        if ( plotStyle() == QgsComposition::Preview ) {
+	    rectadd  = 1; // add 1 pixel in preview, must not be in PS
+	}
+
 	// fill odd
 	for ( int i = 0; i < mNumSegments; i += 2 ) {
-	    painter->drawRect( barLx+i*segwidth, cy, segwidth+1, mHeight );
+	    painter->drawRect( barLx+i*segwidth, cy, segwidth+rectadd, mHeight );
 	}
 
 	// ticks
@@ -263,7 +268,7 @@ QRect QgsComposerScalebar::render ( QPainter *p )
 
 	painter->setBrush( Qt::NoBrush );
 
-	painter->drawRect( barLx, cy, width+1, mHeight );
+	painter->drawRect( barLx, cy, width+rectadd, mHeight );
 	
 	// labels
 	int h = metrics.height();
