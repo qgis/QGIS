@@ -239,7 +239,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     unsigned char *wkb;
     int wkbsize;
 
-    #ifdef QGISDEBUG
+    #if QGISDEBUG > 3
     std::cout << "QgsGrassProvider::getNextFeature() mNextCidx = " << mNextCidx 
     	      << " fetchAttributes = " << fetchAttributes << std::endl;
     #endif
@@ -256,7 +256,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 	break;
     }
     if ( !found ) return 0; // No more features
-    #ifdef QGISDEBUG
+    #if QGISDEBUG > 3
     std::cout << "cat = " << cat << " type = " << type << " id = " << id << std::endl;
     #endif
 
@@ -705,7 +705,7 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 			    value = db_get_column_value(column);
 			    db_convert_value_to_string ( value, sqltype, &dbstr);
 
-			    #ifdef QGISDEBUG
+			    #if QGISDEBUG > 3
 			    std::cout << "column: " << db_get_column_name(column) << std::endl;
 			    std::cout << "value: " << db_get_string(&dbstr) << std::endl;
 			    #endif
@@ -900,7 +900,7 @@ void QgsGrassProvider::closeMap( int mapId )
 /** Set feature attributes */
 void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *feature )
 {
-    #ifdef QGISDEBUG
+    #if QGISDEBUG > 3
     std::cerr << "setFeatureAttributes cat = " << cat << std::endl;
     #endif
     if ( mLayers[layerId].nColumns > 0 ) {
@@ -910,9 +910,11 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 	GATT *att = (GATT *) bsearch ( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
 		                       sizeof(GATT), cmpAtt);
 
-	if ( att != NULL ) {
-	    for (int i = 0; i < mLayers[layerId].nColumns; i++) {
+	for (int i = 0; i < mLayers[layerId].nColumns; i++) {
+	    if ( att != NULL ) {
 		feature->addAttribute ( mLayers[layerId].fields[i].name(), att->values[i]);
+	    } else { /* it may happen that attributes are missing -> set to empty string */
+		feature->addAttribute ( mLayers[layerId].fields[i].name(), "");
 	    }
 	}
     } else { 
@@ -934,11 +936,12 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 	GATT *att = (GATT *) bsearch ( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
 		                       sizeof(GATT), cmpAtt);
 
-	if ( att != NULL ) {
-	    for (std::list<int>::iterator iter=attlist.begin(); iter!=attlist.end();++iter)
-	    {
+	for (std::list<int>::iterator iter=attlist.begin(); iter!=attlist.end();++iter) {
+	    if ( att != NULL ) {
 		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), att->values[*iter]);	
-	    }
+	    } else { /* it may happen that attributes are missing -> set to empty string */
+		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), "");	
+	    } 
 	}
     } else { 
 	QString tmp;
