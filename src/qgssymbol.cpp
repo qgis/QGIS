@@ -1,10 +1,10 @@
 /***************************************************************************
-                          qgslegenditem.cpp  -  description
+                          QgsSymbol.cpp  -  description
                              -------------------
-    begin                : Sun Jul 28 2002
+    begin                : Sun Aug 11 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc dot com
-               Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
+       Romans 3:23=>Romans 6:23=>Romans 5:8=>Romans 10:9,10=>Romans 12
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,39 +15,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <qcolor.h>
 #include "qgssymbol.h"
-#include "qgsmaplayer.h"
-#include "qgslegenditem.h"
 
+QgsSymbol::QgsSymbol(QColor c) : m_color(c){
+	
+}
+QgsSymbol::~QgsSymbol(){
+}
+QColor QgsSymbol::color(){
+	return m_color;
+	}
+void QgsSymbol::setColor(QColor c){
+	m_color = c;
+	}
 
-QgsLegendItem::QgsLegendItem (QgsMapLayer *lyr, QListView * parent)
-	: QCheckListItem(parent, lyr->name(), QCheckListItem::CheckBox), m_layer(lyr)
-{
-  setOn(lyr->visible());
- 
-  
+QColor QgsSymbol::fillColor(){
+	return m_fillColor;
 }
-
-QgsLegendItem::~QgsLegendItem ()
-{
-}
-
-/** Write property of QString layerName. */
-void QgsLegendItem::setLayerName (const QString & _newVal)
-{
-  layerName = _newVal;
-}
-
-/** Write property of QString displayName. */
-void QgsLegendItem::setDisplayName (const QString & _newVal)
-{
-  displayName = _newVal;
-}
-void QgsLegendItem::stateChange(bool vis){
-	m_layer->setVisible(vis);
-}
-QgsMapLayer * QgsLegendItem::layer(){
-	return m_layer;
+void QgsSymbol::setFillColor(QColor c){
+	m_fillColor = c;
 }

@@ -55,14 +55,7 @@ Q_OBJECT
     //! Name of the column in the table that contains the geometry for the features
     QString geometryColumn;
     //OGIS WKB types
-    enum WKBTYPE{
-	WKBPoint=1,
-	WKBLineString,
-	WKBPolygon,
-	WKBMultiPoint,
-	WKBMultiLineString,
-	WKBMultiPolygon
-    };	
+ 
     enum ENDIAN{
 	NDR=1,
 	XDR=0

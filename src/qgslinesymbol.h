@@ -17,7 +17,7 @@
 
 #ifndef QGSLINESYMBOL_H
 #define QGSLINESYMBOL_H
-
+#include "qgssymbol.h"
 class QString;
 
 /*! \class QgsLineSymbol

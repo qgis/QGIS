@@ -19,7 +19,7 @@
 #define QGSSYMBOL_H
 #include <qcolor.h>
 class QString;
-
+class QColor;
 
 /*! \class QgsSymbol
  * \brief Base class for symbols used in rendering map layers.
@@ -27,11 +27,14 @@ class QString;
 class QgsSymbol{
  public:
     //! Constructor
-    QgsSymbol();
+    QgsSymbol(QColor c = QColor(0,0,0));
     //! Set the color
     void setColor(QColor c);
     //! Get the current color
     QColor color();
+    //! Get the fill color
+    QColor fillColor();
+    void setFillColor(QColor c);
     //! Destructor
     ~QgsSymbol();
           /*! Comparison operator
@@ -44,5 +47,6 @@ class QgsSymbol{
     QgsSymbol & operator=(const QgsSymbol &r1);
  private:
     QColor m_color;
+    QColor m_fillColor;
 };
 #endif // QGSSYMBOL_H

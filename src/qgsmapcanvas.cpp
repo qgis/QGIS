@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
+
 #include <qstring.h>
 #include <qpainter.h>
 #include <qrect.h>
@@ -26,6 +27,9 @@
 #include "qgsmaplayer.h"
 #include "qgsdatabaselayer.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmarkersymbol.h"
+#include "qgspolygonsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
 
 QgsMapCanvas::QgsMapCanvas (QWidget * parent,
@@ -45,6 +49,36 @@ QgsMapCanvas::~QgsMapCanvas ()
 
 void QgsMapCanvas::addLayer (QgsMapLayer * lyr)
 {
+// give the layer a default symbol
+QgsSymbol *sym;
+QColor *fill;
+int red,green,blue;
+switch(lyr->featureType()){
+	case QGis::WKBPoint:
+	case QGis::WKBMultiPoint:
+		sym= new QgsMarkerSymbol();
+		break;
+	case QGis::WKBLineString:
+	case QGis::WKBMultiLineString:
+		sym = new QgsLineSymbol();
+		break;
+	case QGis::WKBPolygon:
+	case QGis::WKBMultiPolygon:
+		sym = new QgsPolygonSymbol();
+		  red = 1+(int) (255.0*rand()/(RAND_MAX+1.0));
+     green =  1+(int) (255.0*rand()/(RAND_MAX+1.0));
+     blue =    1+(int) (255.0*rand()/(RAND_MAX+1.0));
+     fill = new QColor(red,green,blue);
+     sym->setFillColor(*fill);
+		break;
+		
+}
+     red = 1+(int) (255.0*rand()/(RAND_MAX+1.0));
+     green =  1+(int) (255.0*rand()/(RAND_MAX+1.0));
+     blue =    1+(int) (255.0*rand()/(RAND_MAX+1.0));
+
+	sym->setColor(QColor(red,green,blue));
+	lyr->setSymbol(sym);
   layers[lyr->name ()] = lyr;
   // update extent if warranted
   if (layers.size () == 1)
@@ -54,6 +88,7 @@ void QgsMapCanvas::addLayer (QgsMapLayer * lyr)
       currentExtent = fullExtent;
 
     }
+    
   updateFullExtent (lyr->extent ());
   // increment zpos for all layers in the map
   incrementZpos();

@@ -8,6 +8,15 @@ enum MapTools {
 	Distance,
 	Identify
 };
+//! Used for symbology operations
+enum WKBTYPE{
+	WKBPoint=1,
+	WKBLineString,
+	WKBPolygon,
+	WKBMultiPoint,
+	WKBMultiLineString,
+	WKBMultiPolygon
+    };	
 static const char *qgisVersion = "0.0.3-alpha";
 }
 #endif
