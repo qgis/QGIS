@@ -106,9 +106,8 @@ void Plugin::initGui()
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the arrow each time the map is rendered
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderNorthArrow(QPainter *)));
-  // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
-  toolBarPointer->setLabel("North Arrow");
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon(myQActionPointer);
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
   refreshCanvas();

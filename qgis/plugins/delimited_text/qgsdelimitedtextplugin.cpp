@@ -125,12 +125,8 @@ void QgsDelimitedTextPlugin::initGui()
       "X and Y fields are required and must contain coordinates in decimal units.");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Delimited Text");
-  toolBarPointer->setLabel("Add Delimited Text Layer");
-  // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(toolBarPointer);
-
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon(myQActionPointer);
 
 }
 

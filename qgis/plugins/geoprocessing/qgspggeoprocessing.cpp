@@ -91,12 +91,9 @@ void QgsPgGeoprocessing::initGui()
       0, this, "buffer");
   // Connect the action to the zoomPrevous slot
   connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
-  // Add the toolbar
-  toolBar = new QToolBar((QMainWindow *) qgisMainWindow, "geoprocessing");
-  toolBar->setLabel("PostgreSQL/PostGIS Geoprocessing");
-  // Add the zoom previous tool to the toolbar
-  bufferAction->addTo(toolBar);
 
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon(myQActionPointer);
 
 }
 
