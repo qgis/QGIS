@@ -20,8 +20,9 @@ plugin_LTLIBRARIES = exampleplugin.la
 	$(UIC) -o $@ -impl $*.h $<
 	
 exampleplugin_la_SOURCES =  exampleplugin.cpp \
-				$(example_UI)\
-				$(example_MOC)
+				$(example_UI)
+				
+nodist_exampleplugin_la_SOURCES = $(example_MOC)
         
 example_MOC = 	exampleplugin.moc.cpp
 

@@ -48,7 +48,7 @@ pggeoprocessing_UIC = qgsdlgpgbufferbase.ui
 qgsdlgpgbufferbase.cpp: qgsdlgpgbufferbase.h qgsdlgpgbufferbase.ui
 qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 
-#BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
+BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 

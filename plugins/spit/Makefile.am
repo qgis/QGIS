@@ -64,7 +64,7 @@ qgsspitbase.h: qgsspitbase.ui
 qgsmessageviewerbase.cpp: qgsmessageviewerbase.h qgsmessageviewerbase.ui
 qgsmessageviewerbase.h: qgsmessageviewerbase.ui
 
-#BUILT_SOURCES = $(spit_MOC) $(spit_UI)
+BUILT_SOURCES = $(spit_MOC) $(spit_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 
