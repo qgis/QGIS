@@ -26,11 +26,12 @@ pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
 				qgspggeoprocessing.h \
         qgsdlgpgbuffer.cpp \
         qgsdlgpgbuffer.h \
-				../../src/qgsmaplayer.cpp\
-        ../../src/qgsvectorlayer.cpp\
-        ../../src/qgsfield.cpp\
-				$(pggeoprocessing_UI)\
-				$(pggeoprocessing_MOC)
+				../../src/qgsmaplayer.cpp \
+        ../../src/qgsvectorlayer.cpp \
+        ../../src/qgsfield.cpp \
+				$(pggeoprocessing_UI)
+        
+nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
         
 pggeoprocessing_MOC = 	qgspggeoprocessing.moc.cpp \
         ../../src/qgsmaplayer.moc.cpp \
@@ -47,7 +48,7 @@ pggeoprocessing_UIC = qgsdlgpgbufferbase.ui
 qgsdlgpgbufferbase.cpp: qgsdlgpgbufferbase.h qgsdlgpgbufferbase.ui
 qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 
-BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
+#BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 
