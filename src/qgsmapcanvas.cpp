@@ -72,6 +72,9 @@ QgsLegend * QgsMapCanvas::getLegend(){
 void QgsMapCanvas::setDirty(bool _dirty){
 	dirty = _dirty;
 }
+bool QgsMapCanvas::isDirty(){
+  return dirty;
+}
 void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr){
 	// add a maplayer interface to a layer type defined in a plugin
 	
@@ -312,6 +315,7 @@ void QgsMapCanvas::zoomFullExtent()
 	currentExtent = fullExtent;
 	clear();
 	render2();
+  dirty = true;
 }
 
 void QgsMapCanvas::zoomPreviousExtent()
@@ -322,6 +326,7 @@ void QgsMapCanvas::zoomPreviousExtent()
 		previousExtent = tempRect;
 		clear();
 		render2();
+    dirty = true;
 	}
 }
 
@@ -365,6 +370,7 @@ void QgsMapCanvas::zoomToSelected()
 	    return;
 	}
     }
+    dirty = true;
 }
 
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
@@ -413,6 +419,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  currentExtent.normalize();
 			  clear();
 			  render2();
+        dirty = true;
 			  break;
 		  case QGis::ZoomOut:
 			  {
@@ -454,6 +461,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 				  std::cout << "Center of currentExtent after scaling is " << currentExtent.center() << std::endl;
 				  clear();
 				  render2();
+          dirty = true;
 			  }
 			  break;
 
@@ -485,6 +493,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  }
 			  clear();
 			  render2();
+        dirty = true;
 		  }
 			  break;
 
@@ -700,6 +709,7 @@ void QgsMapCanvas::remove(QString key)
 	layers = newLayers;
 	delete l;
 	zOrder.remove(key);
+  dirty = true;
 }
 void QgsMapCanvas::removeAll(){
 	layers.clear();

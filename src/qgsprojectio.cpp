@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.20 2004/01/27 07:56:13 mhugent Exp */
+/* qgsprojectio.cpp,v 1.21 2004/01/28 05:55:27 gsherman Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -481,10 +481,10 @@ if(action == SAVE && fullPath.isEmpty()){
 	}
 switch(action){
 	case OPEN:
-	fullPath = QFileDialog::getOpenFileName("./", QObject::tr("QGis files (*.qgs)"), 0,  0, QObject::tr("Choose a file to open") );
+	fullPath = QFileDialog::getOpenFileName("./", QObject::tr("QGis files (*.qgs)"), 0,  0, QObject::tr("Choose a QGIS project file to open") );
 	break;
 	case SAVEAS:
-		fullPath = QFileDialog::getSaveFileName("./", QObject::tr("QGis files (*.qgs)"), 0,  0, QObject::tr("Choose a filename  to save") );
+		fullPath = QFileDialog::getSaveFileName("./", QObject::tr("QGis files (*.qgs)"), 0,  0, QObject::tr("Choose a filename to save") );
 	break;
 	}
 	return fullPath;
