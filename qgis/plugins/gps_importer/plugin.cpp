@@ -102,19 +102,18 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-  pluginMenu->insertItem(QIconSet(icon),"&GpsImporter", this, SLOT(run()));
-  pluginMenu->insertItem("&Add GPX or LOC layer", this, SLOT(addGPXLayer()));
+  pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
   
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Gps", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Import GPS Data", QIconSet(icon), "&Wmi",0, this, "run");
+  QAction *myQActionPointer = new QAction("Import Gps Data", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Gps");
-  toolBarPointer->setLabel("Import GPS Data");
+  toolBarPointer->setLabel("Gps Tools");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
 
@@ -130,33 +129,11 @@ void Plugin::help()
 // Slot called when the buffer menu item is activated
 void Plugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Import GPS Data",true,0);
+  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"GPS Tools",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
   myPluginGui->show();
-}
-
-// Slot calles when the user wants to add a GPX or LOC layer
-void Plugin::addGPXLayer() {
-  QString gpxFileName = 
-    QFileDialog::getOpenFileName("", "GPS eXchange format (*.gpx);;"
-				 "Geocaching locations (*.loc)", 
-				 qgisMainWindowPointer,
-				 "Select a GPX or LOC file",
-				 "Select a GPX or LOC file");
-  
-  // LOC files only has waypoints, don't add track and route layers for them
-  if (gpxFileName != 0) {
-    if (gpxFileName.right(4) == ".gpx") {
-      qGisInterface->addVectorLayer(gpxFileName + "?type=track", 
-				    "Tracks", "gpx");
-      qGisInterface->addVectorLayer(gpxFileName + "?type=route",
-				    "Routes", "gpx");
-    }
-    qGisInterface->addVectorLayer(gpxFileName + "?type=waypoint", 
-				  "Waypoints", "gpx");
-  }
 }
 
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
