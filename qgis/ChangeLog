@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.21 2004/02/27 05:35:48 gsherman Exp
+ChangeLog,v 1.22 2004/02/27 05:40:57 timlinux Exp
 ------------------------------------------------------------------------------
-Version 0.2 'Pumpkin' <not released yet>
+Version 0.2 'Pumpkin' .... developement version
+
+2004-02-26 [ts]
+** Added a tab to raster layer properties dialog to show metadata about the
+   raster layer (using gdal metadata)
 
 2004-02-26 [gs]
 **Added Version to configure.in. QGIS now displays its version number based on
