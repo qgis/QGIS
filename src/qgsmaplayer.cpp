@@ -106,6 +106,11 @@ void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDev
 //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
+void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDevice * )
+{
+//  std::cout << "In QgsMapLayer::draw" << std::endl;
+}
+
 /** Read property of QString labelField. */
 const QString & QgsMapLayer::labelField()
 {
