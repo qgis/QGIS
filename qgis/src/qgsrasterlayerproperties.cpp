@@ -91,8 +91,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
     //
     // Populate the various controls on the form
     //
-    cboColorMap->insertItem("Grayscale");
-    cboColorMap->insertItem("Pseudocolor");
+    cboColorMap->insertItem(tr("Grayscale"));
+    cboColorMap->insertItem(tr("Pseudocolor"));
     if (rasterLayer->getDrawingStyle()==QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
             rasterLayer->getDrawingStyle()==QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
             rasterLayer->getDrawingStyle()==QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR )
@@ -192,7 +192,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
                 ++myIterator )
         {
             QString myQString=*myIterator;
-            myQString = QString::number(myBandCountInt) + " - " + myQString;
             std::cout << "Inserting : " << myQString <<  std::endl;
             cboGray->insertItem(myQString);
             cboRed->insertItem(myQString);
@@ -202,6 +201,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
         cboRed->insertItem("Not Set");
         cboGreen->insertItem("Not Set");
         cboBlue->insertItem("Not Set");
+        cboGray->insertItem("Not Set");
     }
     //now set the combos to the correct values
     cboRed->setCurrentText(rasterLayer->getRedBandName());
@@ -246,8 +246,7 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setBlueBandName(cboBlue->currentText());
     rasterLayer->setGrayBandName(cboGray->currentText());
     //set the appropriate render style
-    if ((grpBoxGrayscale->isEnabled())
-            && (rbtnSingleBand->isChecked()))
+    if ((grpBoxGrayscale->isEnabled()) && (rbtnSingleBand->isChecked()))
     {
         //
         // Grayscale
@@ -255,7 +254,7 @@ void QgsRasterLayerProperties::apply()
         if (rasterLayer->rasterLayerType==QgsRasterLayer::GRAY_OR_UNDEFINED)
         {
 
-            if(cboColorMap->currentText()=="Pseudocolor")
+            if(cboColorMap->currentText()==tr("Pseudocolor"))
             {
                 std::cout << "Setting Raster Drawing Style to :: SINGLE_BAND_PSEUDO_COLOR" << std::endl;
                 rasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
@@ -271,7 +270,7 @@ void QgsRasterLayerProperties::apply()
         //        
         else if (rasterLayer->rasterLayerType==QgsRasterLayer::PALETTE)
         {
-            if(cboColorMap->currentText()=="Pseudocolor")
+            if(cboColorMap->currentText()==tr("Pseudocolor"))
             {
                 std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" << std::endl;
                 rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR);
@@ -289,7 +288,7 @@ void QgsRasterLayerProperties::apply()
         //
         else if (rasterLayer->rasterLayerType==QgsRasterLayer::MULTIBAND)
         {
-            if(cboColorMap->currentText()=="Pseudocolor")
+            if(cboColorMap->currentText()==tr("Pseudocolor"))
             {
                 std::cout << "Setting Raster Drawing Style to ::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR " << std::endl;
                 rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR);
@@ -297,6 +296,7 @@ void QgsRasterLayerProperties::apply()
             else
             {
                 std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
+                std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->getGrayBandName() << std::endl;
                 rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
             }
         }
@@ -327,8 +327,7 @@ void QgsRasterLayerProperties::apply()
 
     rasterLayer->setLayerName(leDisplayName->text());
     //see if the user would like debug overlays
-    if (cboxShowDebugInfo->isChecked()
-            ==true)
+    if (cboxShowDebugInfo->isChecked()==true)
     {
         rasterLayer->setShowDebugOverlayFlag(true);
     }
@@ -668,8 +667,6 @@ void QgsRasterLayerProperties::fillStatsTable()
         tblStats->setText(myRowInt,0,"elementCountInt");
         tblStats->setText(myRowInt,1,QString::number(myRasterBandStats.elementCountInt));
         ++myRowInt;
-        tblStats->setText(myRowInt,0,"noDataDouble");
-        tblStats->setText(myRowInt,1,QString::number(myRasterBandStats.noDataDouble));
       }
       ++myRowInt;
     }
