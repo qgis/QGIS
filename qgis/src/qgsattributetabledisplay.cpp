@@ -18,7 +18,7 @@
 
 #include "qgsattributetabledisplay.h"
 
-QgsAttributeTableDisplay::QgsAttributeTableDisplay(){
+QgsAttributeTableDisplay::QgsAttributeTableDisplay() : QgsAttributeTableBase() {
 }
 QgsAttributeTableDisplay::~QgsAttributeTableDisplay(){
 }
