@@ -89,7 +89,7 @@ void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *, QPaintDevice* src, QPaintDevice* dst)
+void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *,QPaintDevice * )
 {
 //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
