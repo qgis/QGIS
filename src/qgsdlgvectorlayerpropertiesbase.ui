@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>637</width>
-            <height>432</height>
+            <width>518</width>
+            <height>556</height>
         </rect>
     </property>
     <property name="caption">
@@ -90,137 +90,102 @@
                 <attribute name="title">
                     <string>Legend</string>
                 </attribute>
-                <widget class="QWidgetStack">
+                <grid>
                     <property name="name">
-                        <cstring>widgetStackRenderers</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>11</x>
-                            <y>71</y>
-                            <width>589</width>
-                            <height>260</height>
-                        </rect>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>7</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <widget class="QWidget">
+                    <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
                         <property name="name">
-                            <cstring>qt_dead_widget_singlesympage</cstring>
+                            <cstring>legendtypelabel</cstring>
                         </property>
-                        <attribute name="id">
-                            <number>0</number>
-                        </attribute>
-                        <grid>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>22</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>Legend type:</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="1" column="2">
+                        <property name="name">
+                            <cstring>legendtypecombobox</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>270</width>
+                                <height>24</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>22</height>
+                            </size>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Display name</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>txtDisplayName</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QWidgetStack" row="2" column="0" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>widgetStackRenderers</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <widget class="QWidget">
                             <property name="name">
-                                <cstring>unnamed</cstring>
+                                <cstring>qt_dead_widget_singlesympage</cstring>
                             </property>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>qt_dead_widget_continuoussympage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>1</number>
-                        </attribute>
-                        <grid>
+                            <attribute name="id">
+                                <number>0</number>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
                             <property name="name">
-                                <cstring>unnamed</cstring>
+                                <cstring>qt_dead_widget_continuoussympage</cstring>
                             </property>
-                        </grid>
+                            <attribute name="id">
+                                <number>1</number>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>qt_dead_widget_WStackPage</cstring>
+                            </property>
+                            <attribute name="id">
+                                <number>2</number>
+                            </attribute>
+                        </widget>
                     </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>qt_dead_widget_WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>2</number>
-                        </attribute>
-                    </widget>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>legendtypelabel</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>11</x>
-                            <y>39</y>
-                            <width>292</width>
-                            <height>22</height>
-                        </rect>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>32767</width>
-                            <height>22</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Legend type:</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>legendtypecombobox</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>310</x>
-                            <y>40</y>
-                            <width>291</width>
-                            <height>24</height>
-                        </rect>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>270</width>
-                            <height>24</height>
-                        </size>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>32767</width>
-                            <height>22</height>
-                        </size>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel3</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>9</x>
-                            <y>10</y>
-                            <width>75</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Display name</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>txtDisplayName</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>90</x>
-                            <y>10</y>
-                            <width>508</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                </widget>
+                </grid>
             </widget>
             <widget class="QWidget">
                 <property name="name">
