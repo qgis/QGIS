@@ -15,23 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgssisydialog.h"
-#include "qpushbutton.h"
-#include "qspinbox.h"
-#include "qcolordialog.h"
-#include "qgspatterndialog.h"
-#include "qgssymbologyutils.h"
-#include "qgslinestyledialog.h"
 #include <iostream>
-#include "qgsvectorlayer.h"
-#include "qpixmap.h"
-#include "qgslegenditem.h"
-#include "qgsrenderitem.h"
-#include "qgssinglesymrenderer.h"
+#include <qgssisydialog.h>
+#include <qpushbutton.h>
+#include <qspinbox.h>
+#include <qcolordialog.h>
+#include <qpixmap.h>
 #include <qlineedit.h>
 #include <qtoolbutton.h>
 #include <qlabel.h>
 #include <qbuttongroup.h>
+#include <qbrush.h>
+#include <qpen.h>
+
+#include "qgsvectorlayer.h"
+#include "qgslegenditem.h"
+#include "qgsrenderitem.h"
+#include "qgssinglesymrenderer.h"
+#include "qgspatterndialog.h"
+#include "qgssymbologyutils.h"
+#include "qgslinestyledialog.h"
 
 QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), mVectorLayer(0)
 {
@@ -71,13 +74,40 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
             outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
             outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
             lblFillColor->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
-            stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
-            stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
+
+
             lblOutlineColor->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
 
+            //
+            //set outline / line style
+            //
 
+            //stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
+            //stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
+            //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
+            pbnLineSolid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
+            pbnLineDash->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashLine"));
+            pbnLineDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DotLine"));
+            pbnLineDashDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotLine"));
+            pbnLineDashDotDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine"));
+            pbnLineNoPen->setPixmap(QgsSymbologyUtils::char2LinePixmap("NoPen"));
+            QPen myPen = renderer->item()->getSymbol()->pen();
+            if (myPen==Qt::NoPen)
+                (pbnLineNoPen->setOn(true));
+            else if (myPen==Qt::DashLine)
+                (pbnLineDash->setOn(true));
+            else if (myPen==Qt::DotLine)
+                (pbnLineDash->setOn(true));
+            else if (myPen==Qt::DashDotLine)
+                (pbnLineDash->setOn(true));
+            else if (myPen==Qt::DashDotDotLine)
+                (pbnLineDash->setOn(true));
+            else
+                (pbnLineSolid->setOn(true)); //default to solid
+
+            //
             //set pattern button group icons and state
-
+            //
             solid->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
             horizontal->setPixmap(QgsSymbologyUtils::char2PatternPixmap("HorPattern"));
             vertical->setPixmap(QgsSymbologyUtils::char2PatternPixmap("VerPattern"));
@@ -93,22 +123,37 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
             dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
             dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
             nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
-
-            if (renderer->item()->getSymbol()->brush()==Qt::SolidPattern) (solid->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::HorPattern) (horizontal->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::VerPattern) (vertical->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::CrossPattern) (cross->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::BDiagPattern) (bdiag->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::FDiagPattern) (fdiag->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::DiagCrossPattern) (diagcross->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense1Pattern) (dense1->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense2Pattern) (dense2->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense3Pattern) (dense3->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense4Pattern) (dense4->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense5Pattern) (dense5->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense6Pattern) (dense6->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::Dense7Pattern) (dense7->setOn(true));
-            else if (renderer->item()->getSymbol()->brush()==Qt::NoBrush) (solid->setOn(true));
+            QBrush myBrush = renderer->item()->getSymbol()->brush();
+            if (myBrush==Qt::SolidPattern)
+                (solid->setOn(true));
+            else if (myBrush==Qt::HorPattern)
+                (horizontal->setOn(true));
+            else if (myBrush==Qt::VerPattern)
+                (vertical->setOn(true));
+            else if (myBrush==Qt::CrossPattern)
+                (cross->setOn(true));
+            else if (myBrush==Qt::BDiagPattern)
+                (bdiag->setOn(true));
+            else if (myBrush==Qt::FDiagPattern)
+                (fdiag->setOn(true));
+            else if (myBrush==Qt::DiagCrossPattern)
+                (diagcross->setOn(true));
+            else if (myBrush==Qt::Dense1Pattern)
+                (dense1->setOn(true));
+            else if (myBrush==Qt::Dense2Pattern)
+                (dense2->setOn(true));
+            else if (myBrush==Qt::Dense3Pattern)
+                (dense3->setOn(true));
+            else if (myBrush==Qt::Dense4Pattern)
+                (dense4->setOn(true));
+            else if (myBrush==Qt::Dense5Pattern)
+                (dense5->setOn(true));
+            else if (myBrush==Qt::Dense6Pattern)
+                (dense6->setOn(true));
+            else if (myBrush==Qt::Dense7Pattern)
+                (dense7->setOn(true));
+            else if (myBrush==Qt::NoBrush)
+                (solid->setOn(true));
         }
         else
         {
@@ -123,7 +168,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
         }
         //do the signal/slot connections
         QObject::connect(btnOutlineColor, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
-        QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
+        //QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
         QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
         QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
         QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
@@ -148,18 +193,6 @@ void QgsSiSyDialog::selectOutlineColor()
     emit settingsChanged();
 }
 
-void QgsSiSyDialog::selectOutlineStyle()
-{
-    QgsLineStyleDialog linestyledialog;
-    if (linestyledialog.exec() == QDialog::Accepted)
-    {
-        stylebutton->setName(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()).ascii());
-        stylebutton->setPixmap(QgsSymbologyUtils::qString2LinePixmap(QString::fromAscii(stylebutton->name())));
-        emit settingsChanged();
-    }
-    setActiveWindow();
-}
-
 void QgsSiSyDialog::selectFillColor()
 {
     lblFillColor->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
@@ -174,11 +207,30 @@ void QgsSiSyDialog::apply()
     //query the values of the widgets and set the symbology of the vector layer
     QgsSymbol* sy = new QgsSymbol();
     sy->brush().setColor(lblFillColor->paletteBackgroundColor());
-
-    sy->pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
     sy->pen().setWidth(outlinewidthspinbox->value());
     sy->pen().setColor(lblOutlineColor->paletteBackgroundColor());
 
+
+    //
+    // Apply the line style
+    //
+    if  (pbnLineNoPen->isOn())
+        (sy->pen().setStyle(Qt::NoPen));
+    else if  (pbnLineDash->isOn())
+        (sy->pen().setStyle(Qt::DashLine));
+    else if  (pbnLineDash->isOn())
+        (sy->pen().setStyle(Qt::DotLine)) ;
+    else if  (pbnLineDash->isOn())
+        (sy->pen().setStyle(Qt::DashDotLine));
+    else if  (pbnLineDash->isOn())
+        (sy->pen().setStyle(Qt::DashDotDotLine)) ;
+    else
+        (sy->pen().setStyle(Qt::SolidLine)); //default to solid
+
+
+    //
+    // Apply the pattern
+    //
 
     if (solid->isOn())
     {
@@ -316,8 +368,18 @@ void QgsSiSyDialog::setOutlineColor(QColor& c)
 
 void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
 {
-    stylebutton->setPixmap(QgsSymbologyUtils::penStyle2Pixmap(pstyle));
-    stylebutton->setName(QgsSymbologyUtils::penStyle2QString(pstyle));
+    if (pstyle==Qt::NoPen)
+        (pbnLineNoPen->setOn(true));
+    else if (pstyle==Qt::DashLine)
+        (pbnLineDash->setOn(true));
+    else if (pstyle==Qt::DotLine)
+        (pbnLineDash->setOn(true));
+    else if (pstyle==Qt::DashDotLine)
+        (pbnLineDash->setOn(true));
+    else if (pstyle==Qt::DashDotDotLine)
+        (pbnLineDash->setOn(true));
+    else
+        (pbnLineSolid->setOn(true)); //default to solid
 #ifdef QGISDEBUG
 
     qWarning("Setting outline style: "+QgsSymbologyUtils::penStyle2QString(pstyle));
@@ -331,21 +393,36 @@ void QgsSiSyDialog::setFillColor(QColor& c)
 
 void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
 {
-            if (fstyle==Qt::SolidPattern) (solid->setOn(true));
-            else if (fstyle==Qt::HorPattern) (horizontal->setOn(true));
-            else if (fstyle==Qt::VerPattern) (vertical->setOn(true));
-            else if (fstyle==Qt::CrossPattern) (cross->setOn(true));
-            else if (fstyle==Qt::BDiagPattern) (bdiag->setOn(true));
-            else if (fstyle==Qt::FDiagPattern) (fdiag->setOn(true));
-            else if (fstyle==Qt::DiagCrossPattern) (diagcross->setOn(true));
-            else if (fstyle==Qt::Dense1Pattern) (dense1->setOn(true));
-            else if (fstyle==Qt::Dense2Pattern) (dense2->setOn(true));
-            else if (fstyle==Qt::Dense3Pattern) (dense3->setOn(true));
-            else if (fstyle==Qt::Dense4Pattern) (dense4->setOn(true));
-            else if (fstyle==Qt::Dense5Pattern) (dense5->setOn(true));
-            else if (fstyle==Qt::Dense6Pattern) (dense6->setOn(true));
-            else if (fstyle==Qt::Dense7Pattern) (dense7->setOn(true));
-            else if (fstyle==Qt::NoBrush) (solid->setOn(true));
+    if (fstyle==Qt::SolidPattern)
+        (solid->setOn(true));
+    else if (fstyle==Qt::HorPattern)
+        (horizontal->setOn(true));
+    else if (fstyle==Qt::VerPattern)
+        (vertical->setOn(true));
+    else if (fstyle==Qt::CrossPattern)
+        (cross->setOn(true));
+    else if (fstyle==Qt::BDiagPattern)
+        (bdiag->setOn(true));
+    else if (fstyle==Qt::FDiagPattern)
+        (fdiag->setOn(true));
+    else if (fstyle==Qt::DiagCrossPattern)
+        (diagcross->setOn(true));
+    else if (fstyle==Qt::Dense1Pattern)
+        (dense1->setOn(true));
+    else if (fstyle==Qt::Dense2Pattern)
+        (dense2->setOn(true));
+    else if (fstyle==Qt::Dense3Pattern)
+        (dense3->setOn(true));
+    else if (fstyle==Qt::Dense4Pattern)
+        (dense4->setOn(true));
+    else if (fstyle==Qt::Dense5Pattern)
+        (dense5->setOn(true));
+    else if (fstyle==Qt::Dense6Pattern)
+        (dense6->setOn(true));
+    else if (fstyle==Qt::Dense7Pattern)
+        (dense7->setOn(true));
+    else if (fstyle==Qt::NoBrush)
+        (solid->setOn(true));
 }
 
 void QgsSiSyDialog::setOutlineWidth(int width)
@@ -360,7 +437,19 @@ QColor QgsSiSyDialog::getOutlineColor()
 
 Qt::PenStyle QgsSiSyDialog::getOutlineStyle()
 {
-    return QgsSymbologyUtils::qString2PenStyle(stylebutton->name());
+    if  (pbnLineNoPen->isOn())
+        return Qt::NoPen;
+    else if  (pbnLineDash->isOn())
+        return Qt::DashLine;
+    else if  (pbnLineDash->isOn())
+        return Qt::DotLine ;
+    else if  (pbnLineDash->isOn())
+        return Qt::DashDotLine;
+    else if  (pbnLineDash->isOn())
+        return Qt::DashDotDotLine ;
+    else
+        return Qt::SolidLine; //default to solid
+
 }
 
 int QgsSiSyDialog::getOutlineWidth()
@@ -432,7 +521,7 @@ Qt::BrushStyle QgsSiSyDialog::getFillStyle()
         return Qt::Dense3Pattern;
     }
     //fall back to transparent
-     return Qt::NoBrush;
+    return Qt::NoBrush;
 
 }
 
