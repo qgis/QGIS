@@ -19,6 +19,8 @@
 #include <iostream>
 #include <cfloat>
 #include <cmath>
+#include <memory>
+
 #include <qstring.h>
 #include <qpainter.h>
 #include <qrect.h>
@@ -805,7 +807,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 								
                 // create the search rectangle
                 double searchRadius = extent().width() * calculateSearchRadiusValue();
-                QGuardedPtr<QgsRect> search = new QgsRect();
+                QgsRect * search = new QgsRect;
                 // convert screen coordinates to map coordinates
                 QgsPoint idPoint = imp_->coordXForm->toMapCoordinates(e->x(), e->y());
                 search->setXmin(idPoint.x() - searchRadius);
