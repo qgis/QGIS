@@ -80,7 +80,7 @@ bufferRenderer(layer->
   //QTextOStream (&ll) << extent->xMin() << ", " << extent->yMin();
   lblLowerLeft->setText(ll.sprintf("%16f, %16f", extent->xMin(), extent->yMin()));
   QString ur;
-//  QTextOStream (&ur) << extent->xMax() << ", " << extent->yMax(); 
+//  QTextOStream (&ur) << extent->xMax() << ", " << extent->yMax();
   lblUpperRight->setText(ur.sprintf("%16f, %16f", extent->xMax(), extent->yMax()));
   std::vector < QgsField > fields = dp->fields();
   // populate the table and the display field drop-down with the field
@@ -90,8 +90,8 @@ bufferRenderer(layer->
   {
     QgsField fld = fields[i];
     QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
-					   fld.type(), QString("%1").arg(fld.length()),
-					   QString("%1").arg(fld.precision()));
+                                           fld.type(), QString("%1").arg(fld.length()),
+                                           QString("%1").arg(fld.precision()));
     displayFieldComboBox->insertItem( fld.name() );
   }
 
@@ -116,10 +116,10 @@ bufferRenderer(layer->
   labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
   layout->addWidget( labelDialog );
 
-  QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
-  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
-						actionOptionsFrame );
-  actionLayout->addWidget( actionDialog );
+  QGridLayout *actionLayout = new QGridLayout( actionOptionsFrame );
+  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields,
+                                                actionOptionsFrame );
+  actionLayout->addWidget( actionDialog,0,0 );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
 
@@ -161,11 +161,11 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   {
     // On win32 we can't support svg without qt commercial
     // so we beg a bit (i know its tacky to repeat this for
-    // each case, but i'm in a hurry to get the 0.5 release 
+    // each case, but i'm in a hurry to get the 0.5 release
     // out - besides this will go away when the money roles in...)
 #ifdef WIN32
-    QMessageBox::warning(this, "No SVG Support", 
-  "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n" 
+    QMessageBox::warning(this, "No SVG Support",
+  "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n"
   " using the commercial version of Qt. As this project is developed by volunteers\n"
   " donating their time, we don't have the financial resources to purchase Qt\n"
   " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
@@ -185,7 +185,7 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   } else if(string == tr("Unique Value Marker"))
   {
 #ifdef WIN32
-    QMessageBox::warning(this, "No SVG Support", 
+    QMessageBox::warning(this, "No SVG Support",
   "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n"
   " using the commercial version of Qt. As this project is developed by volunteers\n"
   " donating their time, we don't have the financial resources to purchase Qt\n"
@@ -252,7 +252,7 @@ void QgsDlgVectorLayerProperties::btnHelp_clicked()
 void QgsDlgVectorLayerProperties::pbnOK_clicked()
 {
   //make sure changes are applied
-  pbnApply_clicked(); 
+  pbnApply_clicked();
   //
   if (rendererDirty)
     {
@@ -267,7 +267,7 @@ void QgsDlgVectorLayerProperties::pbnOK_clicked()
       //restore the right name in the combobox
       if(bufferRenderer)
       {
-	  legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
+          legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
       }
     }
   reject();
@@ -282,13 +282,13 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
 
   // update the display field
   layer->setDisplayField(displayFieldComboBox->currentText());
-  
+
   if (rendererDirty)
     {
       layer->setRenderer(bufferRenderer);
       layer->setRendererDialog(bufferDialog);
     }
-  
+
   actionDialog->apply();
 
   labelDialog->apply();

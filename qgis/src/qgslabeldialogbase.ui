@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>726</width>
-            <height>478</height>
+            <height>430</height>
         </rect>
     </property>
     <property name="caption">
@@ -179,6 +179,9 @@
                                 <property name="name">
                                     <cstring>sliderFontTransparency</cstring>
                                 </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
                                         <hsizetype>3</hsizetype>
@@ -210,6 +213,9 @@
                                 <property name="name">
                                     <cstring>spinFontTransparency</cstring>
                                 </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
                                         <hsizetype>0</hsizetype>
@@ -237,6 +243,9 @@
                             <widget class="QLabel" row="2" column="0">
                                 <property name="name">
                                     <cstring>textLabel5_2_2_3_2</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
                                 </property>
                                 <property name="font">
                                     <font>
