@@ -399,6 +399,7 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
             // selection rectangle or the EOF is reached
             while(!stream.atEnd() && !processPoint)
             {
+		++mFid;
               line = stream.readLine();
 
               // create the geometry from the x, y fields
@@ -499,6 +500,7 @@ QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist)
             // selection rectangle or the EOF is reached
             while(!stream.atEnd() && !processPoint)
             {
+		++mFid;
               line = stream.readLine();
 
               // create the geometry from the x, y fields
