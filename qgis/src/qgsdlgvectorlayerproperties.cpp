@@ -153,7 +153,7 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n" 
   " using the commercial version of Qt. As this project is developed by volunteers\n"
   " donating their time, we don't have the financial resources to purchase Qt\n"
-  " commercial.  If you would like to help us, please visit the qgis sourcefgorge\n"
+  " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
   " home page to make a donation");
     // use the single symbol renderer
       bufferRenderer = new QgsSingleSymRenderer();
@@ -174,7 +174,7 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   "In order for QGIS to support SVG markers under Windows, we need to build QGIS\n"
   " using the commercial version of Qt. As this project is developed by volunteers\n"
   " donating their time, we don't have the financial resources to purchase Qt\n"
-  " commercial.  If you would like to help us, please visit the qgis sourcefgorge\n"
+  " commercial.  If you would like to help us, please visit the QGIS sourceforge\n"
   " home page to make a donation");
     // use the single symbol renderer
       bufferRenderer = new QgsSingleSymRenderer();
