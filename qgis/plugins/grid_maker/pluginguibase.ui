@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>571</width>
-            <height>393</height>
+            <width>647</width>
+            <height>497</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -29,7 +29,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="0" column="0">
+        <widget class="QLabel" row="0" column="0" rowspan="6" colspan="1">
             <property name="name">
                 <cstring>pixmapLabel1</cstring>
             </property>
@@ -40,21 +40,7 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="Line" row="0" column="1">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>VLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>layout108</cstring>
             </property>
@@ -106,66 +92,145 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="0" column="2">
+        <widget class="QLabel" row="0" column="2">
             <property name="name">
-                <cstring>layout109</cstring>
+                <cstring>txtHeading</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>24</pointsize>
+                    <bold>1</bold>
+                </font>
+            </property>
+            <property name="text">
+                <string>Graticule Builder</string>
+            </property>
+            <property name="alignment">
+                <set>AlignCenter</set>
+            </property>
+        </widget>
+        <widget class="Line" row="0" column="1" rowspan="6" colspan="1">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>VLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+        </widget>
+        <widget class="QTextEdit" row="1" column="2">
+            <property name="name">
+                <cstring>teInstructions</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Arial"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:16pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
+            </property>
+            <property name="wordWrap">
+                <enum>WidgetWidth</enum>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QGroupBox" row="2" column="2">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Origin (Lower Left)</string>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QTextEdit" row="1" column="0" rowspan="1" colspan="4">
+                <widget class="QLineEdit" row="0" column="1">
                     <property name="name">
-                        <cstring>teInstructions</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Arial"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:16pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</string>
-                    </property>
-                    <property name="wordWrap">
-                        <enum>WidgetWidth</enum>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
+                        <cstring>leOriginLatitude</cstring>
                     </property>
                 </widget>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>txtHeading</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>24</pointsize>
-                            <bold>1</bold>
-                        </font>
+                        <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Graticule Builder</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
+                        <string>Latitude:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="4" column="0">
+                <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
-                        <cstring>lblMinTimeGap</cstring>
+                        <cstring>leOriginLongitude</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Latitude Interval:</string>
+                        <string>Longitude:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="3" column="2">
+            <property name="name">
+                <cstring>groupBox1_2</cstring>
+            </property>
+            <property name="title">
+                <string>End point (Upper Right)</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit" row="0" column="1">
                     <property name="name">
-                        <cstring>lblOutputFile</cstring>
+                        <cstring>leEndPointLatitude</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_3</cstring>
                     </property>
                     <property name="text">
-                        <string>Output (Shape) File:</string>
+                        <string>Latitude:</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="3" column="3">
+                <widget class="QLineEdit" row="0" column="3">
+                    <property name="name">
+                        <cstring>leEndPointLongitude</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2">
+                    <property name="name">
+                        <cstring>textLabel1_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Longitude:</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="5" column="2">
+            <property name="name">
+                <cstring>groupBox3</cstring>
+            </property>
+            <property name="title">
+                <string>Output (Shape) File</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="1">
                     <property name="name">
                         <cstring>pbnSelectOutputFile</cstring>
                     </property>
@@ -173,21 +238,33 @@
                         <string>...</string>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="4" column="3">
+                <widget class="QLineEdit" row="0" column="0">
                     <property name="name">
-                        <cstring>spinLongInterval</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>180</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>10</number>
-                    </property>
-                    <property name="value">
-                        <number>1</number>
+                        <cstring>leOutputShapeFile</cstring>
                     </property>
                 </widget>
-                <widget class="QLabel" row="4" column="2">
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="4" column="2">
+            <property name="name">
+                <cstring>groupBox4</cstring>
+            </property>
+            <property name="title">
+                <string>Graticule Size (units in degrees)</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>lblMinTimeGap</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Latitude Interval:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2">
                     <property name="name">
                         <cstring>lblMinDistanceGap</cstring>
                     </property>
@@ -195,23 +272,14 @@
                         <string>Longitude Interval:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="3">
+                <widget class="QLineEdit" row="0" column="1">
                     <property name="name">
-                        <cstring>leOutputShapeFile</cstring>
+                        <cstring>leLatitudeInterval</cstring>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="4" column="1">
+                <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
-                        <cstring>spinLatInterval</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>90</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>10</number>
-                    </property>
-                    <property name="value">
-                        <number>1</number>
+                        <cstring>leLongitudeInterval</cstring>
                     </property>
                 </widget>
             </grid>
@@ -234,22 +302,16 @@
         <slot>pbnOK_clicked()</slot>
     </connection>
     <connection>
-        <sender>pbnSelectOutputFile</sender>
-        <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
-        <slot>pbnSelectOutputFile_clicked()</slot>
-    </connection>
-    <connection>
         <sender>pbnCancel</sender>
         <signal>clicked()</signal>
         <receiver>PluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
     <connection>
-        <sender>leOutputShapeFile</sender>
-        <signal>textChanged(const QString&amp;)</signal>
+        <sender>pbnSelectOutputFile</sender>
+        <signal>clicked()</signal>
         <receiver>PluginGuiBase</receiver>
-        <slot>leOutputShapeFile_textChanged(const QString&amp;)</slot>
+        <slot>pbnSelectOutputFile_clicked()</slot>
     </connection>
 </connections>
 <includes>
