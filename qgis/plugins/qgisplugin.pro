@@ -1,5 +1,5 @@
 TEMPLATE	= 	lib
-CONFIG 		+=	debug
+CONFIG 		+=	qt thread debug
 SOURCES		= 	qgistestplugin.cpp 
 HEADERS		=	qgisplugin.h \
 			qgisplugingui.h \

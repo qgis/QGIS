@@ -3,10 +3,10 @@
 ######################################################################
 TARGET = qgis
 TEMPLATE = app
-LIBS += -L$(PGSQL)/lib -lpq++ -lgdal
+LIBS += -L$(PGSQL)/lib -L$/usr/local/lib -lpq++ -lgdal
 INCLUDEPATH += $(PGSQL)/include
 CONFIG += qt thread debug
-DEFINES += PGDB
+DEFINES += PGDB HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
 # Input
 HEADERS += qgsdbsourceselectbase.ui.h \
            qgisapp.h \
