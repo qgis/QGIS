@@ -533,7 +533,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
               //delete fet;
             }
            //qApp->processEvents();
-           delete fet;
+          // delete fet;
         }
         #ifdef QGISDEBUG
         std::cerr << "Total features processed is " << featureCount << std::endl;
