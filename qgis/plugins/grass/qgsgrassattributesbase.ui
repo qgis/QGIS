@@ -111,6 +111,12 @@
                     <height>25</height>
                 </size>
             </property>
+            <property name="frameShape">
+                <enum>Box</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
             <property name="text">
                 <string>result</string>
             </property>

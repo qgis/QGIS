@@ -33,6 +33,8 @@
 #include <qpointarray.h>
 #include <qcursor.h>
 #include <qnamespace.h>
+#include <qlistview.h>
+#include <qcolordialog.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -148,6 +150,92 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     mSymb[SYMB_NODE_1].setColor        ( QColor ( 255,   0,   0 ) );  // red
     mSymb[SYMB_NODE_2].setColor        ( QColor (   0, 255,   0 ) );  // green
 
+    // Set mSymbDisplay
+    mSymbDisplay.resize(SYMB_COUNT);
+    mSymbDisplay[SYMB_BACKGROUND] = true;
+    mSymbDisplay[SYMB_HIGHLIGHT] = true;
+    mSymbDisplay[SYMB_DYNAMIC] = true;
+    mSymbDisplay[SYMB_POINT] = true;
+    mSymbDisplay[SYMB_LINE] = true;
+    mSymbDisplay[SYMB_BOUNDARY_0] = true;
+    mSymbDisplay[SYMB_BOUNDARY_1] = true;
+    mSymbDisplay[SYMB_BOUNDARY_2] = true;
+    mSymbDisplay[SYMB_CENTROID_IN] = true;
+    mSymbDisplay[SYMB_CENTROID_OUT] = true;
+    mSymbDisplay[SYMB_CENTROID_DUPL] = true;
+    mSymbDisplay[SYMB_NODE_1] = true;
+    mSymbDisplay[SYMB_NODE_2] = true;
+
+    // Set symbology names
+    mSymbName.resize(SYMB_COUNT);
+    mSymbName[SYMB_BACKGROUND]    = "Background";
+    mSymbName[SYMB_HIGHLIGHT]     = "Highlight";
+    mSymbName[SYMB_DYNAMIC]       = "Dynamic (XOR mode)";
+    mSymbName[SYMB_POINT]         = "Point";
+    mSymbName[SYMB_LINE]          = "Line";
+    mSymbName[SYMB_BOUNDARY_0]    = "Boundary (no area)";
+    mSymbName[SYMB_BOUNDARY_1]    = "Boundary (1 area)";
+    mSymbName[SYMB_BOUNDARY_2]    = "Boundary (2 areas)";
+    mSymbName[SYMB_CENTROID_IN]   = "Centroid (in area)";
+    mSymbName[SYMB_CENTROID_OUT]  = "Centroid (outside area)";
+    mSymbName[SYMB_CENTROID_DUPL] = "Centroid (duplicate in area)";
+    mSymbName[SYMB_NODE_1]        = "Node (1 line)";
+    mSymbName[SYMB_NODE_2]        = "Node (2 lines)";
+
+    // Restore symbology
+    QSettings settings;
+    for ( int i = 0; i < SYMB_COUNT; i++ ) {
+	bool ok;
+	QString sn;
+        sn.sprintf( "/qgis/grass/edit/symb/display/%d", i );
+        bool displ = settings.readBoolEntry (sn, true, &ok );
+	if ( ok ) {
+	    mSymbDisplay[i] = displ;
+	}
+        
+        sn.sprintf( "/qgis/grass/edit/symb/color/%d", i );
+	QString colorName = settings.readEntry (sn, "", &ok );
+	if ( ok ) {
+            QColor color( colorName );
+	    mSymb[i].setColor( color );
+	}
+    }
+
+    // Set Symbology in dialog
+    symbologyList->setColumnText(0,"Disp");
+    symbologyList->setColumnWidth(0,20);
+    symbologyList->addColumn("Color");
+    symbologyList->setColumnWidth(0,50);
+    symbologyList->addColumn("Type");
+    symbologyList->setColumnWidthMode(2,QListView::Maximum);
+    symbologyList->addColumn("Index", 0);
+    symbologyList->clear();
+    symbologyList->setSorting(-1);
+
+    for ( int i = SYMB_COUNT-1; i >= 0; i-- ) {
+	if ( i == SYMB_NODE_0 ) continue;
+
+	QPixmap pm ( 40, 15 );
+	pm.fill( mSymb[i].color() );
+	QString index;
+	index.sprintf ("%d", i );
+
+        if ( i == SYMB_BACKGROUND || i == SYMB_HIGHLIGHT || i == SYMB_DYNAMIC ) {	
+            QListViewItem *lvi = new QListViewItem ( symbologyList , "", "", mSymbName[i] );
+	    lvi->setPixmap ( 1, pm );
+	    lvi->setText ( 3, index );
+        } else {
+            QCheckListItem *clvi = new QCheckListItem ( symbologyList , "", QCheckListItem::CheckBox );
+	    clvi->setText ( 2, mSymbName[i] );
+	    clvi->setPixmap ( 1, pm );
+	    clvi->setOn ( mSymbDisplay[i] );
+	    clvi->setText ( 3, index );
+	}
+    }
+    
+    connect( symbologyList, SIGNAL(pressed(QListViewItem *, const QPoint &, int)), 
+	                           this, SLOT(changeSymbology(QListViewItem *, const QPoint &, int)));
+    
     mSize = 9;
     mLastDynamicIcon = ICON_NONE;
     mLastDynamicPoints.resize(0);
@@ -159,12 +247,9 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
 	int field = mProvider->cidxGetFieldNumber(i);
 	if ( field > 0 ) {
 	    int cat = mProvider->cidxGetMaxCat(i);
-	    std::cerr << "field = " << field << "  max cat = " << cat << std::endl;
-
 	    MaxCat mc;
 	    mc.field = field;
 	    mc.maxCat = cat;
-	    
 	    mMaxCats.push_back(mc);
 	}
     }
@@ -190,6 +275,44 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     restorePosition();
     
     mValid = true; 
+}
+
+void QgsGrassEdit::changeSymbology(QListViewItem * item, const QPoint & pnt, int col)
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::changeSymbology() col = " << col << std::endl;
+    #endif
+  
+    QSettings settings;
+
+    if ( !item ) return;
+
+    int index = item->text(3).toInt();
+    
+    if ( col == 0 ) { 
+        if ( index == SYMB_BACKGROUND || index == SYMB_HIGHLIGHT || index == SYMB_DYNAMIC ) return;	
+
+    	QCheckListItem *clvi = (QCheckListItem *) item;
+	mSymbDisplay[index] = clvi->isOn();
+  
+	int ww = settings.readNumEntry("/qgis/grass/windows/edit/w", 420);
+	QString sn;
+	// TODO use a name instead of index
+        sn.sprintf( "/qgis/grass/edit/symb/display/%d", index );
+  	settings.writeEntry ( sn, mSymbDisplay[index] );
+    } else if ( col == 1 ) {
+        QColor color = QColorDialog::getColor ( mSymb[index].color(), this );
+	mSymb[index].setColor( color );
+
+	QPixmap pm ( 40, 15 );
+	pm.fill( mSymb[index].color() );
+	item->setPixmap ( 1, pm );
+
+	QString sn;
+	// TODO use a name instead of index
+        sn.sprintf( "/qgis/grass/edit/symb/color/%d", index );
+  	settings.writeEntry ( sn, mSymb[index].color().name() );
+    }
 }
 
 void QgsGrassEdit::restorePosition()
@@ -677,6 +800,7 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point )
 	case QgsGrassEdit::MOVE_LINE:
 	    // Move previously selected line 
 	    if ( mSelectedLine > 0 ) {
+		eraseDynamic();
 		eraseElement ( mSelectedLine );
 
 		// Transform coordinates
@@ -1210,9 +1334,11 @@ void QgsGrassEdit::displayMap (void)
 
     pen.setColor(QColor(255,0,0));
 
-    for ( int node = 1; node <= nnodes; node++ ) {
-	if ( mNodeSymb[node] == SYMB_NODE_0 ) continue; // do not display nodes with points only
-	displayNode ( node, mSymb[mNodeSymb[node]], mSize, painter ); 
+    if ( mSymbDisplay[SYMB_NODE_1] || mSymbDisplay[SYMB_NODE_2] ) {
+	for ( int node = 1; node <= nnodes; node++ ) {
+	    if ( mNodeSymb[node] == SYMB_NODE_0 ) continue; // do not display nodes with points only
+	    displayNode ( node, mSymb[mNodeSymb[node]], mSize, painter ); 
+	}
     }
     
     painter->end();
@@ -1258,6 +1384,8 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
     #if QGISDEBUG > 3
     std::cerr << "QgsGrassEdit::displayElement() line = " << line << std::endl;
     #endif
+	
+    if ( !mSymbDisplay[mLineSymb[line]] ) return;
     
     int type = mProvider->readLine ( mPoints, NULL, line );
     if ( type < 0 ) return;
@@ -1403,6 +1531,8 @@ void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter 
     #if QGISDEBUG > 3
     std::cerr << "QgsGrassEdit::displayNode() node = " << node << std::endl;
     #endif
+
+    if ( !mSymbDisplay[mNodeSymb[node]] ) return;
 
     double x, y;
 
