@@ -224,3 +224,9 @@ void QgisAppBase::addAllToOverview()
 {
 
 }
+
+
+void QgisAppBase::removeAllFromOverview()
+{
+
+}

@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.149 2004/06/26 18:28:14 timlinux Exp
+ChangeLog,v 1.150 2004/06/27 08:32:06 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+2004-06-27 [ts] 0.3.0devel53
+** Numerous bug fixes and cleanups. 
+** Added remove all layers from overview button.
 
 2004-06-26 [ts] 0.3.0devel52
 ** Extents are now correctly restored when project is loaded
