@@ -40,7 +40,19 @@ QgsAttributeTable::~QgsAttributeTable()
 void QgsAttributeTable::columnClicked(int col)
 {
 	QApplication::setOverrideCursor(Qt::waitCursor);
+
+	//store the ids of the selected rows in a list
+	QValueList<int> idsOfSelected;
+	for(int i=0;i<numSelections();i++)
+	{
+	   for(int j=selection(i).topRow();j<=selection(i).bottomRow();j++)
+	   {
+	       idsOfSelected.append(text(j,0).toInt());
+	   } 
+	}
+
 	sortColumn(col, true, true);
+
 	//clear and rebuild rowIdMap. Overwrite sortColumn later and sort rowIdMap there
 	rowIdMap.clear();
 	int id;
@@ -49,9 +61,19 @@ void QgsAttributeTable::columnClicked(int col)
 	    id=text(i,0).toInt();
 	    rowIdMap.insert(id,i);
 	}
+
+	QObject::disconnect(this,SIGNAL(selectionChanged()),this,SLOT(handleChangedSelections()));
 	clearSelection(true);
-	emit selectionRemoved();
-	emit repaintRequested();
+
+	//select the rows again after sorting
+	
+	QValueList<int>::iterator it;
+	for(it=idsOfSelected.begin();it!=idsOfSelected.end();++it)
+	{
+	    selectRowWithId((*it));
+	}
+	QObject::connect(this,SIGNAL(selectionChanged()),this,SLOT(handleChangedSelections()));
+
 	QApplication::restoreOverrideCursor();
 }
 
@@ -105,15 +127,6 @@ void QgsAttributeTable::insertFeatureId(int id)
 
 void QgsAttributeTable::selectRowWithId(int id)
 {
-    //brute force approach, add a solution with a hash table or a search tree later (and rebuild this structure every time the table is sorted)
-    /*for(int i=0;i<numRows();i++)
-    {
-	if(text(i,0).toInt()==id)
-	{
-	    selectRow(i);
-	    return;
-	}
-	}*/
     QMap<int,int>::iterator it=rowIdMap.find(id);
     selectRow(it.data());
 }
