@@ -122,7 +122,7 @@ public:
   bool isValid();
 
   /** Write property of QString labelField. */
-  virtual void setlabelField(const QString & _newVal);
+  virtual void setLabelField(const QString & _newVal);
 
   /** Read property of QString labelField. */
   virtual const QString & labelField();
