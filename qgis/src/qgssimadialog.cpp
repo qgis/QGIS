@@ -20,6 +20,7 @@
 #include "qgssimadialog.h"
 #include "qgssimarenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmarkerdialog.h"
 #include "qgsmarkersymbol.h"
 #include "qgsrenderitem.h"
 #include "qgsdlgvectorlayerproperties.h"
@@ -195,33 +196,38 @@ void QgsSiMaDialog::apply()
 
 void QgsSiMaDialog::selectMarker()
 {
-    QString svgfile=QFileDialog::getOpenFileName(QString::null,"Pictures (*.svg)",0,0,"Choose a marker picture");
-    mImageButton->setName(svgfile);
+    //QString svgfile=QFileDialog::getOpenFileName(QString::null,"Pictures (*.svg)",0,0,"Choose a marker picture");
+    QgsMarkerDialog mdialog(QDir::homeDirPath());
+    if(mdialog.exec()==QDialog::Accepted)
+    {
+	QString svgfile=mdialog.selectedMarker();
+	mImageButton->setName(svgfile);
     
-    //draw the SVG-Image on the button
-    QPicture pic;
-    double scalefactor=mScaleEdit->text().toDouble();
-    pic.load(svgfile,"svg");
+	//draw the SVG-Image on the button
+	QPicture pic;
+	double scalefactor=mScaleEdit->text().toDouble();
+	pic.load(svgfile,"svg");
 
-    int width=(int)(pic.boundingRect().width()*scalefactor);
-    int height=(int)(pic.boundingRect().height()*scalefactor);
+	int width=(int)(pic.boundingRect().width()*scalefactor);
+	int height=(int)(pic.boundingRect().height()*scalefactor);
 
-    //prevent 0 width or height, which would cause a crash
-    if(width==0)
-    {
-	width=1;
+	//prevent 0 width or height, which would cause a crash
+	if(width==0)
+	{
+	    width=1;
+	}
+	if(height==0)
+	{
+	    height=1;
+	}
+
+	QPixmap pixmap(height,width);
+	pixmap.fill();
+	QPainter p(&pixmap);
+	p.scale(scalefactor,scalefactor);
+	p.drawPicture(0,0,pic);
+	mImageButton->setPixmap(pixmap);
     }
-    if(height==0)
-    {
-	height=1;
-    }
-
-    QPixmap pixmap(height,width);
-    pixmap.fill();
-    QPainter p(&pixmap);
-    p.scale(scalefactor,scalefactor);
-    p.drawPicture(0,0,pic);
-    mImageButton->setPixmap(pixmap);
 
     setActiveWindow();
 }
