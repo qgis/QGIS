@@ -227,6 +227,8 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					<p>
 					<img alt="Raster Properties Popup" src="images/qgis_raster_properties_general_tab.png"/>
 					</p>	
+					<p>The legend tab displays basic information aboug the selected raster - including its
+					dimensions (in pixels) and its display name in the legend.</p>
 				</section>			
 				<section>
 					<title>The symbology properties tab</title>
@@ -253,13 +255,18 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 						<li>Multiband RGB (using any combination of three bands)</li>
 					</ol>
 					<p>QGIS has the capability to invert the colours in a given layer so that light 
-					colors become dark (and dark colors become light).</p>
+					colors become dark (and dark colors become light). Use the 'Invert Color Map' checkbox 
+					to enable / disable this behaviour.</p>
 				
-					<p>QGIS has the capability to invert the colours in a given layer so that light 
-					colors become dark (and dark colors become light).</p>
+					<p>QGIS has the capability to display each raster layer at varying transparency levels. Use
+					the transparency slider to indicate to what extent the underlying layers (if any) should
+					be visible though the current raster layer.</p>
 				
-					<p>QGIS has the capability to invert the colours in a given layer so that light 
-					colors become dark (and dark colors become light).</p>
+					<p>QGIS has the capability restrict the data displayed to show only cells whose values are
+					within a given number of standard diviations of the mean for the layer. This is useful
+					when you have one or two cells with abnormally high values in a raster grid that are having a
+					negative impact on the rendering of the raster. This option is only available for pseudocolor
+					images.</p>
 				</section>
 				<section>
 					<title>The raster statistics properties tab</title>
@@ -275,7 +282,17 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				
 		</section>
 		<section>
-			<title>Identifying a Feature</title>
+			<title>Creating a QGIS mime type</title>
+			<p>If you are a KDE user, you can create a mime type that associates GIS files with QGIS. This is useful
+			because it allows you to click on a shapefile (for example) in konqueror and the file will be loaded in a 
+			new instance of QGIS.
+			</p>
+			<p>
+			<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>
+			</p>
+		</section>		
+		<section>
+			<title>Acknowledgments</title>
 			<p>
 			</p>
 			<p>
