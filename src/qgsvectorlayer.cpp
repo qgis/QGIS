@@ -823,14 +823,28 @@ void QgsVectorLayer::select(int number)
     {
       if (! m_propertiesDialog)
       {
+#ifdef QGISDEBUG
+        std::cerr << "Creating new QgsDlgVectorLayerProperties object\n";
+#endif
         m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
 	// Make sure that the UI starts out with the correct display
 	// field value
+#ifdef QGISDEBUG
+        std::cerr << "Setting display field in prop dialog\n";
+#endif
 	m_propertiesDialog->setDisplayField(displayField());
       }
-
+#ifdef QGISDEBUG
+      std::cerr << "Resetting prop dialog\n";
+#endif
       m_propertiesDialog->reset();
+#ifdef QGISDEBUG
+      std::cerr << "Raising prop dialog\n";
+#endif
       m_propertiesDialog->raise();
+#ifdef QGISDEBUG
+      std::cerr << "Showing prop dialog\n";
+#endif
       m_propertiesDialog->show();
     } // QgsVectorLayer::showLayerProperties()
 

@@ -70,7 +70,8 @@ bufferRenderer(layer->
   txtDisplayName->setText(layer->name());
   // display type and feature count
   lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
-  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  //QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  QgsVectorDataProvider *dp = (QgsVectorDataProvider *)(layer->getDataProvider());
   QString numFeatures;
   numFeatures = numFeatures.setNum(dp->featureCount());
   lblFeatureCount->setText(numFeatures);
