@@ -126,7 +126,6 @@ void Plugin::projectRead()
     mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
     mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement","Bottom Left");
     mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
-    refreshCanvas();
 }
 
 //method defined in interface
