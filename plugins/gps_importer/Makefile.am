@@ -71,7 +71,6 @@ gpsimporterplugin_la_LDFLAGS = -avoid-version -module
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
 	qgsgpspluginguibase.h \
-	qgsgpspluginguibase.ui.h \
 	qgsgpsdevicedialogbase.h \
 	qgsgpsdevicedialogbase.ui.h \
 	qgsgpsplugingui.h \
