@@ -16,38 +16,40 @@
 #ifndef qgisplugintest_h
 #define qgisplugintest_h
 #include "qgisplugin.h"
+#include "qgisplugingui.h"
 
 class QgisTestPlugin : public QgisPlugin{
 public:
 	QgisTestPlugin();
-	virtual QString pluginName();
-	virtual QString pluginVersion();
-	virtual QString pluginDescription();
+	virtual QString name();
+	virtual QString version();
+	virtual QString description();
+	virtual QgisPluginGui *gui();
 	virtual ~QgisTestPlugin();
 private:
-	QString name;
-	QString version;
-	QString description;
+	QString pName;
+	QString pVersion;
+	QString pDescription;
 };
 
 #endif
 QgisTestPlugin::QgisTestPlugin(){
-	name = "Test Plugin";
-	version = "Version 0.0";
-	description = "This test plugin does nothing but tell you its name, version, and description";
+	pName = "Test Plugin";
+	pVersion = "Version 0.0";
+	pDescription = "This test plugin does nothing but tell you its name, version, and description";
 }
 QgisTestPlugin::~QgisTestPlugin(){
 	
 }
-QString QgisTestPlugin::pluginName(){
-	return name;
+QString QgisTestPlugin::name(){
+	return pName;
 }
-QString QgisTestPlugin::pluginVersion(){
-	return version;
+QString QgisTestPlugin::version(){
+	return pVersion;
 	
 }
-QString QgisTestPlugin::pluginDescription(){
-	return description;
+QString QgisTestPlugin::description(){
+	return pDescription;
 	
 }
 extern "C" QgisPlugin * classFactory(){
