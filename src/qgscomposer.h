@@ -128,6 +128,9 @@ public slots:
     
     //! Add new label
     void addLabel(void);
+    
+    //! Add new scalebar
+    void addScalebar(void);
 
     //! read project
     void projectRead();
