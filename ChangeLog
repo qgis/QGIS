@@ -3,6 +3,10 @@ ChangeLog,v 1.200 2004/10/21 17:27:35 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-10-29 [larsl] 0.5.0devel16
+** Added getDefaultValue() in QgsVectorLayer and QgsVectorDataProvider,
+   implemented it in the GPX provider
+
 2004-10-29 [stevehalasz] 0.5.0devel15
 * Write layers to projects files in the proper order by iterating over the
   zOrder in the map canvas. Fixes bug #1054332.
