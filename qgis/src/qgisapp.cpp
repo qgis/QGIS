@@ -98,17 +98,19 @@ void QgisApp::fileExit(){
 
 }
 void QgisApp::zoomIn(){
-    QWMatrix m = mapCanvas->worldMatrix();
+  /*  QWMatrix m = mapCanvas->worldMatrix();
       m.scale( 2.0, 2.0 );
       mapCanvas->setWorldMatrix( m );
+  */
   
 }
 
 void QgisApp::zoomOut()
 {
-    QWMatrix m = mapCanvas->worldMatrix();
+  /*    QWMatrix m = mapCanvas->worldMatrix();
       m.scale( 0.5, 0.5 );
       mapCanvas->setWorldMatrix( m );
+  */
   
 
 }
