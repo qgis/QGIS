@@ -227,7 +227,7 @@ void QgsVectorLayer::setDisplayField()
   for (int j = 0; j < fields.size(); j++)
     {
 
-      QString fldName = fields[j].getName();
+      QString fldName = fields[j].name();
 #ifdef QGISDEBUG
       std::cout << "Checking field " << fldName << std::endl;
 #endif
@@ -259,7 +259,7 @@ void QgsVectorLayer::setDisplayField()
           fieldIndex = idxId;
       } else
         {
-          fieldIndex = fields[0].getName();
+          fieldIndex = fields[0].name();
         }
     }
 }
@@ -641,7 +641,7 @@ void QgsVectorLayer::table()
       //for (int h = 0; h < numFields; h++) {
       for (int h = 1; h <= numFields; h++)
         {
-          colHeader->setLabel(h, fields[h - 1].getName());
+          colHeader->setLabel(h, fields[h - 1].name());
         }
       QgsFeature *fet;
       while ((fet = dataProvider->getNextFeature(true)))

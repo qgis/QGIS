@@ -66,9 +66,9 @@ bufferRenderer(layer->
   for (int i = 0; i < fields.size(); i++)
     {
       QgsField fld = fields[i];
-      QListViewItem *lvi = new QListViewItem(listViewFields, fld.getName(),
-                                             fld.getType(), QString("%1").arg(fld.getLength()),
-                                             QString("%1").arg(fld.getPrecision()));
+      QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
+                                             fld.type(), QString("%1").arg(fld.length()),
+                                             QString("%1").arg(fld.precision()));
     }
   // symbology initialization
   legendtypecombobox->insertItem(tr("Single Symbol"));

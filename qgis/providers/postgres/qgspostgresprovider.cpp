@@ -620,7 +620,7 @@ QString QgsPostgresProvider::getPrimaryKey(){
     }
     primaryKeyIndex = columns[0].toInt()-1;
     QgsField fld = attributeFields[primaryKeyIndex];
-     primaryKey = fld.getName();
+     primaryKey = fld.name();
      #ifdef QGISDEBUG
      std::cerr << "Primary key is " << primaryKey << std::endl;//);// +<< " at column " << primaryKeyIndex << std::endl;
      #endif
@@ -650,7 +650,7 @@ Primary key is composed of fields 1 and 5
 QString QgsPostgresProvider::minValue(int position){
     // get the field name 
     QgsField fld = attributeFields[position];
-    QString sql = QString("select min(%1) from %2").arg(fld.getName()).arg(tableName);
+    QString sql = QString("select min(%1) from %2").arg(fld.name()).arg(tableName);
     PGresult *rmin = PQexec(connection,(const char *)sql);
     QString minValue = PQgetvalue(rmin,0,0);
     PQclear(rmin);
@@ -662,7 +662,7 @@ QString QgsPostgresProvider::minValue(int position){
 QString QgsPostgresProvider::maxValue(int position){
      // get the field name 
     QgsField fld = attributeFields[position];
-    QString sql = QString("select max(%1) from %2").arg(fld.getName()).arg(tableName);
+    QString sql = QString("select max(%1) from %2").arg(fld.name()).arg(tableName);
     PGresult *rmax = PQexec(connection,(const char *)sql);
     QString maxValue = PQgetvalue(rmax,0,0);
     PQclear(rmax);
