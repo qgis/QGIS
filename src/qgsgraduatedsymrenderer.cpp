@@ -227,7 +227,7 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoord
     delete[]feature;
 }
 
-void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr)
+void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
     bool toproperties=false;//if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
     if(pr)

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsDlgVectorLayerPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>570</width>
-            <height>457</height>
+            <width>492</width>
+            <height>331</height>
         </rect>
     </property>
     <property name="caption">
@@ -361,7 +361,7 @@
                         </property>
                         <widget class="QWidget">
                             <property name="name">
-                                <cstring>singlesympage</cstring>
+                                <cstring>qt_dead_widget_singlesympage</cstring>
                             </property>
                             <attribute name="id">
                                 <number>0</number>
@@ -370,101 +370,11 @@
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QGroupBox" row="0" column="0">
-                                    <property name="name">
-                                        <cstring>groupBox3</cstring>
-                                    </property>
-                                    <property name="title">
-                                        <string>Single Symbol</string>
-                                    </property>
-                                    <grid>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <widget class="QLabel" row="0" column="0">
-                                            <property name="name">
-                                                <cstring>outlinecolorlabel</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Outline color</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="1" column="1">
-                                            <property name="name">
-                                                <cstring>fillcolorbutton</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="1" column="0">
-                                            <property name="name">
-                                                <cstring>fillcolorlabel</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Fill color</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="0" column="2">
-                                            <property name="name">
-                                                <cstring>outlinestylelabel</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Style</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="0" column="3">
-                                            <property name="name">
-                                                <cstring>stylebutton</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="1" column="3">
-                                            <property name="name">
-                                                <cstring>patternbutton</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="1" column="2">
-                                            <property name="name">
-                                                <cstring>fillpaternlabel</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Pattern</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QSpinBox" row="2" column="2">
-                                            <property name="name">
-                                                <cstring>outlinewidthspinbox</cstring>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="2" column="1">
-                                            <property name="name">
-                                                <cstring>outlinewidthlabel</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Width</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="0" column="1">
-                                            <property name="name">
-                                                <cstring>outlinecolorbutton</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
-                                    </grid>
-                                </widget>
                             </grid>
                         </widget>
                         <widget class="QWidget">
                             <property name="name">
-                                <cstring>continuoussympage</cstring>
+                                <cstring>qt_dead_widget_continuoussympage</cstring>
                             </property>
                             <attribute name="id">
                                 <number>1</number>
@@ -473,268 +383,15 @@
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QGroupBox" row="0" column="0">
-                                    <property name="name">
-                                        <cstring>groupBox4</cstring>
-                                    </property>
-                                    <property name="title">
-                                        <string>Continuous</string>
-                                    </property>
-                                    <grid>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <widget class="QPushButton" row="1" column="2">
-                                            <property name="name">
-                                                <cstring>mincolorbutton</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>30</height>
-                                                </size>
-                                            </property>
-                                            <property name="paletteBackgroundColor">
-                                                <color>
-                                                    <red>255</red>
-                                                    <green>255</green>
-                                                    <blue>255</blue>
-                                                </color>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
-                                            <property name="name">
-                                                <cstring>classificationComboBox</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>30</height>
-                                                </size>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="0" column="0">
-                                            <property name="name">
-                                                <cstring>classvarlabel</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>30</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string>Classification field</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                                            <property name="name">
-                                                <cstring>mincolorlabel</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>30</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string>Color for minimum value</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
-                                            <property name="name">
-                                                <cstring>maxcolorlabel</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>30</height>
-                                                </size>
-                                            </property>
-                                            <property name="maximumSize">
-                                                <size>
-                                                    <width>32767</width>
-                                                    <height>20</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string>Color for maximum value</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="2" column="2">
-                                            <property name="name">
-                                                <cstring>maxcolorbutton</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>0</width>
-                                                    <height>30</height>
-                                                </size>
-                                            </property>
-                                            <property name="paletteBackgroundColor">
-                                                <color>
-                                                    <red>255</red>
-                                                    <green>255</green>
-                                                    <blue>255</blue>
-                                                </color>
-                                            </property>
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
-                                    </grid>
-                                </widget>
                             </grid>
                         </widget>
                         <widget class="QWidget">
                             <property name="name">
-                                <cstring>WStackPage</cstring>
+                                <cstring>qt_dead_widget_WStackPage</cstring>
                             </property>
                             <attribute name="id">
                                 <number>2</number>
                             </attribute>
-                            <widget class="QGroupBox">
-                                <property name="name">
-                                    <cstring>groupBox5</cstring>
-                                </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>9</x>
-                                        <y>13</y>
-                                        <width>383</width>
-                                        <height>141</height>
-                                    </rect>
-                                </property>
-                                <property name="title">
-                                    <string>Graduated</string>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>numberofclasseslabel</cstring>
-                                    </property>
-                                    <property name="geometry">
-                                        <rect>
-                                            <x>17</x>
-                                            <y>96</y>
-                                            <width>107</width>
-                                            <height>40</height>
-                                        </rect>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>number of classes</string>
-                                    </property>
-                                </widget>
-                                <widget class="QSpinBox">
-                                    <property name="name">
-                                        <cstring>numberofclassesspinbox</cstring>
-                                    </property>
-                                    <property name="geometry">
-                                        <rect>
-                                            <x>138</x>
-                                            <y>103</y>
-                                            <width>47</width>
-                                            <height>30</height>
-                                        </rect>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>classvarlabel_2</cstring>
-                                    </property>
-                                    <property name="geometry">
-                                        <rect>
-                                            <x>7</x>
-                                            <y>26</y>
-                                            <width>145</width>
-                                            <height>30</height>
-                                        </rect>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>classification variable</string>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>classificationComboBox_2</cstring>
-                                    </property>
-                                    <property name="geometry">
-                                        <rect>
-                                            <x>151</x>
-                                            <y>26</y>
-                                            <width>217</width>
-                                            <height>30</height>
-                                        </rect>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>modeComboBox</cstring>
-                                    </property>
-                                    <property name="geometry">
-                                        <rect>
-                                            <x>150</x>
-                                            <y>62</y>
-                                            <width>213</width>
-                                            <height>30</height>
-                                        </rect>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>modelabel</cstring>
-                                    </property>
-                                    <property name="geometry">
-                                        <rect>
-                                            <x>12</x>
-                                            <y>62</y>
-                                            <width>83</width>
-                                            <height>30</height>
-                                        </rect>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>mode</string>
-                                    </property>
-                                </widget>
-                            </widget>
                         </widget>
                     </widget>
                 </grid>
@@ -742,25 +399,5 @@
         </widget>
     </grid>
 </widget>
-<connections>
-    <connection>
-        <sender>btnClose</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDlgVectorLayerPropertiesBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>btnApply</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDlgVectorLayerPropertiesBase</receiver>
-        <slot>apply()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">qgsdlgvectorlayerpropertiesbase.ui.h</include>
-</includes>
-<slots>
-    <slot>apply()</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

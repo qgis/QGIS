@@ -45,7 +45,6 @@
 #include <qlibrary.h>
 #include "qgsrenderer.h"
 #include "qgslegenditem.h"
-#include "qgsvectorlayerproperties.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsrenderitem.h"
@@ -168,13 +167,13 @@ QgsVectorLayer::~QgsVectorLayer()
 	{
 	    delete m_renderer;
 	}
-	if(m_propertiesDialog)
-	{
-	    delete m_propertiesDialog;
-	}
 	if(m_rendererDialog)
 	{
 	    delete m_rendererDialog;
+	}
+	if(m_propertiesDialog)
+	{
+	    delete m_propertiesDialog;
 	}
 }
 
@@ -694,7 +693,7 @@ void QgsVectorLayer::showLayerProperties()
     }
     else
     {
-	m_propertiesDialog = new QgsVectorLayerProperties(this);
+	m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
 	m_propertiesDialog->show();
     }
 }
@@ -726,10 +725,8 @@ void QgsVectorLayer::setRendererDialog(QDialog* dialog)
 {
     if(dialog!=m_rendererDialog)
     {
-	qWarning("in loop");
 	if(m_rendererDialog)
 	{
-	    qWarning("deleting renderer dialog");
 	    delete m_rendererDialog;
 	} 
 	m_rendererDialog=dialog;
@@ -763,7 +760,7 @@ QGis::VectorType QgsVectorLayer::vectorType()
     }
 }
 
-QgsVectorLayerProperties* QgsVectorLayer::propertiesDialog()
+QgsDlgVectorLayerProperties* QgsVectorLayer::propertiesDialog()
 {
     return m_propertiesDialog;
 }
@@ -994,7 +991,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
     return rect;
 }
 
-void QgsVectorLayer::setLayerProperties(QgsVectorLayerProperties* properties)
+void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties* properties)
 {
     if(m_propertiesDialog)
     {

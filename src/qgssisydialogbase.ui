@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsSiSyDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>625</width>
-            <height>186</height>
+            <width>553</width>
+            <height>104</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,32 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>displaynamelabel</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>1</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>0</width>
-                    <height>30</height>
-                </size>
-            </property>
-            <property name="font">
-                <font>
-                </font>
-            </property>
-            <property name="text">
-                <string>Display Name</string>
-            </property>
-        </widget>
         <widget class="QPushButton" row="1" column="4">
             <property name="name">
                 <cstring>stylebutton</cstring>
@@ -121,103 +95,6 @@
             <property name="text">
                 <string>Pattern</string>
             </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="2" rowspan="1" colspan="5">
-            <property name="name">
-                <cstring>displaynamefield</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>0</width>
-                    <height>30</height>
-                </size>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>32767</width>
-                    <height>22</height>
-                </size>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="7">
-            <property name="name">
-                <cstring>layout12</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer16_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>128</width>
-                            <height>27</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>applybutton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Apply</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>closebutton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Close</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer16</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>128</width>
-                            <height>27</height>
-                        </size>
-                    </property>
-                </spacer>
-            </hbox>
         </widget>
     </grid>
 </widget>

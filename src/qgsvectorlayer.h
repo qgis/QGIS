@@ -26,7 +26,7 @@ class OGRDataSource;
 class QgsDataProvider;
 class QgsRenderer;
 class QgsLegendItem;
-class QgsVectorLayerProperties;
+class QgsDlgVectorLayerProperties;
 class QgisApp;
 
 #include <map>
@@ -82,11 +82,11 @@ class QgsVectorLayer:public QgsMapLayer
 	/**Sets the renderer dialog. If a renderer dialog is already present, it is deleted*/
 	void setRendererDialog(QDialog* dialog);
 	/**Sets m_propertiesDialog*/
-	void setLayerProperties(QgsVectorLayerProperties* properties);
+	void setLayerProperties(QgsDlgVectorLayerProperties* properties);
 	/**Returns point, line or polygon*/
 	QGis::VectorType vectorType();
 	/**Returns a pointer to the properties dialog*/
-	QgsVectorLayerProperties* propertiesDialog();
+	QgsDlgVectorLayerProperties* propertiesDialog();
 	/** Return the context menu for the layer */
 	QPopupMenu *contextMenu();
   	/**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds -DBL_MAX*/
@@ -107,7 +107,7 @@ class QgsVectorLayer:public QgsMapLayer
 	/**Renderer object which holds the information about how to display the features*/
 	QgsRenderer* m_renderer;
 	/**Dialog to set the properties*/
-	QgsVectorLayerProperties* m_propertiesDialog;
+	QgsDlgVectorLayerProperties* m_propertiesDialog;
 	/**Widget to set the symbology properties*/
 	QDialog* m_rendererDialog;
  

@@ -52,7 +52,7 @@ void QgsContinuousColRenderer::setMaximumItem(QgsRenderItem* it)
     m_maximumItem=it;
 }
 
-void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr)
+void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
     bool toproperties=false;//if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
     if(pr)
