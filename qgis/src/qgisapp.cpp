@@ -347,6 +347,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // Add a panel to the status bar for the scale, coords and progress
   //
   mProgressBar=new QProgressBar(100,NULL);
+  mProgressBar->setMaximumWidth(100);
   statusBar()->addWidget(mProgressBar,0.5,true);   
   mScaleLabel=new QLabel(QString("Scale"),NULL);
   statusBar()->addWidget(mScaleLabel, 0,true);
