@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include <iostream>
 #include <fstream>
+#include <math.h> //needed for win32 build (ts)
 
 #include <qstring.h>
 #include <qfont.h>
@@ -63,7 +64,7 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
 
     std::vector<QgsFeatureAttribute> fields =  feature->attributeMap();
 
-    for ( int i = 0; i < fields.size(); i++ ) {
+    for ( unsigned int i = 0; i < fields.size(); i++ ) {
 	if ( fields[i].fieldName().compare(mLabelField[attr]) == 0 ) {
 	    return fields[i].fieldValue();
 	}
