@@ -151,10 +151,14 @@ dnl ---------------------------------------------------------------------------
 # AC_SUBST(GRASS_LIB)
 # AC_SUBST(GRASS_INC)
 
+dnl Debug messages to stdout
+AC_MSG_CHECKING([if debug statements should be sent to stdout/stderr])
 if test x"$QGISDEBUG" = "x" ; then
  DEBUG_QGIS=-DNO_DEBUG
+ AC_MSG_RESULT([no])
 else
  DEBUG_QGIS=-DDEBUG
+ AC_MSG_RESULT([yes])
 fi
 AC_SUBST(DEBUG_QGIS)
 
