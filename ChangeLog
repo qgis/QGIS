@@ -3,6 +3,10 @@ ChangeLog,v 1.200 2004/10/21 17:27:35 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-10-22 [larsl] 0.5.0devel12
+** Removed more unused code in the GPS plugin, changed the GPS plugin source
+   to follow the coding standards better
+
 2004-10-22 [larsl] 0.5.0devel11
 ** Some changes in the GPS plugin:
    * Changed the tooltip of the action from "GPS Importer" to "GPS Tools"

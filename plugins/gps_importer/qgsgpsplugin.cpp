@@ -1,13 +1,11 @@
 /***************************************************************************
-  plugin.cpp - GPS related tools
-Functions:
+  qgsgpsplugin.cpp - GPS related tools
+   -------------------
+  Date                 : Jan 21, 2004
+  Copyright            : (C) 2004 by Tim Sutton
+  Email                : tim@linfiniti.com
 
--------------------
-begin                : Jan 21, 2004
-copyright            : (C) 2004 by Tim Sutton
-email                : tim@linfiniti.com
-
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -26,7 +24,7 @@ email                : tim@linfiniti.com
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsdataprovider.h"
-#include "plugin.h"
+#include "qgsgpsplugin.h"
 
 
 #include <qeventloop.h>
@@ -49,7 +47,7 @@ email                : tim@linfiniti.com
 #include <iostream>
 
 //the gui subclass
-#include "plugingui.h"
+#include "qgsgpsplugingui.h"
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
@@ -60,28 +58,31 @@ email                : tim@linfiniti.com
 #define QGISEXTERN extern "C"
 #endif
 
-// 
-static const char * const ident_ = "$Id$";
 
+static const char * const ident_ = 
+  "$Id$";
 static const char * const name_ = "GPS Tools";
-static const char * const description_ = "Tools for loading and importing GPS data.";
+static const char * const description_ = 
+  "Tools for loading and importing GPS data.";
 static const char * const version_ = "Version 0.1";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+
+
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), 
-          qGisInterface(theQgisInterFace),
-          QgisPlugin(name_,description_,version_,type_)
+QgsGPSPlugin::QgsGPSPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+  mMainWindowPointer(theQGisApp), 
+  mQGisInterface(theQgisInterFace),
+  QgisPlugin(name_,description_,version_,type_)
 {
   setupBabel();
 }
 
-Plugin::~Plugin()
+QgsGPSPlugin::~QgsGPSPlugin()
 {
   // delete all our babel formats
   BabelMap::iterator iter;
@@ -91,63 +92,41 @@ Plugin::~Plugin()
     delete iter->second;
 }
 
-/* Following functions return name, description, version, and type for the plugin */
-QString Plugin::name()
-{
-  return pluginNameQString;
-}
-
-QString Plugin::version()
-{
-  return pluginVersionQString;
-
-}
-
-QString Plugin::description()
-{
-  return pluginDescriptionQString;
-
-}
-
-int Plugin::type()
-{
-  return QgisPlugin::UI;
-}
 
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsGPSPlugin::initGui()
 {
   // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = new QPopupMenu(mMainWindowPointer);
   pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
-  menuIdInt = qGisInterface->addMenu("&Gps", pluginMenu);
+  mMenuBarPointer = ((QMainWindow *) mMainWindowPointer)->menuBar();
+  mMenuId = mQGisInterface->addMenu("&Gps", pluginMenu);
 
   // add an action to the toolbar
-  myQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
-				 this, "run");
-  connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  qGisInterface->addToolBarIcon(myQActionPointer);
+  mQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
+				this, "run");
+  connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  mQGisInterface->addToolBarIcon(mQActionPointer);
 }
 
 //method defined in interface
-void Plugin::help()
+void QgsGPSPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsGPSPlugin::run()
 {
   // find all GPX layers
   std::vector<QgsVectorLayer*> gpxLayers;
   std::map<QString, QgsMapLayer*>::const_iterator iter;
-  std::cerr<<"LAYERS: "<<qGisInterface->getLayerRegistry()->
+  std::cerr<<"LAYERS: "<<mQGisInterface->getLayerRegistry()->
     mapLayers().size()<<std::endl;
-  for (iter = qGisInterface->getLayerRegistry()->mapLayers().begin();
-       iter != qGisInterface->getLayerRegistry()->mapLayers().end(); ++iter) {
+  for (iter = mQGisInterface->getLayerRegistry()->mapLayers().begin();
+       iter != mQGisInterface->getLayerRegistry()->mapLayers().end(); ++iter) {
     std::cerr<<iter->second->name()<<std::endl;
     if (iter->second->type() == QgsMapLayer::VECTOR) {
       QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>(iter->second);
@@ -157,9 +136,9 @@ void Plugin::run()
   }
   std::cerr<<std::endl;
   
-  PluginGui *myPluginGui=new PluginGui(mImporters, mDevices, gpxLayers, 
-				       qgisMainWindowPointer, "GPS Tools", 
-				       true, 0);
+  QgsGPSPluginGui *myPluginGui = 
+    new QgsGPSPluginGui(mImporters, mDevices, gpxLayers, mMainWindowPointer, 
+			"GPS Tools", true, 0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), 
 	  this, SLOT(drawRasterLayer(QString)));
@@ -182,24 +161,26 @@ void Plugin::run()
   myPluginGui->show();
 }
 
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+
+void QgsGPSPlugin::drawVectorLayer(QString thePathNameQString, 
+				   QString theBaseNameQString, 
+				   QString theProviderQString)
 {
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
+  mQGisInterface->addVectorLayer(thePathNameQString, theBaseNameQString, 
+				 theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsGPSPlugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
-  qGisInterface->removeToolBarIcon(myQActionPointer);
-  delete myQActionPointer;
+  mMenuBarPointer->removeItem(mMenuId);
+  mQGisInterface->removeToolBarIcon(mQActionPointer);
+  delete mQActionPointer;
 }
 
-void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
-			 bool loadTracks) {
+void QgsGPSPlugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
+			       bool loadTracks) {
 
   //check if input file is readable
   QFileInfo fileInfo(filename);
@@ -214,7 +195,7 @@ void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
   QSettings settings;
   settings.writeEntry("/qgis/gps/gpxdirectory", fileInfo.dirPath());
   
-    // add the requested layers
+  // add the requested layers
   if (loadTracks)
     emit drawVectorLayer(filename + "?type=track", 
 			 fileInfo.baseName() + ", tracks", "gpx");
@@ -229,10 +210,10 @@ void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
 }
 
 
-void Plugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer, 
-			   bool importWaypoints, bool importRoutes, 
-			   bool importTracks, QString outputFilename, 
-			   QString layerName) {
+void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer, 
+				 bool importWaypoints, bool importRoutes, 
+				 bool importTracks, QString outputFilename, 
+				 QString layerName) {
 
   // what features does the user want to import?
   QString typeArg;
@@ -245,7 +226,7 @@ void Plugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer,
   
   // try to start the gpsbabel process
   QStringList babelArgs = 
-    importer->getImportCommand(mBabelPath, typeArg, 
+    importer->importCommand(mBabelPath, typeArg, 
 			       inputFilename, outputFilename);
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
@@ -290,10 +271,10 @@ void Plugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer,
 }
 
 
-void Plugin::downloadFromGPS(QString device, QString port,
-			     bool downloadWaypoints, bool downloadRoutes,
-			     bool downloadTracks, QString outputFilename,
-			     QString layerName) {
+void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
+				   bool downloadWaypoints, bool downloadRoutes,
+				   bool downloadTracks, QString outputFilename,
+				   QString layerName) {
   
   // what does the user want to download?
   QString typeArg;
@@ -306,7 +287,7 @@ void Plugin::downloadFromGPS(QString device, QString port,
   
   // try to start the gpsbabel process
   QStringList babelArgs = 
-    mDevices[device]->getImportCommand(mBabelPath, typeArg, 
+    mDevices[device]->importCommand(mBabelPath, typeArg, 
 				       port, outputFilename);
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
@@ -355,8 +336,8 @@ void Plugin::downloadFromGPS(QString device, QString port,
 }
 
 
-void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
-			 QString port) {
+void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
+			       QString port) {
   
   const QString& source(gpxLayer->getDataProvider()->getDataSourceUri());
   
@@ -375,7 +356,7 @@ void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   
   // try to start the gpsbabel process
   QStringList babelArgs = 
-    mDevices[device]->getExportCommand(mBabelPath, typeArg, 
+    mDevices[device]->exportCommand(mBabelPath, typeArg, 
 				       source.left(source.findRev('?')), port);
   QProcess babelProcess(babelArgs);
   if (!babelProcess.start()) {
@@ -413,7 +394,7 @@ void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 }
 
 
-void Plugin::setupBabel() {
+void QgsGPSPlugin::setupBabel() {
   
   // where is gpsbabel?
   QSettings settings;
@@ -504,28 +485,29 @@ void Plugin::setupBabel() {
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, 
+				     QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsGPSPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-    return name_;
+  return name_;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-    return description_;
+  return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 QGISEXTERN int type()
 {
-    return type_;
+  return type_;
 }
 
 // Return the version number for the plugin

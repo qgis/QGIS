@@ -9,7 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "plugingui.h"
+#include "qgsgpsplugingui.h"
 #include "qgsgpsdevicedialog.h"
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsdataprovider.h"
@@ -30,7 +30,6 @@
 #include <qmessagebox.h>
 #include <qfile.h>
 #include <qsettings.h>
-#include "waypointtoshape.h"
 
 //standard includes
 #include <cassert>
@@ -38,11 +37,13 @@
 #include <iostream>
 
 
-PluginGui::PluginGui(const BabelMap& importers, BabelMap& devices,
-		     std::vector<QgsVectorLayer*> gpxMapLayers, 
-		     QWidget* parent, const char* name, bool modal, WFlags fl)
-  : PluginGuiBase(parent, name, modal, fl), gpxLayers(gpxMapLayers),
-    mImporters(importers), mDevices(devices) {
+QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers, BabelMap& devices,
+				 std::vector<QgsVectorLayer*> gpxMapLayers, 
+				 QWidget* parent, const char* name, 
+				 bool modal, WFlags fl)
+  : QgsGPSPluginGuiBase(parent, name, modal, fl), mGPXLayers(gpxMapLayers),
+    mImporters(importers), mDevices(devices) 
+{
   populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
@@ -50,11 +51,11 @@ PluginGui::PluginGui(const BabelMap& importers, BabelMap& devices,
   connect(pbULEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
   connect(pbDLEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
 } 
-PluginGui::~PluginGui()
+QgsGPSPluginGui::~QgsGPSPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsGPSPluginGui::pbnOK_clicked()
 {
   
   // what should we do?
@@ -94,7 +95,7 @@ void PluginGui::pbnOK_clicked()
   case 1: {
     const QString& typeString(cmbDLFeatureType->currentText());
     emit importGPSFile(leIMPInput->text(), 
-		       mImporters.find(impFormat)->second,
+		       mImporters.find(mImpFormat)->second,
 		       typeString == "Waypoints", typeString == "Routes",
 		       typeString == "Tracks", leIMPOutput->text(),
 		       leIMPLayer->text());
@@ -112,14 +113,14 @@ void PluginGui::pbnOK_clicked()
   
   // or upload GPS data to a device?
   case 3:
-    emit uploadToGPS(gpxLayers[cmbULLayer->currentItem()], 
+    emit uploadToGPS(mGPXLayers[cmbULLayer->currentItem()], 
 		     cmbULDevice->currentText(), cmbULPort->currentText());
     break;
   }
 } 
 
 
-void PluginGui::pbnDLOutput_clicked()
+void QgsGPSPluginGui::pbnDLOutput_clicked()
 {
   QString myFileNameQString = 
     QFileDialog::getSaveFileName("." , //initial dir
@@ -131,7 +132,7 @@ void PluginGui::pbnDLOutput_clicked()
 }
 
 
-void PluginGui::enableRelevantControls() 
+void QgsGPSPluginGui::enableRelevantControls() 
 {
   // load GPX
   if (tabWidget->currentPageIndex() == 0) {
@@ -186,13 +187,13 @@ void PluginGui::enableRelevantControls()
 }
 
 
-void PluginGui::pbnCancel_clicked()
+void QgsGPSPluginGui::pbnCancel_clicked()
 {
  close(1);
 }
 
 
-void PluginGui::pbnGPXSelectFile_clicked()
+void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
 {
   std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
   QString myFileTypeQString;
@@ -214,19 +215,19 @@ void PluginGui::pbnGPXSelectFile_clicked()
 }
 
 
-void PluginGui::pbnIMPInput_clicked() {
+void QgsGPSPluginGui::pbnIMPInput_clicked() {
   QString myFileType;
   QString myFileName = QFileDialog::getOpenFileName(
           "." , //initial dir
-	  babelFilter,
+	  mBabelFilter,
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
           "Select file and format to import" , //caption
           &myFileType //the pointer to store selected filter
           );
-  impFormat = myFileType.left(myFileType.length() - 6);
+  mImpFormat = myFileType.left(myFileType.length() - 6);
   std::map<QString, QgsBabelFormat*>::const_iterator iter;
-  iter = mImporters.find(impFormat);
+  iter = mImporters.find(mImpFormat);
   if (iter == mImporters.end()) {
     std::cerr<<"Unknown file format selected: "
 	     <<myFileType.left(myFileType.length() - 6)<<std::endl;
@@ -245,7 +246,7 @@ void PluginGui::pbnIMPInput_clicked() {
 }
 
 
-void PluginGui::pbnIMPOutput_clicked() {
+void QgsGPSPluginGui::pbnIMPOutput_clicked() {
   QString myFileNameQString = 
     QFileDialog::getSaveFileName("." , //initial dir
 				 "GPS eXchange format (*.gpx)",
@@ -256,7 +257,7 @@ void PluginGui::pbnIMPOutput_clicked() {
 }
 
 
-void PluginGui::populatePortComboBoxes() {
+void QgsGPSPluginGui::populatePortComboBoxes() {
   
 #ifdef linux
   // look for linux serial devices
@@ -337,16 +338,16 @@ void PluginGui::populatePortComboBoxes() {
 }
 
 
-void PluginGui::populateULLayerComboBox() {
-  for (int i = 0; i < gpxLayers.size(); ++i) {
-    cmbULLayer->insertItem(gpxLayers[i]->name());
-    std::cerr<<gpxLayers[i]->name()<<std::endl;
+void QgsGPSPluginGui::populateULLayerComboBox() {
+  for (int i = 0; i < mGPXLayers.size(); ++i) {
+    cmbULLayer->insertItem(mGPXLayers[i]->name());
+    std::cerr<<mGPXLayers[i]->name()<<std::endl;
   }
 }
 
 
-void PluginGui::populateIMPBabelFormats() {
-  babelFilter = "";
+void QgsGPSPluginGui::populateIMPBabelFormats() {
+  mBabelFilter = "";
   cmbULDevice->clear();
   cmbDLDevice->clear();
   QSettings settings;
@@ -354,7 +355,7 @@ void PluginGui::populateIMPBabelFormats() {
   QString lastULDevice = settings.readEntry("/qgis/gps/lastuldevice", "");
   BabelMap::const_iterator iter;
   for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
-    babelFilter.append((const char*)iter->first).append(" (*.*);;");
+    mBabelFilter.append((const char*)iter->first).append(" (*.*);;");
   int u = -1, d = -1;
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
     if (iter->second->supportsExport()) {
@@ -375,19 +376,14 @@ void PluginGui::populateIMPBabelFormats() {
 }
 
 
-void populatePortComboBoxes() {
-  
-}
-
-
-void PluginGui::openDeviceEditor() {
+void QgsGPSPluginGui::slotOpenDeviceEditor() {
   QgsGPSDeviceDialog* dlg = new QgsGPSDeviceDialog(mDevices);
   dlg->show();
   connect(dlg, SIGNAL(devicesChanged()), this, SLOT(slotDevicesUpdated()));
 }
 
 
-void PluginGui::slotDevicesUpdated() {
+void QgsGPSPluginGui::slotDevicesUpdated() {
   populateIMPBabelFormats();
 }
 
