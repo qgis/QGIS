@@ -105,14 +105,16 @@
   These are GDAL driver description strings.
   */
 static const char *const mSupportedRasterFormats[] = {
-  "SDTS",
-  "AIG",
   "AAIGrid",
-  "GTiff",
-  "USGSDEM",
-  "HFA",
-  "GRASS",
+  "AIG",
   "DTED",
+  "GRASS",
+  "GTiff",
+  "HFA",
+  "JPEG2000",
+  "MrSID",
+  "SDTS",
+  "USGSDEM",
   ""   // used to indicate end of list
 };
 
@@ -268,10 +270,26 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
         QString glob = "*.dt0";
         theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
       }
+      else if (myGdalDriverDescription.startsWith("MrSID"))
+      {
+        // MrSID use "*.sid"
+        QString glob = "*.sid";
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+      }
       else
       {
         catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
       }
+    }
+    
+    // A number of drivers support JPEG 2000. Add it in for those.
+    if (  myGdalDriverDescription.startsWith("MrSID") 
+          || myGdalDriverDescription.startsWith("ECW")
+          || myGdalDriverDescription.startsWith("JPEG2000")
+          || myGdalDriverDescription.startsWith("JP2KAK") )
+    {
+      QString glob = "*.jp2 *.j2k";
+      theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
     }
 
     myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
@@ -330,10 +348,8 @@ bool QgsRasterLayer::isValidRasterFileName(QString theFileNameQString)
 
   //open the file using gdal making sure we have handled locale properly
   myDataset = GDALOpen( (const char*)(theFileNameQString.local8Bit()), GA_ReadOnly );
-
   if( myDataset == NULL )
   {
-
     return false;
   }
   else
