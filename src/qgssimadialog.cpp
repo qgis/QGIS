@@ -33,11 +33,13 @@
 QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer)
 {
     QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));
+    mScaleEdit->setText("1.0");
 }
 
 QgsSiMaDialog::QgsSiMaDialog(): QgsSiMaDialogBase(), mVectorLayer(0)
 {
     QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));
+    mScaleEdit->setText("1.0");
 }
 
 QgsSiMaDialog::~QgsSiMaDialog()
