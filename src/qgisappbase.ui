@@ -74,6 +74,7 @@
         <action name="actionAddLayer"/>
     </item>
     <item text="&amp;Tools" name="PopupMenu_4">
+        <action name="actionCheckQgisVersion"/>
         <action name="actionPluginManager"/>
         <action name="actionTestPlugin"/>
         <action name="actionOptions"/>
@@ -393,6 +394,14 @@
             <string>Plugin Manager</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionCheckQgisVersion</cstring>
+        </property>
+        <property name="text">
+            <string>Check QGIS Version</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -562,6 +571,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>actionPluginManager_activated()</slot>
     </connection>
+    <connection>
+        <sender>actionCheckQgisVersion</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>checkQgisVersion()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
@@ -589,6 +604,7 @@
     <slot>fileSaveAs()</slot>
     <slot>fileNew()</slot>
     <slot>actionPluginManager_activated()</slot>
+    <slot>checkQgisVersion()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -134,3 +134,9 @@ void QgisAppBase::actionPluginManager_activated()
 {
 
 }
+
+
+void QgisAppBase::checkQgisVersion()
+{
+
+}
