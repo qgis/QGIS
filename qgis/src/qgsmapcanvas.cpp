@@ -40,15 +40,17 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 	mapWindow = new QRect();
 	coordXForm = new QgsCoordinateTransform();
 	bgColor = QColor(Qt::white);
+	setEraseColor(bgColor);
 	setMouseTracking(true);
 	drawing = false;
 	dirty = true;
-	pmCanvas = 0;
+	pmCanvas = new QPixmap(width(),height());
 }
 
 QgsMapCanvas::~QgsMapCanvas()
 {
 	delete coordXForm;
+	delete pmCanvas;
 	delete mapWindow;
 }
 
@@ -146,8 +148,9 @@ void QgsMapCanvas::render2()
 //  std::cout << "IN RENDER 2" << std::endl;
 			drawing = true;
 			QPainter *paint = new QPainter();
-			paint->begin(this);
-
+			//paint->begin(this);replaced line
+			pmCanvas->fill(bgColor);
+			paint->begin(pmCanvas);
 			// calculate the translation and scaling parameters
 			double muppX, muppY;
 			muppY = currentExtent.height() / height();
@@ -197,10 +200,11 @@ void QgsMapCanvas::render2()
 			drawing = false;
 		}
 		// save the canvas pixmap
-		 delete pmCanvas;
-		 pmCanvas = new QPixmap();
-		 *pmCanvas = QPixmap::grabWindow(winId());
+		//delete pmCanvas;
+		//pmCanvas = new QPixmap();
+		//*pmCanvas = QPixmap::grabWindow(winId());
 		dirty = false;
+		repaint();
 	}
 }
 
@@ -245,17 +249,17 @@ void QgsMapCanvas::render()
   paint->end();
   */
 }
-void QgsMapCanvas::paintEvent(QPaintEvent *)
+
+void QgsMapCanvas::paintEvent(QPaintEvent* ev)
 {
 	if(!dirty){
 		// just bit blit the image to the canvas
-		bitBlt(this, 0, 0, pmCanvas);
+	    bitBlt(this,ev->rect().topLeft(),pmCanvas,ev->rect());
 	}else{
-		if (!drawing)
-			render2();
+	    if (!drawing)
+		render2();
+	    
 	}
-//  else
-//      std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
 }
 
 QgsRect QgsMapCanvas::extent()
@@ -271,11 +275,7 @@ void QgsMapCanvas::setExtent(QgsRect r)
 void QgsMapCanvas::clear()
 {
 	dirty = true;
-	QPainter *p = new QPainter();
-	p->begin(this);
-	p->eraseRect(this->rect());
-	p->end();
-
+	erase();
 }
 
 void QgsMapCanvas::zoomFullExtent()
@@ -304,18 +304,6 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 	  case QGis::ZoomIn:
 	  case QGis::ZoomOut:
 		  zoomBox.setRect(0, 0, 0, 0);
-		  break;
-
-	  case QGis::Pan:
-		  // create a pixmap to use in panning the map canvas
-		  tempPanImage = new QPixmap();
-
-		  //*tempPanImage = QPixmap::grabWidget(this);
-		  *tempPanImage = QPixmap::grabWindow(winId());
-
-
-		  backgroundFill = new QPixmap(tempPanImage->width(), tempPanImage->height());
-		  backgroundFill->fill(bgColor);
 		  break;
 	  case QGis::Distance:
 //              distanceEndPoint = e->pos();
@@ -398,10 +386,6 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  break;
 
 		  case QGis::Pan:
-			  // new extent based on offset
-			  delete tempPanImage;
-			  delete backgroundFill;
-
 			  // use start and end box points to calculate the extent
 			  QgsPoint start = coordXForm->toMapCoordinates(boxStartPoint);
 			  QgsPoint end = coordXForm->toMapCoordinates(e->pos());
@@ -460,6 +444,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 }
 void QgsMapCanvas::resizeEvent(QResizeEvent *e){
 	dirty = true;
+	pmCanvas->resize(e->size());
 }
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
@@ -489,14 +474,32 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 			  paint.end();
 			  break;
 		  case QGis::Pan:
-			  // show the temporary image as the user drags the mouse
+			  // show the pmCanvas as the user drags the mouse
 			  dragging = true;
 			  // bitBlt the pixmap on the screen, offset by the
 			  // change in mouse coordinates
 			  dx = e->pos().x() - boxStartPoint.x();
 			  dy = e->pos().y() - boxStartPoint.y();
-			  bitBlt(this, 0, 0, backgroundFill);
-			  bitBlt(this, dx, dy, tempPanImage);
+			  
+			  //erase only the necessary parts to avoid flickering
+			  if(dx>0)
+			  {
+			      erase(0,0,dx,height());
+			  }
+			  else
+			  {
+			      erase(width()+dx,0,-dx,height());
+			  }
+			  if(dy>0)
+			  {
+			      erase(0,0,width(),dy);
+			  }
+			  else
+			  {
+			      erase(0,height()+dy,width(),-dy);
+			  }
+
+			  bitBlt(this, dx, dy, pmCanvas);
 			  break;
 		}
 
@@ -517,6 +520,8 @@ void QgsMapCanvas::setMapTool(int tool)
 void QgsMapCanvas::setbgColor(const QColor & _newVal)
 {
 	bgColor = _newVal;
+	setEraseColor(_newVal);
+	
 }
 
 /** Updates the full extent to include the mbr of the rectangle r */
