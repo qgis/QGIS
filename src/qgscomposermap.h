@@ -146,6 +146,9 @@ public slots:
     
     // Called if map canvas has changed
     void mapCanvasChanged ( );
+    
+    // Set cache outdated
+    void setCacheUpdated ( bool u = false );
 
 private:
     // Pointer to composition

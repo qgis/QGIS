@@ -525,6 +525,11 @@ bool QgsComposerMap::selected( void )
     return mSelected;
 }
 
+void QgsComposerMap::setCacheUpdated ( bool u ) 
+{
+    mCacheUpdated = u;
+}    
+
 double QgsComposerMap::scale ( void ) { return mScale; }
 
 QWidget *QgsComposerMap::options ( void )
