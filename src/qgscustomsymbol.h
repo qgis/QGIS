@@ -18,7 +18,7 @@
 #ifndef QGSCUSTOMSYMBOL_H
 #define QGSCUSTOMSYMBOL_H
 
-#include <qgssymbol.h>
+#include "qgssymbol.h"
 
 /**
   *@author Gary E.Sherman
