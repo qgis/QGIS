@@ -54,6 +54,11 @@
 #include <qregexp.h>
 #include <qprogressbar.h>
 #include <qstylesheet.h>
+#include <qvgroupbox.h>
+#include <qpainter.h>
+#include <qpixmap.h>
+#include <qpicture.h>
+#include <qimage.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -93,20 +98,21 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     /* Read module description and create options */
 
     // Open QGIS module description
-    QFile qFile ( mPath );
+    QString mpath = mPath + ".qgm";
+    QFile qFile ( mpath );
     if ( !qFile.exists() ) {
-	QMessageBox::warning( 0, "Warning", "The module file (" + mPath + ") not found." );
+	QMessageBox::warning( 0, "Warning", "The module file (" + mpath + ") not found." );
 	return;
     }
     if ( ! qFile.open( IO_ReadOnly ) ) {
-	QMessageBox::warning( 0, "Warning", "Cannot open module file (" + mPath + ")" );
+	QMessageBox::warning( 0, "Warning", "Cannot open module file (" + mpath + ")" );
 	return;
     }
     QDomDocument qDoc ( "qgisgrassmodule" );
     QString err;
     int line, column;
     if ( !qDoc.setContent( &qFile,  &err, &line, &column ) ) {
-	QString errmsg = "Cannot read module file (" + mPath + "):\n" + err + "\nat line "
+	QString errmsg = "Cannot read module file (" + mpath + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
 	std::cerr << errmsg << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
@@ -152,19 +158,19 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 	    QString optionType = e.tagName();
 	    //std::cout << "optionType = " << optionType << std::endl;
 
+	    QString key = e.attribute("key");
+	    std::cout << "key = " << key << std::endl;
+
+	    QDomNode gnode = nodeByKey ( gDocElem, key );
+	    if ( gnode.isNull() ) {
+		QMessageBox::warning( 0, "Warning", "Cannot find key " +  key );
+		return;
+	    }
+
 	    if ( optionType == "option" ) {
 	        bool created = false;
 
 		// Check option type and create appropriate control
-		QString key = e.attribute("key");
-		std::cout << "key = " << key << std::endl;
-
-		QDomNode gnode = nodeByKey ( gDocElem, key );
-		if ( gnode.isNull() ) {
-		    QMessageBox::warning( 0, "Warning", "Cannot find key " +  key );
-		    return;
-		}
-
 		QDomNode promptNode = gnode.namedItem ( "gisprompt" );
 		if ( !promptNode.isNull() ) {
 		    QDomElement promptElem = promptNode.toElement();
@@ -172,8 +178,8 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 		    QString age = promptElem.attribute("age"); 
 		    //std::cout << "element = " << element << " age = " << age << std::endl;
 		    if ( age == "old" && ( element == "vector" || element == "cell") ) {
-			QgsGrassModuleInput *mi = 
-				 new QgsGrassModuleInput ( this, e, gDocElem, mTabWidget->page(0) );
+			QgsGrassModuleInput *mi = new QgsGrassModuleInput ( this, key, e, gDocElem, 
+				                                gnode, mTabWidget->page(0) );
 
 			layout->addWidget ( mi );
 			created = true;
@@ -183,7 +189,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 
 		if ( !created ) {
 		    QgsGrassModuleOption *so = 
-			new QgsGrassModuleOption ( this, e, gDocElem, mTabWidget->page(0) );
+			new QgsGrassModuleOption ( this, key, e, gDocElem, gnode, mTabWidget->page(0) );
 		    
 			layout->addWidget ( so );
 			created = true;
@@ -191,7 +197,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 		}
 	    } else if ( optionType == "flag" )  {
 		    QgsGrassModuleFlag *flag = 
-			new QgsGrassModuleFlag ( this, e, gDocElem, mTabWidget->page(0) );
+			new QgsGrassModuleFlag ( this, key, e, gDocElem, gnode, mTabWidget->page(0) );
 		    
 		    layout->addWidget ( flag );
 		    mItems.push_back(flag);
@@ -224,6 +230,7 @@ QString QgsGrassModule::label ( QString path )
     #endif
 
     // Open QGIS module description
+    path.append ( ".qgm" );
     QFile qFile ( path );
     if ( !qFile.exists() ) {
 	return QString ( "Not available, decription not found (" + path + ")" );
@@ -248,6 +255,100 @@ QString QgsGrassModule::label ( QString path )
     return ( qDocElem.attribute("label") );
 }
 
+QPixmap QgsGrassModule::pixmap ( QString path, int height ) 
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModule::pixmap()" << std::endl;
+    #endif
+
+    std::vector<QPixmap> pixmaps;
+
+    // Create vector of available pictures
+    int cnt = 1;
+    while ( 1 ) 
+    {
+	// SVG
+	QString fpath = path + "." + QString::number(cnt) + ".svg";
+        QFileInfo fi ( fpath );
+        if ( fi.exists() ) 
+	{
+	    QPicture pic;
+	    if ( ! pic.load ( fpath, "svg" ) ) break;
+
+	    QRect br = pic.boundingRect();
+
+	    double scale = 1. * height / br.height();
+	    int width = (int) ( scale * br.width() );
+            if ( width <= 0 ) width = height; //should not happen
+	    QPixmap pixmap ( width, height );
+	    pixmap.fill ( QColor(255,255,255) );
+	    QPainter painter ( &pixmap );
+	    painter.scale ( scale, scale );
+	    painter.drawPicture ( -br.x(), -br.y(), pic );
+	    painter.end();
+	    
+	    pixmaps.push_back ( pixmap );
+	} 
+	else // PNG 
+	{
+	    fpath = path + "." + QString::number(cnt) + ".png";
+	    fi.setFile ( fpath );
+
+	    if ( !fi.exists() ) break;
+
+	    QPixmap pixmap;
+	   
+	    if ( ! pixmap.load(fpath, "PNG" ) ) break;
+	    
+	    double scale = 1. * height / pixmap.height();
+	    int width = (int) ( scale * pixmap.width() );
+
+	    QImage img = pixmap.convertToImage();
+	    img = img.smoothScale ( width, height ); 
+	    pixmap.convertFromImage ( img );
+
+	    pixmaps.push_back ( pixmap );
+	}
+        cnt++;
+    }	
+
+    // Get total width
+    int width = 0;
+    for ( int i = 0; i < pixmaps.size(); i++ ) {
+	width += pixmaps[i].width();
+    }
+
+    if ( width <= 0 ) width = height; //should not happen
+    
+    int swidth = 20; // sign
+    if ( pixmaps.size() > 1 ) width += swidth; // ->
+    if ( pixmaps.size() > 2 ) width += swidth; // +
+
+    QPixmap pixmap ( width, height );
+    pixmap.fill(QColor(255,255,255));
+    QPainter painter ( &pixmap );
+    
+    int pos = 0;
+    for ( int i = 0; i < pixmaps.size(); i++ ) {
+	if ( i == 1 && pixmaps.size() == 3 ) { // +
+	    painter.drawLine ( (int)pos+swidth/2-3, (int)height/2, (int)pos+swidth/2+3, (int)height/2 );
+	    painter.drawLine ( (int)pos+swidth/2, (int)height/2-3, (int)pos+swidth/2, (int)height/2+3 );
+	    pos += swidth;
+	}
+	if ( (i == 1 && pixmaps.size() == 2) || (i == 2 && pixmaps.size() == 3)  ) { // ->
+	    painter.setPen ( QColor(0,0,0) );
+	    painter.drawLine ( pos+3, (int)height/2, pos+swidth-3, (int)height/2 );
+	    painter.drawLine ( (int)pos+swidth/2, (int)height/2-3, pos+swidth-2, (int)height/2 );
+	    painter.drawLine ( (int)pos+swidth/2, (int)height/2+3, pos+swidth-2, (int)height/2 );
+	    pos += swidth;
+	}
+	painter.drawPixmap ( pos,0, pixmaps[i] );
+	pos += pixmaps[i].width();
+    }
+    painter.end();
+
+    return pixmap;
+}
 
 void QgsGrassModule::run()
 {
@@ -399,55 +500,94 @@ QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
      return QDomNode();
 }
 
-QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, 
-	                                   QDomElement &qdesc, QDomElement &gdesc,
+QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key, 
+	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    :QFrame ( parent )
+                    :QVGroupBox ( parent ), QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
     #endif
-    mModule = module;
     setSizePolicy ( QSizePolicy::Preferred, QSizePolicy::Minimum );
-
-    mKey = qdesc.attribute("key");
-    QDomNode gnode = QgsGrassModule::nodeByKey ( gdesc, mKey );
-    if ( gnode.isNull() ) {
-	QMessageBox::warning( 0, "Warning", "Cannot find key " +  mKey );
-	return;
-    }
     
-    mAnswer = qdesc.attribute("answer", "");
-    
-    if ( qdesc.attribute("hidden") == "yes" ) {
-	mHidden = true;
-	hide();
-    }
+    if ( mHidden ) hide();
 
+    setTitle ( " " + mDescription + " " );
+	
     // String without options 
-    if ( !mHidden ) {
-	QHBoxLayout *layout = new QHBoxLayout ( this, 10 );
-	QLabel *lab = new QLabel ( this );
+    if ( !mHidden ) 
+    {
+	
+	// Predefined values ?
+	QDomNode valuesNode = gnode.namedItem ( "values" );
+	
+	if ( !valuesNode.isNull() ) // predefined values -> ComboBox or CheckBox
+	{
+	    // one or many?
+	    QDomElement gelem = gnode.toElement();
+   	    if ( gelem.attribute("multiple") == "yes" ) {
+		mControlType = CheckBoxes;
+	    } else {
+	        mControlType = ComboBox;
+		mComboBox = new QComboBox ( this );
+	    }
 
-	QDomNode n = gnode.namedItem ( "description" );
-	if ( !n.isNull() ) {
-            QDomElement e = n.toElement();
-	    QString description = e.text().stripWhiteSpace();
-	    description.replace( 0, 1, description.left(1).upper() );
-	    lab->setText ( description );
-	} else {
-	    lab->setText ( mKey ); 
-	}
-	layout->addWidget ( lab );
+	    // List of values to be excluded 
+	    QStringList exclude = QStringList::split ( ',', qdesc.attribute("exclude") );
 
-	mLineEdit = new QLineEdit ( this );
-	n = gnode.namedItem ( "default" );
-	if ( !n.isNull() ) {
-            QDomElement e = n.toElement();
-	    QString def = e.text().stripWhiteSpace();
-	    mLineEdit->setText ( def );
+	    QDomElement valuesElem = valuesNode.toElement();
+	    QDomNode valueNode = valuesElem.firstChild();
+
+	    while( !valueNode.isNull() ) {
+		QDomElement valueElem = valueNode.toElement();
+
+		if( !valueElem.isNull() && valueElem.tagName() == "value" ) 
+		{
+
+		    QDomNode n = valueNode.namedItem ( "name" );
+		    if ( !n.isNull() ) {
+			QDomElement e = n.toElement();
+			QString val = e.text().stripWhiteSpace();
+			
+			if ( exclude.contains(val) == 0 ) { 
+			    n = valueNode.namedItem ( "description" );
+			    QString desc;
+			    if ( !n.isNull() ) {
+				e = n.toElement();
+				desc = e.text().stripWhiteSpace();
+			    } else {
+				desc = val;
+			    }
+			    desc.replace( 0, 1, desc.left(1).upper() );
+
+			    if ( mControlType == ComboBox ) {
+				mComboBox->insertItem ( desc );
+			    } else {
+				QCheckBox *cb = new QCheckBox ( desc, this );
+				mCheckBoxes.push_back ( cb );
+			    }
+			    
+			    mValues.push_back ( val );
+			}
+		    }
+		}
+		
+		valueNode = valueNode.nextSibling();
+	     }
+	} 
+	else // No values
+	{
+	    // Line edit
+	    mControlType = LineEdit;
+
+	    mLineEdit = new QLineEdit ( this );
+	    QDomNode n = gnode.namedItem ( "default" );
+	    if ( !n.isNull() ) {
+		QDomElement e = n.toElement();
+		QString def = e.text().stripWhiteSpace();
+		mLineEdit->setText ( def );
+	    }
 	}
-	layout->addWidget ( mLineEdit );
     }
 }
 
@@ -458,9 +598,22 @@ QStringList QgsGrassModuleOption::options()
     if ( mHidden ) {
         list.push_back( mKey + "=" + mAnswer );
     } else {
-        list.push_back( mKey + "=" + mLineEdit->text() );
+	if ( mControlType == LineEdit ) {
+            list.push_back( mKey + "=" + mLineEdit->text() );
+	} else if ( mControlType == ComboBox ) {
+            list.push_back( mKey + "=" + mValues[mComboBox->currentItem()] );
+	} else if ( mControlType == CheckBoxes ) {
+	    QString opt = mKey + "=";
+	    int cnt = 0;
+	    for ( int i = 0; i < mCheckBoxes.size(); i++ ) {
+		if ( mCheckBoxes[i]->isChecked() ) {
+		    if ( cnt > 0 ) opt.append ( "," );
+		    opt.append ( mValues[i] );
+		}
+	    }
+	    list.push_back( opt );
+	}
     }
-	
     return list;
 }
 
@@ -468,43 +621,22 @@ QgsGrassModuleOption::~QgsGrassModuleOption()
 {
 }
 
-QgsGrassModuleFlag::QgsGrassModuleFlag ( QgsGrassModule *module, 
-	                                   QDomElement &qdesc, QDomElement &gdesc,
+QgsGrassModuleFlag::QgsGrassModuleFlag ( QgsGrassModule *module, QString key,
+	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    :QCheckBox ( parent )
+                    :QCheckBox ( parent ), QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleFlag::QgsGrassModuleFlag" << std::endl;
     #endif
-    mModule = module;
-    mAnswer = false;
 
-    mKey = qdesc.attribute("key");
-    QDomNode gnode = QgsGrassModule::nodeByKey ( gdesc, mKey );
-    if ( gnode.isNull() ) {
-	QMessageBox::warning( 0, "Warning", "Cannot find key " +  mKey );
-	return;
-    }
+    if ( mHidden ) hide();
     
-    if ( qdesc.attribute("answer") == "on" ) {
-	mAnswer = true;
-    }
+    if ( mAnswer == "on" )
+        setChecked ( true );
+    else 
+        setChecked ( false );
     
-    if ( qdesc.attribute("hidden") == "yes" ) {
-	mHidden = true;
-	hide();
-    }
-    
-    QDomNode n = gnode.namedItem ( "description" );
-    if ( !n.isNull() ) {
-        QDomElement e = n.toElement();
-	mDescription = e.text().stripWhiteSpace();
-    } else {
-	// Should not happen
-	std::cerr << "description not found or it is not text" << std::endl;
-    }
-
-    setChecked ( mAnswer );
     setText ( mDescription );
 }
 
@@ -521,36 +653,20 @@ QgsGrassModuleFlag::~QgsGrassModuleFlag()
 {
 }
 
-QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, 
-	                                   QDomElement &qdesc, QDomElement &gdesc,
+QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
+	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    :QGroupBox ( parent )
+                    :QVGroupBox ( parent ), QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+		     mUpdate(false)
 {
-    mModule = module;
-    setSizePolicy ( QSizePolicy::Preferred, QSizePolicy::Minimum );
+    //setSizePolicy ( QSizePolicy::Preferred, QSizePolicy::Minimum );
 
-	    
-    mKey = qdesc.attribute("key");
-    QDomNode gnode = QgsGrassModule::nodeByKey ( gdesc, mKey );
-    if ( gnode.isNull() ) {
-	QMessageBox::warning( 0, "Warning", "Cannot find key " +  mKey );
-	return;
-    }
-
-    setTitle ( "Input" );
-    QDomNode n = gnode.namedItem ( "description" );
-    if ( !n.isNull() ) {
-        QDomElement e = n.toElement();
-	QString description = e.text().stripWhiteSpace();
-	description.replace( 0, 1, description.left(1).upper() );
-        setTitle ( " " + description + " " );
-    }
+    if ( mDescription.isEmpty() ) 
+	setTitle ( " Input " );
+    else
+	setTitle ( " " + mDescription + " " );
 
     QDomNode promptNode = gnode.namedItem ( "gisprompt" );
-    if ( promptNode.isNull() ) {
-	QMessageBox::warning( 0, "Warning", "Cannot find gisprompt" );
-	return;
-    }
     QDomElement promptElem = promptNode.toElement();
     QString element = promptElem.attribute("element"); 
 
@@ -562,9 +678,12 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
 	QMessageBox::warning( 0, "Warning", "GRASS element " + element + " not supported" );
     }
 
-    QVBoxLayout *layout = new QVBoxLayout ( this, 25 );
+    if ( qdesc.attribute("update") == "yes" ) {
+	mUpdate = true;
+    }
+
+
     mLayerComboBox = new QComboBox ( this );
-    layout->addWidget ( mLayerComboBox );
 
     // Of course, activated(int) is not enough, but there is no signal BEFORE the cobo is opened
     connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
@@ -619,6 +738,8 @@ void QgsGrassModuleInput::updateQgisLayers()
             
 	    if ( loc != curloc ) continue;
 
+	    if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
+
 	    mLayerComboBox->insertItem( layer->name() );
 	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
 	    mMaps.push_back ( map + "@" + mapset );
@@ -651,6 +772,8 @@ void QgsGrassModuleInput::updateQgisLayers()
             
 	    if ( loc != curloc ) continue;
 
+	    if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
+
 	    mLayerComboBox->insertItem( layer->name() );
 	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
 	    mMaps.push_back ( map + "@" + mapset );
@@ -670,7 +793,25 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 {
 }
 
-QgsGrassModuleItem::QgsGrassModuleItem() { mHidden = false; }
+QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
+	 				QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
+	:mKey(key),
+	mHidden(false), 
+	mModule(module)
+{ 
+    mAnswer = qdesc.attribute("answer", "");
+    
+    if ( qdesc.attribute("hidden") == "yes" ) {
+	mHidden = true;
+    }
+
+    QDomNode n = gnode.namedItem ( "description" );
+    if ( !n.isNull() ) {
+        QDomElement e = n.toElement();
+	mDescription = e.text().stripWhiteSpace();
+	mDescription.replace( 0, 1, mDescription.left(1).upper() );
+    }
+}
 
 bool QgsGrassModuleItem::hidden() { return mHidden; }
 
