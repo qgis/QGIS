@@ -75,6 +75,7 @@ public:
    void freeze(bool frz=true);
 	//! remove the layer defined by key
 	void remove(QString key);
+	void setDirty(bool _dirty);
 	friend class QgsLegend;
 public slots:
 	void render2();
@@ -87,6 +88,7 @@ public slots:
    void mouseMoveEvent(QMouseEvent *e);
    void mousePressEvent(QMouseEvent *e);
    void mouseReleaseEvent(QMouseEvent *e);
+   void resizeEvent(QResizeEvent *e);
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
     std::map<QString,QgsMapLayer *>layers;
@@ -114,6 +116,10 @@ public slots:
   QPoint boxStartPoint;
   /** Pixmap snapshot used for panning */
   QPixmap * tempPanImage;
+  /*! Pixmap used for restoring the canvas when no change in
+  * data or extents has occurred.
+  */
+  QPixmap *pmCanvas;
   /** Pixmap used for filling the background when panning */
   QPixmap *backgroundFill;
   /** Background color for the map canvas */
@@ -126,6 +132,14 @@ public slots:
   //! Flag indicating a map refresh is in progress
   bool drawing;
   bool frozen;
+  /*! Flag to track the state of the Map canvas. The canvas is
+  * flagged as dirty by any operation that changes the state of
+  * the layers or the view extent. If the canvas is not dirty, paint
+  * events are handled by bit-blitting the stored canvas bitmap to
+  * the canvas. This improves performance by not reading the data source
+  * when no real change has occurred
+  */
+  bool dirty;
 
 };
 
