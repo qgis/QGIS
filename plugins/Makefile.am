@@ -12,7 +12,7 @@ if HAVE_GRASS
 GRASS = grass
 endif
 
-SUBDIRS = $(GEOPROCESSING) $(SPIT) $(GRASS) delimited_text gps_importer grid_maker
+SUBDIRS = $(GEOPROCESSING) $(SPIT) $(GRASS) delimited_text gps_importer grid_maker north_arrow copyright_label
 
 EXTRA_DIST = qgisplugin.h 			\
 	     plugin_builder.pl			\
