@@ -658,6 +658,11 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 //initialise the painter
                 paint->begin(theQPaintDevice);
             }
+    // hardwire the current extent for projection testing
+        //     mCanvasProperties->currentExtent.setXmin(-156.00);
+        //     mCanvasProperties->currentExtent.setXmax(-152.00);
+        //     mCanvasProperties->currentExtent.setYmin(55.00);
+        //     mCanvasProperties->currentExtent.setYmax(60.00);
 
             // calculate the translation and scaling parameters
             // mupp = map units per pixel
@@ -743,6 +748,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #ifdef QGISDEBUG
                         std::cout << "Rendering " << ml->name() << std::endl;
                         std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
+    std::cout << "Input extent: " << ml->extent().stringRep() << std::endl; 
+    std::cout << "Transformed extent" << ml->coordinateTransform()->transform(ml->extent()) << std::endl; 
 #endif
 
                         if (ml->visible())
@@ -1964,8 +1971,14 @@ void QgsMapCanvas::recalculateExtents()
     QgsMapLayer * lyr = dynamic_cast<QgsMapLayer *>(mit->second);
 #ifdef QGISDEBUG
     std::cout << "Updating extent using " << lyr->name() << std::endl;
+    std::cout << "Input extent: " << lyr->extent().stringRep() << std::endl; 
+    std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent()) << std::endl; 
 #endif 
-    updateFullExtent(lyr->extent());
+    // Layer extents are stored in the coordinate system (CS) of the
+    // layer. The extent must be projected to the canvas CS prior to passing
+    // on to the updateFullExtent function
+
+    updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
     mit++;
   }
 }
