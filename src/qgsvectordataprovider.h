@@ -173,7 +173,8 @@ class QgsVectorDataProvider : public QgsDataProvider
   const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
   const std::list<QString>& numericalTypes(){return mNumericalTypes;}
 
-  void setEncoding(QString e);
+  void setEncoding(const QString& e);
+  QString encoding() const;
 
 protected:
     /**Encoding*/

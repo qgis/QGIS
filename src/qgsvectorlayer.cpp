@@ -1634,6 +1634,13 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   setDataProvider( providerKey );
 
+  //read provider encoding
+  QDomNode encodingNode = layer_node.namedItem("encoding");
+  if(!encodingNode.isNull()&&dataProvider)
+  {
+      dataProvider->setEncoding(encodingNode.toElement().text());
+  }
+
   // get and set the display field if it exists.
   QDomNode displayFieldNode = layer_node.namedItem("displayfield");
   if (!displayFieldNode.isNull())
@@ -1904,8 +1911,13 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
   QDomElement provider  = document.createElement( "provider" );
   QDomText providerText = document.createTextNode( providerType() );
   provider.appendChild( providerText );
-
   layer_node.appendChild( provider );
+
+  //provider encoding
+  QDomElement encoding = document.createElement("encoding");
+  QDomText encodingText = document.createTextNode(dataProvider->encoding());
+  encoding.appendChild( encodingText );
+  layer_node.appendChild( encoding );
 
   // add the display field
 
