@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.43 2004/06/30 12:07:40 timlinux Exp */
+/* qgsprojectio.cpp,v 1.44 2004/07/10 17:20:12 larsl Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -161,7 +161,7 @@ std::list<QString> QgsProjectIo::read(QString path)
       QDomElement mne = mnl.toElement();
       //QMessageBox::information(0,"Layer Name", mne.text());
       QString layerName = mne.text();
-
+      
       //process data source
       mnl = node.namedItem("datasource");
       mne = mnl.toElement();
@@ -183,9 +183,23 @@ std::list<QString> QgsProjectIo::read(QString path)
 
       if (type == "vector")
       {
-        QString provider;
+	//process provider key
+	QDomNode pkeyNode = node.namedItem("provider");
+	QString provider;
+	if (pkeyNode.isNull())
+	  provider = "";
+	else
+	{
+	  QDomElement pkeyElt = pkeyNode.toElement();
+	  provider = pkeyElt.text();
+	}
+	
         // determine type of vector layer
-        if ((dataSource.find("host=") > -1) && (dataSource.find("dbname=") > -1))
+        if (provider != "")
+	{
+	  
+	} else if ((dataSource.find("host=") > -1) && 
+		   (dataSource.find("dbname=") > -1))
         {
           provider = "postgres";
         } else
@@ -427,7 +441,7 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
         xml << "0";
       }
       xml << "\">\n";
-
+      
       if (isDatabase)
       {
         // cast the layer to a qgsdatabaselayer
@@ -441,16 +455,19 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
       {
         xml << "\t\t<layername>" << lyr->name().ascii() << "</layername>\n";
       }
-      xml << "\t\t<datasource>" << lyr->source().ascii() << "</datasource>\n";
+      xml << "\t\t<datasource>" << lyr->source().replace('&', "&amp;").ascii()
+	  << "</datasource>\n";
       xml << "\t\t<zorder>" << i << "</zorder>\n";
       if (lyr->type() != QgsMapLayer::RASTER)
       {
         QgsVectorLayer *layer = dynamic_cast < QgsVectorLayer * >(lyr);
         if (!layer)
         {
-          qWarning("Warning, cast failed in QgsProjectIo, line 309");
+          qWarning("Warning, cast failed in QgsProjectIo, line 451");
         }
-
+	
+	xml << "\t\t<provider>" << layer->providerType() << "</provider>\n";
+	
         QgsRenderer* renderer;
         if(renderer=layer->renderer())
         {
