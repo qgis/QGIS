@@ -46,16 +46,12 @@ class QgsMarkerSymbol : public QgsSymbol
     double mScaleFactor;
 };
 
-inline QgsMarkerSymbol::QgsMarkerSymbol(): QgsSymbol(), mScaleFactor(1), 
-     mSvgPath("")
-{
-
-}
+inline QgsMarkerSymbol::QgsMarkerSymbol()
+    : QgsSymbol(), mSvgPath(""), mScaleFactor(1)
+{}
 
 inline QgsMarkerSymbol::~QgsMarkerSymbol()
-{
-
-}
+{}
 
 inline void QgsMarkerSymbol::setScaleFactor(double factor)
 {
