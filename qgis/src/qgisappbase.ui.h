@@ -59,3 +59,8 @@ void QgisAppBase::zoomFull()
 {
 
 }
+
+void QgisAppBase::pan()
+{
+
+}

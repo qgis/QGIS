@@ -36,7 +36,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
-
+#include "qgis.h"
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
 
@@ -114,25 +114,34 @@ QgisApp::zoomIn ()
       m.scale( 2.0, 2.0 );
       mapCanvas->setWorldMatrix( m );
   */
+
+  mapTool = QGis::ZoomIn;
+  mapCanvas->setMapTool(mapTool);
   // scale the extent
-  QgsRect ext = mapCanvas->extent();
+ /* QgsRect ext = mapCanvas->extent();
   ext.scale(0.5);
   mapCanvas->setExtent(ext);
   statusBar()->message(ext.stringRep());
   mapCanvas->clear();
-  mapCanvas->render2();
+  mapCanvas->render2(); */
 
 }
 
 void
 QgisApp::zoomOut ()
 {
+	mapTool = QGis::ZoomOut;
+	mapCanvas->setMapTool(mapTool);
   /*    QWMatrix m = mapCanvas->worldMatrix();
 	m.scale( 0.5, 0.5 );
 	mapCanvas->setWorldMatrix( m );
   */
 
 
+}
+void QgisApp::pan(){
+    mapTool = QGis::Pan;
+    mapCanvas->setMapTool(mapTool);
 }
 void QgisApp::zoomFull(){
   mapCanvas->zoomFullExtent();
@@ -264,6 +273,6 @@ void QgisApp::drawLayers(){
 }
 void QgisApp::showMouseCoordinate(QgsPoint &p){
 	statusBar()->message(p.stringRep());
-	qWarning("X,Y is: " + p.stringRep());
-	//qApp->processEvents();
+	//qWarning("X,Y is: " + p.stringRep());
+	
 }

@@ -52,10 +52,16 @@ public:
     QgsRect extent();
     void setExtent(QgsRect );
     void zoomFullExtent();
+  /** Sets the map tool currently being used on the canvas */
+  void setMapTool(int tool);
+  /** Write property of QColor bgColor. */
+  virtual void setbgColor( const QColor& _newVal);
  signals:
  	void xyCoordinates(QgsPoint &p);
  private:
    void mouseMoveEvent(QMouseEvent *e);
+   void mousePressEvent(QMouseEvent *e);
+   void mouseReleaseEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
     map<QString,QgsMapLayer *>layers;
@@ -65,7 +71,24 @@ public:
     QgsRect currentExtent;
     QRect *mapWindow;
     QgsCoordinateTransform *coordXForm;
+  /**  */
+  int mapTool;
+  /** Flag to indicate status of mouse button */
+  bool mouseButtonDown;
+  //! Map units per pixel
     double m_mupp;
+  /** Rubber band box for dynamic zoom */
+  QRect zoomBox;
+  /** Beginning point of a rubber band box */
+  QPoint boxStartPoint;
+  /** Pixmap snapshot used for panning */
+  QPixmap * tempPanImage;
+  /** Pixmap used for filling the background when panning */
+  QPixmap *backgroundFill;
+  /** Background color for the map canvas */
+  QColor bgColor;
+  /** Flag to indicate a map canvas drag operation is taking place */
+  bool dragging;
 
 };
 
