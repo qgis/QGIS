@@ -119,6 +119,7 @@
         <action name="actionPan"/>
         <action name="actionZoomFullExtent"/>
         <action name="actionZoomLast"/>
+	<action name="actionZoomToSelected"/>
         <separator/>
         <action name="actionIdentify"/>
         <action name="actionSelect"/>
@@ -250,6 +251,17 @@
                 <string>Zoom &amp;out</string>
             </property>
         </action>
+	<action>
+	<property name="name">
+                <cstring>actionZoomToSelected</cstring>
+            </property>
+	<property name="text">
+                <string>Zoom to selected features</string>
+	</property>
+	<property name="toolTip">
+         	<string>Zooms to selected features</string>
+      	</property>
+	</action>
         <action>
             <property name="name">
                 <cstring>actionIdentify</cstring>
@@ -497,6 +509,12 @@
         <slot>zoomIn()</slot>
     </connection>
     <connection>
+        <sender>actionZoomToSelected</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomToSelected()</slot>
+    </connection>
+    <connection>
         <sender>drawAction</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
@@ -617,6 +635,7 @@
     <slot>init()</slot>
     <slot>drawLayers()</slot>
     <slot>zoomFull()</slot>
+    <slot>zoomToSelected()</slot>
     <slot>pan()</slot>
     <slot>about()</slot>
     <slot>testButton()</slot>
