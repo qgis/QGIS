@@ -37,7 +37,7 @@ libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
 
 libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)
 libqgisgrass_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
-libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) 
+libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS)
 if HAVE_POSTGRESQL
 libqgisgrass_la_CXXFLAGS += -I$(PG_INC)
 endif
