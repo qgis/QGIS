@@ -51,11 +51,11 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
 */
     QgsSpitPlugin(QgisApp * qgis, QgisIface * qI);
 
-    //! init the gui
-    virtual void initGui();
     //! Destructor
       virtual ~ QgsSpitPlugin();
     public slots:
+    //! init the gui
+    virtual void initGui();
     void spit();
     //! unload the plugin
     void unload();
