@@ -64,7 +64,7 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
    * @param parent Parent widget
    * @param name Name of the widget
    */
-  QgsPgQueryBuilder(QgsDataSourceURI &uri, QWidget *parent = 0,
+  QgsPgQueryBuilder(QgsDataSourceURI *uri, QWidget *parent = 0,
       const char *name=0); 
   
   ~QgsPgQueryBuilder(); 
@@ -111,7 +111,7 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
   
   // private members
   //! Datasource URI
-  QgsDataSourceURI mUri;
+  QgsDataSourceURI *mUri;
   //! PostgreSQL connection object
   PGconn *mPgConnection;
   //! Table name

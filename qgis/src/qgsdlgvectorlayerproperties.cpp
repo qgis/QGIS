@@ -224,6 +224,12 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
   } else if(dialogString == tr("Unique Value Marker"))
   {
 #ifdef WIN32
+    QString msg;
+    QTextOStream(&msg) << tr("In order for QGIS to support SVG markers under Windows, we need to build QGIS")
+      << "\n" << tr(" using the commercial version of Qt. As this project is developed by volunteers")
+      << "\n" << tr(" donating their time, we don't have the financial resources to purchase Qt")
+      << "\n" << tr(" commercial.  If you would like to help us, please visit the QGIS sourceforge")
+      << "\n" << tr(" home page to make a donation");
     QMessageBox::warning(this, tr("No SVG Support"), msg);
 
     // use the single symbol renderer

@@ -92,7 +92,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /** 
     * Get the data source URI structure used by this layer
      */
-    QgsDataSourceURI & getURI();
+    QgsDataSourceURI * getURI();
     
     /**
     * Set the data source URI used by this layer

@@ -61,10 +61,7 @@ public:
   */
   virtual QString getDataSourceUri() = 0;
 
-  virtual QgsDataSourceURI & getURI()
-  {
-    // NOP by default
-  }
+  virtual QgsDataSourceURI * getURI()=0;
   /**
   * Get the extent of the layer
   * @return QgsRect containing the extent of the layer

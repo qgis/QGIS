@@ -650,9 +650,9 @@ QString QgsPostgresProvider::getDataSourceUri()
   return dataSourceUri;
 }
 
-QgsDataSourceURI & QgsPostgresProvider::getURI()
+QgsDataSourceURI * QgsPostgresProvider::getURI()
 {
-  return mUri;
+  return &mUri;
 }
 /**
  * Identify features within the search radius specified by rect

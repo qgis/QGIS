@@ -26,18 +26,18 @@
 }
 // constructor used when the query builder must make its own
 // connection to the database
-QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI &uri, 
+QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri, 
     QWidget *parent, const char *name) : QgsPgQueryBuilderBase(parent, name),
 mUri(uri)
 {
   // The query builder must make its own connection to the database when
   // using this constructor
   QString connInfo = QString("host=%1 dbname=%2 port=%3 user=%4 password=%5")
-    .arg(mUri.host)
-    .arg(mUri.database)
-    .arg(mUri.port)
-    .arg(mUri.username)
-    .arg(mUri.password);
+    .arg(mUri->host)
+    .arg(mUri->database)
+    .arg(mUri->port)
+    .arg(mUri->username)
+    .arg(mUri->password);
 #ifdef QGISDEBUG
   std::cerr << "Attempting connect using: " << connInfo << std::endl; 
 #endif
@@ -45,7 +45,7 @@ mUri(uri)
   // check the connection status
   if (PQstatus(mPgConnection) == CONNECTION_OK) {
     QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
-      .arg(mUri.table)
+      .arg(mUri->table)
       .arg(PQdb(mPgConnection))
       .arg(PQhost(mPgConnection))
       .arg(PQuser(mPgConnection));
@@ -77,8 +77,8 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
 
   // populate minimum uri fields needed for the populate fields function
   QStringList parts = QStringList::split(".", tableName); // table name contains table and schema
-  mUri.schema = parts[0];
-  mUri.table = parts[1];
+  mUri->schema = parts[0];
+  mUri->table = parts[1];
 
   lblDataUri->setText(datasource);
   populateFields();
@@ -95,7 +95,7 @@ void QgsPgQueryBuilder::populateFields()
 {
   // Populate the field vector for this layer. The field vector contains
   // field name, type, length, and precision (if numeric)
-  QString sql = "select * from " + mUri.schema + "." + mUri.table + " limit 1";
+  QString sql = "select * from " + mUri->schema + "." + mUri->table + " limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) sql);
   qWarning("Query executed: " + sql);
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -138,7 +138,7 @@ void QgsPgQueryBuilder::populateFields()
   }else
   {
 #ifdef QGISDEBUG 
-    std::cerr << "Error fetching a row from " + mUri.table << std::endl; 
+    std::cerr << "Error fetching a row from " + mUri->table << std::endl; 
 #endif 
   }
   PQclear(result);
@@ -147,7 +147,7 @@ void QgsPgQueryBuilder::populateFields()
 void QgsPgQueryBuilder::getSampleValues()
 {
   QString sql = "select distinct " + lstFields->currentText() 
-    + " from " + mUri.schema + "." + mUri.table + " order by " + lstFields->currentText()
+    + " from " + mUri->schema + "." + mUri->table + " order by " + lstFields->currentText()
     + " limit 25";
   // clear the values list 
   lstValues->clear();
@@ -183,7 +183,7 @@ void QgsPgQueryBuilder::getSampleValues()
 void QgsPgQueryBuilder::getAllValues()
 {
   QString sql = "select distinct " + lstFields->currentText() 
-    + " from " + mUri.schema + "." + mUri.table + " order by " + lstFields->currentText();
+    + " from " + mUri->schema + "." + mUri->table + " order by " + lstFields->currentText();
   // clear the values list 
   lstValues->clear();
   // determine the field type
@@ -223,7 +223,7 @@ void QgsPgQueryBuilder::testSql()
   // by counting the number of records that would be
   // returned
   QString numRows;
-  QString sql = "select count(*) from " + mUri.schema + "." + mUri.table
+  QString sql = "select count(*) from " + mUri->schema + "." + mUri->table
     + " where " + txtSQL->text();
   PGresult *result = PQexec(mPgConnection, (const char *)sql);
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -247,7 +247,7 @@ void QgsPgQueryBuilder::testSql()
 // XXX This should really throw an exception
 long QgsPgQueryBuilder::countRecords(QString where) 
 {
-  QString sql = "select count(*) from " + mUri.table
+  QString sql = "select count(*) from " + mUri->table
     + " where " + where;
 
   long numRows;
