@@ -41,7 +41,7 @@ PluginGui::PluginGui() : PluginGuiBase()
   populateIMPBabelFormats();
   tabWidget->removePage(tabWidget->page(2));
 }
-PluginGui::PluginGui( std::vector<QgsMapLayer*> gpxMapLayers, 
+PluginGui::PluginGui( std::vector<QgsVectorLayer*> gpxMapLayers, 
 		      QWidget* parent , const char* name , bool modal , 
 		      WFlags fl  )
   : PluginGuiBase( parent, name, modal, fl ), gpxLayers(gpxMapLayers)

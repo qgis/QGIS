@@ -25,6 +25,7 @@ email                : tim@linfiniti.com
 #include "../../src/qgisapp.h"
 #include "../../src/qgsmaplayerregistry.h"
 #include "../../src/qgsmaplayer.h"
+#include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsrasterlayer.h"
 #include "plugin.h"
 
@@ -130,7 +131,9 @@ void Plugin::help()
 // Slot called when the buffer menu item is activated
 void Plugin::run()
 {
-  std::vector<QgsMapLayer*> gpxLayers;
+  // find all GPX layers
+  std::vector<QgsVectorLayer*> gpxLayers;
+  
   PluginGui *myPluginGui=new PluginGui(gpxLayers, qgisMainWindowPointer, "GPS Tools", true, 0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
