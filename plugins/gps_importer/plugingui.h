@@ -70,8 +70,8 @@ private:
       
       std::vector<QgsVectorLayer*> gpxLayers;
       std::map<QString, BabelFormatInfo> babelFormats;
-      std::string babelFilter;
-      std::string impFormat;
+      QString babelFilter;
+      QString impFormat;
 };
 
 #endif

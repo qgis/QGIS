@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.144 2004/06/21 10:23:33 jobi Exp
+ChangeLog,v 1.145 2004/06/21 13:50:35 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-21 [larsl] 0.3.0devel48
+** Hooked up the GPS gui to code that uses gpsbabel to import lots of GPS file
+   formats to GPX
 
 2004-06-21 [jobi] 0.3.0devel47
 ** Added check for wrong UI version to make release
