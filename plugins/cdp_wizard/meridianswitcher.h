@@ -16,11 +16,11 @@ class MeridianSwitcher
 public:
 
   /** Default constructor */
-  FileReader();
+  MeridianSwitcher();
   /** Constructor taking the name of the file to open. */
-  FileReader(QString theFileNameString);
+  MeridianSwitcher(QString theFileNameString);
   /** Destructor  */
-   ~FileReader();
+   ~MeridianSwitcher();
 private:
   //
   //   Private attributes

@@ -64,6 +64,8 @@ climatedataprocessingwizard_la_SOURCES = plugin.cpp \
 	filewriter.h \
 	testdatamaker.cpp \
 	testdatamaker.h \
+	meridianswitcher.h \
+	meridianswitcher.cpp \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
@@ -91,6 +93,8 @@ cdpwizard_SOURCES = 	main.cpp \
 			cdpwizard.cpp \
 			testdatamaker.cpp \
 			testdatamaker.h \
+			meridianswitcher.h \
+			meridianswitcher.cpp \
 			$(plugin_UISOURCES) \
 			$(plugin_UIHEADERS) \
 			$(plugin_UIMOC)
