@@ -63,6 +63,10 @@ class QgsRect{
     void scale(double, QgsPoint *c =0);
     //! Expand the rectangle to support zoom out scaling
     void expand(double, QgsPoint *c = 0);
+     //! return the intersection with the given rectangle
+    QgsRect intersect(QgsRect *rect);
+    //! test if rectangle is empty
+    bool isEmpty();
     //! returns string representation of form xmin,ymin xmax,ymax
     QString stringRep() const;
     /*! Comparison operator

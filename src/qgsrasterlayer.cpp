@@ -23,18 +23,16 @@
 #include "qgsrect.h"
 #include "qgsrasterlayer.h"
 #include "gdal_priv.h"
-//#include "qtiffio.h"
 
 QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 :QgsMapLayer(RASTER, baseName, path)
 {
-	std::cout << "QgsRasterLayer::QgsRasterLayer()" << std::endl;
+	//std::cout << "QgsRasterLayer::QgsRasterLayer()" << std::endl;
 	
 	GDALAllRegister();
 	gdalDataset = (GDALDataset *) GDALOpen( path, GA_ReadOnly );
-	std::cout << "Raster Count: " << gdalDataset->GetRasterCount() << std::endl;
+	//std::cout << "Raster Count: " << gdalDataset->GetRasterCount() << std::endl;
 	
-	double        adfGeoTransform[6];
 	if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
 	{
 		printf( "Origin = (%.6f,%.6f)\n",
@@ -43,8 +41,6 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 		printf( "Pixel Size = (%.6f,%.6f)\n",
 				adfGeoTransform[1], adfGeoTransform[5] );
 	}
-	
-	const char *projRef = gdalDataset->GetProjectionRef();
 	
 	double XMax = adfGeoTransform[0] + gdalDataset->GetRasterXSize() * adfGeoTransform[1] +  
 				  gdalDataset->GetRasterYSize() * adfGeoTransform[2];
@@ -64,34 +60,51 @@ QgsRasterLayer::~QgsRasterLayer()
 
 void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf)
 {
-	/*
-	// init the tiff handler
-	//qInitTiffIO();
-	//std::cout << "Image source is " << source() << std::endl;
-	//QImage *image = new QImage(source());
-	//if(!image){
-	//	qWarning("Failed to load the image using path stored in source()");
-	//}else{
-	//	qWarning("Loaded image");
-	//}
-	//
-	//qWarning("Attempting to draw the image");
-	//p->drawImage(0, 0, *image);
-	//delete image;
-	*/
-	
-	std::cout << "QgsRasterLayer::draw()" << std::endl;
-	std::cout << "gdalDataset->GetRasterCount(): " << gdalDataset->GetRasterCount() << std::endl;
+	//std::cout << "QgsRasterLayer::draw()" << std::endl;
+	//std::cout << "gdalDataset->GetRasterCount(): " << gdalDataset->GetRasterCount() << std::endl;
 	std::cout << "Layer extent: " << layerExtent.stringRep() << std::endl;
 	
-	// get dimensions of raster image in map coordinate space
-	QgsPoint topLeft = cXf->transform(layerExtent.xMin(), layerExtent.yMax());
-	QgsPoint bottomRight = cXf->transform(layerExtent.xMax(), layerExtent.yMin());
-	//QPoint topLeft = cXf->transform(topLeft);
-	//QPoint bottomRight = layerExtent.bottomRight();
-	//bottomRight = cXf->transform(bottomRight);
+	// clip raster extent to view extent
+	QgsRect rasterExtent = viewExtent->intersect(&layerExtent);
+	std::cout << "viewXMin: " << viewExtent->xMin() <<std::endl;
+	std::cout << "viewYMax: " << viewExtent->yMax() <<std::endl;
+	std::cout << "viewXMax: " << viewExtent->xMax() <<std::endl;
+	std::cout << "viewYMin: " << viewExtent->yMin() <<std::endl;
+	std::cout << "rasterXMin: " << rasterExtent.xMin() <<std::endl;
+	std::cout << "rasterYMax: " << rasterExtent.yMax() <<std::endl;
+	std::cout << "rasterXMax: " << rasterExtent.xMax() <<std::endl;
+	std::cout << "rasterYMin: " << rasterExtent.yMin() <<std::endl;
+	if (rasterExtent.isEmpty()) {
+		// nothing to do
+		return;
+	}
+	
+	// calculate raster pixel offsets from origin to clipped rect
+	// we're only interested in positive offsets where the origin of the raster
+	// is northwest of the origin of the view
+	int rXOff = static_cast<int>((viewExtent->xMin() - layerExtent.xMin()) / fabs(adfGeoTransform[1]));
+	rXOff = rXOff >? 0;
+	int rYOff = static_cast<int>((layerExtent.yMax() - viewExtent->yMax()) / fabs(adfGeoTransform[5]));
+	rYOff = rYOff >? 0;
+	
+	std::cout << "rXOff: " << rXOff <<std::endl;
+	std::cout << "rYOff: " << rYOff <<std::endl;
+	
+	// get dimensions of clipped raster image in raster pixel space
+	double rXmin = (rasterExtent.xMin() - adfGeoTransform[0]) / adfGeoTransform[1];
+	double rXmax = (rasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
+	double rYmin = (rasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
+	double rYmax = (rasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
+	int rXSize = abs(static_cast<int>(rXmax - rXmin));
+	int rYSize = abs(static_cast<int>(rYmax - rYmin));
+	
+	// get dimensions of clipped raster image in device coordinate space
+	QgsPoint topLeft = cXf->transform(rasterExtent.xMin(), rasterExtent.yMax());
+	QgsPoint bottomRight = cXf->transform(rasterExtent.xMax(), rasterExtent.yMin());
+	
 	int lXSize = bottomRight.xToInt() - topLeft.xToInt();
 	int lYSize = bottomRight.yToInt() - topLeft.yToInt();
+	
 	std::cout << "xMin: " << layerExtent.xMin() <<std::endl;
 	std::cout << "yMax: " << layerExtent.yMax() <<std::endl;
 	std::cout << "xMax: " << layerExtent.xMax() <<std::endl;
@@ -108,26 +121,31 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	for (int i = 1; i <= gdalDataset->GetRasterCount(); i++) {
 		GDALRasterBand  *gdalBand = gdalDataset->GetRasterBand( i );
 		
-		std::cout << "gdalBand->GetOverviewCount(): " << gdalBand->GetOverviewCount() <<std::endl;
+		//std::cout << "gdalBand->GetOverviewCount(): " << gdalBand->GetOverviewCount() <<std::endl;
 		
-		int nXSize = gdalBand->GetXSize();
-		int nYSize = gdalBand->GetYSize();
-		// read entire raster
+		//int nXSize = gdalBand->GetXSize() - nXOff;
+		//int nYSize = gdalBand->GetYSize() - nYOff;
+		// make sure we don't exceed size of raster
+		rXSize = rXSize <? gdalBand->GetXSize();
+		rYSize = rYSize <? gdalBand->GetYSize();		
+		std::cout << "rXSize: " << rXSize <<std::endl;
+		std::cout << "rYSize: " << rYSize <<std::endl;
+		
+		// read entire clipped area of raster
 		// treat scandata as a pseudo-multidimensional array
 		// RasterIO() takes care of scaling down image
-		// TODO: need to clip to map size or we run out of memory when zooming in
 		uint *scandata = (uint*) CPLMalloc(sizeof(uint)*lXSize * sizeof(uint)*lYSize);
 		CPLErr result = gdalBand->RasterIO( 
-				GF_Read, 0, 0, nXSize, nYSize, scandata, lXSize, lYSize, GDT_UInt32, 0, 0 );
+				GF_Read, rXOff, rYOff, rXSize, rYSize, scandata, lXSize, lYSize, GDT_UInt32, 0, 0 );
 			
 		GDALColorTable *colorTable = gdalBand->GetColorTable();
 			
 		// print each point in scandata using color looked up in color table
-		for (int i = 0; i < lXSize; i++) {
-			for (int j =0; j < lYSize; j++) {
-				const GDALColorEntry *colorEntry = GDALGetColorEntry(colorTable, scandata[i*lXSize + j]);
+		for (int y = 0; y < lYSize; y++) {
+			for (int x =0; x < lXSize; x++) {
+				const GDALColorEntry *colorEntry = GDALGetColorEntry(colorTable, scandata[y*lXSize + x]);
 				p->setPen(QColor(colorEntry->c1, colorEntry->c2, colorEntry->c3));
-				p->drawPoint(topLeft.xToInt() + j, topLeft.yToInt() + i);
+				p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
 			}
 		}
 			
