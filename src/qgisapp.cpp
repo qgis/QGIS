@@ -1321,7 +1321,12 @@ void QgisApp::fileNew()
         QgsMapLayerRegistry::instance()->removeAllMapLayers();
         mMapCanvas->clear();
         mOverviewCanvas->clear();
-        setCaption(tr("Quantum GIS -- Untitled"));
+
+        QString caption = tr("Quantum GIS - ");
+
+        caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+        caption += " -- Untitled";
+        setCaption( caption );
 
         QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
@@ -1350,7 +1355,11 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
         mOverviewCanvas->removeAll();
         mOverviewCanvas->clear();
 
-        setCaption(tr("Quantum GIS -- Untitled"));
+        QString caption = tr("Quantum GIS - ");
+        caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+        caption += " Untitled ";
+
+        setCaption( caption );
 
         QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
@@ -1493,7 +1502,10 @@ void QgisApp::fileOpen()
 
         if ( QgsProject::instance()->read() )
         {
-            setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title());
+            QString caption = tr("Quantum GIS - ");
+            caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+
+            setCaption( caption + " " + QgsProject::instance()->title() );
 
             emit projectRead();     // let plug-ins know that we've read in a new
             // project so that they can check any project
@@ -1522,7 +1534,10 @@ bool QgisApp::addProject(QString projectFile)
     {
         if ( QgsProject::instance()->read( projectFile ) )
         {
-            setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title() );
+            QString caption = tr("Quantum GIS - ");
+            caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+
+            setCaption( caption + " " + QgsProject::instance()->title() );
 
             emit projectRead();       // let plug-ins know that we've read in a new
             // project so that they can check any project
@@ -3353,6 +3368,12 @@ void QgisApp::projectProperties()
         // set the map units for the project (ie the map canvas)
         mMapCanvas->setMapUnits(pp->mapUnits());
         QgsProject::instance()->title( pp->title() );
+
+        QString caption = tr("Quantum GIS - ");
+        caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+
+        setCaption(caption + pp->title());
+
     }
 }
 
