@@ -104,6 +104,9 @@ public:
 
     /** \brief Get paper height */
     double paperHeight ( void );
+    
+    /** \brief Get paper orientation */
+    int paperOrientation ( void );
 
     /** \brief Get resolutin */
     int resolution ( void );
