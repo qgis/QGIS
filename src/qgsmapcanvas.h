@@ -318,6 +318,10 @@ signals:
      */
     void removedAll();
 
+    /** emitted when right mouse button is pressed with zoom tool
+     *  QgisApp should catch it and reset tool to the last non zoom tool */
+    void stopZoom();
+
 private:
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool projectionsEnabled();
