@@ -130,7 +130,7 @@
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>1</hsizetype>
+                            <hsizetype>7</hsizetype>
                             <vsizetype>1</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
@@ -138,13 +138,13 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>50</width>
+                            <width>5</width>
                             <height>22</height>
                         </size>
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
+                            <width>30000</width>
                             <height>22</height>
                         </size>
                     </property>
@@ -194,7 +194,7 @@
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>1</hsizetype>
+                            <hsizetype>7</hsizetype>
                             <vsizetype>1</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
@@ -202,13 +202,13 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>50</width>
+                            <width>5</width>
                             <height>22</height>
                         </size>
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
+                            <width>30000</width>
                             <height>22</height>
                         </size>
                     </property>
