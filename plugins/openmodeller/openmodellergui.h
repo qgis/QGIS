@@ -69,7 +69,7 @@ public:
   void leOutputFileName_textChanged( const QString &theOutputFileName);
   void leOutputDirectory_textChanged( const QString &theOutputDirectory);
   void pbnSelectLayerFolder_clicked();
-  void traverseDirectories(const QString& dirname, QListBox*);
+  void traverseDirectories(const QString& dirname, QListBox*, QComboBox*);
   bool checkLocalitiesFileFormat(const QString);
   void pbnDefaultParameters_clicked();
   void pbnSelectLayerFolderProj_clicked();
@@ -85,6 +85,7 @@ private:
     QStringList layerNamesQStringList;
     QStringList projLayerNamesQStringList;
     QString maskNameQString;
+    QString outputMaskNameQString;
     QStringList extraParametersQStringList;
     QString outputFileNameQString;
     bool useTheseSettingsAgainFlag;

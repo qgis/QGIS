@@ -404,6 +404,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
         if (myProjFileNameQString!=myProjLastFileNameQString)
         {
           lstProjLayers->insertItem(myProjFileNameQString);
+	  //also add the layer to the mask combo
+          cboOutputMaskLayer->insertItem(myProjFileNameQString);
         }
         myProjLastFileNameQString=*myProjIterator;
         ++myProjIterator;
@@ -591,9 +593,12 @@ void OpenModellerGui::makeConfigFile()
     {          
       myQTextStream << tr("Map = ") << *myIterator << "\n";
     }
-    myQTextStream << tr("# A layer that specifies the region of interest\n");      
+    myQTextStream << tr("# A layer that specifies the region of interest for model building\n");      
     myQTextStream << tr("Mask = ") << maskNameQString << "\n";
-    myQTextStream << tr("\n\n##\n");                 
+    myQTextStream << tr("\n\n##\n");
+    myQTextStream << tr("# A layer that specifies the region of interest for model projection\n");      
+    myQTextStream << tr("Output Mask = ") << outputMaskNameQString << "\n";
+    myQTextStream << tr("\n\n##\n");                             
     myQTextStream << tr("## Model Output Settings\n");
     myQTextStream << tr("##\n\n");   
      
@@ -681,6 +686,7 @@ void OpenModellerGui::accept()
   
   
   maskNameQString=cboMaskLayer->currentText();
+  outputMaskNameQString=cboOutputMaskLayer->currentText();
   taxonNameQString=cboTaxon->currentText();
   makeConfigFile();
   parseAndRun(outputFileNameQString+".cfg");
@@ -1016,7 +1022,7 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
 
   settings.writeEntry("/openmodeller/layersDirectory",myLayersDirectoryQString);
-  traverseDirectories(myLayersDirectoryQString, lstLayers);
+  traverseDirectories(myLayersDirectoryQString, lstLayers, cboMaskLayer);
 
 
 
@@ -1027,7 +1033,7 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   setNextEnabled(currentPage(),true);	    
 }
 
-void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theListBox)
+void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theListBox, QComboBox* theComboBox)
 {
   QDir dir(dirname);
   dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
@@ -1052,7 +1058,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theL
     //check to see if entry is a directory - if so iterate through it
     if(fi->isDir() && fi->isReadable() )
     {
-      traverseDirectories(fi->absFilePath(), theListBox);
+      traverseDirectories(fi->absFilePath(), theListBox, theComboBox);
     }
 
     //check to see if its an adf file type
@@ -1063,7 +1069,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theL
       {
         std::cout << "Current filename is: " << fi->dirPath(true).ascii() << std::endl;
         theListBox->insertItem(fi->dirPath(true));
-        cboMaskLayer->insertItem(fi->dirPath(true)); 
+        theComboBox->insertItem(fi->dirPath(true)); 
       }
     }
 
@@ -1102,9 +1108,9 @@ void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theL
         {
           //does have projection info
           std::cout << "Current filename is: " << fi->absFilePath().ascii() << std::endl;
-          lstLayers->insertItem(fi->absFilePath());
-          cboMaskLayer->insertItem(fi->absFilePath());
-          cboMaskLayer->setCurrentItem(0);	  
+          theListBox->insertItem(fi->absFilePath());
+          theComboBox->insertItem(fi->absFilePath());
+          theComboBox->setCurrentItem(0);	  
         }
 
         GDALClose(myTestFile);
@@ -1204,6 +1210,8 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
     }
   }
   lstProjLayers->insertItem(myFileNameQString);
+  //also add the layer to the mask combo
+  cboOutputMaskLayer->insertItem(myFileNameQString);
   //enable the user to carry on to the next page...
   setNextEnabled(currentPage(),true);
 }
@@ -1222,7 +1230,7 @@ void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
   if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
 
   settings.writeEntry("/openmodeller/projectionLayersDirectory",myLayersDirectoryQString);
-  traverseDirectories(myLayersDirectoryQString, lstProjLayers);
+  traverseDirectories(myLayersDirectoryQString, lstProjLayers, cboOutputMaskLayer);
 
 
 
@@ -1245,6 +1253,8 @@ void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
     {
       //remove the item if it is selected
       lstProjLayers->removeItem(myInt);
+      //also remove the item from the mask layer combo
+      cboOutputMaskLayer->removeItem(myInt);
       myInt--;
       myLayersCount--;
     }

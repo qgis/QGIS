@@ -1160,6 +1160,66 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                     <bool>true</bool>
                 </property>
             </widget>
+            <spacer row="4" column="0" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>spacer17_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>81</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="5" column="1">
+                <property name="name">
+                    <cstring>spacer17</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>70</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel" row="1" column="1">
+                <property name="name">
+                    <cstring>lblSelectLocalitiesFile_5</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;b&gt;Select input mask:&lt;/b&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLabel" row="3" column="1">
+                <property name="name">
+                    <cstring>lblSelectLocalitiesFile_5_2</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;b&gt;Select output mask:&lt;/b&gt;</string>
+                </property>
+            </widget>
+            <widget class="QComboBox" row="2" column="1">
+                <property name="name">
+                    <cstring>cboMaskLayer</cstring>
+                </property>
+            </widget>
+            <widget class="QComboBox" row="4" column="1">
+                <property name="name">
+                    <cstring>cboOutputMaskLayer</cstring>
+                </property>
+            </widget>
             <widget class="QTextBrowser" row="0" column="1">
                 <property name="name">
                     <cstring>tbrAlgorithmDescription_2_2_2_2</cstring>
@@ -1192,58 +1252,9 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
 
 
 
-
-
-Select a file that will be used to mask areas from the model.</string>
+Select the files that will be used to mask areas from the model.  The input mask is used during the model creation phase and the output mask is used for the model projection.</string>
                 </property>
             </widget>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>lblSelectLocalitiesFile_5</cstring>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Select layer to be used as mask:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QComboBox" row="2" column="1">
-                <property name="name">
-                    <cstring>cboMaskLayer</cstring>
-                </property>
-            </widget>
-            <spacer row="3" column="1" rowspan="2" colspan="1">
-                <property name="name">
-                    <cstring>spacer17</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>21</width>
-                        <height>94</height>
-                    </size>
-                </property>
-            </spacer>
-            <spacer row="4" column="0">
-                <property name="name">
-                    <cstring>spacer17_2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>21</width>
-                        <height>81</height>
-                    </size>
-                </property>
-            </spacer>
         </grid>
     </widget>
     <widget class="QWidget">
