@@ -36,9 +36,9 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-@POSTGRESDB_TRUE@am__append_1 = $(postgres_SOURCES)
-@POSTGRESDB_TRUE@am__append_2 = $(postgres_UI) 
-@POSTGRESDB_TRUE@am__append_3 = $(postgres_MOC)
+@POSTGRESDB_TRUE@am__append_1 = $(postgresSOURCES)
+@POSTGRESDB_TRUE@am__append_2 = $(postgresUI) 
+@POSTGRESDB_TRUE@am__append_3 = $(postgresMOC)
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -332,17 +332,17 @@ qgis_UIC = qgisappbase.ui \
 
 
 #PostgreSQL files
-postgres_SOURCES = qgsdbsourceselect.cpp \
+postgresSOURCES = qgsdbsourceselect.cpp \
 					qgsnewconnection.cpp\
-postgres_UI = 	qgsdbsourceselectbase.h \
+postgresUI = 	qgsdbsourceselectbase.h \
 				qgsdbsourceselectbase.cpp\
 				qgsnewconnectionbase.h\
 				qgsnewconnectionbase.cpp
 
-postgres_UIC = qgsdbsourceselectbase.ui \
+postgresUIC = qgsdbsourceselectbase.ui \
 		qgsnewconnectionbase.ui	
 
-postgres_MOC = qgsdbsourceselectbase.moc.cpp \
+postgresMOC = qgsdbsourceselectbase.moc.cpp \
 				qgsdbsourceselect.moc.cpp \
 				qgsnewconnection.moc.cpp\
 				qgsnewconnectionbase.moc.cpp
@@ -425,7 +425,7 @@ am__qgis_SOURCES_DIST = qgisapp.cpp qgisapp.h main.cpp qgisiface.cpp \
 	qgsvectorlayerpropertiesbase.moc.cpp splashscreen.moc.cpp \
 	qgsdbsourceselectbase.moc.cpp qgsdbsourceselect.moc.cpp \
 	qgsnewconnection.moc.cpp qgsnewconnectionbase.moc.cpp \
-	qgsdbsourceselect.cpp qgsnewconnection.cpp postgres_UI = \
+	qgsdbsourceselect.cpp qgsnewconnection.cpp postgresUI = \
 	qgsdbsourceselectbase.h qgsdbsourceselectbase.cpp \
 	qgsnewconnectionbase.h qgsnewconnectionbase.cpp
 @POSTGRESDB_TRUE@am__objects_2 = $(am__objects_1)

@@ -29,6 +29,8 @@
 #include <qpointarray.h>
 #include <qstring.h>
 #include <qmessagebox.h>
+#include <qpopupmenu.h>
+#include "qgisapp.h"
 #include "qgsrect.h"
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
@@ -115,6 +117,9 @@ const char *cOgrLib = (const char *)ogrlib;
 
 	//draw the selected features in yellow
 	selectionColor.setRgb(255, 255, 0);
+  
+  // Default for the popup menu
+  popMenu = 0;
 }
 
 QgsVectorLayer::~QgsVectorLayer()
@@ -688,4 +693,17 @@ QGis::VectorType QgsVectorLayer::vectorType()
 QgsVectorLayerProperties* QgsVectorLayer::propertiesDialog()
 {
     return m_propertiesDialog;
+}
+void QgsVectorLayer::initContextMenu(QgisApp *app){
+  popMenu = new QPopupMenu();
+  popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
+  popMenu->insertItem(tr("&Open attribute table"), app, SLOT(attributeTable()));
+  popMenu->insertSeparator();
+  popMenu->insertItem(tr("&Properties"), app, SLOT(layerProperties()));
+  popMenu->insertSeparator();
+  popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
+}
+//
+QPopupMenu *QgsVectorLayer::contextMenu(){
+  return popMenu;
 }
