@@ -17,7 +17,7 @@
 
 #ifndef QGSMARKERSYMBOL_H
 #define QGSMARKERSYMBOL_H
-
+#include "qgssymbol.h"
 class QString;
 
 /*! \class QgsMarkerSymbol

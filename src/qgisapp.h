@@ -26,6 +26,7 @@ class QgsPoint;
 class QgsLegend;
 class QVBox;
 class QListView;
+class QListViewItem;
 #include "qgisappbase.h"
 
 class QgsMapCanvas;
@@ -64,7 +65,8 @@ public:
 	//! About QGis
 	void about();
 public slots:
-	void showMouseCoordinate(QgsPoint &);	
+	void showMouseCoordinate(QgsPoint &);
+	void layerProperties(QListViewItem *);
 private:
 	//! Map canvas
 QgsMapCanvas *mapCanvas;

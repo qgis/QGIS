@@ -26,6 +26,8 @@ layerName (lyrname), layerType (type), dataSource(source)
   // until we learn otherwise
   valid = true;
   m_visible = true;
+  // create a default symbol
+  
 }
 
 QgsMapLayer::~QgsMapLayer ()
@@ -69,7 +71,7 @@ void QgsMapLayer::draw (QPainter *, QgsRect *, QgsCoordinateTransform *)
 
 
 /** Read property of QgsSymbol * m_symbol. */
-const QgsSymbol *QgsMapLayer::symbol ()
+QgsSymbol *QgsMapLayer::symbol ()
 {
   return m_symbol;
 }
@@ -112,4 +114,11 @@ bool QgsMapLayer::visible(){
 void QgsMapLayer::setVisible(bool vis){
 	m_visible = vis;
 	emit visibilityChanged();
-	}
+	}/** Read property of int featureType. */
+const int& QgsMapLayer::featureType(){
+	return feature;
+}
+/** Write property of int featureType. */
+void QgsMapLayer::setFeatureType( const int& _newVal){
+	feature = _newVal;
+}

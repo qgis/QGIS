@@ -42,11 +42,15 @@ SOURCES += main.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
-	   qgsshapefilelayer.cpp \
+	   			 qgsshapefilelayer.cpp \
            qgsdbsourceselect.cpp \
            qgsnewconnection.cpp \
            qgsrect.cpp \
            qgspoint.cpp \
            qgscoordinatetransform.cpp \
            qgslegend.cpp \
-           qgslegenditem.cpp
+           qgslegenditem.cpp \
+           qgssymbol.cpp \
+           qgsmarkersymbol.cpp \
+           qgslinesymbol.cpp \
+           qgspolygonsymbol.cpp

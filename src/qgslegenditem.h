@@ -36,10 +36,11 @@ public:
   /** Write property of QString displayName. */
   virtual void setDisplayName( const QString& _newVal);
   void stateChange(bool);
+  virtual QgsMapLayer * layer();
 private: // Private attributes
   /**  */
   /**  */
-  QgsMapLayer * layer;
+  QgsMapLayer * m_layer;
   QgsSymbol * symbol;
 public: // Public attributes
   /**  */

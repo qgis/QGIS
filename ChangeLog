@@ -2,6 +2,7 @@ Version 0.0.3-alpha August 10, 2002
   * Support for shapefiles and other vector formats
   * Improved handling of extents when adding layers
   * Primitive legend that allows control of layer visibility
+  * About Quantum GIS implemented
   * Other internal changes
 July 26, 2002
 	Drawing code now properly displays layers and calculates extents when

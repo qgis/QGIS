@@ -17,7 +17,7 @@
 
 #ifndef QGSPOLYGONSYMBOL_H
 #define QGSPOLYGONSYMBOL_H
-
+#include "qgssymbol.h"
 class QString;
 
 /*! \class QgsPolygonSymbol
