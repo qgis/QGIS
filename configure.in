@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.66 2004/05/05 08:55:46 timlinux Exp
+dnl configure.in,v 1.67 2004/05/05 09:32:36 timlinux Exp
 
 AC_INIT
 
@@ -24,7 +24,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=2
 MICRO_VERSION=0
-EXTRA_VERSION=5
+EXTRA_VERSION=6
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -227,6 +227,8 @@ AC_CONFIG_FILES([
   tools/Makefile
   tools/qgis_config/Makefile
   i18n/Makefile
+	plugins/north_arrow/Makefile
+	plugins/copyright_label/Makefile
 ])
 
 AC_OUTPUT
