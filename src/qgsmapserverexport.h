@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsprojectio.h - Save/Restore QGIS Project files
+    qgsmapserverexport.h - Export QGIS MapCanvas to MapServer
      --------------------------------------
     Date                 : 08-Nov-2003
     Copyright            : (C) 2003 by Gary E.Sherman
@@ -12,21 +12,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.h,v 1.3 2003/11/09 06:15:31 gsherman Exp */
+/* $Id$ */
 
-#ifndef _QGSPROJECTIO_H_
-#define _QGSPROJECTIO_H_
+#ifndef QGSMAPSERVEREXPORT_H
+#define QGSMAPSERVEREXPORT_H
 
 class QgsMapCanvas;
-/*! \class QgsProjectIo
+/*! \class QgsMapServerExport
 * \brief Class to handle reading and writing a Qgis project file
 */
-class QgsProjectIo
+class QgsMapServerExport
 {
 
 public:
-  QgsProjectIo(QgsMapCanvas *map=0, int action=SAVE);
-  ~QgsProjectIo();
+  QgsMapServerExport(QgsMapCanvas *map=0, int action=SAVE);
+  ~QgsMapServerExport();
   //! Read the file and create the map
   bool read();
   //! Write the contents of the map to a file
@@ -46,7 +46,7 @@ public:
 	OPEN
 	};
   private:
-  void writeXML(void);
+  void writeMapFile(void);
   QString fileName;
   QString fullPath;
   bool neverSaved;
@@ -54,4 +54,5 @@ public:
   int action;
 };
 
-#endif
+#endif //QGSMAPSERVEREXPORT_H
+

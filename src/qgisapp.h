@@ -122,6 +122,8 @@ class QgisApp:public QgisAppBase
 	void fileOpen();
 	//! Create a new project
 	void fileNew();
+	//! Export current view as a mapserver map file
+	void exportMapServer();
 	//! Check qgis version against the qgis version server
 	void checkQgisVersion();
 	void socketConnected();

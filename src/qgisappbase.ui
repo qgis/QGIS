@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>610</width>
-            <height>459</height>
+            <height>465</height>
         </rect>
     </property>
     <property name="font">
@@ -67,6 +67,7 @@
         <separator/>
         <action name="actionFileSave"/>
         <action name="actionFileSaveAs"/>
+        <action name="actionExportMapServer"/>
         <separator/>
         <action name="actionFileExit"/>
     </item>
@@ -445,6 +446,25 @@
             <string>Check QGIS Version</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionExportMapServer</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image17</iconset>
+        </property>
+        <property name="text">
+            <string>Export current view as a Mapserver file</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileExport_to_MapServerAction</cstring>
+        </property>
+        <property name="text">
+            <string>Export to MapServer</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -497,6 +517,9 @@
     </image>
     <image name="image16">
         <data format="XPM.GZ" length="4670">789cadd7596fe3361007f0f77c8a60e76d51cc5ab2254b28fa90c4b94fe74e8a3e0c25ca576cc7b17316fdeea5397f6a9b34bd8082ebddfd811c7178cafef675f5fae470f5ebb795f942168362b5e8cbc3ead7f2713c7efdf9979f7e5df912b756977fa26835fef2c3ca97ee62b5583d9a4eec1272ea40cdbcd96a464bf3a476beb4113843fd636d5f2ff1d2ad28ce1a0ddf7ea60eedcda0b6b63f860bb8e12dad063c87d1bf6c04b7b4ffc3dab234a57086fa23b8d07ae92d9dc4a19e3a70a136f7b57d7b3e50278dc44f169d79d7cfe3549d34d0ff104e50ff10acf1fc0ae789d66fc025ece7238d931cf13618f177700957b5b5fd96b7d4f5a53a8d505f2cdd6ea679aaf5fbea76d46e7a1b6fd38eb45e92a5b36692447e3da50be78dccfbd2db240d5d6f16753b4fb5bf6b7516b58d6f7fb174deaae35fe052e3a5a54ea3587d059758ff7d7586fc9882357f29e01c3e83cbbce5db8fd579a2963def224d90cf365cc2e7ea7689f5bd5167984f5306239f2738ac97e65f84fee816ce91cfa276e1ebfd7c482bcd311f060ef96ca9db113c0a8ed4119c683c9dc388a7437516e17c24eabc44ffcfde857bbef6bf535b9f7f02e3f9f2aaaee38fd4e28e88afdf5cda7cefff499d45ba9fe815c6fc1aab96489f274d18f3c723b589c5d7b35f5f534a588f312ce83f85ad9a06ea102f7efe8b24c37e2482c37eec046bbefca6ce4bbdcf488275bdcd9ddaa4fa7c6ac06234ff5dd89ad27bae2ee222f1eddbde651ece5bbfb6cf8f233857d363b09e17da84912f2d82b5de4cd51265fe7c183c5f92cc9f4f43b0e07cdcc2566d266a373e9dcf0d18e3936b7511ebf8e8184e757c3c84a5d0f123dfc2aac5cf8fbbcc305e1906e33e38529b18fb631d463e52c161fd1f6aeb7a24b0d57ce954edf2d5f115708af569c1a2f99b116cd572575bdb0fd4655aea78336f2b383fbc0387fb4682637fbff10d2c58efd3601d3fb761abedc9a80b8bf3f0ac2e631dbf190623bf4b38e4d7835df1f6f79f4dc5e23c6c05633f8dd526c678bac1d87ff770aaf7355dc082f3320dc6fdb3168cf76ba62e62b51ca843bec6c0a2f952045b8c67565bc7d309b6a9775f6d63781d4ed5e4f7b7b526c5fc8e60c17cdc05e33e3881ad8e971bea22c67dc630f6a7e9d5d6fd388345df979207e33c0d608bfac360ecd74a5de2fe90368cf346252c388f4530da87fa305f4db58de17338b5ea1758e07bd8aac5efbfcaad9faeb73cc1d80f7203237fbe5597b1de47b40da7787f67c19abfac0523ff191cc6636beb785b70b85fee8375bfc854edc6abf3d5afadfb6b1d4ee19360dd2f3281b11f651c8cfd847c6cd87f7bea2aaeb4dedf975555c67a1e846aebf78d2b38c57960389c97bcb6b6df0bd6ef2334872dccb5753f3d06eb7cd381dac678de7e30e22f6b6b7d3318f3d785c37cedc282f57da8addf07df82d13e0ec67c617c36bcbfd78231bf6fb5357e475de1fd4ebd60d45770aaf3cfe8af12f8a276e53d852b7577f1dfcaff13c3e48ab8625c295c295db15cfd434c8ffbf567c0431ef11d8f79f23731e25a4eff50ee79c60f3ce7053ffe65cc133fbf8b99f20bbfbacfd0454dfe22e68dd778fd43d40677dcdf9b2e6aebd3986ddee15dde7b17b3cf077cc8476e5cc77f8ee113eef2299ff1f9bb980bf78c4bbee26bb69fc4dcf02d373872d95fbc8b8ab9c92d4e38fd18c36dce38770b442464a8a092ac4650453dead380861a4323baa3314d684af734a3079abbff2de8919ee8995ec8cd998b78a3355aa70dea847e6893b6689b765cfb5d1731a73ddaa703f784173aa4233aa6131fd1a5533afb9e1b9d73461774e923ae5cb976fdbcd00ddd5283228a5d44935a94d087f1509b321795bbcd46ee3bb49182133a96d24774dd0f692b95f4dec7485f06e8e35a8632e22bb99331bdc984ba32957b99c983cc3fc42ce451c88d7e214ff22c2ff2eafae8c99b2b53d7cb4cd6645d363ec474b8219bb225dbb223bbb227fb72b0cc6a1941858b38942379b70fa4e3da9f48574ee54ccee5422ee54aae5d4ecb3ed67cc48ddc4ae35dcca64412bb7fe76edfcfa429eeb7877b39b75d445b321791bb4348463edda3a931cb353785fb85614d15fa303d57fa66f0590c0dcdb28c5ccc9d199b893cb8cf91dcba3efa662aa79ff7c32975ccbdf45c69c886fb34e4588eddb7f0991beba731ffe2def9edc795df013ad18bd4</data>
+    </image>
+    <image name="image17">
+        <data format="XPM.GZ" length="1904">789c5dd4c772db301006e0bb9e8223dc3c99357b994c0e72efdd96ec4c0e204855cbb68a8b9cc9bb07fb2fa889c3df3e7ce4120217203737bcdec5a9b7b1d95a2cf572643c33d4736fa37a9d4e573f7ffdf8dd6a07a967ff72df0bdbdf5a6d1a78c6533e1f39dc6b1cf8f0bc7114c0c3c6b1864338e7c02f8d13b9be60077ed08cf70ce71c38638741d0dc9fc0459067257c26e6c0113b0a38f0122ec2c0d577c41cf89d1d876191c8f3aec41cf8949d588532debed89e91f9a78dddfd1fb0e6c00fec34e2c07b709984ee792e1a17315ba17f5994681ffd5053761e5ba35ef5c5ebf146620eae97b0492357af1abbf9c46cb44be6bb03c759e99eef53cc81efe18c03dfc038e073b8e4c0016c38f0015c73e02db6f639f02b1c71e0198c0662fe8f709625ae5f4f620e8cfe681cb0d41b0ebc0b5745ecd6f3d2d9b8fd3081fb1c78cc2e030e7c08471cb880933c76fdda86530efc06e71c18eb55e2806bb8e2c015dce7c0866d420e8cf5343107fdc07a9b3437f27ea8a7c66eff9f8875e2dea75bb18df45fc31907c6fec072e1fe4bbc2f0607c6c77c4d5d18d7bf2bb1ae32f44361fe555a18b73e47625d391f8bcbc4bdcfd7620eeec7f356b576ebabc68d65fe0aeb5367ba72cfe38b39700ef7cbe67eedecea15894dedd6fb4eccc1757cdffa9949ddf85d3147fa418a349564a8a29afa34a0218d684c137aa4293d490fffab18d033bd34153493beff533147cdc2fe2fa5825e65add7156ff44e1fb4a24fead8df43056dc9fe58576cdb9a1ddaa53ddab723a2820e644fad2b0e6dcd111dd3099dd2991dcd56d0b9ecc375c58c2ee892aee8da9e5b4805ddc8de7515633bfe2dddd9746d3ad4e30aba97fdee2a86f4e0ae77c9a78042fb74f7f429ef082a4614b9eb4d3af6f7e624df9943f434b1555f6b528c349277133dcdece85f6b3e6c4dcfd54cecd519e554d8a76de6d35564bb14daff997c1329571a29ed1c9a51ae9451953d57cb77765d33b0bd918a400ddd392de3a8911aab09ce3cdad55ad9751fa8a9fdf55c3d51d0fef3bdf5178af1abfa</data>
     </image>
 </images>
 <connections>
@@ -638,6 +661,18 @@
         <receiver>QgisAppBase</receiver>
         <slot>select()</slot>
     </connection>
+    <connection>
+        <sender>actionExportMapServer</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>exportMapServer()</slot>
+    </connection>
+    <connection>
+        <sender>actionAddLayer</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>addDatabaseLayer()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>fileExit()</slot>
@@ -665,6 +700,7 @@
     <slot>actionPluginManager_activated()</slot>
     <slot>checkQgisVersion()</slot>
     <slot>select()</slot>
+    <slot>exportMapServer()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

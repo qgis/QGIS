@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSMAPCANVAS_H
 #define QGSMAPCANVAS_H
@@ -48,6 +49,8 @@ public:
     ~QgsMapCanvas();
     //! Set the legend control to be used with this canvas
     void setLegend(QgsLegend *legend);
+	//! Get a pointer to the legend control used with this canvas
+	QgsLegend * getLegend();
     /*! Adds a layer to the map canvas.
      * @param lyr Pointer to a layer derived from QgsMapLayer
      */

@@ -1,9 +1,10 @@
-
-/**
- * 
- * Gary Sherman
- **/
- /***************************************************************************
+/***************************************************************************
+    qgsprojectio.cpp - Save/Restore QGIS project
+     --------------------------------------
+    Date                 : 19-Oct-2003
+    Copyright            : (C) 2003 by Gary E.Sherman
+    email                : sherman at mrcc.com
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -11,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* qgsprojectio.cpp,v 1.8 2003/11/09 06:15:31 gsherman Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>

@@ -61,6 +61,7 @@
 #include "qgslegend.h"
 #include "qgslegendview.h"
 #include "qgsprojectio.h"
+#include "qgsmapserverexport.h"
 #ifdef POSTGRESQL
 #include <libpq++.h>
 #include "qgsdbsourceselect.h"
@@ -396,6 +397,11 @@ void QgisApp::fileSaveAs(){
 	delete pio;	
 }
 
+void QgisApp::exportMapServer(){
+	QgsMapServerExport *mse = new QgsMapServerExport(mapCanvas, QgsProjectIo::SAVEAS);
+	mse->write();
+	delete mse;
+}
 void QgisApp::zoomIn()
 {
 	/*  QWMatrix m = mapCanvas->worldMatrix();
