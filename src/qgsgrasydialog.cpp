@@ -95,6 +95,8 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
       //todo:find out the fieldname for the classification field
       classificationComboBox->setCurrentItem(renderer->classificationField());
 
+      QGis::VectorType m_type = m_vectorlayer->vectorType();
+
       //set the right colors and texts to the widgets
       int number = 0;
       for (std::list < QgsRangeRenderItem * >::iterator it = list.begin(); it != list.end(); ++it)
@@ -102,16 +104,20 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
           ((QLineEdit *) (ext->getWidget(0, number)))->setText((*it)->value());
           ((QLineEdit *) ext->getWidget(1, number))->setText((*it)->upper_value());
           ((QLineEdit *) ext->getWidget(2, number))->setText((*it)->label());
-          ((QPushButton *) ext->getWidget(3, number))->setPaletteBackgroundColor((*it)->getSymbol()->pen().color());
-          ((QPushButton *) ext->getWidget(4, number))->setName(QgsSymbologyUtils::penStyle2Char((*it)->getSymbol()->pen().style()));
-          ((QPushButton *) ext->getWidget(4, number))->
-            setPixmap(QgsSymbologyUtils::penStyle2Pixmap((*it)->getSymbol()->pen().style()));
+	  if(m_type != QGis::Polygon || number < 1)
+	  {
+	      ((QPushButton *) ext->getWidget(3, number))->setPaletteBackgroundColor((*it)->getSymbol()->pen().color());
+	      ((QPushButton *) ext->getWidget(4, number))->setPixmap(QgsSymbologyUtils::penStyle2Pixmap((*it)->getSymbol()->pen().style()));
+	      ((QPushButton *) ext->getWidget(4, number))->setName(QgsSymbologyUtils::penStyle2Char((*it)->getSymbol()->pen().style()));
+	  }
+          
           ((QSpinBox *) ext->getWidget(5, number))->setValue((*it)->getSymbol()->pen().width());
-          ((QPushButton *) ext->getWidget(6, number))->setPaletteBackgroundColor((*it)->getSymbol()->brush().color());
-          ((QPushButton *) ext->getWidget(7, number))->
-            setName(QgsSymbologyUtils::brushStyle2Char((*it)->getSymbol()->brush().style()));
-          ((QPushButton *) ext->getWidget(7, number))->
-            setPixmap(QgsSymbologyUtils::brushStyle2Pixmap((*it)->getSymbol()->brush().style()));
+	  if(m_type!=QGis::Line)
+	  {
+	      ((QPushButton *) ext->getWidget(6, number))->setPaletteBackgroundColor((*it)->getSymbol()->brush().color());
+	      ((QPushButton *) ext->getWidget(7, number))->setName(QgsSymbologyUtils::brushStyle2Char((*it)->getSymbol()->brush().style()));
+	      ((QPushButton *) ext->getWidget(7, number))->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap((*it)->getSymbol()->brush().style()));
+	  }
           number++;
         }
 
