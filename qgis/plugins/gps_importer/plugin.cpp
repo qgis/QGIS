@@ -28,6 +28,7 @@ email                : tim@linfiniti.com
 #include "plugin.h"
 
 
+#include <qfiledialog.h>
 #include <qtoolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
@@ -102,7 +103,8 @@ void Plugin::initGui()
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
   pluginMenu->insertItem(QIconSet(icon),"&GpsImporter", this, SLOT(run()));
-
+  pluginMenu->insertItem("&Add GPX or LOC layer", this, SLOT(addGPXLayer()));
+  
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Gps", pluginMenu);
@@ -134,6 +136,19 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
   myPluginGui->show();
 }
+
+// Slot calles when the user wants to add a GPX or LOC layer
+void Plugin::addGPXLayer() {
+  QString gpxFileName = 
+    QFileDialog::getOpenFileName("", "GPS eXchange format (*.gpx);;"
+				 "Geocaching locations (*.loc)", 
+				 qgisMainWindowPointer,
+				 "Select a GPX or LOC file",
+				 "Select a GPX or LOC file");
+  if (gpxFileName != 0)
+    qGisInterface->addVectorLayer(gpxFileName, "GPS Data", "gpx");
+}
+
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
 void Plugin::drawRasterLayer(QString theQString)
