@@ -157,7 +157,8 @@ void QgsMapLayer::toggleShowInOverview()
   //
   //update the legend item
   //
-  ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
+  if (m_legendItem)
+    ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
 
   emit showInOverview(ID,mShowInOverview);
 }
