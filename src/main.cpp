@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
 		printf("Loading vector files...\n");
 #endif                                
                 //try to add all these layers - any unsupported file types will be refected automatically
-		qgis->addLayer(myFileStringList);
 		qgis->addRasterLayer(myFileStringList);
+		qgis->addLayer(myFileStringList);
 	}
 
 	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
