@@ -1,5 +1,5 @@
 /* XPM */
-static char *qgis[]={
+static const char *qgis_xpm[]={
 "48 48 652 2",
 "aa c None",
 "Qt c None",
