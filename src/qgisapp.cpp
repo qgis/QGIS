@@ -828,8 +828,11 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
       renderer->initializeSymbology(layer);
       mMapCanvas->addLayer(layer);
 #ifdef QGISDEBUG
-      if (!QMessageBox::question( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-              tr("&Yes"), tr("&No"),QString::null, 0, 1 ) )
+      if (QMessageBox::information( this, tr("Add to overview"),
+				     tr("Would you like to add this layer to "
+					"the overview map?"),
+				     QMessageBox::Yes, QMessageBox::No) == 
+	  QMessageBox::Yes )
       {
         mOverviewCanvas->freeze(false);
         mOverviewCanvas->addLayer(layer);
@@ -946,8 +949,11 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
               renderer->initializeSymbology(layer);
               mMapCanvas->addLayer(layer);
 #ifdef QGISDEBUG
-      if (!QMessageBox::question( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-              tr("&Yes"), tr("&No"),QString::null, 0, 1 ) )
+      if (QMessageBox::information( this, tr("Add to overview"),
+				  tr("Would you like to add this layer to the "
+				     "overview map?"),
+				  QMessageBox::Yes, QMessageBox::No) ==
+	  QMessageBox::Yes)
       {
         mOverviewCanvas->freeze(false);
         mOverviewCanvas->addLayer(layer);
@@ -1288,8 +1294,11 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
      // add it to the mapcanvas collection
      mMapCanvas->addLayer(layer);
 #ifdef QGISDEBUG
-     if (!QMessageBox::question( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-                 tr("&Yes"), tr("&No"),QString::null, 0, 1 ) )
+     if (QMessageBox::information( this, tr("Add to overview"),
+				 tr("Would you like to add this layer to the "
+				    "overview map?"),
+				 QMessageBox::Yes, QMessageBox::No) ==
+	 QMessageBox::Yes)
      {
        mOverviewCanvas->freeze(false);
        mOverviewCanvas->addLayer(layer);
@@ -1404,8 +1413,11 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
         mMapCanvas->addLayer(layer);
 
 #ifdef QGISDEBUG
-        if (!QMessageBox::question( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-                    tr("&Yes"), tr("&No"),QString::null, 0, 1 ) )
+        if (QMessageBox::information( this, tr("Add to overview"),
+				    tr("Would you like to add this layer to "
+				       "the overview map?"),
+				    QMessageBox::Yes, QMessageBox::No ) ==
+	    QMessageBox::Yes)
         {
           mOverviewCanvas->freeze(false);
           mOverviewCanvas->addLayer(layer);
@@ -1580,8 +1592,9 @@ void QgisApp::addDatabaseLayer()
           // add it to the mapcanvas collection
           mMapCanvas->addLayer(layer);
 #ifdef QGISDEBUG
-          if (!QMessageBox::question( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-                      tr("&Yes"), tr("&No"),QString::null, 0, 1 ) )
+          if (QMessageBox::information( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
+				      QMessageBox::Yes, QMessageBox::No ) == 
+	      QMessageBox::Yes)
           {
             mOverviewCanvas->freeze(false);
             mOverviewCanvas->addLayer(layer);
@@ -2805,8 +2818,9 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
       // add it to the mapcanvas collection
       mMapCanvas->addLayer(layer);
 #ifdef QGISDEBUG
-      if (!QMessageBox::question( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-              tr("&Yes"), tr("&No"),QString::null, 0, 1 ) )
+      if (QMessageBox::information( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
+				  QMessageBox::Yes, QMessageBox::No ) ==
+	  QMessageBox::Yes)
       {
         mOverviewCanvas->freeze(false);
         mOverviewCanvas->addLayer(layer);
