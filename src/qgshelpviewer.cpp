@@ -1,13 +1,23 @@
-/****************************************************************************
-** Form implementation generated from reading ui file 'qgshelpviewer.ui'
-**
-** Created: Fre Jan 30 07:58:59 2004
-**      by: The User Interface Compiler ($Id$)
-**
-** WARNING! All changes made in this file will be lost!
-****************************************************************************/
+/***************************************************************************
+                          qgshelpviewer.cpp 
+ Simple help browser
+                             -------------------
+    begin                : 2004-01-28
+    copyright            : (C) 2004 by Gary E.Sherman
+    email                : sherman at mrcc.com
+***************************************************************************/
 
-#include "qgshelpviewer.h"
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+ /* $Id$ */
+
+
 
 #include <qvariant.h>
 #include <qpushbutton.h>
@@ -15,41 +25,11 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-
-/*
- *  Constructs a QgsHelpViewer as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
- */
+#include "qgshelpviewer.h"
 QgsHelpViewer::QgsHelpViewer( QWidget* parent, const char* name, bool modal, WFlags fl )
-    : QDialog( parent, name, modal, fl )
+    : QgsHelpViewerBase( parent, name, modal, fl )
 {
-    if ( !name )
-	setName( "QgsHelpViewer" );
-    setSizeGripEnabled( TRUE );
-    QgsHelpViewerLayout = new QGridLayout( this, 1, 1, 2, 0, "QgsHelpViewerLayout"); 
-
-    Layout1 = new QHBoxLayout( 0, 0, 6, "Layout1"); 
-    Horizontal_Spacing2 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-    Layout1->addItem( Horizontal_Spacing2 );
-
-    buttonCancel = new QPushButton( this, "buttonCancel" );
-    buttonCancel->setAutoDefault( TRUE );
-    Layout1->addWidget( buttonCancel );
-
-    QgsHelpViewerLayout->addLayout( Layout1, 1, 0 );
-
-    textBrowser = new QTextBrowser( this, "textBrowser" );
-
-    QgsHelpViewerLayout->addWidget( textBrowser, 0, 0 );
-    languageChange();
-    resize( QSize(511, 574).expandedTo(minimumSizeHint()) );
-    clearWState( WState_Polished );
-
-    // signals and slots connections
-    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+ 
 }
 
 /*
@@ -59,15 +39,8 @@ QgsHelpViewer::~QgsHelpViewer()
 {
     // no need to delete child widgets, Qt does it all for us
 }
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void QgsHelpViewer::languageChange()
-{
-    setCaption( tr( "QGIS Help" ) );
-    buttonCancel->setText( tr( "&Close" ) );
-    buttonCancel->setAccel( QKeySequence( tr( "Alt+C" ) ) );
+void QgsHelpViewer::showContent(QString path, QString doc){
+  textBrowser->mimeSourceFactory()->addFilePath(path);
+  textBrowser->setSource(doc);
 }
 
