@@ -62,6 +62,8 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
     :QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey), 
     tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0) 
 {
+  std::cerr << "VECTORLAYERPATH: " << vectorLayerPath << std::endl;
+  std::cerr << "BASENAME: " << baseName << std::endl;
 // load the plugin
 QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
 QString ogrlib = pReg->library(providerKey);
@@ -87,12 +89,15 @@ const char *cOgrLib = (const char *)ogrlib;
 		std::cout << "Loaded data provider library" << std::endl;
 		std::cout << "Attempting to resolve the classFactory function" << std::endl;
 		create_it *cf = (create_it *) myLib->resolve("classFactory");
-    
+    valid = false; // assume the layer is invalid until we determine otherwise
 		if (cf) {
 			std::cout << "Getting pointer to a dataProvider object from the library\n";
 			dataProvider = cf(vectorLayerPath);
 			if (dataProvider) {
 				std::cout << "Instantiated the data provider plugin\n";
+         
+         if(dataProvider->isValid()){
+          valid = true;
 				// get the extent
 				QgsRect *mbr = dataProvider->extent();
         // show the extent
@@ -108,11 +113,14 @@ const char *cOgrLib = (const char *)ogrlib;
         // look at the fields in the layer and set the primary
         // display field using some real fuzzy logic
         setDisplayField();
+         }
 			} else {
 				std::cout << "Unable to instantiate the data provider plugin\n";
+        valid = false;
 			}
 		}
 	} else {
+    valid = false;
 		std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
 	}
 	//TODO - fix selection code that formerly used

@@ -91,6 +91,8 @@ class QgsVectorLayer:public QgsMapLayer
 	virtual QgsRect bBoxOfSelected();
    //! Return the provider type for this layer
   QString providerType();
+  //! Return the validity of the layer
+  inline bool isValid(){ return valid;}
   protected:
 	/**Pointer to the table display object if there is one, else a pointer to 0*/
 	QgsAttributeTableDisplay* tabledisplay;
@@ -118,7 +120,8 @@ class QgsVectorLayer:public QgsMapLayer
   QString fieldIndex;
   //! Data provider key
   QString providerKey;
-  
+  //! Flag to indicate if this is a valid layer
+  bool valid;
 	bool registered;
   
 	enum ENDIAN
