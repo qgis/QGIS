@@ -1375,7 +1375,7 @@ void QgsVectorLayer::stopEditing()
 	if(dataProvider->isModified())
 	{
 	    //commit or roll back?
-	    int commit=QMessageBox::question(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
+	    int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
 	    if(commit==QMessageBox::Yes)
 	    {
 		if(!dataProvider->commitChanges())
