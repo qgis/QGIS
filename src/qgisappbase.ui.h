@@ -5,7 +5,7 @@
 ** update this file, preserving your code. Create an init() slot in place of
 ** a constructor, and a destroy() slot in place of a destructor.
 *****************************************************************************/
-
+#include <iostream>
 
 void QgisAppBase::fileExit()
 {
@@ -227,6 +227,19 @@ void QgisAppBase::addAllToOverview()
 
 
 void QgisAppBase::removeAllFromOverview()
+{
+
+}
+
+
+
+void QgisAppBase::hideAllLayers()
+{
+    std::cout <<"hide all layers" << std::endl;
+}
+
+
+void QgisAppBase::showAllLayers()
 {
 
 }

@@ -1,10 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.151 2004/06/27 21:26:07 larsl Exp
+ChangeLog,v 1.152 2004/06/27 23:09:04 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
-2004-06-27 [ts] 0.3.0devel53
+
+2004-06-28 [ts] 0.3.0devel55
+** Added show/hide all layers buttons and menu items
+
 2004-06-27 [larsl] 0.3.0devel54
 ** Enabled GPS upload code again
+
 2004-06-27 [ts] 0.3.0devel53
 ** Numerous bug fixes and cleanups. 
 ** Added remove all layers from overview button.
