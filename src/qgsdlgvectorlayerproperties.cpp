@@ -222,5 +222,5 @@ QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
 
 void QgsDlgVectorLayerProperties::setLegendType(QString type)
 {
-  legendtypecombobox->setCurrentText(type);
+  legendtypecombobox->setCurrentText(tr(type));
 }
