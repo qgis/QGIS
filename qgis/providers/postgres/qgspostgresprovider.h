@@ -378,11 +378,14 @@ private:
   bool deduceEndian();
   bool getGeometryDetails();
 
-  typedef std::map<QString, std::pair<QString, QString> > table_cols;
+  typedef std::map<QString, std::pair<QString, QString> > tableCols;
 
-  QString chooseViewColumn(const table_cols& cols);
+  QString chooseViewColumn(const tableCols& cols);
 
-  void findTableColumns(QString select_cmd, table_cols& cols);
+  void findTableColumns(QString selectCmd, tableCols& cols);
+  void findColumns(QString selectCmd, tableCols& cols);
+  int findRelationAndColumn(QString relation, QString column,
+			    QString& rRelation, QString& rColumn);
   
   bool ready;
   std::ofstream pLog;
