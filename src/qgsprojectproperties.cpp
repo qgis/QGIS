@@ -191,8 +191,10 @@ QString QgsProjectProperties::projectionWKT()
 void QgsProjectProperties::apply()
 {
     // Set the map units
+    // Note. Qt 3.2.3 and greater have a function selectedId() that
+    // can be used instead of the two part technique here
     QgsProject::instance()->mapUnits(
-       static_cast<QgsScaleCalculator::units>(btnGrpMapUnits->selectedId()));
+       static_cast<QgsScaleCalculator::units>(btnGrpMapUnits->id(btnGrpMapUnits->selected())));
 
     // Set the project title
     QgsProject::instance()->title( title() );
@@ -218,7 +220,9 @@ void QgsProjectProperties::apply()
     
     // set the mouse display precision method and the
     // number of decimal places for the manual option
-    if (btnGrpPrecision->selectedId() == 0)
+    // Note. Qt 3.2.3 and greater have a function selectedId() that
+    // can be used instead of the two part technique here
+    if (btnGrpPrecision->id(btnGrpPrecision->selected()) == 0)
       QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", true);
     else
       QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", false);
