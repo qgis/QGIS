@@ -92,6 +92,7 @@ headers =		qgis.h					\
 			qgssymbol.h				\
 			qgssymbologyutils.h			\
 			qgsuniquevalrenderer.h			\
+			qgsuvaldialog.h				\
 			qgsvectorlayer.h			\
 			qgsvectorlayerproperties.h		\
 			splashscreen.h				\
@@ -124,6 +125,7 @@ qgis_UIC =	qgisappbase.ui					\
 		qgsrasterlayerpropertiesbase.ui			\
 		qgssimadialogbase.ui				\
 		qgssisydialogbase.ui				\
+		qgsuvaldialogbase.ui				\
 		qgsvectorlayerpropertiesbase.ui \
 		qgsprojectpropertiesbase.ui
 
@@ -238,6 +240,7 @@ qgis_SOURCES =  main.cpp			\
 		qgssymbol.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuniquevalrenderer.cpp	\
+		qgsuvaldialog.cpp		\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayerproperties.cpp	\
 		splashscreen.cpp \

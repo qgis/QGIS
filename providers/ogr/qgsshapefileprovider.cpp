@@ -585,7 +585,7 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
       {
 	  OGRLineString* l=new OGRLineString();
 	  int length;
-	  memcpy(&length,f->getGeometry()+sizeof(int),sizeof(int));
+	  memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
 #ifdef QGISDEBUG
 	  qWarning("length: "+QString::number(length));
 #endif
@@ -615,11 +615,33 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
       }
       case QGis::WKBMultiPoint:
       {
-
+	  OGRMultiPoint* multip= new OGRMultiPoint();
+	  int count;
+	  //determine how many points
+	  memcpy(&count,f->getGeometry()+1+sizeof(int),sizeof(int));
+	  multip->importFromWkb(f->getGeometry(),1+2*sizeof(int)+count*2*sizeof(double));
+	  feature->SetGeometry(multip);
+	  break;
       }
       case QGis::WKBMultiLineString:
       {
-
+	  OGRMultiLineString* multil=new OGRMultiLineString();
+	  int numlines=(int)f->getGeometry()[5];
+	  int totalpoints=0;
+	  unsigned char* ptr=f->getGeometry()+9;
+	  for(int i=0;i<numlines;++i)
+	  {
+	      int numpoints=(int)ptr;
+	      ptr+=4;
+	      for(int j=0;j<numpoints;++j)
+	      {
+		  ptr+=16;
+		  totalpoints+=2;
+	      }
+	  }
+	  int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
+	  multil->importFromWkb(f->getGeometry(),size);
+	  feature->SetGeometry(multil);
       }
       case QGis::WKBMultiPolygon:
       {
