@@ -45,26 +45,26 @@ public:
   * overlap.
   *
   */
-  virtual void QgsDataProvider::select(QgsRect *mbr, bool useIntersect=false)=0;
+  virtual void select(QgsRect *mbr, bool useIntersect=false)=0;
   /** 
     * Set the data source specification. This may be a path or database
   * connection string
   * @param data source specification
   */
-  virtual void QgsDataProvider::setDataSourceUri(QString uri) = 0;
+  virtual void setDataSourceUri(QString uri) = 0;
   
     /** 
   * Get the data source specification. This may be a path or database
   * connection string
   * @return data source specification
   */
-  virtual QString QgsDataProvider::getDataSourceUri() = 0;
+  virtual QString getDataSourceUri() = 0;
 
   /**
   * Get the extent of the layer
   * @return QgsRect containing the extent of the layer
   */
-  virtual QgsRect * QgsDataProvider::extent() = 0;
+  virtual QgsRect * extent() = 0;
     
   /**
   * Identify features within the search radius specified by rect
@@ -77,7 +77,7 @@ public:
    * Return the endian of this layer.
    * @return 0 for NDR (little endian), 1 for XDR (big endian
    */
-  virtual int QgsDataProvider::endian()=0;
+  virtual int endian()=0;
 
   /**
    * Returns true if this is a valid layer. It is up to individual providers
