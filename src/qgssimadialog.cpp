@@ -32,13 +32,15 @@
 
 QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer)
 {
-    QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));
+    QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));  
+    QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
     mScaleEdit->setText("1.0");
 }
 
 QgsSiMaDialog::QgsSiMaDialog(): QgsSiMaDialogBase(), mVectorLayer(0)
 {
     QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));
+    QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
     mScaleEdit->setText("1.0");
 }
 
@@ -122,5 +124,35 @@ void QgsSiMaDialog::apply()
 
 void QgsSiMaDialog::selectMarker()
 {
-    mImageButton->setName(QFileDialog::getOpenFileName());
+    QString svgfile=QFileDialog::getOpenFileName();
+    mImageButton->setName(svgfile);
+    
+    //draw the SVG-Image on the button
+    QPicture pic;
+    double scalefactor=mScaleEdit->text().toDouble();
+    pic.load(svgfile,"svg");
+    QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+    pixmap.fill();
+    QPainter p(&pixmap);
+    p.scale(scalefactor,scalefactor);
+    p.drawPicture(0,0,pic);
+    mImageButton->setPixmap(pixmap);
+}
+
+void QgsSiMaDialog::updateMarkerSize()
+{
+    //draw the SVG-Image on the button
+    QString svgfile(mImageButton->name());
+    if(!svgfile.isEmpty())
+    {
+	QPicture pic;
+	double scalefactor=mScaleEdit->text().toDouble();
+	pic.load(svgfile,"svg");
+	QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+	pixmap.fill();
+	QPainter p(&pixmap);
+	p.scale(scalefactor,scalefactor);
+	p.drawPicture(0,0,pic);
+	mImageButton->setPixmap(pixmap);
+    } 
 }
