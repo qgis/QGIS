@@ -162,10 +162,7 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlg
         {
 	    layer->setRendererDialog(dialog);
 	    QgsLegendItem *item;
-	    if (item = layer->legendItem())
-            {
-		item->setPixmap(0, (*pixmap));
-            }
+	    layer->updateItemPixmap();
         }
     } 
     else

@@ -247,10 +247,7 @@ void QgsContColDialog::apply()
     p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + fm.height(), QString::number(minimum, 'f', 2));
     p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + gradientheight, QString::number(maximum, 'f', 2));
     
-    if (mVectorLayer->legendItem())
-    {
-	mVectorLayer->legendItem()->setPixmap(0, (*pix));
-    }
+    mVectorLayer->updateItemPixmap();
     
     if (mVectorLayer->propertiesDialog())
     {
