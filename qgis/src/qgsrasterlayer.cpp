@@ -1755,7 +1755,7 @@ void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
     }
     //check that a valid band name was passed
 
-    for (int myIteratorInt = 0; myIteratorInt <= rasterStatsVector.size(); ++myIteratorInt)
+    for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
     {
         //find out the name of this band
         RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
@@ -1788,7 +1788,7 @@ void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
     }
     //check that a valid band name was passed
 
-    for (int myIteratorInt = 0; myIteratorInt <= rasterStatsVector.size(); ++myIteratorInt)
+    for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
     {
         //find out the name of this band
         RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
@@ -1821,7 +1821,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
     }
     //otherwise check that a valid band name was passed
 
-    for (int myIteratorInt = 0; myIteratorInt <= rasterStatsVector.size(); ++myIteratorInt)
+    for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
     {
         //find out the name of this band
         RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
