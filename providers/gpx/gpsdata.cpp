@@ -28,6 +28,131 @@ GPSPoint::GPSPoint() {
 }
 
 
+bool GPSPoint::parseNode(const QDomNode& node) {
+  QDomNode node2;
+  
+  // lat and lon are required
+  node2 = node.attributes().namedItem("lat");
+  if (node2.isNull())
+    return false;
+  lat = node2.nodeValue().toDouble();
+  node2 = node.attributes().namedItem("lon");
+  if (node2.isNull())
+    return false;
+  lon = node2.nodeValue().toDouble();
+  
+  // name is optional
+  node2 = node.namedItem("name");
+  if (!node2.isNull())
+    name = (const char*)node2.firstChild().nodeValue();
+  
+  // url is optional
+  node2 = node.namedItem("url");
+  if (!node2.isNull())
+    url = (const char*)node2.firstChild().nodeValue();
+  
+  // ele is optional
+  node2 = node.namedItem("ele");
+  if (!node2.isNull())
+    ele = std::atof((const char*)node2.firstChild().nodeValue());
+  else
+    ele = -std::numeric_limits<double>::max();
+  
+  return true;
+}
+
+
+bool Route::parseNode(const QDomNode& node) {
+  QDomNode node2;
+  
+  // reset extent
+  xMin = std::numeric_limits<double>::max();
+  xMax = -std::numeric_limits<double>::max();
+  yMin = std::numeric_limits<double>::max();
+  yMax = -std::numeric_limits<double>::max();
+  
+  // routepoints are optional, empty routes are allowed
+  node2 = node.namedItem("rtept");
+  while (!node2.isNull()) {
+    if (node2.nodeName() == "rtept") {
+      Routepoint rtept;
+      if (!rtept.parseNode(node2))
+	return false;
+      points.push_back(rtept);
+      
+      // update the route bounds
+      xMin = (xMin < rtept.lon ? xMin : rtept.lon);
+      xMax = (xMax > rtept.lon ? xMax : rtept.lon);
+      yMin = (yMin < rtept.lat ? yMin : rtept.lat);
+      yMax = (yMax > rtept.lat ? yMax : rtept.lat);
+    }
+    node2 = node2.nextSibling();
+  }
+  
+  // name is optional
+  node2 = node.namedItem("name");
+  if (!node2.isNull())
+    name = (const char*)node2.firstChild().nodeValue();
+  
+  // url is optional
+  node2 = node.namedItem("url");
+  if (!node2.isNull())
+    url = (const char*)node2.firstChild().nodeValue();
+  
+  return true;
+}
+
+
+bool Track::parseNode(const QDomNode& node) {
+  QDomNode node2, node3;
+
+  // reset track bounds
+  xMin = std::numeric_limits<double>::max();
+  xMax = -std::numeric_limits<double>::max();
+  yMin = std::numeric_limits<double>::max();
+  yMax = -std::numeric_limits<double>::max();
+  
+  // track segments are optional - empty tracks are allowed
+  node2 = node.namedItem("trkseg");
+  while (!node2.isNull()) {
+    if (node2.nodeName() == "trkseg") {
+      TrackSegment trkseg;
+      node3 = node2.namedItem("trkpt");
+      while (!node3.isNull()) {
+	if (node3.nodeName() == "trkpt") {
+	  Trackpoint trkpt;
+	  if (!trkpt.parseNode(node3))
+	    return false;
+	  trkseg.points.push_back(trkpt);
+	  
+	  // update the track bounds
+	  xMin = (xMin < trkpt.lon ? xMin : trkpt.lon);
+	  xMax = (xMax > trkpt.lon ? xMax : trkpt.lon);
+	  yMin = (yMin < trkpt.lat ? yMin : trkpt.lat);
+	  yMax = (yMax > trkpt.lat ? yMax : trkpt.lat);
+	}
+	node3 = node3.nextSibling();
+      }
+      
+      segments.push_back(trkseg);
+    }
+    node2 = node2.nextSibling();
+  }
+  
+  // name is optional
+  node2 = node.namedItem("name");
+  if (!node2.isNull())
+    name = (const char*)node2.firstChild().nodeValue();
+  
+  // url is optional
+  node2 = node.namedItem("url");
+  if (!node2.isNull())
+    url = (const char*)node2.firstChild().nodeValue();
+  
+  return true;
+}
+
+
 GPSData::GPSData() {
   xMin = std::numeric_limits<double>::max();
   xMax = -std::numeric_limits<double>::max();
@@ -186,185 +311,43 @@ bool GPSData::parseGPX(QDomNode& node) {
     // waypoint
     if (node.nodeName() == "wpt") {
       Waypoint wpt;
-
-      // lat and lon are required
-      node2 = node.attributes().namedItem("lat");
-      if (node2.isNull())
+      if (!wpt.parseNode(node))
 	return false;
-      wpt.lat = node2.nodeValue().toDouble();
-      node2 = node.attributes().namedItem("lon");
-      if (node2.isNull())
-	return false;
-      wpt.lon = node2.nodeValue().toDouble();
-      
-      // name is optional
-      node2 = node.namedItem("name");
-      if (!node2.isNull())
-	wpt.name = (const char*)node2.firstChild().nodeValue();
-      
-      // url is optional
-      node2 = node.namedItem("url");
-      if (!node2.isNull())
-	wpt.url = (const char*)node2.firstChild().nodeValue();
-      
-      // ele is optional
-      node2 = node.namedItem("ele");
-      if (!node2.isNull())
-	wpt.ele = std::atof((const char*)node2.firstChild().nodeValue());
-      else
-	wpt.ele = -std::numeric_limits<double>::max();
+      waypoints.push_back(wpt);
       
       // update the extent
       xMin = xMin < wpt.lon ? xMin : wpt.lon;
       xMax = xMax > wpt.lon ? xMax : wpt.lon;
       yMin = yMin < wpt.lat ? yMin : wpt.lat;
       yMax = yMax > wpt.lat ? yMax : wpt.lat;
-      
-      waypoints.push_back(wpt);
     }
     
     // route
     else if (node.nodeName() == "rte") {
       Route rte;
-      rte.xMin = std::numeric_limits<double>::max();
-      rte.xMax = -std::numeric_limits<double>::max();
-      rte.yMin = std::numeric_limits<double>::max();
-      rte.yMax = -std::numeric_limits<double>::max();
-      
-      // routepoints are optional, empty routes are allowed
-      node2 = node.namedItem("rtept");
-      while (!node2.isNull()) {
-	if (node2.nodeName() == "rtept") {
-	  Routepoint rtept;
-	  
-	  // lat and lon are required for each routepoint
-	  node3 = node2.attributes().namedItem("lat");
-	  if (node3.isNull())
-	    return false;
-	  rtept.lat = node3.nodeValue().toDouble();
-	  node3 = node2.attributes().namedItem("lon");
-	  if (node3.isNull())
-	    return false;
-	  rtept.lon = node3.nodeValue().toDouble();
-	  
-	  // name is optional for routepoints too
-	  node3 = node2.namedItem("name");
-	  if (!node3.isNull())
-	    rtept.name = (const char*)node3.firstChild().nodeValue();
-	  
-	  // ele is optional
-	  node3 = node2.namedItem("ele");
-	  if (!node3.isNull()) 
-	    rtept.ele = std::atof((const char*)node3.firstChild().nodeValue());
-	  else
-	    rtept.ele = -std::numeric_limits<double>::max();
-	  
-	  // update the route bounds
-	  rte.xMin = (rte.xMin < rtept.lon ? rte.xMin : rtept.lon);
-	  rte.xMax = (rte.xMax > rtept.lon ? rte.xMax : rtept.lon);
-	  rte.yMin = (rte.yMin < rtept.lat ? rte.yMin : rtept.lat);
-	  rte.yMax = (rte.yMax > rtept.lat ? rte.yMax : rtept.lat);
-	  
-	  // update the extent
-	  xMin = xMin < rte.xMin ? xMin : rte.xMin;
-	  xMax = xMax > rte.xMax ? xMax : rte.xMax;
-	  yMin = yMin < rte.yMin ? yMin : rte.yMin;
-	  yMax = yMax > rte.yMax ? yMax : rte.yMax;
-	  
-	  rte.points.push_back(rtept);
-	}
-	node2 = node2.nextSibling();
-      }
-      
-      // name is optional
-      node2 = node.namedItem("name");
-      if (!node2.isNull())
-	rte.name = (const char*)node2.firstChild().nodeValue();
-      
-      // url is optional
-      node2 = node.namedItem("url");
-      if (!node2.isNull())
-	rte.url = (const char*)node2.firstChild().nodeValue();
-      
+      if (!rte.parseNode(node))
+	return false;
       routes.push_back(rte);
+
+      // update the extent
+      xMin = xMin < rte.xMin ? xMin : rte.xMin;
+      xMax = xMax > rte.xMax ? xMax : rte.xMax;
+      yMin = yMin < rte.yMin ? yMin : rte.yMin;
+      yMax = yMax > rte.yMax ? yMax : rte.yMax;
     }
     
     // track
     else if (node.nodeName() == "trk") {
       Track trk;
-      
-      // reset track bounds
-      trk.xMin = std::numeric_limits<double>::max();
-      trk.xMax = -std::numeric_limits<double>::max();
-      trk.yMin = std::numeric_limits<double>::max();
-      trk.yMax = -std::numeric_limits<double>::max();
-      
-      // track segments are optional - empty tracks are allowed
-      node2 = node.namedItem("trkseg");
-      while (!node2.isNull()) {
-	if (node2.nodeName() == "trkseg") {
-	  TrackSegment trkseg;
-	  node3 = node2.namedItem("trkpt");
-	  while (!node3.isNull()) {
-	    if (node3.nodeName() == "trkpt") {
-	      Trackpoint trkpt;
-
-	      // lat and lon are required for each trackpoint
-	      node4 = node3.attributes().namedItem("lat");
-	      if (node4.isNull())
-		return false;
-	      trkpt.lat = node4.nodeValue().toDouble();
-	      node4 = node3.attributes().namedItem("lon");
-	      if (node4.isNull())
-		return false;
-	      trkpt.lon = node4.nodeValue().toDouble();
-	  
-	      // name is optional for trackpoints too
-	      node4 = node3.namedItem("name");
-	      if (!node4.isNull())
-		trkpt.name = (const char*)node4.firstChild().nodeValue();
-	      
-	      // ele is optional
-	      node4 = node.namedItem("ele");
-	      if (!node4.isNull()) 
-		trkpt.ele = 
-		  std::atof((const char*)node4.firstChild().nodeValue());
-	      else
-		trkpt.ele = -std::numeric_limits<double>::max();
-	      
-	      // update the track bounds
-	      trk.xMin = (trk.xMin < trkpt.lon ? trk.xMin : trkpt.lon);
-	      trk.xMax = (trk.xMax > trkpt.lon ? trk.xMax : trkpt.lon);
-	      trk.yMin = (trk.yMin < trkpt.lat ? trk.yMin : trkpt.lat);
-	      trk.yMax = (trk.yMax > trkpt.lat ? trk.yMax : trkpt.lat);
-	      
-	      // update the extent
-	      xMin = xMin < trk.xMin ? xMin : trk.xMin;
-	      xMax = xMax > trk.xMax ? xMax : trk.xMax;
-	      yMin = yMin < trk.yMin ? yMin : trk.yMin;
-	      yMax = yMax > trk.yMax ? yMax : trk.yMax;
-	      
-	      trkseg.points.push_back(trkpt);
-	    }
-	    node3 = node3.nextSibling();
-	  }
-	  
-	  trk.segments.push_back(trkseg);
-	}
-	node2 = node2.nextSibling();
-      }
-      
-      // name is optional
-      node2 = node.namedItem("name");
-      if (!node2.isNull())
-	trk.name = (const char*)node2.firstChild().nodeValue();
-      
-      // url is optional
-      node2 = node.namedItem("url");
-      if (!node2.isNull())
-	trk.url = (const char*)node2.firstChild().nodeValue();
-
+      if (!trk.parseNode(node))
+	return false;
       tracks.push_back(trk);
+      
+      // update the extent
+      xMin = xMin < trk.xMin ? xMin : trk.xMin;
+      xMax = xMax > trk.xMax ? xMax : trk.xMax;
+      yMin = yMin < trk.yMin ? yMin : trk.yMin;
+      yMax = yMax > trk.yMax ? yMax : trk.yMax;
     }
       
     node = node.nextSibling();
