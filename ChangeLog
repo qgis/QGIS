@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.76 2004/05/15 14:11:47 timlinux Exp
+ChangeLog,v 1.77 2004/05/15 20:42:34 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-15 [larsl] 0.2.0devel19
+** Added my picture in the About dialog to attract more female users to QGIS
 
 2004-05-13 [ts] 0.2.0devel18
 ** Raster properties changes: Switched order of general tab and symbology tab - as you normally change
