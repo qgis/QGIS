@@ -732,7 +732,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                         static_cast <
                         int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin3) / 1) * 3)));
                       // testing this stuff still ...
-                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                      if (colorRampingType==FREAK_OUT) {myRedInt=myGreenInt; myGreenInt=255-myGreenInt;}
                     }
               } else            //invert histogram toggle is on
                 {
@@ -766,7 +766,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                       myGreenInt =
                         static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin3)) * 3));
                       // testing this stuff still ...
-                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt; myGreenInt=255-myGreenInt;}
                     }
                 }
               myQImage.setPixel(myRowInt, myColumnInt, qRgba(myRedInt, myGreenInt, myBlueInt, transparencyLevelInt));
@@ -1019,7 +1019,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                         static_cast <
                         int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin3) / 1) * 3)));
                       // testing this stuff still ...
-                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt; myGreenInt=255-myGreenInt;}
                     }
               } else            //invert histogram toggle is on
                 {
@@ -1053,7 +1053,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                       myGreenInt =
                         static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin3)) * 3));
                       // testing this stuff still ...
-                      if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                      if (colorRampingType==FREAK_OUT) {myRedInt=255-myGreenInt; myGreenInt=myGreenInt;}
                     }
 
 
@@ -1814,7 +1814,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
                 int myBlueInt = 0;
                 int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin3) / 1) * 3)));
                 // testing this stuff still ...
-                if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt; myGreenInt=255-myGreenInt;}
                 myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
               }
             }                   //end of invert histogram == false check
@@ -1847,7 +1847,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
                 int myBlueInt = 255;
                 int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * (myDouble - myClassBreakMin3)) * 3));
                 // testing this stuff still ...
-                if (colorRampingType==FREAK_OUT) { myRedInt=myGreenInt;}
+                if (colorRampingType==FREAK_OUT) {myRedInt=255-myGreenInt;}
                 myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
               }
 
