@@ -34,7 +34,7 @@ QgsPgUtil::~QgsPgUtil()
 }
 bool QgsPgUtil::isReserved(QString word)
 {
-  // uppercase the word since all our reserved words are
+  // uppercase the word before testing it since all our reserved words are
   // stored in uppercase
   
   QStringList::iterator it = mReservedWords.find(word.upper());
