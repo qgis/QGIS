@@ -833,7 +833,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
           // calculate the field lengths
           int *lengths = getFieldLengths();
           // create the fields
-          std::cerr << "creating fields" << std::endl; 
+          std::cerr << "creating " << attributeFields.size() << " fields" << std::endl; 
           for(int i = 0; i < attributeFields.size(); i++)
           {
             // check the field length - if > 10 we need to truncate it
@@ -854,25 +854,41 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
             }
           }
           // read the delimited text file and create the features
-
+          std::cerr << "Done creating fields" << std::endl; 
           // read the line
           reset();
           QTextStream stream( mFile );
           QString line;
           while ( !stream.atEnd() ) {
             line = stream.readLine(); // line of text excluding '\n'
+            std::cerr << line << std::endl; 
             // split the line
             QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
+            std::cerr << "Split line into " << parts.size() << std::endl; 
+
             // create the feature
             OGRFeature *poFeature;
 
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
 
             // iterate over the parts and set the fields
-            for ( int i = 0; i < parts.size(); i++ ) 
+            std::cerr << "Setting the field values" << std::endl; 
+            // set limit - we will ignore extra fields on the line
+            int limit = attributeFields.size();
+
+            if(parts.size() < limit){
+            
+              // this is bad - not enough values where supplied on the line
+              // TODO We should inform the user about this...
+            }
+            else
+            {
+
+            for ( int i = 0; i < limit; i++ ) 
             {
               if(parts[i] != QString::null)
               {
+                std::cerr << "Setting " << i << " "  << attributeFields[i].name() << " to " << parts[i] << std::endl; 
                 poFeature->SetField(attributeFields[i].name(), parts[i]);
 
               }
@@ -881,12 +897,14 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
                 poFeature->SetField(attributeFields[i].name(), "");
               }
             }
+            std::cerr << "Field values set" << std::endl; 
             // create the point
             OGRPoint *poPoint = new OGRPoint();
             QString sX = parts[fieldPositions[mXField]];
             QString sY = parts[fieldPositions[mYField]];
             poPoint->setX(sX.toDouble());
             poPoint->setY(sY.toDouble());
+            std::cerr << "Setting geometry" << std::endl; 
 
             poFeature->SetGeometryDirectly(poPoint);
             if(poLayer->CreateFeature(poFeature) != OGRERR_NONE)
@@ -899,7 +917,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
             }
 
             delete poFeature;
-
+          }
           }
           delete poDS;
         }
