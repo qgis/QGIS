@@ -310,8 +310,8 @@ void PluginGui::pbnIMPOutput_clicked() {
 
 
 void PluginGui::populateDeviceComboBox() {
-  // look for linux serial devices
 #ifdef linux
+  // look for linux serial devices
   QString linuxDev("/dev/ttyS%1");
   for (int i = 0; i < 10; ++i) {
     if (QFileInfo(linuxDev.arg(i)).exists()) {
@@ -321,10 +321,22 @@ void PluginGui::populateDeviceComboBox() {
     else
       break;
   }
+  
+  // and the ttyUSB* devices (serial USB adaptor)
+  linuxDev = "/dev/ttyUSB%1";
+  for (int i = 0; i < 10; ++i) {
+    if (QFileInfo(linuxDev.arg(i)).exists()) {
+      cmbDLDevice->insertItem(linuxDev.arg(i));
+      cmbULDevice->insertItem(linuxDev.arg(i));
+    }
+    else
+      break;
+  }
+  
 #endif
 
-  // and freebsd devices (untested)
 #ifdef freebsd
+  // and freebsd devices (untested)
   QString freebsdDev("/dev/cuaa%1");
   for (int i = 0; i < 10; ++i) {
     if (QFileInfo(freebsdDev.arg(i)).exists()) {
@@ -336,8 +348,8 @@ void PluginGui::populateDeviceComboBox() {
   }
 #endif
   
-  // and solaris devices (also untested)
 #ifdef sparc
+  // and solaris devices (also untested)
   QString solarisDev("/dev/cua/%1");
   for (int i = 'a'; i < 'k'; ++i) {
     if (QFileInfo(solarisDev.arg(char(i))).exists()) {
@@ -355,6 +367,7 @@ void PluginGui::populateDeviceComboBox() {
   cmbDLDevice->insertItem("com1");
   cmbDLDevice->insertItem("com2");
 #endif
+
   // OSX, OpenBSD, NetBSD etc? Anyone?
 
 }
