@@ -478,12 +478,13 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       mCanvasProperties->currentExtent.setXmax(dxmax);
       mCanvasProperties->currentExtent.setYmin(dymin);
       mCanvasProperties->currentExtent.setYmax(dymax);
-
+     int myRenderCounter=1;
       // render all layers in the stack, starting at the base
       std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
       // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
       while (li != mCanvasProperties->zOrder.end())
       {
+        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
         QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
         if (ml)

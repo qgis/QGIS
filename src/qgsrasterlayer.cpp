@@ -1853,11 +1853,9 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
   Note that this is a cpu intensive /slow task!*/
 const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
-  emit setStatus(QString("Calculating stats for ")+layerName);
-  //reset the main app progress bar
-  emit setProgress(0,0);
+  emit setStatus(QString("Retrieving stats for ")+layerName);
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::calculate stats for band " << theBandNoInt << std::endl;
+  std::cout << "QgsRasterLayer::retrieve stats for band " << theBandNoInt << std::endl;
 #endif
   //check if we have received a valid band number
   if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType != PALETTE)
@@ -1921,6 +1919,9 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   }
   myRasterBandStats.elementCountInt = rasterXDimInt * rasterYDimInt;
 
+  emit setStatus(QString("Calculating stats for ")+layerName);
+  //reset the main app progress bar
+  emit setProgress(0,0);
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
