@@ -10,7 +10,15 @@ public:
   void setBufferLabel(QString &lbl);
   QString bufferDistance();
   QString bufferLayerName();
+  QString objectIdColumn();
+  QString geometryColumn();
+  QString srid();
+  QString schema();
   bool addLayerToMap();
   void addFieldItem(QString field);
+  void addSchema(QString schema);
+  void setSrid(QString srid);
+  void setBufferLayerName(QString name);
+  void setGeometryColumn(QString name);
  };
 #endif // QGSDLGPGBUFFER_H
