@@ -37,6 +37,7 @@
 #include <qfiledialog.h>
 #include <qfileinfo.h>
 #include <qsettings.h>
+#include <qregexp.h>
 
 //non qt includes
 #include <iostream>
@@ -295,25 +296,75 @@ void QgsGrassPlugin::addVector()
 
     QgsGrassSelect *sel = new QgsGrassSelect(QgsGrassSelect::VECTOR );
     if ( sel->exec() ) {
-  uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
+        uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
     }
     #ifdef QGISDEBUG
     std::cerr << "plugin URI: " << uri << std::endl;
     #endif
     if ( uri.length() == 0 ) {
-  std::cerr << "Nothing was selected" << std::endl;
-  return;
+        std::cerr << "Nothing was selected" << std::endl;
+        return;
     } else {
         #ifdef QGISDEBUG
-  std::cout << "Add new vector layer" << std::endl;
+        std::cout << "Add new vector layer" << std::endl;
         #endif
-  // create vector name: vector layer
-  int pos = uri.findRev('/');
-  pos = uri.findRev('/', pos-1);
-  QString name = uri.right( uri.length() - pos - 1 );
-  name.replace('/', ' ');
+        
+	// create vector name: vector layer
+	QString name = sel->map;
+	
+	QString field; 
+	QString type; 
+	
+	QRegExp rx ( "(\\d+)_(.+)" );
+        if ( rx.search ( sel->layer ) != -1 ) 
+	{
+	    field = rx.cap(1);
+ 	    type = rx.cap(2);
+	}
 
-        qGisInterface->addVectorLayer( uri, name, "grass");
+	// Set location
+	QgsGrass::setLocation ( sel->gisdbase, sel->location );
+
+	/* Open vector */
+	QgsGrass::resetError();
+	Vect_set_open_level (2);
+	struct Map_info map;
+	int level = Vect_open_old_head (&map, (char *) sel->map.ascii(),
+					(char *) sel->mapset.ascii());
+
+	if ( QgsGrass::getError() != QgsGrass::FATAL )
+	{
+	    if ( level >= 2 ) 
+	    {
+		// Count layers
+		int cnt = 0; 
+		int ncidx = Vect_cidx_get_num_fields ( &map );
+
+		for ( int i = 0; i < ncidx; i++ ) 
+		{
+		    int field = Vect_cidx_get_field_number ( &map, i);
+		    
+		    if ( Vect_cidx_get_type_count( &map, field, GV_POINT|GV_LINE|GV_AREA) > 0 ||
+			 (field > 1 && Vect_cidx_get_type_count( &map, field, GV_BOUNDARY) ) )
+		    {
+			cnt++;
+		    }
+		}
+		    
+		if( cnt > 1 ) 
+		{
+		    name.append ( " " + field );
+
+		    // No need to ad type, the type is obvious from the legend 
+		}
+	    }
+
+	    Vect_close ( &map );
+	} else {
+	    std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+	}
+        
+	qGisInterface->addVectorLayer( uri, name, "grass");
     }
 }
 
