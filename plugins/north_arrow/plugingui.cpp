@@ -89,7 +89,7 @@ void PluginGui::sliderRotation_valueChanged( int theInt)
 void PluginGui::rotatePixmap(int theRotationInt)
 {
   QPixmap myQPixmap;
-#ifdef WIN32
+#if defined(WIN32) || defined(Q_OS_MACX)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
   QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");

@@ -150,7 +150,7 @@ const char * const ident =
   //
   // Set up the pyramiding tab
   //
-#ifdef WIN32
+#if defined(WIN32) || defined(Q_OS_MACX)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
   QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
@@ -636,7 +636,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   // repopulate the pyramids list
   //
   lbxPyramidResolutions->clear();
-#ifdef WIN32
+#if defined(WIN32) || defined(Q_OS_MACX)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
   QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));

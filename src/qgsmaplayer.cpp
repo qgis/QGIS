@@ -57,8 +57,8 @@ QgsMapLayer::QgsMapLayer(int type,
   QDateTime dt = QDateTime::currentDateTime();
   ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
 
-#ifdef WIN32
-QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
+#if defined(WIN32) || defined(Q_OS_MACX)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
   mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
   mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
