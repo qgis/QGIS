@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.77 2004/05/15 20:42:34 larsl Exp
+ChangeLog,v 1.78 2004/05/16 15:16:05 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-16 [larsl] 0.2.0devel20
+** Corrected file name extension for PNG files
 
 2004-05-15 [larsl] 0.2.0devel19
 ** Added my picture in the About dialog to attract more female users to QGIS
