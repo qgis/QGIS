@@ -83,6 +83,8 @@ class Plugin:public QObject, public QgisPlugin
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
   QgisIface *qGisInterface;
+  //! Pointer to the QAction object used in the menu and toolbar
+  QAction *myQActionPointer;
 };
 
 #endif

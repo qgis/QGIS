@@ -87,13 +87,13 @@ void QgsPgGeoprocessing::initGui()
   //  menuId = menu->insertItem("&Geoprocessing", pluginMenu);
   menuId = qI->addMenu("&Geoprocessing", pluginMenu);
   // Create the action for tool
-  QAction *bufferAction = new QAction("Buffer features", QIconSet(icon_buffer), "&Buffer",
+  bufferAction = new QAction("Buffer features", QIconSet(icon_buffer), "&Buffer",
       0, this, "buffer");
   // Connect the action to the zoomPrevous slot
   connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
 
   // Add the icon to the toolbar
-  qGisInterface->addToolBarIcon(myQActionPointer);
+  qI->addToolBarIcon(bufferAction);
 
 }
 
@@ -403,7 +403,8 @@ void QgsPgGeoprocessing::unload()
 {
   // remove the GUI
   menu->removeItem(menuId);
-  delete toolBar;
+  qI->removeToolBarIcon(bufferAction);
+  delete bufferAction;
 }
 /** 
  * Required extern functions needed  for every plugin 

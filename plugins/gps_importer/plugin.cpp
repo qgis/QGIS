@@ -122,7 +122,7 @@ void Plugin::initGui()
 
   menuIdInt = qGisInterface->addMenu("&Gps", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Import Gps Data", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Import Gps Data", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
 
@@ -191,7 +191,8 @@ void Plugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  qGisInterface->removeToolBarIcon(myQActionPointer);
+  delete myQActionPointer;
 }
 
 void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,

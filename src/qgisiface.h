@@ -62,6 +62,8 @@ class QgisIface : public QgisInterface{
         int addMenu(QString menuText, QPopupMenu *menu);
         //! Add an icon to the plugins toolbar
         int addToolBarIcon(QAction *qAction);
+        //! Remove an icon (action) from the plugin toolbar
+        void removeToolBarIcon(QAction *qAction);
         /** Open a url in the users browser. By default the QGIS doc directory is used
          * as the base for the URL. To open a URL that is not relative to the installed
          * QGIS documentation, set useQgisDocDirectory to false.

@@ -32,6 +32,7 @@ class QMessageBox;
 class QToolBar;
 class QMenuBar;
 class QPopupMenu;
+class QAction;
 
 //#include "qgsworkerclass.h"
 #include "../../src/qgisapp.h"
@@ -88,6 +89,8 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
     QgisApp *qgisMainWindow;
     //! Pointer to the QGIS interface object
     QgisIface *qI;
+    //! Pointer to the QAction used for the menu and toolbar (needed to enable unloading of the plugin)
+    QAction *bufferAction;
 };
 
 #endif

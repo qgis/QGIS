@@ -105,6 +105,10 @@ int QgisIface::addToolBarIcon(QAction * qAction)
   // add the menu to the master Plugins menu
   return qgis->addPluginToolBarIcon(qAction);
 }
+void QgisIface::removeToolBarIcon(QAction *qAction)
+{
+  qgis->removePluginToolBarIcon(qAction);
+}
 void QgisIface::openURL(QString url, bool useQgisDocDirectory)
 {
   qgis->openURL(url, useQgisDocDirectory);

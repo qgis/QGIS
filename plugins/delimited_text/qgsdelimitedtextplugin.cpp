@@ -119,7 +119,7 @@ void QgsDelimitedTextPlugin::initGui()
 
   menuIdInt = qGisInterface->addMenu("&Delimited Text", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Add Delimited Text Layer", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Add Delimited Text Layer", QIconSet(icon), "&Wmi",0, this, "run");
   myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. "
       "The file must have a header row containing the field names. "
       "X and Y fields are required and must contain coordinates in decimal units.");
@@ -164,7 +164,8 @@ void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  qGisInterface->removeToolBarIcon(myQActionPointer); 
+  delete myQActionPointer;
 }
 /** 
  * Required extern functions needed  for every plugin 

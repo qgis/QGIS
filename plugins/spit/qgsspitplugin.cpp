@@ -85,7 +85,7 @@ void QgsSpitPlugin::initGui()
     //menuId = menu->insertItem("&Spit", pluginMenu);
     menuId = qI->addMenu("&Spit", pluginMenu);
      // Create the action for tool
-    QAction *spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(spitIcon), "&SPIT",
+    spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(spitIcon), "&SPIT",
                                               0, this, "spit");
     // Connect the action to the spit slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
@@ -107,7 +107,8 @@ void QgsSpitPlugin::unload()
 {
     // remove the GUI
     menu->removeItem(menuId);
-    delete toolBar;
+    qI->removeToolBarIcon(spitAction);
+    delete spitAction;
 }
 
 /** 
