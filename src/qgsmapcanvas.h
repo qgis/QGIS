@@ -19,6 +19,7 @@
 #define QGSMAPCANVAS_H
 #include <map>
 #include <vector>
+#include <list>
 #include <qwidget.h>
 
 #include <qevent.h>
@@ -28,6 +29,7 @@ class QRect;
 class QgsCoordinateTransform;
 class QgsMapLayer;
 class QMouseEvent;
+class QgsLegend;
 class QColor;
 class QgsPoint;
 
@@ -63,11 +65,14 @@ public:
   void updateFullExtent(QgsRect r);
   //! return the map layer at postion index in the layer stack
    QgsMapLayer * getZpos(int index);
+   //! return the layer by name
+   QgsMapLayer * layerByName(QString n);
    //! return number of layers on the map
    int layerCount();
    void freeze(bool frz=true);
 	//! remove the layer defined by key
-	void remove(QString key);   
+	void remove(QString key);
+	friend class QgsLegend;
 public slots:
 	void render2();
 	//! This slot is connected to the visibility change of one or more layers
@@ -82,7 +87,8 @@ public slots:
     //! map containing the layers by name
     std::map<QString,QgsMapLayer *>layers;
     //! vector containing the names of layers in zorder
-    std::vector<QString> zOrder;
+//    std::vector<QString> zOrder;
+    std::list<QString> zOrder;
     //! Full extent of the map canvas
     QgsRect fullExtent;
     //! Current extent
