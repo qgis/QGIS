@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.157 2004/06/30 11:30:39 jobi Exp
+dnl configure.in,v 1.158 2004/07/02 08:02:31 gsherman Exp
 
 
 
@@ -24,9 +24,9 @@ dnl ---------------------------------------------------------------------------
 dnl version number
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
-MINOR_VERSION=3
+MINOR_VERSION=4
 MICRO_VERSION=0
-EXTRA_VERSION=58
+EXTRA_VERSION=0
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
