@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.170 2004/08/20 12:29:06 larsl Exp
+ChangeLog,v 1.171 2004/08/20 21:31:31 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-20 [larsl] 0.4.0devel15
+** Added more attribute fields to the GPX provider: cmt, desc, src, sym, number, urlname
 
 2004-08-20 [larsl] 0.4.0devel14
 ** Forgot to calculate bounds for user-added routes and tracks in the GPX
