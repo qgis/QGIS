@@ -294,12 +294,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       // set pen and fill
       QgsSymbol *sym = symbol();
       QPen pen;
-      pen.setColor(sym->color());
-      pen.setWidth(sym->lineWidth());
-      p->setPen(pen);
-
-
-      QBrush *brush = new QBrush(sym->fillColor());
 
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
@@ -345,22 +339,29 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
           } else
             {
               //if feature is selected, change the color of the painter
-              //TODO fix this selection code to work with the provider
-              //if ((*selected)[(fet->featureId())] == true)
               if (selected.find(fet->featureId()) != selected.end())
                 {
                   // must change color of pen since it holds not only color
                   // but line width
-                  if (vectorType() == QGis::Line)
-                    pen.setColor(selectionColor);
+                  if(vectorType() == QGis::Line)
+		  {
+		      pen.setColor(selectionColor);
+		  }
                   else
-                    {
+		  {
                       pen.setColor(Qt::black);
-                    }
+		  }
                   p->setPen(pen);
-                  brush->setColor(selectionColor);
-
-                  /* OGRGeometry *geom = fet->GetGeometryRef();
+		  p->setBrush(QBrush(selectionColor));
+		}
+	      else
+	      {
+                 
+                  //pass the feature to the renderer
+                  m_renderer->renderFeature(p, fet);
+	      }
+	      
+	      /* OGRGeometry *geom = fet->GetGeometryRef();
                      if (!geom) {
                      std::cout << "geom pointer is null" << std::endl;
                      } */
@@ -377,7 +378,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                     {
                       case WKBPoint:
 
-                        p->setBrush(*brush);
                         //  fldDef = fet->GetFieldDefnRef(1);
                         //   fld = fldDef->GetNameRef();
                         //NEEDTHIS?  val = fet->GetFieldAsString(1);
@@ -442,7 +442,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
                       case WKBPolygon:
 
-                        p->setBrush(*brush);
                         // get number of rings in the polygon
                         numRings = (int *) (feature + 1 + sizeof(int));
                         //std::cout << "Number of rings: " << *numRings << std::endl;
@@ -475,7 +474,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
                       case WKBMultiPolygon:
 
-                        p->setBrush(*brush);
                         // get the number of polygons
                         ptr = feature + 5;
                         numPolygons = (int *) ptr;
@@ -521,12 +519,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                     }
                   
                   delete[]feature;
-              } else
-                {
-                 
-                  //pass the feature to the renderer
-                  m_renderer->renderFeature(p, fet, cXf);
-                }
+              
               //std::cout << "deleting feature[]\n";
               //      std::cout << geom->getGeometryName() << std::endl;
               featureCount++;
@@ -538,7 +531,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         #ifdef QGISDEBUG
         std::cerr << "Total features processed is " << featureCount << std::endl;
         #endif
-        delete brush;
       qApp->processEvents();
   } else
     {

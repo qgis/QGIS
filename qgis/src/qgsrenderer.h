@@ -35,8 +35,8 @@ class QgsRenderer
      @param pr the layer properties class involved
     */
     virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0)=0;
-    /**Renders a feature. A vector layer passes features to a renderer object for display*/
-    virtual void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t)=0;
+    /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter*/
+    virtual void renderFeature(QPainter* p, QgsFeature* f)=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     virtual bool needsAttributes()=0;
 };
