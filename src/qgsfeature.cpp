@@ -19,6 +19,7 @@ email                : sherman at mrcc.com
 #include "qgsrect.h"
 #include <geos.h>
 #include <iostream>
+#include <cfloat>
 
 #include <cstring>
 
@@ -501,4 +502,78 @@ bool QgsFeature::exportToWKT() const
 	return false;
     }
     
+}
+
+QgsPoint QgsFeature::closestVertex(const QgsPoint& point)
+{
+    if(geometry)
+    {
+	int wkbType;
+	double actdist=DBL_MAX;
+	double x,y;
+	double *tempx,*tempy;
+	memcpy(&wkbType, (geometry+1), sizeof(int));
+	switch (wkbType)
+	{
+	    case QGis::WKBPoint:
+		x = *((double *) (geometry + 5));
+		y = *((double *) (geometry + 5 + sizeof(double)));
+		break;
+
+	    case QGis::WKBLineString:
+	    {
+		int* npoints=(int*)(geometry+5);
+		for(int index=0;index<*npoints;++index)
+		{
+		    tempx = (double*) (geometry+9+index*2*sizeof(double));
+		    tempy = (double*) (geometry+9+(index*2+1)*sizeof(double));
+		    if(point.sqrDist(*tempx,*tempy)<actdist)
+		    {
+			x=*tempx;
+			y=*tempy;
+			actdist=point.sqrDist(*tempx,*tempy);
+		    }
+		}
+		break;
+	    }
+	    case QGis::WKBPolygon:
+	    {
+		int* nrings=(int*)(geometry+5);
+		int* npoints;
+		unsigned char* ptr=geometry+9;
+		for(int index=0;index<*nrings;++index)
+		{
+		    npoints=(int*)ptr;
+		    ptr+=sizeof(int);
+		    for(int index2=0;index2<*npoints;++index2)
+		    {
+			tempx=(double*)(ptr);
+			tempy=(double*)(ptr+sizeof(double));
+			if(point.sqrDist(*tempx,*tempy)<actdist)
+			{
+			    x=*tempx;
+			    y=*tempy;
+			    actdist=point.sqrDist(*tempx,*tempy);
+			}
+			ptr+=2*sizeof(double);
+		    }
+		}
+	    }
+		break;
+
+	    case QGis::WKBMultiPoint:
+		break;
+
+	    case QGis::WKBMultiLineString:
+		break;
+
+	    case QGis::WKBMultiPolygon:
+		break;
+
+	    default:
+		break;
+	}
+	return QgsPoint(x,y);    
+    }
+    return QgsPoint(0,0);
 }

@@ -118,7 +118,7 @@ class QgsVectorDataProvider : public QgsDataProvider
        @return true in case of success and false in case of failure*/
     virtual bool addFeatures(std::list<QgsFeature*> const flist);
 
-    /**Deletes a feature (but not not write it to disk yes)
+    /**Deletes a feature
        @param id list containing feature ids to delete
        @return true in case of success and false in case of failure*/
     virtual bool deleteFeatures(std::list<int> const & id);

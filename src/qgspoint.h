@@ -88,6 +88,9 @@ class QgsPoint
    */
   QString wellKnownText();
 
+  /**Returns the squared distance between this point and x,y*/
+  double sqrDist(double x, double y) const;
+
   //! equality operator
   bool operator==(const QgsPoint &other);
     

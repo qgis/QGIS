@@ -264,6 +264,16 @@ class QgsVectorLayer : public QgsMapLayer
 
   //! Save as shapefile
   virtual void saveAsShapefile();
+
+  /**Snaps a point to the closest vertex if there is one within the snapping tolerance (mSnappingTolerance)
+     @param point the point which is set to the position of a vertex if there is one within the snapping tolerance.
+     If there is no point within this tolerance, point is left unchanged.
+     @return true if the position of point has been changed and false else*/
+  bool snapPoint(QgsPoint& point);
+
+  /**Sets the snapping tolerance for digitizing*/
+  void setSnappingTolerance(double tol){mSnappingTolerance=tol;}
+
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
     QgsAttributeTableDisplay * tabledisplay;
@@ -283,6 +293,8 @@ protected:
   QgsDlgVectorLayerProperties *m_propertiesDialog;
   /**Widget to set the symbology properties*/
   QDialog *m_rendererDialog;
+  /**Snapping tolerance for digitizing*/
+  double mSnappingTolerance;
   /**Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)*/
   int findFreeId();
   /**Writes the changes to disk*/
