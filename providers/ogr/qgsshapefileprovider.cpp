@@ -58,7 +58,7 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minm
     std::cerr << "Finished get extent\n";
 #endif
     // getting the total number of features in the layer
-    numberFeatures = ogrLayer->GetFeatureCount();
+    numberFeatures = ogrLayer->GetFeatureCount();   
     // check the validity of the layer
 #ifdef QGISDEBUG
     std::cerr << "checking validity\n";
@@ -684,6 +684,8 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
       returnValue = false;
   }
   ogrLayer->SyncToDisk();
+  ++numberFeatures;
+  delete feature;
   return returnValue;
 }
 

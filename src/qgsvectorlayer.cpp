@@ -690,7 +690,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       tabledisplay = new QgsAttributeTableDisplay();
 QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
         tabledisplay->table()->setNumRows(dataProvider->featureCount());
-        //tabledisplay->table()->setNumCols(numFields); //+1 for the id-column
         tabledisplay->table()->setNumCols(numFields + 1); //+1 for the id-column
 
         int row = 0;
@@ -1236,7 +1235,16 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
     {
 	int end=endian();
 	memcpy(f->getGeometry(),&end,1);
-	return dataProvider->addFeature(f);
+	if(dataProvider->addFeature(f))
+	{
+	    if (tabledisplay)
+	    {
+		tabledisplay->close();
+		delete tabledisplay;
+		tabledisplay=0;
+	    }
+	    return true;
+	}
     }
     return false;
 }
