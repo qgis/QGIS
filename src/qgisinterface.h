@@ -15,8 +15,10 @@ public:
 	QgisInterface(QgisApp *qgis=0, const char *name=0);
 	virtual ~QgisInterface();
 	public slots:
-	virtual void zoomFull2()=0;
+	virtual void zoomFull()=0;
 	virtual void zoomPrevious()=0;
+	virtual void zoomActiveLayer()=0;
+	virtual int getInt() = 0;
 private:
 	//QgisApp *qgis;
 };

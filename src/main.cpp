@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	tor.load(QString("qgis.") + QTextCodec::locale(), ".");
 	a.installTranslator(&tor);
 	/* uncomment the following line, if you want a Windows 95 look */
-	a.setStyle("Windows");
+	//a.setStyle("Windows");
 
 	QgisApp *qgis = new QgisApp();
 	a.setMainWidget(qgis);

@@ -204,7 +204,8 @@ void QgisApp::about()
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
 	watsNew += "\n*Fixes to project save/open support\n"
-		;
+		"*Enhancements to plugin tests\n"
+		"*Fixes to build system\n";
 
 
 	abt->setWhatsNew(watsNew);
@@ -653,7 +654,7 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 		popMenu->exec(pt);
 }
 
-QgisInterface * QgisApp::getInterface(){
+QgisIface * QgisApp::getInterface(){
 	return qgisInterface;
 }
 int QgisApp::getInt(){
