@@ -84,3 +84,9 @@ void QgsRasterLayerPropertiesBase::apply()
 {
 
 }
+
+
+void QgsRasterLayerPropertiesBase::sliderTransparency_sliderMoved( int )
+{
+
+}

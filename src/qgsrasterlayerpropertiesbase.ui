@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsRasterLayerPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -366,8 +366,17 @@
                                 <property name="name">
                                     <cstring>sliderTransparency</cstring>
                                 </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
                                 <property name="orientation">
                                     <enum>Horizontal</enum>
+                                </property>
+                                <property name="tickmarks">
+                                    <enum>Below</enum>
+                                </property>
+                                <property name="tickInterval">
+                                    <number>25</number>
                                 </property>
                             </widget>
                             <widget class="QLabel" row="6" column="0">
@@ -872,12 +881,6 @@
         <slot>sliderMinGray_valueChanged(int)</slot>
     </connection>
     <connection>
-        <sender>sliderTransparency</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>QgsRasterLayerPropertiesBase</receiver>
-        <slot>sliderTransparency_valueChanged(int)</slot>
-    </connection>
-    <connection>
         <sender>rbtnSingleBand</sender>
         <signal>toggled(bool)</signal>
         <receiver>QgsRasterLayerPropertiesBase</receiver>
@@ -967,6 +970,12 @@
         <receiver>QgsRasterLayerPropertiesBase</receiver>
         <slot>apply()</slot>
     </connection>
+    <connection>
+        <sender>sliderTransparency</sender>
+        <signal>sliderMoved(int)</signal>
+        <receiver>QgsRasterLayerPropertiesBase</receiver>
+        <slot>sliderTransparency_sliderMoved(int)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsrasterlayerpropertiesbase.ui.h</include>
@@ -984,6 +993,7 @@
     <slot>rbtnSingleBand_toggled( bool )</slot>
     <slot>rbtnThreeBand_toggled( bool )</slot>
     <slot>apply()</slot>
+    <slot>sliderTransparency_sliderMoved( int )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
