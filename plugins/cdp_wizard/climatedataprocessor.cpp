@@ -537,7 +537,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         {
             FileReader *myFileReader2 = new FileReader();
             myFileReader2->openFile(theFileNameString);
-            myFileReader2->setFileType(FileReader::HADLEY_SRES);
+            myFileReader2->setFileType(inputFileType);
             myFileReader2->setBlockMarkers(myDataBlockMarkersVector);
             myFileReader2->setStartMonth(myInt);
             myFileGroup->addFileReader(myFileReader2,myInt);
