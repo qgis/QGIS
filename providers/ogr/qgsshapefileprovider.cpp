@@ -14,7 +14,16 @@
 #include <ogr_geometry.h>
 #include <cpl_error.h>
 #include <qmessagebox.h>
+
+//TODO Following ifndef can be removed once WIN32 GEOS support
+//    is fixed
+#ifndef NOWIN32GEOS
+//XXX GEOS support on windows is broken until we can get VC++ to
+//    tolerate geos.h without throwing a bunch of type errors. It
+//    appears that the windows version of GEOS may be compiled with 
+//    MINGW rather than VC++.
 #include <geos.h>
+#endif 
 #include "ogr_api.h"//only for a test
 
 #include "../../src/qgsdataprovider.h"
@@ -255,16 +264,23 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     //std::cerr << "getting next feature\n";
     // skip features without geometry
     OGRFeature *fet;
+    //TODO Following ifndef can be removed once WIN32 GEOS support
+    //    is fixed
+#ifndef NOWIN32GEOS
     // create the geos geometry factory
     geos::GeometryFactory *gf = new geos::GeometryFactory();
     // create the reader
     geos::WKTReader *wktReader = new geos::WKTReader(gf);
+#endif 
     OGRGeometry *geom;
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
       {
         if(mUseIntersect)
         {
+    //TODO Following ifndef can be removed once WIN32 GEOS support
+    //    is fixed
+#ifndef NOWIN32GEOS
           // Test this geometry to see if it should be
           // returned. This dies big time using the GDAL GEOS
           // functionality so we implement our own logic using
@@ -295,15 +311,20 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
           delete[] sWkt;  
           delete geosGeom;
           delete geosRect;
-	}
+#endif
+        }
         else
         {
           break;
         }
       }
     }
+    //TODO Following ifndef can be removed once WIN32 GEOS support
+    //    is fixed
+#ifndef NOWIN32GEOS
     delete gf;
     delete wktReader;
+#endif 
     if(fet){
       geom = fet->GetGeometryRef();
 

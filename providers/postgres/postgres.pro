@@ -9,7 +9,8 @@ INCLUDEPATH += . \
                 ..\..\src \
                 $(POSTGRESQL)\src\interfaces\libpq \
                 $(POSTGRESQL)\src\include
-LIBS += $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib
+LIBS += $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
+        ..\..\src\libqgis.lib
 
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis
