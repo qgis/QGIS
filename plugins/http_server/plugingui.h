@@ -40,7 +40,7 @@ public slots:
     void wroteToClient(QString);
     void requestReceived(QString);    
     void setPort(int thePortInt);
-    void setEnabled(int theEnabledFlag);
+    void setEnabled(bool theEnabledFlag);
 };
 
 #endif

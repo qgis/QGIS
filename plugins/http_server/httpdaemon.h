@@ -46,8 +46,11 @@ signals:
   void loadProject(QString); //loads the project file but doesnt close connection so other stuff can be loaded
   void loadRasterFile(QString);//loads a rasterfile on its own using defaults 
   void loadRasterFile(QString,QString);//loads a rasterfile (arg1) over the current project (arg2)
+  void loadPseudoColorRasterFile(QString);
+  void loadPseudoColorRasterFile(QString,QString);
   void loadVectorFile(QString);//loads a vector file on its own using defaults
   void loadVectorFile(QString,QString);//loads a vectorfile (arg1) over the current project (arg2)
+  
   void setExtents(int,int,int,int);//zooms to x1,y1 - x2,y2
   void clearMap(); //remove all layers from the map
   void newConnect(QString); //passed out
@@ -63,6 +66,7 @@ private slots:
   void readClient();
   void discardClient();
 private:
+  void showHelp();
   QString mBasePath;
   QString mProject;
 };

@@ -133,6 +133,9 @@ void HttpDaemon::readClient()
         //
         else if (myTokenString == "showProject")
         {
+#ifdef QGISDEBUG
+          std::cout << "showProject called!" << std::endl;
+#endif          
           emit clearMap();
           emit showProject(mProject);
           mapNeedsDrawingFlag=true;
@@ -164,6 +167,36 @@ void HttpDaemon::readClient()
             //load it over the project
             emit loadProject(mProject);
             emit loadRasterFile(myTokenString,mProject);
+            mapNeedsDrawingFlag=true;
+          }
+        }
+        // 
+        // Command : showPseudocolorRasterLayer
+        //
+        // The show raster layer command is used to show a raster layer that exists
+        // on the server's file system. All paths will be relative to the 
+        // HttpDaemon basePath member. Any ../ will be stripped out of the path
+        // to prevent the user requesting a file that is not below basePath.
+        //
+        // The mProject (if set) will be reloaded and the specified rasterLayer will
+        // be displayed over the top of that. The file will be show with a default
+        // colour ramp.
+        // 
+        else if (myTokenString == "showPseudocolorRasterLayer")
+        {
+          myTokenString = myTokens[1];
+          if (mProject=="" || mProject==NULL)
+          {
+            //load the raster on its own
+            emit clearMap();
+            emit loadPseudoColorRasterFile(myTokenString);
+            mapNeedsDrawingFlag=true;
+          }
+          else
+          {
+            //load it over the project
+            emit loadProject(mProject);
+            emit loadPseudoColorRasterFile(myTokenString,mProject);
             mapNeedsDrawingFlag=true;
           }
         }
@@ -222,7 +255,9 @@ void HttpDaemon::readClient()
   //if we made it this far there were no errors - we can test if the map needs to be drawn
   if (mapNeedsDrawingFlag==true)
   {
-    std::cout << "Drawing map" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "Map Needs Drawing flag is true : Drawing map" << std::endl;
+#endif
     QPixmap *myQPixmap = new QPixmap(400,400);
     emit getMap(myQPixmap);
   }
@@ -278,12 +313,31 @@ void HttpDaemon::closeStreamWithError(QString theErrorQString)
   myOutputStream << "HTTP/1.0 200 Ok\r\n"
       "Content-Type: text/html; charset=\"utf-8\"\r\n"
       "\r\n"
-      "<h1>Your request was not recognised or had an unspecified error. If I was a rocket scientist and could intuitively fathom what you wanted me to do, I would do it, but I am not and I cant so I wont :-(</h1>\n";
+      "<h1>Your request was not recognised or had an unspecified error. </h1>\n";
   myOutputStream << "<h2>Error was: <font color=\"red\">" << theErrorQString << "</font></h2>\n";
+  showHelp();
   QTime myTime  = QTime::currentTime();
   QString myTimeQString = myTime.toString("hh:mm:ss") + 
       QString(": Error - No no request processed\n") + 
       theErrorQString;
   emit wroteToClient(myTimeQString);
   myQSocket->close();
+}
+
+void HttpDaemon::showHelp()
+{
+  QSocket * myQSocket = (QSocket*)sender();
+  QTextStream myOutputStream( myQSocket );
+  myOutputStream.setEncoding( QTextStream::UnicodeUTF8 );
+  myOutputStream <<  "<table>\n" 
+                 <<  "<tr><th>Option</th><th>Description</th><tr>\n"
+                 <<  "<tr><td class=\"option\">project</td><td></td></tr>\n"
+                 <<  "<tr><td class=\"option\">showProject</td><td></td></tr>\n"
+                 <<  "<tr><td class=\"option\">showRasterLayer</td><td></td></tr>\n"
+                 <<  "<tr><td class=\"option\">showPseudocolorRasterLayer</td><td></td></tr>\n"
+                 <<  "<tr><td class=\"option\">showVectorLayer</td><td></td></tr>\n"
+                 <<  "</table>\n";
+                 //<<  "<tr><td class="option"></td><td></td></tr>\n"
+                 //<<  "<tr><td class="option"></td><td></td></tr>\n"
+                 // <<  "<tr><td></td><td></td></tr>\n"
 }

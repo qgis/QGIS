@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>PluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -71,12 +71,10 @@
                 <cstring>teInstructions_2</cstring>
             </property>
             <property name="text">
-                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:10pt;font-family:WP MathExtendedB"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:14pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin runs a simple web server (by default listening on port 8081) that listens for requests for maps. &lt;/p&gt;
-
-&lt;div style="color: red"&gt;NOTE: This plugin is pre-alpha code. It does work in its basic form but its still buggy, feature incomplete and my crash QGIS.&lt;/div&gt;
-
+&lt;p&gt;&lt;span style="color:#ff0000"&gt;NOTE: This plugin is pre-alpha code. It does work in its basic form but its still buggy, feature incomplete and my crash QGIS.&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Tim Sutton&lt;/p&gt;
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -126,11 +124,6 @@
                                 </property>
                                 <property name="text">
                                     <string>Enable server</string>
-                                </property>
-                            </widget>
-                            <widget class="QSpinBox" row="0" column="1">
-                                <property name="name">
-                                    <cstring>spinPort</cstring>
                                 </property>
                             </widget>
                         </grid>

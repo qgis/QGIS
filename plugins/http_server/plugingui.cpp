@@ -35,7 +35,7 @@ PluginGui::~PluginGui()
 void PluginGui::pbnOK_clicked()
 {
   bool myFlag = cboEnableServer->isChecked();
-  int myPortInt = spinPort->value();
+  int myPortInt = 8081; //spinPort->value();
   emit enabledChanged(myFlag);
   emit portChanged(myPortInt);
   
@@ -47,7 +47,7 @@ void PluginGui::pbnOK_clicked()
 void PluginGui::pbnApply_clicked()
 {
   bool myFlag = cboEnableServer->isChecked();
-  int myPortInt = spinPort->value();
+  int myPortInt = 8081 ; //spinPort->value();
   emit enabledChanged(myFlag);
   emit portChanged(myPortInt);
 }
@@ -80,6 +80,14 @@ void PluginGui::cboxEnableServer_toggled( bool )
 
 
 void PluginGui::spinPort_valueChanged( int )
+{
+
+}
+void PluginGui::setPort(int thePortInt)
+{
+
+}
+void PluginGui::setEnabled(bool theEnabledFlag)
 {
 
 }

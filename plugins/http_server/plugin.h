@@ -46,6 +46,8 @@ class Plugin:public QObject, public QgisPlugin
 public slots:
   //! Show the dialog box
   void run();
+  //! Used to clear the current map view
+  void clearMap();
   //! Used to get an image of the map and pass it back to the browser (use after all layer ops)
   void getMap(QPixmap *);
   //! Load and show a project file

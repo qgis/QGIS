@@ -23,7 +23,7 @@ email                : tim@linfiniti.com
 // includes
 
 #include <qgsmaplayer.h>
-//#include <qgsrasterlayer.h>
+#include <qgsrasterlayer.h>
 #include <qgisapp.h>
 #include "plugin.h"
 
@@ -36,6 +36,7 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qfileinfo.h>
 
 //non qt includes
 #include <iostream>
@@ -152,7 +153,8 @@ void Plugin::setEnabled (bool theFlag)
 void Plugin::startServer()
 { 
   mHttpDaemon = new HttpDaemon(mPortInt, this );
-  connect(mHttpDaemon, SIGNAL(getMap(QPixmap *)), this, SLOT(loadVectorFile(QPixmap *)));
+  connect(mHttpDaemon, SIGNAL(clearMap()), this, SLOT(clearMap()));
+  connect(mHttpDaemon, SIGNAL(getMap(QPixmap *)), this, SLOT(getMap(QPixmap *)));
   connect(mHttpDaemon, SIGNAL(showProject(QString)), this, SLOT(showProject(QString)));
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString)), this, SLOT(loadRasterFile(QString)));
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString,QString)), this, SLOT(loadRasterFile(QString,QString)));
@@ -170,6 +172,12 @@ void Plugin::stopServer()
   disconnect( mHttpDaemon, 0, 0, 0 );
   delete mHttpDaemon;
   mEnabled=false;
+}
+
+//clear the current map
+void Plugin::clearMap()
+{
+
 }
 
 //get the map in the provided pixmap
@@ -199,10 +207,17 @@ void Plugin::loadProject(QString theProjectFile)
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
   }
 }
+
+
+
 void Plugin::loadRasterFile(QString theRasterFile)
 {
-
-  if ( qGisInterface->addRasterLayer(theRasterFile))
+  QFileInfo myFileInfo(theRasterFile);
+  QString myDirNameQString = myFileInfo.dirPath();
+  QString myBaseNameQString = myFileInfo.baseName();
+  QgsRasterLayer *layer = new QgsRasterLayer(theRasterFile, myBaseNameQString);
+  //if ( qGisInterface->addRasterLayer(theRasterFile))
+  if ( qGisInterface->addRasterLayer(layer))
   {
     //let the httpdserver know we are finished and pass it back the canvas image
     mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
@@ -217,8 +232,13 @@ void Plugin::loadRasterFile(QString theRasterFile, QString theProjectFile)
 
 void Plugin::loadPseudoColorRasterFile(QString theRasterFile)
 {
-
-  if ( qGisInterface->addRasterLayer(theRasterFile))
+  QFileInfo myFileInfo(theRasterFile);
+  QString myDirNameQString = myFileInfo.dirPath();
+  QString myBaseNameQString = myFileInfo.baseName();
+  QgsRasterLayer *layer = new QgsRasterLayer(theRasterFile, myBaseNameQString);
+  layer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);
+  layer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
+  if ( qGisInterface->addRasterLayer(layer))
   {
     //let the httpdserver know we are finished and pass it back the canvas image
     mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
