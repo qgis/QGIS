@@ -33,6 +33,7 @@
 #include "../../src/qgsfeatureattribute.h"
 
 extern "C" {
+#include <gprojects.h>
 #include <gis.h>
 #include <dbmi.h>
 #include <Vect.h>
@@ -1164,6 +1165,25 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 struct Map_info *QgsGrassProvider::layerMap ( int layerId )
 {
     return ( mMaps[mLayers[layerId].mapId].map );
+}
+
+QString QgsGrassProvider::getProjectionWKT(void)
+{
+    QString WKT;
+
+    struct Cell_head cellhd;
+
+    QgsGrass::setLocation ( mGisdbase, mLocation ); 
+    G_get_default_window(&cellhd);
+    if (cellhd.proj != PROJECTION_XY) {
+        struct Key_Value *projinfo = G_get_projinfo();
+        struct Key_Value *projunits = G_get_projunits();
+	char *wkt = GPJ_grass_to_wkt ( projinfo, projunits,  0, 0 );
+	WKT = QString(wkt);
+	free ( wkt);
+    }
+    
+    return WKT;
 }
 
 //-----------------------------------------  Edit -------------------------------------------------------
