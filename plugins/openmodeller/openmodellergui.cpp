@@ -731,7 +731,7 @@ void OpenModellerGui::getProjList()
   mProjectionsMap["Long/Lat - Datum: Corrego Alegre"] = "GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]]";
   
   std::cout << "Getting proj list " << std::endl;
-  QString theFileNameQString="/home/aps03pwb/dev/cpp/plugins/openmodeller/wkt_defs.txt";
+  QString theFileNameQString="/home/aps02ts/dev/cpp/plugins/openmodeller/wkt_defs.txt";
   QFile myQFile( theFileNameQString );
   if ( myQFile.open( IO_ReadOnly ) ) 
   {
@@ -768,8 +768,13 @@ void OpenModellerGui::getProjList()
   }
   else
   {
-    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The projections file is not readable. Check you have the neccessary file permissions and try again."));      
-    return; 
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The projections file is not readable. Check you have the neccessary file permissions and try again. Only a small list of projectsion is now availiable."));      
+    ProjectionWKTMap::Iterator myIterator;
+    for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
+    {
+      //std::cout << "Widget map has: " <<myIterator.key() << std::endl;
+      cboCoordinateSystem->insertItem(myIterator.key());
+    }
   }   
 
 }
