@@ -27,6 +27,8 @@
 #include "qgslegenditem.h"
 #include "qgssvgcache.h"
 #include <qapplication.h>
+#include <qfile.h>
+#include <qfileinfo.h>
 #include <qfiledialog.h>
 #include <qimage.h>
 #include <qpushbutton.h>
@@ -59,10 +61,9 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
             {
                 double scalefactor=sy->scaleFactor();
                 mScaleSpin->setValue((int)(scalefactor*100.0));
-                QString svgfile=sy->picture();
+                mSelectedMarker=sy->picture();
                 pmPreview->setPixmap(QgsSVGCache::instance().
-				     getPixmap(svgfile, scalefactor));
-		pmPreview->setName(svgfile);
+				     getPixmap(mSelectedMarker, scalefactor));
             }
             else
             {
@@ -103,7 +104,7 @@ void QgsSiMaDialog::apply()
 #endif
 
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
-    QString string(pmPreview->name());
+    QString string(mSelectedMarker);
 #ifdef QGISDEBUG
     qWarning(string);
 #endif
@@ -182,15 +183,46 @@ void QgsSiMaDialog::apply()
     mVectorLayer->triggerRepaint();
 }
 
+void QgsSiMaDialog::setMarker(const QString& file, double scaleFactor) {
+  QFile f(file);
+  QFileInfo fi(f);
+
+  if (fi.exists()) {
+    // set the directory
+    mCurrentDir = fi.dir().path() + "/";
+    visualizeMarkers(mCurrentDir);
+    mDirectoryEdit->setText(mCurrentDir);
+  
+    QIconViewItem* item = mIconView->findItem(fi.fileName(), Qt::ExactMatch);
+    if (item) {
+      // set the picture
+      mIconView->setSelected(item, true);
+      
+      // set the scale factor
+      mScaleSpin->setValue(scaleFactor * 100.0);
+    }
+  }
+  emit settingsChanged();
+}
+
+const QString& QgsSiMaDialog::getPicture() const {
+  return mSelectedMarker;
+}
+
+double QgsSiMaDialog::getScaleFactor() const {
+  return mScaleSpin->value() / 100.0;
+}
+
 void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
 {
-    QString svgfile=mCurrentDir+theIconViewItem->text();
-    pmPreview->setName(svgfile);
+    mSelectedMarker=mCurrentDir+theIconViewItem->text();
 
     //draw the SVG-Image on the button
     double scalefactor=mScaleSpin->value()/100.0;
     pmPreview->setPixmap(QgsSVGCache::instance().
-			 getPixmap(svgfile, scalefactor));    
+			 getPixmap(mSelectedMarker, scalefactor));    
+    
+    emit settingsChanged();
 }
 
 void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
@@ -199,15 +231,15 @@ void QgsSiMaDialog::mScaleSpin_valueChanged( int theSize)
     std::cout << "mScaleSpin_valueChanged(" << theSize << ") " << std::endl;
 #endif
     //draw the SVG-Image on the button
-    QString svgfile(pmPreview->name());
-    if(!svgfile.isEmpty())
+    if(!mSelectedMarker.isEmpty())
     {
         //user enters scaling factor as a percentage
         double scalefactor=mScaleSpin->value()/100.0;
 	pmPreview->setPixmap(QgsSVGCache::instance().
-			     getPixmap(svgfile, scalefactor));
+			     getPixmap(mSelectedMarker, scalefactor));
     }
-
+    
+    emit settingsChanged();
 }
 
 void QgsSiMaDialog::mBrowseDirectoriesButton_clicked()

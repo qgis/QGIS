@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsSiMaDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>496</width>
-            <height>343</height>
+            <height>345</height>
         </rect>
     </property>
     <property name="caption">
@@ -201,6 +201,9 @@
                 <property name="scaledContents">
                     <bool>false</bool>
                 </property>
+                <property name="alignment">
+                    <set>AlignCenter</set>
+                </property>
             </widget>
         </widget>
     </grid>
@@ -230,9 +233,6 @@
         <slot>mBrowseDirectoriesButton_clicked()</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">qgssimadialogbase.ui.h</include>
-</includes>
 <slots>
     <slot>mScaleSpin_valueChanged( int )</slot>
     <slot>mIconView_selectionChanged( QIconViewItem * )</slot>

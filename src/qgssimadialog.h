@@ -37,7 +37,10 @@ public:
     ~QgsSiMaDialog();
     static QString defaultDir();
     void apply();
-
+    void setMarker(const QString& file, double scaleFactor);
+    const QString& getPicture() const;
+    double getScaleFactor() const;
+    
 protected:
     QgsVectorLayer* mVectorLayer;
     QString mCurrentDir;
@@ -54,6 +57,9 @@ private:
     /**Renders the SVG pictures of directory to mIconView*/
     void visualizeMarkers(QString directory);
     void mScaleSpin_valueChanged( int theSize);
+
+signals:
+    void settingsChanged();
 };
 
 #endif
