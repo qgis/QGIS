@@ -1610,6 +1610,7 @@ void QgisApp::fileOpen()
             fullPath = openFileDialog->selectedFile();
         } else {
             // if they didn't select anything, just return
+            delete openFileDialog;
             return;
         }
         
@@ -1745,6 +1746,7 @@ void QgisApp::fileSaveAs()
         fullPath = saveFileDialog->selectedFile();
     } else {
         // if they didn't select anything, just return
+        delete saveFileDialog;
         return;
     }
     
