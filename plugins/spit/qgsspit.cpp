@@ -60,7 +60,7 @@ QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   defSrid = -1;
   defGeom = "the_geom";
   total_features = 0;
-  setFixedSize(QSize(605, 612));
+  //setFixedSize(QSize(605, 612));
   
   tblShapefiles->verticalHeader()->hide();
   tblShapefiles->adjustColumn(3);
