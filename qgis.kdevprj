@@ -84,7 +84,7 @@ install_location=
 type=HEADER
 
 [src/Makefile.am]
-files=src/main.cpp,src/qgisapp.cpp,src/qgscoordinatetransform.cpp,src/qgsdatabaselayer.cpp,src/qgsdatasource.cpp,src/qgsdbsourceselect.cpp,src/qgsmapcanvas.cpp,src/qgsmaplayer.cpp,src/qgsnewconnection.cpp,src/qgspoint.cpp,src/qgsrasterlayer.cpp,src/qgsrect.cpp,src/qgisapp.h,src/qgscoordinatetransform.h,src/qgsdatabaselayer.h,src/qgsdatasource.h,src/qgsdbsourceselect.h,src/qgslinesymbol.h,src/qgsmapcanvas.h,src/qgsmaplayer.h,src/qgsmarkersymbol.h,src/qgsnewconnection.h,src/qgspoint.h,src/qgspolygonsymbol.h,src/qgsrasterlayer.h,src/qgsrect.h,src/qgsshapefilelayer.h,src/qgisappbase.ui,src/qgsdbsourceselectbase.ui,src/qgsnewconnectionbase.ui,src/qgscustomsymbol.cpp,src/qgscustomsymbol.h,src/qgslegend.h,src/qgslegend.cpp,src/qgslegenditem.cpp,src/qgslegenditem.h
+files=src/main.cpp,src/qgisapp.cpp,src/qgscoordinatetransform.cpp,src/qgsdatabaselayer.cpp,src/qgsdatasource.cpp,src/qgsdbsourceselect.cpp,src/qgsmapcanvas.cpp,src/qgsmaplayer.cpp,src/qgsnewconnection.cpp,src/qgspoint.cpp,src/qgsrasterlayer.cpp,src/qgsrect.cpp,src/qgisapp.h,src/qgscoordinatetransform.h,src/qgsdatabaselayer.h,src/qgsdatasource.h,src/qgsdbsourceselect.h,src/qgslinesymbol.h,src/qgsmapcanvas.h,src/qgsmaplayer.h,src/qgsmarkersymbol.h,src/qgsnewconnection.h,src/qgspoint.h,src/qgspolygonsymbol.h,src/qgsrasterlayer.h,src/qgsrect.h,src/qgsshapefilelayer.h,src/qgisappbase.ui,src/qgsdbsourceselectbase.ui,src/qgsnewconnectionbase.ui,src/qgscustomsymbol.cpp,src/qgscustomsymbol.h,src/qgslegend.h,src/qgslegend.cpp,src/qgslegenditem.cpp,src/qgslegenditem.h,src/qgssymbol.h,src/qgstable.h
 sharedlib_LDFLAGS=-version-info 0:0:0
 sharedlib_rootname=src
 sub_dirs=
@@ -301,6 +301,18 @@ install_location=
 type=HEADER
 
 [src/qgsshapefilelayer.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgssymbol.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgstable.h]
 dist=true
 install=false
 install_location=

@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include <qsqldatabase.h>
 #include <qsettings.h>
 #include <qlineedit.h>
@@ -43,7 +44,7 @@ void QgsNewConnection::testConnection(){
 
   QString connInfo = "host=" + txtHost->text() +" dbname=" + txtDatabase->text() + " user=" + txtUsername->text() + " password=" + txtPassword->text();
   PgDatabase *pd = new PgDatabase((const char *)connInfo);
-cout << pd->ErrorMessage();
+std::cout << pd->ErrorMessage();
   if(pd->Status()==CONNECTION_OK){
     // Database successfully opened; we can now issue SQL commands.
     QMessageBox::information(this,"Test connection","Connection to " + 

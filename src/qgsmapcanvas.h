@@ -18,7 +18,9 @@
 #ifndef QGSMAPCANVAS_H
 #define QGSMAPCANVAS_H
 #include <map>
+#include <vector>
 #include <qwidget.h>
+
 #include <qevent.h>
 #include "qgsrect.h"
 #include "qgspoint.h"
@@ -26,6 +28,7 @@ class QRect;
 class QgsCoordinateTransform;
 class QgsMapLayer;
 class QMouseEvent;
+class QColor;
 class QgsPoint;
 
 /*! \class QgsMapCanvas
@@ -56,6 +59,8 @@ public:
   void setMapTool(int tool);
   /** Write property of QColor bgColor. */
   virtual void setbgColor( const QColor& _newVal);
+  /** Updates the full extent to include the mbr of the rectangle r */
+  void updateFullExtent(QgsRect r);
  signals:
  	void xyCoordinates(QgsPoint &p);
  private:
@@ -64,7 +69,7 @@ public:
    void mouseReleaseEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
-    map<QString,QgsMapLayer *>layers;
+    std::map<QString,QgsMapLayer *>layers;
     //! Full extent of the map canvas
     QgsRect fullExtent;
     //! Current extent
@@ -89,6 +94,7 @@ public:
   QColor bgColor;
   /** Flag to indicate a map canvas drag operation is taking place */
   bool dragging;
+  std::vector<QColor> initialColor;
 
 };
 
