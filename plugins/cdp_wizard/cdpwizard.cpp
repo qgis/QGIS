@@ -17,7 +17,7 @@ email                : t.sutton@reading.ac.uk
 
 #include "cdpwizard.h"
 #include "imagewriter.h"
-
+#include <meridianswitcher.h>
 
 #include <qcombobox.h>
 #include <qlistbox.h>
@@ -29,7 +29,7 @@ email                : t.sutton@reading.ac.uk
 #include <qsettings.h>
 #include <qapplication.h>
 #include <qdatetime.h>
-#include <meridianswitcher.h>
+#include <qfileinfo.h> 
 
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -495,18 +495,25 @@ void CDPWizard::variableStart(QString theNameQString)
 void CDPWizard::variableDone(QString theFileNameString)
 {
   std::cout << " ---------------- Variable " << theFileNameString << " written! " << std::endl;
+  QFileInfo myQFileInfo(theFileNameString);
   //convert the completed variable layer to an image file
   ImageWriter myImageWriter;
-  myImageWriter.writeImage(theFileNameString,theFileNameString+QString(".png"));
+  QString myImageFileNameString = myQFileInfo.dirPath()+"/"+myQFileInfo.baseName()+".png";
+  myImageWriter.writeImage(theFileNameString,myImageFileNameString);
+  //spit the filename up so we can rename it for the meridian shift
+  QString myMSFileNameString = myQFileInfo.dirPath()+"/"+myQFileInfo.baseName()+"MS."+myQFileInfo.extension();
   //perform the meridian shift (hard coding for now but we should have a class member 
   //boolean that stores whether this is needed
   MeridianSwitcher mySwitcher;
-  mySwitcher.doSwitch(theFileNameString,QString("MS")+theFileNameString);
+  
+  mySwitcher.doSwitch(theFileNameString,myMSFileNameString);
   //make an image for the shifted file too
-  myImageWriter.writeImage(theFileNameString,QString("MS")+theFileNameString+QString(".png"));
+  QFileInfo myQFileInfo2(myMSFileNameString);
+  myImageFileNameString = myQFileInfo2.dirPath()+"/"+myQFileInfo2.baseName()+".png";
+  myImageWriter.writeImage(myMSFileNameString,myImageFileNameString);
   //set the image label on the calculating variables screen to show the last
   //variable calculated
-  QPixmap myPixmap(QString("MS")+theFileNameString+QString(".png"));
+  QPixmap myPixmap(myImageFileNameString);
   pixmapLabel2->setScaledContents(true);
   pixmapLabel2->setPixmap(myPixmap);
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
