@@ -104,10 +104,19 @@ void PluginGui::pbnOK_clicked()
   // or start downloading GPS data from a device?
   else {
     
+    // what does the user want to download?
+    QString typeArg;
+    if (cmbDLFeatureType->currentItem() == 0)
+      typeArg = "-w";
+    else if (cmbDLFeatureType->currentItem() == 1)
+      typeArg = "-r";
+    else if (cmbDLFeatureType->currentItem() == 2)
+      typeArg = "-t";
+
     // try to start the gpsbabel process
     QStringList babelArgs;
-    babelArgs<<"gpsbabel"<<"-t"<<"-i"<<"garmin"<<"-o"<<"gpx"
-	     <<cmbDLDevice->currentText()<<leDLOutput->text();
+    babelArgs<<"gpsbabel"<<typeArg<<"-i"<<cmbDLProtocol->currentText().lower()
+	     <<"-o"<<"gpx"<<cmbDLDevice->currentText()<<leDLOutput->text();
     QProcess babelProcess(babelArgs);
     if (!babelProcess.start()) {
       QMessageBox::warning(this, "Could not start process",
@@ -136,8 +145,15 @@ void PluginGui::pbnOK_clicked()
     }
     
     // add the layer
-    emit drawVectorLayer(leDLOutput->text() + "?type=track", 
-			 leDLBasename->text() + ", tracks", "gpx");
+    if (cmbDLFeatureType->currentItem() == 0)
+      emit drawVectorLayer(leDLOutput->text() + "?type=waypoint", 
+			   leDLBasename->text(), "gpx");
+    else if (cmbDLFeatureType->currentItem() == 1)
+      emit drawVectorLayer(leDLOutput->text() + "?type=route", 
+			   leDLBasename->text(), "gpx");
+    else if (cmbDLFeatureType->currentItem() == 2)
+      emit drawVectorLayer(leDLOutput->text() + "?type=track", 
+			   leDLBasename->text(), "gpx");
   }
   
   //close the dialog
