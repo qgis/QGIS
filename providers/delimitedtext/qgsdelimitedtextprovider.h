@@ -126,7 +126,15 @@ public:
  /**Returns true if this is a valid delimited file
  */
  bool isValid();
- 
+ /**
+  * Check to see if the point is withn the selection
+  * rectangle
+  * @param x X value of point
+  * @param y Y value of point
+  * @return True if point is within the rectangle
+  */
+ bool boundsCheck(double x, double y);
+
 private:
   void fillMinMaxCash();
   //! Fields
@@ -140,6 +148,8 @@ private:
   QString mYField;
   //! Layer extent
   QgsRect *mExtent;
+  //! Current selection rectangle
+  QgsRect *mSelectionRectangle;
   //! Text file
   QFile *mFile;
   bool mValid;
@@ -156,6 +166,12 @@ private:
   double** mMinMaxCache;
   /**Fills the cash and sets minmaxcachedirty to false*/
   void mFillMinMaxCash();
-  
+struct wkbPoint{
+  char byteOrder;
+  unsigned wkbType;
+  double x;
+  double y;
+};
+wkbPoint wkbPt;
   
 };
