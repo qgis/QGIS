@@ -626,12 +626,14 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
       case QGis::WKBMultiLineString:
       {
 	  OGRMultiLineString* multil=new OGRMultiLineString();
-	  int numlines=(int)f->getGeometry()[5];
+	  int numlines;
+	  memcpy(&numlines,f->getGeometry()+1+sizeof(int),sizeof(int));
 	  int totalpoints=0;
+	  int numpoints;//number of point in one line
 	  unsigned char* ptr=f->getGeometry()+9;
 	  for(int i=0;i<numlines;++i)
 	  {
-	      int numpoints=(int)ptr;
+	      memcpy(&numpoints,ptr,sizeof(int));
 	      ptr+=4;
 	      for(int j=0;j<numpoints;++j)
 	      {
@@ -645,7 +647,33 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
       }
       case QGis::WKBMultiPolygon:
       {
+	  OGRMultiPolygon* multipol=new OGRMultiPolygon();
+	  int numpolys;
+	  memcpy(&numpolys,f->getGeometry()+1+sizeof(int),sizeof(int));
+	  int numrings;//number of rings in one polygon
+	  int totalrings=0;
+	  int totalpoints=0;
+	  int numpoints;//number of points in one ring
+	  unsigned char* ptr=f->getGeometry()+9;
 
+	  for(int i=0;i<numpolys;++i)
+	  {
+	      memcpy(&numrings,ptr,sizeof(int));
+	      ptr+=4;
+	      for(int j=0;j<numrings;++j)
+	      {
+		  totalrings++;
+		  memcpy(&numpoints,ptr,sizeof(int));
+		  for(int k=0;k<numpoints;++k)
+		  {
+		      ptr+=16;
+		      totalpoints+=2;
+		  }
+	      }
+	  }
+	  int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
+	  multipol->importFromWkb(f->getGeometry(),size);
+	  feature->SetGeometry(multipol);
       }
   }
 
