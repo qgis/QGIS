@@ -52,19 +52,11 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
 	if (mVectorLayer->propertiesDialog())
         {
-#ifdef WIN32
 	    renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
-#else
-	    renderer = (QgsSingleSymRenderer * )(layer->propertiesDialog()->getBufferRenderer());
-#endif
 	} 
 	else
         {
-#ifdef WIN32
 	    renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
-#else
-	    renderer = (QgsSingleSymRenderer *)(layer->renderer());
-#endif
         }
 
   if (renderer)
