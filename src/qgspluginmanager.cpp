@@ -222,3 +222,25 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
     }
   return pis;
 }
+void QgsPluginManager::selectAll()
+{
+  // select all plugins
+  QCheckListItem *child = dynamic_cast<QCheckListItem *>(lstPlugins->firstChild());
+  while(child)
+  {
+    child->setOn(true);
+    child = dynamic_cast<QCheckListItem *>(child->nextSibling());
+  }
+
+}
+
+void QgsPluginManager::clearAll()
+{
+  // clear all selection checkboxes 
+  QCheckListItem *child = dynamic_cast<QCheckListItem *>(lstPlugins->firstChild());
+  while(child)
+  {
+    child->setOn(false);
+    child = dynamic_cast<QCheckListItem *>(child->nextSibling());
+  }
+}
