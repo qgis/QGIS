@@ -3607,7 +3607,7 @@ void QgsRasterLayer::identify(QgsRect * r)
 } // void QgsRasterLayer::identify(QgsRect * r)
 
 
-void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool theIgnoreOutOfRangeFlag,bool theThoroughBandScanFlag)
+void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool theIgnoreOutOfRangeFlag,bool theHistogramEstimatedFlag)
 {
 
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
@@ -3617,9 +3617,13 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
   //vector is not equal to the number of bins 
   //i.e if the histogram has never previously been generated or the user has
   //selected a new number of bins.
-  if (myRasterBandStats.histogramVector->size()!=theBinCountInt)
+  if (myRasterBandStats.histogramVector->size()!=theBinCountInt ||
+          theIgnoreOutOfRangeFlag != myRasterBandStats.histogramOutOfRangeFlag ||
+          theHistogramEstimatedFlag != myRasterBandStats.histogramEstimatedFlag)
   {
     myRasterBandStats.histogramVector->clear();
+    myRasterBandStats.histogramEstimatedFlag=theHistogramEstimatedFlag;
+    myRasterBandStats.histogramOutOfRangeFlag=theIgnoreOutOfRangeFlag;
     int myHistogramArray[theBinCountInt];
     
     
@@ -3635,7 +3639,7 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
     *          void *      pProgressData
     *          ) 
     */
-    myGdalBand->GetHistogram( -0.5, theBinCountInt-.5, theBinCountInt, myHistogramArray ,theIgnoreOutOfRangeFlag ,theThoroughBandScanFlag , GDALDummyProgress, NULL );
+    myGdalBand->GetHistogram( -0.5, theBinCountInt-.5, theBinCountInt, myHistogramArray ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , GDALDummyProgress, NULL );
     
     for (int myBin = 0; myBin <theBinCountInt; myBin++)
     {
