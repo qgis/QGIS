@@ -11,7 +11,13 @@
 class GraticuleCreator
 {
     public:
-        GraticuleCreator(QString theOutputFileName, double theXIntervalDouble, double theYIntervalDouble);
+        GraticuleCreator(QString theOutputFileName, 
+                         double theXIntervalDouble, 
+                         double theYIntervalDouble,
+                         double theXOriginDouble,
+                         double theYOriginDouble,
+                         double theXEndPointDouble,
+                         double theYEndPointDouble);
         ~GraticuleCreator() {};
         DBFHandle GraticuleCreator::createDbf (QString theDbfName ) ;
         SHPHandle GraticuleCreator::createShapeFile(QString theFileName ); 
@@ -22,7 +28,14 @@ class GraticuleCreator
                 int theCoordinateCountInt, 
                 double * theXArrayDouble, 
                 double * theYArrayDouble ); 
-        void generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,double theXIntervalDouble,double theYIntervalDouble);
+        void generateGraticule(DBFHandle theDbfHandle, 
+                               SHPHandle theShapeHandle,
+                               double theXIntervalDouble,
+                               double theYIntervalDouble,
+                               double theXOriginDouble,
+                               double theYOriginDouble,
+                               double theXEndPointDouble,
+                               double theYEndPointDouble);
         void generatePoints (QString theInputFileName, DBFHandle theDbfHandle, SHPHandle theShapeHandle);
 
     private:

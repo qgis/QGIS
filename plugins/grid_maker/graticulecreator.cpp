@@ -4,7 +4,14 @@
 #include <iostream>
 #include <qfileinfo.h>
 #include <qstringlist.h>
-GraticuleCreator::GraticuleCreator(QString theOutputFileName, double theXIntervalDouble, double theYIntervalDouble)
+GraticuleCreator::GraticuleCreator(QString theOutputFileName, 
+                                   double theXIntervalDouble, 
+                                   double theYIntervalDouble,
+                                   double theXOriginDouble,
+                                   double theYOriginDouble,
+                                   double theXEndPointDouble,
+                                   double theYEndPointDouble
+                                   )
 {
     std::cout << "GraticuleCreator constructor called with " << theOutputFileName
     << " for output file and " << theXIntervalDouble << "," << theYIntervalDouble << " for x,y interval " << std::endl;
@@ -15,7 +22,14 @@ GraticuleCreator::GraticuleCreator(QString theOutputFileName, double theXInterva
     myShapeHandle = createShapeFile(theOutputFileName);
     //test the write point routine....
     //generatePoints(theInputFileName,myDbfHandle,myShapeHandle);
-    generateGraticule(myDbfHandle,myShapeHandle,theXIntervalDouble,theYIntervalDouble);
+    generateGraticule(myDbfHandle,
+                      myShapeHandle,
+                      theXIntervalDouble,
+                      theYIntervalDouble,
+                      theXOriginDouble,
+                      theYOriginDouble,
+                      theXEndPointDouble,
+                      theYEndPointDouble);
     DBFClose( myDbfHandle );
     SHPClose( myShapeHandle );
     return;
@@ -105,26 +119,33 @@ void GraticuleCreator::writeLine(SHPHandle theShapeHandle,
 }
 
 //TODO: check for rediculous intervals!
-void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,double theXIntervalDouble,double theYIntervalDouble)
+void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, 
+                                         SHPHandle theShapeHandle,
+                                         double theXIntervalDouble,
+                                         double theYIntervalDouble,
+                                         double theXOriginDouble,
+                                         double theYOriginDouble,
+                                         double theXEndPointDouble,
+                                         double theYEndPointDouble)
 {
   
   int myRecordInt=0;
   //create the arrays for storing the coordinates
   double * myXArrayDouble;
   double * myYArrayDouble;
-  myXArrayDouble = (double *)malloc(2 * sizeof(double));
+  myXArrayDouble = (double *)malloc(2 * sizeof(double)); //2=no vertices
   myYArrayDouble = (double *)malloc(2 * sizeof(double));
   
   //
   //Longitude loop
   //
-  for (double myXDouble=-180.0;myXDouble <=180.0;myXDouble+=theXIntervalDouble)
+  for (double myXDouble = theXOriginDouble;myXDouble <=theXEndPointDouble;myXDouble+=theXIntervalDouble)
   {
     
     myXArrayDouble[0]=myXDouble;
     myXArrayDouble[1]=myXDouble;
-    myYArrayDouble[0]=-90.0;
-    myYArrayDouble[1]=90.0;
+    myYArrayDouble[0]=theYOriginDouble;
+    myYArrayDouble[1]=theYEndPointDouble;
 
     writeDbfRecord(theDbfHandle,myRecordInt,"testing");
     writeLine(theShapeHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
@@ -135,11 +156,11 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, SHPHandle theSh
   //
   //Latitude loop
   //
-  for (double myYDouble=-90.0;myYDouble<=90.0;myYDouble+=theYIntervalDouble)
+  for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
   {
     
-    myXArrayDouble[0]=-180.0;
-    myXArrayDouble[1]=180.0;
+    myXArrayDouble[0]=theXOriginDouble;
+    myXArrayDouble[1]=theXEndPointDouble;
     myYArrayDouble[0]=myYDouble;
     myYArrayDouble[1]=myYDouble;
     
