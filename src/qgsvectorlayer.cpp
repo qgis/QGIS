@@ -790,6 +790,7 @@ void QgsVectorLayer::select(int number)
       if(dataProvider->supportsSaveAsShapefile())
       {
         // add the save as shapefile menu item
+        popMenu->insertSeparator(); 
         popMenu->insertItem(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
       }
 
