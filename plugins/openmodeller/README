@@ -27,6 +27,16 @@ Dependencies: At time of writing this, the oM plugin reuires openmodeller cvs he
           version to be installed. Please refer to the openmodeller.sourceforge.net
           web site for instructions on building openModeller from cvs.
 
+Distribution specific notes:
+
+         Mandrake: Under mandrake is installed to prefix /usr instead of /usr/local so
+         you should append the following -I statements to each of the following CXXFLAGS
+         sections in Makefile.am
+         
+         libopenmodellerplugin_la_CXXFLAGS  add :  -I/usr/include/openmodeller
+         omgui_CXXFLAGS add add :  -I/usr/include/openmodeller
+
+
 Installation: * Extract the archive
               * If you have installed qgis with a non default prefix, amend
               autogen.sh by adding -I /path/to/qgis.m4 dir. For example on
