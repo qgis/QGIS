@@ -526,7 +526,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=qgsdbsourceselectbase.h qgisappbase.h moc_qgsdbsourceselectbase.cpp moc_qgsmapcanvas.cpp qgsnewconnectionbase.h moc_qgisappbase.cpp qgisappbase.ui.h qgsdbsourceselectbase.ui.h moc_qgsnewconnectionbase.cpp 
+KDE_DIST=qgsdbsourceselectbase.h qgisappbase.h moc_qgsdbsourceselectbase.cpp moc_qgsmapcanvas.cpp sources.txt qgsnewconnectionbase.h moc_qgisappbase.cpp includes.txt qgisappbase.ui.h qgsdbsourceselectbase.ui.h moc_qgsnewconnectionbase.cpp qgispoint.h 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -717,7 +717,7 @@ force-reedit:
 
 
 #>+ 11
-qgis.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/qgsrect.cpp $(srcdir)/qgsrasterlayer.cpp $(srcdir)/qgspoint.cpp $(srcdir)/qgsnewconnection.cpp $(srcdir)/qgsmaplayer.cpp $(srcdir)/qgsmapcanvas.cpp $(srcdir)/qgsdbsourceselect.cpp $(srcdir)/qgsdatasource.cpp $(srcdir)/qgsdatabaselayer.cpp $(srcdir)/qgsdatabase.cpp $(srcdir)/qgscoordinatetransform.cpp $(srcdir)/qgisapp.cpp $(srcdir)/main.cpp $(srcdir)/qgsnewconnectionbase.cpp $(srcdir)/qgsdbsourceselectbase.cpp $(srcdir)/qgisappbase.cpp $(srcdir)/qgsmapcanvas.moc.cpp  qgsnewconnectionbase.moc qgisappbase.moc qgsdbsourceselectbase.moc
+qgis.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/qgsrect.cpp $(srcdir)/qgsrasterlayer.cpp $(srcdir)/qgspoint.cpp $(srcdir)/qgsnewconnection.cpp $(srcdir)/qgsmaplayer.cpp $(srcdir)/qgsmapcanvas.cpp $(srcdir)/qgsdbsourceselect.cpp $(srcdir)/qgsdatasource.cpp $(srcdir)/qgsdatabaselayer.cpp $(srcdir)/qgsdatabase.cpp $(srcdir)/qgscoordinatetransform.cpp $(srcdir)/qgisapp.cpp $(srcdir)/main.cpp qgsnewconnectionbase.cpp qgsdbsourceselectbase.cpp qgisappbase.cpp qgsmapcanvas.moc.cpp  qgsnewconnectionbase.moc qgisappbase.moc qgsdbsourceselectbase.moc
 	@echo 'creating qgis.all_cpp.cpp ...'; \
 	rm -f qgis.all_cpp.files qgis.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> qgis.all_cpp.final; \
