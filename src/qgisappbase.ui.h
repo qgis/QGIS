@@ -217,3 +217,10 @@ void QgisAppBase::capturePoint()
 {
 
 }
+
+
+
+void QgisAppBase::addAllToOverview()
+{
+
+}
