@@ -20,7 +20,7 @@
 
 QgsLegendView::QgsLegendView( QWidget *parent, const char *name ):QListView( parent, name ), mousePressed( FALSE )
 {
-	
+  movingItem = 0;
 }
 
 void QgsLegendView::contentsMousePressEvent( QMouseEvent* e )
