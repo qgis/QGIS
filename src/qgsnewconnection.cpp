@@ -36,6 +36,11 @@ QgsNewConnection::QgsNewConnection(QString connName):QgsNewConnectionBase()
       QString key = "/Qgis/connections/" + connName;
       txtHost->setText(settings.readEntry(key + "/host"));
       txtDatabase->setText(settings.readEntry(key + "/database"));
+      QString port = settings.readEntry(key + "/port");
+      if(port.length() ==0){
+      	port = "5432";
+      }
+      txtPort->setText(port);
       txtUsername->setText(settings.readEntry(key + "/username"));
       if (settings.readEntry(key + "/save") == "true")
         {
@@ -55,7 +60,11 @@ void QgsNewConnection::testConnection()
   // QSqlDatabase *testCon = QSqlDatabase::addDatabase("QPSQL7","testconnection");
 
   QString connInfo =
-    "host=" + txtHost->text() + " dbname=" + txtDatabase->text() + " user=" + txtUsername->text() + " password=" + txtPassword->text();
+    "host=" + txtHost->text() + 
+    " dbname=" + txtDatabase->text() + 
+    " port=" + txtPort->text() +
+    " user=" + txtUsername->text() + 
+    " password=" + txtPassword->text();
   PGconn *pd = PQconnectdb((const char *) connInfo);
 //  std::cout << pd->ErrorMessage();
   if (PQstatus(pd) == CONNECTION_OK)
@@ -74,11 +83,12 @@ void QgsNewConnection::testConnection()
 
 void QgsNewConnection::saveConnection()
 {
-  QSettings settings;
+  QSettings settings; 
   QString baseKey = "/Qgis/connections/";
   baseKey += txtName->text();
   settings.writeEntry(baseKey + "/host", txtHost->text());
   settings.writeEntry(baseKey + "/database", txtDatabase->text());
+  settings.writeEntry(baseKey + "/port", txtPort->text());
   settings.writeEntry(baseKey + "/username", txtUsername->text());
   settings.writeEntry(baseKey + "/password", txtPassword->text());
   if (chkStorePassword->isChecked())
