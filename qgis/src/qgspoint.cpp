@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <qstring.h>
+#include <qtextstream.h>
 #include "qgspoint.h"
 QgsPoint::QgsPoint(){
 }
@@ -38,6 +40,16 @@ int QgsPoint::xToInt() {
 int QgsPoint::yToInt() {
   return (int)m_y;
 }
+
+QString QgsPoint::stringRep(){
+	QString rep;
+	QTextOStream ot(&rep);
+	ot.precision(12);
+	ot << m_x << ", " << m_y;
+	return rep;
+}
+
+// operators
 bool QgsPoint::operator==(const QgsPoint &other){
   if((m_x == other.x()) && (m_y == other.y()))
     return true;

@@ -126,6 +126,9 @@
         <property name="name">
             <cstring>actionZoomIn</cstring>
         </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
         <property name="iconSet">
             <iconset>image1</iconset>
         </property>
@@ -153,6 +156,9 @@
     <action>
         <property name="name">
             <cstring>actionZoomOut</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
         </property>
         <property name="iconSet">
             <iconset>image3</iconset>

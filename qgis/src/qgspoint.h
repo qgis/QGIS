@@ -58,6 +58,8 @@ class QgsPoint {
 	 */
 	double y(void) const;
 	int yToInt();
+	//! String representation of the point (x,y)
+	QString stringRep();
 	//! equality operator
 	bool operator==(const QgsPoint &other);
     

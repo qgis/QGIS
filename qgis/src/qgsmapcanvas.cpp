@@ -17,7 +17,9 @@
 #include <qstring.h>
 #include <qpainter.h>
 #include <qrect.h>
+#include <qevent.h>
 #include "qgsrect.h"
+
 #include "qgsmaplayer.h"
 #include "qgsdatabaselayer.h"
 #include "qgscoordinatetransform.h"
@@ -26,6 +28,7 @@
 QgsMapCanvas::QgsMapCanvas(QWidget *parent, const char *name ) : QWidget(parent,name) {
   mapWindow = new QRect();
   coordXForm = new QgsCoordinateTransform();
+  setMouseTracking(true);
 }
 QgsMapCanvas::~QgsMapCanvas(){
   delete coordXForm;
@@ -149,4 +152,11 @@ void QgsMapCanvas::zoomFullExtent(){
   currentExtent = fullExtent;
   clear();
   render2();
+}
+
+void QgsMapCanvas::mouseMoveEvent(QMouseEvent *e){
+	// show x y on status bar
+	   QPoint xy = e->pos();
+		QgsPoint coord = coordXForm->toMapCoordinates(xy);
+		emit xyCoordinates(coord);
 }

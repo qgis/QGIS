@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <qstring.h>
 #include <qtextstream.h>
+#include <qpoint.h>
 
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
@@ -35,6 +36,18 @@ QgsPoint QgsCoordinateTransform::transform(QgsPoint p){
 
 QgsPoint QgsCoordinateTransform::transform(double x, double y){
   return(transform(QgsPoint(x,y)));
+}
+QgsPoint QgsCoordinateTransform::toMapPoint(int x, int y){
+	double mx = x * mapUnitsPerPixel + xMin;
+	double my = -1 *( (y - yMax) * mapUnitsPerPixel - yMin);
+	return QgsPoint(mx,my);
+}
+QgsPoint QgsCoordinateTransform::toMapCoordinates(QPoint p){
+	QgsPoint mapPt = toMapPoint(p.x(), p.y()	);
+	return QgsPoint(mapPt);
+}
+QgsPoint QgsCoordinateTransform::toMapCoordinates(int x, int y){
+	return toMapPoint(x,y);
 }
 void QgsCoordinateTransform::setMapUnitsPerPixel(double mupp){
   mapUnitsPerPixel = mupp;
