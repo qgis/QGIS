@@ -1,7 +1,9 @@
 Requirements:
 1. PostgreSQL built with the --with-CXX configure options (C++ wrapper)
-2. PostGIS support in PostgreSQL
+   (http://www.postgresql.org)
+2. PostGIS support in PostgreSQL  (http://postgis.refractions.net)
 3. Qt 3.0.x built with thread support
+   (http://www.trolltech.com/developer/download/qt-x11.html)
 4. GDAL/OGR library compiled and installed (with headers). QGIS assumes
    that the headers and library will be in a standard (i.e. /usr/local)
    location. See http://www.remotesensing.org/gdal.
