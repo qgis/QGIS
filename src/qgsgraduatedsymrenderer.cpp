@@ -23,13 +23,14 @@
 inline QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
 {
     //free the memory first
-    for (std::list < QgsRangeRenderItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it)
+    /*for (std::list < QgsRangeRenderItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it)
     {
 	delete *it;
     }
 
     //and remove the pointers then
-    mItems.clear();
+    mItems.clear();*/
+    removeItems();
 }
 
 void QgsGraduatedSymRenderer::removeItems()

@@ -67,7 +67,7 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
     fillpatternlabel->setMaximumHeight(50);
     mGridLayout->addWidget(fillpatternlabel, 0, 7);
 
-    //fint the minimum and maximum of the classification variable
+    //find the minimum and maximum of the classification variable
     double minimum, maximum;
 
     QgsDataProvider *provider = mVectorLayer->getDataProvider();
