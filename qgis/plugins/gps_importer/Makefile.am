@@ -10,6 +10,8 @@
 #
 # $Id$
 
+if HAVE_EXPAT
+
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 
 plugindir = ${pkglibdir}
@@ -77,3 +79,6 @@ EXTRA_DIST = $(plugin_UIC) icon.xpm \
 	qgsgpsplugingui.h \
 	qgsgpsplugin.h \
 	qgsgpsdevicedialog.h
+
+
+endif

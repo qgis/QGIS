@@ -212,6 +212,19 @@ AC_SUBST(GRASS_INC)
 AM_CONDITIONAL([HAVE_GRASS], [test "$ac_grass" = "yes"])
 
 
+dnl ---------------------------------------------------------------------------
+dnl GPX and GPS plugins
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(gpx,
+  AC_HELP_STRING([--disable-gpx],
+                 [Disable the GPX provider and the GPS plugin (built by default if libexpat is found)]),
+                 [ac_gpx=$enableval], [ac_gpx=yes])
+have_expat_lib=no
+if [ test $ac_gpx = yes ] ; then
+  AC_CHECK_LIB(expat, XML_ParserCreate, have_expat_lib=yes)
+fi
+AM_CONDITIONAL([HAVE_EXPAT], [test "$have_expat_lib" = "yes"])
+
 
 dnl ---------------------------------------------------------------------------
 dnl Debugging
@@ -299,6 +312,7 @@ echo "GEOS          : $ac_geos (Version $ac_geos_version)"
 echo "PostgreSQL    : $ac_postgresql $postgresql_version_string"
 echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
+echo "GPS/GPX       : $have_expat_lib"
 echo ""
 echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"

@@ -23,76 +23,19 @@
 #include "gpsdata.h"
 
 
-bool GPSObject::parseNode(const QDomNode& node) {
-  
-  QDomNode node2;
-  
-  // name is optional
-  node2 = node.namedItem("name");
-  if (!node2.isNull())
-    name = node2.firstChild().nodeValue();
-  
-  // cmt is optional
-  node2 = node.namedItem("cmt");
-  if (!node2.isNull())
-    cmt = node2.firstChild().nodeValue();
-  
-  // desc is optional
-  node2 = node.namedItem("desc");
-  if (!node2.isNull())
-    desc = node2.firstChild().nodeValue();
-  
-  // src is optional
-  node2 = node.namedItem("src");
-  if (!node2.isNull())
-    src = node2.firstChild().nodeValue();
-  
-  // url is optional
-  node2 = node.namedItem("url");
-  if (!node2.isNull())
-    url = node2.firstChild().nodeValue();
-  
-  // urlname is optional
-  node2 = node.namedItem("urlname");
-  if (!node2.isNull())
-    urlname = node2.firstChild().nodeValue();
-  
-  return true;
-}
-
-
-void GPSObject::fillElement(QDomElement& elt) {
-  QDomDocument qdd = elt.ownerDocument();
-  if (!name.isEmpty()) {
-    QDomElement nameElt = qdd.createElement("name");
-    nameElt.appendChild(qdd.createTextNode(name));
-    elt.appendChild(nameElt);
-  }
-  if (!cmt.isEmpty()) {
-    QDomElement cmtElt = qdd.createElement("cmt");
-    cmtElt.appendChild(qdd.createTextNode(cmt));
-    elt.appendChild(cmtElt);
-  }
-  if (!desc.isEmpty()) {
-    QDomElement descElt = qdd.createElement("desc");
-    descElt.appendChild(qdd.createTextNode(desc));
-    elt.appendChild(descElt);
-  }
-  if (!src.isEmpty()) {
-    QDomElement srcElt = qdd.createElement("src");
-    srcElt.appendChild(qdd.createTextNode(src));
-    elt.appendChild(srcElt);
-  }
-  if (!url.isEmpty()) {
-    QDomElement urlElt = qdd.createElement("url");
-    urlElt.appendChild(qdd.createTextNode(url));
-    elt.appendChild(urlElt);
-  }
-  if (!urlname.isEmpty()) {
-    QDomElement urlnameElt = qdd.createElement("urlname");
-    urlnameElt.appendChild(qdd.createTextNode(urlname));
-    elt.appendChild(urlnameElt);
-  }
+void GPSObject::writeXML(QTextStream& stream) {
+  if (!name.isEmpty())
+    stream<<"<name>"<<name<<"</name>\n";
+  if (!cmt.isEmpty())
+    stream<<"<cmt>"<<cmt<<"</cmt>\n";
+  if (!desc.isEmpty())
+    stream<<"<desc>"<<desc<<"</desc>\n";
+  if (!src.isEmpty())
+    stream<<"<src>"<<src<<"</src>\n";
+  if (!url.isEmpty())
+    stream<<"<url>"<<url<<"</url>\n";
+  if (!urlname.isEmpty())
+    stream<<"<urlname>"<<urlname<<"</urlname>\n";
 }
 
 
@@ -101,180 +44,53 @@ GPSPoint::GPSPoint() {
 }
 
 
-bool GPSPoint::parseNode(const QDomNode& node) {
-  GPSObject::parseNode(node);
-
-  QDomNode node2;
-  
-  // lat and lon are required
-  node2 = node.attributes().namedItem("lat");
-  if (node2.isNull())
-    return false;
-  lat = node2.nodeValue().toDouble();
-  node2 = node.attributes().namedItem("lon");
-  if (node2.isNull())
-    return false;
-  lon = node2.nodeValue().toDouble();
-  
-  // ele is optional
-  node2 = node.namedItem("ele");
-  if (!node2.isNull())
-    ele = std::atof((const char*)node2.firstChild().nodeValue());
-  else
-    ele = -std::numeric_limits<double>::max();
-  
-  // sym is optional
-  node2 = node.namedItem("sym");
-  if (!node2.isNull())
-    sym = node2.firstChild().nodeValue();
-  
-  return true;
+void GPSPoint::writeXML(QTextStream& stream) {
+  stream<<"<wpt lat=\""<<lat<<"\" lon=\""<<lon<<"\">\n";
+  GPSObject::writeXML(stream);
+  if (ele != -std::numeric_limits<double>::max())
+    stream<<"<ele>"<<ele<<"</ele>\n";
+  if (!sym.isEmpty())
+    stream<<"<sym>"<<sym<<"</sym>\n";
+  stream<<"</wpt>\n";
 }
 
 
-void GPSPoint::fillElement(QDomElement& elt) {
-  GPSObject::fillElement(elt);
-  QDomDocument qdd = elt.ownerDocument();
-  elt.setAttribute("lat", QString("%1").arg(lat, 0, 'f'));
-  elt.setAttribute("lon", QString("%1").arg(lon, 0, 'f'));
-  if (ele != -std::numeric_limits<double>::max()) {
-    QDomElement eleElt = qdd.createElement("ele");
-    eleElt.appendChild(qdd.createTextNode(QString("%1").arg(ele, 0, 'f')));
-    elt.appendChild(eleElt);
-  }
-  if (!sym.isEmpty()) {
-    QDomElement symElt = qdd.createElement("sym");
-    symElt.appendChild(qdd.createTextNode(sym));
-    elt.appendChild(symElt);
-  }
+GPSExtended::GPSExtended()
+  : xMin(std::numeric_limits<double>::max()),
+    xMax(-std::numeric_limits<double>::max()),
+    yMin(std::numeric_limits<double>::max()),
+    yMax(-std::numeric_limits<double>::max()),
+    number(std::numeric_limits<int>::max()) {
+  
 }
 
 
-bool GPSExtended::parseNode(const QDomNode& node) {
-  GPSObject::parseNode(node);
-
-  // number is optional
-  QDomNode node2 = node.namedItem("number");
-  if (!node2.isNull())
-    number = std::atoi((const char*)node2.firstChild().nodeValue());
-  else
-    number = std::numeric_limits<int>::max();
-  return true;
+void GPSExtended::writeXML(QTextStream& stream) {
+  GPSObject::writeXML(stream);
+  if (number != std::numeric_limits<int>::max())
+    stream<<"<number>"<<number<<"</number>\n";
 }
 
 
-void GPSExtended::fillElement(QDomElement& elt) {
-  GPSObject::fillElement(elt);
-  QDomDocument qdd = elt.ownerDocument();
-  if (number != std::numeric_limits<int>::max()) {
-    QDomElement numberElt = qdd.createElement("number");
-    numberElt.appendChild(qdd.createTextNode(QString("%1").arg(number)));
-    elt.appendChild(numberElt);
-  }
-}
-
-
-bool Route::parseNode(const QDomNode& node) {
-  GPSExtended::parseNode(node);
-  
-  QDomNode node2;
-  
-  // reset extent
-  xMin = std::numeric_limits<double>::max();
-  xMax = -std::numeric_limits<double>::max();
-  yMin = std::numeric_limits<double>::max();
-  yMax = -std::numeric_limits<double>::max();
-  
-  // routepoints are optional, empty routes are allowed
-  node2 = node.namedItem("rtept");
-  while (!node2.isNull()) {
-    if (node2.nodeName() == "rtept") {
-      Routepoint rtept;
-      if (!rtept.parseNode(node2))
-	return false;
-      points.push_back(rtept);
-      
-      // update the route bounds
-      xMin = (xMin < rtept.lon ? xMin : rtept.lon);
-      xMax = (xMax > rtept.lon ? xMax : rtept.lon);
-      yMin = (yMin < rtept.lat ? yMin : rtept.lat);
-      yMax = (yMax > rtept.lat ? yMax : rtept.lat);
-    }
-    node2 = node2.nextSibling();
-  }
-  
-  return true;
-}
-
-
-void Route::fillElement(QDomElement& elt) {
-  GPSExtended::fillElement(elt);
-  
-  QDomDocument qdd = elt.ownerDocument();
-  
+void Route::writeXML(QTextStream& stream) {
+  stream<<"<rte>\n";
+  GPSExtended::writeXML(stream);
   for (int i = 0; i < points.size(); ++i) {
-    QDomElement ptElt = qdd.createElement("rtept");
-    points[i].fillElement(ptElt);
-    elt.appendChild(ptElt);
+    points[i].writeXML(stream);
   }
 }
 
 
-bool Track::parseNode(const QDomNode& node) {
-  GPSExtended::parseNode(node);
-  
-  QDomNode node2, node3;
-
-  // reset track bounds
-  xMin = std::numeric_limits<double>::max();
-  xMax = -std::numeric_limits<double>::max();
-  yMin = std::numeric_limits<double>::max();
-  yMax = -std::numeric_limits<double>::max();
-  
-  // track segments are optional - empty tracks are allowed
-  node2 = node.namedItem("trkseg");
-  while (!node2.isNull()) {
-    if (node2.nodeName() == "trkseg") {
-      TrackSegment trkseg;
-      node3 = node2.namedItem("trkpt");
-      while (!node3.isNull()) {
-	if (node3.nodeName() == "trkpt") {
-	  Trackpoint trkpt;
-	  if (!trkpt.parseNode(node3))
-	    return false;
-	  trkseg.points.push_back(trkpt);
-	  
-	  // update the track bounds
-	  xMin = (xMin < trkpt.lon ? xMin : trkpt.lon);
-	  xMax = (xMax > trkpt.lon ? xMax : trkpt.lon);
-	  yMin = (yMin < trkpt.lat ? yMin : trkpt.lat);
-	  yMax = (yMax > trkpt.lat ? yMax : trkpt.lat);
-	}
-	node3 = node3.nextSibling();
-      }
-      
-      segments.push_back(trkseg);
-    }
-    node2 = node2.nextSibling();
-  }
-  
-  return true;
-}
-
-
-void Track::fillElement(QDomElement& elt) {
-  GPSExtended::fillElement(elt);
-  QDomDocument qdd = elt.ownerDocument();
-  
+void Track::writeXML(QTextStream& stream) {
+  stream<<"<trk>\n";
+  GPSExtended::writeXML(stream);
   for (int i = 0; i < segments.size(); ++i) {
-    QDomElement sgmElt = qdd.createElement("trkseg");
-    for (int j = 0; j < segments[i].points.size(); ++j) {
-      QDomElement ptElt = qdd.createElement("trkpt");
-      segments[i].points[j].fillElement(ptElt);
-      sgmElt.appendChild(ptElt);
-    }
-    elt.appendChild(sgmElt);
+    stream<<"<trkseg>\n";
+    for (int j = 0; j < segments[i].points.size(); ++j)
+      segments[i].points[j].writeXML(stream);
+    stream<<"</trkseg>\n";
   }
+  stream<<"</trk>\n";
 }
 
 
@@ -337,27 +153,6 @@ GPSData::RouteIterator GPSData::routesEnd() {
 GPSData::TrackIterator GPSData::tracksEnd() {
   return tracks.end();
 }
-
-
-/*Waypoint& GPSData::getWaypoint(int ID) {
-  if (index < 0 || index >= waypoints.size())
-    throw std::out_of_range("Waypoint index is out of range");
-  return waypoints[index];
-}
-
-
-Route& GPSData::getRoute(int index) {
-  if (index < 0 || index >= routes.size())
-    throw std::out_of_range("Route index is out of range");
-  return routes[index];
-}
-
-
-Track& GPSData::getTrack(int index) {
-  if (index < 0 || index >= tracks.size())
-    throw std::out_of_range("Track index is out of range");
-  return tracks[index];
-  }*/
 
 
 GPSData::WaypointIterator GPSData::addWaypoint(double lat, double lon, 
@@ -470,135 +265,57 @@ void GPSData::removeTracks(std::list<int> const & ids) {
 }
 
 
-/*
-std::ostream& operator<<(std::ostream& os, const GPSData& d) {
-  os<<"  Waypoints:"<<std::endl;
-  GPSData::WaypointIterator wIter;
-  for (wIter = d.waypointsBegin(); wIter != d.waypointsEnd(); ++wIter)
-    os<<"    "<<wIter->name<<": "<<wIter->lat<<", "<<wIter->lon<<std::endl;
-
-  os<<"  Routes:"<<std::endl;
-  GPSData::RouteIterator rIter;
-  for (rIter = d.routesBegin(); rIter != d.routesEnd(); ++rIter)
-    os<<"    "<<iter->name<<std::endl;
-
-  os<<"  Tracks:"<<std::endl;
-  GPSData::TrackIterator tIter;
-  for (tIter = d.tracksBegin(); tIter != d.tracksEnd(); ++tIter)
-    os<<"    "<<iter->name<<std::endl;
-
-  return os;
-}
-*/
-
-
-bool GPSData::parseDom(QDomDocument& qdd) {
-  
-  // reset the extent
-  xMin = std::numeric_limits<double>::max();
-  xMax = -std::numeric_limits<double>::max();
-  yMin = std::numeric_limits<double>::max();
-  yMax = -std::numeric_limits<double>::max();
-  
-  // reset the data
-  waypoints.clear();
-  routes.clear();
-  tracks.clear();
-  
-  // ignore the <?xml... tags
-  QDomNode node, node2, node3, node4;
-  node = qdd.firstChild();
-  while (node.nodeName() != "gpx")
-    node = node.nextSibling();
-  
-  // there must be a gpx element
-  if (node.isNull())
-    return false;
-  
-  return parseGPX(node);
-}
-
-
-void GPSData::fillDom(QDomDocument& qdd) {
-  QDomElement gpxElt = qdd.createElement("gpx");
-  qdd.appendChild(gpxElt);
-  gpxElt.setAttribute("version", "1.0");
-  
-  // add waypoints
-  WaypointIterator wIter;
-  for (wIter = waypoints.begin(); wIter != waypoints.end(); ++wIter) {
-    QDomElement wptElt = qdd.createElement("wpt");
-    wIter->fillElement(wptElt);
-    gpxElt.appendChild(wptElt);
-  }
-
-  // add routes
-  RouteIterator rIter;
-  for (rIter = routes.begin(); rIter != routes.end(); ++rIter) {
-    QDomElement rteElt = qdd.createElement("rte");
-    rIter->fillElement(rteElt);
-    gpxElt.appendChild(rteElt);
-  }
-
-  // add tracks
-  TrackIterator tIter;
-  for (tIter = tracks.begin(); tIter != tracks.end(); ++tIter) {
-    QDomElement trkElt = qdd.createElement("trk");
-    tIter->fillElement(trkElt);
-    gpxElt.appendChild(trkElt);
-  }
-}
-
-
-bool GPSData::parseGPX(QDomNode& node) {
-  // start parsing child nodes
-  node = node.firstChild();
-  QDomNode node2, node3, node4;
-  while (!node.isNull()) {
-
-    // waypoint
-    if (node.nodeName() == "wpt") {
-      Waypoint wpt;
-      if (!wpt.parseNode(node))
-	return false;
-      addWaypoint(wpt);
-    }
-    
-    // route
-    else if (node.nodeName() == "rte") {
-      Route rte;
-      if (!rte.parseNode(node))
-	return false;
-      addRoute(rte);
-    }
-    
-    // track
-    else if (node.nodeName() == "trk") {
-      Track trk;
-      if (!trk.parseNode(node))
-	return false;
-      addTrack(trk);
-    }
-      
-    node = node.nextSibling();
-  } 
-  
-  return true;
+void GPSData::writeXML(QTextStream& stream) {
+  stream.setEncoding(QTextStream::UnicodeUTF8);
+  stream<<"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+	<<"<gpx version=\"1.0\" creator=\"Quantum GIS\">\n";
+  for (WaypointIterator wIter = waypoints.begin(); 
+       wIter != waypoints.end(); ++wIter)
+    wIter->writeXML(stream);
+  for (RouteIterator rIter = routes.begin(); rIter != routes.end(); ++rIter)
+    rIter->writeXML(stream);
+  for (TrackIterator tIter = tracks.begin(); tIter != tracks.end(); ++tIter)
+    tIter->writeXML(stream);
+  stream<<"</gpx>\n";
+  stream<<flush;
 }
 
 
 GPSData* GPSData::getData(const QString& filename) {
-  
   // if the data isn't there already, try to load it
   if (dataObjects.find(filename) == dataObjects.end()) {
-    QDomDocument qdd;
     QFile file(filename);
     GPSData* data = new GPSData;
     std::cerr<<"Loading file "<<filename<<std::endl;
-    if (!(qdd.setContent(&file) && data->parseDom(qdd))) {
-      std::cerr<<filename<<"is not valid GPX!"<<std::endl;
-      return 0;
+    GPXHandler handler(*data);
+    bool failed = false;
+    
+    // SAX parsing
+    XML_Parser p = XML_ParserCreate(NULL);
+    XML_SetUserData(p, &handler);
+    XML_SetElementHandler(p, GPXHandler::start, GPXHandler::end);
+    XML_SetCharacterDataHandler(p, GPXHandler::chars);
+    long int bufsize = 10*1024*1024;
+    char* buffer = new char[bufsize];
+    file.open(IO_ReadOnly);
+    int atEnd = 0;
+    while (!file.atEnd()) {
+      long int readBytes = file.readBlock(buffer, bufsize);
+      if (file.atEnd())
+	atEnd = 1;
+      if (!XML_Parse(p, buffer, readBytes, atEnd)) {
+	std::cerr<<"Parse error at line "
+		 <<XML_GetCurrentLineNumber(p)<<": "
+		 <<XML_ErrorString(XML_GetErrorCode(p))<<std::endl;
+	failed = true;
+	break;
+      }
     }
+    delete [] buffer;
+    XML_ParserFree(p);
+    if (failed)
+      return 0;
+    
     dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
@@ -629,3 +346,243 @@ void GPSData::releaseData(const QString& filename) {
 
 // we have to initialize the static member
 GPSData::DataMap GPSData::dataObjects;
+
+
+
+
+bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
+  //std::cerr<<"<"<<qName<<">"<<std::endl;
+  if (!std::strcmp(qName, "gpx")) {
+    parseModes.push(ParsingDocument);
+    mData = GPSData();
+  }
+    
+  // top level objects
+  else if (!std::strcmp(qName, "wpt")) {
+    parseModes.push(ParsingWaypoint);
+    mWpt = Waypoint();
+    for (int i = 0; attr[2*i] != NULL; ++i) {
+      if (!std::strcmp(attr[2*i], "lat"))
+	mWpt.lat = QString(attr[2*i+1]).toDouble();
+      else if (!std::strcmp(attr[2*i], "lon"))
+	mWpt.lon = QString(attr[2*i+1]).toDouble();
+    }
+    mObj = &mWpt;
+  }
+  else if (!std::strcmp(qName, "rte")) {
+    parseModes.push(ParsingRoute);
+    mRte = Route();
+    mObj = &mRte;
+  }
+  else if (!std::strcmp(qName, "trk")) {
+    parseModes.push(ParsingTrack);
+    mTrk = Track();
+    mObj = &mTrk;
+  }
+    
+  // common properties
+  else if (!std::strcmp(qName, "name")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
+      mString = &mObj->name;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "cmt")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
+      mString = &mObj->cmt;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "desc")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
+      mString = &mObj->desc;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "src")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
+      mString = &mObj->src;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "url")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
+      mString = &mObj->url;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "urlname")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
+      mString = &mObj->urlname;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+    
+  // waypoint-specific attributes
+  else if (!std::strcmp(qName, "ele")) {
+    if (parseModes.top() == ParsingWaypoint) {
+      mDouble = &mWpt.ele;
+      mCharBuffer = "";
+      parseModes.push(ParsingDouble);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "sym")) {
+    if (parseModes.top() == ParsingWaypoint) {
+      mString = &mWpt.sym;
+      mCharBuffer = "";
+      parseModes.push(ParsingString);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+    
+  // route/track-specific attributes
+  else if (!std::strcmp(qName, "number")) {
+    if (parseModes.top() == ParsingRoute) {
+      mInt = &mRte.number;
+      mCharBuffer = "";
+      parseModes.push(ParsingInt);
+    }
+    else if (parseModes.top() == ParsingTrack) {
+      mInt = &mTrk.number;
+      parseModes.push(ParsingInt);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }    
+    
+  // route points
+  else if (!std::strcmp(qName, "rtept")) {
+    if (parseModes.top() == ParsingRoute) {
+      mRtept = Routepoint();
+      for (int i = 0; attr[2*i] != NULL; ++i) {
+	if (!std::strcmp(attr[2*i], "lat"))
+	  mRtept.lat = QString(attr[2*i+1]).toDouble();
+	else if (!std::strcmp(attr[2*i], "lon"))
+	  mRtept.lon = QString(attr[2*i+1]).toDouble();
+      }
+      parseModes.push(ParsingRoutepoint);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+    
+  // track segments and points
+  else if (!std::strcmp(qName, "trkseg")) {
+    if (parseModes.top() == ParsingTrack) {
+      mTrkseg = TrackSegment();
+      parseModes.push(ParsingTrackSegment);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "trkpt")) {
+    if (parseModes.top() == ParsingTrackSegment) {
+      mTrkpt = Trackpoint();
+      for (int i = 0; attr[2*i] != NULL; ++i) {
+	if (!std::strcmp(attr[2*i], "lat"))
+	  mTrkpt.lat = QString(attr[2*i+1]).toDouble();
+	else if (!std::strcmp(attr[2*i], "lon"))
+	  mTrkpt.lon = QString(attr[2*i+1]).toDouble();
+      }
+      parseModes.push(ParsingTrackpoint);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+    
+  // unknown
+  else
+    parseModes.push(ParsingUnknown);
+    
+  return true;
+}
+
+
+void GPXHandler::characters(const XML_Char* chars, int len) {
+  // This is horrible.
+#ifdef XML_UNICODE
+  for (int i = 0; i < len; ++i)
+    mCharBuffer += QChar(chars[i]);
+#else
+  mCharBuffer += QString::fromUtf8(chars, len);
+#endif
+}
+
+
+bool GPXHandler::endElement(const std::string& qName) {
+  if (parseModes.top() == ParsingWaypoint) {
+    mData.addWaypoint(mWpt);
+  }
+  else if (parseModes.top() == ParsingRoute) {
+    mData.addRoute(mRte);
+  }
+  else if (parseModes.top() == ParsingTrack) {
+    mData.addTrack(mTrk);
+  }
+  else if (parseModes.top() == ParsingRoutepoint) {
+    mRte.points.push_back(mRtept);
+    mRte.xMin = (mRte.xMin < mRtept.lon ? mRte.xMin : mRtept.lon);
+    mRte.xMax = (mRte.xMax > mRtept.lon ? mRte.xMax : mRtept.lon);
+    mRte.yMin = (mRte.yMin < mRtept.lat ? mRte.yMin : mRtept.lat);
+    mRte.yMax = (mRte.yMax > mRtept.lat ? mRte.yMax : mRtept.lat);
+  }
+  else if (parseModes.top() == ParsingTrackSegment) {
+    mTrk.segments.push_back(mTrkseg);
+  }
+  else if (parseModes.top() == ParsingTrackpoint) {
+    mTrkseg.points.push_back(mTrkpt);
+    mTrk.xMin = (mTrk.xMin < mTrkpt.lon ? mTrk.xMin : mTrkpt.lon);
+    mTrk.xMax = (mTrk.xMax > mTrkpt.lon ? mTrk.xMax : mTrkpt.lon);
+    mTrk.yMin = (mTrk.yMin < mTrkpt.lat ? mTrk.yMin : mTrkpt.lat);
+    mTrk.yMax = (mTrk.yMax > mTrkpt.lat ? mTrk.yMax : mTrkpt.lat);
+  }
+  else if (parseModes.top() == ParsingDouble) {
+    *mDouble = QString(mCharBuffer).toDouble();
+    mCharBuffer = "";
+  }
+  else if (parseModes.top() == ParsingInt) {
+    *mInt = QString(mCharBuffer).toInt();
+    mCharBuffer = "";
+  }
+  else if (parseModes.top() == ParsingString) {
+    *mString = mCharBuffer;
+    mCharBuffer = "";
+  }
+  parseModes.pop();
+  
+  return true;
+}
+  
