@@ -550,7 +550,7 @@ void QgisApp::testPluginFunctions(){
 // try to load the class factory function
     
 
-  QLibrary myLib( "/home/gsherman/development/qgis/plugins/libqgisplugin.so.1.0.0");
+  QLibrary myLib( "../plugins/libqgisplugin.so.1.0.0");
   bool loaded = myLib.load();
   if(loaded){
     std::cout << "Loaded test plugin library" << std::endl;
