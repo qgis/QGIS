@@ -2,9 +2,7 @@
 
 NAME=`sed -e 's/.*:\([^:]*\)@.*/\1/' CVS/Root`
 
-RAND=`md5sum ChangeLog | awk '{print $1}'`
-
-TMPFILE=/tmp/qgis-commit-${RAND}.tmp
+TMPFILE=`mktemp /tmp/qgis-commit-tmp.XXXXXXXXXX`
 
 MAJOR_VERSION=`sed -n -e 's/MAJOR_VERSION=//p' configure.in`
 MINOR_VERSION=`sed -n -e 's/MINOR_VERSION=//p' configure.in`

@@ -302,8 +302,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // store the application dir
   appDir = PREFIX;
   // Get pointer to the provider registry singleton
-  QString plib = PREFIX;
-  plib += "/lib/qgis";
+  QString plib = PLUGINPATH;
   providerRegistry = QgsProviderRegistry::instance(plib);
   // load any plugins that were running in the last session
   std::cerr << "About to restore plugins session" << std::endl;
