@@ -51,8 +51,8 @@ const char * const ident =
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
-  spinMinimumScale->setValue(lyr->minScale());
-  spinMaximumScale->setValue(lyr->maxScale());
+  spinMinimumScale->setValue((int)lyr->minScale());
+  spinMaximumScale->setValue((int)lyr->maxScale());
 
   // build GUI components
 
@@ -1014,7 +1014,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   int myGraphImageHeight = myImageHeight-myXGutterHeight; 
   
   //find out how wide to draw bars when in bar chart mode
-  int myBarWidth = (((double)myGraphImageWidth)/((double)BINCOUNT));
+  int myBarWidth = static_cast<int>((((double)myGraphImageWidth)/((double)BINCOUNT)));
   
   
   //
@@ -1035,9 +1035,9 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       double myBinValue = myRasterBandStats.histogramVector->at(myBin);
       //NOTE: Int division is 0 if the numerator is smaller than the denominator.
       //hence the casts
-      int myX = (((double)myGraphImageWidth)/((double)BINCOUNT))*myBin;
+      int myX = static_cast<int>((((double)myGraphImageWidth)/((double)BINCOUNT))*myBin);
       //height varies according to freq. and scaled to greatet value in all layers
-      int myY = (int)(((double)myBinValue/(double)myMaxVal)*myGraphImageHeight);
+      int myY = static_cast<int>(((double)myBinValue/(double)myMaxVal)*myGraphImageHeight);
       //determin which color to draw the bar
       int c1, c2, c3;
       bool found = myColorTable->color ( myBinValue, &c1, &c2, &c3 );
@@ -1081,9 +1081,9 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
           double myBinValue = myRasterBandStats.histogramVector->at(myBin);
           //NOTE: Int division is 0 if the numerator is smaller than the denominator.
           //hence the casts
-          int myX = (((double)myGraphImageWidth)/((double)BINCOUNT))*myBin;
+          int myX = static_cast<int>((((double)myGraphImageWidth)/((double)BINCOUNT))*myBin);
           //height varies according to freq. and scaled to greatet value in all layers
-          int myY = (int)(((double)myBinValue/(double)myMaxVal)*myGraphImageHeight);
+          int myY = static_cast<int>(((double)myBinValue/(double)myMaxVal)*myGraphImageHeight);
           //adjust for image origin being top left
 #ifdef QGISDEBUG
           std::cout << "-------------" << std::endl;
