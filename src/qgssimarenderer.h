@@ -39,7 +39,7 @@ class QgsSiMaRenderer: public QgsRenderer
     QgsRenderItem* mItem;
 };
 
-inline QgsSiMaRenderer::QgsSiMaRenderer()//: mItem(new QgsRenderItem())
+inline QgsSiMaRenderer::QgsSiMaRenderer()
 {
     mItem=new QgsRenderItem(new QgsMarkerSymbol(),"","");
 }

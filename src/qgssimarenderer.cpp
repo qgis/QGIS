@@ -34,10 +34,10 @@ void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLay
     
     if (layer)
     {
-	QgsMarkerSymbol sy;
-	sy.brush().setStyle(Qt::NoBrush);
-	sy.pen().setStyle(Qt::NoPen);
-	sy.pen().setWidth(1);//set width 1 as default instead of width 0
+	QgsMarkerSymbol* sy=new QgsMarkerSymbol();
+	sy->brush().setStyle(Qt::NoBrush);
+	sy->pen().setStyle(Qt::NoPen);
+	sy->pen().setWidth(1);//set width 1 as default instead of width 0
 
 	QgsRenderItem* ri = new QgsRenderItem();
 	ri->setSymbol(sy);
