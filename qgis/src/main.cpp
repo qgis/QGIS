@@ -216,7 +216,12 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   if(myProjectFileName!="")
   {
-    qgis->addProject(myProjectFileName);
+      if ( ! qgis->addProject(myProjectFileName) )
+      {
+#ifdef QGISDEBUG
+          std::cerr << "unable to load project " << myProjectFileName << "\n";
+#endif
+      }
   }
 
 
