@@ -83,6 +83,288 @@ email                : tim at linfiniti.com
 #include "gdal_priv.h"
 #include <math.h>
 
+//////////////////////////////////////////////////////////
+//
+// Static Methods and members first....
+//
+/////////////////////////////////////////////////////////
+/**
+  Static member variable storing the subset of GDAL formats 
+  that we currently support.
+
+  @note
+
+  Some day this won't be necessary as there'll be a time when
+  theoretically we'll support everything that GDAL can throw at us.
+
+  These are GDAL driver description strings.
+  */
+static const char *const mSupportedRasterFormats[] = {
+  "SDTS",
+  "AIG",
+  "AAIGrid",
+  "GTiff",
+  "USGSDEM",
+  "HFA",
+  "GRASS",
+  "DTED",
+  ""   // used to indicate end of list
+};
+/**
+  Builds the list of file filter strings to later be used by
+  QgisApp::addRasterLayer()
+
+  We query GDAL for a list of supported raster formats; we then build
+  a list of file filter strings from that list.  We return a string
+  that contains this list that is suitable for use in a a
+  QFileDialog::getOpenFileNames() call.
+
+*/
+void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersString)
+{
+  // first get the GDAL driver manager
+  GDALAllRegister();
+  GDALDriverManager *myGdalDriverManager = GetGDALDriverManager();
+
+  if (!myGdalDriverManager)
+  {
+    std::cerr << "unable to get GDALDriverManager\n";
+    return;                   // XXX good place to throw exception if we 
+  }                           // XXX decide to do exceptions
+
+  // then iterate through all of the supported drivers, adding the
+  // corresponding file filter
+
+  GDALDriver *myGdalDriver;           // current driver
+
+  char **myGdalDriverMetadata;        // driver metadata strings
+
+  QString myGdalDriverLongName("");   // long name for the given driver
+  QString myGdalDriverExtension("");  // file name extension for given driver
+  QString myGdalDriverDescription;    // QString wrapper of GDAL driver description
+
+  QStringList metadataTokens;   // essentially the metadata string delimited by '='
+
+  QString catchallFilter;       // for Any file(*.*), but also for those
+  // drivers with no specific file
+  // filter
+
+  // Grind through all the drivers and their respective metadata.
+  // We'll add a file filter for those drivers that have a file
+  // extension defined for them; the others, welll, even though
+  // theoreticaly we can open those files because there exists a
+  // driver for them, the user will have to use the "All Files" to
+  // open datasets with no explicitly defined file name extension.
+  // Note that file name extension strings are of the form
+  // "DMD_EXTENSION=.*".  We'll also store the long name of the
+  // driver, which will be found in DMD_LONGNAME, which will have the
+  // same form.
+
+  for (int i = 0; i < myGdalDriverManager->GetDriverCount(); ++i)
+  {
+    myGdalDriver = myGdalDriverManager->GetDriver(i);
+
+    Q_CHECK_PTR(myGdalDriver);
+
+    if (!myGdalDriver)
+    {
+      qWarning("unable to get driver %d", i);
+      continue;
+    }
+    // now we need to see if the driver is for something currently
+    // supported; if not, we give it a miss for the next driver
+
+    myGdalDriverDescription = myGdalDriver->GetDescription();
+
+    if (!isSupportedRasterDriver(myGdalDriverDescription))
+    {
+      // not supported, therefore skip
+#ifdef QGISDEBUG
+      qWarning("skipping unsupported driver %s", myGdalDriver->GetDescription());
+#endif
+      continue;
+    }
+    // std::cerr << "got driver string " << myGdalDriver->GetDescription() << "\n";
+
+    myGdalDriverMetadata = myGdalDriver->GetMetadata();
+
+    // presumably we know we've run out of metadta if either the
+    // address is 0, or the first character is null
+    while (myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0])
+    {
+      metadataTokens = QStringList::split("=", *myGdalDriverMetadata);
+      // std::cerr << "\t" << *myGdalDriverMetadata << "\n";
+
+      // XXX add check for malformed metadataTokens
+
+      // Note that it's oddly possible for there to be a
+      // DMD_EXTENSION with no corresponding defined extension
+      // string; so we check that there're more than two tokens.
+
+      if (metadataTokens.count() > 1)
+      {
+        if ("DMD_EXTENSION" == metadataTokens[0])
+        {
+          myGdalDriverExtension = metadataTokens[1];
+
+        } 
+        else if ("DMD_LONGNAME" == metadataTokens[0])
+        {
+          myGdalDriverLongName = metadataTokens[1];
+
+          // remove any superfluous (.*) strings at the end as
+          // they'll confuse QFileDialog::getOpenFileNames()
+
+          myGdalDriverLongName.remove(QRegExp("\\(.*\\)$"));
+        }
+      }
+      // if we have both the file name extension and the long name,
+      // then we've all the information we need for the current
+      // driver; therefore emit a file filter string and move to
+      // the next driver
+      if (!(myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty()))
+      {
+        // XXX add check for SDTS; in that case we want (*CATD.DDF)
+        QString glob = "*." + myGdalDriverExtension; 
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+
+        break;            // ... to next driver, if any.
+      }
+
+      ++myGdalDriverMetadata;
+
+    }                       // each metadata item
+
+    if (myGdalDriverExtension.isEmpty() && !myGdalDriverLongName.isEmpty())
+    {
+      // Then what we have here is a driver with no corresponding
+      // file extension; e.g., GRASS.  In which case we append the
+      // string to the "catch-all" which will match all file types.
+      // (I.e., "*.*") We use the driver description intead of the
+      // long time to prevent the catch-all line from getting too
+      // large.
+
+      // ... OTOH, there are some drivers with missing
+      // DMD_EXTENSION; so let's check for them here and handle
+      // them appropriately
+
+      // USGS DEMs use "*.dem"
+      if (myGdalDriverDescription.startsWith("USGSDEM"))
+      {
+        QString glob = "*.dem"; 
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+      }
+      else if (myGdalDriverDescription.startsWith("DTED"))
+      {
+        // DTED use "*.dt0"
+        QString glob = "*.dt0"; 
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+      } 
+      else
+      {
+        catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
+      }
+    }
+
+    myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
+
+  }                           // each loaded GDAL driver
+
+  // can't forget the default case
+  theFileFiltersString += catchallFilter + "All other files (*)";
+#ifdef QGISDEBUG
+  std::cout << "Raster filter list built: " << theFileFiltersString << std::endl;
+#endif
+}                               // buildSupportedRasterFileFilter_()
+
+/**
+  returns true if the given raster driver name is one currently
+  supported, otherwise it returns false
+
+  @param theDriverName GDAL driver description string
+  */
+bool QgsRasterLayer::isSupportedRasterDriver(QString const &theDriverName)
+{
+  size_t i = 0;
+
+  while (mSupportedRasterFormats[i][0]) // while not end of string list
+  {
+    // If we've got a case-insensitive match for a GDAL aware driver
+    // description, then we've got a match.  Why case-insensitive?
+    // I'm just being paranoid in that I can envision a situation
+    // whereby GDAL slightly changes driver description string case,
+    // in which case we'd catch it here.  Not that that would likely
+    // happen, but if it does, we'll already compensate.
+    // GS - At Qt 3.1.2, the case sensitive argument. So we change the
+    // driverName to lower case before testing
+    QString format = mSupportedRasterFormats[i];
+    if (theDriverName.lower().startsWith(format.lower()))
+    {
+      return true;
+    }
+
+    i++;
+  }
+
+  return false;
+}   // isSupportedRasterDriver
+
+
+/** This helper checks to see whether the filename appears to be a valid raster file name */
+bool QgsRasterLayer::isValidRasterFileName(QString theFileNameQString)
+{
+
+  GDALDatasetH myDataset;
+  GDALAllRegister();
+
+
+  myDataset = GDALOpen( theFileNameQString, GA_ReadOnly );
+
+  if( myDataset == NULL )
+  {
+
+    return false;
+  }
+  else
+  {
+    GDALClose(myDataset);
+    return true;
+  }
+
+  /*
+   * This way is no longer a good idea because it does not
+   * cater for filetypes such as grass rasters that dont
+   * have a predictable file extension.
+   * 
+   QString name = theFileNameQString.lower();
+   return (name.endsWith(".adf") ||
+   name.endsWith(".asc") ||
+   name.endsWith(".grd") ||
+   name.endsWith(".img") ||
+   name.endsWith(".tif") || 
+   name.endsWith(".png") || 
+   name.endsWith(".jpg") || 
+   name.endsWith(".dem") || 
+   name.endsWith(".ddf")) ||
+   name.endsWith(".dt0");
+
+*/
+}
+
+/** Overloaded of the above function provided for convenience that takes a qstring pointer */
+bool QgsRasterLayer::isValidRasterFileName(QString * theFileNameQString)
+{
+  //dereference and delegate
+  return isValidRasterFileName(*theFileNameQString);
+}
+
+
+
+//////////////////////////////////////////////////////////
+//
+// Non Static methods now....
+//
+/////////////////////////////////////////////////////////
 QgsRasterLayer::QgsRasterLayer(QString path, QString baseName):QgsMapLayer(RASTER, baseName, path)
 {
   //we need to do the tr() stuff outside of the loop becauses tr() is a
@@ -395,13 +677,13 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
   if (hasBand("Palette")) //dont tr() this its a gdal word!
   {
 #ifdef QGISDEBUG
-  std::cout << "....found paletted image" << std::endl;
+    std::cout << "....found paletted image" << std::endl;
 #endif
     GDALRasterBandH myGdalBand = gdalDataset->GetRasterBand(1);
     if( GDALGetRasterColorInterpretation(myGdalBand) == GCI_PaletteIndex )
     {
 #ifdef QGISDEBUG
-  std::cout << "....found GCI_PaletteIndex" << std::endl;
+      std::cout << "....found GCI_PaletteIndex" << std::endl;
 #endif
       GDALColorTableH myTable;
       myTable = GDALGetRasterColorTable( myGdalBand );
@@ -437,7 +719,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
         GDALColorEntry myEntry;
         GDALGetColorEntryAsRGB( myTable, myIteratorInt, &myEntry );
         myQImage.setPixel(myIteratorInt % myWidth,(int)(myIteratorInt/myWidth)
-                          ,qRgba(myEntry.c1, myEntry.c2, myEntry.c3, myEntry.c4));
+                ,qRgba(myEntry.c1, myEntry.c2, myEntry.c3, myEntry.c4));
       }
       myQPainter.drawImage(0,0,myQImage);
       return myPalettePixmap; 
@@ -487,7 +769,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
   myRasterViewPort->rectYOffsetInt = static_cast < int >((layerExtent.yMax() - theViewExtent->yMax()) / fabs(adfGeoTransform[5]));
   if (myRasterViewPort->rectYOffsetInt < 0)
   {
-     myRasterViewPort->rectYOffsetInt = 0;
+    myRasterViewPort->rectYOffsetInt = 0;
   }
 
   //std::cout << "Nodata value for band " << i << " is " << noDataDouble << "\n" << std::endl;
@@ -508,7 +790,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
   // make sure we don't exceed size of raster
   if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
   {
-     myRasterViewPort->clippedWidthInt = rasterXDimInt;
+    myRasterViewPort->clippedWidthInt = rasterXDimInt;
   }
   if (myRasterViewPort->clippedHeightInt > rasterYDimInt) 
   {
@@ -1570,51 +1852,51 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
   }
 }
 /** Private method to calculate statistics for a band. Populates rasterStatsMemArray.
-    Note that this is a cpu intensive /slow task!*/
+  Note that this is a cpu intensive /slow task!*/
 const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
-emit setStatus(QString("Calculating stats for ")+layerName);
-//reset the main app progress bar
-emit setProgress(0,0);
+  emit setStatus(QString("Calculating stats for ")+layerName);
+  //reset the main app progress bar
+  emit setProgress(0,0);
 #ifdef QGISDEBUG
-    std::cout << "QgsRasterLayer::calculate stats for band " << theBandNoInt << std::endl;
+  std::cout << "QgsRasterLayer::calculate stats for band " << theBandNoInt << std::endl;
 #endif
-    //check if we have received a valid band number
-    if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType != PALETTE)
-    {
-        //invalid band id, return nothing
-        RasterBandStats myNullReturnStats;
-        return myNullReturnStats;
-    }
-    if (rasterLayerType == PALETTE && (theBandNoInt > 3))
-    {
-        //invalid band id, return nothing
-        RasterBandStats myNullReturnStats;
-        return myNullReturnStats;
-    }
-    //check if we have previously gathered stats for this band...
+  //check if we have received a valid band number
+  if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType != PALETTE)
+  {
+    //invalid band id, return nothing
+    RasterBandStats myNullReturnStats;
+    return myNullReturnStats;
+  }
+  if (rasterLayerType == PALETTE && (theBandNoInt > 3))
+  {
+    //invalid band id, return nothing
+    RasterBandStats myNullReturnStats;
+    return myNullReturnStats;
+  }
+  //check if we have previously gathered stats for this band...
 
-    RasterBandStats myRasterBandStats = rasterStatsVector[theBandNoInt - 1];
-    myRasterBandStats.bandNoInt = theBandNoInt;
-    //dont bother with this if we already have stats
-    if (myRasterBandStats.statsGatheredFlag)
-    {
-        return myRasterBandStats;
-    }
-    GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
-    QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+  RasterBandStats myRasterBandStats = rasterStatsVector[theBandNoInt - 1];
+  myRasterBandStats.bandNoInt = theBandNoInt;
+  //dont bother with this if we already have stats
+  if (myRasterBandStats.statsGatheredFlag)
+  {
+    return myRasterBandStats;
+  }
+  GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
+  QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
 
-    //declare a colorTable to hold a palette - will only be used if the layer color interp is palette
-    GDALColorTable *colorTable;
-    if (rasterLayerType == PALETTE)
+  //declare a colorTable to hold a palette - will only be used if the layer color interp is palette
+  GDALColorTable *colorTable;
+  if (rasterLayerType == PALETTE)
+  {
+    //get the palette colour table
+    colorTable = myGdalBand->GetColorTable();
+    //override the band name - palette images are really only one band
+    //so we are faking three band behaviour
+    switch (theBandNoInt)
     {
-        //get the palette colour table
-        colorTable = myGdalBand->GetColorTable();
-        //override the band name - palette images are really only one band
-        //so we are faking three band behaviour
-        switch (theBandNoInt)
-        {
-            // a "Red" layer
+      // a "Red" layer
         case 1:
             myRasterBandStats.bandName = redTranslatedQString;
             break;
@@ -1629,151 +1911,151 @@ emit setProgress(0,0);
             RasterBandStats myNullReturnStats;
             return myNullReturnStats;
             break;
+    }
+  }
+  else if (rasterLayerType==GRAY_OR_UNDEFINED)
+  {
+    myRasterBandStats.bandName = myColorInterpretation;
+  }
+  else //rasterLayerType is MULTIBAND
+  {
+    //do nothing
+  }
+  myRasterBandStats.elementCountInt = rasterXDimInt * rasterYDimInt;
+
+  //allocate a buffer to hold one row of ints
+  int myAllocationSizeInt = sizeof(uint) * rasterXDimInt;
+  uint *myScanlineAllocInt = (uint *) CPLMalloc(myAllocationSizeInt);
+  bool myFirstIterationFlag = true;
+  //unfortunately we need to make two passes through the data to calculate stddev
+  for (int myCurrentRowInt = 0; myCurrentRowInt < rasterYDimInt; myCurrentRowInt++)
+  {
+    //we loop through the dataset twice for stats so ydim is doubled!
+    emit setProgress(myCurrentRowInt,rasterYDimInt*2);
+    CPLErr myResult =
+        myGdalBand->RasterIO(GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0);
+    for (int myCurrentColInt = 0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
+    {
+
+      double myDouble = 0;
+      //get the nth element from the current row
+      if (myColorInterpretation != "Palette") //dont translate this its a gdal string
+      {
+        myDouble = myScanlineAllocInt[myCurrentColInt];
+      } else
+      {
+        //this is a palette layer so red / green / blue 'layers are 'virtual'
+        //in that we need to obtain the palette entry and then get the r,g or g
+        //component from that palette entry
+        const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable, myScanlineAllocInt[myCurrentColInt]);
+        //check colorEntry is valid
+        if (myColorEntry != NULL)
+        {
+          //check for alternate color mappings
+          if (theBandNoInt == 1)  //"Red"
+          {
+            myDouble = static_cast < double >(myColorEntry->c1);
+          }
+          if (theBandNoInt == 2)  //"Green"
+          {
+            myDouble = static_cast < double >(myColorEntry->c2);
+          }
+          if (theBandNoInt == 3)  //"Blue"
+          {
+            myDouble = static_cast < double >(myColorEntry->c3);
+          }
         }
-    }
-    else if (rasterLayerType==GRAY_OR_UNDEFINED)
-    {
-        myRasterBandStats.bandName = myColorInterpretation;
-    }
-    else //rasterLayerType is MULTIBAND
-    {
-        //do nothing
-    }
-    myRasterBandStats.elementCountInt = rasterXDimInt * rasterYDimInt;
 
-    //allocate a buffer to hold one row of ints
-    int myAllocationSizeInt = sizeof(uint) * rasterXDimInt;
-    uint *myScanlineAllocInt = (uint *) CPLMalloc(myAllocationSizeInt);
-    bool myFirstIterationFlag = true;
-    //unfortunately we need to make two passes through the data to calculate stddev
-    for (int myCurrentRowInt = 0; myCurrentRowInt < rasterYDimInt; myCurrentRowInt++)
-    {
-       //we loop through the dataset twice for stats so ydim is doubled!
-       emit setProgress(myCurrentRowInt,rasterYDimInt*2);
-        CPLErr myResult =
-            myGdalBand->RasterIO(GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0);
-        for (int myCurrentColInt = 0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
+
+      }
+      //only use this element if we have a non null element
+      if (myDouble != noDataValueDouble)
+      {
+        if (myFirstIterationFlag)
         {
-	
-            double myDouble = 0;
-            //get the nth element from the current row
-            if (myColorInterpretation != "Palette") //dont translate this its a gdal string
-            {
-                myDouble = myScanlineAllocInt[myCurrentColInt];
-            } else
-            {
-                //this is a palette layer so red / green / blue 'layers are 'virtual'
-                //in that we need to obtain the palette entry and then get the r,g or g
-                //component from that palette entry
-                const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable, myScanlineAllocInt[myCurrentColInt]);
-                //check colorEntry is valid
-                if (myColorEntry != NULL)
-                {
-                    //check for alternate color mappings
-                    if (theBandNoInt == 1)  //"Red"
-                    {
-                        myDouble = static_cast < double >(myColorEntry->c1);
-                    }
-                    if (theBandNoInt == 2)  //"Green"
-                    {
-                        myDouble = static_cast < double >(myColorEntry->c2);
-                    }
-                    if (theBandNoInt == 3)  //"Blue"
-                    {
-                        myDouble = static_cast < double >(myColorEntry->c3);
-                    }
-                }
-
-
-            }
-            //only use this element if we have a non null element
-            if (myDouble != noDataValueDouble)
-            {
-                if (myFirstIterationFlag)
-                {
-                    //this is the first iteration so initialise vars
-                    myFirstIterationFlag = false;
-                    myRasterBandStats.minValDouble = myDouble;
-                    myRasterBandStats.maxValDouble = myDouble;
-                }               //end of true part for first iteration check
-                else
-                {
-                    //this is done for all subsequent iterations
-                    if (myDouble < myRasterBandStats.minValDouble)
-                    {
-                        myRasterBandStats.minValDouble = myDouble;
-                    }
-                    if (myDouble > myRasterBandStats.maxValDouble)
-                    {
-                        myRasterBandStats.maxValDouble = myDouble;
-                    }
-                    //only increment the running total if it is not a nodata value
-                    if (myDouble != noDataValueDouble)
-                    {
-                        myRasterBandStats.sumDouble += myDouble;
-                        ++myRasterBandStats.elementCountInt;
-                    }
-                }               //end of false part for first iteration check
-            }                   //end of nodata chec
-        }                       //end of column wise loop
-    }                           //end of row wise loop
-    //
-    //end of first pass through data now calculate the range
-    myRasterBandStats.rangeDouble = myRasterBandStats.maxValDouble - myRasterBandStats.minValDouble;
-    //calculate the mean
-    myRasterBandStats.meanDouble = myRasterBandStats.sumDouble / myRasterBandStats.elementCountInt;
-    //for the second pass we will get the sum of the squares / mean
-    for (int myCurrentRowInt = 0; myCurrentRowInt < rasterYDimInt; myCurrentRowInt++)
-    {
-        //we loop through the dataset twice for stats so ydim is doubled (this is loop2)!
-        emit setProgress(myCurrentRowInt+rasterYDimInt,rasterYDimInt*2);
-        CPLErr myResult =
-            myGdalBand->RasterIO(GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0);
-        for (int myCurrentColInt = 0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
+          //this is the first iteration so initialise vars
+          myFirstIterationFlag = false;
+          myRasterBandStats.minValDouble = myDouble;
+          myRasterBandStats.maxValDouble = myDouble;
+        }               //end of true part for first iteration check
+        else
         {
-            double myDouble = 0;
-            //get the nth element from the current row
-            if (myColorInterpretation != "Palette") //dont translate this its a gdal string
-            {
-                myDouble = myScanlineAllocInt[myCurrentColInt];
-            } else
-            {
-                //this is a palette layer so red / green / blue 'layers are 'virtual'
-                //in that we need to obtain the palette entry and then get the r,g or g
-                //component from that palette entry
-                const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable, myScanlineAllocInt[myCurrentColInt]);
-                //check colorEntry is valid
-                if (myColorEntry != NULL)
-                {
-                    //check for alternate color mappings
-                    if (theBandNoInt == 1)  //red
-                    {
-                        myDouble = myColorEntry->c1;
-                    }
-                    if (theBandNoInt == 1)  //green
-                    {
-                        myDouble = myColorEntry->c2;
-                    }
-                    if (theBandNoInt == 3)  //blue
-                    {
-                        myDouble = myColorEntry->c3;
-                    }
-                }
+          //this is done for all subsequent iterations
+          if (myDouble < myRasterBandStats.minValDouble)
+          {
+            myRasterBandStats.minValDouble = myDouble;
+          }
+          if (myDouble > myRasterBandStats.maxValDouble)
+          {
+            myRasterBandStats.maxValDouble = myDouble;
+          }
+          //only increment the running total if it is not a nodata value
+          if (myDouble != noDataValueDouble)
+          {
+            myRasterBandStats.sumDouble += myDouble;
+            ++myRasterBandStats.elementCountInt;
+          }
+        }               //end of false part for first iteration check
+      }                   //end of nodata chec
+    }                       //end of column wise loop
+  }                           //end of row wise loop
+  //
+  //end of first pass through data now calculate the range
+  myRasterBandStats.rangeDouble = myRasterBandStats.maxValDouble - myRasterBandStats.minValDouble;
+  //calculate the mean
+  myRasterBandStats.meanDouble = myRasterBandStats.sumDouble / myRasterBandStats.elementCountInt;
+  //for the second pass we will get the sum of the squares / mean
+  for (int myCurrentRowInt = 0; myCurrentRowInt < rasterYDimInt; myCurrentRowInt++)
+  {
+    //we loop through the dataset twice for stats so ydim is doubled (this is loop2)!
+    emit setProgress(myCurrentRowInt+rasterYDimInt,rasterYDimInt*2);
+    CPLErr myResult =
+        myGdalBand->RasterIO(GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0);
+    for (int myCurrentColInt = 0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
+    {
+      double myDouble = 0;
+      //get the nth element from the current row
+      if (myColorInterpretation != "Palette") //dont translate this its a gdal string
+      {
+        myDouble = myScanlineAllocInt[myCurrentColInt];
+      } else
+      {
+        //this is a palette layer so red / green / blue 'layers are 'virtual'
+        //in that we need to obtain the palette entry and then get the r,g or g
+        //component from that palette entry
+        const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable, myScanlineAllocInt[myCurrentColInt]);
+        //check colorEntry is valid
+        if (myColorEntry != NULL)
+        {
+          //check for alternate color mappings
+          if (theBandNoInt == 1)  //red
+          {
+            myDouble = myColorEntry->c1;
+          }
+          if (theBandNoInt == 1)  //green
+          {
+            myDouble = myColorEntry->c2;
+          }
+          if (theBandNoInt == 3)  //blue
+          {
+            myDouble = myColorEntry->c3;
+          }
+        }
 
 
-            }
-            myRasterBandStats.sumSqrDevDouble += static_cast < double >(pow(myDouble - myRasterBandStats.meanDouble, 2));
-        }                       //end of column wise loop
-    }                           //end of row wise loop
-    //divide result by sample size - 1 and get square root to get stdev
-    myRasterBandStats.stdDevDouble = static_cast < double >(sqrt(myRasterBandStats.sumSqrDevDouble /
-                                     (myRasterBandStats.elementCountInt - 1)));
-    CPLFree(myScanlineAllocInt);
-    myRasterBandStats.statsGatheredFlag = true;
-    //add this band to the class stats map
-    rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
-    emit setProgress(rasterYDimInt, rasterYDimInt); //reset progress
-    return myRasterBandStats;
+      }
+      myRasterBandStats.sumSqrDevDouble += static_cast < double >(pow(myDouble - myRasterBandStats.meanDouble, 2));
+    }                       //end of column wise loop
+  }                           //end of row wise loop
+  //divide result by sample size - 1 and get square root to get stdev
+  myRasterBandStats.stdDevDouble = static_cast < double >(sqrt(myRasterBandStats.sumSqrDevDouble /
+              (myRasterBandStats.elementCountInt - 1)));
+  CPLFree(myScanlineAllocInt);
+  myRasterBandStats.statsGatheredFlag = true;
+  //add this band to the class stats map
+  rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
+  emit setProgress(rasterYDimInt, rasterYDimInt); //reset progress
+  return myRasterBandStats;
 }                               //end of getRasterBandStats
 
 
@@ -2230,7 +2512,7 @@ void QgsRasterLayer::setTransparency(int theInt)
 #endif
   mTransparencySlider->setValue(255-theInt);
   //delegate rest to transparency slider
-  
+
 }
 unsigned int QgsRasterLayer::getTransparency()
 {
@@ -2257,10 +2539,10 @@ QString QgsRasterLayer::getMetadata()
   myMetadataQString += tr("X: ") + QString::number(gdalDataset->GetRasterXSize()) +
       tr(" Y: ") + QString::number(gdalDataset->GetRasterYSize()) + tr(" Bands: ") + QString::number(gdalDataset->GetRasterCount());
   myMetadataQString += "</td></tr>";
-  
+
   //just use the first band
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
-  
+
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Data Type:");
   myMetadataQString += "</td></tr>";
@@ -2304,7 +2586,7 @@ QString QgsRasterLayer::getMetadata()
           myMetadataQString += tr("Could not determine raster data type.");
   }
   myMetadataQString += "</td></tr>";
-  
+
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Pyramid overviews:");
   myMetadataQString += "</td></tr>";
