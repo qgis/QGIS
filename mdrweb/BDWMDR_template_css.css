@@ -1,0 +1,275 @@
+BODY {
+	MARGIN: 0px; COLOR: #000000; BACKGROUND-COLOR: #ffffff
+}
+TD {
+	FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+TR {
+	FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+P {
+	FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+DIV {
+	FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+.ontab {
+	BORDER-RIGHT: #808080 2px outset; BORDER-TOP: #ff9900 2px outset; FONT-WEIGHT: bold; BORDER-LEFT: #ff9900 2px outset; CURSOR: hand; COLOR: #ffffff; BORDER-BOTTOM: #d5d5d5 1px solid; BACKGROUND-COLOR: #ffae00; TEXT-ALIGN: center
+}
+.offtab {
+	BORDER-RIGHT: #e0e0e0 2px outset; BORDER-TOP: #e0e0e0 2px outset; FONT-WEIGHT: normal; BORDER-LEFT: #e0e0e0 2px outset; CURSOR: hand; BORDER-BOTTOM: #d5d5d5 1px solid; BACKGROUND-COLOR: #e5e5e5; TEXT-ALIGN: center
+}
+.tabpadding {
+	
+}
+.tabheading {
+	BACKGROUND-COLOR: #ffae00; TEXT-ALIGN: left
+}
+.pagetext {
+	DISPLAY: none; VISIBILITY: hidden; POSITION: relative; TOP: 0px
+}
+
+H1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 22px; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+
+H2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 20px; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+H4 {
+	FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+H5 {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+H6 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+A:link {
+	FONT-SIZE: 11px; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A:visited {
+	FONT-SIZE: 11px; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #ff6600; TEXT-DECORATION: none
+}
+A.contentpagetitle:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #808080; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+A.contentpagetitle:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #808080; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+A.contentpagetitle:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #ff6600; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left; TEXT-DECORATION: underline
+}
+HR {
+	BORDER-RIGHT: 1px inset; BORDER-TOP: 1px inset; BACKGROUND: #c0c0c0; BORDER-LEFT: 1px inset; BORDER-BOTTOM: 1px inset; HEIGHT: 2px
+}
+HR.separator {
+	BORDER-RIGHT: 0px; BORDER-TOP: 0px; BACKGROUND: #c0c0c0; BORDER-LEFT: 0px; WIDTH: 75px; BORDER-BOTTOM: 0px; HEIGHT: 1px
+}
+A.mainmenu:link {
+	FONT-WEIGHT: normal; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Geneva, Arial, Helvetica, serif
+}
+A.mainmenu:visited {
+	FONT-WEIGHT: normal; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Geneva, Arial, Helvetica, serif
+}
+A.mainlevel:link {
+	FONT-WEIGHT: normal; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Geneva, Arial, Helvetica, serif
+}
+A.mainlevel:visited {
+	FONT-WEIGHT: normal; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Geneva, Arial, Helvetica, serif
+}
+A.mainmenu:hover {
+	COLOR: #ff9900; TEXT-DECORATION: underline
+}
+A.mainlevel:hover {
+	COLOR: #ff9900; TEXT-DECORATION: underline
+}
+A.sublevel:hover {
+	COLOR: #ff0000; TEXT-DECORATION: underline
+}
+A.sublevel:link {
+	FONT-WEIGHT: normal; COLOR: #0000c0; FONT-FAMILY: Trebuchet MS, Verdana, Geneva, Arial, Helvetica, serif
+}
+A.sublevel:visited {
+	FONT-WEIGHT: normal; COLOR: #0000c0; FONT-FAMILY: Trebuchet MS, Verdana, Geneva, Arial, Helvetica, serif
+}
+.contentpane {
+	BACKGROUND-COLOR: #ffffff
+}
+.contentpaneopen {
+	BORDER-RIGHT: #dcdcdc 0px ridge; BORDER-TOP: #dcdcdc 0px ridge; BORDER-LEFT: #dcdcdc 0px ridge; BORDER-BOTTOM: #dcdcdc 0px ridge
+}
+.contentheading {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #333333; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+.contentpagetitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #333333; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+TABLE.contenttoc {
+	COLOR: #333300; BACKGROUND-COLOR: #e0e0e0
+}
+TABLE.contenttoc TD {
+	FONT-WEIGHT: normal; FONT-SIZE: 8pt; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+A.toclink:hover {
+	FONT-SIZE: 9px
+}
+A.toclink:visited {
+	FONT-SIZE: 9px
+}
+A.toclink:link {
+	FONT-SIZE: 9px
+}
+.contentdescription {
+	FONT-SIZE: 11px; COLOR: #808080; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+A.blogsection:link {
+	FONT-WEIGHT: normal; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.blogsection:visited {
+	FONT-WEIGHT: normal; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.blogsection:hover {
+	COLOR: #999999; TEXT-DECORATION: underline
+}
+A.weblinks:link {
+	FONT-WEIGHT: normal; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.weblinks:visited {
+	FONT-WEIGHT: normal; COLOR: #ff9900; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.weblinks:hover {
+	COLOR: #999999; TEXT-DECORATION: underline
+}
+A.readon:link {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: blue; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.readon:visited {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: blue; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.readon:hover {
+	COLOR: #999999; TEXT-DECORATION: underline
+}
+TABLE.moduletable {
+	BORDER-RIGHT: #000000 0px solid; BORDER-TOP: #000000 0px solid; MARGIN: 0px; BORDER-LEFT: #000000 0px solid; WIDTH: 95%; BORDER-BOTTOM: #000000 0px solid
+}
+TABLE.moduletable TH {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; WIDTH: 100%; COLOR: #ffffff; LINE-HEIGHT: 18px; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; HEIGHT: 18px; BACKGROUND-COLOR: #8a8a8a; TEXT-ALIGN: left
+}
+TABLE.moduletable TD {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+.componentheading {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #333333; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+.button {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; FONT-WEIGHT: bold; FONT-SIZE: 10px; BORDER-LEFT: 1px solid; COLOR: #000000; BORDER-BOTTOM: 1px solid; FONT-STYLE: normal; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+.inputbox {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #ffffff; BORDER-LEFT: 1px solid; COLOR: #666666; BORDER-BOTTOM: 1px solid; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+.category {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #999999; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.category:link {
+	FONT-WEIGHT: bold; COLOR: #999999
+}
+A.category:visited {
+	FONT-WEIGHT: bold; COLOR: #999999
+}
+A.category:hover {
+	COLOR: #ff9900
+}
+.poll {
+	FONT-SIZE: 10px; COLOR: #666666; LINE-HEIGHT: 14px; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+.sectiontableentry1 {
+	BACKGROUND-COLOR: #ffffff
+}
+.contentpane {
+	BACKGROUND-COLOR: #ffffff
+}
+.sectiontableentry2 {
+	BACKGROUND-COLOR: #ebebeb
+}
+.sectiontableheader {
+	FONT-WEIGHT: bold; COLOR: #ffffff; BACKGROUND-COLOR: #999999
+}
+.frontpageheader {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #0077aa
+}
+.small {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #ff6600; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.smalldark {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #333333; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.newsfeedheading {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #333333; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+.newsfeeddate {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #ff6600; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.createdate {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #ff6600; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.modifydate {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #808080; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+UL {
+	MARGIN: 0px
+}
+LI {
+	LIST-STYLE-POSITION: inside; LIST-STYLE-IMAGE: url(../images/arrow.png)
+}
+.fase4rdf {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif
+}
+A.fase4rdf:link {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #ff9900
+}
+A.fase4rdf:hover {
+	FONT-WEIGHT: bold; COLOR: #808080
+}
+TABLE.searchintro {
+	BORDER-RIGHT: #777777 1px solid; BORDER-TOP: #777777 1px solid; BORDER-LEFT: #777777 1px solid; BORDER-BOTTOM: #777777 1px solid; BACKGROUND-COLOR: #ffffff
+}
+TABLE.contact {
+	BACKGROUND-COLOR: #ffffff
+}
+TABLE.contact TD.icons {
+	BACKGROUND-COLOR: #c6cbce
+}
+TABLE.contact TD.details {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #eeeeee
+}
+.pagenav {
+	FONT-WEIGHT: normal; COLOR: #386593
+}
+A.pagenav {
+	COLOR: #ff6600
+}
+A.pagenav:visited {
+	COLOR: #ff6600
+}
+A.pagenav:hover {
+	COLOR: #386593
+}
+.pagenavbar {
+	
+}
+.content_rating {
+	FONT-WEIGHT: normal; FONT-SIZE: 8pt
+}
+.content_vote {
+	FONT-WEIGHT: normal; FONT-SIZE: 8pt
+}
+.moscode {
+	BACKGROUND-COLOR: #f0f0f0
+}
+.message {
+	FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #ff6600; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: center
+}
