@@ -112,6 +112,7 @@ class QgisApp:public QgisAppBase
 	//! Current map tool
 	int mapTool;
 	QCursor *cursorZoomIn;
+	QString startupPath;
 };
 
 #endif
