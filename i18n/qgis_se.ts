@@ -559,6 +559,82 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
         <source>Automatically snap to round number on resize</source>
         <translation>Runda av till vettig storlek</translation>
     </message>
+    <message>
+        <source>QGIS Http Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished">Verkställ</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">Allmänt</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:14pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin runs a simple web server (by default listening on port 8081) that listens for requests for maps. &lt;/p&gt;
+&lt;p&gt;Specify your server name using e.g. http://mydomain.com&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;NOTE: This plugin is pre-alpha code. It does work in its basic form but its still buggy, feature incomplete and my crash QGIS.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always start plugin with server enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projects Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default Project:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSS File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QFileDialog</name>
@@ -1427,6 +1503,34 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     <message>
         <source>-</source>
         <translation>-</translation>
+    </message>
+    <message>
+        <source>D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
