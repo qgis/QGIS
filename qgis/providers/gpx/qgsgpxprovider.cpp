@@ -167,24 +167,18 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 
 bool QgsGPXProvider::getNextFeature(QgsFeature* feature, 
 				    std::list<int>& attlist) {
-    bool result = false;
+  bool result = false;
   
-    /*std::list<int>::const_iterator iter;
+  std::list<int>::const_iterator iter;
   
   if (mFeatureType == WaypointType) {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
-    int maxFid = data->getNumberOfWaypoints() +
-      (getnotcommitted ? mAddedFeatures.size() : 0);
+    int maxFid = data->getNumberOfWaypoints();
     
     for (; mFid < maxFid; ++mFid) {
       const Waypoint* wpt;
-      if (mFid < data->getNumberOfWaypoints())
-	wpt = &(data->getWaypoint(mFid));
-      else {
-	wpt = dynamic_cast<Waypoint*>
-	  (mAddedFeatures[mFid - data->getNumberOfWaypoints()]);
-      }
+      wpt = &(data->getWaypoint(mFid));
       if (boundsCheck(wpt->lon, wpt->lat)) {
 	feature->setFeatureId(mFid);
 	result = true;
@@ -241,17 +235,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
   else if (mFeatureType == RouteType) {
     // go through the routes and return the first one that is in the bounds
     // rectangle
-    int maxFid = data->getNumberOfRoutes() +
-      (getnotcommitted ? mAddedFeatures.size() : 0);
+    int maxFid = data->getNumberOfRoutes();
     for (; mFid < maxFid; ++mFid) {
       const Route* rte;
-      if (mFid < data->getNumberOfRoutes())
-	rte = &(data->getRoute(mFid));
-      else {
-	rte = dynamic_cast<Route*>
-	  (mAddedFeatures[mFid - data->getNumberOfRoutes()]);
-      }
-
+      rte = &(data->getRoute(mFid));
+      
       if (rte->points.size() == 0)
 	continue;
       const Routepoint& rtept(rte->points[0]);
@@ -306,16 +294,10 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
   else if (mFeatureType == TrackType) {
     // go through the tracks and return the first one that is in the bounds
     // rectangle
-    int maxFid = data->getNumberOfTracks() +
-      (getnotcommitted ? mAddedFeatures.size() : 0);
+    int maxFid = data->getNumberOfTracks();
     for (; mFid < maxFid; ++mFid) {
       const Track* trk;
-      if (mFid < data->getNumberOfTracks())
-	trk = &(data->getTrack(mFid));
-      else {
-	trk = dynamic_cast<Track*>
-	  (mAddedFeatures[mFid - data->getNumberOfTracks()]);
-      }
+      trk = &(data->getTrack(mFid));
       
       if (trk->segments.size() == 0)
 	continue;
@@ -369,7 +351,6 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
       }
     }
   }
-    */
   return result;
 }
 
@@ -549,7 +530,18 @@ bool QgsGPXProvider::isValid(){
   return mValid;
 }
 
+
 bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
+  for (std::list<QgsFeature*>::const_iterator iter = flist.begin(); 
+       iter != flist.end(); ++iter) {
+    if (!addFeature(*iter))
+      return false;
+  }
+  return true;
+}
+
+
+bool QgsGPXProvider::addFeature(QgsFeature* f) {
   return false;
 }
 

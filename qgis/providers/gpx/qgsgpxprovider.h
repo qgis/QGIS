@@ -129,15 +129,12 @@ public:
    */
   bool isValid();
 
-  /**Returns true if the provider is in editing mode*/
-  virtual bool isEditable() const { return mEditable; }
-
-  /**Returns true if the provider has been modified since the last commit*/
-  virtual bool isModified() const { return mAddedFeatures.size() > 0; }
-
-  /**Adds a feature
+  /**Adds a list of features
      @return true in case of success and false in case of failure*/
   bool addFeatures(std::list<QgsFeature*> flist);
+  
+  /** Adds one feature (used by addFeatures()) */
+  bool QgsGPXProvider::addFeature(QgsFeature* f);
   
   /**Returns the default value for attribute @c attr for feature @c f. */
   QString getDefaultValue(const QString& attr, QgsFeature* f);
@@ -151,7 +148,7 @@ public:
    */
   bool boundsCheck(double x, double y);
 
-  bool supportsFeatureAddition(){return true;}
+  bool supportsFeatureAddition(){return false;}
   
  private:
   
@@ -159,7 +156,6 @@ public:
   bool getNextFeature(QgsFeature* feature, std::list<int>& attlist);
 
   bool mEditable;
-  std::vector<GPSObject*> mAddedFeatures;
   GPSData* data;
   void fillMinMaxCash();
   //! Fields
