@@ -495,7 +495,7 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
     popMenu->insertSeparator();
 
-    popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
+
 
     app->actionInOverview->addTo( popMenu );
 
@@ -504,7 +504,9 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
 
     // now give the sub-classes a chance to tailor the context menu
     initContextMenu_( app );
-
+    //properties goes on bottom of menu for consistency with normal ui standards
+    //e.g. kde stuff
+    popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
 } // QgsMapLayer::initContextMenu(QgisApp * app)
 
 void QgsMapLayer::keyPressed ( QKeyEvent * e )
