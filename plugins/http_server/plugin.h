@@ -60,7 +60,8 @@ class Plugin:public QObject, public QgisPlugin
   void startServer();
   //! Stop the server
   void stopServer();
-  //!
+  //! Passed by the http daemon when it receives a new request
+  void requestReceived(QString);
   
 private:
   

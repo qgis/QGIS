@@ -112,7 +112,9 @@ void Plugin::run()
   
   connect(mHttpDaemon, SIGNAL(newConnect(QString)), myPluginGui, SLOT(newConnect(QString)));
   connect(mHttpDaemon, SIGNAL(endConnect(QString)), myPluginGui, SLOT(endConnect(QString)));
-  connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToConnect(QString)));
+  connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToClient(QString)));
+  connect(mHttpDaemon, SIGNAL(requestReceived(QString)), myPluginGui, SLOT(requestReceived(QString)));
+  connect(mHttpDaemon, SIGNAL(requestReceived(QString)), this, SLOT(requestReceived(QString)));
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -137,6 +139,8 @@ void Plugin::unload()
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
   delete toolBarPointer;
+  //kill any connections to this object
+  disconnect( this, 0, 0, 0 );
 }
 
 void Plugin::startServer()
@@ -148,10 +152,27 @@ void Plugin::startServer()
 void Plugin::stopServer()
 {
   //break all connections to httpdeamon signals
+  disconnect( mHttpDaemon, 0, 0, 0 );
   delete mHttpDaemon;
   
 }
 
+void Plugin::requestReceived(QString theQString)
+{
+  std::cout << "Recevied request to open " << theQString << std::endl;
+  //do all the stuff needed to open the project and take a snapshot of it
+  if (qgisMainWindowPointer->addProject(theQString))
+  {
+    //let the httpdserver know we are finished and pass it back the output filename
+    mHttpDaemon->requestCompleted(QString("Projet opened successfully!"));
+
+  }
+  else
+  {
+    //let the httpdserver know we are finished and pass it back the output filename
+    mHttpDaemon->requestCompleted(QString("Failed opening project!"));
+  }
+}
 
 
 

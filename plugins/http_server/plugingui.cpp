@@ -58,3 +58,7 @@ void PluginGui::wroteToClient(QString theMessage)
 {
   teLogs->append( theMessage );
 }
+void PluginGui::requestReceived(QString theString)
+{
+  teDebug->append(theString);
+}

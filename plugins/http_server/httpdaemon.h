@@ -35,12 +35,19 @@ public:
   void newConnection( int socket );
 
 signals:
-  void newConnect(QString);
-  void endConnect(QString);
-  void wroteToClient(QString);
+  void requestReceived(QString); //passes out qgs project file name
+  void makeMap(QString); //passed out
+  void newConnect(QString); //passed out
+  void endConnect(QString); //passed out
+  void wroteToClient(QString); //passed out
+
+public slots:
+  void requestCompleted(QString); //will contain the filename of the output image
 
 private slots:
   void readClient();
   void discardClient();
+  void closeStreamWithError(QString);
+private:
 };
 #endif

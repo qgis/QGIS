@@ -35,7 +35,7 @@ public slots:
     void newConnect(QString);
     void endConnect(QString);
     void wroteToClient(QString);
-    
+    void requestReceived(QString);    
 };
 
 #endif
