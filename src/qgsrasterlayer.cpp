@@ -110,7 +110,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     // Set up the x and y dimensions of this raster layer
     //
     rasterXDimInt = gdalDataset->GetRasterBand( 1 )->GetXSize();
-    rasterYDimInt = gdalDataset->GetRasterBand( 1 )->GetXSize();
+    rasterYDimInt = gdalDataset->GetRasterBand( 1 )->GetYSize();
     //
     // Determin the no data value
     //
@@ -391,6 +391,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             }
             // a "Palette" layer drawn in gray scale (using only one of the color components)
         case PALETTED_SINGLE_BAND_GRAY:
+            std::cout << "PALETTED_SINGLE_BAND_GRAY drawing type detected..." << std::endl;
             //check the band is set!
             if (grayBandNameQString==tr("Not Set"))
             {
@@ -499,7 +500,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
     QImage myQImage=QImage(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt,32);
     myQImage.setAlphaBuffer(true);
     std::cout << "draw gray band Retrieving stats" << std::endl;
-    RasterBandStats myRasterBandStats = getRasterBandStats(1);
+    RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
     std::cout << "draw gray band Git stats" << std::endl;
     double myRangeDouble=myRasterBandStats.rangeDouble;
     // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
@@ -701,7 +702,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
     // RasterIO() takes care of scaling down image
-    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
+    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( 1 ); //always 1 !!!
     uint *myGdalScanData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
     CPLErr myResultCPLerr = myGdalBand->RasterIO(
                                 GF_Read, theRasterViewPort->rectXOffsetInt,
@@ -782,7 +783,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
     // RasterIO() takes care of scaling down image
-    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
+    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( 1 ); //always one!
     uint *myGdalScanData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
     CPLErr myResultCPLerr = myGdalBand->RasterIO(
                                 GF_Read, theRasterViewPort->rectXOffsetInt,
@@ -800,13 +801,13 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
     myQImage.setAlphaBuffer(true);
 
 
-    RasterBandStats myRasterBandStats = getRasterBandStats(1);
+    RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
     double myRangeDouble=myRasterBandStats.rangeDouble;
     int myRedInt=0;
     int myGreenInt=0;
     int myBlueInt=0;
     //calculate the adjusted matrix stats - which come into affect if the user has chosen
-    RasterBandStats myAdjustedRasterBandStats = getRasterBandStats(1);
+    RasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
     
     //to histogram stretch to a given number of std deviations
     //see if we are using histogram stretch using stddev and plot only within the selected number of deviations if we are
