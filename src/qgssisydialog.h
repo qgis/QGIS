@@ -33,6 +33,18 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
  public:
     QgsSiSyDialog(QgsVectorLayer* layer);
     ~QgsSiSyDialog();
+    QColor getOutlineColor();
+    Qt::PenStyle getOutlineStyle();
+    int getOutlineWidth();
+    QColor getFillColor();
+    Qt::BrushStyle getFillStyle();
+    void setOutlineColor(QColor& c);
+    void setOutlineStyle(Qt::PenStyle pstyle);
+    void setOutlineWidth(int width);
+    void setFillColor(QColor& c);
+    void setFillStyle(Qt::BrushStyle fstyle);
+    
+    
  protected:
     QgsVectorLayer* mVectorLayer;
  public slots:

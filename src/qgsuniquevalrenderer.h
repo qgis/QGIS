@@ -47,7 +47,11 @@ class QgsUniqueValRenderer: public QgsRenderer
     void insertValue(QString name, QgsRenderItem* item);
     /**Removes all entries from mEntries*/
     void clearValues();
+    /**Sets the Field index used for classification*/
+    void setClassificationField(int field);
  protected:
+    /**Field index used for classification*/
+    int mClassificationField;
     /**Entries for the unique values*/
     std::map<QString,QgsRenderItem*> mEntries;
     /**Colour used to render selected features*/
@@ -62,6 +66,11 @@ inline bool QgsUniqueValRenderer::needsAttributes()
 inline void QgsUniqueValRenderer::insertValue(QString name, QgsRenderItem* item)
 {
     mEntries.insert(std::make_pair(name,item));
+}
+
+inline void QgsUniqueValRenderer::setClassificationField(int field)
+{
+    mClassificationField=field;
 }
 
 #endif

@@ -210,3 +210,58 @@ void QgsSiSyDialog::apply()
     //repaint the map canvas
     mVectorLayer->triggerRepaint();
 }
+
+void QgsSiSyDialog::setOutlineColor(QColor& c)
+{
+    lblOutlineColor->setPaletteBackgroundColor(c);
+}
+    
+void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
+{
+    stylebutton->setPixmap(QgsSymbologyUtils::penStyle2Pixmap(pstyle));
+    stylebutton->setName(QgsSymbologyUtils::penStyle2QString(pstyle));
+#ifdef QGISDEBUG
+    qWarning("Setting outline style: "+QgsSymbologyUtils::penStyle2QString(pstyle));
+#endif
+}
+    
+void QgsSiSyDialog::setFillColor(QColor& c)
+{
+    lblFillColor->setPaletteBackgroundColor(c);
+}
+    
+void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
+{
+    patternbutton->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(fstyle));
+    patternbutton->setName(QgsSymbologyUtils::brushStyle2QString(fstyle));
+}
+
+void QgsSiSyDialog::setOutlineWidth(int width)
+{
+    outlinewidthspinbox->setValue(width);
+}
+
+QColor QgsSiSyDialog::getOutlineColor()
+{
+    return lblOutlineColor->paletteBackgroundColor();
+}
+
+Qt::PenStyle QgsSiSyDialog::getOutlineStyle()
+{
+    return QgsSymbologyUtils::qString2PenStyle(stylebutton->name());
+}
+
+int QgsSiSyDialog::getOutlineWidth()
+{
+    return outlinewidthspinbox->value();
+}
+
+QColor QgsSiSyDialog::getFillColor()
+{
+    return lblFillColor->paletteBackgroundColor();
+}
+
+Qt::BrushStyle QgsSiSyDialog::getFillStyle()
+{
+    return QgsSymbologyUtils::qString2BrushStyle(patternbutton->name());
+}
