@@ -93,10 +93,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       mEditable(false),
       mModified(false)
 {
-#ifdef QGISDEBUG
-  std::cerr << "VECTORLAYERPATH: " << vectorLayerPath.ascii() << std::endl;
-  std::cerr << "BASENAME: " << baseName.ascii() << std::endl;
-#endif
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
@@ -194,7 +190,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
 
       QString fldName = fields[j].name();
 #ifdef QGISDEBUG
-      std::cerr << "Checking field " << fldName << std::endl;
+      std::cerr << "Checking field " << fldName << " of " << fields.size() << " total" << std::endl;
 #endif
       // Check the fields and keep the first one that matches.
       // We assume that the user has organized the data with the
@@ -1313,6 +1309,9 @@ void QgsVectorLayer::select(int number)
 
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
+#ifdef QGISDEBUG 
+  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl; 
+#endif 
   // process the attribute actions
   mActions.readXML(layer_node);
 
