@@ -35,13 +35,15 @@ signals:
    //void drawRasterLayer(QString);
    //void drawVectorrLayer(QString,QString,QString);
    void rotationChanged(int);
+   void changePlacement(QString);
+   
 public slots:
     void setRotation(int);
 private slots:
     //overides function byt the same name created in .ui
     void spinSize_valueChanged( int theInt);
     //overides function byt the same name created in .ui
-    void sliderRotation_valueChanged( int theInt);   
+    void sliderRotation_valueChanged( int theInt);
 };
 
 #endif

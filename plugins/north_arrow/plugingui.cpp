@@ -18,6 +18,7 @@
 #include <qspinbox.h>
 #include <qslider.h>
 #include <qtabwidget.h>
+#include <qcombobox.h>
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
@@ -49,6 +50,7 @@ void PluginGui::pbnOK_clicked()
   //
   //close the dialog
   emit rotationChanged(sliderRotation->value());
+  emit changePlacement(cboPlacement->currentText());
   done(1);
 } 
 void PluginGui::pbnCancel_clicked()

@@ -61,11 +61,17 @@ class Plugin:public QObject, public QgisPlugin
   void unload();
   //! show the help document
   void help();
+  //! set copyright label placement
+  void setPlacement(QString);
+
     private:
+
 
   // The amount of rotation for the north arrow
   int mRotationInt;
   int pluginType;
+  // The placement string
+  QString mPlacement;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
   //! Pointer to our toolbar
