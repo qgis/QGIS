@@ -1076,28 +1076,11 @@ void QgsMapCanvas::zoomToSelected()
       rect = lyr->bBoxOfSelected();
     }
 
-    // no selected features
-    // XXX where is rectange set to "empty"? Shouldn't we use QgsRect::isEmpty()?
-    if (rect.xMin() == DBL_MAX &&
-        rect.yMin() == DBL_MAX &&
-        rect.xMax() == -DBL_MAX &&
-        rect.yMax() == -DBL_MAX)
+    // no selected features, only one selected point feature 
+    //or two point features with the same x- or y-coordinates
+    if(rect.isEmpty())
     {
-      return;
-    }
-    //zoom to one single point
-    else if (rect.xMin() == rect.xMax() &&
-             rect.yMin() == rect.yMax())
-    {
-      mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
-      mCanvasProperties->currentExtent.setXmin(rect.xMin() - 25);
-      mCanvasProperties->currentExtent.setYmin(rect.yMin() - 25);
-      mCanvasProperties->currentExtent.setXmax(rect.xMax() + 25);
-      mCanvasProperties->currentExtent.setYmax(rect.yMax() + 25);
-      emit extentsChanged(mCanvasProperties->currentExtent);
-      clear();
-      render();
-      return;
+	return;
     }
     //zoom to an area
     else

@@ -1033,214 +1033,68 @@ QPopupMenu *QgsVectorLayer::contextMenu()
 
 QgsRect QgsVectorLayer::bBoxOfSelected()
 {
-  QgsRect rect(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
+    if(mSelected.size()==0)//no selected features
+    {
+	return QgsRect(0,0,0,0);
+    }
+
+  double xmin=DBL_MAX;
+  double ymin=DBL_MAX;
+  double xmax=-DBL_MAX;
+  double ymax=-DBL_MAX;
+  QgsRect r;
+  QgsFeature* fet;
   dataProvider->reset();
-
-  QgsFeature *fet;
-  unsigned char *feature;
-
-  double *x;
-  double *y;
-  int *nPoints;
-  int *numRings;
-  int *numPolygons;
-  int numPoints;
-  int numLineStrings;
-  int idx, jdx, kdx;
-  unsigned char *ptr;
-  char lsb;
-  QgsPoint pt;
-  QPointArray *pa;
-  int wkbType;
 
   while ((fet = dataProvider->getNextFeature(false)))
   {
     if (mSelected.find(fet->featureId()) != mSelected.end())
     {
-      feature = fet->getGeometry();
-      wkbType = (int) feature[1];
-
-
-      switch (wkbType)
-      {
-      case WKBPoint:
-        x = (double *) (feature + 5);
-        y = (double *) (feature + 5 + sizeof(double));
-        if (*x < rect.xMin())
-        {
-          rect.setXmin(*x);
-        }
-        if (*x > rect.xMax())
-        {
-          rect.setXmax(*x);
-        }
-        if (*y < rect.yMin())
-        {
-          rect.setYmin(*y);
-        }
-        if (*y > rect.yMax())
-        {
-          rect.setYmax(*y);
-        }
-        break;
-
-      case WKBLineString:
-        // get number of points in the line
-        ptr = feature + 5;
-        nPoints = (int *) ptr;
-        ptr = feature + 1 + 2 * sizeof(int);
-        for (idx = 0; idx < *nPoints; idx++)
-        {
-          x = (double *) ptr;
-          ptr += sizeof(double);
-          y = (double *) ptr;
-          ptr += sizeof(double);
-          if (*x < rect.xMin())
-          {
-            rect.setXmin(*x);
-          }
-          if (*x > rect.xMax())
-          {
-            rect.setXmax(*x);
-          }
-          if (*y < rect.yMin())
-          {
-            rect.setYmin(*y);
-          }
-          if (*y > rect.yMax())
-          {
-            rect.setYmax(*y);
-          }
-        }
-        break;
-
-      case WKBMultiLineString:
-        numLineStrings = (int) (feature[5]);
-        ptr = feature + 9;
-        for (jdx = 0; jdx < numLineStrings; jdx++)
-        {
-          // each of these is a wbklinestring so must handle as such
-          lsb = *ptr;
-          ptr += 5;   // skip type since we know its 2
-          nPoints = (int *) ptr;
-          ptr += sizeof(int);
-          for (idx = 0; idx < *nPoints; idx++)
-          {
-            x = (double *) ptr;
-            ptr += sizeof(double);
-            y = (double *) ptr;
-            ptr += sizeof(double);
-            if (*x < rect.xMin())
-            {
-              rect.setXmin(*x);
-            }
-            if (*x > rect.xMax())
-            {
-              rect.setXmax(*x);
-            }
-            if (*y < rect.yMin())
-            {
-              rect.setYmin(*y);
-            }
-            if (*y > rect.yMax())
-            {
-              rect.setYmax(*y);
-            }
-          }
-        }
-        break;
-
-      case WKBPolygon:
-        // get number of rings in the polygon
-        numRings = (int *) (feature + 1 + sizeof(int));
-        ptr = feature + 1 + 2 * sizeof(int);
-        for (idx = 0; idx < *numRings; idx++)
-        {
-          // get number of points in the ring
-          nPoints = (int *) ptr;
-          ptr += 4;
-          for (jdx = 0; jdx < *nPoints; jdx++)
-          {
-            // add points to a point array for drawing the polygon
-            x = (double *) ptr;
-            ptr += sizeof(double);
-            y = (double *) ptr;
-            ptr += sizeof(double);
-            if (*x < rect.xMin())
-            {
-              rect.setXmin(*x);
-            }
-            if (*x > rect.xMax())
-            {
-              rect.setXmax(*x);
-            }
-            if (*y < rect.yMin())
-            {
-              rect.setYmin(*y);
-            }
-            if (*y > rect.yMax())
-            {
-              rect.setYmax(*y);
-            }
-          }
-        }
-        break;
-
-      case WKBMultiPolygon:
-        // get the number of polygons
-        ptr = feature + 5;
-        numPolygons = (int *) ptr;
-        for (kdx = 0; kdx < *numPolygons; kdx++)
-        {
-          //skip the endian and feature type info and
-          // get number of rings in the polygon
-          ptr = feature + 14;
-          numRings = (int *) ptr;
-          ptr += 4;
-          for (idx = 0; idx < *numRings; idx++)
-          {
-            // get number of points in the ring
-            nPoints = (int *) ptr;
-            ptr += 4;
-            for (jdx = 0; jdx < *nPoints; jdx++)
-            {
-              // add points to a point array for drawing the polygon
-              x = (double *) ptr;
-              ptr += sizeof(double);
-              y = (double *) ptr;
-              ptr += sizeof(double);
-              if (*x < rect.xMin())
-              {
-                rect.setXmin(*x);
-              }
-              if (*x > rect.xMax())
-              {
-                rect.setXmax(*x);
-              }
-              if (*y < rect.yMin())
-              {
-                rect.setYmin(*y);
-              }
-              if (*y > rect.yMax())
-              {
-                rect.setYmax(*y);
-              }
-            }
-          }
-        }
-        break;
-
-      default:
-#ifdef QGISDEBUG
-        std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
-#endif
-        break;
-
-      }
-      delete[]feature;
+	r=fet->boundingBox();
+	if(r.xMin()<xmin)
+	{
+	    xmin=r.xMin();
+	}
+	if(r.yMin()<ymin)
+	{
+	    ymin=r.yMin();
+	}
+	if(r.xMax()>xmax)
+	{
+	    xmax=r.xMax();
+	}
+	if(r.yMax()>ymax)
+	{
+	    ymax=r.yMax();
+	}
     }
+      delete fet;
   }
-  return rect;
+  //also go through the not commited features
+  for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+  {
+      if(mSelected.find((*iter)->featureId())!=mSelected.end())
+      {
+	  r=(*iter)->boundingBox();
+	  if(r.xMin()<xmin)
+	  {
+	      xmin=r.xMin();
+	  }
+	  if(r.yMin()<ymin)
+	  {
+	      ymin=r.yMin();
+	  }
+	  if(r.xMax()>xmax)
+	  {
+	      xmax=r.xMax();
+	  }
+	  if(r.yMax()>ymax)
+	  {
+	      ymax=r.yMax();
+	  }
+      }
+  }
+  return QgsRect(xmin,ymin,xmax,ymax);
 }
 
 void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties)

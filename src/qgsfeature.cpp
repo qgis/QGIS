@@ -255,7 +255,7 @@ void QgsFeature::attributeDialog()
     }
 }
 
-bool QgsFeature::intersects(QgsRect* r)
+bool QgsFeature::intersects(QgsRect* r) const
 {
     bool returnval=false;
 
@@ -532,7 +532,7 @@ bool QgsFeature::exportToWKT() const
     
 }
 
-QgsPoint QgsFeature::closestVertex(const QgsPoint& point)
+QgsPoint QgsFeature::closestVertex(const QgsPoint& point) const
 {
     if(geometry)
     {
@@ -681,4 +681,214 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point)
 	return QgsPoint(x,y);    
     }
     return QgsPoint(0,0);
+}
+
+QgsRect QgsFeature::boundingBox() const
+{
+    double xmin=DBL_MAX;
+    double ymin=DBL_MAX;
+    double xmax=-DBL_MAX;
+    double ymax=-DBL_MAX;
+
+    double *x;
+    double *y;
+    int *nPoints;
+    int *numRings;
+    int *numPolygons;
+    int numPoints;
+    int numLineStrings;
+    int idx, jdx, kdx;
+    unsigned char *ptr;
+    char lsb;
+    QgsPoint pt;
+    QPointArray *pa;
+    int wkbType;
+    unsigned char *feature;
+
+    feature = this->getGeometry();
+    if(feature)
+    {
+	wkbType=(int) feature[1];
+	switch (wkbType)
+      {
+      case QGis::WKBPoint:
+        x = (double *) (feature + 5);
+        y = (double *) (feature + 5 + sizeof(double));
+        if (*x < xmin)
+        {
+          xmin=*x;
+        }
+        if (*x > xmax)
+        {
+          xmax=*x;
+        }
+        if (*y < ymin)
+        {
+          ymin=*y;
+        }
+        if (*y > ymax)
+        {
+          ymax=*y;
+        }
+        break;
+
+      case QGis::WKBLineString:
+        // get number of points in the line
+        ptr = feature + 5;
+        nPoints = (int *) ptr;
+        ptr = feature + 1 + 2 * sizeof(int);
+        for (idx = 0; idx < *nPoints; idx++)
+        {
+          x = (double *) ptr;
+          ptr += sizeof(double);
+          y = (double *) ptr;
+          ptr += sizeof(double);
+          if (*x < xmin)
+          {
+            xmin=*x;
+          }
+          if (*x > xmax)
+          {
+	      xmax=*x;
+          }
+          if (*y < ymin)
+          {
+            ymin=*y;
+          }
+          if (*y > ymax)
+          {
+            ymax=*y;
+          }
+        }
+        break;
+
+      case QGis::WKBMultiLineString:
+        numLineStrings = (int) (feature[5]);
+        ptr = feature + 9;
+        for (jdx = 0; jdx < numLineStrings; jdx++)
+        {
+          // each of these is a wbklinestring so must handle as such
+          lsb = *ptr;
+          ptr += 5;   // skip type since we know its 2
+          nPoints = (int *) ptr;
+          ptr += sizeof(int);
+          for (idx = 0; idx < *nPoints; idx++)
+          {
+            x = (double *) ptr;
+            ptr += sizeof(double);
+            y = (double *) ptr;
+            ptr += sizeof(double);
+            if (*x < xmin)
+            {
+              xmin=*x;
+            }
+            if (*x > xmax)
+            {
+              xmax=*x;
+            }
+            if (*y < ymin)
+            {
+              ymin=*y;
+            }
+            if (*y > ymax)
+            {
+              ymax=*y;
+            }
+          }
+        }
+        break;
+
+      case QGis::WKBPolygon:
+        // get number of rings in the polygon
+        numRings = (int *) (feature + 1 + sizeof(int));
+        ptr = feature + 1 + 2 * sizeof(int);
+        for (idx = 0; idx < *numRings; idx++)
+        {
+          // get number of points in the ring
+          nPoints = (int *) ptr;
+          ptr += 4;
+          for (jdx = 0; jdx < *nPoints; jdx++)
+          {
+            // add points to a point array for drawing the polygon
+            x = (double *) ptr;
+            ptr += sizeof(double);
+            y = (double *) ptr;
+            ptr += sizeof(double);
+            if (*x < xmin)
+            {
+              xmin=*x;
+            }
+            if (*x > xmax)
+            {
+              xmax=*x;
+            }
+            if (*y < ymin)
+            {
+              ymin=*y;
+            }
+            if (*y > ymax)
+            {
+              ymax=*y;
+            }
+          }
+        }
+        break;
+
+	case QGis::WKBMultiPolygon:
+        // get the number of polygons
+        ptr = feature + 5;
+        numPolygons = (int *) ptr;
+        for (kdx = 0; kdx < *numPolygons; kdx++)
+        {
+          //skip the endian and feature type info and
+          // get number of rings in the polygon
+          ptr = feature + 14;
+          numRings = (int *) ptr;
+          ptr += 4;
+          for (idx = 0; idx < *numRings; idx++)
+          {
+            // get number of points in the ring
+            nPoints = (int *) ptr;
+            ptr += 4;
+            for (jdx = 0; jdx < *nPoints; jdx++)
+            {
+              // add points to a point array for drawing the polygon
+              x = (double *) ptr;
+              ptr += sizeof(double);
+              y = (double *) ptr;
+              ptr += sizeof(double);
+              if (*x < xmin)
+              {
+                xmin=*x;
+              }
+              if (*x > xmax)
+              {
+                xmax=*x;
+              }
+              if (*y < ymin)
+              {
+                ymin=*y;
+              }
+              if (*y > ymax)
+              {
+                ymax=*y;
+              }
+            }
+          }
+        }
+        break;
+
+      default:
+	  #ifdef QGISDEBUG
+        std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+#endif
+        break;
+
+      }
+      return QgsRect(xmin,ymin,xmax,ymax);
+    }
+    else
+    {
+	return QgsRect(0,0,0,0);
+    }
 }

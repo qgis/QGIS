@@ -122,10 +122,13 @@ class QgsFeature {
     void attributeDialog();
 
     /**Test for intersection with a rectangle (uses GEOS)*/
-    bool intersects(QgsRect* r);
+    bool intersects(QgsRect* r) const;
 
     /**Returns the Vertex closest to a given point*/
-    QgsPoint closestVertex(const QgsPoint& point);
+    QgsPoint closestVertex(const QgsPoint& point) const;
+
+    /**Returns the bounding box of this feature*/
+    QgsRect boundingBox() const;
 
   private:
 
