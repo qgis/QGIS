@@ -115,6 +115,17 @@ public:
     virtual void entryList( QStringList & keyName, 
                             QStringList & entries ) const = 0;
 
+    /**
+       returns list of keys that contain other keys a given key
+
+       @param keyName will be a QStringList that's been tokened by the caller
+                      from '/' delimiters
+
+       @param entries will be list of key entries built so far from recursive calls
+     */
+    virtual void subkeyList( QStringList & keyName, 
+                            QStringList & entries ) const = 0;
+
 
     /**
        deletes the given key
@@ -637,6 +648,16 @@ public:
         // NOP
     }
 
+    /** return keys that contain other keys
+
+        Since PropertyValue isn't a key, don't do anything.
+
+     */
+    void subkeyList( QStringList & keyName, QStringList & entries ) const
+    {
+        // NOP
+    }
+
 private:
 
     /** We use QVariant as it's very handy to keep multiple types and provides
@@ -930,6 +951,58 @@ public:
         }
     }
 
+    PropertyKey *findkey ( QStringList & keyName ) const
+    {
+	if ( keyName.size() == 0 ) {
+	    // Should return this
+	    return 0;
+	}
+        // save the current key, which should be the front of the key list
+        QString currentKey = keyName.front();
+
+        // now pop it off
+        keyName.pop_front();
+
+        if ( properties_.find( currentKey ) )
+        {   
+	    // recurse down to next key
+	    if ( keyName.size() == 0 ) {
+                return ( dynamic_cast<PropertyKey*>(properties_[currentKey] ) ) ;
+	    } else {
+		PropertyKey *pk = dynamic_cast<PropertyKey*>(properties_[currentKey]);
+                return pk->findkey( keyName );
+	    }
+        }
+        else
+        {
+            qDebug( "%s:%d PropertyKey has null child", __FILE__, __LINE__ );
+	    qDebug("key is: "+currentKey);
+            return (PropertyKey*)0; 
+        }
+    }
+
+    /* return keys that contain other keys  */
+    void subkeyList( QStringList & keyName, QStringList & entries ) const
+    {
+	QDict<Property> prop;
+	PropertyKey *key;
+	if ( keyName.size() == 0 ) {
+	    prop = properties_;
+	} else {
+	    key = findkey ( keyName );
+	    if (!key) return;
+	    prop = (*key).properties_;
+        }
+
+        for ( QDictIterator<Property> i(prop); i.current(); ++i )
+        {
+            // add any of the nodes that have just a single value
+            if ( !(i.current()->isLeaf()) )
+            {
+                entries.append( i.currentKey() );
+            }
+        }
+    }
 
     /** returns true if a leaf node 
 
@@ -2364,3 +2437,16 @@ QgsProject::entryList( QString const & scope, QString const & key ) const
 
     return entries;
 } // QgsProject::entryList
+
+QStringList
+QgsProject::subkeyList( QString const & scope, QString const & key ) const
+{
+    QStringList keyTokens = QStringList::split( '/', key );
+
+    QStringList entries;
+    
+    imp_->properties_[scope].subkeyList( keyTokens, entries );
+
+    return entries;
+} // QgsProject::subkeyList
+
