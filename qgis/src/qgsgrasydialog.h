@@ -39,6 +39,8 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
  protected slots:
      /**Creates a new extension widget*/
      void adjustNumberOfClasses();
+     /**Tells the extensionwidget to change the values of the lower and upper text fields*/
+     void adjustClassification();
  protected:
      /**Pointer to the curret extension widget*/
      QgsGraSyExtensionWidget* ext;

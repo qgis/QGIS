@@ -118,8 +118,6 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
     }
 
     addChild(mWidget);
-    //resizeContents(200,50*(mNumberOfClasses+1));
-    //updateContents();
     
 }
 
@@ -219,4 +217,41 @@ void QgsGraMaExtensionWidget::handleReturnPressed()
 	} 
     }
     adjustMarker(indexnumber); 
+}
+
+void QgsGraMaExtensionWidget::setClassification(QgsGraSyDialog::mode mode, int field)
+{
+    mClassField=field;
+    mMode=mode;
+
+    QgsDataProvider *provider=mVectorLayer->getDataProvider();
+
+    if (provider)
+    {
+	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
+	{
+	    double minimum=0;
+	    double maximum=0;
+
+	    minimum = provider->minValue(mClassField).toDouble();
+	    maximum = provider->maxValue(mClassField).toDouble();
+	    
+	    for(int i=0;i<mNumberOfClasses;++i)
+	    {
+		((QLineEdit*)getWidget(0,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', 2));
+		((QLineEdit*)getWidget(1,i))->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i+1), 'f', 2));
+	    }
+	    
+	} 
+	else if (mMode == QgsGraSyDialog::EMPTY)                    //don't waste performance if mMode is QgsGraSyDialog::EMPTY
+	{
+	    for(int i=0;i<mNumberOfClasses;++i)
+	    {
+		((QLineEdit*)getWidget(0,i))->clear();
+		((QLineEdit*)getWidget(1,i))->clear();
+	    }
+	}
+    }
+
+    
 }
