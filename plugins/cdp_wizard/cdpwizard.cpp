@@ -29,6 +29,7 @@ email                : t.sutton@reading.ac.uk
 #include <qsettings.h>
 #include <qapplication.h>
 #include <qdatetime.h>
+#include <meridianswitcher.h>
 
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -497,9 +498,15 @@ void CDPWizard::variableDone(QString theFileNameString)
   //convert the completed variable layer to an image file
   ImageWriter myImageWriter;
   myImageWriter.writeImage(theFileNameString,theFileNameString+QString(".png"));
+  //perform the meridian shift (hard coding for now but we should have a class member 
+  //boolean that stores whether this is needed
+  MeridianSwitcher mySwitcher;
+  mySwitcher.doSwitch(theFileNameString,QString("MS")+theFileNameString);
+  //make an image for the shifted file too
+  myImageWriter.writeImage(theFileNameString,QString("MS")+theFileNameString+QString(".png"));
   //set the image label on the calculating variables screen to show the last
   //variable calculated
-  QPixmap myPixmap(theFileNameString+QString(".png"));
+  QPixmap myPixmap(QString("MS")+theFileNameString+QString(".png"));
   pixmapLabel2->setScaledContents(true);
   pixmapLabel2->setPixmap(myPixmap);
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'

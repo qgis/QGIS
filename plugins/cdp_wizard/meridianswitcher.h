@@ -17,10 +17,10 @@ public:
 
   /** Default constructor */
   MeridianSwitcher();
-  /** Constructor taking the name of the file to open. */
-  MeridianSwitcher(QString theFileNameString);
   /** Destructor  */
    ~MeridianSwitcher();
+   /** Dis waar die kak aangejaag word.... */
+  void doSwitch(QString theInputFileString, QString theOutputFileString);
 private:
   //
   //   Private attributes
