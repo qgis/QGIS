@@ -1,34 +1,24 @@
-README for QGIS version 0.2 'Pumpkin'
+README for QGIS version 0.3 'Madison'
 Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
 built for Linux/Unix. QGIS offers support for vector and raster formats. 
 Currently QGIS supports many common vector and raster formats shapefiles
 and PostgreSQL/PostGIS layers. 
 
 This release adds:
-  Simple and graduated SVG marker symbols 
-  SVG Marker library
-  Mapcanvas is updated as features are drawn (every 1,000 features) 
-  WhatsThis? help for menus and toolbar buttons 
-  Save map canvas as an image (.png) 
-  Search radius for identifying features can be specified in the preferences dialog 
-  Splashscreen can be disabled in user preferences
-  Raster statistics
-  Thumbnail preview in raster properties dialog
-  Metadata tab in raster properties dialog
-  Internationalization for several languages
-  Snapshot mode (invoked from command line)
-  Command line options for loading project files/layers
-  Currently loaded plugins are restored each time QGIS is started
-New Core Plugins
-  Delimited text plugin for creating a map layer from a set of x, y coordinates
-  GPS importer plugin
-  Grid/graticule maker plugin
-  Grass plugin
-New Contributed Plugins
-  Launcher plugin runs a system script or program
-  Worldmap
-  Fishing_spots tutorial plugin
-  Open modeller
+  Features
+    Raster pyramids
+    Scale display
+    Map units can be specified (meters, feet, decimal degrees)
+    Desktop icons (installed in share/qgis/images/icons)
+    Mac OS X vector support now works
+  Core Plugins
+    New North Arrow plugin
+    Improved GPS tools plugin
+    New Copyright plugin
+    Improved Grass plugin with raster and vector loaders
+  Contributed Plugins (available from community.qgis.org)
+    HTTP server (simple map server implementation)
+
 
 Supported raster formats include:
   Grass
@@ -62,11 +52,9 @@ HELP US --  Please submit bug reports using the QGIS bug tracker at:
   
 SUPPORT -   You can get support in the following ways:
             1.  Using the QGIS community site at http://community.qgis.org
-            2.  Using the Help forum at:
-                http://sourceforge.net/forum/forum.php?forum_id=186685
-            3.  Joining the qgis-users mailing list at:
+            2.  Joining the qgis-users mailing list at:
                 http://lists.sourceforge.net/lists/listinfo/qgis-user
-            4.  Using IRC by joining the #qgis channel on irc.freenode.net. 
+            3.  Using IRC by joining the #qgis channel on irc.freenode.net. 
                 Please wait around for a response to your question as many 
                 folks on the channel are doing other things and it may take a 
                 while for them to notice your question.
