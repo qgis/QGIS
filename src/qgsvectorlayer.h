@@ -51,7 +51,7 @@ class QgsVectorLayer:public QgsMapLayer
   //! Constructor
     QgsVectorLayer(QString baseName = 0, QString path = 0, QString providerLib = 0);
   //! Destructor
-   ~QgsVectorLayer();
+   virtual ~QgsVectorLayer();
   //! Identify feature found within the search rectangle
   void identify(QgsRect *);
   //! Select features found within the search rectangle

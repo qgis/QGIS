@@ -83,7 +83,8 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
   const char *cOgrLib = (const char *) ogrlib;
 #ifdef TESTPROVIDERLIB
   // test code to help debug provider loading problems
-  void *handle = dlopen(cOgrLib, RTLD_LAZY);
+//  void *handle = dlopen(cOgrLib, RTLD_LAZY);
+  void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
   if (!handle)
   {
     std::cout << "Error in dlopen: " << dlerror() << std::endl;
