@@ -423,7 +423,7 @@ void QgsShapeFileLayer::identify(QgsRect * r)
 				OGRFieldDefn *def = fet->GetFieldDefnRef(j);
 				QString fldName = def->GetNameRef();
 				std::cout << "Checking field " << fldName << std::endl;
-				if(fldName.contains("name", false)){
+				if(fldName.contains("name", false) || fldName.contains("descript",false)){
 					idxName = j;
 					break;
 				}
