@@ -639,15 +639,25 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
  */
 static void buildSupportedVectorFileFilter_(QString & fileFilters)
 {
+  static QString myFileFilters = "";
+
+  // if we've already built the supported vector string, just return what
+  // we've already built
+  if ( ! myFileFilters.isEmpty() )
+  {
+    fileFilters = myFileFilters;
+
+    return;
+  }
   // first get the GDAL driver manager
 
   OGRSFDriverRegistrar *driverRegistrar = OGRSFDriverRegistrar::GetRegistrar();
 
   if (!driverRegistrar)
-    {
-	    QMessageBox::warning(0,"OGR Driver Manger","unable to get OGRDriverManager");
-      return;                   // XXX good place to throw exception if we 
-    }                           // XXX decide to do exceptions
+  {
+    QMessageBox::warning(0,"OGR Driver Manger","unable to get OGRDriverManager");
+    return;                   // XXX good place to throw exception if we 
+  }                           // XXX decide to do exceptions
 
   // then iterate through all of the supported drivers, adding the
   // corresponding file filter
@@ -666,77 +676,75 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
   std::cerr << "Driver count: " << driverRegistrar->GetDriverCount() << std::endl; 
 #endif 
   for (int i = 0; i < driverRegistrar->GetDriverCount(); ++i)
+  {
+    driver = driverRegistrar->GetDriver(i);
+
+    Q_CHECK_PTR(driver);
+
+    if (!driver)
     {
-      driver = driverRegistrar->GetDriver(i);
+      qWarning("unable to get driver %d", i);
+      continue;
+    }
 
-      Q_CHECK_PTR(driver);
+    driverName = driver->GetName();
 
-      if (!driver)
-        {
-          qWarning("unable to get driver %d", i);
-          continue;
-        }
 
-      driverName = driver->GetName();
+    if (driverName.startsWith("ESRI"))
+    {
+      myFileFilters += createFileFilter_("ESRI Shapefiles", "*.shp");
+    } else if (driverName.startsWith("UK"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("SDTS"))
+    {
+      myFileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
+          "*catd.ddf" );
+    } else if (driverName.startsWith("TIGER"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("S57"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("MapInfo"))
+    {
+      myFileFilters += createFileFilter_("MapInfo", "*.mif *.mid *.tab");
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("DGN"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("VRT"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("AVCBin"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("REC"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("Memory"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("Jis"))
+    {
+      // XXX needs file filter extension
+    } else if (driverName.startsWith("GML"))
+    {
+      // XXX not yet supported; post 0.1 release task
+      //          myFileFilters += createFileFilter_( "Geography Markup Language", 
+      //                                            "*.gml" );
+    } else
+    {
+      // NOP, we don't know anything about the current driver
+      // with regards to a proper file filter string
+    }
 
-#ifdef QGISDEBUG
-      qDebug("got driver string %s", driver->GetName());
-      std::cerr << "Filter string at start of build filter is: " << fileFilters << std::endl; 
-#endif
-
-      if (driverName.startsWith("ESRI"))
-        {
-          fileFilters += createFileFilter_("ESRI Shapefiles", "*.shp");
-      } else if (driverName.startsWith("UK"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("SDTS"))
-        {
-          fileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
-                                            "*catd.ddf" );
-      } else if (driverName.startsWith("TIGER"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("S57"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("MapInfo"))
-        {
-          fileFilters += createFileFilter_("MapInfo", "*.mif *.mid *.tab");
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("DGN"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("VRT"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("AVCBin"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("REC"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("Memory"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("Jis"))
-        {
-          // XXX needs file filter extension
-      } else if (driverName.startsWith("GML"))
-        {
-// XXX not yet supported; post 0.1 release task
-//          fileFilters += createFileFilter_( "Geography Markup Language", 
-//                                            "*.gml" );
-      } else
-        {
-          // NOP, we don't know anything about the current driver
-          // with regards to a proper file filter string
-        }
-
-    }                           // each loaded GDAL driver
+    std::cout << myFileFilters << std::endl; 
+  }                           // each loaded GDAL driver
 
   // can't forget the default case
-  fileFilters += "All files (*.*)";
+  myFileFilters += "All files (*.*)";
+  fileFilters = myFileFilters;
 
 }                               // buildSupportedVectorFileFilter_()
 
@@ -3222,6 +3230,7 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 void QgisApp::addRasterLayer()
 {
   //mMapCanvas->freeze(true);
+
   QString fileFilters;
 
   // build the file filters based on the loaded GDAL drivers

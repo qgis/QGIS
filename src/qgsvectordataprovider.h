@@ -104,7 +104,10 @@ class QgsVectorDataProvider: public QgsDataProvider
      * @return std::vector containing QgsFeature objects that intersect rect
      */
     virtual std::vector<QgsFeature>& identify(QgsRect *rect)=0;
-    
+ protected:
+
+    /**Flag indicating wheter the provider is in editing mode or not*/
+    bool mEditable;
 };
 
 #endif
