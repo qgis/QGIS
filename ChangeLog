@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.135 2004/06/16 00:17:03 timlinux Exp
+ChangeLog,v 1.136 2004/06/16 09:30:18 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-16 [larsl] 0.3.0devel40
+** Added skeleton code for importing other GPS file formats using GPSBabel
 
 2004-06-16 [ts] 0.3.0devel39
 ** Added small icon displayed on raster legend showing whether this layer is in overview 
