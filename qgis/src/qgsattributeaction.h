@@ -76,7 +76,7 @@ class QgsAttributeAction
   QgsAttributeAction() {};
   
   //! Destructor
-  virtual ~QgsAttributeAction() { delete process; }
+  virtual ~QgsAttributeAction() {};
 
   //! Add an action with the given name and action details.
   // Will happily have duplicate names and actions. If
