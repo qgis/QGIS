@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgssimadialog.cpp
- Single marker renderer dialog
+                         Single marker renderer dialog
                              -------------------
     begin                : March 2004
     copyright            : (C) 2004 by Marco Hugentobler

@@ -4,7 +4,8 @@
     Date                 : 01-Jan-2004
     Copyright            : (C) 2004 by Gary E.Sherman
     email                : sherman at mrcc.com
-/***************************************************************************
+    
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #include "qgsfield.h"
 
