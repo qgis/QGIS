@@ -275,9 +275,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
         gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
         gSplashScreen->setStatus(tr("Loading QGIS..."));
         qApp->processEvents();
-        // Set up the timer so the splash screen stays up for
-        // another 5 seconds, then kill it.
-        QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
+
         //  gSplashScreen->setStatus(tr("QGIS ready"));
     }
 
@@ -298,6 +296,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     if (!myHideSplashFlag)
     {
         gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
+        qApp->processEvents();
     }
     QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
     QSplitter *canvasLegendSplit = new QSplitter(frameMain);
@@ -492,7 +491,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     if (! myHideSplashFlag)
     {
         gSplashScreen->setStatus(tr("Setting theme..."));
+        qApp->processEvents();
     }
+
     // get the users theme preference from the settings
     QString themeName = settings.readEntry("/qgis/theme","default");
 
@@ -510,6 +511,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     if (! myHideSplashFlag)
     {
         gSplashScreen->setStatus(tr("QGIS Ready"));
+
+        // Set up the timer so the splash screen stays up for
+        // another 1 seconds, then kill it.
+        QTimer::singleShot( 1000, this, SLOT(killSplashScreen()) );
+        qApp->processEvents();
     }
     // set the focus to the map canvase
     mMapCanvas->setFocus();
