@@ -22,6 +22,8 @@
 //qgis includes
 #include "qgsconfig.h"
 #include "qgsproject.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
 
 //qt includes
 #include <qcombobox.h>
@@ -30,6 +32,8 @@
 #include <qbuttongroup.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+#include <qstring.h>
+
 
 //stdc++ includes
 #include <iostream>
@@ -57,6 +61,21 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
     title(QgsProject::instance()->title());
     getProjList();
     setProjectionWKT(projectionWKT());
+    
+    //if the user changes the projection for the project, we need to 
+    //fire a signal to each layer telling it to change its coordinateTransform
+    //member's output projection. These connects I'm setting up should be
+    //automatically cleaned up when this project props dialog closes
+    std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+    std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+    for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
+    {
+        QgsMapLayer * myMapLayer = myMapIterator->second;
+         connect(this,
+                    SIGNAL(setDestWKT(QString)),
+                     myMapLayer->coordinateTransform(),
+                     SLOT(setDestWKT(QString)));   
+    }
     
 }
 
@@ -117,9 +136,16 @@ bool QgsProjectProperties::setProjectionWKT(QString theName, QString theWKT)
 }
 
 //when user picks a new proj in cmbo
-void QgsProjectProperties::projectionChange(QString theQString)
+void QgsProjectProperties::accept()
 {
-
+#ifdef QGISDEBUG
+  std::cout << "Projection changed, notifying all layers" << std::endl;
+#endif      
+    //notify all layers the output projection has changed
+    emit setDestWKT(mProjectionsMap[cboProjection->currentText()]);
+    //update the project props
+    QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[cboProjection->currentText()]);
+    close();
 }
 void QgsProjectProperties::getProjList()
 {
@@ -156,7 +182,8 @@ void QgsProjectProperties::getProjList()
           continue;
         }
 #ifdef QGISDEBUG
-        std::cout << " Match found:" << myCurrentLineQString.ascii() << std::endl;
+        //generates a lot of output to stdout!
+        //std::cout << " Match found:" << myCurrentLineQString.ascii() << std::endl;
 #endif
         mProjectionsMap[myCurrentLineQString]=myNextLineQString;
       }
