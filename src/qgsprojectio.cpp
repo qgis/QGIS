@@ -18,7 +18,9 @@
  #include <qmessagebox.h>
  #include <qcolor.h>
  #include "qgsmaplayer.h"
+ #ifdef PGDB
  #include "qgsdatabaselayer.h"
+ #endif
  #include "qgsshapefilelayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectio.h"
@@ -123,12 +125,13 @@ void QgsProjectIo::read(){
 		// add the layer to the maplayer
 		
 		if(type == "database"){
-			
+			#ifdef PGDB
 				QgsDatabaseLayer *dbl = new QgsDatabaseLayer(dataSource, layerName);
 				
 				map->addLayer(dbl);
 				dbl->setSymbol(sym);
 				dbl->setVisible(visible == "1");
+			#endif
 		}else{
 			if(type == "vector"){
 				QgsShapeFileLayer *shpl = new QgsShapeFileLayer(dataSource, layerName);

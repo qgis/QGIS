@@ -7,5 +7,3 @@ CONFIG += qt thread debug
 TEMPLATE = subdirs
 SUBDIRS += src \
            plugins 
-SOURCES += QgsProjectIo.cpp 
-HEADERS += QgsProjectIo.h 
