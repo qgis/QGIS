@@ -19,8 +19,10 @@
  /*  $Id$ */
 #ifndef PLUGIN
 #define PLUGIN
-#include "../qgisplugin.h"
-#include "../../src/qgisapp.h"
+#include <qgisplugin.h>
+#include <qwidget.h>
+
+#include <qgisapp.h>
 
 #include <qwidget.h>
 #include "httpdaemon.h"
