@@ -35,6 +35,14 @@ class QgisIface : public QgisInterface{
   int addMenu(QString menuText, QPopupMenu *menu);
   //! Get an integer from the QgisApp object. This is a test function with no real utility
 	int getInt();
+  /** Open a url in the users browser. By default the QGIS doc directory is used
+  * as the base for the URL. To open a URL that is not relative to the installed
+  * QGIS documentation, set useQgisDocDirectory to false.
+  * @param url URL to open
+  * @param useQgisDocDirectory If true, the URL will be formed by concatenating 
+  * url to the QGIS documentation directory path (<prefix>/share/doc)
+  */
+  void openURL(QString url, bool useQgisDocDirectory=true);
 private:
 //! Pointer to the QgisApp object
 QgisApp *qgis;

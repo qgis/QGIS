@@ -1505,7 +1505,13 @@ void QgisApp::options(){
   optionsDialog->exec();
 }
 void QgisApp::helpContents(){
+  openURL("index.html");
+}
+void QgisApp::openURL(QString url, bool useQgisDocDirectory){
   // open help in user browser
+  if(useQgisDocDirectory){
+    url = appDir +"/share/doc/" + url;
+  }
     // find a browser
   QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
@@ -1530,7 +1536,7 @@ void QgisApp::helpContents(){
     // open index.html using browser
     QProcess *helpProcess = new QProcess(this);
     helpProcess->addArgument(browser);
-    helpProcess->addArgument(appDir +"/share/doc/index.html");
+    helpProcess->addArgument(url);
     helpProcess->start();
   }
  /*  helpViewer = new QgsHelpViewer(this,"helpviewer",false);

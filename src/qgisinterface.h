@@ -26,6 +26,14 @@ public:
   virtual QgsMapLayer *activeLayer()=0;
   //! add a menu item to the main menu, postioned to the left of the Help menu
   virtual int addMenu(QString menuText, QPopupMenu *menu) =0;
+  /** Open a url in the users browser. By default the QGIS doc directory is used
+  * as the base for the URL. To open a URL that is not relative to the installed
+  * QGIS documentation, set useQgisDocDirectory to false.
+  * @param url URL to open
+  * @param useQgisDocDirectory If true, the URL will be formed by concatenating 
+  * url to the QGIS documentation directory path (<prefix>/share/doc)
+  */
+  virtual void openURL(QString url, bool useQgisDocDirectory=true)=0;
 private:
 	//QgisApp *qgis;
 };
