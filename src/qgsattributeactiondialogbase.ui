@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsAttributeActionDialogBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -93,7 +93,11 @@
                         <string>Enter actions here</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Use this table to create actions that can be selected from the Identify Results dialog box. Each action has a name, which appears in the Identify Results popup menu. The action is executed in a shell, and the symbol % is replaced with the value of the parameter that was right-clicked on in the Identify Results dialog box</string>
+                        <string>Use this table to create actions that can be selected from the Identify Results dialog box. Each action has a name, which appears in the Identify Results popup menu. The action is executed as a separate process. 
+
+Any %% symbol in the action is replaced by the value of the attribute that was right-clicked on in the Identify Results dialog box. 
+
+Any symbols that start with a % and are then followed by the name of an attribute are replaced by the value of that attribute. For example, if there is an attribute called 'filename' with a value of 'text.txt' and there is an action that includes the text '%filename' it will be replaced by text.txt when the action is run.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">

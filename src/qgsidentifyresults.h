@@ -26,6 +26,7 @@
 
 #include "qgsattributeaction.h"
 #include <vector>
+#include <map>
 
 class QPopupMenu;
 
@@ -63,8 +64,9 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
  private:
   
   QgsAttributeAction mActions;
+  int mClickedOnValue;
   QPopupMenu* mActionPopup;
-  QString mValue;
+  std::vector<std::pair<QString, QString> > mValues;
 };
 
 #endif
