@@ -31,7 +31,7 @@ class QgsComposerItem
 
 public:
     QgsComposerItem();
-    ~QgsComposerItem(); 
+    virtual ~QgsComposerItem(); 
 public:
     /** \brief Set plot style */
     void setPlotStyle ( QgsComposition::PlotStyle p );
