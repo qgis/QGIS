@@ -2,4 +2,4 @@ if HAVE_POSTGRESQL
 POSTGRESQL = postgres
 endif
 
-SUBDIRS = ogr $(POSTGRESQL)
+SUBDIRS = ogr $(POSTGRESQL) delimitedtext
