@@ -97,13 +97,13 @@ void QgsRect::expand(double scaleFactor, QgsPoint * cp)
 QgsRect QgsRect::intersect(QgsRect * rect)
 {
   QgsRect intersection = QgsRect();
-  intersection.setXmin(xmin >? rect->xMin());
-  intersection.setYmin(ymin >? rect->yMin());
-  intersection.setXmax(xmax <? rect->xMax());
-  intersection.setYmax(ymax <? rect->yMax());
+  
+  intersection.setXmin(xmin > rect->xMin()?xmin:rect->xMin());
+  intersection.setXmax(xmax < rect->xMax()?xmax:rect->xMax());
+  intersection.setYmin(ymin > rect->yMin()?ymin:rect->yMin());
+  intersection.setYmax(ymax < rect->yMax()?ymax:rect->yMax());
   return intersection;
 }
-
 bool QgsRect::isEmpty()
 {
   if (xmax <= xmin || ymax <= ymin)
@@ -136,7 +136,7 @@ QString QgsRect::stringRep(int thePrecision) const
                 QString::number(ymax,'f',thePrecision) ;
 #ifdef QGISDEBUG
   std::cout << "Extents : " << rep << std::endl;
-#endif		
+#endif    
   return rep;
 }
 // Return the rectangle as a set of polygon coordinates
