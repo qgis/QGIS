@@ -92,7 +92,8 @@ void QgsSpitPlugin::initGui()
 
     menu = ((QMainWindow *) qgisMainWindow)->menuBar();
 
-    menuId = menu->insertItem("&Spit", pluginMenu);
+    //menuId = menu->insertItem("&Spit", pluginMenu);
+    menuId = qI->addMenu("&Spit", pluginMenu);
      // Create the action for tool
     QAction *spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(icon_spit), "&SPIT",
                                               0, this, "spit");

@@ -7,6 +7,7 @@
 #include <qwidget.h>
 class QgisApp;
 class QgsMapLayer;
+class QPopupMenu;
 
 // interface class for plugins
 class QgisInterface : public QWidget{
@@ -23,6 +24,8 @@ public:
   virtual void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
   //! Get pointer to the active layer (layer selected in the legend)
   virtual QgsMapLayer *activeLayer()=0;
+  //! add a menu item to the main menu, postioned to the left of the Help menu
+  virtual int addMenu(QString menuText, QPopupMenu *menu) =0;
 private:
 	//QgisApp *qgis;
 };
