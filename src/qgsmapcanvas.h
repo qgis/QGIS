@@ -78,6 +78,7 @@ public slots:
 	void render2();
 	//! This slot is connected to the visibility change of one or more layers
 	void layerStateChange();
+ 
  signals:
  	void xyCoordinates(QgsPoint &p);
  private:

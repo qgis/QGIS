@@ -38,6 +38,8 @@
 #include <qfiledialog.h>
 #include <qvbox.h>
 #include <qlistview.h>
+#include <qsettings.h>
+#include <qtextstream.h>
 #include <libpq++.h>
 #include <iostream>
 #include <iomanip>
@@ -138,7 +140,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	popMenu = new QPopupMenu();
 	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
 	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
-	mapCursor = 0;            
+	mapCursor = 0;
+
+ // connect the "cleanup" slot
+ connect(qApp,SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
+ restoreWindowState();  
 }
 
 QgisApp::~QgisApp()
@@ -541,3 +547,43 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int )
 void QgisApp::testPluginFunctions(){
   
   }
+
+void QgisApp::saveWindowState(){
+   // store window and toolbar positions
+        QSettings settings;
+       
+        QString dockStatus;
+        QTextStream ts(&dockStatus,IO_WriteOnly);
+        ts << *this;
+        settings.writeEntry("/qgis/Geometry/ToolBars", dockStatus);
+        // store window geometry
+        QPoint p = this->pos();
+        QSize s = this->size();
+
+        settings.writeEntry("/qgis/Geometry/maximized", this->isMaximized());
+        settings.writeEntry("/qgis/Geometry/x", p.x());
+        settings.writeEntry("/qgis/Geometry/y", p.y());
+        settings.writeEntry("/qgis/Geometry/w", s.width());
+        settings.writeEntry("/qgis/Geometry/h", s.height());
+
+  }
+void QgisApp::restoreWindowState(){
+    QSettings settings;
+        
+        QString dockStatus =  settings.readEntry("/qgis/Geometry/ToolBars");
+        QTextStream ts(&dockStatus, IO_ReadOnly);
+        ts >> *this;
+
+         
+     
+        // restore window geometry
+            QDesktopWidget *d = QApplication::desktop();
+            int dw = d->width();     // returns desktop width
+            int dh = d->height();    // returns desktop height
+        int w = settings.readNumEntry( "/qgis/Geometry/w",600);
+        int h  = settings.readNumEntry( "/qgis/Geometry/h",400);
+        int x =  settings.readNumEntry( "/qgis/Geometry/x",(dw-600)/2);
+        int y =  settings.readNumEntry( "/qgis/Geometry/y",(dh-400)/2);
+        setGeometry(x, y, w, h);        
+  }
+  
