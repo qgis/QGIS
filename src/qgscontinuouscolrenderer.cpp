@@ -67,6 +67,7 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
       QgsSymbol sy;
       sy.brush().setStyle(Qt::SolidPattern);
       sy.pen().setStyle(Qt::SolidLine);
+      sy.pen().setWidth(1);
 
       //random fill colors for points and polygons and pen colors for lines
       int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
@@ -190,8 +191,9 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QgsCo
 
       if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString)
         {
-          p->setPen(QColor(red, green, blue));
-      } else
+	    p->setPen(QPen(QColor(red, green, blue),m_minimumItem->getSymbol()->pen().width()));//make sure the correct line width is used
+	} 
+      else
         {
           p->setBrush(QColor(red, green, blue));
         }
