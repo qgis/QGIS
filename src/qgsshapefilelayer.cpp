@@ -95,6 +95,7 @@ QgsShapeFileLayer::~QgsShapeFileLayer()
     if(tabledisplay)
     {
 	tabledisplay->close();
+	delete tabledisplay;
     }
 }
 
