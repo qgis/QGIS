@@ -159,6 +159,9 @@ class QgsVectorLayer:public QgsMapLayer
   /**Label is on */
   bool labelOn( void );
 
+  /**True if the layer can be edited*/
+  bool isEditable();
+
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
     QgsAttributeTableDisplay * tabledisplay;
