@@ -23,7 +23,6 @@
 //    tolerate geos.h without throwing a bunch of type errors. It
 //    appears that the windows version of GEOS may be compiled with 
 //    MINGW rather than VC++.
-#include <geos.h>
 #endif 
 #include "ogr_api.h"//only for a test
 
@@ -111,6 +110,13 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri): QgsVectorDataProvider()
   {
     minmaxcache[i]=new double[2];
   }
+  // create the geos objects
+  geometryFactory = new geos::GeometryFactory();
+    assert(geometryFactory!=0);
+    // create the reader
+//    std::cerr << "Creating the wktReader\n";
+    wktReader = new geos::WKTReader(geometryFactory);
+
 }
 
 QgsShapeFileProvider::~QgsShapeFileProvider()
@@ -121,6 +127,8 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
   }
   delete[] minmaxcache;
 
+    delete geometryFactory;
+    delete wktReader;
 }
 
 /**
@@ -263,12 +271,12 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 #ifndef NOWIN32GEOSXXX
     // create the geos geometry factory
 //    std::cerr << "Creating the GEOS geometry factory\n";
-    geos::GeometryFactory *gf = new geos::GeometryFactory();
-    assert(gf!=0);
+//    geos::GeometryFactory *gf = new geos::GeometryFactory();
+//    assert(gf!=0);
     // create the reader
 //    std::cerr << "Creating the wktReader\n";
-    geos::WKTReader *wktReader = new geos::WKTReader(gf);
-    assert(wktReader !=0);
+//    geos::WKTReader *wktReader = new geos::WKTReader(gf);
+//    assert(wktReader !=0);
 #endif 
     OGRGeometry *geom;
 //    std::cerr << "Starting read of features\n";
@@ -310,7 +318,9 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 #ifdef QGISDEBUG
 //          std::cerr << "Testing intersection using geos\n";
 #endif
+
           if(geosGeom->intersects(geosRect))
+          //if(geom->Overlaps(mSelectionRectangle))
           {
 //            std::cerr << "Intersection found\n";
             break;
@@ -319,11 +329,11 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 #ifndef WIN32
           //XXX For some reason deleting these on win32 causes segfault
           //XXX Someday I'll figure out why...
-          delete[] wkt;  
-          delete[] sWkt;  
+          //delete[] wkt;  
+          //delete[] sWkt;  
 #endif
-          delete geosGeom;
-          delete geosRect;
+//          delete geosGeom;
+          //delete geosRect;
 #endif
         }
         else
@@ -336,8 +346,6 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     //    is fixed
 #ifndef NOWIN32GEOSXXX
 //    std::cerr << "Deleting geometry factory and wktReader\n";
-    delete gf;
-    delete wktReader;
 #endif 
     if(fet){
       geom = fet->GetGeometryRef();
@@ -389,13 +397,13 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
            {
              // test this geometry to see if it should be
              // returned 
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG2 
              std::cerr << "Testing geometry using intersect" << std::endl; 
 #endif 
            }
            else
            {
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG2 
              std::cerr << "Testing geometry using mbr" << std::endl; 
 #endif 
              break;
@@ -452,7 +460,7 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
 {
   mUseIntersect = useIntersect;
   // spatial query to select features
-  //  std::cerr << "Selection rectangle is " << *rect << std::endl;
+   std::cerr << "Selection rectangle is " << *rect << std::endl;
   OGRGeometry *filter = 0;
   filter = new OGRPolygon();
   QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
@@ -475,12 +483,13 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) {
-    //      std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
+         std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
     ogrLayer->SetSpatialFilter(filter);
-    //      std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
+         std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
   }else{
 #ifdef QGISDEBUG    
     std::cerr << "Setting spatial filter failed!" << std::endl;
+    assert(result==OGRERR_NONE);
 #endif
   }
 }
