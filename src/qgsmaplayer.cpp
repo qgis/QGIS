@@ -170,6 +170,18 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
         mShowInOverview = false;
     }
 
+    // use scale dependent visibility flag 
+    QString scaleBasedVisibility = element.attribute("scaleBasedVisibilityFlag");
+    if ( "1" == scaleBasedVisibility )
+    {
+      setScaleBasedVisibility(true);
+    }
+    else
+    {
+      setScaleBasedVisibility(false);
+    }
+    setMinScale(element.attribute("minScale").toFloat());
+    setMaxScale(element.attribute("maxScale").toFloat());
     // set data source
     QDomNode mnl = layer_node.namedItem("datasource");
     QDomElement mne = mnl.toElement();
@@ -229,6 +241,18 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     {
         maplayer.setAttribute( "showInOverviewFlag", 0 );
     }
+    
+    // use scale dependent visibility flag 
+    if ( scaleBasedVisibility() )
+    {
+        maplayer.setAttribute( "scaleBasedVisibilityFlag", 1 );
+    }
+    else
+    {
+        maplayer.setAttribute( "scaleBasedVisibilityFlag", 0 );
+    }
+    maplayer.setAttribute( "minScale", minScale() );
+    maplayer.setAttribute( "maxScale", maxScale() );
 
     // data source
     QDomElement dataSource = document.createElement( "datasource" );
