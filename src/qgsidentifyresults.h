@@ -24,6 +24,11 @@
 #include "qgsidentifyresultsbase.uic.h"
 #endif
 
+#include "qgsattributeaction.h"
+#include <vector>
+
+class QPopupMenu;
+
 /**
  *@author Gary E.Sherman
  */
@@ -32,7 +37,10 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
 {
   Q_OBJECT;
   public:
-  QgsIdentifyResults();
+
+  //! Constructor - takes it own copy of the QgsAttributeAction so
+  // that it is independent of whoever created it.
+  QgsIdentifyResults(const QgsAttributeAction&);
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */
   void addAttribute(QListViewItem *parent, QString field, QString value);
@@ -44,8 +52,19 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   void restorePosition();  
   void close();
   void closeEvent(QCloseEvent *e);
+  void popupContextMenu(QListViewItem*, const QPoint&, int);
   //void accept();
   //void reject();
+
+  public slots:
+
+    void popupItemSelected(int id);
+
+ private:
+  
+  QgsAttributeAction mActions;
+  QPopupMenu* mActionPopup;
+  QString mValue;
 };
 
 #endif

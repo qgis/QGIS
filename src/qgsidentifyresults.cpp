@@ -22,16 +22,18 @@
 #include <qpoint.h>
 #include <qsize.h>
 #include <qevent.h>
+#include <qlabel.h>
+#include <qpopupmenu.h>
 
 #include "qgsidentifyresults.h"
 
-QgsIdentifyResults::QgsIdentifyResults()
+QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa) : mActions(aa), mActionPopup(0)
 {
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
 {
-
+  delete mActionPopup;
 }
 // Slot called when user clicks the Close button
 // (saves the current window size/position)
@@ -46,6 +48,40 @@ void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 {
   saveWindowLocation();
   e->accept();
+}
+
+// Popup (create if necessary) a context menu that contains a list of
+// actions that can be applied to the data in the identify results
+// dialog box.
+void QgsIdentifyResults::popupContextMenu(QListViewItem* item, 
+					  const QPoint& p, int i)
+{
+  // The assumption is made that an instance of QgsIdentifyResults is
+  // created for each new Identify Results dialog box, and that the
+  // contents of the popup menu doesn't change during the time that
+  // such a dialog box is around.
+  if (mActionPopup == 0)
+  {
+    mActionPopup = new QPopupMenu();
+
+    QLabel* popupLabel = new QLabel( mActionPopup );
+    popupLabel->setText( tr("<center>Run action</center>") );
+    mActionPopup->insertItem(popupLabel);
+    mActionPopup->insertSeparator();
+
+    QgsAttributeAction::aIter	iter = mActions.begin();
+    for (int j = 0; iter != mActions.end(); ++iter, ++j)
+    {
+      int id = mActionPopup->insertItem(iter->name(), this, 
+					SLOT(popupItemSelected(int)));
+      mActionPopup->setItemParameter(id, j);
+    }
+  }
+  // Save the attribute value as this is needed for substituting into
+  // the action. 
+  mValue = item->text(1);
+
+  mActionPopup->popup(p);
 }
 // Restore last window position/size and show the window
 void QgsIdentifyResults::restorePosition()
@@ -88,4 +124,10 @@ QListViewItem *QgsIdentifyResults::addNode(QString label)
 void QgsIdentifyResults::setTitle(QString title)
 {
   setCaption("Identify Results - " + title);
+}
+
+// Run the action that was selected in the popup menu
+void QgsIdentifyResults::popupItemSelected(int id)
+{
+  mActions.doAction(id, mValue);
 }

@@ -1,0 +1,201 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>QgsAttributeActionDialogBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QgsAttributeActionDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>498</width>
+            <height>365</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Form3</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout6</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QTable">
+                    <column>
+                        <property name="text">
+                            <string>Name </string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Action</string>
+                        </property>
+                    </column>
+                    <row>
+                        <property name="text">
+                            <string>0</string>
+                        </property>
+                    </row>
+                    <property name="name">
+                        <cstring>attributeActionTable</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>TabFocus</enum>
+                    </property>
+                    <property name="frameShape">
+                        <enum>Box</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Plain</enum>
+                    </property>
+                    <property name="lineWidth">
+                        <number>0</number>
+                    </property>
+                    <property name="numRows">
+                        <number>1</number>
+                    </property>
+                    <property name="numCols">
+                        <number>2</number>
+                    </property>
+                    <property name="showGrid">
+                        <bool>false</bool>
+                    </property>
+                    <property name="rowMovingEnabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="focusStyle">
+                        <enum>FollowStyle</enum>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Enter actions here</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Use this table to create actions that can be selected from the Identify Results dialog box. Each action has a name, which appears in the Identify Results popup menu. The action is executed in a shell, and the symbol % is replaced with the value of the parameter that was right-clicked on in the Identify Results dialog box</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>addButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Add a row</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Add a blank row to the table</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Use this button to add a new row to the table</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>removeButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Clear</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Clears the selected rows</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Use this button to clear the selected rows in the table</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>clearAllButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Clear all</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Clears all rows</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Use this button to clear all of the rows in the table</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer27</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>31</width>
+                                    <height>230</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>addButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAttributeActionDialogBase</receiver>
+        <slot>add()</slot>
+    </connection>
+    <connection>
+        <sender>removeButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAttributeActionDialogBase</receiver>
+        <slot>remove()</slot>
+    </connection>
+    <connection>
+        <sender>clearAllButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAttributeActionDialogBase</receiver>
+        <slot>clearAll()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>add()</slot>
+    <slot>remove()</slot>
+    <slot>clearAll()</slot>
+</slots>
+<functions>
+    <function access="private">init()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

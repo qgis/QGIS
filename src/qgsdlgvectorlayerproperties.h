@@ -29,6 +29,7 @@
 
 class QgsVectorLayer;
 class QgsLabelDialog;
+class QgsAttributeActionDialog;
 
 class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   Q_OBJECT
@@ -68,6 +69,8 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   QgsRenderer* bufferRenderer;
   /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
   QgsLabelDialog* labelDialog;
+  /**Actions dialog. If apply is pressed, the actions are stored for later use */
+  QgsAttributeActionDialog* actionDialog;
   /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
   QPixmap bufferPixmap;
   void closeEvent(QCloseEvent* e);
