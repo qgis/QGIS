@@ -51,6 +51,6 @@ typedef QgisPlugin* create_t();
 //! Typedef for the function to unload a plugin and free its resources
 typedef void unload_t(QgisPlugin *);
 //! Element type corresponding to one of the values in the ELEMENTS enum
-typedef int QGIS_GUI_TYPE;
+//typedef int QGIS_GUI_TYPE;
 
 #endif //qgisplugin_h

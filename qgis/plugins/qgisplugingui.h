@@ -17,6 +17,8 @@ public:
 	QgisPluginGuiElement element(int index);
 	//! Adds a new element
 	void addElement(QgisPluginGuiElement);
+	//! Destructor
+	virtual ~QgisPluginGui();
 private:
 	std::vector<QgisPluginGuiElement> elements;
 };

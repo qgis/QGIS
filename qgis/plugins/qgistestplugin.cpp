@@ -52,6 +52,11 @@ QString QgisTestPlugin::description(){
 	return pDescription;
 	
 }
+QgisPluginGui * QgisTestPlugin::gui(){
+	// stub
+	return 0;
+}
+
 extern "C" QgisPlugin * classFactory(){
 	return new QgisTestPlugin();
 }
