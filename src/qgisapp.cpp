@@ -1189,6 +1189,7 @@ void QgisApp::fileOpen()
     //return the zorder for those layers.
     std::list<QString> myZOrder = pio->read();
     std::list < QString >::iterator li = myZOrder.begin();
+    QgsRect myExtent = mMapCanvas->extent();
 #ifdef QGISDEBUG
     std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
 #endif
@@ -1215,6 +1216,8 @@ void QgisApp::fileOpen()
     setZOrder(myZOrder);
     setOverviewZOrder(mMapLegend);
     delete pio;
+    mMapCanvas->setExtent(myExtent);
+    mMapCanvas->refresh();
     mOverviewCanvas->freeze(false);
     mMapCanvas->freeze(false);
     mProjectIsDirtyFlag = false;
