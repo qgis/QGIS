@@ -25,6 +25,7 @@
 #include "qgsrect.h"
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
+#include "qgisapp.h"
 #include "qgssymbol.h"
 #include <qpixmap.h>
 class QPopupMenu;
@@ -102,7 +103,8 @@ class QgsMapLayer:public QObject
   /** Read property of int featureType. */
 	virtual const int &featureType();
   /** Return the context menu for the layer */
-  virtual QPopupMenu *contextMenu(); //TODO make this pure virtual after implemented in raster
+  virtual QPopupMenu *contextMenu()=0; 
+  
   public:						// Public attributes
 	//! Layers enum defining the types of layers that can be added to a map
 	enum LAYERS
@@ -115,6 +117,8 @@ class QgsMapLayer:public QObject
 	virtual void showLayerProperties()=0;
 	/**Returns a pointer to the legend pixmap*/
 	virtual QPixmap* legendPixmap();
+        /** All inherited layers must be able to display a conext menu if requested */
+        virtual void initContextMenu(QgisApp *app)=0;
 	/**Returns a pointer to the legend item*/
 	QgsLegendItem* legendItem();
 	/**Sets the pointer to the legend item*/
@@ -122,6 +126,8 @@ class QgsMapLayer:public QObject
 
 	  signals:void visibilityChanged(void);
   protected:
+        //popup menu that will apear when right clicking legend
+        QPopupMenu *popMenu;
 	//! Extent of the layer
 	  QgsRect layerExtent;
 	//! Indicates if the layer is valid and can be drawn
