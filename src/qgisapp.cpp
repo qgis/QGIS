@@ -59,7 +59,7 @@
 #include "qgslegenditem.h"
 #include "qgslegend.h"
 #include "qgsprojectio.h"
-#ifdef PGDB
+#ifdef POSTGRESQL
 #include <libpq++.h>
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
@@ -126,6 +126,20 @@ static unsigned char identify_mask_bits[] = {
 	0x80, 0xff, 0x00, 0x7f, 0x00, 0x3e, 0x00, 0x1c
 };
 
+static unsigned char select_cursor_bits[] = {
+  0x00, 0x00, 0xfe, 0x00, 0x7e, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x76, 0x00,
+  0xf6, 0x55, 0xc2, 0x01, 0x90, 0x43, 0x00, 0x07, 0x10, 0x4e, 0x00, 0x0c,
+  0x50, 0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+
+static unsigned char select_cursor_mask_bits[] = {
+      0x00, 0x00, 0xfe, 0x00, 0x7e, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x76, 0x00,
+   0xf6, 0x7f, 0xf2, 0x7f, 0xf0, 0x7f, 0xf0, 0x7f, 0xf0, 0x7f, 0xf0, 0x7f,
+   0xf0, 0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+};
+
 // constructor starts here   
 
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(parent, name, fl)
@@ -186,7 +200,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	// set the legend control for the map canvas
 	mapCanvas->setLegend(mapLegend);
 	// disable functions based on build type
-	#ifndef PGDB
+	#ifndef POSTGRESQL
 		actionAddLayer->removeFrom(PopupMenu_2);
 		actionAddLayer->removeFrom(DataToolbar);
 	#endif
@@ -203,7 +217,7 @@ void QgisApp::about()
 	QgsAbout *abt = new QgsAbout();
 	QString versionString = "Version ";
 	versionString += qgisVersion;
-	#ifdef PGDB
+	#ifdef POSTGRESQL
 		versionString += " with PostgreSQL support";
 	#else
 		versionString +=  " (no PostgreSQL support)";
@@ -278,7 +292,7 @@ void QgisApp::addLayer()
 
 
 }
-#ifdef PGDB
+#ifdef POSTGRESQL
 void QgisApp::addDatabaseLayer()
 {
 	// only supports postgis layers at present
@@ -466,6 +480,13 @@ void QgisApp::attributeTable()
 
 void QgisApp::select()
 {
+	// set the select cursor
+	QBitmap selectBmp(16, 16, select_cursor_bits, true);
+	QBitmap selectBmpMask(16, 16, select_cursor_mask_bits, true);
+	delete mapCursor;
+	mapCursor = new QCursor(selectBmpMask, selectBmp, 1, 1);
+	mapCanvas->setCursor(*mapCursor);
+	// set current map tool to select
     mapCanvas->setMapTool(QGis::Select);
 }
 

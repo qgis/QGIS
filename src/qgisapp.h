@@ -52,7 +52,7 @@ class QgisApp:public QgisAppBase
 	//public slots:
 	//! Add a layer to the map
 	void addLayer();
-	#ifdef PGDB
+	#ifdef POSTGRESQL
 	//! Add a databaselayer to the map
 	void addDatabaseLayer();
 	#endif
