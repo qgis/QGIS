@@ -143,7 +143,7 @@ void QgsLegend::update()
 
               QgsLegendItem *lvi = new QgsLegendItem(currentMapLayer, this);
               currentMapLayer->setLegendItem(lvi);
-              lvi->setPixmap(0, *currentMapLayer->legendPixmap());
+	      currentMapLayer->updateItemPixmap();
           } else
             {
               std::cerr << __FILE__ << ":" << __LINE__ << " found " << currentMapLayer->name() << "'s legend item ... skipping\n";

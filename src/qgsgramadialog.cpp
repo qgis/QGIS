@@ -296,12 +296,8 @@ void QgsGraMaDialog::apply()
 	
 	renderer->setClassificationField(ext->classfield());
 
-	if (mVectorLayer->legendItem())
-        {
-	    mVectorLayer->legendItem()->setPixmap(0, (*pix));
-        }
+	mVectorLayer->updateItemPixmap();
 	
-
 	if (mVectorLayer->propertiesDialog())
         {
 	    mVectorLayer->propertiesDialog()->setRendererDirty(false);

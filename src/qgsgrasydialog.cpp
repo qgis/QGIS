@@ -365,11 +365,7 @@ void QgsGraSyDialog::apply()
         }
 	renderer->setClassificationField(ext->classfield());
 	
-	if (mVectorLayer->legendItem())
-        {
-	    mVectorLayer->legendItem()->setPixmap(0, (*pix));
-        }
-	
+	mVectorLayer->updateItemPixmap();
 
 	if (mVectorLayer->propertiesDialog())
         {
