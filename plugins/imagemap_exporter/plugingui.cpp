@@ -26,6 +26,7 @@
 #include <fstream>
 #include <map>
 #include <queue>
+#include <valarray>
 
 #include <qgsfeature.h>
 #include <qgsvectorlayer.h>
@@ -120,9 +121,9 @@ void PluginGui::pbnOK_clicked()
     int n = features.size();
     
     // calculate the neighbour matrix
-    bool **neighbour = new (bool*)[n];
+    std::valarray<bool> col(n);
+    std::valarray<std::valarray<bool> > neighbour(col, n);
     for (int i = 0; i < n; ++i) {
-      neighbour[i] = new bool[n]; 
       neighbour[i][i] = false;
       for (int j = 0; j < i; ++j) {
 	unsigned char* geo1 = features[i].first->getGeometry();
@@ -159,7 +160,7 @@ void PluginGui::pbnOK_clicked()
 	}
       }
     }
-    
+
     // sort the features so clusters are contiguous
     std::sort(features.begin(), features.end(), cluster_comp);
     
