@@ -3,6 +3,14 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-11 [gsherman] 0.5.0devel27
+** First pass at a PostgreSQL query builder. This is not entirely
+	 functional yet. Fields for a table are displayed and sample or all
+	 values can be displayed. Double-clicking on a field name or sample
+	 value pastes it into the sql query box at the current cursor
+	 position. The test function is not implemented yet nor is the type
+	 checking to allow auto quoting of text values in the sql statement.
+
 2004-11-19 [mcoletti] 0.5.devel26
 ** Changed QgsProject properties interface to be more similar to
    QSettings.  New properties are emitted to file.  There is a known
