@@ -52,9 +52,9 @@
 /**
    Implementation struct for QgsMapCanvas
 */
-struct QgsMapCanvas::Imp
+struct QgsMapCanvas::CanvasProperties
 {
-    Imp::Imp()
+    CanvasProperties::CanvasProperties()
         : mapWindow( new QRect ),
           coordXForm( new QgsCoordinateTransform ),
           bgColor( Qt::white ),
@@ -66,7 +66,7 @@ struct QgsMapCanvas::Imp
     {
     }
 
-    Imp::Imp( int width, int height )
+    CanvasProperties::CanvasProperties( int width, int height )
         : mapWindow( new QRect ),
           coordXForm( new QgsCoordinateTransform ),
           bgColor( Qt::white ),
@@ -77,7 +77,7 @@ struct QgsMapCanvas::Imp
     {
     }
 
-    Imp::~Imp()
+    CanvasProperties::~CanvasProperties()
     {
         delete coordXForm;
         delete pmCanvas;
@@ -85,7 +85,7 @@ struct QgsMapCanvas::Imp
         delete scaleCalculator;
     }
 
-    void Imp::initMetrics(QPaintDeviceMetrics *pdm){
+    void CanvasProperties::initMetrics(QPaintDeviceMetrics *pdm){
       // set the logical dpi
           mDpi = pdm->logicalDpiX();
           scaleCalculator->setDpi(mDpi);
@@ -94,12 +94,12 @@ struct QgsMapCanvas::Imp
           scaleCalculator->setMapUnits(mMapUnits);
 
     }
-    void Imp::setMapUnits(int units)
+    void CanvasProperties::setMapUnits(int units)
     {
         mMapUnits = units;
         scaleCalculator->setMapUnits(mMapUnits);
     }
-    int Imp::mapUnits()
+    int CanvasProperties::mapUnits()
     {
       return mMapUnits;
     }
@@ -192,61 +192,68 @@ struct QgsMapCanvas::Imp
     //! Map units for the data on the canvas
     int mMapUnits;
 
-}; // struct QgsMapCanvas::Imp
+    //! Map scale of the canvas at its current zool level
+    double mScale;
+
+}; // struct QgsMapCanvas::CanvasProperties
 
 
 
 
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
-    : QWidget(parent, name), imp_( new Imp(width(), height()) )
+    : QWidget(parent, name), mCanvasProperties( new CanvasProperties(width(), height()) )
 {
-  setEraseColor(imp_->bgColor);
+  setEraseColor(mCanvasProperties->bgColor);
   setMouseTracking(true);
   setFocusPolicy(QWidget::StrongFocus);
   QPaintDeviceMetrics *pdm = new QPaintDeviceMetrics(this);
-  imp_->initMetrics(pdm);
+  mCanvasProperties->initMetrics(pdm);
   delete pdm;
 } // QgsMapCanvas ctor
 
 
 QgsMapCanvas::~QgsMapCanvas()
 {
-    // imp_ auto-deleted via std::auto_ptr
-    // Imp struct has its own dtor for freeing resources
+    // mCanvasProperties auto-deleted via std::auto_ptr
+    // CanvasProperties struct has its own dtor for freeing resources
 } // dtor
 
 
 
 void QgsMapCanvas::setLegend(QgsLegend * legend)
 {
-  imp_->mapLegend = legend;
+  mCanvasProperties->mapLegend = legend;
 } // setLegend
 
 
 
 QgsLegend *QgsMapCanvas::getLegend()
 {
-  return imp_->mapLegend;
+  return mCanvasProperties->mapLegend;
 } // getLegend
 
+double QgsMapCanvas::getScale()
+{
+  return mCanvasProperties->mScale;
+} // getScale
 
 void QgsMapCanvas::setDirty(bool _dirty)
 {
-  imp_->dirty = _dirty;
+  mCanvasProperties->dirty = _dirty;
 } // setDirty
 
 
 
 bool QgsMapCanvas::isDirty() const
 {
-  return imp_->dirty;
+  return mCanvasProperties->dirty;
 } // isDirty
 
 
 
 bool QgsMapCanvas::isDrawing()
 {
-  return imp_->drawing;;
+  return mCanvasProperties->drawing;;
 } // isDrawing
 
 
@@ -269,27 +276,27 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     if ( ! lyr )
     { return; }
 
-    imp_->layers[lyr->getLayerID()] = lyr;
+    mCanvasProperties->layers[lyr->getLayerID()] = lyr;
 
     // update extent if warranted
-    if (imp_->layers.size() == 1)
+    if (mCanvasProperties->layers.size() == 1)
     {
-        imp_->fullExtent = lyr->extent();
-        imp_->fullExtent.scale(1.1);
+        mCanvasProperties->fullExtent = lyr->extent();
+        mCanvasProperties->fullExtent.scale(1.1);
         // XXX why magic number of 1.1? - TO GET SOME WHITESPACE AT THE EDGES OF THE MAP
-        imp_->currentExtent = imp_->fullExtent;
+        mCanvasProperties->currentExtent = mCanvasProperties->fullExtent;
     }
     else
     {
         updateFullExtent(lyr->extent());
     }
 
-    imp_->zOrder.push_back(lyr->getLayerID());
+    mCanvasProperties->zOrder.push_back(lyr->getLayerID());
 
     QObject::connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
     QObject::connect(lyr, SIGNAL(repaintRequested()), this, SLOT(refresh()));
 
-    imp_->dirty = true;
+    mCanvasProperties->dirty = true;
 
     emit addedLayer( lyr );
 
@@ -299,16 +306,16 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 {
   //  iterate over the zOrder and return the layer at postion idx
-  std::list < QString >::iterator zi = imp_->zOrder.begin();
+  std::list < QString >::iterator zi = mCanvasProperties->zOrder.begin();
   for (int i = 0; i < idx; i++)
     {
-      if (i < imp_->zOrder.size())
+      if (i < mCanvasProperties->zOrder.size())
         {
           zi++;
         }
     }
 
-  QgsMapLayer *ml = imp_->layers[*zi];
+  QgsMapLayer *ml = mCanvasProperties->layers[*zi];
   return ml;
 } // getZpos
 
@@ -316,14 +323,14 @@ QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 
 void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 {
-  imp_->zOrder.clear();
+  mCanvasProperties->zOrder.clear();
   QListViewItemIterator it(lv);
 
   while (it.current())
     {
       QgsLegendItem *li = (QgsLegendItem *) it.current();
       QgsMapLayer *lyr = li->layer();
-      imp_->zOrder.push_front(lyr->getLayerID());
+      mCanvasProperties->zOrder.push_front(lyr->getLayerID());
       ++it;
     }
 
@@ -335,14 +342,14 @@ void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 
 QgsMapLayer *QgsMapCanvas::layerByName(QString name)
 {
-  return imp_->layers[name];
+  return mCanvasProperties->layers[name];
 } // layerByName
 
 
 
 void QgsMapCanvas::refresh()
 {
-  imp_->dirty = true;
+  mCanvasProperties->dirty = true;
   render();
 } // refresh
 
@@ -354,108 +361,141 @@ void QgsMapCanvas::refresh()
 // saving a map view as an image file.
 void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
-    QString msg = imp_->frozen ? "frozen" : "thawed";
-
+  QString msg = mCanvasProperties->frozen ? "frozen" : "thawed";
 #ifdef QGISDEBUG
+  std::cout << ".............................." << std::endl;
+  std::cout << "...........Rendering.........." << std::endl;
+  std::cout << ".............................." << std::endl;
   std::cout << "Map canvas is " << msg << std::endl;
 #endif
-
-  if (! imp_->frozen && imp_->dirty)
+  int myHeight=0;
+  int myWidth=0;
+  if (! mCanvasProperties->frozen && mCanvasProperties->dirty)
+  {
+    if (!mCanvasProperties->drawing)
     {
-      if (!imp_->drawing)
+      mCanvasProperties->drawing = true;
+      QPainter *paint = new QPainter();
+
+      //default to pmCanvas if no paintdevice is supplied
+      if ( ! theQPaintDevice )  //painting to mapCanvas->pixmap
+      {
+        mCanvasProperties->pmCanvas->fill(mCanvasProperties->bgColor);
+        paint->begin(mCanvasProperties->pmCanvas);
+        myHeight=height();
+        myWidth=width();
+      }
+      else  //painting to an arbitary pixmap passed to render()
+      {
+        // need width/height of paint device
+        QPaintDeviceMetrics myMetrics( theQPaintDevice );
+        myHeight = myMetrics.height();
+        myWidth = myMetrics.width();
+        //fall back to widget height & width if retrieving them from passed in canvas fails
+        if (myHeight==0)
         {
-          imp_->drawing = true;
-          QPainter *paint = new QPainter();
-
-          //default to pmCanvas if no paintdevice is supplied
-          if ( ! theQPaintDevice )
-          {
-            imp_->pmCanvas->fill(imp_->bgColor);
-            paint->begin(imp_->pmCanvas);
-          }
-          else
-          {
-            paint->begin(theQPaintDevice);
-          }
-
-          // calculate the translation and scaling parameters
-          double muppX, muppY;
-          muppY = imp_->currentExtent.height() / height();
-          muppX = imp_->currentExtent.width() / width();
-          imp_->m_mupp = muppY > muppX ? muppY : muppX;
-
-          // calculate the actual extent of the mapCanvas
-          double dxmin, dxmax, dymin, dymax, whitespace;
-
-          if (muppY > muppX)
-            {
-              dymin = imp_->currentExtent.yMin();
-              dymax = imp_->currentExtent.yMax();
-              whitespace = ((width() * imp_->m_mupp) - imp_->currentExtent.width()) / 2;
-              dxmin = imp_->currentExtent.xMin() - whitespace;
-              dxmax = imp_->currentExtent.xMax() + whitespace;
-          }
-          else
-          {
-              dxmin = imp_->currentExtent.xMin();
-              dxmax = imp_->currentExtent.xMax();
-              whitespace = ((height() * imp_->m_mupp) - imp_->currentExtent.height()) / 2;
-              dymin = imp_->currentExtent.yMin() - whitespace;
-              dymax = imp_->currentExtent.yMax() + whitespace;
-          }
-
-          //update the scale shown on the statusbar
-          currentScale(0);
-
-          //std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
-          // endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
-          imp_->coordXForm->setParameters(imp_->m_mupp, dxmin, dymin, height());  //currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
-          // update the currentExtent to match the device coordinates
-          //GS - removed the current extent update to fix bug --
-          //TODO remove the next 4 lines after we're sure this works ok
-          imp_->currentExtent.setXmin(dxmin);
-          imp_->currentExtent.setXmax(dxmax);
-          imp_->currentExtent.setYmin(dymin);
-          imp_->currentExtent.setYmax(dymax);
-
-          // render all layers in the stack, starting at the base
-          std::list < QString >::iterator li = imp_->zOrder.begin();
-//      std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
-          while (li != imp_->zOrder.end())
-            {
-              QgsMapLayer *ml = imp_->layers[*li];
-
-              if (ml)
-                {
-                  //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-#ifdef QGISDEBUG
-                  std::cout << "Rendering " << ml->name() << std::endl;
-#endif
-                  if (ml->visible())
-                  {
-                    ml->draw(paint, &imp_->currentExtent, imp_->coordXForm,imp_->pmCanvas,this);
-                  }
-
-                  li++;
-                  //  mi.draw(p, &fullExtent);
-                }
-            }
-#ifdef QGISDEBUG
-          std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
-#endif
-
-         // notify any listeners that rendering is complete
-         //note that pmCanvas is not draw to gui yet
-          emit renderComplete(paint);
-          paint->end();
-          imp_->drawing = false;
-
+          myHeight=height();
         }
+        if (myWidth==0)
+        {
+          myWidth=width();
+        }
+        //initialise the painter
+        paint->begin(theQPaintDevice);
+      }
 
-      imp_->dirty = false;
+      // calculate the translation and scaling parameters
+      // mupp = map units per pixel
+      double muppX, muppY;
+      muppY = mCanvasProperties->currentExtent.height() / myHeight;
+      muppX = mCanvasProperties->currentExtent.width() / myWidth;
+      mCanvasProperties->m_mupp = muppY > muppX ? muppY : muppX;
 
-      repaint();
+      // calculate the actual extent of the mapCanvas
+      double dxmin, dxmax, dymin, dymax, whitespace;
+
+      if (muppY > muppX)
+      {
+        dymin = mCanvasProperties->currentExtent.yMin();
+        dymax = mCanvasProperties->currentExtent.yMax();
+        whitespace = ((myWidth * mCanvasProperties->m_mupp) - mCanvasProperties->currentExtent.width()) / 2;
+        dxmin = mCanvasProperties->currentExtent.xMin() - whitespace;
+        dxmax = mCanvasProperties->currentExtent.xMax() + whitespace;
+      }
+      else
+      {
+        dxmin = mCanvasProperties->currentExtent.xMin();
+        dxmax = mCanvasProperties->currentExtent.xMax();
+        whitespace = ((myHeight * mCanvasProperties->m_mupp) - mCanvasProperties->currentExtent.height()) / 2;
+        dymin = mCanvasProperties->currentExtent.yMin() - whitespace;
+        dymax = mCanvasProperties->currentExtent.yMax() + whitespace;
+      }
+
+      //update the scale shown on the statusbar
+      currentScale(0);
+
+#ifdef QGISDEBUG
+        std::cout 
+          << "Paint device width : " << myWidth << std::endl
+          << "Paint device height : " << myHeight << std::endl
+          << "Canvas current extent height : " << mCanvasProperties->currentExtent.height()  << std::endl
+          << "Canvas current extent width : " << mCanvasProperties->currentExtent.width()  << std::endl
+          << "muppY: " << muppY << std::endl 
+          << "muppX: " << muppX << std::endl 
+          << "dxmin: " << dxmin << std::endl 
+          << "dxmax: " << dxmax << std::endl 
+          << "dymin: " << dymin << std::endl 
+          << "dymax: " << dymax << std::endl 
+          << "whitespace: " << whitespace << std::endl;
+#endif
+      mCanvasProperties->coordXForm->setParameters(mCanvasProperties->m_mupp, dxmin, dymin, myHeight);  
+      //currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
+      // update the currentExtent to match the device coordinates
+      //GS - removed the current extent update to fix bug --
+      //TODO remove the next 4 lines after we're sure this works ok
+
+      // TS - Update : We want these 4 lines because the device coordinates may be
+      // the printing device or something unrelated to the actual mapcanvas pixmap.
+      // However commenting it it out causes map not to scale when QGIS  window is resized
+
+      mCanvasProperties->currentExtent.setXmin(dxmin);
+      mCanvasProperties->currentExtent.setXmax(dxmax);
+      mCanvasProperties->currentExtent.setYmin(dymin);
+      mCanvasProperties->currentExtent.setYmax(dymax);
+
+      // render all layers in the stack, starting at the base
+      std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
+      // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+      while (li != mCanvasProperties->zOrder.end())
+      {
+        QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+        if (ml)
+        {
+          //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+#ifdef QGISDEBUG
+          std::cout << "Rendering " << ml->name() << std::endl;
+#endif
+          if (ml->visible())
+          {
+            ml->draw(paint, &mCanvasProperties->currentExtent, mCanvasProperties->coordXForm, this);
+          }
+
+          li++;
+        }
+      }
+#ifdef QGISDEBUG
+      std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
+#endif
+      // notify any listeners that rendering is complete
+      //note that pmCanvas is not draw to gui yet
+      emit renderComplete(paint);
+      paint->end();
+      mCanvasProperties->drawing = false;
     }
+    mCanvasProperties->dirty = false;
+    repaint();
+  }
 
 } // render
 
@@ -465,16 +505,20 @@ void QgsMapCanvas::currentScale(int thePrecision)
 {
           // calculate the translation and scaling parameters
           double muppX, muppY;
-          muppY = imp_->currentExtent.height() / height();
-          muppX = imp_->currentExtent.width() / width();
-          imp_->m_mupp = muppY > muppX ? muppY : muppX;
+          muppY = mCanvasProperties->currentExtent.height() / height();
+          muppX = mCanvasProperties->currentExtent.width() / width();
+          mCanvasProperties->m_mupp = muppY > muppX ? muppY : muppX;
 #ifdef QGISDEBUG
+          std::cout << "------------------------------------------ " << std::endl;
+          std::cout << "----------   Current Scale --------------- " << std::endl;
+          std::cout << "------------------------------------------ " << std::endl;
+          
           std::cout << "Current extent is " <<
-            imp_->currentExtent.stringRep() << std::endl; std::cout << "MuppX is: " <<
+            mCanvasProperties->currentExtent.stringRep() << std::endl; std::cout << "MuppX is: " <<
             muppX << "\nMuppY is: " << muppY << std::endl;
           std::cout << "Canvas width: " << width() << ", height: " << height() << std::endl;
-          std::cout << "Extent width: " << imp_->currentExtent.width() << ", height: "
-            << imp_->currentExtent.height() << std::endl;
+          std::cout << "Extent width: " << mCanvasProperties->currentExtent.width() << ", height: "
+            << mCanvasProperties->currentExtent.height() << std::endl;
 
           QPaintDeviceMetrics pdm(this);
           std::cout << "dpiX " << pdm.logicalDpiX() << ", dpiY " <<
@@ -487,30 +531,33 @@ void QgsMapCanvas::currentScale(int thePrecision)
           double dxmin, dxmax, dymin, dymax, whitespace;
           if (muppY > muppX)
             {
-              dymin = imp_->currentExtent.yMin();
-              dymax = imp_->currentExtent.yMax();
-              whitespace = ((width() * imp_->m_mupp) - imp_->currentExtent.width()) / 2;
-              dxmin = imp_->currentExtent.xMin() - whitespace;
-              dxmax = imp_->currentExtent.xMax() + whitespace;
+              dymin = mCanvasProperties->currentExtent.yMin();
+              dymax = mCanvasProperties->currentExtent.yMax();
+              whitespace = ((width() * mCanvasProperties->m_mupp) - mCanvasProperties->currentExtent.width()) / 2;
+              dxmin = mCanvasProperties->currentExtent.xMin() - whitespace;
+              dxmax = mCanvasProperties->currentExtent.xMax() + whitespace;
           } else
             {
-              dxmin = imp_->currentExtent.xMin();
-              dxmax = imp_->currentExtent.xMax();
-              whitespace = ((height() * imp_->m_mupp) - imp_->currentExtent.height()) / 2;
-              dymin = imp_->currentExtent.yMin() - whitespace;
-              dymax = imp_->currentExtent.yMax() + whitespace;
+              dxmin = mCanvasProperties->currentExtent.xMin();
+              dxmax = mCanvasProperties->currentExtent.xMax();
+              whitespace = ((height() * mCanvasProperties->m_mupp) - mCanvasProperties->currentExtent.height()) / 2;
+              dymin = mCanvasProperties->currentExtent.yMin() - whitespace;
+              dymax = mCanvasProperties->currentExtent.yMax() + whitespace;
 
             }
       QgsRect paddedExtent(dxmin, dymin, dxmax, dymax);
-      double mapScale = imp_->scaleCalculator->calculate(paddedExtent, width());
+      mCanvasProperties->mScale = mCanvasProperties->scaleCalculator->calculate(paddedExtent, width());
           std::cout << "Scale (assuming meters as map units) = 1:"
-          << mapScale << std::endl;
+          << mCanvasProperties->mScale << std::endl;
           // return scale based on geographic
           //
 
       //@todo return a proper value
-      QString myScaleString = QString("Scale 1: ")+QString::number(mapScale,'f',thePrecision);
+      QString myScaleString = QString("Scale 1: ")+QString::number(mCanvasProperties->mScale,'f',thePrecision);
       emit scaleChanged(myScaleString) ;
+#ifdef QGISDEBUG
+      std::cout << "------------------------------------------ " << std::endl;
+#endif
 }
 
 
@@ -528,7 +575,7 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
   }
   else //use the map view
   {
-    imp_->pmCanvas->save(theFileName,theFormat);
+    mCanvasProperties->pmCanvas->save(theFileName,theFormat);
   }
 } // saveAsImage
 
@@ -536,13 +583,13 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
 
 void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 {
-  if (!imp_->dirty)
+  if (!mCanvasProperties->dirty)
     {
       // just bit blit the image to the canvas
-      bitBlt(this, ev->rect().topLeft(), imp_->pmCanvas, ev->rect());
+      bitBlt(this, ev->rect().topLeft(), mCanvasProperties->pmCanvas, ev->rect());
   } else
   {
-      if (!imp_->drawing)
+      if (!mCanvasProperties->drawing)
       {
           render();
       }
@@ -553,20 +600,20 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 
 QgsRect const & QgsMapCanvas::extent() const
 {
-  return imp_->currentExtent;
+  return mCanvasProperties->currentExtent;
 } // extent
 
 
 void QgsMapCanvas::setExtent(QgsRect const & r)
 {
-  imp_->currentExtent = r;
-  emit extentsChanged(imp_->currentExtent.stringRep(2));
+  mCanvasProperties->currentExtent = r;
+  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
 } // setExtent
 
 
 void QgsMapCanvas::clear()
 {
-  imp_->dirty = true;
+  mCanvasProperties->dirty = true;
   erase();
 } // clear
 
@@ -574,26 +621,26 @@ void QgsMapCanvas::clear()
 
 void QgsMapCanvas::zoomFullExtent()
 {
-  imp_->previousExtent = imp_->currentExtent;
-  imp_->currentExtent = imp_->fullExtent;
+  mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+  mCanvasProperties->currentExtent = mCanvasProperties->fullExtent;
 
   clear();
   render();
-  emit extentsChanged(imp_->currentExtent.stringRep(2));
+  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
 } // zoomFullExtent
 
 
 
 void QgsMapCanvas::zoomPreviousExtent()
 {
-  if (imp_->previousExtent.width() > 0)
+  if (mCanvasProperties->previousExtent.width() > 0)
   {
-      QgsRect tempRect = imp_->currentExtent;
-      imp_->currentExtent = imp_->previousExtent;
-      imp_->previousExtent = tempRect;
+      QgsRect tempRect = mCanvasProperties->currentExtent;
+      mCanvasProperties->currentExtent = mCanvasProperties->previousExtent;
+      mCanvasProperties->previousExtent = tempRect;
       clear();
       render();
-      emit extentsChanged(imp_->currentExtent.stringRep(2));
+      emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
   }
 } // zoomPreviousExtent
 
@@ -602,7 +649,7 @@ void QgsMapCanvas::zoomPreviousExtent()
 void QgsMapCanvas::zoomToSelected()
 {
   QgsVectorLayer *lyr =
-      dynamic_cast < QgsVectorLayer * >(imp_->mapLegend->currentLayer());
+      dynamic_cast < QgsVectorLayer * >(mCanvasProperties->mapLegend->currentLayer());
 
   if (lyr)
   {
@@ -620,27 +667,27 @@ void QgsMapCanvas::zoomToSelected()
       else if (rect.xMin() == rect.xMax() &&
                rect.yMin() == rect.yMax())
         {
-          imp_->previousExtent = imp_->currentExtent;
-          imp_->currentExtent.setXmin(rect.xMin() - 25);
-          imp_->currentExtent.setYmin(rect.yMin() - 25);
-          imp_->currentExtent.setXmax(rect.xMax() + 25);
-          imp_->currentExtent.setYmax(rect.yMax() + 25);
+          mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+          mCanvasProperties->currentExtent.setXmin(rect.xMin() - 25);
+          mCanvasProperties->currentExtent.setYmin(rect.yMin() - 25);
+          mCanvasProperties->currentExtent.setXmax(rect.xMax() + 25);
+          mCanvasProperties->currentExtent.setYmax(rect.yMax() + 25);
           clear();
           render();
-    emit extentsChanged(imp_->currentExtent.stringRep(2));
+    emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
           return;
         }
       //zoom to an area
       else
         {
-          imp_->previousExtent = imp_->currentExtent;
-          imp_->currentExtent.setXmin(rect.xMin());
-          imp_->currentExtent.setYmin(rect.yMin());
-          imp_->currentExtent.setXmax(rect.xMax());
-          imp_->currentExtent.setYmax(rect.yMax());
+          mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+          mCanvasProperties->currentExtent.setXmin(rect.xMin());
+          mCanvasProperties->currentExtent.setYmin(rect.yMin());
+          mCanvasProperties->currentExtent.setXmax(rect.xMax());
+          mCanvasProperties->currentExtent.setYmax(rect.yMax());
           clear();
           render();
-    emit extentsChanged(imp_->currentExtent.stringRep(2));
+    emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
           return;
         }
     }
@@ -650,15 +697,15 @@ void QgsMapCanvas::zoomToSelected()
 
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
-  imp_->mouseButtonDown = true;
-  imp_->boxStartPoint = e->pos();
+  mCanvasProperties->mouseButtonDown = true;
+  mCanvasProperties->boxStartPoint = e->pos();
 
-  switch (imp_->mapTool)
+  switch (mCanvasProperties->mapTool)
     {
       case QGis::Select:
       case QGis::ZoomIn:
       case QGis::ZoomOut:
-        imp_->zoomBox.setRect(0, 0, 0, 0);
+        mCanvasProperties->zoomBox.setRect(0, 0, 0, 0);
         break;
       case QGis::Distance:
 //              distanceEndPoint = e->pos();
@@ -673,34 +720,34 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
   QPen     pen(Qt::gray);
   QgsPoint ll, ur;
 
-  if (imp_->dragging)
+  if (mCanvasProperties->dragging)
     {
-      imp_->dragging = false;
+      mCanvasProperties->dragging = false;
 
-      switch (imp_->mapTool)
+      switch (mCanvasProperties->mapTool)
       {
           case QGis::ZoomIn:
             // erase the rubber band box
             paint.begin(this);
             paint.setPen(pen);
             paint.setRasterOp(Qt::XorROP);
-            paint.drawRect(imp_->zoomBox);
+            paint.drawRect(mCanvasProperties->zoomBox);
             paint.end();
             // store the rectangle
-            imp_->zoomBox.setRight(e->pos().x());
-            imp_->zoomBox.setBottom(e->pos().y());
+            mCanvasProperties->zoomBox.setRight(e->pos().x());
+            mCanvasProperties->zoomBox.setBottom(e->pos().y());
             // set the extent to the zoomBox
 
-            ll = imp_->coordXForm->toMapCoordinates(imp_->zoomBox.left(), imp_->zoomBox.bottom());
-            ur = imp_->coordXForm->toMapCoordinates(imp_->zoomBox.right(), imp_->zoomBox.top());
-            imp_->previousExtent = imp_->currentExtent;
+            ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
+            ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
+            mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
             //QgsRect newExtent(ll.x(), ll.y(), ur.x(), ur.y());
-            imp_->currentExtent.setXmin(ll.x());
-            imp_->currentExtent.setYmin(ll.y());
-            imp_->currentExtent.setXmax(ur.x());
-            imp_->currentExtent.setYmax(ur.y());
-            imp_->currentExtent.normalize();
-      emit extentsChanged(imp_->currentExtent.stringRep(2));
+            mCanvasProperties->currentExtent.setXmin(ll.x());
+            mCanvasProperties->currentExtent.setYmin(ll.y());
+            mCanvasProperties->currentExtent.setXmax(ur.x());
+            mCanvasProperties->currentExtent.setYmax(ur.y());
+            mCanvasProperties->currentExtent.normalize();
+      emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
             clear();
             render();
 
@@ -711,86 +758,86 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               paint.begin(this);
               paint.setPen(pen);
               paint.setRasterOp(Qt::XorROP);
-              paint.drawRect(imp_->zoomBox);
+              paint.drawRect(mCanvasProperties->zoomBox);
               paint.end();
               // store the rectangle
-              imp_->zoomBox.setRight(e->pos().x());
-              imp_->zoomBox.setBottom(e->pos().y());
+              mCanvasProperties->zoomBox.setRight(e->pos().x());
+              mCanvasProperties->zoomBox.setBottom(e->pos().y());
               // scale the extent so the current view fits inside the zoomBox
-              ll = imp_->coordXForm->toMapCoordinates(imp_->zoomBox.left(), imp_->zoomBox.bottom());
-              ur = imp_->coordXForm->toMapCoordinates(imp_->zoomBox.right(), imp_->zoomBox.top());
-              imp_->previousExtent = imp_->currentExtent;
-              QgsRect tempRect = imp_->currentExtent;
-              imp_->currentExtent.setXmin(ll.x());
-              imp_->currentExtent.setYmin(ll.y());
-              imp_->currentExtent.setXmax(ur.x());
-              imp_->currentExtent.setYmax(ur.y());
-              imp_->currentExtent.normalize();
+              ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
+              ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
+              mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+              QgsRect tempRect = mCanvasProperties->currentExtent;
+              mCanvasProperties->currentExtent.setXmin(ll.x());
+              mCanvasProperties->currentExtent.setYmin(ll.y());
+              mCanvasProperties->currentExtent.setXmax(ur.x());
+              mCanvasProperties->currentExtent.setYmax(ur.y());
+              mCanvasProperties->currentExtent.normalize();
 
-              QgsPoint cer = imp_->currentExtent.center();
+              QgsPoint cer = mCanvasProperties->currentExtent.center();
 
               /* std::cout << "Current extent rectangle is " << tempRect << std::endl;
                  std::cout << "Center of zoom out rectangle is " << cer << std::endl;
                  std::cout << "Zoom out rectangle should have ll of " << ll << " and ur of " << ur << std::endl;
-                 std::cout << "Zoom out rectangle is " << imp_->currentExtent << std::endl;
+                 std::cout << "Zoom out rectangle is " << mCanvasProperties->currentExtent << std::endl;
                */
               double sf;
-              if (imp_->zoomBox.width() > imp_->zoomBox.height())
+              if (mCanvasProperties->zoomBox.width() > mCanvasProperties->zoomBox.height())
                 {
-                  sf = tempRect.width() / imp_->currentExtent.width();
+                  sf = tempRect.width() / mCanvasProperties->currentExtent.width();
               } else
                 {
-                  sf = tempRect.height() / imp_->currentExtent.height();
+                  sf = tempRect.height() / mCanvasProperties->currentExtent.height();
                 }
               //center = new QgsPoint(zoomRect->center());
               //  delete zoomRect;
-              imp_->currentExtent.expand(sf);
+              mCanvasProperties->currentExtent.expand(sf);
 #ifdef QGISDEBUG
-              std::cout << "Extent scaled by " << sf << " to " << imp_->currentExtent << std::endl;
-              std::cout << "Center of currentExtent after scaling is " << imp_->currentExtent.center() << std::endl;
+              std::cout << "Extent scaled by " << sf << " to " << mCanvasProperties->currentExtent << std::endl;
+              std::cout << "Center of currentExtent after scaling is " << mCanvasProperties->currentExtent.center() << std::endl;
 #endif
               clear();
               render();
-        emit extentsChanged(imp_->currentExtent.stringRep(2));
+        emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
             }
             break;
 
           case QGis::Pan:
             {
               // use start and end box points to calculate the extent
-              QgsPoint start = imp_->coordXForm->toMapCoordinates(imp_->boxStartPoint);
-              QgsPoint end = imp_->coordXForm->toMapCoordinates(e->pos());
+              QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->boxStartPoint);
+              QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(e->pos());
 
               double dx = fabs(end.x() - start.x());
               double dy = fabs(end.y() - start.y());
 
               // modify the extent
-              imp_->previousExtent = imp_->currentExtent;
+              mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
 
               if (end.x() < start.x())
                 {
-                  imp_->currentExtent.setXmin(imp_->currentExtent.xMin() + dx);
-                  imp_->currentExtent.setXmax(imp_->currentExtent.xMax() + dx);
+                  mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+                  mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
               } else
                 {
-                  imp_->currentExtent.setXmin(imp_->currentExtent.xMin() - dx);
-                  imp_->currentExtent.setXmax(imp_->currentExtent.xMax() - dx);
+                  mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+                  mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
                 }
 
               if (end.y() < start.y())
                 {
-                  imp_->currentExtent.setYmax(imp_->currentExtent.yMax() + dy);
-                  imp_->currentExtent.setYmin(imp_->currentExtent.yMin() + dy);
+                  mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+                  mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
 
               } else
                 {
-                  imp_->currentExtent.setYmax(imp_->currentExtent.yMax() - dy);
-                  imp_->currentExtent.setYmin(imp_->currentExtent.yMin() - dy);
+                  mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+                  mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
 
                 }
               clear();
               render();
-        emit extentsChanged(imp_->currentExtent.stringRep(2));
+        emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
             }
             break;
 
@@ -799,21 +846,21 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             paint.begin(this);
             paint.setPen(pen);
             paint.setRasterOp(Qt::XorROP);
-            paint.drawRect(imp_->zoomBox);
+            paint.drawRect(mCanvasProperties->zoomBox);
             paint.end();
 
-            QgsMapLayer *lyr = imp_->mapLegend->currentLayer();
+            QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
 
             if (lyr)
               {
                 QgsPoint ll, ur;
 
                 // store the rectangle
-                imp_->zoomBox.setRight(e->pos().x());
-                imp_->zoomBox.setBottom(e->pos().y());
+                mCanvasProperties->zoomBox.setRight(e->pos().x());
+                mCanvasProperties->zoomBox.setBottom(e->pos().y());
 
-                ll = imp_->coordXForm->toMapCoordinates(imp_->zoomBox.left(), imp_->zoomBox.bottom());
-                ur = imp_->coordXForm->toMapCoordinates(imp_->zoomBox.right(), imp_->zoomBox.top());
+                ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
+                ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
 
                 QgsRect *search = new QgsRect(ll.x(), ll.y(), ur.x(), ur.y());
 
@@ -835,11 +882,11 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
   } else
     {
       // map tools that rely on a click not a drag
-      switch (imp_->mapTool)
+      switch (mCanvasProperties->mapTool)
         {
           case QGis::Identify:
             // call identify method for selected layer
-            QgsMapLayer * lyr = imp_->mapLegend->currentLayer();
+            QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
 
             if (lyr)
               {
@@ -848,7 +895,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 double searchRadius = extent().width() * calculateSearchRadiusValue();
                 QgsRect * search = new QgsRect;
                 // convert screen coordinates to map coordinates
-                QgsPoint idPoint = imp_->coordXForm->toMapCoordinates(e->x(), e->y());
+                QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
                 search->setXmin(idPoint.x() - searchRadius);
                 search->setXmax(idPoint.x() + searchRadius);
                 search->setYmin(idPoint.y() - searchRadius);
@@ -872,9 +919,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
 void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 {
-  imp_->dirty = true;
-  imp_->pmCanvas->resize(e->size());
-  emit extentsChanged(imp_->currentExtent.stringRep(2));
+  mCanvasProperties->dirty = true;
+  mCanvasProperties->pmCanvas->resize(e->size());
+  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
 } // resizeEvent
 
 
@@ -890,35 +937,35 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
       // this is a drag-type operation (zoom, pan or other maptool)
 
-      switch (imp_->mapTool)
+      switch (mCanvasProperties->mapTool)
         {
           case QGis::Select:
           case QGis::ZoomIn:
           case QGis::ZoomOut:
             // draw the rubber band box as the user drags the mouse
-            imp_->dragging = true;
+            mCanvasProperties->dragging = true;
 
             paint.begin(this);
             paint.setPen(pen);
             paint.setRasterOp(Qt::XorROP);
-            paint.drawRect(imp_->zoomBox);
+            paint.drawRect(mCanvasProperties->zoomBox);
 
-            imp_->zoomBox.setLeft(imp_->boxStartPoint.x());
-            imp_->zoomBox.setTop(imp_->boxStartPoint.y());
-            imp_->zoomBox.setRight(e->pos().x());
-            imp_->zoomBox.setBottom(e->pos().y());
+            mCanvasProperties->zoomBox.setLeft(mCanvasProperties->boxStartPoint.x());
+            mCanvasProperties->zoomBox.setTop(mCanvasProperties->boxStartPoint.y());
+            mCanvasProperties->zoomBox.setRight(e->pos().x());
+            mCanvasProperties->zoomBox.setBottom(e->pos().y());
 
-            paint.drawRect(imp_->zoomBox);
+            paint.drawRect(mCanvasProperties->zoomBox);
             paint.end();
             break;
 
           case QGis::Pan:
             // show the pmCanvas as the user drags the mouse
-            imp_->dragging = true;
+            mCanvasProperties->dragging = true;
             // bitBlt the pixmap on the screen, offset by the
             // change in mouse coordinates
-            dx = e->pos().x() - imp_->boxStartPoint.x();
-            dy = e->pos().y() - imp_->boxStartPoint.y();
+            dx = e->pos().x() - mCanvasProperties->boxStartPoint.x();
+            dy = e->pos().y() - mCanvasProperties->boxStartPoint.y();
 
             //erase only the necessary parts to avoid flickering
             if (dx > 0)
@@ -936,7 +983,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
                 erase(0, height() + dy, width(), -dy);
               }
 
-            bitBlt(this, dx, dy, imp_->pmCanvas);
+            bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
             break;
         }
 
@@ -944,7 +991,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
   // show x y on status bar
   QPoint xy = e->pos();
-  QgsPoint coord = imp_->coordXForm->toMapCoordinates(xy);
+  QgsPoint coord = mCanvasProperties->coordXForm->toMapCoordinates(xy);
   emit xyCoordinates(coord);
 
 } // mouseMoveEvent
@@ -953,14 +1000,14 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 /** Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool(int tool)
 {
-  imp_->mapTool = tool;
+  mCanvasProperties->mapTool = tool;
 } // setMapTool
 
 
 /** Write property of QColor bgColor. */
 void QgsMapCanvas::setbgColor(const QColor & _newVal)
 {
-  imp_->bgColor = _newVal;
+  mCanvasProperties->bgColor = _newVal;
   setEraseColor(_newVal);
 } // setbgColor
 
@@ -969,27 +1016,27 @@ void QgsMapCanvas::setbgColor(const QColor & _newVal)
 /** Updates the full extent to include the mbr of the rectangle r */
 void QgsMapCanvas::updateFullExtent(QgsRect const & r)
 {
-  if (r.xMin() < imp_->fullExtent.xMin())
+  if (r.xMin() < mCanvasProperties->fullExtent.xMin())
   {
-    imp_->fullExtent.setXmin(r.xMin());
+    mCanvasProperties->fullExtent.setXmin(r.xMin());
   }
 
-  if (r.xMax() > imp_->fullExtent.xMax())
+  if (r.xMax() > mCanvasProperties->fullExtent.xMax())
   {
-    imp_->fullExtent.setXmax(r.xMax());
+    mCanvasProperties->fullExtent.setXmax(r.xMax());
   }
 
-  if (r.yMin() < imp_->fullExtent.yMin())
+  if (r.yMin() < mCanvasProperties->fullExtent.yMin())
   {
-    imp_->fullExtent.setYmin(r.yMin());
+    mCanvasProperties->fullExtent.setYmin(r.yMin());
   }
 
-  if (r.yMax() > imp_->fullExtent.yMax())
+  if (r.yMax() > mCanvasProperties->fullExtent.yMax())
   {
-    imp_->fullExtent.setYmax(r.yMax());
+    mCanvasProperties->fullExtent.setYmax(r.yMax());
   }
 
-  emit extentsChanged(imp_->currentExtent.stringRep(2));
+  emit extentsChanged(mCanvasProperties->currentExtent.stringRep(2));
 } // updateFullExtent
 
 
@@ -1000,14 +1047,14 @@ void QgsMapCanvas::updateFullExtent(QgsRect const & r)
 */
 int QgsMapCanvas::layerCount() const
 {
-  return imp_->layers.size();
+  return mCanvasProperties->layers.size();
 } // layerCount
 
 
 
 void QgsMapCanvas::layerStateChange()
 {
-  if (!imp_->frozen)
+  if (!mCanvasProperties->frozen)
     {
       clear();
       render();
@@ -1018,7 +1065,7 @@ void QgsMapCanvas::layerStateChange()
 
 void QgsMapCanvas::freeze(bool frz)
 {
-  imp_->frozen = frz;
+  mCanvasProperties->frozen = frz;
 } // freeze
 
 
@@ -1029,40 +1076,40 @@ void QgsMapCanvas::remove(QString const & key)
     // XXX in 'layers'?  Theoretically it should be ok to skip this check since
     // XXX this should always be called with correct keys.
 
-    delete imp_->layers[key];   // first delete the map layer itself
+    delete mCanvasProperties->layers[key];   // first delete the map layer itself
 
-    imp_->layers.erase( key );  // then erase its entry from layer table
+    mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
 
     // XXX after removing this layer, we should probably compact the
     // XXX remaining Z values
-    imp_->zOrder.remove(key);   // ... and it's Z order entry, too
+    mCanvasProperties->zOrder.remove(key);   // ... and it's Z order entry, too
 
     // Since we removed a layer, we may have to adjust the map canvas'
     // over-all extent; so we update to the largest extent found in the
     // remaining layers.
 
-    if ( imp_->layers.empty() )
+    if ( mCanvasProperties->layers.empty() )
     {
         // XXX do we want to reset the extents if the last layer is deleted?
     }
     else
     {
         std::map < QString, QgsMapLayer * >::iterator mi =
-            imp_->layers.begin();
+            mCanvasProperties->layers.begin();
 
-        imp_->fullExtent = mi->second->extent();
-        imp_->fullExtent.scale(1.1); // XXX why set the scale to this magic
+        mCanvasProperties->fullExtent = mi->second->extent();
+        mCanvasProperties->fullExtent.scale(1.1); // XXX why set the scale to this magic
                                      // XXX number?
 
         ++mi;
 
-        for ( ; mi != imp_->layers.end(); ++mi )
+        for ( ; mi != mCanvasProperties->layers.end(); ++mi )
         {
             updateFullExtent(mi->second->extent());
         }
     }
 
-    imp_->dirty = true;
+    mCanvasProperties->dirty = true;
 
     // signal that we've erased this layer
     emit removedLayer( key );
@@ -1076,16 +1123,16 @@ void QgsMapCanvas::removeAll()
 
 // Welllllll, yeah, this works, but now we have to ensure that the
 // removedLayer() signal is emitted.
-//   imp_->layers.clear();
-//   imp_->zOrder.clear();
+//   mCanvasProperties->layers.clear();
+//   mCanvasProperties->zOrder.clear();
 
     // So:
     std::map < QString, QgsMapLayer * >::iterator mi =
-        imp_->layers.begin();
+        mCanvasProperties->layers.begin();
 
     QString current_key;
 
-    while ( mi != imp_->layers.end() )
+    while ( mi != mCanvasProperties->layers.end() )
     {
         // save the current key
         current_key = mi->first;
@@ -1097,7 +1144,7 @@ void QgsMapCanvas::removeAll()
 
         // since mi is now invalidated because the std::map was modified in
         // remove(), reset it to the first element, if any
-        mi = imp_->layers.begin();
+        mi = mCanvasProperties->layers.begin();
     }
 
 } // removeAll
@@ -1120,42 +1167,42 @@ double QgsMapCanvas::calculateSearchRadiusValue()
 
 QPixmap * QgsMapCanvas::canvasPixmap()
 {
-    return imp_->pmCanvas;
+    return mCanvasProperties->pmCanvas;
 } // canvasPixmap
 
 
 
 void QgsMapCanvas::setCanvasPixmap(QPixmap * theQPixmap)
 {
-    imp_->pmCanvas = theQPixmap;
+    mCanvasProperties->pmCanvas = theQPixmap;
 } // setCanvasPixmap
 
 
 
 std::list < QString > const & QgsMapCanvas::zOrders() const
 {
-    return imp_->zOrder;
+    return mCanvasProperties->zOrder;
 } // zOrders
 
 
 std::list < QString >       & QgsMapCanvas::zOrders()
 {
-    return imp_->zOrder;
+    return mCanvasProperties->zOrder;
 } // zOrders
 
 
 double QgsMapCanvas::mupp() const
 {
-    return imp_->m_mupp;
+    return mCanvasProperties->m_mupp;
 } // mupp
 void QgsMapCanvas::setMapUnits(int units)
 {
 #ifdef QGISDEBUG
   std::cerr << "Setting map units to " << units << std::endl;
 #endif
-  imp_->setMapUnits(units);
+  mCanvasProperties->setMapUnits(units);
 }
 int QgsMapCanvas::mapUnits()
 {
-  return imp_->mapUnits();
+  return mCanvasProperties->mapUnits();
 }
