@@ -105,6 +105,8 @@ class QgisApp:public QgisAppBase
 	void layerProperties();
 	//! Show the right-click menu for the legend
 	void rightClickLegendMenu(QListViewItem *, const QPoint &, int);
+	//! Disable/enable toolbar buttons as appropriate for selected layer
+	void clickLegendMenu(QListViewItem *);
 	//! Remove a layer from the map and legend
 	void removeLayer();
 	//! zoom to extent of layer
