@@ -2230,6 +2230,10 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
       QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
       if (layer->type() == QgsMapLayer::RASTER)
         {
+	    toolPopupCapture->setItemEnabled(0,FALSE);
+	    toolPopupCapture->setItemEnabled(1,FALSE);
+	    toolPopupCapture->setItemEnabled(2,FALSE);
+	    toolPopupCapture->setItemEnabled(3,FALSE);
           actionIdentify->setEnabled(FALSE);
           actionSelect->setEnabled(FALSE);
           actionOpenTable->setEnabled(FALSE);
@@ -2242,6 +2246,43 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
             }
       } else
         {
+	    //vector layer editing buttons
+	    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) lvi)->layer());
+	    if(vlayer)
+	    {
+		if(vlayer->vectorType()==QGis::Point)
+		{
+		    toolPopupCapture->setItemEnabled(0,TRUE);
+		    toolPopupCapture->setItemEnabled(1,FALSE);
+		    toolPopupCapture->setItemEnabled(2,FALSE);
+		}
+		else if(vlayer->vectorType()==QGis::Line)
+		{
+		    toolPopupCapture->setItemEnabled(0,FALSE);
+		    toolPopupCapture->setItemEnabled(1,TRUE);
+		    toolPopupCapture->setItemEnabled(2,FALSE);
+		}
+		else if(vlayer->vectorType()==QGis::Polygon)
+		{
+		    toolPopupCapture->setItemEnabled(0,FALSE);
+		    toolPopupCapture->setItemEnabled(1,FALSE);
+		    toolPopupCapture->setItemEnabled(2,TRUE);
+		}
+
+		QgsVectorDataProvider* dprov=vlayer->getDataProvider();
+		if(dprov)
+		{
+		    if(dprov->supportsFeatureDeletion())
+		    {
+			toolPopupCapture->setItemEnabled(3,TRUE);
+		    }
+		    else
+		    {
+			toolPopupCapture->setItemEnabled(3,FALSE);
+		    }
+		}
+	    }
+
           actionIdentify->setEnabled(TRUE);
           actionSelect->setEnabled(TRUE);
           actionOpenTable->setEnabled(TRUE);
@@ -3279,16 +3320,16 @@ void QgisApp::setupToolbarPopups(QString themeName)
   toolPopupCapture = new QPopupMenu();
    toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_point.png")),
       "Capture points",
-      this, SLOT(capturePoint()));
+      this, SLOT(capturePoint()),0,0);
   toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_line.png")),
       "Capture lines",
-      this, SLOT(captureLine()));
+      this, SLOT(captureLine()),0,1);
   toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_general.png")),
       "Capture polygons",
-      this, SLOT(capturePolygon()));
+      this, SLOT(capturePolygon()),0,2);
   toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/delete_selected.png")),
       "Delete selection",
-      this, SLOT(deleteSelected()));
+      this, SLOT(deleteSelected()),0,3);			       
   tbtnCaptureTools->setPopup(toolPopupCapture);
   tbtnCaptureTools->setPopupDelay(0);
   // connect the top overview tool to the appropriate slot
