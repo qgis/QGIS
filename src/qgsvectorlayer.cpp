@@ -562,10 +562,16 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 x = (double *) ptr;
                 ptr += sizeof(double);
                 y = (double *) ptr;
+#ifdef QGISDEBUG
+                   std::cout << "Transforming " << *x << "," << *y << " to ";
+#endif
                 ptr += sizeof(double);
                 pt.setX(*x);
                 pt.setY(*y);
                 cXf->transform(&pt);
+#ifdef QGISDEBUG
+                  std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
+#endif
                 pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
               }
               if ( idx == 0 ) { // remember last outer ring point
@@ -619,12 +625,15 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                   ptr += sizeof(double);
                   y = (double *) ptr;
                   ptr += sizeof(double);
-                  // std::cout << "Transforming " << *x << "," << *y << " to ";
-
+#ifdef QGISDEBUG
+                   std::cout << "Transforming " << *x << "," << *y << " to ";
+#endif
                   pt.setX(*x);
                   pt.setY(*y);
                   cXf->transform(&pt);
-                  //std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
+#ifdef QGISDEBUG
+                  std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
+#endif
                   pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
 
                 }
