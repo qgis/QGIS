@@ -49,7 +49,8 @@ listView->clear();
 
 for(int idx=0; idx < map->layerCount(); idx++){
 	QgsMapLayer *lyr = map->getZpos(idx);
-	QListViewItem *lvi = new QListViewItem(listView, lyr->name());
+	QgsLegendItem *lvi = new QgsLegendItem(lyr,listView); // lyr->name(), QCheckListItem::CheckBox );
+	//lvi->setOn(lyr->visible());
 //	QgsLegendItem *li = new QgsLegendItem(lyr, legendContainer);
 	//addChild(li,0,idx*60);
 	int foo = 1;

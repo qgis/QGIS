@@ -49,7 +49,7 @@ public:
     /*! Draw the map using the symbology set for each layer
      */
     void render();
-    void render2();
+    
     void clear();
     double mupp();
     QgsRect extent();
@@ -65,6 +65,10 @@ public:
    QgsMapLayer * getZpos(int index);
    //! return number of layers on the map
    int layerCount();
+public slots:
+	void render2();
+	//! This slot is connected to the visibility change of one or more layers
+	void layerStateChange();
  signals:
  	void xyCoordinates(QgsPoint &p);
  private:

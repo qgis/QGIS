@@ -19,8 +19,8 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer (int type, QString lyrname):QgsDataSource (),
-layerName (lyrname), layerType (type)
+QgsMapLayer::QgsMapLayer (int type, QString lyrname, QString source) :
+layerName (lyrname), layerType (type), dataSource(source)
 {
   // assume the layer is valid (data source exists and can be used)
   // until we learn otherwise
@@ -109,3 +109,7 @@ bool QgsMapLayer::isValid(){
 bool QgsMapLayer::visible(){
 	return m_visible;
 }
+void QgsMapLayer::setVisible(bool vis){
+	m_visible = vis;
+	emit visibilityChanged();
+	}

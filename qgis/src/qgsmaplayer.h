@@ -19,6 +19,7 @@
 #define QGSMAPLAYER_H
 
 #include <qwidget.h>
+#include <qobject.h>
 #include "qgsdatasource.h"
 #include "qgsrect.h"
 #include "qgscoordinatetransform.h"
@@ -30,14 +31,14 @@
  * This class is the base class for all map layer types (shapefile,
  * raster, database). 
  */
-class QgsMapLayer : public QgsDataSource  {
-
+class QgsMapLayer : public QObject {
+   Q_OBJECT
  public: 
     /*! Constructor
      * @param type Type of layer as defined in LAYERS enum
      * @param lyrname Display Name of the layer
      */
-    QgsMapLayer(int type=0, QString lyrname=QString::null );
+    QgsMapLayer(int type=0, QString lyrname=QString::null, QString source=QString::null);
     //! Destructor
     virtual ~QgsMapLayer();
     /*! Get the type of the layer
@@ -81,6 +82,8 @@ class QgsMapLayer : public QgsDataSource  {
   int z();
   //! Visibility of the layer
 	bool visible();
+	//! set visibility
+	void setVisible(bool vis);
  public: // Public attributes
     //! Layers enum defining the types of layers that can be added to a map
     enum LAYERS {
@@ -88,6 +91,8 @@ class QgsMapLayer : public QgsDataSource  {
 	RASTER,
 	DATABASE
     }  ;
+ signals:
+ 	void visibilityChanged(void);
  protected:
     //! Extent of the layer
     QgsRect layerExtent; 
@@ -95,6 +100,7 @@ class QgsMapLayer : public QgsDataSource  {
     int zpos;
     //! Indicates if the layer is valid and can be drawn
     bool valid;
+    QString dataSource;
  private: // Private attributes
     /** Name of the layer - used for display  */
     QString layerName;
@@ -105,6 +111,7 @@ class QgsMapLayer : public QgsDataSource  {
     QString tag;
   /**  */
   QgsSymbol * m_symbol;
+  
     bool m_visible;
 public: // Public attributes
   /**  */

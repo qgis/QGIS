@@ -28,6 +28,7 @@ class QgsRect;
  * At present Qgis supports PostGIS "layers" in PostgresQL. 
  */
 class QgsDatabaseLayer : public QgsMapLayer  {
+Q_OBJECT
  public: 
     /*! Constructor
      * @param conninfo Pointer to the connection information required to
