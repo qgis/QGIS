@@ -567,6 +567,7 @@ bool QgsShapeFileProvider::isValid()
 
 bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 {
+  bool returnValue = true;
     OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
     OGRFeature* feature=new OGRFeature(fdef);
     /*double x;
@@ -587,8 +588,10 @@ OGRPoint* p=new OGRPoint(x,y,0);*/
     {
 	//writing failed
 	QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+  returnValue = false;
     }
     ogrLayer->SyncToDisk();
+  return returnValue;
 }
 
 bool QgsShapeFileProvider::deleteFeature(int id)
