@@ -634,7 +634,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Plugins</string>
+                    <string>Providers</string>
                 </attribute>
                 <widget class="QTextBrowser">
                     <property name="name">
