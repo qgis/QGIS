@@ -376,32 +376,33 @@ int QgsLabelAttributes::unitsCode ( const QString &name )
 
 QString QgsLabelAttributes::alignmentName ( int alignment )
 {
-    if ( alignment & Qt::AlignLeft ) {
-	return QString("left");
-    } else if ( alignment & Qt::AlignRight ) {
-	return QString("right");
-    } else if ( alignment & Qt::AlignTop ) {
-	return QString("top");
-    } else if ( alignment & Qt::AlignBottom ) {
-	return QString("bottom");
-    }
-	
-    return QString("center");
+  std::cout << "QString QgsLabelAttributes::alignmentName (" << alignment << ")" << std::endl;
+  if (!alignment)                                       return  QString("center");
+  if (alignment == (Qt::AlignRight | Qt::AlignBottom )) return  QString("aboveleft");
+  if (alignment == (Qt::AlignRight | Qt::AlignTop    )) return  QString("belowleft"); 
+  if (alignment == (Qt::AlignLeft  | Qt::AlignBottom )) return  QString("aboveright");
+  if (alignment == (Qt::AlignLeft  | Qt::AlignTop    )) return  QString("belowright");
+  if (alignment == (Qt::AlignRight | Qt::AlignVCenter)) return  QString("left");
+  if (alignment == (Qt::AlignLeft  | Qt::AlignVCenter)) return  QString("right");
+  if (alignment == (Qt::AlignBottom| Qt::AlignHCenter)) return  QString("above"); 
+  if (alignment == (Qt::AlignTop   | Qt::AlignHCenter)) return  QString("below"); 
+  if (alignment == (Qt::AlignCenter                  )) return  QString("center");
+  return QString("center");
 }
 
 int QgsLabelAttributes::alignmentCode ( const QString &name )
 {
-    QString lname = name.lower();
-    
-    if ( lname.compare("left") == 0 ) {
-	return Qt::AlignLeft | Qt::AlignVCenter;
-    } else if ( lname.compare("right") == 0 ) {
-	return Qt::AlignRight | Qt::AlignVCenter;
-    } else if ( lname.compare("top") == 0 ) {
-	return Qt::AlignTop | Qt::AlignHCenter;
-    } else if ( lname.compare("bottom") == 0 ) {
-	return Qt::AlignBottom | Qt::AlignHCenter;
-    }
-	
-    return Qt::AlignCenter;
+  QString lname = name.lower();
+  if (lname.compare("aboveleft")  == 0)  return Qt::AlignRight | Qt::AlignBottom     ;
+  if (lname.compare("belowleft")  == 0)  return Qt::AlignRight | Qt::AlignTop        ; 
+  if (lname.compare("aboveright")  == 0) return Qt::AlignLeft  | Qt::AlignBottom     ;
+  if (lname.compare("belowright")  == 0) return Qt::AlignLeft  | Qt::AlignTop        ;
+  if (lname.compare("left")  == 0)       return Qt::AlignRight | Qt::AlignVCenter    ;
+  if (lname.compare("right")  == 0)      return Qt::AlignLeft  | Qt::AlignVCenter    ;
+  if (lname.compare("above")  == 0)      return Qt::AlignBottom| Qt::AlignHCenter    ; 
+  if (lname.compare("below")  == 0)      return Qt::AlignTop   | Qt::AlignHCenter    ; 
+  if (lname.compare("center")  == 0)       return Qt::AlignCenter                      ;  
+
+
+  return Qt::AlignCenter;
 }

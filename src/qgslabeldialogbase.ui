@@ -574,63 +574,6 @@
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="5">
-                                <property name="name">
-                                    <cstring>layout44</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel1_2_2_2_2_2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Angle (deg):</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QSlider">
-                                        <property name="name">
-                                            <cstring>sliderAngle</cstring>
-                                        </property>
-                                        <property name="sizePolicy">
-                                            <sizepolicy>
-                                                <hsizetype>7</hsizetype>
-                                                <vsizetype>0</vsizetype>
-                                                <horstretch>0</horstretch>
-                                                <verstretch>0</verstretch>
-                                            </sizepolicy>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>360</number>
-                                        </property>
-                                        <property name="orientation">
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property name="tickmarks">
-                                            <enum>NoMarks</enum>
-                                        </property>
-                                        <property name="tickInterval">
-                                            <number>45</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QSpinBox">
-                                        <property name="name">
-                                            <cstring>spinAngle</cstring>
-                                        </property>
-                                        <property name="suffix">
-                                            <string>°</string>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>360</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>0</number>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
                             <spacer row="1" column="4">
                                 <property name="name">
                                     <cstring>spacer23</cstring>
@@ -853,6 +796,71 @@
                                     </size>
                                 </property>
                             </spacer>
+                            <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="5">
+                                <property name="name">
+                                    <cstring>layout44</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel1_2_2_2_2_2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Angle (deg):</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QSlider">
+                                        <property name="name">
+                                            <cstring>sliderAngle</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>7</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="maxValue">
+                                            <number>360</number>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property name="tickmarks">
+                                            <enum>NoMarks</enum>
+                                        </property>
+                                        <property name="tickInterval">
+                                            <number>45</number>
+                                        </property>
+                                    </widget>
+                                    <widget class="QSpinBox">
+                                        <property name="name">
+                                            <cstring>spinAngle</cstring>
+                                        </property>
+                                        <property name="suffix">
+                                            <string>°</string>
+                                        </property>
+                                        <property name="maxValue">
+                                            <number>360</number>
+                                        </property>
+                                        <property name="value">
+                                            <number>0</number>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="5">
+                                <property name="name">
+                                    <cstring>cbxUseCollisionDetection</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Use best judgement when labels collide</string>
+                                </property>
+                            </widget>
                         </grid>
                     </widget>
                 </grid>

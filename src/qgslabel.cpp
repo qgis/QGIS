@@ -51,7 +51,7 @@ QgsLabel::QgsLabel( std::vector<QgsField>& fields )
         mLabelField[i] = "";
         mLabelFieldIdx[i] = -1;
     }
-    mLayerAttributes = new QgsLabelAttributes ( true );
+    mLabelAttributes = new QgsLabelAttributes ( true );
 }
 
 QgsLabel::~QgsLabel()
@@ -97,7 +97,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     /* Text */
     value = fieldValue ( Text, feature );
     if ( value.isEmpty() ) {
-        text = mLayerAttributes->text();
+        text = mLabelAttributes->text();
     } else {
 	text = value;
     }
@@ -105,7 +105,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     /* Font */
     value = fieldValue ( Family, feature );
     if ( value.isEmpty() ) {
-	font.setFamily ( mLayerAttributes->family() );
+	font.setFamily ( mLabelAttributes->family() );
     } else {
 	font.setFamily ( value );
     }
@@ -113,39 +113,39 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     double size;
     value = fieldValue ( Size, feature );
     if ( value.isEmpty() ) {
-        size =  mLayerAttributes->size();
+        size =  mLabelAttributes->size();
     } else {
         size =  value.toDouble();
     }
-    if (  mLayerAttributes->sizeType() == QgsLabelAttributes::MapUnits ) {
+    if (  mLabelAttributes->sizeType() == QgsLabelAttributes::MapUnits ) {
 	size *= scale;
     }
     font.setPointSizeFloat ( size );
     
     value = fieldValue ( Color, feature );
     if ( value.isEmpty() ) {
-        pen.setColor ( mLayerAttributes->color() );
+        pen.setColor ( mLabelAttributes->color() );
     } else { 
 	pen.setColor ( QColor(value) );
     }
     
     value = fieldValue ( Bold, feature );
     if ( value.isEmpty() ) {
-        font.setBold ( mLayerAttributes->bold() );
+        font.setBold ( mLabelAttributes->bold() );
     } else {
 	font.setBold ( (bool) value.toInt() );
     }
     
     value = fieldValue ( Italic, feature );
     if ( value.isEmpty() ) {
-        font.setItalic ( mLayerAttributes->italic() );
+        font.setItalic ( mLabelAttributes->italic() );
     } else {
 	font.setItalic ( (bool) value.toInt() );
     }
     
     value = fieldValue ( Underline, feature );
     if ( value.isEmpty() ) {
-        font.setUnderline ( mLayerAttributes->underline() );
+        font.setUnderline ( mLabelAttributes->underline() );
     } else { 
 	font.setUnderline ( (bool) value.toInt() );
     }
@@ -171,26 +171,26 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
 
     value = fieldValue ( XOffset, feature );
     if ( value.isEmpty() ) {
-        xoffset = mLayerAttributes->xOffset();
+        xoffset = mLabelAttributes->xOffset();
     } else { 
 	xoffset = value.toDouble();
     }
     value = fieldValue ( YOffset, feature );
     if ( value.isEmpty() ) {
-        yoffset = mLayerAttributes->yOffset();
+        yoffset = mLabelAttributes->yOffset();
     } else { 
 	yoffset = value.toDouble();
     }
 
     // recalc offset to points
-    if (  mLayerAttributes->offsetType() == QgsLabelAttributes::MapUnits ) {
+    if (  mLabelAttributes->offsetType() == QgsLabelAttributes::MapUnits ) {
 	xoffset *= scale;
 	yoffset *= scale;
     }
     
     value = fieldValue ( Angle, feature );
     if ( value.isEmpty() ) {
-        ang = mLayerAttributes->angle();
+        ang = mLabelAttributes->angle();
     } else {
         ang = value.toDouble();
     }
@@ -208,7 +208,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
 
     value = fieldValue ( Alignment, feature );
     if ( value.isEmpty() ) {
-        alignment = mLayerAttributes->alignment();
+        alignment = mLabelAttributes->alignment();
     } else {
 	value = value.lower();
 	alignment = Qt::AlignCenter;
@@ -246,12 +246,12 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     //
     // Draw a buffer behind the text if one is desired
     //
-    if (mLayerAttributes->bufferSizeIsSet())
+    if (mLabelAttributes->bufferSizeIsSet())
     {
-      int myBufferSize = mLayerAttributes->bufferSize() ;
-      if (mLayerAttributes->bufferColorIsSet())
+      int myBufferSize = mLabelAttributes->bufferSize() ;
+      if (mLabelAttributes->bufferColorIsSet())
       {
-        painter->setPen( mLayerAttributes->bufferColor());
+        painter->setPen( mLabelAttributes->bufferColor());
       }
       else //default to a white buffer
       {
@@ -316,7 +316,7 @@ QString QgsLabel::labelField ( int attr )
 
 QgsLabelAttributes *QgsLabel::layerAttributes ( void )
 {
-    return mLayerAttributes;
+    return mLabelAttributes;
 }
 
 QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
@@ -402,33 +402,33 @@ void QgsLabel::readXML( const QDomNode& node )
    
     /* Text */
     el = node.namedItem("label").toElement();
-    mLayerAttributes->setText ( el.attribute("text") );
+    mLabelAttributes->setText ( el.attribute("text") );
     setLabelField ( Text, el.attribute("field") );
 
     /* Family */
     el = node.namedItem("family").toElement();
-    mLayerAttributes->setFamily ( el.attribute("name") );
+    mLabelAttributes->setFamily ( el.attribute("name") );
     setLabelField ( Family, el.attribute("field") );
 
     /* Size */
     el = node.namedItem("size").toElement();
     type = QgsLabelAttributes::unitsCode( el.attribute("units") );
-    mLayerAttributes->setSize ( el.attribute("value").toDouble(), type );
+    mLabelAttributes->setSize ( el.attribute("value").toDouble(), type );
     setLabelField ( Size, el.attribute("field") );
 
     /* Bold */
     el = node.namedItem("bold").toElement();
-    mLayerAttributes->setBold ( (bool)el.attribute("on").toInt() );
+    mLabelAttributes->setBold ( (bool)el.attribute("on").toInt() );
     setLabelField ( Bold, el.attribute("field") );
     
     /* Italic */
     el = node.namedItem("italic").toElement();
-    mLayerAttributes->setItalic ( (bool)el.attribute("on").toInt() );
+    mLabelAttributes->setItalic ( (bool)el.attribute("on").toInt() );
     setLabelField ( Italic, el.attribute("field") );
     
     /* Underline */
     el = node.namedItem("underline").toElement();
-    mLayerAttributes->setUnderline ( (bool)el.attribute("on").toInt() );
+    mLabelAttributes->setUnderline ( (bool)el.attribute("on").toInt() );
     setLabelField ( Underline, el.attribute("field") );
     
     /* Color */
@@ -436,7 +436,7 @@ void QgsLabel::readXML( const QDomNode& node )
     red = el.attribute("red").toInt();
     green = el.attribute("green").toInt();
     blue = el.attribute("blue").toInt();
-    mLayerAttributes->setColor ( QColor(red, green, blue) );
+    mLabelAttributes->setColor ( QColor(red, green, blue) );
     setLabelField ( Color, el.attribute("field") );
 
     /* X */
@@ -453,50 +453,49 @@ void QgsLabel::readXML( const QDomNode& node )
     type = QgsLabelAttributes::unitsCode( el.attribute("units") );
     xoffset = el.attribute("x").toDouble();
     yoffset = el.attribute("y").toDouble();
-    mLayerAttributes->setOffset ( xoffset, yoffset, type );
+    mLabelAttributes->setOffset ( xoffset, yoffset, type );
     setLabelField ( XOffset, el.attribute("xfield") );
     setLabelField ( YOffset, el.attribute("yfield") );
 
     /* Angle */
     el = node.namedItem("angle").toElement();
-    mLayerAttributes->setAngle ( el.attribute("value").toDouble() );
+    mLabelAttributes->setAngle ( el.attribute("value").toDouble() );
     setLabelField ( Angle, el.attribute("field") );
 
     /* Alignment */
     el = node.namedItem("alignment").toElement();
-    mLayerAttributes->setAlignment ( QgsLabelAttributes::alignmentCode(el.attribute("value")) );
+    mLabelAttributes->setAlignment ( QgsLabelAttributes::alignmentCode(el.attribute("value")) );
     setLabelField ( Alignment, el.attribute("field") );
 
 }
 
 void QgsLabel::writeXML(std::ofstream& xml)
 {
-    QgsLabelAttributes *a = mLayerAttributes;
     
     xml << "\t\t<labelattributes>\n";
 
     /* Text */
-    xml << "\t\t\t<label text=\"" << a->text().ascii() << "\" field=\"" << mLabelField[Text].ascii() << "\" />\n";
+    xml << "\t\t\t<label text=\"" << mLabelAttributes->text().ascii() << "\" field=\"" << mLabelField[Text].ascii() << "\" />\n";
 
     /* Family */
-    xml << "\t\t\t<family name=\"" << a->family().ascii() << "\" field=\"" << mLabelField[Family].ascii() << "\" />\n";
+    xml << "\t\t\t<family name=\"" << mLabelAttributes->family().ascii() << "\" field=\"" << mLabelField[Family].ascii() << "\" />\n";
 
     /* Size */
-    xml << "\t\t\t<size value=\"" << a->size() << "\" units=\"" 
-	<< (const char *)QgsLabelAttributes::unitsName(a->sizeType()) << "\" field=\"" << mLabelField[Size].ascii() << "\" />\n";
+    xml << "\t\t\t<size value=\"" << mLabelAttributes->size() << "\" units=\"" 
+	<< (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()) << "\" field=\"" << mLabelField[Size].ascii() << "\" />\n";
 
     /* Bold */
-    xml << "\t\t\t<bold on=\"" << a->bold() << "\" field=\"" << mLabelField[Bold].ascii() << "\" />\n";
+    xml << "\t\t\t<bold on=\"" << mLabelAttributes->bold() << "\" field=\"" << mLabelField[Bold].ascii() << "\" />\n";
 
     /* Italic */
-    xml << "\t\t\t<italic on=\"" << a->italic() << "\" field=\"" << mLabelField[Italic].ascii() << "\" />\n";
+    xml << "\t\t\t<italic on=\"" << mLabelAttributes->italic() << "\" field=\"" << mLabelField[Italic].ascii() << "\" />\n";
 
     /* Underline */
-    xml << "\t\t\t<underline on=\"" << a->underline() << "\" field=\"" << mLabelField[Underline].ascii() << "\" />\n";
+    xml << "\t\t\t<underline on=\"" << mLabelAttributes->underline() << "\" field=\"" << mLabelField[Underline].ascii() << "\" />\n";
 
     /* Color */
-    xml << "\t\t\t<color red=\"" << a->color().red() << "\" green=\"" << a->color().green()
-        << "\" blue=\"" << a->color().blue() << "\" field=\"" << mLabelField[Color].ascii() << "\" />\n";
+    xml << "\t\t\t<color red=\"" << mLabelAttributes->color().red() << "\" green=\"" << mLabelAttributes->color().green()
+        << "\" blue=\"" << mLabelAttributes->color().blue() << "\" field=\"" << mLabelField[Color].ascii() << "\" />\n";
 
     /* X */
     xml << "\t\t\t<x field=\"" << mLabelField[XCoordinate].ascii() << "\" />\n";
@@ -505,16 +504,16 @@ void QgsLabel::writeXML(std::ofstream& xml)
     xml << "\t\t\t<y field=\"" << mLabelField[YCoordinate].ascii() << "\" />\n";
 
     /* Offset */
-    xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(a->offsetType()).ascii()
-        << "\" x=\"" << a->xOffset() << "\" xfield=\"" << mLabelField[XOffset].ascii() 
-        << "\" y=\"" << a->yOffset() << "\" yfield=\"" << mLabelField[YOffset].ascii()
+    xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType()).ascii()
+        << "\" x=\"" << mLabelAttributes->xOffset() << "\" xfield=\"" << mLabelField[XOffset].ascii() 
+        << "\" y=\"" << mLabelAttributes->yOffset() << "\" yfield=\"" << mLabelField[YOffset].ascii()
 	<< "\" />\n";
 
     /* Angle */
-    xml << "\t\t\t<angle value=\"" << a->angle() << "\" field=\"" << mLabelField[Angle].ascii() << "\" />\n";
+    xml << "\t\t\t<angle value=\"" << mLabelAttributes->angle() << "\" field=\"" << mLabelField[Angle].ascii() << "\" />\n";
 
     /* Alignment */
-    xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(a->alignment()).ascii() 
+    xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment()).ascii() 
 	<< "\" field=\"" << mLabelField[Alignment].ascii() << "\" />\n";
 
     xml << "\t\t</labelattributes>\n";
