@@ -53,6 +53,7 @@ class QgsComposer;
 #include "qgisiface.h"
 #include "splashscreen.h"
 #include "qgsconfig.h"
+#include "qgsvectordataprovider.h"
 
 static SplashScreen * gSplashScreen ;
 
@@ -82,7 +83,7 @@ public:
     void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
     /** \brief overloaded vesion of the privat addLayer method that takes a list of
     * filenames instead of prompting user with a dialog.
-
+    @param enc encoding type for the layer 
     @returns true if successfully added layer
 
     @note
@@ -92,11 +93,12 @@ public:
     It's much better to try to just open one file at a time.
 
     */
-    bool addLayer(QStringList const & theLayerQStringList);
+    bool addLayer(QStringList const & theLayerQStringList, const QgsVectorDataProvider::Encoding enc);
 
     /** open a vector layer for the given file
 
-      @returns false if unable to open a raster layer for rasterFile
+    
+    @returns false if unable to open a raster layer for rasterFile
 
       @note
 
