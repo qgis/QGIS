@@ -45,9 +45,7 @@ libgridmakerplugin_la_SOURCES = plugin.cpp \
 	     
 plugin_MOC = plugin.moc.cpp \
 	plugingui.moc.cpp \
-	pluginguibase.moc.cpp \
-	../../src/qgsmaplayer.moc.cpp \
-	../../src/qgsvectorlayer.moc.cpp 
+	pluginguibase.moc.cpp
 
 plugin_UI = pluginguibase.h \
 	    pluginguibase.cpp 
@@ -60,6 +58,7 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 libgridmakerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
+libgridmakerplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 libgridmakerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 libgridmakerplugin_la_LDFLAGS = -avoid-version -module
 
@@ -79,6 +78,7 @@ gridmaker_SOURCES = main.cpp \
 	$(standalone_MOC) 
 
 gridmaker_LDADD = $(QT_LDADD) 
+gridmaker_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
 
 standalone_MOC = plugingui.moc.cpp \
