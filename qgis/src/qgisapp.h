@@ -45,11 +45,11 @@ class QgisApp : public QgisAppBase
 {
   Q_OBJECT public:
 //! Constructor
-	QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
+  QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
 
-	 ~QgisApp();
+   ~QgisApp();
 public:
-	 QgisIface *getInterface();
+   QgisIface *getInterface();
 
          void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
          /** \brief overloaded vesion of the privat addLayer method that takes a list of
@@ -91,7 +91,7 @@ public:
          It's much better to try to just open one file at a time.
 
          */
-      	 bool addRasterLayer(QStringList const & theLayerQStringList);
+         bool addRasterLayer(QStringList const & theLayerQStringList);
 
 
       /** open a raster layer for the given file
@@ -102,7 +102,7 @@ public:
 
          This is essentially a simplified version of the above
       */
-      	 bool addRasterLayer(QFileInfo const & rasterFile);
+         bool addRasterLayer(QFileInfo const & rasterFile);
         
        /** opens a qgis project file
        @returns false if unable to open the project
@@ -111,13 +111,13 @@ public:
        bool addProject(QString projectFile);
        
         //!Overloaded version of the private function with same name that takes the imagename as a parameter
-	void saveMapAsImage(QString);
+  void saveMapAsImage(QString);
 private:
 
-	//! Add a vector layer to the map
-	void addLayer();
-	//! Add a raster layer to the map
-	void addRasterLayer();
+  //! Add a vector layer to the map
+  void addLayer();
+  //! Add a raster layer to the map
+  void addRasterLayer();
         /** This helper checks to see whether the filename appears to be a valid raster file name */
         bool isValidRasterFileName (QString theFileNameQString);
         /** Overloaded version of the above function provided for convenience that takes a qstring pointer */ 
@@ -127,83 +127,83 @@ private:
         /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
         bool isValidVectorFileName (QString * theFileNameQString);
 
-	#ifdef POSTGRESQL
-	//! Add a databaselayer to the map
-	void addDatabaseLayer();
-	#endif
+  #ifdef POSTGRESQL
+  //! Add a databaselayer to the map
+  void addDatabaseLayer();
+  #endif
 
-	//! Exit Qgis
-	void fileExit();
-	
-	//! Set map tool to Zoom out
-	void zoomOut();
-	//! Set map tool to Zoom in
-	void zoomIn();
-	//! Zoom to full extent
-	void zoomFull();
-	//! Zoom to the previous extent
-	void zoomPrevious();
-	//! Zoom to selected features
-	void zoomToSelected();
-	//! Set map tool to pan
-	void pan();
-	//! Identify feature(s) on the currently selected layer
-	void identify();
-	//! show the attribute table for the currently selected layer
-	void attributeTable();
-	//! Read Well Known Binary stream from PostGIS
-	//void readWKB(const char *, QStringList tables);
-	//! Draw a point on the map canvas
-	void drawPoint(double x, double y);
-	//! draw layers
-	void drawLayers();
-	//! test function
-	void testButton();
-	//! About QGis
-	void about();
-	//! activates the selection tool
-	void select();
+  //! Exit Qgis
+  void fileExit();
+  
+  //! Set map tool to Zoom out
+  void zoomOut();
+  //! Set map tool to Zoom in
+  void zoomIn();
+  //! Zoom to full extent
+  void zoomFull();
+  //! Zoom to the previous extent
+  void zoomPrevious();
+  //! Zoom to selected features
+  void zoomToSelected();
+  //! Set map tool to pan
+  void pan();
+  //! Identify feature(s) on the currently selected layer
+  void identify();
+  //! show the attribute table for the currently selected layer
+  void attributeTable();
+  //! Read Well Known Binary stream from PostGIS
+  //void readWKB(const char *, QStringList tables);
+  //! Draw a point on the map canvas
+  void drawPoint(double x, double y);
+  //! draw layers
+  void drawLayers();
+  //! test function
+  void testButton();
+  //! About QGis
+  void about();
+  //! activates the selection tool
+  void select();
   //! check to see if file is dirty and if so, prompt the user th save it
   int saveDirty();
-	private slots:				
-		//! Slot to show the map coordinate position of the mouse cursor
-	void showMouseCoordinate(QgsPoint &);
-	//! Show layer properties for the selected layer
-	void layerProperties(QListViewItem *);
-	//! Show layer properties for selected layer (called by right-click menu)
-	void layerProperties();
-	//! Show the right-click menu for the legend
-	void rightClickLegendMenu(QListViewItem *, const QPoint &, int);
-	//! Disable/enable toolbar buttons as appropriate for selected layer
-	void currentLayerChanged(QListViewItem *);
-	//! Remove a layer from the map and legend
-	void removeLayer();
-	//! zoom to extent of layer
-	void zoomToLayerExtent();
-	//! test plugin functionality
-	void testPluginFunctions();
-	//! test maplayer plugins
-	void testMapLayerPlugins();
-	//! plugin manager
-	void actionPluginManager_activated();
-	//! plugin loader
-	void loadPlugin(QString name, QString description, QString fullPath);
-	//! Save window state
-	void saveWindowState();
-	//! Restore the window and toolbar state
-	void restoreWindowState();
-	//! Save project
-	void fileSave();
-	//! Save project as
-	void fileSaveAs();
+  private slots:        
+    //! Slot to show the map coordinate position of the mouse cursor
+  void showMouseCoordinate(QgsPoint &);
+  //! Show layer properties for the selected layer
+  void layerProperties(QListViewItem *);
+  //! Show layer properties for selected layer (called by right-click menu)
+  void layerProperties();
+  //! Show the right-click menu for the legend
+  void rightClickLegendMenu(QListViewItem *, const QPoint &, int);
+  //! Disable/enable toolbar buttons as appropriate for selected layer
+  void currentLayerChanged(QListViewItem *);
+  //! Remove a layer from the map and legend
+  void removeLayer();
+  //! zoom to extent of layer
+  void zoomToLayerExtent();
+  //! test plugin functionality
+  void testPluginFunctions();
+  //! test maplayer plugins
+  void testMapLayerPlugins();
+  //! plugin manager
+  void actionPluginManager_activated();
+  //! plugin loader
+  void loadPlugin(QString name, QString description, QString fullPath);
+  //! Save window state
+  void saveWindowState();
+  //! Restore the window and toolbar state
+  void restoreWindowState();
+  //! Save project
+  void fileSave();
+  //! Save project as
+  void fileSaveAs();
         //! Save the map view as an image - user is prompted for image name using a dialog
-	void saveMapAsImage();
-	//! Open a project
-	void fileOpen();
-	//! Create a new project
-	void fileNew();
-	//! Export current view as a mapserver map file
-	void exportMapServer();
+  void saveMapAsImage();
+  //! Open a project
+  void fileOpen();
+  //! Create a new project
+  void fileNew();
+  //! Export current view as a mapserver map file
+  void exportMapServer();
   //! Return pointer to the active layer
   QgsMapLayer *activeLayer();
   //! Return data source of the active layer
@@ -216,39 +216,41 @@ private:
   void helpQgisSourceForge();
   //! Open a url in the users configured browser
   void openURL(QString url, bool useQgisDocDirectory=true);
-	//! Check qgis version against the qgis version server
-	void checkQgisVersion();
+  //! Check qgis version against the qgis version server
+  void checkQgisVersion();
   //! options dialog slot
   void options();
-	void socketConnected();
-	void socketConnectionClosed();
-	void socketReadyRead();
-	void socketError(int e);
-/* 	void urlData(); */
+  //! Whats-this help slot
+  void whatsThis();
+  void socketConnected();
+  void socketConnectionClosed();
+  void socketReadyRead();
+  void socketError(int e);
+/*  void urlData(); */
   private:
 //! Popup menu
-	  QPopupMenu * popMenu;
+    QPopupMenu * popMenu;
 //! Legend list view control
-	QgsLegendView *legendView;
-	//! Map canvas
-	QgsMapCanvas *mapCanvas;
+  QgsLegendView *legendView;
+  //! Map canvas
+  QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
-	QgsLegend *mapLegend;
-	QCursor *mapCursor;
+  QgsLegend *mapLegend;
+  QCursor *mapCursor;
 //! scale factor
-	double scaleFactor;
-	//! Current map window extent in real-world coordinates
-	QRect *mapWindow;
-	//! Current map tool
-	int mapTool;
-	QCursor *cursorZoomIn;
-	QString startupPath;
-	//! full path name of the current map file (if it has been saved or loaded)
-	QString fullPath;
-	QgisIface *qgisInterface;
-	QSocket *socket;
-	QString versionMessage;
-	friend class QgisIface;
+  double scaleFactor;
+  //! Current map window extent in real-world coordinates
+  QRect *mapWindow;
+  //! Current map tool
+  int mapTool;
+  QCursor *cursorZoomIn;
+  QString startupPath;
+  //! full path name of the current map file (if it has been saved or loaded)
+  QString fullPath;
+  QgisIface *qgisInterface;
+  QSocket *socket;
+  QString versionMessage;
+  friend class QgisIface;
   QgsProviderRegistry *providerRegistry;
   //! application directory
   QString appDir;
