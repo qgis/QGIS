@@ -329,66 +329,36 @@ bool QgsRasterLayer::hasBand(QString theBandName)
   return false;
 }
 
+void QgsRasterLayer::drawThumbnail(QPixmap * theQPixmap)
+{
+  theQPixmap->fill(); //defaults to white
+  RasterViewPort *myRasterViewPort = new RasterViewPort();
+  myRasterViewPort->rectXOffsetInt = 0;
+  myRasterViewPort->rectYOffsetInt = 0;
+  myRasterViewPort->clippedXMinDouble = 0;
+  myRasterViewPort->clippedXMaxDouble = rasterXDimInt;
+  myRasterViewPort->clippedYMinDouble = rasterYDimInt;
+  myRasterViewPort->clippedYMaxDouble = 0;
+  myRasterViewPort->clippedWidthInt   = rasterXDimInt;
+  myRasterViewPort->clippedHeightInt  = rasterYDimInt;
+  myRasterViewPort->topLeftPoint = QgsPoint(0,0);
+  myRasterViewPort->bottomRightPoint = QgsPoint(theQPixmap->width(), theQPixmap->height());
+  myRasterViewPort->drawableAreaXDimInt = theQPixmap->width();
+  myRasterViewPort->drawableAreaYDimInt = theQPixmap->height();
+  
+  QPainter * myQPainter=new QPainter(theQPixmap);
+  draw(myQPainter,myRasterViewPort);
+  delete myRasterViewPort;
+  myQPainter->end();
+  delete myQPainter;
+}
+
 void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform)
 {
   //Dont waste time drawing if transparency is at 0 (completely transparent)
   if (transparencyLevelInt == 0)
     return;
-  //
-  // ---------------------------------------------------
-  //These are typical assignements made in this routine:
-  // ---------------------------------------------------
-  //
-  //QPainter Variables:
-  //{ "wx", "QCOORD", "0" }
-  //{ "wy", "QCOORD", "0" }
-  //{ "ww", "QCOORD", "552" }
-  //{ "wh", "QCOORD", "360" }
-  //{ "vx", "QCOORD", "0" }
-  //{ "vy", "QCOORD", "0" }
-  //{ "vw", "QCOORD", "552" }
-  //{ "vh", "QCOORD", "360" }
-  //
-  // ViewExtent Variables:
-  // { "xmin", "double", "9.5477478992443516e-307" }
-  // { "ymin", "double", "2.5145588030892154e-91" }
-  // { "xmax", "double", "1.4158750209781043e-308" }
-  // { "ymax", "double", "571082560307492" }
-  //
-  //myRasterExtent Variables:
-  //{ "xmin", "double", "-10.729980070443938" }
-  //{ "ymin", "double", "35.899496437673918" }
-  //{ "xmax", "double", "29.896874152460249" }
-  //{ "ymax", "double", "69.805551356045626" }
 
-  //RasterLayer Draw Variables:
-  //{ "rectXOffsetInt", "int", "0" }
-  //{ "rectYOffsetInt", "int", "0" }
-  //{ "clippedXMinDouble", "double", "0" }
-  //{ "clippedXMaxDouble", "double", "7532" }
-  //{ "clippedYMinDouble", "double", "1" }
-  //{ "clippedWidthInt", "int", "7532" }
-  //{ "clippedHeightInt", "int", "6285" }
-
-  //TopLeftPoint Variable:
-  //{ "m_x", "double", "79.927920631706826" }
-  //{ "m_y", "double", "16.363636363636321" }
-
-  //BottomRightPoint Variable:
-  //{ "m_x", "double", "472.0720793682932" }
-  //{ "m_y", "double", "343.63636363636363" }
-
-  // Layer Variables:
-  //{ "drawableAreaXDimInt", "int", "393" }
-  //{ "drawableAreaYDimInt", "int", "327" }
-
-  //
-  // ---------------------------------------------------
-  //
-
-  //std::cout << "QgsRasterLayer::draw()" << std::endl;
-  //std::cout << "gdalDataset->GetRasterCount(): " << gdalDataset->GetRasterCount() << std::endl;
-  //std::cout << "Layer extent: " << layerExtent.stringRep() << std::endl;
 
   // clip raster extent to view extent
   QgsRect myRasterExtent = theViewExtent->intersect(&layerExtent);
@@ -439,9 +409,12 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
   myRasterViewPort->drawableAreaXDimInt = myRasterViewPort->bottomRightPoint.xToInt() - myRasterViewPort->topLeftPoint.xToInt();
   myRasterViewPort->drawableAreaYDimInt = myRasterViewPort->bottomRightPoint.yToInt() - myRasterViewPort->topLeftPoint.yToInt();
 
+  draw(theQPainter,myRasterViewPort);
+  delete myRasterViewPort;
+}
 
-
-
+void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterViewPort)
+{
   //
   //
   // The goal here is to make as many decisions as possible early on (outside of the rendering loop)
@@ -552,15 +525,14 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
     {
       showDebugOverlay(theQPainter, myRasterViewPort);
     };
-  delete myRasterViewPort;
 
 }                               //end of draw method
 
 void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
-#endif
+//#ifdef QGISDEBUG
+  std::cerr << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
+//#endif
   //create the outout image that the layer will be drawn on before placing it in the qcanvas
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   // QPixmap * myQPixmap=new QPixmap(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt);
@@ -689,8 +661,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
     }
   //set up the three class breaks for pseudocolour mapping
   double myBreakSizeDouble = myAdjustedRasterBandStats.rangeDouble / 3;
-  double myClassBreakMin1 = noDataValueDouble;
-  double myClassBreakMax1 = noDataValueDouble + myBreakSizeDouble;
+  double myClassBreakMin1 = myRasterBandStats.minValDouble;
+  double myClassBreakMax1 = myClassBreakMin1 + myBreakSizeDouble;
   double myClassBreakMin2 = myClassBreakMax1;
   double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
   double myClassBreakMin3 = myClassBreakMax2;
@@ -949,8 +921,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
     }
   //set up the three class breaks for pseudocolour mapping
   double myBreakSizeDouble = myAdjustedRasterBandStats.rangeDouble / 3;
-  double myClassBreakMin1 = noDataValueDouble;
-  double myClassBreakMax1 = noDataValueDouble + myBreakSizeDouble;
+  double myClassBreakMin1 = myRasterBandStats.minValDouble;
+  double myClassBreakMax1 = myClassBreakMin1 + myBreakSizeDouble;
   double myClassBreakMin2 = myClassBreakMax1;
   double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
   double myClassBreakMin3 = myClassBreakMax2;
@@ -1349,9 +1321,11 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
       RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
       if (myRasterBandStats.bandName == theBandNameQString)
         {
+	std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString << std::endl;
           return myRasterBandStats.bandNoInt;
         }
     }
+  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString << std::endl;  
   return 0;                     //no band was found
 }
 
@@ -1692,7 +1666,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
       grayBandNameQString = theBandNameQString;
       return;
     }
-  //check that a valid band name was passed
+  //otherwise check that a valid band name was passed
 
   for (int myIteratorInt = 0; myIteratorInt <= rasterStatsVector.size(); ++myIteratorInt)
     {
@@ -1704,7 +1678,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
           return;
         }
     }
-
+    
   //if no matches were found default to not set
   grayBandNameQString = tr("Not Set");
   return;
