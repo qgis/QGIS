@@ -10,10 +10,6 @@
 #
 # $Id$
 
-
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
-
-
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = spitplugin.la
 
@@ -76,5 +72,7 @@ BUILT_SOURCES = $(spit_MOC) $(spit_UI)
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB) ../../src/libqgis.la
 spitplugin_la_LDFLAGS = -avoid-version -module
+spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
+
 
 EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm

@@ -10,11 +10,7 @@
 #
 # $Id$
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
-
 plugindir = ${pkglibdir}
-
-
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -56,6 +52,7 @@ BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
 pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) ../../src/libqgis.la
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
+pggeoprocessingplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
 
 EXTRA_DIST = $(pggeoprocessing_UIC) icon_buffer.xpm
 
