@@ -331,8 +331,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       QPointArray *pa;
       int wkbType;
       while ((fet = dataProvider->getNextFeature(attributesneeded)))
-        {                       //true is necessary for graduated symbol
-
+      {
+        
+                              //true is necessary for graduated symbol
+#ifdef QGISDEBUG
+  std::cout << "Fetched next feature" << std::endl;
+#endif
           if (fet == 0)
             {
 #ifdef QGISDEBUG
@@ -340,9 +344,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
           } else
             {
-               #ifdef QGISDEBUG
-                  std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!Feature geometry: " << fet->wellKnownText() << std::endl;
-               #endif
               //if feature is selected, change the color of the painter
               //TODO fix this selection code to work with the provider
               //if ((*selected)[(fet->featureId())] == true)
@@ -518,6 +519,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
                         break;
                     }
+                  
                   delete[]feature;
               } else
                 {
@@ -528,12 +530,10 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
               //std::cout << "deleting feature[]\n";
               //      std::cout << geom->getGeometryName() << std::endl;
               featureCount++;
-              #ifdef QGISDEBUG
-              std::cout << "Feature count: " << featureCount << std::endl;
-              #endif
-              //delete[]feature;
+              //delete fet;
             }
-           // delete fet;
+           //qApp->processEvents();
+           delete fet;
         }
         #ifdef QGISDEBUG
         std::cerr << "Total features processed is " << featureCount << std::endl;
@@ -598,7 +598,7 @@ void QgsVectorLayer::identify(QgsRect * r)
             }
           ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
         }
-
+        delete fet;
     }
 
 #ifdef QGISDEBUG
