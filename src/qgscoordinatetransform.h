@@ -1,5 +1,5 @@
 /***************************************************************************
-                          QgsCoordinateTransform.cpp  -  description
+               QgsCoordinateTransform.h  - Coordinate Transforms
                              -------------------
     begin                : Dec 2004
     copyright            : (C) 2004 Tim Sutton
@@ -228,17 +228,17 @@ inline QgsRect QgsCoordinateTransform::transform(QgsRect * theRect)
     std::cout << "Rect projection..." 
               << "Xmin : " 
               << theRect->xMin() 
-	      << "-->" << x1 
-	      << ", Ymin: " 
-	      << theRect->yMin() 
-	      << " -->" << y1
+        << "-->" << x1 
+        << ", Ymin: " 
+        << theRect->yMin() 
+        << " -->" << y1
               << "Xmax : " 
               << theRect->xMax() 
-	      << "-->" << x2 
-	      << ", Ymax: " 
-	      << theRect->yMax() 
-	      << " -->" << y2	      
-	      << std::endl;
+        << "-->" << x2 
+        << ", Ymax: " 
+        << theRect->yMax() 
+        << " -->" << y2       
+        << std::endl;
 #endif        
     return QgsRect(x1, y1, x2 , y2);
   } 
@@ -333,17 +333,17 @@ inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect theRect)
 #ifdef QGISDEBUG 
     std::cout << "Xmin : " 
               << theRect.xMin() 
-	      << "-->" << x1 
-	      << ", Ymin: " 
-	      << theRect.yMin() 
-	      << " -->" << y1
+        << "-->" << x1 
+        << ", Ymin: " 
+        << theRect.yMin() 
+        << " -->" << y1
               << "Xmax : " 
               << theRect.xMax() 
-	      << "-->" << x2 
-	      << ", Ymax: " 
-	      << theRect.yMax() 
-	      << " -->" << y2	      
-	      << std::endl;
+        << "-->" << x2 
+        << ", Ymax: " 
+        << theRect.yMax() 
+        << " -->" << y2       
+        << std::endl;
 #endif        
     return QgsRect(x1, y1, x2 , y2);
   } 
