@@ -1625,7 +1625,7 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
-
+  CPLFree(myGdalScanData);
 }
 void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
 {
