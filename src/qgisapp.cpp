@@ -28,8 +28,8 @@
 #include <qdir.h>
 #include <qscrollview.h>
 #include <qstringlist.h>
-#include <qmessagebox.h>
 #include <qerrormessage.h>
+#include <qmessagebox.h>
 #include <qstatusbar.h>
 #include <qlabel.h>
 #include <qfiledialog.h>
@@ -71,6 +71,7 @@
 #include "qgsmessageviewer.h"
 #include "qgsshapefilelayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterlayerproperties.h"
 #include "qgslayerproperties.h"
 #include "qgsabout.h"
 #include "qgspluginmanager.h"
@@ -299,37 +300,83 @@ void QgisApp::addLayer()
 
 void QgisApp::addRasterLayer()
 {
-	mapCanvas->freeze();
-	QStringList files = QFileDialog::getOpenFileNames("GeoTIFF (*.tif);;All files (*.*)", 0, this, "open files dialog",
-													  "Select one or more layers to add");
-	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QStringList::Iterator it = files.begin();
-	while (it != files.end()) {
-		QFileInfo fi(*it);
-		QString base = fi.baseName();
+  mapCanvas->freeze();
+  QString myFileTypeQString;
+  QString myArcInfoBinaryGridFilterString="Arc Info Binary Grid (*.adf)";
+  QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
+  QString myGeoTiffFilterString="Geo tiff (*.tif)";
+  QString myBilFilterString="Band Interleaved by Line (*.bil)";
+  QString myJpgFilterString="Geo jpg (*.jpg)";
+  QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
+          myArcInfoBinaryGridFilterString + ";;" +
+          myArcInfoAsciiGridFilterString + ";;" +
+          myGeoTiffFilterString + ";;" +
+          myBilFilterString + ";;" +
+          myJpgFilterString,  //filters to select
+          "." , //initial dir
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select file name and type" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );  
+  //cout << "Selected filetype filter is : " << myFileTypeQString << endl;
+  if (myFileNameQStringList.size()==0) return; //no files selected so bail out
 
-		// create the layer
-		QgsRasterLayer *lyr = new QgsRasterLayer(*it, base);
-		QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
-		
-		if (lyr->isValid()) {
-			// add it to the mapcanvas collection
-			mapCanvas->addLayer(lyr);
-		} else {
-			QString msg = *it;
-			msg += " is not a valid or recognized raster data source";
-			QMessageBox::critical(this, "Invalid Data Source", msg);
-		}
+  QApplication::setOverrideCursor(Qt::WaitCursor);
 
-		++it;
-	}
-	
-	mapLegend->update();
-	qApp->processEvents();
-	mapCanvas->freeze(false);
-	mapCanvas->render2();
-	QApplication::restoreOverrideCursor();
-	statusBar()->message(mapCanvas->extent().stringRep());
+  if (myFileTypeQString==myArcInfoBinaryGridFilterString)
+  {
+    //if multiple file were selected ignore the others because currently we 
+    //can only select one AI Binary Grid dir at a time
+    QStringList::Iterator it = myFileNameQStringList.begin();
+    QFileInfo fi(*it);
+    QString base = fi.dirPath(); //get the directory the .adf file was in
+
+    // create the layer
+    QgsRasterLayer *lyr = new QgsRasterLayer(*it, base);
+    QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
+
+    if (lyr->isValid()) {
+      // add it to the mapcanvas collection
+      mapCanvas->addLayer(lyr);
+    } else {
+      QString msg = *it;
+      msg += " is not a valid or recognized raster data source";
+      QMessageBox::critical(this, "Invalid Data Source", msg);
+    }
+
+  }
+  else // Any other gdal type
+  {
+    QStringList::Iterator it = myFileNameQStringList.begin();
+    while (it != myFileNameQStringList.end()) {
+      QFileInfo fi(*it);
+      QString base = fi.baseName();
+
+      // create the layer
+      QgsRasterLayer *lyr = new QgsRasterLayer(*it, base);
+      QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
+
+      if (lyr->isValid()) {
+        // add it to the mapcanvas collection
+        mapCanvas->addLayer(lyr);
+      } else {
+        QString msg = *it;
+        msg += " is not a valid or recognized raster data source";
+        QMessageBox::critical(this, "Invalid Data Source", msg);
+      }
+
+      ++it;
+    }
+
+  }
+
+  mapLegend->update();
+  qApp->processEvents();
+  mapCanvas->freeze(false);
+  mapCanvas->render2();
+  QApplication::restoreOverrideCursor();
+  statusBar()->message(mapCanvas->extent().stringRep());
 }
 
 #ifdef POSTGRESQL
@@ -704,22 +751,42 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 		lyr = ((QgsLegendItem *) li)->layer();
 	}
 	QString currentName = lyr->name();
-	QgsLayerProperties *lp = new QgsLayerProperties(lyr);
-	if (lp->exec()) {
-		// update the symbol
-		lyr->setSymbol(lp->getSymbol());
-		mapCanvas->freeze();
-		lyr->setlayerName(lp->displayName());
-		if (currentName != lp->displayName())
-			mapLegend->update();
-		delete lp;
-		qApp->processEvents();
+        //test if we have a raster or vector layer and show the appropriate dialog
+        if (lyr->type()==QgsMapLayer::RASTER)
+        {
+          QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(lyr);
+          rlp->exec();
+        }
+        else if (lyr->type()==QgsMapLayer::VECTOR)
+        {
+          QgsLayerProperties *lp = new QgsLayerProperties(lyr);
+          if (lp->exec()) {
+            // update the symbol
+            lyr->setSymbol(lp->getSymbol());
+            mapCanvas->freeze();
+            lyr->setlayerName(lp->displayName());
+            if (currentName != lp->displayName())
+              mapLegend->update();
+            delete lp;
+            qApp->processEvents();
 
-		// apply changes
-		mapCanvas->freeze(false);
-		mapCanvas->setDirty(true);
-		mapCanvas->render2();
-	}
+            // apply changes
+            mapCanvas->freeze(false);
+            mapCanvas->setDirty(true);
+            mapCanvas->render2();
+          }
+        }
+        else if (lyr->type()==QgsMapLayer::DATABASE)
+        {
+           //do me!
+          QMessageBox::information( this, "QGis",
+          "Properties box not yet implemented for database layer");
+        }
+        else 
+        {
+          QMessageBox::information( this, "QGis",
+          "Unknown Layer Type");
+        }
 
 }
 void QgisApp::removeLayer()
