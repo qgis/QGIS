@@ -16,11 +16,9 @@ See http://xml.apache.org/forrest/linking.html for more info
 
 <site label="QGIS" href="" xmlns="http://apache.org/forrest/linkmap/1.0" tab="">
 
- <!--  <about label="About">
-    <index label="Index" href="index.html" description="Welcome to MyProj"/>
-    <changes label="Changes" href="changes.html" description="History of Changes" />
-    <todo label="Todo" href="todo.html"  description="Todo List" />
-  </about> -->
+   <about label="About">
+    <index label="QGIS" href="index.html" description="Welcome to MyProj"/>
+  </about> 
  <!--  <about label="About">
   <changes label="Changes" href="changes.html" description="History of Changes" />
   </about> -->
