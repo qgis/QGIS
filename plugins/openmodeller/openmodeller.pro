@@ -7,7 +7,9 @@
 ####################################################################
 TEMPLATE = lib   # to build as a dll
 
-TARGET = omgui #will produce omgui.dll 
+# config for dll
+CONFIG += qt dll thread rtti #release version without debug symbols
+#CONFIG += qt dll thread rtti debug console #debug version
 
 #inc path for qgis plugin
 INCLUDEPATH += . 
@@ -25,15 +27,15 @@ LIBS += $(GDAL)\lib\gdal_i.lib
 LIBS += libopenmodeller.lib
 LIBS += libexpatMT.lib 
 
+
 contains( CONFIG, debug ) { 
   LIBS += $(OM_HOME)\lib\debug\libopenmodeller.lib 
+  TARGET = omgui_debug #will produce omgui_debug.dll 
 } else {
   LIBS += $(OM_HOME)\lib\libopenmodeller.lib 
+  TARGET = omgui #will produce omgui.dll 
 }
 
-# config for dll
-CONFIG += qt dll thread rtti #release version without debug symbols
-#CONFIG += qt dll thread rtti debug console #debug version
 
 DEFINES+=_WINDOWS
 DEFINES+=CORE_DLL_IMPORT 

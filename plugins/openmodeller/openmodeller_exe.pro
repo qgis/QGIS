@@ -6,7 +6,6 @@
 ####################################################################
 
 TEMPLATE = app
-TARGET = omgui 
 
 # config for standalone mode
 CONFIG += qt rtti thread release
@@ -27,8 +26,10 @@ LIBS += $(GDAL)\lib\gdal_i.lib
 
 contains( CONFIG, debug ) { 
   LIBS += $(OM_HOME)\lib\debug\libopenmodeller.lib 
+  TARGET = omgui_debug 
 } else {
   LIBS += $(OM_HOME)\lib\libopenmodeller.lib 
+  TARGET = omgui 
 }
 
 
