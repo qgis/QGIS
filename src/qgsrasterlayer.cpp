@@ -96,13 +96,8 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
         return;
     }
 
-    if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
-    {
-#ifdef DEBUG
-        printf( "Origin = (%.6f,%.6f)\n", adfGeoTransform[0], adfGeoTransform[3] );
-        printf( "Pixel Size = (%.6f,%.6f)\n", adfGeoTransform[1], adfGeoTransform[5] );
-#endif
-    }
+    //just testing remove this later
+    getMetadata();
 
     double myXMaxDouble = adfGeoTransform[0] + gdalDataset->GetRasterXSize() * adfGeoTransform[1] +
                           gdalDataset->GetRasterYSize() * adfGeoTransform[2];
@@ -326,6 +321,8 @@ bool QgsRasterLayer::hasBand(QString theBandName)
 
 void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform)
 {
+  //Dont waste time drawing if transparency is at 0 (completely transparent)
+  if (transparencyLevelInt==0) return;
     //
     // ---------------------------------------------------
     //These are typical assignements made in this routine:
@@ -602,22 +599,25 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
             int myGrayValInt=myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
             //remove these lines!
             //if (myColumnInt==0)
-            //std::cout << "Checking if " << myGrayValInt << " = " << myRasterBandStats.noDataDouble << std::endl;
+            //std::cout << "Checking if " << myGrayValInt << " = " << noDataValueDouble << std::endl;
 
             //dont draw this point if it is no data !
-            if (myGrayValInt != noDataValueDouble)
+            //gdal should return -9999 when a cell is null, but it seems to return 0 rather
+            if (myGrayValInt != 0) //noDataValueDouble)
             {
                 // We need to make sure the values are 0-255
                 myGrayValInt = static_cast<int>((255/myRangeDouble) * myGrayValInt);
 
                 if (invertHistogramFlag)
+                {
                     myGrayValInt=255-myGrayValInt;
+                }
                 myQImage.setPixel( myRowInt, myColumnInt, qRgba( myGrayValInt, myGrayValInt, myGrayValInt, transparencyLevelInt ));
             }
             else //render no data as 100% transparent
             {
                 //0 alpha = completely transparent
-                myQImage.setPixel( myRowInt, myColumnInt, qRgba( 255, 255, 255, 0 ));
+                //myQImage.setPixel( myRowInt, myColumnInt, qRgba( 255, 127, 255, 127 ));
             }
         }
     }
@@ -706,7 +706,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
             myGreenInt = 255;
             int myInt=myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
             // draw this point if it is not  no_data !
-            if (myInt!=noDataValueDouble)
+            //gdal should return -9999 when a cell is null, but it seems to return 0 rather
+            if (myInt != noDataValueDouble)
             {
                 //double check that myInt >= min and <= max
                 //this is relevant if we are plotting within stddevs
@@ -771,7 +772,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
             else //nodata so draw transparent
             {
                 //0 alpha = completely transparent
-                myQImage.setPixel( myRowInt, myColumnInt, qRgba( 255, 255, 255, 0 ));
+                //myQImage.setPixel( myRowInt, myColumnInt, qRgba( 255, 255, 255, 0 ));
             }
         }//end of columnwise loop
     }//end of towwise loop
@@ -1938,4 +1939,61 @@ void QgsRasterLayer::initContextMenu(QgisApp *theApp){
   popMenu->insertItem(tr("&Properties"), theApp, SLOT(layerProperties()));
   popMenu->insertSeparator();
   popMenu->insertItem(tr("&Remove"), theApp, SLOT(removeLayer()));
+}
+
+QString QgsRasterLayer::getMetadata()
+{
+  QString myMetadataQString = "<html><body>";
+  myMetadataQString += "<table>";
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Driver:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += QString(gdalDataset->GetDriver()->GetDescription());
+  myMetadataQString += "<br>";
+  myMetadataQString += QString(gdalDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME )) ;
+  myMetadataQString += "</td></tr>";
+
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Dimensions:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("X: ") + QString::number(gdalDataset->GetRasterXSize()) + 
+                       tr(" Y: ") + QString::number(gdalDataset->GetRasterYSize()) +
+                       tr(" Bands: ") + QString::number(gdalDataset->GetRasterCount());
+  myMetadataQString += "</td></tr>";
+
+
+  if( gdalDataset->GetProjectionRef()  != NULL )
+  {
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Projection: ");
+    myMetadataQString += "</td></tr>";
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += QString(gdalDataset->GetProjectionRef() );
+    myMetadataQString += "</td></tr>";
+  }
+  if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
+  {
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Origin:");
+    myMetadataQString += "</td></tr>";
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += QString::number(adfGeoTransform[0] );
+    myMetadataQString += ",";
+    myMetadataQString += QString::number(adfGeoTransform[3] );
+    myMetadataQString += "</td></tr>";
+
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Pixel Size:");
+    myMetadataQString += "</td></tr>";
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += QString::number(adfGeoTransform[1] );
+    myMetadataQString += ",";
+    myMetadataQString += QString::number(adfGeoTransform[5] );
+    myMetadataQString += "</td></tr>";
+  }
+  myMetadataQString += "</table>";
+  myMetadataQString += "</body></html>";
+  return myMetadataQString;
 }

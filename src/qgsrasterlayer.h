@@ -651,6 +651,8 @@ public:
     QPopupMenu *contextMenu();
     /** \brief Emit a signal asking for a repaint.  */
     void triggerRepaint();
+    /** \brief Obtain GDAL Metadata for this layer */
+    QString getMetadata();
     
 
 private:
