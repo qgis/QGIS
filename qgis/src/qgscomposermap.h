@@ -123,6 +123,9 @@ public slots:
     // Called by GUI if with  scale was changed 
     void scaleChanged ( void );
     
+    // Frame settings changed 
+    void frameChanged ( void );
+    
     // Called by GUI if preview style was changed
     void previewModeChanged ( int i );
 
@@ -177,6 +180,9 @@ private:
 
     /** \brief Number of layers when cache was created  */
     int mNumCachedLayers;
+
+    /** \brief Draw frame  */
+    bool mFrame;
 };
 
 #endif

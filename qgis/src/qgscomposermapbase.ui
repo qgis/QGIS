@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>265</width>
-            <height>607</height>
+            <width>271</width>
+            <height>650</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -217,6 +217,14 @@
                 <cstring>mFontScaleLineEdit</cstring>
             </property>
         </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>mFrameCheckBox</cstring>
+            </property>
+            <property name="text">
+                <string>Frame</string>
+            </property>
+        </widget>
         <widget class="QLabel">
             <property name="name">
                 <cstring>textLabel1_5</cstring>
@@ -300,12 +308,19 @@
         <receiver>QgsComposerMapBase</receiver>
         <slot>scaleChanged()</slot>
     </connection>
+    <connection>
+        <sender>mFrameCheckBox</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsComposerMapBase</receiver>
+        <slot>frameChanged()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>sizeChanged()</slot>
     <slot>setCurrentExtent()</slot>
     <slot>scaleChanged()</slot>
     <slot>previewModeChanged(int)</slot>
+    <slot>frameChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -29,6 +29,7 @@
 #include <qlineedit.h>
 #include <qpointarray.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 
 #include "qgsproject.h"
 #include "qgsrect.h"
@@ -101,6 +102,8 @@ void QgsComposerMap::init ()
     mWidthScale = 1.0 / mComposition->scale();
     mSymbolScale = 1.0;
     mFontScale = 1.0;
+
+    mFrame = true;
 
     QCanvasRectangle::setZ(20);
     setActive(true);
@@ -241,15 +244,14 @@ void QgsComposerMap::draw ( QPainter & painter )
     } 
 
     // Draw frame around
-    painter.setPen( QPen(QColor(0,0,0), 1) );
-    painter.setBrush( Qt::NoBrush );
-
-    painter.save();
-	
-    painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-    //painter.drawRect ( 0, 0, (int) mWidth+1, (int) mHeight+1 ); // is it right?
-    painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
-    painter.restore();
+    if ( mFrame ) {
+	painter.setPen( QPen(QColor(0,0,0), 1) );
+	painter.setBrush( Qt::NoBrush );
+        painter.save();
+	painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+	painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
+        painter.restore();
+    }
 
     // Show selected / Highlight
     std::cout << "mSelected = " << mSelected << std::endl;
@@ -338,6 +340,17 @@ void QgsComposerMap::recalculate ( void )
     cache();
 }
 
+void QgsComposerMap::frameChanged ( )
+{
+    mFrame = mFrameCheckBox->isChecked();
+
+    QCanvasRectangle::update();
+    QCanvasRectangle::canvas()->update();
+
+    writeSettings();
+}
+
+
 void QgsComposerMap::setOptions ( void )
 { 
     mNameLabel->setText ( mName );
@@ -365,6 +378,8 @@ void QgsComposerMap::setOptions ( void )
     mWidthScaleLineEdit->setText ( QString("%1").arg(mWidthScale,0,'g',2) );
     mSymbolScaleLineEdit->setText ( QString("%1").arg(mSymbolScale,0,'g',2) );
     mFontScaleLineEdit->setText ( QString("%1").arg(mFontScale,0,'g',2) );
+
+    mFrameCheckBox->setChecked ( mFrame );
 }
 
 void QgsComposerMap::setCurrentExtent ( void )
@@ -419,6 +434,8 @@ bool QgsComposerMap::writeSettings ( void )
     QgsProject::instance()->writeEntry( "Compositions", path+"symbolscale", mSymbolScale );
     QgsProject::instance()->writeEntry( "Compositions", path+"fontscale", mFontScale );
 
+    QgsProject::instance()->writeEntry( "Compositions", path+"frame", mFrame );
+
     QgsProject::instance()->writeEntry( "Compositions", path+"previewmode", mPreviewMode );
 
     return true; 
@@ -445,6 +462,8 @@ bool QgsComposerMap::readSettings ( void )
     mWidthScale = QgsProject::instance()->readDoubleEntry("Compositions", path+"widthscale", 1., &ok);
     mSymbolScale = QgsProject::instance()->readDoubleEntry("Compositions", path+"symbolscale", 1., &ok);
     mFontScale = QgsProject::instance()->readDoubleEntry("Compositions", path+"fontscale", 1., &ok);
+    
+    mFrame = QgsProject::instance()->readBoolEntry("Compositions", path+"frame", true, &ok);
     
     mPreviewMode = (PreviewMode) QgsProject::instance()->readNumEntry("Compositions", path+"previewmode", Cache, &ok);
     
