@@ -188,7 +188,7 @@ if test -n "$with_grass" -a x"$with_grass" != "xno"; then
     if test ! -f "$GISLIB"; then
 	AC_MSG_ERROR( [GRASS library not found] )
     fi
-    GRASS_LIB="-L$with_grass/lib/ -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form"
+    GRASS_LIB="-L$with_grass/lib/ -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj"
 
     GISINC=`ls $with_grass/include/gis.h`
     if test ! -f "$GISINC"; then
