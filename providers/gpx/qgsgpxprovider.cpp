@@ -57,7 +57,6 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
     attributeFields.push_back(QgsField("lat", "text"));
     attributeFields.push_back(QgsField("lon", "text"));
     attributeFields.push_back(QgsField("ele", "text"));
-    attributeFields.push_back(QgsField("url", "text"));
   }
   else if (mFeatureType == "route" || mFeatureType == "track") {
     mGeomType = 2;
@@ -66,6 +65,7 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
     std::cerr<<"Unknown feature type: "<<mFeatureType<<std::endl;
     return;
   }
+  attributeFields.push_back(QgsField("url", "text"));
   mFileName = uri.left(fileNameEnd);
   
 
@@ -146,7 +146,9 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	  result->addAttribute("name", wpt.name);
 	  result->addAttribute("lat", QString("%1").arg(wpt.lat));
 	  result->addAttribute("lon", QString("%1").arg(wpt.lon));
-	  if (!isnan(wpt.ele))
+	  if (isnan(wpt.ele))
+	    result->addAttribute("ele", "");
+	  else
 	    result->addAttribute("ele", QString("%1").arg(wpt.ele));
 	  result->addAttribute("url", wpt.url);
 	}
@@ -187,6 +189,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	// add attributes if they are wanted
 	if (fetchAttributes) {
 	  result->addAttribute("name", rte.name);
+	  result->addAttribute("url", rte.url);
 	}
 	
 	++mFid;
@@ -227,6 +230,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	// add attributes if they are wanted
 	if (fetchAttributes) {
 	  result->addAttribute("name", trk.name);
+	  result->addAttribute("url", trk.url);
 	}
 	
 	++mFid;
@@ -238,7 +242,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   return result;
 }
 
-QgsFeature * getNextFeature(std::list<int>& attlist)
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist)
 {
     return 0;//soon
 }
