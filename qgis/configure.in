@@ -1,4 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
+dnl configure.in,v 1.24 2004/02/29 00:52:20 gsherman Exp
 
 AC_INIT
 
@@ -10,7 +11,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=4
+EXTRA_VERSION=5
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel
 else
@@ -45,39 +46,39 @@ dnl ---------------------------------------------------------------------------
 AC_ARG_WITH(gdal,
   AC_HELP_STRING([--with-gdal=path],
                  [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config']))
-								 
+                 
 AC_MSG_CHECKING([for GDAL])
 if test x"$with_gdal" = "xyes" -o x"$with_gdal" = "x" ; then
-	GDAL_CONFIG=`which gdal-config`
-	if test ! -x "$GDAL_CONFIG" ; then
-		AC_MSG_ERROR(["Cannot find gdal-config, try to use --with-gdal option"])
-	fi
-	AC_MSG_RESULT([yes])
+  GDAL_CONFIG=`which gdal-config`
+  if test ! -x "$GDAL_CONFIG" ; then
+    AC_MSG_ERROR(["Cannot find gdal-config, try to use --with-gdal option"])
+  fi
+  AC_MSG_RESULT([yes])
 elif test x"$with_gdal" = "xno" ; then
-	ac_gdalogr=no
-	AC_MSG_RESULT([no])
+  ac_gdalogr=no
+  AC_MSG_RESULT([no])
 else
-	if test -x "$with_gdal/gdal-config" ; then
-		GDAL_CONFIG="$with_gdal/gdal-config"
-		AC_MSG_RESULT([yes])
-	else
-		AC_MSG_ERROR("Cannot find $with_gdal/gdal-config")
-	fi
+  if test -x "$with_gdal/gdal-config" ; then
+    GDAL_CONFIG="$with_gdal/gdal-config"
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_ERROR("Cannot find $with_gdal/gdal-config")
+  fi
 fi
 
 if test x"$ac_gdalogr" != "xno" ; then
-	AC_MSG_CHECKING([for OGR in GDAL])
-	if test x`$GDAL_CONFIG --ogr-enabled` = "xno" ; then
-	  AC_MSG_ERROR([GDAL must be compiled with OGR support and currently is not.])
-	fi
-	AC_MSG_RESULT(yes)
-	ac_gdalogr=yes
+  AC_MSG_CHECKING([for OGR in GDAL])
+  if test x`$GDAL_CONFIG --ogr-enabled` = "xno" ; then
+    AC_MSG_ERROR([GDAL must be compiled with OGR support and currently is not.])
+  fi
+  AC_MSG_RESULT(yes)
+  ac_gdalogr=yes
 
-	GDAL_LIB="`$GDAL_CONFIG --libs`"
-	GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
+  GDAL_LIB="`$GDAL_CONFIG --libs`"
+  GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
 
-	AC_SUBST(GDAL_LIB)
-	AC_SUBST(GDAL_CFLAGS)
+  AC_SUBST(GDAL_LIB)
+  AC_SUBST(GDAL_CFLAGS)
 fi
 
 
@@ -105,9 +106,9 @@ if test x"$PG_CONFIG" != "xno" ; then
   PG_INC="`$PG_CONFIG --includedir`"
   AC_MSG_CHECKING([for postgreSQL libs])
   AC_MSG_RESULT([$PG_LIB])
-	ac_postgresql="yes"
+  ac_postgresql="yes"
 else
-	ac_postgresql="no"
+  ac_postgresql="no"
 fi
 
 AC_SUBST(PG_INC)
@@ -120,7 +121,7 @@ dnl ---------------------------------------------------------------------------
 dnl checking if gdal and/or postgresql are available
 dnl ---------------------------------------------------------------------------
 if test x"$ac_postgresql" = "xno" -a x"$ac_gdalogr" = "xno"; then
-	AC_MSG_ERROR("QGIS without GDAL(with OGR support) and PostgreSQL makes no sense!")
+  AC_MSG_ERROR("QGIS without GDAL(with OGR support) and PostgreSQL makes no sense!")
 fi
 
 
@@ -130,20 +131,20 @@ dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(spit,
   AC_HELP_STRING([--disable-spit],
                  [disable Shapefile to PostgreSQL (PostGIS) import plugin (built by default with PostgreSQL support)]),
-	[ac_spit=$enableval], [ac_spit=yes])
+  [ac_spit=$enableval], [ac_spit=yes])
                  
 AC_MSG_CHECKING([for SPIT])
 if test x"$ac_spit" = "xyes"; then
-	if test x"$ac_postgresql" = "xyes" -a x"$ac_gdalogr" = "xyes"; then
-		AC_MSG_RESULT([yes])
-	else
-		ac_spit="no"
-		if test x"$ac_postgresql" = "xno" ; then
-			AC_MSG_RESULT([no (PostgreSQL not available)])
-		else
-			AC_MSG_RESULT([no (GDAL with OGR support not available)])
-		fi
-	fi
+  if test x"$ac_postgresql" = "xyes" -a x"$ac_gdalogr" = "xyes"; then
+    AC_MSG_RESULT([yes])
+  else
+    ac_spit="no"
+    if test x"$ac_postgresql" = "xno" ; then
+      AC_MSG_RESULT([no (PostgreSQL not available)])
+    else
+      AC_MSG_RESULT([no (GDAL with OGR support not available)])
+    fi
+  fi
 else
   AC_MSG_RESULT([no])
 fi
@@ -198,17 +199,17 @@ dnl ---------------------------------------------------------------------------
 dnl Debugging
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(debug,
-	AC_HELP_STRING([--enable-debug],
-								 [Enable debuging messages [[default=no]]]),
+  AC_HELP_STRING([--enable-debug],
+                 [Enable debuging messages [[default=no]]]),
         [ac_debug=$enableval], [ac_debug=no])
 
 AC_MSG_CHECKING([if debug statements should be sent to stdout/stderr])
 if test x"$ac_debug" = "xno" ; then
-	DEBUG_QGIS=-DNO_DEBUG
-	AC_MSG_RESULT([no])
+  DEBUG_QGIS=-DNO_DEBUG
+  AC_MSG_RESULT([no])
 else
-	DEBUG_QGIS=-DQGISDEBUG
-	AC_MSG_RESULT([yes])
+  DEBUG_QGIS=-DQGISDEBUG
+  AC_MSG_RESULT([yes])
 fi
 AC_SUBST(DEBUG_QGIS)
 
@@ -220,24 +221,25 @@ AC_SUBST(DEBUG_QGIS)
 #echo Plugins will be installed in $libdir
 
 AC_CONFIG_FILES([
-	Makefile 
-	src/Makefile 
-	providers/Makefile 
-	providers/ogr/Makefile
-	providers/postgres/Makefile
-	plugins/Makefile
-	plugins/spit/Makefile
-	plugins/example/Makefile
-	plugins/maplayer/Makefile
-	plugins/geoprocessing/Makefile
-	doc/Makefile
-	doc/skin/Makefile
-	doc/skin/images/Makefile
-	doc/images/Makefile
-	doc/plugins/Makefile
-	doc/plugins/geoprocessing/Makefile
-	doc/plugins/geoprocessing/buffer/Makefile
-	qgis.spec
+  Makefile 
+  src/Makefile 
+  providers/Makefile 
+  providers/ogr/Makefile
+  providers/postgres/Makefile
+  providers/delimitedtext/Makefile
+  plugins/Makefile
+  plugins/spit/Makefile
+  plugins/example/Makefile
+  plugins/maplayer/Makefile
+  plugins/geoprocessing/Makefile
+  doc/Makefile
+  doc/skin/Makefile
+  doc/skin/images/Makefile
+  doc/images/Makefile
+  doc/plugins/Makefile
+  doc/plugins/geoprocessing/Makefile
+  doc/plugins/geoprocessing/buffer/Makefile
+  qgis.spec
 ])
 
 AC_OUTPUT
