@@ -39,7 +39,16 @@
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
 
+#include "../../src/qgsprovidercountcalcevent.h"
+#include "../../src/qgsproviderextentcalcevent.h"
+
 #include "qgspostgresprovider.h"
+
+#include "qgspostgrescountthread.h"
+#include "qgspostgresextentthread.h"
+
+#include "qgspostgisbox3d.h"
+
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
 #else
@@ -230,6 +239,29 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       getPrimaryKey();
       selectSQL += " from " + tableName;
       //--std::cout << "selectSQL: " << (const char *)selectSQL << std::endl;
+      
+      // Kick off the long running threads
+
+      std::cout << "QgsPostgresProvider: About to touch mExtentThread" << std::endl;
+      mExtentThread.setConnInfo( connInfo );
+      mExtentThread.setTableName( tableName );
+      mExtentThread.setSqlWhereClause( sqlWhereClause );
+      mExtentThread.setGeometryColumn( geometryColumn );
+      mExtentThread.setCallback( this );
+      std::cout << "QgsPostgresProvider: About to start mExtentThread" << std::endl;
+      mExtentThread.start();
+      std::cout << "QgsPostgresProvider: Main thread just dispatched mExtentThread" << std::endl;
+
+      std::cout << "QgsPostgresProvider: About to touch mCountThread" << std::endl;
+      mCountThread.setConnInfo( connInfo );
+      mCountThread.setTableName( tableName );
+      mCountThread.setSqlWhereClause( sqlWhereClause );
+      mCountThread.setGeometryColumn( geometryColumn );
+      mCountThread.setCallback( this );
+      std::cout << "QgsPostgresProvider: About to start mCountThread" << std::endl;
+      mCountThread.start();
+      std::cout << "QgsPostgresProvider: Main thread just dispatched mCountThread" << std::endl;
+      
 
     } else {
       // the table is not a geometry table
@@ -270,7 +302,27 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
+  std::cout << "QgsPostgresProvider: About to wait for mExtentThread" << std::endl;
+
+  mExtentThread.wait();
+
+  std::cout << "QgsPostgresProvider: Finished waiting for mExtentThread" << std::endl;
+
+  std::cout << "QgsPostgresProvider: About to wait for mCountThread" << std::endl;
+
+  mCountThread.wait();
+
+  std::cout << "QgsPostgresProvider: Finished waiting for mCountThread" << std::endl;
+
+  // Make sure all events from threads have been processed
+  // (otherwise they will get destroyed prematurely)
+  QApplication::sendPostedEvents(this, QGis::ProviderExtentCalcEvent);
+  QApplication::sendPostedEvents(this, QGis::ProviderCountCalcEvent);
+  
   PQfinish(connection);
+  
+  std::cout << "QgsPostgresProvider: deconstructing." << std::endl;
+
   //pLog.flush();
 }
 
@@ -433,7 +485,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
       {
         // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
 #ifdef QGISDEBUG
-	  qWarning("swapping endian for oid");
+//XXX TOO MUCH OUTPUT!!!	  qWarning("swapping endian for oid");
 #endif 
         // convert oid to opposite endian
         // XXX "Opposite?"  Umm, that's not enough information.
@@ -499,8 +551,21 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   std::cout << "Binary cursor: " << declare << std::endl; 
 #endif
   if(useIntersect){
-    declare += " where intersects(" + geometryColumn;
-    declare += ", setsrid('BOX3D(" + rect->stringRep();
+//    declare += " where intersects(" + geometryColumn;
+//    declare += ", GeometryFromText('BOX3D(" + rect->stringRep();
+//    declare += ")'::box3d,";
+//    declare += srid;
+//    declare += "))";
+    
+    // Contributed by #qgis irc "creeping"
+    // This version actually invokes PostGIS's use of spatial indexes
+    declare += " where " + geometryColumn;
+    declare += " && GeometryFromText('BOX3D(" + rect->stringRep();
+    declare += ")'::box3d,";
+    declare += srid;
+    declare += ")";
+    declare += " and intersects(" + geometryColumn;
+    declare += ", GeometryFromText('BOX3D(" + rect->stringRep();
     declare += ")'::box3d,";
     declare += srid;
     declare += "))";
@@ -576,6 +641,13 @@ return gPtr;
 
 } */
 
+void QgsPostgresProvider::setExtent( QgsRect* newExtent )
+{
+  layerExtent.setXmax( newExtent->xMax() );
+  layerExtent.setXmin( newExtent->xMin() );
+  layerExtent.setYmax( newExtent->yMax() );
+  layerExtent.setYmin( newExtent->yMin() );
+}
 
 // TODO - make this function return the real extent_
 QgsRect *QgsPostgresProvider::extent()
@@ -1190,34 +1262,61 @@ void QgsPostgresProvider::setSubsetString(QString theSQL)
   calculateExtents();
   
 }
+
 long QgsPostgresProvider::getFeatureCount()
 {
-    // get total number of features
-  QString sql = "select count(*) from " + tableName;
-  if(sqlWhereClause.length() > 0)
-  {
-    sql += " where " + sqlWhereClause;
-  }
+  // get total number of features
+  
+  // First get an approximate count; then delegate to
+  // a thread the task of getting the full count.
+  
+  QString sql = "select reltuples from pg_catalog.pg_class where relname = '" + 
+                 tableName + "'";
+  
+  std::cerr << "QgsPostgresProvider: Running SQL: " << 
+        sql << std::endl;        
+                 
+  //QString sql = "select count(*) from " + tableName;
+  
+  //if(sqlWhereClause.length() > 0)
+  //{
+  //  sql += " where " + sqlWhereClause;
+  //}
+  
   PGresult *result = PQexec(connection, (const char *) sql);
+  
+#ifdef QGISDEBUG
+      std::cerr << "QgsPostgresProvider: Approximate Number of features as text: " << 
+        PQgetvalue(result, 0, 0) << std::endl;
+#endif
+
   numberFeatures = QString(PQgetvalue(result, 0, 0)).toLong();
   PQclear(result);
 
 #ifdef QGISDEBUG
-      std::cerr << "Number of features: " << numberFeatures << std::endl;
+      std::cerr << "QgsPostgresProvider: Approximate Number of features: " << 
+        numberFeatures << std::endl;
 #endif
 
   return numberFeatures;
 }
 
+// TODO: use the estimateExtents procedure of PostGIS and PostgreSQL 8
+// This tip thanks to #qgis irc nick "creeping"
 void QgsPostgresProvider::calculateExtents()
 {
-  // get the extents
+  // get the approximate extent by retreiving the bounding box
+  // of the first few items with a geometry
 
-  QString sql = "select extent(" + geometryColumn + ") from " + tableName;
+  QString sql = "select box3d(" + geometryColumn + ") from " + tableName + 
+                " where ";
+                
   if(sqlWhereClause.length() > 0)
   {
-    sql += " where " + sqlWhereClause;
+    sql += "(" + sqlWhereClause + ") and ";
   }
+
+  sql += "not IsEmpty(" + geometryColumn + ") limit 5";
 
 #if WASTE_TIME
   sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
@@ -1226,49 +1325,107 @@ void QgsPostgresProvider::calculateExtents()
 #endif
 
 #ifdef QGISDEBUG 
-  qDebug("+++++++++QgsPostgresProvider::calculateExtents -  Getting extents using schema.table: " + sql);
+  qDebug("QgsPostgresProvider::calculateExtents - Getting approximate extent using: '" + sql + "'");
 #endif
   PGresult *result = PQexec(connection, (const char *) sql);
-  std::string box3d = PQgetvalue(result, 0, 0);
-
-  if (box3d != "")
+  
+  // TODO: Guard against the result having no rows
+  
+  for (int i = 0; i < PQntuples(result); i++)
   {
-    std::string s;
-
-    box3d = box3d.substr(box3d.find_first_of("(")+1);
-    box3d = box3d.substr(box3d.find_first_not_of(" "));
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double minx = strtod(s.c_str(), NULL);
-
-    box3d = box3d.substr(box3d.find_first_of(" ")+1);
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double miny = strtod(s.c_str(), NULL);
-
-    box3d = box3d.substr(box3d.find_first_of(",")+1);
-    box3d = box3d.substr(box3d.find_first_not_of(" "));
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double maxx = strtod(s.c_str(), NULL);
-
-    box3d = box3d.substr(box3d.find_first_of(" ")+1);
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double maxy = strtod(s.c_str(), NULL);
-
-    layerExtent.setXmax(maxx);
-    layerExtent.setXmin(minx);
-    layerExtent.setYmax(maxy);
-    layerExtent.setYmin(miny);
-#ifdef QGISDEBUG
-    QString xMsg;
-    QTextOStream(&xMsg).precision(18);
-    QTextOStream(&xMsg).width(18);
-    QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
-      xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
-    std::cerr << xMsg << std::endl;
-#endif
-    // clear query result
-    PQclear(result);
+    std::string box3d = PQgetvalue(result, i, 0);
+  
+    if (0 == i)
+    {
+      // create the initial extent
+      layerExtent = QgsPostGisBox3d(box3d);
+    }
+    else
+    {
+      // extend the initial extent
+      QgsPostGisBox3d b = QgsPostGisBox3d(box3d);
+      
+      layerExtent.combineExtentWith( &b );
+    }
+  
+    std::cout << "QgsPostgresProvider: After row " << i << ", extent is: " 
+          << layerExtent.xMin() << ", " << layerExtent.yMin() <<
+      " " << layerExtent.xMax() << ", " << layerExtent.yMax() << std::endl;
+  
   }
+
+#ifdef QGISDEBUG
+  QString xMsg;
+  QTextOStream(&xMsg).precision(18);
+  QTextOStream(&xMsg).width(18);
+  QTextOStream(&xMsg) << "QgsPostgresProvider: Set extents to: " << layerExtent.
+    xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
+  std::cerr << xMsg << std::endl;
+#endif
+
+  std::cout << "QgsPostgresProvider: Set limit 5 extents to: " 
+        << layerExtent.xMin() << ", " << layerExtent.yMin() <<
+    " " << layerExtent.xMax() << ", " << layerExtent.yMax() << std::endl;
+
+  // clear query result
+  PQclear(result);
+
 }
+
+/**
+ * Event sink for events from threads
+ */
+void QgsPostgresProvider::customEvent( QCustomEvent * e )
+{
+  std::cout << "QgsPostgresProvider: received a custom event " << e->type() << std::endl;
+    
+  switch ( e->type() )
+  {
+    case (QEvent::Type) QGis::ProviderExtentCalcEvent:
+        
+        std::cout << "QgsPostgresProvider: extent has been calculated" << std::endl;
+        
+        // Collect the new extent from the event and set this layer's
+        // extent with it.
+        
+        setExtent( (QgsRect*) e->data() );
+        
+       
+        std::cout << "QgsPostgresProvider: new extent has been saved" << std::endl;
+          
+        std::cout << "QgsPostgresProvider: Set extent to: " 
+              << layerExtent.xMin() << ", " << layerExtent.yMin() <<
+          " " << layerExtent.xMax() << ", " << layerExtent.yMax() << std::endl;
+
+        std::cout << "QgsPostgresProvider: emitting fullExtentCalculated()" << std::endl;
+        
+        emit fullExtentCalculated();
+
+        // TODO: Only uncomment this when the overview map canvas has been subclassed
+        // from the QgsMapCanvas
+        
+//        std::cout << "QgsPostgresProvider: emitting repaintRequested()" << std::endl;
+//        emit repaintRequested();
+        
+        break;
+  
+    case (QEvent::Type) QGis::ProviderCountCalcEvent:
+  
+        std::cout << "QgsPostgresProvider: count has been calculated" << std::endl;
+        
+        QgsProviderCountCalcEvent* e1 = (QgsProviderCountCalcEvent*) e;
+        
+        long numberFeatures = e1->numberFeatures();
+        
+        std::cout << "QgsPostgresProvider: count is " << numberFeatures << std::endl;
+        
+        break;
+  }
+    
+  std::cout << "QgsPostgresProvider: Finished processing custom event " << e->type() << std::endl;
+    
+}
+
 
 bool QgsPostgresProvider::deduceEndian()
 {
@@ -1391,7 +1548,9 @@ bool QgsPostgresProvider::getGeometryDetails()
 #endif
   return valid;
 }
-    
+
+
+   
 /**
  * Class factory to return a pointer to a newly created 
  * QgsPostgresProvider object
