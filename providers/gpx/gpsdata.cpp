@@ -229,6 +229,7 @@ int GPSData::addRoute(QString name) {
 int GPSData::addTrack(QString name) {
   Track trk;
   trk.name = name;
+  tracks.push_back(trk);
   return tracks.size() - 1;
 }
   
@@ -310,6 +311,8 @@ void GPSData::fillDom(QDomDocument& qdd) {
   QDomElement gpxElt = qdd.createElement("gpx");
   qdd.appendChild(gpxElt);
   gpxElt.setAttribute("version", "1.0");
+  
+  // add waypoints
   for (int i = 0; i < waypoints.size(); ++i) {
     QDomElement wptElt = qdd.createElement("wpt");
     wptElt.setAttribute("lat", QString("%1").arg(waypoints[i].lat, 0, 'f'));

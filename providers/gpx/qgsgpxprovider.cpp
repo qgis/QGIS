@@ -29,6 +29,7 @@
 #include <qdom.h>
 #include <qrect.h>
 
+#include "../../src/qgis.h"
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -566,10 +567,27 @@ bool QgsGPXProvider::isValid(){
 }
 
 bool QgsGPXProvider::addFeature(QgsFeature* f) {
+  unsigned char* geo = f->getGeometry();
   int id;
-  if (mGeomType == 1) {
-    id = data->addWaypoint(*((double*)(f->getGeometry() + 5 + sizeof(double))),
-			   *((double*)(f->getGeometry() + 5)));
+  QGis::WKBTYPE ftype;
+  memcpy(&ftype, (geo + 1), sizeof(int));
+  
+  /* Do different things for different geometry types:
+     WKBPoint      -> add waypoint if this is a waypoint layer
+     WKBLineString -> add track if this is a track layer, route if this is a
+                      route layer
+     WKBPolygon and the WKBMulti types are not supported because they don't
+     make sense for GPX files. */
+  switch(ftype) {
+    
+    // the user is trying to add a point feature
+  case QGis::WKBPoint: {
+    if (mFeatureType != "waypoint") {
+      std::cerr<<"Tried to write point feature to non-point layer!"<<std::endl;
+      return false;
+    }
+    id = data->addWaypoint(*((double*)(geo + 5 + sizeof(double))),
+			   *((double*)(geo + 5)));
     Waypoint& wpt(data->getWaypoint(id));
     std::vector<QgsFeatureAttribute>::const_iterator iter;
     for (iter = f->attributeMap().begin(); 
@@ -583,12 +601,62 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     }
     return true;
   }
+    
+    // the user is trying to add a line feature
+  case QGis::WKBLineString: {
+    if (mFeatureType == "waypoint") {
+      std::cerr<<"Tried to write line feature to point layer!"<<std::endl;
+      return false;
+    }
+    
+    // get the number of points
+    int length;
+    memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
+#ifdef QGISDEBUG
+    qWarning("length: "+QString::number(length));
+#endif
+    
+    // add route
+    if (mFeatureType == "route") {
+      id = data->addRoute();
+      Route& rte(data->getRoute(id));
+      for (int i = 0; i < length; ++i) {
+	Routepoint rpt;
+	std::memcpy(&rpt.lon, geo + 9 + 16 * i, sizeof(double));
+	std::memcpy(&rpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
+	rte.points.push_back(rpt);
+      }
+      return true;
+    }
+    
+    // add track
+    else if (mFeatureType == "track") {
+      id = data->addTrack();
+      Track& trk(data->getTrack(id));
+      TrackSegment trkSeg;
+      for (int i = 0; i < length; ++i) {
+	Trackpoint tpt;
+	std::memcpy(&tpt.lon, geo + 9 + 16 * i, sizeof(double));
+	std::memcpy(&tpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
+	trkSeg.points.push_back(tpt);
+      }
+      trk.segments.push_back(trkSeg);
+      return true;
+    }
+    
+    break;
+  }
+  }
+  
+  // something went wrong, or we wouldn't be here
   return false;
 }
+
 
 bool QgsGPXProvider::deleteFeature(int id) {
   return false;
 }
+
 
 /** 
  * Check to see if the point is within the selection rectangle
