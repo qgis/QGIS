@@ -292,7 +292,22 @@
                             <property name="text">
                                 <string>Peter Brewer</string>
                             </property>
-                        </item>
+                          </item>
+                        <item>
+                            <property name="text">
+                              <string>Christoph Spoerri</string>
+                            </property>
+                          </item>
+                        <item>
+                            <property name="text">
+                              <string>Gavin Macauley</string>
+                            </property>
+                          </item>
+                        <item>
+                            <property name="text">
+                              <string>Tom Elwertowski</string>
+                            </property>
+                          </item>
                         <property name="name">
                             <cstring>listBox1</cstring>
                         </property>
@@ -575,6 +590,78 @@
                                     </property>
                                     <property name="pixmap">
                                         <pixmap>image10</pixmap>
+                                    </property>
+                                    <property name="scaledContents">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                              <cstring>Christoph_S</cstring>
+                            </property>
+                            <attribute name="id">
+                              <number>12</number>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pixmapLabel1_10</cstring>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap></pixmap>
+                                    </property>
+                                    <property name="scaledContents">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                              <cstring>Gavin_M</cstring>
+                            </property>
+                            <attribute name="id">
+                              <number>13</number>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pixmapLabel1_11</cstring>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap></pixmap>
+                                    </property>
+                                    <property name="scaledContents">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                              <cstring>Tom_E</cstring>
+                            </property>
+                            <attribute name="id">
+                              <number>14</number>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pixmapLabel1_12</cstring>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap></pixmap>
                                     </property>
                                     <property name="scaledContents">
                                         <bool>true</bool>
