@@ -252,8 +252,8 @@ qgis_UIC = 	qgisappbase.ui					\
 
 # XXX Actually the general pattern matching rules should already do these dependencies
 # UI dependencies			
-gsattributetablebase.cpp: gsattributetablebase.h qgsattributetablebase.ui
-gsattributetablebase.h: qgsattributetablebase.ui
+qgsattributetablebase.cpp: qgsattributetablebase.h qgsattributetablebase.ui
+qgsattributetablebase.h: qgsattributetablebase.ui
 qgisappbase.cpp: qgisappbase.ui qgisappbase.h
 qgisappbase.h: qgisappbase.ui
 qgsabout.cpp: qgsabout.h qgsabout.ui
