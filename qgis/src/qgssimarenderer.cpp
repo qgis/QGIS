@@ -39,11 +39,12 @@ void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLay
 	sy.pen().setStyle(Qt::NoPen);
 	sy.pen().setWidth(1);//set width 1 as default instead of width 0
 
-	QgsRenderItem* ri = new QgsRenderItem(sy, "", "");
+	QgsRenderItem* ri = new QgsRenderItem();
+	ri->setSymbol(sy);
 	addItem(ri);
 	
 	//todo: add a pixmap for the legend
-    
+	
 
 	QgsSiMaDialog *dialog = new QgsSiMaDialog(layer);
 	if (toproperties)
