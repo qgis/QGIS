@@ -27,8 +27,12 @@
 
 class OGRLayer;
 class OGRDataSource;
-class PGconn;
- 
+extern "C"
+{
+  #include <libpq-fe.h>
+}
+
+
 class QgsShapeFile : public QObject
 {
   Q_OBJECT
