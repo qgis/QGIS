@@ -1,11 +1,11 @@
 /***************************************************************************
-                          plugin.h 
+                          plugin.h
  Functions:
                              -------------------
     begin                : Jan 21, 2004
     copyright            : (C) 2004 by Tim Sutton
     email                : tim@linfiniti.com
-  
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,6 +21,8 @@
 #define PLUGIN
 #include "../qgisplugin.h"
 #include <qwidget.h>
+#include <qpainter.h>
+
 
 #include "../../src/qgisapp.h"
 
@@ -32,11 +34,11 @@
 class Plugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
-      /** 
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+      /**
+       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
        * QGIS when it attempts to instantiate the plugin.
        * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object. 
+       * @param qI Pointer to the QgisIface object.
        */
       Plugin(QgisApp * , QgisIface * );
   //! init the gui
@@ -47,7 +49,7 @@ class Plugin:public QObject, public QgisPlugin
   //! Show the dialog box
   void run();
   // draw some arbitary text to the screen
-  void renderNorthArrow();
+  void renderNorthArrow(QPainter *);
   //! Run when the user has set a new rotation
   void rotationChanged(int);
   //! Refresh the map display using the mapcanvas exported via the plugin interface

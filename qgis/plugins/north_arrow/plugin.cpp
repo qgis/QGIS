@@ -1,5 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
+  plugin.cpp
   Import tool for various worldmap analysis output files
 Functions:
 
@@ -50,7 +50,7 @@ email                : tim@linfiniti.com
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
-// 
+//
 static const char * const ident_ = "$Id$";
 
 static const char * const name_ = "NorthArrow";
@@ -66,9 +66,9 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-qgisMainWindowPointer(theQGisApp), 
+    qgisMainWindowPointer(theQGisApp),
     qGisInterface(theQgisInterFace),
-QgisPlugin(name_,description_,version_,type_)
+    QgisPlugin(name_,description_,version_,type_)
 {
   mRotationInt=0;
   mPlacement=tr("Bottom Left");
@@ -76,11 +76,10 @@ QgisPlugin(name_,description_,version_,type_)
 
 Plugin::~Plugin()
 {
-
 }
 
 /*
- * Initialize the GUI interface for the plugin 
+ * Initialize the GUI interface for the plugin
  */
 void Plugin::initGui()
 {
@@ -97,7 +96,7 @@ void Plugin::initGui()
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the arrow each time the map is rendered
-  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete()), this, SLOT(renderNorthArrow()));
+  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderNorthArrow(QPainter *)));
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
   toolBarPointer->setLabel("North Arrow");
@@ -134,92 +133,86 @@ void Plugin::refreshCanvas()
   qGisInterface->getMapCanvas()->refresh();
 }
 
-void Plugin::renderNorthArrow()
+void Plugin::renderNorthArrow(QPainter * theQPainter)
 {
-
-//Large IF statement controlled by enable check box
-if (mEnable)
-{
-  QPixmap myQPixmap; //to store the north arrow image in
-  QString myFileNameQString = QString(PKGDATAPATH) + 
-      QString("/images/north_arrows/default.png");
-  //std::cout << "Trying to load " << myFileNameQString << std::cout;
-  if (myQPixmap.load(myFileNameQString))
+#ifdef QGISDEBUG
+      std::cout << "Rendering n-arrow"  << std::endl;
+#endif
+  //Large IF statement controlled by enable check box
+  if (mEnable)
   {
-    // myPainterPixmap.fill();
-    QPainter myQPainter;
-    myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
+    QPixmap myQPixmap; //to store the north arrow image in
+    QString myFileNameQString = QString(PKGDATAPATH) +
+                                QString("/images/north_arrows/default.png");
+    //std::cout << "Trying to load " << myFileNameQString << std::cout;
+    if (myQPixmap.load(myFileNameQString))
+    {
 
-    double centerXDouble = myQPixmap.width()/2;
-    double centerYDouble = myQPixmap.height()/2;
-    //save the current canvas rotation
-    myQPainter.save();
-    //
-    //work out how to shift the image so that it rotates
-    //           properly about its center
-    //(x cos a + y sin a - x, -x sin a + y cos a - y)
-    //
-    const double PI = 3.14159265358979323846;
-    double myRadiansDouble = (PI/180) * mRotationInt;
-    int xShift = static_cast<int>((
-                (centerXDouble * cos(myRadiansDouble)) +
-                (centerYDouble * sin(myRadiansDouble))
-                ) - centerXDouble);
-    int yShift = static_cast<int>((
-                (-centerXDouble * sin(myRadiansDouble)) + 
-                (centerYDouble * cos(myRadiansDouble))
-                ) - centerYDouble);	
+      double centerXDouble = myQPixmap.width()/2;
+      double centerYDouble = myQPixmap.height()/2;
+      //save the current canvas rotation
+      theQPainter->save();
+      //
+      //work out how to shift the image so that it rotates
+      //           properly about its center
+      //(x cos a + y sin a - x, -x sin a + y cos a - y)
+      //
+      const double PI = 3.14159265358979323846;
+      double myRadiansDouble = (PI/180) * mRotationInt;
+      int xShift = static_cast<int>((
+                                      (centerXDouble * cos(myRadiansDouble)) +
+                                      (centerYDouble * sin(myRadiansDouble))
+                                    ) - centerXDouble);
+      int yShift = static_cast<int>((
+                                      (-centerXDouble * sin(myRadiansDouble)) +
+                                      (centerYDouble * cos(myRadiansDouble))
+                                    ) - centerYDouble);
 
-    //Get canvas dimensions
-    int myHeight = qGisInterface->getMapCanvas()->height();
-    int myWidth = qGisInterface->getMapCanvas()->width();
+      //Get canvas dimensions
+      int myHeight = qGisInterface->getMapCanvas()->height();
+      int myWidth = qGisInterface->getMapCanvas()->width();
 
 #ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at " << mPlacement << std::endl; 
+      std::cout << "Rendering n-arrow at " << mPlacement << std::endl;
 #endif
-    //Determine placement of label from form combo box
-    if (mPlacement==tr("Bottom Left"))
-    {
-      myQPainter.translate(0,myHeight-myQPixmap.height());	
-    }
-    else if (mPlacement==tr("Top Right"))
-    {
-      myQPainter.translate(myWidth-myQPixmap.width(),0);	
-    }
-    else if (mPlacement==tr("Bottom Right"))
-    {
-      myQPainter.translate(myWidth-myQPixmap.width(),
-                           myHeight-myQPixmap.height());	
-    }
-    else // defaulting to top left
-    {
-      //no need to translate for TL corner because we're already at the origin
-      myQPainter.translate(0, 0); 
-    }
-    //rotate the canvas by the north arrow rotation amount
-    myQPainter.rotate( mRotationInt );
-    //Now we can actually do the drawing
-    myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
+      //Determine placement of label from form combo box
+      if (mPlacement==tr("Bottom Left"))
+      {
+        theQPainter->translate(0,myHeight-myQPixmap.height());
+      }
+      else if (mPlacement==tr("Top Right"))
+      {
+        theQPainter->translate(myWidth-myQPixmap.width(),0);
+      }
+      else if (mPlacement==tr("Bottom Right"))
+      {
+        theQPainter->translate(myWidth-myQPixmap.width(),
+                             myHeight-myQPixmap.height());
+      }
+      else // defaulting to top left
+      {
+        //no need to translate for TL corner because we're already at the origin
+        theQPainter->translate(0, 0);
+      }
+      //rotate the canvas by the north arrow rotation amount
+      theQPainter->rotate( mRotationInt );
+      //Now we can actually do the drawing
+      theQPainter->drawPixmap(xShift,yShift,myQPixmap);
 
-    //unrotate the canvase again
-    myQPainter.restore();
-    myQPainter.end();
+      //unrotate the canvase again
+      theQPainter->restore();
 
-    //bitBlt ( qGisInterface->getMapCanvas()->canvasPixmap(), 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
+      //bitBlt ( qGisInterface->getMapCanvas()->canvasPixmap(), 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
 
+    }
+    else
+    {
+      QFont myQFont("time", 32, QFont::Bold);
+      theQPainter->setFont(myQFont);
+      theQPainter->setPen(Qt::black);
+      theQPainter->drawText(10, 20, QString("Pixmap Not Found"));
+    }
   }
-  else
-  {
-    //myPainterPixmap.fill();
-    QPainter myQPainter;
-    myQPainter.begin(qGisInterface->getMapCanvas()->canvasPixmap());	
-    QFont myQFont("time", 32, QFont::Bold);
-    myQPainter.setFont(myQFont);
-    myQPainter.setPen(Qt::black);
-    myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
-    myQPainter.end();
-  }
-}
 
 }
 // Unload the plugin by cleaning up the GUI
@@ -255,8 +248,8 @@ void Plugin::setEnabled(bool theBool)
 
 
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
