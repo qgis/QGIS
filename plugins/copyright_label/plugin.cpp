@@ -25,6 +25,7 @@ email                : tim@linfiniti.com
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include "plugin.h"
+#include <qgsproject.h>
 
 
 #include <qtoolbar.h>
@@ -107,9 +108,26 @@ void Plugin::initGui()
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
-  //default text to start with
+  //default text to start with - try to fetch it from qgsproject
+  QgsProject::Properties myProperties = QgsProject::instance()->properties("CopyrightLabel");
+  for ( QgsProject::Properties::const_iterator i = myProperties.begin();
+          i != myProperties.end();
+          ++i )
+     {
+        qDebug( "%s -> %s", (*i).first.ascii(), (*i).second.toString().ascii() );
+        QString myCurrentKeyString = (*i).first;
+        if ( "FontName" == myCurrentKeyString )
+        {
+          mQFont.setFamily((*i).second.toString());
+        }
+        else if( "FontSize" == myCurrentKeyString )
+        {
+          mQFont.setPointSize((*i).second.toInt());
+        }
+    }
+   
   mLabelQString = QString(" QGIS 2004");
-  mQFont = QFont("time", 12, QFont::Bold);
+  mQFont = QFont("times", 12, QFont::Bold);
   mLabelQColor = QColor(Qt::black);
 
   //default placement to start with
@@ -216,6 +234,14 @@ void Plugin::unload()
   void Plugin::setFont(QFont theQFont)
   {
     mQFont = theQFont;
+    //save state to the project file.....
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("FontName", 
+          theQFont.family() ) ); 
+    //save state to the project file.....
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("FontSize", 
+          theQFont.pointSize() ) ); 
     refreshCanvas();
   }
   //! change the copyright text
