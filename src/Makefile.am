@@ -42,7 +42,6 @@ headers =		qgis.h					\
 			qgscontinuouscolrenderer.h		\
 			qgscoordinatetransform.h		\
 			qgscustomsymbol.h			\
-			qgsdatabaselayer.h			\
 			qgsdataprovider.h			\
 			qgsdatasource.h				\
 			qgsdlgvectorlayerproperties.h		\
@@ -94,7 +93,6 @@ headers =		qgis.h					\
 			qgsuniquevalrenderer.h			\
 			qgsuvaldialog.h				\
 			qgsvectorlayer.h			\
-			qgsvectorlayerproperties.h		\
 			splashscreen.h				\
 			qgisapp.h \
 			qgsscalecalculator.h \
@@ -129,7 +127,6 @@ qgis_UIC =	qgisappbase.ui					\
 		qgssimadialogbase.ui				\
 		qgssisydialogbase.ui				\
 		qgsuvaldialogbase.ui				\
-		qgsvectorlayerpropertiesbase.ui \
 		qgsprojectpropertiesbase.ui
 
 ## all the ui files generate a corresponding header file
@@ -182,7 +179,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp			\
-		qgsvectorlayerproperties.moc.cpp	\
 		splashscreen.moc.cpp \
 		qgsprojectproperties.moc.cpp \
 		qgsoptions.moc.cpp			\
@@ -247,7 +243,6 @@ qgis_SOURCES =  main.cpp			\
 		qgsuniquevalrenderer.cpp	\
 		qgsuvaldialog.cpp		\
 		qgsvectorlayer.cpp		\
-		qgsvectorlayerproperties.cpp	\
 		splashscreen.cpp \
 		qgsscalecalculator.cpp  \
 		qgsprojectproperties.cpp \

@@ -35,7 +35,6 @@
 #include "qgsfield.h"
 #include "qgspatterndialog.h"
 #include "qgslinestyledialog.h"
-#include "qgsvectorlayerproperties.h"
 
 #include "qgslabelattributes.h"
 #include "qgslabel.h"

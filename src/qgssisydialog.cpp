@@ -28,7 +28,6 @@
 #include "qgslegenditem.h"
 #include "qgsrenderitem.h"
 #include "qgssinglesymrenderer.h"
-#include "qgsvectorlayerproperties.h"
 #include <qlineedit.h>
 #include <qtoolbutton.h>
 #include <qlabel.h>
