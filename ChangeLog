@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.120 2004/06/09 16:03:02 sbr00pwb Exp
+ChangeLog,v 1.121 2004/06/09 21:36:33 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+
+2004-06-09 [mcoletti] 0.3.0devel25
+Added support for a feature type name in QgsFeature.  The GDAL/OGR shape file
+provider now also provides the feature type name.
 
 2004-06-09 [petebr] 0.3.0devel24
 Added the scale bar plugin. My first solo plugin! :-)
@@ -158,6 +163,7 @@ state hadnling for copyright plugin.
 ** Resaved plugins/copyright_label/pluginguibase.ui with designer 3.1 to fix
    const problem
 
+>>>>>>> 1.120
 2004-05-20 [ts] 0.2.0devel31
 ** First working version for gui pyramid manager (implemented as tab in raster
 props). Raster legend entry now stretched to width of legend and show an icon
