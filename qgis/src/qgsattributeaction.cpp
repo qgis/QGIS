@@ -39,7 +39,8 @@ void QgsAttributeAction::addAction(QString name, QString action,
   mActions.push_back(QgsAction(name, action, capture));
 }
 
-void QgsAttributeAction::doAction(unsigned int index, QString value) 
+void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pair<QString, QString> >& values,
+				  int defaultValueIndex) 
 {
   aIter action = retrieveAction(index);
 
@@ -55,7 +56,7 @@ void QgsAttributeAction::doAction(unsigned int index, QString value)
 
   if (action != end())
   {
-    QString expanded_action = expandAction(action->action(), value);
+    QString expanded_action = expandAction(action->action(), values, defaultValueIndex);
     std::cout << "Running command '" << expanded_action << "'.\n";
     QStringList args = QStringList::split(" ", expanded_action);
 
@@ -89,15 +90,35 @@ QgsAttributeAction::aIter QgsAttributeAction::retrieveAction(unsigned int index)
   return a_iter;
 }
 
-QString QgsAttributeAction::expandAction(QString action, QString value)
+QString QgsAttributeAction::expandAction(QString action, const std::vector<std::pair<QString, QString> >& values, 
+					 int clickedOnValue)
 {
-  // This functions currently replaces all % characters in the action
-  // with the given value. Additional substitutions could include:
-  // - symbols for $CWD, $HOME, etc (and their OSX and Windows
-  //   equivalents)
-  // - other values in the same row as the given value
+  // This function currently replaces all %% characters in the action
+  // with the value from values[clickedOnValue].second, and then
+  // searches for all strings that go %attribite_name, where
+  // attribute_name is found in values[x].first, and replaces any that
+  // it finds by values[s].second.
 
-  QString expanded_action = action.replace("%", value);
+  // Additional substitutions could include symbols for $CWD, $HOME,
+  // etc (and their OSX and Windows equivalents)
+
+  // This function will potentially fall apart if any of the
+  // substitutions produce text that could match another
+  // substition. May be better to adopt a two pass approach - identify
+  // all matches and their substitutions and then do a second pass 
+  // for the actual substitutions.
+
+  QString expanded_action;
+  if (clickedOnValue >= 0 && clickedOnValue < values.size())
+    expanded_action = action.replace("%%", values[clickedOnValue].second);
+  else
+    expanded_action = action;
+
+  for (int i = 0; i < values.size(); ++i)
+    {
+      QString to_replace = "%" + values[i].first;
+      expanded_action = expanded_action.replace(to_replace, values[i].second);
+    }
 
   return expanded_action;
 }

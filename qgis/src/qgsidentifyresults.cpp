@@ -27,7 +27,7 @@
 
 #include "qgsidentifyresults.h"
 
-QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa) : mActions(aa), mActionPopup(0)
+QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa) : mActions(aa), mClickedOnValue(0), mActionPopup(0)
 {
 }
 
@@ -77,9 +77,36 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
       mActionPopup->setItemParameter(id, j);
     }
   }
-  // Save the attribute value as this is needed for substituting into
+  // Save the attribute values as these are needed for substituting into
   // the action. 
-  mValue = item->text(1);
+  // A little bit complicated because the user could of right-clicked
+  // on a parent or a child in the dialog box. We also want to keep
+  // track of which row in the identify results table was actually
+  // clicked on. This is stored as an index into the mValues vector.
+
+  QListViewItem* parent = item->parent();
+  QListViewItem* child;
+
+  if (item->parent() == 0)
+    child = item->firstChild();
+  else
+    child = parent->firstChild();
+
+  mValues.clear();
+  int j = 0;
+  while (child != 0)
+    {
+      mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+      // Need to do the comparison on the text strings rather than the
+      // pointers because if the user clicked on the parent, we need
+      // to pick up which child that actually is (the parent in the
+      // identify results dialog box is just one of the children
+      // that has been chosen by some method).
+      if (child->text(0) == item->text(0))
+	mClickedOnValue = j;
+      ++j;
+      child = child->nextSibling();
+    }
 
   mActionPopup->popup(p);
 }
@@ -129,5 +156,5 @@ void QgsIdentifyResults::setTitle(QString title)
 // Run the action that was selected in the popup menu
 void QgsIdentifyResults::popupItemSelected(int id)
 {
-  mActions.doAction(id, mValue);
+  mActions.doAction(id, mValues, mClickedOnValue);
 }
