@@ -540,7 +540,7 @@ void QgsShapeFileProvider::fillMinMaxCash()
       }
     }
     delete[] f->getGeometry();
-    delete f;
+   
   }while(f=getNextFeature(true));
 
   minmaxcachedirty=false;
