@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.156 2004/06/29 04:47:37 gsherman Exp
+dnl configure.in,v 1.157 2004/06/30 11:30:39 jobi Exp
 
 
 
@@ -26,12 +26,20 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=3
 MICRO_VERSION=0
-EXTRA_VERSION=57
+EXTRA_VERSION=58
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${EXTRA_VERSION}
 fi
+
+dnl ---------------------------------------------------------------------------
+dnl library interfase version number
+dnl change when lib interface changes
+dnl see http://www.gnu.org/software/libtool/manual.html#TOC32
+dnl ---------------------------------------------------------------------------
+INTERFACE_VERSION=0:1:0
+
 
 AM_INIT_AUTOMAKE(qgis, ${VERSION})
 
@@ -39,6 +47,7 @@ AC_SUBST(MAJOR_VERSION)
 AC_SUBST(MINOR_VERSION)
 AC_SUBST(MICRO_VERSION)
 AC_SUBST(EXTRA_VERSION)
+AC_SUBST(INTERFACE_VERSION)
 
 AC_PREFIX_PROGRAM(gcc)
 
@@ -222,8 +231,8 @@ AC_CONFIG_FILES([
   src/images/north_arrows/Makefile
   src/images/splash/Makefile
   src/images/icons/Makefile
-	src/themes/Makefile
-	src/themes/default/Makefile
+  src/themes/Makefile
+  src/themes/default/Makefile
   providers/Makefile 
   providers/ogr/Makefile
   providers/postgres/Makefile
