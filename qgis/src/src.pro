@@ -58,7 +58,8 @@ HEADERS += qgisapp.h \
            qgsprojectio.h \
            qgisiface.h \
 	   qgspluginmanager.h \
-	   qgspluginitem.h
+	   qgspluginitem.h \
+	   qgsmaplayerinterface.h
 FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
