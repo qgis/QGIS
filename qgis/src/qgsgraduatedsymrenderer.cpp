@@ -188,7 +188,7 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 void QgsGraduatedSymRenderer::writeXML(std::ofstream& xml)
 {
     xml << "\t\t<graduatedsymbol>\n";
-    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) +
+    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() <<
 	"</classificationfield>\n";
     for (std::list < QgsRangeRenderItem * >::iterator it = this->items().begin(); it != this->items().end();
 	 ++it)
