@@ -45,7 +45,7 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp cdpwizard.moc.cpp
+plugin_MOC = plugin.moc.cpp cdpwizard.moc.cpp climatedataprocessor.moc.cpp
 
 
 climatedataprocessingwizard_la_SOURCES = plugin.cpp \
@@ -95,7 +95,7 @@ cdpwizard_SOURCES = 	main.cpp \
 			$(plugin_UIHEADERS) \
 			$(plugin_UIMOC)
 
-nodist_cdpwizard_SOURCES = cdpwizard.moc.cpp	
+nodist_cdpwizard_SOURCES = cdpwizard.moc.cpp climatedataprocessor.moc.cpp
 
 cdpwizard_LDADD = $(QT_LDADD) $(GDAL_LDADD) -lgsl -lgslcblas
 cdpwizard_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GSL_FLAGS)

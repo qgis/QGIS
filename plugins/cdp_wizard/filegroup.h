@@ -40,6 +40,12 @@ public:
     bool addFileReader(FileReader *theFileReader, int theDataBlockNo) ;
     /** Get the next element from each fileReader and return the result as a vector. */
     QValueVector<float> getElementVector();
+    /**
+    * Accessor for the elementCountInt property. This property tells us
+    * how many cells in any one data block in a filereader exist.
+    * @return int - The number of cells in a block of the first filereader.
+    */
+    int getElementCount();
     /** Read property of bool endOfMatrixFlag. */
     const bool getEndOfMatrixFlag();
     /** Move to the start of the active data block */
@@ -53,9 +59,15 @@ private:
     typedef QPtrVector <FileReader> FileReaderVector;
     /**This is the container for all the file readers in this group. */
     FileReaderVector * fileReaderVector;
-    /** 
+    /**
+    * The number of cells (xdim * ydim) in the block in the first file in the
+    * file group. It is assumed that all files in the group have the same block
+    * dimensions.
+    */
+    int elementCountInt;
+    /**
     * A flag to show whether the end of the matrix has been reached.
-    * @note the first fileReader in the fileGroup is used to determine this. 
+    * @note the first fileReader in the fileGroup is used to determine this.
     */
     bool endOfMatrixFlag;
 };

@@ -19,6 +19,7 @@
 
 FileGroup::FileGroup()
 {
+    elementCountInt=0;
     endOfMatrixFlag=false;
     fileReaderVector = new FileReaderVector();
     //automatically delete any filereader as it is
@@ -50,6 +51,7 @@ bool FileGroup::addFileReader(FileReader* theFileReader,
 
         return false;
     }
+
     //expand the filereader vector by one and insert the new filereader
     //onto the end of the list
     int mySizeInt = fileReaderVector->size();
@@ -58,9 +60,20 @@ bool FileGroup::addFileReader(FileReader* theFileReader,
 #ifdef QGISDEBUG
     cout << "File group size: " << fileReaderVector->size() << endl;
 #endif
-
+    //see if this was the first filereader being added and if so set the
+    //elementCountInt property.
+    if (mySizeInt==0)
+    {
+      elementCountInt=theFileReader->getXDim() * theFileReader->getYDim();
+    }
     return true;
 }
+
+int FileGroup::getElementCount()
+{
+  return elementCountInt;
+}
+
 
 QValueVector<float> FileGroup::getElementVector()
 {

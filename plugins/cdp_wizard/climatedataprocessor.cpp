@@ -25,7 +25,7 @@ email                : t.sutton@reading.ac.uk
 #include <qmessagebox.h>
 #include <qdir.h>
 
-ClimateDataProcessor::ClimateDataProcessor()
+ClimateDataProcessor::ClimateDataProcessor() : QObject()
 {
     std::cout << "Climate Data Processor constructor called." << std::endl;
 
@@ -1014,11 +1014,61 @@ bool ClimateDataProcessor::run()
 
     //This is the MAIN OUTER LOOP:
     //cycle through each year block, doing all the requested calculations for that year
-    std::cout << "Year offsets. Note that this code does not currently implement" << std::endl;
-    std::cout << "support for paleaoclimate data or any data before 0AD" << std::endl;
-    std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
     int myOffsetInt = jobStartYearInt - fileStartYearInt;
     int myNumberOfIterationsInt = (jobEndYearInt - jobStartYearInt) +1;
+    //work out how many variables we are going to calculate
+    int myNumberOfVariables = 0;
+    QMap<QString, bool>::const_iterator myIter;
+    for (myIter=availableCalculationsMap.begin(); myIter != availableCalculationsMap.end(); myIter++)
+    {
+        if (myIter.data()) //true
+        {
+            myNumberOfVariables++;
+        }
+    }
+    //
+    //work out how many cells need to be processed for each calculations
+    //
+    int myNumberOfCells =0;
+    if (meanTempFileGroup)
+    {
+        myNumberOfCells = meanTempFileGroup->getElementCount();
+    }
+    else if (minTempFileGroup)
+    {
+        myNumberOfCells = minTempFileGroup->getElementCount();
+    }
+    else if (maxTempFileGroup)
+    {
+        myNumberOfCells = maxTempFileGroup->getElementCount();
+    }
+    else if (diurnalTempFileGroup)
+    {
+        myNumberOfCells = diurnalTempFileGroup->getElementCount();
+    }
+    else if (meanPrecipFileGroup)
+    {
+        myNumberOfCells = meanPrecipFileGroup->getElementCount();
+    }
+    else if (frostDaysFileGroup)
+    {
+        myNumberOfCells = frostDaysFileGroup->getElementCount();
+    }
+    else if (totalSolarRadFileGroup)
+    {
+        myNumberOfCells = totalSolarRadFileGroup->getElementCount();
+    }
+    else if (windSpeedFileGroup)
+    {
+        myNumberOfCells = windSpeedFileGroup->getElementCount();
+    }
+    //check nothing fishy is going on
+    if (myNumberOfCells ==  0)
+    {
+      return false;
+    }
+
+
     int myCurrentYearInt = jobStartYearInt; //this will be changed on each iteration
     bool myFirstLoopFlag = true;
     for (int myCDPMainLoopInt = jobStartYearInt;
@@ -1130,9 +1180,9 @@ bool ClimateDataProcessor::run()
                 float myFloat = myDataProcessor->meanOverYear(myFloatVector );
                 if (myFirstIterationFlag || meanTempFileGroup->getEndOfMatrixFlag())
                 {
-                  //this next bit is just for debugging purposes"
-                  printVectorAndResult(myFloatVector,myFloat);
-                  myFirstIterationFlag=false;
+                    //this next bit is just for debugging purposes"
+                    printVectorAndResult(myFloatVector,myFloat);
+                    myFirstIterationFlag=false;
                 }
                 //write the result to our output file
                 bool myResultFlag = myFileWriter->writeElement(myFloat);

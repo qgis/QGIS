@@ -26,6 +26,7 @@ email                : t.sutton@reading.ac.uk
 #include "filegroup.h"
 #include <qmap.h>
 #include <qstring.h>
+#include <qobject.h>
 
 /**
 * This struct is simple container used in the 'run' method.
@@ -45,7 +46,8 @@ struct FileWriterStruct
  *@author Tim Sutton
  */
 
-class ClimateDataProcessor {
+class ClimateDataProcessor : QObject {
+    Q_OBJECT;
     public:
         /** Default constructor */
         ClimateDataProcessor();
@@ -365,6 +367,64 @@ class ClimateDataProcessor {
         * @return QString - the currently set file header.
         */
         const QString getOutputHeaderString();
+
+
+    signals:
+        /**
+        * A signal emitted to notify listeners how many years'
+        * data will be calculated.
+        *@param theNumberInt - The total number of years
+        *@return void - No return
+        */
+        void numberOfYearsToCalc(int theNumberInt);
+        /**
+        * A signal emitted to notify listeners how many variables
+        * are going to be calculated for each years data.
+        *@param theNumberInt - The total number of variables
+        *@return void - No return
+        */
+        void numberOfVariablesToCalc(int theNumberInt);
+        /**
+        * A signal emitted to notify listeners how many cells
+        * will be passed through in each block.
+        *@param theNumberInt - The total number of cells in any block
+        *@return void - No return
+        */
+        void numberOfCellsToCalc(int theNumberInt);
+        /**
+        * A signal emitted to notify listeners that we are about to
+        * start processing data for a given year.
+        *@param theNameQString - A String containing the year e.g. '1998' or '20000BP'
+        *@return void - No return
+        */
+        void yearStart(QString theNameQString);
+        /**
+        * A signal emitted to notify listeners that we have
+        * completed processing the current year.
+        *@return void - No return
+        */
+        void yearDone();
+        /**
+        * A signal emitted to notify listeners that we are about to
+        * start calculating a variable for one years data.
+        *@param theNameQString - A String containing the variable name e.g.
+        *                        'Precipitation over coolest month'
+        *@return void - No return
+        */
+        void variableStart(QString theNameQString);
+        /**
+        * A signal emitted to notify listeners that we
+        * completed calculating the given variable.
+        *@return void - No return
+        */
+        void variableDone();
+        /**
+        * A signal emitted to notify listeners that we
+        * have completed calculating a given cell.
+        *@param theResultFloat - The calculated value for a cell
+        *@return void - No return
+        */
+        void cellDone(float theResultFloat);
 
     private:
 
