@@ -16,9 +16,11 @@ namespace QGis
 	// Version constants
 	//
 	// Version string 
-	static const char *qgisVersion = "0.2 Development 'Pumpkin'";
+	static const char *qgisVersion = VERSION;
 	// Version number used for comparing versions using the "Check QGIS Version" function
 	static const int qgisVersionInt =200;
+  // Release name
+  static const char *qgisReleaseName = "Pumpkin";
 	
 	// Enumerations
 	//
