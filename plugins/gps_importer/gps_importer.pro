@@ -3,26 +3,28 @@
 ######################################################################
 
 TEMPLATE = lib
-INCLUDEPATH += . ..\..\src
-LIBS += ..\..\src\libqgis.lib
+INCLUDEPATH += . ..\..\src \
+          $(GEOS)\include
+LIBS += ..\..\src\libqgis.lib \
+        $(GDAL)\lib\gdal_i.lib \
+        $(GEOS)\lib\geos.lib
 
 DLLDESTDIR= ..\..\win_build\lib\qgis
 CONFIG += qt dll thread rtti
 
 # Input
 
-HEADERS += plugin.h \
-           plugingui.h \
-           pluginguibase.ui.h \
-           shapefile.h \
-           utils.h \
-           waypointtoshape.h 
-INTERFACES += pluginguibase.ui
-SOURCES += dbfopen.c \
-           plugin.cpp \
-           plugingui.cpp \
-           shpopen.c \
-           utils.c \
-           waypointtoshape.cpp 
+HEADERS +=    qgsgpsplugin.cpp \
+              qgsbabelformat.h \
+              qgsbabelformat.cpp \
+              qgsgpsplugingui.cpp \
+              qgsgpsdevicedialog.cpp 
+INTERFACES += qgsgpspluginguibase.ui \
+              qgsgpsdevicedialogbase.ui
+SOURCES +=    qgsgpsplugin.cpp \
+              qgsbabelformat.h \
+              qgsbabelformat.cpp \
+              qgsgpsplugingui.cpp \
+              qgsgpsdevicedialog.cpp 
 
            
