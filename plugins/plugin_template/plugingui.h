@@ -31,7 +31,7 @@ private:
     
 signals:
    void drawRasterLayer(QString);
-   void drawVectorrLayer(QString,QString,QString);
+   void drawVectorLayer(QString,QString,QString);
 };
 
 #endif
