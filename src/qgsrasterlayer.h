@@ -224,6 +224,10 @@ struct RasterBandStats
     /** \brief Store the histogram for a given layer */
     typedef QValueVector<int> HistogramVector;
     HistogramVector * histogramVector;
+    /** \brief whteher histogram values are estimated or completely calculated */
+    bool histogramEstimatedFlag;
+    /** whehter histogram compuation should include out of range values */
+    bool histogramOutOfRangeFlag;
     /** Color table */
     QgsColorTable colorTable;
 };
