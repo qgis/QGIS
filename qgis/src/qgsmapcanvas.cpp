@@ -529,6 +529,9 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         }
       }
 
+      //make verys sure progress bar arrives at 100%!
+      emit setProgress(1,1);
+                   
 #ifdef QGISDEBUG
       std::cout << "Done rendering map labels...emitting renderComplete(paint)\n";
 #endif
