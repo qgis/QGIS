@@ -33,10 +33,11 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
     enum mode{EMPTY, EQUAL_INTERVAL, QUANTILES};
     QgsGraSyDialog(QgsVectorLayer* layer);
     ~QgsGraSyDialog();
+ public slots:
+     void apply() const;
  protected slots:
      /**Creates a new extension widget*/
      void adjustNumberOfClasses();
-     void apply() const;
  protected:
      /**Pointer to the curret extension widget*/
      QgsGraSyExtensionWidget* ext;

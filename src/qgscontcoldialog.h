@@ -12,9 +12,9 @@ class QgsContColDialog: public QgsContColDialogBase
  public: 
     QgsContColDialog(QgsVectorLayer* layer);
     ~QgsContColDialog();
-
+ public slots:
+    void apply();	
  protected slots:
-    void apply();
     void selectMinimumColor();
     void selectMaximumColor();
  protected:

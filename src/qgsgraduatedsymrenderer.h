@@ -37,7 +37,7 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     /**Adds a new item
     \param ri a pointer to the QgsRangeRenderItem to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when the instance is destroyed*/
     void addItem(QgsRangeRenderItem* ri);
-    /**Returns the name of the classification field*/
+    /**Returns the number of the classification field*/
     int classificationField() const;
     /**Removes all items*/
     void removeItems();
