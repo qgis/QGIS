@@ -39,6 +39,12 @@ public:
   //accessor and mutator for base path
   void setBasePath(QString);
   QString basePath();
+  //accessor and mutator for css file name
+  void setCssFileName(QString);
+  QString cssFileName();
+  //accessor and mutator for log file name
+  void setLogFileName(QString);
+  QString logFileName();
 signals:
   void requestReceived(QString); //used to notify listeners when a web client connects
   void getMap(QPixmap *); //renders map and sends result to browser
@@ -71,12 +77,16 @@ private:
   void showHelp();   //show some useage help
   void getCss();
   void getCssInline();
+  void getCssFromFile();
   void getProjectsList();
   void getFileList();
   void showSettings();
+  void logMessage(QString);
   
   QString mBasePath;
   QString mProject;
   QString mHostName;
+  QString mCssFileName;
+  QString mLogFileName;
 };
 #endif

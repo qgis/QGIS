@@ -1,0 +1,93 @@
+/*       This is an example stylesheet for the qgis_http_server
+             You are free to modify and redistribute this 
+	    file under the terms of the Gnu Public License
+	    
+	    You should implement at least all the div tags as 
+	                     listed below.
+			    
+	    This file and QGIS http_plugin (c)Tim Sutton 2004 
+*/	    
+	    
+	    
+	     
+
+body {
+}
+a:link { 
+  font-weight: bold; 
+  text-decoration: none; 
+  color: white;
+ }
+a:visited { 
+  font-weight: bold; 
+  text-decoration: none; 
+  color: white;
+ }
+a:hover, a:active { 
+   text-decoration: none; 
+   color: gray;
+ }
+div#all {
+  border: solid thin black;
+  color: black;
+  background: #4A7CC3;
+  padding: 0px;
+}
+div#heading {
+  text-align: center;
+  border-bottom: solid thin black;
+  margin-bottom: 0;
+  margin-top: 0;
+  padding: 1em;
+  background: #173D88;
+  font-weight: bold;
+  font-size: larger;
+  color: white;
+}
+div#leftmenu {
+  float: left;
+  margin: 0;
+  padding: 1ex;
+  width: 10em;
+}
+div#content {
+  background: #AFDCEF;
+  border-left: solid thin black;
+  color: black;
+  margin: 0;
+  margin-left: 12em;
+  padding: 1ex;
+}
+div#footer {
+  clear: both;
+  border-top: solid thin black;
+  text-align: center;
+  background: #15387A;
+}
+table.helptable {
+       align: center;
+       width: 80%;
+     }
+h1,h2,h3,h4 { text-align: center; font-size: 12px }
+th {background-color: #1C4DAD;
+    color: white;}
+td.option {
+      background-color: #376EC8; 
+      font-weight: bold;
+      vertical-align: top;
+      }
+td.odd {
+      background-color: #4FC1E5;
+      color: white; 
+      }
+td.even {
+      background-color: #3C80E2; 
+      color: white;
+      }
+	 
+table {
+  border-top: solid thin black;
+  border-bottom: solid thin black;
+  margin: 10px auto;
+  width: 100%;
+}
