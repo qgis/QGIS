@@ -314,6 +314,7 @@ void QgsProjectProperties::getProjList()
     cboProjection->setCurrentText(mySelectedKey);
     */
     lstCoordinateSystems->setCurrentItem(mySelectedItem);
+            lstCoordinateSystems->ensureItemVisible(mySelectedItem);
   }
   else
   {
