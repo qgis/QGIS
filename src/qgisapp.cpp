@@ -2950,8 +2950,9 @@ void QgisApp::addRasterLayer()
     return;
   }
 
-  //mMapCanvas->freeze(false);
   addRasterLayer(selectedFiles);
+  mMapCanvas->freeze(false);
+  mMapCanvas->refresh();
 }// QgisApp::addRasterLayer()
 
 //
