@@ -20,6 +20,7 @@
 #include <qspinbox.h>
 
 //standard includes
+#include <cmath>
 #include <iostream>
 #include <fstream>
 
@@ -99,18 +100,57 @@ void PluginGui::pbnOK_clicked()
   int altIndex = cmbSelectALT->currentItem() - 1;
   while (feature != 0) {
     unsigned char* geometry = feature->getGeometry();
+    QString url = feature->attributeMap()[urlIndex].fieldValue();
+    QString alt = "";
+    if (altIndex != -1)
+      alt = feature->attributeMap()[altIndex].fieldValue();
+    std::cerr<<"geo: "<<(*(int*)(geometry + 1))<<", url: "<<url<<std::endl;
+    
+    // point - use a circle area
     if (geometry[1] == 1) {
       double x = *((double*)(geometry + 5));
       double y = *((double*)(geometry + 13));
       QgsPoint point = transform.transform(x, y);
       file<<"      <AREA shape=\"circle\" coords=\""
 	  <<int(point.x())<<","<<int(point.y())<<","
-	  <<sbSelectRadius->value()<<"\" "
-	  <<"href=\""<<feature->attributeMap()[urlIndex].fieldValue()<<"\"";
-      if (altIndex != -1)
-	file<<" alt=\""<<feature->attributeMap()[altIndex].fieldValue()<<"\"";
-      file<<">"<<std::endl;
+	  <<sbSelectRadius->value()<<"\" "<<"href=\""<<url<<"\""
+	  <<" alt=\""<<alt<<"\">"<<std::endl;
     }
+    
+    // linestring - use a polygon area that extends RADIUS units from the line
+    else if (geometry[1] == 2) {
+      
+    }
+    
+    // polygon - just use polygon areas, ignore the radius
+    else if (geometry[1] == 3) {
+      int numRings = *((int*)(geometry + 5));
+      if (numRings != 0) {
+	unsigned char* ringBegin = geometry + 9;
+	for (int r = 0; r < numRings; ++r) {
+	  int numPoints = *((int*)(ringBegin));
+	  file<<"      <AREA shape=\"poly\" coords=\"";
+	  for (int i = 0; i < numPoints; ++i) {
+	    double x = *((double*)(ringBegin + 4 + i*16)); 
+	    double y = *((double*)(ringBegin + 12 + i*16)); 
+	    QgsPoint point = transform.transform(x, y);
+	    file<<int(point.x())<<","<<int(point.y());
+	    if (i != numPoints - 1)
+	      file<<",";
+	  }
+	  file<<"\" ";
+	  // not sure if this is correct - I want to check if the ring is solid
+	  // or a hole, polygonIsHole() calculates the winding
+	  if (r != 0 && polygonIsHole((double*)(ringBegin + 4), numPoints))
+	    file<<"nohref";
+	  else
+	    file<<"href=\""<<url<<"\"";
+	  file<<" alt=\""<<alt<<"\">"<<std::endl;
+	  ringBegin += 4 + numPoints * 16;
+	}
+      }
+    }
+    
     feature = layer->getNextFeature(true);
   }
   file<<"    </MAP>"<<std::endl
@@ -142,4 +182,30 @@ void PluginGui::pbnSelectHTML_clicked()
 				 "Save file dialog"
 				 "Choose a filename to save under");
   leSelectHTML->setText(filename);
+}
+
+
+bool PluginGui::polygonIsHole(double* points, int nPoints)
+{
+  /* This is how it works: Find the leftmost point, point[i]. Check if the ray
+     from point[i] that goes through point[i+1] is above the ray from point[i]
+     that goes through point[i-1] - if it is the polygon is defined clockwise,
+     otherwise it's counterclockwise. Counterclockwise polygons are holes.
+     NOTE: point is an array of doubles, not points, but you get the idea. */
+  
+  // find the leftmost point
+  int leftmost = 0;
+  for (int i = 0; i < nPoints; ++i) {
+    if (points[i*2] < points[leftmost*2])
+      leftmost = i;
+  }
+  
+  // calculate the angles for the two rays and compare
+  double a1 = std::atan((points[(leftmost+1)*2+1] - points[leftmost*2+1]) /
+			(points[(leftmost+1)*2] - points[leftmost*2]));
+  double a2 = std::atan((points[(leftmost-1)*2+1] - points[leftmost*2+1]) /
+			(points[(leftmost-1)*2] - points[leftmost*2]));
+  if (a1 > a2)
+    return false;
+  return true;
 }

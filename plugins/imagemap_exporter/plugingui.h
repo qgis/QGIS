@@ -25,24 +25,26 @@ class PluginGui : public PluginGuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QgisIface* iFace, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
-
-    void pbnOK_clicked();
-    void pbnCancel_clicked();
-    void cmbSelectLayer_clicked();
-    void pbnSelectHTML_clicked();
-    
+  PluginGui();
+  PluginGui( QgisIface* iFace, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~PluginGui();
+  
+  void pbnOK_clicked();
+  void pbnCancel_clicked();
+  void cmbSelectLayer_clicked();
+  void pbnSelectHTML_clicked();
+  
 private:
-    
+  
+  bool polygonIsHole(double* points, int nPoints);
+  
 signals:
-   void drawRasterLayer(QString);
-   void drawVectorLayer(QString,QString,QString);
+  void drawRasterLayer(QString);
+  void drawVectorLayer(QString,QString,QString);
    
 private:
-   QgisIface* qgisIFace;
-   QgsVectorLayer* layer;
+  QgisIface* qgisIFace;
+  QgsVectorLayer* layer;
 };
 
 #endif
