@@ -54,8 +54,8 @@ class QgsMapLayer : public QgsDataSource  {
      * This function must be overridden in all child classes and implemented
      * based on the layer type
      */
-    virtual void calculateExtent();
-    virtual void draw(QPainter *, QRect * = 0);
+    virtual QgsRect calculateExtent();
+    virtual void draw(QPainter *, QgsRect * = 0);
     /*! Return the extent of the layer as a QRect
      */
     const QgsRect extent();

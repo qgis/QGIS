@@ -16,20 +16,28 @@ class QgsRect{
     void setXmin(double x);
     //! Set the maximum x value
     void setXmax(double x);
- //! Set the maximum y value
+    //! Set the maximum y value
     void setYmin(double y);
- //! Set the maximum y value
+    //! Set the maximum y value
     void setYmax(double y);
     //! Get the x maximum value (right side of rectangle)
-    double xMax();
-     //! Get the x maximum value (right side of rectangle)
-    double xMin();
- //! Get the x minimum value (left side of rectangle)
-    double yMax();
- //! Get the y maximum value (top side of rectangle)
-    double yMin();
- //! Normalize the rectangle so it has non-negative width/height
+    double xMax() const;
+    //! Get the x maximum value (right side of rectangle)
+    double xMin() const;
+    //! Get the x minimum value (left side of rectangle)
+    double yMax() const;
+    //! Get the y maximum value (top side of rectangle)
+    double yMin() const;
+    //! Normalize the rectangle so it has non-negative width/height
     void normalize();
+    /*! Comparison operator
+      @return True if rectangles are equal
+    */
+    bool operator==(const QgsRect &r1);
+    /*! Assignment operator
+     * @param r1 QgsRect to assign from
+     */
+    QgsRect & operator=(const QgsRect &r1);
  private:
     double xmax;
     double xmin;
