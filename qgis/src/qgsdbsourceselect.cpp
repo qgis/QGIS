@@ -33,16 +33,10 @@ void QgsDbSourceSelect::addNewConnection(){
 }
 void QgsDbSourceSelect::editConnection(){
  
-  QgsNewConnection *nc = new QgsNewConnection();
-  // populate the fields with the stored setting parameters
-  QSettings settings;
+  QgsNewConnection *nc = new QgsNewConnection(cmbConnections->currentText());
 
-  QString key = "/Qgis/connections/" + cmbConnections->currentText();
-  QString host = settings.readEntry(key+"/host");
-  QString database = settings.readEntry(key+"/database");
-  QString username = settings.readEntry(key+"/username");
-  QString password = settings.readEntry(key+"/password");
   if(nc->exec()){
+    nc->saveConnection();
   }
 }
 void QgsDbSourceSelect::addTables(){
@@ -56,7 +50,7 @@ void QgsDbSourceSelect::addTables(){
 void QgsDbSourceSelect::dbConnect(){
   // populate the table list
   QSettings settings;
-
+  
   QString key = "/Qgis/connections/" + cmbConnections->currentText();
   QString host = "host="+settings.readEntry(key+"/host");
   QString database = "dbname="+settings.readEntry(key+"/database");
@@ -67,6 +61,8 @@ void QgsDbSourceSelect::dbConnect(){
   PgDatabase *pd = new PgDatabase((const char *)m_connInfo);
   cout << pd->ErrorMessage();
   if(pd->Status()==CONNECTION_OK){
+    // clear the existing entries
+    lstTables->clear();
     // create the pixmaps for the layer types
     QPixmap pxPoint;
     pxPoint = QPixmap(point_layer_xpm);
