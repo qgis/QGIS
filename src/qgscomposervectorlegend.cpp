@@ -88,7 +88,6 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 
     // Calc size and cache
     recalculate();
-    cache();
 
     // Add to canvas
     setCanvas(mComposition->canvas());
@@ -115,7 +114,6 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 
     // Calc size and cache
     recalculate();
-    cache();
 
     // Add to canvas
     setCanvas(mComposition->canvas());
@@ -133,7 +131,7 @@ void QgsComposerVectorLegend::init ( void )
     mNextLayerGroup = 1;
 
     // Cache
-    mCachePixmap = new QPixmap();
+    mCacheUpdated = false;
 
     // Rectangle
     QCanvasRectangle::setZ(50);
@@ -470,16 +468,16 @@ void QgsComposerVectorLegend::cache ( void )
 {
     std::cout << "QgsComposerVectorLegend::cache()" << std::endl;
 
-    delete mCachePixmap;
-    mCachePixmap = new QPixmap ( QCanvasRectangle::width(), QCanvasRectangle::height(), -1, QPixmap::BestOptim ); 
+    mCachePixmap.resize ( QCanvasRectangle::width(), QCanvasRectangle::height() ); 
 
-    QPainter p(mCachePixmap);
+    QPainter p(&mCachePixmap);
     
-    mCachePixmap->fill(QColor(255,255,255));
+    mCachePixmap.fill(QColor(255,255,255));
     render ( &p );
     p.end();
 
     mNumCachedLayers = mMapCanvas->layerCount();
+    mCacheUpdated = true;    
 }
 
 void QgsComposerVectorLegend::draw ( QPainter & painter )
@@ -500,14 +498,14 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
     if ( plotStyle() == QgsComposition::Preview &&  mPreviewMode == Cache ) { // Draw from cache
         std::cout << "use cache" << std::endl;
 	
-	if ( mMapCanvas->layerCount() != mNumCachedLayers ) {
+	if ( !mCacheUpdated || mMapCanvas->layerCount() != mNumCachedLayers ) {
 	    cache();
 	}
 	
 	painter.save();
 	painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
         std::cout << "translate: " << QCanvasRectangle::x() << ", " << QCanvasRectangle::y() << std::endl;
-	painter.drawPixmap(0,0, *mCachePixmap);
+	painter.drawPixmap(0,0, mCachePixmap);
 
 	painter.restore();
 
@@ -623,8 +621,7 @@ void QgsComposerVectorLegend::recalculate ( void )
 
     QCanvasRectangle::setSize ( r.width(), r.height() );
     
-    //setOptions();
-    cache();
+    mCacheUpdated = false;
 }
 
 void QgsComposerVectorLegend::setOptions ( void )
