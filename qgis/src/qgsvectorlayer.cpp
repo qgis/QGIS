@@ -326,7 +326,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
       //true is necessary for graduated symbol
 #ifdef QGISDEBUG
-      std::cout << "Fetched next feature" << std::endl;
+     // std::cout << "Fetched next feature" << std::endl;
 #endif
       if (fet == 0)
       {
