@@ -35,6 +35,8 @@
 #include <qpopupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
+#include <qapplication.h>
+#include <qcursor.h>
 #include "qgsdlgpgbuffer.h"
 #include "qgspggeoprocessing.h"
 extern "C"
@@ -123,6 +125,7 @@ void QgsPgGeoprocessing::buffer()
     if (lyr) {
         // check the layer to see if its a postgres layer
         if (lyr->providerType() == "postgres") {
+         
             QString dataSource = lyr->source(); //qI->activeLayerSource();
 
             // create the connection string
@@ -193,6 +196,8 @@ void QgsPgGeoprocessing::buffer()
                 PQclear(sridq);
                 // exec the dialog and process if user selects ok
                 if (bb->exec()) {
+                   QApplication::setOverrideCursor(Qt::WaitCursor);
+                   qApp->processEvents();
                     // determine what column to use as the obj id
                     QString objId = bb->objectIdColumn();
                     QString objIdType = "int";
@@ -254,6 +259,7 @@ void QgsPgGeoprocessing::buffer()
                         QStringList versionParts = QStringList::split(" ", versionString);
                         // second element is the version number
                         QString version = versionParts[1];
+                       
                         if(version < "7.4.0"){
                           // modify the tableName 
                           tableName = tableName.mid(tableName.find(".")+1);
@@ -307,7 +313,7 @@ void QgsPgGeoprocessing::buffer()
                         QMessageBox::critical(0, "Unable to create table",
                                               QString("Failed to create the output table %1").arg(bb->bufferLayerName()));
                     }
-
+                    QApplication::restoreOverrideCursor();
                 }
                 delete bb;
             } else {
@@ -315,6 +321,7 @@ void QgsPgGeoprocessing::buffer()
                 QString err = tr("Error connecting to the database");
                 QMessageBox::critical(0, err, PQerrorMessage(conn));
             }
+            
         } else {
             QMessageBox::critical(0, "Not a PostgreSQL/PosGIS Layer",
                                   QString
