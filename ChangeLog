@@ -1,7 +1,21 @@
 QGIS Change Log
-ChangeLog,v 1.105 2004/05/31 20:08:53 timlinux Exp
+ChangeLog,v 1.106 2004/06/02 14:05:44 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-02 [ts] 0.3.0devel11
+** Changed maplayer draw() and its subclasses vectorlayer and rasterlayer to
+not need src parameter (this can be obtained from painter->device()).
+
+** More work on print system - still only works well on A4 landscape.
+
+** Northarrow and copyright label plugins now hidethemselves before emitting
+  update signals when ok is pressed.
+
+** QGSMapCanvas can now return the (last calculated) scale using getScale
+
+** QGSMapCanvas Impl struct rename to CanvasProperties. QgsMapCanvas impl_
+   member renamed to mCanvasProperties.
 
 2004-05-31 [ts] 0.3.0devel10
 ** Added basic print capability to qgis....consider this a work in progress.
