@@ -456,7 +456,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist)
+QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
 {
   QgsFeature *f = 0;
   if (valid)

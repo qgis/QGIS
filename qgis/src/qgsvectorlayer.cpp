@@ -417,7 +417,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
     std::list<int> attributes=m_renderer->classificationAttributes();
 
-    while((fet = dataProvider->getNextFeature(attributes)))
+    while((fet = dataProvider->getNextFeature(attributes,true)))
     {
       // If update threshold is greater than 0, check to see if
       // the threshold has been exceeded
@@ -1305,6 +1305,10 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       {
         int end=endian();
         memcpy(f->getGeometry(),&end,1);
+
+	//using a feature id which (hopefully) does not conflict with already commited features
+	f->setFeatureId(-1);
+
         if(dataProvider->addFeature(f))
         {
           if (tabledisplay)
