@@ -105,13 +105,13 @@ void Plugin::initGui()
 
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
-  menuIdInt = qGisInterface->addMenu("&Tools", pluginMenu);
+  menuIdInt = qGisInterface->addMenu("&Gps", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("Import GPS Data", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Tools");
+  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Gps");
   toolBarPointer->setLabel("Import GPS Data");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
