@@ -548,7 +548,11 @@ void QgsVectorLayer::table()
     // display the attribute table
     QApplication::setOverrideCursor(Qt::waitCursor);
     dataProvider->reset();
-    int numFields = dataProvider->fieldCount();
+
+    QgsFeature *fet;
+    fet = dataProvider->getNextFeature(true);
+    std::vector < QgsFeatureAttribute > attributes = fet->attributeMap();
+    int numFields = attributes.size();
     tabledisplay = new QgsAttributeTableDisplay(this);
     connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
     tabledisplay->table()->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
@@ -558,13 +562,13 @@ void QgsVectorLayer::table()
     // set up the column headers
     QHeader *colHeader = tabledisplay->table()->horizontalHeader();
     colHeader->setLabel(0, "id"); //label for the id-column
-    std::vector < QgsField > fields = dataProvider->fields();
-    //for (int h = 0; h < numFields; h++) {
+
     for (int h = 1; h <= numFields; h++)
     {
-      colHeader->setLabel(h, fields[h - 1].name());
+	    colHeader->setLabel(h, attributes[h - 1].fieldName());
     }
-    QgsFeature *fet;
+
+    dataProvider->reset();
     while ((fet = dataProvider->getNextFeature(true)))
     {
       if(mDeleted.find(fet->featureId())!=mDeleted.end())
@@ -576,6 +580,11 @@ void QgsVectorLayer::table()
       tabledisplay->table()->setText(row, 0, QString::number(fet->featureId()));
       tabledisplay->table()->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
       std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+
+#ifdef QGISDEBUG
+      
+#endif
+
       for (int i = 0; i < attr.size(); i++)
       {
         // get the field values
