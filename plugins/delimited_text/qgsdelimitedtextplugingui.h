@@ -30,7 +30,7 @@ class QgsDelimitedTextPluginGui : public QgsDelimitedTextPluginGuiBase
     void pbnOK_clicked();
     void updateFieldLists();
     void getOpenFileName();
-    void enableBrowseButton(const QString &);
+    void enableButtons();
     void help();
 
   private:

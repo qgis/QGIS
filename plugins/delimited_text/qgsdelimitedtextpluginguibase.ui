@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>398</height>
+            <width>577</width>
+            <height>516</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -37,7 +37,7 @@
                 <string>Cancel</string>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="0" rowspan="6" colspan="1">
+        <widget class="QLabel" row="0" column="0" rowspan="8" colspan="2">
             <property name="name">
                 <cstring>pixmapLabel1</cstring>
             </property>
@@ -48,7 +48,7 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="5" column="3">
+        <widget class="QLayoutWidget" row="7" column="2">
             <property name="name">
                 <cstring>layout5</cstring>
             </property>
@@ -143,7 +143,21 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="4" column="3">
+        <widget class="Line" row="1" column="1" rowspan="7" colspan="1">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>VLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="5" column="2">
             <property name="name">
                 <cstring>layout6</cstring>
             </property>
@@ -225,16 +239,47 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTextEdit" row="1" column="3">
+        <widget class="QGroupBox" row="6" column="2">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Sample text</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QTextEdit" row="0" column="0">
+                    <property name="name">
+                        <cstring>txtSample</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <family>Courier New</family>
+                        </font>
+                    </property>
+                    <property name="textFormat">
+                        <enum>PlainText</enum>
+                    </property>
+                    <property name="wordWrap">
+                        <enum>NoWrap</enum>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QTextEdit" row="2" column="2">
             <property name="name">
                 <cstring>teInstructions</cstring>
             </property>
             <property name="text">
                 <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:18pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select the file containing delimited text with lat/lon coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
-&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimeter box to specify what the delimeter is for your file (e.g. space, commar or tab). Note this box accepts regex entries so use \t for tab and so on. After choosing a delimeter, press the parse button to see what field names have been detected in your file.&lt;/p&gt;
-&lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:16pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
             </property>
@@ -245,27 +290,13 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="Line" row="0" column="1" rowspan="6" colspan="1">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>VLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="2" rowspan="1" colspan="2">
+        <widget class="QLabel" row="0" column="2" rowspan="2" colspan="1">
             <property name="name">
                 <cstring>txtHeading</cstring>
             </property>
             <property name="font">
                 <font>
-                    <pointsize>24</pointsize>
+                    <pointsize>20</pointsize>
                     <bold>1</bold>
                 </font>
             </property>
@@ -276,7 +307,7 @@
                 <set>AlignCenter</set>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="3" column="3">
+        <widget class="QLayoutWidget" row="3" column="2">
             <property name="name">
                 <cstring>layout3</cstring>
             </property>
@@ -311,7 +342,7 @@
                         <cstring>btnBrowseForFile</cstring>
                     </property>
                     <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                     </property>
                     <property name="maximumSize">
                         <size>
@@ -331,7 +362,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="3">
+        <widget class="QLayoutWidget" row="4" column="2">
             <property name="name">
                 <cstring>layout5</cstring>
             </property>
