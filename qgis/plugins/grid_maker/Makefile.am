@@ -68,17 +68,10 @@ libgridmakerplugin_la_LDFLAGS = -avoid-version -module
 ##
 
 gridmaker_SOURCES = main.cpp \
-	graticulecreator.cpp \
-	graticulecreator.h \
-	utils.c \
-	shpopen.c \
-	dbfopen.c \
-	shapefile.h \
-	plugingui.cpp \
 	pluginguibase.cpp \
 	$(standalone_MOC) 
 
-gridmaker_LDADD = $(QT_LDADD) 
+gridmaker_LDADD = $(QT_LDADD) libgridmakerplugin.la
 gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
 
 standalone_MOC = plugingui.moc.cpp \
