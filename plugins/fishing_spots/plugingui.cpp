@@ -17,6 +17,9 @@
 #include <qlineedit.h>
 #include <qtextedit.h>
 #include <qmessagebox.h>
+#include <qtabwidget.h>
+#include <qwidget.h>
+#include <qstring.h>
 //standard includes
 #include <iostream>
 #include <assert.h>
@@ -24,12 +27,14 @@
 PluginGui::PluginGui() : PluginGuiBase()
 {
   
+  tabMain->removePage(tabRegex);
 }
 
 PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : PluginGuiBase( parent, name, modal, fl )
 {
    
+  tabMain->removePage(tabRegex);
 }  
 PluginGui::~PluginGui()
 {
@@ -294,8 +299,13 @@ void PluginGui::requestGetFinished(int id)
       int myLastPosInt=0; //for keeping track of where we have searched up to within the record
       
       // now extract the location name
+      
       myLastPosInt = myLabelQRegExp.search(myRecordQString, myLastPosInt);
-      QString myLabelQString = myRecordQString.mid(myLastPosInt+3,myLabelQRegExp.matchedLength()-4); //+3 to skip the <p> tag, -4 that and newline
+      QString myLabelQString = myRecordQString.mid(myLastPosInt,myLabelQRegExp.matchedLength());
+      myLabelQString.replace("<P> ","");
+      myLabelQString.replace("\n","");
+      std::cerr << "\t label match from " << myLastPosInt << " : " << myLabelQRegExp.matchedLength() << std::endl; 
+      myLastPosInt += myLabelQRegExp.matchedLength();
       
       // now extract the lat
       
@@ -303,17 +313,32 @@ void PluginGui::requestGetFinished(int id)
       QString myLatitudeQString = myRecordQString.mid(myLastPosInt,myLatitudeQRegExp.matchedLength()); 
       myLatitudeQString.replace("&#176; ",","); //replace the html degree symbol with a comma
       myLatitudeQString.replace("'",""); //replace the minutes symbol with nothing
+      myLatitudeQString.replace("\n","");
+      QStringList myQStringList = QStringList::split(QString(","),myLatitudeQString);
+      float myDegreesFloat = myQStringList[0].toFloat();
+      float myDecimalMinutesFloat = myQStringList[1].toFloat();
+      float myLatitudeFloat = myDegreesFloat + (myDecimalMinutesFloat/60); //convert from degrees and decimal minutes to decimal degrees
+      std::cerr << "\t long match from " << myLastPosInt << " : " << myLatitudeQRegExp.matchedLength() << std::endl; 
+      myLastPosInt += myLatitudeQRegExp.matchedLength();
+      
       // now extract the long
       
       myLastPosInt = myLongitudeQRegExp.search(myRecordQString, myLastPosInt);
       QString myLongitudeQString = myRecordQString.mid(myLastPosInt,myLongitudeQRegExp.matchedLength()); 
       myLongitudeQString.replace("&#176; ",","); //replace the html degree symbol with a comma
       myLongitudeQString.replace("'",""); //replace the minutes symbol with nothing
+      myLongitudeQString.replace("\n","");
+      myQStringList = QStringList::split(QString(","),myLongitudeQString);
+      myDegreesFloat = myQStringList[0].toFloat();
+      myDecimalMinutesFloat = myQStringList[1].toFloat();
+      float myLongitudeFloat = myDegreesFloat + (myDecimalMinutesFloat/60); //convert from degrees and decimal minutes to decimal degrees
+      std::cerr << "\t lat match from " << myLastPosInt << " : " << myLongitudeQRegExp.matchedLength() << std::endl; 
+      myLastPosInt += myLongitudeQRegExp.matchedLength();
       
       // Show some info to stdout
 
-      teResults->append( myLabelQString + ", " + myLatitudeQString  + ", " + myLongitudeQString + "\n");;
-      //std::cerr << myLabelQString << " :: " << myLatitudeQString << " :: " << myLongitudeQString << std::endl;
+      teResults->append( myLabelQString + ", " + QString::number(myLatitudeFloat)  + ", " + QString::number(myLongitudeFloat) + "\n");;
+      std::cerr << myLabelQString << " :: " << myLatitudeQString << " :: " << myLongitudeQString << std::endl;
       //std::cerr << myRecordQString << std::endl;
     }
   }
