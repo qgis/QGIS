@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>479</width>
-            <height>296</height>
+            <height>363</height>
         </rect>
     </property>
     <property name="caption">
@@ -177,6 +177,71 @@
                                 </property>
                                 <property name="text">
                                     <string>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>WordBreak|AlignVCenter</set>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QGroupBox" row="2" column="0">
+                        <property name="name">
+                            <cstring>groupBox5</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="title">
+                            <string>SVG Options</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel1_7</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>SVG oversampling factor</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox" row="0" column="1">
+                                <property name="name">
+                                    <cstring>spbSVGOversampling</cstring>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                            </widget>
+                            <spacer row="0" column="2">
+                                <property name="name">
+                                    <cstring>spacer2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>180</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>textLabel1_5_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</string>
                                 </property>
                                 <property name="alignment">
                                     <set>WordBreak|AlignVCenter</set>

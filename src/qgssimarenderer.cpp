@@ -19,6 +19,7 @@
 
 #include "qgssimarenderer.h"
 #include "qgssimadialog.h"
+#include "qgssvgcache.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsvectorlayer.h"
 #include "qgsmarkersymbol.h"
@@ -68,12 +69,15 @@ void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, d
     QgsMarkerSymbol* ms=dynamic_cast<QgsMarkerSymbol*>(mItem->getSymbol());
     if(ms&&pic)
     {
-	pic->load(ms->picture(),"svg");
-	(*scalefactor)=ms->scaleFactor();
+        QPainter painter(pic);
+	painter.drawPixmap(0, 0, QgsSVGCache::instance().
+			   getPixmap(ms->picture(), ms->scaleFactor()));
+	(*scalefactor) = 1;
+        //pic->load(ms->picture(),"svg");
+	//(*scalefactor)=ms->scaleFactor();
 	if(selected)
 	{
 	    QRect bound=pic->boundingRect();
-	    QPainter painter(pic);
 	    painter.setBrush(QColor(255,255,0));
 	    painter.drawRect(0,0,bound.width(),bound.height());
 	}

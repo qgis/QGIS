@@ -88,6 +88,7 @@ headers =		qgis.h					\
 			qgssimarenderer.h			\
 			qgssimadialog.h				\
 			qgssisydialog.h				\
+			qgssvgcache.h				\
 			qgssymbol.h				\
 			qgssymbologyutils.h			\
 			qgsvectorlayer.h			\
@@ -232,6 +233,7 @@ qgis_SOURCES =  main.cpp			\
 		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
+		qgssvgcache.cpp			\
 		qgssymbol.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsvectorlayer.cpp		\

@@ -9,6 +9,9 @@
 #include <qsettings.h>
 #include <qfiledialog.h>
 
+#include "qgssvgcache.h"
+
+
 void QgsOptionsBase::init()
 {
     // read the current browser and set it
@@ -33,6 +36,8 @@ void QgsOptionsBase::saveOptions()
  settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
  settings.writeEntry("/qgis/theme",cmbTheme->currentText());
  settings.writeEntry("/qgis/map/updateThreshold", spinBoxUpdateThreshold->value());
+ QgsSVGCache::instance().setOversampling(spbSVGOversampling->value());
+ settings.writeEntry("/qgis/svgoversampling", spbSVGOversampling->value());
  accept();
 }
 
