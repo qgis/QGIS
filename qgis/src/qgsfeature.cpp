@@ -17,7 +17,6 @@ email                : sherman at mrcc.com
 #include "qgsfeature.h"
 #include "qgsattributedialog.h"
 #include "qgsrect.h"
-#include <geos.h>
 #include <iostream>
 #include <cfloat>
 
@@ -891,4 +890,210 @@ QgsRect QgsFeature::boundingBox() const
     {
 	return QgsRect(0,0,0,0);
     }
+}
+
+geos::Geometry* QgsFeature::geosGeometry() const
+{
+    if(!geometry)
+    {
+	return 0;
+    }
+
+#ifdef QGISDEBUG
+    qWarning("In QgsFeature::geosGeometry()");
+#endif
+	
+    double *x;
+    double *y;
+    int *nPoints;
+    int *numRings;
+    int *numPolygons;
+    int numPoints;
+    int numLineStrings;
+    int idx, jdx, kdx;
+    unsigned char *ptr;
+    char lsb;
+    QgsPoint pt;
+    QPointArray *pa;
+    int wkbtype;
+
+    geos::GeometryFactory* geometryFactory = new geos::GeometryFactory();
+    wkbtype=(int) geometry[1];
+    switch(wkbtype)
+    {
+	case QGis::WKBPoint:
+	{
+	   x = (double *) (geometry + 5);
+	   y = (double *) (geometry + 5 + sizeof(double));
+	   return geometryFactory->createPoint(geos::Coordinate(*x,*y));
+	}
+	case QGis::WKBMultiPoint:
+	{
+	    std::vector<geos::Geometry*>* points=new std::vector<geos::Geometry*>;
+	    ptr = geometry + 5;
+	    nPoints = (int *) ptr;
+	    ptr = geometry + 1 + 2 * sizeof(int);
+	    for (idx = 0; idx < *nPoints; idx++)
+	    {
+		x = (double *) ptr;
+		ptr += sizeof(double);
+		y = (double *) ptr;
+		ptr += sizeof(double);
+		points->push_back(geometryFactory->createPoint(geos::Coordinate(*x,*y)));
+	    }
+	    return geometryFactory->createMultiPoint(points);
+	}
+	case QGis::WKBLineString:
+	{
+#ifdef QGISDEBUG
+    qWarning("Linestring found");
+#endif
+	    geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
+	    ptr = geometry + 5;
+	    nPoints = (int *) ptr;
+	    ptr = geometry + 1 + 2 * sizeof(int);
+	    for (idx = 0; idx < *nPoints; idx++)
+	    {
+		x = (double *) ptr;
+		ptr += sizeof(double);
+		y = (double *) ptr;
+		ptr += sizeof(double);
+#ifdef QGISDEBUG
+			qWarning("adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
+#endif
+		sequence->add(geos::Coordinate(*x,*y));
+	    }
+	    return geometryFactory->createLineString(sequence); 
+	}
+	case QGis::WKBMultiLineString:
+	{
+	    std::vector<geos::Geometry*>* lines=new std::vector<geos::Geometry*>;
+	    numLineStrings = (int) (geometry[5]);
+	    ptr = geometry + 9;
+	    for (jdx = 0; jdx < numLineStrings; jdx++)
+	    {
+		geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
+		// each of these is a wbklinestring so must handle as such
+		lsb = *ptr;
+		ptr += 5;   // skip type since we know its 2
+		nPoints = (int *) ptr;
+		ptr += sizeof(int);
+		for (idx = 0; idx < *nPoints; idx++)
+		{
+		    x = (double *) ptr;
+		    ptr += sizeof(double);
+		    y = (double *) ptr;
+		    ptr += sizeof(double);
+		    sequence->add(geos::Coordinate(*x,*y));
+		}
+		lines->push_back(geometryFactory->createLineString(sequence));
+	    }
+	    return geometryFactory->createMultiLineString(lines);
+	}
+	case QGis::WKBPolygon: 
+	{
+#ifdef QGISDEBUG
+    qWarning("Polygon found");
+#endif
+	    // get number of rings in the polygon
+	    numRings = (int *) (geometry + 1 + sizeof(int));
+	    ptr = geometry + 1 + 2 * sizeof(int);
+	    
+	    geos::LinearRing* outer=0;
+	    std::vector<geos::Geometry*>* inner=new std::vector<geos::Geometry*>;
+
+	    for (idx = 0; idx < *numRings; idx++)
+	    {
+#ifdef QGISDEBUG
+    qWarning("Ring nr: "+QString::number(idx));
+#endif		
+		geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
+		// get number of points in the ring
+		nPoints = (int *) ptr;
+		ptr += 4;
+		for (jdx = 0; jdx < *nPoints; jdx++)
+		{
+		    // add points to a point array for drawing the polygon
+		    x = (double *) ptr;
+		    ptr += sizeof(double);
+		    y = (double *) ptr;
+		    ptr += sizeof(double);
+		    sequence->add(geos::Coordinate(*x,*y));
+		}
+		geos::LinearRing* ring=geometryFactory->createLinearRing(sequence);
+		if(idx==0)
+		{
+		    outer=ring;
+		}
+		else
+		{
+		    inner->push_back(ring);
+		}
+	    }
+	    return geometryFactory->createPolygon(outer,inner);
+	}
+	
+	case QGis::WKBMultiPolygon:
+	{
+#ifdef QGISDEBUG
+	    qWarning("Multipolygon found");
+#endif
+	    std::vector<geos::Geometry *> *polygons=new std::vector<geos::Geometry *>;
+	    // get the number of polygons
+	    ptr = geometry + 5;
+	    numPolygons = (int *) ptr;
+	    ptr = geometry +9;
+	    for (kdx = 0; kdx < *numPolygons; kdx++)
+	    {
+#ifdef QGISDEBUG
+		//qWarning("Polygon nr: "+QString::number(kdx));
+#endif
+		geos::LinearRing* outer=0;
+		std::vector<geos::Geometry*>* inner=new std::vector<geos::Geometry*>;
+
+		//skip the endian and feature type info and
+		// get number of rings in the polygon
+		ptr += 5;
+		numRings = (int *) ptr;
+		ptr += 4;
+		for (idx = 0; idx < *numRings; idx++)
+		{
+#ifdef QGISDEBUG
+		    //qWarning("Ring nr: "+QString::number(idx));
+#endif
+		    geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
+		    // get number of points in the ring
+		    nPoints = (int *) ptr;
+		    ptr += 4;
+		    for (jdx = 0; jdx < *nPoints; jdx++)
+		    {
+			// add points to a point array for drawing the polygon
+			x = (double *) ptr;
+			ptr += sizeof(double);
+			y = (double *) ptr;
+			ptr += sizeof(double);
+#ifdef QGISDEBUG
+			//qWarning("adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
+#endif
+			sequence->add(geos::Coordinate(*x,*y));
+		    }
+		    geos::LinearRing* ring=geometryFactory->createLinearRing(sequence);
+		    if(idx==0)
+		    {
+			outer=ring;
+		    }
+		    else
+		    {
+			inner->push_back(ring);
+		    }
+		}
+	    
+		polygons->push_back(geometryFactory->createPolygon(outer,inner));
+	    }
+	    return (geometryFactory->createMultiPolygon(polygons));
+	}
+	default:
+	    return 0;
+    }
+    
 }
