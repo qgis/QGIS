@@ -7,6 +7,7 @@
 #include "qgslinestylewidget.h"
 #include "qgsfillstylewidget.h"
 #include "qgspointstylewidget.h"
+#include "qgsvectorsymbologywidget.h"
 static const char *legend_pixmap[] = {
     "22 22 8 1",
     "  c Gray100",
@@ -89,6 +90,8 @@ QgsDesignerWidgets::QgsDesignerWidgets()
         "", "A widget that lets you select a fill style.", "A widget that lets you select a fill style"));
    mEntriesVector.append(Entry("QgsPointStyleWidget", "qgspointstylewidget.h",
         "", "A widget that lets you select a point style.", "A widget that lets you select a point style"));
+   mEntriesVector.append(Entry("QgsVectorSymbologyWidget", "QgsVectorSymbologyWidget",
+        "", "A widget that lets you select vector symbology.", "A widget that lets you select vector symbology"));
 }
 
 
@@ -105,6 +108,8 @@ QWidget* QgsDesignerWidgets::create(const QString &key,
         return new QgsFillStyleWidget ( parent, name );
     else if ( key == "QgsPointStyleWidget" )
         return new QgsPointStyleWidget ( parent, name );
+    else if ( key == "QgsVectorSymbologyWidget" )
+        return new QgsVectorSymbologyWidget( parent, name );
     return 0;
 }
 
