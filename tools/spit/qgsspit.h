@@ -35,7 +35,6 @@ class QgsSpit :public QgsSpitBase{
   void removeAllFiles();
   void useDefaultSrid();
   void useDefaultGeom();
-  void changeEditAndRemove(int);
   void helpInfo();
   void import();
 

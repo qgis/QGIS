@@ -17,8 +17,6 @@
 
 
 #include <libpq++.h>
-#include <iostream>
-#include <sstream>
 #include <qsettings.h>
 #include <qlistbox.h>
 #include <qtable.h>
@@ -37,6 +35,19 @@
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
+
+// Qt implementation of alignment() + changed the numeric types to be shown on the left as well
+int QTableItem::alignment() const
+{
+    bool num;
+    bool ok1 = FALSE, ok2 = FALSE;
+    (void)txt.toInt( &ok1 );
+    if ( !ok1 )
+        (void)txt.toDouble( &ok2 );
+    num = ok1 || ok2;
+
+    return ( num ? AlignLeft : AlignLeft ) | AlignVCenter;
+}
 
 QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   populateConnectionList();
@@ -72,7 +83,6 @@ void QgsSpit::populateConnectionList(){
 		cmbConnections->insertItem(*it);
 		++it;
 	}
-  if(cmbConnections->count()==0) changeEditAndRemove(0);
 }
 
 void QgsSpit::newConnection()
@@ -82,7 +92,6 @@ void QgsSpit::newConnection()
 	if (con->exec()) {
 		populateConnectionList();
 	}
-  if(cmbConnections->count()!=0) changeEditAndRemove(1);
 }
 
 void QgsSpit::editConnection()
@@ -107,7 +116,6 @@ void QgsSpit::removeConnection()
 		settings.removeEntry(key + "/save");
 
 		cmbConnections->removeItem(cmbConnections->currentItem());
-    if(cmbConnections->count()==0) changeEditAndRemove(0);
 	}
 }
 
@@ -135,12 +143,9 @@ void QgsSpit::addFile()
         tblShapefiles->insertRows(row);
         tblShapefiles->setText(row, 0, *it);
         tblShapefiles->setText(row, 1, file->getFeatureClass());
-        std::stringstream temp;
-        int count = file->getFeatureCount();
-        temp << count;
-        tblShapefiles->setText(row, 2, temp.str());
+        tblShapefiles->setText(row, 2, QString("%1").arg(file->getFeatureCount()));        
         tblShapefiles->setText(row, 3, file->getTable());
-        total_features += count;
+        total_features += file->getFeatureCount();
       }
       else{
         error += *it + "\n";
@@ -218,17 +223,6 @@ void QgsSpit::useDefaultGeom(){
   }
 }
 
-void QgsSpit::changeEditAndRemove(int mode){
-  if(mode==0){
-    btnEdit->setEnabled(false);
-    btnRemove->setEnabled(false);
-  }
-  else if(mode==1){
-    btnEdit->setEnabled(true);
-    btnRemove->setEnabled(true);
-  }
-}
-
 void QgsSpit::helpInfo(){
   QString message = "General Interface Help:\n\n";
   QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
@@ -293,10 +287,8 @@ void QgsSpit::import(){
             pd->ExecTuplesOk(query);            
           }
           
-          std::stringstream temp;
-          temp << spinSrid->value();
           if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), txtGeomName->text(),
-            QString(temp.str()), pd, pro, finished)){
+            QString("%1").arg(spinSrid->value()), pd, pro, finished)){
             if(!finished){
               pro->close();
               QMessageBox::warning(this, "Import Shapefiles",
