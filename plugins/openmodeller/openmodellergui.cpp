@@ -75,11 +75,6 @@
   //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
   
-  
-  
-  
-  
-  
 }
 
     OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -307,7 +302,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
           }
         
 	}
-	myScrollView->addChild(myLayoutWidget,0,0);		
+	myScrollView->addChild(myLayoutWidget,0,0);	
+	myScrollView->setResizePolicy(QScrollView::AutoOneFit);	
       }     
       //Exit loop because we have found the correct algorithm
       break;      
