@@ -39,6 +39,7 @@ class QSocket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
+class QgsMapLayerRegistry;
 
 #include "qgisappbase.uic.h"
 #include "qgisiface.h"
@@ -122,7 +123,7 @@ public:
 
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage(QString, QPixmap *);
-    QgsMapCanvas * getMapCanvas() { return mapCanvas; };
+    QgsMapCanvas * getMapCanvas() { return mMapCanvas; };
     //! Set theme (icons)
     void setTheme(QString themeName="default");
 private:
@@ -204,7 +205,7 @@ private slots:
     //! plugin manager
     void actionPluginManager_activated();
     //! plugin loader
-    void loadPlugin(QString name, QString description, QString fullPath);
+    void loadPlugin(QString name, QString description, QString mFullPath);
     //! Add a plugin menu to the main Plugins menu
     int addPluginMenu(QString menuText, QPopupMenu *menu);
     //! Save window state
@@ -261,48 +262,51 @@ public slots:
     void showExtents(QString theExtents);
     void showStatusMessage(QString theMessage);
 private:
+    //! A central registry that keeps track of all loaded layers.
+    QgsMapLayerRegistry * mMapLayerRegistry;
     //! Widget that will live on the statusbar to display scale
     QLabel * mScaleLabel;
     //! Widget that will live in the statusbar to display coords
     QLabel * mCoordsLabel;
     //! Widget that will live in the statusbar to show progress of operations
     QProgressBar * mProgressBar;
-    //! Overview label where the map overview is shown
-    QLabel * mOverviewLabel;
     //! Popup menu
-    QPopupMenu * popMenu;
+    QPopupMenu * mPopupMenu;
     //! Top level plugin menu
-    QPopupMenu *pluginMenu;
+    QPopupMenu *mPluginMenu;
     //! Legend list view control
-    QgsLegendView *legendView;
+    //doesnt see to be used...(TS)
+    //QgsLegendView *mLegendView;
     //! Map canvas
-    QgsMapCanvas *mapCanvas;
+    QgsMapCanvas *mMapCanvas;
+    //! Overview canvas where the map overview is shown
+    QgsMapCanvas * mOverviewCanvas;
     //! Table of contents (legend) for the map
-    QgsLegend *mapLegend;
-    QCursor *mapCursor;
+    QgsLegend *mMapLegend;
+    QCursor *mMapCursor;
     //! scale factor
-    double scaleFactor;
+    double mScaleFactor;
     //! Current map window extent in real-world coordinates
-    QRect *mapWindow;
+    QRect *mMapWindow;
     //! Current map tool
-    int mapTool;
-    QCursor *cursorZoomIn;
-    QString startupPath;
+    int mMapTool;
+    //QCursor *mCursorZoomIn; //doesnt seem to be used anymore (TS)
+    QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
-    QString fullPath;
-    QgisIface *qgisInterface;
-    QSocket *socket;
-    QString versionMessage;
+    QString mFullPathName;
+    QgisIface *mQgisInterface;
+    QSocket *mSocket;
+    QString mVersionMessage;
     friend class QgisIface;
-    QgsProviderRegistry *providerRegistry;
+    QgsProviderRegistry *mProviderRegistry;
     //! application directory
-    QString appDir;
+    QString mAppDir;
     //! help viewer
-    QgsHelpViewer *helpViewer;
+    QgsHelpViewer *mHelpViewer;
     /** Flag to track whether the user should be prompted to save the project
     * before opening/creating a new one or exiting the application
     */
-    bool projectIsDirty;
+    bool mProjectIsDirtyFlag;
     //! menu map (key is name, value is menu id)
     std::map<QString, int>mMenuMapByName;
     //! menu map (key is menu id, value is name)

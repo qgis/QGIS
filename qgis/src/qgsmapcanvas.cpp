@@ -1070,13 +1070,15 @@ void QgsMapCanvas::freeze(bool frz)
 
 
 
-void QgsMapCanvas::remove(QString const & key)
+void QgsMapCanvas::remove(QString key)
 {
     // XXX As a safety precaution, shouldn't we check to see if the 'key' is
     // XXX in 'layers'?  Theoretically it should be ok to skip this check since
     // XXX this should always be called with correct keys.
 
-    delete mCanvasProperties->layers[key];   // first delete the map layer itself
+    //We no longer delete the layer her - deletiong of layers is now managed
+    //by the MapLayerRegistry. All we do now is remove any local reference to this layer.
+    //delete mCanvasProperties->layers[key];   // first delete the map layer itself
 
     mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
 
