@@ -16,13 +16,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #include <cfloat>
 #include <iostream>
 #include <limits>
 #include <math.h>
 
-#include <qapp.h>
+// Changed #include <qapp.h> to <qapplication.h>. Apparently some
+// debian distros do not include the qapp.h wrapper and the compilation
+// fails. [gsherman]
+#include <qapplication.h>
+
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstringlist.h>
