@@ -1,7 +1,14 @@
 QGIS Change Log
-ChangeLog,v 1.92 2004/05/25 15:33:07 larsl Exp
+ChangeLog,v 1.93 2004/05/25 17:18:41 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-25 [ts] 0.2.0devel35
+Disable overview widget for release. Minor bugfix in rasterlayer picker up by
+Larsl which is only encountered bu i8n users. Miscellaneous other fixes
+including proper rotation support for north arrows in all 4 corners of
+display, inproved refresh behaviour of n-arrow and copyright plugin, better
+state hadnling for copyright plugin.
 
 2004-05-25 [larsl] 0.2.0devel34
 ** Updated all ts files and translated new messages in the swedish file
