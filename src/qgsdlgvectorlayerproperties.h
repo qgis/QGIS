@@ -33,7 +33,7 @@ class QgsLabelDialog;
 class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   Q_OBJECT
   public:
-  QgsDlgVectorLayerProperties(QgsVectorLayer *lyr =0,QWidget *parent=0, const char *name=0);
+  QgsDlgVectorLayerProperties(QgsVectorLayer *lyr =0,QWidget *parent=0, const char *name=0, bool modal=true);
   ~QgsDlgVectorLayerProperties();
   /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
   void setLegendType(QString type);
