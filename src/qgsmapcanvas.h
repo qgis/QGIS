@@ -160,7 +160,7 @@ public slots:
     void render(QPaintDevice * theQPaintDevice=0);
 
     //! Save the convtents of the map canvas to disk as an image
-    void saveAsImage(QString theFileName,QPixmap * QPixmap=0 );
+    void saveAsImage(QString theFileName,QPixmap * QPixmap=0, QString="PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();

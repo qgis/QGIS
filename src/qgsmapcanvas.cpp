@@ -477,8 +477,8 @@ void QgsMapCanvas::currentScale(int thePrecision)
 
 
 
-
-void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap)
+//the format defaults to "PNG" if not specified
+void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QString theFormat)
 {
   //
   //check if the optional QPaintDevice was supplied
@@ -486,11 +486,11 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap)
   if (theQPixmap != NULL)
   {
     render(theQPixmap);
-    theQPixmap->save(theFileName,"PNG");
+    theQPixmap->save(theFileName,theFormat);
   }
   else //use the map view
   {
-    imp_->pmCanvas->save(theFileName,"PNG");
+    imp_->pmCanvas->save(theFileName,theFormat);
   }
 } // saveAsImage
 
