@@ -18,7 +18,7 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qfile.h>
-#include "waypointtoshape.h"
+#include "graticulecreator.h"
 //standard includes
 #include <iostream>
 

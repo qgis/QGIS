@@ -32,8 +32,8 @@ bin_PROGRAMS = gridmaker
 ##
 
 libgridmakerplugin_la_SOURCES = plugin.cpp \
-	waypointtoshape.cpp \
-	waypointtoshape.h \
+	graticulecreator.cpp \
+	graticulecreator.h \
 	utils.c \
 	shpopen.c \
 	dbfopen.c \
@@ -68,8 +68,8 @@ libgridmakerplugin_la_LDFLAGS = -avoid-version -module
 ##
 
 gridmaker_SOURCES = main.cpp \
-	waypointtoshape.cpp \
-	waypointtoshape.h \
+	graticulecreator.cpp \
+	graticulecreator.h \
 	utils.c \
 	shpopen.c \
 	dbfopen.c \
