@@ -36,9 +36,9 @@ class QString;
 class QgsCoordinateTransform{
  public:
 
-    QgsMapToPixel(QString theSourceWKT, QString theDestWKT  );
+    QgsCoordinateTransform(QString theSourceWKT, QString theDestWKT  );
      //! destructor
-    ~QgsMapToPixel();
+    ~QgsCoordinateTransform();
     
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * @param p Point to transform
