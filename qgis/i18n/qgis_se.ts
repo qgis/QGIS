@@ -89,7 +89,13 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Välj GPS-dumpfilen som du vill konvertera till en shapefile så gör detta plugin jobbet åt dig! &lt;/p&gt;
+&lt;p&gt;Använd det minimala tidsgapet för att ange vilket tidsintervall som ska användas för att bestämma när en ny detalj påbörjas. &lt;/p&gt;
+&lt;p&gt;Använd det minimala avståndsgapet för att ange vilket avståndsintervall som ska användas för att bestämma när en ny detalj påbörjas. &lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -399,11 +405,11 @@
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation type="unfinished"></translation>
+        <translation>Sparade kartbild till</translation>
     </message>
     <message>
         <source>QGIS - Changes in CVS Since Last Release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - Ändringar i CVS Sedan Senaste Utgåvan</translation>
     </message>
 </context>
 <context>
