@@ -2690,6 +2690,8 @@ void QgisApp::showExtents(QgsRect theExtents)
 {
   // update the statusbar with the current extents
   statusBar()->message(QString(tr("Extents: ")) + theExtents.stringRep(2));
+  // set the extents of the overview to match the mapcanvas
+  mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
   // Update the extent rectangle in the overview map
   QgsPoint origin(0,0);
   // create the new acetate object
@@ -2867,6 +2869,8 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
 
   mOverviewCanvas->render();
   mOverviewCanvas->zoomFullExtent();
+  // set the extents of the overview to match the mapcanvas
+  mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
   mOverviewCanvas->refresh();
 
 }
