@@ -49,9 +49,6 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
      void addAttribute();
      void startEditing();
      void stopEditing();
- signals:
-	/**Is emitted before the widget deletes itself*/
-	void deleted();
 };
 
 #endif

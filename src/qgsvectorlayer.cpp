@@ -655,8 +655,8 @@ void QgsVectorLayer::table()
       delete fet;
     }
 
-    //also consider the not commited features //temporarily disabled
-    /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    //also consider the not commited features
+    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       //id-field
       tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
@@ -668,7 +668,7 @@ void QgsVectorLayer::table()
         tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
       }
       row++;
-      }*/
+    }
 
     // reset the pointer to start of fetabledisplayures so
     // subsequent reads will not fail
@@ -2390,4 +2390,67 @@ void QgsVectorLayer::saveAsShapefile()
   // call the dataproviders saveAsShapefile method
   dataProvider->saveAsShapefile();
   //  QMessageBox::information(0,"Save As Shapefile", "Someday...");
+}
+
+bool QgsVectorLayer::commitAttributeChanges(const std::set<QString>& deleted,
+					    const std::map<QString,QString>& added,
+					    std::map<int,std::map<QString,QString> >& changed)
+{
+    bool returnvalue=true;
+
+    if(dataProvider)
+    {
+	//delete attributes in all not commited features
+	for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+	{
+	    for(std::set<QString>::const_iterator it=deleted.begin();it!=deleted.end();++it)
+	    {
+		(*iter)->deleteAttribute(*it);
+	    }
+	}
+	//and then in the provider
+	if(!dataProvider->deleteAttributes(deleted))
+	{
+	    returnvalue=false;
+	}
+
+	//add attributes in all not commited features
+	for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+	{
+	    for(std::map<QString,QString>::const_iterator it=added.begin();it!=added.end();++it)
+	    {
+		(*iter)->addAttribute(it->first);
+	    }
+	}
+	//and then in the provider
+	if(!dataProvider->addAttributes(added))
+	{
+	    returnvalue=false;
+	}
+
+	//change values of the not commited features
+	for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+	{
+	    std::map<int,std::map<QString,QString> >::iterator it=changed.find((*iter)->featureId());
+	    if(it!=changed.end())
+	    {
+		for(std::map<QString,QString>::const_iterator iterat=it->second.begin();iterat!=it->second.end();++iterat)
+		{
+		    (*iter)->changeAttributeValue(iterat->first,iterat->second);
+		}
+		changed.erase(it);
+	    }
+	}
+
+	//and then those of the commited ones
+	if(!dataProvider->changeAttributeValues(changed))
+	{
+	    returnvalue=false;
+	}
+    }
+    else
+    {
+	returnvalue=false;
+    }
+    return returnvalue;
 }
