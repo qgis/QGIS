@@ -21,12 +21,14 @@
 #include <iostream>
 #include <limits>
 #include <list>
-#include <string>
 #include <map>
+#include <stack>
+#include <string>
 #include <vector>
 
-#include <qdom.h>
+#include <expat.h>
 #include <qstring.h>
+#include <qtextstream.h>
 
 #include "../../src/qgsrect.h"
 
@@ -36,8 +38,7 @@
 */
 class GPSObject {
  public:
-  virtual bool parseNode(const QDomNode& node);
-  virtual void fillElement(QDomElement& elt);
+  virtual void writeXML(QTextStream& stream);
   QString name, cmt, desc, src, url, urlname;
 };
 
@@ -48,8 +49,7 @@ class GPSObject {
 class GPSPoint : public GPSObject {
  public:
   GPSPoint();
-  virtual bool parseNode(const QDomNode& node);
-  virtual void fillElement(QDomElement& elt);
+  virtual void writeXML(QTextStream& stream);
   double lat, lon, ele;
   QString sym;
 };
@@ -60,8 +60,8 @@ class GPSPoint : public GPSObject {
     those classes. */
 class GPSExtended : public GPSObject {
  public:
-  virtual bool parseNode(const QDomNode& node);
-  virtual void fillElement(QDomElement& elt);
+  GPSExtended();
+  virtual void writeXML(QTextStream& stream);
   int number;
   double xMin, xMax, yMin, yMax;
 };
@@ -83,8 +83,7 @@ class Waypoint : public GPSPoint {
  */
 class Route : public GPSExtended {
  public:
-  bool parseNode(const QDomNode& node);
-  void fillElement(QDomElement& elt);
+  virtual void writeXML(QTextStream& stream);
   std::vector<Routepoint> points;
   int id;
 };
@@ -104,8 +103,7 @@ class TrackSegment {
 */
 class Track : public GPSExtended {
  public:
-  bool parseNode(const QDomNode& node);
-  void fillElement(QDomElement& elt);
+  virtual void writeXML(QTextStream& stream);
   std::vector<TrackSegment> segments;
   int id;
 };
@@ -143,28 +141,26 @@ class GPSData {
   /** Returns the number of waypoints in this dataset. */
   int getNumberOfTracks() const;
   
+  /** This function returns an iterator that points to the first waypoint. */
   WaypointIterator waypointsBegin();
-  RouteIterator routesBegin();
-  TrackIterator tracksBegin();
-  WaypointIterator waypointsEnd();
-  RouteIterator routesEnd();
-  TrackIterator tracksEnd();
   
-  /** This function returns the waypoint with ID @c id. If there is no
-      waypoint with that ID an exception will be thrown.
-  */
-  //Waypoint& getWaypoint(int id);
-
-  /** This function returns the route with index @c index. If there is no
-      route with that index an exception will be thrown.
-  */
-  //Route& getRoute(int index);
-
-  /** This function returns the track with index @c index. If there is no
-      track with that index an exception will be thrown.
-  */
-  //Track& getTrack(int index);
-
+  /** This function returns an iterator that points to the first route. */
+  RouteIterator routesBegin();
+  
+  /** This function returns an iterator that points to the first track. */
+  TrackIterator tracksBegin();
+  
+  /** This function returns an iterator that points to the end of the 
+      waypoint list. */
+  WaypointIterator waypointsEnd();
+  
+  /** This function returns an iterator that points to the end of the
+      route list. */
+  RouteIterator routesEnd();
+  
+  /** This function returns an iterator that points to the end of the 
+      track list. */
+  TrackIterator tracksEnd();
   
   /** This function tries to add a new waypoint. An iterator to the new
       waypoint will be returned (it will be waypointsEnd() if the waypoint
@@ -195,14 +191,9 @@ class GPSData {
   /** This function removes the tracks whose IDs are in the list. */
   void removeTracks(std::list<int> const & ids);
   
-  /** This function tries to parse a QDomDocument as a GPX tree. If it
-      succeeds it will fill this GPSData object with the data from the
-      QDomDocument and return true, otherwise it will return false. */
-  bool parseDom(QDomDocument& qdd);
-  
-  /** This function will fill the given QDomDocument with child nodes that
-      represent the data in this GPSData object as a GPX tree. */
-  void fillDom(QDomDocument& qdd);
+  /** This function will write the contents of this GPSData object as XML to
+      the given text stream. */
+  void writeXML(QTextStream& stream);
   
   /** This function returns a pointer to the GPSData object associated with
       the file @c filename. If the file does not exist or can't be parsed,
@@ -227,14 +218,6 @@ class GPSData {
   
  protected:
   
-  /** This function parses a GPX file and places the data it finds in this 
-      object. If any errors are found in the XML tree the function will return
-      false, but it doesn't do a full validity check so some errors could get
-      through. If it succeeds it will return true.
-      @param node The <gpx> node from a QDomDocument
-  */
-  bool parseGPX(QDomNode& node);
-  
   std::list<Waypoint> waypoints;
   std::list<Route> routes;
   std::list<Track> tracks;
@@ -251,5 +234,71 @@ class GPSData {
   static DataMap dataObjects;
   
 };
+
+
+
+class GPXHandler {
+public:
+  
+  GPXHandler(GPSData& data) : mData(data) { }
+  
+  /** This function is called when expat encounters a new start element in 
+      the XML stream. */
+  bool startElement(const XML_Char* qName, const XML_Char** attr);
+  
+  /** This function is called when expat encounters character data in the
+      XML stream. */
+  void characters(const XML_Char* chars, int len);
+  
+  /** This function is called when expat encounters a new end element in
+      the XML stream. */
+  bool endElement(const std::string& qName);
+  
+  // static wrapper functions for the XML handler functions (expat is in C,
+  // it does not know about member functions)
+  static void start(void* data, const XML_Char* el, const XML_Char** attr) {
+    static_cast<GPXHandler*>(data)->startElement(el, attr);
+  }
+  static void end(void* data, const XML_Char* el) {
+    static_cast<GPXHandler*>(data)->endElement(el);
+  }
+  static void chars(void* data, const XML_Char* chars, int len) {
+    static_cast<GPXHandler*>(data)->characters(chars, len);
+  }
+  
+private:
+  
+  enum ParseMode {
+    ParsingDocument,
+    ParsingWaypoint,
+    ParsingRoute,
+    ParsingTrack,
+    ParsingRoutepoint,
+    ParsingTrackSegment,
+    ParsingTrackpoint,
+    ParsingDouble,
+    ParsingInt,
+    ParsingString,
+    ParsingUnknown
+  };
+  
+  /** This is used to keep track of what kind of data we are parsing. */
+  std::stack<ParseMode> parseModes;
+  
+  GPSData& mData;
+  Waypoint mWpt;
+  Route mRte;
+  Track mTrk;
+  Routepoint mRtept;
+  TrackSegment mTrkseg;
+  Trackpoint mTrkpt;
+  GPSObject* mObj;
+  QString* mString;
+  double* mDouble;
+  int* mInt;
+  QString mCharBuffer;
+};
+
+
 
 #endif
