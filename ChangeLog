@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.44 2004/03/31 22:06:51 jobi Exp
+ChangeLog,v 1.45 2004/04/01 12:23:05 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-01 [jobi] 0.1.0devel22
+** Fixed GRASS plugin and provider build
 
 2004-04-01 [jobi] 0.1.0devel21
 ** fixed strange warning: object 'foo.$(OBJEXT)' created both
