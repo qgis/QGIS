@@ -103,11 +103,14 @@ void Plugin::initGui()
  
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
+  //default text to start with
   toolBarPointer->setLabel("Copyright Label");
   mLabelQString = QString("© QGIS 2004");
   mQFont = QFont("time", 12, QFont::Bold);
   mLabelQColor = QColor(Qt::black);
 
+  //default placement to start with
+  mPlacement=tr("Bottom Right");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
   refreshCanvas();
@@ -134,21 +137,9 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
   connect(myPluginGui, SIGNAL(enableCopyrightLabel(bool)), this, SLOT(setEnable(bool)));
   myPluginGui->setText(mLabelQString);
+  myPluginGui->setPlacement(mPlacement);
   myPluginGui->show();
 }
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void Plugin::drawRasterLayer(QString theQString)
-{
-  qGisInterface->addRasterLayer(theQString);
-}
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
-{
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
-}
-
 //! Refresh the map display using the mapcanvas exported via the plugin interface
 void Plugin::refreshCanvas()
 {
@@ -157,67 +148,67 @@ void Plugin::refreshCanvas()
 
 void Plugin::renderLabel()
 { 
-//Large IF statement to enable/disable copyright label
-if (mEnable)
-{
-  //@todo softcode this!myQSimpleText.height()
-  int myRotationInt = 90;
-  QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
-  // Draw a text alabel onto the pixmap 
-  //
-  QPainter myQPainter(myQPixmap);
-  //myQPainter.rotate(-myRotationInt);
-  //could use somthing like next line to draw a pic instead of text
-  //myQPainter.drawImage(-70, 0, myQImage);
-  
-  //hard coded cludge for getting a colorgroup.  Needs to be replaced
-  QButton * myQButton =new QButton();
-  QColorGroup myQColorGroup = myQButton->colorGroup();  
-       
-  QSimpleRichText myQSimpleText(mLabelQString, mQFont);
-  myQSimpleText.setWidth( &myQPainter, (qGisInterface->getMapCanvas()->width()-10) );
-  
-  //Get canvas dimensions
-  int myYOffset = qGisInterface->getMapCanvas()->height();
-  int myXOffset = qGisInterface->getMapCanvas()->width();
-  
-  
-  //Determine placement of label from form combo box
-  if (mPlacement==tr("Bottom Left"))
+  //Large IF statement to enable/disable copyright label
+  if (mEnable)
   {
-    //Define bottom left hand corner start point
-    myYOffset = myYOffset - (myQSimpleText.height()+5);
-    myXOffset = 5;
-  } 
-  else if (mPlacement==tr("Top Left"))
-  {
-    //Define top left hand corner start point
-    myYOffset = 5;
-    myXOffset = 5;
+    //@todo softcode this!myQSimpleText.height()
+    int myRotationInt = 90;
+    QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
+    // Draw a text alabel onto the pixmap 
+    //
+    QPainter myQPainter(myQPixmap);
+    //myQPainter.rotate(-myRotationInt);
+    //could use somthing like next line to draw a pic instead of text
+    //myQPainter.drawImage(-70, 0, myQImage);
+
+    //hard coded cludge for getting a colorgroup.  Needs to be replaced
+    QButton * myQButton =new QButton();
+    QColorGroup myQColorGroup = myQButton->colorGroup();  
+
+    QSimpleRichText myQSimpleText(mLabelQString, mQFont);
+    myQSimpleText.setWidth( &myQPainter, (qGisInterface->getMapCanvas()->width()-10) );
+
+    //Get canvas dimensions
+    int myYOffset = qGisInterface->getMapCanvas()->height();
+    int myXOffset = qGisInterface->getMapCanvas()->width();
+
+
+    //Determine placement of label from form combo box
+    if (mPlacement==tr("Bottom Left"))
+    {
+      //Define bottom left hand corner start point
+      myYOffset = myYOffset - (myQSimpleText.height()+5);
+      myXOffset = 5;
+    } 
+    else if (mPlacement==tr("Top Left"))
+    {
+      //Define top left hand corner start point
+      myYOffset = 5;
+      myXOffset = 5;
+    }
+    else if (mPlacement==tr("Top Right"))
+    {
+      //Define top right hand corner start point
+      myYOffset = 5;
+      myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+    }  
+    else // defaulting to bottom right
+    {
+      //Define bottom right hand corner start point
+      myYOffset = myYOffset - (myQSimpleText.height()+5);
+      myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+    }    
+
+    //Paint label to canvas
+    QRect myRect(myXOffset,myYOffset,myQSimpleText.widthUsed(),myQSimpleText.height());
+    myQSimpleText.draw (&myQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
+
+    //myQPainter.setFont(mQFont);
+    //myQPainter.setPen(mLabelQColor);
+    //myQPainter.drawText(10, myQPixmap->height()-10, mLabelQString);
+
+    //myQPainter.rotate(myRotationInt);
   }
-  else if (mPlacement==tr("Top Right"))
-  {
-    //Define top right hand corner start point
-    myYOffset = 5;
-    myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
-  }  
-  else // defaulting to bottom right
-  {
-    //Define bottom right hand corner start point
-    myYOffset = myYOffset - (myQSimpleText.height()+5);
-    myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
-  }    
-  
-  //Paint label to canvas
-  QRect myRect(myXOffset,myYOffset,myQSimpleText.widthUsed(),myQSimpleText.height());
-  myQSimpleText.draw (&myQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
-  
-  //myQPainter.setFont(mQFont);
-  //myQPainter.setPen(mLabelQColor);
-  //myQPainter.drawText(10, myQPixmap->height()-10, mLabelQString);
-  
-  //myQPainter.rotate(myRotationInt);
-}
 }
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
@@ -232,28 +223,33 @@ void Plugin::unload()
   void Plugin::setFont(QFont theQFont)
   {
     mQFont = theQFont;
+    refreshCanvas();
   }
   //! change the copyright text
   void Plugin::setLabel(QString theLabelQString)
   {
     mLabelQString = theLabelQString;
+    refreshCanvas();
   }
   //! change the copyright text colour
   void Plugin::setColor(QColor theQColor)
   {
     mLabelQColor = theQColor;
+    refreshCanvas();
   }
   
   //! set placement of copyright label
   void Plugin::setPlacement(QString theQString)
   {
     mPlacement = theQString;
+    refreshCanvas();
   }
 
   //! set whether copyright label is enabled
   void Plugin::setEnable(bool theBool)
   {
     mEnable = theBool;
+    refreshCanvas();
   }
 
 
