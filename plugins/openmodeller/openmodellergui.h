@@ -74,6 +74,7 @@ public:
   void pbnDefaultParameters_clicked();
   
 private:
+    OpenModeller * mOpenModeller;
     QString modelNameQString;
     QString localitiesFileNameQString;
     QString coordinateSystemQString;

@@ -63,6 +63,8 @@
     OpenModellerGui::OpenModellerGui()
 : OpenModellerGuiBase()
 {
+  mOpenModeller = new OpenModeller();
+  mOpenModeller->loadAlgorithms();
   getAlgorithmList();
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
@@ -76,6 +78,8 @@
     OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
+  mOpenModeller = new OpenModeller();
+  mOpenModeller->loadAlgorithms();
   getAlgorithmList();
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
@@ -96,10 +100,9 @@ OpenModellerGui::~OpenModellerGui()
 void OpenModellerGui::getAlgorithmList()
 {
 
-  OpenModeller  myOpenModeller;
   // Find out which model algorithm is to be used.
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
-  AlgMetadata **myAlgorithmMetadataArray = myOpenModeller.availableAlgorithms();
+  AlgMetadata **myAlgorithmMetadataArray = mOpenModeller->availableAlgorithms();
   AlgMetadata *myAlgorithmMetadata;
   //loop through the algorithm names adding to the algs combo
   while ( myAlgorithmMetadata = *myAlgorithmMetadataArray++ )
@@ -117,9 +120,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 {  
   std::cout <<"getParameterList called" << std::endl;
 
-  OpenModeller  myOpenModeller;
   // Find out which model algorithm is to be used.
-  AlgMetadata **myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
+  AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
   AlgMetadata *myAlgorithmMetadata;
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
 
@@ -160,7 +162,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
   //mLayout->setColSpacing(3,0);
 
   //reinitialise the metadataarray 
-  myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
+  myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
 
   //Buidling maps for widgets
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
@@ -485,9 +487,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 {
 
-  OpenModeller  myOpenModeller;
   RequestFile myRequestFile;
-  int myResult = myRequestFile.configure( &myOpenModeller, strdup(theParametersFileNameQString));
+  int myResult = myRequestFile.configure( mOpenModeller, strdup(theParametersFileNameQString));
 
   if ( myResult < 0 )
   {
@@ -497,19 +498,19 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   }
 
   //tell oM to use our locally made callback fn
-  myOpenModeller.setMapCallback( mapCallback, progressBar1);
+  mOpenModeller->setMapCallback( mapCallback, progressBar1);
 
-  if ( ! myOpenModeller.run() )
+  if ( ! mOpenModeller->run() )
   {
     QMessageBox::warning( this,
             "openModeller Wizard Error","Error running model!",
-            myOpenModeller.error()
+            mOpenModeller->error()
             );
     return;
   }
 
   // Prepare the output map
-  myOpenModeller.createMap( myOpenModeller.getEnvironment() );
+  mOpenModeller->createMap( mOpenModeller->getEnvironment() );
   //if all went ok, send notification to the parent app that we are finished
   emit drawRasterLayer(outputFileNameQString+QString(".tif"));
 }
@@ -885,8 +886,8 @@ void OpenModellerGui::leLocalitiesFileName_returnPressed()
 
 void OpenModellerGui::cboModelAlgorithm_highlighted( const QString &theModelAlgorithm )
 {
-  OpenModeller  myOpenModeller;
-  AlgMetadata **myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
+  mOpenModeller->loadAlgorithms();
+  AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
   AlgMetadata *myAlgorithmMetadata;
 
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
