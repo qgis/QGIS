@@ -6,7 +6,7 @@ TEMPLATE = app
 LIBS += -L$(PGSQL)/lib -lpq++ -lgdal
 INCLUDEPATH += $(PGSQL)/include
 CONFIG += qt thread debug
-
+DEFINES += PGDB
 # Input
 HEADERS += qgsdbsourceselectbase.ui.h \
            qgisapp.h \
