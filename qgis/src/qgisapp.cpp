@@ -1110,7 +1110,10 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
     }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
-
+  // this is messy since some files in the list may be rasters and others may
+  // be ogr layers. We'll set returnValue to false if one or more layers fail
+  // to load.
+  bool returnValue = true;
   for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); 
        myIterator != theFileNameQStringList.end();
        ++myIterator)
@@ -1159,6 +1162,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
               // XXX should we return false here, or just grind through
               // XXX the remaining arguments?
+              returnValue = false;
             }
 
           //only allow one copy of a ai grid file to be loaded at a
@@ -1170,7 +1174,10 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
               break;
             }
-        } 
+        }else
+        {
+          returnValue = false;
+        }
     }
 
   mapLegend->update();
@@ -1185,7 +1192,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
   statusBar()->message(mapCanvas->extent().stringRep());
 
-  return true;
+  return returnValue;
 
 }                               // QgisApp::addRasterLayer()
 
@@ -1369,7 +1376,27 @@ void QgisApp::fileSaveAs()
   delete pio;
   projectIsDirty = false;
 }
-
+bool QgisApp::addProject(QString projectFile)
+{
+  // adds a saved project to qgis, usually called on startup by
+  // specifying a project file on the command line
+  bool returnValue = false;
+  QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN, this);
+  
+  if (pio->read(projectFile))
+  {
+    mapCanvas->freeze(true);
+    setCaption(tr("Quantum GIS --") + " " + pio->baseName());
+    fullPath = pio->fullPathName();
+    mapLegend->update();
+    mapCanvas->freeze(false);
+    projectIsDirty = false;
+    returnValue = true;
+  }
+  delete pio;
+  
+ return returnValue;
+}
 void QgisApp::exportMapServer()
 {
   // check to see if there are any layers to export

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.27 2004/02/13 06:04:12 gsherman Exp */
+/* qgsprojectio.cpp,v 1.28 2004/02/21 20:54:26 gsherman Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -77,9 +77,12 @@ bool QgsProjectIo::write()
     }
 }
 
-bool QgsProjectIo::read()
+bool QgsProjectIo::read(QString path)
 {
-  QString path = selectFileName();
+  if(path.isEmpty())
+  {
+    QString path = selectFileName();
+  }
   QDomDocument *doc;
   if (!path.isEmpty())
     {
