@@ -11,6 +11,37 @@
 docdatadir = $(datadir)/$(PACKAGE)/doc/images
 
 docdata_DATA = \
+     add_layer_dialog.png \
+     back20x20.png \
+     checkversion.png \
+     configure.png \
+     connect_no.png \
+     contents.png \
+     exit.png \
+     filenew.png \
+     filesave.png \
+     filesaveas.png \
+     gis_add_pg_layer.png \
+     gis_add_vector_layer.png \
+     gis_identify.png \
+     gis_pan.png \
+     gis_view_all.png \
+     gis_zoom_to_selected.png \
+     icon_small.png \
+     loaded_shapefiles.png \
+     mapserver.png \
+     open.png \
+     package_network.png \
+     qgis_vector_layer_properties.png \
+     qgis_vector_layer_properties1.png \
+     qgis_vector_layer_properties2.png \
+     qgis_vector_layer_properties3.png \
+     reload20x20.png \
+     select_features.png \
+     sf.png \
+     table.png \
+     viewmag-.png \
+     zoomin.png \
      gis_add_raster_layer.png \
      change_symbology.gif \
      qgis_raster_properties_symbology_tab.png \
