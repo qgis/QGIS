@@ -350,15 +350,22 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       "\" where " + column + " is not null limit 1";
 
     PGresult* gresult = PQexec(pg, (const char*) query);
-    Q_ASSERT(PQntuples(gresult) == 1);
-
-    QString type = PQgetvalue(gresult, 0, 0); // GeometryType
-    QString schema = PQgetvalue(gresult, 0, 1); // current_schema
-    QString full_desc = "";
-    if (schema.length() > 0)
-      full_desc = schema + ".";
-    full_desc += table + " (" + column + ")";
-    details.push_back(geomPair(full_desc, type));
+    if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
+    {
+      qDebug(tr("Access to relation ") + table + tr(" using sql;\n") + sql +
+	     tr("\nhas failed. The database said:\n") +
+	     PQresultErrorMessage(gresult));
+    }
+    else
+    {
+      QString type = PQgetvalue(gresult, 0, 0); // GeometryType
+      QString schema = PQgetvalue(gresult, 0, 1); // current_schema
+      QString full_desc = "";
+      if (schema.length() > 0)
+	full_desc = schema + ".";
+      full_desc += table + " (" + column + ")";
+      details.push_back(geomPair(full_desc, type));
+    }
     PQclear(gresult);
   }
   ok = true;
