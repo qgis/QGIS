@@ -46,7 +46,7 @@
 #include <qlistview.h>
 #include <qsettings.h>
 #include <qtextstream.h>
-
+#include <qsocket.h>
 
 #include <iostream>
 #include <iomanip>
@@ -780,3 +780,59 @@ void QgisApp::restoreWindowState()
 	int y = settings.readNumEntry("/qgis/Geometry/y", (dh - 400) / 2);
 	setGeometry(x, y, w, h);
 }
+void QgisApp::checkQgisVersion(){
+
+
+		socket = new QSocket( this );
+        connect( socket, SIGNAL(connected()),
+                SLOT(socketConnected()) );
+        connect( socket, SIGNAL(connectionClosed()),
+                SLOT(socketConnectionClosed()) );
+		connect( socket, SIGNAL(readyRead()),
+                SLOT(socketReadyRead()) );
+		connect( socket, SIGNAL(error(int)),
+                SLOT(socketError(int)) );
+		socket->connectToHost("mrcc.com", 4444);
+}
+
+void QgisApp::socketConnected(){
+		QTextStream os(socket);
+		versionMessage = "";
+		// send the qgis version string
+        os << qgisVersion << "\r\n";
+		
+	
+}
+void QgisApp::socketConnectionClosed(){
+	// show version message from server
+	QMessageBox::information(this, "QGIS Version Information", versionMessage);
+}
+void QgisApp::socketError(int e){
+// get errror type
+QString detail;
+switch(e){
+	case QSocket::ErrConnectionRefused:
+		detail = "Connection refused - server may be down";
+		break;
+	case QSocket::ErrHostNotFound:
+		detail = "QGIS server was not found";
+		break;
+	case QSocket::ErrSocketRead:
+		detail = "Error reading from server";
+		break;
+		}
+	// show version message from server
+	QMessageBox::critical(this, "QGIS Version Information", "Unable to connect to the QGIS Version server\n" + detail);
+}
+
+ void QgisApp::socketReadyRead()
+    {
+	while(socket->bytesAvailable() > 0){
+		char *data = new char[socket->bytesAvailable() +1];
+		memset(data, '\0', socket->bytesAvailable() +1);
+		socket->readBlock(data, socket->bytesAvailable());
+		versionMessage += data;
+		delete[] data;
+	}
+           
+    }
