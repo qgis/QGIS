@@ -102,6 +102,7 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
 	QLineEdit *scaleedit = new QLineEdit(viewport());
 	mGridLayout->addWidget(scaleedit,i,4);
 	mWidgetVector[ 5 * (i - 1) + 4] = scaleedit;
+	scaleedit->setText("1.0");
 
         /*Set the default values of the lower and upper bounds according to the chosen mode */
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
@@ -171,4 +172,10 @@ void QgsGraMaExtensionWidget::selectMarker()
     }
 
     setActiveWindow();
+}
+
+void QgsGraMaExtensionWidget::resizeEvent(QResizeEvent* e)
+{
+    setContentsPos (0,0);
+    QScrollView::resizeEvent(e);
 }
