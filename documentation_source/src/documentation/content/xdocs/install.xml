@@ -31,6 +31,7 @@ Each of these requirements are discussed below. Note that the information given
 below is abstracted from the installation documentation for each of the 
 libraries. See the install information for each library to get detailed 
 instructions.</p>
+<p>In the documentation below, the file names used are examples.</p>
 			<p>
 If you are building QGIS <strong>without PostgreSQL</strong>, skip to the section on
 
@@ -40,11 +41,17 @@ If you are building QGIS <strong>without PostgreSQL</strong>, skip to the sectio
 		</section>
 		<section>
 			<title>PostgreSQL</title>
-			<p>QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x is recommended with QGIS version 0.1
+			<p>QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x is recommended with QGIS version 0.1. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below).
 				</p>
 				<ol>
 					<li>Download PostgreSQL source from <link href="http://www.postgresql.org">www.postgresql.org</link>
 					</li>
+          <li>Extract the source
+          <source>tar -xzf postgresql-7.4.1.tar.gz</source>
+          </li>
+          <li>Change to the source directory
+          <source>cd postgresql-7.4.1</source>
+          </li>
 					<li>Configure PostgreSQL:
 
 					<source>./configure --prefix=/usr/local/pgsql </source>
@@ -89,16 +96,54 @@ If you are building QGIS <strong>without PostgreSQL</strong>, skip to the sectio
 					<li>PostgreSQL install is done.</li>
 			</ol>
 		</section>
+    <section>
+    <title>GEOS</title>
+    <p>
+    QGIS uses GEOS to properly fetch features from the database when doing an identify or select. You can still view PostGIS layers without GEOS, but you will not be able to create a selection or identify a feature.</p>
+    <p>
+    If you choose to proceed without GEOS support, QGIS will warn you each time you load a layer from the database.
+    </p>
+    <p>To install GEOS:</p>
+    	<ol>
+        <li>Download GEOS source from <link href="http://geos.refractions.net">geos.refractions.net</link></li>
+        <li>Untar GEOS
+        <source>tar -xzf geos-1.0.0.tar.gz</source></li>
+        <li>Change to the GEOS source dir
+        <source>cd geos-1.0-.0</source>
+        </li>
+        <li>Follow the instructions in the GEOS README file to complete the installation. Typically the install goes like this:
+        <ul>
+        <li>./configure</li>
+        <li>make</li>
+        <li>make install</li>
+        </ul>
+        </li>
+        </ol>
+    </section>
 		<section>
 			<title>PostGIS</title>
+      <note>You must edit the PostGIS Makefile and make sure that USE_GEOS=1 is set. Also adjust GEOS_DIR to point to your GEOS installation directory.</note>
 			<ol>
 				<li>Download PostGIS source from <link href="http://postgis.refractions.net">postgis.refractions.net</link>
 				</li>
-				<li>Untar PostGIS into the contrib subdirectory of the postgresql build directory</li>
+				<li>Untar PostGIS into the contrib subdirectory of the postgresql build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.</li>
+        <li>Change to the postgis subdirectory</li>
+        <li>Edit the Makefile to enable GEOS support (see the note above)</li>
 				<li>PostGIS provides a manual in the doc/html subdirectory that explains the build process (see the Installation section)</li>
-				<li>Follow instructions in the PostGIS manual</li>
-				<li>If you will not be using PostgreSQL/PostGIS, you do not need to follow the steps regarding the procedural language extension</li>
-				<li>PostGIS library is now installed</li>
+        <li>The quick and dirty steps to install PostGIS are:
+        <ul>
+        <li>cd contrib</li>
+        <li>gunzip postgis-0.8.0.tar.gz</li> 
+        <li>tar xvf postgis-0.8.0.tar</li> 
+        <li>cd postgis-0.8.0 </li>
+        <li>make </li>
+       <li>make install </li>
+        <li>createlang plpgsql yourtestdatabase </li>
+       <li>psql -d yourtestdatabase -f postgis.sql </li>
+        <li>psql -d yourtestdatabase -f spatial_ref_sys.sql</li> 
+        </ul>
+        </li>
+				<li>The <strong>better way</strong> is to carefully follow the instructions in the PostGIS manual in the doc/html subdirectory or the online manual at <link href="http://postgis.refractions.net/docs">http://postgis.refractions.net/docs</link></li>
 			</ol>
 		
 		</section>
@@ -112,25 +157,41 @@ If you are building QGIS <strong>without PostgreSQL</strong>, skip to the sectio
 To install GDAL/OGR from source:
 </p>
 <ol>
-<li>Download the GDAL distribution from <link href="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</link>
+<li>Download the GDAL distribution from <link href="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</link>. You should use version 1.1.9 or higher. Versions prior to 1.1.9 contained a bug that caused problems when a null feature was encountered.
 					</li>
-					<li>Untar the distribution</li>
-					<li>Change to the gdal-x.x.x subdirectory that was created by step 2</li>
-					<li>See the documentation in the ./html subdirectory for information on building GDAL.</li>
-					<li>Follow the instructions in the <em>Building GDAL From Source</em> section</li>
-					<li>Make sure that gdal-config (found in the bin subdirectory where GDAL was installed)
-is included in the PATH. If necessary, add the path to gdal-config to the PATH
-environment variable. </li>
-<ul>
-<li>Check the install by running: gdal-config --prefix
+<li>Untar the distribution 
+<source>tar xfvz /../path/../gdal-x.x.x.tar.gz</source>
 </li>
-					</ul>
-				</ol>
+<li>Change to the gdal-x.x.x subdirectory that was created by step 2
+<source>cd gdal-x.x.x</source>
+</li>
+<li>Configure GDAL without PostgreSQL support (necessary):
+<source>./configure --without-pg</source>
+</li>
+<li>Build and install GDAL:
+<source>
+make
+su
+make install
+</source>
+</li>
+<li>In order to run GDAL after installing it is necessary for the shared library to be findable. This can often be accomplished by setting LD_LIBRARY_PATH to include /usr/local/lib. On Linux, you can add /usr/local/lib (or whatever path you used for installing GDAL) to /etc/ld.so.conf and running ldconfig.
+</li>
+<li>Make sure that gdal-config (found in the bin subdirectory where GDAL was installed) is included in the PATH. If necessary, add the path to gdal-config to the PATH environment variable.
+<source>export PATH=/../path/../gdal-config:$PATH</source>
+</li>
+<li>Check the install by running:
+<source>gdal-config --prefix</source>
+</li>
+</ol>
+ <p>
+If you've had problems during the installation, refer to this manual, where the whole process is described with some more detail: http://www.remotesensing.org/gdal/gdal_building.html 
+    </p>      
 		</section>
 		<section>
 			<title>Qt</title>
-			<p>You must download and install Qt in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version Qt 3.1 or later.
-To install Qt:
+			<p>Qt 3.1.2 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.1.2 or later. If not already installed, you will have to install the Qt development package for your distribution. If you are not able to install the required Qt packages, you will have to build from source.
+To install Qt from source:
 </p>
 <ol>
 <li>Download Qt from <link href="http://www.trolltech.com/developer">http://www.trolltech.com/developer</link> (choose the Qt/X11 Free Edition)</li>
@@ -147,13 +208,8 @@ documentation (see step 3)</li>
 		<section>
 		<title>Building QGIS</title>
 		<p>
-		After you have installed the required libraries, you are ready to build QGIS. 
+		After you have installed the required libraries, you are ready to build QGIS. Download and untar the QGIS distribution and change to the QGIS source directory. You have two options for building and installing QGIS: <em>Quick and Dirty</em> and the <em>right way</em>.
 		</p>
-		<p>
-		As of version 0.0.13, QGIS uses GNU Autoconf to configure the software prior
-		to building. 
-		</p>
-		
 		<section>
 		<title>Quick and Dirty</title>
 		<p>If you don't need PostgreSQL support and have installed GDAL ,
@@ -235,6 +291,7 @@ installed in /usr/local/qgis.</p>
 <source>make
 make install
 </source>
+<note>As of this version, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location</note>
 </section>
 		<p>
 		<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>

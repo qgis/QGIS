@@ -165,25 +165,30 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				To make the layer more appealing, open the Layer Properties 
 				dialog by right-clicking on a layer name
 				in the table of contents (left side of the QGIS window) and
-				selecting <em>Properties</em>.
+				selecting <em>Properties</em>. 
 				</p>
+        	<p>If you like, change the display name of the layer by editing
+				the <em>Display name</em> field.</p>
 				<p>
-				<img alt="Layer Properties" src="images/layer_properties.gif"/>
+				<img alt="Layer Properties" src="images/qgis_vector_layer_properties.png"/>
 				</p>
-				<p>
-				If you like, change the display name of the layer by editing
-				the <em>Display name</em> field. Click on the <em>Symbology</em>
-				tab and click on the <em>Outline color</em> and <em>Fill color</em>
+         <p>Click on the <em>Legend</em>
+				tab to display the current symbols used for the layer</p>
+			<p>
+        <img alt="Display name" src="images/qgis_vector_layer_properties1.png"/></p>
+       
+        
+        <p>Click on the <em>Outline color</em> and <em>Fill color</em>
 				and select a new color from the color chooser. You can also change the
 				line width if desired.</p>
-				<p>
-				<img alt="Changing colors" src="images/change_symbology.gif"/>
+        <p>
+				<img alt="Changing colors" src="images/qgis_vector_layer_properties2.png"/>
 				</p>
 				<p>After making the changes, click Ok to apply the changes to
 				the layer. Note that the alaska layer has been renamed to Alaska and the
 				color has been changed to a light green:</p>
 				<p>
-				<img alt="Changing colors" src="images/changed_symbology.gif"/>
+				<img alt="Changing colors" src="images/qgis_vector_layer_properties3.png"/>
 				</p>
 			</section>
 			<section>
