@@ -27,7 +27,7 @@ DBFHandle WayPointToShape::createDbf (QString theDbfName )
     DBFHandle myDbfHandle;
     //remove the path part of the dbf name
     QFileInfo myFileInfo( theDbfName );
-    QString myBaseString = myFileInfo.baseName();  // excludes any extension
+    QString myBaseString = myFileInfo.dirPath()+QString("/")+myFileInfo.baseName();  // excludes any extension
     //create the dbf
     myDbfHandle = DBFCreate( myBaseString+".dbf" );
     //create an index field named after the base part of the file name
