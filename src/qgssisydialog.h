@@ -45,8 +45,8 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     void setFillStyle(Qt::BrushStyle fstyle);
     void setLabel(QString label);
     QString label();
-    
-    
+
+
  protected:
     QgsVectorLayer* mVectorLayer;
  public slots:
@@ -58,7 +58,6 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     void selectOutlineColor();
     void selectOutlineStyle();
     void selectFillColor();
-    void selectFillPattern();
  private:
     /**Default constructor is privat to not use is*/
      QgsSiSyDialog();
