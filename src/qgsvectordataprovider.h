@@ -32,6 +32,17 @@ class QgsVectorDataProvider : public QgsDataProvider
 
  public:
 
+    enum Capability
+	{
+	    NoCapabilities = 0,
+	    AddFeatures = 1,
+	    DeleteFeatures = 1 << 1,
+	    ChangeAttributes = 1 << 2,
+	    AddAttributes = 1 << 3,
+	    DeleteAttributes = 1 << 4,
+	    SaveAsShapefile = 1 << 5
+	};
+
     QgsVectorDataProvider();
 
     virtual ~QgsVectorDataProvider() {};
@@ -173,6 +184,9 @@ class QgsVectorDataProvider : public QgsDataProvider
   {
         // NOP by default
   }
+
+  /**Returns a bitmask containing the supported capabilities*/
+  virtual int capabilities(){return QgsVectorDataProvider::NoCapabilities;}
 
   const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
   const std::list<QString>& numericalTypes(){return mNumericalTypes;}
