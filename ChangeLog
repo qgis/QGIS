@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.197 2004/10/19 05:16:56 gsherman Exp
+ChangeLog,v 1.198 2004/10/19 11:17:50 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-10-19 [larsl] 0.5.0devel8
+** Changed mFeatureType in qgsgpxprovider.cpp from a QString to an enum to
+   avoid unnecessary string comparisons
 
 2004-10-18 [gsherman] 0.5.0devel7
 ** Added test for GEOS to acinclude.m4 and configure.in
