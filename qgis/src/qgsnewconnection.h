@@ -17,7 +17,11 @@
  /* $Id$ */
 #ifndef QGSNEWCONNECTION_H
 #define QGSNEWCONNECTION_H
+#ifdef WIN32
+#include "qgsnewconnectionbase.h"
+#else
 #include "qgsnewconnectionbase.uic.h"
+#endif
 /*! \class QgsNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgresQl database

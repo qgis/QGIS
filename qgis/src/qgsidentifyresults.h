@@ -18,8 +18,11 @@ Romans 3:23=>Romans 6:23=>Romans 5:8=>Romans 10:9,10=>Romans 12
 /* $Id$ */
 #ifndef QGSIDENTIFYRESULTS_H
 #define QGSIDENTIFYRESULTS_H
-
+#ifdef WIN32
+#include "qgsidentifyresultsbase.h"
+#else
 #include "qgsidentifyresultsbase.uic.h"
+#endif
 
 /**
  *@author Gary E.Sherman

@@ -50,11 +50,15 @@ void QgisIface::zoomActiveLayer()
 bool QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
 {
   qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
+  //TODO fix this so it returns something meaningfull
+  return true;
 }
 
 bool QgisIface::addRasterLayer(QString rasterLayerPath)
 {
   qgis->addRasterLayer(rasterLayerPath);
+  //TODO fix this so it returns something meaningfull
+  return true;
 }
 
 bool QgisIface::addProject(QString theProjectName)

@@ -18,8 +18,11 @@
 
 #ifndef QGSGRAMADIALOG_H
 #define QGSGRAMADIALOG_H
-
+#ifdef WIN32
+#include "qgsgramadialogbase.h"
+#else
 #include "qgsgramadialogbase.uic.h"
+#endif
 #include <map>
 
 class QgsGraMaExtensionWidget;

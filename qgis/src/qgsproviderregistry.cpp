@@ -53,7 +53,11 @@ int bin = appDir.findRev("/bin", -1, false);
 QString baseDir = appDir.left(bin);
 QString libDir = baseDir + "/lib"; */
   libDir = pluginPath;
+#ifdef WIN32
+  QDir pluginDir(libDir, "*.dll", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+#else
   QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+#endif
 #ifdef QGISDEBUG
   std::cerr << "Checking " << libDir << " for provider plugins" << std::endl;
 #endif
@@ -89,6 +93,7 @@ QString libDir = baseDir + "/lib"; */
                       providerkey_t *pKey = (providerkey_t *) myLib->resolve("providerKey");
                       if (pDesc && pKey)
                         {
+							const char *foo = pKey();
                           // add this provider to the provider map
                           provider[pKey()] = new QgsProviderMetadata(pKey(), pDesc(), myLib->library());
 #ifdef QGISDEBUG

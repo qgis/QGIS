@@ -19,7 +19,11 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 class QString;
+#ifdef WIN32
+#include "qgsoptionsbase.h"
+#else
 #include "qgsoptionsbase.uic.h"
+#endif
 /**
  * \class QgsOptions
  * \brief Set user options and preferences

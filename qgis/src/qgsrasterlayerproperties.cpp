@@ -18,6 +18,7 @@
 
 #include "qgsrasterlayerproperties.h"
 #include <qlabel.h>
+#include <qapplication.h>
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qslider.h>
@@ -294,6 +295,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
   //
   // Set up the pyramiding tab
   //
+#ifdef WIN32
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
   QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
   RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
@@ -770,6 +774,9 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   // repopulate the pyramids list
   //
   lbxPyramidResolutions->clear();
+#ifdef WIN32
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
   QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
   RasterPyramidList::iterator myRasterPyramidIterator;

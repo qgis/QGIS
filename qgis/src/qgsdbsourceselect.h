@@ -17,7 +17,11 @@
 /* $Id$ */
 #ifndef QGSDBSOURCESELECT_H
 #define QGSDBSOURCESELECT_H
+#ifdef WIN32
+#include "qgsdbsourceselectbase.h"
+#else
 #include "qgsdbsourceselectbase.uic.h"
+#endif
 
 class QListBoxItem;
 class QgisApp;

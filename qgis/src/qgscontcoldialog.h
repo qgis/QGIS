@@ -18,8 +18,11 @@
  /* $Id$ */
 #ifndef QGSCONTCOLDIALOG_H
 #define QGSCONTCOLDIALOG_H
-
+#ifdef WIN32
+#include "qgscontcoldialogbase.h"
+#else
 #include "qgscontcoldialogbase.uic.h"
+#endif
 #include <map>
 
 class QgsVectorLayer;
