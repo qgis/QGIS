@@ -49,6 +49,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
     pixmapLegend->repaint(false);
     //set the transparency slider
     sliderTransparency->setValue(255-rasterLayer->getTransparency());
+    //update the transparency percentage label
+    sliderTransparency_valueChanged(255-rasterLayer->getTransparency());
     //decide whether user can change rgb settings
     if (rasterLayer->getBandCount() > 2)
     {
@@ -327,7 +329,12 @@ void QgsRasterLayerProperties::accept()
     apply();
     close();
 }
-
+void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
+{
+  //set the transparency percentage label to a suitable value
+  int myInt = static_cast<int>((theValue/255.0)*100); //255.0 to prevent integer division
+  lblTransparencyPercent->setText(QString::number(myInt)+"%");
+}
 
 void QgsRasterLayerProperties::sliderMaxRed_valueChanged( int )
 {

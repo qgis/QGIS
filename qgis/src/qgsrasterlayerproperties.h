@@ -38,6 +38,7 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
 
         void apply();
         void accept();
+	void sliderTransparency_valueChanged( int );
         void sliderMaxRed_valueChanged( int );
         void sliderMinRed_valueChanged( int );
         void sliderMaxBlue_valueChanged( int );
