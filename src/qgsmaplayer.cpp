@@ -132,3 +132,6 @@ void QgsMapLayer::setFeatureType(const int &_newVal)
 {
 	feature = _newVal;
 }
+
+void QgsMapLayer::identify(QgsRect *r){
+  }

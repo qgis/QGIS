@@ -62,6 +62,9 @@ class QgsMapLayer:public QObject
 	virtual QgsRect calculateExtent();
 	virtual void draw(QPainter *, QgsRect *, int);
 	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
+  /*! Identify the feature(s) in this layer that are contained in the search rectangle
+  */
+    virtual void identify(QgsRect *);
 	/*! Return the extent of the layer as a QRect
 	 */
 	const QgsRect extent();

@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsrect.h"
 #include "qgsrasterlayer.h"
 QgsRasterLayer::QgsRasterLayer()
 {
@@ -25,3 +26,6 @@ QgsRasterLayer::~QgsRasterLayer()
 void QgsRasterLayer::draw(QPainter * p, QRect * viewExtent)
 {
 }
+
+void QgsRasterLayer::identify(QgsRect *r){
+  }
