@@ -98,7 +98,7 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 	OGRGeometry *filter = 0;
 	filter = new OGRPolygon();
 	std::ostrstream wktExtent;
-	wktExtent << "POLYGON ((" << viewExtent->stringRep() << "))" << ends;
+	wktExtent << "POLYGON ((" << viewExtent->stringRep() << "))" << std::ends;
 	char *wktText = wktExtent.str();
 
 	OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&wktText);
@@ -276,7 +276,7 @@ void QgsShapeFileLayer::identify(QgsRect * r)
 	OGRGeometry *filter = 0;
 	filter = new OGRPolygon();
 	std::ostrstream wktExtent;
-	wktExtent << "POLYGON ((" << r->stringRep() << "))" << ends;
+	wktExtent << "POLYGON ((" << r->stringRep() << "))" << std::ends;
 	char *wktText = wktExtent.str();
 
 	OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&wktText);
