@@ -573,14 +573,14 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         {
             QMessageBox::critical( 0, "CDP Wizard",
                                    QString("The file you have selected could not be opened:\n\n" + theFileNameString +
-                                   "\n\n Halting climate data proceesing." ));
+                                           "\n\n Halting climate data proceesing." ));
             return false;
         }
         if ( !myFileReader->setFileType(inputFileType))
         {
             QMessageBox::critical( 0, "CDP Wizard",
                                    QString("The file type could not be set for:\n\n" + theFileNameString +
-                                   "\n\n Halting climate data proceesing." ));
+                                           "\n\n Halting climate data proceesing." ));
             return false;
         }
         //when we open the first filereader in the, we find
@@ -591,7 +591,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         {
             QMessageBox::critical( 0, "CDP Wizard",
                                    QString("Error - failed to get block markers for :\n\n" + theFileNameString +
-                                   "\n\n Halting climate data proceesing." ));
+                                           "\n\n Halting climate data proceesing." ));
             return false;
 
         }
@@ -1180,25 +1180,12 @@ bool ClimateDataProcessor::run()
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
-
-
-
                 //get the next element from the file group
                 myFloatVector = meanTempFileGroup->getElementVector();
-
-                //this next bit is just for debugging purposes:
-                /*
-                                    std::cout << "Printing out myFloatVector ("<< myFloatVector.size() << " elements): "  << std::endl;
-                                    for (int i=0;i < myFloatVector.size(); i++)
-                                    {
-                                    std::cout << myFloatVector[i] << ",";
-                                    }
-
-                //end of debugging
-                */
-
                 //we are using mean over year summary
                 float myFloat = myDataProcessor->meanOverYear(myFloatVector );
+                //this next bit is just for debugging purposes"
+                printVectorAndResult(myFloatVector,myFloat);
                 //write the result to our output file
                 bool myResultFlag = myFileWriter->writeElement(myFloat);
                 if (!myResultFlag)
@@ -2273,7 +2260,16 @@ bool ClimateDataProcessor::run()
     return true;
 }
 
+void ClimateDataProcessor::printVectorAndResult(QValueVector<float> theVector, float theResultFloat)
+{
+    int myVectorLengthInt=theVector.size();
+    for (int myInt = 0; myInt <= myVectorLengthInt-1; myInt++)
+    {
 
+        std::cout << theVector[myInt] << ",";
+    }
+    std::cout << "\t : " << theResultFloat << std::endl;
+}
 
 /** Return a nice summary about this ClimateDataProcessor object */
 QString ClimateDataProcessor::getDescription()

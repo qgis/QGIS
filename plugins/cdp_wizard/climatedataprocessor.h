@@ -163,6 +163,9 @@ class ClimateDataProcessor {
     private:
 
         // Private methods
+        /** This method is intended for debugging purposes only */
+        void printVectorAndResult(QValueVector<float> theVector, float theResultFloat);
+
         bool meanTempOverCoolestQ();
 
         /**This is a private method. It is a simple method to populate the

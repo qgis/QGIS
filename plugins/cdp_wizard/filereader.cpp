@@ -86,7 +86,7 @@ float FileReader::getElement()
     //print out the last entries for debuggging
     if (currentElementLong > 0)
     {
-      if (debugModeFlag) std::cout << "FileReader::getElement() retrieved value : " << myElementFloat << " for element no " << currentElementLong << std::endl;
+     // if (debugModeFlag) std::cout << "FileReader::getElement() retrieved value : " << myElementFloat << " for element no " << currentElementLong << std::endl;
     }
 #endif
     //check if we have now run to the end of the matrix
