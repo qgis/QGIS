@@ -42,3 +42,4 @@ void QgsDbSourceSelectBase::addLayer( QListBoxItem * )
 {
 
 }
+
