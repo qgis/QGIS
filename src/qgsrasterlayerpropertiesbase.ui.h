@@ -1,3 +1,4 @@
+
 /****************************************************************************
 ** ui.h extension file, included from the uic-generated form implementation.
 **
@@ -8,7 +9,78 @@
 *****************************************************************************/
 
 
-void QgsRasterLayerPropertiesBase::pbnOk_clicked()
+
+
+
+
+void QgsRasterLayerPropertiesBase::sliderMaxRed_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMinRed_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMaxBlue_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMinBlue_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMaxGreen_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMinGreen_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMaxGray_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::sliderMinGray_valueChanged( int )
+{
+
+}
+
+
+
+void QgsRasterLayerPropertiesBase::sliderTransparency_valueChanged( int )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::rbtnSingleBand_toggled( bool )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::rbtnThreeBand_toggled( bool )
+{
+
+}
+
+
+void QgsRasterLayerPropertiesBase::apply()
 {
 
 }

@@ -89,6 +89,7 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 			qgsattributetable.moc.cpp\
 			qgsidentifyresultsbase.moc.cpp\
 			qgslayerpropertiesbase.moc.cpp\
+			qgsrasterlayerproperties.moc.cpp\
 			qgsrasterlayerpropertiesbase.moc.cpp\
 			qgslegend.moc.cpp\
 			qgslegenditembase.moc.cpp\
