@@ -32,3 +32,8 @@ void QgsDbSourceSelectBase::editConnection()
 {
 
 }
+
+void QgsDbSourceSelectBase::deleteConnection()
+{
+
+}
