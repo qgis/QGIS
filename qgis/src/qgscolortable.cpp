@@ -53,6 +53,14 @@ void QgsColorTable::add ( int index, unsigned char c1, unsigned char c2, unsigne
     std::cerr << "QgsColorTable::add() index = " << index << std::endl;
     #endif
 
+    if ( mDiscrete.size() == 0 ) {
+	mMin = index;
+	mMax = index;
+    } else { 
+	if ( index < mMin ) mMin = index;
+	if ( index > mMax ) mMax = index;
+    }
+
     if ( mDiscrete.size() <= index ) {
        mDiscrete.resize ( index + 1 ); 
     }
@@ -72,6 +80,14 @@ void QgsColorTable::add ( double min,  double max,
     #ifdef QGISDEBUG
     std::cerr << "QgsColorTable::add() min = " << min << " max = " << max << std::endl;
     #endif
+
+    if ( mRamp.size() == 0 ) {
+	mMin = min;
+	mMax = max;
+    } else { 
+	if ( min < mMin ) mMin = min;
+	if ( max > mMax ) mMax = max;
+    }
 
     ramp.min = min;
     ramp.max = max;
@@ -143,6 +159,16 @@ bool QgsColorTable::defined ( void )
 int QgsColorTable::interpretation ( void )
 {
     return mInterp;
+}
+
+double QgsColorTable::min ( void )
+{
+    return mMin;
+}
+
+double QgsColorTable::max ( void )
+{
+    return mMax;
 }
 
 void QgsColorTable::print ( void )
