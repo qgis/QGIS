@@ -47,6 +47,7 @@ struct FileWriterStruct
 
 class ClimateDataProcessor {
     public:
+        /** Default constructor */
         ClimateDataProcessor();
 
         /*
@@ -58,92 +59,226 @@ class ClimateDataProcessor {
                 QString theOutputFileTypeString
                 );
         */
+        /** Destructor */
         ~ClimateDataProcessor();
-
-
 
         // Getters and setters
 
-        /** Write property of QString meanTempFileGroup. */
+        /** Mutator for filename of the meanTemp calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setMeanTempFileName ( QString theFileNameString);
-        /** Read property of QString meanTempFileGroup. */
+        /** Accessor for filename of the meanTemp calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getMeanTempFileName ();
 
-        /** Write property of QString minTempFileGroup. */
+        /** Mutator for filename of the minTemp calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setMinTempFileName ( QString theFileNameString);
-        /** Read property of QString minTempFileGroup. */
+        /** Accessor for filename of the minTemp calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getMinTempFileName ();
 
-        /** Write property of QString maxTempFileGroup. */
+        /** Mutator for filename of the maxTemp calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setMaxTempFileName ( QString theFileNameString);
-        /** Read property of QString maxTempFileGroup. */
+        /** Accessor for filename of the maxTemp calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getMaxTempFileName ();
 
-        /** Write property of QString diurnalTempFileGroup. */
+        /** Mutator for filename of the diurnalTemp calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setDiurnalTempFileName ( QString theFileNameString);
-        /** Read property of QString diurnalTempFileGroup. */
+        /** Accessor for filename of the diurnalTemp calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getDiurnalTempFileName ();
 
-        /** Write property of QString meanPrecipFileGroup. */
+        /** Mutator for filename of the mean precipitation calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setMeanPrecipFileName ( QString theFileNameString);
-        /** Read property of QString meanPrecipFileGroup. */
+        /** Accessor for filename of the mean precipitation calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getMeanPrecipFileName ();
 
-        /** Write property of QString frostDaysFileGroup. */
+        /** Mutator for filename of the frost days calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setFrostDaysFileName ( QString theFileNameString);
-        /** Read property of QString frostDaysFileGroup. */
+        /** Accessor for filename of the frost days calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getFrostDaysFileName ();
 
-        /** Write property of QString totalSolarRadFileGroup. */
+        /** Mutator for filename of the solar radiation calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setTotalSolarRadFileName ( QString theFileNameString);
-        /** Read property of QString totalSolarRadFileGroup. */
+        /** Accessor for filename of the solar radiation calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getTotalSolarRadFileName ();
 
-        /** Write property of QString windSpeedFileGroup. */
+        /** Mutator for filename of the wind speed calculation inputs.
+        * If the files are in series, the name should be of the first file in the series.
+        * @param theFileNameString - The new filename for the calculation inputs.
+        * @return void - No return.
+        */
         void setWindSpeedFileName ( QString theFileNameString);
-        /** Read property of QString windSpeedFileGroup. */
+        /** Accessor for filename of the wind speed calculation inputs.
+        * @return a QString containing the filename (which will be the first file
+        * in the series if the files are in series).
+        */
         const QString  getWindSpeedFileName ();
 
-        /** Write property of QString * outputFilePathString. */
+        /** Mutator for directory name for the calculation output files.
+        * @param theFilePathString - The name of an existing directory where the
+        * output files will be stored.
+        * @return void - No return.
+        */
         void setOutputFilePathString( QString theFilePathString);
-        /** Read property of QString * outputFilePathString. */
+        /** Accessor for the file output path.
+        * @return a QString containing the directory name.
+        */
         const QString getOutputFilePathString();
 
-        /** Write property of int fileStartYearInt. */
+        /**
+        * Mutator for int fileStartYearInt.
+        * @param theYearInt - The year of the first 12 blocks of data
+        * in the file (or the 12 files if the files are in series).
+        * @return void - No return.
+        * @note If the files are in series, jobStartYearInt should be the same as
+        * fileStartYearInt and jobEndYearInt!
+        */
         void setFileStartYearInt( const int theYearInt);
-        /** Read property of int fileStartYearInt. */
+        /** Accessor for int fileStartYearInt. */
         const int getFileStartYearInt();
 
-        /** Write property of int jobStartYearInt. */
+        /**
+        * Mutator for int setJobStartYearInt.
+        * @param theYearInt - The first year in the input file(s) to be read.
+        * @return void - No return.
+        * @note If the files are in series, jobStartYearInt should be the same as
+        * fileStartYearInt and jobEndYearInt!
+        */
         void setJobStartYearInt( const int theYearInt);
-        /** Read property of int jobStartYearInt. */
+        /**
+        * Accessor for int jobStartYearInt.
+        * @return int - the current value of the first year in the input
+        * files to be read.
+        */
         const int getJobStartYearInt();
 
-        /** Write property of int jobEndYearInt. */
+        /**
+        * Mutator for int jobEndYearInt.
+        * @param theYearInt - The last year in the input file(s) to be read.
+        * @return void - No return
+        * @note If the files are in series, jobStartYearInt should be the same as
+        * fileStartYearInt and jobEndYearInt!
+        */
         void setJobEndYearInt( const int theYearInt);
-        /** Read property of int jobEndYearInt. */
+        /**
+        * Accessor for int jobEndYearInt.
+        * @return int - the current value of the last year in the input
+        * files to be read.
+        */
         const int getJobEndYearInt();
 
-        /** Write property of FileReader::FileType inputFileType. */
+        /**
+        * Mutator for FileReader::FileType inputFileType.
+        * @param theInputFileType - The input filetype as specified in FileReader::FileTypeEnum
+        * @return void - No return
+        */
         void setInputFileType( const FileReader::FileTypeEnum theInputFileType);
-        /** Overloaded version of above that taks a string and looks up the enum */
+        /**
+        * Mutator for FileReader::FileType inputFileType.
+        * This is an overloaded version of above that takes a string and looks up the enum.
+        * @param theInputFileTypeString - The input filetype as a string. Valid options being:
+        * CRES African climate data
+        * ESRI & ASCII raster
+        * Hadley Centre HadCM3 SRES Scenario
+        * Hadley Centre HadCM3 IS92a Scenario
+        * IPCC Observed Climatology
+        * University of Reading Palaeoclimate data
+        * Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data
+        * CSIRO-Mk2 Model data
+        * National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data
+        * Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data
+        * Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data
+        * CCSR/NIES AGCM model data and CCSR OGCM model data
+        * @return void - No return
+        */
         void setInputFileType( const QString theInputFileTypeString);
-        /** Read property of FileReader::FileType inputFileType. */
+        /**
+        * Accessor for FileReader::FileType inputFileType.
+        * @return a FileReader::FileTypeEnum indicating the current input file type.
+        */
         const FileReader::FileTypeEnum getInputFileType();
 
-        /** Write property of FileWriter::FileType outputFileType. */
+        /**
+        * Mutator for FileWriter::FileType outputFileType.
+        * This will determine how outputs from calculations will be written to disk.
+        * @param theOutputFileType - a  FileWriter::FileTypeEnum value
+        * @return void - No return
+        */
         void setOutputFileType( const FileWriter::FileTypeEnum theOutputFileType);
-        /** Overloaded version of above that takes a string and looks up the enum */
+        /**
+        * Mutator for FileWriter::FileType outputFileType.
+        * Overloaded version of above that takes a string and looks up the enum.
+        * @param theOutputFileTypeString - a QString containing the desired output file type.
+        * Valid options include:
+        * CSM for Matlab
+        * CSM for Octave
+        * Desktop GARP
+        * ESRI ASCII Grid
+        * Plain matrix with no header
+        * @return void - No return
+        */
         void setOutputFileType( const QString theOutputFileTypeString);
-        /** Read property of FileWriter::FileType outputFileType. */
+        /**
+        * Accessor for FileWriter::FileType outputFileType.
+        * @return FileWriter::FileTypeEnum - the current output file type
+        */
         const FileWriter::FileTypeEnum getOutputFileType();
 
 
-        /**  Set up the filegroups for each filename that has been registered */
+        /**
+        * Set up the filegroups for each filename that has been registered
+        * @param theStartYearInt - the year in the file (not used if files
+        * are in series) for which the filegroup should be made.
+        * @return bool - A boolean indicating success or failure of the operation
+        */
         bool makeFileGroups(int theStartYearInt);
-        /** Set up an individual file group (called by makeFileGroups for
-         *   each filegroup that needs to be initialised) */
-        FileGroup * initialiseFileGroup(QString theFileNameString,int theStartYearInt);
+
         /**  Build a list of which calculations can be performed given the input files
          *    that have been registered. The boolean field indicates whether the user actually
          *    want to perform this calculation
@@ -161,21 +296,26 @@ class ClimateDataProcessor {
         /** get a Description of the ClimateDataProcessor vars. */
         QString getDescription();
 
-        /** Write property of bool filesInSeriesFlag. */
+        /** Mutator for bool filesInSeriesFlag. */
         void setFilesInSeriesFlag( const bool theFlagl);
-        /** Read property of bool filesInSeriesFlag. */
+        /** Accessor for bool filesInSeriesFlag. */
         const bool getFilesInSeriesFlag();
 
-        /** Write property of QString outputHeaderString. */
+        /** Mutator for QString outputHeaderString. */
         void setOutputHeaderString( const QString& theOutputHeaderString);
-        /** Read property of QString outputHeaderString. */
+        /** Accessor for QString outputHeaderString. */
         const QString getOutputHeaderString();
 
     private:
 
         // Private methods
+
         /** This method is intended for debugging purposes only */
         void printVectorAndResult(QValueVector<float> theVector, float theResultFloat);
+
+        /** Set up an individual file group (called by makeFileGroups for
+         *   each filegroup that needs to be initialised) */
+        FileGroup * initialiseFileGroup(QString theFileNameString,int theStartYearInt);
 
         /**This is a private method. It is a simple method to populate the
          * inputFileTypeMap attribute - this will usually be called by the
