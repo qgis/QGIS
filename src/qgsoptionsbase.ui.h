@@ -43,3 +43,9 @@ void QgsOptionsBase::addTheme(QString item)
 {
   cmbTheme->insertItem(item);
 }
+
+
+void QgsOptionsBase::themeChanged(const QString & )
+{
+
+}
