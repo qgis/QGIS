@@ -12,7 +12,8 @@
 #ifndef OMGUIMAIN_H
 #define OMGUIMAIN_H
 
-#include <qwidget.h>
+#include <qlabel.h>
+#include <qstring.h>
 
 #ifdef WIN32
 #include <omguimainbase.h>
@@ -34,7 +35,9 @@ public:
     void saveMapAsImage();
   public slots:
     void drawModelImage (QString theFileName);
-    
+
+  private:
+    QLabel * mPictureWidget;
 };
 
 #endif

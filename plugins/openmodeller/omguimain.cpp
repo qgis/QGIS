@@ -16,12 +16,24 @@
 #include "openmodellergui.h"
 #include <qsettings.h>
 #include <qfiledialog.h>
-#include <qimage.h>  
-
-
+#include <qimage.h>
+#include <qscrollview.h>
+#include <qwidget.h>
+#include <qlayout.h>
+#include <qframe.h>
 OmGuiMain::OmGuiMain()
   : OmGuiMainBase()
 {
+  //set up a scrollviewdesigner
+  QGridLayout *myLayout = new QGridLayout(frameImage,1,1);
+  QScrollView *myScrollView = new QScrollView(frameImage);
+  
+  myLayout->addWidget(myScrollView,0,0,0);
+  QVBox * myVBox = new QVBox (myScrollView->viewport());
+  myScrollView->addChild(myVBox);
+  mPictureWidget = new QLabel(myVBox);
+  myScrollView->setResizePolicy(QScrollView::AutoOneFit);
+  show();
   runWizard();
 }
 
@@ -65,10 +77,8 @@ void OmGuiMain::drawModelImage(QString theFileName)
   //variable calculated
   std::cout << "drawModelImage Called" << std::endl;
   QPixmap myPixmap(theFileName);
-  pixModelOutputImage->setScaledContents(true);
-  pixModelOutputImage->setPixmap(myPixmap); 
-  pixModelOutputImage->setGeometry(0,0,630,470);
-  pixModelOutputImage->show();
+  mPictureWidget->setPixmap(myPixmap); 
+  mPictureWidget->show();
   //make sure the main gui windows shows (its off when app starts!)
   show();
 }
@@ -143,7 +153,7 @@ void OmGuiMain::saveMapAsImage()
 
     if (!myOutputFileNameQString.isEmpty())
     {
-       pixModelOutputImage->pixmap()->save( myOutputFileNameQString, myFilterMap[myFilterString], -1); 
+      mPictureWidget->pixmap()->save( myOutputFileNameQString, myFilterMap[myFilterString], -1); 
     }
 
 } 
