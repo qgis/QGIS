@@ -334,8 +334,6 @@ private:
     QPopupMenu * mPopupMenu;
     //! Top level plugin menu
     QPopupMenu *mPluginMenu;
-    //! Plugin tool bar
-    QToolBar *mPluginToolBar;
     //! Popup menu for the map overview tools
     QPopupMenu *toolPopupOverviews;
     //! Popup menu for the display tools

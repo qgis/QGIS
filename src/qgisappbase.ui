@@ -228,6 +228,14 @@
             <string>Help Toolbar</string>
         </property>
     </toolbar>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>mPluginToolBar</cstring>
+        </property>
+        <property name="label">
+            <string>Toolbar</string>
+        </property>
+    </toolbar>
 </toolbars>
 <actions>
     <action>
