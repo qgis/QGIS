@@ -56,11 +56,11 @@ class QgsDelimitedTextPlugin:public QObject, public QgisPlugin
    * Return the plugin type
    */
   virtual int type();
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ QgsDelimitedTextPlugin();
   public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");

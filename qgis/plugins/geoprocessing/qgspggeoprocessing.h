@@ -53,11 +53,11 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
 */
     QgsPgGeoprocessing(QgisApp * qgis, QgisIface * qI);
 
-    //! init the gui
-    virtual void initGui();
     //! Destructor
       virtual ~ QgsPgGeoprocessing();
     public slots:
+    //! init the gui
+    virtual void initGui();
       //! buffer features in a layer
     void buffer();
     //! unload the plugin

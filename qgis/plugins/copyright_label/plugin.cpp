@@ -124,14 +124,28 @@ void Plugin::initGui()
         {
           mQFont.setPointSize((*i).second.toInt());
         }
+        else if( "Label" == myCurrentKeyString )
+        {
+          mLabelQString = (*i).second.toString();
+        }
+        else if( "Placement" == myCurrentKeyString )
+        {
+          mPlacement = (*i).second.toString();
+        }
+        else if( "Enabled" == myCurrentKeyString )
+        {
+          mEnable = (*i).second.toBool();
+        }
+        // todo - store state of font color
     }
    
-  mLabelQString = QString(" QGIS 2004");
-  mQFont = QFont("times", 12, QFont::Bold);
+  if (mLabelQString.isEmpty()) mLabelQString = QString(" QGIS 2004");
+  if (mQFont.family().isEmpty()) mQFont = QFont("times", 12, QFont::Bold);
+  if (mPlacement.isEmpty()) mPlacement=tr("Bottom Right");
+  
+  //todo - read from settings file
   mLabelQColor = QColor(Qt::black);
 
-  //default placement to start with
-  mPlacement=tr("Bottom Right");
   refreshCanvas();
 
 }
@@ -248,12 +262,24 @@ void Plugin::unload()
   void Plugin::setLabel(QString theLabelQString)
   {
     mLabelQString = theLabelQString;
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("Label", 
+          mLabelQString ) ); 
     refreshCanvas();
   }
   //! change the copyright text colour
   void Plugin::setColor(QColor theQColor)
   {
     mLabelQColor = theQColor;
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("ColorRedPart", 
+          mLabelQColor.red() ) ); 
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("ColorGreenPart", 
+          mLabelQColor.green() ) ); 
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("ColorBluePart", 
+          mLabelQColor.blue() ) ); 
     refreshCanvas();
   }
 
@@ -261,6 +287,9 @@ void Plugin::unload()
   void Plugin::setPlacement(QString theQString)
   {
     mPlacement = theQString;
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("Placement", 
+          mPlacement ) ); 
     refreshCanvas();
   }
 
@@ -268,6 +297,9 @@ void Plugin::unload()
   void Plugin::setEnable(bool theBool)
   {
     mEnable = theBool;
+    QgsProject::instance()->properties("CopyrightLabel").append
+        ( QgsProject::PropertyValue("Enabled", 
+          mEnable ) ); 
     refreshCanvas();
   }
 
