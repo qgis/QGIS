@@ -15,6 +15,10 @@
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer* layer): QgsContColDialogBase(), m_vectorlayer(layer)
 {
+#ifdef DEBUG
+    qWarning("constructor QgsContColDialog");
+#endif
+
     QObject::connect(mincolorbutton,SIGNAL(clicked()),this,SLOT(selectMinimumColor()));
     QObject::connect(maxcolorbutton,SIGNAL(clicked()),this,SLOT(selectMaximumColor()));
 
@@ -77,12 +81,16 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer* layer): QgsContColDialogBase(
 
 QgsContColDialog::QgsContColDialog()
 {
-    
+#ifdef DEBUG
+    qWarning("constructor QgsContColDialog");
+#endif  
 }
 
 QgsContColDialog::~QgsContColDialog()
 {
-    qWarning("bin im Destruktor von QgsContColDialog");
+#ifdef DEBUG
+    qWarning("destructor QgsContColDialog");
+#endif
 }
 
 void QgsContColDialog::apply()

@@ -34,11 +34,17 @@
 
 QgsSiSyDialog::QgsSiSyDialog(): QgsSiSyDialogBase(), m_vectorlayer(0)
 {
-
+#ifdef DEBUG
+    qWarning("constructor QgsSiSyDialog");
+#endif
 }
 
 QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vectorlayer(layer)
 {
+#ifdef DEBUG
+    qWarning("constructor QgsSiSyDialog");
+#endif
+
     if(layer)
     {
 	QgsSingleSymRenderer* renderer;
@@ -86,7 +92,9 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
 
 QgsSiSyDialog::~QgsSiSyDialog()
 {
-    std::cout << "bin im Destruktor von QgsSiSyDialog" << std::endl;
+    #ifdef DEBUG
+    qWarning("destructor QgsSiSyDialog");
+    #endif
 }
 
 void QgsSiSyDialog::selectOutlineColor()

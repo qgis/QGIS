@@ -34,6 +34,10 @@ email                : mhugent@geo.unizh.ch
 
 QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer* vlayer): QWidget(parent), m_classfield(classfield), m_gridlayout(new QGridLayout(this,1,8)), m_mode(mode), m_numberofclasses(nofclasses), m_vectorlayer(vlayer)
 {
+#ifdef DEBUG
+    qWarning("constructor QgsGraSyExtensionWidget");
+#endif
+
   m_gridlayout->setSpacing(10);
 
   //fill the title line into the grid layout
@@ -207,12 +211,16 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
 
 QgsGraSyExtensionWidget::QgsGraSyExtensionWidget()
 {
-
+#ifdef DEBUG
+    qWarning("constructor QgsGraSyExtensionWidget");
+#endif
 }
 
 QgsGraSyExtensionWidget::~QgsGraSyExtensionWidget()
 {
-    std::cout << "bin im Destruktor von QgsGraSyExtensionWidget" << std::endl << std::flush;
+#ifdef DEBUG
+    qWarning("destructor QgsGraSyExtensionWidget");
+#endif
 }
 
 QWidget* QgsGraSyExtensionWidget::getWidget(int column, int row)
