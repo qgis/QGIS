@@ -141,7 +141,7 @@ class QgsOgrProvider:public QgsVectorDataProvider
     bool isValid();
 
     /**Writes a list of features to the file*/
-    bool addFeatures(std::list<QgsFeature*> flist);
+    bool addFeatures(std::list<QgsFeature*> const flist);
 
     bool supportsFeatureAddition() const 
     { 
