@@ -598,11 +598,11 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Quantum GIS -- Untitled</source>
-        <translation>Quantum GIS -- Bezmena</translation>
+        <translation type="obsolete">Quantum GIS -- Bezmena</translation>
     </message>
     <message>
         <source>Quantum GIS --</source>
-        <translation>Quantum GIS --</translation>
+        <translation type="obsolete">Quantum GIS --</translation>
     </message>
     <message>
         <source>Saved map to:</source>
@@ -875,6 +875,70 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     <message>
         <source>Unable to save project to </source>
         <translation>Nie je možné uložiť projekt do</translation>
+    </message>
+    <message>
+        <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished">Zásuvné &amp;moduly</translation>
+    </message>
+    <message>
+        <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the current map scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save delimited text as shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved Delimited Text plugin, including preview of text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display SQL query used to create a PostGIS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1508,51 +1572,51 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Gary E. Sherman</source>
-        <translation>Gary E. Sherman</translation>
+        <translation type="obsolete">Gary E. Sherman</translation>
     </message>
     <message>
         <source>Steve Halasz</source>
-        <translation>Steve Halasz</translation>
+        <translation type="obsolete">Steve Halasz</translation>
     </message>
     <message>
         <source>Tim Sutton</source>
-        <translation>Tim Sutton</translation>
+        <translation type="obsolete">Tim Sutton</translation>
     </message>
     <message>
         <source>Marco Hugentobler</source>
-        <translation>Marco Hugentobler</translation>
+        <translation type="obsolete">Marco Hugentobler</translation>
     </message>
     <message>
         <source>Denis Antipov</source>
-        <translation>Denis Antipov</translation>
+        <translation type="obsolete">Denis Antipov</translation>
     </message>
     <message>
         <source>Mark Coletti</source>
-        <translation>Mark Coletti</translation>
+        <translation type="obsolete">Mark Coletti</translation>
     </message>
     <message>
         <source>Jens Oberender</source>
-        <translation>Jens Oberender</translation>
+        <translation type="obsolete">Jens Oberender</translation>
     </message>
     <message>
         <source>Radim Blazek</source>
-        <translation>Radim Blazek</translation>
+        <translation type="obsolete">Radim Blazek</translation>
     </message>
     <message>
         <source>Carl Anderson</source>
-        <translation>Carl Anderson</translation>
+        <translation type="obsolete">Carl Anderson</translation>
     </message>
     <message>
         <source>Masaru Hoshi</source>
-        <translation>Masaru Hoshi</translation>
+        <translation type="obsolete">Masaru Hoshi</translation>
     </message>
     <message>
         <source>Lars Luthman</source>
-        <translation>Lars Luthman</translation>
+        <translation type="obsolete">Lars Luthman</translation>
     </message>
     <message>
         <source>Peter Brewer</source>
-        <translation>Peter Brewer</translation>
+        <translation type="obsolete">Peter Brewer</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
@@ -1561,7 +1625,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Quantum GIS je pod GNU General Public License licenciou&lt;p&gt;
+        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;Quantum GIS je pod GNU General Public License licenciou&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1579,7 +1643,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;<byte value="xd"/>
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;Quantum GIS je pod GNU General Public License licenciou&lt;p&gt;
+        <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Quantum GIS je pod GNU General Public License licenciou&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
 </context>
@@ -1599,7 +1663,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clikcing on the item.</source>
-        <translation>Tento zoznam obsahuje všetky akcie ktoré boli definované pre aktuálnu vrstvu. Pridajte akcie vložením detailov v kontrolkách dole a stlačením tlačítka Vložiť. Akcie je možné upraviť dvojklikom na príslušnú položku.</translation>
+        <translation type="obsolete">Tento zoznam obsahuje všetky akcie ktoré boli definované pre aktuálnu vrstvu. Pridajte akcie vložením detailov v kontrolkách dole a stlačením tlačítka Vložiť. Akcie je možné upraviť dvojklikom na príslušnú položku.</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -1643,7 +1707,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</source>
-        <translation type="unfinished">Sem vložte akciu. Môže ňou byť akýkoľvek program, skript alebo príkaz ktorý je dostupný vo vašom systéme. Keď je akcia vyvolaná nejakou sadou znakou ktoré začínajú s % a potom meno poľa bude nahradené hodnotou poľa. Špeciálne znaky %% budú nahradené hodnotou vybratého poľa.</translation>
+        <translation type="obsolete">Sem vložte akciu. Môže ňou byť akýkoľvek program, skript alebo príkaz ktorý je dostupný vo vašom systéme. Keď je akcia vyvolaná nejakou sadou znakou ktoré začínajú s % a potom meno poľa bude nahradené hodnotou poľa. Špeciálne znaky %% budú nahradené hodnotou vybratého poľa.</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
@@ -1684,6 +1748,14 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     <message>
         <source>The valid attribute names for this layer</source>
         <translation type="unfinished">Správne mená atribútov pre túto vrstvu</translation>
+    </message>
+    <message>
+        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2110,11 +2182,20 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 &lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;<byte value="xd"/>
 &lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;<byte value="xd"/>
 &lt;/body&gt;&lt;/html&gt;<byte value="xd"/></source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Vyberte súbor s oddelným textom obsahujúcim x-ové a y-ové súradnice, ktorý chcete použiť ako vrstvu bodov a tento zásuvný modul sa o zvyšok postará! &lt;/p&gt;
 &lt;p&gt;Použite políčko s menom vrstvy na určenie mena novej vrstvy v legende. Políčkom Oddeľovač určíte oddeľovač použitý vo vašom súbore (napr. medzera, čiarka alebo tabulátor). Nezabudnite, že toto políčko akceptuje regulárne výrazy, takže je treba použiť \t pre tabulátor a pod. Po vybratí oddeľovača, kliknite na tlačítko Preskúmať a vyberte stĺpce obsahujúce x-ové a a y-ové hodnoty vrstvy.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2213,6 +2294,50 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     <message>
         <source>Unique Value Marker</source>
         <translation>Ozančník jedinečnej hodnoty</translation>
+    </message>
+    <message>
+        <source>The source of the data (path name or database connection information)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The number of features in this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> using the commercial version of Qt. As this project is developed by volunteers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> home page to make a donation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No SVG Support</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2388,6 +2513,49 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     <message>
         <source>Actions</source>
         <translation>Akcie</translation>
+    </message>
+</context>
+<context>
+    <name>QgsEditReservedWordsBase</name>
+    <message>
+        <source>Edit Reserved Words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Pomocník</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Reserved Words</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3824,12 +3992,22 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
 By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/><byte value="xd"/>
 identifying features without zooming in very close.<byte value="xd"/><byte value="xd"/>
 &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation type="obsolete">&lt;html&gt;
 &lt;b&gt;Poznámka:&lt;/b&gt; Zadajte hodnotu v tisícoch. Polomer hľadania je počítaný ako:&lt;br&gt;
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Širka mapového okna) * ( Hodnota/1000.0)&lt;/i&gt;
 &lt;br&gt;
 QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém identifikovať objekty bez veľkého priblíženia.
 &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;<byte value="xd"/>
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;<byte value="xd"/>
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;<byte value="xd"/>
+&lt;br&gt;<byte value="xd"/>
+By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/>
+identifying features without zooming in very close.<byte value="xd"/>
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3883,6 +4061,30 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     <message>
         <source>An error occurred when executing the query:</source>
         <translation>Pri vykonávaní dopytu nastala chyba:</translation>
+    </message>
+    <message>
+        <source>Connection Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to the database failed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to get sample of field values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Records</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4661,6 +4863,17 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
 </context>
 <context>
+    <name>QgsScanGeometries</name>
+    <message>
+        <source>Scanning Geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>textLabel1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSiMaDialogBase</name>
     <message>
         <source>QgsSiMaDialogBase</source>
@@ -4751,11 +4964,15 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>Fill Pattern:</source>
-        <translation>Vzorka výplne:</translation>
+        <translation type="obsolete">Vzorka výplne:</translation>
     </message>
     <message>
         <source>Clear</source>
         <translation type="unfinished">Vyčistiť:</translation>
+    </message>
+    <message>
+        <source>Fill Patterns:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
