@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 /** \file qgsrasterlayer.h
  *  \brief This class provides qgis with the ability to render raster datasets
@@ -174,8 +174,7 @@ The [type] part of the variable should be the type class of the variable written
 #include "qgscolortable.h"
 #include "qgsrasterlayer.h"
 
-#include "gdal_priv.h"
-
+#include <gdal_priv.h>
 //
 // Forward declarations
 //

@@ -226,7 +226,7 @@
 &lt;p&gt;Select a GPX or LOC file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX står för &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, och används för att lagra information om waypoints, rutter, och spår. LOC används av &lt;a href=&quot;http://www.geocaching.com&quot;&gt;geocaching.com&lt;/a&gt; för att lagra waypoints.&lt;/p&gt;
 &lt;p&gt;Välj en GPX- eller LOC-fil och välj sedan detaljtyperna som du vill ladda.&lt;/p&gt;
@@ -239,7 +239,7 @@
     </message>
     <message>
         <source>Feature types:</source>
-        <translation>Detaljtyper:</translation>
+        <translation>Objekttyper:</translation>
     </message>
     <message>
         <source>Waypoints</source>
@@ -264,8 +264,8 @@
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Välj GPS-dumpfilen som du vill konvertera till en shapefile så gör detta plugin jobbet åt dig! &lt;/p&gt;
-&lt;p&gt;Använd det minimala tidsgapet för att ange vilket tidsintervall som ska användas för att bestämma när en ny detalj påbörjas. &lt;/p&gt;
-&lt;p&gt;Använd det minimala avståndsgapet för att ange vilket avståndsintervall som ska användas för att bestämma när en ny detalj påbörjas. &lt;/p&gt;
+&lt;p&gt;Använd det minimala tidsgapet för att ange vilket tidsintervall som ska användas för att bestämma när ett nytt objekt påbörjas. &lt;/p&gt;
+&lt;p&gt;Använd det minimala avståndsgapet för att ange vilket avståndsintervall som ska användas för att bestämma när ett nytt objekt påbörjas. &lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
@@ -371,7 +371,7 @@
     </message>
     <message>
         <source>Load GPX or LOC</source>
-        <translation>Ladda GPX / LOC</translation>
+        <translation type="obsolete">Ladda GPX / LOC</translation>
     </message>
     <message>
         <source>Import other file</source>
@@ -390,7 +390,7 @@ and a name for the new layer. All file formats can not store waypoints, routes, 
 tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;QGIS kan bara ladda GPX- och LOC-filer, men många andra format  
 kan konverteras till GPX med GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
@@ -409,7 +409,7 @@ så några detaljtyper är inaktiverade för en del filformat.&lt;/p&gt;
     </message>
     <message>
         <source>Feature type:</source>
-        <translation>Detaljtyp:</translation>
+        <translation>Objekttyp:</translation>
     </message>
     <message>
         <source>GPX output file:</source>
@@ -438,7 +438,7 @@ don&apos;t have GPSBabel installed where QGIS can find it, this tool will not wo
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beskrivning&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Det här verktyget hjälper dig att hämta data från en GPS-enhet.. Välj ditt protokoll, 
-porten som din GPS är kopplad till, detaljtypen du vill ladda ner, 
+porten som din GPS är kopplad till, typen av objekt du vill ladda ner, 
 ett namn för ditt nya lager och namnet på den nya GPX-filen där du vill lagra datan.&lt;/p&gt;
 &lt;p&gt;Detta verktyg använder GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
 för att överföra data. Om du inte har GPSBabel installerat där QGIS kan hitta det så kommer
@@ -559,6 +559,50 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
         <source>Automatically snap to round number on resize</source>
         <translation>Runda av till vettig storlek</translation>
     </message>
+    <message>
+        <source>Load GPX file</source>
+        <translation>Ladda GPX-fil</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
+&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX står för &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt; och används för att lagra information om waypoints, rutter och spår.&lt;/p&gt;
+&lt;p&gt;Välj en GPX-fil och typen av objekt som du vill ladda.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS kan bara ladda GPX-filer, men många andra filformat kan
+konverteras till GPX med GPSBabel  (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). Det kräver att du har GPSBabel installerat någonstans
+där QGIS kan hitta det.&lt;/p&gt;
+&lt;p&gt;Välj ett filformat för GPS-data som du vill importera från, typen av objekt som
+du vill använda, ett filnamn som du vill spara den konverterade GPX-filen som och
+ett namn för det nya lagret. Alla filformat kan inte lagra waypoints, rutter
+och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
 </context>
 <context>
     <name>QFileDialog</name>
@@ -569,6 +613,10 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     <message>
         <source>Save file dialog</source>
         <translation>Spara filer-dialog</translation>
+    </message>
+    <message>
+        <source>Open an OGR Supported Data Source</source>
+        <translation>Öppna en OGR-Stödd Datakälla</translation>
     </message>
 </context>
 <context>
@@ -671,7 +719,7 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Sourceforge Project Page: http://sourceforge.net/projects/qgis</source>
-        <translation>Projektsida på Sourceforge: http://sourceforge.net/projects/qgis</translation>
+        <translation type="obsolete">Projektsida på Sourceforge: http://sourceforge.net/projects/qgis</translation>
     </message>
     <message>
         <source>Version</source>
@@ -887,27 +935,39 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
-        <translation>Websida: http://qgis.org</translation>
+        <translation type="obsolete">Websida: http://qgis.org</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem med att radera objekt</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett problem uppstod under radering av objekt</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget Vektorlager Markerat</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Radering av objekt fungerar bara på vektorlager</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>För att radera ett objekt så måste du markera ett vektorlager i teckenförklaringen</translation>
+    </message>
+    <message>
+        <source>QGIS ready</source>
+        <translation>QGIS redo</translation>
+    </message>
+    <message>
+        <source>Quantum GIS is licensed under the GNU General Public License</source>
+        <translation>Quantum GIS är licensierad under GNU General Public License</translation>
+    </message>
+    <message>
+        <source>http://www.gnu.org/licenses</source>
+        <translation>http://www.gnu.org/licenses</translation>
     </message>
 </context>
 <context>
@@ -1006,11 +1066,11 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Identify a feature on the active layer</source>
-        <translation>Identifiera en detalj i det aktiva lagret</translation>
+        <translation>Identifiera ett objekt i det aktiva lagret</translation>
     </message>
     <message>
         <source>select features</source>
-        <translation>markera detaljed</translation>
+        <translation>markera objekt</translation>
     </message>
     <message>
         <source>&amp;About Quantum GIS</source>
@@ -1078,11 +1138,11 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Zoom to selected features</source>
-        <translation>Visa markerade detaljer</translation>
+        <translation>Visa markerade objekt</translation>
     </message>
     <message>
         <source>Zoom to selected features in active layer</source>
-        <translation>Visa markerade detaljer i det aktiva lagret</translation>
+        <translation>Visa markerade objekt i det aktiva lagret</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
@@ -1166,15 +1226,15 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation>Zooma till utsträckningen av de markerade detaljerna i det aktiva lagret. Vyn kommer att zoomas så att alla markerade detaljer blir synliga. Om det inte finns några markerade detaljer så ändras inte vyn.</translation>
+        <translation>Zooma till utsträckningen av de markerade objekten i det aktiva lagret. Vyn kommer att zoomas så att alla markerade objekt blir synliga. Om det inte finns några markerade objekt så ändras inte vyn.</translation>
     </message>
     <message>
         <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
-        <translation>Identifiera en detalj i det aktiva lagret (det aktiva lagret är markerat i teckenförklaringen). Identifiera söker efter detaljer nära där musen klickas och visar information om resultaten. Sökradien kan ställas in i QGIS&apos; inställningsfönster.</translation>
+        <translation>Identifiera ett objekt i det aktiva lagret (det aktiva lagret är markerat i teckenförklaringen). Identifiera söker efter objekt nära där musen klickas och visar information om resultaten. Sökradien kan ställas in i QGIS&apos; inställningsfönster.</translation>
     </message>
     <message>
         <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation>Välj detaljer i det aktiva lagret genom att dra med musen för att skapa en ruta runt de intressanta detaljerna. När musen släpps så markeras detaljerna och ritas i en annan färg (standard är gul)</translation>
+        <translation>Välj objekt i det aktiva lagret genom att dra med musen för att skapa en ruta runt de intressanta objekten. När musen släpps så markeras objekten och ritas i en annan färg (standard är gul)</translation>
     </message>
     <message>
         <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
@@ -1194,7 +1254,7 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
-        <translation>Öppna inställningsfönstret för att ange QGIS-inställningar som webläsare och sökradie för identifiering av detaljer.</translation>
+        <translation>Öppna inställningsfönstret för att ange QGIS-inställningar som webläsare och sökradie för identifiering av objekt.</translation>
     </message>
     <message>
         <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
@@ -1478,15 +1538,31 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Capture Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa Linje</translation>
     </message>
     <message>
         <source>Capture Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa Polygon</translation>
     </message>
     <message>
         <source>Map Edit Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartredigeringsverktyg</translation>
+    </message>
+    <message>
+        <source>Show all layers</source>
+        <translation>Visa alla lager</translation>
+    </message>
+    <message>
+        <source>Add to overview</source>
+        <translation>Lägg till i översikt</translation>
+    </message>
+    <message>
+        <source>Capture points</source>
+        <translation>Skapa Punkter</translation>
+    </message>
+    <message>
+        <source>Plugins Toolbar</source>
+        <translation>Pluginverktygsrad</translation>
     </message>
 </context>
 <context>
@@ -1509,7 +1585,7 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>Quantum GIS (qgis)</source>
-        <translation>Quantum GIS (qgis)</translation>
+        <translation type="obsolete">Quantum GIS (qgis)</translation>
     </message>
     <message>
         <source>What&apos;s New</source>
@@ -1517,15 +1593,15 @@ av QGIS beroende på zoomnivån. Storleken mäts i de kartenheter som anges i pr
     </message>
     <message>
         <source>License</source>
-        <translation>Licens</translation>
+        <translation type="obsolete">Licens</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation>http://www.gnu.org/licenses</translation>
+        <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation>Quantum GIS är licensierad med GNU General Public License</translation>
+        <translation type="obsolete">Quantum GIS är licensierad med GNU General Public License</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -1561,7 +1637,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
@@ -1614,6 +1690,28 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <message>
         <source>Peter Brewer</source>
         <translation>Peter Brewer</translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
+&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
+        <translation>&lt;p align=&quot;center&quot;&gt;Quantum GIS är licensierat under GNU General Public License&lt;p&gt;
+&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>QGIS Home Page</source>
+        <translation>QGIS Hemsida</translation>
+    </message>
+    <message>
+        <source>Subscribe to the QGIS-User mailing list</source>
+        <translation>Prenumerera på maillistan QGIS-User</translation>
+    </message>
+    <message>
+        <source>Providers</source>
+        <translation>Dataplugin</translation>
     </message>
 </context>
 <context>
@@ -1864,15 +1962,15 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
 </context>
 <context>
@@ -2062,7 +2160,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     <name>QgsDlgPgBufferBase</name>
     <message>
         <source>Buffer features</source>
-        <translation>Bufferdetaljer</translation>
+        <translation>Spara objekt i buffer</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -2110,7 +2208,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Unique field to use as feature id:</source>
-        <translation>Unikt fält att använda som detalj-ID:</translation>
+        <translation>Unikt fält att använda som objekt-ID:</translation>
     </message>
     <message>
         <source>Schema:</source>
@@ -2122,14 +2220,14 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;Buffra detaljer i lager: &lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Buffra objekt i lager: &lt;/h2&gt;</translation>
     </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerProperties</name>
     <message>
         <source>Single Symbol</source>
-        <translation>Enstaka Symbol</translation>
+        <translation>Enkel Symbol</translation>
     </message>
     <message>
         <source>Graduated Symbol</source>
@@ -2141,7 +2239,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Single Marker</source>
-        <translation>Enstaka Markör</translation>
+        <translation>Enkel Markör</translation>
     </message>
     <message>
         <source>Graduated Marker</source>
@@ -2149,7 +2247,11 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Unique Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Unik Symbol</translation>
+    </message>
+    <message>
+        <source>Unique Value Marker</source>
+        <translation>Unik Markör</translation>
     </message>
 </context>
 <context>
@@ -2204,7 +2306,7 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Features</source>
-        <translation>Detaljer</translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <source>Count</source>
@@ -2247,16 +2349,12 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
         <translation>Typ av teckenförklaring:</translation>
     </message>
     <message>
-        <source>Display/label field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Labels</source>
-        <translation type="unfinished">Etiketter</translation>
+        <translation>Etiketter</translation>
     </message>
     <message>
         <source>Display labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa etiketter</translation>
     </message>
 </context>
 <context>
@@ -2390,285 +2488,285 @@ Faktor</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation>Nedre</translation>
+        <translation type="obsolete">Nedre</translation>
     </message>
     <message>
         <source>Upper</source>
-        <translation>Övre</translation>
+        <translation type="obsolete">Övre</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Etikett</translation>
+        <translation type="obsolete">Etikett</translation>
     </message>
     <message>
         <source>Outline
 Color</source>
-        <translation>Kantfärg</translation>
+        <translation type="obsolete">Kantfärg</translation>
     </message>
     <message>
         <source>Outline
 Style</source>
-        <translation>Kantstil</translation>
+        <translation type="obsolete">Kantstil</translation>
     </message>
     <message>
         <source>Outline
 Width</source>
-        <translation>Kantbredd</translation>
+        <translation type="obsolete">Kantbredd</translation>
     </message>
     <message>
         <source>Fill
 Color</source>
-        <translation>Fyllningsfärg</translation>
+        <translation type="obsolete">Fyllningsfärg</translation>
     </message>
     <message>
         <source>Fill
 Pattern</source>
-        <translation>Fyllningsmönster</translation>
+        <translation type="obsolete">Fyllningsmönster</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassAttributesBase</name>
     <message>
         <source>GRASS Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-Attribut</translation>
     </message>
     <message>
         <source>Tab 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab 1</translation>
     </message>
     <message>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>resultat</translation>
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera</translation>
     </message>
     <message>
         <source>Update database record</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera databas</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished">Ny</translation>
+        <translation>Ny</translation>
     </message>
     <message>
         <source>Add new category using settings in GRASS Edit toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ny kategory med inställningarna i GRASS</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Radera</translation>
+        <translation>Radera</translation>
     </message>
     <message>
         <source>Delete selected category</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ny kategory med inställningarna i GRASS-Redigering</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditBase</name>
     <message>
         <source>GRASS Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-Redigering</translation>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategori</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Läge</translation>
     </message>
     <message>
         <source>Field (layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fält (lager)</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished">Inställningar</translation>
+        <translation>Inställningar</translation>
     </message>
     <message>
         <source>Snapping in screen pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Snappning i skärmpixlar</translation>
     </message>
     <message>
         <source>Symbology</source>
-        <translation type="unfinished">Symbologi</translation>
+        <translation>Symbologi</translation>
     </message>
     <message>
         <source>Column 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumn 1</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished">Ny Post</translation>
+        <translation>Ny Post</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabell</translation>
     </message>
     <message>
         <source>Add Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg Till Kolumn</translation>
     </message>
     <message>
         <source>Create / Alter Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa / Ändra Tabell</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Verktyg</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Verktygsrad</translation>
     </message>
     <message>
         <source>New line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny rad</translation>
     </message>
     <message>
         <source>F2</source>
-        <translation type="unfinished">F2</translation>
+        <translation>F2</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny punkt</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>New boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny gräns</translation>
     </message>
     <message>
         <source>F3</source>
-        <translation type="unfinished">F3</translation>
+        <translation>F3</translation>
     </message>
     <message>
         <source>New centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny centroid</translation>
     </message>
     <message>
         <source>F4</source>
-        <translation type="unfinished">F4</translation>
+        <translation>F4</translation>
     </message>
     <message>
         <source>Move vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytta nod</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <source>Add vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till nod</translation>
     </message>
     <message>
         <source>F6</source>
-        <translation type="unfinished">F6</translation>
+        <translation>F6</translation>
     </message>
     <message>
         <source>Delete vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Radera nod</translation>
     </message>
     <message>
         <source>F7</source>
-        <translation type="unfinished">F7</translation>
+        <translation>F7</translation>
     </message>
     <message>
         <source>Split line</source>
-        <translation type="unfinished"></translation>
+        <translation>Dela linje</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type="unfinished">F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
         <source>Move line</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytta linje</translation>
     </message>
     <message>
         <source>F9</source>
-        <translation type="unfinished">F9</translation>
+        <translation>F9</translation>
     </message>
     <message>
         <source>Delete line</source>
-        <translation type="unfinished"></translation>
+        <translation>Radera linje</translation>
     </message>
     <message>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <source>Edit categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera kategorier</translation>
     </message>
     <message>
         <source>Edit attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera attribut</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassRegionBase</name>
     <message>
         <source>GRASS Region Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS Regioninställningar</translation>
     </message>
     <message>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>N-S Res</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Rader</translation>
     </message>
     <message>
         <source>Cols</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumner</translation>
     </message>
     <message>
         <source>E-W Res</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Färg</translation>
+        <translation>Färg</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Bredd</translation>
+        <translation>Bredd</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
 </context>
 <context>
@@ -2781,7 +2879,7 @@ Pattern</source>
     </message>
     <message>
         <source>Feature</source>
-        <translation>Detalj</translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <source>Value</source>
@@ -2790,6 +2888,228 @@ Pattern</source>
     <message>
         <source>Close</source>
         <translation>Stäng</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLUDialogBase</name>
+    <message>
+        <source>Enter class bounds</source>
+        <translation>Ange begränsningar</translation>
+    </message>
+    <message>
+        <source>Lower value</source>
+        <translation>Lägsta värde</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>Upper value</source>
+        <translation>Högsta värde</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLabelDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation>Formulär1</translation>
+    </message>
+    <message>
+        <source>Source:</source>
+        <translation>Källa:</translation>
+    </message>
+    <message>
+        <source>Field containing label:</source>
+        <translation>Fält med etikett:</translation>
+    </message>
+    <message>
+        <source>Default label:</source>
+        <translation>Standardetikett:</translation>
+    </message>
+    <message>
+        <source>Preview:</source>
+        <translation>Förhandsvisning:</translation>
+    </message>
+    <message>
+        <source>QGIS Rocks!</source>
+        <translation>QGIS Rocks!</translation>
+    </message>
+    <message>
+        <source>Default Style</source>
+        <translation>Standardstil</translation>
+    </message>
+    <message>
+        <source>Font Style</source>
+        <translation>Typsnittsstil</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation>Typsnitt</translation>
+    </message>
+    <message>
+        <source>Font size units are in ...</source>
+        <translation>Typsnittsenheter är i ...</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation>Punkter</translation>
+    </message>
+    <message>
+        <source>Map units</source>
+        <translation>Kartenheter</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation>%</translation>
+    </message>
+    <message>
+        <source>Transparency:</source>
+        <translation>Genomskinlighet:</translation>
+    </message>
+    <message>
+        <source>Colour</source>
+        <translation>Färg</translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation>Position</translation>
+    </message>
+    <message>
+        <source>X Offset (pts):</source>
+        <translation>X-Position (pktr):</translation>
+    </message>
+    <message>
+        <source>Y Offset (pts):</source>
+        <translation>Y-Position (pktr):</translation>
+    </message>
+    <message>
+        <source>Offset units are in ...</source>
+        <translation>Positionsenheter är i ...</translation>
+    </message>
+    <message>
+        <source>Buffer Settings</source>
+        <translation>Bufferinställningar</translation>
+    </message>
+    <message>
+        <source>Buffer Labels?</source>
+        <translation>Använd Buffer?</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>Storlek:</translation>
+    </message>
+    <message>
+        <source>Buffer size is in ...</source>
+        <translation>Bufferstorlek är i ...</translation>
+    </message>
+    <message>
+        <source>Size is in map units</source>
+        <translation>Storlek är i kartenheter</translation>
+    </message>
+    <message>
+        <source>Size is in points</source>
+        <translation>Storlek är i punkter</translation>
+    </message>
+    <message>
+        <source>Alignment</source>
+        <translation>Justering</translation>
+    </message>
+    <message>
+        <source>Above</source>
+        <translation>Ovanför</translation>
+    </message>
+    <message>
+        <source>Over</source>
+        <translation>Över</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Vänster</translation>
+    </message>
+    <message>
+        <source>Below</source>
+        <translation>Nedanför</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Höger</translation>
+    </message>
+    <message>
+        <source>Above Right</source>
+        <translation>Ovanför Höger</translation>
+    </message>
+    <message>
+        <source>Below Right</source>
+        <translation>Nedanför Höger</translation>
+    </message>
+    <message>
+        <source>Above Left</source>
+        <translation>Ovanför Vänster</translation>
+    </message>
+    <message>
+        <source>Below Left</source>
+        <translation>Nedanför Vänster</translation>
+    </message>
+    <message>
+        <source>Angle (deg):</source>
+        <translation>Vinkel (grader):</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>°</source>
+        <translation>°</translation>
+    </message>
+    <message>
+        <source>Use best judgement when labels collide</source>
+        <translation>Använd heuristik när etiketter överlappar</translation>
+    </message>
+    <message>
+        <source>Data Defined Style</source>
+        <translation>Datadefinierad stil</translation>
+    </message>
+    <message>
+        <source>&amp;Font family:</source>
+        <translation>&amp;Typsnitt:</translation>
+    </message>
+    <message>
+        <source>&amp;Italic:</source>
+        <translation>&amp;Kursiv:</translation>
+    </message>
+    <message>
+        <source>&amp;Underline:</source>
+        <translation>&amp;Understruken:</translation>
+    </message>
+    <message>
+        <source>&amp;Bold:</source>
+        <translation>&amp;Fet:</translation>
+    </message>
+    <message>
+        <source>&amp;Size:</source>
+        <translation>&amp;Storlek:</translation>
+    </message>
+    <message>
+        <source>X Coordinate:</source>
+        <translation>X-Koordinat:</translation>
+    </message>
+    <message>
+        <source>Y Coordinate:</source>
+        <translation>Y-Koordinat:</translation>
+    </message>
+    <message>
+        <source>Placement:</source>
+        <translation>Placering:</translation>
+    </message>
+    <message>
+        <source>&amp;Colour:</source>
+        <translation>&amp;Färg:</translation>
     </message>
 </context>
 <context>
@@ -2913,11 +3233,11 @@ Pattern</source>
     </message>
     <message>
         <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation>För att välja detaljer måste du välja ett aktivt lager genom att klicka på dess namn i teckenförklaringen</translation>
+        <translation>För att välja objekt måste du välja ett aktivt lager genom att klicka på dess namn i teckenförklaringen</translation>
     </message>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation>För att identifiera detaljer måste du välja ett aktivt lager genom att klicka på dess namn i teckenförklaringen</translation>
+        <translation>För att identifiera objekt måste du välja ett aktivt lager genom att klicka på dess namn i teckenförklaringen</translation>
     </message>
 </context>
 <context>
@@ -3250,7 +3570,7 @@ Pattern</source>
     </message>
     <message>
         <source>Search Radius for Identifying Features</source>
-        <translation>Sökradie för identifiering av detaljer</translation>
+        <translation>Sökradie för identifiering av objekt</translation>
     </message>
     <message>
         <source>Value</source>
@@ -3322,15 +3642,15 @@ med att identifiera detaljer utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
-        <translation>Kartbilden kommer att uppdateras efter att såhär många detaljer har lästs från datakällan</translation>
+        <translation>Kartbilden kommer att uppdateras efter att såhär många objekt har lästs från datakällan</translation>
     </message>
     <message>
         <source>features</source>
-        <translation>detaljer</translation>
+        <translation>objekt</translation>
     </message>
     <message>
         <source>(Set to 0 to not update the display until all features have been read)</source>
-        <translation>(Sätt till 0 för att inte uppdatera förrän alla detaljer har lästs)</translation>
+        <translation>(Sätt till 0 för att inte uppdatera förrän alla objekt har lästs)</translation>
     </message>
     <message>
         <source>&amp;Selection</source>
@@ -3353,24 +3673,24 @@ identifying features without zooming in very close.
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Kartvyns bredd) * ( Värde/1000.0)&lt;/i&gt;
 &lt;br&gt;
 QGIS använder värdet 5 som standard. Öka värdet om du har problem 
-med att identifiera detaljer utan att zooma in väldigt nära.
+med att identifiera objekt utan att zooma in väldigt nära.
 &lt;/html&gt;</translation>
     </message>
     <message>
         <source>SVG Options</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-Inställningar</translation>
     </message>
     <message>
         <source>SVG oversampling factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Översamplingsfaktor</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;OBS: &lt;/b&gt;Ett högt värde ger mjukare SVG-symboler, men kan göra QGIS långsammare</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -3460,7 +3780,7 @@ med att identifiera detaljer utan att zooma in väldigt nära.
     <name>QgsPgGeoprocessing</name>
     <message>
         <source>Buffer features in layer %1</source>
-        <translation>Buffra detaljer i lager %1</translation>
+        <translation>Buffra objekt i lager %1</translation>
     </message>
     <message>
         <source>Error connecting to the database</source>
@@ -4204,6 +4524,10 @@ med att identifiera detaljer utan att zooma in väldigt nära.
         <source>Fill</source>
         <translation>Fyllning</translation>
     </message>
+    <message>
+        <source>Label</source>
+        <translation>Etikett</translation>
+    </message>
 </context>
 <context>
     <name>QgsSpitBase</name>
@@ -4253,11 +4577,11 @@ med att identifiera detaljer utan att zooma in väldigt nära.
     </message>
     <message>
         <source>Feature Class</source>
-        <translation>Detaljklass</translation>
+        <translation>Objektklass</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation>Detaljer</translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <source>DB Relation Name</source>
@@ -4364,15 +4688,30 @@ med att identifiera detaljer utan att zooma in väldigt nära.
     <name>QgsUValDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation type="unfinished">Formulär1</translation>
+        <translation>Formulär1</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation type="unfinished">Klassifikationsfält:</translation>
+        <translation>Klassifikationsfält:</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished">Ny Post</translation>
+        <translation>Ny Post</translation>
+    </message>
+</context>
+<context>
+    <name>QgsUValMaDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation>Formulär1</translation>
+    </message>
+    <message>
+        <source>Classification Field:</source>
+        <translation>Klassifikationsfält:</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation>Ny Post</translation>
     </message>
 </context>
 <context>
@@ -4422,15 +4761,15 @@ med att identifiera detaljer utan att zooma in väldigt nära.
     <name>QgsVectorLayerProperties</name>
     <message>
         <source>single symbol</source>
-        <translation>Enstaka symbol</translation>
+        <translation type="obsolete">Enstaka symbol</translation>
     </message>
     <message>
         <source>graduated symbol</source>
-        <translation>graderad symbol</translation>
+        <translation type="obsolete">graderad symbol</translation>
     </message>
     <message>
         <source>continuous color</source>
-        <translation>kontinuerlig färg</translation>
+        <translation type="obsolete">kontinuerlig färg</translation>
     </message>
 </context>
 <context>

@@ -84,7 +84,7 @@ email                : tim at linfiniti.com
 #include "qgsrect.h"
 #include "qgisapp.h"
 #include "qgsrasterlayerproperties.h"
-#include "gdal_priv.h"
+#include <gdal_priv.h>
 
 //////////////////////////////////////////////////////////
 //
@@ -1766,10 +1766,6 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
   Note that this is a cpu intensive /slow task!*/
 const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
-  emit setStatus(QString("Retrieving stats for ")+layerName);
-#ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::retrieve stats for band " << theBandNoInt << std::endl;
-#endif
   //check if we have received a valid band number
   if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType != PALETTE)
   {
@@ -1793,6 +1789,14 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   {
     return myRasterBandStats;
   }
+  //onyl print message if we are actually gathering the stats
+  emit setStatus(QString("Retrieving stats for ")+layerName);
+  qApp->processEvents();
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::retrieve stats for band " << theBandNoInt << std::endl;
+#endif
+
+  
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
 
@@ -2954,7 +2958,6 @@ bool QgsRasterLayer::isEditable()
 {
     return false;
 }
-
 void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable )
 {
     #ifdef QGISDEBUG
@@ -3068,3 +3071,4 @@ double QgsRasterLayer::readValue ( void *data, GDALDataType type, int index )
     }
     return 0.0;
 }
+

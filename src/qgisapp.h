@@ -377,6 +377,8 @@ private:
     * before opening/creating a new one or exiting the application
     */
     bool mProjectIsDirtyFlag;
+    //! Flag to indicate if the splash screen is shown on startup
+    bool myHideSplashFlag;
     //! menu map (key is name, value is menu id)
     std::map<QString, int>mMenuMapByName;
     //! menu map (key is menu id, value is name)
