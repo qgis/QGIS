@@ -87,6 +87,7 @@
 #include "qgsmaplayerinterface.h"
 #include "qgsmarkersymbol.h"
 #include "qgspolygonsymbol.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 
@@ -1319,7 +1320,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 }
 
 		//snap point to points within the vector layer snapping tolerance
-		vlayer->snapPoint(idPoint);
+		vlayer->snapPoint(idPoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
 
                 QgsFeature* f = new QgsFeature(0,"WKBPoint");
                 int size=5+2*sizeof(double);
@@ -1378,7 +1379,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           }
 
 	  QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-	  vlayer->snapPoint(digitisedpoint);
+	  vlayer->snapPoint(digitisedpoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
           mCaptureList.push_back(digitisedpoint);
           if(mCaptureList.size()>1)
           {
