@@ -1362,7 +1362,6 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     QDomNode graduatedmarkernode = layer_node.namedItem("graduatedmarker");
     QDomNode uniquevaluenode = layer_node.namedItem("uniquevalue");
     QDomNode labelnode = layer_node.namedItem("label");
-    QDomNode labelattributesnode = layer_node.namedItem("labelattributes");
     QDomNode uniquemarkernode = layer_node.namedItem("uniquevaluemarker");
 
     //std::auto_ptr<QgsRenderer> renderer; actually the renderer SHOULD NOT be
@@ -1425,12 +1424,15 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 #if QGISDEBUG
     std::cout << "Testing if qgsvectorlayer can call label readXML routine" << std::endl;
 #endif
-    if(!labelnode.isNull())
+
+    QDomNode labelattributesnode = layer_node.namedItem("labelattributes");
+
+    if(!labelattributesnode.isNull())
     {
 #if QGISDEBUG
         std::cout << "qgsvectorlayer calling label readXML routine" << std::endl;
 #endif
-        mLabel->readXML(labelnode);
+        mLabel->readXML(labelattributesnode);
     }
 
     return valid;               // should be true if read successfully
