@@ -604,7 +604,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
 
           //dont draw this point if it is no data !
           //gdal should return -9999 when a cell is null, but it seems to return 0 rather
-          if (myGrayValInt != 0)  //noDataValueDouble)
+          //when this is resolved the first clause below should be removed.
+          if ((myGrayValInt != 0) && (myGrayValInt != noDataValueDouble))
             {
               // We need to make sure the values are 0-255
               myGrayValInt = static_cast < int >((255 / myRangeDouble) * myGrayValInt);
@@ -707,7 +708,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
           int myInt = myGdalScanData[myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt];
           // draw this point if it is not  no_data !
           //gdal should return -9999 when a cell is null, but it seems to return 0 rather
-          if (myInt != noDataValueDouble)
+          if ((myInt != noDataValueDouble) && (myInt != 0)) //should not need the second clause!
             {
               //double check that myInt >= min and <= max
               //this is relevant if we are plotting within stddevs
