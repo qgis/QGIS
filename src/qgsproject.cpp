@@ -272,6 +272,9 @@ _getMapUnits( QDomDocument const & doc )
 
    XML in file has this form:
      <qgis projectname="default project">
+        <title>a project title</title>
+
+  @todo XXX we should go with the attribute xor <title>, not both.
  */
 static
 void
@@ -279,10 +282,31 @@ _getTitle( QDomDocument const & doc, QString & title )
 {
     QDomNodeList nl = doc.elementsByTagName("title");
 
-    QDomNode    node    = nl.item(0); // there should only be one, so zeroth element ok
-    QDomElement element = node.toElement();
+    if ( ! nl.count() )
+    {
+        qDebug( "%s : %s %s", __FILE__ , __LINE__, " unable to find title element\n" );
+        return;
+    }
 
-    title = element.attribute("projectname");
+    QDomNode titleNode = nl.item(0); // there should only be one, so zeroth element ok
+
+    if ( ! titleNode.hasChildNodes() ) // if not, then there's no actual text
+    {
+        qDebug( "%s : %s %s", __FILE__ , __LINE__, " unable to find title element\n" );
+        return;
+    }
+
+    QDomNode titleTextNode = titleNode.firstChild(); // should only have on child
+
+    if ( ! titleTextNode.isText() )
+    {
+        qDebug( "%s : %s %s", __FILE__ , __LINE__, " unable to find title element\n" );
+        return;
+    }
+
+    QDomText titleText = titleTextNode.toText();
+
+    title = titleText.data();
 
 } // _getTitle
 
