@@ -1,15 +1,40 @@
 QGIS Change Log
-ChangeLog,v 1.137 2004/06/18 15:06:55 larsl Exp
+ChangeLog,v 1.138 2004/06/19 12:41:28 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+
+2004-06-16 [ts] 0.3.0devel42
+
+** Add white buffer around scalebar text...buffer around lines to come...
 
 2004-06-18 [larsl] 0.3.0devel41
 ** Added an option for setting the length of the scale bar to closest
    integer < 10 times power of 10
+   
+2004-06-16 [ts] 0.3.0devel40
+
+** Win32 support for package path - which will hopefully ensure pyramid and overview mini 
+   icons are displayed on legend entry now.
+
+** Beginnings of generic vector file writer - incomplete and doesnt do anything useful 
+   yet except has abilty to make a shapefile with a couple of user defined fields e.g. 
+   to create a new point shapefile:
+    
+   QgsVectorFileWriter myFileWriter("/tmp/test.shp", wkbPoint);
+   if (myFileWriter.initialise())
+   {
+     myFileWriter.createField("TestInt",OFTInteger,8,0);
+     myFileWriter.createField("TestRead",OFTReal,8,3);
+     myFileWriter.createField("TestStr",OFTString,255,0);
+     myFileWriter.writePoint(&theQgsPoint);
+   }
+
 
 2004-06-16 [larsl] 0.3.0devel40
 ** Added skeleton code for importing other GPS file formats using GPSBabel
 
+>>>>>>> 1.136
 2004-06-16 [ts] 0.3.0devel39
 ** Added small icon displayed on raster legend showing whether this layer is in overview 
    or not. This icon needs "petification!". Need to do the ame for vector once I figure 
