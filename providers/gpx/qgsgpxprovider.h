@@ -51,6 +51,7 @@ public:
   */
   QgsFeature * getNextFeature(bool fetchAttributes=false);
   bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
+  QgsFeature * getNextFeature(std::list<int>& attlist);
   
   /** Get the feature type. This corresponds to 
       WKBPoint,

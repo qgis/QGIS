@@ -18,6 +18,7 @@
 #define QQGSDATAPROVIDER_H
 #include <qstring.h>
 #include <vector>
+#include <list>
 class QgsRect;
 class QgsFeature;
 class QgsField;
@@ -43,6 +44,10 @@ public:
   * @return QgsFeature
   */
   virtual QgsFeature * QgsDataProvider::getNextFeature(bool fetchAttributes=false)=0;
+  /**Get the next feature resulting from a select operation.
+   *@param attlist a list containing the indexes of the attribute fields to copy
+   */
+  virtual QgsFeature * QgsDataProvider::getNextFeature(std::list<int>& attlist)=0;
   /**
    * Get the next feature using new method
    * TODO - make this pure virtual once it works and change existing providers

@@ -40,6 +40,8 @@ class QgsSiMaRenderer: public QgsRenderer
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ofstream& xml);
     bool needsAttributes();
+    /**Returns an empty list, since no classification attributes are used*/
+    virtual std::list<int> classificationAttributes();
     QgsRenderItem* item();
  protected:
     QgsRenderItem* mItem;

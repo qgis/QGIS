@@ -186,3 +186,9 @@ void QgsSiMaRenderer::writeXML(std::ofstream& xml)
 	qWarning("warning, type cast failed in qgsprojectio.cpp line 715"); 
     }
 }
+
+std::list<int> QgsSiMaRenderer::classificationAttributes()
+{
+    std::list<int> list;
+    return list;//return an empty list
+}

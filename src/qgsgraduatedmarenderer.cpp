@@ -239,3 +239,10 @@ void QgsGraduatedMaRenderer::writeXML(std::ofstream& xml)
     }
     xml << "\t\t</graduatedmarker>\n";
 }
+
+std::list<int> QgsGraduatedMaRenderer::classificationAttributes()
+{
+    std::list<int> list;
+    list.push_back(mClassificationField);
+    return list;
+}

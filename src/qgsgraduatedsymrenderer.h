@@ -65,6 +65,8 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     virtual void writeXML(std::ofstream& xml);
     /** Returns true*/
     bool needsAttributes();
+    /**Returns a list with the index to the classification field*/
+    virtual std::list<int> classificationAttributes();
  protected:
     /**Name of the classification field (it must be a numerical field)*/
     int mClassificationField;
