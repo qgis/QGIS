@@ -27,9 +27,11 @@ email                : tim@linfiniti.com
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsrasterlayer.h"
+#include "../../src/qgsdataprovider.h"
 #include "plugin.h"
 
 
+#include <qeventloop.h>
 #include <qfiledialog.h>
 #include <qtoolbar.h>
 #include <qmenubar.h>
@@ -39,8 +41,11 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qprocess.h>
+#include <qprogressdialog.h>
 
 //non qt includes
+#include <cassert>
 #include <iostream>
 
 //the gui subclass
@@ -147,6 +152,19 @@ void Plugin::run()
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  connect(myPluginGui, SIGNAL(loadGPXFile(QString, bool, bool, bool)), 
+	  this, SLOT(loadGPXFile(QString, bool, bool, bool)));
+  connect(myPluginGui, SIGNAL(importGPSFile(QString, QString, bool, bool, bool,
+					    QString, QString)),
+	  this, SLOT(importGPSFile(QString, QString, bool, bool, bool, QString,
+				   QString)));
+  connect(myPluginGui, SIGNAL(downloadFromGPS(QString, QString, bool, bool,
+					      bool, QString, QString)),
+	  this, SLOT(downloadFromGPS(QString, QString, bool, bool, bool,
+				     QString, QString)));
+  connect(myPluginGui, SIGNAL(uploadToGPS(QgsVectorLayer*, QString, QString)),
+	  this, SLOT(uploadToGPS(QgsVectorLayer*, QString, QString)));
+  
   myPluginGui->show();
 }
 
@@ -170,6 +188,202 @@ void Plugin::unload()
   menuBarPointer->removeItem(menuIdInt);
   delete toolBarPointer;
 }
+
+void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
+			 bool loadTracks) {
+
+  //check if input file is readable
+  QFileInfo fileInfo(filename);
+  if (!fileInfo.isReadable()) {
+    QMessageBox::warning(NULL, "GPX/LOC Loader",
+			 "Unable to read the selected file.\n"
+			 "Please reselect a valid file." );
+    return;
+  }
+  
+    // add the requested layers
+  if (loadTracks)
+    emit drawVectorLayer(filename + "?type=track", 
+			 fileInfo.baseName() + ", tracks", "gpx");
+  if (loadRoutes)
+    emit drawVectorLayer(filename + "?type=route", 
+			 fileInfo.baseName() + ", routes", "gpx");
+  if (loadWaypoints)
+    emit drawVectorLayer(filename + "?type=waypoint", 
+			 fileInfo.baseName() + ", waypoints", "gpx");
+}
+
+
+void Plugin::importGPSFile(QString inputFilename, QString inputFormat, 
+			   bool importWaypoints, bool importRoutes, 
+			   bool importTracks, QString outputFilename, 
+			   QString layerName) {
+
+  // what features does the user want to import?
+  QString typeArg;
+  if (importWaypoints)
+    typeArg = "-w";
+  else if (importRoutes)
+    typeArg = "-r";
+  else if (importTracks)
+    typeArg = "-t";
+  
+  // try to start the gpsbabel process
+  QStringList babelArgs;
+  babelArgs<<"gpsbabel"<<typeArg<<"-i"<<inputFormat<<"-o"<<"gpx"
+	   <<inputFilename<<outputFilename;
+  QProcess babelProcess(babelArgs);
+  if (!babelProcess.start()) {
+    QMessageBox::warning(NULL, "Could not start process",
+			 "Could not start GPSBabel!");
+    return;
+  }
+  
+  // wait for gpsbabel to finish (or the user to cancel)
+  QProgressDialog progressDialog("Importing data...", "Cancel", 0,
+				 NULL, 0, true);
+  progressDialog.show();
+  for (int i = 0; babelProcess.isRunning(); ++i) {
+    QApplication::eventLoop()->processEvents(0);
+    progressDialog.setProgress(i/64);
+    if (progressDialog.wasCancelled())
+      return;
+  }
+  
+  // did we get any data?
+  if (babelProcess.exitStatus() != 0) {
+    QString babelError(babelProcess.readStderr());
+    QString errorMsg(QString("Could not import data from %1!\n\n")
+		     .arg(inputFilename));
+    errorMsg += babelError;
+    QMessageBox::warning(NULL, "Error importing data", errorMsg);
+    return;
+  }
+  
+  // add the layer
+  if (importTracks)
+    emit drawVectorLayer(outputFilename + "?type=track", 
+			 layerName, "gpx");
+  if (importRoutes)
+    emit drawVectorLayer(outputFilename + "?type=route", 
+			 layerName, "gpx");
+  if (importWaypoints)
+    emit drawVectorLayer(outputFilename + "?type=waypoint", 
+			 layerName, "gpx");
+}
+
+
+void Plugin::downloadFromGPS(QString protocol, QString deviceFilename,
+			     bool downloadWaypoints, bool downloadRoutes,
+			     bool downloadTracks, QString outputFilename,
+			     QString layerName) {
+
+  // what does the user want to download?
+  QString typeArg;
+  if (downloadWaypoints)
+    typeArg = "-w";
+  else if (downloadRoutes)
+    typeArg = "-r";
+  else if (downloadTracks)
+    typeArg = "-t";
+  
+  // try to start the gpsbabel process
+  QStringList babelArgs;
+  babelArgs<<"gpsbabel"<<typeArg<<"-i"<<protocol<<"-o"<<"gpx"
+	   <<deviceFilename<<outputFilename;
+  QProcess babelProcess(babelArgs);
+  if (!babelProcess.start()) {
+    QMessageBox::warning(NULL, "Could not start process",
+			 "Could not start GPSBabel!");
+    return;
+  }
+  
+  // wait for gpsbabel to finish (or the user to cancel)
+  QProgressDialog progressDialog("Downloading data...", "Cancel", 0,
+				 NULL, 0, true);
+  progressDialog.show();
+  for (int i = 0; babelProcess.isRunning(); ++i) {
+    QApplication::eventLoop()->processEvents(0);
+    progressDialog.setProgress(i/64);
+    if (progressDialog.wasCancelled())
+      return;
+  }
+  
+  // did we get any data?
+  if (babelProcess.exitStatus() != 0) {
+    QString babelError(babelProcess.readStderr());
+    QString errorMsg("Could not download data from GPS!\n\n");
+    errorMsg += babelError;
+    QMessageBox::warning(NULL, "Error downloading data", errorMsg);
+    return;
+  }
+  
+  // add the layer
+  if (downloadWaypoints)
+    emit drawVectorLayer(outputFilename + "?type=waypoint", 
+			 layerName, "gpx");
+  if (downloadRoutes)
+    emit drawVectorLayer(outputFilename + "?type=route", 
+			 layerName, "gpx");
+  if (downloadTracks)
+    emit drawVectorLayer(outputFilename + "?type=track", 
+			 layerName, "gpx");
+}
+
+
+void Plugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
+			 QString deviceFilename) {
+  
+  const QString& source(gpxLayer->getDataProvider()->getDataSourceUri());
+  
+  // what kind of data does the user want to upload?
+  QString typeArg;
+  if (source.right(8) == "waypoint")
+    typeArg = "-w";
+  else if (source.right(5) == "route")
+    typeArg = "-r";
+  else if (source.right(5) == "track")
+    typeArg = "-t";
+  else {
+    std::cerr<<source.right(8)<<std::endl;
+    assert(false);
+  }
+  
+  // try to start the gpsbabel process
+  QStringList babelArgs;
+  babelArgs<<"gpsbabel"<<typeArg<<"-i"<<"gpx"
+	   <<"-o"<<protocol
+	   <<source.left(source.findRev('?'))<<deviceFilename;
+  QProcess babelProcess(babelArgs);
+  if (!babelProcess.start()) {
+    QMessageBox::warning(NULL, "Could not start process",
+			 "Could not start GPSBabel!");
+    return;
+  }
+  
+  // wait for gpsbabel to finish (or the user to cancel)
+  QProgressDialog progressDialog("Uploading data...", "Cancel", 0,
+				 NULL, 0, true);
+  progressDialog.show();
+  for (int i = 0; babelProcess.isRunning(); ++i) {
+    QApplication::eventLoop()->processEvents(0);
+    progressDialog.setProgress(i/64);
+    if (progressDialog.wasCancelled())
+      return;
+  }
+  
+  // did we get an error?
+  if (babelProcess.exitStatus() != 0) {
+    QString babelError(babelProcess.readStderr());
+    QString errorMsg("Error while uploading data to GPS!\n\n");
+    errorMsg += babelError;
+    QMessageBox::warning(NULL, "Error uploading data", errorMsg);
+    return;
+  }
+}
+
+
+
 /** 
  * Required extern functions needed  for every plugin 
  * These functions can be called prior to creating an instance

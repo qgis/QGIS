@@ -55,6 +55,18 @@ class PluginGui : public PluginGuiBase
 signals:
       void drawRasterLayer(QString);
       void drawVectorLayer(QString,QString,QString);
+      void loadGPXFile(QString filename, bool showWaypoints, bool showRoutes, 
+		       bool showTracks);
+      void importGPSFile(QString inputFilename, QString inputFormat,
+			 bool importWaypoints, bool importRoutes, 
+			 bool importTracks, QString outputFilename, 
+			 QString layerName);
+      void downloadFromGPS(QString protocol, QString deviceFilename, 
+			   bool downloadWaypoints, bool downloadRoutes,
+			   bool downloadTracks, QString outputFilename, 
+			   QString layerName);
+      void uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
+		       QString deviceFilename);
 
 private:
       
