@@ -253,6 +253,9 @@ private:
 
     //! Overridden mouse release event
     void mouseReleaseEvent(QMouseEvent * e);
+    
+    //! Overridden mouse wheel event
+    void wheelEvent(QWheelEvent * e);
 
     //! Overridden resize event
     void resizeEvent(QResizeEvent * e);

@@ -1090,7 +1090,30 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
   emit extentsChanged(mCanvasProperties->currentExtent);
 } // resizeEvent
 
+void QgsMapCanvas::wheelEvent(QWheelEvent *e)
+{
+  // Zoom the map canvas in response to a mouse wheel event. Moving the
+  // wheel forward (away) from the user zooms in by a factor of 2. 
+  // TODO The scale factor needs to be customizable by the user.
+#ifdef QGISDEBUG
+  std::cout << "Wheel event delta " << e->delta() << std::endl;
+#endif
+  // change extent
+  double scaleFactor;
+  if(e->delta() > 0){
+    scaleFactor = .5;
+  }else{
+    scaleFactor = 2;
+  }
+  // transform the mouse pos to map coordinates
+  QgsPoint center  = mCanvasProperties->coordXForm->toMapPoint(e->x(), e->y());
+  mCanvasProperties->currentExtent.scale(scaleFactor,&center );
+  clear();
+  render();
+  emit extentsChanged(mCanvasProperties->currentExtent);
 
+
+}
 
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
