@@ -181,7 +181,7 @@ void QgsLabelDialog::init ( void )
   }
   if (myLabelAttributes->italicIsSet())
   {
-     mFont.setBold(myLabelAttributes->italic());
+     mFont.setItalic(myLabelAttributes->italic());
   }
   else
   {
