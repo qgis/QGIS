@@ -299,7 +299,7 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgV
 	p.setFont( f );
 	p.drawText(35,pixmap->height()-10,name);
 
-	QgsRangeRenderItem* ri = new QgsRangeRenderItem(sy,QString::number(-DBL_MAX,'f',6),QString::number(DBL_MAX,'f',6),"");
+	QgsRangeRenderItem* ri = new QgsRangeRenderItem(sy,QString::number(-DBL_MAX,'f',2),QString::number(DBL_MAX,'f',2),"");
 	addItem(ri);
 
 	QgsGraSyDialog* dialog=new QgsGraSyDialog(layer);
