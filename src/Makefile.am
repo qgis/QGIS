@@ -67,7 +67,9 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 			qgsmessageviewer.moc.cpp\
 			qgspluginmanagerbase.moc.cpp\
 			qgsrasterlayer.moc.cpp\
-			qgsshapefilelayer.moc.cpp
+			qgsshapefilelayer.moc.cpp \
+			qgsmapserverexportbase.moc.cpp \
+			qgsmapserverexport.moc.cpp
 qgis_UI = qgisappbase.h\
 			qgisappbase.cpp\
 			qgslegenditembase.h\
@@ -83,7 +85,8 @@ qgis_UI = qgisappbase.h\
 			qgspluginmanagerbase.h\
 			qgspluginmanagerbase.cpp\
 			qgsmessageviewer.h\
-			qgsmessageviewer.cpp
+			qgsmessageviewer.cpp \
+ 			qgsmapserverexportbase.cpp
 
 # UI dependencies			
 qgisappbase.h: qgisappbase.ui
