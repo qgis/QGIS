@@ -56,7 +56,7 @@ QgsProject * QgsProject::theProject_;
    ABC for property hierarchies
 
    Each sub-class is either a PropertyKey or PropertyValue.  PropertyKeys can
-   container either PropertyKeys or PropertyValues, thus describing an
+   contain either PropertyKeys or PropertyValues, thus describing an
    hierarchy.  PropertyValues are always graph leaves.
 
  */
@@ -72,7 +72,8 @@ public:
 
     /// return the QVariant value for the given key
     /**
-        keyName will be a QStringList that's been tokened by the caller from '/' delimiters
+        keyName will be a QStringList that's been tokenized by the caller from '/' delimiters
+
         @note will be QVariant::Invalid if no value
     */
     virtual QVariant value( QStringList & keyName ) const = 0;
@@ -108,6 +109,9 @@ public:
     virtual bool writeXML( QString const & nodeName, QDomNode & node, QDomDocument & document ) = 0;
 
     /// how many elements are contained within this one?
+    /**
+       @note does not recursively count all sub-keys, only immediate objects
+    */
     virtual size_t count() const = 0;
 
 }; // class Property
@@ -557,7 +561,7 @@ public:
 
     PropertyKey( )
     {
-        // since we own our properties, we responsible for deleting the
+        // since we own our properties, we are responsible for deleting the
         // contents
         properties_.setAutoDelete( true );
     }
@@ -570,7 +574,7 @@ public:
     */
     PropertyKey( QStringList & keyName, QVariant const & value )
     {
-        // since we own our properties, we responsible for deleting the
+        // since we own our properties, we are responsible for deleting the
         // contents
         properties_.setAutoDelete( true );
 
@@ -610,7 +614,7 @@ public:
     */
     /* virtual */ QVariant value( QStringList & keyName ) const
     {
-        // save the current free, which should be the front of the key list
+        // save the current key, which should be the front of the key list
         QString currentKey = keyName.front();
 
         // now pop it off
@@ -1161,11 +1165,17 @@ _getScopeProperties( QDomNode const & scopeNode,
 
     <properties>
         <fsplugin>
+            <foo type="int" >42</foo>
+            <baz type="int" >1</baz>
             <layers type="QStringList" >
                 <value>railroad</value>
-                <value>hydrop</value>
-                <value>athen-road</value>
+                <value>airport</value>
             </layers>
+            <xyqzzy type="int" >1</xyqzzy>
+            <bar type="double" >123.456</bar>
+            <feature_types type="QStringList" >
+                <value>type</value>
+            </feature_types>
         </fsplugin>
     </properties>
 
