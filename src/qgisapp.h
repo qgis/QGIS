@@ -53,10 +53,10 @@ public:
          void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
          /** \brief overloaded vesion of the privat addLayer method that takes a list of
          * filenames instead of prompting user with a dialog. */
-         void addLayer(QStringList theLayerQStringList);
+         void addLayer(QStringList const & theLayerQStringList);
          /** \brief overloaded vesion of the privat addLRasterayer method that takes a list of
          * filenames instead of prompting user with a dialog. */
-      	void addRasterLayer(QStringList theLayerQStringList);
+      	void addRasterLayer(QStringList const & theLayerQStringList);
         
 private:
 	 //private:
