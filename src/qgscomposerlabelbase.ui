@@ -1,0 +1,72 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsComposerLabelBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QgsComposerLabelBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>215</width>
+            <height>128</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Label Options</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mTextLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mFontButton</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Font</string>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mFontButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsComposerLabelBase</receiver>
+        <slot>changeFont()</slot>
+    </connection>
+    <connection>
+        <sender>mTextLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerLabelBase</receiver>
+        <slot>textChanged()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>changeFont()</slot>
+    <slot>textChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
