@@ -109,7 +109,7 @@
                         <string>Add Layer</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Add layer using the deimiter, file, and x/y fields specifed</string>
+                        <string>Add layer using the delimiter, file, and x/y fields specified</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</string>
