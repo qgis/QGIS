@@ -68,8 +68,8 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   void pbnOK_clicked();
   void pbnApply_clicked();
   void btnHelp_clicked();
-  
-  
+  void pbnQueryBuilder_clicked();
+
 
   protected:
   QgsVectorLayer *layer;
@@ -89,7 +89,7 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
 
 inline void QgsDlgVectorLayerProperties::setBufferDialog(QDialog* dialog)
 {
-    bufferDialog=dialog; 
+    bufferDialog=dialog;
 }
 
 inline QPixmap* QgsDlgVectorLayerProperties::getBufferPixmap()

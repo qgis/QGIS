@@ -36,3 +36,9 @@ void QgsDlgVectorLayerPropertiesBase::pbnCancel_pressed()
 {
 
 }
+
+
+void QgsDlgVectorLayerPropertiesBase::pbnQueryBuilder_clicked()
+{
+
+}
