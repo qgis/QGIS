@@ -140,12 +140,12 @@ void QgsSpit::removeFile()
   QListViewItemIterator it(lstShapefiles);
   while(it.current())
     if ( it.current()->isSelected() ){
-      for(std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit!=fileList.end(); vit++)
+      for(std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit!=fileList.end(); vit++){
         if((*vit)->getName()==(const char *)it.current()->text(0)){
-          //QgsShapeFile *temp_it = *vit;
           fileList.erase(vit);
-          //delete temp_it;
+          break;
         }
+      }  
       delete it.current();
       it = lstShapefiles->firstChild();
     }
@@ -190,6 +190,7 @@ void QgsSpit::helpInfo(){
 
 void QgsSpit::import(){
   QString connName = cmbConnections->currentText();
+  bool error = false;
   if (!connName.isEmpty()) {
     QSettings settings;
     QString key = "/Qgis/connections/" + connName;
@@ -198,19 +199,27 @@ void QgsSpit::import(){
     PgDatabase *pd = new PgDatabase((const char *) connInfo);
 
   	if (pd->Status() == CONNECTION_OK) {     
-      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 10000, this, "Progress");
+      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", total_features, this, "Progress");
       pro->setAutoClose(true);
+      pro->setAutoReset(true);
       pro->show();
 
-      //pd->ExecTuplesOk("BEGIN");
+      pd->ExecTuplesOk("BEGIN");
       for(int i=0; i<fileList.size(); i++){
         std::stringstream temp;
         temp << spinSrid->value();
         if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, total_features)){
-          QMessageBox::warning(this, "Import Shapefiles", "Problem executing SQL query");
-          pd->ExecTuplesOk("ROLLBACK");
+          QMessageBox::warning(this, "Import Shapefiles", "Problem inserting features");
+          error = true;
           break;
         }
+      }
+      
+      if(error)
+        pd->ExecCommandOk("ROLLBACK");
+      else{
+        int temp = pd->ExecCommandOk("COMMIT");
+        std::cout<<"commit " << temp << " " << pd->ErrorMessage() << std::endl;
       }
     }
     else 

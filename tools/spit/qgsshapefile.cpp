@@ -124,10 +124,9 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
     if(n < column_names.size() -1)
       query += ", ";
   }
-  query += ")";
-
+  query += ")";  
   conn->ExecTuplesOk((const char *)query);
-  
+
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table + "\', \'the_geom\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";
   conn->ExecTuplesOk((const char *)query);
@@ -151,6 +150,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
 
     conn->ExecTuplesOk((const char *)query);
 
+    pro->setProgress(pro->progress()+1);  
     delete[] geo_temp;
   }   
 

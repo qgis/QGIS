@@ -149,28 +149,6 @@
                     <string>SRID</string>
                 </property>
             </widget>
-            <widget class="QSpinBox">
-                <property name="name">
-                    <cstring>spinSrid</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>140</x>
-                        <y>70</y>
-                        <width>110</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="maxValue">
-                    <number>1000000</number>
-                </property>
-                <property name="minValue">
-                    <number>-1</number>
-                </property>
-                <property name="value">
-                    <number>-1</number>
-                </property>
-            </widget>
             <widget class="QListView">
                 <column>
                     <property name="text">
@@ -242,6 +220,28 @@
                     <string>Add ...</string>
                 </property>
             </widget>
+            <widget class="QSpinBox">
+                <property name="name">
+                    <cstring>spinSrid</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>140</x>
+                        <y>70</y>
+                        <width>110</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="maxValue">
+                    <number>1000000</number>
+                </property>
+                <property name="minValue">
+                    <number>-1</number>
+                </property>
+                <property name="value">
+                    <number>-1</number>
+                </property>
+            </widget>
         </widget>
         <widget class="QPushButton" row="2" column="1">
             <property name="name">
@@ -253,10 +253,10 @@
         </widget>
         <widget class="QPushButton" row="2" column="2">
             <property name="name">
-                <cstring>btnCancel</cstring>
+                <cstring>btnQuit</cstring>
             </property>
             <property name="text">
-                <string>Cancel</string>
+                <string>Quit</string>
             </property>
         </widget>
         <widget class="QPushButton" row="2" column="4">
@@ -358,7 +358,7 @@
         <slot>editConnection()</slot>
     </connection>
     <connection>
-        <sender>btnCancel</sender>
+        <sender>btnQuit</sender>
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
         <slot>close()</slot>
