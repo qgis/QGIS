@@ -31,7 +31,15 @@ class QgsGraSyExtensionWidget: public QScrollView
 {
     Q_OBJECT
  public:
+    /**Constructor
+       @param parent the parent widget
+       @param the index of the field, which is used to classify
+       @param mode the mode used for classification, e.g. QgsGraSyDialog::EQUAL_INTERVAL or QgsGraSyDialog::EMPTY
+       @param nofclasses the number of classes
+       @param vlayer a pointer to the vector layer
+    */
     QgsGraSyExtensionWidget(QWidget* parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer* vlayer);
+    /**Destructor*/
     ~QgsGraSyExtensionWidget();
     /**Returns the number of the field to classify*/
     int classfield();
@@ -40,20 +48,24 @@ class QgsGraSyExtensionWidget: public QScrollView
  protected:
     /**Number of the field to classify*/
     int m_classfield;
-    QGridLayout* m_gridlayout;
-    QgsGraSyDialog::mode m_mode;
-    int m_numberofclasses;
-    QgsVectorLayer* m_vectorlayer;
+    /**Layout object for the widget*/
+    QGridLayout* mGridLayout;
+    /**Stores the classification mode*/
+    QgsGraSyDialog::mode mMode;
+    /**Stores the number of classes*/
+    int mNumberOfClasses;
+    /**Pointer to the vector layer*/
+    QgsVectorLayer* mVectorLayer;
     /**Pointers to the widgets are stored so that they are accessible for other classes*/
     std::vector<QWidget*> m_widgetvector;
     virtual void resizeEvent (QResizeEvent* e);
  protected slots:
-    void selectColor();
-    void selectFillPattern();
-    void selectOutlineStyle();   
+     void selectColor();
+     void selectFillPattern();
+     void selectOutlineStyle();   
  private:
-    /**Do not use the default constructor*/
-    QgsGraSyExtensionWidget();
+     /**Do not use the default constructor*/
+     QgsGraSyExtensionWidget();
 
 };
 
