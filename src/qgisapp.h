@@ -22,6 +22,7 @@ class QRect;
 class QCanvasView;
 class QStringList;
 class QgsPoint;
+class QgsLegend;
 #include "qgisappbase.h"
 
 class QgsMapCanvas;
@@ -59,7 +60,7 @@ private:
 	//! Map canvas
 QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
-QWidget *mapToc;
+QgsLegend *mapLegend;
 //! scale factor
  double scaleFactor;
  //! Current map window extent in real-world coordinates
