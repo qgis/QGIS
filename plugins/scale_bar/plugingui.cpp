@@ -33,6 +33,7 @@ void PluginGui::pbnOK_clicked()
   hide();
   emit changePlacement(cboPlacement->currentText());
   emit changePreferredSize(spnSize->value());
+  emit changeSnapping(chkSnapping->isChecked());
   emit changeEnabled(chkEnable->isChecked());
   emit changeStyle(cboStyle->currentText());
   emit changeColour(frameColour->paletteBackgroundColor());
@@ -54,6 +55,10 @@ void PluginGui::setPreferredSize(int thePreferredSize)
   spnSize->setValue(thePreferredSize);
 }
 
+void PluginGui::setSnapping(bool theSnapping)
+{
+  chkSnapping->setChecked(theSnapping);
+}
 void PluginGui::setEnabled(bool theBool)
 {
   chkEnable->setChecked(theBool);

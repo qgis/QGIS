@@ -65,6 +65,8 @@ class Plugin:public QObject, public QgisPlugin
   void setPlacement(QString);
   //! set preferred size of scale bar
   void setPreferredSize(int);
+  //! set whether the scale bar length should snap to the closest A*10^B
+  void setSnapping(bool);
   //! set whether scale bar is enabled
   void setEnabled(bool);
   //! set the scale bar style
@@ -83,6 +85,8 @@ class Plugin:public QObject, public QgisPlugin
   QString mPlacement;
   //! The size preferred size of the scale bar
   int mPreferredSize;
+  //! Should we snap to integer times power of 10?
+  bool mSnapping;
   //! Scale bar enabled?
   bool mEnabled;
   //! Style of scale bar

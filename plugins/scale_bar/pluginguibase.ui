@@ -29,7 +29,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="0" column="1" rowspan="4" colspan="1">
+        <widget class="Line" row="0" column="1" rowspan="5" colspan="1">
             <property name="name">
                 <cstring>line1</cstring>
             </property>
@@ -49,7 +49,7 @@
                 <enum>Vertical</enum>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="0" rowspan="4" colspan="1">
+        <widget class="QLabel" row="0" column="0" rowspan="5" colspan="1">
             <property name="name">
                 <cstring>pixmapLabel2</cstring>
             </property>
@@ -99,7 +99,7 @@
                 <set>AlignCenter</set>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>layout4</cstring>
             </property>
@@ -154,14 +154,21 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QCheckBox" row="3" column="2">
+        <widget class="QTextEdit" row="1" column="2">
             <property name="name">
-                <cstring>chkEnable</cstring>
+                <cstring>teInstructions_2</cstring>
             </property>
             <property name="text">
-                <string>Enable scale bar</string>
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a 'preferred' size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
             </property>
-            <property name="checked">
+            <property name="wordWrap">
+                <enum>WidgetWidth</enum>
+            </property>
+            <property name="readOnly">
                 <bool>true</bool>
             </property>
         </widget>
@@ -324,21 +331,25 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QTextEdit" row="1" column="2">
+        <widget class="QCheckBox" row="3" column="2">
             <property name="name">
-                <cstring>teInstructions_2</cstring>
+                <cstring>chkEnable</cstring>
             </property>
             <property name="text">
-                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a 'preferred' size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</string>
+                <string>Enable scale bar</string>
             </property>
-            <property name="wordWrap">
-                <enum>WidgetWidth</enum>
+            <property name="checked">
+                <bool>true</bool>
             </property>
-            <property name="readOnly">
+        </widget>
+        <widget class="QCheckBox" row="4" column="2">
+            <property name="name">
+                <cstring>chkSnapping</cstring>
+            </property>
+            <property name="text">
+                <string>Snap scale bar length to power of 10 times integer</string>
+            </property>
+            <property name="checked">
                 <bool>true</bool>
             </property>
         </widget>
