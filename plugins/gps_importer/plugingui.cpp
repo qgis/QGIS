@@ -349,6 +349,10 @@ void PluginGui::populateDeviceComboBox() {
   }
 #endif
 
+#ifdef WIN32
+  cmbULDevice->insertItem("com1");
+  cmbULDevice->insertItem("com2");
+#endif
   // OSX, OpenBSD, NetBSD etc? Anyone?
 
 }
