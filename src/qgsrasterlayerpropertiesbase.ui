@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsRasterLayerPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -1164,148 +1164,160 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QSplitter" row="0" column="0">
+                    <widget class="QGroupBox" row="0" column="1">
                         <property name="name">
-                            <cstring>splitter2</cstring>
+                            <cstring>groupBox12</cstring>
                         </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
+                        <property name="maximumSize">
+                            <size>
+                                <width>200</width>
+                                <height>32767</height>
+                            </size>
                         </property>
-                        <widget class="QLayoutWidget">
+                        <property name="title">
+                            <string>Options</string>
+                        </property>
+                        <grid>
                             <property name="name">
-                                <cstring>layout9</cstring>
+                                <cstring>unnamed</cstring>
                             </property>
-                            <vbox>
+                            <widget class="QListBox" row="0" column="0">
                                 <property name="name">
-                                    <cstring>unnamed</cstring>
+                                    <cstring>lstHistogramLabels</cstring>
                                 </property>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>layout8</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <widget class="QLabel">
-                                            <property name="name">
-                                                <cstring>pixHistogram</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>356</width>
-                                                    <height>356</height>
-                                                </size>
-                                            </property>
-                                            <property name="frameShape">
-                                                <enum>Box</enum>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="scaledContents">
-                                                <bool>true</bool>
-                                            </property>
-                                        </widget>
-                                    </hbox>
-                                </widget>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>layout6</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <spacer>
-                                            <property name="name">
-                                                <cstring>spacer10</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>40</width>
-                                                    <height>21</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                        <widget class="QPushButton">
-                                            <property name="name">
-                                                <cstring>pbnHistRefresh</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Refresh</string>
-                                            </property>
-                                        </widget>
-                                        <spacer>
-                                            <property name="name">
-                                                <cstring>spacer10_2</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>40</width>
-                                                    <height>21</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                    </hbox>
-                                </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout7</cstring>
-                            </property>
-                            <vbox>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>256</width>
+                                        <height>32767</height>
+                                    </size>
+                                </property>
+                                <property name="selectionMode">
+                                    <enum>Multi</enum>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="1" column="0">
                                 <property name="name">
-                                    <cstring>unnamed</cstring>
+                                    <cstring>chkHistIgnoreOutOfRange</cstring>
                                 </property>
-                                <widget class="QListBox">
+                                <property name="text">
+                                    <string>Out Of Range OK?</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="2" column="0">
+                                <property name="name">
+                                    <cstring>chkHistAllowApproximation</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Allow Approximation</string>
+                                </property>
+                                <property name="checked">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                            <widget class="QButtonGroup" row="3" column="0">
+                                <property name="name">
+                                    <cstring>grpHistCharType</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Chart Type</string>
+                                </property>
+                                <grid>
                                     <property name="name">
-                                        <cstring>lstHistogramLabels</cstring>
+                                        <cstring>unnamed</cstring>
                                     </property>
-                                    <property name="maximumSize">
-                                        <size>
-                                            <width>256</width>
-                                            <height>32767</height>
-                                        </size>
-                                    </property>
-                                    <property name="selectionMode">
-                                        <enum>Multi</enum>
-                                    </property>
-                                </widget>
-                                <widget class="QCheckBox">
+                                    <widget class="QRadioButton" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>radHistTypeBar</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Bar Chart</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QRadioButton" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>radHistTypeLine</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Line Graph</string>
+                                        </property>
+                                        <property name="checked">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                            <widget class="QLayoutWidget" row="4" column="0">
+                                <property name="name">
+                                    <cstring>layout15</cstring>
+                                </property>
+                                <hbox>
                                     <property name="name">
-                                        <cstring>chkHistIgnoreOutOfRange</cstring>
+                                        <cstring>unnamed</cstring>
                                     </property>
-                                    <property name="text">
-                                        <string>Include Out Of Range</string>
-                                    </property>
-                                </widget>
-                                <widget class="QCheckBox">
-                                    <property name="name">
-                                        <cstring>chkHistAllowApproximation</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Allow Approximation</string>
-                                    </property>
-                                    <property name="checked">
-                                        <bool>true</bool>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel1_2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>X Range:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QSpinBox">
+                                        <property name="name">
+                                            <cstring>spinHistBinCount</cstring>
+                                        </property>
+                                        <property name="maxValue">
+                                            <number>1024</number>
+                                        </property>
+                                        <property name="minValue">
+                                            <number>8</number>
+                                        </property>
+                                        <property name="lineStep">
+                                            <number>8</number>
+                                        </property>
+                                        <property name="value">
+                                            <number>64</number>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QPushButton" row="5" column="0">
+                                <property name="name">
+                                    <cstring>pbnHistRefresh</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Refresh</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>pixHistogram</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>356</width>
+                                <height>356</height>
+                            </size>
+                        </property>
+                        <property name="frameShape">
+                            <enum>Box</enum>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="scaledContents">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </grid>
             </widget>
