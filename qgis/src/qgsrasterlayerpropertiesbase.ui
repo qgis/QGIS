@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>466</width>
-            <height>547</height>
+            <height>549</height>
         </rect>
     </property>
     <property name="caption">
@@ -330,7 +330,7 @@
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="QRadioButton" row="0" column="0" rowspan="1" colspan="3">
+                            <widget class="QRadioButton" row="0" column="0" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>rbtnThreeBand</cstring>
                                 </property>
@@ -338,7 +338,7 @@
                                     <string>Three Band</string>
                                 </property>
                             </widget>
-                            <widget class="QRadioButton" row="1" column="0" rowspan="1" colspan="3">
+                            <widget class="QRadioButton" row="1" column="0" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>rbtnSingleBand</cstring>
                                 </property>
@@ -346,7 +346,7 @@
                                     <string>Single Band</string>
                                 </property>
                             </widget>
-                            <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="3">
+                            <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>cboxInvertColorMap</cstring>
                                 </property>
@@ -354,7 +354,7 @@
                                     <string>Invert Color Map</string>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="4" column="0" rowspan="1" colspan="3">
+                            <widget class="QLabel" row="4" column="0" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>textLabel2_4_2</cstring>
                                 </property>
@@ -362,7 +362,7 @@
                                     <string>Transparency:</string>
                                 </property>
                             </widget>
-                            <widget class="QSlider" row="5" column="0" rowspan="1" colspan="3">
+                            <widget class="QSlider" row="5" column="0" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>sliderTransparency</cstring>
                                 </property>
@@ -378,7 +378,32 @@
                                     <string>None</string>
                                 </property>
                             </widget>
-                            <spacer row="6" column="1">
+                            <widget class="QTextEdit" row="2" column="0" rowspan="1" colspan="5">
+                                <property name="name">
+                                    <cstring>txtSymologyNotes</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="text">
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:14px"&gt;&lt;span style="font-size:13pt;font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
+                                </property>
+                                <property name="wordWrap">
+                                    <enum>WidgetWidth</enum>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="6" column="4">
+                                <property name="name">
+                                    <cstring>textLabel4</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&lt;p align="right"&gt;Full&lt;/p&gt;</string>
+                                </property>
+                            </widget>
+                            <spacer row="6" column="3">
                                 <property name="name">
                                     <cstring>spacer4</cstring>
                                 </property>
@@ -390,34 +415,34 @@
                                 </property>
                                 <property name="sizeHint">
                                     <size>
-                                        <width>100</width>
+                                        <width>20</width>
+                                        <height>21</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <spacer row="6" column="1">
+                                <property name="name">
+                                    <cstring>spacer4_2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
                                         <height>21</height>
                                     </size>
                                 </property>
                             </spacer>
                             <widget class="QLabel" row="6" column="2">
                                 <property name="name">
-                                    <cstring>textLabel4</cstring>
+                                    <cstring>lblTransparencyPercent</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;p align="right"&gt;Full&lt;/p&gt;</string>
-                                </property>
-                            </widget>
-                            <widget class="QTextEdit" row="2" column="0" rowspan="1" colspan="3">
-                                <property name="name">
-                                    <cstring>txtSymologyNotes</cstring>
-                                </property>
-                                <property name="enabled">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:10pt;font-family:Arial"&gt;
-&lt;p style="margin-top:14px"&gt;&lt;span style="font-size:11pt;font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</string>
-                                </property>
-                                <property name="wordWrap">
-                                    <enum>WidgetWidth</enum>
+                                    <string>0%</string>
                                 </property>
                             </widget>
                         </grid>
