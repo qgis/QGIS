@@ -38,7 +38,7 @@ class QgsMapToPixel;
 class QgsLabel
 {
 public:
-    QgsLabel ( std::vector<QgsField>& fields  );
+    QgsLabel ( std::vector<QgsField> const & fields  );
 
     ~QgsLabel();
 

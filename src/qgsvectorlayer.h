@@ -322,11 +322,16 @@ private:                       // Private attributes
   bool valid;
   bool registered;
 
-  enum ENDIAN
+  /** constants for endian-ness 
+    XDR is network, or big-endian, byte order
+    NDR is little-endian byte order
+  */
+  typedef enum ENDIAN
   {
-    NDR = 1,
-    XDR = 0
-  };
+    XDR = 0,
+    NDR = 1
+  } endian_t;
+  
   enum WKBTYPE
   {
     WKBPoint = 1,
@@ -337,7 +342,7 @@ private:                       // Private attributes
     WKBMultiPolygon
   };
 private:                       // Private methods
-  int endian();
+  endian_t endian();
   // pointer for loading the provider library
   QLibrary *myLib;
   //! Pointer to the identify results dialog

@@ -45,7 +45,7 @@ static const char * const ident_ =
     "$Id$";
 
 
-QgsLabel::QgsLabel( std::vector<QgsField>& fields )
+QgsLabel::QgsLabel( std::vector<QgsField> const & fields )
 {
 #ifdef QGISDEBUG
     std::cerr << "QgsLabel::QgsLabel()" << std::endl;

@@ -28,6 +28,13 @@
 #include <sstream>
 #include <memory>
 
+// for htonl
+#ifdef WIN32
+#include <winsock.h>
+#else
+#include <netinet/in.h>
+#endif
+
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qpainter.h>
@@ -413,22 +420,22 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cX
 }
 
 
-int QgsVectorLayer::endian()
+QgsVectorLayer::endian_t QgsVectorLayer::endian()
   {
-    char *chkEndian = new char[4];
-    memset(chkEndian, '\0', 4);
-    chkEndian[0] = 0xE8;
+//     char *chkEndian = new char[4];
+//     memset(chkEndian, '\0', 4);
+//     chkEndian[0] = 0xE8;
 
-    int *ce = (int *) chkEndian;
-    int retVal;
-    if (232 == *ce)
-      retVal = NDR;
-    else
-      retVal = XDR;
+//     int *ce = (int *) chkEndian;
+//     int retVal;
+//     if (232 == *ce)
+//       retVal = NDR;
+//     else
+//       retVal = XDR;
 
-    delete [] chkEndian;
+//     delete [] chkEndian;
 
-    return retVal;
+    return (htonl(1) == 1) ? QgsVectorLayer::XDR : QgsVectorLayer::NDR ;
   }
 
   void QgsVectorLayer::identify(QgsRect * r)

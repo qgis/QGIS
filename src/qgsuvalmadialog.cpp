@@ -46,10 +46,12 @@ QgsUValMaDialog::QgsUValMaDialog(QgsVectorLayer* vl): QgsUValMaDialogBase(), mVe
     QgsVectorDataProvider *provider;
     if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
     {
-	std::vector < QgsField > &fields = provider->fields();
+	std::vector < QgsField > const & fields = provider->fields();
 	QString str;
 	
-	for (std::vector < QgsField >::iterator it = fields.begin(); it != fields.end(); ++it)
+	for (std::vector < QgsField >::const_iterator it = fields.begin(); 
+             it != fields.end(); 
+             ++it)
         {
 	    str = (*it).name();
 	    str = str.left(1).upper() + str.right(str.length() - 1);  //make the first letter uppercase

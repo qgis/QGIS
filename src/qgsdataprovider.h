@@ -16,13 +16,24 @@
 
 #ifndef QQGSDATAPROVIDER_H
 #define QQGSDATAPROVIDER_H
-#include <qstring.h>
+
 #include <vector>
 #include <list>
+
+// for htonl
+#ifdef WIN32
+#include <winsock.h>
+#else
+#include <netinet/in.h>
+#endif
+
+#include <qstring.h>
+
 class QgsRect;
 class QgsFeature;
 class QgsField;
 class QgsDataSourceURI;
+
 /** \class QgsDataProvider
 * \brief Abstract base class for spatial data provider implementations
   *@author Gary E.Sherman
@@ -67,11 +78,36 @@ public:
   */
   //virtual std::vector<QgsFeature>& QgsDataProvider::identify(QgsRect *rect)=0;
 
-   /**
-   * Return the endian of this layer.
-   * @return 0 for NDR (little endian), 1 for XDR (big endian
+  /** type for byte order
+
+    XDR is for network byte order, or big-endian
+    NDR is for little-endian systems
+
+    @note that default values were taken from similarly named WKB types
    */
-  virtual int endian()=0;
+  typedef enum
+  {
+    XDR = 0,                    // network byte order (big-endian)
+    NDR = 1                     // little endian
+  } endian_t;
+
+   /**
+      Return the endian of this layer.
+
+      XDR for network, or big-endian, byte order
+      NDR for little-endian byte order
+
+      @note 
+
+      By default this returns the endian-ness of the current platform.
+      Sub-classes are free to over-ride this to perhaps return endian-ness of
+      data as stored persistently instead of local hardware architecture
+      endian-ness.
+   */
+    virtual endian_t endian()
+    {
+      return (htonl(1) == 1) ? XDR : NDR;
+    }
 
   /**
    * Returns true if this is a valid layer. It is up to individual providers
