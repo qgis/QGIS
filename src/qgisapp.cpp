@@ -581,7 +581,8 @@ void QgisApp::testPluginFunctions()
 			std::cout << "Plugin name: " << pl->pluginName() << std::endl;
 			std::cout << "Plugin version: " << pl->pluginVersion() << std::endl;
 			std::cout << "Plugin description: " << pl->pluginDescription() << std::endl;
-
+          QMessageBox::information(this,"Plugin Information","QGis loaded the following plugin:\nName: "
+            + pl->pluginName() + "\nVersion: " + pl->pluginVersion() + "\nDescription: " + pl->pluginDescription());
 			// unload the plugin (delete it)
 			std::cout << "Attempting to resolve the unload function" << std::endl;
 			unload_t *ul = (unload_t *) myLib.resolve("unload");
@@ -589,11 +590,13 @@ void QgisApp::testPluginFunctions()
 				ul(pl);
 				std::cout << "Unloaded the plugin\n";
 			} else {
-				std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
+ 				std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
 			}
 		}
-	} else
-		std::cout << "Unable to load library" << std::endl;
+	} else{
+               QMessageBox::warning(this,"Unable to Load Plugin","QGis was unable to load the plugin from: ../plugins/libqgisplugin.so.1.0.0");
+        		std::cout << "Unable to load library" << std::endl;
+          }
 }
 
 void QgisApp::saveWindowState()
