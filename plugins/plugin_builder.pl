@@ -9,22 +9,32 @@
 # $Id$ #
 
 # get the needed information from the user
-print "Directory for the new plugin: ";
+print "\n\nEnter the directory name under qgis/plugins/ where your new plugin will be created.\n";
+print "We suggest using a lowercase underscore separated name e.g. clever_plugin\n";
+print "Directory for the new plugin:";
 $pluginDir =<STDIN>;
 chop $pluginDir;
 
+print "\n\nEnter the name that will be used when creating the plugin library and should be\n";
+print "entered as a mixed case name with no spaces. e.g. CleverPlugin\n";
 print "Plugin name: " ;
 $pluginName = <STDIN>;
 chop $pluginName;
 
+print "\n\nEnter a short description (typically one line)\n";
+print "e.g. The clever plugin does clever stuff in qgis\n";
 print "Plugin description: " ;
 $pluginDescription = <STDIN>;
 chop $pluginDescription;
 
+print "\n\n Enter the name of the application menu that will be created for your plugin\n";
+print "Clever Tools\n";
 print "Menu name: ";
 $menuName = <STDIN>;
 chop $menuName;
 
+print "\n\n Enter the name of the menu entry  (under the menu that you have just defined) that\n";
+print "will be used to invoke your plugin. e.g. Clever Plugin\n";
 print "Menu item name: ";
 $menuItemName = <STDIN>;
 chop $menuItemName;
@@ -36,6 +46,7 @@ Summary of plugin parameters:
 ---------------------------------------------
 Plugin directory      $pluginDir
 Name of the plugin:   $pluginName
+Description of the plugin:   $pluginDescription
 Menu name:            $menuName
 Menu item name:       $menuItemName
 
