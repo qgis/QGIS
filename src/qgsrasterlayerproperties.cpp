@@ -754,7 +754,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
       if ( myItem->isSelected() )
       {
         //mark to be pyramided
-        myPyramidList[myCounterInt+1].existsFlag=true;
+        myPyramidList[myCounterInt].existsFlag=true;
       }
   }
   //
