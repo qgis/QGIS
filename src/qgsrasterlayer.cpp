@@ -106,14 +106,23 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     layerExtent.setXmin(adfGeoTransform[0]);
     layerExtent.setYmax(adfGeoTransform[3]);
     layerExtent.setYmin(myYMinDouble);
-
+    //
+    // Set up the x and y dimensions of this raster layer
+    //
+    rasterXDimInt = gdalDataset->GetRasterBand( 1 )->GetXSize();
+    rasterYDimInt = gdalDataset->GetRasterBand( 1 )->GetXSize();
+    //
+    // Determin the no data value
+    //
+    noDataValueDouble = gdalDataset->GetRasterBand( 1 )->GetNoDataValue();
+     
     //initialise the raster band stats vector
     for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
     {
         GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( i );
         QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
         RasterBandStats myRasterBandStats;
-        myRasterBandStats.bandName=myColorQString;
+        myRasterBandStats.bandName=myColorQString + " (" + QString::number(i) + ")";
         //myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;        
         myRasterBandStats.bandNoInt=i;
         myRasterBandStats.statsGatheredFlag=false;
@@ -145,9 +154,18 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     }
     else if (rasterLayerType==MULTIBAND)
     {
-        redBandNameQString="Red"; // sensible default
-        greenBandNameQString="Green"; // sensible default
-        blueBandNameQString="Blue"; // sensible default
+        //we know we have at least 2 layers...
+        redBandNameQString=getRasterBandName(1); // sensible default
+        greenBandNameQString=getRasterBandName(2); // sensible default
+        //for the third layer we cant be sure so..
+        if (gdalDataset->GetRasterCount() > 2)
+        {
+          blueBandNameQString=getRasterBandName(2); // sensible default
+        }
+        else
+        {
+          blueBandNameQString="Not Set"; // sensible default        
+        }
         grayBandNameQString="Not Set"; //sensible default
         drawingStyle=MULTI_BAND_COLOR; //sensible default
     }
@@ -311,12 +329,6 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
     myRasterViewPort->rectYOffsetInt = static_cast<int>((layerExtent.yMax() - theViewExtent->yMax()) / fabs(adfGeoTransform[5]));
     myRasterViewPort->rectYOffsetInt = myRasterViewPort->rectYOffsetInt >? 0;
 
-    //get the first raster band so we can dinf out the nodata value
-    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( 1 );
-
-
-
-    myRasterViewPort->noDataDouble = myGdalBand->GetNoDataValue();
     //std::cout << "Nodata value for band " << i << " is " << noDataDouble << "\n" << std::endl;
     //std::cout << "myGdalBand->GetOverviewCount(): " << myGdalBand->GetOverviewCount() <<std::endl;
 
@@ -331,8 +343,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
     myRasterViewPort->clippedWidthInt = abs(static_cast<int>(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
     myRasterViewPort->clippedHeightInt = abs(static_cast<int>(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
     // make sure we don't exceed size of raster
-    myRasterViewPort->clippedWidthInt = myRasterViewPort->clippedWidthInt <? myGdalBand->GetXSize();
-    myRasterViewPort->clippedHeightInt = myRasterViewPort->clippedHeightInt <? myGdalBand->GetYSize();
+    myRasterViewPort->clippedWidthInt = myRasterViewPort->clippedWidthInt <? rasterXDimInt;
+    myRasterViewPort->clippedHeightInt = myRasterViewPort->clippedHeightInt <? rasterYDimInt;
 
     // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
     myRasterViewPort->topLeftPoint = theQgsCoordinateTransform->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
@@ -341,7 +353,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
                                             myRasterViewPort->topLeftPoint.xToInt();
     myRasterViewPort->drawableAreaYDimInt = myRasterViewPort->bottomRightPoint.yToInt() -
                                             myRasterViewPort->topLeftPoint.yToInt();
-    QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+                                            
+    
 
 
     //
@@ -352,42 +365,98 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
     //
     switch (drawingStyle)
     {
-        // a "Gray" or "Undefined" layer drawn as a range of gray colors
-    case SINGLE_BAND_GRAY:
-            drawSingleBandGray(theQPainter,myRasterViewPort,1);
-        break;
-        // a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
-    case SINGLE_BAND_PSEUDO_COLOR:
-        drawSingleBandPseudoColor(theQPainter,myRasterViewPort,1);
-        break;
-        // a "Palette" layer drawn in gray scale (using only one of the color components)
-    case PALETTED_SINGLE_BAND_GRAY:
-        drawPalettedSingleBandGray(theQPainter, myRasterViewPort, 1,grayBandNameQString);
-        break;
-        // a "Palette" layer having only one of its color components rendered as psuedo color
-    case PALETTED_SINGLE_BAND_PSEUDO_COLOR:
-        drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort, 1, grayBandNameQString);
-        break;
-        //a "Palette" image where the bands contains 24bit color info and 8 bits is pulled out per color
-    case PALETTED_MULTI_BAND_COLOR:
-        drawPalettedMultiBandColor(theQPainter, myRasterViewPort, 1);
-        break;
-        // a layer containing 2 or more bands, but using only one band to produce a grayscale image
-    case MULTI_BAND_SINGLE_BAND_GRAY:
-       drawMultiBandSingleBandGray(theQPainter, myRasterViewPort, 1);
-        break;
-        //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
-    case MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
-        drawMultiBandSingleBandPseudoColor(theQPainter, myRasterViewPort, 1);
-        break;
-        //a layer containing 2 or more bands, mapped to the three RGBcolors.
-        //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
-    case MULTI_BAND_COLOR:
-        drawMultiBandColor(theQPainter,myRasterViewPort);    
-        break;
+      // a "Gray" or "Undefined" layer drawn as a range of gray colors
+        case SINGLE_BAND_GRAY:
+            //check the band is set!
+            if (grayBandNameQString==tr("Not Set"))
+            {
+              break;
+            }
+            else
+            {
+              drawSingleBandGray(theQPainter,myRasterViewPort,getRasterBandNumber(grayBandNameQString));
+              break;
+            }
+            // a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
+        case SINGLE_BAND_PSEUDO_COLOR:
+            //check the band is set!
+            if (grayBandNameQString==tr("Not Set"))
+            {
+              break;
+            }
+            else
+            {
+              drawSingleBandPseudoColor(theQPainter,myRasterViewPort,getRasterBandNumber(grayBandNameQString));
+              break;
+            }
+            // a "Palette" layer drawn in gray scale (using only one of the color components)
+        case PALETTED_SINGLE_BAND_GRAY:
+            //check the band is set!
+            if (grayBandNameQString==tr("Not Set"))
+            {
+              break;
+            }
+            else
+            {
 
-    default:
-        break;
+              drawPalettedSingleBandGray(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString),grayBandNameQString);
+
+              break;
+            }
+            // a "Palette" layer having only one of its color components rendered as psuedo color
+        case PALETTED_SINGLE_BAND_PSEUDO_COLOR:
+            //check the band is set!
+            if (grayBandNameQString==tr("Not Set"))
+            {
+              break;
+            }
+            else
+            {
+
+              drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString), grayBandNameQString);        
+              break;
+            }
+            //a "Palette" image where the bands contains 24bit color info and 8 bits is pulled out per color
+        case PALETTED_MULTI_BAND_COLOR:
+            drawPalettedMultiBandColor(theQPainter, myRasterViewPort, 1);
+            break;
+            // a layer containing 2 or more bands, but using only one band to produce a grayscale image
+        case MULTI_BAND_SINGLE_BAND_GRAY:
+            std::cout << "MULTI_BAND_SINGLE_BAND_GRAY drawing type detected..." << std::endl;
+            //check the band is set!
+            if (grayBandNameQString==tr("Not Set"))
+            {
+              std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString << std::endl;
+              break;
+            }
+            else
+            {
+
+              //get the band number for the mapped gray band
+              drawMultiBandSingleBandGray(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString));
+              break;
+            }
+            //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
+        case MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
+            //check the band is set!
+            if (grayBandNameQString==tr("Not Set"))
+            {
+              break;
+            }
+            else
+            {
+
+              drawMultiBandSingleBandPseudoColor(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString));
+              break;
+            }
+            //a layer containing 2 or more bands, mapped to the three RGBcolors.
+            //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
+        case MULTI_BAND_COLOR:
+            drawMultiBandColor(theQPainter,myRasterViewPort);    
+            break;
+
+        default:
+            break;
 
     }
         
@@ -405,7 +474,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
                                         RasterViewPort * theRasterViewPort,
                                         int theBandNoInt)
 {
-    std::cout << "QgsRasterLayer::drawSingleBandGray called" << std::endl;
+    std::cout << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
     //create the outout image that the layer will be drawn on before placing it in the qcanvas
     GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
     // QPixmap * myQPixmap=new QPixmap(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt);
@@ -444,7 +513,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
             //std::cout << "Checking if " << myGrayValInt << " = " << myRasterBandStats.noDataDouble << std::endl;
 
             //dont draw this point if it is no data !
-            if (myGrayValInt != myRasterBandStats.noDataDouble)
+            if (myGrayValInt != noDataValueDouble)
             {
                 // We need to make sure the values are 0-255
                 myGrayValInt = static_cast<int>((255/myRangeDouble) * myGrayValInt);
@@ -497,7 +566,6 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
     int myBlueInt=0;
     //calculate the adjusted matrix stats - which come into affect if the user has chosen
     RasterBandStats myAdjustedRasterBandStats =  getRasterBandStats(theBandNoInt);
-    myAdjustedRasterBandStats.noDataDouble=0;//hard coding for now
     //to histogram stretch to a given number of std deviations
     //see if we are using histogram stretch using stddev and plot only within the selected number of deviations if we are
     //cout << "stdDevsToPlotDouble: " << cboStdDev->currentText() << " converted to " << stdDevsToPlotDouble << endl;
@@ -508,10 +576,10 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
         //printf("myTotalDeviationDouble: %i\n" , myTotalDeviationDouble );
         //adjust min and max accordingly
         //only change min if it is less than mean  -  (n  x  deviations)
-        if (myAdjustedRasterBandStats.minValDouble < (myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble))
+        if (noDataValueDouble < (myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble))
         {
-            myAdjustedRasterBandStats.minValDouble=(myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble);
-            //cout << "Adjusting minValDouble to: " << myAdjustedRasterBandStats.minValDouble << endl;
+            noDataValueDouble=(myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble);
+            //cout << "Adjusting minValDouble to: " << noDataValueDouble << endl;
         }
         //only change max if it is greater than mean  +  (n  x  deviations)
         if (myAdjustedRasterBandStats.maxValDouble > (myAdjustedRasterBandStats.meanDouble + myTotalDeviationDouble))
@@ -520,12 +588,12 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
             //cout << "Adjusting maxValDouble to: " << myAdjustedRasterBandStats.maxValDouble << endl;
         }
         //update the range
-        myAdjustedRasterBandStats.rangeDouble = myAdjustedRasterBandStats.maxValDouble-myAdjustedRasterBandStats.minValDouble;
+        myAdjustedRasterBandStats.rangeDouble = myAdjustedRasterBandStats.maxValDouble-noDataValueDouble;
     }
     //set up the three class breaks for pseudocolour mapping
     double myBreakSizeDouble = myAdjustedRasterBandStats.rangeDouble / 3;
-    double myClassBreakMin1 = myAdjustedRasterBandStats.minValDouble;
-    double myClassBreakMax1 = myAdjustedRasterBandStats.minValDouble + myBreakSizeDouble;
+    double myClassBreakMin1 = noDataValueDouble;
+    double myClassBreakMax1 = noDataValueDouble + myBreakSizeDouble;
     double myClassBreakMin2 = myClassBreakMax1;
     double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
     double myClassBreakMin3 = myClassBreakMax2;
@@ -544,13 +612,13 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
             myGreenInt = 255;
             int myInt=myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt];
             // draw this point if it is not  no_data !
-            if (myInt!=myAdjustedRasterBandStats.noDataDouble)
+            if (myInt!=noDataValueDouble)
             {
                 //double check that myInt >= min and <= max
                 //this is relevant if we are plotting within stddevs
-                if (myInt < myAdjustedRasterBandStats.minValDouble )
+                if (myInt < noDataValueDouble )
                 {
-                    myInt = static_cast<int>(myAdjustedRasterBandStats.minValDouble);
+                    myInt = static_cast<int>(noDataValueDouble);
                 }
                 if (myInt > myAdjustedRasterBandStats.maxValDouble)
                 {
@@ -658,7 +726,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
         {
             const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable, myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt]);
             //dont draw this point if it is no data !
-            if (theRasterViewPort->noDataDouble != myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt])
+            if (noDataValueDouble != myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt])
             {
                 int myGrayValueInt=0; //color 1 int
                 //check colorEntry is valid
@@ -739,7 +807,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
     int myBlueInt=0;
     //calculate the adjusted matrix stats - which come into affect if the user has chosen
     RasterBandStats myAdjustedRasterBandStats = getRasterBandStats(1);
-    myAdjustedRasterBandStats.noDataDouble=0;//hard coding for now
+    
     //to histogram stretch to a given number of std deviations
     //see if we are using histogram stretch using stddev and plot only within the selected number of deviations if we are
     //cout << "stdDevsToPlotDouble: " << cboStdDev->currentText() << " converted to " << stdDevsToPlotDouble << endl;
@@ -750,10 +818,10 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
         //printf("myTotalDeviationDouble: %i\n" , myTotalDeviationDouble );
         //adjust min and max accordingly
         //only change min if it is less than mean  -  (n  x  deviations)
-        if (myAdjustedRasterBandStats.minValDouble < (myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble))
+        if (noDataValueDouble < (myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble))
         {
-            myAdjustedRasterBandStats.minValDouble=(myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble);
-            //cout << "Adjusting minValDouble to: " << myAdjustedRasterBandStats.minValDouble << endl;
+            noDataValueDouble=(myAdjustedRasterBandStats.meanDouble-myTotalDeviationDouble);
+            //cout << "Adjusting minValDouble to: " << noDataValueDouble << endl;
         }
         //only change max if it is greater than mean  +  (n  x  deviations)
         if (myAdjustedRasterBandStats.maxValDouble > (myAdjustedRasterBandStats.meanDouble + myTotalDeviationDouble))
@@ -762,12 +830,12 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
             //cout << "Adjusting maxValDouble to: " << myAdjustedRasterBandStats.maxValDouble << endl;
         }
         //update the range
-        myAdjustedRasterBandStats.rangeDouble = myAdjustedRasterBandStats.maxValDouble-myAdjustedRasterBandStats.minValDouble;
+        myAdjustedRasterBandStats.rangeDouble = myAdjustedRasterBandStats.maxValDouble-noDataValueDouble;
     }
     //set up the three class breaks for pseudocolour mapping
     double myBreakSizeDouble = myAdjustedRasterBandStats.rangeDouble / 3;
-    double myClassBreakMin1 = myAdjustedRasterBandStats.minValDouble;
-    double myClassBreakMax1 = myAdjustedRasterBandStats.minValDouble + myBreakSizeDouble;
+    double myClassBreakMin1 = noDataValueDouble;
+    double myClassBreakMax1 = noDataValueDouble + myBreakSizeDouble;
     double myClassBreakMin2 = myClassBreakMax1;
     double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
     double myClassBreakMin3 = myClassBreakMax2;
@@ -802,15 +870,15 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                 //dont draw this point if it is no data !
                 //double check that myInt >= min and <= max
                 //this is relevant if we are plotting within stddevs
-                if ((myInt < myAdjustedRasterBandStats.minValDouble ) && (myInt != myAdjustedRasterBandStats.noDataDouble))
+                if ((myInt < noDataValueDouble ) && (myInt !=noDataValueDouble))
                 {
-                    myInt = static_cast<int>(myAdjustedRasterBandStats.minValDouble);
+                    myInt = static_cast<int>(noDataValueDouble);
                 }
-                if ((myInt > myAdjustedRasterBandStats.maxValDouble)   && (myInt != myAdjustedRasterBandStats.noDataDouble))
+                if ((myInt > myAdjustedRasterBandStats.maxValDouble)   && (myInt !=noDataValueDouble))
                 {
                     myInt = static_cast<int>(myAdjustedRasterBandStats.maxValDouble);
                 }
-                if (myInt==myAdjustedRasterBandStats.noDataDouble)
+                if (myInt==noDataValueDouble)
                 {
                     //hardcoding to white for now
                     myRedInt = 255;
@@ -926,7 +994,7 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter,
         {
             const GDALColorEntry *colorEntry = GDALGetColorEntry(colorTable, myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt]);
             //dont draw this point if it is no data !
-            if (theRasterViewPort->noDataDouble != myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt])
+            if (noDataValueDouble != myGdalScanData[myColumnInt*theRasterViewPort->drawableAreaXDimInt + myRowInt])
             {
                 int myRedValueInt=0; //color 1 int
                 int myGreenValueInt=0; //color 2 int
@@ -997,11 +1065,13 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter,
                                         RasterViewPort * theRasterViewPort)
 {
     std::cout << "QgsRasterLayer::drawMultiBandColor called" << std::endl;
-    //TODO check band / colour mappings when assigning bands
     
-    GDALRasterBand  *myGdalRedBand = gdalDataset->GetRasterBand( 1 );
-    GDALRasterBand  *myGdalGreenBand = gdalDataset->GetRasterBand( 2 );
-    GDALRasterBand  *myGdalBlueBand = gdalDataset->GetRasterBand( 3 );    
+    int myRedBandNoInt = getRasterBandNumber(redBandNameQString);
+    int myGreenBandNoInt = getRasterBandNumber(greenBandNameQString);
+    int myBlueBandNoInt = getRasterBandNumber(blueBandNameQString);
+    GDALRasterBand  *myGdalRedBand = gdalDataset->GetRasterBand(myRedBandNoInt);
+    GDALRasterBand  *myGdalGreenBand = gdalDataset->GetRasterBand(myGreenBandNoInt);
+    GDALRasterBand  *myGdalBlueBand = gdalDataset->GetRasterBand(myBlueBandNoInt);    
     //
     // I dont know how much overhead there is in opening three matricies at the same time....
     // but this is a replacement of the old method implemented by Steve which xored the color components
@@ -1130,6 +1200,25 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQSt
 
 
 }
+//get the number of a band given its name
+//note this should be the rewritten name set up in the constructor,
+//not the name retrieved directly from gdal!
+//if no matching band is found zero will be returned!
+const  int QgsRasterLayer::getRasterBandNumber (QString theBandNameQString) 
+{
+    for (int myIteratorInt = 0;
+            myIteratorInt <= rasterStatsVector.size();
+            ++myIteratorInt)
+    {
+        //find out the name of this band
+        RasterBandStats myRasterBandStats=rasterStatsVector[myIteratorInt];
+        if (myRasterBandStats.bandName==theBandNameQString)
+        {
+          return myRasterBandStats.bandNoInt;
+        }      
+    }
+    return 0;//no band was found
+}
 
 // get the name of a band given its number
 const  QString QgsRasterLayer::getRasterBandName (int theBandNoInt) 
@@ -1188,8 +1277,7 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   }
   GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-  //this wll probably have been populated in the constructor already...but we will double check
-  myRasterBandStats.bandName=myColorInterpretation;
+
   //declare a colorTable to hold a palette - will only be used if the layer color interp is palette
   GDALColorTable *colorTable;
   if ( rasterLayerType==PALETTE )
@@ -1221,23 +1309,19 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   {
     myRasterBandStats.bandName=myColorInterpretation;
   }
-  // get the dimensions of the raster
-  int myColsInt = myGdalBand->GetXSize();
-  int myRowsInt = myGdalBand->GetYSize();
 
-  myRasterBandStats.elementCountInt=myColsInt*myRowsInt;
-  myRasterBandStats.noDataDouble=myGdalBand->GetNoDataValue();
+  myRasterBandStats.elementCountInt=rasterXDimInt*rasterYDimInt;
 
   //allocate a buffer to hold one row of ints
-  int myAllocationSizeInt = sizeof(uint)*myColsInt;
+  int myAllocationSizeInt = sizeof(uint)*rasterXDimInt;
   uint * myScanlineAllocInt = (uint*) CPLMalloc(myAllocationSizeInt);
   bool myFirstIterationFlag = true;
   //unfortunately we need to make two passes through the data to calculate stddev
-  for (int myCurrentRowInt=0; myCurrentRowInt < myRowsInt;myCurrentRowInt++)
+  for (int myCurrentRowInt=0; myCurrentRowInt < rasterYDimInt;myCurrentRowInt++)
   {
     CPLErr myResult = myGdalBand->RasterIO(
-            GF_Read, 0, myCurrentRowInt, myColsInt, 1, myScanlineAllocInt, myColsInt, 1, GDT_UInt32, 0, 0 );
-    for (int myCurrentColInt=0; myCurrentColInt < myColsInt; myCurrentColInt++)
+            GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0 );
+    for (int myCurrentColInt=0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
     {
       double myDouble=0;
       //get the nth element from the current row
@@ -1272,7 +1356,7 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
       }
       //only use this element if we have a non null element
-      if (myDouble != myRasterBandStats.noDataDouble )
+      if (myDouble != noDataValueDouble )
       {
         if (myFirstIterationFlag)
         {
@@ -1293,7 +1377,7 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
             myRasterBandStats.maxValDouble=myDouble;
           }
           //only increment the running total if it is not a nodata value
-          if (myDouble != myRasterBandStats.noDataDouble)
+          if (myDouble != noDataValueDouble)
           {
             myRasterBandStats.sumDouble += myDouble;
             ++myRasterBandStats.elementCountInt;
@@ -1308,11 +1392,11 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   //calculate the mean
   myRasterBandStats.meanDouble = myRasterBandStats.sumDouble / myRasterBandStats.elementCountInt;
   //for the second pass we will get the sum of the squares / mean
-  for (int myCurrentRowInt=0; myCurrentRowInt < myRowsInt;myCurrentRowInt++)
+  for (int myCurrentRowInt=0; myCurrentRowInt < rasterYDimInt;myCurrentRowInt++)
   {
     CPLErr myResult = myGdalBand->RasterIO(
-            GF_Read, 0, myCurrentRowInt, myColsInt, 1, myScanlineAllocInt, myColsInt, 1, GDT_UInt32, 0, 0 );
-    for (int myCurrentColInt=0; myCurrentColInt < myColsInt; myCurrentColInt++)
+            GF_Read, 0, myCurrentRowInt, rasterXDimInt, 1, myScanlineAllocInt, rasterXDimInt, 1, GDT_UInt32, 0, 0 );
+    for (int myCurrentColInt=0; myCurrentColInt < rasterXDimInt; myCurrentColInt++)
     {
       double myDouble=0;
       //get the nth element from the current row
@@ -1364,117 +1448,165 @@ const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 void QgsRasterLayer::setRedBandName(QString theBandNameQString)
 {
     //check if the band is unset
-    if (theBandNameQString=="Not Set")
+    if (theBandNameQString==tr("Not Set"))
     {
         redBandNameQString=theBandNameQString;
+        return;
     }
-    //check that a valid band name was passed, or if this is a paletted image,
-    //Red, Green or Blue are also allowed.
-    for (int myInt = 1; myInt <= gdalDataset->GetRasterCount(); ++myInt)
+    //check if the image is paletted
+    if  (rasterLayerType==PALETTE &&
+          ( 
+            theBandNameQString=="Red" ||
+            theBandNameQString=="Green" ||
+            theBandNameQString=="Blue"
+          )
+        )
     {
-        GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( myInt );
-        QString myBandNameQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-        if (theBandNameQString==myBandNameQString)
-        {
-            //set the class member red band with the name passed by the calling fn
             redBandNameQString=theBandNameQString;
-        }
-        else if ((myBandNameQString=="Palette") && (theBandNameQString=="Red" || theBandNameQString=="Green" ||theBandNameQString=="Blue") )
+            return;
+    }    
+    
+    //check that a valid band name was passed
+    
+    for (int myIteratorInt = 0;
+            myIteratorInt <= rasterStatsVector.size();
+            ++myIteratorInt)
+    {
+        //find out the name of this band
+        RasterBandStats myRasterBandStats=rasterStatsVector[myIteratorInt];
+        if (myRasterBandStats.bandName==theBandNameQString)
         {
-            //this is a special case where we allow the calling fn to set the band name to rd green or blue
-            //if the layre is palette based. This allows us to plot RGB onto RBG or BGR for example. See the
-            //Palette section in the paint routine for more info.
-            redBandNameQString=theBandNameQString;
-        }
-    }
+           redBandNameQString=theBandNameQString;
+           return;
+        }      
+    }    
+    
+    //if no matches were found default to not set
+    redBandNameQString=tr("Not Set");
+    return;
 }
 //mutator for green band name
 void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
 {
     //check if the band is unset
-    if (theBandNameQString=="Not Set")
+    if (theBandNameQString==tr("Not Set"))
     {
         greenBandNameQString=theBandNameQString;
+        return;
     }
-    //check that a valid band name was passed, or if this is a paletted image,
-    //Red, Green or Blue are also allowed.
-    for (int myInt = 1; myInt <= gdalDataset->GetRasterCount(); ++myInt)
+    //check if the image is paletted
+    if  (rasterLayerType==PALETTE &&
+          ( 
+            theBandNameQString=="Red" ||
+            theBandNameQString=="Green" ||
+            theBandNameQString=="Blue"
+          )
+        )
     {
-        GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( myInt );
-        QString myBandNameQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-        if (theBandNameQString==myBandNameQString)
-        {
-            //set the class member red band with the name passed by the calling fn
             greenBandNameQString=theBandNameQString;
-        }
-        else if ((myBandNameQString=="Palette") && (theBandNameQString=="Red" || theBandNameQString=="Green" ||theBandNameQString=="Blue") )
+            return;
+    }    
+    
+    //check that a valid band name was passed
+    
+    for (int myIteratorInt = 0;
+            myIteratorInt <= rasterStatsVector.size();
+            ++myIteratorInt)
+    {
+        //find out the name of this band
+        RasterBandStats myRasterBandStats=rasterStatsVector[myIteratorInt];
+        if (myRasterBandStats.bandName==theBandNameQString)
         {
-            //this is a special case where we allow the calling fn to set the band name to rd green or blue
-            //if the layre is palette based. This allows us to plot RGB onto RBG or BGR for example. See the
-            //Palette section in the paint routine for more info.
-            greenBandNameQString=theBandNameQString;
-        }
-    }
-
+           greenBandNameQString=theBandNameQString;
+           return;
+        }      
+    }    
+    
+    //if no matches were found default to not set
+    greenBandNameQString=tr("Not Set");
+    return;
 }
 //mutator for blue band name
 void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
 {
     //check if the band is unset
-    if (theBandNameQString=="Not Set")
+    if (theBandNameQString==tr("Not Set"))
     {
         blueBandNameQString=theBandNameQString;
+        return;
     }
-    //check that a valid band name was passed, or if this is a paletted image,
-    //Red, Green or Blue are also allowed.
-    for (int myInt = 1; myInt <= gdalDataset->GetRasterCount(); ++myInt)
+    //check if the image is paletted
+    if  (rasterLayerType==PALETTE &&
+          ( 
+            theBandNameQString=="Red" ||
+            theBandNameQString=="Green" ||
+            theBandNameQString=="Blue"
+          )
+        )
     {
-        GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( myInt );
-        QString myBandNameQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-        if (theBandNameQString==myBandNameQString)
-        {
-            //set the class member red band with the name passed by the calling fn
             blueBandNameQString=theBandNameQString;
-        }
-        else if ((myBandNameQString=="Palette") && (theBandNameQString=="Red" || theBandNameQString=="Green" ||theBandNameQString=="Blue") )
+            return;
+    }    
+    
+    //check that a valid band name was passed
+    
+    for (int myIteratorInt = 0;
+            myIteratorInt <= rasterStatsVector.size();
+            ++myIteratorInt)
+    {
+        //find out the name of this band
+        RasterBandStats myRasterBandStats=rasterStatsVector[myIteratorInt];
+        if (myRasterBandStats.bandName==theBandNameQString)
         {
-            //this is a special case where we allow the calling fn to set the band name to rd green or blue
-            //if the layre is palette based. This allows us to plot RGB onto RBG or BGR for example. See the
-            //Palette section in the paint routine for more info.
-            blueBandNameQString=theBandNameQString;
-        }
-    }
+           blueBandNameQString=theBandNameQString;
+           return;
+        }      
+    }    
+    
+    //if no matches were found default to not set
+    blueBandNameQString=tr("Not Set");
+    return;
 }
 //mutator for gray band name
 void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
 {
     //check if the band is unset
-    if (theBandNameQString=="Not Set")
+    if (theBandNameQString==tr("Not Set"))
     {
         grayBandNameQString=theBandNameQString;
+        return;
     }
-    //check that a valid band name was passed, or if this is a paletted image,
-    //Red, Green or Blue are also allowed.
-    for (int myInt = 1; myInt <= gdalDataset->GetRasterCount(); ++myInt)
+    //check if the image is paletted
+    if  (rasterLayerType==PALETTE &&
+          ( 
+            theBandNameQString=="Red" ||
+            theBandNameQString=="Green" ||
+            theBandNameQString=="Blue"
+          )
+        )
     {
-        GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( myInt );
-        QString myBandNameQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-        if (theBandNameQString==myBandNameQString)
-        {
-            //set the class member gray band with the name passed by the calling fn
             grayBandNameQString=theBandNameQString;
-        }
-        else if  (myBandNameQString=="Palette" &&
-                  ( theBandNameQString=="Red" ||
-                    theBandNameQString=="Green" ||
-                    theBandNameQString=="Blue"
-                  )
-                 )
+            return;
+    }    
+    
+    //check that a valid band name was passed
+    
+    for (int myIteratorInt = 0;
+            myIteratorInt <= rasterStatsVector.size();
+            ++myIteratorInt)
+    {
+        //find out the name of this band
+        RasterBandStats myRasterBandStats=rasterStatsVector[myIteratorInt];
+        if (myRasterBandStats.bandName==theBandNameQString)
         {
-            grayBandNameQString=theBandNameQString;
-        }
-    }
-
+           grayBandNameQString=theBandNameQString;
+           return;
+        }      
+    }    
+    
+    //if no matches were found default to not set
+    grayBandNameQString=tr("Not Set");
+    return;
 }
 
 /** Return a pixmap representing a legend image. This is an overloaded

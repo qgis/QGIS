@@ -76,8 +76,7 @@ struct RasterBandStats
     double sumSqrDevDouble; //used to calculate stddev
     double stdDevDouble;
     double sumDouble;
-    int elementCountInt;
-    double noDataDouble;
+    int elementCountInt;    
 };
 
 struct RasterViewPort
@@ -94,7 +93,6 @@ struct RasterViewPort
     QgsPoint bottomRightPoint;
     int drawableAreaXDimInt;
     int drawableAreaYDimInt;
-    double noDataDouble;
 };
 
 
@@ -117,8 +115,16 @@ public:
      void showLayerProperties();
     //this is called when the view on the rasterlayer needs to be refreshed
     void draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform);
-
-
+    //
+    // Accessors for image height and width
+    //
+    const int getRasterXDim() {return rasterXDimInt;};
+    const int getRasterYDim() {return rasterYDimInt;};
+    //
+    // Accessor and mutator for no data double
+    //
+    const double getNoDataValue() {return noDataValueDouble;};
+    void setNoDataValue(double theNoDataDouble) { noDataValueDouble=theNoDataDouble; return;};
     //
     // Accessor and mutator for invertHistogramFlag
     //
@@ -154,6 +160,11 @@ public:
     // Note this approach is not recommeneded because it is possibly for two gdal raster
     // bands to have the same name!
     const  RasterBandStats getRasterBandStats(QString);
+    //get the number of a band given its name
+    //note this should be the rewritten name set up in the constructor,
+    //not the name retrieved directly from gdal!
+    //if no matching band is found zero will be returned!
+    const  int getRasterBandNumber (QString theBandNameQString);
     // get the name of a band given its number
     const  QString getRasterBandName(int theBandNoInt);
     // Find out whether a given band exists
@@ -356,7 +367,9 @@ private:
     //
     // Private member vars
     //
-
+    int rasterXDimInt;
+    int rasterYDimInt;
+    double noDataValueDouble;
     //flag to indicate whether debug infor overlay should be rendered onto the raster
     bool showDebugOverlayFlag;
     GDALDataset * gdalDataset;
