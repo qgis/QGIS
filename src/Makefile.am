@@ -53,7 +53,6 @@ headers =		qgis.h					\
 			qgsgramadialog.h			\
 			qgsgramaextensionwidget.h		\
 			qgsgrasydialog.h			\
-			qgsgrasyextensionwidget.h		\
 			qgshelpviewer.h				\
 			qgsidentifyresults.h			\
 			qgslegend.h				\
@@ -163,7 +162,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsgramadialog.moc.cpp			\
 		qgsgramaextensionwidget.moc.cpp		\
 		qgsgrasydialog.moc.cpp			\
-		qgsgrasyextensionwidget.moc.cpp		\
 		qgshelpviewer.moc.cpp			\
 		qgsidentifyresults.moc.cpp			\
 		qgslegend.moc.cpp			\
@@ -210,7 +208,6 @@ qgis_SOURCES =  main.cpp			\
 		qgsgramadialog.cpp		\
 		qgsgramaextensionwidget.cpp	\
 		qgsgrasydialog.cpp		\
-		qgsgrasyextensionwidget.cpp	\
 		qgshelpviewer.cpp		\
 		qgsidentifyresults.cpp		\
 		qgslegend.cpp			\

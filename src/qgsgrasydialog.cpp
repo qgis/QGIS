@@ -20,7 +20,6 @@
 #include "qpushbutton.h"
 #include <qcombobox.h>
 #include <qlistbox.h>
-#include "qgsgrasyextensionwidget.h"
 #include "qgssymbologyutils.h"
 #include "qgsrangerenderitem.h"
 #include "qlineedit.h"
@@ -95,6 +94,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 	classificationComboBox->setCurrentItem(renderer->classificationField());
 	QGis::VectorType m_type = mVectorLayer->vectorType();
 	numberofclassesspinbox->setValue(list.size());
+	//todo: fill mValue with the setting of the (single) renderitem and apply to the sisydialog
     }
     
     //do the necessary signal/slot connections
@@ -139,26 +139,6 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     
     std::map < QString, int >::iterator iter = mFieldMap.find(fieldstring);
     int field = iter->second;
-    
-    //create a new extension dialog
-    /*if (modeComboBox->currentText() == "Empty")
-    {
-	ext = new QgsGraSyExtensionWidget(this, field, QgsGraSyDialog::EMPTY, numberofclassesspinbox->value(), mVectorLayer);
-    } 
-    else if (modeComboBox->currentText() == "Equal Interval")
-    {
-	ext = new QgsGraSyExtensionWidget(this, field, QgsGraSyDialog::EQUAL_INTERVAL, numberofclassesspinbox->value(), mVectorLayer);
-    }
-    
-    if (numberofclassesspinbox->value() == 0)
-    {
-	ext = 0;
-	return;
-    }
-    
-    QgsGraSyDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
-    ext->show();*/
-    
 }
 
 void QgsGraSyDialog::apply()
@@ -427,7 +407,7 @@ void QgsGraSyDialog::adjustClassification()
 	    symbol->setPen(pen);
 	    symbol->setBrush(brush);
 	    rritem->setSymbol(symbol);
-	    //}
+       
 	mEntries.insert(std::make_pair(listboxtext,rritem));
     }
     mClassBreakBox->setCurrentItem(0);
