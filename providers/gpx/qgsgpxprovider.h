@@ -146,9 +146,7 @@ public:
   std::map<QString, int> fieldPositions;
   QString mDataSourceUri;
   QString mFileName;
-  QString mDelimiter;
-  QString mXField;
-  QString mYField;
+  QString mFeatureType;
   //! Current selection rectangle
   QgsRect *mSelectionRectangle;
   //! Text file
