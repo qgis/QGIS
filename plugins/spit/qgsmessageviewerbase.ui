@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>499</width>
-            <height>283</height>
+            <height>285</height>
         </rect>
     </property>
     <property name="caption">
@@ -41,23 +41,6 @@
         <spacer row="1" column="0">
             <property name="name">
                 <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>191</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="1" column="2">
-            <property name="name">
-                <cstring>spacer1_2</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
