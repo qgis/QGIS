@@ -412,6 +412,7 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
 #endif
 	}
 	QgsFeature *fet;
+	provider->reset();
 	while ((fet = provider->getNextFeature(true)))
 	{
 	    //id-field
