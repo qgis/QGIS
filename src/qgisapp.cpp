@@ -1683,6 +1683,11 @@ void QgisApp::captureLine()
    mMapCanvas->setMapTool(QGis::CaptureLine); 
 }
 
+void QgisApp::capturePolygon()
+{
+   mMapCanvas->setMapTool(QGis::CapturePolygon); 
+}
+
 void QgisApp::select()
 {
 
