@@ -23,7 +23,7 @@
 #ifdef WIN32
 #include "qgslabeldialogbase.h"
 #else
-#include "qgslabeldialogbase.ui.h"
+#include "qgslabeldialogbase.uic.h"
 #endif
 
 class QWidget;
