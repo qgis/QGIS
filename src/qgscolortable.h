@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 #ifndef QGSCOLORTABLE_H
 #define QGSCOLORTABLE_H
 

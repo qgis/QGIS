@@ -1,6 +1,6 @@
 /***************************************************************************
-		 gsrasterlayer.h  -  description
-			 -------------------
+                        qgsrasterlayer.h  -  description
+                              -------------------
 	begin                : Fri Jun 28 2002
 	copyright            : (C) 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 	email                : tim@linfiniti.com

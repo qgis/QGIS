@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSPOLYGONSYMBOL_H
 #define QGSPOLYGONSYMBOL_H

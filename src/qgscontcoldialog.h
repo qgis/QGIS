@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgscontcoldialog.h 
- Continuous color renderer dialog
+                        Continuous color renderer dialog
                              -------------------
     begin                : 2004-02-12
     copyright            : (C) 2004 by Gary E.Sherman

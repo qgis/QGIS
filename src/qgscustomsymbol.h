@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 #ifndef QGSCUSTOMSYMBOL_H
 #define QGSCUSTOMSYMBOL_H
 

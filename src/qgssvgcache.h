@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgssvgcache.h  -  SVG rendering and pixmap caching
+               qgssvgcache.h  -  SVG rendering and pixmap caching
                              -------------------
     begin                : Sat Jul 17 2004
     copyright            : (C) 2004 by Lars Luthman

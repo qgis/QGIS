@@ -1,6 +1,6 @@
 /***************************************************************************
-                          qgshelpviewer.h 
- Simple help browser
+                                qgshelpviewer.h 
+                              Simple help browser
                              -------------------
     begin                : 2004-01-28
     copyright            : (C) 2004 by Gary E.Sherman

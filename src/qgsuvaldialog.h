@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSUVALDIALOG_H
 #define QGSUVALDIALOG_H
 #ifdef WIN32

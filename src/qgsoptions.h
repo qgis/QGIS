@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsoptions.h
-              Set user options and preferences
+                        Set user options and preferences
                              -------------------
     begin                : May 28, 2004
     copyright            : (C) 2004 by Gary E.Sherman
