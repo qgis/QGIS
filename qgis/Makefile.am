@@ -8,5 +8,14 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-#EXTRA_DIST = reconf configure
+#EXTRA_DIST = doc
 SUBDIRS = src providers plugins
+
+install-data-local:
+	for f in `(cd $(srcdir)/doc; find -type d)`; do \
+	$(INSTALL) -d $(datadir)/doc/$$f; \
+	done; \
+	for f in `(cd $(srcdir)/doc; find -type f)`; do \
+	$(INSTALL_DATA) $(srcdir)/doc/$$f $(datadir)/doc/$$f; \
+	done;
+
