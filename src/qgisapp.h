@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$  */
+/*  $Id$ */
 
 #ifndef QGISAPP_H
 #define QGISAPP_H
@@ -32,6 +32,7 @@ class QListView;
 class QListViewItem;
 class QgsMapLayer;
 class QSocket;
+class QgsProviderRegistry;
 #include "qgisappbase.h"
 #include "qgisiface.h"
 class QgsMapCanvas;
@@ -157,6 +158,7 @@ class QgisApp:public QgisAppBase
 	QSocket *socket;
 	QString versionMessage;
 	friend class QgisIface;
+  QgsProviderRegistry *providerRegistry;
 };
 
 #endif

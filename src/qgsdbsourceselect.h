@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSDBSOURCESELECT_H
 #define QGSDBSOURCESELECT_H
 #include "qgsdbsourceselectbase.h"
@@ -27,6 +27,7 @@
  */
 class QgsDbSourceSelect : public QgsDbSourceSelectBase 
 {
+  Q_OBJECT
  public:
     //! Constructor
     QgsDbSourceSelect(QWidget *parent = 0, const char *name = 0);

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>463</width>
-            <height>258</height>
+            <width>462</width>
+            <height>263</height>
         </rect>
     </property>
     <property name="caption">
@@ -197,7 +197,6 @@
                         </property>
                         <property name="font">
                             <font>
-                                <pointsize>11</pointsize>
                             </font>
                         </property>
                         <property name="text">
@@ -213,7 +212,6 @@
                         </property>
                         <property name="font">
                             <font>
-                                <pointsize>11</pointsize>
                             </font>
                         </property>
                         <property name="text">
@@ -276,22 +274,45 @@
                         </property>
                         <property name="text">
                             <string>&lt;h3&gt;QGIS Contributors&lt;/h3&gt;
-&lt;b&gt;&lt;font color="#550000"&gt;&lt;font size="+1"&gt;Code&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;&lt;br&gt;
-Gary E. Sherman&lt;br&gt;
-Steve Halasz&lt;br&gt;
-Marco Hugentobler&lt;br&gt;
-Carl Anderson&lt;br&gt;
-Masaru Hoshi&lt;br&gt;
-Radim Blazek&lt;br&gt;
-&lt;p&gt;
-&lt;b&gt;&lt;font color="#550000"&gt;&lt;font size="+1"&gt;Planning/Design&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;&lt;br&gt;
-Denis Antipov&lt;br&gt;
-Mark Coletti
+&lt;ul&gt;
+&lt;li&gt;Gary E. Sherman&lt;br&gt;
+&lt;li&gt;Steve Halasz&lt;br&gt;
+&lt;li&gt;Tim Sutton&lt;br&gt;
+&lt;li&gt;Marco Hugentobler&lt;br&gt;
+&lt;li&gt;Denis Antipov&lt;br&gt;
+&lt;li&gt;Mark Coletti
+&lt;li&gt;Carl Anderson&lt;br&gt;
+&lt;li&gt;Masaru Hoshi&lt;br&gt;
+&lt;li&gt;Radim Blazek&lt;br&gt;
 &lt;p&gt;
 Apologies to anyone not included. Please let the project admin at qgis.sourceforge.net know if you have contributed but are not included in the acknowledgments.</string>
                         </property>
                     </widget>
                 </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Plugins</string>
+                </attribute>
+                <widget class="QTextBrowser">
+                    <property name="name">
+                        <cstring>txtBrowserPlugins</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>10</y>
+                            <width>422</width>
+                            <height>153</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
             </widget>
         </widget>
     </grid>
@@ -304,10 +325,14 @@ Apologies to anyone not included. Please let the project admin at qgis.sourcefor
         <slot>reject()</slot>
     </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgsabout.ui.h</include>
+</includes>
 <slots>
     <slot>setVersion( QString v )</slot>
     <slot>setURLs( QString urls )</slot>
     <slot>setWhatsNew( QString txt )</slot>
+    <slot>setPluginInfo( QString txt )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -21,6 +21,7 @@ class QgsPluginItem;
 */
 class QgsPluginManager : public QgsPluginManagerBase
 {
+Q_OBJECT
 public:
     QgsPluginManager(QWidget *parent=0, const char *name=0);
 

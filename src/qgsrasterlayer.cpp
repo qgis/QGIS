@@ -19,7 +19,7 @@ email                : sherman at mrcc.com
 #include <qimage.h>
 #include <qfont.h>
 #include <stdio.h>
-
+#include <qpixmap.h>
 #include "qgspoint.h"
 #include "qgsrect.h"
 #include "qgsrasterlayer.h"
@@ -58,10 +58,10 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     layerExtent.setYmax(adfGeoTransform[3]);
     layerExtent.setYmin(myYMinDouble);
     calculateStats();
-    redBandNameQString="Red"; // sensible default
-    greenBandNameQString="Green"; // sensible default
-    blueBandNameQString="Blue"; // sensible default
-    grayBandNameQString="Gray"; // sensible default
+    redBandNameQString=tr("Red"); // sensible default
+    greenBandNameQString=tr("Green"); // sensible default
+    blueBandNameQString=tr("Blue"); // sensible default
+    grayBandNameQString=tr("Gray"); // sensible default
     showGrayAsColorFlag=false; // sensible default
     invertHistogramFlag=false; // sensible default
     stdDevsToPlotDouble = 0; // sensible default
@@ -917,3 +917,9 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
     } //end of mulitband
 
 }//end of getLegendQPixmap function
+QPixmap * QgsRasterLayer::legendPixmap()
+{
+  QPixmap myQPixmap = getLegendQPixmap();
+  //legendQPixmap=new QPixmap(& myQPixmap);
+  return new QPixmap(myQPixmap);//legendQPixmap;
+}

@@ -15,57 +15,46 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qcolor.h>
+
 #include "qgssymbol.h"
 
-QgsSymbol::QgsSymbol(QColor c):m_color(c)
+QgsSymbol::QgsSymbol(QColor c)
 {
+    m_pen.setColor(c);
+    m_brush.setColor(c);
+}
 
-}
-QgsSymbol::QgsSymbol(const QgsSymbol &sym){
-	m_color = sym.color();
-	m_fillColor = sym.fillColor();
-	m_lineWidth = sym.lineWidth();
-}
 QgsSymbol::~QgsSymbol()
 {
 }
 QColor QgsSymbol::color() const
 {
-	return m_color;
+	return m_pen.color();
 }
 
 void QgsSymbol::setColor(QColor c)
 {
-	m_color = c;
+	m_pen.setColor(c);
 }
 
 QColor QgsSymbol::fillColor() const
 {
-	return m_fillColor;
+	return m_brush.color();
 }
 
 void QgsSymbol::setFillColor(QColor c)
 {
-	m_fillColor = c;
+    m_brush.setColor(c);
 }
 
 int QgsSymbol::lineWidth() const
 {
-	return m_lineWidth;
+	return m_pen.width();
 }
 
 void QgsSymbol::setLineWidth(int w)
 {
-	m_lineWidth = w;
+    m_pen.setWidth(w);
 }
 
-QgsSymbol & QgsSymbol::operator=(const QgsSymbol &r1){
-	
-	if(&r1 != this){
-		m_color = r1.color();
-		m_fillColor = r1.fillColor();
-		m_lineWidth = r1.lineWidth();
-	}
-	return *this;
-}
+

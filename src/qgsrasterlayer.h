@@ -24,7 +24,7 @@
 
 class QgsRect;
 class GDALDataset;
-
+class QPixmap;
 
 
 struct RasterBandStats {
@@ -134,6 +134,15 @@ class QgsRasterLayer : public QgsMapLayer  {
           void slot_setTransparency(unsigned int); //should be between 0 and 255
     // emit a signal asking for a repaint
      void triggerRepaint();
+     // abstract function implementations required by super class
+     inline void identify(QgsRect*){};
+     inline void select(QgsRect*, bool){};
+     inline void table(){};
+     inline void showLayerProperties(){};
+     
+         //this is just for compatibility with the maplayer api
+      QPixmap * legendPixmap();
+
     private:
       //flag to indicate whether debug infor overlay should be rendered onto the raster
       bool showDebugOverlayFlag;
@@ -180,6 +189,8 @@ class QgsRasterLayer : public QgsMapLayer  {
       double maxGrayDouble;
       //the colour scaling algorithm to be used (see enum COLOR_SCALING_ALGORITHM)
       int colorScalingAlgorithm;
+       //the pixmap used to show the legend symbol
+       QPixmap * legendQPixmap;
 signals:
       void repaintRequested();
 };

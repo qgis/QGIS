@@ -1,0 +1,35 @@
+/***************************************************************************
+                         qgssymbologyutils.h  -  description
+                             -------------------
+    begin                : Oct 2003
+    copyright            : (C) 2003 by Marco Hugentobler
+    email                : mhugent@geo.unizh.ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSSYMBOLOGYUTILS_H
+#define QGSSYMBOLOGYUTILS_H
+
+#include <qnamespace.h> 
+#include <qstring.h>
+#include <qpixmap.h>
+
+/**Namespace containing static methods which are useful for the symbology widgets*/
+namespace QgsSymbologyUtils
+{
+    QString penStyle2QString(Qt::PenStyle penstyle);
+    Qt::PenStyle qString2PenStyle(QString string);
+    QString brushStyle2QString(Qt::BrushStyle brushstyle);
+    Qt::BrushStyle qString2BrushStyle(QString string);
+    QPixmap* qString2Pixmap(QString string);
+}
+
+#endif

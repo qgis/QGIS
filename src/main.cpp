@@ -42,7 +42,13 @@ int main(int argc, char *argv[])
 	// set the location where your .qm files are in load() below as the last parameter instead of "."
 	// for development, use "/" to use the english original as
 	// .qm files are stored in the base project directory.
-	tor.load(QString("qgis.") + QTextCodec::locale(), ".");
+  if(argc == 2){
+    QString translation = "qgis_" + QString(argv[1]);
+    tor.load(translation,".");
+  }else{
+    tor.load(QString("qgis_") + QTextCodec::locale(), ".");
+  }
+  //tor.load("qgis_go", "." );
 	a.installTranslator(&tor);
 	/* uncomment the following line, if you want a Windows 95 look */
 	//a.setStyle("Windows");

@@ -33038,6 +33038,8 @@ void qt_wait_for_window_manager( QWidget *widget );
 
 void SplashScreen::finish( QWidget *mainWin )
 {
+  // wait for a few seconds
+  sleep(3);
 #if defined(Q_WS_X11)
     qt_wait_for_window_manager( mainWin );
 #endif

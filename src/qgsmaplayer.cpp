@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include <cfloat>
 #include <iostream>
 #include <qdatetime.h>
@@ -21,7 +22,7 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):layerName(lyrname), layerType(type), dataSource(source)
+QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):layerName(lyrname), layerType(type), dataSource(source), m_legendItem(0)
 {
 	// assume the layer is valid (data source exists and can be used)
 	// until we learn otherwise
@@ -132,24 +133,26 @@ void QgsMapLayer::setVisible(bool vis)
 }	 /** Read property of int featureType. */
 const int &QgsMapLayer::featureType()
 {
-	return feature;
+	return geometryType;
 }
 
 /** Write property of int featureType. */
 void QgsMapLayer::setFeatureType(const int &_newVal)
 {
-	feature = _newVal;
+	geometryType = _newVal;
 }
 
-void QgsMapLayer::identify(QgsRect * r)
+QPixmap* QgsMapLayer::legendPixmap()
 {
+    return &m_legendPixmap;
 }
 
-void QgsMapLayer::table()
+QgsLegendItem* QgsMapLayer::legendItem()
 {
+    return m_legendItem;
 }
 
-void QgsMapLayer::select(QgsRect *, bool lock)
+void QgsMapLayer::setLegendItem(QgsLegendItem* li)
 {
-
+    m_legendItem=li;
 }
