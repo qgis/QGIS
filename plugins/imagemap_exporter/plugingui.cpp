@@ -20,9 +20,12 @@
 #include <qspinbox.h>
 
 //standard includes
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <map>
+#include <queue>
 
 #include <qgsfeature.h>
 #include <qgsvectorlayer.h>
@@ -76,10 +79,13 @@ void PluginGui::pbnOK_clicked()
   
   
   // write the image file
-  QString imageFile = leSelectHTML->text();
-  imageFile.replace('.', "_");
-  imageFile = imageFile + "." + cmbFormat->currentText().lower();
-  qgisIFace->getMapCanvas()->saveAsImage(imageFile, 0, 
+  QFile f(leSelectHTML->text());
+  QFileInfo fi(f);
+  QString dir = fi.dir().path() + "/";
+  QString basename = fi.fileName();
+  basename.replace('.', "_");
+  QString imageFile = basename + "." + cmbFormat->currentText().lower();
+  qgisIFace->getMapCanvas()->saveAsImage(dir + imageFile, 0, 
 					 cmbFormat->currentText());
   
   // write the HTML code
@@ -95,35 +101,129 @@ void PluginGui::pbnOK_clicked()
       <<"    <MAP name=\"qgismap\">"<<std::endl;
   QgsRect extentRect((qgisIFace->getMapCanvas()->extent()));
   layer->select(&extentRect, false);
-  QgsFeature* feature = layer->getFirstFeature(true);
+
   int urlIndex = cmbSelectURL->currentItem();
   int altIndex = cmbSelectALT->currentItem() - 1;
-  while (feature != 0) {
-    unsigned char* geometry = feature->getGeometry();
-    QString url = feature->attributeMap()[urlIndex].fieldValue();
-    QString alt = "";
-    if (altIndex != -1)
-      alt = feature->attributeMap()[altIndex].fieldValue();
-    std::cerr<<"geo: "<<(*(int*)(geometry + 1))<<", url: "<<url<<std::endl;
+  int radius = sbSelectRadius->value();
+  
+  // do different things for different geometry types
+  switch (layer->vectorType()) {
+  case QGis::Point: {
+
+    // build a vector of all the features in the current view
+    QgsFeature* feature = layer->getFirstFeature(true);
+    std::vector<std::pair<QgsFeature*, int> > features;
+    while (feature != 0) {
+      features.push_back(std::pair<QgsFeature*, int>(feature, -1));
+      feature = layer->getNextFeature(true);
+    }
+    int n = features.size();
     
-    // point - use a circle area
-    if (geometry[1] == 1) {
-      double x = *((double*)(geometry + 5));
-      double y = *((double*)(geometry + 13));
-      QgsPoint point = transform.transform(x, y);
+    // calculate the neighbour matrix
+    bool **neighbour = new (bool*)[n];
+    for (int i = 0; i < n; ++i) {
+      neighbour[i] = new bool[n]; 
+      neighbour[i][i] = false;
+      for (int j = 0; j < i; ++j) {
+	unsigned char* geo1 = features[i].first->getGeometry();
+	double x1 = *((double*)(geo1 + 5));
+	double y1 = *((double*)(geo1 + 13));
+	QgsPoint p1 = transform.transform(x1, y1);
+	unsigned char* geo2 = features[j].first->getGeometry();
+	double x2 = *((double*)(geo2 + 5));
+	double y2 = *((double*)(geo2 + 13));
+	QgsPoint p2 = transform.transform(x2, y2);
+	double d = std::sqrt(std::pow(p2.x() - p1.x(), 2) + 
+			     std::pow(p2.y() - p1.y(), 2));
+	neighbour[i][j] = std::sqrt(std::pow(p2.x() - p1.x(), 2) + 
+				    std::pow(p2.y() - p1.y(), 2)) < radius;
+	neighbour[j][i] = neighbour[i][j];
+      }
+    }
+    
+    // find clusters
+    std::queue<int> q;
+    for (int i = 0; i < n; ++i) {
+      if (features[i].second == -1) {
+	features[i].second = i;
+	q.push(i);
+      }
+      while (q.size() > 0) {
+	int k = q.front();
+	q.pop();
+	for (int j = 0; j < n; ++j) {
+	  if (neighbour[k][j] && features[j].second == -1) {
+	    features[j].second = features[k].second;
+	    q.push(j);
+	  }
+	}
+      }
+    }
+    
+    // sort the features so clusters are contiguous
+    std::sort(features.begin(), features.end(), cluster_comp);
+    
+    // get urls
+    std::map<int, std::vector<QString> > urls, alts;
+    for (int i = 0; i < n; ++i) {
+      urls[features[i].second].
+	push_back(features[i].first->attributeMap()[urlIndex].fieldValue());
+      if (altIndex != -1)
+	alts[features[i].second].
+	  push_back(features[i].first->attributeMap()[altIndex].fieldValue());
+    }
+    
+    // print map areas
+    for (int i = 0; i < n; ++i) {
+      unsigned char* geo = features[i].first->getGeometry();
+      double x = *((double*)(geo + 5));
+      double y = *((double*)(geo + 13));
+      QgsPoint p = transform.transform(x, y);
       file<<"      <AREA shape=\"circle\" coords=\""
-	  <<int(point.x())<<","<<int(point.y())<<","
-	  <<sbSelectRadius->value()<<"\" "<<"href=\""<<url<<"\""
-	  <<" alt=\""<<alt<<"\">"<<std::endl;
+	  <<int(p.x())<<","<<int(p.y())<<","<<radius<<"\" "
+	  <<"href=\"";
+      if (urls[features[i].second].size() > 1) {
+	QString ciName = basename + "_" + QString::number(features[i].second) +
+	  ".html";
+	file<<ciName;
+	if (i == features[i].second) {
+	  std::ofstream cIdx(dir + ciName);
+	  cIdx<<"<HTML>\n  <BODY>"<<std::endl;
+	  for (int j = 0; j < urls[i].size(); ++j) {
+	    cIdx<<"    <A href=\""<<(urls[i][j].isNull() ? "" : urls[i][j])
+		<<"\"><br>"<<(urls[i][j].isNull() ? "" : urls[i][j])<<"</A>\n";
+	  }
+	  cIdx<<"  </BODY>\n</HTML>"<<std::endl;
+	}
+      }
+      else
+	file<<(urls[features[i].second][0].isNull() ? "" : 
+	       urls[features[i].second][0]);
+      file<<"\" alt=\"";
+      if (alts[features[i].second].size() > 1)
+	file<<alts[features[i].second].size()<<" links";
+      else if (altIndex != -1)
+	file<<(alts[features[i].second][0].isNull() ? "" : 
+	       alts[features[i].second][0]);
+      file<<"\">"<<std::endl;
     }
     
-    // linestring - use a polygon area that extends RADIUS units from the line
-    else if (geometry[1] == 2) {
-      
-    }
+    break;
+  }
     
-    // polygon - just use polygon areas, ignore the radius
-    else if (geometry[1] == 3) {
+  case QGis::Line:
+    break;
+    
+  case QGis::Polygon: {
+    QgsFeature* feature = layer->getFirstFeature(true);
+    while (feature != 0) {
+      unsigned char* geometry = feature->getGeometry();
+      QString url = feature->attributeMap()[urlIndex].fieldValue();
+      url = (url.isNull() ? "" : url);
+      QString alt;
+      if (altIndex != -1)
+	alt = feature->attributeMap()[altIndex].fieldValue();
+      alt = (alt.isNull() ? "" : alt);
       int numRings = *((int*)(geometry + 5));
       if (numRings != 0) {
 	unsigned char* ringBegin = geometry + 9;
@@ -149,10 +249,13 @@ void PluginGui::pbnOK_clicked()
 	  ringBegin += 4 + numPoints * 16;
 	}
       }
+      feature = layer->getNextFeature(true);
     }
-    
-    feature = layer->getNextFeature(true);
+    break;
   }
+
+  }
+  
   file<<"    </MAP>"<<std::endl
       <<"  </BODY>"<<std::endl
       <<"</HTML>"<<std::endl;

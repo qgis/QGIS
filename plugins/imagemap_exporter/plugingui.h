@@ -54,6 +54,12 @@ private:
   */
   bool polygonIsHole(const double* points, int nPoints);
   
+  /** This is used for internal sorting algorithms. */
+  static bool cluster_comp(std::pair<QgsFeature*, int> i, 
+		    std::pair<QgsFeature*, int> j) {
+    return i.second < j.second;
+  }
+  
 signals:
   void drawRasterLayer(QString);
   void drawVectorLayer(QString,QString,QString);
