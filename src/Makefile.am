@@ -30,6 +30,7 @@ qgis_SOURCES =  qgisapp.cpp \
 				qgslayerproperties.cpp \
 				qgslegend.cpp \
 				qgslegenditem.cpp \
+				qgslegendview.cpp \
 				qgslinesymbol.cpp \
 				qgsmapcanvas.cpp \
 				qgsmaplayer.cpp \
@@ -58,6 +59,7 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 			qgslegend.moc.cpp\
 			qgslegenditembase.moc.cpp\
 			qgslegenditem.moc.cpp\
+			qgslegendview.moc.cpp\
 			qgsmapcanvas.moc.cpp\
 			qgsmaplayer.moc.cpp\
 			qgsmaplayerinterface.moc.cpp\
