@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>354</width>
-            <height>170</height>
+            <width>340</width>
+            <height>159</height>
         </rect>
     </property>
     <property name="caption">
@@ -65,17 +65,9 @@
                 <cstring>mUpperEdit</cstring>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="2">
-            <property name="name">
-                <cstring>mUpperLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Upper value</string>
-            </property>
-        </widget>
         <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
             <property name="name">
-                <cstring>layout18</cstring>
+                <cstring>layout2</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -100,18 +92,18 @@
                 </spacer>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>mCancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
                         <cstring>mOkButton</cstring>
                     </property>
                     <property name="text">
                         <string>OK</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mCancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
                     </property>
                 </widget>
                 <spacer>
@@ -126,12 +118,20 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>30</width>
+                            <width>31</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
             </hbox>
+        </widget>
+        <widget class="QLabel" row="0" column="2">
+            <property name="name">
+                <cstring>mUpperLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Upper value</string>
+            </property>
         </widget>
     </grid>
 </widget>
