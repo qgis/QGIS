@@ -52,9 +52,9 @@ QString QgisTestPlugin::description(){
 	return pDescription;
 	
 }
-QgisPluginGui * QgisTestPlugin::gui(){
+QgisPluginGui *QgisTestPlugin::gui(){
 	// stub
-	return 0;
+	return (0);
 }
 
 extern "C" QgisPlugin * classFactory(){
