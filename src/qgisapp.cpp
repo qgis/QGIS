@@ -1548,7 +1548,25 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 int QgisApp::saveDirty(){
    int answer = 0;
    mapCanvas->freeze(true);
-   if((projectIsDirty || mapCanvas->isDirty()) && mapCanvas->layerCount() > 0){
+   #ifdef DEBUG
+   std::cout << "Layer count is " << mapCanvas->layerCount() << std::endl;
+   std::cout << "Project is ";
+   if(projectIsDirty){
+     std::cout << "dirty" << std::endl;
+   }else{
+     std::cout << "not dirty" << std::endl;
+   }
+   std::cout << "Map canvas is " ;
+   if(mapCanvas->isDirty()){
+     std::cout << "dirty" << std::endl;
+   }else{
+     std::cout << "not dirty" << std::endl;
+   }
+   #endif
+   if((projectIsDirty || (mapCanvas->isDirty()) && mapCanvas->layerCount() > 0)){
+     // flag project is dirty since dirty state of canvas is reset if "dirty"
+     // is based on a zoom or pan
+     projectIsDirty = true;
     // prompt user to save
     answer =  QMessageBox::information(this, "Save?","Do you want to save the current project?",
     QMessageBox::Yes | QMessageBox::Default,
