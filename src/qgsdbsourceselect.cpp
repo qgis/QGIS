@@ -29,7 +29,7 @@
 #include "qgsdbsourceselect.h"
 #include "qgsnewconnection.h"
 
-QgsDbSourceSelect::QgsDbSourceSelect():QgsDbSourceSelectBase()
+QgsDbSourceSelect::QgsDbSourceSelect(QWidget *parent, const char *name):QgsDbSourceSelectBase()
 {
 	QSettings settings;
 	QStringList keys = settings.subkeyList("/Qgis/connections");
@@ -39,6 +39,8 @@ QgsDbSourceSelect::QgsDbSourceSelect():QgsDbSourceSelectBase()
 
 		++it;
 	}
+	// connect the double-click signal to the addSingleLayer slot in the parent
+
 
 }
 
