@@ -1,6 +1,9 @@
 QGIS Change Log
-ChangeLog,v 1.18 2004/02/25 07:02:35 gsherman Exp
+ChangeLog,v 1.19 2004/02/26 05:33:07 gsherman Exp
 ------------------------------------------------------------------------------
+Version 0.2 'Pumpkin' <not released yet>
+**Save current view to disk as a PNG image
+
 Version 0.1 'Moroz' February 25, 2004
 **User interface improvements - menu and dialog cleanups and a new icon theme
   based on Everaldo's Crystal icon set.
