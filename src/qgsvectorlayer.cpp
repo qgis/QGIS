@@ -97,7 +97,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       m_renderer(0),
       m_propertiesDialog(0),
       m_rendererDialog(0),
-      mSnappingTolerance(0),
       ir(0),                    // initialize the identify results pointer
       mEditable(false),
       mModified(false)
@@ -1920,20 +1919,20 @@ bool QgsVectorLayer::rollBack()
     return true;
 }
 
-bool QgsVectorLayer::snapPoint(QgsPoint& point)
+bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
 {
-    if(mSnappingTolerance<=0||!dataProvider)
+    if(tolerance<=0||!dataProvider)
     {
 	return false;
     }
-    double mindist=mSnappingTolerance*mSnappingTolerance;//current minimum distance
+    double mindist=tolerance*tolerance;//current minimum distance
     double mindistx=point.x();
     double mindisty=point.y();
     QgsFeature* fet;
     QgsPoint vertexFeature;//the closest vertex of a feature
     double minvertexdist;//the distance between 'point' and 'vertexFeature'
 
-    QgsRect selectrect(point.x()-mSnappingTolerance,point.y()-mSnappingTolerance,point.x()+mSnappingTolerance,point.y()+mSnappingTolerance);
+    QgsRect selectrect(point.x()-tolerance,point.y()-tolerance,point.x()+tolerance,point.y()+tolerance);
     dataProvider->reset();
     dataProvider->select(&selectrect);
     while ((fet = dataProvider->getNextFeature(false)))
@@ -2124,7 +2123,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           p->setPen ( pen );
           p->setBrush ( Qt::NoBrush );
           for (idx = 0; idx < *numRings; idx++) {
-              p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
+	  p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
           }
 
           delete pa;
