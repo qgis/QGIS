@@ -61,7 +61,9 @@ class QgsContinuousColRenderer: public QgsRenderer
     /** Returns true*/
     bool needsAttributes();
     /**Returns a list with the index of the classification attribute*/
-    virtual std::list<int> classificationAttributes(); 
+    virtual std::list<int> classificationAttributes();
+    /**Returns the renderers name*/
+    QString name(); 
  protected:
     /**Number of the classification field (it must be a numerical field)*/
     int mClassificationField;
