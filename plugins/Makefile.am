@@ -14,27 +14,28 @@ endif
 
 SUBDIRS = $(GEOPROCESSING) $(SPIT) $(GRASS) delimited_text gps_importer grid_maker north_arrow copyright_label scale_bar
 
-EXTRA_DIST = qgisplugin.h 			\
-	     plugin_builder.pl			\
-	     plugin_template/icon.xpm		\
-	     plugin_template/Makefile.am	\
-	     plugin_template/plugin.cpp		\
-	     plugin_template/pluginguibase.ui	\
-	     plugin_template/pluginguibase.ui.h	\
-	     plugin_template/plugingui.cpp	\
-	     plugin_template/plugingui.h	\
-	     plugin_template/plugin.h		\
-	     plugin_template/README		\
-	     maplayer/Makefile.am		\
-	     maplayer/Makefile.in		\
-	     maplayer/maplayertest.cpp		\
-	     maplayer/maplayertest.h		\
-	     maplayer/matrix1.xpm		\
-	     example/Makefile.am		\
-	     example/Makefile.in		\
-	     example/exampleplugin.cpp		\
-	     example/exampleplugin.h		\
-	     example/matrix1.xpm
+EXTRA_DIST = \
+	    example/exampleplugin.cpp \
+	    example/exampleplugin.h \
+	    example/Makefile.am \
+	    example/Makefile.in \
+	    example/matrix1.xpm \
+	    maplayer/Makefile.am \
+	    maplayer/Makefile.in \
+	    maplayer/maplayertest.cpp \
+	    maplayer/maplayertest.h \
+	    maplayer/matrix1.xpm \
+	    plugin_builder.pl \
+	    plugin_template/icon.xpm \
+	    plugin_template/Makefile.am \
+	    plugin_template/plugin.cpp \
+	    plugin_template/pluginguibase.ui \
+	    plugin_template/pluginguibase.ui.h \
+	    plugin_template/plugingui.cpp \
+	    plugin_template/plugingui.h \
+	    plugin_template/plugin.h \
+	    plugin_template/README \
+			qgisplugin.h 
 
 
 pkginclude_HEADERS=qgisplugin.h
