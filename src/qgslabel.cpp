@@ -84,7 +84,8 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
 
 void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
                             QgsMapToPixel *transform, QPaintDevice* device,
-                            QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes )
+                            QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes,
+       			    double sizeScale )
 {
 #if QGISDEBUG > 3
     std::cerr << "QgsLabel::renderLabel()" << std::endl;
@@ -139,6 +140,8 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     if (  mLabelAttributes->sizeType() == QgsLabelAttributes::MapUnits )
     {
         size *= scale;
+    } else {
+	size *= sizeScale;
     }
     font.setPointSizeFloat ( size );
 

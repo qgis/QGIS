@@ -280,10 +280,16 @@ void QgsVectorLayer::setDisplayField(QString fldName)
     setLabelField(fieldIndex);
   }
 }
+
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
+{
+    drawLabels(p, viewExtent, theMapToPixelTransform, dst, 1.);
+}
+
 // NOTE this is a temporary method added by Tim to prevent label clipping
 // which was occurring when labeller was called in the main draw loop
 // This method will probably be removed again in the near future!
-void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst, double scale)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -318,7 +324,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
         if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
         {
           bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-          mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, fet, sel);
+          mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, fet, sel, 0, scale);
         }
       }
       delete fet;
@@ -329,7 +335,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-      mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, *it, sel);
+      mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, *it, sel, 0, scale);
     }
 
 
@@ -343,6 +349,11 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 }
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
+{
+    draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1. );
+}
+
+void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst, double widthScale, double symbolScale)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -358,7 +369,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     /*Pointer to a marker image*/
     QPicture marker;
     /*Scale factor of the marker image*/
-    double markerScaleFactor=1;
+    double markerScaleFactor=1.;
 
     // select the records in the extent. The provider sets a spatial filter
     // and sets up the selection set for retrieval
@@ -423,8 +434,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
         {
           bool sel=mSelected.find(fet->featureId()) != mSelected.end();
           m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
-
-          drawFeature(p,fet,theMapToPixelTransform,&marker, markerScaleFactor, projectionsEnabledFlag);
+	  double scale = markerScaleFactor * symbolScale;
+          drawFeature(p,fet,theMapToPixelTransform,&marker, scale, widthScale, projectionsEnabledFlag);
           ++featureCount;
           delete fet;
         }
@@ -435,7 +446,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     {
       bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
       m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
-      drawFeature(p,*it,theMapToPixelTransform,&marker,markerScaleFactor, projectionsEnabledFlag);
+      double scale = markerScaleFactor * symbolScale;
+      drawFeature(p,*it,theMapToPixelTransform,&marker,scale, widthScale, projectionsEnabledFlag);
     }
 
 #ifdef QGISDEBUG
@@ -2092,7 +2104,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   point.setY(mindisty);
 }
 
-void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
+void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor, double widthScale, bool projectionsEnabledFlag)
 {
   unsigned char *feature;
   bool attributesneeded = m_renderer->needsAttributes();
@@ -2103,6 +2115,15 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   QgsPoint pt,myProjectedPoint;
 
   QPen pen;
+
+  // Scale pen width if necessary
+  if ( widthScale != 1. ) {
+      pen = p->pen(); 
+      pen.setWidth ( (int) (widthScale * pen.width() ) ) ;
+      std::cout << "width = " << pen.width() << std::endl;
+      p->setPen ( pen );
+  }
+
   feature = fet->getGeometry();
 
   memcpy(&wkbType, (feature+1), sizeof(wkbType));
@@ -2134,12 +2155,14 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         myProjectedPoint=theMapToPixelTransform->transform(pt);
       }
       //std::cout << "drawing marker for feature " << featureCount << "\n";
-      p->drawRect(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()), 5, 5);
+      p->drawRect(static_cast<int>(myProjectedPoint.x()-markerScaleFactor*3), static_cast<int>(myProjectedPoint.y()-markerScaleFactor*3), static_cast<int>(markerScaleFactor*6), static_cast<int>(markerScaleFactor*6));
+      p->save();
       p->scale(markerScaleFactor,markerScaleFactor);
       p->drawPicture((int)(static_cast<int>(myProjectedPoint.x()) / markerScaleFactor - marker->boundingRect().width() / 2),
                      (int)(static_cast<int>(myProjectedPoint.y()) / markerScaleFactor - marker->boundingRect().height() / 2),
                      *marker);
-      p->resetXForm();
+      p->restore();
+      // p->resetXForm(); // Don't use this, some transformations must be keept !
 
       break;
     }
