@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>610</width>
-            <height>475</height>
+            <height>478</height>
         </rect>
     </property>
     <property name="font">
@@ -83,6 +83,7 @@
         <action name="actionOptions"/>
     </item>
     <item text="&amp;Help" name="PopupMenu_3">
+        <action name="actionHelpContents"/>
         <action name="actionHelpAbout"/>
     </item>
 </menubar>
@@ -478,6 +479,20 @@
             <string>Add a Raster Layer</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionHelpContents</cstring>
+        </property>
+        <property name="text">
+            <string>Action</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Contents</string>
+        </property>
+        <property name="toolTip">
+            <string>QGIS Help (HTML)</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -689,6 +704,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>drawLayers()</slot>
     </connection>
+    <connection>
+        <sender>actionHelpContents</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>helpContents()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
@@ -721,6 +742,7 @@
     <slot>select()</slot>
     <slot>exportMapServer()</slot>
     <slot>addRasterLayer()</slot>
+    <slot>helpContents()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

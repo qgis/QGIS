@@ -162,3 +162,9 @@ void QgisAppBase::addRasterLayer()
 {
 
 }
+
+
+void QgisAppBase::helpContents()
+{
+
+}
