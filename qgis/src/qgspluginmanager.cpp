@@ -108,7 +108,7 @@ QDir pluginDir(txtPluginDir->text(), "*.so*", QDir::Name | QDir::IgnoreCase, QDi
             #endif
             if(libName == myLib->library()){
               // set the checkbox
-              pl->setState(QCheckListItem::On);
+              pl->setOn(true);
             }
           }
 				}else{
