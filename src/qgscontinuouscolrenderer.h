@@ -56,237 +56,42 @@ class QgsContinuousColRenderer: public QgsRenderer
     bool needsAttributes();
  protected:
     /**Number of the classification field (it must be a numerical field)*/
-    int m_classificationField;
+    int mClassificationField;
     /**Item for the minimum value*/
-    QgsRenderItem* m_minimumItem;
+    QgsRenderItem* mMinimumItem;
     /**Item for the maximum value*/
-    QgsRenderItem* m_maximumItem;
+    QgsRenderItem* mMaximumItem;
 };
 
-inline QgsContinuousColRenderer::QgsContinuousColRenderer(): m_minimumItem(0), m_maximumItem(0)
+inline QgsContinuousColRenderer::QgsContinuousColRenderer(): mMinimumItem(0), mMaximumItem(0)
 {
 
 }
 
 inline int QgsContinuousColRenderer::classificationField() const
 {
-    return m_classificationField;
+    return mClassificationField;
 }
 
 inline void QgsContinuousColRenderer::setClassificationField(int id)
 {
-    m_classificationField=id;
+    mClassificationField=id;
 }
 
 inline QgsRenderItem* QgsContinuousColRenderer::minimumItem()
 {
-    return m_minimumItem;
+    return mMinimumItem;
 }
 
 inline QgsRenderItem* QgsContinuousColRenderer::maximumItem()
 {
-    return m_maximumItem;
+    return mMaximumItem;
 }
 
 inline bool QgsContinuousColRenderer::needsAttributes()
 {
   return true;
 }
-/*inline void QgsContinuousColRenderer::renderFeature(QPainter* p, OGRFeature* f, QgsCoordinateTransform* t, int endian)
-{
-    if(m_minimumItem&&m_maximumItem)
-    {
-	//finally draw the feature
-	OGRGeometry *geom = f->GetGeometryRef();
-	if(!geom){
-	    std::cout << "geom pointer is null" << std::endl;
-	}
-	// get the wkb representation
-	unsigned char *feature = new unsigned char[geom->WkbSize()];
-	if(!feature)
-	{
-	    std::cout <<  "'the feature is null\n";
-	}
-	geom->exportToWkb((OGRwkbByteOrder)endian, feature);
 
-
-	int wkbType = (int) feature[1];
-	//std::cout << "Feature type: " << wkbType << std::endl;
-	// read each feature based on its type
-
-	//interpolate the color values******************************************************************************************************
-	double fvalue=f->GetFieldAsDouble(m_classificationField);
-	double minvalue=m_minimumItem->value().toDouble();
-	double maxvalue=m_maximumItem->value().toDouble();
-        
-	QColor mincolor, maxcolor;
-
-	if(wkbType==wkbLineString||wkbType==wkbMultiLineString)
-	{
-	    mincolor=m_minimumItem->getSymbol()->pen().color();
-	    maxcolor=m_maximumItem->getSymbol()->pen().color();
-	}
-        else//if(point or polygon)
-	{
-	    p->setPen(m_minimumItem->getSymbol()->pen());
-	    mincolor=m_minimumItem->getSymbol()->fillColor();
-	    maxcolor=m_maximumItem->getSymbol()->fillColor();
-	}
-
-	int red=int(maxcolor.red()*(fvalue-minvalue)/(maxvalue-minvalue)+mincolor.red()*(maxvalue-fvalue)/(maxvalue-minvalue));
-	int green=int(maxcolor.green()*(fvalue-minvalue)/(maxvalue-minvalue)+mincolor.green()*(maxvalue-fvalue)/(maxvalue-minvalue));
-	int blue=int(maxcolor.blue()*(fvalue-minvalue)/(maxvalue-minvalue)+mincolor.blue()*(maxvalue-fvalue)/(maxvalue-minvalue));
-	
-	if(wkbType==wkbLineString||wkbType==wkbMultiLineString)
-	{
-	  p->setPen(QColor(red,green,blue));  
-	}
-	else
-	{
-	    p->setBrush(QColor(red,green,blue));
-	}
-	//*********************************************************************************************************************************
-
-	double *x;
-	double *y;
-	int *nPoints;
-	int *numRings;
-	int *numPolygons;
-	int numPoints;
-	int numLineStrings;
-	int idx, jdx, kdx;
-	unsigned char *ptr;
-	char lsb;
-	QgsPoint pt;
-	QPointArray *pa;
-	OGRFieldDefn *fldDef;
-	QString fld;
-	QString val;
-	switch (wkbType) { 
-	    case wkbPoint://WKBPoint:
-		//	fldDef = f->GetFieldDefnRef(1);
-		//	 fld = fldDef->GetNameRef();
-		val = f->GetFieldAsString(1);
-		//std::cout << val << "\n";
-				
-		x = (double *) (feature + 5);
-		y = (double *) (feature + 5 + sizeof(double));
-		//std::cout << "transforming point\n";
-		pt = t->transform(*x, *y);
-		//std::cout << "drawing marker for feature " << featureCount << "\n";
-		p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
-		//std::cout << "marker draw complete\n";
-		break;
-	    case wkbLineString://WKBLineString:
-		// get number of points in the line 
-		ptr = feature + 5;
-		nPoints = (int *) ptr;
-		ptr = feature + 1 + 2 * sizeof(int);
-		for (idx = 0; idx < *nPoints; idx++) {
-		    x = (double *) ptr;
-		    ptr += sizeof(double);
-		    y = (double *) ptr;
-		    ptr += sizeof(double);
-		    // transform the point
-		    pt = t->transform(*x, *y);
-		    if (idx == 0)
-			p->moveTo(pt.xToInt(), pt.yToInt());
-		    else
-			p->lineTo(pt.xToInt(), pt.yToInt());
-		}
-		break;
-	    case wkbMultiLineString://WKBMultiLineString:
-
-		numLineStrings = (int) (feature[5]);
-		ptr = feature + 9;
-		for (jdx = 0; jdx < numLineStrings; jdx++) {
-		    // each of these is a wbklinestring so must handle as such
-		    lsb = *ptr;
-		    ptr += 5;	// skip type since we know its 2
-		    nPoints = (int *) ptr;
-		    ptr += sizeof(int);
-		    for (idx = 0; idx < *nPoints; idx++) {
-			x = (double *) ptr;
-			ptr += sizeof(double);
-			y = (double *) ptr;
-			ptr += sizeof(double);
-			// transform the point
-			pt = t->transform(*x, *y);
-			if (idx == 0)
-			    p->moveTo(pt.xToInt(), pt.yToInt());
-			else
-			    p->lineTo(pt.xToInt(), pt.yToInt());
-
-		    }
-		}
-		break;
-	    case wkbPolygon: //WKBPolygon:
-		// get number of rings in the polygon
-		numRings = (int *) (feature + 1 + sizeof(int));
-		ptr = feature + 1 + 2 * sizeof(int);
-		for (idx = 0; idx < *numRings; idx++) {
-		    // get number of points in the ring
-		    nPoints = (int *) ptr;
-		    ptr += 4;
-		    pa = new QPointArray(*nPoints);
-		    for (jdx = 0; jdx < *nPoints; jdx++) {
-			// add points to a point array for drawing the polygon
-			x = (double *) ptr;
-			ptr += sizeof(double);
-			y = (double *) ptr;
-			ptr += sizeof(double);
-			pt = t->transform(*x, *y);
-			pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
-		    }
-		    // draw the ring
-		    p->drawPolygon(*pa);
-
-		}
-		break;
-	    case wkbMultiPolygon: //WKBMultiPolygon:
-		// get the number of polygons
-		ptr = feature + 5;
-		numPolygons = (int *) ptr;
-		for (kdx = 0; kdx < *numPolygons; kdx++) {
-		    //skip the endian and feature type info and
-		    // get number of rings in the polygon
-		    ptr = feature + 14;
-		    numRings = (int *) ptr;
-		    ptr += 4;
-		    for (idx = 0; idx < *numRings; idx++) {
-			// get number of points in the ring
-			nPoints = (int *) ptr;
-			ptr += 4;
-			pa = new QPointArray(*nPoints);
-			for (jdx = 0; jdx < *nPoints; jdx++) {
-			    // add points to a point array for drawing the polygon
-			    x = (double *) ptr;
-			    ptr += sizeof(double);
-			    y = (double *) ptr;
-			    ptr += sizeof(double);
-			    // std::cout << "Transforming " << *x << "," << *y << " to ";
-
-			    pt = t->transform(*x, *y);
-			    //std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
-			    pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
-
-			}
-			// draw the ring
-			p->drawPolygon(*pa);
-			delete pa;
-		    }
-		}
-		break;
-	}
-		
-	//std::cout << "deleting feature[]\n";
-	//      std::cout << geom->getGeometryName() << std::endl;
-	delete[] feature;
-    }
-    else
-    {
-	std::cout << "warning, null pointer in QgsContinuousColRenderer::renderFeature" << std::endl << std::flush;
-    }
-}*/
 
 #endif
