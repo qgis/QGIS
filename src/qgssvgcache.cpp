@@ -35,6 +35,10 @@ QgsSVGCache::QgsSVGCache() {
 
 
 QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
+  
+  // make the symbols smaller
+  scaleFactor *= 0.30;
+  
   PixmapMap::const_iterator iter;
   PixmapMap::key_type key(filename, scaleFactor);
   iter = pixmapMap.find(key);
