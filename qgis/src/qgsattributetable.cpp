@@ -383,7 +383,7 @@ bool QgsAttributeTable::rollBack(QgsVectorLayer* layer)
 {
     if(layer)
     {
-	fillTable(layer);
+	layer->fillTable(this);
     }
     mEdited=false;
     clearEditingStructures();
