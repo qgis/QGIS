@@ -317,7 +317,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     QgsPoint pt;
     QPointArray *pa;
     int wkbType;
+    //std::list<int> attributes=m_renderer->classificationAttributes();
     while ((fet = dataProvider->getNextFeature(attributesneeded)))
+    //while((fet = dataProvider->getNextFeature(attributes)))
     {
       if(featureCount%1000==0)//copy the drawing buffer every 1000 elements
       {

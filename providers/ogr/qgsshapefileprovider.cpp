@@ -255,7 +255,40 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 
 QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
 {
-    return 0;//soon
+   QgsFeature *f = 0; 
+   if(valid)
+   {
+       OGRFeature *fet = ogrLayer->GetNextFeature();
+       if(fet)
+       {
+	 OGRGeometry *geom = fet->GetGeometryRef();
+         // get the wkb representation
+	 unsigned char *feature = new unsigned char[geom->WkbSize()];
+	 geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
+	 f = new QgsFeature(fet->GetFID());
+	 f->setGeometry(feature, geom->WkbSize());
+	 for(std::list<int>::iterator it=attlist.begin();it!=attlist.end();++it)
+	 {
+	     getFeatureAttribute(fet,f,*it);
+	 }
+	 delete fet;
+       }
+       else
+       {
+#ifdef QGISDEBUG
+	   std::cerr << "Feature is null\n";
+#endif  
+           // probably should reset reading here
+	   ogrLayer->ResetReading();
+       }
+   }
+   else
+   {
+#ifdef QGISDEBUG    
+    std::cerr << "Read attempt on an invalid shapefile data source\n";
+#endif    
+   }
+   return f;
 }
 
 /**
@@ -384,20 +417,29 @@ int QgsShapeFileProvider::fieldCount(){
   return attributeFields.size();
 }
 
+void QgsShapeFileProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, int attindex)
+{
+    OGRFieldDefn *fldDef = ogrFet->GetFieldDefnRef(attindex);
+    QString fld = fldDef->GetNameRef();
+    QString val;
+    val = ogrFet->GetFieldAsString(attindex);
+    f->addAttribute(fld, val);
+}
+
 /**
  * Fetch attributes for a selected feature
  */
 void QgsShapeFileProvider::getFeatureAttributes(OGRFeature *ogrFet, QgsFeature *f){
   for (int i = 0; i < ogrFet->GetFieldCount(); i++) {
-
+      getFeatureAttribute(ogrFet,f,i);
     // add the feature attributes to the tree
-    OGRFieldDefn *fldDef = ogrFet->GetFieldDefnRef(i);
+    /*OGRFieldDefn *fldDef = ogrFet->GetFieldDefnRef(i);
     QString fld = fldDef->GetNameRef();
     //    OGRFieldType fldType = fldDef->GetType();
     QString val;
 
     val = ogrFet->GetFieldAsString(i);
-    f->addAttribute(fld, val);
+    f->addAttribute(fld, val);*/
   }
 }
 
