@@ -79,7 +79,8 @@ class QgsMapLayer : public QgsDataSource  {
   void setZ(int zorder);
   /** No descriptions */
   int z();
-
+  //! Visibility of the layer
+	bool visible();
  public: // Public attributes
     //! Layers enum defining the types of layers that can be added to a map
     enum LAYERS {
@@ -104,7 +105,7 @@ class QgsMapLayer : public QgsDataSource  {
     QString tag;
   /**  */
   QgsSymbol * m_symbol;
- 
+    bool m_visible;
 public: // Public attributes
   /**  */
   QString m_labelField;

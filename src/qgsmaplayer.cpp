@@ -25,6 +25,7 @@ layerName (lyrname), layerType (type)
   // assume the layer is valid (data source exists and can be used)
   // until we learn otherwise
   valid = true;
+  m_visible = true;
 }
 
 QgsMapLayer::~QgsMapLayer ()
@@ -105,3 +106,6 @@ void QgsMapLayer::setZ (int zorder)
 bool QgsMapLayer::isValid(){
 	return valid;
 	}
+bool QgsMapLayer::visible(){
+	return m_visible;
+}

@@ -32,6 +32,7 @@
 #include <qlayout.h>
 #include <qwmatrix.h>
 #include <qfiledialog.h>
+#include <qvbox.h>
 #include <libpq++.h>
 #include <iostream>
 #include <iomanip>
@@ -65,6 +66,9 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   mapCanvas->setMinimumWidth (400);
   FrameLayout->addWidget (split, 0, 0);
   mapLegend->setBackgroundColor (QColor (192, 192, 192));
+  mapLegend->setMapCanvas(mapCanvas);
+ 
+
   connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
 	   SLOT (showMouseCoordinate (QgsPoint &)));
 
@@ -76,7 +80,7 @@ QgisApp::~QgisApp ()
 void QgisApp::addLayer ()
 {
   QStringList files =
-    QFileDialog::getOpenFileNames (0, 0, this, "open files dialog",
+    QFileDialog::getOpenFileNames ("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
 				   "Select one or more layers to add");
   QStringList::Iterator it = files.begin ();
   while (it != files.end ())
@@ -107,6 +111,7 @@ void QgisApp::addLayer ()
   // update legend
   /*! \todo Need legend scrollview and legenditem classes */
   // draw the map
+  mapLegend->update();
   mapCanvas->render2 ();
   statusBar ()->message (mapCanvas->extent ().stringRep ());
 
@@ -143,6 +148,7 @@ void QgisApp::addDatabaseLayer ()
       qApp->processEvents ();
       // update legend
       /*! \todo Need legend scrollview and legenditem classes */
+      mapLegend->update();
       // draw the map
       mapCanvas->render2 ();
       statusBar ()->message (mapCanvas->extent ().stringRep ());

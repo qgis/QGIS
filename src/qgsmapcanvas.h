@@ -61,6 +61,10 @@ public:
   virtual void setbgColor( const QColor& _newVal);
   /** Updates the full extent to include the mbr of the rectangle r */
   void updateFullExtent(QgsRect r);
+  //! return the map layer at postion index in the layer stack
+   QgsMapLayer * getZpos(int index);
+   //! return number of layers on the map
+   int layerCount();
  signals:
  	void xyCoordinates(QgsPoint &p);
  private:
@@ -70,6 +74,8 @@ public:
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
     std::map<QString,QgsMapLayer *>layers;
+    //! vector containing the names of layers in zorder
+    std::vector<QString> zOrder;
     //! Full extent of the map canvas
     QgsRect fullExtent;
     //! Current extent
@@ -95,6 +101,8 @@ public:
   /** Flag to indicate a map canvas drag operation is taking place */
   bool dragging;
   std::vector<QColor> initialColor;
+  void incrementZpos();
+  void updateZpos();
 
 };
 
