@@ -29,115 +29,107 @@
 #include "matrix1.xpm"
 // qgis includes
 #include "../../src/qgsmaplayer.h"
+
+
+static const char * const ident_ = "$Id$";
+
+
+static const char *pluginVersion = "0.1";
+
+static const char * const name_ = "Example Plug-in";
+static const char * const description_ = "This example plugin installs menu items and a toolbar";
+static const char * const version_ = "Version 0.0";
+static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+
+
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
 * and an interface object that provides access to exposed functions in QGIS.
 * @param qgis Pointer to the QGIS main window
 * @parma _qI Pointer to the QGIS interface object
 */
-ExamplePlugin::ExamplePlugin(QgisApp * qgis, QgisIface * _qI):qgisMainWindow(qgis), qI(_qI)
+ExamplePlugin::ExamplePlugin(QgisApp * qgis, QgisIface * _qI)
+    : qgisMainWindow(qgis), qI(_qI), QgisPlugin( name_, description_, version_, type_ )
 {
-  /** Initialize the plugin and set the required attributes */
-    pName = "Example Plugin";
-    pVersion = "Version 0.0";
-    pDescription = "This example plugin installs menu items and a toolbar";
+  // see if we can popup a message box in qgis on load
+  QMessageBox::information(qgisMainWindow, "Message From Plugin", "This message is from within the example plugin.");
 
-    // see if we can popup a message box in qgis on load
-    QMessageBox::information(qgisMainWindow, "Message From Plugin", 
-      "This message is from within the example plugin.");
+  // Zoom the map canvas to the full extent of all layers
+  qI->zoomFull();
 
-    // Zoom the map canvas to the full extent of all layers
-    qI->zoomFull();
-    
-    QMessageBox::information(qgisMainWindow, "Message From Plugin", "Click Ok to zoom previous");
-    // zoom the map back to previous extent
-    qI->zoomPrevious();
-  
-    // call a function defined in the QgisIface class and send its value to stdout
-    QgsMapLayer * myMapLayer = qI->activeLayer();
-    std::cout << "Current map layer is: " << myMapLayer->name() << std::endl;
+  QMessageBox::information(qgisMainWindow, "Message From Plugin", "Click Ok to zoom previous");
+  // zoom the map back to previous extent
+  qI->zoomPrevious();
+
+  // call a function defined in the QgisIface class and send its value to stdout
+  QgsMapLayer *myMapLayer = qI->activeLayer();
+  std::cout << "Current map layer is: " << myMapLayer->name() << std::endl;
 
 }
 
 ExamplePlugin::~ExamplePlugin()
 {
-
-}
-/* Following functions return name, description, version, and type for the plugin */
-QString ExamplePlugin::name()
-{
-    return pName;
 }
 
-QString ExamplePlugin::version()
-{
-    return pVersion;
 
-}
-
-QString ExamplePlugin::description()
-{
-    return pDescription;
-
-}
-
-int ExamplePlugin::type()
-{
-    return QgisPlugin::UI;
-}
 
 /*
 * Initialize the GUI interface for the plugin 
 */
 void ExamplePlugin::initGui()
 {
-    // add a test menu with 3 items
-    QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
+  // add a test menu with 3 items
+  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
 
-    pluginMenu->insertItem("&Open", this, SLOT(open()));
-    pluginMenu->insertItem("&New", this, SLOT(newThing()));
-    pluginMenu->insertItem("&Unload Example Plugin", this, SLOT(unload()));
-   
-    menu = ((QMainWindow *) qgisMainWindow)->menuBar();
+  pluginMenu->insertItem("&Open", this, SLOT(open()));
+  pluginMenu->insertItem("&New", this, SLOT(newThing()));
+  pluginMenu->insertItem("&Unload Example Plugin", this, SLOT(unload()));
 
-    menuId = menu->insertItem("&ExamplePluginMenu", pluginMenu);
-    
-    /* Add a test toolbar with one tool (a zoom previous tool) */
-    // Create the action for tool
-    QAction *zoomPreviousAction = new QAction("Zoom Previous", QIconSet(icon_matrix), "&Zoom Previous",
-                                              CTRL + Key_S, qgisMainWindow, "zoomPrevious");
-    // Connect the action to the zoomPrevous slot
-    connect(zoomPreviousAction, SIGNAL(activated()), this, SLOT(zoomPrevious()));
-    // Add the toolbar
-    toolBar = new QToolBar((QMainWindow *) qgisMainWindow, "zoom operations");
-    toolBar->setLabel("Zoom Operations");
-    // Add the zoom previous tool to the toolbar
-    zoomPreviousAction->addTo(toolBar);
+  menu = ((QMainWindow *) qgisMainWindow)->menuBar();
+
+  menuId = menu->insertItem("&ExamplePluginMenu", pluginMenu);
+
+  /* Add a test toolbar with one tool (a zoom previous tool) */
+  // Create the action for tool
+  QAction *zoomPreviousAction = new QAction("Zoom Previous", QIconSet(icon_matrix), "&Zoom Previous",
+                                            CTRL + Key_S, qgisMainWindow, "zoomPrevious");
+  // Connect the action to the zoomPrevous slot
+  connect(zoomPreviousAction, SIGNAL(activated()), this, SLOT(zoomPrevious()));
+  // Add the toolbar
+  toolBar = new QToolBar((QMainWindow *) qgisMainWindow, "zoom operations");
+  toolBar->setLabel("Zoom Operations");
+  // Add the zoom previous tool to the toolbar
+  zoomPreviousAction->addTo(toolBar);
 
 }
+
 // Slot called when open is selected on the menu
 void ExamplePlugin::open()
 {
-    QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the open menu");
+  QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the open menu");
 }
+
 // Slot called when new is selected on the menu
 void ExamplePlugin::newThing()
 {
-    QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the new menu");
+  QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the new menu");
 }
+
 // Slot called when the zoomPrevious button is clicked
 void ExamplePlugin::zoomPrevious()
 {
-    qI->zoomPrevious();
+  qI->zoomPrevious();
 }
+
 // Unload the plugin bye cleaning up the GUI
 void ExamplePlugin::unload()
 {
-    // remove the GUI
-    menu->removeItem(menuId);
-    // cleanup anything else that needs to be nuked
-    delete toolBar;
+  // remove the GUI
+  menu->removeItem(menuId);
+  // cleanup anything else that needs to be nuked
+  delete toolBar;
 }
+
 /** 
 * Required extern functions needed  for every plugin 
 * These functions can be called prior to creating an instance
@@ -146,26 +138,29 @@ void ExamplePlugin::unload()
 // Class factory to return a new instance of the plugin class
 extern "C" QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
 {
-    return new ExamplePlugin(qgis, qI);
+  return new ExamplePlugin(qgis, qI);
 }
+
 // Return the name of the plugin
 extern "C" QString name()
 {
-    return QString("Test Plugin");
+    return name_;
 }
+
 // Return the description
 extern "C" QString description()
 {
-    return QString("Default QGIS Test Plugin");
+    return description_;
 }
+
 // Return the type (either UI or MapLayer plugin)
 extern "C" int type()
 {
-    return QgisPlugin::UI;
+    return type_;
 }
+
 // Delete ourself
 extern "C" void unload(QgisPlugin * p)
 {
-
-    delete p;
+  delete p;
 }

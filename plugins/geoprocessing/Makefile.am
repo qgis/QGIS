@@ -21,7 +21,7 @@ plugin_LTLIBRARIES = pggeoprocessingplugin.la
 
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
-	
+
 pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
 				qgspggeoprocessing.h \
         qgsdlgpgbuffer.cpp \
@@ -30,9 +30,9 @@ pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
         ../../src/qgsvectorlayer.cpp \
         ../../src/qgsfield.cpp \
 				$(pggeoprocessing_UI)
-        
+
 nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
-        
+
 pggeoprocessing_MOC = 	qgspggeoprocessing.moc.cpp \
         ../../src/qgsmaplayer.moc.cpp \
         ../../src/qgsvectorlayer.moc.cpp \
@@ -41,7 +41,7 @@ pggeoprocessing_MOC = 	qgspggeoprocessing.moc.cpp \
 
 pggeoprocessing_UI = qgsdlgpgbufferbase.h \
         qgsdlgpgbufferbase.cpp 
-        
+
 pggeoprocessing_UIC = qgsdlgpgbufferbase.ui
 
 # UI dependencies			
@@ -50,7 +50,7 @@ qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 
 BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS) -I../../src
 
 pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB)
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module

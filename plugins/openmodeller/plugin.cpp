@@ -44,7 +44,14 @@ email                : tim@linfiniti.com
 // xpm for creating the toolbar icon
 #include "icon_om.xpm"
 // 
-static const char *pluginVersion = "0.1";
+static const char * const ident_ = "$Id$";
+
+static const char * const name_ = "openMOdeller Wizard";
+static const char * const description_ = "Plugin to run openModeller in QGIS.";
+static const char * const version_ = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+
+
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
@@ -52,13 +59,10 @@ static const char *pluginVersion = "0.1";
  * @param _qI Pointer to the QGIS interface object
  */
 Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
+          qgisMainWindowPointer(theQGisApp), 
+          qGisInterface(theQgisInterFace),
+          QgisPlugin( name_, description_, version_, type_ )
 {
-  /** Initialize the plugin and set the required attributes */
-  pluginNameQString = "openModeller Wizard";
-  pluginVersionQString = "Version 0.1";
-  pluginDescriptionQString = "Plugin to run openModeller in QGIS.";
-
 }
 
 Plugin::~Plugin()
@@ -66,28 +70,6 @@ Plugin::~Plugin()
 
 }
 
-/* Following functions return name, description, version, and type for the plugin */
-QString Plugin::name()
-{
-  return pluginNameQString;
-}
-
-QString Plugin::version()
-{
-  return pluginVersionQString;
-
-}
-
-QString Plugin::description()
-{
-  return pluginDescriptionQString;
-
-}
-
-int Plugin::type()
-{
-  return QgisPlugin::UI;
-}
 
 /*
  * Initialize the GUI interface for the plugin 
@@ -152,25 +134,25 @@ extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * th
 // the class may not yet be insantiated when this method is called.
 extern "C" QString name()
 {
-  return QString("openModeller Wizard");
+    return name_;
 }
 
 // Return the description
 extern "C" QString description()
 {
-  return QString("This is a plugin to run openModeller in QGIS");
+    return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 extern "C" int type()
 {
-  return QgisPlugin::UI;
+    return type_;
 }
 
 // Return the version number for the plugin
 extern "C" QString version()
 {
-  return pluginVersion;
+    return version_;
 }
 
 // Delete ourself

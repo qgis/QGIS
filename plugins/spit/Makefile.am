@@ -66,7 +66,7 @@ qgsmessageviewerbase.h: qgsmessageviewerbase.ui
 
 BUILT_SOURCES = $(spit_MOC) $(spit_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC)  -I../../src
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB)
 spitplugin_la_LDFLAGS = -avoid-version -module

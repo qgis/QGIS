@@ -47,7 +47,7 @@ openmodellerguibase.cpp: openmodellerguibase.h openmodellerguibase.ui
 
 BUILT_SOURCES = $(openmodeller_MOC) $(openmodeller_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS)
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 
 #-lom is libopenmodeller which should be in to /usr/lib/libom.so.0.0
 libopenmodellerplugin_la_LIBADD = $(QT_LDADD) -L/usr/lib/ -lom -lm
