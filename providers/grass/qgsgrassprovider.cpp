@@ -236,6 +236,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 {
     int cat, type, id, idx;
     unsigned char *wkb;
+		int wkbsize;
 
     #ifdef QGISDEBUG
     std::cout << "QgsGrassProvider::getNextFeature() mNextCidx = " << mNextCidx 
@@ -264,7 +265,6 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 
     // TODO int may be 64 bits (memcpy)
     if ( type & (GV_POINTS | GV_LINES) ) { /* points or lines */
-	int wkbsize;
 	
 	Vect_read_line ( mMap, mPoints, mCats, id);
 	int npoints = mPoints->n_points;
@@ -298,7 +298,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 	Vect_get_area_points ( mMap, id, mPoints );
 	int npoints = mPoints->n_points;
 
-	int wkbsize = 1+4+4+4+npoints*2*8; // size without islands
+	wkbsize = 1+4+4+4+npoints*2*8; // size without islands
 	wkb = new unsigned char[wkbsize];
 	wkb[0] = (unsigned char) mEndian;
 	int offset = 1;
@@ -341,7 +341,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 	}
     }
 
-    f->setGeometry(wkb);
+    f->setGeometry(wkb, wkbsize);
 
     if ( fetchAttributes ) {
 	QgsGrassProvider::setFeatureAttributes( mLayerId, cat, f );  
