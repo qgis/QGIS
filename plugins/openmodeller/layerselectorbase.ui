@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Form1</string>
+        <string>Raster Layer Selector</string>
     </property>
     <property name="icon">
         <pixmap>image0</pixmap>
@@ -135,12 +135,26 @@
         <receiver>LayerSelectorBase</receiver>
         <slot>pbnDirectorySelector_clicked()</slot>
     </connection>
+    <connection>
+        <sender>pbnOK</sender>
+        <signal>clicked()</signal>
+        <receiver>LayerSelectorBase</receiver>
+        <slot>pbnOK_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>LayerSelectorBase</receiver>
+        <slot>pbnCancel_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">layerselectorbase.ui.h</include>
 </includes>
 <slots>
     <slot>pbnDirectorySelector_clicked()</slot>
+    <slot>pbnOK_clicked()</slot>
+    <slot>pbnCancel_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

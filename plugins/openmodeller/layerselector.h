@@ -22,6 +22,7 @@
 #endif
 
 #include <qwidget.h>
+#include <qstringlist.h> 
 
 /**
 @author Tim Sutton
@@ -35,12 +36,15 @@ public:
     
 public slots:
     void pbnDirectorySelector_clicked();
-
+    void pbnOK_clicked();
+    void pbnCancel_clicked();
+    QStringList getSelectedLayers() {return selectedLayersList;};
 private:
     
     void traverseDirectories(const QString& dirname, QListViewItem* theListViewItem);
     QListViewItem * listParent; 
     QString baseDirString;
+    QStringList selectedLayersList;
 signals:
 };
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'layerselectorbase.ui'
 **
-** Created: Thu Feb 17 01:10:15 2005
+** Created: Thu Feb 17 09:48:40 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -39,6 +39,8 @@ public:
 
 public slots:
     virtual void pbnDirectorySelector_clicked();
+    virtual void pbnOK_clicked();
+    virtual void pbnCancel_clicked();
 
 protected:
     QGridLayout* LayerSelectorBaseLayout;

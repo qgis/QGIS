@@ -70,6 +70,35 @@ void LayerSelector::pbnDirectorySelector_clicked()
   
 }
 
+
+
+
+void LayerSelector::pbnOK_clicked()
+{
+
+  selectedLayersList.clear();
+  QListViewItemIterator myIterator (listParent);
+  while (myIterator.current())
+  {
+    if (myIterator.current()->isSelected())
+    {
+      selectedLayersList+=myIterator.current()->text(0);
+    }
+    ++myIterator;
+  }
+  hide();
+
+}
+
+
+void LayerSelector::pbnCancel_clicked()
+{
+  selectedLayersList.clear();
+  hide();
+}
+
+
+
 void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem* theParentListViewItem)
 {
   QDir myDirectory(theDirName);
@@ -101,7 +130,17 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
       QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->absFilePath());
       myItem->setText(1,"DIR");
       traverseDirectories(myFileInfo->absFilePath(),myItem );
-      myItem->setOpen(true);
+      //if it turned out the dir contained an arc info coverage, the 'DIR' label above will have been changed
+      //to AIG in the above travers call. Now we can test if this item has no child nodes and is not named AIG
+      //we can prune it out of the tree
+      if (myItem->childCount()<1)
+      {
+        delete myItem;
+      }
+      else
+      {
+        myItem->setOpen(true);
+      }
     }
 
     //check to see if its an adf file type
@@ -111,8 +150,19 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
       if (myFileInfo->fileName()=="hdr.adf")
       {
         std::cout << "Current filename is: " <<myFileInfo->filePath().ascii() << std::endl;
-        QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->fileName());
-        myItem->setText(1,"AIG");
+        //set the parent item as the layer because this is a coverage
+        theParentListViewItem->setText(1,"AIG");
+
+        if (OpenModellerGui::isValidGdalProj(myFileInfo->absFilePath()))
+        {
+          theParentListViewItem->setText(2,"Valid");
+        }
+        else
+        {
+          theParentListViewItem->setText(2,"Invalid");
+        }
+        //dont scan this dir any further (we assume there are not coverages nested inside coverages)!
+        return;
       }
     }
 
@@ -137,6 +187,7 @@ void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem
         //GOOD FILE AND BAD PROJ
         std::cout <<myFileInfo->absFilePath().ascii() << " is a valid GDAL file but contains no projection info" << std::endl;
         QListViewItem * myItem = new QListViewItem(theParentListViewItem,myFileInfo->fileName());
+        myItem->setText(1,myFileInfo->extension(false));
         myItem->setText(2,"Invalid");
         myInvalidFileProjFlag = true;	  
         myInvalidFileProjList +=myFileInfo->absFilePath()+"\n"; 	
