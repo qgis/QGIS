@@ -68,23 +68,28 @@ const char * QgsShapeFile::getFeatureClass(){
       dbf.read((char *)&dbh, sizeof(dbh));
 
       Fda fda;
+      std::stringstream num;
       for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read += sizeof(fda)){
       	dbf.read((char *)&fda, sizeof(fda));
         switch(fda.field_type){
-          case 'N': column_types.push_back("int");
-                    break;
-          case 'D': column_types.push_back("date");
-                    break;
-          case 'C': column_types.push_back("varchar(256)");
+          case 'N': if((int)fda.field_decimal>0)
+                      column_types.push_back("float");
+                    else
+                      column_types.push_back("int");          
                     break;
           case 'F': column_types.push_back("float");
+                    break;                    
+          case 'D': column_types.push_back("date");
+                    break;
+          case 'C': num << (int)fda.field_length << std::ends;
+                    column_types.push_back((const char *)QString("varchar(" + num.str() + ")"));
                     break;
           case 'L': column_types.push_back("boolean");
                     break;
           default:
                     column_types.push_back("varchar(256)");
                     break;
-        }
+        }       
       }
       dbf.close();
       
