@@ -17,6 +17,8 @@
 
 /* $Id$ */
 
+#define QGISDEBUG
+
 #include <fstream>
 #include <iostream>
 
@@ -26,7 +28,6 @@
 #include <qmessagebox.h>
 #include <qcursor.h>
 #include <qobject.h>
-#include <qregexp.h> 
 
 // for ntohl
 #ifdef WIN32
@@ -183,7 +184,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       selectSQL = "select ";
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
-      QString sql = "select * from " + tableName + " limit 1";
+      QString sql = "select * from \"" + tableName + "\" limit 1";
       PGresult* result = PQexec(pd, (const char *) sql);
       //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
       for (int i = 0; i < PQnfields(result); i++)
@@ -264,7 +265,9 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       mCountThread.start();
       std::cout << "QgsPostgresProvider: Main thread just dispatched mCountThread" << std::endl;
 #endif
-    } else {
+    } 
+    else 
+    {
       // the table is not a geometry table
       numberFeatures = 0;
       valid = false;
@@ -554,7 +557,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 
   QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
-      + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
+      + ",asbinary(%1,'%2') as qgs_feature_geometry from \"%3\"").arg(geometryColumn).arg(endianString()).arg(tableName);
 #ifdef QGISDEBUG
   std::cout << "Binary cursor: " << declare << std::endl; 
 #endif
@@ -692,7 +695,7 @@ int QgsPostgresProvider::fieldCount() const
  */
 void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
 
-  QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
+  QString sql = QString("select * from \"%1\" where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
 
 #ifdef QGISDEBUG
 //  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
@@ -721,7 +724,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key,
   for(iter=attlist.begin();iter!=attlist.end();++iter)
   {
     ++i;
-    QString sql = QString("select %1 from %2 where %3 = %4")
+    QString sql = QString("select %1 from \"%2\" where %3 = %4")
       .arg(fields()[*iter].name())
       .arg(tableName)
       .arg(primaryKey)
@@ -751,7 +754,7 @@ void QgsPostgresProvider::reset()
   //--std::cout << "Resetting the cursor to the first record " << std::endl;
   QString declare = QString("declare qgisf binary cursor for select " +
       primaryKey + 
-      ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn)
+      ",asbinary(%1,'%2') as qgs_feature_geometry from \"%3\"").arg(geometryColumn)
       .arg(endianString()).arg(tableName);
   if(sqlWhereClause.length() > 0)
   {
@@ -826,21 +829,21 @@ QString QgsPostgresProvider::getPrimaryKey()
     + tableName + "')";
 
 #ifdef QGISDEBUG
-  std::cerr << "Getting primary key using '" << sql << "'" << std::endl;
+  std::cerr << "Getting primary key using '" << sql << "'\n";
 #endif
 
   PGresult *pk = PQexec(connection,(const char *)sql);
 
 #ifdef QGISDEBUG
-  std::cout << "Got " << PQntuples(pk) << " rows." << std::endl;
+  std::cerr << "Got " << PQntuples(pk) << " rows.\n";
 #endif
 
   // if we got no tuples we ain't go no pk :)
   if( PQntuples(pk) == 0 )
   {
 #ifdef QGISDEBUG
-    std::cout << "Relation has no primary key -- "
-	      << "investigating alternatives" << std::endl;
+    std::cerr << "Relation has no primary key -- "
+	      << "investigating alternatives\n";
 #endif
 
     // Two options here. If the relation is a table, see if there is
@@ -862,7 +865,7 @@ QString QgsPostgresProvider::getPrimaryKey()
       std::cerr << "Relation is a table. Checking to see if it has an "
 		<< "oid column.\n";
 #endif
-      sql = "select oid from " + tableName + " limit 1";
+      sql = "select oid from \"" + tableName + "\" limit 1";
       PGresult* oidPresent = PQexec(connection, (const char*)sql);
 
       if (PQntuples(oidPresent) == 0)
@@ -890,34 +893,26 @@ QString QgsPostgresProvider::getPrimaryKey()
       // Have a poke around the view to see if any of the columns
       // could be used as the primary key.
 
-      // Get the select statement that defines the view
-      sql = "select definition from pg_views where viewname = '" 
-	+ tableName + "'";
-      PGresult* def = PQexec(connection, (const char*)sql);
-      if (PQntuples(def) == 0)
-	qDebug("View " + tableName + " is not a view!");
-      QString viewDef = PQgetvalue(def, 0, 0);
-      PQclear(def);
 
-      table_cols cols;
-      // Find columns in the view that have unique constraints on the
-      // underlying table columns 
-      findTableColumns(viewDef, cols);
-      // and choose one of them
+      // Find columns in the view that may be suitable as a key for
+      // qgis (derive from table columns with a unique constraint and
+      // int4 type)
+      tableCols cols;
+      findColumns(tableName, cols);
       primaryKey = chooseViewColumn(cols);
 
       if (primaryKey.isEmpty())
       {
 	valid = false;
 	QApplication::restoreOverrideCursor();
-	QMessageBox::warning(0, QObject::tr("No 'primary key' column in view"),
+	QMessageBox::warning(0, QObject::tr("No suitable key column in view"),
 	    QObject::tr("The view has no column suitable for use as a "
-	       "primary key.\n"
+	       "unique key.\n\n"
 	       "Qgis requires that the view have a column that can be\n"
-	       "used as a primary key. It should be of type int4 and contain\n"
-	       "a unique value for each row of the table.\n"
-               "For better performance the column should be derived\n"
-	       "from an indexed column"));
+	       "used as a unique key. It should be derived from a column\n"
+	       "of type int4 and be either a primary key or have\n"
+	       "a unique constraint on it (an indexed column wiln"
+	       "give better performance)."));
 	QApplication::setOverrideCursor(Qt::waitCursor);
       }
     }
@@ -940,7 +935,7 @@ QString QgsPostgresProvider::getPrimaryKey()
 	QApplication::setOverrideCursor(Qt::waitCursor);
       //TODO concatenated key -- can we use this?
 #ifdef QGISDEBUG
-      std::cerr << "Table has a concatenated primary key" << std::endl;
+      std::cerr << "Table has a concatenated primary key\n";
 #endif
     }
     int primaryKeyIndex = attributeFieldsIdMap[columns[0].toInt()];
@@ -959,14 +954,21 @@ QString QgsPostgresProvider::getPrimaryKey()
   }
   PQclear(pk);
 
-#ifdef QGISDEBUG
-  std::cout << "Primary key is " << primaryKey << std::endl;
-#endif
+  //#ifdef QGISDEBUG
+  if (primaryKey.length() > 0)
+    std::cerr << "Qgis row key is " << primaryKey << '\n';
+  else
+    std::cerr << "Qgis row key was not set.\n";
+  //#endif
 
   return primaryKey;
 }
 
-QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
+// Given the table and column that each column in the view refers to,
+// choose one. Prefers column with an index on them, but will
+// otherwise choose something suitable.
+
+QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
 {
   // For each relation name and column name need to see if it
   // has unique constraints on it, or is a primary key (if not,
@@ -974,15 +976,15 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
   // entries in the map which can be used as the key.
 
   QString sql, key;
-  table_cols suitable;
+  tableCols suitable;
 
-  std::vector<table_cols::const_iterator> oids;
-  table_cols::const_iterator iter = cols.begin();
+  std::vector<tableCols::const_iterator> oids;
+  tableCols::const_iterator iter = cols.begin();
   for (; iter != cols.end(); ++iter)
   {
-    QString view_col   = iter->first;
-    QString table_name = iter->second.first;
-    QString table_col  = iter->second.second;
+    QString viewCol   = iter->first;
+    QString tableName = iter->second.first;
+    QString tableCol  = iter->second.second;
     // This sql returns one or more rows if the column 'table_col' in 
     // table 'table_name' has one or more columns that satisfy the
     // following conditions:
@@ -993,29 +995,25 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
     //    it isn't a constraint over multiple columns.
     sql = "select * from pg_constraint where conkey[1] = "
       "(select attnum from pg_attribute where attname = '"
-      + table_col + "' and attrelid = (select oid from "
-      "pg_class where relname = '" + table_name + "') and "
+      + tableCol + "' and attrelid = (select oid from "
+      "pg_class where relname = '" + tableName + "') and "
       "atttypid = (select oid from pg_type where typname = 'int4')) and "
       "conrelid = (select oid from pg_class where relname = '" +
-      table_name + "') and (contype = 'p' or contype = 'u') "
+      tableName + "') and (contype = 'p' or contype = 'u') "
       " and array_dims(conkey) = '[1:1]'";
 
-#ifdef QGISDEBUG
-    std::cout << "Column " << view_col << " from " 
-	      << table_name << "." << table_col;
-#endif
     PGresult* result = PQexec(connection, (const char*)sql);
     if (PQntuples(result) == 1)
-      suitable[view_col] = iter->second;
+      suitable[viewCol] = iter->second;
 
 #ifdef QGISDEBUG
     if (PQntuples(result) == 1)
-      std::cout << " is suitable.\n";
-    else
-      std::cout << " is not suitable.\n";
+      std::cerr << "Column " << viewCol << " from " 
+		<< tableName << "." << tableCol
+		<< " is suitable.\n";
 #endif
     PQclear(result);
-    if (table_col == "oid")
+    if (tableCol == "oid")
       oids.push_back(iter);
   }
 
@@ -1028,8 +1026,8 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
     {
       suitable[oids[i]->first] = oids[i]->second;
 #ifdef QGISDEBUG
-      std::cout << "Adding column " << oids[i]->first 
-		<< " as it may be suitable." << std::endl;
+      std::cerr << "Adding column " << oids[i]->first 
+		<< " as it may be suitable.\n";
 #endif
     }
   }
@@ -1041,14 +1039,14 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
   {
     key = suitable.begin()->first;
 #ifdef QGISDEBUG
-    std::cout << "Picked column " << key
+    std::cerr << "Picked column " << key
 	      << " as it is the only one that was suitable.\n";
 #endif
   }
   else if (suitable.size() > 1)
   {
     // Search for one with an index
-    table_cols::const_iterator i = suitable.begin();
+    tableCols::const_iterator i = suitable.begin();
     for (; i != suitable.end(); ++i)
     {
       sql = "select * from pg_index where indrelid = (select oid "
@@ -1064,7 +1062,7 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
       { // Got one. Use it.
 	key = i->first;
 #ifdef QGISDEBUG
-	std::cout << "Picked column '" << key
+	std::cerr << "Picked column '" << key
 		  << "' because it has an index.\n";
 #endif
 	break;
@@ -1082,7 +1080,7 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
       {
 	key = i->first;
 #ifdef QGISDEBUG
-	std::cout << "Picked column " << key
+	std::cerr << "Picked column " << key
 		  << " as it is probably the postgresql object id "
 		  << " column (which contains unique values) and there are no"
 		  << " columns with indices to choose from\n.";
@@ -1092,7 +1090,7 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
       {
 	key = suitable.begin()->first;
 #ifdef QGISDEBUG
-	std::cout << "Picked column " << key
+	std::cerr << "Picked column " << key
 		  << " as it was the first suitable column found"
 		  << " and there are no"
 		  << " columns with indices to choose from\n.";
@@ -1100,33 +1098,178 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
       }
     }
   }
-  // XXX Remove when findTableColumns() is enhanced.
-  //
-  // Temporary hack to choose a column called 'oid' to
-  // allow for none of the above working due to the
-  // findTableColumns() function currently not detecting
-  // underlying tables if a view refers to a second view.
-
-  if (key == "" && cols.find("oid") != cols.end())
-    key = "oid";
 
   return key;
 }
 
+// Given a relation name, will return in the cols variable the
+// underlying table and columns for each column in the given
+// relation. This is trivial for tables, but for views that reference
+// views, etc, can be a bit more tricky.
+
+void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
+{
+  // Get a list of the columns in the given relation.
+  typedef std::list<QString> columnNamesType;
+  columnNamesType columnNames;
+  QString sql = "select attname from pg_attribute where attrelid = ("
+    "select oid from pg_class where relname = '" + relationName + "')";
+  PGresult* result = PQexec(connection, (const char*)sql);
+  for (int i = 0; i < PQntuples(result); ++i)
+    columnNames.push_back(PQgetvalue(result, i, 0));
+  // Iterate over all of the columns in the given relation and work
+  // downwards until we reach a table (rather than a view).
+  columnNamesType::const_iterator i = columnNames.begin();
+  for (; i != columnNames.end(); ++i)
+  {
+    QString relation = relationName;
+    QString rRelation = relation;
+    QString column = *i;
+    QString rColumn = column;
+
+#ifdef QGISDEBUG
+    std::cerr << "Looking at " << relation << '.' << column << '\n';
+#endif
+
+    // status is a flag variable. 0 means the relation is a view, 1
+    // that the relation is a table, and 2 that the column is
+    // unsuitable for going any further.
+    int status = 0;
+    while (status == 0)
+    {
+      status = findRelationAndColumn(relation, column, 
+				     rRelation, rColumn);
+#ifdef QGISDEBUG
+      if (status == 0)
+	std::cerr << "  " << relation << '.' << column
+		  << " derives from " 
+		  << rRelation << '.' << rColumn << '\n';
+#endif
+      relation = rRelation;
+      column = rColumn;
+    }
+
+    if (status == 1)
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Search completed: " 
+		<< relationName << '.' << *i
+		<< " ends at " << relation << '.' << column 
+		<< "\n\n";
+#endif
+      cols[*i] = std::make_pair<QString, QString>(relation, column);
+    }
+    else if (status == 2) // we've reached a dead-end
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Search stopped: " << relation << '.' << column 
+		<< " is not suitable.\n";
+#endif
+    }
+    else
+      qDebug("Unexpected status of " + status);
+  }
+}
+
+// Given a view name and a column in that view, this function returns
+// the relation and column that the view column comes from. It caches
+// the results from the sql queries that are done to reduce
+// communication with the database (on the assumption that that is
+// slow). 
+
+int QgsPostgresProvider::findRelationAndColumn(
+		       QString relation, QString column,
+		       QString& rRelation, QString& rColumn)
+{
+  // Get the relation type from the cache or ask the database
+  typedef std::map<QString, char> relationType;
+  static relationType type;
+  relationType::const_iterator typeIter = type.find(relation);
+  if (typeIter == type.end())
+  {
+    QString sql = "select relkind from pg_class where relname = '" +
+      relation + "'";
+    PGresult* result = PQexec(connection, (const char*)sql);
+    if (PQntuples(result) == 0)
+    {
+      qDebug("Relation " + relation + " is unknown!");
+      return 2;
+    }
+
+    type[relation] = PQgetvalue(result, 0, 0)[0];
+    PQclear(result);
+    typeIter = type.find(relation);
+  }
+  char relType = typeIter->second;
+
+  // If relation is a table, we've reached the end, so return.
+  if (relType == 'r')
+    return 1;
+
+  // There are other types of relations beyond 'r' and 'v', but we
+  // should never get them here.
+  if (relType != 'v')
+  {
+    std::cerr << __FILE__<< ":" << __LINE__ 
+	      << "Found a relation with type " << relType 
+	      << ". This is unexpected.\n";
+    return 2;
+  }
+
+  // Relation is a view, so find out what tables and columns it refers
+  // to, and store in the cache.
+  typedef std::map<QString, tableCols> tableDetails;
+  static tableDetails cache;
+
+  tableDetails::const_iterator i = cache.find(relation);
+  if (i == cache.end())
+  {
+    QString sql = "select definition from pg_views where viewname = '" 
+      + relation + "'";
+    PGresult* def = PQexec(connection, (const char*)sql);
+    if (PQntuples(def) == 0)
+      qDebug("View " + relation + " is not a view!");
+    QString selectCmd = PQgetvalue(def, 0, 0);
+    PQclear(def);
+
+    tableCols tempCols;
+    findTableColumns(selectCmd, tempCols);
+    cache[relation] = tempCols;
+    i = cache.find(relation);
+  }
+
+  // Find the underlying relation and column for the given relation
+  // and column and return.
+  tableCols::const_iterator ii = i->second.find(column);
+
+  if (ii == i->second.end())
+    return 2; // dead-end
+  else
+  {
+    rRelation = ii->second.first;
+    rColumn = ii->second.second;
+    return 0; // is a view
+  }
+}
 
 // Finds out the underlying tables and columns for each column in the
 // view defined by the given select statement.
 
-void QgsPostgresProvider::findTableColumns(QString select_cmd, 
-					   table_cols& cols)
+void QgsPostgresProvider::findTableColumns(QString selectCmd, 
+					   tableCols& cols)
 {
-  QRegExp col_regexp("SELECT *(.+) *FROM");
-  col_regexp.setCaseSensitive(false);
+  // Pick out the text between the first SELECT and the first FROM
+  // words in selectCmd. 
+  int start = selectCmd.find("SELECT");
+  int stop  = selectCmd.find("FROM");
 
-  if (col_regexp.search(select_cmd) > -1)
+  if (start != -1 && stop != -1 && stop > start)
   {
+    // Why doesn't QString have a subString(int start, int stop) function?
+    QString cmd = selectCmd.remove(0, start + 6);
+    cmd = cmd.remove(stop - (start + 6), 10000000);
 #ifdef QGISDEBUG
-    std::cerr << "Column definitions are: " << col_regexp.cap(1) << std::endl;
+    std::cerr << "View definition is: " << cmd << '\n';
 #endif
     // Now split the columns definitions on commas to get at actual
     // column definitions. The complication is that if column
@@ -1136,29 +1279,28 @@ void QgsPostgresProvider::findTableColumns(QString select_cmd,
     // way. 
 
     QStringList fields;
-    QString cmd = col_regexp.cap(1);
-    QString current_item;
-    bool in_braces = false;
+    QString currentItem;
+    bool inBraces = false;
 
     for (int i = 0; i < cmd.length(); ++i)
     {
       // new item, store preceeding one if it's got something in it
-      if (cmd[i] == ',' && !in_braces && !current_item.isEmpty()) 
+      if (cmd[i] == ',' && !inBraces && !currentItem.isEmpty()) 
       {
-	fields.push_back(current_item);
-	current_item = "";
+	fields.push_back(currentItem);
+	currentItem = "";
       }
       else
-	current_item += cmd[i];
+	currentItem += cmd[i];
 
       if (cmd[i] == '(')
-	in_braces = true;
-      else if (cmd[i] == ')' && in_braces)
-	in_braces = false;
+	inBraces = true;
+      else if (cmd[i] == ')' && inBraces)
+	inBraces = false;
     }
     // Grab the last item if worthwhile
-    if (!current_item.isEmpty())
-      fields.push_back(current_item);
+    if (!currentItem.isEmpty())
+      fields.push_back(currentItem);
 
     // Pick apart the fields to determine the table name, table
     // column name, and view column name
@@ -1166,100 +1308,72 @@ void QgsPostgresProvider::findTableColumns(QString select_cmd,
     {
       QString f = (*i).simplifyWhiteSpace();
 
-      QString view_col_name = "", table_col_name = "", 
-	table_name = "";
+      QString viewColName = "", tableColName = "", 
+	tableName = "";
       // if the view column name is renamed, there will be the
       // 'AS' command, so split on that if present.
-      QRegExp rename_regexp("(.+) AS (.+)");
-      if (rename_regexp.search(f) > -1)
+      int splitPos = f.find(" AS ");
+      if (splitPos != -1)
       {
-	view_col_name = rename_regexp.cap(2);
-	table_col_name = rename_regexp.cap(1);
+	viewColName = f;
+	viewColName.remove(0, splitPos+4).remove('"');
+	tableColName = f;
+	tableColName.remove(splitPos, 100000);
       }
       else
-	table_col_name = f;
+	tableColName = f.remove('"');
 
       // Now extract the table name from the column
       // name. It appears that the sql that we get from
       // postgresql always has the full form of 'relation.column'
-      if (table_col_name.contains('.'))
+      if (tableColName.contains('.'))
       {
-	QStringList tt = QStringList::split('.', table_col_name);
-	table_name = tt[0];
-	table_col_name = tt[1];
+	QStringList tt = QStringList::split('.', tableColName);
+	tableName = tt[0].remove('"');
+	tableColName = tt[1];
       }
       else
 	std::cerr << "The view column definition '" << f 
-		  << "' is not in relation.column form." << std::endl;
+		  << "' is not in relation.column form.\n";
 
       // If there was no 'AS', the view column name is the same as
       // the column name from the underlying table.
-      if (view_col_name == "")
-	view_col_name = table_col_name;
+      if (viewColName == "")
+	viewColName = tableColName;
 
 #ifdef QGISDEBUG
-      std::cerr << "View column '" << view_col_name << "' comes from " 
-		<< table_name << "." << table_col_name << std::endl;
+      std::cerr << "View column '" << viewColName << "' comes from " 
+		<< tableName << "." << tableColName << '\n';
 #endif
       // If there are braces () in the table_col_name this probably
       // indicates that some sql function is being used to transform
       // the underlying column. This is probably not
       // suitable so exclude such columns from the result.
-      if (!table_name.contains('('))
-	cols[view_col_name] = 
-	  std::make_pair<QString, QString>(table_name, table_col_name);
+      // If any of the items are blank, discard them too.
+      if (tableName.length() > 0 && viewColName.length() > 0 &&
+	  !tableName.contains('(') && !viewColName.contains('('))
+	cols[viewColName] = 
+	  std::make_pair<QString, QString>(tableName, tableColName);
       else
       {
 #ifdef QGISDEBUG
-	std::cerr << "The definition for view column '" 
-	  << view_col_name << "' contains "
-	  "an open bracket in the definition which probably means that "
-	  "a postgreSQL function is being used to derive the column and "
-	  "hence that it is unsuitable for use as a key into the "
-	  "table." << std::endl;
+	if (!tableName.contains('(') && !viewColName.contains('('))
+	  std::cerr << "The definition for view column '" 
+		    << viewColName << "' contains "
+	    "an open bracket in the definition which probably means that "
+	    "a postgreSQL function is being used to derive the column and "
+	    "hence that it is unsuitable for use as a key into the "
+	    "table.\n";
+	if (tableName.length() == 0 || viewColName.length() == 0)
+	  std::cerr << "Failed to extract a sensible table name or "
+	    "view column name from '" << f << "'\n";
 #endif
       }
     }
   }
   else
     std::cerr << "Couldn't extract view column definitions from '"
-	      << select_cmd << "'." << std::endl;
-
-  // Now ensure that the tables and columns that we found are tables,
-  // and not views.
-  /*
-
-  // work in progress
-
-  // A cache for our results. The key is the table name.
-  typedef std::map<QString, table_cols> cache_type;
-  cache_type cache;
-  static table_cols::iterator iter = cols.begin();
-
-  for (; iter != cols.end(); ++iter)
-  {
-    // Is it a view?
-
-    // Is it in the cache?
-    cache_type::const_iterator i = cache.find(iter->second.first);
-    if (i != cache.end())
-    {
-      // Store results
-      iter->second = i->second;      
-    }
-    else
-    {
-      // Get view definition
-
-      // Call recursively
-      table_cols temp_cols;
-      findTableColumns(VIEW_DEF, temp_cols);
-      // Store results
-      iter->second = temp_cols[iter->second.first].second;
-
-    }
-  }
-  */
+	      << selectCmd << "'.\n";
 }
 
 // Returns the minimum value of an attribute
@@ -1269,11 +1383,11 @@ QString QgsPostgresProvider::minValue(int position){
   QString sql;
   if(sqlWhereClause.isEmpty())
   {
-      sql = QString("select min(%1) from %2").arg(fld.name()).arg(tableName);
+      sql = QString("select min(%1) from \"%2\"").arg(fld.name()).arg(tableName);
   }
   else
   {
-      sql = QString("select min(%1) from %2").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
+      sql = QString("select min(%1) from \"%2\"").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
   }
   PGresult *rmin = PQexec(connection,(const char *)sql);
   QString minValue = PQgetvalue(rmin,0,0);
@@ -1289,11 +1403,11 @@ QString QgsPostgresProvider::maxValue(int position){
   QString sql;
   if(sqlWhereClause.isEmpty())
   {
-      sql = QString("select max(%1) from %2").arg(fld.name()).arg(tableName);
+      sql = QString("select max(%1) from \"%2\"").arg(fld.name()).arg(tableName);
   }
   else
   {
-      sql = QString("select max(%1) from %2").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
+      sql = QString("select max(%1) from \"%2\"").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
   } 
   PGresult *rmax = PQexec(connection,(const char *)sql);
   QString maxValue = PQgetvalue(rmax,0,0);
@@ -1309,9 +1423,9 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
 {
     if(f)
     {
-  QString insert("INSERT INTO ");
+  QString insert("INSERT INTO \"");
   insert+=tableName;
-  insert+="(";
+  insert+="\" (";
 
   //add the name of the geometry column to the insert statement
   insert+=geometryColumn;//first the geometry
@@ -1410,7 +1524,7 @@ QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 
 bool QgsPostgresProvider::deleteFeature(int id)
 {
-    QString sql("DELETE FROM "+tableName+" WHERE "+primaryKey+" = "+QString::number(id));
+    QString sql("DELETE FROM \""+tableName+"\" WHERE "+primaryKey+" = "+QString::number(id));
 #ifdef QGISDEBUG
     qWarning("delete sql: "+sql);
 #endif
@@ -1501,7 +1615,7 @@ bool QgsPostgresProvider::addAttributes(std::map<QString,QString> const & name)
     PQexec(connection,"BEGIN");
     for(std::map<QString,QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
-	QString sql="ALTER TABLE "+tableName+" ADD COLUMN "+(*iter).first+" "+(*iter).second;
+	QString sql="ALTER TABLE \""+tableName+"\" ADD COLUMN "+(*iter).first+" "+(*iter).second;
 #ifdef QGISDEBUG
 	qWarning(sql);
 #endif
@@ -1528,7 +1642,7 @@ bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
     PQexec(connection,"BEGIN");
     for(std::set<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
-	QString sql="ALTER TABLE "+tableName+" DROP COLUMN "+(*iter);
+	QString sql="ALTER TABLE \""+tableName+"\" DROP COLUMN "+(*iter);
 #ifdef QGISDEBUG
 	qWarning(sql);
 #endif
@@ -1587,7 +1701,7 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
 		value.append("'");
 	    }
 
-	    QString sql="UPDATE "+tableName+" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
+	    QString sql="UPDATE \""+tableName+"\" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
 #ifdef QGISDEBUG
 	    qWarning(sql);
 #endif
@@ -1647,7 +1761,7 @@ long QgsPostgresProvider::getFeatureCount()
   std::cerr << "QgsPostgresProvider: Running SQL: " << 
         sql << std::endl;        
 #else                 
-  QString sql = "select count(*) from " + tableName;
+  QString sql = "select count(*) from \"" + tableName + "\"";
   
   if(sqlWhereClause.length() > 0)
   {
@@ -1681,8 +1795,8 @@ void QgsPostgresProvider::calculateExtents()
   // get the approximate extent by retreiving the bounding box
   // of the first few items with a geometry
 
-  QString sql = "select box3d(" + geometryColumn + ") from " + tableName +
-    " where ";
+  QString sql = "select box3d(" + geometryColumn + ") from \"" 
+    + tableName + "\" where ";
                 
   if(sqlWhereClause.length() > 0)
   {
@@ -1695,7 +1809,9 @@ void QgsPostgresProvider::calculateExtents()
 #if WASTE_TIME
   sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
     "xmin(extent(" + geometryColumn + ")) as xmin,"
-    "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
+    "ymax(extent(" + geometryColumn + ")) as ymax," 
+    "ymin(extent(" + geometryColumn + ")) as ymin" 
+    " from \"" + tableName + "\"";
 #endif
 
 #ifdef QGISDEBUG 
@@ -1748,7 +1864,8 @@ void QgsPostgresProvider::calculateExtents()
 
   // get the extents
 
-  QString sql = "select extent(" + geometryColumn + ") from " + tableName;
+  QString sql = "select extent(" + geometryColumn + ") from \"" + 
+    tableName + "\"";
   if(sqlWhereClause.length() > 0)
   {
     sql += " where " + sqlWhereClause;
@@ -1757,13 +1874,16 @@ void QgsPostgresProvider::calculateExtents()
 #if WASTE_TIME
   sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
     "xmin(extent(" + geometryColumn + ")) as xmin,"
-    "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
+    "ymax(extent(" + geometryColumn + ")) as ymax," 
+    "ymin(extent(" + geometryColumn + ")) as ymin" 
+    " from \"" + tableName + "\"";
 #endif
 
 #ifdef QGISDEBUG 
   qDebug("+++++++++QgsPostgresProvider::calculateExtents -  Getting extents using schema.table: " + sql);
 #endif
   PGresult *result = PQexec(connection, (const char *) sql);
+  Q_ASSERT(PQntuples(result) == 1);
   std::string box3d = PQgetvalue(result, 0, 0);
 
   if (box3d != "")
@@ -1871,7 +1991,8 @@ bool QgsPostgresProvider::deduceEndian()
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
 
-  QString firstOid = "select oid from " + tableName + " limit 1";
+  QString firstOid = "select oid from pg_class where relname = '" + 
+    tableName + "'";
   PGresult * oidResult = PQexec(connection, firstOid);
   // get the int value from a "normal" select
   QString oidValue = PQgetvalue(oidResult,0,0);
@@ -1883,7 +2004,7 @@ bool QgsPostgresProvider::deduceEndian()
   // get the same value using a binary cursor
 
   PQexec(connection,"begin work");
-  QString oidDeclare = QString("declare oidcursor binary cursor for select oid from %1 where oid = %2").arg(tableName).arg(oidValue);
+  QString oidDeclare = QString("declare oidcursor binary cursor for select oid from pg_class where relname = '%1'").arg(tableName);
   // set up the cursor
   PQexec(connection, (const char *)oidDeclare);
   QString fetch = "fetch forward 1 from oidcursor";
@@ -1913,6 +2034,9 @@ bool QgsPostgresProvider::deduceEndian()
 
 bool QgsPostgresProvider::getGeometryDetails()
 {
+  QString fType;
+  valid = false;
+
   QString sql = "select f_geometry_column,type,srid from geometry_columns"
     " where f_table_name='" + tableName + "' and f_geometry_column = '" + 
     geometryColumn + "' and f_table_schema = '" + mSchema + "'";
@@ -1920,10 +2044,6 @@ bool QgsPostgresProvider::getGeometryDetails()
 #ifdef QGISDEBUG
   std::cerr << "Getting geometry column: " + sql << std::endl;
 #endif
-
-  QString fType;
-
-  valid = false;
 
   PGresult *result = PQexec(connection, (const char *) sql);
 
@@ -1956,8 +2076,8 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     sql = "select "
       "srid("         + geometryColumn + "), "
-      "geometrytype(" + geometryColumn + ") from " + 
-      tableName + " limit 1";
+      "geometrytype(" + geometryColumn + ") from \"" + 
+      tableName + "\" limit 1";
 
     result = PQexec(connection, (const char*) sql);
 
