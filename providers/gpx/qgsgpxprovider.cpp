@@ -733,6 +733,96 @@ bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
 }
 
 
+bool QgsGPXProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const& attr_map) {
+  std::map<int, std::map<QString, QString> >::const_iterator aIter =
+    attr_map.begin();
+  if (mFeatureType == WaypointType) {
+    GPSData::WaypointIterator wIter = data->waypointsBegin();
+    for (; wIter != data->waypointsEnd() && aIter != attr_map.end(); ++wIter) {
+      if (wIter->id == aIter->first) {
+	changeAttributeValues(*wIter, aIter->second);
+	++aIter;
+      }
+    }
+  }
+  else if (mFeatureType == RouteType) {
+    GPSData::RouteIterator rIter = data->routesBegin();
+    for (; rIter != data->routesEnd() && aIter != attr_map.end(); ++rIter) {
+      if (rIter->id == aIter->first) {
+	changeAttributeValues(*rIter, aIter->second);
+	++aIter;
+      }
+    }
+  }
+  if (mFeatureType == TrackType) {
+    GPSData::TrackIterator tIter = data->tracksBegin();
+    for (; tIter != data->tracksEnd() && aIter != attr_map.end(); ++tIter) {
+      if (tIter->id == aIter->first) {
+	changeAttributeValues(*tIter, aIter->second);
+	++aIter;
+      }
+    }
+  }
+
+  // write back to file
+  QDomDocument qdd;
+  data->fillDom(qdd);
+  QFile file(mFileName);
+  if (!file.open(IO_WriteOnly))
+    return false;
+  QTextStream ostr(&file);
+  ostr<<qdd.toString();
+  return true;
+}
+
+
+void QgsGPXProvider::changeAttributeValues(GPSObject& obj, 
+					   const std::map<QString, QString>& attrs) {
+  std::map<QString, QString>::const_iterator aIter;
+  
+  // common attributes
+  if ((aIter = attrs.find(attr[NameAttr])) != attrs.end())
+    obj.name = aIter->second;
+  if ((aIter = attrs.find(attr[CmtAttr])) != attrs.end())
+    obj.cmt = aIter->second;
+  if ((aIter = attrs.find(attr[DscAttr])) != attrs.end())
+    obj.desc = aIter->second;
+  if ((aIter = attrs.find(attr[SrcAttr])) != attrs.end())
+    obj.src = aIter->second;
+  if ((aIter = attrs.find(attr[URLAttr])) != attrs.end())
+    obj.url = aIter->second;
+  if ((aIter = attrs.find(attr[URLNameAttr])) != attrs.end())
+    obj.urlname = aIter->second;
+  
+  // waypoint-specific attributes
+  Waypoint* wpt = dynamic_cast<Waypoint*>(&obj);
+  if (wpt != NULL) {
+    if ((aIter = attrs.find(attr[SymAttr])) != attrs.end())
+      wpt->sym = aIter->second;
+    if ((aIter = attrs.find(attr[EleAttr])) != attrs.end()) {
+      bool eleIsOK;
+      double ele = aIter->second.toDouble(&eleIsOK);
+      if (eleIsOK)
+	wpt->ele = ele;
+    }
+  }
+  
+  // route- and track-specific attributes
+  GPSExtended* ext = dynamic_cast<GPSExtended*>(&obj);
+  if (ext != NULL) {
+    if ((aIter = attrs.find(attr[NumAttr])) != attrs.end()) {
+      bool eleIsOK;
+      int number = aIter->second.toInt(&eleIsOK);
+      if (eleIsOK)
+	ext->number = number;
+    }
+  }
+  
+  for (aIter = attrs.begin(); aIter != attrs.end(); ++aIter)
+    std::cerr<<"   ******   "<<aIter->first<<" -> "<<aIter->second<<std::endl;
+}
+
+
 QString QgsGPXProvider::getDefaultValue(const QString& attr, QgsFeature* f) {
   if (attr == "source")
     return "Digitized in QGIS";
