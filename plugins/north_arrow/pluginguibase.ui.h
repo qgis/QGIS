@@ -1,3 +1,4 @@
+
 /****************************************************************************
 ** ui.h extension file, included from the uic-generated form implementation.
 **
@@ -21,10 +22,7 @@ void PluginGuiBase::pbnCancel_clicked()
 }
 
 
-void PluginGuiBase::spinRotation_valueChanged( int )
-{
 
-}
 
 
 
@@ -35,6 +33,24 @@ void PluginGuiBase::sliderRotation_valueChanged( int )
 
 
 void PluginGuiBase::sliderRotation_sliderMoved( int )
+{
+
+}
+
+
+void PluginGuiBase::spinSize_valueChanged( int )
+{
+
+}
+
+
+void PluginGuiBase::cboxShow_toggled( bool )
+{
+
+}
+
+
+void PluginGuiBase::cboPlacement_textChanged( const QString & )
 {
 
 }
