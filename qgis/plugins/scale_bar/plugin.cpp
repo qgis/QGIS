@@ -85,6 +85,8 @@ QgisPlugin(name_,description_,version_,type_)
   mPreferredSize = 100;
   mPlacement = "Top Left";
   mStyle = "Tick Down";
+  mEnabled = true;
+  mSnapping = true;
 }
 
 Plugin::~Plugin()
