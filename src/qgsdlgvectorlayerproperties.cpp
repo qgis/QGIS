@@ -205,6 +205,7 @@ void QgsDlgVectorLayerProperties::apply()
   
   labelDialog->apply();
   layer->setLabelOn(labelCheckBox->isChecked());
+  layer->setLayerName(displayName());
 
   QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(layer->rendererDialog());
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(layer->rendererDialog());
