@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsDlgPgBufferBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>520</width>
-            <height>307</height>
+            <height>314</height>
         </rect>
     </property>
     <property name="caption">
@@ -363,6 +363,15 @@
         <receiver>QgsDlgPgBufferBase</receiver>
         <slot>reject()</slot>
     </connection>
+    <connection>
+        <sender>buttonHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDlgPgBufferBase</receiver>
+        <slot>help()</slot>
+    </connection>
 </connections>
+<slots>
+    <slot>help()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

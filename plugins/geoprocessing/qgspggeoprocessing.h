@@ -77,6 +77,8 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
     void buffer();
     //! unload the plugin
     void unload();
+    //! show the help document
+    void help();
   private:
   //! get postgis version string
    QString postgisVersion(PGconn *);
@@ -86,6 +88,7 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
   bool hasGIST(PGconn *);
   //! get status of PROJ4 capability
   bool hasPROJ(PGconn *);
+  
   QString postgisVersionInfo;
   bool geosAvailable;
   bool gistAvailable;
