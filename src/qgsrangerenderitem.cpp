@@ -33,7 +33,7 @@ void QgsRangeRenderItem::setUpperValue(QString value)
   m_upper_value = value;
 }
 
-const QString & QgsRangeRenderItem::upper_value() const const
+const QString & QgsRangeRenderItem::upper_value() const
 {
   return m_upper_value;
 }
