@@ -234,7 +234,7 @@ void QgsGraSyDialog::apply() const
 
 	//draw the layer name and the name of the classification field into the pixmap
 	p.drawText(leftspace,topspace+fm.height(),name);
-	m_vectorlayer->setlayerName(name);
+	m_vectorlayer->setLayerName(name);
 	p.drawText(leftspace,topspace+2*fm.height(),classificationComboBox->currentText());
 
 	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
