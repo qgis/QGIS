@@ -161,16 +161,16 @@ void QgsMapCanvas::render2()
 			currentExtent.setYmin(dymin);
 			currentExtent.setYmax(dymax);
 			// render all layers in the stack, starting at the base
-			std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
+			std::list < QString >::iterator li = zOrder.begin();
 //      std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
-			while (mi != layers.end()) {
-				QgsMapLayer *ml = (*mi).second;
+			while (li != zOrder.end()) {
+				QgsMapLayer *ml = layers[*li];
 				if (ml) {
 					//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 //          std::cout << "Rendering " << ml->name() << std::endl;
 					if (ml->visible())
 						ml->draw(paint, &currentExtent, coordXForm);
-					mi++;
+					li++;
 					//  mi.draw(p, &fullExtent);
 				}
 			}
