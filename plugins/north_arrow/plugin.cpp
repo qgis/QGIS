@@ -127,18 +127,6 @@ void Plugin::run()
   myPluginGui->show();
 
 }
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void Plugin::drawRasterLayer(QString theQString)
-{
-  qGisInterface->addRasterLayer(theQString);
-}
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
-{
-  qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
-}
 
 //! Refresh the map display using the mapcanvas exported via the plugin interface
 void Plugin::refreshCanvas()
@@ -253,11 +241,13 @@ void Plugin::rotationChanged(int theInt)
 void Plugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
+  refreshCanvas();
 }
 
 void Plugin::setEnabled(bool theBool)
 {
   mEnable = theBool;
+  refreshCanvas();
 }
 
 
