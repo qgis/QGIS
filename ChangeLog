@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.86 2004/05/20 07:27:36 timlinux Exp
+ChangeLog,v 1.87 2004/05/20 10:38:22 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-20 [ts] 0.2.0devel29
+** Added pyramid / no pyramid icon to raster legend entry and made legend 
+pixmap fill up all available space in leend width. Added new dir for icons
+in src that will be installed to PKGPATH/share/icons
 
 2004-05-20 [ts] 0.2.0devel28
 ** Changed splash to load picture from file instead of an xpm include. This
