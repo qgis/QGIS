@@ -58,6 +58,7 @@
 #include "qgscontinuouscolrenderer.h"
 #include "qgsgraduatedmarenderer.h"
 #include "qgssimarenderer.h"
+#include "qgsuniquevalrenderer.h"
 #include "qgsrenderitem.h"
 #include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
@@ -1411,7 +1412,9 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     QDomNode continuousnode = layer_node.namedItem("continuoussymbol");
     QDomNode singlemarkernode = layer_node.namedItem("singlemarker");
     QDomNode graduatedmarkernode = layer_node.namedItem("graduatedmarker");
-    QDomNode labelnode = layer_node.namedItem("labelattributes");
+    QDomNode uniquevaluenode = layer_node.namedItem("uniquevalue");
+    QDomNode labelnode = layer_node.namedItem("label");
+    QDomNode labelattributesnode = layer_node.namedItem("labelattributes");
 
     //std::auto_ptr<QgsRenderer> renderer; actually the renderer SHOULD NOT be
     //deleted when this function finishes, otherwise the application will
@@ -1428,39 +1431,54 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     else if (!graduatednode.isNull())
     {
         //renderer.reset( new QgsGraduatedSymRenderer );
-        renderer =  new QgsGraduatedSymRenderer;
+        renderer = new QgsGraduatedSymRenderer;
         renderer->readXML(graduatednode, *this);
     }
     else if (!continuousnode.isNull())
     {
         //renderer.reset( new QgsContinuousColRenderer );
-        renderer =  new QgsContinuousColRenderer;
+        renderer = new QgsContinuousColRenderer;
         renderer->readXML(continuousnode, *this);
     }
-    else if(!singlemarkernode.isNull())
+    else if (!singlemarkernode.isNull())
     {
         //renderer.reset( new QgsSiMaRenderer );
-        renderer =  new QgsSiMaRenderer;
+        renderer = new QgsSiMaRenderer;
         renderer->readXML(singlemarkernode, *this);
     }
-    else if(!graduatedmarkernode.isNull())
+    else if (!graduatedmarkernode.isNull())
     {
         //renderer.reset( new QgsGraduatedMaRenderer );
-        renderer =  new QgsGraduatedMaRenderer;
+        renderer = new QgsGraduatedMaRenderer;
         renderer->readXML(graduatedmarkernode, *this);
     }
+    else if (!uniquevaluenode.isNull())
+    {
+        //renderer.reset( new QgsUniqueValRenderer );
+        renderer = new QgsUniqueValRenderer;
+        renderer->readXML(uniquevaluenode, *this);
+    }
+    
+    // Test if labeling is on or off
+    QDomElement element = labelnode.toElement();
+    int labelOn = element.text().toInt();
+    if (labelOn < 1) {
+        setLabelOn(false);
+    } else {
+        setLabelOn(true);
+    }
+    
 #if QGISDEBUG
-      std::cout << "Testing if qgsvectorlayer can call label readXML routine" << std::endl;
+    std::cout << "Testing if qgsvectorlayer can call label readXML routine" << std::endl;
 #endif
     if(!labelnode.isNull())
     {
 #if QGISDEBUG
-      std::cout << "qgsvectorlayer calling label readXML routine" << std::endl;
+        std::cout << "qgsvectorlayer calling label readXML routine" << std::endl;
 #endif
-        mLabelOn = true;
         mLabel->readXML(labelnode);
     }
-
+    
     return valid;               // should be true if read successfully
 
 } // void QgsVectorLayer::readXML_
@@ -1787,4 +1805,3 @@ void QgsVectorLayer::inOverview( bool b )
 {
     QgsMapLayer::inOverview( b );
 }
-
