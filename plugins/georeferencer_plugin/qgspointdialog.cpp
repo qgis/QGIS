@@ -1,3 +1,4 @@
+#include <qtoolbutton.h>
 #include <qcombobox.h>
 #include <qfiledialog.h>
 #include <qframe.h>
@@ -10,6 +11,10 @@
 #include "mapcoordsdialog.h"
 #include "qgsleastsquares.h"
 
+#include "zoom_in.xpm"
+#include "zoom_out.xpm"
+#include "pan.xpm"
+#include "add_point.xpm"
 
 QgsPointDialog::QgsPointDialog() {
   
@@ -19,18 +24,18 @@ QgsPointDialog::QgsPointDialog() {
 QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, const QString& worldfile,
 			       QWidget* parent, const char* name, 
 			       bool modal, WFlags fl) 
-  : QgsPointDialogBase(parent, name, modal, fl) {
+  : QgsPointDialogBase(parent, name, modal, fl), 
+    mLayer(layer), mWorldfile(worldfile), mCursor(NULL) {
   
-  mLayer = layer;
-  mWorldfile = worldfile;
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
   layout->setAutoAdd(true);
   mCanvas = new QgsMapCanvas(canvasFrame, "georefCanvas");
   mCanvas->setBackgroundColor(Qt::white);
   mCanvas->setMinimumWidth(400);
-  mCanvas->addLayer(layer);
-  mCanvas->setExtent(layer->extent());
-  mCanvas->setMapTool(QGis::EmitPoint);
+  mCanvas->addLayer(mLayer);
+  mCanvas->setExtent(mLayer->extent());
+  tbnAddPoint->setOn(true);
+  
   connect(mCanvas, SIGNAL(xyClickCoordinates(QgsPoint&)),
 	  this, SLOT(showCoordDialog(QgsPoint&)));
   leSelectWorldFile->setText(worldfile);
@@ -161,3 +166,82 @@ bool QgsPointDialog::generateWorldFile() {
   
   return true;
 }
+
+
+void QgsPointDialog::tbnZoomIn_changed(int state) {
+  if (state == QButton::On) {
+    tbnZoomOut->setOn(false);
+    tbnPan->setOn(false);
+    tbnAddPoint->setOn(false);
+    tbnDeletePoint->setOn(false);
+    mCanvas->setMapTool(QGis::ZoomIn);
+    delete mCursor;
+    QPixmap pix((const char **)zoom_in2);
+    mCursor = new QCursor(pix, 7, 7);
+    mCanvas->setCursor(*mCursor);
+  }
+}
+
+
+void QgsPointDialog::tbnZoomOut_changed(int state) {
+  if (state == QButton::On) {
+    tbnZoomIn->setOn(false);
+    tbnPan->setOn(false);
+    tbnAddPoint->setOn(false);
+    tbnDeletePoint->setOn(false);
+    mCanvas->setMapTool(QGis::ZoomOut);
+    delete mCursor;
+    QPixmap pix((const char **)zoom_out);
+    mCursor = new QCursor(pix, 7, 7);
+    mCanvas->setCursor(*mCursor);
+  }
+}
+
+
+void QgsPointDialog::tbnZoomToLayer_clicked() {
+  mCanvas->setExtent(mLayer->extent());
+  mCanvas->refresh();
+}
+
+
+void QgsPointDialog::tbnPan_changed(int state) {
+  if (state == QButton::On) {
+    tbnZoomIn->setOn(false);
+    tbnZoomOut->setOn(false);
+    tbnAddPoint->setOn(false);
+    tbnDeletePoint->setOn(false);
+    mCanvas->setMapTool(QGis::Pan);
+    delete mCursor;
+    QPixmap pix((const char **)pan);
+    mCursor = new QCursor(pix, 7, 7);
+    mCanvas->setCursor(*mCursor);
+  }
+}
+
+
+void QgsPointDialog::tbnAddPoint_changed(int state) {
+  if (state == QButton::On) {
+    tbnZoomIn->setOn(false);
+    tbnZoomOut->setOn(false);
+    tbnPan->setOn(false);
+    tbnDeletePoint->setOn(false);
+    mCanvas->setMapTool(QGis::EmitPoint);
+    delete mCursor;
+    QPixmap pix((const char **)add_point);
+    mCursor = new QCursor(pix, 7, 7);
+    mCanvas->setCursor(*mCursor);
+  }
+}
+
+
+void QgsPointDialog::tbnDeletePoint_changed(int state) {
+  if (state == QButton::On) {
+    tbnZoomIn->setOn(false);
+    tbnZoomOut->setOn(false);
+    tbnPan->setOn(false);
+    tbnAddPoint->setOn(false);
+    mCanvas->setMapTool(QGis::EmitPoint);
+  }
+}
+
+

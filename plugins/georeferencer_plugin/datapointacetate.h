@@ -30,7 +30,7 @@ public:
       painter->setFont(QFont("helvetica", 9));
       painter->setPen(Qt::black);
       painter->setBrush(Qt::red);
-      painter->drawRect(pixelOrigin.x() - 2, pixelOrigin.y() - 2, 5, 5);
+      painter->drawRect(x - 2, y - 2, 5, 5);
       QRect textBounds = painter->boundingRect(x + 4, y + 4, 10, 10, 
 					       Qt::AlignLeft,
 					       QString("X %1\nY %2").

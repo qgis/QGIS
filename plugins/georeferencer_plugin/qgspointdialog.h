@@ -14,6 +14,8 @@
 
 #include <vector>
 
+#include <qcursor.h>
+
 #include <qgsmapcanvas.h>
 
 #include "qgsrasterlayer.h"
@@ -39,7 +41,13 @@ public slots:
   void pbnGenerateWorldFile_clicked();
   void pbnGenerateAndLoad_clicked();
   void pbnSelectWorldFile_clicked();
-    
+  void tbnZoomIn_changed(int);
+  void tbnZoomOut_changed(int);
+  void tbnZoomToLayer_clicked();
+  void tbnPan_changed(int);
+  void tbnAddPoint_changed(int);
+  void tbnDeletePoint_changed(int);
+  
 signals:
   
   void loadLayer(QString);
@@ -49,6 +57,7 @@ private:
   bool generateWorldFile();
   
   QgsMapCanvas* mCanvas;
+  QCursor* mCursor;
   QgsRasterLayer* mLayer;
   QString mWorldfile;
   
