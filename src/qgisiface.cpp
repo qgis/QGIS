@@ -5,46 +5,61 @@
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
 
-QgisIface::QgisIface(QgisApp *_qgis, const char * name) : qgis(_qgis) {
+QgisIface::QgisIface(QgisApp * _qgis, const char *name):qgis(_qgis)
+{
 
 }
-QgisIface::~QgisIface(){
+
+QgisIface::~QgisIface()
+{
 }
 
-void QgisIface::zoomFull(){
-	qgis->zoomFull();
-}
-void QgisIface::zoomPrevious(){
-	qgis->zoomPrevious();
-}
-void QgisIface::zoomActiveLayer(){
-	qgis->zoomToLayerExtent();
-}
-int QgisIface::getInt(){
-	return qgis->getInt();
+void QgisIface::zoomFull()
+{
+  qgis->zoomFull();
 }
 
-void QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey){
+void QgisIface::zoomPrevious()
+{
+  qgis->zoomPrevious();
+}
+
+void QgisIface::zoomActiveLayer()
+{
+  qgis->zoomToLayerExtent();
+}
+
+int QgisIface::getInt()
+{
+  return qgis->getInt();
+}
+
+void QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
+{
   qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
 }
 
-QgsMapLayer * QgisIface::activeLayer(){
+QgsMapLayer *QgisIface::activeLayer()
+{
   return qgis->activeLayer();
 }
 
-QString QgisIface::activeLayerSource(){
+QString QgisIface::activeLayerSource()
+{
   return qgis->activeLayerSource();
 }
 
-int QgisIface::addMenu(QString menuText, QPopupMenu *menu){
+int QgisIface::addMenu(QString menuText, QPopupMenu * menu)
+{
   QMenuBar *mainMenu = qgis->menuBar();
   // get the index of the help menu 
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cout << "Menu item count is : " << mainMenu->count() << std::endl;
-  #endif
-  return mainMenu->insertItem(menuText, menu,-1, mainMenu->count() -1);
+#endif
+  return mainMenu->insertItem(menuText, menu, -1, mainMenu->count() - 1);
 }
 
-void QgisIface::openURL(QString url, bool useQgisDocDirectory){
-  qgis->openURL(url,useQgisDocDirectory);  
+void QgisIface::openURL(QString url, bool useQgisDocDirectory)
+{
+  qgis->openURL(url, useQgisDocDirectory);
 }
