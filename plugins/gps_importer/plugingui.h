@@ -31,11 +31,15 @@ class PluginGui : public PluginGuiBase
       void pbnSelectOutputFile_clicked();
 
       void pbnGPXSelectFile_clicked();
+
+      void pbnDLOutput_clicked();
       
       void enableRelevantControls();
       void pbnCancel_clicked();
       void pbnOK_clicked();
 
+      void populateDeviceComboBox();
+      
 signals:
       void drawRasterLayer(QString);
       void drawVectorLayer(QString,QString,QString);

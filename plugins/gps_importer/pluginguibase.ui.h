@@ -93,3 +93,9 @@ void PluginGuiBase::enableRelevantControls()
 {
 
 }
+
+
+void PluginGuiBase::pbnDLOutput_clicked()
+{
+
+}
