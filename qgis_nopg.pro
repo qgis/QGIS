@@ -5,4 +5,4 @@ CONFIG += qt thread debug
 TEMPLATE = subdirs
 MAKEFILE = Makefile.nopg
 # Directories
-SUBDIRS = src plugins
+SUBDIRS = src 
