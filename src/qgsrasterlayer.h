@@ -805,8 +805,13 @@ public slots:
      * invokes an instance of the QgsRasterLayerProperties dialog box.*/
     /* virtual */ void showLayerProperties();
 
-  //! Populate the histogram vector for a given layer
-  void populateHistogram(int theBandNoInt, int theBinCountInt=256);
+  /** Populate the histogram vector for a given layer
+  * @param theBandNoInt - which band to compute the histogram for
+  * @param theBinCountInt - how many 'bins' to categorise the data into
+  * @param theIgnoreOutOfRangeFlag - whether to ignore values that are out of range (default=true)
+  * @param theThoroughBandScanFlag - whether to visit each cell when computing the histogram (default=false)
+  */
+  void populateHistogram(int theBandNoInt, int theBinCountInt=256,bool theIgnoreOutOfRangeFlag=true,bool theThoroughBandScanFlag=false);
 
     /** \brief Color table 
      *  \param band number

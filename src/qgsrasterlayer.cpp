@@ -3607,7 +3607,7 @@ void QgsRasterLayer::identify(QgsRect * r)
 } // void QgsRasterLayer::identify(QgsRect * r)
 
 
-void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt)
+void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool theIgnoreOutOfRangeFlag,bool theThoroughBandScanFlag)
 {
 
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
@@ -3621,7 +3621,22 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt)
   {
     myRasterBandStats.histogramVector->clear();
     int myHistogramArray[theBinCountInt];
-    myGdalBand->GetHistogram( -0.5, theBinCountInt-.5, theBinCountInt, myHistogramArray , FALSE, TRUE, GDALDummyProgress, NULL );
+    
+    
+   /*
+    *  CPLErr GDALRasterBand::GetHistogram (       
+    *          double       dfMin,
+    *          double      dfMax,
+    *          int     nBuckets,
+    *          int *   panHistogram,
+    *          int     bIncludeOutOfRange,
+    *          int     bApproxOK,
+    *          GDALProgressFunc    pfnProgress,
+    *          void *      pProgressData
+    *          ) 
+    */
+    myGdalBand->GetHistogram( -0.5, theBinCountInt-.5, theBinCountInt, myHistogramArray ,theIgnoreOutOfRangeFlag ,theThoroughBandScanFlag , GDALDummyProgress, NULL );
+    
     for (int myBin = 0; myBin <theBinCountInt; myBin++)
     {
       myRasterBandStats.histogramVector->push_back( myHistogramArray[myBin]);
