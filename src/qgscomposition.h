@@ -93,7 +93,8 @@ public:
     /** \brief Plot type */
     enum PlotStyle {
 	Preview = 0, // Use cache etc
-	Print        // Render well
+	Print,       // Render well
+	Postscript   // Fonts need different scaling!
     };
 
     /** \brief Composition ID */

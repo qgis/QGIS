@@ -192,9 +192,9 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 
     std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
     // Font size in canvas units
-    int titleSize = (int) ( 25.4 * mComposition->scale() * mTitleFont.pointSize() / 72);
-    int sectionSize = (int) ( 25.4 * mComposition->scale() * mSectionFont.pointSize() / 72);
-    int size = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
+    float titleSize = 25.4 * mComposition->scale() * mTitleFont.pointSizeFloat() / 72;
+    float sectionSize = 25.4 * mComposition->scale() * mSectionFont.pointSizeFloat() / 72;
+    float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
 
     std::cout << "font sizes = " << titleSize << " " << sectionSize << " " << size << std::endl;
 
@@ -203,27 +203,26 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     QFont sectionFont ( mSectionFont );
     QFont font ( mFont );
 
-    titleFont.setPointSize ( titleSize );
-    sectionFont.setPointSize ( sectionSize );
-    font.setPointSize ( size );
+    titleFont.setPointSizeFloat ( titleSize );
+    sectionFont.setPointSizeFloat ( sectionSize );
+    font.setPointSizeFloat ( size );
 
     QFontMetrics titleMetrics ( titleFont );
     QFontMetrics sectionMetrics ( sectionFont );
     QFontMetrics metrics ( font );
     
     // Fonts for rendering
-
-    // It seems that font pointSize is used in points in Postscript, that means it depends 
-    // on resolution!
-    if ( plotStyle() == QgsComposition::Print ) {
-	titleSize = (int) ( 72.0 * titleSize / mComposition->resolution() );
-	sectionSize = (int) ( 72.0 * sectionSize / mComposition->resolution() );
-	size = (int) ( 72.0 * size / mComposition->resolution() );
+    
+    // I have no idea why 2.54 - it is an empirical value
+    if ( plotStyle() == QgsComposition::Postscript) {
+	titleSize = 2.54 * 72.0 * mTitleFont.pointSizeFloat() / mComposition->resolution();
+	sectionSize = 2.54 * 72.0 * mSectionFont.pointSizeFloat() / mComposition->resolution();
+	size = 2.54 * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
     }
     
-    titleFont.setPointSize ( titleSize );
-    sectionFont.setPointSize ( sectionSize );
-    font.setPointSize ( size );
+    titleFont.setPointSizeFloat ( titleSize );
+    sectionFont.setPointSizeFloat ( sectionSize );
+    font.setPointSizeFloat ( size );
 
     // Not sure about Style Strategy, QFont::PreferMatch?
     titleFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
@@ -430,10 +429,12 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 			lab = itemLabels[icnt];
 		    }
 		    
+		    // drawText (x, y w, h, ...) was cutting last letter (the box was tto small)
 		    QRect br = metrics.boundingRect ( lab );
 		    x = (int) ( 2*mMargin + mSymbolWidth );
-		    y = (int) ( localHeight + symbolHeight/2 - br.height()/2 );
-		    painter->drawText( x, y, br.width(), br.height(), Qt::AlignLeft|Qt::AlignVCenter, lab );	
+		    y = (int) ( localHeight + symbolHeight/2 + ( metrics.height()/2 - metrics.descent()) );
+
+		    painter->drawText( x, y, lab );	
 
 		    int w = 3*mMargin + mSymbolWidth + metrics.width(lab);
 		    if ( w > width ) width = w;
@@ -514,7 +515,8 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
 	painter.restore();
 
     } else if ( (plotStyle() == QgsComposition::Preview && mPreviewMode == Render) || 
-	         plotStyle() == QgsComposition::Print ) 
+	         plotStyle() == QgsComposition::Print ||
+		 plotStyle() == QgsComposition::Postscript ) 
     {
         std::cout << "render" << std::endl;
 	
@@ -611,15 +613,15 @@ void QgsComposerVectorLegend::recalculate ( void )
     
     // Title and section font 
     mTitleFont = mFont;
-    mTitleFont.setPointSize ( (int) (1.4 * mFont.pointSize()) );
+    mTitleFont.setPointSizeFloat ( 1.4 * mFont.pointSizeFloat());
     mSectionFont = mFont;
-    mSectionFont.setPointSize ( (int) (1.2 * mFont.pointSize()) );
+    mSectionFont.setPointSizeFloat ( 1.2 * mFont.pointSizeFloat() );
     
-    std::cout << "font size = " << mFont.pointSize() << std::endl;
-    std::cout << "title font size = " << mTitleFont.pointSize() << std::endl;
+    std::cout << "font size = " << mFont.pointSizeFloat() << std::endl;
+    std::cout << "title font size = " << mTitleFont.pointSizeFloat() << std::endl;
 
     // Font size in canvas units
-    int size = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
+    float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
 
     mMargin = (int) ( 0.9 * size );
     mSymbolHeight = (int) ( 1.3 * size );
