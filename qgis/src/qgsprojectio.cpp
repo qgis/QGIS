@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.41 2004/06/21 20:03:55 timlinux Exp */
+/* qgsprojectio.cpp,v 1.42 2004/06/24 07:58:45 timlinux Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -46,9 +46,11 @@ email                : sherman at mrcc.com
 #include "qgsmaplayerregistry.h"
 #include <map>
 
-    QgsProjectIo::QgsProjectIo(int _action, QgisApp * qgis)
-:  action(_action), qgisApp(qgis)
-{}
+    QgsProjectIo::QgsProjectIo(int _action, QgsMapCanvas * theMapCanvas)
+:  action(_action)
+{
+ mMapCanvas=theMapCanvas;
+}
 
 
 QgsProjectIo::~QgsProjectIo()
@@ -87,8 +89,14 @@ bool QgsProjectIo::write(QgsRect theRect)
   }
 }
 
-bool QgsProjectIo::read(QString path)
+//returns the zOrder of the restored project
+std::list<QString> QgsProjectIo::read(QString path)
 {
+  // Get the  registry (its a singleton so
+  // it will be the same registry data as used by the map canvas)
+  QgsMapLayerRegistry * myMapLayerRegistry = QgsMapLayerRegistry::instance();
+  std::list<QString> myZOrder;
+  myZOrder.clear();
   if(path.isNull())
   {
     path = selectFileName();
@@ -102,19 +110,16 @@ bool QgsProjectIo::read(QString path)
     QFile file(path);
     if (!file.open(IO_ReadOnly))
     {
-      return false;
+      return myZOrder;
     }
     if (!doc->setContent(&file))
     {
       file.close();
-      return false;
+      return myZOrder;
     }
     file.close();
     //enable the hourglass
-    QApplication::setOverrideCursor(Qt::WaitCursor);
     qWarning("opened document" + file.name());
-    // clear the map canvas
-    qgisApp->removeAllLayers();
     // get the extent
     QDomNodeList extents = doc->elementsByTagName("extent");
     QDomNode extentNode = extents.item(0);
@@ -132,8 +137,7 @@ bool QgsProjectIo::read(QString path)
     double ymax = exElement.text().toDouble();
     QgsRect savedExtent(xmin, ymin, xmax, ymax);
 
-    std::list<QString> myZOrder;
-    
+
     QDomNodeList nl = doc->elementsByTagName("maplayer");
     QString layerCount;
     layerCount = layerCount.setNum(nl.count());
@@ -167,7 +171,6 @@ bool QgsProjectIo::read(QString path)
       //process zorder
       mnl = node.namedItem("zorder");
       mne = mnl.toElement();
-      myZOrder.push_back(mne.text());
       //QMessageBox::information(0,"Zorder", mne.text());
 
       // XXX I strongly suggest that much of this be pushed into the
@@ -175,6 +178,8 @@ bool QgsProjectIo::read(QString path)
       // XXX read to a provider.  --MAC
 
       // add the layer to the maplayer
+
+      QString myNewLayerId="";
 
       if (type == "vector")
       {
@@ -198,7 +203,7 @@ bool QgsProjectIo::read(QString path)
               << " unable to create vector layer for "
               << dataSource << "\n"; 
 #endif                  
-          return false;
+          return myZOrder;
         }
 
         if ( ! dbl->isValid() )
@@ -215,8 +220,9 @@ bool QgsProjectIo::read(QString path)
           // XXX ignore the missing data and move on.  Perhaps this
           // XXX will be revisited when the architecture is refactored.
 
-          return false;
+          return myZOrder;
         }
+        myNewLayerId=dbl->getLayerID();
 
         QDomNode singlenode = node.namedItem("singlesymbol");
         QDomNode graduatednode = node.namedItem("graduatedsymbol");
@@ -257,12 +263,13 @@ bool QgsProjectIo::read(QString path)
         {
           dbl->toggleShowInOverview();
         }
-        dbl->initContextMenu(qgisApp);
-        qgisApp->addMapLayer(dbl);
+        myMapLayerRegistry->addMapLayer(dbl);
+        myZOrder.push_front(dbl->getLayerID());
       } 
       else if (type == "raster")
       {
         QgsRasterLayer *myRasterLayer = new QgsRasterLayer(dataSource, layerName);
+        myNewLayerId=myRasterLayer->getLayerID();
 
         myRasterLayer->setVisible(visible == "1");
         if (showInOverview == "1")
@@ -309,14 +316,14 @@ bool QgsProjectIo::read(QString path)
         myElement = snode.toElement();
         myRasterLayer->setGrayBandName(myElement.text());
 
-        qgisApp->addMapLayer(myRasterLayer);
+        myMapLayerRegistry->addMapLayer(myRasterLayer);
+        myZOrder.push_front(myRasterLayer->getLayerID());
       }
-      qgisApp->setExtent(savedExtent);
+      mMapCanvas->setExtent(savedExtent);
     }
 
-    qgisApp->setZOrder(myZOrder);
     QApplication::restoreOverrideCursor();
-    return true;
+    return myZOrder;
   }
 }
 
@@ -375,13 +382,13 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
     // the registry is a singleton so
     // it will be the same registry data as used by the map canvas
     QgsMapLayerRegistry * myMapLayerRegistry = QgsMapLayerRegistry::instance();
-    std::map<QString, QgsMapLayer *> myMapLayers = myMapLayerRegistry->mapLayers();
-    xml << "<projectlayers layercount=\"" << myMapLayers.size() << "\"> \n";
+    std::list<QString> myZOrder = mMapCanvas->zOrders();
+    xml << "<projectlayers layercount=\"" << myZOrder.size() << "\"> \n";
     int i=0;
-    std::map<QString, QgsMapLayer *>::iterator myMapIterator;
-    for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
+    std::list<QString>::iterator myMaplayerIterator;
+    for ( myMaplayerIterator = myZOrder.begin(); myMaplayerIterator != myZOrder.end(); ++myMaplayerIterator ) 
     {
-      QgsMapLayer *lyr = myMapIterator->second;
+      QgsMapLayer *lyr = myMapLayerRegistry->mapLayer(*myMaplayerIterator);
       bool isDatabase = false;
       xml << "\t<maplayer type=\"";
       switch (lyr->type())

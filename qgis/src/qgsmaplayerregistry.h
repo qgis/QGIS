@@ -22,6 +22,7 @@
 #include <map>
 #include <qobject.h>
 #include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 class QString;
 class QStringList;
 /**
@@ -40,11 +41,14 @@ public:
  //! Retrieve the mapLayers collection (mainly intended for use by projectio)
  std::map<QString,QgsMapLayer*> mapLayers();
  //! Add a layer to the map of loaded layers
- void addMapLayer(QgsMapLayer * theMapLayer);
+ bool addMapLayer(QgsMapLayer * theMapLayer);
  //! Remove a layer from qgis - any canvases using that layer will need to remove it
  void removeMapLayer(QString theLayerId);
  //! Remove all registered layers 
  void removeAllMapLayers();
+ //! Get a vector layer from the registry - the the requested key does not exist or
+ //does not correspond to a vector layer, null returned!
+ QgsVectorLayer * getVectorLayer(QString theLayerId);
 signals:
  void layerWillBeRemoved(QString theLayerId);
  void layerWasAdded(QgsMapLayer * theMapLayer);
