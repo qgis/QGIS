@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.39 2004/03/26 13:48:56 jobi Exp
+ChangeLog,v 1.40 2004/03/27 13:50:24 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-27 [jobi] 0.1.0devel17
+** autogen.sh now passes paramters to configure
+** fixed tools/qgiscommit by using mktemp, thanx mcoletti
+** pluginpath is now taken of libdir to be 64bit compliant (e.g. /usr/lib64/qgis)
 
 2004-03-26 [jobi] 0.1.0devel13
 ** forgot to remove tempfile

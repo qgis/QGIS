@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.39 2004/03/26 17:36:35 gsherman Exp
+dnl configure.in,v 1.40 2004/03/27 13:50:24 jobi Exp
 
 AC_INIT
 
@@ -23,7 +23,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=16
+EXTRA_VERSION=17
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel
 else
