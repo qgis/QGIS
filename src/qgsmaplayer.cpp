@@ -18,6 +18,7 @@
 #include <cfloat>
 #include <iostream>
 #include <qdatetime.h>
+#include <qpopupmenu.h>
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
@@ -156,3 +157,7 @@ void QgsMapLayer::setLegendItem(QgsLegendItem* li)
 {
     m_legendItem=li;
 }
+QPopupMenu * QgsMapLayer::contextMenu(){
+  return 0;
+}
+

@@ -202,13 +202,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(legendView, SIGNAL(zOrderChanged(QgsLegendView *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegendView *)));
 
   // create the layer popup menu
-  popMenu = new QPopupMenu();
+  /* popMenu = new QPopupMenu();
   popMenu->insertItem(tr("&Zoom to extent of selected layer"), this, SLOT(zoomToLayerExtent()));
   popMenu->insertItem(tr("&Open attribute table"), this, SLOT(attributeTable()));
   popMenu->insertSeparator();
   popMenu->insertItem(tr("&Properties"), this, SLOT(layerProperties()));
   popMenu->insertSeparator();
-  popMenu->insertItem(tr("&Remove"), this, SLOT(removeLayer()));
+  popMenu->insertItem(tr("&Remove"), this, SLOT(removeLayer())); */
   mapCursor = 0;
   // create the interfce
   qgisInterface = new QgisIface(this);
@@ -293,7 +293,10 @@ void QgisApp::addLayer()
     	QgsVectorLayer *lyr = new QgsVectorLayer(*it, base, "ogr");
 
 		if (lyr->isValid()) {
-		    QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();//add single symbol renderer as default
+       // init the context menu so it can connect to slots in main app
+       lyr->initContextMenu(this);
+       //add single symbol renderer as default
+		    QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();
 		    lyr->setRenderer(renderer);
 		    renderer->initializeSymbology(lyr);
 		    mapCanvas->addLayer(lyr);
@@ -442,6 +445,10 @@ void QgisApp::addDatabaseLayer()
 			// create the layer
 			//qWarning("creating lyr");
 			QgsVectorLayer *lyr = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
+      
+      // init the context menu so it can connect to slots in main app
+      lyr->initContextMenu(this);
+      
 			// give it a random color
 			QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();//add single symbol renderer as default
 			lyr->setRenderer(renderer);
@@ -940,8 +947,14 @@ void QgisApp::zoomToLayerExtent()
 
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 {
-	if (lvi)
-		popMenu->exec(pt);
+	if (lvi){
+    // get the context menu from the layer and display it 
+    QgsMapLayer *lyr = ((QgsLegendItem *) lvi)->layer();
+    QPopupMenu *popMenu = lyr->contextMenu();
+    if(popMenu){
+      popMenu->exec(pt);
+    }
+  }
 }
 
 QgisIface * QgisApp::getInterface(){
