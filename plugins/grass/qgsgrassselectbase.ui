@@ -20,12 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="font">
-        <font>
-            <family>Helvetica [Urw]</family>
-            <pointsize>10</pointsize>
-        </font>
-    </property>
     <property name="caption">
         <string>Add GRASS Layer</string>
     </property>

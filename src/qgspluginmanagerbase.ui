@@ -112,7 +112,6 @@
             </property>
             <property name="font">
                 <font>
-                    <family>Helvetica</family>
                     <pointsize>10</pointsize>
                 </font>
             </property>

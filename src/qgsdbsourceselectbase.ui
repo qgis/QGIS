@@ -12,11 +12,6 @@
             <height>448</height>
         </rect>
     </property>
-    <property name="font">
-        <font>
-            <family>Helvetica [Urw]</family>
-        </font>
-    </property>
     <property name="caption">
         <string>Add PostGIS Table(s)</string>
     </property>
@@ -39,11 +34,6 @@
         <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>GroupBox1</cstring>
-            </property>
-            <property name="font">
-                <font>
-                    <family>helvetica</family>
-                </font>
             </property>
             <property name="title">
                 <string>PostgreSQL Connections</string>
@@ -75,10 +65,6 @@
                             <property name="name">
                                 <cstring>btnConnect</cstring>
                             </property>
-                            <property name="font">
-                                <font>
-                                </font>
-                            </property>
                             <property name="text">
                                 <string>Connect</string>
                             </property>
@@ -86,10 +72,6 @@
                         <widget class="QPushButton">
                             <property name="name">
                                 <cstring>btnNew</cstring>
-                            </property>
-                            <property name="font">
-                                <font>
-                                </font>
                             </property>
                             <property name="text">
                                 <string>New</string>
@@ -99,10 +81,6 @@
                             <property name="name">
                                 <cstring>btnEdit</cstring>
                             </property>
-                            <property name="font">
-                                <font>
-                                </font>
-                            </property>
                             <property name="text">
                                 <string>Edit</string>
                             </property>
@@ -110,10 +88,6 @@
                         <widget class="QPushButton">
                             <property name="name">
                                 <cstring>btnDelete</cstring>
-                            </property>
-                            <property name="font">
-                                <font>
-                                </font>
                             </property>
                             <property name="text">
                                 <string>Delete</string>
@@ -134,11 +108,6 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>btnHelp</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Lucida</family>
-                        </font>
                     </property>
                     <property name="text">
                         <string>Help</string>
@@ -171,11 +140,6 @@
                     <property name="name">
                         <cstring>btnAdd</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                            <family>Lucida</family>
-                        </font>
-                    </property>
                     <property name="text">
                         <string>Add</string>
                     </property>
@@ -192,11 +156,6 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>btnCancel</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Lucida</family>
-                        </font>
                     </property>
                     <property name="text">
                         <string>Close</string>
