@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include <qapplication.h>
 #include <qfont.h>
 #include <qstring.h>

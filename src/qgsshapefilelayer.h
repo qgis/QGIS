@@ -5,7 +5,7 @@
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc.com
  ***************************************************************************/
-/* $Id$ */
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSSHAPEFILELAYER_H
 #define QGSSHAPEFILELAYER_H
 class QPainter;

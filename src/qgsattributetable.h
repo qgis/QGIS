@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/*  $Id$  */
 #ifndef QGSATTRIBUTETABLE_H
 #define QGSATTRIBUTETABLE_H
 
