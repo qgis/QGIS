@@ -39,6 +39,7 @@ else
   GDAL_LDADD=`$GDAL_CONFIG --libs`
   AC_MSG_RESULT($GDAL_LDADD)
 
+  ac_gdalogr_version=`$GDAL_CONFIG --version`
   ac_gdalogr="yes"
 fi
 
@@ -74,15 +75,20 @@ AC_PATH_PROG(GEOS_CONFIG, geos-config, no, $ac_geos_config_path)
 if test x${GEOS_CONFIG} = xno ; then
   AC_MSG_ERROR([geos-config not found! Supply it with --with-geos=PATH])
 else
-  AC_MSG_CHECKING([GEOS_CFLAGS])
-  GEOS_CFLAGS=`$GEOS_CONFIG --cflags`
-  AC_MSG_RESULT($GEOS_CFLAGS)
+  ac_geos_version=`${GEOS_CONFIG} --version`
+  if test `echo ${ac_geos_version} | sed -e 's#2\.0.*#OK#'` != OK ; then
+    AC_MSG_ERROR([Geos Version 2.0.x is needed, but you have $ac_geos_version!])
+  else
+    AC_MSG_CHECKING([GEOS_CFLAGS])
+    GEOS_CFLAGS=`$GEOS_CONFIG --cflags`
+    AC_MSG_RESULT($GEOS_CFLAGS)
 
-  AC_MSG_CHECKING([GEOS_LDADD])
-  GEOS_LDADD=`$GEOS_CONFIG --libs`
-  AC_MSG_RESULT($GEOS_LDADD)
+    AC_MSG_CHECKING([GEOS_LDADD])
+    GEOS_LDADD=`$GEOS_CONFIG --libs`
+    AC_MSG_RESULT($GEOS_LDADD)
 
-  ac_geos="yes"
+    ac_geos="yes"
+  fi
 fi
 
 AC_SUBST(GEOS_CFLAGS)
