@@ -17,7 +17,8 @@ EXTRA_DIST = doc \
 	TODO \
 	COPYING \
 	NEWS \
-	qgis.spec
+	qgis.spec \
+	config.h.in
 
 SUBDIRS = src providers plugins doc
 
