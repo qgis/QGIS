@@ -550,6 +550,8 @@ double QgsComposition::paperWidth ( void ) { return mPaperWidth; }
 
 double QgsComposition::paperHeight ( void ) { return mPaperHeight; }
 
+int QgsComposition::paperOrientation ( void ) { return mPaperOrientation; }
+
 int QgsComposition::resolution ( void ) { return mResolution; }
 
 int QgsComposition::scale( void ) { 
