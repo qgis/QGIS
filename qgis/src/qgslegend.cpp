@@ -40,13 +40,28 @@ void QgsLegend::setMapCanvas(QgsMapCanvas * canvas)
 	map = canvas;
 }
 
-QString  QgsLegend::currentLayer(){
-    QListViewItem *li = listView->currentItem();
-    if(li)
-      return li->text(0);
-    else
-      return 0;
-  }
+QgsMapLayer *QgsLegend::currentLayer()
+{
+	QgsLegendItem *li = (QgsLegendItem *) listView->currentItem();
+
+	if (li)
+		return li->layer();
+	else
+		return 0;
+
+
+}
+
+QString QgsLegend::currentLayerName()
+{
+	QListViewItem *li = listView->currentItem();
+	if (li)
+		return li->text(0);
+
+	else
+		return 0;
+}
+
 void QgsLegend::update()
 {
 // clear the legend
