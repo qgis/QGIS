@@ -29,6 +29,7 @@ class QgsRasterLayer : public QgsMapLayer  {
     QgsRasterLayer();
     //! Destructor
     ~QgsRasterLayer();
+    void draw(QPainter *p, QRect *viewExtent);
 };
 
 #endif

@@ -19,7 +19,8 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgsshapefilelayer.h \
            qgstable.h \
            qgsdbsourceselect.h \
-           qgsnewconnection.h 
+           qgsnewconnection.h \
+           qgsrect.h
            
 INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui
 SOURCES += main.cpp \
@@ -30,4 +31,5 @@ SOURCES += main.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
            qgsdbsourceselect.cpp \
-           qgsnewconnection.cpp
+           qgsnewconnection.cpp \
+           qgsrect.cpp
