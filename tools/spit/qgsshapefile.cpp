@@ -146,7 +146,12 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
   query += ")";  
   conn->ExecTuplesOk((const char *)query);
   message = conn->ErrorMessage();
-  if(message != "") result = false;
+  if(message != ""){
+    // flag error and send query and error message to stdout on debug
+    result = false;
+    qWarning(query);
+    qWarning(conn->ErrorMessage());
+  }
 
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";            
@@ -178,15 +183,25 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
           else
             quotes = "\'";
           query += quotes;
-          query += QString(feat->GetFieldAsString(n));
+          // escape single quotes to prevent sql syntax error (no effect for numerics)
+          QString val = feat->GetFieldAsString(n);
+          val.replace("'","''");
+          // add escaped value to the query 
+          query += val;
           query += QString(quotes + ", ");
 
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
+        
+       
         if(result) conn->ExecTuplesOk((const char *)query);
         message = conn->ErrorMessage();
-        if(message != "") result = false;
-
+        if(message != ""){
+          // flag error and send query and error message to stdout on debug
+          result = false;
+          qWarning(query);
+          qWarning(conn->ErrorMessage());
+        }
         pro->setProgress(pro->progress()+1);
         qApp->processEvents();
         delete[] geo_temp;
