@@ -82,7 +82,7 @@
 #endif
 
 static const char * const sIdent = "$Id$";
-static const char * const sName = "climatedataprocessingwizard";
+static const char * const sName = "Climate Data Processing Wizard";
 static const char * const sDescription = "A tool to produce various derived variables from climate data such as Hadley SRES.";
 static const char * const sVersion = "Version 0.1";
 static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
