@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsLabelDialogBase</class>
-<widget class="QDialog">
+<widget class="QWidget">
     <property name="name">
         <cstring>QgsLabelDialogBase</cstring>
     </property>
@@ -8,12 +8,12 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>642</width>
-            <height>637</height>
+            <width>598</width>
+            <height>564</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Vector Labels</string>
+        <string>Form1</string>
     </property>
     <grid>
         <property name="name">
@@ -78,6 +78,12 @@
                             <horstretch>2</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                 </widget>
             </grid>
@@ -173,40 +179,6 @@
                             </widget>
                         </grid>
                     </widget>
-                    <spacer row="2" column="0">
-                        <property name="name">
-                            <cstring>spacer32</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="2" column="1">
-                        <property name="name">
-                            <cstring>spacer32_2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
                     <widget class="QGroupBox" row="1" column="0">
                         <property name="name">
                             <cstring>groupBox6_2_2</cstring>
@@ -281,7 +253,6 @@
                                         <property name="font">
                                             <font>
                                                 <family>Application</family>
-                                                <pointsize>8</pointsize>
                                             </font>
                                         </property>
                                         <property name="text">
@@ -316,7 +287,7 @@
                                             <enum>Horizontal</enum>
                                         </property>
                                         <property name="tickmarks">
-                                            <enum>Right</enum>
+                                            <enum>NoMarks</enum>
                                         </property>
                                         <property name="tickInterval">
                                             <number>100</number>
@@ -357,7 +328,6 @@
                                         <property name="font">
                                             <font>
                                                 <family>Application</family>
-                                                <pointsize>8</pointsize>
                                             </font>
                                         </property>
                                         <property name="text">
@@ -501,7 +471,6 @@
                                             <property name="font">
                                                 <font>
                                                     <family>Andale Sans Ui</family>
-                                                    <pointsize>8</pointsize>
                                                 </font>
                                             </property>
                                             <property name="text">
@@ -515,7 +484,6 @@
                                             <property name="font">
                                                 <font>
                                                     <family>Andale Sans Ui</family>
-                                                    <pointsize>8</pointsize>
                                                 </font>
                                             </property>
                                             <property name="text">
@@ -532,7 +500,6 @@
                                             <property name="font">
                                                 <font>
                                                     <family>Andale Sans Ui</family>
-                                                    <pointsize>8</pointsize>
                                                 </font>
                                             </property>
                                             <property name="text">
@@ -546,7 +513,6 @@
                                             <property name="font">
                                                 <font>
                                                     <family>Andale Sans Ui</family>
-                                                    <pointsize>8</pointsize>
                                                 </font>
                                             </property>
                                             <property name="text">
@@ -560,7 +526,6 @@
                                             <property name="font">
                                                 <font>
                                                     <family>Andale Sans Ui</family>
-                                                    <pointsize>8</pointsize>
                                                 </font>
                                             </property>
                                             <property name="text">
@@ -657,7 +622,7 @@
                                         <enum>Horizontal</enum>
                                     </property>
                                     <property name="tickmarks">
-                                        <enum>Right</enum>
+                                        <enum>NoMarks</enum>
                                     </property>
                                     <property name="tickInterval">
                                         <number>45</number>
@@ -730,7 +695,6 @@
                                         <property name="font">
                                             <font>
                                                 <family>Application</family>
-                                                <pointsize>8</pointsize>
                                             </font>
                                         </property>
                                         <property name="text">
@@ -765,7 +729,7 @@
                                             <enum>Horizontal</enum>
                                         </property>
                                         <property name="tickmarks">
-                                            <enum>Right</enum>
+                                            <enum>NoMarks</enum>
                                         </property>
                                         <property name="tickInterval">
                                             <number>100</number>
@@ -806,7 +770,6 @@
                                         <property name="font">
                                             <font>
                                                 <family>Application</family>
-                                                <pointsize>8</pointsize>
                                             </font>
                                         </property>
                                         <property name="text">
@@ -1273,32 +1236,8 @@
 </widget>
 <connections>
     <connection>
-        <sender>sliderAngle</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>spinAngle</receiver>
-        <slot>setValue(int)</slot>
-    </connection>
-    <connection>
-        <sender>spinAngle</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>sliderAngle</receiver>
-        <slot>setValue(int)</slot>
-    </connection>
-    <connection>
-        <sender>sliderBufferTransparency</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>spinBufferTransparency</receiver>
-        <slot>setValue(int)</slot>
-    </connection>
-    <connection>
-        <sender>spinBufferTransparency</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>sliderBufferTransparency</receiver>
-        <slot>setValue(int)</slot>
-    </connection>
-    <connection>
         <sender>sliderFontTransparency</sender>
-        <signal>valueChanged(int)</signal>
+        <signal>sliderMoved(int)</signal>
         <receiver>spinFontTransparency</receiver>
         <slot>setValue(int)</slot>
     </connection>
@@ -1306,6 +1245,18 @@
         <sender>spinFontTransparency</sender>
         <signal>valueChanged(int)</signal>
         <receiver>sliderFontTransparency</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>sliderBufferTransparency</sender>
+        <signal>sliderMoved(int)</signal>
+        <receiver>spinBufferTransparency</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>spinBufferTransparency</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>sliderBufferTransparency</receiver>
         <slot>setValue(int)</slot>
     </connection>
 </connections>
