@@ -330,7 +330,7 @@ void QgsShapeFileProvider::fillMinMaxCash()
     for(int i=0;i<fieldCount();i++)
     {
 	minmaxcache[i][0]=DBL_MAX;
-	minmaxcache[i][1]=DBL_MIN;
+	minmaxcache[i][1]=-DBL_MAX;
     }
 
     QgsFeature* f=getFirstFeature(true);

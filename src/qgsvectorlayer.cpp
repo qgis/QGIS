@@ -96,7 +96,7 @@ const char *cOgrLib = (const char *)ogrlib;
 			if (dataProvider) {
 				std::cout << "Instantiated the data provider plugin\n";
          
-         if(dataProvider->isValid()){
+				if(dataProvider->isValid()){
           valid = true;
 				// get the extent
 				QgsRect *mbr = dataProvider->extent();
@@ -275,7 +275,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 				{
 				    // must change color of pen since it holds not only color
 				    // but line width
+				    if(vectorType()==QGis::Line)
 				    pen.setColor(selectionColor);
+				    else
+				    {
+					pen.setColor(Qt::black);
+				    }
 				    p->setPen(pen);
 				    brush->setColor(selectionColor); 
 
@@ -729,7 +734,7 @@ QPopupMenu *QgsVectorLayer::contextMenu(){
 
 QgsRect QgsVectorLayer::bBoxOfSelected()
 {
-    QgsRect rect(DBL_MAX,DBL_MAX,DBL_MIN,DBL_MIN);
+    QgsRect rect(DBL_MAX,DBL_MAX,-DBL_MAX,-DBL_MAX);
     dataProvider->reset();
 
     QgsFeature *fet;
