@@ -57,7 +57,7 @@ lib[pluginname]_la_SOURCES = plugin.cpp \
 nodist_lib[pluginname]_la_SOURCES =	$(plugin_MOC)
 
 lib[pluginname]_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
-lib[pluginname]_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LADD)
+lib[pluginname]_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
