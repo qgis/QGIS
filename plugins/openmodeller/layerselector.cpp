@@ -32,27 +32,35 @@
 LayerSelector::LayerSelector( QString theBaseDir, QWidget* parent , const char* name , bool modal , WFlags fl  )
   : LayerSelectorBase( parent, name, modal, fl )
 {
-
-  baseDirString = theBaseDir;
+  if (!theBaseDir)
+  {
+    baseDirString ="";
+  }
+  else
+  {
+    baseDirString = theBaseDir;
+  }
+    
   listFileTree->setRootIsDecorated(true);
   listFileTree->setColumnWidthMode(0,QListView::Maximum);
   listFileTree->setColumnWidth(0,300);
   listFileTree->setColumnWidth(1,30);
   listFileTree->setColumnWidth(2,30);
-  listFileTree->setResizeMode(QListView::AllColumns);
-  QDir myDir;
-  if (myDir.exists(baseDirString))
+  //listFileTree->setResizeMode(QListView::AllColumns);
+  QFileInfo myFileInfo(baseDirString);
+  if ( myFileInfo.exists() && !baseDirString.isEmpty())
   {
-    listParent = new QListViewItem(listFileTree,baseDirString);
+    std::cout << "Provided directory found - traversing subdirectories" << std::endl;
     lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
     listFileTree->clear();
+    listParent = new QListViewItem(listFileTree,baseDirString);
     traverseDirectories(baseDirString,listParent);
     listParent->setOpen(true);
     listFileTree->triggerUpdate();
   }
   else
   {
-    std::cout << "Provided directory does not exist - prompting for director" << std::endl;
+    std::cout << "Provided directory does not exist - prompting for directory" << std::endl;
     pbnDirectorySelector_clicked();
   }
 }
@@ -114,7 +122,10 @@ void LayerSelector::pbnCancel_clicked()
 
 void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem* theParentListViewItem)
 {
-	std::cout << "Recursing into : " << theDirName << std::endl;
+  if (!theDirName) return;
+  if (!theParentListViewItem) return;
+  if (theDirName.isEmpty()) return;
+  std::cout << "Recursing into : " << theDirName << std::endl;
   QDir myDirectory(theDirName);
   myDirectory.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
   std::cout << "Current directory is: " << theDirName.ascii() << std::endl;
