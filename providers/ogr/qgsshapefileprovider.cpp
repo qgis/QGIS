@@ -283,115 +283,43 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 
   QgsFeature *f = 0;
   if(valid){
-    //std::cerr << "getting next feature\n";
-    // skip features without geometry
     OGRFeature *fet;
-    //TODO Following ifndef can be removed once WIN32 GEOS support
-    //    is fixed
-#ifndef NOWIN32GEOSXXX
-    // create the geos geometry factory
-//    std::cerr << "Creating the GEOS geometry factory\n";
-//    geos::GeometryFactory *gf = new geos::GeometryFactory();
-//    assert(gf!=0);
-    // create the reader
-//    std::cerr << "Creating the wktReader\n";
-//    geos::WKTReader *wktReader = new geos::WKTReader(gf);
-//    assert(wktReader !=0);
-#endif 
     OGRGeometry *geom;
-//    std::cerr << "Starting read of features\n";
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
       {
-#ifdef QGISDEBUG
-	  qWarning("Testing a geometry for intersection with geos");
-#endif
         if(mUseIntersect)
         {
-    //TODO Following ifndef can be removed once WIN32 GEOS support
-    //    is fixed
-#ifndef NOWIN32GEOSXXX
-          // Test this geometry to see if it should be
-          // returned. This dies big time using the GDAL GEOS
-          // functionality so we implement our own logic using
-          // the geos library. The select functions has already
-          // narrowed the selection to those features with the MBR
-          // of the selection rectangle.
-          // 
-          // get the feature geometry and create a geos geometry from it
-//          std::cerr << "Using geos intersect to filter features\n";
           geom  =  fet->GetGeometryRef();
           char *wkt = new char[2 * geom->WkbSize()];
-#ifdef QGISDEBUG
-	  qWarning("before exportToWkt");
-#endif
           geom->exportToWkt(&wkt);
-#ifdef QGISDEBUG
-	  qWarning("after exportToWkt");
-#endif
-          //std::cerr << "Passing " << wkt << " to goes\n";
-//          std::cerr << "Creating geos geometry from wkt\n";
-#ifdef QGISDEBUG
-	  qWarning("before readWkt");
-#endif	  
           geos::Geometry *geosGeom = wktReader->read(wkt);
-#ifdef QGISDEBUG
-	  qWarning("after readWkt");
-#endif
           assert(geosGeom != 0);
-//          std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
+          std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
           // get the selection rectangle and create a geos geometry from it
           char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
           mSelectionRectangle->exportToWkt(&sWkt);
-//          std::cerr << "Passing " << sWkt << " to goes\n";	  
+          std::cerr << "Passing " << sWkt << " to goes\n";	  
           geos::Geometry *geosRect = wktReader->read(sWkt);
           assert(geosRect != 0);
-//          std::cerr << "About to apply intersects function\n";
-
+          std::cerr << "About to apply intersects function\n";
           // test the geometry
-#ifdef QGISDEBUG
-//          std::cerr << "Testing intersection using geos\n";
-#endif
-#ifdef QGISDEBUG
-	  qWarning("before geos intersection test");
-#endif
           if(geosGeom->intersects(geosRect))
-#ifdef QGISDEBUG
-	  qWarning("after geos intersection test");
-#endif
-          //if(geom->Overlaps(mSelectionRectangle))
           {
-//            std::cerr << "Intersection found\n";
+            std::cerr << "Intersection found\n";
             break;
-#ifdef QGISDEBUG
-	  qWarning("intersection test finished");
-#endif 
           }
-//          std::cerr << "Deleting objects used in geos intersect\n";
-#ifndef WIN32
           //XXX For some reason deleting these on win32 causes segfault
           //XXX Someday I'll figure out why...
           //delete[] wkt;  
           //delete[] sWkt;  
-#endif
-//          delete geosGeom;
-          //delete geosRect;
-#endif
         }
         else
         {
           break;
         }
-#ifdef QGISDEBUG
-	  qWarning("intersection test finished");
-#endif
       }
     }
-    //TODO Following ifndef can be removed once WIN32 GEOS support
-    //    is fixed
-#ifndef NOWIN32GEOSXXX
-//    std::cerr << "Deleting geometry factory and wktReader\n";
-#endif 
     if(fet){
       geom = fet->GetGeometryRef();
 
