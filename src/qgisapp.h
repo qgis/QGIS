@@ -109,6 +109,12 @@ public:
       */
       	 bool addRasterLayer(QFileInfo const & rasterFile);
         
+       /** opens a qgis project file
+       @returns false if unable to open the project
+       
+       */
+       bool addProject(QString projectFile);
+       
 private:
 
 	//! Add a vector layer to the map

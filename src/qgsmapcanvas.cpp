@@ -237,9 +237,9 @@ void QgsMapCanvas::render2()
           //GS - removed the current extent update to fix bug --
           //TODO remove the next 4 lines after we're sure this works ok
           currentExtent.setXmin(dxmin);
-            currentExtent.setXmax(dxmax);
-            currentExtent.setYmin(dymin);
-            currentExtent.setYmax(dymax); 
+          currentExtent.setXmax(dxmax);
+          currentExtent.setYmin(dymin);
+          currentExtent.setYmax(dymax); 
           
           // render all layers in the stack, starting at the base
           std::list < QString >::iterator li = zOrder.begin();

@@ -63,25 +63,25 @@ int main(int argc, char *argv[])
 #ifdef QGISDEBUG
       printf("%d: %s\n", i, argv[i]);
 #endif
+    QString path = argv[i];
       // try to add all these layers - any unsupported file types will
-      // be refected automatically
-      if ( qgis->addRasterLayer(argv[i]) )
-      {
-         // NOP
-         continue;
+      // be rejected automatically
+      // They funky bool ok is so this can be debugged a bit easier...
+      
+      // First try and load it as a project file
+      if(!qgis->addProject(path)){
+        //nope - try and load it as raster
+        bool ok = qgis->addRasterLayer(path);
+        if(!ok){
+          //nope - try and load it as a shape/ogr
+          ok = qgis->addLayer(argv[i]);
+          //we have no idea what this layer is...
+          if(!ok){
+            std::cout << "Unable to load " << argv[i] << std::endl;
+          }
+        }
       }
-      else if ( qgis->addLayer(argv[i]) )
-      {
-         // NOP
-         continue;
-      }
-      else
-      {
-         // XXX should have complaint here about file not being valid
-#ifdef QGISDEBUG
-         std::cerr << argv[i] << " is not a recognized file\n"; 
-#endif
-      }
+   
     }
 
   a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
