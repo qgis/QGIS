@@ -1,3 +1,9 @@
+/**
+
+ @file projecttst.h
+
+*/
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -7,6 +13,20 @@
 
 
 
+/**
+   tests for QgsProject
+
+   @todo XXX add tests for:
+
+   entryList()
+   removeEntry()
+   clearProperties()
+   read()
+   write()
+
+   Although the last two may be difficult to test for since qgis won't be running.
+
+*/
 class ProjectTest : public CppUnit::TestFixture 
 { 
     CPPUNIT_TEST_SUITE( ProjectTest );
@@ -17,6 +37,7 @@ class ProjectTest : public CppUnit::TestFixture
     CPPUNIT_TEST( testDirtyFlag );
     CPPUNIT_TEST( readNullEntries );
     CPPUNIT_TEST( testWriteEntries );
+    CPPUNIT_TEST( testRemoveEntry );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -177,6 +198,22 @@ class ProjectTest : public CppUnit::TestFixture
 
     } // testWriteEntries
 
+
+
+    void testRemoveEntry()
+    {
+        // presume that testWriteEntries() already invoked so that properties are set
+
+        CPPUNIT_ASSERT( QgsProject::instance()->removeEntry( mScope, mBoolValueKey ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->removeEntry( mScope, mNumValueKey ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->removeEntry( mScope, mDoubleValueKey ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->removeEntry( mScope, mStringValueKey ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->removeEntry( mScope, mStringListValueKey ) );
+
+        // since we've removed everything, re-run this test to verify that
+        readNullEntries();
+        
+    } // testRemoveEntry
 
 private:
 
