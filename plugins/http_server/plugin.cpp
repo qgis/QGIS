@@ -164,7 +164,7 @@ void Plugin::requestReceived(QString theQString)
   if (qGisInterface->addProject(theQString))
   {
     //let the httpdserver know we are finished and pass it back the output filename
-    mHttpDaemon->requestCompleted(QString("Project opened successfully!"));
+    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
 
   }
   else
