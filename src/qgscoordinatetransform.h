@@ -37,7 +37,7 @@ class QgsCoordinateTransform{
  public:
 
     QgsMapToPixel(QString theSourceWKT, QString theDestWKT  );
-		 //! destructor
+     //! destructor
     ~QgsMapToPixel();
     
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
@@ -67,7 +67,7 @@ inline QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QSt
        myOutputSpatialRefSys.importFromWkt( &theDestWKT ) != OGRERR_NONE )
     {
       printf( 1, "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
-		   theSourceWKT, theDestWKT );
+       theSourceWKT, theDestWKT );
     }
 
   gSourceToDestXForm = OGRCreateCoordinateTransformation( &myInputSpatialRefSys, &myOutputSpatialRefSys );
@@ -75,7 +75,7 @@ inline QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QSt
   if ( ! gSourceToDestXForm )
     {
       printf( 1, "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
-		   theSourceWKT, theDestWKT );
+       theSourceWKT, theDestWKT );
     }
 
   // Deactivate GDAL error messages.
@@ -91,37 +91,37 @@ inline QgsMapToPixel::~QgsMapToPixel()
 }
 inline QgsPoint QgsMapToPixel::transform(double x, double y)
 {
-	return (transform(QgsPoint(x, y)));
+  return (transform(QgsPoint(x, y)));
 }
 
 inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint) throws QgsCsException
 {
-	// transform x
-	double x = thePoint.x(); 
-	double y = thePoint.y();
-	if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
-	{
-	  //something bad happened....
-	  throw QgsCsException("Coordinate transform failed";
-	}
-	else
-	{
-	  return QgsPoint(x, y);
-	}	
+  // transform x
+  double x = thePoint.x(); 
+  double y = thePoint.y();
+  if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
+  {
+    //something bad happened....
+    throw QgsCsException("Coordinate transform failed");
+  }
+  else
+  {
+    return QgsPoint(x, y);
+  } 
 }
 inline QgsPoint QgsMapToPixel::transform(double theX, double theY)
 {
-	// transform x
-	double x = theX; 
-	double y = theY;
-	if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
-	{
-	  //something bad happened....
-	  return null;
-	}
-	else
-	{
-	  return QgsPoint(x, y);
-	}	
+  // transform x
+  double x = theX; 
+  double y = theY;
+  if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
+  {
+    //something bad happened....
+    return null;
+  }
+  else
+  {
+    return QgsPoint(x, y);
+  } 
 }
 #endif // QGSCSTRANSFORM_H
