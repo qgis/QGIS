@@ -87,8 +87,29 @@ QgsUValMaDialog::QgsUValMaDialog(QgsVectorLayer* vl): QgsUValMaDialogBase(), mVe
 	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
 	int classattr=*iter;
 	mClassificationComboBox->setCurrentItem(classattr);
+	if(renderer->items().size()==0)
+	{
+	    changeClassificationAttribute(classattr);
+	}
+
+	for(std::map<QString,QgsRenderItem*>::iterator it=renderer->items().begin();it!=renderer->items().end();++it)
+	{
+	    QgsRenderItem* item=(*it).second;
+	    QString itemvalue=item->value();
+	    QgsMarkerSymbol* s=dynamic_cast<QgsMarkerSymbol*>(item->getSymbol());
+	    if(s)
+	    {
+		QgsMarkerSymbol* sym=new QgsMarkerSymbol();
+		QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
+		sym->setPen(s->pen());
+		sym->setBrush(s->brush());
+		sym->setPicture(s->picture());
+		mValues.insert(std::make_pair(itemvalue,ritem));
+		mClassBreakBox->insertItem(itemvalue);
+	    }
+	}
+
 	mClassBreakBox->setCurrentItem(0);
-	changeClassificationAttribute(classattr);
     }
     
 }

@@ -59,6 +59,7 @@
 #include "qgsgraduatedmarenderer.h"
 #include "qgssimarenderer.h"
 #include "qgsuniquevalrenderer.h"
+#include "qgsuvalmarenderer.h"
 #include "qgsrenderitem.h"
 #include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
@@ -1362,6 +1363,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     QDomNode uniquevaluenode = layer_node.namedItem("uniquevalue");
     QDomNode labelnode = layer_node.namedItem("label");
     QDomNode labelattributesnode = layer_node.namedItem("labelattributes");
+    QDomNode uniquemarkernode = layer_node.namedItem("uniquevaluemarker");
 
     //std::auto_ptr<QgsRenderer> renderer; actually the renderer SHOULD NOT be
     //deleted when this function finishes, otherwise the application will
@@ -1404,6 +1406,11 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
         //renderer.reset( new QgsUniqueValRenderer );
         renderer = new QgsUniqueValRenderer;
         renderer->readXML(uniquevaluenode, *this);
+    }
+    else if(!uniquemarkernode.isNull())
+    {
+	renderer = new QgsUValMaRenderer;
+	renderer->readXML(uniquemarkernode, *this);
     }
 
     // Test if labeling is on or off
