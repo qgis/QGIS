@@ -594,7 +594,8 @@ void QgsShapeFileProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature *
 
     QString fld = fldDef->GetNameRef();
     QString val;
-    val = ogrFet->GetFieldAsString(attindex);
+    //val = ogrFet->GetFieldAsString(attindex);
+    val = QString::fromUtf8(ogrFet->GetFieldAsString(attindex));
     f->addAttribute(fld, val);
 }
 
