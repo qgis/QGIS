@@ -36,9 +36,6 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 {
     setOrientation(Qt::Vertical);
 
-    //Set the initial display name
-    displaynamefield->setText(m_vectorlayer->name());
-
     //find out the numerical fields of m_vectorlayer
     QgsDataProvider* provider;
     if(provider=m_vectorlayer->getDataProvider())
@@ -136,9 +133,6 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
     QObject::connect(numberofclassesspinbox,SIGNAL(valueChanged(int)),this,SLOT(adjustNumberOfClasses()));
     QObject::connect(classificationComboBox,SIGNAL(activated(int)),this,SLOT(adjustNumberOfClasses()));
     QObject::connect(modeComboBox,SIGNAL(activated(int)),this,SLOT(adjustNumberOfClasses()));
-    QObject::connect(closebutton,SIGNAL(clicked()),this,SLOT(hide()));
-    QObject::connect(applybutton,SIGNAL(clicked()),this,SLOT(apply()));
-    
 }
 
 QgsGraSyDialog::QgsGraSyDialog()
@@ -153,6 +147,7 @@ QgsGraSyDialog::~QgsGraSyDialog()
 	ext->hide();
 	delete ext;
     }
+    qWarning("bin im Destruktor von QgsGraSyDialog");
 }
 
 void QgsGraSyDialog::adjustNumberOfClasses()
@@ -236,7 +231,15 @@ void QgsGraSyDialog::apply()
 	int labelwidth=fm.width(widestlabel);
         //create the pixmap for the render item
 	QPixmap* pix=m_vectorlayer->legendPixmap();
-	QString name=displaynamefield->text();
+	QString name;
+	if(m_vectorlayer->propertiesDialog())
+	{
+	    name=m_vectorlayer->propertiesDialog()->displayName();
+	}
+	else
+	{
+	    name="";
+	}
 	//query the name and the maximum upper value to estimate the necessary width of the pixmap (12 pixel width per letter seems to be appropriate)
 	int pixwidth=leftspace+rightspace+symbolwidth+2*wordspace+labelwidth+fm.width(((QLineEdit*)(ext->getWidget(1,numberofclassesspinbox->value()-1)))->text()+" - "+((QLineEdit*)(ext->getWidget(0,numberofclassesspinbox->value()-1)))->text());//width of the pixmap with symbol and values
 	//consider 240 pixel for labels
@@ -248,21 +251,11 @@ void QgsGraSyDialog::apply()
 	p.setFont(f);
 	//draw the layer name and the name of the classification field into the pixmap
 	p.drawText(leftspace,topspace+fm.height(),name);
-	m_vectorlayer->setLayerName(name);
 	p.drawText(leftspace,topspace+2*fm.height(),classificationComboBox->currentText());
 
 
-	QgsGraduatedSymRenderer* renderer;
-	if(m_vectorlayer->propertiesDialog())
-	{
-	    renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
-	}
-	else
-	{
-	    renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
-	}
+	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
 	
-
 	if(!renderer)
 	{
 	    qWarning("Warning, typecast failed in QgsGraSyDialog::apply()");
@@ -366,7 +359,7 @@ void QgsGraSyDialog::apply()
 	m_vectorlayer->setRendererDialog(this);
 	if(m_vectorlayer->propertiesDialog())
 	{
-	    m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+	    m_vectorlayer->propertiesDialog()->setRendererDirty(false);
 	}
 	m_vectorlayer->triggerRepaint();
     }

@@ -21,7 +21,7 @@ class QgsFeature;
 class QgsCoordinateTransform;
 class QgsVectorLayer;
 class QPainter;
-class QgsVectorLayerProperties;
+class QgsDlgVectorLayerProperties;
 
 
 
@@ -33,7 +33,7 @@ class QgsRenderer
      @param layer the vector layer associated with the renderer
      @param pr the layer properties class involved
     */
-    virtual void initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr=0)=0;
+    virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0)=0;
     /**Renders a feature. A vector layer passes features to a renderer object for display*/
     virtual void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t)=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
