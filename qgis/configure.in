@@ -4,6 +4,7 @@ AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(qgis, 0.0.13)
 AC_PROG_LIBTOOL()
 #AC_CONFIG_HEADERS()
+AM_MAINTAINER_MODE()
 #AC_CONFIG_COMMANDS([src/Makefile], [$QTDIR/bin/qmake -o src/Makefile src/src.pro])
 gw_CHECK_QT
 dnl ---------------------------------------------------------------------------
