@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>578</width>
-            <height>482</height>
+            <height>484</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -89,6 +89,9 @@
             </property>
             <property name="wordWrap">
                 <enum>WidgetWidth</enum>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
             </property>
         </widget>
         <widget class="QTextEdit" row="1" column="2">
