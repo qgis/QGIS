@@ -136,7 +136,6 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
   connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
-  QString message;
 
   QString query = "CREATE TABLE "+table_name+"(gid int4 PRIMARY KEY, ";
   for(int n=0; n<column_names.size() && result; n++){
@@ -151,22 +150,24 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
   query += " )";
   
   PGresult *res = PQexec(conn, (const char *)query);
-  message = PQresultErrorMessage(res);  
-  if(message != ""){
+  if(PQresultStatus(res)!=PGRES_COMMAND_OK){
     // flag error and send query and error message to stdout on debug
     result = false;
-    qWarning(query);
     qWarning(PQresultErrorMessage(res));
   }
-  PQclear(res);
+  else {
+    PQclear(res);
+  }
 
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";            
   if(result) res = PQexec(conn, (const char *)query);
-  if(message != ""){
+  if(PQresultStatus(res)!=PGRES_COMMAND_OK){
     result = false;
-    qWarning(query);
-    message = PQresultErrorMessage(res);
+    qWarning(PQresultErrorMessage(res));
+  }
+  else{
+    PQclear(res);
   }
 
   //adding the data into the table
@@ -175,6 +176,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
       fin = true;
       break;
     }
+    
     OGRFeature *feat = ogrLayer->GetNextFeature();
     if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
@@ -206,15 +208,17 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
         
-        PQclear(res);       
-        if(result) res = PQexec(conn, (const char *)query);
-        message = PQresultErrorMessage(res);
-        if(message != ""){
+        if(result)                 
+          res = PQexec(conn, (const char *)query);
+        if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           // flag error and send query and error message to stdout on debug
           result = false;
           qWarning(query);
-          qWarning(PQresultErrorMessage(res));
         }
+        else {
+           PQclear(res);
+        }
+        
         pro->setProgress(pro->progress()+1);
         qApp->processEvents();
         delete[] geo_temp;
@@ -223,7 +227,6 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
     }
   }
   ogrLayer->ResetReading();
-  PQclear(res);
   return result;
 }
 

@@ -268,7 +268,14 @@ void QgsSpit::import(){
           pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
           continue;
         }
-        PQexec(pd, "BEGIN");
+        
+        res = PQexec(pd, "BEGIN");
+        if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+          qWarning(PQresultErrorMessage(res));
+        }
+        else {
+          PQclear(res);
+        }
         
         fileList[i]->setTable(tblShapefiles->text(i, 3));
         pro->setLabelText("Importing files\n"+fileList[i]->getName());
@@ -276,14 +283,26 @@ void QgsSpit::import(){
         int rel_exists2 = 0;
         QString query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+fileList[i]->getTable()+"\'";
         res = PQexec(pd, (const char *)query);
-        rel_exists1 = PQntuples(res);
-        PQclear(res);
-        query = "SELECT relname FROM pg_tables WHERE tablename=\'"+fileList[i]->getTable()+"\'";
+        if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+          qWarning(PQresultErrorMessage(res));
+        }
+        else {
+          PQclear(res);
+        }
+        
+        //rel_exists1 = PQntuples(res);
+        
+        query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+fileList[i]->getTable()+"\'";
         res = PQexec(pd, (const char *)query);
-        rel_exists2 = PQntuples(res);
-        PQclear(res);
+        if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+          qWarning(PQresultErrorMessage(res));
+        }
+        else {
+          PQclear(res);
+        }
+        //rel_exists2 = PQntuples(res);
 
-        std::cout<< rel_exists1 << " " << rel_exists2 << std::endl;
+        //std::cout<< rel_exists1 << " " << rel_exists2 << std::endl;
         
         QMessageBox *del_confirm;
         if(rel_exists1!=0 || rel_exists2!=0){
@@ -301,15 +320,31 @@ void QgsSpit::import(){
             query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
               fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";
             res = PQexec(pd, (const char *)query);
-            PQclear(res);
+            if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              qWarning(PQresultErrorMessage(res));
+            }
+            else {
+              PQclear(res);
+            }            
           }
           else if (del_confirm->exec() == QMessageBox::Yes && rel_exists2!=0){
             query = "DROP TABLE " + fileList[i]->getTable();
             res = PQexec(pd, (const char *)query);
-            PQclear(res);
+            if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              qWarning(PQresultErrorMessage(res));
+            }
+            else {
+              PQclear(res);
+            }
           }
           else {
-      	    PQexec(pd, "ROLLBACK");
+      	    res = PQexec(pd, "ROLLBACK");
+            if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              qWarning(PQresultErrorMessage(res));
+            }
+            else {
+              PQclear(res);
+            }
           }
         }
 	
@@ -318,12 +353,25 @@ void QgsSpit::import(){
           if(!finished){
             QMessageBox::warning(this, "Import Shapefiles",
               "Problem inserting features from file:\n"+fileList[i]->getName());
-            PQexec(pd, "ROLLBACK");
+            res = PQexec(pd, "ROLLBACK");
+            if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              qWarning(PQresultErrorMessage(res));
+            }
+            else {
+              PQclear(res);
+            }
           }
           pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
         }
         else{  // if file has been imported, remove it from the list
-          PQexec(pd, "COMMIT");
+          res = PQexec(pd, "COMMIT");
+          if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+            qWarning(PQresultErrorMessage(res));
+          }
+          else {
+            PQclear(res);
+          }
+          
           for(int j=0; j<tblShapefiles->numRows(); j++){
             if(tblShapefiles->text(j,0)==QString(fileList[i]->getName())){
               tblShapefiles->selectRow(j);
