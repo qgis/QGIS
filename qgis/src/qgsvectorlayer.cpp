@@ -33,6 +33,8 @@ email                : sherman at mrcc.com
 #include <qstring.h>
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
+#include <qlabel.h>
+
 #include "qgisapp.h"
 #include "qgsrect.h"
 #include "qgspoint.h"
@@ -234,8 +236,8 @@ void QgsVectorLayer::setDisplayField()
   // dialog. We look for fields containing "name" first and second for
   // fields containing "id". If neither are found, the first field
   // is used as the node.
-  QString idxName;
-  QString idxId;
+  QString idxName="";
+  QString idxId="";
 
   std::vector < QgsField > fields = dataProvider->fields();
   int j = 0;
@@ -263,6 +265,8 @@ void QgsVectorLayer::setDisplayField()
     }
   }
 
+  //if there were no fields in the dbf just return - otherwise qgis segfaults!
+  if (j==0) return;
 
   if (idxName.length() > 0)
   {
@@ -899,6 +903,10 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
     void QgsVectorLayer::initContextMenu(QgisApp * app)
     {
       popMenu = new QPopupMenu();
+      QLabel *myPopupLabel = new QLabel( popMenu );
+      myPopupLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
+      myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
+      popMenu->insertItem(myPopupLabel,0);
       popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
       popMenu->insertItem(tr("&Open attribute table"), app, SLOT(attributeTable()));
       popMenu->insertSeparator();
