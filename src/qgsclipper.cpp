@@ -107,7 +107,7 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 
     // the right border
     r_n = -(from.x() - maxX)     * (maxY   - minY);
-    dLR =  (to.x()   - from.x()) * (maxY   - minY);
+    double dLR =  (to.x()   - from.x()) * (maxY   - minY);
 
     if (fabs(dLR) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
     {
