@@ -3,7 +3,9 @@
 
 #include "qgsshapefileprovider.h"
 
+#ifndef WIN32
 #include <netinet/in.h>
+#endif
 #include <iostream>
 #include <cfloat>
 
@@ -15,8 +17,11 @@
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
-
-
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
 QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minmaxcachedirty(true)
 {
   OGRRegisterAll();
@@ -363,6 +368,11 @@ std::vector<QgsFeature>& QgsShapeFileProvider::identify(QgsRect * rect)
 {
   // select the features
   select(rect);
+#ifdef WIN32
+  //TODO fix this later for win32
+  std::vector<QgsFeature> feat;
+  return feat;
+#endif
 }
 
 unsigned char * QgsShapeFileProvider::getGeometryPointer(OGRFeature *fet){
@@ -379,6 +389,9 @@ unsigned char * QgsShapeFileProvider::getGeometryPointer(OGRFeature *fet){
 
 int QgsShapeFileProvider::endian()
 {
+#ifdef WIN32
+  return NDR;
+#else
     // XXX why re-calculate this all the time?  Why not just calculate this
     // XXX once and return the value?  For that matter, some machines have
     // XXX endian.h, which stores the constant variable for local endian-ness.
@@ -392,6 +405,7 @@ int QgsShapeFileProvider::endian()
     // otherwise this must be little-endian
 
     return NDR;
+#endif
 }
 
 
@@ -526,22 +540,20 @@ bool QgsShapeFileProvider::isValid()
  * Class factory to return a pointer to a newly created 
  * QgsShapeFileProvider object
  */
-extern "C" QgsShapeFileProvider * classFactory(const char *uri)
+QGISEXTERN QgsShapeFileProvider * classFactory(const char *uri)
 {
   return new QgsShapeFileProvider(uri);
 }
-
 /** Required key function (used to map the plugin to a data store type)
 */
-extern "C" QString providerKey()
+QGISEXTERN QString providerKey()
 {
   return QString("ogr");
 }
-
 /**
  * Required description function 
  */
-extern "C" QString description()
+QGISEXTERN QString description()
 {
   return QString("OGR data provider (shapefile and other formats)");
 } 
@@ -549,7 +561,8 @@ extern "C" QString description()
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin
  */
-extern "C" bool isProvider()
+
+QGISEXTERN bool isProvider()
 {
   return true;
 }
