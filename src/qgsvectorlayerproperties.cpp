@@ -58,7 +58,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer* lyr):layer(ly
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
- 
+    if(rendererDirty)
+    {
+	delete bufferDialog;
+	delete bufferRenderer;
+    }
 }
 
 QgsSymbol* QgsVectorLayerProperties::getSymbol()
@@ -124,12 +128,6 @@ void QgsVectorLayerProperties::apply()
 
 void QgsVectorLayerProperties::cancel()
 {
-    //todo: add code to free memory here
-    if(rendererDirty)
-    {
-	delete bufferDialog;
-	delete bufferRenderer;
-    }
     reject();
 }
 

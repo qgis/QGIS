@@ -50,7 +50,18 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer* layer): QgsContColDialogBase(
     }
 
     //restore the correct colors for minimum and maximum values
-    QgsContinuousColRenderer* renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->renderer());
+
+    QgsContinuousColRenderer* renderer;
+
+    if(m_vectorlayer->propertiesDialog())
+    {
+	renderer=dynamic_cast<QgsContinuousColRenderer*>(layer->propertiesDialog()->getBufferRenderer());
+    }
+    else
+    {
+	renderer=dynamic_cast<QgsContinuousColRenderer*>(layer->renderer());
+    }
+
     if(renderer)
     {
 	QgsRenderItem* minitem=renderer->minimumItem();
@@ -130,6 +141,7 @@ void QgsContColDialog::apply()
 
     //set the render items to the buffer renderer of the property dialog
     QgsContinuousColRenderer* renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+
     if(renderer)
     {
 	renderer->setMinimumItem(minimumitem);
