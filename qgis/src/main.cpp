@@ -213,6 +213,24 @@ int main(int argc, char *argv[])
   }
   QApplication a(argc, argv, myUseGuiFlag );
 
+  // Check to see if qgis was started from the source directory. 
+  // This is done by looking for Makefile in the directory where qgis was
+  // started from. If running from the src directory, exit gracefully
+  if(qApp->applicationFilePath().contains("/src/qgis"))
+  {
+    // check to see if configure is present in the directory
+    QFileInfo fi(qApp->applicationDirPath() + "/Makefile");
+    if(fi.exists())
+    {
+      QMessageBox::critical(0,"QGIS Not Installed",
+          "You appear to be running QGIS from the source directory.\n"
+          "You must install QGIS using make install and run it from the "
+          "installed directory.");
+      exit(1);
+    }
+  }
+
+  
   // a.setFont(QFont("helvetica", 11));
 
 #if defined(Q_OS_MACX) || defined(WIN32)
