@@ -112,7 +112,11 @@ QgsMapLayer *QgsMapCanvas::getZpos(int index)
 
 void QgsMapCanvas::render2()
 {
+QString msg = frozen?"frozen":"thawed";
+std::cout << "Map canvas is " << msg << std::endl;
+if(!frozen){
 	if (!drawing) {
+	std::cout << "IN RENDER 2" << std::endl;
 		drawing = true;
 		QPainter *paint = new QPainter();
 		paint->begin(this);
@@ -163,7 +167,7 @@ void QgsMapCanvas::render2()
 		paint->end();
 		drawing = false;
 	}
-
+}
 }
 
 void QgsMapCanvas::render()
@@ -209,8 +213,10 @@ void QgsMapCanvas::render()
 }
 void QgsMapCanvas::paintEvent(QPaintEvent * pe)
 {
-//  if (!drawing)
-	//render2();
+  if (!drawing)
+		render2();
+	else
+		std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
 }
 
 QgsRect QgsMapCanvas::extent()
@@ -250,7 +256,10 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 	  case QGis::Pan:
 		  // create a pixmap to use in panning the map canvas
 		  tempPanImage = new QPixmap();
+		  
 		  *tempPanImage = QPixmap::grabWidget(this);
+		  
+		  
 		  backgroundFill = new QPixmap(tempPanImage->width(), tempPanImage->height());
 		  backgroundFill->fill(bgColor);
 		  break;
@@ -332,6 +341,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 		QPainter paint;
 		QPen pen(Qt::gray);
 		// this is a drag-type operation (zoom, pan or other maptool)
+		
 		switch (mapTool) {
 		  case QGis::ZoomIn:
 			  // draw the rubber band box as the user drags the mouse
@@ -406,6 +416,12 @@ int QgsMapCanvas::layerCount()
 
 void QgsMapCanvas::layerStateChange()
 {
+if(!frozen){
 	clear();
 	render2();
+	}
+}
+
+void QgsMapCanvas::freeze(bool frz){
+	frozen = frz;
 }

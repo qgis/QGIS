@@ -65,6 +65,8 @@ public:
    QgsMapLayer * getZpos(int index);
    //! return number of layers on the map
    int layerCount();
+   void freeze(bool frz=true);
+   
 public slots:
 	void render2();
 	//! This slot is connected to the visibility change of one or more layers
@@ -109,6 +111,7 @@ public slots:
   void updateZpos();
   //! Flag indicating a map refresh is in progress
   bool drawing;
+  bool frozen;
 
 };
 
