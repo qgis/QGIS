@@ -1,0 +1,37 @@
+<html>
+  <body>
+    <h2>Delmited Text Plugin</h2>
+    This Delimited Text plugin allows you to load a delimited text file
+    as a layer in QGIS. A valid text file must contain:
+    <ol>
+      <li>A delimited header row of field names. This must be the
+      first line in the text file</li>
+      <li>The header row must contain an X and Y field. These fields
+      can have any name.</li>
+      <li>The x and y coordinates must be specified as a number. The
+      coordinate system is not important</li>
+      <h3>Example of a valid text file</h3>
+      <pre>
+        name|latdec|longdec|cell|
+        196 mile creek|61.89806|-150.0775|tyonek d-1 ne|
+        197 1/2 mile creek|61.89472|-150.09972|tyonek d-1 ne|
+        a b mountain|59.52889|-135.28333|skagway c-1 sw|
+        apw dam number 2|60.53|-145.75167|cordova c-5 sw|
+        apw reservoir|60.53167|-145.75333|cordova c-5 sw|
+        apw reservoir|60.53|-145.75167|cordova c-5 sw|
+        aaron creek|56.37861|-131.96556|bradfield canal b-6|
+        aaron island|58.43778|-134.81944|juneau b-3 ne|
+        aats bay|55.905|-134.24639|craig d-7|
+      </pre>
+      Some items of note about the text file are:
+      <ol>
+        <li> The example text file uses | as delimter. Any character can be used to
+        delimit the fields.</li>
+        <li>The first row is the header row. It contains the fields name, latdec, longdec, and cell</li>
+        <li>No quotes (") are used to delimit text fields</li>
+        <li>The x coordinates are contained in the <i>longdec</i> field</li>
+        <li>The y coordinates are contained in the <i>latdec</i> field</li>
+
+    </ol>
+  </body>
+</html>
