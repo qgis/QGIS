@@ -86,6 +86,8 @@ signals:
   /** Used to notify all coordinateTransform objects to update their dest wkt because the project
       output projection system is changed */
   void setDestWKT(QString);   
+  // Used to tell others that the mouse display precision may have changed
+  void displayPrecisionChanged();
 private:
   typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
   //stores a list of available projection definitions 

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsProjectPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>689</width>
-            <height>419</height>
+            <height>482</height>
         </rect>
     </property>
     <property name="caption">
@@ -113,14 +113,14 @@
         </widget>
         <widget class="QSplitter" row="0" column="0">
             <property name="name">
-                <cstring>splitter2</cstring>
+                <cstring>splitter1</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
             </property>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout2</cstring>
+                    <cstring>layout8</cstring>
                 </property>
                 <vbox>
                     <property name="name">
@@ -222,104 +222,200 @@
                             </widget>
                         </grid>
                     </widget>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>btnGrpPrecision</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="title">
+                            <string>Cursor display precision</string>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>btnAutomatic</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Automatic</string>
+                                </property>
+                                <property name="checked">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Automatically sets the number of decimal places in the mouse position display</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>btnManual</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Manual</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Sets the number of decimal places to use for the mouse position display</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Sets the number of decimal places to use for the mouse position display</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox">
+                                <property name="name">
+                                    <cstring>spinBoxDP</cstring>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>The number of decimal places for the manual option</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The number of decimal places for the manual option</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel3</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>decimal places</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
                     <widget class="QGroupBox">
                         <property name="name">
                             <cstring>groupBox2_2</cstring>
                         </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
                         <property name="title">
                             <string>Digitising Settings</string>
                         </property>
-                        <grid>
+                        <widget class="QPushButton">
                             <property name="name">
-                                <cstring>unnamed</cstring>
+                                <cstring>pbnDigitisedLineColour</cstring>
                             </property>
-                            <widget class="QPushButton" row="2" column="1">
-                                <property name="name">
-                                    <cstring>pbnDigitisedLineColour</cstring>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>111</red>
-                                        <green>244</green>
-                                        <blue>200</blue>
-                                    </color>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="2" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Line Colour:</string>
-                                </property>
-                            </widget>
-                            <widget class="QSpinBox" row="1" column="1">
-                                <property name="name">
-                                    <cstring>spinDigitisedLineWidth</cstring>
-                                </property>
-                                <property name="minValue">
-                                    <number>1</number>
-                                </property>
-                            </widget>
-                            <widget class="QLineEdit" row="0" column="1">
-                                <property name="name">
-                                    <cstring>leSnappingTolerance</cstring>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_2_2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Line Width:</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_2_2_2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Snapping Tolerance:</string>
-                                </property>
-                            </widget>
-                            <spacer row="3" column="1">
-                                <property name="name">
-                                    <cstring>spacer10</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>21</width>
-                                        <height>111</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <spacer row="3" column="0">
-                                <property name="name">
-                                    <cstring>spacer11</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>21</width>
-                                        <height>121</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
+                            <property name="geometry">
+                                <rect>
+                                    <x>157</x>
+                                    <y>82</y>
+                                    <width>177</width>
+                                    <height>30</height>
+                                </rect>
+                            </property>
+                            <property name="paletteBackgroundColor">
+                                <color>
+                                    <red>111</red>
+                                    <green>244</green>
+                                    <blue>200</blue>
+                                </color>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>11</x>
+                                    <y>82</y>
+                                    <width>140</width>
+                                    <height>30</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Line Colour:</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>spinDigitisedLineWidth</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>157</x>
+                                    <y>53</y>
+                                    <width>177</width>
+                                    <height>23</height>
+                                </rect>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>leSnappingTolerance</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>157</x>
+                                    <y>23</y>
+                                    <width>177</width>
+                                    <height>24</height>
+                                </rect>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2_2</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>11</x>
+                                    <y>53</y>
+                                    <width>140</width>
+                                    <height>23</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Line Width:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2_2_2</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>11</x>
+                                    <y>23</y>
+                                    <width>140</width>
+                                    <height>24</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Snapping Tolerance:</string>
+                            </property>
+                        </widget>
                     </widget>
                 </vbox>
             </widget>

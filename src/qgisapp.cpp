@@ -73,7 +73,7 @@
 #include <memory>
 #include <vector>
 
-
+#include <cmath>
 
 
 #include "qgsrect.h"
@@ -395,6 +395,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     connect(mMapCanvas, SIGNAL(setProgress(int,int)), this, SLOT(showProgress(int,int)));
     connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
     connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
+    connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(updateMouseCoordinatePrecision()));
     connect(mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mMapLegend, SLOT(addLayer(QgsMapLayer *)));
     connect(mMapCanvas, SIGNAL(removedLayer(QString)), mMapLegend, SLOT(removeLayer(QString)));
     connect(mMapCanvas, SIGNAL(removedAll()), mMapLegend, SLOT(removeAll()));
@@ -2397,19 +2398,7 @@ void QgisApp::drawLayers()
 
 void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
-  // Work out a suitable number of decimal places for the mouse
-  // coordinates with the aim of always having enough decimal places
-  // to show the difference in position between adjacent pixels.
-  // Also avoid taking the log of 0.
-  int dp = 0;
-  if (getMapCanvas()->mupp() != 0.0)
-    dp = static_cast<int> (ceil(-1.0*log10(getMapCanvas()->mupp())));
-
-  // Limit decimal places to keep the mouse coordinate display sensible.
-  if (dp < 0) dp = 0;
-  if (dp > 5) dp = 5;
-
-  mCoordsLabel->setText(p.stringRep(dp));
+  mCoordsLabel->setText(p.stringRep(mMousePrecisionDecimalPlaces));
 }
 
 void QgisApp::showScale(QString theScale)
@@ -3699,6 +3688,34 @@ void QgisApp::drawExtentRectangle(QPainter *painter)
     */
 }
 
+void QgisApp::updateMouseCoordinatePrecision()
+{
+  // Work out what mouse display precision to use. This only needs to
+  // be when the settings change or the zoom level changes. This
+  // function needs to be called every time one of the above happens.
+
+  // Get the display precision from the project settings
+  bool automatic = QgsProject::instance()->readBoolEntry("PositionPrecision","/Automatic");
+  int dp = 0;
+
+  if (automatic)
+  {
+    // Work out a suitable number of decimal places for the mouse
+    // coordinates with the aim of always having enough decimal places
+    // to show the difference in position between adjacent pixels.
+    // Also avoid taking the log of 0.
+    if (getMapCanvas()->mupp() != 0.0)
+      dp = static_cast<int> (ceil(-1.0*log10(getMapCanvas()->mupp())));
+  }
+  else
+    dp = QgsProject::instance()->readNumEntry("PositionPrecision","/DecimalPlaces");
+
+  // Keep dp sensible
+  if (dp < 0) dp = 0;
+
+  mMousePrecisionDecimalPlaces = dp;
+}
+
 void QgisApp::showStatusMessage(QString theMessage)
 {
     statusBar()->message(theMessage);
@@ -3706,16 +3723,23 @@ void QgisApp::showStatusMessage(QString theMessage)
 
 void QgisApp::projectProperties()
 {
-    QgsProjectProperties *pp = new QgsProjectProperties(this);
+  QgsProjectProperties *pp = new QgsProjectProperties(this);
 
-    if(pp->exec())
-    {
-        // set the map units for the project (ie the map canvas)
-        mMapCanvas->setMapUnits(pp->mapUnits());
-        QgsProject::instance()->title( pp->title() );
+  // Be told if the mouse display precision may have changed by the user
+  // changing things in the project properties dialog box
+  connect(pp, SIGNAL(displayPrecisionChanged()), this, SLOT(updateMouseCoordinatePrecision()));
 
-        setTitleBarText_( *this );
-    }
+  // Display the modal dialog box.
+  pp->exec();
+
+  // set the map units for the project if they have changed
+  if (mMapCanvas->mapUnits() != pp->mapUnits())
+    mMapCanvas->setMapUnits(pp->mapUnits());
+
+  // Set the window title. No way to do a comparison like for the map
+  // units above, so redo it everytime.
+  setTitleBarText_( *this );
+
 } // QgisApp::projectProperties
 
 
