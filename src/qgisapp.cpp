@@ -936,7 +936,8 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
    @param selectedFiles string list of selected files; will be empty
                         if none selected
-
+   @param enc        encoding?
+   @param title      the title for the dialog
    @note
 
    Stores persistent settings under /qgis/UI/.  The sub-keys will be
@@ -947,7 +948,8 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
    with the current filter name.
 
 */
-static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles, QString& enc)
+static void openFilesRememberingFilter_(QString const &filterName, 
+  QString const &filters, QStringList & selectedFiles, QString& enc, QString &title)
 {
 
     bool haveLastUsedFilter = false;  // by default, there is no last
@@ -971,7 +973,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 
     // allow for selection of more than one file
     openFileDialog->setMode(QFileDialog::ExistingFiles);
-    openFileDialog->setCaption(QFileDialog::tr("Open an OGR Supported Data Source"));
+    openFileDialog->setCaption(title);
 
     if (haveLastUsedFilter)       // set the filter to the last one used
     {
@@ -1031,7 +1033,9 @@ void QgisApp::addLayer()
 #endif
 
 	QString enc;
-        openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc);
+  QString title = tr("Open an OGR Supported Vector Layer");
+        openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc,
+          title);
         if (selectedFiles.isEmpty())
         {
             // no files were selected, so just bail
@@ -4044,8 +4048,9 @@ void QgisApp::addRasterLayer()
 
     QStringList selectedFiles;
     QString e;//only for parameter correctness
-
-    openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles,e);
+    QString title = tr("Open a GDAL Supported Raster Data Source");
+    openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles,e,
+      title);
 
     if (selectedFiles.isEmpty())
     {
