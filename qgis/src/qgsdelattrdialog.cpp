@@ -1,8 +1,8 @@
 /***************************************************************************
-                         qgsgeomtypedialog.cpp  -  description
+                         qgsdelattrdialog.cpp  -  description
                              -------------------
-    begin                : October 2004
-    copyright            : (C) 2004 by Marco Hugentobler
+    begin                : January 2005
+    copyright            : (C) 2005 by Marco Hugentobler
     email                : marco.hugentobler@autoform.ch
  ***************************************************************************/
 
@@ -14,36 +14,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
-#include "qgsgeomtypedialog.h"
-#include <qradiobutton.h>
 
-QgsGeomTypeDialog::QgsGeomTypeDialog(): QgsGeomTypeDialogBase()
+#include "qgsdelattrdialog.h"
+#include "qgsfield.h"
+#include <qheader.h>
+#include <qlistbox.h>
+
+QgsDelAttrDialog::QgsDelAttrDialog(QHeader* header)
 {
     QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    mPointRadioButton->setChecked(true);
+
+    //insert attribute names into the QListView
+    if(header)
+    {
+	listBox2->clear();
+	for(int i=1;i<header->count();++i)
+	{
+	    listBox2->insertItem(header->label(i));
+	}
+    }
 }
 
-QgsGeomTypeDialog::~QgsGeomTypeDialog()
+const std::list<QString>* QgsDelAttrDialog::selectedAttributes()
 {
-
-}
-
-QGis::WKBTYPE QgsGeomTypeDialog::selectedType()
-{
-    if(mPointRadioButton->isChecked())
+    mSelectedItems.clear();
+    for(int i=0;i<listBox2->numRows();++i)
     {
-	return QGis::WKBPoint;
+	if(listBox2->isSelected(i))
+	{
+	    mSelectedItems.push_back(listBox2->text(i));
+	}
     }
-    else if(mLineRadioButton->isChecked())
-    {
-	return QGis::WKBLineString;
-    }
-    else if(mPolygonRadioButton->isChecked())
-    {
-	return QGis::WKBPolygon;
-    }
-
-    return QGis::WKBUnknown;
+    return &mSelectedItems;
 }

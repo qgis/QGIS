@@ -22,11 +22,14 @@
 #include <qlabel.h>
 #include <qfont.h>
 #include "qgsattributetable.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsvectordataprovider.h"
 #include <iostream>
 #include <stdlib.h>
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false),
-									 sort_ascending(true), mActionPopup(0), mEditable(false)
+									 sort_ascending(true), mActionPopup(0), mEditable(false), mEdited(false)
 {
   QFont f(font());
   f.setFamily("Helvetica");
@@ -313,10 +316,101 @@ void QgsAttributeTable::popupItemSelected(int id)
 
 void QgsAttributeTable::addAttribute(const QString& name, const QString& type)
 {
-    //soon
+    mAddedAttributes.insert(std::make_pair(name,type));
+    mEdited=true;
 }
 
 void QgsAttributeTable::deleteAttribute(const QString& name)
 {
-    //soon
+    //check, if there is already an attribute with this name in mAddedAttributes
+    std::map<QString,QString>::iterator iter=mAddedAttributes.find(name);
+    if(iter!=mAddedAttributes.end())
+    {
+	mAddedAttributes.erase(iter);
+    }
+    else
+    {
+#ifdef QGISDEBUG
+	qWarning("QgsAttributeTable: deleteAttribute "+name);
+#endif
+	mDeletedAttributes.insert(name);
+	//hide the column in the table
+	QHeader* header=horizontalHeader();
+	for(int i=0;i<header->count();++i)
+	{
+	    if(header->label(i)==name)
+	    {
+		removeColumn(i);
+		break;
+	    }
+	}
+    }
+    mEdited=true;
+}
+
+bool QgsAttributeTable::commitChanges(QgsVectorDataProvider* provider)
+{
+    bool returnvalue=true;
+
+    if(provider)
+    {
+	//delete columns
+	if(!provider->deleteAttributes(mDeletedAttributes))
+	{
+	    returnvalue=false;
+	}
+    }
+    mEdited=false;
+    return returnvalue;//soon
+}
+
+bool QgsAttributeTable::rollBack(QgsVectorDataProvider* provider)
+{
+    if(provider)
+    {
+	fillTable(provider);
+    }
+    mEdited=false;
+    return true;
+}
+
+//todo: replace some of the lines in QgsVectorLayer::table() with this function
+void QgsAttributeTable::fillTable(QgsVectorDataProvider* provider)
+{
+    if(provider)
+    {
+	int row = 0;
+	// set up the column headers
+	QHeader *colHeader = horizontalHeader();
+	colHeader->setLabel(0, "id"); //label for the id-column
+	std::vector < QgsField > fields = provider->fields();
+	int fieldcount=provider->fieldCount();
+	setNumCols(fieldcount+1);
+
+	for (int h = 1; h <= fieldcount; h++)
+	{
+	    colHeader->setLabel(h, fields[h - 1].name());
+#ifdef QGISDEBUG
+	    qWarning("Setting column label "+fields[h - 1].name());
+#endif
+	}
+	QgsFeature *fet;
+	while ((fet = provider->getNextFeature(true)))
+	{
+	    //id-field
+	    setText(row, 0, QString::number(fet->featureId()));
+	    insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
+	    std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+	    for (int i = 0; i < attr.size(); i++)
+	    {
+		// get the field values
+		setText(row, i + 1, attr[i].fieldValue());
+#ifdef QGISDEBUG
+		//qWarning("Setting value for "+QString::number(i+1)+"//"+QString::number(row)+"//"+attr[i].fieldValue());
+#endif
+	    }
+	    row++;
+	    delete fet;
+	}
+    }
 }
