@@ -232,3 +232,10 @@ bool QgsSiMaRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
     }
     return returnvalue;
 }
+
+const std::list<QgsRenderItem*> QgsSiMaRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    list.push_back(mItem);
+    return list;
+}

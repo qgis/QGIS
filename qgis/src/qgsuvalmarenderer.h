@@ -56,6 +56,8 @@ class QgsUValMaRenderer: public QgsRenderer
     int classificationField();
     /**Returns the values*/
     std::map<QString,QgsRenderItem*>& items();
+    /**Return symbology items*/
+    const std::list<QgsRenderItem*> items() const;
  protected:
     /**Field index used for classification*/
     int mClassificationField;

@@ -264,3 +264,10 @@ QString QgsSingleSymRenderer::name()
 {
     return "Single Symbol";
 }
+
+const std::list<QgsRenderItem*> QgsSingleSymRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    list.push_back(mItem);
+    return list;
+}

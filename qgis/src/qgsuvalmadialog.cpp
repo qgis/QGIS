@@ -311,7 +311,7 @@ void QgsUValMaDialog::changeClassificationAttribute(int nr)
 	    if(mValues.find(value)==mValues.end())
 	    {
 		symbol=new QgsMarkerSymbol();
-		ritemptr=new QgsRenderItem(symbol,"","");
+		ritemptr=new QgsRenderItem(symbol,value,"");
 		mValues.insert(std::make_pair(value,ritemptr));
 	    }
 	    delete f;

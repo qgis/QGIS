@@ -250,3 +250,13 @@ bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
     }
     return returnval;
 }
+
+const std::list<QgsRenderItem*> QgsGraduatedSymRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    for(std::list<QgsRangeRenderItem*>::const_iterator iter=mItems.begin();iter!=mItems.end();++iter)
+    {
+	list.push_back(*iter);
+    }
+    return list;
+}
