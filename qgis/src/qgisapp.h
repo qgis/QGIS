@@ -267,9 +267,10 @@ private slots:
     /*  void urlData(); */
 public slots:
     void showProgress(int theProgress, int theTotalSteps);
-    void showExtents(QString theExtents);
+    void showExtents(QgsRect theExtents);
     void showStatusMessage(QString theMessage);
     void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
+    void drawExtentRectangle(QPainter *);
 private:
     //! A central registry that keeps track of all loaded layers.
     QgsMapLayerRegistry * mMapLayerRegistry;

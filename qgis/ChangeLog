@@ -1,9 +1,19 @@
 QGIS Change Log
-ChangeLog,v 1.123 2004/06/10 23:10:16 timlinux Exp
+ChangeLog,v 1.124 2004/06/11 01:04:07 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-10 [gsherman] 0.3.0devel28
+** Added display of extent rectangle in the overview map. Current
+   implementation is not optimized (requires repaint of the overview canvas to
+   display updated rectangle)
+** Added acetate layer support to the map canvas. Currently there is only one
+   acetate object type - QgsAcetateRectangle, which inherits from
+   QgsAcetateObject. More acetate types will follow...
+
 2004-06-10 [ts] 0.3.0devel27
-** Modified projectio (serialisation and deserialisation of project files) to use maplayerregistry and not mapcanvas.
+** Modified projectio (serialisation and deserialisation of project files) to
+   use maplayerregistry and not mapcanvas.
 
 ** Implemented state handling of 'showInOverview' property in project io.
 2004-06-10 [petebr] 0.3.0devel26
