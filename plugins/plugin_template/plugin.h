@@ -39,23 +39,6 @@ class Plugin:public QObject, public QgisPlugin
        * @param qI Pointer to the QgisIface object. 
        */
       Plugin(QgisApp * , QgisIface * );
-  /**
-   * Virtual function to return the name of the plugin. The name will be used when presenting a list 
-   * of installable plugins to the user
-   */
-  virtual QString name();
-  /**
-   * Virtual function to return the version of the plugin. 
-   */
-  virtual QString version();
-  /**
-   * Virtual function to return a description of the plugins functions 
-   */
-  virtual QString description();
-  /**
-   * Return the plugin type
-   */
-  virtual int type();
   //! init the gui
   virtual void initGui();
   //! Destructor
@@ -73,14 +56,6 @@ class Plugin:public QObject, public QgisPlugin
   void help();
     private:
 
-
-  //! Name of the plugin
-  QString pluginNameQString;
-  //! Version
-  QString pluginVersionQString;
-  //! Descrption of the plugin
-  QString pluginDescriptionQString;
-  //! Plugin type as defined in QgisPlugin::PLUGINTYPE
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;

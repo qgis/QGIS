@@ -51,23 +51,7 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
 * @param qI Pointer to the QgisIface object. 
 */
     QgsPgGeoprocessing(QgisApp * qgis, QgisIface * qI);
-    /**
-	* Virtual function to return the name of the plugin. The name will be used when presenting a list 
-	* of installable plugins to the user
-	*/
-    virtual QString name();
-    /**
-	* Virtual function to return the version of the plugin. 
-	*/
-    virtual QString version();
-    /**
-	* Virtual function to return a description of the plugins functions 
-	*/
-    virtual QString description();
-    /**
-  * Return the plugin type
-  */
-    virtual int type();
+
     //! init the gui
     virtual void initGui();
     //! Destructor
@@ -94,14 +78,6 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
   bool gistAvailable;
   bool projAvailable;
   
-//! Name of the plugin
-      QString pName;
-    //! Version
-    QString pVersion;
-    //! Descrption of the plugin
-    QString pDescription;
-    //! Plugin type as defined in QgisPlugin::PLUGINTYPE
-    int ptype;
     //! Id of the plugin's menu. Used for unloading
     int menuId;
     //! Pointer to our toolbar
