@@ -19,23 +19,23 @@
     </message>
     <message>
         <source> metres/km</source>
-        <translation type="unfinished"></translation>
+        <translation>metros/km</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished"></translation>
+        <translation>pés</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>graus</translation>
     </message>
     <message>
         <source> metres</source>
-        <translation type="unfinished"></translation>
+        <translation>metros</translation>
     </message>
     <message>
         <source> km</source>
-        <translation type="unfinished"></translation>
+        <translation>km</translation>
     </message>
     <message>
         <source>Tick Down</source>
@@ -47,11 +47,11 @@
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Caixa</translation>
     </message>
 </context>
 <context>
@@ -341,35 +341,40 @@
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Informe seu texto de copyright abaixo. Este plugin suporta html básico para formatação do título. Por exemplo:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Texto negrito&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Itálico&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation type="unfinished">Alt+O</translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Cancelar</translation>
+        <translation>&amp;Cancelar</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished">Alt+C</translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <source>Enable North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar Rosa dos Ventos</translation>
     </message>
     <message>
         <source>Load GPX or LOC</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregar GPX ou LOC</translation>
     </message>
     <message>
         <source>Import other file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar outro arquivo</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -384,27 +389,37 @@ and a name for the new layer. All file formats can not store waypoints, routes, 
 tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS pode carregar arquivos GPX e LOC, mas é possível fazer a conversão de outros
+formatos para GPX utilizando o GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). Para isso, instale o GPSBabel onde o QGIS possa encontrá-lo.&lt;/p&gt;
+&lt;p&gt;Selecione um formato de arquivo de GPS, o arquivo que você deseja importar, o tipo
+de feição que deseja utilizar, o nome do arquivo GPX que deseja salvar os dados convertidos
+e um nome para a nova camada. Nenhum dos formatos pode armazenar waypoints, rotas e trilhas,
+por isso, algumas feições podem estar desabilitadas para determinados formatos.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>File to import:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo a ser importado:</translation>
     </message>
     <message>
         <source>Feature type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de feição:</translation>
     </message>
     <message>
         <source>GPX output file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo GPX de saída:</translation>
     </message>
     <message>
         <source>Layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome da camada:</translation>
     </message>
     <message>
         <source>Download from GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>Descarregar do GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -418,31 +433,42 @@ you want to store the data.&lt;/p&gt;
 don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Esta ferramenta o ajudará a descarregar os dados de um dispositivo de GPS. Escolha o tipo de
+protocolo, o dispositivo onde seu GPS está conectado, o tipo de feição que deseja utilizar,
+um nome para a nova camada e o nome do arquivo GPX que deseja utilizar para armazenar
+os dados convertidos.&lt;/p&gt;
+&lt;p&gt;Esta ferramente utiliza o programa GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) para transferir os dados. Se você
+não possui o GPSBabel instalado onde o QGIS possa encontrá-lo, esta ferramenta não irá funcionar
+corretamente.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Protocol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Protocolo:</translation>
     </message>
     <message>
         <source>Device file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositivo:</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo de saída:</translation>
     </message>
     <message>
         <source>Garmin</source>
-        <translation type="unfinished"></translation>
+        <translation>Garmin</translation>
     </message>
     <message>
         <source>Magellan</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Upload to GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregar no GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -454,23 +480,32 @@ GPS is connected to.&lt;/p&gt;
 have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Esta ferramente o ajudará a carregar dados de uma cadama GPX para um dispositivo GPS.
+Selecione a camada que deseja enviar, o protocolo que irá utilizar e o dispositivo onde seu 
+aparelho está conectado.&lt;/p&gt;
+&lt;p&gt;Esta ferramente utiliza o &lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;GPSBabel&lt;/a&gt; para transferir
+os dados. Se você não possui o GPSBabel instalado onde o QGIS possa encontrá-lo, esta
+ferramenta não funcionará corretamente.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Data layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de dados:</translation>
     </message>
     <message>
         <source>QGIS Http Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor Http do QGIS</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished">Aplicar</translation>
+        <translation>Aplicar</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Geral</translation>
+        <translation>Geral</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
@@ -482,63 +517,73 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:14pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Este plugin executa um servidor web simples (por padrão na porta 8081) que
+retorna requisições por mapas.&lt;/p&gt;
+&lt;p&gt;Especifique o nome do seu servidor utilizando o formato http://meudominio.com&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;NOTA: Este plugin é um código pré-alfa. Ele funciona de
+forma básica e ainda cheia de problemas e pode tornar o QGIS instável.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Server Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opções do Servidor:</translation>
     </message>
     <message>
         <source>Always start plugin with server enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre iniciar o plugin com o servidor habilitado</translation>
     </message>
     <message>
         <source>Enable Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar Servidor</translation>
     </message>
     <message>
         <source>Server Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do Servidor:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Porta:</translation>
     </message>
     <message>
         <source>Additional Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opções Adicionais:</translation>
     </message>
     <message>
         <source>Projects Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diretórios dos Projetos:</translation>
     </message>
     <message>
         <source>Default Project:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projeto Padrão:</translation>
     </message>
     <message>
         <source>Layers Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diretório das Camadas:</translation>
     </message>
     <message>
         <source>CSS File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo CSS:</translation>
     </message>
     <message>
         <source>Log File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo de Log:</translation>
     </message>
     <message>
         <source>Logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Logs</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <source>Scale Bar Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin de Barra de Escala</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -546,55 +591,62 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
 &lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Este plugin desenha uma barra de escala no mapa. Note que a opção do tamanho
+abaixo está definida como &quot;preferred&quot; e pode ter que ser alterada pelo QGIS dependendo
+do nível de zoom. O tamanho é medido de acordo com as unidades especificadas no mapa
+nas propriedades do projeto.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Size of bar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho da barra:</translation>
     </message>
     <message>
         <source>Select Colour</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar Cor</translation>
     </message>
     <message>
         <source>Placement:</source>
-        <translation type="unfinished"></translation>
+        <translation>Posicionamento:</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Caixa</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra</translation>
     </message>
     <message>
         <source>Select the style of the scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecione o estilo da barra de escala</translation>
     </message>
     <message>
         <source>Colour of bar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor da barra:</translation>
     </message>
     <message>
         <source>Scale bar style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo da barra de escala:</translation>
     </message>
     <message>
         <source>Enable scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar barra de escala</translation>
     </message>
     <message>
         <source>Automatically snap to round number on resize</source>
-        <translation type="unfinished"></translation>
+        <translation>Arredondar números automaticamente ao redimensionar</translation>
     </message>
 </context>
 <context>
@@ -896,7 +948,7 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
-        <translation type="unfinished"></translation>
+        <translation>Site: http://qgis.org</translation>
     </message>
 </context>
 <context>
@@ -1239,215 +1291,215 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Arquivo</translation>
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Camada</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exibir</translation>
     </message>
     <message>
         <source>&amp;Open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir &amp;Projeto</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Add a &amp;PostGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar uma camada Post&amp;GIS</translation>
     </message>
     <message>
         <source>&amp;Refresh </source>
-        <translation type="unfinished"></translation>
+        <translation>Atuali&amp;zar</translation>
     </message>
     <message>
         <source>Zoom to &amp;full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom para extent &amp;total</translation>
     </message>
     <message>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Aumentar Zoom</translation>
     </message>
     <message>
         <source>Zoom &amp;Out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Diminuir Zoom</translation>
     </message>
     <message>
         <source>&amp;Zoom to selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom nas feições S&amp;elecionadas</translation>
     </message>
     <message>
         <source>I&amp;dentify</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Identificar</translation>
     </message>
     <message>
         <source>Add a &amp;Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar uma cada &amp;Vetorial</translation>
     </message>
     <message>
         <source>&amp;Attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela de A&amp;tributos</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Anterior</translation>
     </message>
     <message>
         <source>Zoom to &amp;previous extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom para o extent &amp;anterior</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferência&amp;s</translation>
     </message>
     <message>
         <source>&amp;Save Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar &amp;Projeto</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save Project &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar Projeto &amp;Como...</translation>
     </message>
     <message>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo Projeto</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Novo Projeto</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Plugin &amp;Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gerenciador de Plugins</translation>
     </message>
     <message>
         <source>Check QGIS &amp;Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Checar por Versão do &amp;QGIS</translation>
     </message>
     <message>
         <source>Export As Mapserver file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar para Mapserver</translation>
     </message>
     <message>
         <source>Export As &amp;Mapserver file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar para &amp;Mapserver</translation>
     </message>
     <message>
         <source>Add a &amp;Raster Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar camada &amp;Raster</translation>
     </message>
     <message>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar como Imagem</translation>
     </message>
     <message>
         <source>E&amp;xport As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar como Image&amp;m</translation>
     </message>
     <message>
         <source>&amp;Whats this?</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;O que é isto?</translation>
     </message>
     <message>
         <source>Shift+F1</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+F1</translation>
     </message>
     <message>
         <source>Project &amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propriedades do Projeto</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">Propriedades</translation>
+        <translation>Propriedades</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation type="unfinished">&amp;Propriedades</translation>
+        <translation>&amp;Propriedades</translation>
     </message>
     <message>
         <source>Properties for the selected layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedades da camada selecionada</translation>
     </message>
     <message>
         <source>Zoom to layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom na camada</translation>
     </message>
     <message>
         <source>Zoom to &amp;layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom na &amp;camada</translation>
     </message>
     <message>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Im&amp;primir</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <source>Capture Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Capturar Ponto</translation>
     </message>
     <message>
         <source>Add All To Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar tudo para o Overview</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <source>Remove All From Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover tudo do Overview</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar Todas as Camadas</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar Todas as Camadas</translation>
     </message>
     <message>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
 </context>
 <context>
@@ -1655,7 +1707,7 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1753,15 +1805,15 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation type="unfinished">Conexões PostgreSQL </translation>
+        <translation>Conexões PostgreSQL </translation>
     </message>
     <message>
         <source>Where Clause:</source>
-        <translation type="unfinished"></translation>
+        <translation>Condição Where:</translation>
     </message>
     <message>
         <source>Tables:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelas:</translation>
     </message>
 </context>
 <context>
@@ -1919,35 +1971,35 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Ajuda</translation>
+        <translation>&amp;Ajuda</translation>
     </message>
     <message>
         <source>Alt+H</source>
-        <translation type="unfinished">Alt+H</translation>
+        <translation>Alt+H</translation>
     </message>
     <message>
         <source>&amp;Parse</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xtrair</translation>
     </message>
     <message>
         <source>Alt+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+P</translation>
     </message>
     <message>
         <source>&amp;Add Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Adicionar Camada</translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation type="unfinished">Alt+A</translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Fechar</translation>
+        <translation>&amp;Fechar</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished">Alt+C</translation>
+        <translation>Alt+C</translation>
     </message>
 </context>
 <context>
@@ -2362,7 +2414,7 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Fechar</translation>
+        <translation>Fechar</translation>
     </message>
 </context>
 <context>
@@ -2831,67 +2883,67 @@ identificando feições sem executar um zoom muito perto.
     </message>
     <message>
         <source>&amp;Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apa&amp;rência</translation>
     </message>
     <message>
         <source>&amp;Splash Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Tela de &amp;Abertura</translation>
     </message>
     <message>
         <source>&amp;Icon Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Ícone &amp;Tema</translation>
     </message>
     <message>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt;Mudanças no tema somente terão efeito na próxima vez que o QGIS for iniciado</translation>
     </message>
     <message>
         <source>Help &amp;Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Navegador de Ajuda</translation>
     </message>
     <message>
         <source>Open help documents with</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir ajuda com</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Nota:&lt;/b&gt; O navegador deve estar em seu PATH ou você pode &lt;br&gt;especificar seu caminho completo abaixo</translation>
     </message>
     <message>
         <source>&amp;Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Renderizar</translation>
     </message>
     <message>
         <source>&amp;Update During Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Atuali&amp;zar Durante o Desenho</translation>
     </message>
     <message>
         <source>Update display after reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizar tela após renderizar</translation>
     </message>
     <message>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
-        <translation type="unfinished"></translation>
+        <translation>A visualização do mapa será atualizada (desenhada) após este número de feições ter sido lido</translation>
     </message>
     <message>
         <source>features</source>
-        <translation type="unfinished"></translation>
+        <translation>feições</translation>
     </message>
     <message>
         <source>(Set to 0 to not update the display until all features have been read)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Defina 0 para não atualizar a visualização até que todas as feições tenham sido lidas)</translation>
     </message>
     <message>
         <source>&amp;Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Seleção</translation>
     </message>
     <message>
         <source>Search Radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Raio da Pesquisa</translation>
     </message>
     <message>
         <source>&lt;html&gt;
@@ -2901,7 +2953,14 @@ identificando feições sem executar um zoom muito perto.
 By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Especifique o valor em múltiplos de 1000. O raio da pesquisa é calculado na forma:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Largura do mapa) * ( Valor/1000.0)&lt;/i&gt;
+&lt;br&gt;
+Por padrão o QGIS utilizar o valor 5. Aumente este valor se desejar identificar
+feições sem aumentar o zoom na camada.
+&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -3175,75 +3234,75 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Data Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de Dados:</translation>
     </message>
     <message>
         <source>GDT_Byte - Eight bit unsigned integer</source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Byte - Inteiro de 8 bits sem sinal</translation>
     </message>
     <message>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_UInt16 - Inteiro de 16 bits sem sinal</translation>
     </message>
     <message>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Int16 - Inteiro de 16 bits</translation>
     </message>
     <message>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_UInt32 - Inteiro de 32 bits sem sinal</translation>
     </message>
     <message>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Int32 - Inteiro de 32 bits</translation>
     </message>
     <message>
         <source>GDT_Float32 - Thirty two bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Float32 - Ponto flutuante de 32 bits</translation>
     </message>
     <message>
         <source>GDT_Float64 - Sixty four bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_Float64 - Ponto flutuante de 64 bits</translation>
     </message>
     <message>
         <source>GDT_CInt16 - Complex Int16 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CInt16 - Inteiro complexo de 16 bits</translation>
     </message>
     <message>
         <source>GDT_CInt32 - Complex Int32 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CInt32 - Inteiro complexo de 32 bits</translation>
     </message>
     <message>
         <source>GDT_CFloat32 - Complex Float32 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CFloat32 - Ponto flutuante complexo de 32 bits</translation>
     </message>
     <message>
         <source>GDT_CFloat64 - Complex Float64 </source>
-        <translation type="unfinished"></translation>
+        <translation>GDT_CFloat64 - Ponto flutuante complexto de 64 bits</translation>
     </message>
     <message>
         <source>Could not determine raster data type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível determinar o tipo de dados do raster.</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;center&gt;&lt;b&gt;Camada Raster&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
         <source>Show In &amp;Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir no &amp;Overview</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;center&gt;&lt;b&gt;Transparência&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
         <source>Average Magphase</source>
-        <translation type="unfinished">Magphase Média</translation>
+        <translation>Magphase Média</translation>
     </message>
     <message>
         <source>Average</source>
-        <translation type="unfinished">Média</translation>
+        <translation>Média</translation>
     </message>
 </context>
 <context>
@@ -3286,11 +3345,11 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Colunas:</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linhas:</translation>
     </message>
 </context>
 <context>
@@ -3538,26 +3597,29 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Pré-Visualização</translation>
     </message>
     <message>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Colunas:</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linhas:</translation>
     </message>
     <message>
         <source>Palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notas&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
@@ -3566,7 +3628,12 @@ identifying features without zooming in very close.
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Camadas raster de alta resolução podem ter uma navegação lenta no QGIS. Ao criar cópias dos dados em resoluções menores (pirâmides) a porformance pode ser melhorada consideravelmente uma vez que o QGIS selecionará a resolução mais adequada dependendo do nível de zoom que estiver utilizando. Você deve ter permissão de escrita no diretório onde estão os dados originais a fim de construir as pirâmides. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Note também que utilizar pirâmides pode alterar o arquivo de dados original e, uma vez criadas, não como removê-las.&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -3628,15 +3695,15 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Preenchimento</translation>
     </message>
 </context>
 <context>
@@ -3727,71 +3794,71 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Shapefile to PostGIS Import Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramenta de importação de Shapefile para PostGIS</translation>
     </message>
     <message>
         <source>Import the defined shapefiles to PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar os shapefiles selecionados para PostGIS</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Fechar</translation>
+        <translation>Fechar</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Adicionar</translation>
+        <translation>Adicionar</translation>
     </message>
     <message>
         <source>Add a shapefile to the list of files to be imported</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar um shapefile para a lista de arquivos a serem importados</translation>
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover o shapefile selecionado da lista de importação</translation>
     </message>
     <message>
         <source>Remove all the shapefiles from the import list</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover todos os shapefiles da lista de importação</translation>
     </message>
     <message>
         <source>Use Default SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizar SRID Padrão</translation>
     </message>
     <message>
         <source>Set the SRID to the default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Definir o SRID para valor padrão</translation>
     </message>
     <message>
         <source>Use Default Geometry Column Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizar o Nome da Coluna de Geometria Padrão</translation>
     </message>
     <message>
         <source>Set the geometry column name to the default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Definir o nome da coluna de geometria como valor padrão</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished">Novo</translation>
+        <translation>Novo</translation>
     </message>
     <message>
         <source>Create a new PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar uma nova conexão PostGIS</translation>
     </message>
     <message>
         <source>Remove the current PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover a atual conexão PostGIS</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">Conectar</translation>
+        <translation>Conectar</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Editar</translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <source>Edit the current PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar a conexão PostGIS atual</translation>
     </message>
 </context>
 <context>
@@ -3826,11 +3893,11 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;center&gt;&lt;b&gt;Camada Vetorial&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
         <source>Show In &amp;Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar no &amp;Overview</translation>
     </message>
 </context>
 <context>
@@ -3891,7 +3958,7 @@ identifying features without zooming in very close.
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
-        <translation type="unfinished">Quantum GIS -</translation>
+        <translation>Quantum GIS -</translation>
     </message>
 </context>
 </TS>
