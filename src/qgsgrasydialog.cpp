@@ -29,9 +29,10 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
+#include "qscrollview.h"
+#include <qlayout.h>
 
-
-QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext(0), m_vectorlayer(layer)
+QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext(0), scv(0), m_vectorlayer(layer)
 {
     QObject::connect(numberofclassesspinbox,SIGNAL(valueChanged(int)),this,SLOT(adjustNumberOfClasses()));
     QObject::connect(classificationComboBox,SIGNAL(activated(int)),this,SLOT(adjustNumberOfClasses()));
@@ -91,10 +92,6 @@ QgsGraSyDialog::~QgsGraSyDialog()
 
 void QgsGraSyDialog::adjustNumberOfClasses()
 {
-    showExtension(false);
-
-    hide();
-
     //find out the number of the classification field
     QString fieldstring=classificationComboBox->currentText();
 
@@ -116,10 +113,24 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     {
 	ext=new QgsGraSyExtensionWidget(this,field,QgsGraSyDialog::EQUAL_INTERVAL,numberofclassesspinbox->value(),m_vectorlayer);
     }
-    show();
 
-    setExtension(ext);
-    showExtension(true);
+    if(scv)
+    {
+	QgsGraSyDialogBaseLayout->remove(scv);
+	delete scv;
+    }
+
+    if(numberofclassesspinbox->value()==0)
+    {
+	scv=0;
+	return;
+    }
+
+    scv=new QScrollView(this);
+    scv->addChild(ext);
+
+    QgsGraSyDialogBaseLayout->addMultiCellWidget(scv,5,5,0,3);
+    scv->show();
     
 }
 
@@ -131,24 +142,51 @@ void QgsGraSyDialog::apply() const
 	{
 	    return;
 	}
-	
-//create the pixmap for the render item
+
+	//font tor the legend text
+	//TODO Make the font a user option
+	QFont f( "times", 12, QFont::Normal );
+	QFontMetrics fm(f);
+
+	//spaces
+	int topspace=5;
+	int bottomspace=5;
+	int leftspace=10;//space between left side of the pixmap and the text/graphics
+	int rightspace=5;//space between text/graphics and right side of the pixmap
+	int wordspace=5;//space between graphics/word
+	int symbolheight=15;//height of an area where a symbol is painted
+	int symbolwidth=15;//width of an area where a symbol is painted
+	int rowspace=5;//spaces between rows of symbols
+	int rowheight=(fm.height()>symbolheight)?fm.height():symbolheight;//height of a row in the symbology part
+	//find out the width of the widest label
+	QString widestlabel="";
+	for(int i=0;i<numberofclassesspinbox->value();i++)
+	{
+	    QString string=((QLineEdit*)(ext->getWidget(2,i)))->text();
+	    if(string.length()>widestlabel.length())
+	    {
+		widestlabel=string;
+	    }
+	}
+	int labelwidth=fm.width(widestlabel);
+
+        //create the pixmap for the render item
 	QPixmap* pix=m_vectorlayer->legendPixmap();
 	QString name=displaynamefield->text();
 	//query the name and the maximum upper value to estimate the necessary width of the pixmap (12 pixel width per letter seems to be appropriate)
-	int pixwidth=90+((QLineEdit*)(ext->getWidget(1,numberofclassesspinbox->value()-1)))->text().length()*2*12;//width of the pixmap with symbol and values
+	int pixwidth=leftspace+rightspace+symbolwidth+2*wordspace+labelwidth+fm.width(((QLineEdit*)(ext->getWidget(1,numberofclassesspinbox->value()-1)))->text()+" - "+((QLineEdit*)(ext->getWidget(0,numberofclassesspinbox->value()-1)))->text());//width of the pixmap with symbol and values
 	//consider 240 pixel for labels
-	int pixpluswidth=pixwidth+240;
-	int namewidth=45+name.length()*12;
-	int width=(pixpluswidth>namewidth) ? pixpluswidth : namewidth;
-	pix->resize(width,70+35*numberofclassesspinbox->value());
+	int namewidth=leftspace+fm.width(name)+rightspace;
+	int width=(pixwidth>namewidth) ? pixwidth : namewidth;
+	pix->resize(width,topspace+2*fm.height()+bottomspace+(rowheight+rowspace)*numberofclassesspinbox->value());
 	pix->fill();
 	QPainter p(pix);
+	p.setFont(f);
 
 	//draw the layer name and the name of the classification field into the pixmap
-	p.drawText(45,35,name);
+	p.drawText(leftspace,topspace+fm.height(),name);
 	m_vectorlayer->setlayerName(name);
-	p.drawText(45,70,classificationComboBox->currentText());
+	p.drawText(leftspace,topspace+2*fm.height(),classificationComboBox->currentText());
 
 	QgsGraduatedSymRenderer* renderer=dynamic_cast<QgsGraduatedSymRenderer*>(m_vectorlayer->renderer());
 	if(!renderer)
@@ -156,8 +194,11 @@ void QgsGraSyDialog::apply() const
 	    qWarning("Warning, typecast failed in QgsGraSyDialog::apply()");
 	    return;
 	}
-	
+
 	renderer->removeItems();
+
+	int offset=topspace+2*fm.height();
+	int rowincrement=rowheight+rowspace;
 
 	for(int i=0;i<numberofclassesspinbox->value();i++)
 	{
@@ -188,13 +229,13 @@ void QgsGraSyDialog::apply() const
 	    else if (m_vectorlayer->vectorType()==QGis::Point)
 	    {
 		sy.brush().setStyle(Qt::SolidPattern);
-	    } 
+	    }
 
 	    QString lower_bound=((QLineEdit*)(ext->getWidget(0,i)))->text();
 	    QString upper_bound=((QLineEdit*)(ext->getWidget(1,i)))->text();
 	    QString label=((QLineEdit*)(ext->getWidget(2,i)))->text();
 
-	    //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution) 
+	    //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
 	    bool lbcontainsletter=false;
 	    for(uint j=0;j<lower_bound.length();j++)
 	    {
@@ -217,31 +258,31 @@ void QgsGraSyDialog::apply() const
 	    if(lbcontainsletter==false&&ubcontainsletter==false&&lower_bound.length()>0&&upper_bound.length()>0)//only add the item if the value bounds do not contain letters and are not null strings
 	    {
 		QgsRangeRenderItem* item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, ((QLineEdit*)(ext->getWidget(2,i)))->text());
-	
+
 		renderer->addItem(item);
 		//add the symbol to the picture
-	    
+
 		QString legendstring=lower_bound+" - "+upper_bound;
 		p.setPen(sy.pen());
 		p.setBrush(sy.brush());
 		if(m_vectorlayer->vectorType()==QGis::Polygon)
 		{
-		    p.drawRect(10,70+5+30*i,30,20);//implement different painting for lines and points here
+		    p.drawRect(leftspace,offset+rowincrement*i+(rowheight-symbolheight),symbolwidth,symbolheight);//implement different painting for lines and points here
 		}
 		else if(m_vectorlayer->vectorType()==QGis::Line)
 		{
-		    p.drawLine(10,70+5+30*i+10,40,70+5+30*i+10);
+		    p.drawLine(leftspace,offset+rowincrement*i+(rowheight-symbolheight),leftspace+symbolwidth,offset+rowincrement*i+rowheight);
 		}
 		else if(m_vectorlayer->vectorType()==QGis::Point)
 		{
-		    p.drawRect(25,70+5+30*i+10,5,5);
+		    p.drawRect(leftspace+symbolwidth/2,offset+(int)(rowincrement*(i+0.5)),5,5);
 		}
 		p.setPen(Qt::black);
-		p.drawText(45,70+25+30*i,legendstring);
-		p.drawText(pixwidth+10,70+25+30*i,label);
+		p.drawText(leftspace+symbolwidth+wordspace,offset+rowincrement*i+rowheight,legendstring);
+		p.drawText(pixwidth-labelwidth-rightspace,offset+rowincrement*i+rowheight,label);
 	    }
 	}
-	
+
 	renderer->setClassificationField(ext->classfield());
 
 	m_vectorlayer->triggerRepaint();
