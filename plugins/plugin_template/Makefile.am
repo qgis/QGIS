@@ -50,10 +50,10 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 
 lib[pluginname]plugin_la_LIBADD = $(QT_LDADD)
 lib[pluginname]plugin_la_LDFLAGS = -avoid-version -module
+lib[pluginname]plugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm
 
