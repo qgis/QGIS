@@ -18,6 +18,9 @@
 #include <qframe.h>
 #include <qcolordialog.h>
 #include <qpushbutton.h>
+#include <qlineedit.h>
+#include <qstring.h>
+#include <qlabel.h>
 #include "qgsmaplayer.h"
 #include "qgssymbol.h"
 #include "qgslayerproperties.h"
@@ -25,6 +28,12 @@
 QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 {
 	// populate the property sheet based on the layer properties
+	// general info
+	QString source = lyr->source();
+	source = source.left(source.find("password"));
+	lblSource->setText(source);
+	txtDisplayName->setText(lyr->name());
+	//symbology
 	sym = layer->symbol();
 
 	btnSetColor->setPaletteBackgroundColor(sym->color());
@@ -38,7 +47,7 @@ QgsLayerProperties::~QgsLayerProperties()
 }
 void QgsLayerProperties::selectFillColor()
 {
-
+	
 	QColor fc = QColorDialog::getColor(sym->fillColor(), this);
 	if (fc.isValid()) {
 		
@@ -54,4 +63,8 @@ void QgsLayerProperties::selectOutlineColor()
 		btnSetColor->setPaletteBackgroundColor(oc);
 		sym->setColor(oc);
 	}
+}
+
+QString QgsLayerProperties::displayName(){
+	return txtDisplayName->text();
 }

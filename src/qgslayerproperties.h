@@ -20,6 +20,7 @@
 #define QGSLAYERPROPERTIES_H
 class QgsMapLayer;
 class QgsSymbol;
+class QString;
 #include "qgslayerpropertiesbase.h"
 
 
@@ -38,6 +39,8 @@ public:
 	void selectFillColor();
 	//! Function to display the color selector and choose the outline color
 	void selectOutlineColor();
+	//! Name to display in legend
+	QString displayName();
 private:
 	QgsMapLayer *layer;
 	QgsSymbol *sym;
