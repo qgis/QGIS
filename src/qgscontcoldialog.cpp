@@ -139,8 +139,16 @@ void QgsContColDialog::apply()
     }
     QgsRenderItem* maximumitem=new QgsRenderItem(maxsymbol,QString::number(maximum,'f')," ");
 
-    //set the render items to the buffer renderer of the property dialog
-    QgsContinuousColRenderer* renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+    //set the render items to the buffer renderer of the property dialog (if there is one)
+    QgsContinuousColRenderer* renderer;
+    if(m_vectorlayer->propertiesDialog())
+    {
+	renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+    }
+    else
+    {
+	renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->renderer());
+    }
 
     if(renderer)
     {
@@ -210,7 +218,10 @@ void QgsContColDialog::apply()
 
     m_vectorlayer->setRenderer(renderer);
     m_vectorlayer->setRendererDialog(this);
-    m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+    if(m_vectorlayer->propertiesDialog())
+    {
+	m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+    }
 
     m_vectorlayer->triggerRepaint();
 }
