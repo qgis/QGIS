@@ -24,7 +24,7 @@
 
 
 GPSPoint::GPSPoint() {
-  ele = DOUBLE_NA;
+  ele = -std::numeric_limits<double>::max();
 }
 
 
