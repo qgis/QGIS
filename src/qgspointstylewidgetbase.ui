@@ -1,0 +1,181 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsPointStyleWidgetBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QgsPointStyleWidgetBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>178</width>
+            <height>326</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form3</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>grpSymbol</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Symbol Style</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>txtSymbol</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Symbol</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="2">
+                    <property name="name">
+                        <cstring>txtSymbolScale</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Scale</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="2">
+                    <property name="name">
+                        <cstring>spbSymbolScale</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>42</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <spacer row="3" column="1">
+                    <property name="name">
+                        <cstring>spcSymbol</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Fixed</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>30</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton" row="3" column="0">
+                    <property name="name">
+                        <cstring>colSymbolFirstColour</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>50</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>col</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>txtSymbolColour</cstring>
+                    </property>
+                    <property name="acceptDrops">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Colour</string>
+                    </property>
+                </widget>
+                <widget class="QIconView" row="1" column="0" rowspan="1" colspan="3">
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap>image0</pixmap>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap>image0</pixmap>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap>image0</pixmap>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap>image0</pixmap>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap>image0</pixmap>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>New Item</string>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap>image0</pixmap>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>iconView1</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="512">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000001c7494441545885bd973d92c2201cc51f8e87d8220547b04e13ca141e20ce6c61e989ac2d76460f6091121ace41e13dd82212012181047d334e4824bedffff19148a49430aaeb5a9bb69492e00bdafa17b8e6030c19603e0d42a4944ee5e0006ff878ca08c3274136a6a1b546d775001b4c99188cb9e6e09aa3ae6bed8016d29880d6afdf3e1c0eb8dd6ec3099f4ec440ed763b9ccfe7ec948200392066ce84e05603a480849403b299eb0000d7eb353a4742b25399d364024208344d0321040040a90700e078fc053c8f502a8cb0d914261330e64dd3000028ad40693526e19809367e7214043015db0918080068dbfd0be2e9c7ecf613c42cdf6c00dbd48631a2b4c2e974c2e5f23782fc74dd1b548a9c39e057ec434c49a90728ada0d4037d7f1f560d7f7ec9e22bc24960aef290a96f4e69e50ed18c1c80d898c7649bdac71c8d006b2bb7af2f02585bf9523909d8c790722b67390029caad9ce70028f588565272cca3007d7f47dfdf832025c7dcd7161836097fcb6cdb7dd01c2853b903602000bceddd0664e93a4f064801296d1e044801f90ac0b74066014a8198fbfca76232c0a740b2014a824829c962803990d4fb5603c440baae9bec6744ecbfe725e527127b25fb07931f90f4a06dcb260000000049454e44ae426082</data>
+    </image>
+</images>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
