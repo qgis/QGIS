@@ -1394,6 +1394,27 @@ void QgisApp::fileSaveAs()
   delete pio;
   projectIsDirty = false;
 }
+void QgisApp::saveMapAsImage()
+{
+  //prompt the user for a filename
+  QString myOutputFileNameQString = QFileDialog::getSaveFileName(
+          ".",
+          "PNG Files (*.png)",
+          this,
+          "save file dialog"
+          "Choose a filename to save the map image as" );
+  if ( myOutputFileNameQString=="")
+  {
+    //no filename chosen
+    return;
+  }
+  else
+  {
+    //save the mapview to the selected file
+    mapCanvas->saveAsImage(myOutputFileNameQString);
+  }
+
+}
 bool QgisApp::addProject(QString projectFile)
 {
   // adds a saved project to qgis, usually called on startup by

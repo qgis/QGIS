@@ -194,6 +194,8 @@ private:
 	void fileSave();
 	//! Save project as
 	void fileSaveAs();
+        //! Save the map view as an image
+	void saveMapAsImage();
 	//! Open a project
 	void fileOpen();
 	//! Create a new project
