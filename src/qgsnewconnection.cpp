@@ -18,6 +18,7 @@
 #include <qsqldatabase.h>
 #include <qsettings.h>
 #include <qlineedit.h>
+#include <qcheckbox.h>
 #include <qmessagebox.h>
 #include "libpq++.h"
 #include "qgsnewconnection.h"
@@ -71,8 +72,13 @@ void QgsNewConnection::saveConnection()
 	baseKey += txtName->text();
 	settings.writeEntry(baseKey + "/host", txtHost->text());
 	settings.writeEntry(baseKey + "/database", txtDatabase->text());
+
 	settings.writeEntry(baseKey + "/username", txtUsername->text());
-	settings.writeEntry(baseKey + "/password", txtPassword->text());
+	if (chkStorePassword->isChecked()) {
+		settings.writeEntry(baseKey + "/password", txtPassword->text());
+	} else{
+        settings.writeEntry(baseKey + "/password", "");
+    }
 
-
+  accept();
 }
