@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.56 2004/04/17 09:04:37 timlinux Exp
+ChangeLog,v 1.57 2004/04/17 22:07:12 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-18 [jobi] 0.1.0devel33
+** Added internationalisations stuff
+   Needs some documentation and more translations :-)
 
 2004-04-17 [ts] 0.1.0devel32
 ** Fix for crash when opening singleband grayscale images introduced by Steves

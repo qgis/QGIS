@@ -20,7 +20,7 @@ EXTRA_DIST = doc \
 	qgis.spec \
 	qgsconfig.h.in
 
-SUBDIRS = src providers plugins doc tools
+SUBDIRS = src providers plugins doc tools i18n
 
 pkginclude_HEADERS = qgsconfig.h
 
