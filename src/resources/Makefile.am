@@ -12,7 +12,7 @@
 
  resourcedir = ${pkgdatadir}/resources
 
- resource_DATA = *.jpg
+ resource_DATA = wkt_defs.txt
 
  EXTRA_DIST = $(resource_DATA)
  
