@@ -4,7 +4,7 @@
 <document>
 	<header>
 		<title>QGIS Installation Guide</title>
-		<subtitle>For Version 0.1 Pre1 <em>Moroz</em></subtitle>
+		<subtitle>For Version 0.1 <em>Moroz</em></subtitle>
 		<authors>
 			<person name="Gary E. Sherman" email="sherman at mrcc.com"/>
       <person name="Tim Sutton" email="tim at linfiniti.com"/>
@@ -16,7 +16,7 @@
 			<p>
     
    This document briefly describes how to build QGIS from the source distribution. 
-   The information below is for <strong>version 0.1 Pre1 <em>Moroz</em></strong> of QGIS.  </p>
+   The information below is for <strong>version 0.1 <em>Moroz</em></strong> of QGIS.  </p>
    <note>The latest version of this document can always be found at <link href="http://qgis.sourceforge.net/docs/install.html">
    http://qgis.sourceforge.net/docs/install.html
 </link></note>
