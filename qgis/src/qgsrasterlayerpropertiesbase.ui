@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>636</width>
-            <height>456</height>
+            <height>458</height>
         </rect>
     </property>
     <property name="caption">
@@ -424,20 +424,12 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>lblLayerSource</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Layer Source:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="5">
+                    <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="2">
                         <property name="name">
                             <cstring>leDisplayName</cstring>
                         </property>
                     </widget>
-                    <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="5">
+                    <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="2">
                         <property name="name">
                             <cstring>leLayerSource</cstring>
                         </property>
@@ -445,7 +437,7 @@
                             <bool>false</bool>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
                         <property name="name">
                             <cstring>lblDisplayName</cstring>
                         </property>
@@ -453,29 +445,7 @@
                             <string>Display Name:</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="4" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>lblDisplayName_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Legend:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="5">
-                        <property name="name">
-                            <cstring>pixmapLegend</cstring>
-                        </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>0</width>
-                                <height>10</height>
-                            </size>
-                        </property>
-                        <property name="scaledContents">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox" row="6" column="0" rowspan="1" colspan="5">
+                    <widget class="QCheckBox" row="0" column="1">
                         <property name="name">
                             <cstring>cboxShowDebugInfo</cstring>
                         </property>
@@ -483,132 +453,189 @@
                             <string>Show debug info as overlay on raster?</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="7" column="2">
+                    <widget class="QLabel" row="0" column="0">
                         <property name="name">
-                            <cstring>lblColumns</cstring>
+                            <cstring>lblLayerSource</cstring>
                         </property>
                         <property name="text">
-                            <string>&lt;p align="center"&gt;Columns: &lt;/p&gt;</string>
+                            <string>Layer Source:</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="8" column="2">
+                    <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="2">
                         <property name="name">
-                            <cstring>pixmapThumbnail</cstring>
+                            <cstring>layout2</cstring>
                         </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>120</width>
-                                <height>120</height>
-                            </size>
-                        </property>
-                        <property name="frameShape">
-                            <enum>StyledPanel</enum>
-                        </property>
-                        <property name="scaledContents">
-                            <bool>true</bool>
-                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>groupBox10</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Thumbnail</string>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>lblColumns</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Columns:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
+                                        <property name="name">
+                                            <cstring>lblNoData</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>No Data:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>lblRows</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Rows:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="4" column="0">
+                                        <property name="name">
+                                            <cstring>pixmapThumbnail</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>120</width>
+                                                <height>120</height>
+                                            </size>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>StyledPanel</enum>
+                                        </property>
+                                        <property name="scaledContents">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                    <spacer row="3" column="0">
+                                        <property name="name">
+                                            <cstring>spacer17</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Vertical</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>20</width>
+                                                <height>31</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </grid>
+                            </widget>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>groupBox9</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Legend:</string>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>pixmapLegend</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>120</width>
+                                                <height>120</height>
+                                            </size>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>Box</enum>
+                                        </property>
+                                        <property name="scaledContents">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                    <spacer row="0" column="0">
+                                        <property name="name">
+                                            <cstring>spacer15</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Vertical</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>20</width>
+                                                <height>71</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </grid>
+                            </widget>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>groupBox8</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Palette:</string>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>pixmapPalette</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>120</width>
+                                                <height>120</height>
+                                            </size>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>Box</enum>
+                                        </property>
+                                        <property name="scaledContents">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                    <spacer row="0" column="0">
+                                        <property name="name">
+                                            <cstring>spacer14</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Vertical</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>20</width>
+                                                <height>61</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </grid>
+                            </widget>
+                        </hbox>
                     </widget>
-                    <widget class="QLabel" row="8" column="1">
-                        <property name="name">
-                            <cstring>lblRows</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&lt;p align="right"&gt;Rows: &lt;/p&gt;</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="8" column="3">
-                        <property name="name">
-                            <cstring>lblNoData</cstring>
-                        </property>
-                        <property name="text">
-                            <string>No Data:</string>
-                        </property>
-                    </widget>
-                    <spacer row="7" column="3">
-                        <property name="name">
-                            <cstring>spacer6</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>81</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="7" column="1">
-                        <property name="name">
-                            <cstring>spacer7</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>121</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="8" column="4">
-                        <property name="name">
-                            <cstring>spacer8</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>41</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="8" column="0">
-                        <property name="name">
-                            <cstring>spacer9</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>21</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="9" column="2">
-                        <property name="name">
-                            <cstring>spacer2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>21</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
                 </grid>
             </widget>
             <widget class="QWidget">

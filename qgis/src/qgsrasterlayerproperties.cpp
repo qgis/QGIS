@@ -59,8 +59,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
   txtbMetadata->setText(rasterLayer->getMetadata());
   //tabSymbology->removePage(tabMetadata);
   //display the raster dimensions and no data value
-  lblColumns->setText(tr("<p align=\"center\">Columns:") + QString::number(rasterLayer->getRasterXDim()) + "</p>");
-  lblRows->setText(tr("<p align=\"right\">Rows:") + QString::number(rasterLayer->getRasterYDim()) + "</p>");
+  lblColumns->setText(tr("Columns:") + QString::number(rasterLayer->getRasterXDim()));
+  lblRows->setText(tr("Rows:") + QString::number(rasterLayer->getRasterYDim()));
   lblNoData->setText(tr("No Data:") + QString::number(rasterLayer->getNoDataValue()));
   //these properties (layername and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText(rasterLayer->source());
@@ -73,6 +73,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
   pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
   pixmapLegend->repaint(false);
+
+  //set the palette pixmap
+  pixmapPalette->setPixmap(rasterLayer->getPaletteAsPixmap());
+  pixmapPalette->setScaledContents(true);
+  pixmapPalette->repaint(false);
 
   //set the transparency slider
   sliderTransparency->setValue(255 - rasterLayer->getTransparency());
