@@ -400,6 +400,9 @@ QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
 
 void QgsLabel::readXML( const QDomNode& node )
 {
+#if QGISDEBUG
+  std::cout << "readXML called for layer label properties \n" << std::endl;
+#endif
     //QDomNode nd;
     QDomElement el;
     int red, green, blue;
@@ -486,7 +489,7 @@ void QgsLabel::readXML( const QDomNode& node )
     setLabelField ( BufferSize, el.attribute("field") );
 
     el = node.namedItem("bufferenabled").toElement();
-    mLabelAttributes->setItalic ( (bool)el.attribute("on").toInt() );
+    mLabelAttributes->setBufferEnabled ( (bool)el.attribute("on").toInt() );
     setLabelField ( BufferEnabled, el.attribute("field") );
 }
 
