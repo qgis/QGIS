@@ -87,7 +87,7 @@ class QgsVectorLayer:public QgsMapLayer
 	QgsVectorLayerProperties* propertiesDialog();
 	/** Return the context menu for the layer */
 	QPopupMenu *contextMenu();
-  	/**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds DBL_MIN*/
+  	/**Returns the bounding box of the selected features. If there is no selection, the lower bounds are DBL_MAX and the upper bounds -DBL_MAX*/
 	virtual QgsRect bBoxOfSelected();
    //! Return the provider type for this layer
   QString providerType();

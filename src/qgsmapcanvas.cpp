@@ -334,7 +334,7 @@ void QgsMapCanvas::zoomToSelected()
 	QgsRect rect=lyr->bBoxOfSelected();
 
 	//no selected features
-	if(rect.xMin()==DBL_MAX&&rect.yMin()==DBL_MAX&&rect.xMax()==DBL_MIN&&rect.yMax()==DBL_MIN)
+	if(rect.xMin()==DBL_MAX&&rect.yMin()==DBL_MAX&&rect.xMax()==-DBL_MAX&&rect.yMax()==-DBL_MAX)
 	{
 	    return;
 	}
