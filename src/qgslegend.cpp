@@ -17,16 +17,25 @@
  ***************************************************************************/
  /* $Id$ */
 #include <map>
+
+
 #include <qcursor.h>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qlabel.h>
 #include <qvbox.h>
 #include <qlistview.h>
+
+
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
+
+
+static const char* const ident_ 
+ = "$Id$";
+
 
 QgsLegend::QgsLegend(QWidget * parent, const char *name):QListView(parent, name), mousePressed(FALSE)
 {
@@ -80,6 +89,11 @@ void QgsLegend::update()
       lvi->setPixmap(0, *lyr->legendPixmap());
       zi++;
     }
+
+  // highlight the current item
+
+  setSelected( currentItem(), true );
+
 
   emit currentChanged(currentItem());
 
