@@ -869,8 +869,8 @@ struct QgsProject::Imp
     QgsScaleCalculator::units mapUnits;
 
     Imp()
-            : title(""), dirty(false), mapUnits(QgsScaleCalculator::METERS)
-    {}
+      : title(""), dirty(false), mapUnits(QgsScaleCalculator::METERS)
+      {}
 
     /* clear project properties when a new project is started */
     void clear()
@@ -891,7 +891,11 @@ struct QgsProject::Imp
 
 QgsProject::QgsProject()
         : imp_( new QgsProject::Imp )
-{} // QgsProject ctor
+{
+  // Set some default project properties
+  writeEntry("PositionPrecision","/Automatic", true);
+  writeEntry("PositionPrecision","/DecimalPlaces", 2);
+} // QgsProject ctor
 
 
 
@@ -944,9 +948,6 @@ void QgsProject::mapUnits(QgsScaleCalculator::units u)
 
     dirty(true);
 } // void QgsProject::mapUnits(QgsScaleCalculator::units u)
-
-
-
 
 bool QgsProject::dirty() const
 {
@@ -1385,8 +1386,6 @@ _getMapUnits( QDomDocument const & doc )
     return true;
 
 } // _getMapUnits
-
-
 
 /**
    Get the project title
@@ -1870,7 +1869,6 @@ QgsProject::read( )
 
     // now set the map units; note, alters QgsProject::instance().
     _getMapUnits( *doc );
-
 
     // now get any properties
     _getProperties( *doc, imp_->properties_ );
