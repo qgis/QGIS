@@ -10,7 +10,7 @@
 *
 */
 /* $Id$ */
-#include <qgsconfig.h>
+#include "qgsconfig.h"
 
 namespace QGis
 { 
