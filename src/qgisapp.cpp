@@ -493,7 +493,7 @@ void QgisApp::addRasterLayer(QStringList theFileNameQStringList)
 
       //only allow one copy of a ai grid file to be loaded at a time to
       //prevent the user selecting all adfs in 1 dir which actually represent 1 coverate,
-      if (myBaseNameQString.endsWith(".adf", FALSE))
+      if (myBaseNameQString.lower().endsWith(".adf"))
       {
 
         break;
@@ -517,15 +517,16 @@ void QgisApp::addRasterLayer(QStringList theFileNameQStringList)
 /** This helper checks to see whether the filename appears to be a valid raster file name */
 bool QgisApp::isValidRasterFileName (QString theFileNameQString)
 {
-  return (theFileNameQString.endsWith(".adf", FALSE) ||
-          theFileNameQString.endsWith(".asc", FALSE) ||
-          theFileNameQString.endsWith(".grd", FALSE) ||
-          theFileNameQString.endsWith(".img", FALSE) ||
-          theFileNameQString.endsWith(".tif", FALSE) ||
-          theFileNameQString.endsWith(".png", FALSE) ||
-          theFileNameQString.endsWith(".jpg", FALSE) ||
-          theFileNameQString.endsWith(".dem", FALSE) ||
-          theFileNameQString.endsWith(".ddf", FALSE)) ;
+  QString name = theFileNameQString.lower();
+  return (name.endsWith(".adf") ||
+          name.endsWith(".asc") ||
+          name.endsWith(".grd") ||
+          name.endsWith(".img") ||
+          name.endsWith(".tif") ||
+          name.endsWith(".png") ||
+          name.endsWith(".jpg") ||
+          name.endsWith(".dem") ||
+          name.endsWith(".ddf")) ;
 }
 /** Overloaded of the above function provided for convenience that takes a qstring pointer */
 bool QgisApp::isValidRasterFileName (QString * theFileNameQString)
@@ -537,7 +538,7 @@ bool QgisApp::isValidRasterFileName (QString * theFileNameQString)
 /** This helper checks to see whether the filename appears to be a valid vector file name */
 bool QgisApp::isValidVectorFileName (QString theFileNameQString)
 {
-  return (theFileNameQString.endsWith(".shp", FALSE)) ;
+  return (theFileNameQString.lower().endsWith(".shp")) ;
 }
 /** Overloaded of the above function provided for convenience that takes a qstring pointer */
 bool QgisApp::isValidVectorFileName (QString * theFileNameQString)
