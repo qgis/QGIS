@@ -3,7 +3,7 @@
 * is used when saving/restoring a QGIS project.
 -->
 <!ELEMENT qgis (projectlayers) >
-<!ELEMENT projectlayers (maplayer) >
+<!ELEMENT projectlayers (maplayer*) >
 <!ELEMENT maplayer (layername, datasource, zorder, symbol) >
 <!ELEMENT layername (#PCDATA) >
 <!ELEMENT datasource (#PCDATA) >
