@@ -71,7 +71,7 @@ public slots:
 
   @param layer_key is unique layer identification
   */
-  void removeLayer( QString const & layer_key );
+  void removeLayer( QString layer_key );
 
 protected:
   // override these to handle layer order manipulation

@@ -235,7 +235,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
 
 /* slot */
-void QgsLegend::removeLayer( QString const & layer_key )
+void QgsLegend::removeLayer( QString layer_key )
 {
     // There are three possible starting legend states when this is invoked.
     //
