@@ -2,7 +2,7 @@
                          qgslabeldialog.cpp  -  render vector labels
                              -------------------
     begin                : August 2004
-    copyright            : (C) 2004 by Radim Blazek
+    copyright            : (C) 2004 by Radim Blazek & Tim Sutton
     email                : blazek@itc.it
  ***************************************************************************/
 /***************************************************************************
@@ -26,11 +26,16 @@
 #include <qlabel.h>
 #include <qtable.h>
 #include <qlineedit.h>
-#include "qpushbutton.h"
-#include "qspinbox.h"
-#include "qcolor.h"
-#include "qcolordialog.h"
+#include <qcombobox.h>
 #include <qfontdatabase.h>
+#include <qradiobutton.h> 
+#include <qfont.h>
+#include <qpushbutton.h>
+#include <qspinbox.h>
+#include <qcolor.h>
+#include <qcolordialog.h>
+#include <qfontdatabase.h>
+#include <qfontdialog.h>
 
 #include "qgsfield.h"
 #include "qgspatterndialog.h"
@@ -40,278 +45,239 @@
 #include "qgslabel.h"
 #include "qgslabeldialog.h"
 
+
+
 #define PIXMAP_WIDTH 200
 #define PIXMAP_HEIGHT 20
 
-QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
+QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) : QgsLabelDialogBase (parent)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsLabelDialog::QgsLabelDialog()" << std::endl;
     #endif
 
     mLabel = label;
-    QgsLabelAttributes *att = mLabel->layerAttributes();
-
-    mTable = new QTable ( 13, 3, parent );
-    mTable->setSizePolicy ( QSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
-    QVBoxLayout *layout = new QVBoxLayout( parent );
-    layout->addWidget( mTable );
-
-    mTable->setLeftMargin(0); // hide row labels
-
-    mTable->horizontalHeader()->setLabel( 0, "Attribute" );
-    mTable->horizontalHeader()->setLabel( 1, "Default" );
-    mTable->horizontalHeader()->setLabel( 2, "Field" );
-
-    mTable->setColumnWidth ( 0, 200 ); 
-
-    /* Available fields */
-    std::vector<QgsField> fields = label->fields();
-    QStringList fieldsList;
-    fieldsList.append ( "" );
-    for ( int i = 0; i < fields.size(); i++ ) {
-	fieldsList.append ( fields[i].name() );
-    }
-
-    QTableItem *ti;
-    QComboTableItem *cti;
-    QCheckTableItem *chti;
-    QString str;
-
-    /* Text */
-    ti = new QTableItem( mTable, QTableItem::Never, "Text" );
-    mTable->setItem ( Text, 0, ti );
-    
-    ti = new QTableItem( mTable, QTableItem::Always, "" );
-    mTable->setItem ( Text, 1, ti );
-
-    /* Font family */
-    ti = new QTableItem( mTable, QTableItem::Never, "Font family" );
-    mTable->setItem ( Family, 0, ti );
-
-    QFontDatabase fontDb;
-    cti = new QComboTableItem ( mTable, fontDb.families() );
-    mTable->setItem ( Family, 1, cti );
-
-    /* Font size */
-    QStringList sizeTypes;
-    sizeTypes.append ( "Size in points" );
-    sizeTypes.append ( "Size in map units" );
-    cti = new QComboTableItem ( mTable, sizeTypes );
-    mTable->setItem ( Size, 0, cti );
-
-    ti = new QTableItem( mTable, QTableItem::Always, "" );
-    mTable->setItem ( Size, 1, ti );
-
-    /* Font bold */
-    ti = new QTableItem( mTable, QTableItem::Never, "Bold" );
-    mTable->setItem ( Bold, 0, ti );
-
-    chti = new QCheckTableItem ( mTable, "" );
-    mTable->setItem ( Bold, 1, chti );
-
-    /* Italic */
-    ti = new QTableItem( mTable, QTableItem::Never, "Italic" );
-    mTable->setItem ( Italic, 0, ti );
-
-    chti = new QCheckTableItem ( mTable, "" );
-    mTable->setItem ( Italic, 1, chti );
-
-    /* Underline */
-    ti = new QTableItem( mTable, QTableItem::Never, "Underline" );
-    mTable->setItem ( Underline, 0, ti );
-
-    chti = new QCheckTableItem ( mTable, "" );
-    mTable->setItem ( Underline, 1, chti );
-
-    /* Color */
-    ti = new QTableItem( mTable, QTableItem::Never, "Color" );
-    mTable->setItem ( Color, 0, ti );
-
-    ti = new QTableItem( mTable, QTableItem::Never, "" );
-    mTable->setItem ( Color, 1, ti );
-
-    /* X Coordinate */
-    ti = new QTableItem( mTable, QTableItem::Never, "X coordinate" );
-    mTable->setItem ( XCoordinate, 0, ti );
-
-    ti = new QTableItem( mTable, QTableItem::Never, "" );
-    mTable->setItem ( XCoordinate, 1, ti );
-
-    /* Y Coordinate */
-    ti = new QTableItem( mTable, QTableItem::Never, "Y coordinate" );
-    mTable->setItem ( YCoordinate, 0, ti );
-
-    ti = new QTableItem( mTable, QTableItem::Never, "" );
-    mTable->setItem ( YCoordinate, 1, ti );
-
-    /* X offset */
-    QStringList xOffsetTypes;
-    xOffsetTypes.append ( "X offset in points" );
-    xOffsetTypes.append ( "X offset in map units" );
-    cti = new QComboTableItem ( mTable, xOffsetTypes );
-    mTable->setItem ( XOffset, 0, cti );
-
-    ti = new QTableItem( mTable, QTableItem::Always, "" );
-    mTable->setItem ( XOffset, 1, ti );
-
-    /* Y offset */
-    ti = new QTableItem( mTable, QTableItem::Never, "Y offset" );
-    mTable->setItem ( YOffset, 0, ti );
-
-    ti = new QTableItem( mTable, QTableItem::Always, "" );
-    mTable->setItem ( YOffset, 1, ti );
-
-    /* Angle */
-    ti = new QTableItem( mTable, QTableItem::Never, "Angle in degrees" );
-    mTable->setItem ( Angle, 0, ti );
-    
-    ti = new QTableItem( mTable, QTableItem::Always, "" );
-    mTable->setItem ( Angle, 1, ti );
-
-    /* Alignment */
-    ti = new QTableItem( mTable, QTableItem::Never, "Alignment" );
-    mTable->setItem ( Alignment, 0, ti );
-    
-    QStringList alignmentList;
-    alignmentList.append ( "center" );
-    alignmentList.append ( "left" );
-    alignmentList.append ( "right" );
-    alignmentList.append ( "top" );
-    alignmentList.append ( "bottom" );
-    cti = new QComboTableItem ( mTable, alignmentList );
-    mTable->setItem ( Alignment, 1, cti );
-
-    /* Add fields */
-    for ( int i = 0; i < 13; i++ ) {
-	cti = new QComboTableItem ( mTable, fieldsList );
-	mTable->setItem ( i, 2, cti );
-    }
-
-    // Reset to vector values
-    reset();
-
-    /* Connect */
-    connect( mTable, SIGNAL( clicked(int, int, int, const QPoint &)), 
-	     this, SLOT( tableClicked (int, int) ));
+    init();
 }
 
-void QgsLabelDialog::reset ( void )
+void QgsLabelDialog::init ( void )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsLabelDialog::reset" << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsLabelDialog::reset" << std::endl;
+#endif
+  QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
+  //populate a string list with all the field names which will be used to set up the 
+  //data bound combos
+  std::vector<QgsField> myFieldsVector = mLabel->fields();
+  QStringList myFieldStringList;
+  myFieldStringList.append ( "" );
+  for (unsigned int i = 0; i < myFieldsVector.size(); i++ ) 
+  {
+    myFieldStringList.append ( myFieldsVector[i].name() );
+  }
+  //
+  //now set all the combos that need field lists using the string list
+  //
+  cboLabelField->clear();
+  cboLabelField->insertStringList(myFieldStringList);
+  cboLabelField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Text),myFieldStringList));
 
-    QString str;
-    QgsLabelAttributes *att = mLabel->layerAttributes();
-    QTableItem *item;
-    QComboTableItem *combo;
-    QCheckTableItem *check;
-    int type;
 
-    /* Text */
-    mTable->item(Text,1)->setText( att->text() ); 
-    
-    mTable->setText(Text,1,att->text()); 
-    mTable->updateCell(Text,1);
+  cboFontField->clear();
+  cboFontField->insertStringList(myFieldStringList); 
+  cboFontField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Family),myFieldStringList));
 
-    /* Font family */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( Family, 1 ) );
-    combo->setCurrentItem ( att->family() ); 
-    mTable->updateCell(Family,1);
+  cboBoldField->clear();
+  cboBoldField->insertStringList(myFieldStringList); 
+  cboBoldField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Bold),myFieldStringList));
 
-    /* Font size */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( Size, 0 ) );
-    if ( att->sizeType() == QgsLabelAttributes::MapUnits ) {
-	combo->setCurrentItem(1);
-    } else {
-	combo->setCurrentItem(0);
+
+  cboItalicField->clear();
+  cboItalicField->insertStringList(myFieldStringList); 
+  cboItalicField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Italic),myFieldStringList));
+
+  cboUnderlineField->clear();
+  cboUnderlineField->insertStringList(myFieldStringList); 
+  cboUnderlineField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Underline),myFieldStringList));
+
+  cboFontSizeField->clear();
+  cboFontSizeField->insertStringList(myFieldStringList); 
+  cboFontSizeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Size),myFieldStringList));
+
+  cboFontTransparencyField->clear();
+  cboFontTransparencyField->insertStringList(myFieldStringList); 
+  //cboFontTransparencyField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::FontTransparency),myFieldStringList));
+
+  //cboBufferColorField->clear();
+  //cboBufferColorField->insertStringList(myFieldStringList); 
+
+  cboBufferSizeField->clear();
+  cboBufferSizeField->insertStringList(myFieldStringList); 
+  cboBufferSizeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::BufferSize),myFieldStringList));
+
+  cboBufferTransparencyField->clear();
+  cboBufferTransparencyField->insertStringList(myFieldStringList); 
+  //cboBufferTransparencyField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::BufferTransparency),myFieldStringList));
+
+  cboXCoordinateField->clear();
+  cboXCoordinateField->insertStringList(myFieldStringList); 
+  cboXCoordinateField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::XCoordinate),myFieldStringList));
+
+  cboYCoordinateField->clear();
+  cboYCoordinateField->insertStringList(myFieldStringList); 
+  cboYCoordinateField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::YCoordinate),myFieldStringList));
+
+  cboXOffsetField->clear();
+  cboXOffsetField->insertStringList(myFieldStringList); 
+  cboXOffsetField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::XOffset),myFieldStringList));
+
+  cboYOffsetField->clear();
+  cboYOffsetField->insertStringList(myFieldStringList); 
+  cboYOffsetField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::YOffset),myFieldStringList));
+
+  cboAlignmentField->clear();
+  cboAlignmentField->insertStringList(myFieldStringList); 
+  cboAlignmentField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Alignment),myFieldStringList));
+
+  cboAngleField->clear();
+  cboAngleField->insertStringList(myFieldStringList); 
+  cboAngleField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Angle),myFieldStringList));
+
+
+  //
+  //set the non-databound fields up now
+  //
+  leDefaultLabel->setText(myLabelAttributes->text());
+  mFont.setFamily(myLabelAttributes->family());
+  if (myLabelAttributes->sizeIsSet())
+  {
+    mFont.setPointSize(myLabelAttributes->size());
+
+    int myTypeInt = myLabelAttributes->sizeType();
+    if (myTypeInt == QgsLabelAttributes::PointUnits)
+    {
+      radioFontSizeUnitsPoints->setChecked(true);
     }
-    str.sprintf ( "%.0f", att->size() );
-    mTable->setText( Size, 1, str ); 
-    //mTable->updateCell(Size,0);
-    mTable->updateCell(Size,1);
-
-    /* Font bold */
-    check = dynamic_cast < QCheckTableItem *> ( mTable->item ( Bold, 1 ) ) ;
-    check->setChecked ( att->bold() );
-    mTable->updateCell(Bold,1);
-
-    /* Italic */
-    check = dynamic_cast < QCheckTableItem *> ( mTable->item ( Italic, 1 ) ) ;
-    check->setChecked ( att->italic() );
-
-    /* Underline */
-    check = dynamic_cast < QCheckTableItem *> ( mTable->item ( Underline, 1 ) ) ;
-    check->setChecked ( att->underline() );
-
-    /* Color */
-    mColor = att->color();
-    QPixmap pm ( PIXMAP_WIDTH, PIXMAP_HEIGHT );
-    pm.fill ( mColor );
-    mTable->item(Color,1)->setPixmap ( pm ); 
-
-    /* X offset */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( XOffset, 0 ) );
-    if ( att->offsetType() == QgsLabelAttributes::MapUnits ) {
-	combo->setCurrentItem(1);
-    } else {
-	combo->setCurrentItem(0);
+    else //assume map units is checked
+    { 
+      radioFontSizeUnitsMap->setChecked(true);
     }
-    str.sprintf ( "%.0f", att->xOffset() );
-    mTable->setText(XOffset,1,str); 
-    mTable->updateCell(XOffset,1);
+  }
+  else //defaults for when no size has been set
+  {
+    mFont.setPointSize(myLabelAttributes->size());
+    radioFontSizeUnitsPoints->setChecked(true);
+  }
 
-    /* Y offset */
-    str.sprintf ( "%.0f", att->yOffset() );
-    mTable->setText(YOffset,1,str); 
-    mTable->updateCell(YOffset,1);
+  if (myLabelAttributes->boldIsSet())
+  {
+     mFont.setBold(myLabelAttributes->bold());
+  }
+  else
+  {
+     mFont.setBold(false);
+  }
+  if (myLabelAttributes->italicIsSet())
+  {
+     mFont.setBold(myLabelAttributes->italic());
+  }
+  else
+  {
+     mFont.setItalic(false);
+  }
+  /*
+     myLabelAttributes->setUnderline(mFont.underline());
+     myLabelAttributes->setColor(mFontColor); 
+     myTypeInt = 0;
+     if ( radioOffsetUnitsPoints->isChecked() )
+     {
+     myTypeInt = QgsLabelAttributes::PointUnits; 
+     } 
+     else 
+     { 
+     myTypeInt = QgsLabelAttributes::MapUnits;
+     }
+     myLabelAttributes->setOffset(spinXOffset->value() ,spinYOffset->value(), myTypeInt);
+     myLabelAttributes->setAngle(spinAngle->value()); 
 
-    /* Angle */
-    str.sprintf ( "%.0f", att->angle() );
-    mTable->setText(Angle,1,str); 
-    mTable->updateCell(Angle,1);
+  //the values here may seem a bit counterintuitive - basically everything 
+  //is the reverse of the way you think it should be...
+  //TODO investigate in QgsLabel why this needs to be the case
+  if (radioAboveLeft->isChecked())   myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+  if (radioBelowLeft->isChecked())   myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignTop);
+  if (radioAboveRight->isChecked())  myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignBottom);
+  if (radioBelowRight->isChecked())  myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignTop);
+  if (radioLeft->isChecked())        myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  if (radioRight->isChecked())       myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignVCenter);
+  if (radioAbove->isChecked())       myLabelAttributes->setAlignment(Qt::AlignBottom| Qt::AlignHCenter); 
+  if (radioBelow->isChecked())       myLabelAttributes->setAlignment(Qt::AlignTop   | Qt::AlignHCenter); 
+  if (radioOver->isChecked())        myLabelAttributes->setAlignment(Qt::AlignCenter);
 
-    /* Alignment */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( Alignment, 1 ) );
-    combo->setCurrentItem ( QgsLabelAttributes::alignmentName(att->alignment()) );
-
-    (dynamic_cast <QComboTableItem*>(mTable->item(Text,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Text));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Family,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Family));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Size,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Size));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Bold,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Bold));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Italic,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Italic));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Underline,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Underline));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Color,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Color));
-    (dynamic_cast <QComboTableItem*>(mTable->item(XCoordinate,2)))->setCurrentItem(mLabel->labelField(QgsLabel::XCoordinate));
-    (dynamic_cast <QComboTableItem*>(mTable->item(YCoordinate,2)))->setCurrentItem(mLabel->labelField(QgsLabel::YCoordinate));
-    (dynamic_cast <QComboTableItem*>(mTable->item(XOffset,2)))->setCurrentItem(mLabel->labelField(QgsLabel::XOffset));
-    (dynamic_cast <QComboTableItem*>(mTable->item(YOffset,2)))->setCurrentItem(mLabel->labelField(QgsLabel::YOffset));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Angle,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Angle));
-    (dynamic_cast <QComboTableItem*>(mTable->item(Alignment,2)))->setCurrentItem(mLabel->labelField(QgsLabel::Alignment));
-}
-
-void QgsLabelDialog::tableClicked ( int row, int col )
-{
-    #ifdef QGISDEBUG
-    std::cerr << "QgsLabelDialog::tableClicked()" << std::endl;
-    #endif
-
-    if ( row == Color && col == 1 ) changeColor();
+  myLabelAttributes->setBufferColor(mBufferColor); 
+  myTypeInt = 0;
+  if ( radioBufferUnitsPoints->isChecked() )
+  {
+  myTypeInt = QgsLabelAttributes::PointUnits; 
+  } 
+  else 
+  { 
+  myTypeInt = QgsLabelAttributes::MapUnits;
+  }
+  myLabelAttributes->setBufferSize(spinBufferSize->value(), myTypeInt);
+  //TODO - transparency attributes for buffers
+  */
 
 }
 
-void QgsLabelDialog::changeColor(void)
+
+
+void QgsLabelDialog::changeFont ( void )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsLabelDialog::changeColor()" << std::endl;
+    std::cerr << "QgsLabelDialog::changeFont()" << std::endl;
     #endif
+    bool resultFlag;
+    mFont = QFontDialog::getFont(&resultFlag, mFont, this );
+    if ( resultFlag ) 
+    {
+        // font is set to the font the user selected
+    } else 
+    {
+        // the user cancelled the dialog; font is set to the initial
+        // value, in this case Helvetica [Cronyx], 10
+    }
+    lblSample->setFont(mFont);
+}
 
-    mColor = QColorDialog::getColor ( mColor );
-    QPixmap pm ( PIXMAP_WIDTH, PIXMAP_HEIGHT );
-    pm.fill( mColor );
-    mTable->item(Color,1)->setPixmap(pm);
-    mTable->repaint();
+void QgsLabelDialog::changeFontColor(void)
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsLabelDialog::changeFontColor()" << std::endl;
+    #endif
+    mFontColor = QColorDialog::getColor ( mFontColor );
+    lblSample->setPaletteForegroundColor(mFontColor);
+}
+
+void QgsLabelDialog::changeBufferColor(void)
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsLabelDialog::changeBufferColor()" << std::endl;
+    #endif
+    mBufferColor = QColorDialog::getColor ( mBufferColor );
+    lblSample->setPaletteBackgroundColor(mBufferColor);
+}
+
+
+int QgsLabelDialog::itemNoForField(QString theFieldName, QStringList theFieldList)
+{
+    int myItemInt=0;
+    for ( QStringList::Iterator it = theFieldList.begin(); it != theFieldList.end(); ++it ) 
+    {
+        if (theFieldName == *it) return myItemInt;
+        ++myItemInt;
+    }
+    //if no matches assume first item in list is blank and return that
+    return 0;
 }
 
 QgsLabelDialog::~QgsLabelDialog()
@@ -327,78 +293,78 @@ void QgsLabelDialog::apply()
     std::cerr << "QgsLabelDialog::apply()" << std::endl;
     #endif
 
-    QgsLabelAttributes *att = mLabel->layerAttributes();
-    QTableItem *item;
-    QComboTableItem *combo;
-    QCheckTableItem *check;
-    int type;
-
-    /* Text */
-    item = mTable->item ( Text, 1 );
-    att->setText ( item->text() );
-
-    /* Font family */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( Family, 1 ) );
-    att->setFamily ( combo->currentText() );
-    
-    /* Font size */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( Size, 0 ) );
-    item = mTable->item ( Size, 1 );
-    if ( combo->currentItem() == 0 ) {
-	type = QgsLabelAttributes::PointUnits; 
-    } else { 
-	type = QgsLabelAttributes::MapUnits;
+    //set the label props that are NOT bound to a field in the attributes tbl
+    //All of these are set in the layerAttributes member of the layer
+    QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
+    myLabelAttributes->setText(leDefaultLabel->text()); 
+    myLabelAttributes->setFamily(mFont.family());
+    int myTypeInt = 0;
+    if ( radioFontSizeUnitsPoints->isChecked())
+    {
+       myTypeInt = QgsLabelAttributes::PointUnits; 
+    } 
+    else //assume map units is checked
+    { 
+       myTypeInt = QgsLabelAttributes::MapUnits;
     }
-    att->setSize ( item->text().toDouble(), type );
-
-    /* Font bold */
-    check = dynamic_cast < QCheckTableItem *> ( mTable->item ( Bold, 1 ) ) ;
-    att->setBold ( check->isChecked() );
-
-    /* Italic */
-    check = dynamic_cast < QCheckTableItem *> ( mTable->item ( Italic, 1 ) ) ;
-    att->setItalic ( check->isChecked() );
-
-    /* Underline */
-    check = dynamic_cast < QCheckTableItem *> ( mTable->item ( Underline, 1 ) ) ;
-    att->setUnderline ( check->isChecked() );
-
-    /* Color */
-    att->setColor ( mColor ); 
-
-
-    /* X, Y offset */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( XOffset, 0 ) );
-    if ( combo->currentItem() == 0 ) {
-	type = QgsLabelAttributes::PointUnits; 
-    } else { 
-	type = QgsLabelAttributes::MapUnits;
+    myLabelAttributes->setSize(mFont.pointSize() , myTypeInt);
+    myLabelAttributes->setBold(mFont.bold());
+    myLabelAttributes->setItalic(mFont.italic());
+    myLabelAttributes->setUnderline(mFont.underline());
+    myLabelAttributes->setColor(mFontColor); 
+    myTypeInt = 0;
+    if ( radioOffsetUnitsPoints->isChecked() )
+    {
+       myTypeInt = QgsLabelAttributes::PointUnits; 
+    } 
+    else 
+    { 
+       myTypeInt = QgsLabelAttributes::MapUnits;
     }
+    myLabelAttributes->setOffset(spinXOffset->value() ,spinYOffset->value(), myTypeInt);
+    myLabelAttributes->setAngle(spinAngle->value()); 
+
+    //the values here may seem a bit counterintuitive - basically everything 
+    //is the reverse of the way you think it should be...
+    //TODO investigate in QgsLabel why this needs to be the case
+    if (radioAboveLeft->isChecked())   myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+    if (radioBelowLeft->isChecked())   myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    if (radioAboveRight->isChecked())  myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignBottom);
+    if (radioBelowRight->isChecked())  myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignTop);
+    if (radioLeft->isChecked())        myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    if (radioRight->isChecked())       myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignVCenter);
+    if (radioAbove->isChecked())       myLabelAttributes->setAlignment(Qt::AlignBottom| Qt::AlignHCenter); 
+    if (radioBelow->isChecked())       myLabelAttributes->setAlignment(Qt::AlignTop   | Qt::AlignHCenter); 
+    if (radioOver->isChecked())        myLabelAttributes->setAlignment(Qt::AlignCenter);
+      
+    myLabelAttributes->setBufferColor(mBufferColor); 
+    myTypeInt = 0;
+    if ( radioBufferUnitsPoints->isChecked() )
+    {
+       myTypeInt = QgsLabelAttributes::PointUnits; 
+    } 
+    else 
+    { 
+       myTypeInt = QgsLabelAttributes::MapUnits;
+    }
+    myLabelAttributes->setBufferSize(spinBufferSize->value(), myTypeInt);
+    //TODO - transparency attributes for buffers
     
-    att->setOffset ( mTable->item(XOffset,1)->text().toDouble(),
-	             mTable->item(YOffset,1)->text().toDouble(), type );
+    //set the label props that are data bound to a field in the attributes tbl
+    mLabel->setLabelField( QgsLabel::Text,  cboLabelField->currentText() );
+    mLabel->setLabelField( QgsLabel::Family, cboFontField->currentText() );
+    mLabel->setLabelField( QgsLabel::Bold,  cboBoldField->currentText() );
+    mLabel->setLabelField( QgsLabel::Italic,  cboItalicField->currentText() );
+    mLabel->setLabelField( QgsLabel::Underline,  cboUnderlineField->currentText() );
+    mLabel->setLabelField( QgsLabel::Size,  cboFontSizeField->currentText() );
+    mLabel->setLabelField( QgsLabel::BufferSize,  cboBufferSizeField->currentText() );
+    //mLabel->setLabelField( QgsLabel::BufferTransparency,  cboBufferTransparencyField->currentText() );
+    mLabel->setLabelField( QgsLabel::XCoordinate,  cboXCoordinateField->currentText() );
+    mLabel->setLabelField( QgsLabel::YCoordinate,  cboYCoordinateField->currentText() );
+    mLabel->setLabelField( QgsLabel::XOffset,  cboXOffsetField->currentText() );
+    mLabel->setLabelField( QgsLabel::YOffset,  cboYOffsetField->currentText() );
+    mLabel->setLabelField( QgsLabel::Alignment,  cboAlignmentField->currentText() );
+    mLabel->setLabelField( QgsLabel::Angle,  cboAngleField->currentText() );
 
-    /* Angle */
-    att->setAngle ( mTable->item(Angle,1)->text().toDouble() );
-
-    /* Alignment */
-    combo = dynamic_cast < QComboTableItem * > ( mTable->item ( Alignment, 1 ) );
-    att->setAlignment ( QgsLabelAttributes::alignmentCode(combo->currentText()) );
-
-    /* Fields */
-    mLabel->setLabelField( QgsLabel::Text, ( dynamic_cast <QComboTableItem*>(mTable->item(Text,2)))->currentText() );
-    mLabel->setLabelField( QgsLabel::Family, ( dynamic_cast <QComboTableItem*>(mTable->item(Family,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Size, ( dynamic_cast <QComboTableItem*>(mTable->item(Size,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Bold, ( dynamic_cast <QComboTableItem*>(mTable->item(Bold,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Italic, ( dynamic_cast <QComboTableItem*>(mTable->item(Italic,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Underline, ( dynamic_cast <QComboTableItem*>(mTable->item(Underline,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Color, ( dynamic_cast <QComboTableItem*>(mTable->item(Color,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::XCoordinate, ( dynamic_cast <QComboTableItem*>(mTable->item(XCoordinate,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::YCoordinate, ( dynamic_cast <QComboTableItem*>(mTable->item(YCoordinate,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::XOffset, ( dynamic_cast <QComboTableItem*>(mTable->item(XOffset,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::YOffset, ( dynamic_cast <QComboTableItem*>(mTable->item(YOffset,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Angle, ( dynamic_cast <QComboTableItem*>(mTable->item(Angle,2)) )->currentText() );
-    mLabel->setLabelField( QgsLabel::Alignment, ( dynamic_cast <QComboTableItem*>(mTable->item(Alignment,2)) )->currentText() );
-    
 }
 

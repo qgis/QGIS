@@ -18,22 +18,27 @@
 
 #include <qobject.h>
 #include <qcolor.h>
+#include <qfont.h>
+
+#ifdef WIN32
+#include "qgslabeldialogbase.h"
+#else
+#include "qgslabeldialogbase.ui.h"
+#endif
 
 class QWidget;
 class QPoint;
-class QTable;
-
 class QgsLabel;
-
 /** QgsLabelDialog is the dialog for label. */
-class QgsLabelDialog: public QObject
+class QgsLabelDialog: public QgsLabelDialogBase
 {
     Q_OBJECT;
 
 public:
     QgsLabelDialog( QgsLabel *label,  QWidget * parent = 0 );
     ~QgsLabelDialog();
-
+    int itemNoForField(QString theFieldName, QStringList theFieldList);
+    
     /* Attributes in order used in the table */
     enum Attribute {
 	Text = 0,
@@ -62,21 +67,23 @@ public slots:
     /** applies the changes to the label class */
     void apply ( void );
 
-    /** Table clicked */
-    void tableClicked ( int row, int col );
-	
-    /** Change color */
-    void changeColor ( void );
+    /** Change font - reimplements method from base class*/
+    void changeFont ( );
 
-    /** Reset dialog to vector layer values */
-    void reset ( void );
+    /** Change color - reimplements method from base class */
+    void changeBufferColor ( );
+    void changeFontColor ( );
+
+    /** Initialise dialog to vector layer values */
+    void init ( void );
 
 protected slots:
 
 private:
-    QTable   *mTable;
     QgsLabel *mLabel;
-    QColor    mColor;
+    QColor    mFontColor;
+    QColor    mBufferColor;
+    QFont     mFont;
 };
 
 #endif
