@@ -3,7 +3,7 @@
 # Automakeversion
 AM_1=1
 AM_2=7
-AM_3=6
+AM_3=2
 
 # Autoconfversion
 AC_1=2
@@ -11,7 +11,7 @@ AC_2=57
 
 # Libtoolversion
 LT_1=1
-LT_2=5
+LT_2=4
 
 # Check automake version
 AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*$#\1 \2 \3#p'`

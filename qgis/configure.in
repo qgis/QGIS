@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.72 2004/05/11 23:08:45 timlinux Exp
+dnl configure.in,v 1.73 2004/05/12 08:28:04 jobi Exp
 
 AC_INIT
 
@@ -24,7 +24,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=2
 MICRO_VERSION=0
-EXTRA_VERSION=8
+EXTRA_VERSION=9
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -50,6 +50,15 @@ AC_PROG_INSTALL
 
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
+
+
+dnl ---------------------------------------------------------------------------
+dnl Check for Endian stuff to manage big endian anomalies
+dnl ---------------------------------------------------------------------------
+
+AC_C_BIGENDIAN
+AC_CHECK_HEADERS([endian.h])
+AC_CHECK_HEADERS([machine/endian.h])
 
 
 dnl ---------------------------------------------------------------------------
