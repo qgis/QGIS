@@ -1125,6 +1125,7 @@ long QgsPostgresProvider::getFeatureCount()
   numberFeatures = QString(PQgetvalue(result, 0, 0)).toLong();
         //--std::cout << "Feature count is " << numberFeatures << std::endl;
   PQclear(result);
+  return numberFeatures;
   }
   void QgsPostgresProvider::calculateExtents()
   {

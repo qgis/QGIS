@@ -55,7 +55,7 @@
 QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) : QgsLabelDialogBase (parent)
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsLabelDialog::QgsLabelDialog()" << std::endl;
+//    std::cerr << "QgsLabelDialog::QgsLabelDialog()" << std::endl;
     #endif
 
     mLabel = label;

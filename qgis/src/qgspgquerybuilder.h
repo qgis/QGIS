@@ -26,7 +26,7 @@ extern "C"
 #else
 #include "qgspgquerybuilderbase.uic.h"
 #endif
-class QgsField;
+#include "qgsfield.h"
 /*!
  * \class QgsPgQueryBuilder
  * \brief Query Builder for PostgreSQL layers.

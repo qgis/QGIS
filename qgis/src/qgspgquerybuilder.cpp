@@ -17,7 +17,6 @@
 #include <qmessagebox.h>
 #include <qtextedit.h>
 #include <qlabel.h>
-#include "qgsfield.h"
 #include "qgspgquerybuilder.h"
 
   QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name)
