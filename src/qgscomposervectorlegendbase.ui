@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>212</width>
-            <height>275</height>
+            <height>419</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -88,6 +88,30 @@
                 <string>Font</string>
             </property>
         </widget>
+        <widget class="QListView">
+            <column>
+                <property name="text">
+                    <string>Column 1</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+        <item>
+            <property name="text">
+                <string>New Item</string>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+        </item>
+            <property name="name">
+                <cstring>mLayersListView</cstring>
+            </property>
+        </widget>
         <widget class="QLabel">
             <property name="name">
                 <cstring>textLabel1_5</cstring>
@@ -117,23 +141,6 @@
                 </sizepolicy>
             </property>
         </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>16</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
     </vbox>
 </widget>
 <connections>

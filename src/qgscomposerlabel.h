@@ -80,6 +80,7 @@ public:
     QWidget *options ( void );
     bool writeSettings ( void );
     bool readSettings ( void );
+    bool removeSettings ( void );
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
     bool readXML( QDomNode & node );
 
