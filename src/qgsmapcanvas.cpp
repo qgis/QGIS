@@ -239,7 +239,8 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     if (imp_->layers.size() == 1)
     {
         imp_->fullExtent = lyr->extent();
-        imp_->fullExtent.scale(1.1); // XXX why magic number of 1.1?
+        imp_->fullExtent.scale(1.1); 
+				// XXX why magic number of 1.1? - TO GET SOME WHITESPACE AT THE EDGES OF THE MAP
         imp_->currentExtent = imp_->fullExtent;
     }
     else
