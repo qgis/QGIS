@@ -33,6 +33,7 @@ bin_PROGRAMS = qgis
 ## ancillary library for plug-ins
 lib_LTLIBRARIES = libqgis.la
 
+
 headers =		\
 		qgisapp.h \
 		qgis.h \
@@ -53,6 +54,7 @@ headers =		\
 		qgsfeatureattribute.h \
 		qgsfeature.h \
 		qgsfield.h \
+		qgsgeomtypedialog.h			\
 		qgsgraduatedmarenderer.h \
 		qgsgraduatedsymrenderer.h \
 		qgsgramadialog.h \
@@ -111,12 +113,14 @@ headers =		\
 		splashscreen.h				
 
 ## qt designer files for all the GUI stuff
+
 qgis_UIC =	\
 		qgisappbase.ui \
 		qgsabout.ui \
 		qgsattributetablebase.ui \
 		qgscontcoldialogbase.ui \
 		qgsdlgvectorlayerpropertiesbase.ui \
+		qgsgeomtypedialogbase.ui			\
 		qgsgramadialogbase.ui \
 		qgsgrasydialogbase.ui \
 		qgshelpviewerbase.ui \
@@ -162,12 +166,14 @@ qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
 
 
 ## non-uic files generated from MOC
+
 qgis_MOC =  \
 		qgisapp.moc.cpp \
 		qgisinterface.moc.cpp \
 		qgsattributetable.moc.cpp \
 		qgscontcoldialog.moc.cpp \
 		qgsdlgvectorlayerproperties.moc.cpp \
+		qgsgeomtypedialog.moc.cpp \
 		qgsgramadialog.moc.cpp \
 		qgsgramaextensionwidget.moc.cpp \
 		qgsgrasydialog.moc.cpp \
@@ -217,6 +223,7 @@ qgis_SOURCES =  \
 		qgsfeatureattribute.cpp \
 		qgsfeature.cpp \
 		qgsfield.cpp \
+		qgsgeomtypedialog.cpp		\
 		qgsgraduatedmarenderer.cpp \
 		qgsgraduatedsymrenderer.cpp \
 		qgsgramadialog.cpp \

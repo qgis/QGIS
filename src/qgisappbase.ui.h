@@ -257,3 +257,9 @@ void QgisAppBase::about()
 {
 
 }
+
+
+void QgisAppBase::newVectorLayer()
+{
+
+}

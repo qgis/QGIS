@@ -266,6 +266,8 @@ private slots:
     void fileNew();
     //! As above but allows forcing without prompt
     void fileNew(bool thePromptToSaveFlag);
+    //! Create a new empty vector layer
+    void newVectorLayer();
     //! Print the current map view frame
     void filePrint();
     //! Add all loaded layers into the overview - overides qgisappbase method

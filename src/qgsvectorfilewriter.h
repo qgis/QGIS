@@ -18,7 +18,18 @@ class QgsVectorFileWriter
         QgsVectorFileWriter(QString theOutputFileName, QgsVectorLayer * theVectorLayer);
         QgsVectorFileWriter(QString theOutputFileName, OGRwkbGeometryType theGeometryType);
         ~QgsVectorFileWriter() ;
-        bool writePoint(QgsPoint * thePoint); 
+	/**Writes a point to the file*/
+        bool writePoint(QgsPoint * thePoint);
+	/**Writes a line to the file
+	 @param wkb well known binary char array
+	 @param size size of the binary array
+	 @return true in case of success and false else*/
+	bool writeLine(unsigned char* wkb, int size);
+	/**Writes a polygon to the file
+	@param wkb well known binary char array
+	@param size size of the binary array
+	@return true in case of success and false else*/ 
+	bool writePolygon(unsigned char* wkb, int size);
         //! Add a new field to the output attribute table
         bool createField(QString theName, OGRFieldType theType, int theWidthInt=0, int thePrecisionInt=0);
         //! creates the output file etc...
@@ -38,5 +49,12 @@ class QgsVectorFileWriter
         OGRwkbGeometryType mGeometryType;
         //! Whether the output gile has been initialised. Some operations require this to be true before they will run
         bool mInitialisedFlag;
+	enum ENDIAN
+	    {
+		NDR = 1,
+		XDR = 0
+	    };
+	/** Return endian-ness for this layer*/
+	int endian();
 };
 #endif
