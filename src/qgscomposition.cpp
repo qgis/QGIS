@@ -86,7 +86,7 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
     mPapers.push_back ( QgsCompositionPaper( tr("Letter (8.5x11 inches)"),  216, 279 ) );
     mPapers.push_back ( QgsCompositionPaper( tr("Legal (8.5x14 inches)"), 216, 356 ) );
 
-    mDefaultPaper = mCustomPaper = 0;
+    mPaper = mDefaultPaper = mCustomPaper = 0;
     for( int i = 0; i < mPapers.size(); i++ ) {
         mPaperSizeComboBox->insertItem( mPapers[i].mName );
         // Map - A4 land for now, if future read from template
@@ -99,6 +99,7 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
     // Orientation
     mPaperOrientationComboBox->insertItem( tr("Portrait"), Portrait );
     mPaperOrientationComboBox->insertItem( tr("Landscape"), Landscape );
+    mPaperOrientation = Landscape;
 
     mPaperUnitsComboBox->insertItem( "mm" );
 
@@ -118,7 +119,7 @@ void QgsComposition::createDefault(void)
 {
     mPaperSizeComboBox->setCurrentItem(mDefaultPaper);
     mPaperOrientationComboBox->setCurrentItem(Landscape);
-
+    
     mUserPaperWidth = mPapers[mDefaultPaper].mWidth;
     mUserPaperHeight = mPapers[mDefaultPaper].mHeight;
 
@@ -185,25 +186,12 @@ QgsComposition::~QgsComposition()
     
     if ( mPaperItem ) delete mPaperItem;
 
-    /* TODO: For some strange reason, it crashes if QgsComposerItem (QgsComposerLabel,QgsComposerMap)
-     *       is deleted. It crashes before the destructor is called. QgsComposerVectorLegend works.
-     *       -> deleting canvas items 
-     */
     for (std::list < QgsComposerItem * >::iterator it = mItems.begin(); 
 				     it != mItems.end(); ++it) 
     {
-	    //delete *it; // crashes on QgsComposerLabel and QgsComposerMap
-	    QCanvasItem *ci = dynamic_cast<QCanvasItem*>(*it);
-	    delete ci;
+	    delete *it;
     }
 
-    /*
-    QCanvasItemList l = mCanvas->allItems();
-    for ( QCanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
-	delete *it;
-    }
-    */
-    
     if ( mCanvas ) delete mCanvas;
 }
 
@@ -457,8 +445,8 @@ void QgsComposition::paperSizeChanged ( void )
 	mPaperWidthLineEdit->setEnabled( TRUE );
 	mPaperHeightLineEdit->setEnabled( TRUE );
     } else {
-	mUserPaperWidth = mPapers[mPaperSizeComboBox->currentItem()].mWidth;
-	mUserPaperHeight = mPapers[mPaperSizeComboBox->currentItem()].mHeight;
+	mUserPaperWidth = mPapers[mPaper].mWidth;
+	mUserPaperHeight = mPapers[mPaper].mHeight;
 	mPaperWidthLineEdit->setEnabled( FALSE );
 	mPaperHeightLineEdit->setEnabled( FALSE );
 	setOptions();
