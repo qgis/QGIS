@@ -35,6 +35,8 @@ class QgsSymbol{
     //! Get the fill color
     QColor fillColor();
     void setFillColor(QColor c);
+    int lineWidth();
+    void setLineWidth(int w);
     //! Destructor
     ~QgsSymbol();
           /*! Comparison operator
@@ -48,5 +50,6 @@ class QgsSymbol{
  private:
     QColor m_color;
     QColor m_fillColor;
+    int m_lineWidth;
 };
 #endif // QGSSYMBOL_H

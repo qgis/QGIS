@@ -19,6 +19,7 @@
 #include <qcolordialog.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
+#include <qspinbox.h>
 #include <qstring.h>
 #include <qlabel.h>
 #include "qgsmaplayer.h"
@@ -39,6 +40,7 @@ QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 	btnSetColor->setPaletteBackgroundColor(sym->color());
 	
 	btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
+	spinLineWidth->setValue(sym->lineWidth());
 	setCaption("Layer Properties - " + lyr->name());
 }
 
@@ -68,3 +70,9 @@ void QgsLayerProperties::selectOutlineColor()
 QString QgsLayerProperties::displayName(){
 	return txtDisplayName->text();
 }
+
+void QgsLayerProperties::setLineWidth(int w){
+	sym->setLineWidth(w);
+}
+
+	
