@@ -391,7 +391,6 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             }
             // a "Palette" layer drawn in gray scale (using only one of the color components)
         case PALETTED_SINGLE_BAND_GRAY:
-            std::cout << "PALETTED_SINGLE_BAND_GRAY drawing type detected..." << std::endl;
             //check the band is set!
             if (grayBandNameQString==tr("Not Set"))
             {
@@ -399,8 +398,9 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             }
             else
             {
-
-              drawPalettedSingleBandGray(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString),grayBandNameQString);
+              std::cout << "PALETTED_SINGLE_BAND_GRAY drawing type detected..." << std::endl;
+              int myBandNoInt=1;
+              drawPalettedSingleBandGray(theQPainter, myRasterViewPort, myBandNoInt,grayBandNameQString);
 
               break;
             }
@@ -702,7 +702,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
     // RasterIO() takes care of scaling down image
-    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( 1 ); //always 1 !!!
+    GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
     uint *myGdalScanData = (uint*) CPLMalloc(sizeof(uint)*theRasterViewPort->drawableAreaXDimInt * sizeof(uint)*theRasterViewPort->drawableAreaYDimInt);
     CPLErr myResultCPLerr = myGdalBand->RasterIO(
                                 GF_Read, theRasterViewPort->rectXOffsetInt,
@@ -1753,13 +1753,13 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
         myLegendQPixmap = QPixmap(3,1);
         myQPainter.begin(&myLegendQPixmap);
         //draw legend red part
-        myQPainter.setPen( QPen( QColor(255,0,0, QColor::Rgb), 0) );
+        myQPainter.setPen( QPen( QColor(127,0,0, QColor::Rgb), 0) );
         myQPainter.drawPoint( 0,0);
         //draw legend green part
-        myQPainter.setPen( QPen( QColor(0,255,0, QColor::Rgb), 0) );
+        myQPainter.setPen( QPen( QColor(0,127,0, QColor::Rgb), 0) );
         myQPainter.drawPoint( 1,0);
         //draw legend blue part
-        myQPainter.setPen( QPen( QColor(0,0,255, QColor::Rgb), 0) );
+        myQPainter.setPen( QPen( QColor(0,0,127, QColor::Rgb), 0) );
         myQPainter.drawPoint( 2,0);
     }
 
