@@ -1,15 +1,15 @@
 <?xml version = '1.0'?>
 <kdevelop>
   <general>
-    <author>Tim Sutton</author>
-    <email>aps02ts@linux</email>
+    <author>The QGIS Team</author>
+    <email>qgis-developer@lists.sourceforge.net</email>
     <version>$VERSION$</version>
     <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
+    <description></description>
     <secondaryLanguages/>
   </general>
   <kdevautoproject>
@@ -18,10 +18,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>src/qgis</mainprogram>
-      <directoryradio>executable</directoryradio>
-      <customdirectory>/</customdirectory>
-      <programargs/>
+      <mainprogram>/home/aps02ts/bin/qgis</mainprogram>
+      <directoryradio>custom</directoryradio>
+      <customdirectory>/home/aps02ts/bin/</customdirectory>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -29,19 +29,10 @@
     <configurations>
       <optimized>
         <builddir>optimized</builddir>
-        <ccompiler>kdevgccoptions</ccompiler>
-        <cxxcompiler>kdevgppoptions</cxxcompiler>
-        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompiler>GccOptions</ccompiler>
+        <cxxcompiler>GppOptions</cxxcompiler>
+        <f77compiler>G77Options</f77compiler>
         <cxxflags>-O2 -g0</cxxflags>
-        <configargs>--prefix=/home/aps02ts</configargs>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
       </optimized>
       <debug>
         <configargs>--enable-debug=full --prefix=$HOME</configargs>
@@ -50,6 +41,7 @@
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
+        <envvars/>
         <topsourcedir/>
         <cppflags/>
         <ldflags/>
@@ -60,20 +52,21 @@
         <f77flags/>
       </debug>
       <default>
+        <envvars/>
         <configargs>--prefix=$HOME --enable-debug</configargs>
-        <builddir/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
+        <builddir></builddir>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <cxxflags>-O0 -g3</cxxflags>
-        <f77flags/>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags></cxxflags>
+        <f77flags></f77flags>
       </default>
     </configurations>
     <make>
@@ -81,20 +74,21 @@
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
-      <abortonerror>true</abortonerror>
+      <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
+      <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -102,8 +96,55 @@
     <display>
       <staticmembers>false</staticmembers>
       <demanglenames>true</demanglenames>
+      <outputradix>10</outputradix>
     </display>
   </kdevdebugger>
+  <kdevdoctreeview>
+    <ignoretocs>
+      <toc>ada</toc>
+      <toc>ada_bugs_gcc</toc>
+      <toc>bash</toc>
+      <toc>bash_bugs</toc>
+      <toc>clanlib</toc>
+      <toc>fortran_bugs_gcc</toc>
+      <toc>gnome1</toc>
+      <toc>gnustep</toc>
+      <toc>gtk</toc>
+      <toc>gtk_bugs</toc>
+      <toc>haskell</toc>
+      <toc>haskell_bugs_ghc</toc>
+      <toc>java_bugs_gcc</toc>
+      <toc>java_bugs_sun</toc>
+      <toc>kde2book</toc>
+      <toc>opengl</toc>
+      <toc>pascal_bugs_fp</toc>
+      <toc>php</toc>
+      <toc>php_bugs</toc>
+      <toc>perl</toc>
+      <toc>perl_bugs</toc>
+      <toc>python</toc>
+      <toc>python_bugs</toc>
+      <toc>qt-kdev3</toc>
+      <toc>ruby</toc>
+      <toc>ruby_bugs</toc>
+      <toc>sdl</toc>
+      <toc>sw</toc>
+      <toc>w3c-dom-level2-html</toc>
+      <toc>w3c-svg</toc>
+      <toc>w3c-uaag10</toc>
+      <toc>wxwidgets_bugs</toc>
+    </ignoretocs>
+    <ignoreqt_xml>
+      <toc>Guide to the Qt Translation Tools</toc>
+      <toc>Qt Assistant Manual</toc>
+      <toc>Qt Designer Manual</toc>
+      <toc>Qt Reference Documentation</toc>
+      <toc>qmake User Guide</toc>
+    </ignoreqt_xml>
+    <ignoredoxygen>
+      <toc>KDE Libraries (Doxygen)</toc>
+    </ignoredoxygen>
+  </kdevdoctreeview>
   <kdevfilecreate>
     <filetypes/>
     <useglobaltypes>
@@ -112,17 +153,6 @@
       <type ext="h" />
     </useglobaltypes>
   </kdevfilecreate>
-  <kdevdoctreeview>
-    <projectdoc>
-      <userdocDir>html/</userdocDir>
-      <apidocDir>html/</apidocDir>
-    </projectdoc>
-    <ignoreqt_xml/>
-    <ignoredoxygen/>
-    <ignorekdocs/>
-    <ignoretocs/>
-    <ignoredevhelp/>
-  </kdevdoctreeview>
   <cppsupportpart>
     <filetemplates>
       <interfacesuffix>.h</interfacesuffix>
@@ -134,25 +164,34 @@
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
       <includeEnums>true</includeEnums>
-      <includeTypedefs>true</includeTypedefs>
+      <includeTypedefs>false</includeTypedefs>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>
-      <codeCompletionDelay>400</codeCompletionDelay>
+      <codeCompletionDelay>250</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
-    <references/>
+    <references>
+      <pcs>Qt</pcs>
+    </references>
   </kdevcppsupport>
+  <kdevdocumentation>
+    <projectdoc>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
+    </projectdoc>
+  </kdevdocumentation>
   <kdevfileview>
     <groups>
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
-      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
       <showvcsfields>false</showvcsfields>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
     </tree>
   </kdevfileview>
   <kdevcvsservice>
