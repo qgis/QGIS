@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsPatternDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,15 +8,12 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>326</width>
-            <height>283</height>
+            <width>328</width>
+            <height>289</height>
         </rect>
     </property>
     <property name="caption">
         <string>select a pattern</string>
-    </property>
-    <property name="modal">
-        <bool>true</bool>
     </property>
     <grid>
         <property name="name">
