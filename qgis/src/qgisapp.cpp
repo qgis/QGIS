@@ -2433,6 +2433,7 @@ void QgisApp::options()
       optionsDialog->addTheme(dirs[i]);
     }
   }
+  optionsDialog->setCurrentTheme();
   if(optionsDialog->exec())
   {
     // set the theme if it changed
