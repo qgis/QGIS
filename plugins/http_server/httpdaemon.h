@@ -31,6 +31,7 @@ class HttpDaemon : public QServerSocket
   Q_OBJECT;
 public:
   HttpDaemon( QObject* parent=0 );
+  ~HttpDaemon();
   void newConnection( int socket );
 
 signals:

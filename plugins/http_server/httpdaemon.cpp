@@ -21,7 +21,9 @@ HttpDaemon::HttpDaemon( QObject* parent ) : QServerSocket(8081,1,parent)
         exit( 1 );
     }
 }
-
+HttpDaemon::~HttpDaemon()
+{
+}
 void HttpDaemon::newConnection( int theSocket )
 {
     // When a new client connects, the server constructs a QSocket and all
