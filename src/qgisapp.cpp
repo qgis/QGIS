@@ -2842,6 +2842,8 @@ void QgisApp::setTheme(QString themeName)
   actionHelpAbout->setIconSet(QIconSet(QPixmap(iconPath + "/help_about.png")));
   drawAction->setIconSet(QIconSet(QPixmap(iconPath + "/reload.png")));
   actionCapturePoint->setIconSet(QIconSet(QPixmap(iconPath + "/digitising_point.png")));
+  actionCaptureLine->setIconSet(QIconSet(QPixmap(iconPath + "/digitising_line.png")));
+  actionCapturePolygon->setIconSet(QIconSet(QPixmap(iconPath + "/digitising_general.png")));
   actionZoomIn->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_in.png")));
   actionZoomOut->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_out.png")));
   actionZoomFullExtent->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_full.png")));
