@@ -19,6 +19,8 @@
 #ifndef QGISINTERFACE_H
 #define QGISINTERFACE_H
 
+#include <qaction.h> 
+
 #include <qwidget.h>
 #include <map>
 class QgisApp;
@@ -70,6 +72,8 @@ class QgisInterface : public QWidget{
     virtual QgsMapLayer *activeLayer()=0;
     //! add a menu item to the main menu, postioned to the left of the Help menu
     virtual int addMenu(QString menuText, QPopupMenu *menu) =0;
+    //! Add an icon to the plugins toolbar
+    virtual int addToolBarIcon(QAction *qAction) =0;
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.

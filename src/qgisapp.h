@@ -246,6 +246,8 @@ private slots:
     void loadPlugin(QString name, QString description, QString mFullPath);
     //! Add a plugin menu to the main Plugins menu
     int addPluginMenu(QString menuText, QPopupMenu *menu);
+    //! Add an icon to the plugin toolbar
+    int addPluginToolBarIcon (QAction * qAction);
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state
@@ -332,6 +334,8 @@ private:
     QPopupMenu * mPopupMenu;
     //! Top level plugin menu
     QPopupMenu *mPluginMenu;
+    //! Plugin tool bar
+    QToolBar *mPluginToolBar;
     //! Popup menu for the map overview tools
     QPopupMenu *toolPopupOverviews;
     //! Popup menu for the display tools
