@@ -518,3 +518,21 @@ void QgsMapLayer::keyPressed ( QKeyEvent * e )
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
   std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
 }
+
+    /** Accessor for the coordinate transformation object */
+QgsCoordinateTransform * QgsMapLayer::coordinateTransform() 
+{
+#ifdef QGISDEBUG
+ std::cout << "Maplayer asked for coordinateTransform which is...." ;
+ if (!mCoordinateTransform)
+ {
+   std::cout << "*NOT* valid" << std::endl;
+ }
+ else
+ {
+   std::cout << "valid" << std::endl;
+ }
+ 
+#endif
+  
+ return mCoordinateTransform;};

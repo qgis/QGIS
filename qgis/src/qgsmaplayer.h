@@ -268,7 +268,7 @@ public:
     bool writeXML( QDomNode & layer_node, QDomDocument & document );
 
     /** Accessor for the coordinate transformation object */
-    QgsCoordinateTransform * coordinateTransform() {return mCoordinateTransform;};
+    QgsCoordinateTransform * coordinateTransform();
     
 
 public  slots:
