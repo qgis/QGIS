@@ -76,8 +76,8 @@ if test x${GEOS_CONFIG} = xno ; then
   AC_MSG_ERROR([geos-config not found! Supply it with --with-geos=PATH])
 else
   ac_geos_version=`${GEOS_CONFIG} --version`
-  if test `echo ${ac_geos_version} | sed -e 's#2\.0.*#OK#'` != OK ; then
-    AC_MSG_ERROR([Geos Version 2.0.x is needed, but you have $ac_geos_version!])
+  if test `echo ${ac_geos_version} | sed -e 's#2\.[0-9].*#OK#'` != OK ; then
+    AC_MSG_ERROR([Geos Version 2.x.x is needed, but you have $ac_geos_version!])
   else
     AC_MSG_CHECKING([GEOS_CFLAGS])
     GEOS_CFLAGS=`$GEOS_CONFIG --cflags`
