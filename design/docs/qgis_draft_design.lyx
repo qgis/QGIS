@@ -5994,7 +5994,7 @@ Sample QGIS Main Window Layout
 
 
 \begin_inset Graphics
-	filename /home/gsherman/development/qgis_design/qgismain.png
+	filename ./qgismain.png
 
 \end_inset 
 
@@ -6043,7 +6043,7 @@ Conceptual Diagram of Plugin Architecture
 
 
 \begin_inset Graphics
-	filename /home/gsherman/development/qgis_design/plugin.png
+	filename ./plugin.png
 
 \end_inset 
 
