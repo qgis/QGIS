@@ -25,3 +25,9 @@ QString s = QFileDialog::getSaveFileName(
                     "Choose a filename for the exported map file" );
 txtMapFilePath->setText(s);
 }
+
+
+void QgsMapserverExportBase::showHelp()
+{
+
+}

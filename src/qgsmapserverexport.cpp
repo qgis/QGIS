@@ -33,6 +33,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrect.h"
 #include "qgsmapserverexport.h"
+#include "qgshelpviewer.h"
 #include "qgis.h"
 
 // constructor
@@ -235,4 +236,11 @@ void QgsMapserverExport::writeMapFile(){
 		mapFile.close();
 	}else{
 	}
+}
+void QgsMapserverExport::showHelp(){
+	//QMessageBox::information(this, "Help","Help");
+	QgsHelpViewer *hv = new QgsHelpViewer(this);
+	hv->setModal(false);
+	hv->setCaption("QGIS Help - Mapserver Export");
+	hv->show();
 }

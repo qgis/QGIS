@@ -47,6 +47,7 @@ qgis_SOURCES =  qgisapp.cpp \
 				qgsshapefilelayer.cpp \
 				qgssymbol.cpp\
 				qgsmapserverexport.cpp \
+				qtiffio.cpp \
 				$(qgis_UI)\
 				$(qgis_MOC)
 qgis_MOC = 	qgisappbase.moc.cpp \
@@ -69,7 +70,8 @@ qgis_MOC = 	qgisappbase.moc.cpp \
 			qgsrasterlayer.moc.cpp\
 			qgsshapefilelayer.moc.cpp \
 			qgsmapserverexportbase.moc.cpp \
-			qgsmapserverexport.moc.cpp
+			qgsmapserverexport.moc.cpp \
+			qgshelpviewer.moc.cpp
 qgis_UI = qgisappbase.h\
 			qgisappbase.cpp\
 			qgslegenditembase.h\
@@ -86,7 +88,9 @@ qgis_UI = qgisappbase.h\
 			qgspluginmanagerbase.cpp\
 			qgsmessageviewer.h\
 			qgsmessageviewer.cpp \
- 			qgsmapserverexportbase.cpp
+ 			qgsmapserverexportbase.cpp \
+			qgshelpviewer.h \
+			qgshelpviewer.cpp
 
 # UI dependencies			
 qgisappbase.h: qgisappbase.ui
@@ -105,6 +109,8 @@ qgspluginmanagerbase.h: qgspluginmanagerbase.ui
 qgspluginmanagerbase.cpp: qgspluginmanagerbase.h qgspluginmanagerbase.ui
 qgsmessageviewer.h: qgsmessageviewer.ui
 qgsmessageviewer.cpp: qgsmessageviewer.h qgsmessageviewer.ui
+qgshelpviewer.h: qgshelpviewer.ui
+qgshelpviewer.cpp: qgshelpviewer.h qgshelpviewer.ui 
 
 #PostgreSQL UI dependencies
 qgsdbsourceselectbase.h: qgsdbsourceselectbase.ui

@@ -188,6 +188,7 @@ qgis_SOURCES = qgisapp.cpp \
 				qgsshapefilelayer.cpp \
 				qgssymbol.cpp\
 				qgsmapserverexport.cpp \
+				qtiffio.cpp \
 				$(qgis_UI)\
 				$(qgis_MOC)\
 $(am__append_1)
@@ -211,7 +212,8 @@ qgis_MOC = qgisappbase.moc.cpp \
 			qgsrasterlayer.moc.cpp\
 			qgsshapefilelayer.moc.cpp \
 			qgsmapserverexportbase.moc.cpp \
-			qgsmapserverexport.moc.cpp\
+			qgsmapserverexport.moc.cpp \
+			qgshelpviewer.moc.cpp\
 $(am__append_3)
 qgis_UI = qgisappbase.h\
 			qgisappbase.cpp\
@@ -229,7 +231,9 @@ qgis_UI = qgisappbase.h\
 			qgspluginmanagerbase.cpp\
 			qgsmessageviewer.h\
 			qgsmessageviewer.cpp \
- 			qgsmapserverexportbase.cpp\
+ 			qgsmapserverexportbase.cpp \
+			qgshelpviewer.h \
+			qgshelpviewer.cpp\
 $(am__append_2)
 
 #PostgreSQL files
@@ -271,29 +275,31 @@ am__qgis_SOURCES_DIST = qgisapp.cpp main.cpp qgisiface.cpp \
 	qgspluginmanager.cpp qgspoint.cpp qgspolygonsymbol.cpp \
 	qgsprojectio.cpp qgsrasterlayer.cpp qgsrect.cpp qgsrenderer.cpp \
 	qgsrenderitem.cpp qgsshapefilelayer.cpp qgssymbol.cpp \
-	qgsmapserverexport.cpp qgisappbase.h qgisappbase.cpp \
-	qgslegenditembase.h qgslegenditembase.cpp qgsabout.h \
-	qgsabout.cpp qgslayerpropertiesbase.h \
+	qgsmapserverexport.cpp qtiffio.cpp qgisappbase.h \
+	qgisappbase.cpp qgslegenditembase.h qgslegenditembase.cpp \
+	qgsabout.h qgsabout.cpp qgslayerpropertiesbase.h \
 	qgslayerpropertiesbase.cpp qgsidentifyresultsbase.h \
 	qgsidentifyresultsbase.cpp qgsattributetablebase.h \
 	qgsattributetablebase.cpp qgspluginmanagerbase.h \
 	qgspluginmanagerbase.cpp qgsmessageviewer.h \
-	qgsmessageviewer.cpp qgsmapserverexportbase.cpp \
-	qgsdbsourceselectbase.h qgsdbsourceselectbase.cpp \
-	qgsnewconnectionbase.h qgsnewconnectionbase.cpp \
-	qgisappbase.moc.cpp qgisapp.moc.cpp qgisinterface.moc.cpp \
-	qgsabout.moc.cpp qgsattributetablebase.moc.cpp \
-	qgsattributetable.moc.cpp qgsidentifyresultsbase.moc.cpp \
-	qgslayerpropertiesbase.moc.cpp qgslegend.moc.cpp \
-	qgslegenditembase.moc.cpp qgslegenditem.moc.cpp \
-	qgslegendview.moc.cpp qgsmapcanvas.moc.cpp qgsmaplayer.moc.cpp \
+	qgsmessageviewer.cpp qgsmapserverexportbase.cpp qgshelpviewer.h \
+	qgshelpviewer.cpp qgsdbsourceselectbase.h \
+	qgsdbsourceselectbase.cpp qgsnewconnectionbase.h \
+	qgsnewconnectionbase.cpp qgisappbase.moc.cpp qgisapp.moc.cpp \
+	qgisinterface.moc.cpp qgsabout.moc.cpp \
+	qgsattributetablebase.moc.cpp qgsattributetable.moc.cpp \
+	qgsidentifyresultsbase.moc.cpp qgslayerpropertiesbase.moc.cpp \
+	qgslegend.moc.cpp qgslegenditembase.moc.cpp \
+	qgslegenditem.moc.cpp qgslegendview.moc.cpp \
+	qgsmapcanvas.moc.cpp qgsmaplayer.moc.cpp \
 	qgsmaplayerinterface.moc.cpp qgsmessageviewer.moc.cpp \
 	qgspluginmanagerbase.moc.cpp qgsrasterlayer.moc.cpp \
 	qgsshapefilelayer.moc.cpp qgsmapserverexportbase.moc.cpp \
-	qgsmapserverexport.moc.cpp qgsdbsourceselectbase.moc.cpp \
-	qgsdatabaselayer.moc.cpp qgsdbsourceselect.moc.cpp \
-	qgsnewconnection.moc.cpp qgsnewconnectionbase.moc.cpp \
-	qgsdbsourceselect.cpp qgsnewconnection.cpp qgsdatabaselayer.cpp
+	qgsmapserverexport.moc.cpp qgshelpviewer.moc.cpp \
+	qgsdbsourceselectbase.moc.cpp qgsdatabaselayer.moc.cpp \
+	qgsdbsourceselect.moc.cpp qgsnewconnection.moc.cpp \
+	qgsnewconnectionbase.moc.cpp qgsdbsourceselect.cpp \
+	qgsnewconnection.cpp qgsdatabaselayer.cpp
 am__objects_1 = qgsdbsourceselectbase.$(OBJEXT) \
 	qgsnewconnectionbase.$(OBJEXT)
 @POSTGRESDB_TRUE@am__objects_2 = $(am__objects_1)
@@ -302,7 +308,7 @@ am__objects_3 = qgisappbase.$(OBJEXT) qgslegenditembase.$(OBJEXT) \
 	qgsidentifyresultsbase.$(OBJEXT) \
 	qgsattributetablebase.$(OBJEXT) qgspluginmanagerbase.$(OBJEXT) \
 	qgsmessageviewer.$(OBJEXT) qgsmapserverexportbase.$(OBJEXT) \
-	$(am__objects_2)
+	qgshelpviewer.$(OBJEXT) $(am__objects_2)
 am__objects_4 = qgsdbsourceselectbase.moc.$(OBJEXT) \
 	qgsdatabaselayer.moc.$(OBJEXT) qgsdbsourceselect.moc.$(OBJEXT) \
 	qgsnewconnection.moc.$(OBJEXT) \
@@ -321,7 +327,8 @@ am__objects_6 = qgisappbase.moc.$(OBJEXT) qgisapp.moc.$(OBJEXT) \
 	qgspluginmanagerbase.moc.$(OBJEXT) qgsrasterlayer.moc.$(OBJEXT) \
 	qgsshapefilelayer.moc.$(OBJEXT) \
 	qgsmapserverexportbase.moc.$(OBJEXT) \
-	qgsmapserverexport.moc.$(OBJEXT) $(am__objects_5)
+	qgsmapserverexport.moc.$(OBJEXT) qgshelpviewer.moc.$(OBJEXT) \
+	$(am__objects_5)
 am__objects_7 = qgsdbsourceselect.$(OBJEXT) qgsnewconnection.$(OBJEXT) \
 	qgsdatabaselayer.$(OBJEXT)
 @POSTGRESDB_TRUE@am__objects_8 = $(am__objects_7)
@@ -339,8 +346,8 @@ am_qgis_OBJECTS = qgisapp.$(OBJEXT) main.$(OBJEXT) qgisiface.$(OBJEXT) \
 	qgsprojectio.$(OBJEXT) qgsrasterlayer.$(OBJEXT) \
 	qgsrect.$(OBJEXT) qgsrenderer.$(OBJEXT) qgsrenderitem.$(OBJEXT) \
 	qgsshapefilelayer.$(OBJEXT) qgssymbol.$(OBJEXT) \
-	qgsmapserverexport.$(OBJEXT) $(am__objects_3) $(am__objects_6) \
-	$(am__objects_8)
+	qgsmapserverexport.$(OBJEXT) qtiffio.$(OBJEXT) $(am__objects_3) \
+	$(am__objects_6) $(am__objects_8)
 qgis_OBJECTS = $(am_qgis_OBJECTS)
 qgis_DEPENDENCIES =
 qgis_LDFLAGS =
@@ -370,6 +377,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/qgsdbsourceselect.moc.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsdbsourceselectbase.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsdbsourceselectbase.moc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qgshelpviewer.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qgshelpviewer.moc.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsidentifyresults.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsidentifyresultsbase.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsidentifyresultsbase.moc.Po \
@@ -414,7 +423,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/qgsrenderitem.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsshapefilelayer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qgsshapefilelayer.moc.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qgssymbol.Po
+@AMDEP_TRUE@	./$(DEPDIR)/qgssymbol.Po ./$(DEPDIR)/qtiffio.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -507,6 +516,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsdbsourceselect.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsdbsourceselectbase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsdbsourceselectbase.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgshelpviewer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgshelpviewer.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsidentifyresults.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsidentifyresultsbase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsidentifyresultsbase.moc.Po@am__quote@
@@ -553,6 +564,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsshapefilelayer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgsshapefilelayer.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qgssymbol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qtiffio.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -803,6 +815,8 @@ qgspluginmanagerbase.h: qgspluginmanagerbase.ui
 qgspluginmanagerbase.cpp: qgspluginmanagerbase.h qgspluginmanagerbase.ui
 qgsmessageviewer.h: qgsmessageviewer.ui
 qgsmessageviewer.cpp: qgsmessageviewer.h qgsmessageviewer.ui
+qgshelpviewer.h: qgshelpviewer.ui
+qgshelpviewer.cpp: qgshelpviewer.h qgshelpviewer.ui 
 
 #PostgreSQL UI dependencies
 qgsdbsourceselectbase.h: qgsdbsourceselectbase.ui
