@@ -299,6 +299,8 @@ void QgsSpit::getSchema(){
     	for (int i = 0; i < PQntuples(schemas); i++) {
         schema_list << QString(PQgetvalue(schemas, i, 0));
       }
+			if(schema_list.size()==0)
+				schema_list<<"public";
     }
     PQclear(schemas);
 	}
@@ -361,7 +363,8 @@ void QgsSpit::import(){
       pro->setLabelText("Importing files\n"+tblShapefiles->text(i,0));
       bool rel_exists1 = false;
       bool rel_exists2 = false;
-      query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+tblShapefiles->text(i,3)+"\'";
+      query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+tblShapefiles->text(i,3)+
+				"\' AND f_table_schema=\'"+tblShapefiles->text(i,4)+"\'";
       res = PQexec(pd, (const char *)query);
       rel_exists1 = (PQntuples(res)>0);
       if(PQresultStatus(res)!=PGRES_TUPLES_OK){
@@ -374,7 +377,8 @@ void QgsSpit::import(){
         PQclear(res);
       }
         
-      query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+tblShapefiles->text(i,3)+"\'";
+      query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+tblShapefiles->text(i,3)+"\' AND schemaname=\'"+
+				tblShapefiles->text(i,4)+"\'";
       res = PQexec(pd, (const char *)query);
       qWarning(query);
       rel_exists2 = (PQntuples(res)>0);
@@ -401,7 +405,11 @@ void QgsSpit::import(){
         PQclear(res);
       }
 				        
-			query = "SET SEARCH_PATH TO \'"+tblShapefiles->text(i,4)+"\'";
+			query = "SET SEARCH_PATH TO \'";
+			if(tblShapefiles->text(i,4)=="public")
+				query+="public\'";
+			else 
+				query+=tblShapefiles->text(i,4)+"\', \'public\'";
       res = PQexec(pd, query);
 			qWarning(query);
       if(PQresultStatus(res)!=PGRES_COMMAND_OK){
@@ -522,6 +530,7 @@ void QgsSpit::import(){
 				break;
 			}
     }
+		delete pro;
   }
 	PQfinish(pd);
 }
