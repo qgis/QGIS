@@ -25,6 +25,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include <iostream>
 #include <stdlib.h>
 
@@ -359,37 +360,30 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
     mEdited=true;
 }
 
-bool QgsAttributeTable::commitChanges(QgsVectorDataProvider* provider)
+bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 {
     bool returnvalue=true;
-
-    if(provider)
+    if(layer)
     {
-	//delete columns
-	if(!provider->deleteAttributes(mDeletedAttributes))
-	{
-	    returnvalue=false;
-	}
-	if(!provider->addAttributes(mAddedAttributes))
-	{
-	    returnvalue=false;
-	}
-	//change values
-	if(!provider->changeAttributeValues(mChangedValues))
+	if(!layer->commitAttributeChanges(mDeletedAttributes, mAddedAttributes, mChangedValues))
 	{
 	    returnvalue=false;
 	}
     }
+    else
+    {
+	returnvalue=false;
+    }
     mEdited=false;
     clearEditingStructures();
-    return returnvalue;//soon
+    return returnvalue;
 }
 
-bool QgsAttributeTable::rollBack(QgsVectorDataProvider* provider)
+bool QgsAttributeTable::rollBack(QgsVectorLayer* layer)
 {
-    if(provider)
+    if(layer)
     {
-	fillTable(provider);
+	fillTable(layer);
     }
     mEdited=false;
     clearEditingStructures();
@@ -397,8 +391,9 @@ bool QgsAttributeTable::rollBack(QgsVectorDataProvider* provider)
 }
 
 //todo: replace some of the lines in QgsVectorLayer::table() with this function
-void QgsAttributeTable::fillTable(QgsVectorDataProvider* provider)
+void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
 {
+    QgsVectorDataProvider* provider=layer->getDataProvider();
     if(provider)
     {
 	int row = 0;
