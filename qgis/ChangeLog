@@ -1,7 +1,21 @@
 QGIS Change Log
-ChangeLog,v 1.57 2004/04/17 22:07:12 jobi Exp
+ChangeLog,v 1.58 2004/04/18 23:44:39 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-19 [jobi] 0.1.0devel34
+** Changed to simple macros for detecting QT and GDAL
+** Added code for detecting QGIS as m4 file to tools
+** this will be installed together with QT and GDAL detection to
+   $prefix/share/aclocal/qgis.m4
+   so the plugins can just use those simple unique macros
+** updated German translation
+!! Developers have to link the installed qgis.m4 to /usr/share/aclocal/
+!! or where ever aclocal keeps the m4 files
+!! otherwise it's not detected by the plugins autogen.sh (more exactly
+!! aclocal)
+!! It can be cheated by adding -I path/to/qgis.m4 to the aclocal of
+!! autogen.sh. But be carefull not to commit that to CVS
 
 2004-04-18 [jobi] 0.1.0devel33
 ** Added internationalisations stuff
