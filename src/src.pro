@@ -3,11 +3,10 @@
 # Subdir relative project main directory: ./src
 # Target is an application:  qgis
 
-#LIBS += -L$/usr/local/lib -lgdal.1.1
-
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgisinterface.cpp \
+           qgsdatasource.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
@@ -30,9 +29,7 @@ SOURCES += main.cpp \
            qgsprojectio.cpp \
            qgisiface.cpp \
 	   qgspluginmanager.cpp \
-	   qgspluginitem.cpp \
-	   qgsfeature.cpp \
-	   qgsfeatureattribute.cpp
+	   qgspluginitem.cpp
 HEADERS += qgisapp.h \
            qgisinterface.h \
            qgisappbase.ui.h \
@@ -62,9 +59,7 @@ HEADERS += qgisapp.h \
            qgisiface.h \
 	   qgspluginmanager.h \
 	   qgspluginitem.h \
-	   qgsmaplayerinterface.h \
-	   qgsfeature.h \
-	   qgsfeatureattribute.h
+	   qgsmaplayerinterface.h
 FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
@@ -94,7 +89,6 @@ message("OGR enabled - $$OGR")
 LIBS+= $$system(gdal-config --libs)
 GDALINC = $$system(gdal-config --cflags)
 INCLUDEPATH += $$GDALINC
-
 # conditional tests for optional modules
 
 #.............................
@@ -128,4 +122,3 @@ message ("PGSQL environment variable is not defined. PostgreSQL excluded from bu
 message ("To build with PostgreSQL support set PGSQL to point to your Postgres installation")
 }
 }
-message ("Configuration complete, type make to build qgis")
