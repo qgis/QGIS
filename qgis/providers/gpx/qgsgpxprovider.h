@@ -189,6 +189,9 @@ public:
   QString mDataSourceUri;
   QString mFileName;
   enum { WaypointType, RouteType, TrackType } mFeatureType;
+  enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr, 
+		   CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr };
+  static const char* attr[];
   //! Current selection rectangle
   QgsRect *mSelectionRectangle;
   bool mValid;
