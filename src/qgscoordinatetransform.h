@@ -65,6 +65,25 @@ class QgsCoordinateTransform{
     */        
     QgsRect transform(QgsRect theRect);
     
+    /*! Inverse Transform the point from Dest Coordinate System to Source Coordinate System
+    * @param p Point to transform (in destination coord system)
+    * @return QgsPoint in Source Coordinate System
+    */    
+    QgsPoint inverseTransform(QgsPoint p);
+    
+    /*! Inverse Transform the point specified by x,y from Dest Coordinate System to Source Coordinate System
+    * @param x x cordinate of point to transform (in dest coord sys)
+    * @param y y coordinate of point to transform (in dest coord sys)
+    * @return QgsPoint in Source Coordinate System
+    */
+    QgsPoint inverseTransform(double x, double y);
+
+    /*! Inverse Transform a QgsRect to the source Coordinate system 
+    * @param QgsRect rect to transform (in dest coord sys)
+    * @return QgsRect in Source Coordinate System
+    */        
+    QgsRect inverseTransform(QgsRect theRect); 
+       
     QString showParameters();
     
     //! Accessor and mutator for source WKT
@@ -80,16 +99,31 @@ class QgsCoordinateTransform{
     void initialise();
     //! flag to show whether the transform is properly initialised or not
     bool mInitialisedFlag;
+    /** Used for forward transform */
     OGRCoordinateTransformation * mSourceToDestXForm;
+    /** Used for reverse transform */
+    OGRCoordinateTransformation * mDestToSourceXForm;
+    /** Transform definitionsin WKT format */
     QString mSourceWKT,mDestWKT;
+    /** Dunno if we need this - XXXXX Delete if unused */
     bool mInputIsDegrees;
     //set to true if src cs  == dest cs
     bool mShortCircuit;
 };
 
 
+//--------------------------------------------------------
+// Inlined method implementations for best performance
+//--------------------------------------------------------
 
 
+// ------------------------------------------------------------------
+//
+//
+// --------------- FORWARD PROJECTIONS ------------------------------
+//
+//
+// ------------------------------------------------------------------
 inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint)
 {
   if (mShortCircuit || !mInitialisedFlag) return thePoint;
@@ -171,4 +205,98 @@ inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
     return QgsPoint(x, y);
   } 
 }
+
+// ------------------------------------------------------------------
+//
+//
+// --------------- INVERSE PROJECTIONS ------------------------------
+//
+//
+// ------------------------------------------------------------------
+
+
+inline QgsPoint QgsCoordinateTransform::inverseTransform(QgsPoint thePoint)
+{
+  if (mShortCircuit || !mInitialisedFlag) return thePoint;
+  // transform x
+  double x = thePoint.x(); 
+  double y = thePoint.y();
+  // Number of points to reproject------+
+  //                                    | 
+  //                                    V 
+  if ( ! mDestToSourceXForm->Transform( 1, &x, &y ) )
+  {
+    //something bad happened....
+    throw QgsCsException(QString("Coordinate inverse transform failed"));
+  }
+  else
+  {
+#ifdef QGISDEBUG 
+    std::cout << "Point inverse projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
+#endif        
+    return QgsPoint(x, y);
+  } 
+}
+
+inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect theRect)
+{
+  if (mShortCircuit || !mInitialisedFlag) return theRect;
+  // transform x
+  double x1 = theRect.xMin(); 
+  double y1 = theRect.yMin();
+  double x2 = theRect.xMax(); 
+  double y2 = theRect.yMax();  
+  // Number of points to reproject------+
+  //                                    | 
+  //                                    V 
+  if ( ! mDestToSourceXForm->Transform( 1, &x1, &y1 ) || ! mDestToSourceXForm->Transform( 1, &x2, &y2 ) )
+  {
+    //something bad happened....
+    throw QgsCsException(QString("Coordinate inverse transform failed"));
+  }
+  else
+  {
+#ifdef QGISDEBUG 
+    std::cout << "Rect inverse projection..." 
+              << "Xmin : " 
+              << theRect.xMin() 
+	      << "-->" << x1 
+	      << ", Ymin: " 
+	      << theRect.yMin() 
+	      << " -->" << y1
+              << "Xmax : " 
+              << theRect.xMax() 
+	      << "-->" << x2 
+	      << ", Ymax: " 
+	      << theRect.yMax() 
+	      << " -->" << y2	      
+	      << std::endl;
+#endif        
+    return QgsRect(x1, y1, x2 , y2);
+  } 
+}
+
+
+inline QgsPoint QgsCoordinateTransform::inverseTransform(double theX, double theY)
+{
+  if (mShortCircuit || !mInitialisedFlag) return QgsPoint(theX,theY);
+  // transform x
+  double x = theX; 
+  double y = theY;
+  if ( ! mDestToSourceXForm->Transform( 1, &x, &y ) )
+  {
+    //something bad happened....
+    throw QgsCsException(QString("Coordinate inverseTransform failed"));
+  }
+  else
+  {
+#ifdef QGISDEBUG 
+    std::cout << "Point inverse projection...X : " << theX << "-->" << x << ", Y: " << theY << " -->" << y << std::endl;
+#endif    
+    return QgsPoint(x, y);
+  } 
+}
+
+
+
 #endif // QGSCOORDINATETRANSFORM_H
