@@ -62,7 +62,7 @@ Introduction
 This document describes the requirements and design for Quantum GIS (QGIS),
  a desktop GIS application for Linux and Unix.
  This document presents use cases, high-level class diagrams, and additional
- information about the design and implementaion of QGIS.
+ information about the design and implementation of QGIS.
  
 \layout Standard
 
@@ -3775,8 +3775,8 @@ Goal in Context:
 
 \layout Standard
 \added_space_top smallskip 
-Create a new data layer or add to an existing layer by digitizing information
- from a raster image on the screen (heads-up digitizing)
+Create a new data layer that contains a buffer around one or more features
+ on an existing layer
 \end_inset 
 </cell>
 </row>
@@ -3816,7 +3816,7 @@ Preconditions:
 
 \layout Standard
 \added_space_top smallskip 
-Raster is loaded and displayed
+Data layer containing features to buffer is loaded and displayed
 \end_inset 
 </cell>
 </row>
@@ -3836,7 +3836,7 @@ Success End Condition:
 
 \layout Standard
 \added_space_top smallskip 
-New features are added to the data layer and saved to the data store
+New data layer containing polygon buffers is created
 \end_inset 
 </cell>
 </row>
@@ -3856,8 +3856,8 @@ Failed End Condition:
 
 \layout Standard
 \added_space_top smallskip 
-Existing data is not changed but remains in the state prior to beginning
- the edit operation
+No new data layer is created and application remains in state prior to beginning
+ of buffer operation
 \end_inset 
 </cell>
 </row>
@@ -3897,7 +3897,8 @@ Trigger:
 
 \layout Standard
 \added_space_top smallskip 
-User needs to create new data from a raster 
+User needs to buffer features for the purpose of performing spatial analysis
+ or answering a question about proximity of features
 \end_inset 
 </cell>
 </row>
@@ -3917,22 +3918,16 @@ Description of Steps:
 
 \layout Enumerate
 
-Loads or create the target layer 
+Select feature or features to buffer
 \layout Enumerate
 
-Enter edit mode
+Specify the buffer distance in appropriate map units
 \layout Enumerate
 
-Digitize features using the underlying raster
+Create buffer
 \layout Enumerate
 
-Add attributes to each feature as it is completed
-\layout Enumerate
-
-Save data
-\layout Enumerate
-
-Exit edit mode
+Save buffer layer to permanent store
 \end_inset 
 </cell>
 </row>
