@@ -1,9 +1,9 @@
 /***************************************************************************
-                          qgsrasterlayerproperties.cpp  -  description
-                             -------------------
-    begin                : 1/1/2004
-    copyright            : (C) 2004 Tim Sutton
-    email                : tim@linfiniti.com
+  qgsrasterlayerproperties.cpp  -  description
+  -------------------
+begin                : 1/1/2004
+copyright            : (C) 2004 Tim Sutton
+email                : tim@linfiniti.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -37,141 +37,147 @@
 #include <qlistview.h>
 #include <qlistbox.h>
 #include <qtextbrowser.h>
-
+#include <qspinbox.h>
 
 const char * const ident = 
-   "$Id";
+"$Id";
 
 
-QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr)
-    : rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
+    QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr)
+: rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
-    // build GUI components
 
-    cboColorMap->insertItem(tr("Grayscale"));
-    cboColorMap->insertItem(tr("Pseudocolor"));
-    cboColorMap->insertItem(tr("Freak Out"));
+  // set up the scale based layer visibility stuff....
+  chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
+  spinMinimumScale->setValue(lyr->minScale());
+  spinMaximumScale->setValue(lyr->maxScale());
 
-    //set the std deviations to be plotted combo box
-    cboStdDev->insertItem("0");
-    cboStdDev->insertItem("0.5");
-    cboStdDev->insertItem("0.75");
-    cboStdDev->insertItem("1");
-    cboStdDev->insertItem("1.25");
-    cboStdDev->insertItem("1.5");
-    cboStdDev->insertItem("1.75");
-    cboStdDev->insertItem("2");
-    cboStdDev->insertItem("2.25");
-    cboStdDev->insertItem("2.5");
-    cboStdDev->insertItem("2.75");
-    cboStdDev->insertItem("3");
+  // build GUI components
 
-    //
-    // Set up the combo boxes that contain band lists using the qstring list generated above
-    //
+  cboColorMap->insertItem(tr("Grayscale"));
+  cboColorMap->insertItem(tr("Pseudocolor"));
+  cboColorMap->insertItem(tr("Freak Out"));
 
-    if (rasterLayer->getRasterLayerType()
-        == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
-    {
-        cboRed->insertItem("Red");
-        cboGreen->insertItem("Red");
-        cboBlue->insertItem("Red");
+  //set the std deviations to be plotted combo box
+  cboStdDev->insertItem("0");
+  cboStdDev->insertItem("0.5");
+  cboStdDev->insertItem("0.75");
+  cboStdDev->insertItem("1");
+  cboStdDev->insertItem("1.25");
+  cboStdDev->insertItem("1.5");
+  cboStdDev->insertItem("1.75");
+  cboStdDev->insertItem("2");
+  cboStdDev->insertItem("2.25");
+  cboStdDev->insertItem("2.5");
+  cboStdDev->insertItem("2.75");
+  cboStdDev->insertItem("3");
 
-        cboRed->insertItem("Green");
-        cboGreen->insertItem("Green");
-        cboBlue->insertItem("Green");
+  //
+  // Set up the combo boxes that contain band lists using the qstring list generated above
+  //
 
-        cboRed->insertItem("Blue");
-        cboGreen->insertItem("Blue");
-        cboBlue->insertItem("Blue");
+  if (rasterLayer->getRasterLayerType()
+          == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
+  {
+    cboRed->insertItem("Red");
+    cboGreen->insertItem("Red");
+    cboBlue->insertItem("Red");
 
-        cboRed->insertItem("Not Set");
-        cboGreen->insertItem("Not Set");
-        cboBlue->insertItem("Not Set");
+    cboRed->insertItem("Green");
+    cboGreen->insertItem("Green");
+    cboBlue->insertItem("Green");
 
-        cboGray->insertItem("Red");
-        cboGray->insertItem("Green");
-        cboGray->insertItem("Blue");
-        cboGray->insertItem("Not Set");
-    }
-    else                   // all other layer types use band name entries only
-    {
+    cboRed->insertItem("Blue");
+    cboGreen->insertItem("Blue");
+    cboBlue->insertItem("Blue");
+
+    cboRed->insertItem("Not Set");
+    cboGreen->insertItem("Not Set");
+    cboBlue->insertItem("Not Set");
+
+    cboGray->insertItem("Red");
+    cboGray->insertItem("Green");
+    cboGray->insertItem("Blue");
+    cboGray->insertItem("Not Set");
+  }
+  else                   // all other layer types use band name entries only
+  {
 #ifdef QGISDEBUG
-        std::cout << "Populating combos for non paletted layer" << std::endl;
+    std::cout << "Populating combos for non paletted layer" << std::endl;
 #endif
 
-        //
-        // Get a list of band names
-        //
-        QStringList myBandNameQStringList;
+    //
+    // Get a list of band names
+    //
+    QStringList myBandNameQStringList;
 
-        int myBandCountInt = rasterLayer->getBandCount();
+    int myBandCountInt = rasterLayer->getBandCount();
 
-        for (int myIteratorInt = 1;
-             myIteratorInt <= myBandCountInt;
-             ++myIteratorInt)
-        {
-            //find out the name of this band
-            QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt)
-                ;
-            //keep a list of band names for later use
-            myBandNameQStringList.append(myRasterBandNameQString);
-        }
-
-        myBandCountInt = 1;
-
-        for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
-             myIterator != myBandNameQStringList.end(); 
-             ++myIterator)
-        {
-            QString myQString = *myIterator;
-#ifdef QGISDEBUG
-
-            std::cout << "Inserting : " << myQString << std::endl;
-#endif
-
-            cboGray->insertItem(myQString);
-            cboRed->insertItem(myQString);
-            cboGreen->insertItem(myQString);
-            cboBlue->insertItem(myQString);
-        }
-        cboRed->insertItem("Not Set");
-        cboGreen->insertItem("Not Set");
-        cboBlue->insertItem("Not Set");
-        cboGray->insertItem("Not Set");
+    for (int myIteratorInt = 1;
+            myIteratorInt <= myBandCountInt;
+            ++myIteratorInt)
+    {
+      //find out the name of this band
+      QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt)
+          ;
+      //keep a list of band names for later use
+      myBandNameQStringList.append(myRasterBandNameQString);
     }
 
-    //
-    // Set up the pyramiding tab
-    //
+    myBandCountInt = 1;
+
+    for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
+            myIterator != myBandNameQStringList.end(); 
+            ++myIterator)
+    {
+      QString myQString = *myIterator;
+#ifdef QGISDEBUG
+
+      std::cout << "Inserting : " << myQString << std::endl;
+#endif
+
+      cboGray->insertItem(myQString);
+      cboRed->insertItem(myQString);
+      cboGreen->insertItem(myQString);
+      cboBlue->insertItem(myQString);
+    }
+    cboRed->insertItem("Not Set");
+    cboGreen->insertItem("Not Set");
+    cboBlue->insertItem("Not Set");
+    cboGray->insertItem("Not Set");
+  }
+
+  //
+  // Set up the pyramiding tab
+  //
 #ifdef WIN32
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-    QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
-    QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
+  QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
+  QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
 
-    RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
-    RasterPyramidList::iterator myRasterPyramidIterator;
+  RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+  RasterPyramidList::iterator myRasterPyramidIterator;
 
-    for ( myRasterPyramidIterator=myPyramidList.begin();
+  for ( myRasterPyramidIterator=myPyramidList.begin();
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
+  {
+    if ((*myRasterPyramidIterator).existsFlag==true)
     {
-        if ((*myRasterPyramidIterator).existsFlag==true)
-        {
-            lbxPyramidResolutions->insertItem(myPyramidPixmap,
-                                              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-                                              QString::number((*myRasterPyramidIterator).yDimInt)); 
-        }
-        else
-        {
-            lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
-                                              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-                                              QString::number((*myRasterPyramidIterator).yDimInt)); 
-        }
+      lbxPyramidResolutions->insertItem(myPyramidPixmap,
+              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+              QString::number((*myRasterPyramidIterator).yDimInt)); 
     }
+    else
+    {
+      lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+              QString::number((*myRasterPyramidIterator).yDimInt)); 
+    }
+  }
 
-    sync();                     // update based on lyr's current state
+  sync();                     // update based on lyr's current state
 } // QgsRasterLayerProperties ctor
 
 
@@ -183,6 +189,10 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
 
 void QgsRasterLayerProperties::apply()
 {
+  // set up the scale based layer visibility stuff....
+  rasterLayer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
+  rasterLayer->setMinScale(spinMinimumScale->value());
+  rasterLayer->setMaxScale(spinMaximumScale->value());
 
   rasterLayer->setTransparency(static_cast < unsigned int >(255 - sliderTransparency->value()));
   //set the std deviations to be plotted
@@ -612,11 +622,11 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   for ( unsigned int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
     QListBoxItem *myItem = lbxPyramidResolutions->item( myCounterInt );
-      if ( myItem->isSelected() )
-      {
-        //mark to be pyramided
-        myPyramidList[myCounterInt].existsFlag=true;
-      }
+    if ( myItem->isSelected() )
+    {
+      //mark to be pyramided
+      myPyramidList[myCounterInt].existsFlag=true;
+    }
   }
   //
   // Ask raster layer to build the pyramids
@@ -660,12 +670,12 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
 
 
 /**
-   @note moved from ctor
+  @note moved from ctor
 
-   Previously this dialog was created anew with each right-click pop-up menu
-   invokation.  Changed so that the dialog always exists after first
-   invocation, and is just re-synchronized with its layer's state when
-   re-shown.
+  Previously this dialog was created anew with each right-click pop-up menu
+  invokation.  Changed so that the dialog always exists after first
+  invocation, and is just re-synchronized with its layer's state when
+  re-shown.
 
 */
 void QgsRasterLayerProperties::sync()

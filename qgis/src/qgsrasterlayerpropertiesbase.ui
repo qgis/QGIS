@@ -819,7 +819,7 @@
                             </property>
                             <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
                                 <property name="name">
-                                    <cstring>chkUseScaleDependentRendering_2</cstring>
+                                    <cstring>chkUseScaleDependentRendering</cstring>
                                 </property>
                                 <property name="text">
                                     <string>Use scale dependent rendering</string>
@@ -835,7 +835,7 @@
                             </widget>
                             <widget class="QSpinBox" row="1" column="4">
                                 <property name="name">
-                                    <cstring>spinMaximumScale_2_2</cstring>
+                                    <cstring>spinMaximumScale</cstring>
                                 </property>
                                 <property name="maxValue">
                                     <number>100000000</number>
@@ -857,7 +857,7 @@
                             </widget>
                             <widget class="QSpinBox" row="1" column="1" rowspan="1" colspan="2">
                                 <property name="name">
-                                    <cstring>spinMinimumScale_2</cstring>
+                                    <cstring>spinMinimumScale</cstring>
                                 </property>
                                 <property name="maxValue">
                                     <number>100000000</number>
