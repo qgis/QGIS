@@ -127,7 +127,9 @@ void QgsPgGeoprocessing::buffer()
 
             // create the connection string
             QString connInfo = dataSource.left(dataSource.find("table="));
+            #ifdef DEBUG
             std::cerr << "Data source = " << QString("Datasource:%1\n\nConnectionInfo:%2").arg(dataSource).arg(connInfo) << std::endl;
+            #endif
              // connect to the database and check the capabilities
              PGconn *capTest = PQconnectdb((const char *) connInfo);
              if (PQstatus(capTest) == CONNECTION_OK) {
@@ -187,7 +189,9 @@ void QgsPgGeoprocessing::buffer()
                   QString("select srid,f_geometry_column from geometry_columns where f_table_schema='%1' and f_table_name='%2'")
                   .arg(schema)
                   .arg(tableName.mid(tableName.find(".") + 1));
+                #ifdef DEBUG
                 std::cerr << "SRID SQL" << sridSql << std::endl;
+                #endif 
                 QString geometryCol;
                 PGresult *sridq = PQexec(conn, (const char *) sridSql);
                 if (PQresultStatus(sridq) == PGRES_TUPLES_OK) {
@@ -224,7 +228,9 @@ void QgsPgGeoprocessing::buffer()
                       sql = QString("set search_path = '%1','public'").arg(bb->schema());
                       result = PQexec(conn, (const char *) sql);
                       PQclear(result);
+                      #ifdef DEBUG
                       std::cerr << sql << std::endl;
+                      #endif
                     }
                     // first create the new table
 
@@ -233,9 +239,13 @@ void QgsPgGeoprocessing::buffer()
                       .arg(bb->bufferLayerName())
                       .arg(objId)
                       .arg(objIdType);
+                    #ifdef DEBUG
                     std::cerr << sql << std::endl;
+                    #endif
                     result = PQexec(conn, (const char *) sql);
+                    #ifdef DEBUG
                     std::cerr << "Status from create table is " << PQresultStatus(result) << std::endl;
+                    #endif
                     if (PQresultStatus(result) == PGRES_COMMAND_OK) {
                         PQclear(result);
                         // add the geometry column
@@ -247,14 +257,18 @@ void QgsPgGeoprocessing::buffer()
                           .arg(bb->srid())
                           .arg("POLYGON")
                           .arg("2");
+                        #ifdef DEBUG
                         std::cerr << sql << std::endl;
+                        #endif
                         PGresult *geoCol = PQexec(conn, (const char *) sql);
                         PQclear(geoCol);
                         // drop the check constraint based on geometry type
                         sql = QString("alter table %1.%2 drop constraint \"$2\"")
                           .arg(bb->schema())
                           .arg(bb->bufferLayerName());
+                        #ifdef DEBUG
                         std::cerr << sql << std::endl;
+                        #endif
                         result = PQexec(conn, (const char *) sql);
                         PQclear(result);
                         // check pg version and formulate insert query accordingly
@@ -268,7 +282,9 @@ void QgsPgGeoprocessing::buffer()
                           // modify the tableName 
                           tableName = tableName.mid(tableName.find(".")+1);
                         }
+                        #ifdef DEBUG
                           std::cerr << "Table name for PG 7.3 is: " << tableName.mid(tableName.find(".")+1) << std::endl;
+                        #endif
                         //   if(PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
                         // do the buffer and insert the features
                         if (objId == "objectid") {
@@ -285,13 +301,17 @@ void QgsPgGeoprocessing::buffer()
                               .arg(geometryCol)
                               .arg(bb->bufferDistance().toDouble())
                               .arg(tableName);
-                            std::cerr << sql << std::endl;
+                              #ifdef DEBUG
+                              std::cerr << sql << std::endl;
+                              #endif
 
                         }
                         result = PQexec(conn, (const char *) sql);
                         PQclear(result);
                         // }
+                        #ifdef DEBUG
                         std::cerr << sql << std::endl;
+                        #endif
                         result = PQexec(conn, "end work");
                         PQclear(result);
                         result = PQexec(conn, "commit;vacuum");
@@ -302,12 +322,16 @@ void QgsPgGeoprocessing::buffer()
                         if (bb->addLayerToMap()) {
                             // create the connection string
                             QString newLayerSource = dataSource.left(dataSource.find("table="));
+                            #ifdef DEBUG
                             std::cerr << "newLayerSource: " << newLayerSource << std::endl;
+                            #endif
                             // add the schema.table and geometry column
                             /*  newLayerSource += "table=" + bb->schema() + "." + bb->bufferLayerName()  
                                + " (" + bb->geometryColumn() + ")"; */
+                            #ifdef DEBUG
                             std::cerr << "newLayerSource: " << newLayerSource << std::endl;
                             std::cerr << "Adding new layer using\n\t" << newLayerSource << std::endl;
+                            #endif
                             // host=localhost dbname=gis_data user=gsherman password= table=public.alaska (the_geom)
                             qI->addVectorLayer(newLayerSource, bb->schema() + "." + bb->bufferLayerName()
                                                + " (" + bb->geometryColumn() + ")", "postgres");
@@ -342,7 +366,9 @@ void QgsPgGeoprocessing::buffer()
 QString QgsPgGeoprocessing::postgisVersion(PGconn *connection){
   PGresult *result = PQexec(connection, "select postgis_version()");
   postgisVersionInfo = PQgetvalue(result,0,0);
+  #ifdef DEBUG
   std::cerr << "PostGIS version info: " << postgisVersionInfo << std::endl;
+  #endif
   // assume no capabilities
   geosAvailable = false;
   gistAvailable = false;
