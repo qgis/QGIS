@@ -1493,7 +1493,7 @@ void QgisApp::saveMapAsImage()
   // get a list of supported output image types
   int myCounterInt=0;
   QString myFilters;
-  for (myCounterInt;myCounterInt < QImageIO::outputFormats().count(); myCounterInt++ ) 
+  for ( ; myCounterInt < QImageIO::outputFormats().count(); myCounterInt++ ) 
   {
     QString myFormat=QString(QImageIO::outputFormats().at( myCounterInt ));
     QString myFilter = createFileFilter_(myFormat + " format", "*."+myFormat);

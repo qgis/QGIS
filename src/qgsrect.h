@@ -19,11 +19,15 @@
 #ifndef QGSRECT_H
 #define QGSRECT_H
 
-#include <iostream>
+#include <iosfwd>
 
+#ifndef QSTRING_H
 #include <qstring.h>
+#endif
 
+#ifndef QGSPOINT_H
 #include <qgspoint.h>
+#endif
 
 
 /*! \class QgsRect

@@ -3,6 +3,10 @@ ChangeLog,v 1.200 2004/10/21 17:27:35 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-10-26 [mcoletti] 0.5.0devel13
+** regarding saving and restoring units in project files.
+** made many minor bug fixes and tidying up
+
 2004-10-22 [larsl] 0.5.0devel12
 ** Removed more unused code in the GPS plugin, changed the GPS plugin source
    to follow the coding standards better

@@ -622,6 +622,9 @@ QString QgsRasterLayer::getDrawingStyleAsQString()
       default:
           break;
   }
+
+  return QString("INVALID_DRAWING_STYLE"); // XXX I hope this is ok to return
+
 }
 
 void QgsRasterLayer::setDrawingStyle(QString theDrawingStyleQString)
@@ -1785,6 +1788,9 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQStr
       return myRasterBandStats;
     }
   }
+
+  return RasterBandStats();     // return a null one
+                                // XXX is this ok?  IS there a "null" one?
 }
 
 //get the number of a band given its name

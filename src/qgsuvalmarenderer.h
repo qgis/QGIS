@@ -28,7 +28,7 @@ class QgsUValMaRenderer: public QgsRenderer
 {
  public:
     QgsUValMaRenderer();
-    ~QgsUValMaRenderer();
+    virtual ~QgsUValMaRenderer();
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected);
     /**Reads the renderer configuration from an XML file

@@ -86,6 +86,13 @@ class QgisIface : public QgisInterface{
         /** Return a pointer to the map layer registry */
         QgsMapLayerRegistry * getLayerRegistry();	
     private:
+
+        /// QgisIface aren't copied
+        QgisIface( QgisIface const & );
+        
+        /// QgisIface aren't copied
+        QgisIface & operator=( QgisIface const & );
+
         //! Pointer to the QgisApp object
         QgisApp *qgis;
 };

@@ -341,6 +341,13 @@ public slots:
     void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
     void drawExtentRectangle(QPainter *);
 private:
+
+    /// QgisApp aren't copyable
+    QgisApp( QgisApp const & );
+
+    /// QgisApp aren't copyable
+    QgisApp & operator=( QgisApp const & );
+
     //! A central registry that keeps track of all loaded layers.
     // prefer QgsMapLayerRegistry::instance() to emphasize Singleton
     ///QgsMapLayerRegistry * mMapLayerRegistry;

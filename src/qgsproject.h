@@ -28,9 +28,10 @@
 #include <qvaluelist.h>
 #include <qvariant.h>
 
+#include <qgsscalecalculator.h>
+
 
 class QFileInfo;
-
 
 
 /** Reads and writes project states.
@@ -73,6 +74,19 @@ public:
     /** returns title */
     QString const & title() const;
     //@}
+
+    /**
+     * Gets the currently select map units
+     * @return int which matches a value in the units enum in QgsScaleCalculator::units
+     */
+    QgsScaleCalculator::units mapUnits() const;
+
+
+    /**
+     * Set the map units
+     * @param new units type
+     */
+    void mapUnits(QgsScaleCalculator::units u);
 
 
     /**
