@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.200 2004/10/21 17:27:35 mcoletti Exp
+# ChangeLog,v 1.212 2004/11/12 00:40:06 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-11-11 [gsherman] 0.5.0devel22
+** Added ifdef's for WIN32 around dynamic_casts in the vector renderer
+	dialogs. Even though rtti is enabled, use of dynamic casts causes seg
+	faults under WIN32.
 
 2004-11-09 [timlinux] 0.5.0devel21
 ** Added options to graticule builder to allow you to define origin and
