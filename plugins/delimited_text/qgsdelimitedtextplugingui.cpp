@@ -17,24 +17,23 @@
 #include <qfile.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
-#include "plugingui.h"
+#include "qgsdelimitedtextplugingui.h"
+#include "../../src/qgisiface.h"
 
-
-PluginGui::PluginGui() : PluginGuiBase()
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QgsDelimitedTextPluginGuiBase()
 {
 
 }
 
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-  : PluginGuiBase( parent, name, modal, fl )
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , WFlags fl  ) : QgsDelimitedTextPluginGuiBase( parent, name, modal, fl ), qI(_qI)
 {
 
 }  
-PluginGui::~PluginGui()
+QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsDelimitedTextPluginGui::pbnOK_clicked()
 {
   //Build the delimited text URI from the user provided information
   QString uri = QString("%1?delimiter=%2&xField=%3&yField=%4")
@@ -47,7 +46,7 @@ void PluginGui::pbnOK_clicked()
   emit drawVectorLayer(uri,QString("layername"),"delimitedtext");
 } 
 
-void PluginGui::updateFieldLists()
+void QgsDelimitedTextPluginGui::updateFieldLists()
 {
   // Update the x and y field dropdown boxes
 #ifdef QGISDEBUG  
@@ -58,6 +57,9 @@ void PluginGui::updateFieldLists()
   if(QFile::exists(txtFilePath->text())){
     QFile *file = new QFile(txtFilePath->text());
     if ( file->open( IO_ReadOnly ) ) {
+      // clear the field lists
+      cmbXField->clear();
+      cmbYField->clear();
       QTextStream stream( file );
       QString line;
       line = stream.readLine(); // line of text excluding '\n'
@@ -87,7 +89,7 @@ void PluginGui::updateFieldLists()
   }
 
 }
-void PluginGui::getOpenFileName()
+void QgsDelimitedTextPluginGui::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
   QString s = QFileDialog::getOpenFileName(
@@ -103,9 +105,13 @@ void PluginGui::getOpenFileName()
   // the header row
   updateFieldLists();
 }
-void PluginGui::enableBrowseButton(const QString &delimiter)
+void QgsDelimitedTextPluginGui::enableBrowseButton(const QString &delimiter)
 {
   // If a delimiter has entered, enable the browse button,
   // otherwise disable it.
   btnBrowseForFile->setEnabled(delimiter.length() > 0);
+}
+void QgsDelimitedTextPluginGui::help()
+{
+   qI->openURL("plugins/delimited_text/index.html",true);
 }
