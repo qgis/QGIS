@@ -8,6 +8,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QgsDbSourceSelect();
     ~QgsDbSourceSelect();
     void addNewConnection();
+    void editConnection();
     void dbConnect();
 };
 

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>305</width>
-            <height>367</height>
+            <height>338</height>
         </rect>
     </property>
     <property name="font">
@@ -34,7 +34,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget" row="2" column="1" rowspan="2" colspan="1">
+        <widget class="QLayoutWidget" row="2" column="1">
             <property name="name">
                 <cstring>Layout5</cstring>
             </property>
@@ -112,19 +112,6 @@
                 </spacer>
             </grid>
         </widget>
-        <widget class="QLabel" row="1" column="0">
-            <property name="name">
-                <cstring>TextLabel3_2_2</cstring>
-            </property>
-            <property name="font">
-                <font>
-                    <pointsize>11</pointsize>
-                </font>
-            </property>
-            <property name="text">
-                <string>Tables</string>
-            </property>
-        </widget>
         <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>GroupBox1</cstring>
@@ -142,7 +129,12 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QPushButton" row="1" column="1">
+                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>cmbConnections</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
                     <property name="name">
                         <cstring>btnConnect</cstring>
                     </property>
@@ -152,42 +144,36 @@
                 </widget>
                 <widget class="QPushButton" row="1" column="2">
                     <property name="name">
-                        <cstring>btnConnect_2</cstring>
+                        <cstring>btnEdit</cstring>
                     </property>
                     <property name="text">
-                        <string>Create</string>
+                        <string>Edit</string>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="4">
+                <widget class="QPushButton" row="1" column="1">
                     <property name="name">
-                        <cstring>cmbConnections</cstring>
+                        <cstring>btnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
                     </property>
                 </widget>
-                <spacer row="1" column="0">
-                    <property name="name">
-                        <cstring>Spacer3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                </spacer>
-                <spacer row="1" column="3">
-                    <property name="name">
-                        <cstring>Spacer3_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                </spacer>
             </grid>
         </widget>
-        <widget class="QListBox" row="3" column="0">
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>TextLabel3_2_2</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>11</pointsize>
+                </font>
+            </property>
+            <property name="text">
+                <string>Tables</string>
+            </property>
+        </widget>
+        <widget class="QListBox" row="2" column="0">
             <property name="name">
                 <cstring>lstTables</cstring>
             </property>
@@ -217,20 +203,37 @@
         <slot>addTables()</slot>
     </connection>
     <connection>
-        <sender>btnConnect_2</sender>
+        <sender>btnNew</sender>
         <signal>clicked()</signal>
         <receiver>QgsDbSourceSelectBase</receiver>
         <slot>addNewConnection()</slot>
     </connection>
+    <connection>
+        <sender>btnEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>editConnection()</slot>
+    </connection>
 </connections>
+<tabstops>
+    <tabstop>cmbConnections</tabstop>
+    <tabstop>btnConnect</tabstop>
+    <tabstop>btnNew</tabstop>
+    <tabstop>btnEdit</tabstop>
+    <tabstop>lstTables</tabstop>
+    <tabstop>btnAdd</tabstop>
+    <tabstop>btnCancel</tabstop>
+    <tabstop>btnHelp</tabstop>
+</tabstops>
 <includes>
     <include location="local" impldecl="in implementation">qgsdbsourceselectbase.ui.h</include>
 </includes>
 <slots>
-    <slot>init()</slot>
-    <slot>dbConnect()</slot>
-    <slot>addTables()</slot>
     <slot>addNewConnection()</slot>
+    <slot>addTables()</slot>
+    <slot>dbConnect()</slot>
+    <slot>init()</slot>
+    <slot>editConnection()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
