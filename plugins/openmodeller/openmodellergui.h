@@ -110,6 +110,7 @@ private:
     QGridLayout *mScrollViewLayout;
     QWidget *mLayoutWidget;
     void getProjList();
+    void updateModelImage(QString theBaseName);
     
 signals:
    void drawRasterLayer(QString);

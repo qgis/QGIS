@@ -54,6 +54,7 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	openmodellergui.h \
 	request_file.cpp \
 	occurrences_file.cpp \
+	imagewriter.cpp \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
@@ -73,6 +74,7 @@ omgui_SOURCES = 	main.cpp \
 			openmodellergui.h \
 			request_file.cpp \
 			occurrences_file.cpp \
+			imagewriter.cpp \
 			$(plugin_UISOURCES) \
 			$(plugin_UIHEADERS) \
 			$(plugin_UIMOC)
