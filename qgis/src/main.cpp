@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 #endif
   if (!myUseGuiFlag) 
   {
-    std::cerr << "QGIS starting in non-interactive mode because you have no DISPLAY environment variable set." << std::endl;
+    std::cerr << "QGIS starting in non-interactive mode not supported.\n You are seeing this message most likely because you have no DISPLAY environment variable set." << std::endl;
     exit(1); //exit for now until a version of qgis is capabable of running non interactive
   }
   QApplication a(argc, argv, myUseGuiFlag );
