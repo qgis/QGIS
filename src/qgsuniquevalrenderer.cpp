@@ -108,6 +108,9 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     {
 	QDomNode valuenode = renderitemnode.namedItem("value");
 	QString value = valuenode.toElement().text();
+#ifdef QGISDEBUG
+	qWarning("readXML, value is "+value);
+#endif
 	QgsSymbol* msy = new QgsSymbol();
 	QPen pen;
 	QBrush brush;
@@ -201,4 +204,9 @@ std::list<int> QgsUniqueValRenderer::classificationAttributes()
     std::list<int> list;
     list.push_back(mClassificationField);
     return list;
+}
+
+std::map<QString,QgsRenderItem*>& QgsUniqueValRenderer::items()
+{
+    return mEntries;
 }

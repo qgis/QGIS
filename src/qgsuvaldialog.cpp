@@ -25,10 +25,12 @@
 #include "qgssisydialog.h"
 #include "qgssymbol.h"
 #include "qgsrenderitem.h"
+#include "qgsuniquevalrenderer.h"
 #include <qwidgetstack.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
 #include <qpainter.h>
+#include <list.h>
 
 QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLayer(vl), sydialog(vl)
 {
@@ -58,6 +60,39 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
     QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
     mSymbolWidgetStack->addWidget(&sydialog);
     mSymbolWidgetStack->raiseWidget(&sydialog);
+
+    //restore settings if unique value renderer was read from a project file
+    QgsUniqueValRenderer *renderer;
+    //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
+    if (mVectorLayer->propertiesDialog())
+    {
+	renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+    } 
+    else
+    {
+	renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
+    }
+
+
+    if (renderer)
+    {
+	mClassBreakBox->clear();
+	std::map<QString,QgsRenderItem*>& map=renderer->items();
+	for(std::map<QString,QgsRenderItem*>::iterator it=map.begin();it!=map.end();++it)
+	{
+	    mClassBreakBox->insertItem(it->first);
+	    QgsSymbol* symbol=new QgsSymbol();
+	    symbol->setPen(it->second->getSymbol()->pen());
+	    symbol->setBrush(it->second->getSymbol()->brush());
+	    mValues.insert(std::make_pair(it->first,symbol));
+	}
+	
+	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
+	int classattr=*iter;
+	mClassificationComboBox->setCurrentItem(classattr);
+	mClassBreakBox->setCurrentItem(0);
+    }
+    
 }
 
 QgsUValDialog::~QgsUValDialog()
@@ -66,6 +101,7 @@ QgsUValDialog::~QgsUValDialog()
     {
 	delete it->second;
     }
+    mClassBreakBox->setCurrentItem(0);
 }
 
 void QgsUValDialog::apply()
