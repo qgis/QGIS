@@ -151,12 +151,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
             myIteratorInt <= myBandCountInt;
             ++myIteratorInt)
     {
-        //TODO change this so that is does not do a full stats parse for every band!
-        //otherwise it takes very long - possibly we can just impement a getRasterBandName() method 
-        //in raster
-        RasterBandStats myRasterBandStats=rasterLayer->getRasterBandStats(myIteratorInt);
+        //find out the name of this band
+        QString myRasterBandNameQString=rasterLayer->getRasterBandName(myIteratorInt);
         //keep a list of band names for later use
-        myBandNameQStringList.append(myRasterBandStats.bandName);
+        myBandNameQStringList.append(myRasterBandNameQString);
     }
     //
     // Set up the combo boxes that contain band lists using the qstring list generated above
@@ -349,6 +347,8 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setMaxBlueDouble(static_cast<double>(255-sliderMaxBlue->value()));
     rasterLayer->setMinGrayDouble(static_cast<double>(sliderMinGray->value()));
     rasterLayer->setMaxGrayDouble(static_cast<double>(255-sliderMaxGray->value()));
+    //update the stats table
+    fillStatsTable();
     //make sure the layer is redrawn
     rasterLayer->triggerRepaint();
 }
@@ -616,7 +616,25 @@ void QgsRasterLayerProperties::fillStatsTable()
             myIteratorInt <= myBandCountInt;
             ++myIteratorInt)
     {
+      std::cout << "Raster properties : checking if band " << myIteratorInt << " has stats? ";
+      //check if full stats for this layer have already been collected
+      if (!rasterLayer->hasStats(myIteratorInt)) //not collected
+      {
+        std::cout << ".....no" <<std::endl;
+        tblStats->setText(myRowInt,0,"Band");
+        tblStats->setText(myRowInt,1,rasterLayer->getRasterBandName(myIteratorInt));
+        ++myRowInt;
 
+        tblStats->setText(myRowInt,0,"Band No");
+        tblStats->setText(myRowInt,1,QString::number(myIteratorInt));
+        ++myRowInt;
+        tblStats->setText(myRowInt,0,"Stats");
+        tblStats->setText(myRowInt,1,"Not collected yet");
+        ++myRowInt;
+      }
+      else // collected - show full detail
+      {        
+        std::cout << ".....yes" <<std::endl;
         RasterBandStats myRasterBandStats=rasterLayer->getRasterBandStats(myIteratorInt);
 
         tblStats->setText(myRowInt,0,"Band");
@@ -652,6 +670,7 @@ void QgsRasterLayerProperties::fillStatsTable()
         ++myRowInt;
         tblStats->setText(myRowInt,0,"noDataDouble");
         tblStats->setText(myRowInt,1,QString::number(myRasterBandStats.noDataDouble));
-        ++myRowInt;
+      }
+      ++myRowInt;
     }
 }

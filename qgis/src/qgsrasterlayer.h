@@ -154,6 +154,8 @@ public:
     // Note this approach is not recommeneded because it is possibly for two gdal raster
     // bands to have the same name!
     const  RasterBandStats getRasterBandStats(QString);
+    // get the name of a band given its number
+    const  QString getRasterBandName(int theBandNoInt);
     // Find out whether a given band exists
     bool hasBand(QString theBandName);
     //accessor for transparency level
