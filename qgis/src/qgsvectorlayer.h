@@ -175,11 +175,39 @@ class QgsVectorLayer : public QgsMapLayer
   virtual bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false) const;
 
   /**
-   * Number of features in the layer
+   * Number of features in the layer. This is necessary if features are
+   * added/deleted or the layer has been subsetted. If the data provider
+   * chooses not to support this feature, the total number of features
+   * can be returned.
    * @return long containing number of features
    */
   virtual long featureCount() const;
   
+  /**
+   * Update the feature count 
+   * @return long containing the number of features in the datasource
+   */
+  virtual long updateFeatureCount() const;
+
+  /**
+   * Update the extents for the layer. This is necessary if features are
+   * added/deleted or the layer has been subsetted.
+   */
+  virtual void updateExtents();
+
+  /**
+   * Set the string (typically sql) used to define a subset of the layer
+   * @param subset The subset string. This may be the where clause of a sql statement
+   * or other defintion string specific to the underlying dataprovider and data
+   * store.
+   */
+  virtual void setSubsetString(QString subset);
+
+  /**
+   * Get the string (typically sql) used to define a subset of the layer
+   * @return The subset string or QString::null if not implemented by the provider
+   */
+  virtual QString subsetString();
   /**
    * Number of attribute fields for a feature in the layer
    */

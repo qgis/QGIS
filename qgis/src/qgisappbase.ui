@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgisAppBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -81,13 +81,13 @@
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddRasterLayer"/>
         <action name="actionAddLayer"/>
-        <action name="actionAddAllToOverview"/>
         <action name="actionRemoveLayer"/>
-        <action name="actionRemoveAllFromOverview"/>
+        <action name="actionNewVectorLayer"/>
         <action name="actionInOverview"/>
+        <action name="actionAddAllToOverview"/>
+        <action name="actionRemoveAllFromOverview"/>
         <action name="actionShowAllLayers"/>
         <action name="actionHideAllLayers"/>
-        <action name="actionNewVectorLayer"/>
         <separator/>
         <action name="actionOpenTable"/>
         <action name="actionLayerProperties"/>
@@ -180,6 +180,7 @@
         </property>
         <action name="actionZoomIn"/>
         <action name="actionZoomOut"/>
+        <action name="actionZoomToLayer"/>
         <action name="actionZoomFullExtent"/>
         <action name="actionZoomToSelected"/>
         <action name="actionPan"/>
@@ -925,7 +926,10 @@
             <cstring>actionZoomToLayer</cstring>
         </property>
         <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image33</iconset>
         </property>
         <property name="text">
             <string>Zoom to layer</string>
@@ -939,7 +943,7 @@
             <cstring>actionFilePrint</cstring>
         </property>
         <property name="iconSet">
-            <iconset>image33</iconset>
+            <iconset>image34</iconset>
         </property>
         <property name="text">
             <string>Print</string>
@@ -956,7 +960,7 @@
             <cstring>actionAddAllToOverview</cstring>
         </property>
         <property name="iconSet">
-            <iconset>image34</iconset>
+            <iconset>image35</iconset>
         </property>
         <property name="text">
             <string></string>
@@ -976,7 +980,7 @@
             <cstring>actionRemoveAllFromOverview</cstring>
         </property>
         <property name="iconSet">
-            <iconset>image35</iconset>
+            <iconset>image36</iconset>
         </property>
         <property name="text">
             <string></string>
@@ -999,7 +1003,7 @@
             <cstring>actionShowAllLayers</cstring>
         </property>
         <property name="iconSet">
-            <iconset>image36</iconset>
+            <iconset>image37</iconset>
         </property>
         <property name="text">
             <string></string>
@@ -1019,7 +1023,7 @@
             <cstring>actionHideAllLayers</cstring>
         </property>
         <property name="iconSet">
-            <iconset>image37</iconset>
+            <iconset>image38</iconset>
         </property>
         <property name="text">
             <string></string>
@@ -1189,18 +1193,21 @@
         <data format="XPM.GZ" length="2205">789c75d45953db301000e0777e45867d633adbd8f1a5e9f4a1774bb9afd276faa0cb498004080e473bfdef95765750a88bd198cfbb5a49eb84e76b83e39dcdc1daf395ab4e77533bb013bd18acb9e56c76f7fdc7cb5f2bab593308bf6a38c8579fadacee76033bd83a9ffb08980640918dac29a251b18b6145c9b024eba2293419932b36449779616d49f3bfb0cb613d226f8b4b3668b2aeb286e3efa2eb519d3586bc292e95a5fc05d9d4aea638dc4437a3dac9fc45b2e7f35cb19b54ff2699ebe1a558eae305d9344af3f9df442bab94e6f85db2f4e7245a17ca89c76c9d893dd96a6d1cede734da1475963514d76ceda55f5fd92617ef8b2b4bf37198dcb6548fd637aeb0b2ff9fd1b654a5a3f3e35bb1f315f93ddb78ae07d76c5bc97af364c7ce92793d3c24bb46e543f2946d3daf07d44f573699ccff98dcd2fa60c52a57e4315ba57ebc62eb52de5f27d652ef3899e3f849ecc567646f725e0f3fb09d96f3ef8abd983e1fbe52999c6fc6365a4cfdf15e95e253b112ef889db863fbb4bfa5d8cb7edae8b64afd8409b9ad9cf4f388dd483fc08bcb21c5c189d590fb354a967e5e88a51ef07aadca24bf4c96fae76c9d65bc7e952cfbd94ae6ef1b1e2473ffc0dc9bdfd74c5c4abd49b2f4a7107bd9cf67b6f1d28f33b6ad647e9dccdf27b84d967aafc5f2be602ef6323fe54b7d6cd82ee7ef2342b2c4737125efcbde9be3eb6c9ff2bf89537c4f9c3e3ff2be7c5a7f83dda6f9d2ff36e54b3fe30fff73deed1050a3418b0e3db6f1c9e3eb3e6f8c139c86cc789de0695f1e9ef1df38c339e59de3456fde252e24f30abb90b7c46bbce9c9bbc53bfc19b25ee16baa66f00dbeedc9f3217289eff07db8c77a1ff063efba9f703d443f87b14e63033771ab276f1b777097eac4b187fb78808778443b0ee77ae80b7ec163fc8adf70184686398eb0c012ab10a9b179d43f0588db00a0c18005071e5a18c3e4699fe305d3304ee014ce600673380f630c174ff3e01216701546cffd210f3a79677dd7062ceff316f4c4f50db8fe2bafa37937ff8ede7a06ae1f0f7ef64fbd5be8c2d3eee11e9ec5fbf2aff32eff7f85f3fe7eb1f207e08b2644</data>
     </image>
     <image name="image33">
-        <data format="XPM.GZ" length="2734">789c7dd6595322491000e0777f0561be191b397dd31d1bfbe085c7a8a38e8ece6cec43755535a2208a20e8c6fef7cdcacc9e610956cb8cf633b30eaa9a864f5b9ddbf3d3ced6a78d97a9990e6cc7de994967cbcd46a3b73ffffae3ef8dcd24e9d06f1cd165f3b78dcd8b69c776cec68f3e00ef0810f14f301cb0cbd0d863b55587ce1047a1b1f7d599186fd96568ec3c3889922c91fa5d76959449c5be0f4ee3344a63f6509da917ec2ab5a9d4bf0467711665927f629baccc0c7b1e9c2799cdf9c5e28d388fc4b0a7ce35ff956dc8dc1f21b848725748fd4c5cc4ea4775aee6fd2b4c5115d23f513b311c0577d3c27553ce8fc5dd587da5cec5f0c0aed3a85b737e22a6bcf8555d89c1a89d7a105ca66956ca786fe2ae13e3b5988e47dc67d76555caf87b6aa72e82abac8aab8c7daccec5f0ccb664cbf94375a55ea89d3a0d3659b73232deb3b8726278159b58f3dfd8b6cc8df43f131ba3feacf6ea4cec1331ec04d759e96a19ef525c1762e0d753bbc2d58ef3037137561f89abd63fc4b51703bf5e9b772b9b73fe4dedc4d0886da2f95a5d68deb15d195b196f24366adc55e79aef8ba9bfe423b5d17c4fed35cfef6797bbc4c9fc95ba505fb07de91c3f0f6022ae62316e8b9d51bfabbdfa7bb02faadc17ec7375250614d746bdadf6ea5aec13ed3f53176a3e3fef2be765be47b189d55fd4b918bcd826ea7775a1b662afc6a9daa8efd55edd15378dfa34b8295cd2c8fa5ec454211e894363976aa3e6f5358d4d9a86edd4853a16bb367fa26ef33db551cfd55e6dc4beeddfa8dbfe56adfd01d46dff7d71d3f67f52b7fd87ea76fe077523be98b60d010dd668d15184abc706fb78f7ab62a57e80f7f8f0b30d2946f8f841fd78a9fa89c2523c7f503fc117ad1e514c29661f8effba32f69c62f141fd1bafbf1dfb9d621b77feaf1e77718f2af6291a8a1ec501cd748847385e5b7f4cf37fc6138a533cc32fb49273fadf055ee2e4bff5f895c6bea2eaa1ae7d79fd618e6bfc86376d3ddee277fc41b5a3a5dd6cf77fa8af27c21813bc93e737e901b395ead536a495caf3a5e0ea2e964b63ae8b0ac7f2bc00585af70701f279bba0bf6a0aabfbbe2e66e13c409e8f9ef7fa44a3b7262acd5dcbe7219d5184161a8e664d58e873cd449ed7e13e873b18c03db78795eb008630a25e737894cf7fdadb4bbc81313cd1799ec3339feb391630a1b9fbf002539851f52bcce5fb10bcc13b2e689ffa4bbbf7eb8c7b780cdb78083b782bdfef6017e63442b172b6f7b26fb4ee6bd8a359f6e57ce54e8231ad8aeecd70167c1e86f766083ddc07d3ded34bf50798c021bd63a8d1f50ac77004c7b40ba1cd7fd6fff3fbc6bfeb55a3e5</data>
+        <data format="XPM.GZ" length="2221">789ccdd3c952dc301006e0fb3c850bdfa8d48fb7f152a91cd897b00d3ba47290658b7d1fd654de3d52770b8630241c3880b87cd26f59eed68c8d063bab4bc1e858e7baaffa873ad007ea2a186d6e4e4f1f7efcfcf6ab33922481fd2fa22019f9d219e9f5031d2c9f9fb50e082dc2c8fe9511799e1dc76d4e9e23c771620c7983dc6df388f3ebe4dc18f1ac73ac1225f935b23126aec833ce6996f9fd7ae4d29834254f3b674dd73fbfeadcb51b640d79ca392f8a58d657c8369df379279dcba8ac647d996cdf26df37e15c29e59f5f22d7c6547cbeda59456e90c79debb42e25bf48ce8ca9a9987874d64d13c9fa77b6315a93ef9ded7224f5cc9cdbf4a97ea7e4dc75c0396cd85521eb0fecd6bf7f815c1823fbdd399b3cf2df734b2e625fbf1b729966e23eb9ca1af13559e585f88a5c97fe7b2ed995dfef82aceb549cb26dff6372e21d2bf239b9d1fe7d31dbf63b2347ded2df3defbc209f91db3697e777d94ffddcf1aef87ddbde35dfa72d6fcdfb9f908daf378ed97125f7f3889da6721f0fd95923e73b60e7b9dcb77d76e97f3f865d557c9f42cd5625d727acd9752cf569c509dfa7508915d7270cd93ae1f78710d7529f46ace5be55ec2693f394622df529d86d57ea23e7b3378cbf2717b752af2edbf8f54db1bf7fca9bfbd3ebbf7f7c641ea11dea33e4293938d4c7e607cfc3e353d4e7c549fe9f1f3686e551bf3586e5edbc46831606fb38c0218e708c139cda79f53a6f67cf708e0b5ce20ad7e8e306b7b8c33da7ffcedbd9073c621c1398c414a6318359cc61dea75fe6edec02be63114b58c60a56d1c31ad6b1f19c1eccdbd94d6c611b3bd8c51e22c44890221b4c3fe7ed6c17390a94a86c9bc2508575a8c3e665dae7dfaee0f07ef95bf57abca75fffecefefaf9d3f6ae35eac</data>
     </image>
     <image name="image34">
-        <data format="XPM.GZ" length="2157">789cb5d3d94e1b311406e0fb3cc588b943d5cfacce44552fd87748d8a1ea8567316b58c312aabe7b6d9f730a94b480d46246e8c37f8eede3c9c478b0d75d0dc6275a37033d38ae82ea485f07e3f56dbf3ffcfaedcbf7d6589204f657a92019fbd41aeb0d822a58bb386f1ca02dc2c8fe14a977282e6bef45721c35ca7b416c8cf706b95151e4dd231bc39e778e8ba4e07c976c4c5c78cf39a77126f5669d339d77d86bce79624ca6bd679c55d28e797eddb99d1aa3687edab9480bf9fc0ad9183e5fedac331debcc7b956c4ca7f29e742eb352f3e797c8c694949f72ae732deb2f938da973efc6bbd1714dfdadc865c3be7476dde2fec4e45ffd1bb265fd0b67d74d9e7f10f3fc39392eb89ff7629eef93d3288dbdefd819cf9f91b38afb7b2be6f953b2ca957f797042b6cb513f0762ca8721b993f37e8fd91dee4f875c26bcdf2331f7f75accebdfb015bb4dae12da6f08b6f4af20d78adf875cccfb55e446f17da7625edf88f97dbf12f3fa876cb99f4776c34ec846f2195bf3f923b67c3f0ec4dc8f7d31dfd79e98ef6757ccf7b123e6f36d89f93cdb625e7f53cce72bc5b4dfdee0fde35fe61142a3fc405e7f30ffeefa3ee986fc2ddfc853f2e97923ff7cff34fe537fc20fe55fece4edfca8312a8f0af5e867541e0d0c0e7184639ce01467e8e31c17b8b4ff2f5fe76d9d2b9bbec60d0676dce20ef778b0a3a293bcccdb1a433c62125398c60c663187792c60916aff9e7735ec58c23256b08a35aca38b1e36a4f6cbbcadb169d35bd8c60e76b1877d1c2042fc54fb79ded6486c3a45861c0a6d14e88408c3e7b59ff2b646fd8767e47dc95bf57abce7befe7abf3f3eb77e02a36754c2</data>
+        <data format="XPM.GZ" length="2734">789c7dd6595322491000e0777f0561be191b397dd31d1bfbe085c7a8a38e8ece6cec43755535a2208a20e8c6fef7cdcacc9e610956cb8cf633b30eaa9a864f5b9ddbf3d3ced6a78d97a9990e6cc7de994967cbcd46a3b73ffffae3ef8dcd24e9d06f1cd165f3b78dcd8b69c776cec68f3e00ef0810f14f301cb0cbd0d863b55587ce1047a1b1f7d599186fd96568ec3c3889922c91fa5d76959449c5be0f4ee3344a63f6509da917ec2ab5a9d4bf0467711665927f629baccc0c7b1e9c2799cdf9c5e28d388fc4b0a7ce35ff956dc8dc1f21b848725748fd4c5cc4ea4775aee6fd2b4c5115d23f513b311c0577d3c27553ce8fc5dd587da5cec5f0c0aed3a85b737e22a6bcf8555d89c1a89d7a105ca66956ca786fe2ae13e3b5988e47dc67d76555caf87b6aa72e82abac8aab8c7daccec5f0ccb664cbf94375a55ea89d3a0d3659b73232deb3b8726278159b58f3dfd8b6cc8df43f131ba3feacf6ea4cec1331ec04d759e96a19ef525c1762e0d753bbc2d58ef3037137561f89abd63fc4b51703bf5e9b772b9b73fe4dedc4d0886da2f95a5d68deb15d195b196f24366adc55e79aef8ba9bfe423b5d17c4fed35cfef6797bbc4c9fc95ba505fb07de91c3f0f6022ae62316e8b9d51bfabbdfa7bb02faadc17ec7375250614d746bdadf6ea5aec13ed3f53176a3e3fef2be765be47b189d55fd4b918bcd826ea7775a1b662afc6a9daa8efd55edd15378dfa34b8295cd2c8fa5ec454211e894363976aa3e6f5358d4d9a86edd4853a16bb367fa26ef33db551cfd55e6dc4beeddfa8dbfe56adfd01d46dff7d71d3f67f52b7fd87ea76fe077523be98b60d010dd668d15184abc706fb78f7ab62a57e80f7f8f0b30d2946f8f841fd78a9fa89c2523c7f503fc117ad1e514c29661f8effba32f69c62f141fd1bafbf1dfb9d621b77feaf1e77718f2af6291a8a1ec501cd748847385e5b7f4cf37fc6138a533cc32fb49273fadf055ee2e4bff5f895c6bea2eaa1ae7d79fd618e6bfc86376d3ddee277fc41b5a3a5dd6cf77fa8af27c21813bc93e737e901b395ead536a495caf3a5e0ea2e964b63ae8b0ac7f2bc00585af70701f279bba0bf6a0aabfbbe2e66e13c409e8f9ef7fa44a3b7262acd5dcbe7219d5184161a8e664d58e873cd449ed7e13e873b18c03db78795eb008630a25e737894cf7fdadb4bbc81313cd1799ec3339feb391630a1b9fbf002539851f52bcce5fb10bcc13b2e689ffa4bbbf7eb8c7b780cdb78083b782bdfef6017e63442b172b6f7b26fb4ee6bd8a359f6e57ce54e8231ad8aeecd70167c1e86f766083ddc07d3ded34bf50798c021bd63a8d1f50ac77004c7b40ba1cd7fd6fff3fbc6bfeb55a3e5</data>
     </image>
     <image name="image35">
-        <data format="XPM.GZ" length="932">789c7592cf6ac3300c87ef790a53dfcae85f0a1d658fb0b1e360ec905851ecb84e93b63b8cb1779f14555d3352bb867cfefc931c9af9d4bcbd3e9be93c3b9df37370c6f9fc68a6f099d2d7fbc7d3773659ad0cff96663979c82633e3cccba129f939d1b35dd0d8ae191bc50218832222230a6e978b056325f808820741b712dc0b4229180511052de376cdb51973c602145b46b7d152b520a2db30022317127b14d4c3a5a21c2e14e5154e827a2ba728b613d44b7a45b1b3d13134d6dadc8e9abc70908f675c097732e578867a70c6daff062beba80fd80a79fe19f4215816bef675447f35481b616f59044fe25a8d44ac03a56805166a3841d582f7d1f709359ce0fd9a27624a4d923eb8a793e1107da4648531c674e98383016d97b48ff7be0138c6d8f5ab177a83a6eda806b4b440c4c5f4a2a5cdd801881043a5da8e27e9d34588a14bdecc5be38763ecffb9ff1d0ccccf2efb056c0beada</data>
+        <data format="XPM.GZ" length="2157">789cb5d3d94e1b311406e0fb3cc588b943d5cfacce44552fd87748d8a1ea8567316b58c312aabe7b6d9f730a94b480d46246e8c37f8eede3c9c478b0d75d0dc6275a37033d38ae82ea485f07e3f56dbf3ffcfaedcbf7d6589204f657a92019fbd41aeb0d822a58bb386f1ca02dc2c8fe14a977282e6bef45721c35ca7b416c8cf706b95151e4dd231bc39e778e8ba4e07c976c4c5c78cf39a77126f5669d339d77d86bce79624ca6bd679c55d28e797eddb99d1aa3687edab9480bf9fc0ad9183e5fedac331debcc7b956c4ca7f29e742eb352f3e797c8c694949f72ae732deb2f938da973efc6bbd1714dfdadc865c3be7476dde2fec4e45ffd1bb265fd0b67d74d9e7f10f3fc39392eb89ff7629eef93d3288dbdefd819cf9f91b38afb7b2be6f953b2ca957f797042b6cb513f0762ca8721b993f37e8fd91dee4f875c26bcdf2331f7f75accebdfb015bb4dae12da6f08b6f4af20d78adf875cccfb55e446f17da7625edf88f97dbf12f3fa876cb99f4776c34ec846f2195bf3f923b67c3f0ec4dc8f7d31dfd79e98ef6757ccf7b123e6f36d89f93cdb625e7f53cce72bc5b4dfdee0fde35fe61142a3fc405e7f30ffeefa3ee986fc2ddfc853f2e97923ff7cff34fe537fc20fe55fece4edfca8312a8f0af5e867541e0d0c0e7184639ce01467e8e31c17b8b4ff2f5fe76d9d2b9bbec60d0676dce20ef778b0a3a293bcccdb1a433c62125398c60c663187792c60916aff9e7735ec58c23256b08a35aca38b1e36a4f6cbbcadb169d35bd8c60e76b1877d1c2042fc54fb79ded6486c3a45861c0a6d14e88408c3e7b59ff2b646fd8767e47dc95bf57abce7befe7abf3f3eb77e02a36754c2</data>
     </image>
     <image name="image36">
-        <data format="XPM.GZ" length="767">789c9592cd4ac34010c7ef798a257b0b629bda82203e82e251283dcccceeec7a680b5a0f22bebb33bb0d196d023a93c0fef29fcfb08bce3d3f3db86ed1bc9de0f4428e32bcba2ebceff71fdbddfd67d3ae564e9e7ee9faf6aa69af1db9c7e321ea19e4ec9762b7378a7e400c8a3c206d14f380cc8a4111d6d0c35a3129d286b90647c510a10fa51155c4581115b9581969d2feae78c019056695991c0f00fae285229f8b5f2ab58fd83f67f373cab9d484329a552818b74a644cc539a7884621cc2c5d52ce98084db528d199d551334685241a255ab3c86e1a4bfdda27a299ad6664937156e4128cfe6353b436b5e9af7ff075d77c03547eb024</data>
+        <data format="XPM.GZ" length="932">789c7592cf6ac3300c87ef790a53dfcae85f0a1d658fb0b1e360ec905851ecb84e93b63b8cb1779f14555d3352bb867cfefc931c9af9d4bcbd3e9be93c3b9df37370c6f9fc68a6f099d2d7fbc7d3773659ad0cff96663979c82633e3cccba129f939d1b35dd0d8ae191bc50218832222230a6e978b056325f808820741b712dc0b4229180511052de376cdb51973c602145b46b7d152b520a2db30022317127b14d4c3a5a21c2e14e5154e827a2ba728b613d44b7a45b1b3d13134d6dadc8e9abc70908f675c097732e578867a70c6daff062beba80fd80a79fe19f4215816bef675447f35481b616f59044fe25a8d44ac03a56805166a3841d582f7d1f709359ce0fd9a27624a4d923eb8a793e1107da4648531c674e98383016d97b48ff7be0138c6d8f5ab177a83a6eda806b4b440c4c5f4a2a5cdd801881043a5da8e27e9d34588a14bdecc5be38763ecffb9ff1d0ccccf2efb056c0beada</data>
     </image>
     <image name="image37">
+        <data format="XPM.GZ" length="767">789c9592cd4ac34010c7ef798a257b0b629bda82203e82e251283dcccceeec7a680b5a0f22bebb33bb0d196d023a93c0fef29fcfb08bce3d3f3db86ed1bc9de0f4428e32bcba2ebceff71fdbddfd67d3ae564e9e7ee9faf6aa69af1db9c7e321ea19e4ec9762b7378a7e400c8a3c206d14f380cc8a4111d6d0c35a3129d286b90647c510a10fa51155c4581115b9581969d2feae78c019056695991c0f00fae285229f8b5f2ab58fd83f67f373cab9d484329a552818b74a644cc539a7884621cc2c5d52ce98084db528d199d551334685241a255ab3c86e1a4bfdda27a299ad6664937156e4128cfe6353b436b5e9af7ff075d77c03547eb024</data>
+    </image>
+    <image name="image38">
         <data format="XPM.GZ" length="409">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523234530022630543251d2e253d856405bffcbc54103b11c856360003105719c44d0303b04a348024a69ca88c2ea60c14534615534e0401656431e544b00c58102a06164a840a42c420aa12a12ac162ca2862ca6031a0e120ac0ca571aac3661e567b61ba51dc0712c4f00756ff22874bad351700b18f53a6</data>
     </image>
 </images>
@@ -1457,6 +1464,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>newVectorLayer()</slot>
     </connection>
+    <connection>
+        <sender>actionZoomToLayer</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomToLayerExtent()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
@@ -1510,6 +1523,8 @@
     <slot>menubar_highlighted( int )</slot>
     <slot>about()</slot>
     <slot>deleteSelected()</slot>
+    <slot>zoomToLayer()</slot>
+    <slot>zoomToLayerExtent()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

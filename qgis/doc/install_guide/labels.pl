@@ -3,7 +3,7 @@
 
 
 $key = q/label_introduction/;
-$external_labels{$key} = "$URL/" . q|node2.html|; 
+$external_labels{$key} = "$URL/" . q|install.html|; 
 $noresave{$key} = "$nosave";
 
 1;

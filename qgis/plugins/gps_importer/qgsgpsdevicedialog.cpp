@@ -20,7 +20,11 @@
 #include <qsettings.h>
 
 
-QgsGPSDeviceDialog::QgsGPSDeviceDialog(BabelMap& devices) : mDevices(devices) {
+QgsGPSDeviceDialog::QgsGPSDeviceDialog(BabelMap& devices) : 
+     mDevices(devices),
+     QgsGPSDeviceDialogBase(0, 0, true ) //ensure dialog is openened modal
+
+{
   slotUpdateDeviceList();
 }
 

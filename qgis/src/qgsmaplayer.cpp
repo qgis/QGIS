@@ -32,6 +32,7 @@
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
+#include "qgslegenditem.h"
 
 
 
@@ -318,13 +319,14 @@ bool QgsMapLayer::visible()
 
 void QgsMapLayer::setVisible(bool vis)
 {
-    if (m_visible != vis)
-    {
-        // XXX should this happen automatically via signals/slots? ((QCheckListItem *) m_legendItem)->setOn(vis);
-        m_visible = vis;
-        emit visibilityChanged();
-    }
-}  /** Read property of int featureType. */
+  if (m_visible != vis)
+  {
+    if (m_legendItem != 0)
+      m_legendItem->setOn(vis);
+    m_visible = vis;
+    emit visibilityChanged();
+  }
+}
 
 
 

@@ -24,9 +24,9 @@ dnl ---------------------------------------------------------------------------
 dnl version number
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
-MINOR_VERSION=5
+MINOR_VERSION=6
 MICRO_VERSION=0
-EXTRA_VERSION=30
+EXTRA_VERSION=0
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -119,6 +119,7 @@ if test x"$PG_CONFIG" != "xno" ; then
     [Define to 1 if PostgreSQL is available])
   ac_postgresql="yes"
   ac_postgresql_version=`$PG_CONFIG --version | sed -e 's#PostgreSQL ##'`
+  postgresql_version_string="(Version $ac_postgresql_version)"
 else
   ac_postgresql="no"
 fi
@@ -174,6 +175,9 @@ AC_ARG_WITH(grass,
 
 if test -n "$with_grass" -a x"$with_grass" != "xno"; then
     # I don't know how to add library path to AC_CHECK_LIB()
+    if test ! -f "$GISLIB"; then
+      GISLIB=`ls $with_grass/lib/libgrass_gis.dylib 2> /dev/null`
+    fi
     if test ! -f "$GISLIB"; then
       GISLIB=`ls $with_grass/lib/libgrass_gis.so 2> /dev/null`
     fi
@@ -246,6 +250,7 @@ AC_CONFIG_FILES([
   src/images/north_arrows/Makefile
   src/images/splash/Makefile
   src/images/icons/Makefile
+  src/images/developers/Makefile
   src/themes/Makefile
   src/themes/default/Makefile
   providers/Makefile 
@@ -288,7 +293,7 @@ echo "$PACKAGE $VERSION"
 echo "------------------------------------------"
 echo "GDAL/OGR      : $ac_gdalogr (Version $ac_gdalogr_version)"
 echo "GEOS          : $ac_geos (Version $ac_geos_version)"
-echo "PostgreSQL    : $ac_postgresql (Version $ac_postgresql_version)"
+echo "PostgreSQL    : $ac_postgresql $postgresql_version_string"
 echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
 echo ""

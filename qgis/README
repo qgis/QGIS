@@ -1,19 +1,59 @@
-README for QGIS version 0.5 'Bandit'
-Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
-built for Linux/Unix. QGIS offers support for vector and raster formats. 
-Currently QGIS supports many common vector and raster formats shapefiles
-and PostgreSQL/PostGIS layers. 
+README for QGIS version 0.6 'Simon'
+
+Quantum GIS (QGIS) is an Open Source Geographic Information System. The
+project was born in May of 2002 and was established as a project on
+SourceForge in June of the same year. We've worked hard to make GIS
+software (which is traditionaly expensive commerical software) a viable
+prospect for anyone with basic access to a Personal Computer.  QGIS
+currently runs on most Unix platforms, Window, and OS X. QGIS is
+developed using the Qt toolkit (http://www.trolltech.com) and C++.  This
+means that QGIS feels snappy to use and has a pleasing, easy to use
+graphical user interface. 
+
+QGIS aims to be an easy to use GIS, providing common functions and
+features. The initial goal was to provide a GIS data viewer. QGIS has
+reached that point in its evolution and is being used by many for their
+daily GIS data viewing needs. QGIS supports a number of raster and
+vector data formats, with new support easily added using the plugin
+architecture.
+
+QGIS is released under the GNU Public License (GPL). Devloping QGIS
+under this license means that you can (if you want to) inspect and
+modify the source code and guarantees that you, our happy user will
+always have access to a GIS program that is free of cost and can be
+freely modified.
 
 This release adds:
-  * Windows version
-  * Feature labeling with optional buffering
-  * Preliminary digitizing support for shapefiles
-  * GRASS digitizing support
-  * GPS SVG icons 
-  * Unique value renderers
-  * User interface improvements
-  * Specify a query when loading a PostGIS layer
-  * Italian translation 
+  * GEOS support in the OGR provider to refine selection of features
+    via identify. This improves over the previous method of feature
+    selection which used a simple MBR intersection check.
+  * PostGIS editing support in provider
+  * Vector dialog redesign to improve usability
+  * Improvement in project handling (loading and saving)
+  * Scale dependent rendering
+  * User option to load layers with out drawing them, thus allowing
+    you to set scale dependency, etc without waiting for the initial draw to
+    complete
+  * Interrupt drawing of features by hitting ESC
+  * Attribute actions - the ability to run an external program based
+    on the contents of an attribute field in a layer
+  * Create new vector layer (shapefile) for editing
+  * Windows installer
+  * Mac OSX binary
+  * New options in the graticule builder plugin
+  * Enhancements to the GPS plugin
+  * Man page
+  * Save delimited text as shapefile
+  * Improved Delimited Text plugin, including preview of text file
+  * Improved SPIT handling of PostgreSQL reserved words and shapefiles
+    with multiple geometry types
+  * Display SQL query used to create a PostGIS layer
+  * PostgreSQL query builder
+  * Ability to redefine the query used for PostgreSQL layers from the
+    layer properties dialog
+  * North arrow, scalebar, and copyright plugins save their state in
+    the project file
+  * Datasets with UTF8, Kanjii and CJK filenames now load properly
 
 Supported raster formats include:
   Grass

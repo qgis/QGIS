@@ -19,9 +19,9 @@
 /*
    Please observe the following variable naming guidelines when editing this class:
    ---------------------------------------------------------------------------------
-   In my opinion, clarity of code is more important than brevity, so variables should be 
-   given clear, unambiguous names. Variables names should be written in mixed case, with 
-   a lowercase first letter. Each variable name should include a scope resolution 
+   In my opinion, clarity of code is more important than brevity, so variables should be
+   given clear, unambiguous names. Variables names should be written in mixed case, with
+   a lowercase first letter. Each variable name should include a scope resolution
    indicator and a type indicator, in the form:
 
    [scope]+[name]+[type]
@@ -55,7 +55,7 @@
 
    DEBUG DIRECTIVES:
 
-   When compiling you can make sure DEBUG is defined by including -DDEBUG in the gcc command (e.g. gcc -DDEBUG myprog.c ) if you 
+   When compiling you can make sure DEBUG is defined by including -DDEBUG in the gcc command (e.g. gcc -DDEBUG myprog.c ) if you
    wish to see edbug messages printed to stdout.
 
 */
@@ -93,7 +93,7 @@
 //
 /////////////////////////////////////////////////////////
 /**
-  Static member variable storing the subset of GDAL formats 
+  Static member variable storing the subset of GDAL formats
   that we currently support.
 
   @note
@@ -136,7 +136,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   if (!myGdalDriverManager)
   {
     std::cerr << "unable to get GDALDriverManager\n";
-    return;                   // XXX good place to throw exception if we 
+    return;                   // XXX good place to throw exception if we
   }                           // XXX decide to do exceptions
 
   // then iterate through all of the supported drivers, adding the
@@ -214,7 +214,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
         {
           myGdalDriverExtension = metadataTokens[1];
 
-        } 
+        }
         else if ("DMD_LONGNAME" == metadataTokens[0])
         {
           myGdalDriverLongName = metadataTokens[1];
@@ -232,7 +232,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       if (!(myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty()))
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension; 
+        QString glob = "*." + myGdalDriverExtension;
         theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
 
         break;            // ... to next driver, if any.
@@ -258,15 +258,15 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       // USGS DEMs use "*.dem"
       if (myGdalDriverDescription.startsWith("USGSDEM"))
       {
-        QString glob = "*.dem"; 
+        QString glob = "*.dem";
         theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
       }
       else if (myGdalDriverDescription.startsWith("DTED"))
       {
         // DTED use "*.dt0"
-        QString glob = "*.dt0"; 
+        QString glob = "*.dt0";
         theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
-      } 
+      }
       else
       {
         catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
@@ -327,8 +327,8 @@ bool QgsRasterLayer::isValidRasterFileName(QString theFileNameQString)
   GDALDatasetH myDataset;
   GDALAllRegister();
 
-
-  myDataset = GDALOpen( theFileNameQString, GA_ReadOnly );
+  //open the file using gdal making sure we have handled locale properly
+  myDataset = GDALOpen( (const char*)(theFileNameQString.local8Bit()), GA_ReadOnly );
 
   if( myDataset == NULL )
   {
@@ -345,16 +345,16 @@ bool QgsRasterLayer::isValidRasterFileName(QString theFileNameQString)
    * This way is no longer a good idea because it does not
    * cater for filetypes such as grass rasters that dont
    * have a predictable file extension.
-   * 
+   *
    QString name = theFileNameQString.lower();
    return (name.endsWith(".adf") ||
    name.endsWith(".asc") ||
    name.endsWith(".grd") ||
    name.endsWith(".img") ||
-   name.endsWith(".tif") || 
-   name.endsWith(".png") || 
-   name.endsWith(".jpg") || 
-   name.endsWith(".dem") || 
+   name.endsWith(".tif") ||
+   name.endsWith(".png") ||
+   name.endsWith(".jpg") ||
+   name.endsWith(".dem") ||
    name.endsWith(".ddf")) ||
    name.endsWith(".dt0");
 
@@ -432,7 +432,8 @@ QgsRasterLayer::readFile( QString const & fileName )
 {
     GDALAllRegister();
 
-    gdalDataset = (GDALDataset *) GDALOpen(fileName, GA_ReadOnly);
+    //open the dataset making sure we handle char encoding of locale properly
+    gdalDataset = (GDALDataset *) GDALOpen((const char*)(fileName.local8Bit()), GA_ReadOnly);
 
     if (gdalDataset == NULL)
     {
@@ -451,7 +452,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     }
 
     //populate the list of what pyramids exist
-    buildRasterPyramidList(); 
+    buildRasterPyramidList();
 
     //load  up the pyramid icons
 #if defined(WIN32) || defined(Q_OS_MACX)
@@ -464,10 +465,10 @@ QgsRasterLayer::readFile( QString const & fileName )
     //just testing remove this later
     getMetadata();
 
-    double myXMaxDouble = adfGeoTransform[0] + 
+    double myXMaxDouble = adfGeoTransform[0] +
         gdalDataset->GetRasterXSize() * adfGeoTransform[1] +
         gdalDataset->GetRasterYSize() * adfGeoTransform[2];
-    double myYMinDouble = adfGeoTransform[3] + 
+    double myYMinDouble = adfGeoTransform[3] +
         gdalDataset->GetRasterXSize() * adfGeoTransform[4] +
         gdalDataset->GetRasterYSize() * adfGeoTransform[5];
 
@@ -515,7 +516,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     else if (hasBand("Palette")) //dont tr() this its a gdal word!
     {
         rasterLayerType = PALETTE;
-    } 
+    }
     else
     {
         rasterLayerType = GRAY_OR_UNDEFINED;
@@ -674,7 +675,7 @@ void QgsRasterLayer::setDrawingStyle(QString theDrawingStyleQString)
 }
 
 
-/** This method looks to see if a given band name exists. 
+/** This method looks to see if a given band name exists.
 
   @note
 
@@ -773,22 +774,22 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
       myPalettePixmap.fill();
 
       double myStepDouble = ( myMaxDouble - myMinDouble ) / ( mySizeInt * mySizeInt);
-      
+
       for( int myRowInt = 0; myRowInt < mySizeInt; myRowInt++ ) {
           for( int myColInt = 0; myColInt < mySizeInt; myColInt++ ) {
-	      
-	      double myValueDouble = myMinDouble + myStepDouble * (myColInt + myRowInt * mySizeInt);
-	      
-	      int c1, c2, c3;
-	      bool found = myColorTable->color ( myValueDouble, &c1, &c2, &c3 );
-              
-	      if ( found )
+
+              double myValueDouble = myMinDouble + myStepDouble * (myColInt + myRowInt * mySizeInt);
+
+              int c1, c2, c3;
+              bool found = myColorTable->color ( myValueDouble, &c1, &c2, &c3 );
+
+              if ( found )
                   myQImage.setPixel( myColInt, myRowInt, qRgb(c1, c2, c3));
-	  }
+          }
       }
 
       myQPainter.drawImage(0,0,myQImage);
-      return myPalettePixmap; 
+      return myPalettePixmap;
     }
     QPixmap myNullPixmap;
     return myNullPixmap;
@@ -803,9 +804,9 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 
 
 
-void QgsRasterLayer::draw(QPainter * theQPainter, 
-                          QgsRect * theViewExtent, 
-                          QgsCoordinateTransform * theQgsCoordinateTransform, 
+void QgsRasterLayer::draw(QPainter * theQPainter,
+                          QgsRect * theViewExtent,
+                          QgsCoordinateTransform * theQgsCoordinateTransform,
                           QPaintDevice* dst)
 {
   //Dont waste time drawing if transparency is at 0 (completely transparent)
@@ -860,7 +861,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   {
     myRasterViewPort->clippedWidthInt = rasterXDimInt;
   }
-  if (myRasterViewPort->clippedHeightInt > rasterYDimInt) 
+  if (myRasterViewPort->clippedHeightInt > rasterYDimInt)
   {
     myRasterViewPort->clippedHeightInt = rasterYDimInt;
   }
@@ -871,7 +872,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
 
   myRasterViewPort->drawableAreaXDimInt = static_cast<int>(myRasterViewPort->bottomRightPoint.x()) - static_cast<int>(myRasterViewPort->topLeftPoint.x());
   myRasterViewPort->drawableAreaYDimInt = static_cast<int>(myRasterViewPort->bottomRightPoint.y()) - static_cast<int>(myRasterViewPort->topLeftPoint.y());
-  
+
   draw(theQPainter,myRasterViewPort);
   delete myRasterViewPort;
 }
@@ -1017,21 +1018,21 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
     myQImage.setAlphaBuffer(true);
 
     double myRangeDouble = myRasterBandStats.rangeDouble;
-    
+
     // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
     for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
         for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
-            double myGrayValDouble = readValue ( myGdalScanData, myDataType, 
+            double myGrayValDouble = readValue ( myGdalScanData, myDataType,
                                                  myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
-	
+
             if ( myGrayValDouble == noDataValueDouble || myGrayValDouble != myGrayValDouble ) continue;
-	
-            int myGrayValInt = static_cast < int >( (myGrayValDouble-myRasterBandStats.minValDouble)  
+
+            int myGrayValInt = static_cast < int >( (myGrayValDouble-myRasterBandStats.minValDouble)
                                                     * (255/myRangeDouble));
-	
-            if (invertHistogramFlag) 
+
+            if (invertHistogramFlag)
             {
                 myGrayValDouble = 255 - myGrayValDouble;
             }
@@ -1043,8 +1044,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
     filterLayer(&myQImage);
 
     //part of the experimental transaparency support
-    theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()), 
-                           static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+    theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
+                           static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                            myQImage);
 
 } // QgsRasterLayer::drawSingleBandGray
@@ -1074,7 +1075,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
   int myBlueInt = 0;
 
   //to histogram stretch to a given number of std deviations
-  //see if we are using histogram stretch using stddev and plot only within the selected 
+  //see if we are using histogram stretch using stddev and plot only within the selected
   //number of deviations if we are
   if (stdDevsToPlotDouble > 0)
   {
@@ -1114,121 +1115,121 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
       myRedInt = 255;
       myBlueInt = 255;
       myGreenInt = 255;
-      double myValDouble = readValue ( myGdalScanData, myDataType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
-      
+      double myValDouble = readValue ( myGdalScanData, myDataType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+
       if ( myValDouble == noDataValueDouble || myValDouble != myValDouble ) continue;
 
       //double check that myInt >= min and <= max
       //this is relevant if we are plotting within stddevs
       if ( myValDouble < myAdjustedRasterBandStats.minValDouble )
       {
-	myValDouble = myAdjustedRasterBandStats.minValDouble;
+        myValDouble = myAdjustedRasterBandStats.minValDouble;
       }
       if ( myValDouble > myAdjustedRasterBandStats.maxValDouble)
       {
-	myValDouble = myAdjustedRasterBandStats.maxValDouble;
+        myValDouble = myAdjustedRasterBandStats.maxValDouble;
       }
 
       if (!invertHistogramFlag)
       {
-	//check if we are in the first class break
-	if ((myValDouble >= myClassBreakMin1) && (myValDouble < myClassBreakMax1))
-	{
-	  myRedInt = 0;
-	  myBlueInt = 255;
-	  myGreenInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-					      * (myValDouble - myClassBreakMin1) ) * 3 );
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=255-myGreenInt;
-	  }
-	}
-	//check if we are in the second class break
-	else if ( (myValDouble >= myClassBreakMin2) && (myValDouble < myClassBreakMax2) )
-	{
-	  myRedInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-					    * ((myValDouble - myClassBreakMin2) / 1)) * 3);
-	  myBlueInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-						    * ((myValDouble - myClassBreakMin2) / 1)) * 3));
-	  myGreenInt = 255;
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myGreenInt=myBlueInt;
-	  }
-	}
-	//otherwise we must be in the third classbreak
-	else
-	{
-	  myRedInt = 255;
-	  myBlueInt = 0;
-	  myGreenInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble) * 
-						     ((myValDouble - myClassBreakMin3) / 1) * 3)));
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=myGreenInt;
-	    myGreenInt=255-myGreenInt;
-	  }
-	}
+        //check if we are in the first class break
+        if ((myValDouble >= myClassBreakMin1) && (myValDouble < myClassBreakMax1))
+        {
+          myRedInt = 0;
+          myBlueInt = 255;
+          myGreenInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                              * (myValDouble - myClassBreakMin1) ) * 3 );
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+        }
+        //check if we are in the second class break
+        else if ( (myValDouble >= myClassBreakMin2) && (myValDouble < myClassBreakMax2) )
+        {
+          myRedInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                            * ((myValDouble - myClassBreakMin2) / 1)) * 3);
+          myBlueInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                                    * ((myValDouble - myClassBreakMin2) / 1)) * 3));
+          myGreenInt = 255;
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myGreenInt=myBlueInt;
+          }
+        }
+        //otherwise we must be in the third classbreak
+        else
+        {
+          myRedInt = 255;
+          myBlueInt = 0;
+          myGreenInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble) *
+                                                     ((myValDouble - myClassBreakMin3) / 1) * 3)));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=myGreenInt;
+            myGreenInt=255-myGreenInt;
+          }
+        }
       }
       else            //invert histogram toggle is on
       {
-	//check if we are in the first class break
-	if ((myValDouble >= myClassBreakMin1) && (myValDouble < myClassBreakMax1))
-	{
-	  myRedInt = 255;
-	  myBlueInt = 0;
-	  myGreenInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-					    * ((myValDouble - myClassBreakMin1) / 1) * 3));
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=255-myGreenInt;
-	  }
-	}
-	//check if we are in the second class break
-	else if ((myValDouble >= myClassBreakMin2) && (myValDouble < myClassBreakMax2))
-	{
-	  myRedInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-						   * ((myValDouble - myClassBreakMin2) / 1)) * 3));
-	  myBlueInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-					     * ((myValDouble - myClassBreakMin2) / 1)) * 3);
-	  myGreenInt = 255;
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myGreenInt=myBlueInt;
-	  }
-	}
-	//otherwise we must be in the third classbreak
-	else
-	{
-	  myRedInt = 0;
-	  myBlueInt = 255;
-	  myGreenInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble) 
-						     * (myValDouble - myClassBreakMin3)) * 3));
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=myGreenInt;
-	    myGreenInt=255-myGreenInt;
-	  }
-	}
+        //check if we are in the first class break
+        if ((myValDouble >= myClassBreakMin1) && (myValDouble < myClassBreakMax1))
+        {
+          myRedInt = 255;
+          myBlueInt = 0;
+          myGreenInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                            * ((myValDouble - myClassBreakMin1) / 1) * 3));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+        }
+        //check if we are in the second class break
+        else if ((myValDouble >= myClassBreakMin2) && (myValDouble < myClassBreakMax2))
+        {
+          myRedInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                                   * ((myValDouble - myClassBreakMin2) / 1)) * 3));
+          myBlueInt = static_cast < int >( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                             * ((myValDouble - myClassBreakMin2) / 1)) * 3);
+          myGreenInt = 255;
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myGreenInt=myBlueInt;
+          }
+        }
+        //otherwise we must be in the third classbreak
+        else
+        {
+          myRedInt = 0;
+          myBlueInt = 255;
+          myGreenInt = static_cast < int >(255 - ( ( (255 / myAdjustedRasterBandStats.rangeDouble)
+                                                     * (myValDouble - myClassBreakMin3)) * 3));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=myGreenInt;
+            myGreenInt=255-myGreenInt;
+          }
+        }
       }
       myQImage.setPixel(myRowInt, myColumnInt, qRgba(myRedInt, myGreenInt, myBlueInt, transparencyLevelInt));
     }                       //end of columnwise loop
   }                           //end of towwise loop
 
   CPLFree ( myGdalScanData );
-  
+
   //render any inline filters
   filterLayer(&myQImage);
   //draw with the experimental transaparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()), 
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                          myQImage);
 }
 
@@ -1257,8 +1258,8 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
     {
-      double myValDouble = readValue ( myGdalScanData, myDataType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myValDouble = readValue ( myGdalScanData, myDataType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       if ( myValDouble == noDataValueDouble || myValDouble != myValDouble ) continue; // NULL
 
@@ -1268,9 +1269,9 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
 
       if (invertHistogramFlag)
       {
-	c1 = 255 - c1;
-	c2 = 255 - c2;
-	c3 = 255 - c3;
+        c1 = 255 - c1;
+        c2 = 255 - c2;
+        c3 = 255 - c3;
       }
       //set the pixel based on the above color mappings
       myQImage.setPixel(myRowInt, myColumnInt, qRgba(c1, c2, c3, transparencyLevelInt));
@@ -1280,7 +1281,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
   filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                          myQImage);
   CPLFree(myGdalScanData);
 }
@@ -1304,7 +1305,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
   QgsColorTable *myColorTable = &(myRasterBandStats.colorTable);
-  
+
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
   myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
@@ -1313,15 +1314,15 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
     {
-      double myValDouble = readValue ( myGdalScanData, myDataType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myValDouble = readValue ( myGdalScanData, myDataType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       if ( myValDouble == noDataValueDouble || myValDouble != myValDouble ) continue; // NULL
-	
+
       int c1, c2, c3;
       bool found = myColorTable->color ( myValDouble, &c1, &c2, &c3 );
       if ( !found ) continue;
-      
+
       int myGrayValueInt = 0; //color 1 int
 
       if (theColorQString == redTranslatedQString)
@@ -1336,7 +1337,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
       {
         myGrayValueInt = c3;
       }
-      
+
       if (invertHistogramFlag)
       {
         myGrayValueInt = 255 - myGrayValueInt;
@@ -1352,8 +1353,8 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
   filterLayer(&myQImage);
 
   //part of the experimental transaparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()), 
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                          myQImage);
 }
 
@@ -1424,131 +1425,131 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
     {
-      double myValDouble = readValue ( myGdalScanData, myDataType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myValDouble = readValue ( myGdalScanData, myDataType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       if ( myValDouble == noDataValueDouble || myValDouble != myValDouble ) continue; // NULL
 
       int c1, c2, c3;
       bool found = myColorTable->color ( myValDouble, &c1, &c2, &c3 );
       if ( !found ) continue;
-      
+
       int myInt;
 
       //check for alternate color mappings
       if (theColorQString == redTranslatedQString)
       {
-	myInt = c1;
-      } 
+        myInt = c1;
+      }
       else if (theColorQString == ("Green"))
       {
-	myInt = c2;
+        myInt = c2;
       }
       else if (theColorQString == ("Blue"))
       {
-	myInt = c3;
+        myInt = c3;
       }
       //dont draw this point if it is no data !
       //double check that myInt >= min and <= max
       //this is relevant if we are plotting within stddevs
-      
+
       if ( myInt < myAdjustedRasterBandStats.minValDouble )
       {
-	myInt = static_cast < int >(myAdjustedRasterBandStats.minValDouble);
+        myInt = static_cast < int >(myAdjustedRasterBandStats.minValDouble);
       }
       else if ( myInt > myAdjustedRasterBandStats.maxValDouble )
       {
-	myInt = static_cast < int >(myAdjustedRasterBandStats.maxValDouble);
-      } 
+        myInt = static_cast < int >(myAdjustedRasterBandStats.maxValDouble);
+      }
 
       if (!invertHistogramFlag)
       {
-	//check if we are in the first class break
-	if ((myInt >= myClassBreakMin1) && (myInt < myClassBreakMax1))
-	{
-	  myRedInt = 0;
-	  myBlueInt = 255;
-	  myGreenInt = static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) 
-					    * (myInt - myClassBreakMin1)) * 3);
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=255-myGreenInt;
-	  }
-	}
-	//check if we are in the second class break
-	else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
-	{
-	  myRedInt = static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) 
-					  * ((myInt - myClassBreakMin2) / 1)) * 3);
-	  myBlueInt = static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) 
-					  * ((myInt - myClassBreakMin2) / 1)) * 3));
-	  myGreenInt = 255;
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myGreenInt=myBlueInt;
-	  }
-	}
-	//otherwise we must be in the third classbreak
-	else
-	{
-	  myRedInt = 255;
-	  myBlueInt = 0;
-	  myGreenInt = static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) 
-						   * ((myInt - myClassBreakMin3) / 1) * 3)));
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=myGreenInt;
-	    myGreenInt=255-myGreenInt;
-	  }
-	}
+        //check if we are in the first class break
+        if ((myInt >= myClassBreakMin1) && (myInt < myClassBreakMax1))
+        {
+          myRedInt = 0;
+          myBlueInt = 255;
+          myGreenInt = static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble)
+                                            * (myInt - myClassBreakMin1)) * 3);
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+        }
+        //check if we are in the second class break
+        else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
+        {
+          myRedInt = static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble)
+                                          * ((myInt - myClassBreakMin2) / 1)) * 3);
+          myBlueInt = static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble)
+                                          * ((myInt - myClassBreakMin2) / 1)) * 3));
+          myGreenInt = 255;
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myGreenInt=myBlueInt;
+          }
+        }
+        //otherwise we must be in the third classbreak
+        else
+        {
+          myRedInt = 255;
+          myBlueInt = 0;
+          myGreenInt = static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble)
+                                                   * ((myInt - myClassBreakMin3) / 1) * 3)));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=myGreenInt;
+            myGreenInt=255-myGreenInt;
+          }
+        }
       }
       else            //invert histogram toggle is on
       {
-	//check if we are in the first class break
-	if ((myInt >= myClassBreakMin1) && (myInt < myClassBreakMax1))
-	{
-	  myRedInt = 255;
-	  myBlueInt = 0;
-	  myGreenInt =
-	      static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin1) / 1) * 3));
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=255-myGreenInt;
-	  }
-	}
-	//check if we are in the second class break
-	else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
-	{
-	  myRedInt =
-	      static_cast <
-	      int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3));
-	  myBlueInt =
-	      static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3);
-	  myGreenInt = 255;
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myGreenInt=myBlueInt;
-	  }
-	}
-	//otherwise we must be in the third classbreak
-	else
-	{
-	  myRedInt = 0;
-	  myBlueInt = 255;
-	  myGreenInt =
-	      static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin3)) * 3));
-	  // testing this stuff still ...
-	  if (colorRampingType==FREAK_OUT)
-	  {
-	    myRedInt=255-myGreenInt;
-	    myGreenInt=myGreenInt;
-	  }
-	}
+        //check if we are in the first class break
+        if ((myInt >= myClassBreakMin1) && (myInt < myClassBreakMax1))
+        {
+          myRedInt = 255;
+          myBlueInt = 0;
+          myGreenInt =
+              static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin1) / 1) * 3));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+        }
+        //check if we are in the second class break
+        else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
+        {
+          myRedInt =
+              static_cast <
+              int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3));
+          myBlueInt =
+              static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3);
+          myGreenInt = 255;
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myGreenInt=myBlueInt;
+          }
+        }
+        //otherwise we must be in the third classbreak
+        else
+        {
+          myRedInt = 0;
+          myBlueInt = 255;
+          myGreenInt =
+              static_cast < int >(255 - (((255 / myAdjustedRasterBandStats.rangeDouble) * (myInt - myClassBreakMin3)) * 3));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+            myGreenInt=myGreenInt;
+          }
+        }
 
 
       }
@@ -1560,8 +1561,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
   //render any inline filters
   filterLayer(&myQImage);
   //part of the experimental transaparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()), 
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                          myQImage);
 }
 
@@ -1590,8 +1591,8 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
     {
-      double myValDouble = readValue ( myGdalScanData, myDataType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myValDouble = readValue ( myGdalScanData, myDataType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       if ( myValDouble == noDataValueDouble || myValDouble != myValDouble ) continue; // NULL
 
@@ -1603,27 +1604,27 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
         int myGreenValueInt = 0;  //color 2 int
         int myBlueValueInt = 0; //color 3 int
 
-	//check for alternate color mappings
-	if (redBandNameQString == redTranslatedQString)
-	  myRedValueInt = c1;
-	else if (redBandNameQString == greenTranslatedQString)
-	  myRedValueInt = c2;
-	else if (redBandNameQString == blueTranslatedQString)
-	  myRedValueInt = c3;
-	
-	if (greenBandNameQString == redTranslatedQString)
-	  myGreenValueInt = c1;
-	else if (greenBandNameQString == greenTranslatedQString)
-	  myGreenValueInt = c2;
-	else if (greenBandNameQString == blueTranslatedQString)
-	  myGreenValueInt = c3;
-	
-	if (blueBandNameQString == redTranslatedQString)
-	  myBlueValueInt = c1;
-	else if (blueBandNameQString == greenTranslatedQString)
-	  myBlueValueInt = c2;
-	else if (blueBandNameQString == blueTranslatedQString)
-	  myBlueValueInt = c3;
+        //check for alternate color mappings
+        if (redBandNameQString == redTranslatedQString)
+          myRedValueInt = c1;
+        else if (redBandNameQString == greenTranslatedQString)
+          myRedValueInt = c2;
+        else if (redBandNameQString == blueTranslatedQString)
+          myRedValueInt = c3;
+
+        if (greenBandNameQString == redTranslatedQString)
+          myGreenValueInt = c1;
+        else if (greenBandNameQString == greenTranslatedQString)
+          myGreenValueInt = c2;
+        else if (greenBandNameQString == blueTranslatedQString)
+          myGreenValueInt = c3;
+
+        if (blueBandNameQString == redTranslatedQString)
+          myBlueValueInt = c1;
+        else if (blueBandNameQString == greenTranslatedQString)
+          myBlueValueInt = c2;
+        else if (blueBandNameQString == blueTranslatedQString)
+          myBlueValueInt = c3;
 
         if (invertHistogramFlag)
         {
@@ -1639,8 +1640,8 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   //render any inline filters
   filterLayer(&myQImage);
   //part of the experimental transaparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()), 
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                          myQImage );
 
   CPLFree(myGdalScanData);
@@ -1672,11 +1673,11 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   GDALRasterBand *myGdalRedBand = gdalDataset->GetRasterBand(myRedBandNoInt);
   GDALRasterBand *myGdalGreenBand = gdalDataset->GetRasterBand(myGreenBandNoInt);
   GDALRasterBand *myGdalBlueBand = gdalDataset->GetRasterBand(myBlueBandNoInt);
-  
+
   GDALDataType myRedType = myGdalRedBand->GetRasterDataType();
   GDALDataType myGreenType = myGdalGreenBand->GetRasterDataType();
   GDALDataType myBlueType = myGdalBlueBand->GetRasterDataType();
-  
+
   void *myGdalRedData = readData ( myGdalRedBand, theRasterViewPort );
   void *myGdalGreenData = readData ( myGdalGreenBand, theRasterViewPort );
   void *myGdalBlueData = readData ( myGdalBlueBand, theRasterViewPort );
@@ -1689,18 +1690,18 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
     {
-      double myRedValueDouble   = readValue ( myGdalRedData, myRedType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
-      double myGreenValueDouble = readValue ( myGdalGreenData, myRedType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
-      double myBlueValueDouble  = readValue ( myGdalBlueData, myRedType, 
-				       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myRedValueDouble   = readValue ( myGdalRedData, myRedType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myGreenValueDouble = readValue ( myGdalGreenData, myRedType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      double myBlueValueDouble  = readValue ( myGdalBlueData, myRedType,
+                                       myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       // TODO: check all channels ?
       if ( myRedValueDouble == noDataValueDouble || myRedValueDouble != myRedValueDouble ) {
-	std::cout << "myRedValueDouble = " << myRedValueDouble << std::endl;
-	std::cout << "noDataValueDouble = " << noDataValueDouble << std::endl;
-	continue;
+        std::cout << "myRedValueDouble = " << myRedValueDouble << std::endl;
+        std::cout << "noDataValueDouble = " << noDataValueDouble << std::endl;
+        continue;
       }
 
       int myRedValueInt   = static_cast < int > ( myRedValueDouble );
@@ -1714,16 +1715,16 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
         myBlueValueInt = 255 - myBlueValueInt;
       }
       //set the pixel based on the above color mappings
-      myQImage.setPixel ( myRowInt, myColumnInt, 
-	  		  qRgba(myRedValueInt, myGreenValueInt, myBlueValueInt, transparencyLevelInt) );
+      myQImage.setPixel ( myRowInt, myColumnInt,
+                          qRgba(myRedValueInt, myGreenValueInt, myBlueValueInt, transparencyLevelInt) );
     }
   }
 
   //render any inline filters
   filterLayer(&myQImage);
   //part of the experimental transaparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()), 
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()), 
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
                          myQImage);
 
   //free the scanline memory
@@ -1910,7 +1911,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   std::cout << "QgsRasterLayer::retrieve stats for band " << theBandNoInt << std::endl;
 #endif
 
-  
+
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
 
@@ -1919,7 +1920,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   QgsColorTable *myColorTable = &(myRasterBandStats.colorTable);
   if (rasterLayerType == PALETTE)
   {
-    
+
     //override the band name - palette images are really only one band
     //so we are faking three band behaviour
     switch (theBandNoInt)
@@ -1964,10 +1965,10 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
-  
+
   int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
   myGdalBand->GetBlockSize( &myXBlockSize, &myYBlockSize );
-  
+
   myNXBlocks = (myGdalBand->GetXSize() + myXBlockSize - 1) / myXBlockSize;
   myNYBlocks = (myGdalBand->GetYSize() + myYBlockSize - 1) / myYBlockSize;
 
@@ -1986,7 +1987,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   if ( ! success )
   {
-      std::cerr << __FILE__ << " : " << __LINE__ 
+      std::cerr << __FILE__ << " : " << __LINE__
                 << " myGdalBand->GetMinimum() failed\n";
   }
 
@@ -1994,7 +1995,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   if ( ! success )
   {
-      std::cerr << __FILE__ << " : " << __LINE__ 
+      std::cerr << __FILE__ << " : " << __LINE__
                 << " myGdalBand->GetMaximum() failed\n";
   }
 
@@ -2002,7 +2003,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   if ( ! success )
   {
-      std::cerr << __FILE__ << " : " << __LINE__ 
+      std::cerr << __FILE__ << " : " << __LINE__
                 << " myGdalBand->GetNoDataValue() failed\n";
   }
 
@@ -2036,81 +2037,81 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
       // Compute the portion of the block that is valid
       // for partial edge blocks.
       if( (iXBlock+1) * myXBlockSize > myGdalBand->GetXSize() )
-	  nXValid = myGdalBand->GetXSize() - iXBlock * myXBlockSize;
+          nXValid = myGdalBand->GetXSize() - iXBlock * myXBlockSize;
       else
-	  nXValid = myXBlockSize;
+          nXValid = myXBlockSize;
 
       if( (iYBlock+1) * myYBlockSize > myGdalBand->GetYSize() )
-	  nYValid = myGdalBand->GetYSize() - iYBlock * myYBlockSize;
+          nYValid = myGdalBand->GetYSize() - iYBlock * myYBlockSize;
       else
-	  nYValid = myYBlockSize;
+          nYValid = myYBlockSize;
 
       // Collect the histogram counts.
       for( int iY = 0; iY < nYValid; iY++ )
       {
-	for( int iX = 0; iX < nXValid; iX++ )
-	{
-	   double myDouble = readValue ( myData, myDataType, iX + iY * myXBlockSize );
-      
-	   if ( fabs(myDouble - noDataValueDouble) < myPrecision || 
-                myDouble < GDALminimum ) 
-           { 
+        for( int iX = 0; iX < nXValid; iX++ )
+        {
+           double myDouble = readValue ( myData, myDataType, iX + iY * myXBlockSize );
+
+           if ( fabs(myDouble - noDataValueDouble) < myPrecision ||
+                myDouble < GDALminimum )
+           {
                continue; // NULL
            }
 
-	   //get the nth element from the current row
-	   if (myColorInterpretation == "Palette") // dont translate this its a gdal string
-	   {
-	      //this is a palette layer so red / green / blue 'layers are 'virtual'
-	      //in that we need to obtain the palette entry and then get the r,g or g
-	      //component from that palette entry
-		
-	      int c1, c2, c3;
-	      bool found = myColorTable->color ( myDouble, &c1, &c2, &c3 );
-	      if ( !found ) continue;
+           //get the nth element from the current row
+           if (myColorInterpretation == "Palette") // dont translate this its a gdal string
+           {
+              //this is a palette layer so red / green / blue 'layers are 'virtual'
+              //in that we need to obtain the palette entry and then get the r,g or g
+              //component from that palette entry
 
-	      //check for alternate color mappings
-	      switch (theBandNoInt) 
-	      {
-		  case 1:
-		      myDouble = c1;
-		      break;
-		  case 2:
-		      myDouble = c2;
-		      break;
-		  case 3:
-		      myDouble = c3;
-		      break;
-	      }
-	   }
+              int c1, c2, c3;
+              bool found = myColorTable->color ( myDouble, &c1, &c2, &c3 );
+              if ( !found ) continue;
 
-	   //only use this element if we have a non null element
-	   if (myFirstIterationFlag)
-	   {
-	     //this is the first iteration so initialise vars
-	     myFirstIterationFlag = false;
-	     myRasterBandStats.minValDouble = myDouble;
-	     myRasterBandStats.maxValDouble = myDouble;
-	   }               //end of true part for first iteration check
-	   else
-	   {
-	     //this is done for all subsequent iterations
-	     if (myDouble < myRasterBandStats.minValDouble)
-	     {
-	       myRasterBandStats.minValDouble = myDouble;
-	     }
-	     if (myDouble > myRasterBandStats.maxValDouble)
-	     {
-	       myRasterBandStats.maxValDouble = myDouble;
-	     }
-	     //only increment the running total if it is not a nodata value
-	     if (myDouble != noDataValueDouble)
-	     {
-	       myRasterBandStats.sumDouble += myDouble;
-	       ++myRasterBandStats.elementCountInt;
-	     }
-	   }               //end of false part for first iteration check
-	}
+              //check for alternate color mappings
+              switch (theBandNoInt)
+              {
+                  case 1:
+                      myDouble = c1;
+                      break;
+                  case 2:
+                      myDouble = c2;
+                      break;
+                  case 3:
+                      myDouble = c3;
+                      break;
+              }
+           }
+
+           //only use this element if we have a non null element
+           if (myFirstIterationFlag)
+           {
+             //this is the first iteration so initialise vars
+             myFirstIterationFlag = false;
+             myRasterBandStats.minValDouble = myDouble;
+             myRasterBandStats.maxValDouble = myDouble;
+           }               //end of true part for first iteration check
+           else
+           {
+             //this is done for all subsequent iterations
+             if (myDouble < myRasterBandStats.minValDouble)
+             {
+               myRasterBandStats.minValDouble = myDouble;
+             }
+             if (myDouble > myRasterBandStats.maxValDouble)
+             {
+               myRasterBandStats.maxValDouble = myDouble;
+             }
+             //only increment the running total if it is not a nodata value
+             if (myDouble != noDataValueDouble)
+             {
+               myRasterBandStats.sumDouble += myDouble;
+               ++myRasterBandStats.elementCountInt;
+             }
+           }               //end of false part for first iteration check
+        }
       }
     }                       //end of column wise loop
   }                           //end of row wise loop
@@ -2129,63 +2130,63 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     for( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
     {
       int  nXValid, nYValid;
-	 
+
       myGdalBand->ReadBlock( iXBlock, iYBlock, myData );
 
       // Compute the portion of the block that is valid
       // for partial edge blocks.
       if( (iXBlock+1) * myXBlockSize > myGdalBand->GetXSize() )
-	  nXValid = myGdalBand->GetXSize() - iXBlock * myXBlockSize;
+          nXValid = myGdalBand->GetXSize() - iXBlock * myXBlockSize;
       else
-	  nXValid = myXBlockSize;
+          nXValid = myXBlockSize;
 
       if( (iYBlock+1) * myYBlockSize > myGdalBand->GetYSize() )
-	  nYValid = myGdalBand->GetYSize() - iYBlock * myYBlockSize;
+          nYValid = myGdalBand->GetYSize() - iYBlock * myYBlockSize;
       else
-	  nYValid = myYBlockSize;
+          nYValid = myYBlockSize;
 
       // Collect the histogram counts.
       for( int iY = 0; iY < nYValid; iY++ )
       {
-	for( int iX = 0; iX < nXValid; iX++ )
-	{
-	   double myDouble = readValue ( myData, myDataType, iX + iY * myXBlockSize );
-      
-	   if ( fabs(myDouble - noDataValueDouble) < myPrecision ||
+        for( int iX = 0; iX < nXValid; iX++ )
+        {
+           double myDouble = readValue ( myData, myDataType, iX + iY * myXBlockSize );
+
+           if ( fabs(myDouble - noDataValueDouble) < myPrecision ||
                 myDouble < GDALminimum )
            {
                continue; // NULL
            }
 
-	   //get the nth element from the current row
-	   if (myColorInterpretation == "Palette") // dont translate this its a gdal string
-	   {
-	      //this is a palette layer so red / green / blue 'layers are 'virtual'
-	      //in that we need to obtain the palette entry and then get the r,g or g
-	      //component from that palette entry
-		
-	      int c1, c2, c3;
-	      bool found = myColorTable->color ( myDouble, &c1, &c2, &c3 );
-	      if ( !found ) continue;
+           //get the nth element from the current row
+           if (myColorInterpretation == "Palette") // dont translate this its a gdal string
+           {
+              //this is a palette layer so red / green / blue 'layers are 'virtual'
+              //in that we need to obtain the palette entry and then get the r,g or g
+              //component from that palette entry
 
-	      //check for alternate color mappings
-	      switch (theBandNoInt) 
-	      {
-		  case 1:
-		      myDouble = c1;
-		      break;
-		  case 2:
-		      myDouble = c2;
-		      break;
-		  case 3:
-		      myDouble = c3;
-		      break;
-	      }
-	   }
-     
-	   myRasterBandStats.sumSqrDevDouble += static_cast < double >
-	                                        (pow(myDouble - myRasterBandStats.meanDouble, 2));
-	}
+              int c1, c2, c3;
+              bool found = myColorTable->color ( myDouble, &c1, &c2, &c3 );
+              if ( !found ) continue;
+
+              //check for alternate color mappings
+              switch (theBandNoInt)
+              {
+                  case 1:
+                      myDouble = c1;
+                      break;
+                  case 2:
+                      myDouble = c2;
+                      break;
+                  case 3:
+                      myDouble = c3;
+                      break;
+              }
+           }
+
+           myRasterBandStats.sumSqrDevDouble += static_cast < double >
+                                                (pow(myDouble - myRasterBandStats.meanDouble, 2));
+        }
       }
     }                       //end of column wise loop
   }                           //end of row wise loop
@@ -2559,7 +2560,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
       //scale width by factor of 50 (=150px wide)
       myQWMatrix.scale(60, myHeightInt);
     }
-    else                    
+    else
     {
       //assume 100px so scale by factor of 1.5 (=150px wide)
       myQWMatrix.scale(1.8, myHeightInt);
@@ -2585,7 +2586,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     {
       myQPainter.drawPixmap(0,0,mInOverviewPixmap);
       }*/
-    
+
     //
     // Overlay the layername
     //
@@ -2853,7 +2854,7 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += tr("Band No");
     myMetadataQString += "</td>";
     myMetadataQString += "<td bgcolor=\"white\">";
-    myMetadataQString += QString::number(myIteratorInt); 
+    myMetadataQString += QString::number(myIteratorInt);
     myMetadataQString += "</td></tr>";
 
     //check if full stats for this layer have already been collected
@@ -2867,9 +2868,9 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("No Stats");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += tr("No stats collected yet"); 
+      myMetadataQString += tr("No stats collected yet");
       myMetadataQString += "</td></tr>";
-    } 
+    }
     else                    // collected - show full detail
     {
 #ifdef QGISDEBUG
@@ -2882,7 +2883,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Min Val");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.minValDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.minValDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       // Max Val
@@ -2890,7 +2891,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Max Val");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.maxValDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.maxValDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       // Range
@@ -2898,7 +2899,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Range");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.rangeDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.rangeDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       // Mean
@@ -2906,7 +2907,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Mean");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.meanDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.meanDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       //sum of squares
@@ -2914,7 +2915,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Sum of squares");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.sumSqrDevDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.sumSqrDevDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       //standard deviation
@@ -2922,7 +2923,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Standard Deviation");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.stdDevDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.stdDevDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       //sum of all cells
@@ -2930,7 +2931,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Sum of all cells");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.sumDouble, 'f',10); 
+      myMetadataQString += QString::number(myRasterBandStats.sumDouble, 'f',10);
       myMetadataQString += "</td></tr>";
 
       //number of cells
@@ -2938,7 +2939,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += tr("Cell Count");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"white\">";
-      myMetadataQString += QString::number(myRasterBandStats.elementCountInt); 
+      myMetadataQString += QString::number(myRasterBandStats.elementCountInt);
       myMetadataQString += "</td></tr>";
     }
   }
@@ -2981,14 +2982,14 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   delete gdalDataset;
   gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
   //
-  // Iterate through the Raster Layer Pyramid Vector, building any pyramid 
+  // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
   //
   int myCountInt=1;
   int myTotalInt=theRasterPyramidList.count();
   RasterPyramidList::iterator myRasterPyramidIterator;
-  for ( myRasterPyramidIterator=theRasterPyramidList.begin(); 
-          myRasterPyramidIterator != theRasterPyramidList.end(); 
+  for ( myRasterPyramidIterator=theRasterPyramidList.begin();
+          myRasterPyramidIterator != theRasterPyramidList.end();
           ++myRasterPyramidIterator )
   {
     std::cout << "Buld pyramids:: Level " << (*myRasterPyramidIterator).levelInt
@@ -3003,14 +3004,14 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
       int myOverviewLevelsIntArray[1] = {(*myRasterPyramidIterator).levelInt };
       /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
        * pszResampling : one of "NEAREST", "AVERAGE" or "MODE" controlling the downsampling method applied.
-       * nOverviews : number of overviews to build. 
-       * panOverviewList : the list of overview decimation factors to build. 
-       * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0. 
-       * panBandList : list of band numbers. 
-       * pfnProgress : a function to call to report progress, or NULL. 
+       * nOverviews : number of overviews to build.
+       * panOverviewList : the list of overview decimation factors to build.
+       * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
+       * panBandList : list of band numbers.
+       * pfnProgress : a function to call to report progress, or NULL.
        * pProgressData : application data to pass to the progress function.
        */
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG
       //build the pyramid and show progress to console
       if(theResamplingMethod==tr("Average Magphase"))
       {
@@ -3028,7 +3029,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
         gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
               GDALTermProgress, NULL );
       }
-#else      
+#else
       //build the pyramid and show progress to console
       if(theResamplingMethod==tr("Average Magphase"))
       {
@@ -3046,7 +3047,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
         gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
               GDALDummyProgress, NULL );
       }
-#endif      
+#endif
       myCountInt++;
       //make sure the raster knows it has pyramids
       hasPyramidsFlag=true;
@@ -3073,7 +3074,7 @@ RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
 
   mPyramidList.clear();
   std::cout << "Building initial pyramid list" << std::endl;
-  while((myWidth/myDivisorInt > 32) && ((myHeight/myDivisorInt)>32)) 
+  while((myWidth/myDivisorInt > 32) && ((myHeight/myDivisorInt)>32))
   {
 
     RasterPyramid myRasterPyramid;
@@ -3112,10 +3113,10 @@ RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
         //
         std::cout << "Checking whether " <<
             myRasterPyramid.xDimInt << " x " <<
-            myRasterPyramid.yDimInt << " matches " << 
+            myRasterPyramid.yDimInt << " matches " <<
             myOverviewXDim << " x " << myOverviewYDim ;
 
-        if ((myOverviewXDim <= (myRasterPyramid.xDimInt+ myNearMatchLimitInt)) && 
+        if ((myOverviewXDim <= (myRasterPyramid.xDimInt+ myNearMatchLimitInt)) &&
                 (myOverviewXDim >= (myRasterPyramid.xDimInt- myNearMatchLimitInt)) &&
                 (myOverviewYDim <= (myRasterPyramid.yDimInt+ myNearMatchLimitInt)) &&
                 (myOverviewYDim >= (myRasterPyramid.yDimInt- myNearMatchLimitInt)))
@@ -3156,7 +3157,7 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
     std::cerr << "QgsRasterLayer::readColorTable()" << std::endl;
 #endif
 
-    // First try to read color table from metadata 
+    // First try to read color table from metadata
     char **metadata = gdalBand->GetMetadata();
 
     bool found = false;
@@ -3164,20 +3165,20 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
       QStringList metadataTokens = QStringList::split("=", *metadata );
 
       if (metadataTokens.count() < 2 ) continue;
-        
-      if ( metadataTokens[0].contains("COLOR_TABLE_RULE_RGB_") ) {
-	  double min, max;
-	  int min_c1, min_c2, min_c3, max_c1, max_c2, max_c3;
 
-	  if ( sscanf((char*)metadataTokens[1].ascii(),"%lf %lf %d %d %d %d %d %d", 
-		               &min, &max, &min_c1, &min_c2, &min_c3, &max_c1, &max_c2, &max_c3) != 8 )
-	  {
-	      continue;
-	  }
-          theColorTable->add ( min, max, 
-		            (unsigned char)min_c1, (unsigned char)min_c2, (unsigned char)min_c3, 0, 
-			    (unsigned char)max_c1, (unsigned char)max_c2, (unsigned char)max_c3, 0 );
-	  found = true;
+      if ( metadataTokens[0].contains("COLOR_TABLE_RULE_RGB_") ) {
+          double min, max;
+          int min_c1, min_c2, min_c3, max_c1, max_c2, max_c3;
+
+          if ( sscanf((char*)metadataTokens[1].ascii(),"%lf %lf %d %d %d %d %d %d",
+                               &min, &max, &min_c1, &min_c2, &min_c3, &max_c1, &max_c2, &max_c3) != 8 )
+          {
+              continue;
+          }
+          theColorTable->add ( min, max,
+                            (unsigned char)min_c1, (unsigned char)min_c2, (unsigned char)min_c3, 0,
+                            (unsigned char)max_c1, (unsigned char)max_c2, (unsigned char)max_c3, 0 );
+          found = true;
       }
       ++metadata;
     }
@@ -3185,25 +3186,25 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
 
     // If no color table was found, try to read it from GDALColorTable
     if ( !found ) {
-	GDALColorTable *gdalColorTable = gdalBand->GetColorTable();
+        GDALColorTable *gdalColorTable = gdalBand->GetColorTable();
 
-	if ( gdalColorTable ) {
-	    int count = gdalColorTable->GetColorEntryCount();
-	
-	    for ( int i = 0; i < count; i++ ) {
-		const GDALColorEntry *colorEntry = gdalColorTable->GetColorEntry ( i );
-	    
-		if ( !colorEntry ) continue;
+        if ( gdalColorTable ) {
+            int count = gdalColorTable->GetColorEntryCount();
 
-		theColorTable->add ( i, (unsigned char) colorEntry->c1, (unsigned char) colorEntry->c2,
-				      (unsigned char) colorEntry->c3 );
-	    }
-	}
+            for ( int i = 0; i < count; i++ ) {
+                const GDALColorEntry *colorEntry = gdalColorTable->GetColorEntry ( i );
+
+                if ( !colorEntry ) continue;
+
+                theColorTable->add ( i, (unsigned char) colorEntry->c1, (unsigned char) colorEntry->c2,
+                                      (unsigned char) colorEntry->c3 );
+            }
+        }
     }
-    
-#ifdef QGISDEBUG 
+
+#ifdef QGISDEBUG
     theColorTable->print();
-#endif      
+#endif
 }
 
 
@@ -3213,23 +3214,23 @@ QgsColorTable *QgsRasterLayer::colorTable ( int theBandNoInt )
 }
 
 
-void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, RasterViewPort *viewPort ) 
+void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, RasterViewPort *viewPort )
 {
     GDALDataType type = gdalBand->GetRasterDataType();
     int size = GDALGetDataTypeSize ( type ) / 8;
 
     void *data = CPLMalloc ( size * viewPort->drawableAreaXDimInt * viewPort->drawableAreaYDimInt );
-    
-    CPLErr myErr = gdalBand->RasterIO ( GF_Read, 
-					viewPort->rectXOffsetInt,
-					viewPort->rectYOffsetInt,
-					viewPort->clippedWidthInt,
-					viewPort->clippedHeightInt,
-					data,
-					viewPort->drawableAreaXDimInt,
-					viewPort->drawableAreaYDimInt,
-					type, 0, 0 );
-	    
+
+    CPLErr myErr = gdalBand->RasterIO ( GF_Read,
+                                        viewPort->rectXOffsetInt,
+                                        viewPort->rectYOffsetInt,
+                                        viewPort->clippedWidthInt,
+                                        viewPort->clippedHeightInt,
+                                        data,
+                                        viewPort->drawableAreaXDimInt,
+                                        viewPort->drawableAreaYDimInt,
+                                        type, 0, 0 );
+
     return data;
 }
 
@@ -3237,32 +3238,32 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, RasterViewPort *viewP
 double QgsRasterLayer::readValue ( void *data, GDALDataType type, int index )
 {
     double val;
-    
+
     switch ( type ) {
-	case GDT_Byte:
- 	    return (double) ((GByte *)data)[index];
+        case GDT_Byte:
+            return (double) ((GByte *)data)[index];
             break;
-	case GDT_UInt16:
- 	    return (double) ((GUInt16 *)data)[index];
+        case GDT_UInt16:
+            return (double) ((GUInt16 *)data)[index];
             break;
-	case GDT_Int16:
- 	    return (double) ((GInt16 *)data)[index];
+        case GDT_Int16:
+            return (double) ((GInt16 *)data)[index];
             break;
-	case GDT_UInt32:
- 	    return (double) ((GUInt32 *)data)[index];
+        case GDT_UInt32:
+            return (double) ((GUInt32 *)data)[index];
             break;
-	case GDT_Int32:
- 	    return (double) ((GInt32 *)data)[index];
+        case GDT_Int32:
+            return (double) ((GInt32 *)data)[index];
             break;
-	case GDT_Float32:
- 	    return (double) ((float *)data)[index];
+        case GDT_Float32:
+            return (double) ((float *)data)[index];
             break;
-	case GDT_Float64:
-	    val = ((double *)data)[index];
- 	    return (double) ((double *)data)[index];
+        case GDT_Float64:
+            val = ((double *)data)[index];
+            return (double) ((double *)data)[index];
             break;
-	default:
-	    qWarning("Data type %d is not supported", type);
+        default:
+            qWarning("Data type %d is not supported", type);
     }
     return 0.0;
 }
@@ -3336,7 +3337,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
                                     // QgsMapLayer::readXML()
     {
         std::cerr << __FILE__ << ":" << __LINE__
-                  << " unable to read from raster file " 
+                  << " unable to read from raster file "
                   << source() << "\n";
 
         return false;
@@ -3348,7 +3349,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
 
 
-/* virtual */ bool QgsRasterLayer::writeXML_( QDomNode & layer_node, 
+/* virtual */ bool QgsRasterLayer::writeXML_( QDomNode & layer_node,
                                               QDomDocument & document )
 {
     // first get the layer element so that we can append the type attribute
@@ -3381,7 +3382,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     {
         showDebugOverlayFlagElement.setAttribute( "boolean", "false" );
     }
-    
+
     rasterPropertiesElement.appendChild( showDebugOverlayFlagElement );
 
     // <drawingStyle>
@@ -3467,7 +3468,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
 
 
-/** we wouldn't have to do this if slots were inherited 
+/** we wouldn't have to do this if slots were inherited
 
   XXX Actually this <I>should</I> be inherited.
 */

@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Quantum GIS"
-!define PRODUCT_VERSION "0.6 [TEST VERSION]"
+!define PRODUCT_VERSION "0.6 Prerelease 3"
 !define PRODUCT_PUBLISHER "QGIS Development Team"
 !define PRODUCT_WEB_SITE "http://qgis.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe"

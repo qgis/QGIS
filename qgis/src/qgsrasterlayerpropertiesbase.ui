@@ -1071,6 +1071,9 @@
                     <property name="name">
                         <cstring>buttonHelp</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
                     <property name="text">
                         <string>&amp;Help</string>
                     </property>

@@ -107,13 +107,14 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-  pluginMenu->insertItem(QIconSet(icon),"&GraticuleMaker", this, SLOT(run()));
-
+  int menuId = pluginMenu->insertItem(QIconSet(icon),"&GraticuleMaker", this, SLOT(run()));
+  pluginMenu->setWhatsThis(menuId, "Creates a graticule (grid) and stores the result as a shapefile");
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Graticules", pluginMenu);
   // Create the action for tool
   myQActionPointer = new QAction("Graticule Creator", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer->setWhatsThis("Creates a graticule (grid) and stores the result as a shapefile");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
 

@@ -91,13 +91,14 @@ void Plugin::initGui()
     // add a menu with 2 items
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-    pluginMenu->insertItem(QIconSet(icon),"&CopyrightLabel", this, SLOT(run()));
-
+    int menuId = pluginMenu->insertItem(QIconSet(icon),"&CopyrightLabel", this, SLOT(run()));
+    pluginMenu->setWhatsThis(menuId, "Creates a copyright label that is displayed on the map canvas.");
     menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
     menuIdInt = qGisInterface->addMenu("&Decorations", pluginMenu);
     // Create the action for tool
     myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
+    myQActionPointer->setWhatsThis("Creates a copyright label that is displayed on the map canvas.");
     // Connect the action to the run
     connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
     // This calls the renderer everytime the cnavas has drawn itself
