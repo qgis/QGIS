@@ -19,6 +19,7 @@
 #include <qpainter.h>
 #include <stdio.h>
 
+#include "qgspoint.h"
 #include "qgsrect.h"
 #include "qgsrasterlayer.h"
 #include "gdal_priv.h"
@@ -33,6 +34,27 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 	gdalDataset = (GDALDataset *) GDALOpen( path, GA_ReadOnly );
 	std::cout << "Raster Count: " << gdalDataset->GetRasterCount() << std::endl;
 	
+	double        adfGeoTransform[6];
+	if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
+	{
+		printf( "Origin = (%.6f,%.6f)\n",
+				adfGeoTransform[0], adfGeoTransform[3] );
+		
+		printf( "Pixel Size = (%.6f,%.6f)\n",
+				adfGeoTransform[1], adfGeoTransform[5] );
+	}
+	
+	const char *projRef = gdalDataset->GetProjectionRef();
+	
+	double XMax = adfGeoTransform[0] + gdalDataset->GetRasterXSize() * adfGeoTransform[1] +  
+				  gdalDataset->GetRasterYSize() * adfGeoTransform[2];
+	double YMin  = adfGeoTransform[3] + gdalDataset->GetRasterXSize() * adfGeoTransform[4] + 
+				   gdalDataset->GetRasterYSize() * adfGeoTransform[5];
+	
+	layerExtent.setXmax(XMax);
+	layerExtent.setXmin(adfGeoTransform[0]);
+	layerExtent.setYmax(adfGeoTransform[3]);
+	layerExtent.setYmin(YMin);
 }
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -60,6 +82,22 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	
 	std::cout << "QgsRasterLayer::draw()" << std::endl;
 	std::cout << "gdalDataset->GetRasterCount(): " << gdalDataset->GetRasterCount() << std::endl;
+	std::cout << "Layer extent: " << layerExtent.stringRep() << std::endl;
+	
+	// get dimensions of raster image in map coordinate space
+	QgsPoint topLeft = cXf->transform(layerExtent.xMin(), layerExtent.yMax());
+	QgsPoint bottomRight = cXf->transform(layerExtent.xMax(), layerExtent.yMin());
+	//QPoint topLeft = cXf->transform(topLeft);
+	//QPoint bottomRight = layerExtent.bottomRight();
+	//bottomRight = cXf->transform(bottomRight);
+	int lXSize = bottomRight.xToInt() - topLeft.xToInt();
+	int lYSize = bottomRight.yToInt() - topLeft.yToInt();
+	std::cout << "xMin: " << layerExtent.xMin() <<std::endl;
+	std::cout << "yMax: " << layerExtent.yMax() <<std::endl;
+	std::cout << "xMax: " << layerExtent.xMax() <<std::endl;
+	std::cout << "yMin: " << layerExtent.yMin() <<std::endl;
+	std::cout << "lXSize: " << lXSize <<std::endl;
+	std::cout << "lYSize: " << lYSize <<std::endl;
 	
 	// if there is more than one raster band they can be for red, green, blue, etc.
 	// so this loop doesn't make much sense right now
@@ -69,27 +107,31 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 	// http://cugir.mannlib.cornell.edu/browse_map/quad_map.html
 	for (int i = 1; i <= gdalDataset->GetRasterCount(); i++) {
 		GDALRasterBand  *gdalBand = gdalDataset->GetRasterBand( i );
-
+		
+		std::cout << "gdalBand->GetOverviewCount(): " << gdalBand->GetOverviewCount() <<std::endl;
+		
 		int nXSize = gdalBand->GetXSize();
 		int nYSize = gdalBand->GetYSize();
-		// read raster 1 line at a time
-		// display image at 0,0
-		for (int nYOff = 0; nYOff < nYSize; nYOff++) {
-			uint *scanline = (uint*) CPLMalloc(sizeof(uint)*nXSize);
-			CPLErr result = gdalBand->RasterIO( 
-					GF_Read, 0, nYOff, nXSize, 1, scanline, nXSize, 1, GDT_UInt32, 0, 0 );
+		// read entire raster
+		// treat scandata as a pseudo-multidimensional array
+		// RasterIO() takes care of scaling down image
+		// TODO: need to clip to map size or we run out of memory when zooming in
+		uint *scandata = (uint*) CPLMalloc(sizeof(uint)*lXSize * sizeof(uint)*lYSize);
+		CPLErr result = gdalBand->RasterIO( 
+				GF_Read, 0, 0, nXSize, nYSize, scandata, lXSize, lYSize, GDT_UInt32, 0, 0 );
 			
-			GDALColorTable *colorTable = gdalBand->GetColorTable();
+		GDALColorTable *colorTable = gdalBand->GetColorTable();
 			
-			// print each point in scanline using color looked up in color table
-			for (int i = 0; i < nXSize; i++) {
-				const GDALColorEntry *colorEntry = GDALGetColorEntry (colorTable, scanline[i]);
+		// print each point in scandata using color looked up in color table
+		for (int i = 0; i < lXSize; i++) {
+			for (int j =0; j < lYSize; j++) {
+				const GDALColorEntry *colorEntry = GDALGetColorEntry(colorTable, scandata[i*lXSize + j]);
 				p->setPen(QColor(colorEntry->c1, colorEntry->c2, colorEntry->c3));
-				p->drawPoint(i, nYOff);
+				p->drawPoint(topLeft.xToInt() + j, topLeft.yToInt() + i);
 			}
-			
-			CPLFree(scanline);
 		}
+			
+		CPLFree(scandata);
 	}
 }
 
