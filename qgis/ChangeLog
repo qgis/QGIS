@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.52 2004/04/03 11:05:34 timlinux Exp
+ChangeLog,v 1.53 2004/04/04 15:27:33 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-04 [jobi] 0.1.0devel29
+** fixed GRASS provider
 
 2004-04-03 [ts] 0.1.0devel28
 ** Bug fix (still unconfirmed if it cures the bug!) for raster layer rendering
