@@ -16,56 +16,64 @@
  ***************************************************************************/
 
 #include "filegroup.h"
-using namespace std;
 
 FileGroup::FileGroup()
 {
-    debugModeFlag=false;
     endOfMatrixFlag=false;
     fileReaderVector = new FileReaderVector();
-    //automatically delete any filereader as it is removed from the collection
+    //automatically delete any filereader as it is
+    //removed from the collection
     fileReaderVector->setAutoDelete(true);
 }
-FileGroup::~FileGroup()
-{}
-/** Add a new file reader object to the filegroup and position the
-*   offset at the start of the data block requested. */
-bool FileGroup::addFileReader(FileReader* theFileReader, int theDataBlockNo)
-{
 
-    //if the program crashes at this point it is most likely because
-    //of an unintialised pointer! (Thanks Paul!)
-    //so check for uninitialised FileReader param:
+FileGroup::~FileGroup()
+{
+  //clean up - close each filereader in the group
+  for (int myIteratorInt=0;myIteratorInt<fileReaderVector->size();myIteratorInt++)
+  {
+    FileReader * myFileReader = fileReaderVector[myIteratorInt];
+    myFileReader->closeFile();
+  }
+  //delete thee vector which will in turn autodelete its filereaders
+  delete fileReaderVector;
+  
+}
+
+bool FileGroup::addFileReader(FileReader* theFileReader,
+                              int theDataBlockInt)
+{
     if (!theFileReader)
     {
-        if (debugModeFlag)
-            cout << "FileGroup::addFileReader(FileReader* theFileReader, int theDataBlockNo) error - theFileReader is uninitialised!" << endl;
+#ifdef QGISDEBUG
+        std::cout << "FileGroup::addFileReader() error - theFileReader is uninitialised!" << std::endl;
+#endif
+
         return false;
     }
+    //expand the filereader vector by one and insert the new filereader
+    //onto the end of the list
     int mySizeInt = fileReaderVector->size();
     fileReaderVector->resize(mySizeInt+1);
     fileReaderVector->insert(mySizeInt,theFileReader);
-    if (debugModeFlag)
-        cout << "File group size: " << fileReaderVector->size() << endl;
+#ifdef QGISDEBUG
+    cout << "File group size: " << fileReaderVector->size() << endl;
+#endif
+
     return true;
-
-
 }
 
-/** Get the next element from each fileReader and return the result as a vector. */
 QValueVector<float> FileGroup::getElementVector()
 {
-
     QValueVector<float> myFloatVector;
     //test that there are some files in our filereader group
-    if ( fileReaderVector->size()==0)
+    if ( fileReaderVector->isNull())
     {
-        return myFloatVector;
+        return 0;
     }
     //test we are not at the end of the matrix
     if (endOfMatrixFlag)
     {
-        return myFloatVector;
+        return 0;
     }
     //retrieve the each FileReader from the colelction and get its current element
     for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
@@ -85,38 +93,32 @@ QValueVector<float> FileGroup::getElementVector()
     return myFloatVector;
 }
 
-/** Read property of bool endOfMatrixFlag. */
 const bool FileGroup::getEndOfMatrixFlag()
 {
     return endOfMatrixFlag;
 }
 
-/** Move to the start of the active data block */
 bool FileGroup::moveToDataStart()
 {
     if (fileReaderVector->isNull())
     {
-      return false;
+        return false;
     }
     for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
     {
         FileReader * myCurrentFileReader = fileReaderVector->at(myIteratorInt);
         myCurrentFileReader->moveToDataStart();
     }
-    //
-
     endOfMatrixFlag=false;
     //add better error checking
     return true;
 }
-/** Increment the currently active datablock by theIncrementAmount.
-This allows you to move to a new  datablock in SRES type continuous files.
-The file pointer will be moved to the start of the datablock */
+
 bool FileGroup::incrementDataBlocks(int theIncrementAmountInt)
 {
     if (fileReaderVector->isNull())
     {
-      return false;
+        return false;
     }
     for (int myIteratorInt = 0; myIteratorInt < fileReaderVector->size();myIteratorInt++)
     {
@@ -124,8 +126,6 @@ bool FileGroup::incrementDataBlocks(int theIncrementAmountInt)
         myCurrentFileReader->setStartMonth(myCurrentFileReader->getStartMonth()+theIncrementAmountInt);
         myCurrentFileReader->moveToDataStart();
     }
-    //
-
     endOfMatrixFlag=false;
     //add better error checking
     return true;

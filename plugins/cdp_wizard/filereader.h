@@ -20,11 +20,24 @@ public:
    //
   // Enumerators
   //
-  enum FileTypeEnum { CRES,  ARCINFO_GRID , HADLEY_SRES , HADLEY_IS92 ,  IPCC_OBSERVED ,
-                                      VALDES ,  ECHAM4 ,  CSIRO_MK2 ,  NCAR_CSM_PCM , GFDL_R30 , CGCM2 ,
-                                      CCSR_AGCM_OGCM };
+  enum FileTypeEnum { CRES,  
+                      ARCINFO_GRID, 
+                      HADLEY_SRES, 
+                      HADLEY_IS92,  
+                      IPCC_OBSERVED,
+                      VALDES,  
+                      ECHAM4,  
+                      CSIRO_MK2,  
+                      NCAR_CSM_PCM, 
+                      GFDL_R30, 
+                      CGCM2,
+                      CCSR_AGCM_OGCM };
 
-  enum FileFormatEnum { CSM_MATLAB , CSM_OCTAVE ,  GARP ,  ESRI_ASCII ,  PLAIN };
+  enum FileFormatEnum { CSM_MATLAB, 
+                        CSM_OCTAVE,  
+                        GARP,  
+                        ESRI_ASCII,  
+                        PLAIN };
 
   //
   //   Public methods
