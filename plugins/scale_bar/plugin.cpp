@@ -21,7 +21,9 @@ email                : sbr00pwb@users.sourceforge.net
 /*  $Id$ */
 
 // includes
-
+#ifdef WIN32
+#include <cmath>
+#endif
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
@@ -212,7 +214,15 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     // snap to integer < 10 times power of 10
     if (mSnapping) {
       int myPowerOf10 = pow(10, int(log(myActualSize) / log(10)));
+#ifdef WIN32
+      // I know this is tacky -- but I'm trying to get this ready
+      // for release
+      // TODO Make this actually round up/down as appropriate
+
+      //myActualSize = ceil(myActualSize / myPowerOf10) * myPowerOf10;
+#else
       myActualSize = round(myActualSize / myPowerOf10) * myPowerOf10;
+#endif
       myScaleBarWidth = myActualSize / myMuppDouble;
     }
 

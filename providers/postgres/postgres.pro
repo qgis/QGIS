@@ -1,18 +1,18 @@
 ######################################################################
-Qmake project file for building the postgres provider.
-This file is needed for building on Windows
+# Qmake project file for building the postgres provider.
+# This file is needed for building on Windows
 ######################################################################
-# postgres.pro,v 1.1 2004/06/17 04:27:07 gsherman Exp 
+# postgres.pro,v 1.2 2004/06/23 04:15:55 gsherman Exp 
 
 TEMPLATE = lib
 INCLUDEPATH += . \
-                C:\Development\qgis_win32\src \
-                C:\Development\postgresql-7.4.3\src\interfaces\libpq \
-                C:\Development\postgresql-7.4.3\src\include
-LIBS += C:\Development\postgresql-7.4.3\src\interfaces\libpq\Release\libpq.lib
+                ..\..\src \
+                $(POSTGRESQL)\src\interfaces\libpq \
+                $(POSTGRESQL)\src\include
+LIBS += $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib
 
 CONFIG += qt dll thread
-DLLDESTDIR= ..\..\src\lib\qgis
+DLLDESTDIR= ..\..\win_build\lib\qgis
 # Input
 HEADERS += qgspostgresprovider.h
 SOURCES += qgspostgresprovider.cpp \
