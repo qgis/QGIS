@@ -17,6 +17,7 @@ email                : sherman at mrcc.com
 /* $Id$ */
 
 #include "../../src/qgsvectordataprovider.h"
+#include <geos.h>
 
 class QgsFeature;
 class QgsField;
@@ -143,6 +144,7 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     bool addFeatures(std::list<QgsFeature*> flist);
 
     bool supportsFeatureAddition(){return true;}
+    QgsDataSourceURI * getURI(){ return 0;};
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
@@ -171,4 +173,9 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     OGRPolygon * mSelectionRectangle;
     /**Adds one feature*/
     bool addFeature(QgsFeature* f);
+    //! The geometry factory
+    geos::GeometryFactory *geometryFactory;
+    //! The well known text reader
+    geos::WKTReader *wktReader;
+
 };

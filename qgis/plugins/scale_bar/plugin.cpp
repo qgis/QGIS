@@ -106,13 +106,14 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-  pluginMenu->insertItem(QIconSet(icon),"&ScaleBar", this, SLOT(run()));
-
+  int menuId = pluginMenu->insertItem(QIconSet(icon),"&ScaleBar", this, SLOT(run()));
+  pluginMenu->setWhatsThis(menuId, "Creates a scale bar that is displayed on the map canvas");
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Scale Bar", pluginMenu);
   // Create the action for tool
   myQActionPointer = new QAction("Scale Bar", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer->setWhatsThis("Creates a scale bar that is displayed on the map canvas");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the scale bar each time the map is rendered

@@ -11,6 +11,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+/* $Id$ */
 #include <iostream>
 #include <qfiledialog.h>
 #include <qlineedit.h>
@@ -121,7 +122,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       // clear the sample text box
       txtSample->clear();
       // put the header row in the sample box
-      txtSample->insert(line + "\n");
+      txtSample->insert(line + "\n"); 
       // put a few more lines into the sample box
       int counter = 0;
       while((line=stream.readLine()) && (counter < 20))

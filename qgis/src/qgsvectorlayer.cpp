@@ -126,6 +126,14 @@ QgsVectorLayer::~QgsVectorLayer()
 #ifdef QGISDEBUG
   std::cerr << "In QgsVectorLayer destructor" << std::endl;
 #endif
+
+  valid=false;
+
+  if(isEditable())
+  {
+      stopEditing();
+  }
+
   if (tabledisplay)
   {
     tabledisplay->close();
@@ -787,7 +795,7 @@ void QgsVectorLayer::select(int number)
       if(dataProvider->supportsSaveAsShapefile())
       {
         // add the save as shapefile menu item
-        popMenu->insertSeparator(); 
+        popMenu->insertSeparator();
         popMenu->insertItem(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
       }
 
@@ -1081,7 +1089,67 @@ void QgsVectorLayer::select(int number)
       return dataProvider->featureCount();
     } // QgsVectorLayer::featureCount
 
+   long QgsVectorLayer::updateFeatureCount() const
+    {
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::updateFeatureCount() invoked with null dataProvider\n";
+        return 0;
+      }
+      return dataProvider->updateFeatureCount();
+    }
+    void QgsVectorLayer::updateExtents()
+    {
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::updateFeatureCount() invoked with null dataProvider\n";
+      }
+      else
+      {
+#ifdef QGISDEBUG
+        qDebug("***Getting current extents from the provider***");
+        qDebug(dataProvider->extent()->stringRep());
+#endif 
+        // get the extent of the layer from the provider
+       layerExtent.setXmin(dataProvider->extent()->xMin()); 
+       layerExtent.setYmin(dataProvider->extent()->yMin()); 
+       layerExtent.setXmax(dataProvider->extent()->xMax()); 
+       layerExtent.setYmax(dataProvider->extent()->yMax()); 
+      }
+    }
 
+  QString QgsVectorLayer::subsetString()
+{
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::subsetString() invoked with null dataProvider\n";
+        return 0;
+      }
+  return dataProvider->subsetString();
+}
+    void QgsVectorLayer::setSubsetString(QString subset)
+    {
+      if ( ! dataProvider )
+      {
+        std::cerr << __FILE__ << ":" << __LINE__
+          << " QgsVectorLayer::setSubsetString() invoked with null dataProvider\n";
+      }
+      else
+      {
+        dataProvider->setSubsetString(subset);
+        updateExtents();
+      }
+      //trigger a recalculate extents request to any attached canvases
+#ifdef QGISDEBUG
+      std::cout << "Subset query changed, emitting recalculateExtents() signal" << std::endl;
+#endif
+      // emit the signal  to inform any listeners that the extent of this
+      // layer has changed
+      emit recalculateExtents();
+    }
     int QgsVectorLayer::fieldCount() const
     {
       if ( ! dataProvider )
@@ -1235,7 +1303,10 @@ void QgsVectorLayer::select(int number)
           else
           {
               mEditable=true;
-              updateItemPixmap();
+	      if(isValid())
+	      {
+		  updateItemPixmap();
+	      }
           }
       }
     }
@@ -1283,7 +1354,10 @@ void QgsVectorLayer::select(int number)
         }
         mEditable=false;
         mModified=false;
-        updateItemPixmap();
+	if(isValid())
+	{
+	    updateItemPixmap();
+	}
       }
     }
 
@@ -1310,9 +1384,9 @@ void QgsVectorLayer::select(int number)
 
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
-#ifdef QGISDEBUG 
-  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl; 
-#endif 
+#ifdef QGISDEBUG
+  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl;
+#endif
   // process the attribute actions
   mActions.readXML(layer_node);
 
@@ -1408,8 +1482,8 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     }
     else if(!uniquemarkernode.isNull())
     {
-	renderer = new QgsUValMaRenderer;
-	renderer->readXML(uniquemarkernode, *this);
+        renderer = new QgsUValMaRenderer;
+        renderer->readXML(uniquemarkernode, *this);
     }
 
     // Test if labeling is on or off
@@ -1498,7 +1572,8 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #endif
             //XXX - This was a dynamic cast but that kills the Windows
             //      version big-time with an abnormal termination error
-            dataProvider = (QgsVectorDataProvider*)(classFactory(dataSource));
+            dataProvider = (QgsVectorDataProvider*)(classFactory((const
+                            char*)(dataSource.utf8())));
 
             if (dataProvider)
             {
@@ -1666,14 +1741,14 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         rawXML += temp_str;
 
 #ifdef QGISDEBUG
-	std::cout << rawXML << std::endl << std::flush;
+        std::cout << rawXML << std::endl << std::flush;
 #endif
 
         const char * s = rawXML.c_str(); // debugger probe
 
         if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
         {
-            qDebug( "%s:%d XML import error at line %d column %d " + errorMsg, 
+            qDebug( "%s:%d XML import error at line %d column %d " + errorMsg,
                     __FILE__, __LINE__, errorLine, errorColumn );
 
             return false;
@@ -1736,7 +1811,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         rawXML   += temp_str;
 
 #ifdef QGISDEBUG
-	std::cout << rawXML << std::endl << std::flush;
+        std::cout << rawXML << std::endl << std::flush;
 #endif
         const char * s = rawXML.c_str(); // debugger probe
 
@@ -1810,6 +1885,9 @@ bool QgsVectorLayer::commitChanges()
 {
     if(dataProvider)
     {
+#ifdef QGISDEBUG
+	qWarning("in QgsVectorLayer::commitChanges");
+#endif
         bool returnvalue=true;
         std::list<QgsFeature*> addedlist;
         for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
@@ -2090,6 +2168,6 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTran
 
 void QgsVectorLayer::saveAsShapefile(){
   // call the dataproviders saveAsShapefile method
-  dataProvider->saveAsShapefile();  
+  dataProvider->saveAsShapefile();
 //  QMessageBox::information(0,"Save As Shapefile", "Someday...");
 }

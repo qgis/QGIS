@@ -114,6 +114,9 @@ class QgsMapCanvas : public QWidget
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool(int tool);
 
+    /**Returns the currently active tool*/
+    int mapTool();
+
     /** Write property of QColor bgColor. */
     virtual void setbgColor(const QColor & _newVal);
 
@@ -145,6 +148,11 @@ class QgsMapCanvas : public QWidget
     //! Return the state of the canvas (dirty or not)
     bool isDirty() const;
 
+    //! accessor for mIsOverviewCanvas member
+    bool isOverviewCanvas();
+    //! mutator for mIsOverviewCanvas member
+    void setIsOverviewCanvas(bool theFlag) { mIsOverviewCanvas = theFlag; };
+
     //! Calculate the scale and return as a string
     void currentScale(int thePrecision);
 
@@ -174,6 +182,8 @@ class QgsMapCanvas : public QWidget
     */
     bool writeXML( QDomNode & layerNode, QDomDocument & doc );
 
+    //! true if canvas currently drawing
+    bool isDrawing();
 public slots:
 
     /*! Adds a layer to the map canvas.
@@ -250,6 +260,16 @@ public slots:
       @param b is true if visible in over view
      */
     void showInOverview( QgsMapLayer * maplayer, bool visible );
+
+    /**
+    Recalculate the full extent for the map canvas. This slot is connected to
+    each map layer and is "called" when the layers extent changes, either
+    through editing or subsetting via SQL query or other method. The full
+    extent is calculated by getting the layer collection from the map layer
+    registry and iterating through it, passing the extent of each layer to
+    the updateFullExtent method.
+     */
+    void recalculateExtents();
 
 
 signals:
@@ -347,8 +367,7 @@ private:
     //! Updates the z order for layers on the map
     void updateZpos();
 
-    //! true if canvas currently drawing
-    bool isDrawing();
+
 
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)
@@ -357,6 +376,8 @@ private:
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
 
+    //! lets us know whether this canvas is being used as an overview canvas or note
+    bool mIsOverviewCanvas;
   /** debugging member
       invoked when a connect() is made to this object
   */

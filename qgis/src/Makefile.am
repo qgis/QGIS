@@ -53,6 +53,7 @@ headers =							\
 		qgscustomsymbol.h \
 		qgsdataprovider.h \
 		qgsdatasource.h \
+		qgsdatasourceuri.h \
 		qgsdlgvectorlayerproperties.h \
 	  qgsexception.h \
 		qgsfeatureattribute.h \
@@ -301,12 +302,13 @@ postgresHEADERS = qgsdbsourceselect.h \
 postgresSOURCES = qgsdbsourceselect.cpp \
 									qgsnewconnection.cpp \
 									qgspgquerybuilder.cpp \
-									qgspgutil.cpp
+									qgspgutil.h
 postgresUIC     = qgsdbsourceselectbase.ui \
 									qgsnewconnectionbase.ui \
 									qgspgquerybuilderbase.ui	
 postgresUIH     = 
- 
+postgresLIBSOURCES = qgspgutil.cpp
+
 if HAVE_POSTGRESQL
 postgresUIHEADERS = $(postgresUIC:.ui=.uic.h)
 postgresUISOURCES = $(postgresUIC:.ui=.uic.cpp)
@@ -315,7 +317,6 @@ postgresUIMOC     = $(postgresUIC:.ui=.moc.uic.cpp)
 postgresMOC       = $(postgresHEADERS:.h=.moc.cpp)
 
 qgis_SOURCES     += $(postgresSOURCES)
-postgresLIBSOURCES = qgspgutil.cpp
 endif
 
 
@@ -367,8 +368,10 @@ libqgis_la_SOURCES =				\
 		qgsvectorfilewriter.cpp \
 		qgsvectordataprovider.cpp \
 		qgsvectorlayer.cpp \
-		qgsvectorlayer.moc.cpp \
-		$(postgresLIBSOURCES) 
+		qgsvectorlayer.moc.cpp 
+if HAVE_POSTGRESQL
+libqgis_la_SOURCES += $(postgresLIBSOURCES)
+endif
 
 libqgis_la_LIBFLAGS = $(QT_LDADD) $(GEOS_LDADD)
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
@@ -382,4 +385,5 @@ pkginclude_dir = $(includedir)/qgis
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(postgresHEADERS) $(postgresSOURCES) $(postgresUIC) $(qgis_UIC) $(qgis_UIH) $(postgresUIH) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png
+EXTRA_DIST = $(postgresHEADERS) $(postgresSOURCES) $(postgresUIC) $(qgis_UIC) $(qgis_UIH) $(postgresUIH) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png 
+noinst_HEADERS = qgsdatasourceuri.h
