@@ -679,53 +679,50 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::getPaletteAsPixmap" << std::endl;
 #endif
-  if (hasBand("Palette")) //dont tr() this its a gdal word!
+  if (hasBand("Palette") ) //dont tr() this its a gdal word!
   {
 #ifdef QGISDEBUG
     std::cout << "....found paletted image" << std::endl;
 #endif
+    QgsColorTable *myColorTable = colorTable ( 1 );
     GDALRasterBandH myGdalBand = gdalDataset->GetRasterBand(1);
-    if( GDALGetRasterColorInterpretation(myGdalBand) == GCI_PaletteIndex )
+    if( GDALGetRasterColorInterpretation(myGdalBand) == GCI_PaletteIndex && myColorTable->defined() )
     {
 #ifdef QGISDEBUG
       std::cout << "....found GCI_PaletteIndex" << std::endl;
 #endif
-      GDALColorTableH myTable;
-      myTable = GDALGetRasterColorTable( myGdalBand );
-      int myColourCountInt = GDALGetColorEntryCount( myTable ) ;
+      double myMinDouble = myColorTable->min();
+      double myMaxDouble = myColorTable->max();
 
-      //we would like to have the palette drawn onto a more or less
-      //square pixmap. So we need to determine the square root of the 
-      //total palette entry count and handle any non int remainders
-      //by adding an extra row if neccessary
-      //
-      int myWidth=(int) sqrt(myColourCountInt);
-      int myHeight;
-      if ((myWidth*myWidth) < myColourCountInt)
-      {
-        //add an extra row for the remainder
-        myHeight=myWidth+1;
-      }
-      else
-      {
-        //pixmap is exactly proporational
-        myHeight=myWidth;
-      }
-      QPixmap myPalettePixmap(myWidth,myHeight);
+#ifdef QGISDEBUG
+      std::cout << "myMinDouble = " << myMinDouble << " myMaxDouble = " << myMaxDouble << std::endl;
+#endif
+
+      // Draw image
+      int mySizeInt = 100;
+      QPixmap myPalettePixmap( mySizeInt, mySizeInt);
       QPainter myQPainter(&myPalettePixmap);
 
-      QImage myQImage = QImage(myWidth,myHeight, 32);
+      QImage myQImage = QImage( mySizeInt, mySizeInt, 32);
       myQImage.fill(0);
-      myQImage.setAlphaBuffer(true);
+      myQImage.setAlphaBuffer(false);
       myPalettePixmap.fill();
 
-      for( int myIteratorInt = 0; myIteratorInt < myColourCountInt; myIteratorInt++ )
-      {
-        GDALColorEntry myEntry;
-        GDALGetColorEntryAsRGB( myTable, myIteratorInt, &myEntry );
-        myQImage.setPixel(myIteratorInt % myWidth,(int)(myIteratorInt/myWidth)
-                ,qRgba(myEntry.c1, myEntry.c2, myEntry.c3, myEntry.c4));
+      double myStepDouble = ( myMaxDouble - myMinDouble ) / ( mySizeInt * mySizeInt);
+      
+      for( int myRowInt = 0; myRowInt < mySizeInt; myRowInt++ ) {
+          for( int myColInt = 0; myColInt < mySizeInt; myColInt++ ) {
+	      
+	      double myValueDouble = myMinDouble + myStepDouble * (myColInt + myRowInt * mySizeInt);
+	      
+	      int c1, c2, c3;
+	      bool found = myColorTable->color ( myValueDouble, &c1, &c2, &c3 );
+              
+	      if ( found )
+                  myQImage.setPixel( myColInt, myRowInt, qRgb(c1, c2, c3));
+	  }
       }
+
       myQPainter.drawImage(0,0,myQImage);
       return myPalettePixmap; 
     }
