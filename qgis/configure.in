@@ -251,6 +251,7 @@ AC_CONFIG_FILES([
   src/images/splash/Makefile
   src/images/icons/Makefile
   src/images/developers/Makefile
+  src/resources/Makefile
   src/themes/Makefile
   src/themes/default/Makefile
   providers/Makefile 
