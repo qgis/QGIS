@@ -38,7 +38,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     /**Returns a pointer to m_item*/
     QgsRenderItem* item();
     /**Renders an OGRFeature*/
-    void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t);
+    void renderFeature(QPainter* p, QgsFeature* f);
     /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn
      @param layer the vector layer associated with the renderer*/
     virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
