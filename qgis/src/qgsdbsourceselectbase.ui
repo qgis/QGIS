@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>547</width>
-            <height>446</height>
+            <height>448</height>
         </rect>
     </property>
     <property name="font">
@@ -42,11 +42,11 @@
             </property>
             <property name="font">
                 <font>
-                    <family>Lucida</family>
+                    <family>helvetica</family>
                 </font>
             </property>
             <property name="title">
-                <string>Connection Information</string>
+                <string>PostgreSQL Connections</string>
             </property>
             <grid>
                 <property name="name">
@@ -58,80 +58,69 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="5">
+                <widget class="QComboBox" row="0" column="0">
                     <property name="name">
                         <cstring>cmbConnections</cstring>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="4">
+                <widget class="QLayoutWidget" row="1" column="0">
                     <property name="name">
-                        <cstring>btnDelete</cstring>
+                        <cstring>layout6</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>12</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Delete</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnConnect</cstring>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Connect</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnNew</cstring>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>New</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnEdit</cstring>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Edit</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnDelete</cstring>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Delete</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QPushButton" row="1" column="3">
-                    <property name="name">
-                        <cstring>btnEdit</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>12</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Edit</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>btnConnect</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>12</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Connect</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="2">
-                    <property name="name">
-                        <cstring>btnNew</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>12</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>New</string>
-                    </property>
-                </widget>
-                <spacer row="1" column="0">
-                    <property name="name">
-                        <cstring>spacer6</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>31</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
             </grid>
         </widget>
         <widget class="QLayoutWidget" row="3" column="0">
@@ -262,6 +251,9 @@
                 <widget class="QListBox" row="0" column="0">
                     <property name="name">
                         <cstring>lstTables</cstring>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>Multi</enum>
                     </property>
                 </widget>
             </grid>
