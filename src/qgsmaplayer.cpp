@@ -155,11 +155,7 @@ void QgsMapLayer::toggleShowInOverview()
     mShowInOverview=false;
   }
   //update the show in overview popup menu item
-  if (mShowInOverviewItemId != 0)
-  {
-    //set the checkbox using the property in the maplayer superclass
-    popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
-  }
+  updateOverviewPopupItem();
   updateItemPixmap();
   emit showInOverview(ID,mShowInOverview);
 }
@@ -168,7 +164,6 @@ void QgsMapLayer::updateItemPixmap()
 {
   if (m_legendItem)
   {
-      //((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
       if(mShowInOverview)
       {
 	  //add overview glasses to the pixmap
@@ -182,6 +177,15 @@ void QgsMapLayer::updateItemPixmap()
 	  ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
       }
   }  
+}
+
+void QgsMapLayer::updateOverviewPopupItem()
+{
+    if (mShowInOverviewItemId != 0)
+    {
+	popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
+    }
+   
 }
 
 const int &QgsMapLayer::featureType()

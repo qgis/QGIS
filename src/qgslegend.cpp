@@ -213,6 +213,12 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
   // XXX item through use of signals/slots
   layer->setLegendItem(legend_item);
 
+  if(layer->showInOverviewStatus())
+  {
+      layer->updateOverviewPopupItem();
+      layer->updateItemPixmap();
+  }
+
   // if the newly added legend item is the first one, then go ahead and
   // highlight it indicating it is selected
   if (1 == childCount())
