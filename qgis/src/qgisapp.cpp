@@ -1169,6 +1169,9 @@ void QgisApp::addDatabaseLayer()
         QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
         if (layer->isValid())
         {
+          // set initial visibility based on user preference
+          layer->setVisible(mAddedLayersHidden);
+
           // register this layer with the central layers registry
           QgsMapLayerRegistry::instance()->addMapLayer(layer);
 
@@ -3595,6 +3598,9 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
 
       // create the layer
       QgsRasterLayer *layer = new QgsRasterLayer(*myIterator, myBaseNameQString);
+      
+      // set initial visibility based on user preference
+      layer->setVisible(mAddedLayersHidden);
 
       addRasterLayer(layer);
 
