@@ -465,9 +465,29 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist, bool ge
     queryResult = PQexec(connection, (const char *)fetch);
     if(PQntuples(queryResult) == 0)
     {
-      PQexec(connection, "end work");
-      ready = false;
-      return 0;
+       
+	if(getnotcommited&&mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
+	{
+#ifdef QGISDEBUG
+	    qWarning("accessing feature in the cache");
+#endif //QGISDEBUG
+	    QgsFeature* addedfeature=*mAddedFeaturesIt;
+	    ++mAddedFeaturesIt;
+	       //copy the feature because it will be deleted in QgsVectorLayer::draw()
+	    QgsFeature* returnf=new QgsFeature(*addedfeature);
+	    return returnf;
+	}
+#ifdef QGISDEBUG
+	std::cerr << "Feature is null\n";
+#endif  
+	if(!mAddedFeatures.empty())
+	{
+	    mAddedFeaturesIt=mAddedFeatures.begin();
+	}
+      
+	PQexec(connection, "end work");
+	ready = false;
+	return 0;
     } 
     int *noid;
     int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
@@ -896,6 +916,100 @@ bool QgsPostgresProvider::startEditing()
 {
     mEditable=true;
     return true;
+}
+
+bool QgsPostgresProvider::commitFeature(QgsFeature* f)
+{
+    if(f)
+    {
+	QString insert("INSERT INTO ");
+	insert+=tableName;
+	insert+="(";
+	insert+=geometryColumn;//first the geometry
+	std::vector<QgsFeatureAttribute> attributevec=f->attributeMap();
+	for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
+	{
+	    QString fieldname=it->fieldName();
+	    if(fieldname!=geometryColumn)
+	    {
+		insert+=",";
+		insert+=fieldname;
+	    }
+	}
+	insert+=") VALUES (GeomFromWKB('";
+	unsigned char* geom=f->getGeometry();
+	for(int i=0;i<f->getGeometrySize();++i)
+	{
+	    QString hex=QString::number((int)geom[i],16).upper();
+	    if(hex.length()==1)
+	    {
+		hex="0"+hex;
+	    }
+#ifdef QGISDEBUG
+	    qWarning("in geometry loop: "+QString::number((int)geom[i],16).upper());
+#endif   
+	    insert+=hex;
+	}
+	insert+="',-1)";
+
+	for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
+	{
+	    if(it->fieldName()!=geometryColumn)
+	    {
+		QString fieldvalue=it->fieldValue();
+		bool charactertype=false;
+		insert+=",";
+		if(fieldvalue!="NULL")
+		{
+		    for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
+		    {
+			if(iter->name()==it->fieldName())
+			{
+			    if(iter->type().contains("char",false)>0||iter->type()=="text")
+			    {
+				charactertype=true;
+			    }
+			}
+		    }
+		}
+
+		if(charactertype)
+		{
+		    insert+="'";
+		}
+		insert+=fieldvalue;
+		if(charactertype)
+		{
+		    insert+="'";
+		}
+	    }
+	}
+
+	insert+=")";
+#ifdef QGISDEBUG
+	qWarning("insert statement is: "+insert);
+#endif
+
+	//send INSERT statement and do error handling
+	PGresult* result=PQexec(connection, (const char *)insert);
+	if(result==0)
+	{
+	    QMessageBox::information(0,"INSERT error","An error occured during feature insertion",QMessageBox::Ok);
+	}
+	ExecStatusType message=PQresultStatus(result);
+	if(message==PGRES_FATAL_ERROR)
+	{
+	    QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+	}
+	
+	return true;
+    }
+    return false;
+}
+
+QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
+{
+    return "NULL";
 }
 
 /**
