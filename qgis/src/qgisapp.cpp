@@ -282,6 +282,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mapLegend, SIGNAL(zOrderChanged(QgsLegend *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegend *)));
   connect(mapLegend, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(currentLayerChanged(QListViewItem *)));
 
+  // add the whats this toolbar button
+  //TODO Fix this ToolBar pointer to be named consistently
+  QWhatsThis::whatsThisButton(helpToolbar);
   // create the layer popup menu
   mapCursor = 0;
   // create the interfce
