@@ -77,8 +77,12 @@ public slots:
   void help();
   //! Display current region
   void displayRegion(QPainter *painter);
+  //! Switch region on/off
+  void switchRegion(bool on);
   //! Change region
   void changeRegion(void);
+  //! Post render
+  void postRender(QPainter *);
 
 private:
   //! Check if given directory contains a GRASS installation
