@@ -68,6 +68,8 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         void rbtnSingleBand_toggled( bool );
         /** \brief slot executed when the three band radio button is pressed. */
         void rbtnThreeBand_toggled( bool );
+        /** \brief slot executed when user wishes to refresh raster histogram */
+        void QgsRasterLayerProperties::pbnHistRefresh_clicked();
 
         /** synchronize state with associated raster layer */
         void sync();

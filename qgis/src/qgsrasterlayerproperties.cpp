@@ -119,8 +119,10 @@ const char * const ident =
             ++myIteratorInt)
     {
       //find out the name of this band
-      QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt)
-          ;
+      QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt) ;
+
+      //add the band to the histogram tab
+      lstHistogramLabels->insertItem(myRasterBandNameQString);
       //keep a list of band names for later use
       myBandNameQStringList.append(myRasterBandNameQString);
     }
@@ -175,40 +177,9 @@ const char * const ident =
     }
   }
   
-  //
   //draw the histogram
-  //
-  int myHistogramWidth = pixHistogram->width();
-  int myHistogramHeight = pixHistogram->height();
-  int myBandCountInt = rasterLayer->getBandCount();
+  pbnHistRefresh_clicked();
   
-  QPixmap myPixmap(myHistogramWidth,myHistogramHeight);
-  myPixmap.fill(Qt::white);
-  QPainter myPainter(&myPixmap, this);
-  for (int myIteratorInt = 1;
-            myIteratorInt <= myBandCountInt;
-            ++myIteratorInt)
-  {
-    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
-    QPointArray myPointArray(256);
-    for (int myBin = 0; myBin <256; myBin++)
-    {
-      int myBinValue = myRasterBandStats.histogram[myBin];
-      int myX = (myHistogramWidth/256)*myBin;
-      //height varies according to freq.
-      int myY = (myHistogramHeight/256)*myBinValue;
-#ifdef QGISDEBUG
-      std::cout << "Band " << myIteratorInt << ", bin " << myBin << ", Value : " << myY << std::endl;
-#endif
-      myPointArray.setPoint(myBin, myX, myY);
-    }
-    myPainter.setPen( Qt::black );
-    myPainter.drawPolyline(myPointArray);
-  }
-
-  myPainter.end();
-  pixHistogram->setPixmap(myPixmap);
-
  // update based on lyr's current state
   sync();  
 } // QgsRasterLayerProperties ctor
@@ -886,3 +857,118 @@ void QgsRasterLayerProperties::sync()
 
 
 } // QgsRasterLayerProperties::sync()
+
+
+void QgsRasterLayerProperties::pbnHistRefresh_clicked()
+{
+
+  //
+  //draw the histogram
+  //
+  int myHistogramWidth =256; // pixHistogram->width();
+  int myHistogramHeight = 256; // pixHistogram->height();
+  int myBandCountInt = rasterLayer->getBandCount();
+  
+  QPixmap myPixmap(myHistogramWidth,myHistogramHeight);
+  myPixmap.fill(Qt::white);
+  QPainter myPainter(&myPixmap, this);
+
+
+  //
+  // First scan through to get max value from among selected layers
+  //
+  long myMaxVal=0;
+  long myMinVal=0;
+  for (int myIteratorInt = 1;
+            myIteratorInt <= myBandCountInt;
+            ++myIteratorInt)
+  {
+    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    if ( myItem->isSelected() )
+    {
+      RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+      if ( myRasterBandStats.maxValDouble > myMaxVal)
+      {
+        myMaxVal = myRasterBandStats.maxValDouble;
+      }
+      if ( myIteratorInt==1)
+      {
+        myMinVal = myRasterBandStats.minValDouble;
+      }
+      if ( myRasterBandStats.minValDouble < myMinVal)
+      {
+        myMinVal = myRasterBandStats.minValDouble;
+      }
+    }
+  }
+
+  lblHistYMax->setText(QString::number(myMaxVal));
+  lblHistYMin->setText(QString::number(myMinVal));
+  //now draw actual graphs
+  //
+  for (int myIteratorInt = 1;
+            myIteratorInt <= myBandCountInt;
+            ++myIteratorInt)
+  {
+    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    if ( myItem->isSelected() )
+    {
+
+      QPointArray myPointArray(256);
+      for (int myBin = 0; myBin <256; myBin++)
+      {
+        int myBinValue = myRasterBandStats.histogram[myBin];
+        int myX = (myHistogramWidth/256)*myBin;
+        //height varies according to freq. and scaled to greated value in all layers
+        int myY = (myHistogramHeight/myMaxVal)*myBinValue;
+#ifdef QGISDEBUG
+        std::cout << "Band " << myIteratorInt << ", bin " << myBin << ", Value : " << myY << std::endl;
+#endif
+        myPointArray.setPoint(myBin, myX, myY);
+      }
+      if (myBandCountInt==1) //draw single band images with black
+      {
+        myPainter.setPen( Qt::black );
+      }
+      else if (myIteratorInt==1)
+      {
+        myPainter.setPen( Qt::red );
+      }
+      else if (myIteratorInt==2)
+      {
+        myPainter.setPen( Qt::green );
+      }
+      else if (myIteratorInt==3)
+      {
+        myPainter.setPen( Qt::blue );
+      }
+      else if (myIteratorInt==4)
+      {
+        myPainter.setPen( Qt::magenta );
+      }
+      else if (myIteratorInt==5)
+      {
+        myPainter.setPen( Qt::darkRed );
+      }
+      else if (myIteratorInt==6)
+      {
+        myPainter.setPen( Qt::darkGreen );
+      }
+      else if (myIteratorInt==7)
+      {
+        myPainter.setPen( Qt::darkBlue );
+      }
+      else
+      {
+        myPainter.setPen( Qt::gray );
+      }
+      myPainter.drawPolyline(myPointArray);
+    }
+  }
+
+  myPainter.end();
+  pixHistogram->setPixmap(myPixmap);
+}
+

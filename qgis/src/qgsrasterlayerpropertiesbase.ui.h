@@ -98,3 +98,9 @@ void QgsRasterLayerPropertiesBase::buttonBuildPyramids_clicked()
 {
 
 }
+
+
+void QgsRasterLayerPropertiesBase::pbnHistRefresh_clicked()
+{
+
+}
