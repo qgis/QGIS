@@ -87,4 +87,4 @@ spitplugin_la_LDFLAGS = -avoid-version -module
 spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
 
 
-EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm
+EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm spit_icons.h
