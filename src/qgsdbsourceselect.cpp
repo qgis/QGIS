@@ -264,6 +264,8 @@ void QgsDbSourceSelect::addLayer(QListBoxItem * item)
 bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
 					      geomCol& details)
 {
+  bool ok = false;
+
   QString sql = "select * from geometry_columns";
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
   sql += " order by f_table_name";
@@ -296,6 +298,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 
       details.push_back(geomPair(v, type));
     }
+    ok = true;
   }
   PQclear(result);
 
@@ -346,7 +349,11 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       }
       PQclear(gresult);
     }
+    ok = true;
   }
+
   PQclear(result);
+
+  return ok;
 }
 
