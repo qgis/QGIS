@@ -27,8 +27,9 @@ email                : sherman at mrcc.com
   length, and if applicable, precision.
  */
 
-class QgsField{
-  public:
+class QgsField
+{
+public:
     /** Constructor. Constructs a new QgsField object.
      * @param nam Field name
      * @param typ Field type (eg. char, varchar, text, int, serial, double). 
@@ -38,57 +39,76 @@ class QgsField{
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
      */
-    QgsField(QString nam=0, QString typ=0, int len=0, int prec=0);
-    //! Destructor
-    ~QgsField();
-    //! Gets the name of the field
-    QString name();
+  QgsField(QString nam = "", QString typ = "", int len = 0, int prec = 0);
+
+  //! Destructor
+   ~QgsField();
+
+  //! Gets the name of the field
+  QString const & name() const;
+
+
     /** 
       Gets the field type. Field types vary depending on the data source. Examples
       are char, int, double, blob, geometry, etc. The type is stored exactly as
       the data store reports it, with no attenpt to standardize the value.
       @return QString containing the field type
      */
-    QString type();
+  QString const & type() const;
+
+
     /**
       Gets the length of the field.
       @return int containing the length of the field
      */
-    int length();
+  int length() const;
+
+
     /**
       Gets the precision of the field. Not all field types have a related precision.
       @return int containing the precision or zero if not applicable to the field type.
      */
-    int precision();
+  int precision() const;
+
+
     /**
       Set the field name.
       @param nam Name of the field
      */
-    void setName(QString nam);
+  void setName(QString const & nam);
+
     /**
       Set the field type.
       @param typ Field type
      */
-    void setType(QString typ);
+  void setType(QString const & typ);
+
     /**
       Set the field length.
       @param len Length of the field
      */
-    void setLength(int len);
+  void setLength(int len);
+
     /**
       Set the field precision.
       @param prec Precision of the field
      */
-    void setPrecision(int prec);
-  private:
-    //! Name
-    QString mName;
-    //! Type
-    QString mType;
-    //! Length
-    int mLength;
-    //! Precision
-    int mPrecision;
-};
+  void setPrecision(int prec);
+
+private:
+
+  //! Name
+  QString mName;
+
+  //! Type
+  QString mType;
+
+  //! Length
+  int mLength;
+
+  //! Precision
+  int mPrecision;
+
+}; // class QgsField
 
 #endif
