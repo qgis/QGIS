@@ -22,6 +22,7 @@
 #include "qgspluginmanager.h"
 #include "qgspluginitem.h"
 #include "qgsproviderregistry.h"
+#include "qgspluginregistry.h"
 
 #define TESTLIB
 #ifdef TESTLIB
@@ -30,7 +31,8 @@
 QgsPluginManager::QgsPluginManager(QWidget *parent, const char * name)
  : QgsPluginManagerBase(parent, name)
 {
-  // set the default lib dir to the qgis install directory/lib
+  // set the default lib dir to the qgis install directory/lib (this info is
+  // available from the provider registry so we use it here)
   QgsProviderRegistry *pr =  QgsProviderRegistry::instance();
  /*  char **argv = qApp->argv();
   QString appDir = argv[0];
@@ -86,10 +88,29 @@ QDir pluginDir(txtPluginDir->text(), "*.so*", QDir::Name | QDir::IgnoreCase, QDi
 				description_t *pDesc = (description_t *) myLib->resolve("description");
         type_t *pType = (type_t *) myLib->resolve("type");
 				if(pName && pDesc && pType){
-					QCheckListItem *pl = new QCheckListItem(lstPlugins, pName(),QCheckListItem::CheckBox); //, pDesc(), pluginDir[i]);
+					QCheckListItem *pl = new QCheckListItem(lstPlugins, pName(),QCheckListItem::CheckBox); //, pDesc(), pluginDir[i])
 					pl->setText(1, pDesc());
 					pl->setText(2, pluginDir[i]);
           pl->setText(3, QString().setNum(pType()));
+          #ifdef DEBUG
+          std::cout << "Getting an instance of the QgsPluginRegistry" << std::endl;
+          #endif
+          // check to see if the plugin is loaded and set the checkbox accordingly
+          QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+          // get the library using the plugin description
+          #ifdef DEBUG
+          std::cout << "Getting library name from the registry" << std::endl;
+          #endif
+          QString libName = pRegistry->library(pName());
+          if(libName.length() > 0){
+            #ifdef DEBUG
+            std::cout << "Found library name in the registry" << std::endl;
+            #endif
+            if(libName == myLib->library()){
+              // set the checkbox
+              pl->setState(QCheckListItem::On);
+            }
+          }
 				}else{
           std::cout << "Failed to get name, description, or type for " << myLib->library() << std::endl;
         }
@@ -99,6 +120,32 @@ QDir pluginDir(txtPluginDir->text(), "*.so*", QDir::Name | QDir::IgnoreCase, QDi
 		}
 }
 }
+void QgsPluginManager::apply(){
+  unload();
+  accept();
+}
+void QgsPluginManager::unload(){
+  #ifdef DEBUG
+  std::cout << "Checking for plugins to unload" << std::endl;
+  #endif
+  	QCheckListItem *lvi = (QCheckListItem *)lstPlugins->firstChild();
+	while(lvi != 0){
+		if(!lvi->isOn()){
+    // its off -- see if it is loaded and if so, unload it
+       QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+       #ifdef DEBUG
+       std::cout << "Checking to see if " << lvi->text(0) << " is loaded" << std::endl;
+       #endif
+       QgisPlugin *plugin = pRegistry->plugin(lvi->text(0));
+       if(plugin){
+         plugin->unload();
+         // remove the plugin from the registry
+         pRegistry->removePlugin(lvi->text(0));
+       }
+    }
+    	lvi = (QCheckListItem *)lvi->nextSibling();
+  }
+}
 std::vector<QgsPluginItem> QgsPluginManager::getSelectedPlugins(){
 	std::vector<QgsPluginItem> pis;
 	QCheckListItem *lvi = (QCheckListItem *)lstPlugins->firstChild();
@@ -106,7 +153,9 @@ std::vector<QgsPluginItem> QgsPluginManager::getSelectedPlugins(){
 		if(lvi->isOn()){
 			
 			pis.push_back(QgsPluginItem(lvi->text(0), lvi->text(1), txtPluginDir->text() + "/" + lvi->text(2)));
-		}
+		}else{
+    
+    }
 		lvi = (QCheckListItem *)lvi->nextSibling();
 	}
 	return pis;

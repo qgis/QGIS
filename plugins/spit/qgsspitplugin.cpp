@@ -88,7 +88,7 @@ void QgsSpitPlugin::initGui()
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
 
     pluginMenu->insertItem("&Import Shapefiles to PostgreSQL", this, SLOT(spit()));
-    pluginMenu->insertItem("&Unload SPIT Plugin", this, SLOT(unload()));
+  //  pluginMenu->insertItem("&Unload SPIT Plugin", this, SLOT(unload()));
 
     menu = ((QMainWindow *) qgisMainWindow)->menuBar();
 

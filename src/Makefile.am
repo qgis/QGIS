@@ -102,6 +102,10 @@ qgis_SOURCES =  qgisapp.cpp \
 		qgsproviderregistry.h \
 		qgsprovidermetadata.cpp \
 		qgsprovidermetadata.h \
+    qgspluginmetadata.cpp \
+    qgspluginmetadata.h \
+    qgspluginregistry.cpp \
+    qgspluginregistry.h \
 		qgsdlgvectorlayerproperties.cpp \
 		qgsdlgvectorlayerproperties.h \
 		$(qgis_UI) \

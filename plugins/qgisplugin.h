@@ -41,6 +41,8 @@ public:
   //! Plugin type, either UI or map layer
   virtual int type()=0;
   virtual void initGui()=0;
+  //! Unload the plugin and cleanup the gui
+  virtual void unload()=0;
 	//! Interface to gui element collection object
 	//virtual QgisPluginGui *gui()=0;
 	//! Element types that can be added to the interface

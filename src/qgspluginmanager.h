@@ -28,7 +28,10 @@ public:
     ~QgsPluginManager();
 	void browseFiles();
 	void getPluginDescriptions();
+  void unload();
 	std::vector<QgsPluginItem> getSelectedPlugins();
+public slots:
+  void apply();
 };
 
 #endif
