@@ -13,9 +13,9 @@
 #define PLUGINGUI_H
 
 #include <qgslauncherpluginguibase.uic.h>
-
-class QProcess;
+#include <memory>
 class QTextEdit;
+class QProcess;
 /**
   \class QgsLauncherPluginGui
   \brief Launches external programs from QGIS.
@@ -30,7 +30,7 @@ class QgsLauncherPluginGui : public QgsLauncherPluginGuiBase
 Q_OBJECT
 public:
   //! Default constructor
-    QgsLauncherPluginGui();
+    //QgsLauncherPluginGui();
     QgsLauncherPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~QgsLauncherPluginGui();
 public slots:
