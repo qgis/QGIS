@@ -44,15 +44,8 @@ QgsShapeFileLayer::QgsShapeFileLayer (QString vectorLayerPath, QString baseName)
       layerExtent.setXmin (ext->MinX);
       layerExtent.setYmax (ext->MaxY);
       layerExtent.setYmin (ext->MinY);
-/*			while(OGRFeature *fet = ogrLayer->GetNextFeature()){
-				fet->DumpReadable(stdout);
-				OGRGeometry *geom = fet->GetGeometryRef();
-				std::cout << geom->getGeometryName() << std::endl;
-				
-				delete fet;				
-			}
-	*/
-
+    }else{
+    	valid = false;
     }
 
 }
