@@ -6,7 +6,7 @@
 /** This class will write a png image given an input gdal compatible datasource.
  * The output file will be colour mapped using a pseudocolor renderer.
  **/
-struct RasterBandStats {
+struct BandStats {
 	QString bandName;
 	int bandNo;
 	double minValDouble;
@@ -34,7 +34,7 @@ public:
   void writeImage(QString theInputFileString, QString theOutputFileString);
 private:
   /** Calculate image statistics */
-  void calculateStats(RasterBandStats * theRasterBandStats,GDALDataset * gdalDataset);
+  void calculateStats(BandStats * theBandStats,GDALDataset * gdalDataset);
   //
   //   Private attributes
   //
