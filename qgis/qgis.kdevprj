@@ -1,86 +1,34 @@
-[AUTHORS]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[COPYING]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[ChangeLog]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [Config for BinMakefileAm]
-addcxxflags=-I$PGSQL/include
 bin_program=qgis
-cflags=
-cppflags=-I$PGSQL/include
-cxxflags=\s-O0 -g3 -Wall
-ldadd=-L$(PGSQL)/lib -lpq++ $(LIB_QT)
-ldflags=\s    \s
+cxxflags=-O0 -g3 -Wall
+ldflags=\s
 
 [General]
 AMChanged=false
 author=Gary E.Sherman
-configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --with-qt-dir=/opt/qt3.0.5 --with-extra-includes=(PGSQL)/include
+configure_args=
 email=sherman at mrcc dot com
 kdevprj_version=1.3
 lfv_open_groups=
-make_options=\s-j1
-makefiles=Makefile.am,qgis/Makefile.am,qgis/docs/Makefile.am,qgis/docs/en/Makefile.am
-modifyMakefiles=true
+make_options=-j1
+makefiles=Makefile.am,qgis/Makefile.am,qgis/docs/Makefile.am,qgis/docs/en/Makefile.am,src/Makefile.am
 project_name=Qgis
-project_type=normal_qt2
-sgml_file=/opt/development/qgis/qgis/docs/en/index.sgml
-short_info=
-showNonProjectFiles=true
+project_type=normal_empty
 sub_dir=qgis/
 version=0.0.2
 version_control=None
 
-[INSTALL]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [LFV Groups]
-GNU=AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,NEWS
 Headers=*.h,*.hh,*.hxx,*.hpp,*.H
 Others=*
 Sources=*.cpp,*.c,*.cc,*.C,*.cxx,*.ec,*.ecpp,*.lxx,*.l++,*.ll,*.l
-Translations=*.ts
 User Interface=*.kdevdlg,*.ui,*.rc,*.dlg
-groups=Headers,Sources,User Interface,Translations,GNU,Others
+groups=Headers,Sources,User Interface,Others
 
 [Makefile.am]
-files=qgis.kdevprj,admin,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,qgis.lsm
-sub_dirs=qgis
+files=qgis.kdevprj
+sub_dirs=qgis,src
 type=normal
-
-[README]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[TODO]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[admin]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [qgis.kdevprj]
 dist=true
@@ -88,279 +36,200 @@ install=false
 install_location=
 type=DATA
 
-[qgis.lsm]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [qgis/Makefile.am]
-files=qgis/filenew.xpm,qgis/filesave.xpm,qgis/fileopen.xpm,qgis/main.cpp,qgis/qgisapp.cpp,qgis/qgisapp.h,qgis/qgisappbase.ui,qgis/qgscoordinatetransform.cpp,qgis/qgscoordinatetransform.h,qgis/qgsdatabase.cpp,qgis/qgsdatabaselayer.cpp,qgis/qgsdatabaselayer.h,qgis/qgsdatasource.cpp,qgis/qgsdatasource.h,qgis/qgsdbsourceselect.cpp,qgis/qgsdbsourceselectbase.ui,qgis/qgsdbsourceselect.h,qgis/qgslinesymbol.h,qgis/qgsmapcanvas.cpp,qgis/qgsmapcanvas.h,qgis/qgsmaplayer.cpp,qgis/qgsmaplayer.h,qgis/qgsmarkersymbol.h,qgis/qgsnewconnection.cpp,qgis/qgsnewconnection.h,qgis/qgsnewconnectionbase.ui,qgis/qgspoint.cpp,qgis/qgspoint.h,qgis/qgspolygonsymbol.h,qgis/qgsrasterlayer.cpp,qgis/qgsrasterlayer.h,qgis/qgsrect.cpp,qgis/qgsrect.h,qgis/qgsshapefilelayer.h,qgis/qgssymbol.h,qgis/qgstable.h
-sub_dirs=docs
+sub_dirs=
 type=prog_main
 
 [qgis/docs/Makefile.am]
-sub_dirs=en
-type=normal
-
-[qgis/docs/en/Makefile.am]
-files=qgis/docs/en/index.html,qgis/docs/en/index-1.html,qgis/docs/en/index-2.html,qgis/docs/en/index-3.html,qgis/docs/en/index-4.html,qgis/docs/en/index-5.html,qgis/docs/en/index-6.html
 sub_dirs=
 type=normal
 
-[qgis/docs/en/index-1.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index-1.html
-type=DATA
+[qgis/docs/en/Makefile.am]
+sub_dirs=
+type=normal
 
-[qgis/docs/en/index-2.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index-2.html
-type=DATA
+[src/Makefile.am]
+files=src/main.cpp,src/qgisapp.cpp,src/qgscoordinatetransform.cpp,src/qgsdatabaselayer.cpp,src/qgsdatasource.cpp,src/qgsdbsourceselect.cpp,src/qgsmapcanvas.cpp,src/qgsmaplayer.cpp,src/qgsnewconnection.cpp,src/qgspoint.cpp,src/qgsrasterlayer.cpp,src/qgsrect.cpp,src/qgisapp.h,src/qgscoordinatetransform.h,src/qgsdatabaselayer.h,src/qgsdatasource.h,src/qgsdbsourceselect.h,src/qgslinesymbol.h,src/qgsmapcanvas.h,src/qgsmaplayer.h,src/qgsmarkersymbol.h,src/qgsnewconnection.h,src/qgspoint.h,src/qgspolygonsymbol.h,src/qgsrasterlayer.h,src/qgsrect.h,src/qgsshapefilelayer.h,src/qgisappbase.ui,src/qgsdbsourceselectbase.ui,src/qgsnewconnectionbase.ui
+sharedlib_LDFLAGS=-version-info 0:0:0
+sharedlib_rootname=src
+sub_dirs=
+type=static_library
 
-[qgis/docs/en/index-3.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index-3.html
-type=DATA
-
-[qgis/docs/en/index-4.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index-4.html
-type=DATA
-
-[qgis/docs/en/index-5.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index-5.html
-type=DATA
-
-[qgis/docs/en/index-6.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index-6.html
-type=DATA
-
-[qgis/docs/en/index.html]
-dist=true
-install=true
-install_location=$$(prefix)/doc/qgis/index.html
-type=DATA
-
-[qgis/filenew.xpm]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[qgis/fileopen.xpm]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[qgis/filesave.xpm]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[qgis/main.cpp]
+[src/main.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgisapp.cpp]
+[src/qgisapp.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgisapp.h]
+[src/qgisapp.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgisappbase.ui]
+[src/qgisappbase.ui]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgscoordinatetransform.cpp]
+[src/qgscoordinatetransform.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgscoordinatetransform.h]
+[src/qgscoordinatetransform.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsdatabase.cpp]
+[src/qgsdatabaselayer.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsdatabaselayer.cpp]
+[src/qgsdatabaselayer.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgsdatasource.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsdatabaselayer.h]
+[src/qgsdatasource.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsdatasource.cpp]
+[src/qgsdbsourceselect.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsdatasource.h]
+[src/qgsdbsourceselect.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsdbsourceselect.cpp]
+[src/qgsdbsourceselectbase.ui]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsdbsourceselect.h]
+[src/qgslinesymbol.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsdbsourceselectbase.ui]
+[src/qgsmapcanvas.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgslinesymbol.h]
+[src/qgsmapcanvas.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsmapcanvas.cpp]
+[src/qgsmaplayer.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsmapcanvas.h]
+[src/qgsmaplayer.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsmaplayer.cpp]
+[src/qgsmarkersymbol.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgsnewconnection.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsmaplayer.h]
+[src/qgsnewconnection.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsmarkersymbol.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgis/qgsnewconnection.cpp]
+[src/qgsnewconnectionbase.ui]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsnewconnection.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgis/qgsnewconnectionbase.ui]
+[src/qgspoint.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgspoint.cpp]
+[src/qgspoint.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgspolygonsymbol.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgsrasterlayer.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgspoint.h]
+[src/qgsrasterlayer.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgspolygonsymbol.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgis/qgsrasterlayer.cpp]
+[src/qgsrect.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[qgis/qgsrasterlayer.h]
+[src/qgsrect.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[qgis/qgsrect.cpp]
-dist=true
-install=false
-install_location=
-type=SOURCE
-
-[qgis/qgsrect.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgis/qgsshapefilelayer.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgis/qgssymbol.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[qgis/qgstable.h]
+[src/qgsshapefilelayer.h]
 dist=true
 install=false
 install_location=
