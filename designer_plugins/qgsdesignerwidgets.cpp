@@ -98,9 +98,9 @@ QWidget* QgsDesignerWidgets::create(const QString &key,
     if ( key == "QgsLegend" )
         return new QgsLegend( parent, name );
     else if ( key == "QgsMapCanvas" )
-        return new QgsLineStyleWidget ( parent, name );
-    else if ( key == "QgsLineStyleWidget" )
         return new QgsMapCanvas ( parent, name );
+    else if ( key == "QgsLineStyleWidget" )
+        return new QgsLineStyleWidget ( parent, name );
     else if ( key == "QgsFillStyleWidget" )
         return new QgsFillStyleWidget ( parent, name );
     else if ( key == "QgsPointStyleWidget" )
