@@ -28,7 +28,7 @@
 #include <qpainter.h>
 #include <vector>
 
-QgsUniqueValRenderer::QgsUniqueValRenderer(): mClassificationField(-1),mSelectionColor(QColor(255,255,0))
+QgsUniqueValRenderer::QgsUniqueValRenderer(): mClassificationField(0),mSelectionColor(QColor(255,255,0))
 {
 
 }
@@ -52,7 +52,6 @@ void QgsUniqueValRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVect
 	else
         {
 	    layer->setRendererDialog(dialog);
-	    //layer->updateItemPixmap();
         }
 }
     
