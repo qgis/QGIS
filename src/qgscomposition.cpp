@@ -282,6 +282,7 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
 	    mNewCanvasItem->setX( p.x() );
 	    mNewCanvasItem->setY( p.y() );
 	    QgsComposerVectorLegend *vl = dynamic_cast <QgsComposerVectorLegend*> (mNewCanvasItem);
+	    vl->writeSettings();
             mItems.push_back(vl);
 	    mNewCanvasItem = 0;
 	    mComposer->selectItem(); // usually just one legend
@@ -300,6 +301,7 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
 	    mNewCanvasItem->setX( p.x() );
 	    mNewCanvasItem->setY( p.y() );
 	    QgsComposerLabel *lab = dynamic_cast <QgsComposerLabel*> (mNewCanvasItem);
+	    lab->writeSettings();
             mItems.push_back(lab);
 	    mNewCanvasItem = 0;
 	    mComposer->selectItem(); // usually just one ???
@@ -318,6 +320,7 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
 	    mNewCanvasItem->setX( p.x() );
 	    mNewCanvasItem->setY( p.y() );
 	    QgsComposerScalebar *sb = dynamic_cast <QgsComposerScalebar*> (mNewCanvasItem);
+	    sb->writeSettings();
             mItems.push_back(sb);
 	    mNewCanvasItem = 0;
 	    mComposer->selectItem(); // usually just one ???
@@ -348,9 +351,6 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 		
 		mSelectedItem->moveBy ( x - mLastX, y - mLastY );
 
-		QgsComposerItem *ci = dynamic_cast <QgsComposerItem *> (mSelectedItem);
-		ci->writeSettings();
-
 		mLastX = x;
 		mLastY = y;
 		mCanvas->update();
@@ -374,8 +374,6 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 		mRectangleItem->setSize(w,h);
 		
 		mCanvas->update();
-    
-		std::cerr << "x = " << x << " y = " << y << " w = " << w << " h = " << h << std::endl;
 	    }
 	    break;
 
@@ -429,6 +427,13 @@ void QgsComposition::contentsMouseReleaseEvent(QMouseEvent* e)
 		mCanvas->update();
 	    }
 	    break;
+
+	case Select:
+	    if ( mSelectedItem ) {
+		// the object was probably moved
+		QgsComposerItem *ci = dynamic_cast <QgsComposerItem *> (mSelectedItem);
+		ci->writeSettings();
+	    }
     }
 }
 
