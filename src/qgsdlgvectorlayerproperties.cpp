@@ -57,7 +57,7 @@
 #include "qgslabeldialog.h"
 
 
-QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name):QgsDlgVectorLayerPropertiesBase(parent, name), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
+QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name, bool modal):QgsDlgVectorLayerPropertiesBase(parent, name, modal), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
 bufferRenderer(layer->
                renderer())
 {
