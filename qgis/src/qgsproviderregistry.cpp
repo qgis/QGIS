@@ -31,14 +31,14 @@ typedef QString description_t();
 typedef bool isprovider_t();
 
 QgsProviderRegistry* QgsProviderRegistry::_instance = 0;
-QgsProviderRegistry* QgsProviderRegistry::instance (char *pluginPath) 
+QgsProviderRegistry* QgsProviderRegistry::instance (const char *pluginPath) 
 {
   if (_instance == 0){ 
     _instance = new QgsProviderRegistry(pluginPath);
   }
  return _instance;
 }
-QgsProviderRegistry::QgsProviderRegistry(char *pluginPath){
+QgsProviderRegistry::QgsProviderRegistry(const char *pluginPath){
 // At startup, examine the libs in the qgis/lib dir and store those that
 // are a provider shared lib
 // check all libs in the current plugin directory and get name and descriptions
