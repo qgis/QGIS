@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.54 2004/04/04 22:53:47 jobi Exp
+ChangeLog,v 1.55 2004/04/06 08:56:00 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-06 [ts] 0.1.0devel31
+** Added new plugin (grid_maker) to build arbitary sized graticules and add
+   them to the current map view.
 
 2004-04-05 [jobi] 0.1.0devel30
 ** fixed qgiscommit (didn't work when in qgis root)
