@@ -20,7 +20,11 @@ email                : sherman at mrcc.com
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstringlist.h>
+#include <qmessagebox.h>
+#include <qfiledialog.h>
+#include <qsettings.h>
 #include <qregexp.h>
+#include <ogrsf_frmts.h>
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -764,10 +768,193 @@ bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
         (x > mSelectionRectangle->xMin())) &&
       ((y < mSelectionRectangle->yMax()) &&
        (y > mSelectionRectangle->yMin())));
-  QString hit = inBounds?"true":"false";
-  std::cerr << "Checking if " << x << ", " << y << " is in " << 
-  mSelectionRectangle->stringRep().ascii() << ": " << hit.ascii() << std::endl; 
+ // QString hit = inBounds?"true":"false";
+
+ // std::cerr << "Checking if " << x << ", " << y << " is in " << 
+ //mSelectionRectangle->stringRep().ascii() << ": " << hit.ascii() << std::endl; 
   return inBounds;
+}
+bool QgsDelimitedTextProvider::supportsSaveAsShapefile()
+{
+  return true;
+}
+
+bool QgsDelimitedTextProvider::saveAsShapefile()
+{
+  // save the layer as a shapefile
+  QString driverName = "ESRI Shapefile";
+  OGRSFDriver *poDriver;
+  OGRRegisterAll();
+  poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName((const char *)driverName );
+  bool returnValue = true;
+  if( poDriver != NULL )
+  {
+    // get a name for the shapefile
+    // Get a file to process, starting at the current directory
+    // Set inital dir to last used in delimited text plugin
+    QSettings settings;
+
+    QString shapefileName = QFileDialog::getSaveFileName(
+        settings.readEntry("/Qgis/delimited_text_plugin/text_path","./"),
+        "Shapefiles (*.shp)",
+        0,
+        "open file dialog",
+        "Save delimited text layer as shapefile" );
+
+    if(!shapefileName.isNull())
+    {
+      // add the extension if not present
+      if(shapefileName.find(".shp") == -1)
+      {
+        shapefileName += ".shp";
+      }
+      OGRDataSource *poDS;
+      // create the data source
+      poDS = poDriver->CreateDataSource( (const char *)shapefileName, NULL );
+      if( poDS != NULL )
+      {
+        std::cerr << "created datasource" << std::endl; 
+        // datasource created, now create the output layer
+        OGRLayer *poLayer;
+        poLayer = poDS->CreateLayer((const char *)shapefileName.left(shapefileName.find(".shp")), NULL, static_cast<OGRwkbGeometryType>(1), NULL );
+        if( poLayer != NULL )
+        {
+          std::cerr << "created layer" << std::endl; 
+          // calculate the field lengths
+          int *lengths = getFieldLengths();
+          // create the fields
+          std::cerr << "creating fields" << std::endl; 
+          for(int i = 0; i < attributeFields.size(); i++)
+          {
+            // check the field length - if > 10 we need to truncate it
+            QgsField attrField = attributeFields[i];
+            if(attrField.name().length() > 10)
+            {
+              attrField = attrField.name().left(10);
+            }
+            // all fields are created as string (for now)
+            OGRFieldDefn fld(attrField.name(), OFTString);
+            // set the length for the field -- but we don't know what it is...
+            fld.SetWidth(lengths[i]);
+            // create the field
+            std::cerr << "creating field " << attrField.name() << " width length " << lengths[i] << std::endl; 
+            if(poLayer->CreateField(&fld) != OGRERR_NONE)
+            {
+              QMessageBox::warning(0, "Error", "Error creating field " + attrField.name());
+            }
+          }
+          // read the delimited text file and create the features
+
+          // read the line
+          reset();
+          QTextStream stream( mFile );
+          QString line;
+          while ( !stream.atEnd() ) {
+            line = stream.readLine(); // line of text excluding '\n'
+            // split the line
+            QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
+            // create the feature
+            OGRFeature *poFeature;
+
+            poFeature = new OGRFeature( poLayer->GetLayerDefn() );
+
+            // iterate over the parts and set the fields
+            for ( int i = 0; i < parts.size(); i++ ) 
+            {
+              if(parts[i] != QString::null)
+              {
+                poFeature->SetField(attributeFields[i].name(), parts[i]);
+
+              }
+              else
+              {
+                poFeature->SetField(attributeFields[i].name(), "");
+              }
+            }
+            // create the point
+            OGRPoint *poPoint = new OGRPoint();
+            QString sX = parts[fieldPositions[mXField]];
+            QString sY = parts[fieldPositions[mYField]];
+            poPoint->setX(sX.toDouble());
+            poPoint->setY(sY.toDouble());
+
+            poFeature->SetGeometryDirectly(poPoint);
+            if(poLayer->CreateFeature(poFeature) != OGRERR_NONE)
+            {
+              std::cerr << "Failed to create feature in shapefile" << std::endl; 
+            }
+            else
+            {
+              std::cerr << "Added feature" << std::endl; 
+            }
+
+            delete poFeature;
+
+          }
+          delete poDS;
+        }
+        else
+        {
+          QMessageBox::warning(0,"Error", "Layer creation failed");
+        }
+
+      }
+      else
+      {
+        QMessageBox::warning(0, "Error creating shapefile", 
+            "The shapefile could not be created (" + shapefileName + ")");
+      }
+
+    }
+    //std::cerr << "Saving to " << shapefileName << std::endl; 
+  }
+  else
+  {
+    QMessageBox::warning(0, "Driver not found", driverName +  " driver is not available");
+    returnValue = false;
+  }
+  return returnValue;
+}
+
+
+int* QgsDelimitedTextProvider::getFieldLengths()
+{
+  // this function parses the entire data file and calculates the
+  // max for each
+
+  // Only do this if we haven't done it already (ie. the vector is
+  // empty)
+  int *lengths = new int[attributeFields.size()];
+  // init the lengths to zero
+  for(int il=0; il < attributeFields.size(); il++)
+  {
+    lengths[il] = 0;
+  }
+  if(mValid){
+    reset();
+    // read the line
+    QTextStream stream( mFile );
+    QString line;
+    while ( !stream.atEnd() ) {
+      line = stream.readLine(); // line of text excluding '\n'
+      // split the line
+      QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
+      // iterate over the parts and update the max value
+      for ( int i = 0; i < parts.size(); i++ ) 
+      {
+       if(parts[i] != QString::null)
+       { 
+       // std::cerr << "comparing length for " << parts[i] << " against max len of " << lengths[i] << std::endl; 
+        if(parts[i].length() > lengths[i])
+        {
+          lengths[i] = parts[i].length();
+        }
+       }
+
+      }
+    }
+  }
+  return lengths;
 }
 /**
  * Class factory to return a pointer to a newly created 

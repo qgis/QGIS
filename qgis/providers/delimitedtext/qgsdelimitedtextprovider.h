@@ -139,8 +139,15 @@ public:
   */
  bool boundsCheck(double x, double y);
 
+ //! We support saving as shapefile - used to add item to the
+ //  layers context menu
+ bool supportsSaveAsShapefile();
+ 
+  //! Save the layer as a shapefile
+  bool saveAsShapefile();
 private:
   void fillMinMaxCash();
+  int * getFieldLengths();
   //! Fields
   std::vector<QgsField> attributeFields;
   //! Map to store field position by name
