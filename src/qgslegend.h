@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSLEGEND_H
 #define QGSLEGEND_H

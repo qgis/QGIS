@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgssymbologyutils.h"
 
 static const char *solidLineData[] = {

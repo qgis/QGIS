@@ -14,7 +14,7 @@ email                : mhugent@geo.unizh.ch
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgsgrasyextensionwidget.h"
 #include <qlabel.h>
 #include <qlineedit.h>

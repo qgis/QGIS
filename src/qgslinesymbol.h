@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 
 #ifndef QGSLINESYMBOL_H
 #define QGSLINESYMBOL_H

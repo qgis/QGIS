@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id */
 #ifndef QGSRENDERITEM_H
 #define QGSRENDERITEM_H
 #include <map>
