@@ -180,3 +180,9 @@ void QgisAppBase::helpQgisHomePage()
 {
 
 }
+
+
+void QgisAppBase::saveMapAsImage()
+{
+
+}
