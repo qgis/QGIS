@@ -55,18 +55,25 @@ class Plugin:public QObject, public QgisPlugin
   //! show the help document
   void help();
     private:
-
-  int pluginType;
+  
+  ////////////////////////////////////////////////////////////////////
+  //
+  // MANDATORY PLUGIN MEMBER DECLARATIONS  .....
+  //
+  ////////////////////////////////////////////////////////////////////
+  
+  int mPluginType;
   //! Id of the plugin's menu. Used for unloading
-  int menuIdInt;
+  int mMenuId;
   //! Pointer to our toolbar
-  QToolBar *toolBarPointer;
+  QToolBar *mToolBarPointer;
   //! Pointer to our menu
-  QMenuBar *menuBarPointer;
+  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
+  QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisIface *mQGisIface;
+
 };
 
 #endif

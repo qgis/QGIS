@@ -45,25 +45,36 @@ email                : tim@linfiniti.com
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
-// 
-static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "ImageMapExporter";
-static const char * const description_ = "Exports imagemaps for webpages";
-static const char * const version_ = "Version 0.1";
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
 
+static const char * const sIdent = "$Id$";
+static const char * const sName = "ImageMapExporter";
+static const char * const sDescription = "Exports imagemaps for webpages.";
+static const char * const sVersion = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
+
+
+//////////////////////////////////////////////////////////////////////
+//
+// THE FOLLOWING METHODS ARE MANDATORY FOR ALL PLUGINS
+//
+//////////////////////////////////////////////////////////////////////
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param qgis Pointer to the QGIS main window
- * @param _qI Pointer to the QGIS interface object
+ * @param theQGisApp - Pointer to the QGIS main window
+ * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), 
-          qGisInterface(theQgisInterFace),
-          QgisPlugin(name_,description_,version_,type_)
+Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+                 mQGisApp(theQGisApp), 
+                 mQGisIface(theQgisInterface),
+                 QgisPlugin(sName,sDescription,sVersion,sType)
 {
 }
 
@@ -72,28 +83,29 @@ Plugin::~Plugin()
 
 }
 
+
 /*
  * Initialize the GUI interface for the plugin 
  */
 void Plugin::initGui()
 {
   // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
 
   pluginMenu->insertItem(QIconSet(icon),"&Image Map Exporter", this, SLOT(run()));
 
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
+  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
 
-  menuIdInt = qGisInterface->addMenu("&Image Map Exporter", pluginMenu);
+  mMenuId = mQGisIface->addMenu("&Image Map Exporter", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("Image Map Exporter", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Image Map Exporter");
-  toolBarPointer->setLabel("Image Map Exporter");
+  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Image Map Exporter");
+  mToolBarPointer->setLabel("Image Map Exporter");
   // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(toolBarPointer);
+  myQActionPointer->addTo(mToolBarPointer);
 
 
 }
@@ -106,14 +118,14 @@ void Plugin::help()
 // Slot called when the buffer menu item is activated
 void Plugin::run()
 {
-  if (qGisInterface->activeLayer() == NULL ||
-      qGisInterface->activeLayer()->type() != QgsMapLayer::VECTOR) {
-    QMessageBox::critical(qgisMainWindowPointer, "Error", 
+  if (mQGisIface->activeLayer() == NULL ||
+      mQGisIface->activeLayer()->type() != QgsMapLayer::VECTOR) {
+    QMessageBox::critical(mQGisApp, "Error", 
 			  "You must select a vector layer.");
     return;
   }
   
-  PluginGui *myPluginGui=new PluginGui(qGisInterface, qgisMainWindowPointer,"Image Map Exporter",true,0);
+  PluginGui *myPluginGui=new PluginGui(mQGisIface, mQGisApp,"Image Map Exporter",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -123,60 +135,73 @@ void Plugin::run()
 //layer
 void Plugin::drawRasterLayer(QString theQString)
 {
-  qGisInterface->addRasterLayer(theQString);
+  mQGisIface->addRasterLayer(theQString);
 }
 //!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
 void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
+ mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  mMenuBarPointer->removeItem(mMenuId);
+  delete mToolBarPointer;
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//  THE FOLLOWING CODE IS AUTOGENERATED BY THE PLUGIN BUILDER SCRIPT
+//    YOU WOULD NORMALLY NOT NEED TO MODIFY THIS, AND YOUR PLUGIN
+//      MAY NOT WORK PROPERLY IF YOU MODIFY THIS INCORRECTLY
+//
+//
+//////////////////////////////////////////////////////////////////////////
+
+
 /** 
  * Required extern functions needed  for every plugin 
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
   return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
-
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-extern "C" QString name()
+QGISEXTERN QString name()
 {
-    return name_;
+  return sName;
 }
 
 // Return the description
-extern "C" QString description()
+QGISEXTERN QString description()
 {
-    return description_;
+  return sDescription;
 }
 
 // Return the type (either UI or MapLayer plugin)
-extern "C" int type()
+QGISEXTERN int type()
 {
-    return type_;
+  return sType;
 }
 
 // Return the version number for the plugin
-extern "C" QString version()
+QGISEXTERN QString version()
 {
-  return version_;
+  return sVersion;
 }
 
 // Delete ourself
-extern "C" void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
   delete thePluginPointer;
 }
+
