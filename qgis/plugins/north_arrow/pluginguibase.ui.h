@@ -19,3 +19,22 @@ void PluginGuiBase::pbnCancel_clicked()
 {
 
 }
+
+
+void PluginGuiBase::spinRotation_valueChanged( int )
+{
+
+}
+
+
+
+void PluginGuiBase::sliderRotation_valueChanged( int )
+{
+
+}
+
+
+void PluginGuiBase::sliderRotation_sliderMoved( int )
+{
+
+}

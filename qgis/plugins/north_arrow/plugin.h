@@ -53,6 +53,8 @@ class Plugin:public QObject, public QgisPlugin
   void drawVectorLayer(QString,QString,QString);
   // draw some arbitary text to the screen
   void renderNorthArrow();
+  //! Run when the user has set a new rotation
+  void rotationChanged(int);
   //! Refresh the map display using the mapcanvas exported via the plugin interface
   void refreshCanvas();
   //! unload the plugin
@@ -61,6 +63,8 @@ class Plugin:public QObject, public QgisPlugin
   void help();
     private:
 
+  // The amount of rotation for the north arrow
+  int mRotationInt;
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
