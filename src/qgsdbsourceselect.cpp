@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* Id */
 #include <libpq++.h>
 #include <iostream>
 #include <qsettings.h>

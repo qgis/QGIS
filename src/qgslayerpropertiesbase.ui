@@ -152,7 +152,7 @@
                     </widget>
                     <widget class="QLabel" row="1" column="0">
                         <property name="name">
-                            <cstring>TextLabel1_2</cstring>
+                            <cstring>lblFillColor</cstring>
                         </property>
                         <property name="font">
                             <font>
