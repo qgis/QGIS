@@ -31,7 +31,6 @@
 //openmodeller includes
 #include <om_control.hh>
 #include <om.hh>
-#include <om_log.hh>
 #include "file_parser.hh"
 
 //standard includes
@@ -81,13 +80,44 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   if (thePageNameQString==tr("Step 3 of 8")) //we do this after leaving the file selection page
   {
     setNextEnabled(currentPage(),false);
+    
     if (leLocalitiesFileName->text() !="")
     {
       setNextEnabled(currentPage(),true);
     }
+    else
+    {
+      setSpeciesList(settings.readEntry("/openmodeller/localitiesFileName"));
+    }
   }
   if (thePageNameQString==tr("Step 4 of 8")) 
   {  
+
+    const QString myFileNameQString =  settings.readEntry("/openmodeller/layerNames");
+    //tokenise the setting list (its separated by ^e)
+    const QString mySeparatorQString = "^e";
+    QStringList myFileNameQStringList =  QStringList::split (mySeparatorQString, myFileNameQString, false ); 
+    //only try to restore the list of layers used in the last session if the list is empty
+    if (myFileNameQStringList.size() > 0 && lstLayers->count()==0)
+    {
+      //loop through the layer names
+     QStringList::Iterator myIterator= myFileNameQStringList.begin();
+     QString myLastFileNameQString="";
+     while( myIterator!= myFileNameQStringList.end() ) 
+     {
+        QString myFileNameQString=*myIterator;
+        if (myFileNameQString!=myLastFileNameQString)
+        {
+          lstLayers->insertItem(myFileNameQString);
+          //also add the layer to the mask combo
+          cboMaskLayer->insertItem(myFileNameQString);
+        }
+        myLastFileNameQString=*myIterator;
+         ++myIterator;
+     }     
+      //enable the user to carry on to the next page...
+      setNextEnabled(currentPage(),true);
+    }
     if ( lstLayers->count()==0)
     {
       setNextEnabled(currentPage(),false);
@@ -499,8 +529,11 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
  );  
   std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
-  
-  
+  setSpeciesList(myFileNameQString);
+} //end of pbnSelectLocalitiesFile_clicked
+
+void OpenModellerGui::setSpeciesList(QString theFileNameQString)
+{
   //
   // Now that we have the localities text file, we need to parse it and find
   // all unique instances of taxon names and populate the taxon combo...
@@ -508,7 +541,7 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
   //first build a regex to match text at the beginning of the line
  QRegExp myQRegExp( "^[^#][ a-zA-Z]*" ); //seconf caret means 'not'
  QStringList myTaxonQStringList;;
- QFile myQFile( myFileNameQString );
+ QFile myQFile( theFileNameQString );
  if ( myQFile.open( IO_ReadOnly ) ) 
  {
      //clear the existing entries in the taxon combo first
@@ -551,15 +584,15 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
  }
  else
  {
-      QMessageBox::warning( this,QString("Acme Wizard Error"),QString("The localities file is not readable. Check you have the neccessary file permissions and try again."));      
+      QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The localities file is not readable. Check you have the neccessary file permissions and try again."));      
       return; 
  }   
   // if all that went ok, update the form field and the class var  
-  leLocalitiesFileName->setText(myFileNameQString);
-  localitiesFileNameQString = myFileNameQString;
+  leLocalitiesFileName->setText(theFileNameQString);
+  localitiesFileNameQString = theFileNameQString;
   //enable the user to carry on to the next page...
   setNextEnabled(currentPage(),true);
-} //end of pbnSelectLocalitiesFile_clicked
+} //end of setSpeciesList
 
 void OpenModellerGui::leLocalitiesFileName_textChanged( const QString &theFileNameQString )
 {

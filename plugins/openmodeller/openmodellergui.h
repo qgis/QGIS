@@ -19,8 +19,6 @@
 /**
 @author Tim Sutton
 */
-#include <om_log.hh>
-extern Log _log;
 class OpenModellerGui : public OpenModellerGuiBase
 {
 Q_OBJECT
@@ -39,6 +37,7 @@ public:
   /** This method overrides the virtual OpenModellerGuiBase method (slot) of the same name. */
   void formSelected(const QString &thePageNameQString);
   void leLocalitiesFileName_textChanged( const QString &theFileNameQString );
+  void setSpeciesList(QString theFileNameQSting);
   void pbnSelectOutputFile_clicked();
   void pbnRemoveParameter_clicked();
   void pbnAddParameter_clicked();
