@@ -35,7 +35,7 @@ public:
 
 public slots:
   
-  void showCoordDialog(QgsPoint& pixelCoords);
+  void handleCanvasClick(QgsPoint& pixelCoords);
   void addPoint(const QgsPoint& pixelCoords, const QgsPoint& mapCoords);
   void pbnCancel_clicked();
   void pbnGenerateWorldFile_clicked();
@@ -53,7 +53,9 @@ signals:
   void loadLayer(QString);
   
 private:
-  
+
+  void showCoordDialog(QgsPoint& pixelCoords);
+  void deleteDataPoint(QgsPoint& pixelCoords);
   bool generateWorldFile();
   
   QgsMapCanvas* mCanvas;
@@ -62,6 +64,7 @@ private:
   QString mWorldfile;
   
   std::vector<QgsPoint> mPixelCoords, mMapCoords;
+  std::vector<QString> mAcetateIDs;
 
 };
 

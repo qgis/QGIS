@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <qtoolbutton.h>
 #include <qcombobox.h>
 #include <qfiledialog.h>
@@ -27,17 +29,35 @@ QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, const QString& worldfile,
   : QgsPointDialogBase(parent, name, modal, fl), 
     mLayer(layer), mWorldfile(worldfile), mCursor(NULL) {
   
+  // set up the canvas
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
   layout->setAutoAdd(true);
   mCanvas = new QgsMapCanvas(canvasFrame, "georefCanvas");
   mCanvas->setBackgroundColor(Qt::white);
   mCanvas->setMinimumWidth(400);
+  mCanvas->freeze(true);
   mCanvas->addLayer(mLayer);
-  mCanvas->setExtent(mLayer->extent());
   tbnAddPoint->setOn(true);
   
+  // load previously added points
+  QFile pointFile(mWorldfile + ".points");
+  if (pointFile.open(IO_ReadOnly)) {
+    QTextStream points(&pointFile);
+    QString tmp;
+    points>>tmp>>tmp>>tmp>>tmp;
+    while (!points.atEnd()) {
+      double mapX, mapY, pixelX, pixelY;
+      points>>mapX>>mapY>>pixelX>>pixelY;
+      QgsPoint mapCoords(mapX, mapY);
+      QgsPoint pixelCoords(pixelX, pixelY);
+      addPoint(pixelCoords, mapCoords);
+    }
+  }
+  
+  mCanvas->setExtent(mLayer->extent());
+  mCanvas->freeze(false);
   connect(mCanvas, SIGNAL(xyClickCoordinates(QgsPoint&)),
-	  this, SLOT(showCoordDialog(QgsPoint&)));
+	  this, SLOT(handleCanvasClick(QgsPoint&)));
   leSelectWorldFile->setText(worldfile);
 }
 
@@ -47,11 +67,11 @@ QgsPointDialog::~QgsPointDialog() {
 }
 
 
-void QgsPointDialog::showCoordDialog(QgsPoint& pixelCoords) {
-  MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, this, NULL, true);
-  connect(mcd, SIGNAL(pointAdded(const QgsPoint&, const QgsPoint&)),
-	  this, SLOT(addPoint(const QgsPoint&, const QgsPoint&)));
-  mcd->show();
+void QgsPointDialog::handleCanvasClick(QgsPoint& pixelCoords) {
+  if (tbnAddPoint->state() == QButton::On)
+    showCoordDialog(pixelCoords);
+  else if (tbnDeletePoint->state() == QButton::On)
+    deleteDataPoint(pixelCoords);
 }
 
 
@@ -60,14 +80,10 @@ void QgsPointDialog::addPoint(const QgsPoint& pixelCoords,
   mPixelCoords.push_back(pixelCoords);
   mMapCoords.push_back(mapCoords);
   static int acetateCounter = 0;
-  mCanvas->addAcetateObject(QString("%1").arg(++acetateCounter),
+  mAcetateIDs.push_back(QString("%1").arg(++acetateCounter));
+  mCanvas->addAcetateObject(mAcetateIDs[mAcetateIDs.size() - 1],
 			    new DataPointAcetate(pixelCoords, mapCoords));
   mCanvas->refresh();
-  for (int i = 0; i < mPixelCoords.size(); ++i) {
-    std::cerr<<"GEOREF: pixel ("
-	     <<mPixelCoords[i].x()<<","<<mPixelCoords[i].y()<<") map ("
-	     <<mMapCoords[i].x()<<","<<mMapCoords[i].y()<<")"<<std::endl;
-  }
 }
 
 
@@ -112,6 +128,9 @@ bool QgsPointDialog::generateWorldFile() {
   QgsPoint origin(0, 0);
   double pixelSize = 1;
   double rotation = 0;
+  
+  // compute the parameters using the least squares method 
+  // (might throw std::domain_error)
   try {
     if (cmbTransformType->currentItem() == 0)
       QgsLeastSquares::linear(mMapCoords, mPixelCoords, origin, pixelSize);
@@ -149,13 +168,13 @@ bool QgsPointDialog::generateWorldFile() {
 	   <<"================="<<std::endl
 	   <<"ROTATION: "<<(rotation*180/3.14159265)<<std::endl;
   
+  // write the world file
   QFile file(leSelectWorldFile->text());
   if (!file.open(IO_WriteOnly)) {
     QMessageBox::critical(this, "Error", 
 			  "Could not write to " + leSelectWorldFile->text());
     return false;
   }
-
   QTextStream stream(&file);
   stream<<pixelSize<<endl
 	<<0<<endl
@@ -164,6 +183,17 @@ bool QgsPointDialog::generateWorldFile() {
 	<<origin.x()<<endl
 	<<origin.y()<<endl;  
   
+  // write the data points in case we need them later
+  QFile pointFile(leSelectWorldFile->text() + ".points");
+  if (pointFile.open(IO_WriteOnly)) {
+    QTextStream points(&pointFile);
+    points<<"mapX\tmapY\tpixelX\tpixelY"<<endl;
+    for (int i = 0; i < mMapCoords.size(); ++i) {
+      points<<(QString("%1\t%2\t%3\t%4").
+	       arg(mMapCoords[i].x()).arg(mMapCoords[i].y()).
+	       arg(mPixelCoords[i].x()).arg(mPixelCoords[i].y()))<<endl;
+    }
+  }
   return true;
 }
 
@@ -245,3 +275,29 @@ void QgsPointDialog::tbnDeletePoint_changed(int state) {
 }
 
 
+void QgsPointDialog::showCoordDialog(QgsPoint& pixelCoords) {
+  MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, this, NULL, true);
+  connect(mcd, SIGNAL(pointAdded(const QgsPoint&, const QgsPoint&)),
+	  this, SLOT(addPoint(const QgsPoint&, const QgsPoint&)));
+  mcd->show();
+}
+
+
+void QgsPointDialog::deleteDataPoint(QgsPoint& pixelCoords) {
+  std::vector<QgsPoint>::iterator pixIter = mPixelCoords.begin();
+  std::vector<QgsPoint>::iterator mapIter = mMapCoords.begin();
+  std::vector<QString>::iterator idIter = mAcetateIDs.begin();
+
+  for ( ; pixIter != mPixelCoords.end(); ++pixIter, ++mapIter, ++idIter) {
+    if (std::sqrt(std::pow(pixIter->x() - pixelCoords.x(), 2) +
+		  std::pow(pixIter->y() - pixelCoords.y(), 2)) < 
+	5 * mCanvas->mupp()) {
+      mCanvas->removeAcetateObject(*idIter);
+      mAcetateIDs.erase(idIter);
+      mPixelCoords.erase(pixIter);
+      mMapCoords.erase(mapIter);
+      mCanvas->refresh();
+      break;
+    }
+  }
+}
