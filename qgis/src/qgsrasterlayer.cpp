@@ -158,6 +158,17 @@ void QgsRasterLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 				}
 			}
 			p->setRasterOp(Qt::CopyROP);
+		} else if ( colorInterp == "Gray" ) {
+                       //ensure we are not still xoring
+                        p->setRasterOp(Qt::CopyROP);  
+			// print each point in scandata with equal parts R, G ,B o make it show as gray
+			for (int y = 0; y < lYSize; y++) {
+				for (int x =0; x < lXSize; x++) {	
+                                        int myGrayValInt=scandata[y*lXSize + x];				
+					p->setPen(QColor(myGrayValInt, myGrayValInt, myGrayValInt));
+					p->drawPoint(topLeft.xToInt() + x, topLeft.yToInt() + y);
+				}
+			}			                      
 		} else {
 			// do nothing
 		}
