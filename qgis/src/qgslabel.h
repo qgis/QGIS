@@ -109,7 +109,7 @@ private:
     QColor mSelectionColor;
     
     //! Default layer attributes
-    QgsLabelAttributes *mLayerAttributes;
+    QgsLabelAttributes *mLabelAttributes;
     
     //! Available layer fields
     std::vector<QgsField> mField;
