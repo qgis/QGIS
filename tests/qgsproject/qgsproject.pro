@@ -109,6 +109,10 @@ QGIS_FILES = 	qgisapp.o					\
 		qgspluginitem.o					\
 		qgspluginmanager.o				\
 		qgspluginmetadata.o				\
+                qgsmeasurebase.moc.uic.o \
+                qgsmeasurebase.uic.o \
+                qgsmeasure.moc.o \
+                qgsmeasure.o \
 		qgspluginregistry.o				\
 		qgspoint.o					\
 		qgspolygonsymbol.o				\
