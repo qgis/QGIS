@@ -26,7 +26,7 @@ class OpenModellerGui : public OpenModellerGuiBase
 Q_OBJECT
 public:
     OpenModellerGui();
-    OpenModellerGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  );
     ~OpenModellerGui();
   void OpenModellerGui::parseAndRun(QString theParametersFileNameQString);
   void makeConfigFile();
