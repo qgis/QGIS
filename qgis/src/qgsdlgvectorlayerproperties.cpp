@@ -104,19 +104,16 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString& string)
     //create a new Dialog
     if(string==tr("Single Symbol"))
     {
-	qWarning("im single symbol part");
         bufferRenderer=new QgsSingleSymRenderer();
 	bufferRenderer->initializeSymbology(layer,this);
     }
     else if(string==tr("Graduated Symbol"))
     {
-	qWarning("im graduated symbol part");
 	bufferRenderer=new QgsGraduatedSymRenderer();
 	bufferRenderer->initializeSymbology(layer,this);
     }
     else if(string==tr("Continuous Color"))
     {
-	qWarning("im continuous symbol part");
 	bufferRenderer=new QgsContinuousColRenderer();
 	bufferRenderer->initializeSymbology(layer,this);
     }

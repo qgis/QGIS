@@ -34,6 +34,12 @@
 
 QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext(0), scv(0), m_vectorlayer(layer)
 {
+
+
+#ifdef DEBUG
+    qWarning("constructor QgsGraSyDialog");
+#endif
+    
     setOrientation(Qt::Vertical);
 
     //find out the numerical fields of m_vectorlayer
@@ -139,7 +145,9 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 
 QgsGraSyDialog::QgsGraSyDialog()
 {
-
+#ifdef DEBUG
+    qWarning("constructor QgsGraSyDialog");
+#endif
 }
 
 QgsGraSyDialog::~QgsGraSyDialog()
@@ -149,7 +157,9 @@ QgsGraSyDialog::~QgsGraSyDialog()
 	ext->hide();
 	delete ext;
     }
-    qWarning("bin im Destruktor von QgsGraSyDialog");
+#ifdef DEBUG
+    qWarning("destructor QgsGraSyDialog");
+#endif
 }
 
 void QgsGraSyDialog::adjustNumberOfClasses()
