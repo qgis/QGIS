@@ -32,7 +32,7 @@ Q_OBJECT
     //! Destructor
     ~QgsRasterLayer();
     void draw(QPainter *p, QRect *viewExtent);
-    void identify(QgsRect *r);
+    //void identify(QgsRect *r);
 };
 
 #endif
