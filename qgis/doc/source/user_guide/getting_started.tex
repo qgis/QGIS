@@ -1,27 +1,27 @@
-\section{Getting Started}
+\chapter{Getting Started}
 
 This section gives you a quick overview of running QGIS and examining
 data available on the QGIS web page.
 
 
-\subsection{Installation}
+\section{Installation}
 \index{installation}
 Installation of QGIS is documented in the Installation Guide. The Installation Guide is distributed with the QGIS source code and is also available at \url{http://qgis.org}.
 
 
-\subsection{Sample Data}
+\section{Sample Data}
 \index{data!sample}
 If you do not have any GIS data handy, you can obtain a dataset for Alaska from the QGIS web site at \url{http://qgis.org}. The Alaska data set will be used as the basis for many of the examples and screenshots provided in this document.
 
 
-\subsection{Starting QGIS}
+\section{Starting QGIS}
 
 Assuming that QGIS is installed in the PATH, you can start QGIS by
 typing: \textbf{qgis}  at a command prompt or by double clicking on the QGIS application link (or shortcut) on the desktop.
 %\begin{figure}
 %\caption{QGIS Main Window}
 %\end{figure} 
-\subsubsection{Command Line Options}\index{command line options}
+\subsection{Command Line Options}\index{command line options}
 QGIS supports a number of options when started from the command line. To get a
 list of the options, enter \texttt{qgis ---help} on the command line. The usage
 statement for QGIS is:
@@ -54,7 +54,7 @@ load on startup using the following command:
 }
 \end{Tip}
 
-\subsection{The QGIS Main Window}\index{main window}
+\section{The QGIS Main Window}\index{main window}
 When QGIS starts, an empty window is displayed as shown below.
 
 \begin{figure}[h]
@@ -77,7 +77,7 @@ The QGIS main window is divided into five areas:
 \end{compactenum}
 
 These six components of the QGIS interface are described in more detail in the following sections
-\subsubsection{The QGIS menu bar}
+\subsection{The QGIS menu bar}
 \index{menus}
 The menu bar provides access to various QGIS features using a standard windows
 heirachical menu. The top-level menus and a summary of some of the functions provided are:
@@ -91,7 +91,7 @@ heirachical menu. The top-level menus and a summary of some of the functions pro
 \end{compactitem}
 %See Appendix \ref{app_menu} for complete descriptions of the menu items.
 
-\subsubsection{Toolbars}
+\subsection{Toolbars}
 \index{toolbars}
 The toolbars provide access to most of the same functions as the menus, plus
 additional tools for interacting with the map. Each toolbar item has popup
@@ -99,7 +99,7 @@ help available. Hold your mouse over the item and a short description of the
 tool's purpose will be displayed. %See Appendix \ref{app_toolbar} for complete
 %descriptions and illustrations of the various toolbars.  
 
-\subsubsection{The QGIS map legend}
+\subsection{The QGIS map legend}
 \index{legend}
 The map legend area is used to set the visibility and z-ordering of layers.
 Z-ordering means that layers listed nearer the top of the legend are drawn
@@ -111,7 +111,7 @@ on the layer name. The context menu contains items for working with the layer an
 its properties.}
 \end{Tip}
 
-\subsubsection{The QGIS map view}
+\subsection{The QGIS map view}
 \index{map!view}
 This is the 'business end' of QGIS - maps are displayed in this area! The map
 displayed in this window will depend on the vector and raster layers you have
@@ -125,15 +125,15 @@ Wheel}}\index{zoom!mouse wheel}
 \qgistip{You can use the mouse wheel to zoom in and out on the map. Place the mouse cursor inside the map area and roll it forward (away from you) to zoom in and backwards (towards you) to zoom out.
 }
 \end{Tip}
-\subsubsection{The QGIS map overview}
+\subsection{The QGIS map overview}
 \index{map!overview}
 The map overview area provides a full extent view of layers added to it. Within the view is a rectangle showing the current map extent. This allows you to quickly determine which area of the map you are currently viewing.
 
-\subsubsection{The QGIS map status bar} 
+\subsection{The QGIS map status bar} 
 The status bar shows you your current position in map coordinate (e.g. meters
 or decimal degress) as the mouse pointer is moved accross the map view.
 
-\subsection{Rendering}\label{subsec:redraw_events}\index{rendering}
+\section{Rendering}\label{subsec:redraw_events}\index{rendering}
 By default, QGIS renders all visible layers whenever the map canvas must be refreshed. The events that trigger a refresh of the map canvas include:
 \begin{compactitem}
 \item Adding a layer
@@ -142,7 +142,7 @@ By default, QGIS renders all visible layers whenever the map canvas must be refr
 \item Changing the visibility of a layer or layers
 \end{compactitem}
 QGIS allows you to control the rendering process in a number of ways.
-\subsubsection{Scale Dependent Rendering}\index{rendering!scale dependent}
+\subsection{Scale Dependent Rendering}\index{rendering!scale dependent}
 Scale dependent rendering allows you to specify the minimum and maximum scales
 at which a layer wil be visible.  To set scale dependency rendering, open the
 properties dialog by double-clicking on the layer in the legend. On the
@@ -151,18 +151,18 @@ the \textit{Use scale dependent rendering} checkbox.
 
 You can determine the scale values by first zooming to the level you want to use
 an noting the scale value in the QGIS status bar.\index{scale}
-\subsubsection{Controlling Map Rendering}
+\subsection{Controlling Map Rendering}
 Map rendering can be controlled in the following ways:
 \begin{compactenum}
 \item Stopping rendering during drawing of the map canvas
 \item Temporarily suspending rendering
 \item Setting an option to control the visibility of layers when they are added
 \end{compactenum}
-\subsubsection{Stopping Rendering}\index{rendering!halting}
+\subsection{Stopping Rendering}\index{rendering!halting}
 To stop the map drawing, press the ESC key. This will halt the refresh of the
 map canvas and leave the map partially drawn. It may take a bit of time between
 pressing ESC and the time the map drawing is halted.
-\subsubsection{Suspending Rendering}\index{rendering!suspending}
+\subsection{Suspending Rendering}\index{rendering!suspending}
 To suspend rendering, click the \textit{Render} checkbox in the lower right
 corner of the statusbar. When the \textit{Render} box is not checked, QGIS does
 not redraw the canvas in response to any of the events described in Section
@@ -176,7 +176,7 @@ include:
 \end{compactitem}
 Checking the \textit{Render} box enables rendering and causes and immediate
 refresh of the map canvas.
-\subsubsection{Setting Layer Add
+\subsection{Setting Layer Add
 Option}\index{rendering!options}\index{layers!initial visibility}
 You can set an option to always load new layers without drawing them. This means
 the layer will be added to the map, but its visibility checkbox in the legend
@@ -184,7 +184,7 @@ will be unchecked. To set this option, choose \textit{Preferences} from the
 \textit{Settings} menu and click on the \textit{Rendering} tab. Check the
 \textit{New layers added to the map are not displayed} checkbox. Any layer added
 to the map will be off (invisible) by default.
-\subsubsection{Updating the Map Display During Rendering}\index{rendering!update
+\subsection{Updating the Map Display During Rendering}\index{rendering!update
 during drawing}
 You can set an option to update the map display as features are drawn. By
 default, QGIS does not display any features for a layer until the entire layer

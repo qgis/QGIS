@@ -1,4 +1,4 @@
-\section{Working with Vector Data}
+\chapter{Working with Vector Data}
 QGIS supports vector data in a number of formats, including shapefiles,
 MapInfo mif, and PostGIS\index{PostGIS} layers in a PostgreSQL database. Support for
 additional data types is provided by plugins, for example delimited
@@ -10,7 +10,7 @@ features available in QGIS work the same regardless of the vector data source.
 This is by design and includes the identify, select, labeling, and attributes
 functions.
 
-\subsection{Shapefiles}\index{shapefile}
+\section{Shapefiles}\index{shapefile}
 Shapefile support is provided by a library of functions (OGR
 \url{http://www.remotesensing.org/gdal/ogr})\index{ogr}. See Appendix \ref{appdx_ogr} for a list of supported formats.
 
@@ -23,7 +23,7 @@ files:\index{shapefile!format}
 \end{compactenum}
 The technical specification for the shapefile format can be found at\\
 \url{http://www.esri.com/software/opengis/openpdf.html}\index{shapefile!specification}.
-\subsubsection{Loading a Shapefile}
+\subsection{Loading a Shapefile}
 \parpic[l]{\includegraphics{qgis_user_guide_images/addshapefile}}To load a
 shapefile, start QGIS and click on the \textit{Add a vector layer} toolbar bar
 button\index{shapefile!loading}. This same tool can be used to load any of the formats supported by the OGR library.
@@ -50,12 +50,12 @@ shows QGIS after loading the country.shp file.
 \end{Tip}
 
 Once loaded, you can zoom around the shapefile using the map navigation tools. To change the symbology of a layer, open the layer properties dialog by double clicking on the layer name or by right-clicking on the name in the legend and choosing \textsl{Properties} from the popup menu. See Section \ref{sec:symbology} for more information on setting symbology of vector layers.
-\subsubsection{Loading a MapInfo Layer}
+\subsection{Loading a MapInfo Layer}
 To load a MapInfo layer, click on the \textit{Add a vector layer}
 toolbar bar button and change the file type filter to \textit{MapInfo (*.mif
 *.tab *.MIF *.TAB)} and select the layer you want to load.
 
-\subsubsection{Loading an ArcInfo Coverage}
+\subsection{Loading an ArcInfo Coverage}
 Loading an an ArcInfo coverage is done using the same method as with a
 shapefiles and MapInfo layers. Click on the \textit{Add a vector layer} toolbar
 button to open the layer dialog.  Navigate to the coverage directory and select
@@ -67,7 +67,7 @@ one of the following files (if present in your coverage)
 \item .pal - to load a polygon layer
 \end{compactenum}
 
-\subsection{PostGIS Layers}\index{PostGIS!layers}
+\section{PostGIS Layers}\index{PostGIS!layers}
 PostGIS layers are stored in a PostgreSQL database. The advantage of PostGIS is the spatial indexing, filtering, and query capability. Using PostGIS, vector functions such as select and identify work more accurately than with OGR layers in QGIS.
 To use PostGIS layers you must:\index{PostgreSQL!loading layers}
 \begin{compactenum}
@@ -78,7 +78,7 @@ not already defined)\index{PostgreSQL!connection}
 \item Optionally provide a SQL \textit{where} clause to define which features to load from the layer
 \item Load the layer
 \end{compactenum}
-\subsubsection{Creating a Stored Connection}\index{PostgreSQL!connection}
+\subsection{Creating a Stored Connection}\index{PostgreSQL!connection}
 \parpic[l]{\includegraphics{qgis_user_guide_images/addpostgis}}The first time
 you use a PostGIS data source, you must create a connection to the PostgreSQL
 database that contains the data. Begin by clicking on the \textit{Add a PostGIS
@@ -109,7 +109,7 @@ Security}}\index{settings}\index{security}
 \qgistip{Your customized settings for QGIS are stored based on the operating system. On Linux/Unix, the settings are stored in your home directory in .qt/qgisrc. On Windows, the settings are stored in the registry. Depending on your computing environment, storing passwords in your QGIS settings may be a security risk.
 }
 \end{Tip}
-\subsubsection{Loading a PostGIS Layer}\index{PostgreSQL!loading layers}
+\subsection{Loading a PostGIS Layer}\index{PostgreSQL!loading layers}
 \parpic[l]{\includegraphics{qgis_user_guide_images/addpostgis}}Once you have one or more connections defined, you can load layers from the PostgreSQL database. Of course this requires having data in PostgreSQL. See Section \ref{sec:loading_postgis_data} for a discussion on importing data into the database. 
 
 To load a layer from PostGIS, perform the following steps:
@@ -120,7 +120,7 @@ To load a layer from PostGIS, perform the following steps:
 \item Select it by clicking on it. You can select multiple layers by holding down the shift key while clicking. See Section \ref{sec:query_builder} for information on using the PostgreSQL Query Builder to further define the layer.
 \item Click on the \textsl{Add} button to add the layer to the map
 \end{compactenum}
-\subsubsection{Using the Query
+\subsection{Using the Query
 Builder}\label{sec:query_builder}\index{PostgreSQL!query builder}
 The PostgreSQL Query Builder allows you to define a subset of a table and add it
 as a layer in QGIS.  For example, if you have a towns layer with a population
@@ -162,7 +162,7 @@ dialog by double-clicking on the layer in the legend and click on the
 \ref{sec:vectorprops} for more information.}
 \end{Tip}
 
-\subsubsection{Importing Data into PostgreSQL}\label{sec:loading_postgis_data}
+\subsection{Importing Data into PostgreSQL}\label{sec:loading_postgis_data}
 \index{SPIT!importing data}
 Data can be imported into PostgreSQL using a number of methods. PostGIS includes a utility called shp2pgsql that can be used to import shapefiles into a PostGIS enabled database. 
 
@@ -187,7 +187,7 @@ prior to import and change any that are reserved words (or change any other
 field names as desired). Attempting to
 import a shapefile with reserved words as field names will likely fail.}
 \end{Tip} 
-\subsection{The Vector Properties
+\section{The Vector Properties
 Dialog}\label{sec:vectorprops}\index{vector layers!properties dialog}
 The vector properties dialog provides information about a layer, symbology
 settings, and labeling options. If your vector layer has been loaded from a
@@ -197,7 +197,7 @@ query builder dialog on the \textit{General} tab. To access the properties dialo
 double-click on a layer in the legend or right-click on the layer and select
 Properties from the popup menu.
 
-\subsubsection{Vector Symbology}\label{sec:symbology}\index{vector
+\subsection{Vector Symbology}\label{sec:symbology}\index{vector
 layers!symbology}
 
 QGIS supports a number of symbology renderers to control how
@@ -242,7 +242,6 @@ the vector layer properties dialog will be shown.\index{symbology!changing}
 \end{center}  
 \end{figure}
 %force all figures to be printed
-\subsection{Attribute Actions}
-\subsection{Editing}
+\section{Attribute Actions}
+\section{Editing}
 
-\clearpage

@@ -1,6 +1,6 @@
-\section{Working with Raster Data}
+\chapter{Working with Raster Data}
 QGIS supports a number of raster data formats. This section describes how to work with raster data in QGIS.
-\subsection{What is raster data?}
+\section{What is raster data?}
 index{rasters!definition}
 Raster data in GIS are matrices of discrete cells that represent features on, above or below the earth's surface. Each cell in the raster grid is the same size, and cells are usually rectangular (in QGIS they will always be rectangular). Typical raster datasets include remote sensing data such as aerial photography or satellite imagery and modelled data such as an elevation matrix.
 
@@ -11,7 +11,7 @@ will allow it to be positioned correctly in the map display to allow other
 vector and raster data to be overlayed with it. QGIS makes use of georeferenced
 rasters to properly display the data.\index{rasters!georeferenced}
 	
-\subsection{Raster formats supported in QGIS}
+\section{Raster formats supported in QGIS}
 QGIS supports a number of different raster formats. Currently tested formats
 include:\index{rasters!formats}
 \begin{compactitem}
@@ -28,14 +28,14 @@ raster formats implemented in GDAL are also likely to work, but have not yet
 been tested. See Appendix \ref{appdx_gdal} for more
 details.\index{rasters!implmentation}
 	
-\subsection{Loading raster data in QGIS}
+\section{Loading raster data in QGIS}
 \parpic[l]{\includegraphics{qgis_user_guide_images/addraster}}Raster layers are
 loaded either by clicking on the Load Raster icon or by selecting the View->Add
 Raster Layer menu option. More than one layer can be loaded at the same time by
 holding down the Control key and clicking on multiple items in the file
 dialog.\index{rasters!loading}
 	
-\subsection{Raster Properties}
+\section{Raster Properties}
 
 \parpic[r]{\includegraphics[scale=0.6]{qgis_user_guide_images/rastercontextmenu}}To
 view and set the properties for a raster layer, right click on the layer name.
@@ -62,7 +62,7 @@ Figure \ref{fig:raster_properties} shows the properties dialog. There are four t
 \end{figure}
 
 
-\subsubsection{Symbology Tab}
+\subsection{Symbology Tab}
 
 
 QGIS supports three forms of raster layers:\index{rasters!supported forms}
@@ -97,13 +97,13 @@ QGIS can restrict the data displayed to only show cells whose values are within
 a given number of standard deviations of the mean for the
 layer.\index{rasters!standard deviation} This is useful when you have one or two cells with abnormally high values in a raster grid that are having a negative impact on the rendering of the raster. This option is only available for pseudocolor images.
 
-\subsubsection{General Tab}
+\subsection{General Tab}
 The General tab displays basic information about the selected raster, including
 the layer source and  display name in the legend (which can be modified). This
 tab also shows a thumbnail of the layer, its legend symbol, and the
 palette.\index{rasters!properties}
 
-\subsubsection{Metadata Tab}
+\subsection{Metadata Tab}
 The Metadata tab displays a wealth of information about the raster layer,
 including statistics about each band in the current raster layer. Statistics are
 gathered on a 'need to know' basis, so it may well be that a given layers
@@ -117,7 +117,7 @@ consuming. Please be patient while QGIS examines your
 data!\index{rasters!statistics}
 }
 \end{Tip}
-\subsubsection{Pyramids Tab}
+\subsection{Pyramids Tab}
 Large resolution raster layers can slow navigation in QGIS. By creating lower
 resolution copies of the data (pyramids), performance can be considerably
 improved as QGIS selects the most suitable resolution to use depending on the

@@ -1,4 +1,4 @@
-\section{GRASS}\label{sec:grass}\index{GRASS}
+\chapter{GRASS}\label{sec:grass}\index{GRASS}
 The GRASS plugin adds the following features to QGIS:
 \begin{compactitem}
 \item Add GRASS vector layers
@@ -6,14 +6,14 @@ The GRASS plugin adds the following features to QGIS:
 \item Vector layers digitizing
 \item Changing of the GRASS region
 \end{compactitem}
-\subsection{Starting QGIS with
+\section{Starting QGIS with
 GRASS}\label{sec:starting_grass}\index{GRASS!starting QGIS}
 When using the GRASS plugin, QGIS can be started in two ways: from the GRASS shell or from a regular shell.
-\subsubsection{From GRASS shell}
+\subsection{From GRASS shell}
 
 If QGIS is started from the GRASS shell (GRASS started by grass57 command), no
 additional settings are required. \index{GRASS!shell}
-\subsubsection{Outside GRASS shell}
+\subsection{Outside GRASS shell}
 
 If QGIS is not started from the GRASS shell, the environment variables must be properly set before starting QGIS.
  
@@ -27,12 +27,12 @@ The GISBASE environment variable must be set to the full path of the directory w
 \begin{verbatim}
     export GISBASE=/usr1/grass57/dist.i686-pc-linux-gnu 
 \end{verbatim}
-\subsection{Loading GRASS Data}\index{GRASS!loading data}
+\section{Loading GRASS Data}\index{GRASS!loading data}
 With the GRASS plugin loaded, you can load a vector or raster layer using the appropriate button on the toolbar. \begin{Tip}\caption{\textsc{GRASS Data Loading}}
 \qgistip{If you have problems loading data or QGIS terminates abnormally, check to make sure you have started GRASS properly as described in Section \ref{sec:starting_grass}.
 }
 \end{Tip} 
-\subsection{Vector Data Model}\index{GRASS!vector data model}
+\section{Vector Data Model}\index{GRASS!vector data model}
 It is important to understand the GRASS vector data model prior to
 digitizing.\index{GRASS!digitizing}
 In general, GRASS uses a topological vector model.\index{GRASS!topology} This
@@ -72,7 +72,7 @@ Extract the mapset, add all layers from vector 'multi' to QGIS, and query attrib
 Finaly start editing of vector 'multi', to see how those layers are stored.
 }
 \end{Tip} 
-\subsection{Digitizing and Editing Tools}\index{GRASS!digitizing tools}
+\section{Digitizing and Editing Tools}\index{GRASS!digitizing tools}
 The digitizing tools for GRASS vector layers are accessed using the \textsl{Edit GRASS Vector Layer} tool on the toolbar. Make sure you have loaded a GRASS vector and it is the selected layer in the legend before clicking on the edit tool. In this release, the vector must exist prior to beginning to edit. The ability to create a new "empty" layer will be added in a future version. Figure \ref{fig:grass_edit} shows the GRASS Edit dialog that is displayed when you click on the edit tool. 
 \begin{figure}[h]
    \begin{center}
@@ -81,7 +81,7 @@ The digitizing tools for GRASS vector layers are accessed using the \textsl{Edit
 \end{center}  
 \end{figure}
 The tools and settings are discussed in the following sections.
-\subsubsection{Toolbar}
+\subsection{Toolbar}
 Table \ref{tab:grass_tools} lists the digitizing tools provided by the GRASS plugin. These correspond to the tool buttons in the toolbar(s) across the top of the dialog.
 \begin{table}[h]\index{GRASS!digitizing tools}
 
@@ -104,7 +104,7 @@ Table \ref{tab:grass_tools} lists the digitizing tools provided by the GRASS plu
 \hline
 \end{tabular}
 \end{table}
-\subsubsection{Category Tab}\index{GRASS!category settings}
+\subsection{Category Tab}\index{GRASS!category settings}
 This tab allows you to set the way in which the category will be assigned to each new feature and/or assign a category to a feature.
 \begin{compactitem}
 \item Mode: what category should be attached to geometry
@@ -116,20 +116,20 @@ This tab allows you to set the way in which the category will be assigned to eac
 \item Category - a number (ID) attached to digitized feature
 \item Field - feature (attribute table) identification
 \end{compactitem}
-\subsubsection{Settings Tab} \index{GRASS!snapping tolerance}
+\subsection{Settings Tab} \index{GRASS!snapping tolerance}
 This tab allow you to set the snapping in screen pixels. This is the threshold in pixels in which new points or line ends are snapped to existing nodes. This helps prevent gaps or dangles between boundaries
 
-\subsubsection{Symbology Tab}\index{GRASS!symbology settings}
+\subsection{Symbology Tab}\index{GRASS!symbology settings}
 This tab allows you to view and set symbology for various geometry types and their topological status (e.g. closed / opened boundary).
 
-\subsubsection{Table} \index{GRASS!table editing}
+\subsection{Table} \index{GRASS!table editing}
 This tab provides the means to view, create, or modify the database table for a given field.
 \begin{Tip}\caption{\textsc{GRASS Edit Permissions}}\index{GRASS!edit permissions}
 \qgistip{You must be the owner of the GRASS mapset you want to edit. It is impossible to edit vectors in mapsets which are not yours, even if you have write permissions.
 }
 \end{Tip} 
 
-\subsubsection{Region Tool}\index{GRASS!region}
+\subsection{Region Tool}\index{GRASS!region}
 
 The current region (window) in GRASS is very important for all 
 raster modules. All new created rasters have the extension and resolution
@@ -140,7 +140,7 @@ horizontal and vertical resolution.
 
 It is possible to switch on/off the grass region in QGIS canvas
 using the \textsl{Display Current GRASS Region}
-button.\\index{GRASS!region!display}\
+button. \index{GRASS!region!display}
 
 With the \textsl{Edit Current GRASS Region} you can open a tool 
 in which you can change the current region and symbology
@@ -153,5 +153,5 @@ shell or if the GISRC enviroment variable pointing to a
 valid GISRC file was set (i.e. only if you are running 
 GRASS within your mapset).
 
-%\subsection{The GRASS Toolbar}
+%\section{The GRASS Toolbar}
 %The GRASS toolbar is displayed when the GRASS plugin is loaded using the Plugin Manager (see Section \ref{sec:managing_plugins}, \textsl{Managing Plugins}). Figure  shows the toolbar with each function annotated.
