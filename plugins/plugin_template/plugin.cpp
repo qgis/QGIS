@@ -89,12 +89,9 @@ void Plugin::initGui()
   QAction *myQActionPointer = new QAction("[menuitemname]", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "[menuname]");
-  toolBarPointer->setLabel("[menuitemname]");
-  // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(toolBarPointer);
 
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon(myQActionPointer);
 
 }
 //method defined in interface

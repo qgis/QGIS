@@ -95,11 +95,9 @@ void ExamplePlugin::initGui()
                                             CTRL + Key_S, qgisMainWindow, "zoomPrevious");
   // Connect the action to the zoomPrevous slot
   connect(zoomPreviousAction, SIGNAL(activated()), this, SLOT(zoomPrevious()));
-  // Add the toolbar
-  toolBar = new QToolBar((QMainWindow *) qgisMainWindow, "zoom operations");
-  toolBar->setLabel("Zoom Operations");
-  // Add the zoom previous tool to the toolbar
-  zoomPreviousAction->addTo(toolBar);
+
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon(myQActionPointer);
 
 }
 
