@@ -10,6 +10,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString th
 QgsCoordinateTransform::~QgsCoordinateTransform()
 {
   delete mSourceToDestXForm;
+  delete mDestToSourceXForm;
 }
 
 void QgsCoordinateTransform::setSourceWKT(QString theWKT)
@@ -100,8 +101,8 @@ void QgsCoordinateTransform::initialise()
   }  
   
   mSourceToDestXForm = OGRCreateCoordinateTransformation( &myInputSpatialRefSys, &myOutputSpatialRefSys );
-
-  if ( ! mSourceToDestXForm )
+  mDestToSourceXForm = OGRCreateCoordinateTransformation( &myOutputSpatialRefSys, &myInputSpatialRefSys );
+  if ( ! mSourceToDestXForm || ! mDestToSourceXForm)
   {
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
     std::cout << "The OGR Coordinate transformation for this layer could *** NOT *** be set " << std::endl;

@@ -350,6 +350,9 @@ protected:
     /** Used to ask the layer for its projection as a WKT string. Must be reimplemented by each provider. */
     virtual QString getProjectionWKT()  = 0 ;
   
+    /** Accessor for the coordinate transformation object */
+    QgsCoordinateTransform * coordinateTransform() {return mCoordinateTransform;};
+    
     /** called by readXML(), used by children to read state specific to them from
         project files.
     */
