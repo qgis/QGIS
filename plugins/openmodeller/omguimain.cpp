@@ -47,4 +47,6 @@ void OmGuiMain::drawModelImage(QString theFileName)
   pixModelOutputImage->setScaledContents(true);
   pixModelOutputImage->setPixmap(myPixmap); 
   pixModelOutputImage->show();
+  //make sure the main gui windows shows (its off when app starts!)
+  show();
 }

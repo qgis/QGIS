@@ -9,7 +9,9 @@ int main(int argc, char *argv[])
   QApplication a(argc, argv);
   OmGuiMain * myOmGui = new OmGuiMain();
   a.setMainWidget(myOmGui);
-  myOmGui->show();
+  
+  //only show the main gui once the model has run!
+  //myOmGui->show();
   
 
   return a.exec();
