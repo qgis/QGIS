@@ -191,7 +191,9 @@ void QgsMapCanvas::refresh()
 void QgsMapCanvas::render2()
 {
   QString msg = frozen ? "frozen" : "thawed";
-//std::cout << "Map canvas is " << msg << std::endl;
+ #ifdef QGISDEBUG
+  std::cout << "Map canvas is " << msg << std::endl;
+  #endif
   if (!frozen && dirty)
     {
       if (!drawing)
@@ -205,7 +207,10 @@ void QgsMapCanvas::render2()
           double muppX, muppY;
           muppY = currentExtent.height() / height();
           muppX = currentExtent.width() / width();
-//      std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
+          #ifdef QGISDEBUG
+          std::cout << "Current extent is " << currentExtent.stringRep() << std::endl;
+          std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
+          #endif
           m_mupp = muppY > muppX ? muppY : muppX;
           // calculate the actual extent of the mapCanvas
           double dxmin, dxmax, dymin, dymax, whitespace;
@@ -229,10 +234,13 @@ void QgsMapCanvas::render2()
 //        endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
           coordXForm->setParameters(m_mupp, dxmin, dymin, height());  //currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
           // update the currentExtent to match the device coordinates
-          currentExtent.setXmin(dxmin);
-          currentExtent.setXmax(dxmax);
-          currentExtent.setYmin(dymin);
-          currentExtent.setYmax(dymax);
+          //GS - removed the current extent update to fix bug --
+          //TODO remove the next 4 lines after we're sure this works ok
+          /*currentExtent.setXmin(dxmin);
+            currentExtent.setXmax(dxmax);
+            currentExtent.setYmin(dymin);
+            currentExtent.setYmax(dymax); */
+          
           // render all layers in the stack, starting at the base
           std::list < QString >::iterator li = zOrder.begin();
 //      std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
