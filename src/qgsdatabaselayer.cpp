@@ -418,6 +418,12 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 
 void QgsDatabaseLayer::identify(QgsRect * r)
 {
+// create a search filter  for identifying records
+ 
+  QString sql = "select * from " + tableName;
+  sql += " where " + geometryColumn;
+	sql += " && GeometryFromText('BOX3D(" + r->stringRep();
+	sql += ")'::box3d,-1)";
 }
 int QgsDatabaseLayer::endian()
 {

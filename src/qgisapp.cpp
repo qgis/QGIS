@@ -46,6 +46,7 @@
 #include <iomanip>
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
 #include "qgsdbsourceselect.h"
@@ -152,6 +153,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
 	mapCursor = 0;
 
+  // set the legend control for the map canvas
+  mapCanvas->setLegend(mapLegend);
+  
 	// connect the "cleanup" slot
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
 	restoreWindowState();
@@ -640,3 +644,4 @@ void QgisApp::restoreWindowState()
 	int y = settings.readNumEntry("/qgis/Geometry/y", (dh - 400) / 2);
 	setGeometry(x, y, w, h);
 }
+

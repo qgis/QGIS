@@ -20,6 +20,7 @@
 #define QGSLEGEND_H
 #include <qwidget.h>
 class QgsMapCanvas;
+class QgsMapLayer;
 class QListView;
 
 class QPainter;
@@ -46,6 +47,7 @@ public:
 	void setMapCanvas(QgsMapCanvas *canvas);
 	//! Update the legend
 	void update();
+    QString currentLayer();
 	
 private:
 QListView* listView;
