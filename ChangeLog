@@ -1,21 +1,21 @@
 QGIS Change Log
-ChangeLog,v 1.22 2004/02/27 05:40:57 timlinux Exp
+ChangeLog,v 1.23 2004/02/27 05:51:37 gsherman Exp
 ------------------------------------------------------------------------------
-Version 0.2 'Pumpkin' .... developement version
+Version 0.2 'Pumpkin' .... development version
 
-2004-02-26 [ts]
+2004-02-26 [ts] 0.1.0devel3
 ** Added a tab to raster layer properties dialog to show metadata about the
    raster layer (using gdal metadata)
 
 2004-02-26 [gs]
-**Added Version to configure.in. QGIS now displays its version number based on
-the settings in configure.in
+** Added Version to configure.in. QGIS now displays its version number based on
+   the settings in configure.in
 
 2004-02-24 [gs]
-**Search radius for identifying features on vector layers added to Preferences
+** Search radius for identifying features on vector layers added to Preferences
 
 2004-02-23 [ts]
-**Save current view to disk as a PNG image
+** Save current view to disk as a PNG image
 
 ------------------------------------------------------------------------------
 Version 0.1 'Moroz' February 25, 2004
