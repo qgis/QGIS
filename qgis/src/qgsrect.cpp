@@ -90,10 +90,10 @@ void QgsRect::expand(double scaleFactor, QgsPoint * cp)
 QgsRect QgsRect::intersect(QgsRect * rect)
 {
   QgsRect intersection = QgsRect();
-  intersection.setXmin(xmin > ? rect->xMin());
-  intersection.setYmin(ymin > ? rect->yMin());
-  intersection.setXmax(xmax < ? rect->xMax());
-  intersection.setYmax(ymax < ? rect->yMax());
+  intersection.setXmin(xmin >? rect->xMin());
+  intersection.setYmin(ymin >? rect->yMin());
+  intersection.setXmax(xmax <? rect->xMax());
+  intersection.setYmax(ymax <? rect->yMax());
   return intersection;
 }
 
@@ -108,7 +108,7 @@ bool QgsRect::isEmpty()
     }
 }
 
-QString QgsRect::stringRep() const const
+QString QgsRect::stringRep() const
 {
   QString tmp;
   QString rep = tmp.setNum(xmin);;
