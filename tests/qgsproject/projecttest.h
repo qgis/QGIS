@@ -40,6 +40,7 @@ class ProjectTest : public CppUnit::TestFixture
     CPPUNIT_TEST( testDirtyFlag );
     CPPUNIT_TEST( readNullEntries );
     CPPUNIT_TEST( testWriteEntries );
+    CPPUNIT_TEST( testXML );
     CPPUNIT_TEST( testRemoveEntry );
     CPPUNIT_TEST( testClearProperties );
     CPPUNIT_TEST( testEntryList );
@@ -58,15 +59,15 @@ class ProjectTest : public CppUnit::TestFixture
         mTitle = "test title";
         mScope = "project_test";
 
-        mNumValueKey = "/values/num";
+        mNumValueKey = "/values/myNum";
 
-        mDoubleValueKey = "/values/double";
+        mDoubleValueKey = "/values/myDouble";
 
-        mBoolValueKey = "/values/bool";
+        mBoolValueKey = "/values/myBool";
 
-        mStringValueKey = "/values/strings/string";
+        mStringValueKey = "/values/myStrings/myString";
 
-        mStringListValueKey = "/values/strings/stringlist";
+        mStringListValueKey = "/values/myStrings/myStringlist";
 
 
         mNumValueConst = 42;
@@ -187,6 +188,34 @@ class ProjectTest : public CppUnit::TestFixture
 
         bool status;
 
+        int i = QgsProject::instance()->readNumEntry( mScope, mNumValueKey, 13, &status );
+        CPPUNIT_ASSERT( mNumValueConst == i && status );
+
+        bool b = QgsProject::instance()->readBoolEntry( mScope, mBoolValueKey, false, &status );
+        CPPUNIT_ASSERT( mBoolValueConst == b && status );
+
+        double d = QgsProject::instance()->readDoubleEntry( mScope, mDoubleValueKey, 99.0, &status );
+        CPPUNIT_ASSERT( mDoubleValueConst == d && status );
+
+        QString s = QgsProject::instance()->readEntry( mScope, mStringValueKey, "FOO", &status );
+        CPPUNIT_ASSERT( mStringValueConst == s && status );
+
+        QStringList sl = QgsProject::instance()->readListEntry( mScope, mStringListValueKey, &status );
+        CPPUNIT_ASSERT( mStringListValueConst == sl && status );
+
+    } // testWriteEntries
+
+    void testXML()
+    {  // write out the state, clear the project, reload it, and see if we got
+       // everything back
+        CPPUNIT_ASSERT( QgsProject::instance()->write() );
+
+        QgsProject::instance()->clearProperties();
+
+        CPPUNIT_ASSERT( QgsProject::instance()->read() );
+
+        bool status;
+
         bool b = QgsProject::instance()->readBoolEntry( mScope, mBoolValueKey, false, &status );
         CPPUNIT_ASSERT( mBoolValueConst == b && status );
 
@@ -202,8 +231,10 @@ class ProjectTest : public CppUnit::TestFixture
         QStringList sl = QgsProject::instance()->readListEntry( mScope, mStringListValueKey, &status );
         CPPUNIT_ASSERT( mStringListValueConst == sl && status );
 
-    } // testWriteEntries
+//         qDebug( "%s:%d testXML after read" );
 
+//         QgsProject::instance()->dumpProperties();
+    }
 
 
     void testRemoveEntry()
@@ -324,6 +355,7 @@ class ProjectTest : public CppUnit::TestFixture
         CPPUNIT_ASSERT( entries.find( "four" ) == entries.end() );
         CPPUNIT_ASSERT( entries.find( "five" ) == entries.end() );
     }
+
 
 private:
 

@@ -5,6 +5,10 @@
 TEMPLATE = app
 TARGET = testproject
 
+INCLUDEPATH += .
+LIBPATH += $(HOME)/lib
+
+CONFIG  = qt warn_on debug thread exceptions stl rtti
 
 # get gdal info
 GDAL_LIBS = $$system(gdal-config --libs)
@@ -24,7 +28,41 @@ QGIS_FILES = 	qgisapp.o					\
 		qgsacetatelines.o				\
 		qgsacetateobject.o				\
 		qgsacetaterectangle.o				\
-		qgsattributeaction.o				\
+                qgscomposer.moc.o \
+                qgscomposerbase.moc.uic.o \
+                qgscomposerbase.uic.o \
+                qgscomposer.o \
+                qgscompositionbase.moc.uic.o \
+                qgscompositionbase.uic.o \
+                qgscomposition.moc.o \
+                qgscomposition.o \
+                qgscomposerview.o \
+                qgscomposerview.moc.o \
+                qgscomposermap.moc.o \
+                qgscomposermapbase.moc.uic.o \
+                qgscomposermap.o \
+                qgscomposermapbase.uic.o \
+                qgscomposervectorlegend.moc.o \
+                qgscomposervectorlegendbase.moc.uic.o \
+                qgscomposervectorlegend.o \
+                qgscomposervectorlegendbase.uic.o \
+                qgscomposerlabel.moc.o \
+                qgscomposerlabelbase.moc.uic.o \
+                qgscomposerlabel.o \
+                qgscomposerlabelbase.uic.o \
+                qgscomposeritem.o \
+                qgsdelattrdialogbase.moc.uic.o  \
+                qgsdelattrdialog.moc.o \
+                qgsdelattrdialogbase.uic.o \
+                qgsdelattrdialog.o \
+                qgsattributetabledisplay.moc.o \
+                qgsrunprocess.moc.o \
+                qgsrunprocess.o \
+                qgsaddattrdialogbase.moc.uic.o \
+                qgsaddattrdialog.moc.o \
+                qgsaddattrdialogbase.uic.o \
+                qgsaddattrdialog.o \
+                qgsattributeaction.o				\
 		qgsattributeactiondialog.o			\
 		qgsattributedialog.o				\
 		qgsattributetable.o				\
@@ -48,7 +86,9 @@ QGIS_FILES = 	qgisapp.o					\
 		qgsgramaextensionwidget.o			\
 		qgsgrasydialog.o				\
 		qgshelpviewer.o					\
-		qgsidentifyresults.o				\
+                qgsencodingfiledialog.moc.o  \
+                qgsencodingfiledialog.o \
+                qgsidentifyresults.o				\
 		qgslabelattributes.o				\
 		qgslabel.o					\
 		qgslabeldialog.o				\
@@ -133,7 +173,6 @@ QGIS_FILES = 	qgisapp.o					\
 		qgspgquerybuilder.moc.o				\
 		qgisapp.moc.o					\
 		qgisinterface.moc.o				\
-		qgsattributeaction.moc.o			\
 		qgsattributeactiondialog.moc.o			\
 		qgsattributedialog.moc.o			\
 		qgsattributetable.moc.o				\
@@ -160,6 +199,7 @@ QGIS_FILES = 	qgisapp.o					\
 		qgsoptions.moc.o				\
 		qgspatterndialog.moc.o				\
 		qgspluginmanager.moc.o				\
+                qgsprojectproperty.o			        \
 		qgsprojectproperties.moc.o			\
 		qgsrasterlayer.moc.o				\
 		qgsrasterlayerproperties.moc.o			\
@@ -205,16 +245,13 @@ QGIS_FILES = 	qgisapp.o					\
 		qgspgquerybuilderbase.moc.uic.o	
 
 
+# Note that auto(cont|make) and libtool  prepend "qgis-" to binary names.
 QGIS_OBJS = $$join(QGIS_FILES," ../../src/qgis-"," ../../src/qgis-")
 
-INCLUDEPATH += .
-LIBPATH += $(HOME)/lib
-
-CONFIG += qt warn_on debug thread exceptions stl rtti
 
 DEFINES = QGISDEBUG
 
-LIBS += -lcppunit -dl -lqgis $$QGIS_OBJS $$GDAL_LIBS
+LIBS += -lcppunit -dl $$QGIS_OBJS $$GDAL_LIBS
 
 # Input
 HEADERS += projecttest.h
