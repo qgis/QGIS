@@ -495,6 +495,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   }
 
   //tell oM to use our locally made callback fn
+  mOpenModeller->setModelCallback( mapCallback, progressBar1);
   mOpenModeller->setMapCallback( mapCallback, progressBar1);
 
   if ( ! mOpenModeller->run() )
@@ -1074,6 +1075,8 @@ void OpenModellerGui::mapCallback( float progress, void *extra_param )
   QProgressBar *myProgressBar = (QProgressBar *) extra_param;
   //std::cout << "OMGUI : Map creation progress : " << ( 100 * progress ) << std::endl;
   myProgressBar->setProgress(100 * progress);
+  //process events so gui doesnt block...
+  qApp->processEvents();
 }
 
 
