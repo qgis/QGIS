@@ -26,6 +26,7 @@ qgis_SOURCES =  qgisapp.cpp \
 		qgisiface.cpp \
 		qgisiface.h \
 		qgisinterface.h \
+		qgisinterface.cpp \
 		qgsattributetable.cpp \
 		qgsattributetable.h \
 		qgsattributetabledisplay.cpp \
@@ -148,6 +149,7 @@ qgis_MOC = 	splashscreen.moc.cpp \
 						qgslinestyledialogbase.moc.cpp \
 						qgsmapcanvas.moc.cpp \
 						qgsmaplayer.moc.cpp \
+						qgisinterface.moc.cpp \
 						qgsmaplayerinterface.moc.cpp \
 						qgsmapserverexport.moc.cpp \
 						qgsmapserverexportbase.moc.cpp \
