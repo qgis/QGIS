@@ -54,27 +54,64 @@ class QgsCoordinateTransform{
 
     QString showParameters();
  private:
-    OGRCreateCoordinateTransformation gSourceToDestXForm;
-    bool gInputIsDegrees;
+    OGRCoordinateTransformation * mSourceToDestXForm;
+    bool mInputIsDegrees;
+    //set to true if src cs  == dest cs
+    bool mShortCircuit;
 };
 
 inline QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString theDestWKT )
 {
+  //default to geo / wgs84 for now .... later we will make this user configurable
+  QString myGeoWKT =    "GEOGCS[\"WGS 84\", "
+    "  DATUM[\"WGS_1984\", "
+    "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+    "      AUTHORITY[\"EPSG\",7030]], "
+    "    TOWGS84[0,0,0,0,0,0,0], "
+    "    AUTHORITY[\"EPSG\",6326]], "
+    "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+    "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+    "  AXIS[\"Lat\",NORTH], "
+    "  AXIS[\"Long\",EAST], "
+    "  AUTHORITY[\"EPSG\",4326]]";
+  if (theSourceWKT.isEmpty())
+  {
+   theSourceWKT = myGeoWKT;
+  }
+  if (theDestWKT.isEmpty())
+  {
+    theDestWKT = myGeoWKT;
+  }  
+  
+  if (theSourceWKT == theDestWKT)
+  {
+    mShortCircuit=true;
+    return;
+  }
+  else
+  {
+    mShortCircuit=false;
+  }
+  
   OGRSpatialReference myInputSpatialRefSys, myOutputSpatialRefSys;
- 
-  if ( myInputSpatialRefSys.importFromWkt( &theSourceWKT ) != OGRERR_NONE ||
-       myOutputSpatialRefSys.importFromWkt( &theDestWKT ) != OGRERR_NONE )
+  //this is really ugly but we need to get a QString to a char**
+  const char * mySourceCharArray =  theSourceWKT.ascii();
+  char *mySourceCharArrayPointer = (char *)mySourceCharArray;
+  const char * myDestCharArray =  theDestWKT.ascii();
+  char *myDestCharArrayPointer = (char *)myDestCharArray;
+  if ( myInputSpatialRefSys.importFromWkt( & mySourceCharArrayPointer ) != OGRERR_NONE ||
+       myOutputSpatialRefSys.importFromWkt( & myDestCharArrayPointer ) != OGRERR_NONE )
     {
-      printf( 1, "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
-       theSourceWKT, theDestWKT );
+      printf( "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
+       theSourceWKT.ascii(), theDestWKT.ascii() );
     }
 
-  gSourceToDestXForm = OGRCreateCoordinateTransformation( &myInputSpatialRefSys, &myOutputSpatialRefSys );
+  mSourceToDestXForm = OGRCreateCoordinateTransformation( &myInputSpatialRefSys, &myOutputSpatialRefSys );
 
-  if ( ! gSourceToDestXForm )
+  if ( ! mSourceToDestXForm )
     {
-      printf( 1, "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
-       theSourceWKT, theDestWKT );
+      printf(  "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
+       theSourceWKT.ascii(), theDestWKT.ascii() );
     }
 
   // Deactivate GDAL error messages.
@@ -86,22 +123,20 @@ inline QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QSt
 
 inline QgsCoordinateTransform::~QgsCoordinateTransform()
 {
-  delete gSourceToDestXForm;
-}
-inline QgsPoint QgsCoordinateTransform::transform(double x, double y)
-{
-  return (transform(QgsPoint(x, y)));
+  delete mSourceToDestXForm;
 }
 
-inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint) throws QgsCsException
+
+inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint)
 {
+  if (mShortCircuit) return thePoint;
   // transform x
   double x = thePoint.x(); 
   double y = thePoint.y();
-  if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
+  if ( ! mSourceToDestXForm->Transform( 1, &x, &y ) )
   {
     //something bad happened....
-    throw QgsCsException("Coordinate transform failed");
+    throw QgsCsException(QString("Coordinate transform failed"));
   }
   else
   {
@@ -110,13 +145,14 @@ inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint) throws QgsC
 }
 inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
 {
+  if (mShortCircuit) return QgsPoint(theX,theY);
   // transform x
   double x = theX; 
   double y = theY;
-  if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
+  if ( ! mSourceToDestXForm->Transform( 1, &x, &y ) )
   {
     //something bad happened....
-    return null;
+    throw QgsCsException(QString("Coordinate transform failed"));
   }
   else
   {
