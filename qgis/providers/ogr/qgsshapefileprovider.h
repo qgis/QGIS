@@ -113,6 +113,11 @@ public:
  /**Returns the maximum value of an attribut
     @param position the number of the attribute*/
  QString maxValue(int position);
+
+ /**Returns true if this is a valid shapefile
+ */
+ bool isValid();
+ 
 private:
 	unsigned char *getGeometryPointer(OGRFeature *fet);
 	std::vector<QgsFeature> features;
