@@ -73,6 +73,10 @@ public slots:
    */
   void mapUnitChange(int);
   /**
+   * Slot called when apply button is pressed 
+   */
+  void apply();
+  /**
    * Slot called when ok button pressed (inherits from gui base)
    */
   void accept();
