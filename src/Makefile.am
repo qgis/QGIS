@@ -495,7 +495,12 @@ libqgis_la_SOURCES =				\
 		qgslinestylewidget.cpp		\
 		qgslinestylewidget.moc.cpp	\
 		qgsfillstylewidget.cpp		\
-		qgsfillstylewidget.moc.cpp		
+		qgsfillstylewidget.moc.cpp	\
+		qgsvectorsymbologywidgetbase.uic.cpp	\
+		qgsvectorsymbologywidgetbase.moc.uic.cpp \
+		qgsvectorsymbologywidget.cpp	\
+		qgsvectorsymbologywidget.moc.cpp	
+
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
