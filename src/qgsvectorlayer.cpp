@@ -135,9 +135,15 @@ m_rendererDialog(0)
 
                   if (providerKey == "postgres")
                     {
+                      #ifdef DEBUG
+                       std::cout << "Beautifying layer name " << layerTitle << std::endl;
+                      #endif
                       // adjust the display name for postgres layers
                       layerTitle = layerTitle.mid(layerTitle.find(".") + 1);
                       layerTitle = layerTitle.left(layerTitle.find("("));
+                      #ifdef DEBUG
+                       std::cout << "Beautified name is " << layerTitle << std::endl;
+                      #endif
                     }
                   // upper case the first letter of the layer name
                   layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
