@@ -43,4 +43,5 @@ class QgsSpit :public QgsSpitBase{
   int default_value;
   int total_features;
   std::vector <QgsShapeFile *> fileList;
+
 };

@@ -30,6 +30,7 @@ class OGRDataSource;
  
 class QgsShapeFile
 {
+  Q_OBJECT
   public:
 
   QgsShapeFile(QString filename);
@@ -47,10 +48,14 @@ class QgsShapeFile
   private:
   OGRDataSource *ogrDataSource;
   OGRLayer * ogrLayer;
+  bool import_cancelled;
   bool valid;
   int features;
   const char * filename;
-  const char * geom_type;  
+  const char * geom_type;
+
+  public slots:
+  void cancelImport();
 };
 
 #endif

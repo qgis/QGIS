@@ -206,7 +206,7 @@ void QgsSpit::import(){
       pro->show();
 
       pd->ExecTuplesOk("BEGIN");
-      for(int i=0; i<fileList.size(); i++){
+      for(int i=0; i<fileList.size() ; i++){
         std::stringstream temp;
         temp << spinSrid->value();
         if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro)){
@@ -219,9 +219,8 @@ void QgsSpit::import(){
       if(error)
         pd->ExecCommandOk("ROLLBACK");
       else{
-        int temp = pd->ExecCommandOk("COMMIT");
+        pd->ExecCommandOk("COMMIT");
         removeAllFiles();
-        //std::cout<<"commit " << temp << " " << pd->ErrorMessage() << total_features << " " << pro->progress() << std::endl;
       }
     }
     else 

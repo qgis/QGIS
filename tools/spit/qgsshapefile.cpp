@@ -16,6 +16,8 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <qapplication.h>
+#include <qobject.h>
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 #include <string>
@@ -114,6 +116,8 @@ const char * QgsShapeFile::getName(){
 }
 
 bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro){
+  QObject::connect( pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
+  import_cancelled = false;
   bool result = true;
   QString table(filename);
   
@@ -136,6 +140,10 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
 
   //adding the data into the table
   for(int m=0;m<features; m++){
+    if(import_cancelled){
+      result = false;
+      break;
+    }
     OGRFeature *feat = ogrLayer->GetNextFeature();
     if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
@@ -162,6 +170,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
         conn->ExecTuplesOk((const char *)query);
 
         pro->setProgress(pro->progress()+1);
+        qApp->processEvents();
         delete[] geo_temp;
       }
       delete feat;
@@ -169,4 +178,8 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
   }
 
   return result;
+}
+
+void QgsShapeFile::cancelImport(){
+  import_cancelled = true;
 }
