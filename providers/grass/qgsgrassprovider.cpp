@@ -1188,7 +1188,8 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 
 	for (int i = 0; i < mLayers[layerId].nColumns; i++) {
 	    if ( att != NULL ) {
-		feature->addAttribute ( mLayers[layerId].fields[i].name(), att->values[i]);
+		QCString cstr( att->values[i] );
+		feature->addAttribute ( mLayers[layerId].fields[i].name(), mEncoding->toUnicode(cstr) );
 	    } else { /* it may happen that attributes are missing -> set to empty string */
 		feature->addAttribute ( mLayers[layerId].fields[i].name(), "");
 	    }
@@ -1214,7 +1215,8 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 
 	for (std::list<int>::const_iterator iter=attlist.begin(); iter!=attlist.end();++iter) {
 	    if ( att != NULL ) {
-		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), att->values[*iter]);	
+		QCString cstr( att->values[*iter] );
+		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), mEncoding->toUnicode(cstr) );
 	    } else { /* it may happen that attributes are missing -> set to empty string */
 		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), "");	
 	    } 

@@ -577,7 +577,7 @@ private:
    *  @param feature
    *  @param cat category number
    */
-  static void setFeatureAttributes ( int layerId, int cat, QgsFeature *feature);
+  void setFeatureAttributes ( int layerId, int cat, QgsFeature *feature);
 
   /*! Set feature attributes. 
    *  @param layerId
@@ -585,7 +585,7 @@ private:
    *  @param cat category number
    *  @param attlist a list containing the index number of the fields to set
    */
-  static void setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int> const & attlist);
+  void setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int> const & attlist);
 
   /* Static arrays of opened layers and vectors */
   static 	std::vector<GLAYER> mLayers; // Map + field/attributes
