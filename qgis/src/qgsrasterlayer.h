@@ -171,7 +171,10 @@ The [type] part of the variable should be the type class of the variable written
 #include <qslider.h>
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
+#include "qgscolortable.h"
 #include "qgsrasterlayer.h"
+
+#include "gdal_priv.h"
 
 //
 // Forward declarations
@@ -218,6 +221,8 @@ struct RasterBandStats
     int elementCountInt;    
     /** \brief A histogram storing the distribution of values within the raster. */
     int histogram[256];
+    /** Color table */
+    QgsColorTable colorTable;
 };
 
 /** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
@@ -681,9 +686,11 @@ public:
     {
         SINGLE_BAND_GRAY, // a "Gray" or "Undefined" layer drawn as a range of gray colors
         SINGLE_BAND_PSEUDO_COLOR,// a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
+        PALETTED_COLOR, //a "Palette" image drawn using color table
         PALETTED_SINGLE_BAND_GRAY,// a "Palette" layer drawn in gray scale (using only one of the color components)
         PALETTED_SINGLE_BAND_PSEUDO_COLOR, // a "Palette" layer having only one of its color components rendered as psuedo color
-        PALETTED_MULTI_BAND_COLOR, //a "Palette" image where the bands contains 24bit color info and 8 bits is pulled out per color
+        PALETTED_MULTI_BAND_COLOR, // a "Palette" image is decomposed to 3 channels (RGB) and drawn 
+	                           // as multiband 
         MULTI_BAND_SINGLE_BAND_GRAY, // a layer containing 2 or more bands, but using only one band to produce a grayscale image
         MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR, //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
         MULTI_BAND_COLOR //a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
@@ -783,8 +790,13 @@ private:
 
 
     //
-    // Pseudocolor layers
+    // Paletted Layers
     //
+    
+    /** \brief Drawing routine for paletted image, rendered as a single band image in color.  */
+    void drawPalettedSingleBandColor(QPainter * theQPainter,
+                                RasterViewPort * theRasterViewPort,
+                                int theBandNoInt);
     
     /** \brief Drawing routine for paletted image, rendered as a single band image in grayscale.  */
     void drawPalettedSingleBandGray(QPainter * theQPainter,
@@ -820,6 +832,25 @@ private:
     /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
 
+    /** \brief Read color table from GDAL raster band */
+    void readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable );
+
+    /** \brief Allocate memory and load data to that allocated memory, data type is the same
+     *         as raster band. The memory must be released later!
+     *  \return pointer to the memory
+     */
+    void *readData ( GDALRasterBand *gdalBand, RasterViewPort *viewPort );
+
+    /** \brief Read a raster value on given position from memory block created by readData() 
+     *  \param index index in memory block
+     */
+    inline double readValue ( void *data, GDALDataType type, int index );
+
+    /** \brief Color table 
+     *  \param band number
+     *  \return pointer to color table
+     */
+    QgsColorTable *colorTable ( int theBandNoInt );
 
     //
     // Private member vars
