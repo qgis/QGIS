@@ -1,0 +1,213 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsComposerScalebarBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QgsComposerScalebarBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>222</width>
+            <height>487</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Barscale Options</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_3</cstring>
+            </property>
+            <property name="text">
+                <string>Segment size</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mSegmentLengthLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Number of segments</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mNumSegmentsLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2_2</cstring>
+            </property>
+            <property name="text">
+                <string>Map units per scalebar unit</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mMapUnitsPerUnitLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_2</cstring>
+            </property>
+            <property name="text">
+                <string>Unit label</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mUnitLabelLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Map</string>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <property name="name">
+                <cstring>mMapComboBox</cstring>
+            </property>
+            <property name="enabled">
+                <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mFontButton</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Font</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_4</cstring>
+            </property>
+            <property name="text">
+                <string>Line width</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>mLineWidthSpinBox</cstring>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>26</width>
+                    <height>35</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mFontButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>changeFont()</slot>
+    </connection>
+    <connection>
+        <sender>mMapComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>mapSelectionChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>mUnitLabelLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>unitLabelChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mSegmentLengthLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>sizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mNumSegmentsLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>sizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mLineWidthSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>sizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mMapUnitsPerUnitLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerScalebarBase</receiver>
+        <slot>sizeChanged()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>changeFont()</slot>
+    <slot>mapSelectionChanged(int)</slot>
+    <slot>unitLabelChanged()</slot>
+    <slot>sizeChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
