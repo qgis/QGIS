@@ -10,6 +10,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+/* $Id$ */
 #include <qfiledialog.h>
 #include <qlineedit.h>
 #include <qlistview.h>
@@ -60,4 +61,14 @@ QDir pluginDir(txtPluginDir->text(), "*.so*", QDir::Name | QDir::IgnoreCase, QDi
 }
 }
 std::vector<QgsPluginItem> QgsPluginManager::getSelectedPlugins(){
+	std::vector<QgsPluginItem> pis;
+	QCheckListItem *lvi = (QCheckListItem *)lstPlugins->firstChild();
+	while(lvi != 0){
+		if(lvi->isOn()){
+			
+			pis.push_back(QgsPluginItem(lvi->text(0), lvi->text(1), txtPluginDir->text() + "/" + lvi->text(2)));
+		}
+		lvi = (QCheckListItem *)lvi->nextSibling();
+	}
+	return pis;
 }

@@ -5,7 +5,7 @@
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman at mrcc.com
  ***************************************************************************/
-
+/* $Id$ */
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
