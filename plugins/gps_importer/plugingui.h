@@ -12,14 +12,13 @@
 #ifndef PLUGINGUI_H
 #define PLUGINGUI_H
 
-#include <pluginguibase.h>
+#include "../../src/qgsvectorlayer.h"
+#include "pluginguibase.h"
 
 #include <vector>
 
 #include <qstring.h>
 
-
-class QgsMapLayer;
 
 /**
 @author Tim Sutton
@@ -29,7 +28,7 @@ class PluginGui : public PluginGuiBase
   Q_OBJECT
     public:
       PluginGui();
-      PluginGui( std::vector<QgsMapLayer*> gpxMapLayers, QWidget* parent , 
+      PluginGui( std::vector<QgsVectorLayer*> gpxMapLayers, QWidget* parent , 
 		 const char* name , bool modal , WFlags );
       ~PluginGui();
 
@@ -69,7 +68,7 @@ private:
 	bool hasTracks;
       };
       
-      std::vector<QgsMapLayer*> gpxLayers;
+      std::vector<QgsVectorLayer*> gpxLayers;
       std::map<QString, BabelFormatInfo> babelFormats;
       std::string babelFilter;
       std::string impFormat;
