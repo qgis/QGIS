@@ -317,7 +317,7 @@ void QgisApp::addRasterLayer()
 			mapCanvas->addLayer(lyr);
 		} else {
 			QString msg = *it;
-			msg += " is not a valid or recognized data source";
+			msg += " is not a valid or recognized raster data source";
 			QMessageBox::critical(this, "Invalid Data Source", msg);
 		}
 
