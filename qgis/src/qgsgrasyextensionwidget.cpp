@@ -37,21 +37,21 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
     m_gridlayout->setSpacing(10);
 
     //fill the title line into the grid layout
-    QLabel* lvaluelabel=new QLabel(tr("lower"),this);
+    QLabel* lvaluelabel=new QLabel(tr("Lower"),this);
     m_gridlayout->addWidget(lvaluelabel,0,0);
-    QLabel* uvaluelabel=new QLabel(tr("upper"),this);
+    QLabel* uvaluelabel=new QLabel(tr("Upper"),this);
     m_gridlayout->addWidget(uvaluelabel,0,1);
-    QLabel* labellabel=new QLabel(tr("label"),this);
+    QLabel* labellabel=new QLabel(tr("Label"),this);
     m_gridlayout->addWidget(labellabel,0,2);
-    QLabel* outlinecolorlabel=new QLabel(tr("outline\ncolor"),this);
+    QLabel* outlinecolorlabel=new QLabel(tr("Outline\nColor"),this);
     m_gridlayout->addWidget(outlinecolorlabel,0,3);
-    QLabel* outlinestylelabel=new QLabel(tr("outline\nstyle"),this);
+    QLabel* outlinestylelabel=new QLabel(tr("Outline\nStyle"),this);
     m_gridlayout->addWidget(outlinestylelabel,0,4);
-    QLabel* outlinewidthlabel=new QLabel(tr("outline\nwidth"),this);
+    QLabel* outlinewidthlabel=new QLabel(tr("Outline\nWidth"),this);
     m_gridlayout->addWidget(outlinewidthlabel,0,5);
-    QLabel* fillcolorlabel=new QLabel(tr("fill\ncolor"),this);
+    QLabel* fillcolorlabel=new QLabel(tr("Fill\nColor"),this);
     m_gridlayout->addWidget(fillcolorlabel,0,6);
-    QLabel* fillpatternlabel=new QLabel(tr("fill\npattern"),this);
+    QLabel* fillpatternlabel=new QLabel(tr("Fill\nPattern"),this);
     m_gridlayout->addWidget(fillpatternlabel,0,7);
 
     //fint the minimum and maximum of the classification variable
@@ -84,8 +84,6 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
     for(int i=1;i<=m_numberofclasses;i++)
     {
 	QLineEdit* ltextfield=new QLineEdit(this);
-
-
 	m_gridlayout->addWidget(ltextfield,i,0);
 	m_widgetvector[8*(i-1)]=ltextfield;
 	QLineEdit* utextfield=new QLineEdit(this);
