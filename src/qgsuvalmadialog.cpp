@@ -104,6 +104,7 @@ QgsUValMaDialog::QgsUValMaDialog(QgsVectorLayer* vl): QgsUValMaDialogBase(), mVe
 		sym->setPen(s->pen());
 		sym->setBrush(s->brush());
 		sym->setPicture(s->picture());
+		sym->setScaleFactor(s->scaleFactor());
 		mValues.insert(std::make_pair(itemvalue,ritem));
 		mClassBreakBox->insertItem(itemvalue);
 	    }

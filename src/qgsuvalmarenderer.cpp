@@ -113,11 +113,16 @@ void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 #endif
 	QgsMarkerSymbol* msy = new QgsMarkerSymbol();
 	QDomNode synode = renderitemnode.namedItem("markersymbol");
-	QString svgpath = "", scalefactor = "";
+	QString svgpath = "";
+	QString scalefactor = "";
 	QDomNode svgnode = synode.namedItem("svgpath");
 	svgpath = svgnode.toElement().text();
 	QDomNode scalenode = synode.namedItem("scalefactor");
 	scalefactor = scalenode.toElement().text();
+#ifdef QGISDEBUG
+	qWarning("scalefactor is: "+scalefactor);
+#endif
+
 
 	//create a renderitem and add it to the renderer
 	msy->setPicture(svgpath);
