@@ -867,7 +867,7 @@
             <string>Export As Image</string>
         </property>
         <property name="menuText">
-            <string>E&amp;xport As Image</string>
+            <string>&amp;Export As Image</string>
         </property>
         <property name="whatsThis">
             <string>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</string>
@@ -904,7 +904,7 @@
             <string>Project Properties</string>
         </property>
         <property name="menuText">
-            <string>Project &amp;Properties</string>
+            <string>P&amp;roject Properties</string>
         </property>
         <property name="toolTip">
             <string>Set project properties, including map units</string>
