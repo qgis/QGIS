@@ -48,6 +48,10 @@ Q_OBJECT public:
     QgsMapCanvas(QWidget * parent = 0, const char *name = 0);
     //! Destructor
     ~QgsMapCanvas();
+    //! Accessor for the cnavas pixmap
+    QPixmap * canvasPixmap() { return pmCanvas; } ;
+    //! Mutator for the canvas pixmap
+    void setCanvasPixmap(QPixmap * theQPixmap) { pmCanvas=theQPixmap; } ;
     //! Set the legend control to be used with this canvas
     void setLegend(QgsLegend *legend);
     //! Get a pointer to the legend control used with this canvas
@@ -129,6 +133,8 @@ signals:
     void scaleChanged(QString);  
     //! Emitted when the extents of the map change
     void extentsChanged(QString);  
+    //! Emitted when the canvas has rendered
+    void renderComplete();
 private:
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
