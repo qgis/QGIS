@@ -3,11 +3,11 @@
 # Subdir relative project main directory: ./src
 # Target is an application:  qgis
 
-LIBS += -L$/usr/local/lib -lgdal.1.1
+#LIBS += -L$/usr/local/lib -lgdal.1.1
+
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgisinterface.cpp \
-           qgsdatasource.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
@@ -30,7 +30,9 @@ SOURCES += main.cpp \
            qgsprojectio.cpp \
            qgisiface.cpp \
 	   qgspluginmanager.cpp \
-	   qgspluginitem.cpp
+	   qgspluginitem.cpp \
+	   qgsfeature.cpp \
+	   qgsfeatureattribute.cpp
 HEADERS += qgisapp.h \
            qgisinterface.h \
            qgisappbase.ui.h \
@@ -60,7 +62,9 @@ HEADERS += qgisapp.h \
            qgisiface.h \
 	   qgspluginmanager.h \
 	   qgspluginitem.h \
-	   qgsmaplayerinterface.h
+	   qgsmaplayerinterface.h \
+	   qgsfeature.h \
+	   qgsfeatureattribute.h
 FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
@@ -75,6 +79,21 @@ CONFIG += debug \
           qt \
           thread 
 TARGET = qgis 
+
+#.............................
+# GDAL/OGR configuration
+#.............................
+message(Configuring GDAL)
+GDALCONFIG = $$system(which gdal-config)
+isEmpty(GDALCONFIG) {
+	error("gdal-config not found in PATH. Check GDAL installation.")
+}
+# check to see if ogr enabled
+OGR = $$system(gdal-config --ogr-enabled)
+message("OGR enabled - $$OGR")
+LIBS+= $$system(gdal-config --libs)
+GDALINC = $$system(gdal-config --cflags)
+INCLUDEPATH += $$GDALINC
 
 # conditional tests for optional modules
 
@@ -109,3 +128,4 @@ message ("PGSQL environment variable is not defined. PostgreSQL excluded from bu
 message ("To build with PostgreSQL support set PGSQL to point to your Postgres installation")
 }
 }
+message ("Configuration complete, type make to build qgis")
