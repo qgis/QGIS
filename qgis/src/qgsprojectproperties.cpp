@@ -33,6 +33,9 @@
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qstring.h>
+#include <qspinbox.h>
+#include <qcolor.h>
+#include <qpushbutton.h>
 
 
 //stdc++ includes
@@ -77,6 +80,30 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
                      SLOT(setDestWKT(QString)));   
     }
     
+    //get the snapping tolerance for digitising and set the control accordingly
+    double mySnapTolerance = QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0);
+    //leSnappingTolerance->setInputMask("000000.000000");
+    leSnappingTolerance->setText(QString::number(mySnapTolerance));
+
+    //get the line width for digitised lines and set the control accordingly
+    int myLineWidth = QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",0);
+    spinDigitisedLineWidth->setValue(myLineWidth);    
+    
+    //get the colour of digitising lines and set the button colour accordingly
+    int myRedInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255);
+    int myGreenInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0);
+    int myBlueInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0);
+    QColor myColour = QColor(myRedInt,myGreenInt,myBlueInt);
+    pbnDigitisedLineColour->setPaletteBackgroundColor (myColour);
+
+    //get the colour selections and set the button colour accordingly
+    myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
+    myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",0);
+    myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
+    myColour = QColor(myRedInt,myGreenInt,myBlueInt);
+    pbnSelectionColour->setPaletteBackgroundColor (myColour);    
+    
+
 }
 
 QgsProjectProperties::~QgsProjectProperties()
@@ -135,8 +162,8 @@ bool QgsProjectProperties::setProjectionWKT(QString theName, QString theWKT)
   QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",theWKT);
 }
 
-//when user picks a new proj in cmbo
-void QgsProjectProperties::accept()
+//when user clicks apply button
+void QgsProjectProperties::apply()
 {
 #ifdef QGISDEBUG
   std::cout << "Projection changed, notifying all layers" << std::endl;
@@ -145,6 +172,31 @@ void QgsProjectProperties::accept()
     emit setDestWKT(mProjectionsMap[cboProjection->currentText()]);
     //update the project props
     QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[cboProjection->currentText()]);
+    
+    //set the snapping tolerance for digitising (we write as text but read will convert to a num
+    QgsProject::instance()->writeEntry("Digitizing","/Tolerance",leSnappingTolerance->text());
+
+    //set the line width for digitised lines and set the control accordingly
+    QgsProject::instance()->writeEntry("Digitizing","/LineWidth",spinDigitisedLineWidth->value());
+        
+    //set the colour of digitising lines
+    QColor myColour = pbnDigitisedLineColour->paletteBackgroundColor();
+    QgsProject::instance()->writeEntry("Digitizing","/LineColorRedPart",myColour.red());
+    QgsProject::instance()->writeEntry("Digitizing","/LineColorGreenPart",myColour.green());
+    QgsProject::instance()->writeEntry("Digitizing","/LineColorBluePart",myColour.blue());
+
+    //set the colour for selections
+    myColour = pbnSelectionColour->paletteBackgroundColor();
+    QgsProject::instance()->writeEntry("Gui","/SelectionColorRedPart",myColour.red());
+    QgsProject::instance()->writeEntry("Gui","/SelectionColorGreenPart",myColour.green());
+    QgsProject::instance()->writeEntry("Gui","/SelectionColorBluePart",myColour.blue()); 
+            
+}
+
+//when user clicks ok
+void QgsProjectProperties::accept()
+{
+    apply();
     close();
 }
 void QgsProjectProperties::getProjList()
