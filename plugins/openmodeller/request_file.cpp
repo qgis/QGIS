@@ -46,14 +46,14 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 {
   FileParser fp( request_file );
 
-  _occurrences_setted = setOccurrences( om, fp );
-  _environment_setted = setEnvironment( om, fp );
-  _outputmap_setted   = setOutputMap  ( om, fp );
-  _algorithm_setted   = setAlgorithm  ( om, fp );
+  _occurrences_set = setOccurrences( om, fp );
+  _environment_set = setEnvironment( om, fp );
+  _outputmap_set   = setOutputMap  ( om, fp );
+  _algorithm_set   = setAlgorithm  ( om, fp );
 
-  // Returns ZERO if all was setted correctly.
-  return 4 - _occurrences_setted - _environment_setted -
-    _outputmap_setted - _algorithm_setted;
+  // Returns ZERO if all was set correctly.
+  return 4 - _occurrences_set - _environment_set -
+    _outputmap_set - _algorithm_set;
 }
 
 
@@ -220,10 +220,10 @@ RequestFile::readParameters( AlgParameter *result,
     {
       // The resulting name is equal the name set in
       // algorithm's metadata.
-      result->setName( param->name );
+      result->setId( param->id );
 
       // Read the resulting value from str_param.
-      char *value = extractParameter( result->name(), str_nparam,
+      char *value = extractParameter( result->id(), str_nparam,
                                       str_param );
 
       // If the parameter is not referenced in the file, set it
