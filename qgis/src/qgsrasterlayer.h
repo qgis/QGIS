@@ -2,8 +2,8 @@
 		 gsrasterlayer.h  -  description
 			 -------------------
 	begin                : Fri Jun 28 2002
-	copyright            : (C) 2002 by Gary E.Sherman
-	email                : sherman at mrcc.com
+	copyright            : (C) 2004 by T.Sutton, Gary E.Sherman, Steve Halsatz
+	email                : tim@linfiniti.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -15,6 +15,41 @@
  *                                                                         *
  ***************************************************************************/
 
+/** \file qgsrasterlayer.h
+ *  \brief This class provides qgis with the ability to render raster datasets
+ *  onto the mapcanvas..
+ *  
+ *  The qgsrasterlayer class makes use of gdal for data io, and thus supports
+ *  any gdal supported format. The constructor attemtps to infer what type of
+ *  file (RASTER_LAYER_TYPE) is being opened - not in terms of the file format (tif, ascii grid etc.)
+ *  but rather in terms of whether the image is a GRAYSCALE, PALETTED or MULTIBAND,
+ *
+ *  Within the three allowable raster layer types, there are 8 permutations of 
+ *  how a layer can actually be rendered. These are defined in the DRAWING_STYLE enum
+ *  and consist of:
+ *
+ *  SINGLE_BAND_GRAY -> a GRAYSCALE layer drawn as a range of gray colors (0-255)
+ *  SINGLE_BAND_PSEUDO_COLOR -> a GRAYSCALE layer drawn using a pseudocolor algorithm
+ *  PALETTED_SINGLE_BAND_GRAY -> a PALLETED layer drawn in gray scale (using only one of the color components)
+ *  PALETTED_SINGLE_BAND_PSEUDO_COLOR -> a PALLETED layer having only one of its color components rendered as psuedo color
+ *  PALETTED_MULTI_BAND_COLOR -> a PALLETED image where the bands contains 24bit color info and 8 bits is pulled out per color
+ *  MULTI_BAND_SINGLE_BAND_GRAY -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
+ *  MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
+ *  MULTI_BAND_COLOR -> a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
+ *
+ *  Each of the above mentioned drawing styles is implemented in its own draw* function.
+ *  Some of the drawing styles listed above require statistics about the layer such 
+ *  as the min / max / mean / stddev etc. Statics for a band can be gathered using the 
+ *  getRasterBandStats function. Note that statistics gathering is a slow process and 
+ *  evey effort should be made to call this function as few times as possible. For this
+ *  reason, qgsraster has a vector class member to store stats for each band. The 
+ *  constructor initialises this vector on startup, but only populates the band name and
+ *  number fields.
+ *
+ *  A qgsrasterlayer band can be referred to either by name or by number (base=1). It
+ *  should be noted that band names as stored in datafiles may not be uniqe, and 
+ *  so the rasterlayer class appends the band number in brackets behind each band name.
+ */
 /*
  Please observe the following variable naming guidelines when editing this class:
 ----------------
@@ -57,6 +92,8 @@ The [type] part of the variable should be the type class of the variable written
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
+
+
 
 class QgsRect;
 class GDALDataset;
