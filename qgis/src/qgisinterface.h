@@ -54,9 +54,9 @@ class QgisInterface : public QWidget{
     //! Zoome to extent of the active layer
     virtual void zoomActiveLayer()=0;
     //! Add a vector layer
-    virtual void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
+    virtual bool addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
     //! Add a raster layer
-    virtual void addRasterLayer(QString rasterLayerPath)=0;
+    virtual bool addRasterLayer(QString rasterLayerPath)=0;
     //! Add a project
     virtual bool addProject(QString theProject)=0; 
 
