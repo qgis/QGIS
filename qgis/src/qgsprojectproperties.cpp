@@ -255,6 +255,7 @@ void QgsProjectProperties::getProjList()
 #endif
       //get the user friendly name for the WKT
       QString myShortName = getWKTShortName(myCurrentLineQString);
+      if (!myShortName) continue;
       mProjectionsMap[myShortName]=myCurrentLineQString;
     }
     myQFile.close();
@@ -431,6 +432,8 @@ void QgsProjectProperties::coordinateSystemSelected( QListViewItem * theItem)
 }
 QString QgsProjectProperties::getWKTShortName(QString theWKT)
 {
+    if (!theWKT) return NULL;
+    if (theWKT.isEmpty()) return NULL;
     /* for example 
     PROJCS["Kertau / Singapore Grid",GEOGCS["Kertau",DATUM["Kertau",SPHEROID["Everest 1830 Modified",6377304.063,300.8017]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Cassini_Soldner"],PARAMETER["latitude_of_origin",1.28764666666667],PARAMETER["central_meridian",103.853002222222],PARAMETER["false_easting",30000],PARAMETER["false_northing",30000],UNIT["metre",1]]
     
