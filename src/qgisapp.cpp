@@ -1910,7 +1910,8 @@ void QgisApp::testMapLayerPlugins()
                       // set the main window pointer for the plugin
                       pl->setQgisMainWindow(this);
 #ifdef QGISDEBUG
-                      std::cout << "getInt returned " << pl->getInt() << " from map layer plugin\n";
+                      //the call to getInt is deprecated and this line should be removed
+                      //std::cout << "getInt returned " << pl->getInt() << " from map layer plugin\n";
 #endif
                       // set up the gui
                       pl->initGui();
