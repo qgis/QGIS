@@ -350,8 +350,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mProgressBar->setMaximumWidth(100);
   statusBar()->addWidget(mProgressBar,0.5,true);   
   mScaleLabel=new QLabel(QString("Scale"),NULL);
+  mScaleLabel->setMinimumWidth(100);
   statusBar()->addWidget(mScaleLabel, 0,true);
   mCoordsLabel=new QLabel(QString("Coordinates:"), NULL);
+  mCoordsLabel->setMinimumWidth(200);
   statusBar()->addWidget(mCoordsLabel, 0, true);
  
 }
@@ -2667,26 +2669,29 @@ void QgisApp::showProgress(int theProgress, int theTotalSteps)
 #ifdef QGISDEBUG
   std::cout << "setProgress called with " << theProgress << "/" << theTotalSteps << endl;
 #endif
-/* @todo fix this!
-  if (theProgress==0 && theTotalSteps==0)
+
+  if (theProgress==theTotalSteps)
   {
-    mProgressBar->hide();
+    mProgressBar->reset();
   }
   else
   {
+    /* @todo fix this!
     //only call show if not already hidden to reduce flicker
     if (!mProgressBar->isVisible())
     {
       mProgressBar->show();
     }
+    */
+    mProgressBar->setProgress(theProgress,theTotalSteps);
   }
-  */
-  mProgressBar->setProgress(theProgress,theTotalSteps);
+  
+  
 }
 
 void QgisApp::showExtents(QString theExtents)
 {
-  statusBar()->message(theExtents);
+  statusBar()->message(QString(tr("Extents: ")) + theExtents);
 
 }
 
