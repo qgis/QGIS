@@ -415,8 +415,7 @@ void QgsGrassModule::readStdout()
 
     QString line;
     while ( mProcess.canReadLineStdout() ) {
-       	line = mProcess.readLineStdout ();
-        //std::cerr << "stdout: " << line << std::endl;
+       	line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
 	mOutputTextBrowser->append ( line );
     }
 }
@@ -432,9 +431,10 @@ void QgsGrassModule::readStderr()
     QRegExp rxwarning ( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
     QRegExp rxerror ( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
     QRegExp rxend ( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
+        
 
     while ( mProcess.canReadLineStderr() ) {
-       	line = mProcess.readLineStderr ();
+       	line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
         //std::cerr << "stderr: " << line << std::endl;
 
 	if ( rxpercent.search ( line ) != -1 ) {
