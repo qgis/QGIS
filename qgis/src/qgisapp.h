@@ -53,6 +53,8 @@ class QgisApp:public QgisAppBase
 	//public slots:
 	//! Add a layer to the map
 	void addLayer();
+	//! Add a raster layer to the map
+	void addRasterLayer();
 	#ifdef POSTGRESQL
 	//! Add a databaselayer to the map
 	void addDatabaseLayer();
