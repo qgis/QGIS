@@ -21,25 +21,21 @@ void QgsPgQueryBuilderBase::insGt()
 txtSQL->insert(" > ");
 }
 
-void QgsPgQueryBuilderBase::insNot()
-{
-txtSQL->insert(" ! ");
-}
 void QgsPgQueryBuilderBase::insPct()
 {
 txtSQL->insert(" % ");
 }
 void QgsPgQueryBuilderBase::insIn()
 {
-txtSQL->insert(" in ");
+txtSQL->insert(" IN ");
 }
 void QgsPgQueryBuilderBase::insNotIn()
 {
-txtSQL->insert(" not in ");
+txtSQL->insert(" NOT IN ");
 }
 void QgsPgQueryBuilderBase::insLike()
 {
-txtSQL->insert(" like ");
+txtSQL->insert(" LIKE ");
 }
 
 QString QgsPgQueryBuilderBase::sql()
@@ -54,7 +50,7 @@ void QgsPgQueryBuilderBase::setSql( QString sqlStatement)
 }
 
 
-void QgsPgQueryBuilderBase::testSqll()
+void QgsPgQueryBuilderBase::testSql()
 {
 
 }
@@ -77,4 +73,46 @@ void QgsPgQueryBuilderBase::fieldDoubleClick( QListBoxItem *item )
 void QgsPgQueryBuilderBase::valueDoubleClick( QListBoxItem *item )
 {
      txtSQL->insert(item->text());
+}
+
+
+void QgsPgQueryBuilderBase::insLessThanEqual()
+{
+    txtSQL->insert(" <= ");
+}
+
+
+void QgsPgQueryBuilderBase::insGreaterThanEqual()
+{
+    txtSQL->insert(" >= ");
+}
+
+
+void QgsPgQueryBuilderBase::insNotEqual()
+{
+    txtSQL->insert(" != ");
+}
+
+
+void QgsPgQueryBuilderBase::insAnd()
+{
+    txtSQL->insert(" AND ");
+}
+
+
+void QgsPgQueryBuilderBase::insNot()
+{
+    txtSQL->insert(" NOT ");
+}
+
+
+void QgsPgQueryBuilderBase::insOr()
+{
+    txtSQL->insert(" OR ");
+}
+
+
+void QgsPgQueryBuilderBase::clearSQL()
+{
+    txtSQL->clear();
 }
