@@ -251,6 +251,21 @@ Geography Markup Language (GML)
 
 Web Feature Service (WFS) 
 \end_deeper 
+\layout Subsection
+
+User Interface
+\layout Subsection
+
+Standards
+\layout Subsection
+
+Data Formats
+\layout Subsection
+
+Platform Support
+\layout Subsection
+
+Toolkits
 \layout Section
 
 
@@ -288,9 +303,21 @@ These two actors are sufficient to frame the development and discussion
 
 Primary Use Cases
 \layout Standard
-
+\added_space_bottom smallskip 
 The primary use cases for QGIS are listed below in no particular order of
  importance:
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="1" columns="2">
+<features>
+<column alignment="block" valignment="top" width="2.5in">
+<column alignment="block" valignment="top" width="2.5in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
 \layout Itemize
 
 Load data
@@ -349,6 +376,11 @@ Print feature information
 \layout Itemize
 
 Write script
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
 \layout Itemize
 
 Run script
@@ -406,7 +438,14 @@ Select by attribute
 \layout Itemize
 
 Select spatially
-\end_deeper 
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Subsection
 
 Case Descriptions
@@ -5388,7 +5427,7 @@ Export the features
 
 \layout Subsubsection
 
-Select Features
+Select Spatially
 \layout Standard
 
 
@@ -5413,7 +5452,7 @@ Use Case:
 
 \layout Standard
 \added_space_top smallskip 
-Select Features
+Select Spatially
 \end_inset 
 </cell>
 </row>
@@ -5590,4 +5629,232 @@ Select
 \end_inset 
 
 
+\layout Subsubsection
+
+Select by Attribute
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Select by Attribute
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Select features on the map canvas for purpose of using in another function
+ or operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Subfunction
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer needed for operation is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Features are selected and highlighted on map
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No selection set is created and application remains in state prior to beginning
+ of export operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to select features for use in another function or operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select data layer containing features of interest
+\layout Enumerate
+
+Open the query builder to define the selection criteria
+\layout Enumerate
+
+Execute the query to select features
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Section
+
+Core Architecture
+\layout Standard
+
+This section describes the functionality of the QGIS 
+\begin_inset Quotes eld
+\end_inset 
+
+core
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ The core application contains minimal functionality.
+ QGIS depends on plugins to implement all non-trivial functions.
+ The components of the core are discussed in the following sections.
+ Details with regard to physical implementation are included where appropriate.
+\layout Subsection
+
+Main Window
+\layout Subsection
+
+Plugins
 \the_end
