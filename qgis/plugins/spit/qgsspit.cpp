@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 
 #include <qsettings.h>
 #include <qlistbox.h>
@@ -149,6 +149,7 @@ void QgsSpit::addFile()
         tblShapefiles->setText(row, 1, file->getFeatureClass());
         tblShapefiles->setText(row, 2, QString("%1").arg(file->getFeatureCount()));        
         tblShapefiles->setText(row, 3, file->getTable());
+				tblShapefiles->setText(row, 4, "public");
         total_features += file->getFeatureCount();
       }
       else{
@@ -237,101 +238,209 @@ void QgsSpit::helpInfo(){
 void QgsSpit::import(){
   tblShapefiles->setCurrentCell(-1, 0);
     
-  QString connName = cmbConnections->currentText();
-  bool finished = false;
+	bool cancelled = false;
+  QString connName = cmbConnections->currentText();	
   PGresult *res;
-  if (!connName.isEmpty()) {
+  QString query;
+  if (connName.isEmpty()){
+    QMessageBox::warning(this, "Import Shapefiles", "You need to specify a Connection first");
+  }
+	else if(total_features==0){
+		QMessageBox::warning(this, "Import Shapefiles", "You need to add shapefiles to the list first");
+	}
+  else{
     QSettings settings;
     QString key = "/Qgis/connections/" + connName;
     QString connInfo = "host=" + settings.readEntry(key + "/host") + " dbname=" + settings.readEntry(key + "/database") +
 	  " user=" + settings.readEntry(key + "/username") + " password=" + settings.readEntry(key + "/password");
     PGconn *pd = PQconnectdb((const char *) connInfo);
 
-  	if (PQstatus(pd) == CONNECTION_OK) {     
+    if (PQstatus(pd) != CONNECTION_OK) {     
+      QMessageBox::warning(this, "Import Shapefiles", "Connection failed - Check settings and try again");
+    }
+    else { // if connection is ok
       QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", total_features, this, "Progress", true);
       pro->setProgress(0);
       pro->setAutoClose(true);
+      pro->show();
       qApp->processEvents();
-      //pro->setAutoReset(true);
       
       for(int i=0; i<fileList.size() ; i++){
+				QString error = "Problem inserting features from file:\n"+tblShapefiles->text(i,0);
         // if a name starts with invalid character
-        if(!(fileList[i]->getTable()[0]).isLetter()){
-          QMessageBox::warning(pro, "Import Shapefiles",
-          "Problem inserting file:\n"+fileList[i]->getName()+"\nInvalid table name.");
-          std::cout<<i<<std::endl;
+        if(!(tblShapefiles->text(i,3))[0].isLetter()){
+          QMessageBox::warning(pro, "Import Shapefiles", "Problem inserting file:\n"+tblShapefiles->text(i,0)+"\nInvalid table name.");
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           continue;
         }
-        PQexec(pd, "BEGIN");
         
         fileList[i]->setTable(tblShapefiles->text(i, 3));
-        pro->show();
-        pro->setLabelText("Importing files\n"+fileList[i]->getName());
-        int rel_exists1 = 0;
-        int rel_exists2 = 0;
-        QMessageBox *del_confirm;
-        QString query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+fileList[i]->getTable()+"\'";
+        pro->setLabelText("Importing files\n"+tblShapefiles->text(i,0));
+        bool rel_exists1 = false;
+        bool rel_exists2 = false;
+        query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+tblShapefiles->text(i,3)+"\'";
         res = PQexec(pd, (const char *)query);
-        rel_exists1 = PQntuples(res);
-        PQclear(res);
-        query = "SELECT relname FROM pg_stat_all_tables WHERE relname=\'"+fileList[i]->getTable()+"\'";
-        res = PQexec(pd, (const char *)query);
-        rel_exists2 = PQntuples(res);
-        PQclear(res);
+        rel_exists1 = (PQntuples(res)>0);
+        if(PQresultStatus(res)!=PGRES_TUPLES_OK){
+					qWarning(PQresultErrorMessage(res));
+          QMessageBox::warning(pro, "Import Shapefiles", error);
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+          continue;
+        }
+        else {
+          PQclear(res);
+        }
         
+        query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+tblShapefiles->text(i,3)+"\'";
+        res = PQexec(pd, (const char *)query);
+        qWarning(query);
+        rel_exists2 = (PQntuples(res)>0);
+        if(PQresultStatus(res)!=PGRES_TUPLES_OK){
+          qWarning(PQresultErrorMessage(res));
+          QMessageBox::warning(pro, "Import Shapefiles", error);
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+          continue;
+        }
+        else {
+          PQclear(res);
+        }
+				
+				// begin session
+        query = "BEGIN";
+        res = PQexec(pd, query);
+        if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+          qWarning(PQresultErrorMessage(res));
+					QMessageBox::warning(pro, "Import Shapefiles", error);
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+          continue;
+        }
+        else {
+          PQclear(res);
+        }
+				        
+				query = "SET SEARCH_PATH TO \'"+tblShapefiles->text(i,4)+"\'";
+        res = PQexec(pd, query);
+				qWarning(query);
+        if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+          qWarning(PQresultErrorMessage(res));
+					qWarning(PQresStatus(PQresultStatus(res)));
+					QMessageBox::warning(pro, "Import Shapefiles", error);
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+          continue;
+        }
+        else {
+          PQclear(res);
+        }
+				
+        QMessageBox *del_confirm;
         if(rel_exists1 || rel_exists2){
           del_confirm = new QMessageBox("Import Shapefiles - Relation Exists",
-            "The Shapefile:\n"+fileList[i]->getName()+"\nwill use ["+
-            QString(fileList[i]->getTable())+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
+            "The Shapefile:\n"+tblShapefiles->text(i,0)+"\nwill use ["+
+            tblShapefiles->text(i,3)+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
             "To avoid data loss change the \"DB Relation Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
-            "Do you want to overwrite the ["+fileList[i]->getTable()+"] relation?",
+            "Do you want to overwrite the ["+tblShapefiles->text(i,3)+"] relation?",
           QMessageBox::Warning,
           QMessageBox::Yes | QMessageBox::Default,
           QMessageBox::No  | QMessageBox::Escape,
-          QMessageBox::NoButton, pro, "Relation Exists");
+          QMessageBox::NoButton, this, "Relation Exists");
+
+					if(del_confirm->exec() == QMessageBox::Yes){
+         		if (rel_exists2){
+            	query = "DROP TABLE " + tblShapefiles->text(i,3);            
+            	qWarning(query);
+            	res = PQexec(pd, (const char *)query);
+            	if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              	qWarning(PQresultErrorMessage(res));
+          			QMessageBox::warning(pro, "Import Shapefiles", error);
+          			pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+          			continue;								
+            	}
+            	else {
+              	PQclear(res);
+            	}            
+						}
+
+          	if(rel_exists1){
+            	/*query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
+              	fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";*/
+							query = "DELETE FROM geometry_columns WHERE f_table_schema=\'"+tblShapefiles->text(i,4)+"\' AND "+
+								"f_table_name=\'"+tblShapefiles->text(i,3)+"\'";
+            	qWarning(query);
+            	res = PQexec(pd, (const char *)query);
+            	if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              	qWarning(PQresultErrorMessage(res));
+          			QMessageBox::warning(pro, "Import Shapefiles", error);
+          			pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+          			continue;
+            	}
+            	else {
+              	PQclear(res);
+            	}
+						}
+          }
+          else {
+            query = "ROLLBACK";
+      	    res = PQexec(pd, query);
+            if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+              qWarning(PQresultErrorMessage(res));
+          		QMessageBox::warning(pro, "Import Shapefiles", error);
+            }
+            else {
+              PQclear(res);
+            }
+						pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+						continue;
+          }
         }
-        if ((!rel_exists1 && !rel_exists2) || del_confirm->exec() == QMessageBox::Yes){
-          if(rel_exists1){
-            query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
-              fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";
-            res = PQexec(pd, (const char *)query);
+	
+				// importing file here
+				int temp_progress = pro->progress();
+				cancelled = false;
+        if(fileList[i]->insertLayer(settings.readEntry(key + "/database"), txtGeomName->text(),
+          QString("%1").arg(spinSrid->value()), pd, pro, cancelled) && !cancelled)
+				{ // if file has been imported successfully
+          query = "COMMIT";
+          res = PQexec(pd, query);
+          if(PQresultStatus(res)!=PGRES_COMMAND_OK){					
+            qWarning(PQresultErrorMessage(res));
+          	QMessageBox::warning(pro, "Import Shapefiles", error);
+          	continue;
+          }
+          else {
             PQclear(res);
           }
-          if(rel_exists2){
-            query = "DROP TABLE " + fileList[i]->getTable();
-            res = PQexec(pd, (const char *)query);
-            PQclear(res);
-          }
-          
-          if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), txtGeomName->text(),
-            QString("%1").arg(spinSrid->value()), pd, pro, finished)){
-            if(!finished){
-              QMessageBox::warning(pro, "Import Shapefiles",
-                "Problem inserting features from file:\n"+fileList[i]->getName());
-              PQexec(pd, "ROLLBACK");
+					
+          // remove file
+          for(int j=0; j<tblShapefiles->numRows(); j++){
+            if(tblShapefiles->text(j,0)==QString(fileList[i]->getName())){
+              tblShapefiles->selectRow(j);
+              removeFile();
+              i--;
+              break;
             }
           }
-          else{  // if file has been imported, remove it from the list
-            PQexec(pd, "COMMIT");
-            for(int j=0; j<tblShapefiles->numRows(); j++)
-              if(tblShapefiles->text(j,0)==QString(fileList[i]->getName())){
-                tblShapefiles->selectRow(j);
-                removeFile();
-                i--;
-                break;
-              }
-          }
+					
         }
-        else{
-          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
-        }        
+				else if(!cancelled){ // if problem importing file occured
+					pro->setProgress(temp_progress+(tblShapefiles->text(i,2)).toInt());
+          QMessageBox::warning(this, "Import Shapefiles", error);
+          query = "ROLLBACK";
+          res = PQexec(pd, query);
+          if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+            qWarning(PQresultErrorMessage(res));
+          	QMessageBox::warning(pro, "Import Shapefiles", error);
+          }
+          else {
+          	PQclear(res);
+          }
+      	}
+				else{ // if import was actually cancelled
+					delete pro;
+					break;
+				}
+
       }
     }
-    else 
-      QMessageBox::warning(this, "Import Shapefiles", "Connection failed - Check settings and try again");
-  
     PQfinish(pd);
   }
-  else
-    QMessageBox::warning(this, "Import Shapefiles", "You need to specify a Connection first");
 }
