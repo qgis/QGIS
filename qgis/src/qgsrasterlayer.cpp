@@ -1732,8 +1732,10 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
 
       // TODO: check all channels ?
       if ( myRedValueDouble == noDataValueDouble || myRedValueDouble != myRedValueDouble ) {
+#ifdef QGISDEBUG
         std::cout << "myRedValueDouble = " << myRedValueDouble << std::endl;
         std::cout << "noDataValueDouble = " << noDataValueDouble << std::endl;
+#endif
         continue;
       }
 
