@@ -56,14 +56,16 @@ void QgsMapCanvas::render2(){
       cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << endl;
       m_mupp = muppY > muppX?muppY:muppX;
       // calculate the actual extent of the mapCanvas
-      double dxmin,dymin,dymax,whitespace;
+      double dxmin,dxmax,dymin,dymax,whitespace;
       if(muppY > muppX){
 	dymin = currentExtent.yMin();
 	dymax = currentExtent.yMax();
 	whitespace = ((width() *m_mupp) - currentExtent.width())/2;
 	dxmin = currentExtent.xMin() - whitespace;
+	dxmax = currentExtent.xMax() + whitespace;
       }else{
 	dxmin = currentExtent.xMin();
+	dxmax =  currentExtent.xMax();
 	whitespace = ((height() *m_mupp) - currentExtent.height())/2;
 	dymin = currentExtent.yMin() - whitespace;
 	dymax = currentExtent.yMax() + whitespace;
@@ -71,6 +73,11 @@ void QgsMapCanvas::render2(){
       }
       cout << "dxmin: " << dxmin << endl << "dymin: " << dymin << endl << "dymax: " << dymax << endl << "whitespace: " << whitespace << endl;
       coordXForm->setParameters(m_mupp, dxmin,dymin,height()); //currentExtent.xMin(), 	    currentExtent.yMin(), currentExtent.yMax());
+      // update the currentExtent to match the device coordinates
+      currentExtent.setXmin(dxmin);
+      currentExtent.setXmax(dxmax);
+      currentExtent.setYmin(dymin);
+      currentExtent.setYmax(dymax);
   // render all layers in the stack, starting at the base
   map<QString,QgsMapLayer *>::iterator mi = layers.begin();
   while(mi != layers.end()){

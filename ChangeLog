@@ -1,3 +1,6 @@
+July 26, 2002
+	Drawing code now properly displays layers and calculates extents when
+	zooming. Zoom is still fixed zoom in rather than interactive.
 July 20, 2002
 	Repaint automatic for layers.
 July 18, 2002
