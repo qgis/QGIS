@@ -756,7 +756,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             }
             catch (QgsCsException &e)
             {
-              qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+              qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
             }
 #endif
 
@@ -778,7 +778,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 }
                 catch (QgsCsException &e)
                 {
-                  qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+                  qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
                 }
                 ml->draw(paint,
                          &myProjectedRect,
@@ -1060,7 +1060,7 @@ void QgsMapCanvas::zoomToSelected()
       }
       catch (QgsCsException &e)
       {
-        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
       }
     }
     else
@@ -2033,7 +2033,7 @@ void QgsMapCanvas::recalculateExtents()
     }
     catch (QgsCsException &e)
     {
-      qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
     }
 #endif
     // Layer extents are stored in the coordinate system (CS) of the
@@ -2047,7 +2047,7 @@ void QgsMapCanvas::recalculateExtents()
       }
       catch (QgsCsException &e)
       {
-        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
       }
     }
     else
