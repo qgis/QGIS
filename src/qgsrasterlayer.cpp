@@ -600,9 +600,9 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
 
     double myRangeDouble = myRasterBandStats.rangeDouble;
     // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
-    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
-        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
             int myGrayValInt = myGdalScanData[myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt];
             //remove these lines!
@@ -709,9 +709,9 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
 
     myQImage.setAlphaBuffer(true);
 
-    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
-        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
             //hardcoding to white to start with
             myRedInt = 255;
@@ -877,9 +877,9 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
 
 
 
-    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
-        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
             const GDALColorEntry *myColorEntry =
                 GDALGetColorEntry(colorTable, myGdalScanData[myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt]);
@@ -1004,9 +1004,9 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
 
 
 
-    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
-        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
             int myInt = 0;
             const GDALColorEntry *myColorEntry =
@@ -1194,9 +1194,9 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
     QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
     myQImage.fill(0);
     myQImage.setAlphaBuffer(true);
-    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
-        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
             const GDALColorEntry *colorEntry =
                 GDALGetColorEntry(colorTable, myGdalScanData[myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt]);
@@ -1323,9 +1323,9 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
     QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
     myQImage.fill(0);
     myQImage.setAlphaBuffer(true);
-    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
+    for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
     {
-        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; myRowInt++)
+        for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
         {
             //pull the rgb values from each band
             int myRedValueInt = myGdalRedData[myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt];

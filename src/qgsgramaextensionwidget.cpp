@@ -168,6 +168,9 @@ void QgsGraMaExtensionWidget::selectMarker()
 	adjustMarker(indexnumber);
     }
 
+    qWarning("The size of the layout is: "+QString::number(mGridLayout->geometry().width())+"/"+QString::number(mGridLayout->geometry().height()));
+    resizeContents(mGridLayout->geometry().width(),mGridLayout->geometry().height());
+    updateContents();
     setActiveWindow();
 }
 
@@ -183,6 +186,9 @@ void QgsGraMaExtensionWidget::adjustMarkers()
     {
 	adjustMarker(i);
     }
+    qWarning("The size of the layout is: "+QString::number(mGridLayout->geometry().width())+"/"+QString::number(mGridLayout->geometry().height()));
+    resizeContents(mGridLayout->geometry().width(),mGridLayout->geometry().height());
+    updateContents();
 }
 
 void QgsGraMaExtensionWidget::adjustMarker(int row)
@@ -224,4 +230,7 @@ void QgsGraMaExtensionWidget::handleReturnPressed()
 	} 
     }
     adjustMarker(indexnumber);
+    qWarning("The size of the layout is: "+QString::number(mGridLayout->geometry().width())+"/"+QString::number(mGridLayout->geometry().height()));
+    resizeContents(900,300);//mGridLayout->geometry().width(),mGridLayout->geometry().height());
+    updateContents(); 
 }
