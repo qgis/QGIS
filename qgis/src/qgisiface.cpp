@@ -56,9 +56,12 @@ bool QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QStrin
 
 bool QgisIface::addRasterLayer(QString rasterLayerPath)
 {
-  qgis->addRasterLayer(rasterLayerPath);
-  //TODO fix this so it returns something meaningfull
-  return true;
+  return qgis->addRasterLayer(rasterLayerPath);
+}
+
+bool QgisIface::addRasterLayer(QgsRasterLayer * theRasterLayer)
+{
+  return qgis->addRasterLayer(theRasterLayer);
 }
 
 bool QgisIface::addProject(QString theProjectName)
