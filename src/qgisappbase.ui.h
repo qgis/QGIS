@@ -89,3 +89,8 @@ void QgisAppBase::zoomPrevious()
 {
 
 }
+
+void QgisAppBase::testPluginFunctions()
+{
+
+}

@@ -72,6 +72,9 @@
     <item text="&amp;Help" name="PopupMenu_3">
         <action name="actionHelpAbout"/>
     </item>
+    <item text="Plugins" name="PopupMenu_5">
+        <action name="actionTestPlugin"/>
+    </item>
 </menubar>
 <toolbars>
     <toolbar dock="2">
@@ -321,6 +324,14 @@
             <string>Zoom to last extent</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionTestPlugin</cstring>
+        </property>
+        <property name="text">
+            <string>Test plugin functions</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -439,24 +450,31 @@
         <receiver>QgisAppBase</receiver>
         <slot>zoomPrevious()</slot>
     </connection>
+    <connection>
+        <sender>actionTestPlugin</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>testPluginFunctions()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
 </includes>
 <slots>
+    <slot>about()</slot>
+    <slot>addDatabaseLayer()</slot>
+    <slot>addLayer()</slot>
+    <slot>drawLayers()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
-    <slot>addDatabaseLayer()</slot>
+    <slot>identify()</slot>
+    <slot>init()</slot>
+    <slot>testPluginFunctions()</slot>
+    <slot>pan()</slot>
+    <slot>testButton()</slot>
+    <slot>zoomFull()</slot>
     <slot>zoomIn()</slot>
     <slot>zoomOut()</slot>
-    <slot>init()</slot>
-    <slot>drawLayers()</slot>
-    <slot>zoomFull()</slot>
-    <slot>pan()</slot>
-    <slot>about()</slot>
-    <slot>testButton()</slot>
-    <slot>addLayer()</slot>
-    <slot>identify()</slot>
     <slot>zoomPrevious()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
