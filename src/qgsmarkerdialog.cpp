@@ -17,6 +17,7 @@
 /* $Id */
 
 #include "qgsmarkerdialog.h"
+#include "qgssvgcache.h"
 #include <qdir.h>
 #include <qfiledialog.h>
 #include <qiconview.h>
@@ -83,18 +84,8 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
 	qWarning(*it);
 	
 	//render the SVG file to a pixmap and put it into mIconView
-	/*QPicture pic;
-	pic.load(mCurrentDir+(*it),"svg");
-	QIconViewItem* ivi=new QIconViewItem(mIconView,*it,pic);*/
-	
-	//use the QPixmap way, as the QPicture version does not seem to work properly
-	QPicture pic;
-	pic.load(mCurrentDir+"/"+(*it),"svg");
-	QPixmap pix;
-	pix.resize(pic.boundingRect().width(),pic.boundingRect().height());
-	pix.fill();
-	QPainter p(&pix);
-	p.drawPicture(0,0,pic);
+	QPixmap pix = QgsSVGCache::instance().getPixmap(mCurrentDir + "/" + 
+							(*it), 1);
 	QIconViewItem* ivi=new QIconViewItem(mIconView,*it,pix);
 	
     }

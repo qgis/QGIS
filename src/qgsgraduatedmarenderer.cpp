@@ -23,6 +23,7 @@
 #include "qgsgramadialog.h"
 #include "qgslegenditem.h"
 #include "qgsmarkersymbol.h"
+#include "qgssvgcache.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectorlayer.h"
 #include <iostream>
@@ -120,9 +121,12 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
 	    }
 	    else
 	    {
-		pic->load(ms->picture(),"svg");
+	        QPainter p(pic);
+		QPixmap pix = QgsSVGCache::instance().
+		  getPixmap(ms->picture(), ms->scaleFactor());
+		p.drawPixmap(0, 0, pix);
 	    }
-	    (*scalefactor)=ms->scaleFactor();
+	    (*scalefactor) = 1;
 	    
 	    if(selected)
 	    {

@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.160 2004/07/17 20:26:06 larsl Exp
+ChangeLog,v 1.161 2004/07/18 10:48:46 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-07-18 [larsl] 0.4.0devel6
+** Changed Graduated Marker renderer to use the SVG cache
 
 2004-07-17 [larsl] 0.4.0devel5
 ** Added SVG cache and started using it in the Single Marker renderer
