@@ -960,9 +960,9 @@ dump_( QMap< QString, PropertyKey > const & property_list )
           curr_scope != property_list.end();
           curr_scope++ )
     {
-        qDebug( "<%s>", curr_scope.key() );
+//        qDebug( "<%s>", curr_scope.key() );
         curr_scope.data().dump( );
-        qDebug( "</%s>", curr_scope.key() );
+ //       qDebug( "</%s>", curr_scope.key() );
     }
 } // dump_
 
