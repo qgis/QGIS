@@ -18,6 +18,7 @@
 #include "qgsproject.h"
 
 #include <memory>
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -1546,6 +1547,7 @@ _getMapLayers( QDomDocument const & doc )
     
     // process the map layer nodes
 
+    assert(nl.count() != 0);
     for (size_t i = 0; i < nl.count(); i++)
     {
 	QDomNode    node    = nl.item(i);
@@ -1555,7 +1557,9 @@ _getMapLayers( QDomDocument const & doc )
 
 
         QgsMapLayer * mapLayer;
-
+#ifdef QGISDEBUG 
+        std::cerr << "type is " << type << std::endl; 
+#endif 
 	if (type == "vector")
 	{
 	    mapLayer = new QgsVectorLayer;

@@ -40,7 +40,7 @@ LIBS += $(GDAL)\lib\gdal_i.lib \
 DEFINES+= QGISDEBUG
 DESTDIR = ../win_build
 CONFIG += qt thread rtti debug console
-#CONFIG += qt thread rtti 
+#CONFIG += qt thread rtti console
 RC_FILE = qgis_win32.rc
 # Input
 HEADERS += qgis.h \

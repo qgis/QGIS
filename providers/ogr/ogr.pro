@@ -26,6 +26,7 @@ LIBS += $(GDAL)\lib\gdal_i.lib \
                 ..\..\src\libqgis.lib \
                 $(GEOS)\lib\geos.lib
 CONFIG += qt dll thread debug rtti
+#CONFIG += qt dll thread rtti
 DLLDESTDIR= ..\..\win_build\lib\qgis
 #DEFINES += NOWIN32GEOS
 # Input
