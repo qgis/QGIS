@@ -91,3 +91,8 @@ void QgsMapLayerRegistry::removeAllMapLayers()
   //delete mMapLayers[theLayerId]; 
   //mMapLayers.erase(theLayerId);
 }
+
+std::map<QString,QgsMapLayer*> QgsMapLayerRegistry::mapLayers()
+{
+  return mMapLayers;
+}

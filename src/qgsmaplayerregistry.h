@@ -39,6 +39,8 @@ public:
  QStringList mapLayerList();
  //! Retrieve a pointer to a loaded plugin by id
  QgsMapLayer * mapLayer(QString theLayerId);
+ //! Retrieve the mapLayers collection (mainly intended for use by projectio)
+ std::map<QString,QgsMapLayer*> mapLayers();
  //! Add a layer to the map of loaded layers
  void addMapLayer(QgsMapLayer * theMapLayer);
  //! Remove a layer from qgis - any canvases using that layer will need to remove it
