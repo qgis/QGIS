@@ -1,1 +1,1 @@
-SUBDIRS = example spit
+SUBDIRS = example maplayer spit
