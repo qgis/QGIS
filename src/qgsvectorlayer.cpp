@@ -1657,24 +1657,22 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         int     errorColumn;
 
         // start with bogus XML header
-        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                  "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">\n";
+        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n";
 
-        while ( std::getline( rendererXML, temp_str ) )
-        {
-            rawXML += temp_str + '\n';
-        }
+        temp_str = rendererXML.str();
+
+        rawXML += temp_str;
 
 #ifdef QGISDEBUG
 	std::cout << rawXML << std::endl << std::flush;
 #endif
 
-        // const char * s = rawXML.c_str(); // debugger probe
+        const char * s = rawXML.c_str(); // debugger probe
 
         if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
         {
-            //qDebug( s );
-            qDebug( "XML import error at %d %d " + errorMsg, errorLine, errorColumn );
+            qDebug( "%s:%d XML import error at line %d column %d " + errorMsg, 
+                    __FILE__, __LINE__, errorLine, errorColumn );
 
             return false;
         }
@@ -1714,48 +1712,51 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 
     if ( myLabel = this->label() )
     {
-        std::stringstream rendererXML;
+        std::stringstream labelXML;
 
-        myLabel->writeXML(rendererXML);
+        myLabel->writeXML(labelXML);
 
-        QDomDocument rendererDOM;
+        QDomDocument labelDOM;
 
-        std::string rawXML, temp_str;
-        QString errorMsg;
-        int     errorLine;
-        int     errorColumn;
+        std::string rawXML;
+        std::string temp_str;
+        QString     errorMsg;
+        int         errorLine;
+        int         errorColumn;
 
         // start with bogus XML header
-        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">\n";
+        rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n";
 
-        while ( std::getline( rendererXML, temp_str ) )
+        temp_str = labelXML.str();
+
+        const char * temp_str_c = temp_str.c_str(); // debugger probe point
+
+        rawXML   += temp_str;
+
+#ifdef QGISDEBUG
+	std::cout << rawXML << std::endl << std::flush;
+#endif
+        const char * s = rawXML.c_str(); // debugger probe
+
+        if ( ! labelDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
         {
-            rawXML += temp_str + '\n';
-        }
-
-        // const char * s = rawXML.c_str(); // debugger probe
-
-        if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
-        {
-            //qDebug( s );
-            qDebug( "XML import error at %d %d " + errorMsg, errorLine, errorColumn );
+            qDebug( "XML import error at line %d column %d " + errorMsg, errorLine, errorColumn );
 
             return false;
         }
 
         // lastChild() because the first two nodes are the <xml> and
-        // <!DOCTYPE> nodes; the renderer node follows that, and is (hopefully)
+        // <!DOCTYPE> nodes; the label node follows that, and is (hopefully)
         // the last node.
-        QDomNode rendererDOMNode = document.importNode( rendererDOM.lastChild(), true );
+        QDomNode labelDOMNode = document.importNode( labelDOM.lastChild(), true );
 
-        if ( ! rendererDOMNode.isNull() )
+        if ( ! labelDOMNode.isNull() )
         {
-            layer_node.appendChild( rendererDOMNode );
+            layer_node.appendChild( labelDOMNode );
         }
         else
         {
-            qDebug( "not able to import renderer DOM node" );
+            qDebug( "not able to import label DOM node" );
 
             // XXX return false?
         }
