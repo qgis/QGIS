@@ -19,4 +19,4 @@ bin_PROGRAMS = qgis_config
 ## ancillary library for plug-ins
 
 qgis_config_SOURCES =  qgis_config.cpp
-qgis_CXXFLAGS = $(PREFIX) $(INCLUDE_DIR) $(LIB_DIR) $(BIN_DIR) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEBUG_QGIS)
+qgis_config_CXXFLAGS = $(PREFIX) $(INCLUDE_DIR) $(LIB_DIR) $(BIN_DIR) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEBUG_QGIS)
