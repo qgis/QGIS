@@ -122,6 +122,13 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     }
     font.setPointSizeFloat ( size );
     
+    value = fieldValue ( Color, feature );
+    if ( value.isEmpty() ) {
+        pen.setColor ( mLayerAttributes->color() );
+    } else { 
+	pen.setColor ( QColor(value) );
+    }
+    
     value = fieldValue ( Bold, feature );
     if ( value.isEmpty() ) {
         font.setBold ( mLayerAttributes->bold() );
@@ -236,21 +243,27 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     painter->setFont ( font );
     painter->translate ( x, y );
     painter->rotate ( -ang );
-    //draw the buffer if needed
+    //
+    // Draw a buffer behind the text if one is desired
+    //
     if (mLayerAttributes->bufferSizeIsSet())
     {
-      pen.setColor ( mLayerAttributes->bufferColor() );
-      painter->setPen ( pen );
-      for (int x = 0 - mLayerAttributes->bufferSize(); x < mLayerAttributes->bufferSize(); x++)
-        for (int y = 0 - mLayerAttributes->bufferSize(); y < mLayerAttributes->bufferSize(); y++)
-          painter->drawText ( dx+x, dy+y, text );
-    }
-    //revert to main font colour
-    value = fieldValue ( Color, feature );
-    if ( value.isEmpty() ) {
-        pen.setColor ( mLayerAttributes->color() );
-    } else { 
-	pen.setColor ( QColor(value) );
+      int myBufferSize = mLayerAttributes->bufferSize() ;
+      if (mLayerAttributes->bufferColorIsSet())
+      {
+        painter->setPen( mLayerAttributes->bufferColor());
+      }
+      else //default to a white buffer
+      {
+        painter->setPen( Qt::white);
+      }
+      for (int i = dx-myBufferSize; i <= dx+myBufferSize; i++)
+      {
+        for (int j = dy-myBufferSize; j <= dy+myBufferSize; j++) 
+        {
+          painter->drawText( i ,j, text);
+        }
+      }
     }
     painter->setPen ( pen );
     painter->drawText ( dx, dy, text );
