@@ -86,6 +86,34 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					<title>The QGIS menu bar</title>
 					<p>The menu bar provides access to various QGIS features using a standard windows 
 					heirachical menu.</p>
+					<p>The File Menu:</p>
+					<ul>
+						<li><img alt="Open Project" src="images/open.png"/> - Open a previously saved project.</li>
+						<li><img alt="Save Project" src="images/filesave.png"/> - Save the current project.</li>
+						<li><img alt="Save Project As" src="images/filesaveas.png"/> - Save project under a new file name.</li>
+						<li><img alt="Export to mapserver" src="images/mapserver.png"/> - Export your current project as a mapserver
+						map file. Note that not all mapserver features are available in the exported mapfile.</li>	
+						<li><img alt="Export to mapserver" src="images/mapserver.png"/> - Exit the QGIS application.</li>					
+					</ul>
+					<p>The View Menu:</p>
+					<ul>
+						<li><img alt="Add Postgis Layer(s)" src="images/gis_add_pg_layer.png"/> - Add one or more layers 
+						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
+						<li><img alt="Add Vector Layer(s)" src="images/gis_add_vector_layer.png"/> - Add one or more layers 
+						stored on disk as shapefiles to the map view.</li>
+						<li><img alt="Add Raster Layers" src="images/gis_add_raster_layer.png"/> - Add one or more raster layers
+						to the map view. </li>
+					</ul>
+			                <p>The Tools Menu:</p>
+					<ul>	
+						<li><img alt="Plugin Manager" src="images/connect_no.png"/> - This opens a dialog 
+						that allows you to manage (load and unload) which plugins are used in QGIS.</li>
+						<li><img alt="Check Version" src="images/gis_add_vector_layer.png"/> - This option connects
+						over the internet to the QGIS server to find out what the latest available version is. No 
+						personal data is sent to the QGIS server.</li>
+						<li><img alt="Preferences" src="images/preferences.png"/> - Global configuration options
+						 for the QGIS application.. </li>
+					</ul>				
 				</section>
 				<section>
 					<title>The QGIS toolbars</title>
