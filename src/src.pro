@@ -81,10 +81,10 @@ TARGET = qgis
 #.............................
 #PostgreSQL support
 #.............................
-contains (DEFINES, postgres){
+contains (DEFINES, POSTGRESQL){
  message ("Checking PostgreSQL environment")
 }
-contains ( DEFINES, postgres ){
+contains ( DEFINES, POSTGRESQL ){
 MYPGSQL=$$(PGSQL)
 count(MYPGSQL, 1){
 message ("PGSQL environment variable is defined")
@@ -93,7 +93,7 @@ message ("PGSQL environment variable is defined")
   message ( "Configuring to build with PostgreSQL support" )
   LIBS += -L$(PGSQL)/lib -lpq++
   INCLUDEPATH += $(PGSQL)/include
-  DEFINES += PGDB HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
+  DEFINES += HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
   SOURCES += qgsdatabaselayer.cpp \
              qgsdbsourceselect.cpp \
              qgsnewconnection.cpp 
