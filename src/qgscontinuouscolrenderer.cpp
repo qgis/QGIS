@@ -150,7 +150,7 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
     }
 }
 
-void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f)
+void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor)
 {
     if ((mMinimumItem && mMaximumItem))
     {

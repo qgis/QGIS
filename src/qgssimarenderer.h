@@ -21,15 +21,20 @@
 #define QGSSIMARENDERER_H
 
 #include "qgsrenderer.h"
+#include "qgsrenderitem.h"
 
 class QgsSiMaRenderer: public QgsRenderer
 {
  public:
     QgsSiMaRenderer();
     ~QgsSiMaRenderer();
+    /**Replaces the current mItem by ri*/
+    void addItem(QgsRenderItem ri);
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
-    void renderFeature(QPainter* p, QgsFeature* f);
+    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
     bool needsAttributes();
+ protected:
+    QgsRenderItem mItem;
 };
 
 inline QgsSiMaRenderer::QgsSiMaRenderer()
@@ -45,6 +50,11 @@ inline QgsSiMaRenderer::~QgsSiMaRenderer()
 inline bool QgsSiMaRenderer::needsAttributes()
 {
     return false;
+}
+
+inline void QgsSiMaRenderer::addItem(QgsRenderItem ri)
+{
+    mItem=ri;
 }
 
 #endif
