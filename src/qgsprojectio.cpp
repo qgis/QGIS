@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.13 2004/01/13 15:15:31 timlinux Exp */
+/* qgsprojectio.cpp,v 1.14 2004/01/13 20:39:07 timlinux Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -338,7 +338,7 @@ void QgsProjectIo::writeXML(){
                             }
                             else
                             {
-                              xml << "true\"/>\n";
+                              xml << "false\"/>\n";
                             }                           
                             // Raster flag indicating whether grayscale images should be rendered as pseudocolor
                             xml << "\t\t\t<showGrayAsColorFlag boolean=\"" ;
@@ -348,7 +348,7 @@ void QgsProjectIo::writeXML(){
                             }
                             else
                             {
-                              xml << "true\"/>\n";
+                              xml << "false\"/>\n";
                             }                             
                             //Raster : flag indicating whether the histogram should be inverted or not 
                             xml << "\t\t\t<invertHistogramFlag boolean=\"" ;
@@ -358,7 +358,7 @@ void QgsProjectIo::writeXML(){
                             }
                             else
                             {
-                              xml << "true\"/>\n";
+                              xml << "false\"/>\n";
                             }                              
                             //Raster : Number of stddev to plot (0) to ignore -->
                             xml << "\t\t\t<stdDevsToPlotDouble>" << myRasterLayer->getStdDevsToPlot() << "</stdDevsToPlotDouble>\n" ;
