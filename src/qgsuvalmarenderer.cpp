@@ -59,7 +59,8 @@ void QgsUValMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorL
         }
 }
     
-void QgsUValMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected)
+void QgsUValMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
+	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
 #ifdef QGISDEBUG
     qWarning("in QgsUValMaRenderer::renderFeature");

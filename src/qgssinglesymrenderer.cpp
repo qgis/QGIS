@@ -48,24 +48,15 @@ void QgsSingleSymRenderer::addItem(QgsRenderItem* ri)
     mItem = ri;
 }
 
-void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor, bool selected)
+void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
+	         double* scalefactor, bool selected, int oversampling, double widthScale)
 {
 	// Point 
 	if ( pic && mVectorType == QGis::Point) {
-	    QPainter painter;
-	    painter.begin(pic);
-
-	    QPicture pic = mItem->getSymbol()->getPointSymbolAsPicture();
-	    if(selected) {
-		painter.setBrush(QColor(255,255,0));
-		QRect br = pic.boundingRect();
-		painter.drawRect( 0, 0, br.width(), br.height());
-	    }
-	    painter.drawPicture(0,0,pic);
+	    *pic = mItem->getSymbol()->getPointSymbolAsPicture( oversampling, widthScale, 
+					 selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;
-
-	    painter.end();
 	} 
 
         // Line, polygon
@@ -73,12 +64,15 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture*
 	{
 	    if( !selected ) 
 	    {
+		QPen pen=mItem->getSymbol()->pen();
+		pen.setWidth ( (int) (widthScale * pen.width()) );
 		p->setPen(mItem->getSymbol()->pen());
 		p->setBrush(mItem->getSymbol()->brush());
 	    }
 	    else
 	    {
 		QPen pen=mItem->getSymbol()->pen();
+		pen.setWidth ( (int) (widthScale * pen.width()) );
 		pen.setColor(mSelectionColor);
 		QBrush brush=mItem->getSymbol()->brush();
 		brush.setColor(mSelectionColor);

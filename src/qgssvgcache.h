@@ -23,6 +23,7 @@
 #include <queue>
 
 #include <qpixmap.h>
+#include <qpicture.h>
 
 
 /** This class is a singleton that does all the SVG rendering in QGIS.
@@ -42,6 +43,9 @@ class QgsSVGCache {
       will be transparent, and if the file for some reason can't be rendered
       the pixmap will be completely transparent. */
   QPixmap getPixmap(QString filename, double scaleFactor);
+  
+  /** Returns SVG picture in original size */
+  QPicture getPicture(QString filename);
   
   /** This function clears the pixmap cache and forces all newly requested
       pixmaps to be rendered again. Can be useful if the oversampling factor
@@ -71,6 +75,9 @@ class QgsSVGCache {
   
  protected:
   
+  typedef std::map<QString, QPicture> PictureMap;
+  PictureMap pictureMap;
+
   typedef std::map<std::pair<QString, double>, QPixmap> PixmapMap;
   PixmapMap pixmapMap;
   int oversampling;

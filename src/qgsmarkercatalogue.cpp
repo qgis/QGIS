@@ -87,32 +87,49 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
     return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QPicture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversample )
+QPicture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling )
 {
+    //std::cerr << "QgsMarkerCatalogue::marker" << std::endl;
     QPicture picture;
     
     if ( fullName.left(5) == "hard:" ) {
-        return hardMarker ( fullName.mid(5), size, pen, brush, oversample ); 
+        return hardMarker ( fullName.mid(5), size, pen, brush, oversampling ); 
     } else if ( fullName.left(4) == "svg:" ) {
-        return svgMarker ( fullName.mid(4), size ); 
+        return svgMarker ( fullName.mid(4), size, oversampling ); 
     }
 
     return picture; // empty
 }
 
-QPicture QgsMarkerCatalogue::svgMarker ( QString name, int s )
+QPicture QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
 {
     QPicture picture;
-
-    QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,1.);
-    
-    double scale = 1. * s / ( ( pixmap.width() + pixmap.height() ) / 2 ) ;
-    
-    pixmap = QgsSVGCache::instance().getPixmap(name,scale);
-
     QPainter painter;
     painter.begin(&picture);
-    painter.drawPixmap ( 0, 0, pixmap );
+
+    if ( oversampling <= 1 ) 
+    {
+	QPicture pic = QgsSVGCache::instance().getPicture(name);
+
+	QRect br = pic.boundingRect();
+
+	double scale = 1. * s / ( ( br.width() + br.height() ) / 2 ) ;
+
+	painter.scale ( scale, scale );
+	painter.drawPicture ( 0, 0, pic );
+
+    } 
+    else
+    {
+	QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,1.);
+	
+	double scale = 1. * s / ( ( pixmap.width() + pixmap.height() ) / 2 ) ;
+	
+	pixmap = QgsSVGCache::instance().getPixmap(name,scale);
+
+	painter.drawPixmap ( 0, 0, pixmap );
+
+    }
     painter.end();
 
     return picture;
@@ -135,10 +152,9 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     picpainter.begin(&picture);
     
     // Also width must be odd otherwise there are discrepancies visible in canvas!
-    int lw = (int)(2*floor(pen.width()/2)+1);
+    int lw = (int)(2*floor(pen.width()/2)+1); // -> lw > 0
     pen.setWidth(lw);
     picpainter.setPen ( pen );
-
     picpainter.setBrush( brush);
 
     if ( name == "circle" ) 
@@ -161,49 +177,39 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
 	picpainter.drawPolygon ( pa );
     }
     // Warning! if pen width > 0 picpainter.drawLine(x1,y1,x2,y2) will draw only (x1,y1,x2-1,y2-1) !
-    // It is impossible to use drawLine(x1,y1+1,x2,y2+1) because then the bounding box is incorrect 
-    // and the picture is shifted in drawFeature. 
-    // -> draw line width 1 as 0 and width > 1 as rectangle
+    // It is impossible to draw lines as rectangles because line width scaling would not work
+    // (QPicture is scaled later in QgsVectorLayer)
+    //  -> reset boundingRect for cross, cross2
     else if ( name == "cross" ) 
     {
-	pen.setWidth(0);
-	picpainter.setPen ( pen );
-	if ( lw < 3 ) {
-	    // Draw line
-	    picpainter.drawLine(0, half, size-1, half); // horizontal
-	    picpainter.drawLine(half, 0, half, size-1); // vertical
-	} else {
-	    // Draw rectangle
-	    brush.setColor( pen.color() );
-	    picpainter.setBrush ( brush );
-	    int off = (int) floor(lw/2);
-	    picpainter.drawRect(0, half-off, size, lw);
-	    picpainter.drawRect(half-off, 0, lw, size);
-	}
+	int add = 1;  // lw always > 0
+	
+	picpainter.drawLine(0, half, size-1+add, half); // horizontal
+	picpainter.drawLine(half, 0, half, size-1+add); // vertical
     }
     else if ( name == "cross2" ) 
     {
-	pen.setWidth(0);
-	picpainter.setPen ( pen );
-	if ( lw < 3 ) {
-	    // Draw line
-	    half = (int) floor( s/2/sqrt(2));
-	    size = 2*half + 1;
-	    picpainter.drawLine( 0, 0, size-1, size-1);
-	    picpainter.drawLine( 0, size-1, size-1, 0);
-	} else {
-	    // Draw rectangle
-	    brush.setColor( pen.color() );
-	    picpainter.setBrush ( brush );
-	    int off = (int) floor(lw/2);
-	    picpainter.rotate ( 45 );
-	    picpainter.drawRect(0, half-off, size, lw);
-	    picpainter.drawRect(half-off, 0, lw, size);
-	}
+	half = (int) floor( s/2/sqrt(2));
+	size = 2*half + 1;
+	
+	int add = 1;  // lw always > 0
+	
+	picpainter.drawLine( 0, 0, size-1+add, size-1+add);
+	picpainter.drawLine( 0, size-1, size-1+add, 0-add);
+	
+	// Impossible because of scaling */
     }
     picpainter.end();
 
+    if ( name == "cross" || name == "cross2" ) {
+        picture.setBoundingRect ( QRect ( 0, 0, size, size ) ); 
+    }
+
     // If oversampling > 1 create pixmap 
+    
+    // Hardcoded symbols are not oversampled at present, because the problem is especially 
+    // with SVG markers (I am not sure why)
+    /*
     if ( oversampling > 1 ) {
 	QRect br = picture.boundingRect();
 	QPixmap pixmap ( oversampling * br.width(), oversampling * br.height() );
@@ -243,6 +249,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
 	picpainter.drawPixmap ( 0, 0, pixmap );
 	picpainter.end();
     } 
+    */
 
     return picture;
 }
