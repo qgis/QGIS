@@ -23,6 +23,7 @@
 #include <qwidget.h>
 #include <qrect.h>
 #include <qcombobox.h>
+#include <qcheckbox.h>
 #include <qdom.h>
 #include <qcanvas.h>
 #include <qpainter.h>
@@ -131,6 +132,7 @@ void QgsComposerVectorLegend::init ( void )
     mTitle = "Legend";
     mMap = 0;
     mNextLayerGroup = 1;
+    mFrame = true;
 
     // Cache
     mCacheUpdated = false;
@@ -485,14 +487,17 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
 	      << " mPreviewMode = " << mPreviewMode << std::endl;
 
     // Draw background rectangle
-    painter.setPen( QPen(QColor(0,0,0), 1) );
-    painter.setBrush( QBrush( QColor(255,255,255), Qt::SolidPattern) );
 
-    painter.save();
-	
-    painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-    painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
-    painter.restore();
+    if ( mFrame ) {
+	painter.setPen( QPen(QColor(0,0,0), 1) );
+	painter.setBrush( QBrush( QColor(255,255,255), Qt::SolidPattern) );
+
+	painter.save();
+	    
+	painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+	painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
+	painter.restore();
+    }
     
     if ( plotStyle() == QgsComposition::Preview &&  mPreviewMode == Cache ) { // Draw from cache
         std::cout << "use cache" << std::endl;
@@ -588,6 +593,16 @@ void QgsComposerVectorLegend::mapChanged ( int id )
     QCanvasRectangle::canvas()->update();
 }
 
+void QgsComposerVectorLegend::frameChanged ( )
+{
+    mFrame = mFrameCheckBox->isChecked();
+
+    QCanvasRectangle::update();
+    QCanvasRectangle::canvas()->update();
+
+    writeSettings();
+}
+
 void QgsComposerVectorLegend::recalculate ( void ) 
 {
     std::cout << "QgsComposerVectorLegend::recalculate" << std::endl;
@@ -650,6 +665,8 @@ void QgsComposerVectorLegend::setOptions ( void )
 	mMap = 0;
 	mMapComboBox->setCurrentItem ( 0 );
     }
+
+    mFrameCheckBox->setChecked ( mFrame );
     
     // Layers
     mLayersListView->clear();
@@ -829,6 +846,8 @@ bool QgsComposerVectorLegend::writeSettings ( void )
     QgsProject::instance()->writeEntry( "Compositions", path+"font/underline", mFont.underline() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/strikeout", mFont.strikeOut() );
 
+    QgsProject::instance()->writeEntry( "Compositions", path+"frame", mFrame );
+
     // Layers: remove all, write new
     path.sprintf("/composition_%d/vectorlegend_%d/layers/", mComposition->id(), mId ); 
     QgsProject::instance()->removeEntry ( "Compositions", path );
@@ -873,6 +892,8 @@ bool QgsComposerVectorLegend::readSettings ( void )
     mFont.setWeight(  QgsProject::instance()->readNumEntry("Compositions", path+"font/weight", (int)QFont::Normal, &ok) );
     mFont.setUnderline(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/underline", false, &ok) );
     mFont.setStrikeOut(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/strikeout", false, &ok) );
+
+    mFrame = QgsProject::instance()->readBoolEntry("Compositions", path+"frame", true, &ok);
 
     // Preview mode
     mPreviewMode = (PreviewMode) QgsProject::instance()->readNumEntry("Compositions", path+"previewmode", Render, &ok);
