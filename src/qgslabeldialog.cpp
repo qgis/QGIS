@@ -185,20 +185,30 @@ void QgsLabelDialog::init ( void )
   {
      mFont.setItalic(false);
   }
+  mFont.setUnderline(myLabelAttributes->underline());
+  mFontColor= myLabelAttributes->color(); 
+  
+  if (myLabelAttributes->offsetIsSet())
+  {
+    int myTypeInt = myLabelAttributes->offsetType();
+    if ( myTypeInt == QgsLabelAttributes::PointUnits )
+    {
+      radioOffsetUnitsPoints->setChecked(true);
+    } 
+    else 
+    { 
+      radioOffsetUnitsMap->setChecked(true);
+    }
+    spinXOffset->setValue(myLabelAttributes->xOffset());
+    spinYOffset->setValue(myLabelAttributes->yOffset());
+  }
+  else //defaults for when no offset is defined
+  {
+    spinXOffset->setValue(0);
+    spinYOffset->setValue(0);
+  }
+  spinAngle->setValue(myLabelAttributes->angle()); 
   /*
-     myLabelAttributes->setUnderline(mFont.underline());
-     myLabelAttributes->setColor(mFontColor); 
-     myTypeInt = 0;
-     if ( radioOffsetUnitsPoints->isChecked() )
-     {
-     myTypeInt = QgsLabelAttributes::PointUnits; 
-     } 
-     else 
-     { 
-     myTypeInt = QgsLabelAttributes::MapUnits;
-     }
-     myLabelAttributes->setOffset(spinXOffset->value() ,spinYOffset->value(), myTypeInt);
-     myLabelAttributes->setAngle(spinAngle->value()); 
 
   //the values here may seem a bit counterintuitive - basically everything 
   //is the reverse of the way you think it should be...
