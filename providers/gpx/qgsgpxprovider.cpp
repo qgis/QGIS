@@ -277,7 +277,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 }
 
 
-QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited) {
   QgsFeature* result = 0;
   std::list<int>::const_iterator iter;
   

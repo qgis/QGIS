@@ -448,7 +448,7 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist)
+QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
 {
      // We must manually check each point to see if it is within the
   // selection rectangle

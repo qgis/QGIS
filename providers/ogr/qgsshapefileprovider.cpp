@@ -304,7 +304,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
+QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
 {
    QgsFeature *f = 0; 
    if(valid)
@@ -335,7 +335,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
        }
        else
        {
-	   if(mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
+	   if(getnotcommited&&mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
 	   {
 #ifdef QGISDEBUG
 	       qWarning("accessing feature in the cache");
