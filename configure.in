@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.57 2004/04/17 22:07:13 jobi Exp
+dnl configure.in,v 1.58 2004/04/18 23:44:40 jobi Exp
 
 AC_INIT
 
@@ -24,7 +24,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=33
+EXTRA_VERSION=34
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -56,43 +56,7 @@ AQ_CHECK_QT
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
-AC_ARG_WITH(gdal,
-  AC_HELP_STRING([--with-gdal=path],
-                 [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config']))
-                 
-AC_MSG_CHECKING([for GDAL])
-if test x"$with_gdal" = "xyes" -o x"$with_gdal" = "x" ; then
-  GDAL_CONFIG=`which gdal-config`
-  if test ! -x "$GDAL_CONFIG" ; then
-    AC_MSG_ERROR(["Cannot find gdal-config, try to use --with-gdal option"])
-  fi
-  AC_MSG_RESULT([yes])
-elif test x"$with_gdal" = "xno" ; then
-  ac_gdalogr=no
-  AC_MSG_RESULT([no])
-else
-  if test -x "$with_gdal/gdal-config" ; then
-    GDAL_CONFIG="$with_gdal/gdal-config"
-    AC_MSG_RESULT([yes])
-  else
-    AC_MSG_ERROR("Cannot find $with_gdal/gdal-config")
-  fi
-fi
-
-if test x"$ac_gdalogr" != "xno" ; then
-  AC_MSG_CHECKING([for OGR in GDAL])
-  if test x`$GDAL_CONFIG --ogr-enabled` = "xno" ; then
-    AC_MSG_ERROR([GDAL must be compiled with OGR support and currently is not.])
-  fi
-  AC_MSG_RESULT(yes)
-  ac_gdalogr=yes
-
-  GDAL_LIB="`$GDAL_CONFIG --libs`"
-  GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
-
-  AC_SUBST(GDAL_LIB)
-  AC_SUBST(GDAL_CFLAGS)
-fi
+AQ_CHECK_GDAL
 
 
 dnl ---------------------------------------------------------------------------
