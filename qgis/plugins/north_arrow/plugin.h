@@ -46,11 +46,6 @@ class Plugin:public QObject, public QgisPlugin
   public slots:
   //! Show the dialog box
   void run();
-  //!draw a raster layer in the qui - not used!
-  void drawRasterLayer(QString);
-  //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-  //  - not used!
-  void drawVectorLayer(QString,QString,QString);
   // draw some arbitary text to the screen
   void renderNorthArrow();
   //! Run when the user has set a new rotation
