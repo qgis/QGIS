@@ -100,7 +100,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QTextEdit" row="2" column="0">
+                <widget class="QTextEdit" row="2" column="1">
                     <property name="name">
                         <cstring>teProjection</cstring>
                     </property>
@@ -108,12 +108,34 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="1" column="0">
+                <widget class="QComboBox" row="1" column="0" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>cboProjection</cstring>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="0" column="0">
+                <widget class="QListView" row="2" column="0">
+                    <column>
+                        <property name="text">
+                            <string>Coordinate Systems</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>lstCoordinateSystems</cstring>
+                    </property>
+                    <property name="showSortIndicator">
+                        <bool>true</bool>
+                    </property>
+                    <property name="rootIsDecorated">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>cbxProjectionEnabled</cstring>
                     </property>

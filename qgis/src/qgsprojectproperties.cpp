@@ -38,6 +38,7 @@
 #include <qpushbutton.h>
 #include <qcheckbox.h>
 #include <qregexp.h>
+#include <qlistview.h>
 
 //stdc++ includes
 #include <iostream>
@@ -234,6 +235,10 @@ void QgsProjectProperties::getProjList()
     QTextStream myQTextStream( &myQFile );
     QString myCurrentLineQString;
     QStringList myQStringList;
+    //XXX setup the nodes for the list view
+    geoList = new QListViewItem(lstCoordinateSystems,"Geographic Coordinate System");
+    projList = new QListViewItem(lstCoordinateSystems,"Projected Coordinate System");
+
     while ( !myQTextStream.atEnd() ) 
     {
       myCurrentLineQString = myQTextStream.readLine(); // line of text excluding '\n'
@@ -259,6 +264,17 @@ void QgsProjectProperties::getProjList()
     {
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
       cboProjection->insertItem(myIterator.key());
+      
+      //XXX Add to the tree view
+      if(myIterator.key().find("LatLong") > -1)
+      {
+        new QListViewItem(geoList, myIterator.key());
+      }
+      else
+      {
+        new QListViewItem(projList, myIterator.key());
+      }
+      
 
     }
     //make sure all the loaded layer WKT's and the active project projection exist in the 
@@ -281,7 +297,8 @@ void QgsProjectProperties::getProjList()
   }
   else
   {
-    QMessageBox::warning( this,QString("QGIS Error"),QString("The projections file is not readable. Check you have the neccessary file permissions and try again. Only a small list of projectsion is now availiable."));      
+    QMessageBox::warning( this,tr("QGIS Error"),tr("The projections file is not readable. Check you have the neccessary file permissions and try again. Only a small list of projections is currently availiable."));      
+    
     ProjectionWKTMap::Iterator myIterator;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
@@ -304,8 +321,7 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
     */
   OGRSpatialReference mySpatialRefSys;
   //this is really ugly but we need to get a QString to a char**
-  const char * mySourceCharArray =  theWKT.ascii();
-  char *mySourceCharArrayPointer = (char *)mySourceCharArray;
+  char * mySourceCharArrayPointer = (char*) theWKT.ascii();
   
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
@@ -326,16 +342,20 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
   }
   std::cout << theWKT << std::endl;
   //check if the coordinate system is projected or not
+
+  // if the spatial ref sys starts with GEOGCS, the coordinate
+  // system is not projected
   QString myProjection,myDatum,myCoordinateSystem,myName;
-  if (mySpatialRefSys.GetAttrNode("GEOCS")!=NULL)
+  if(theWKT.find(QRegExp("^GEOGCS")) == 0)
   {
     myProjection = "LatLong";
-    myDatum = mySpatialRefSys.GetAttrValue("DATUM",0);
+    myDatum = mySpatialRefSys.GetAttrValue("GEOGCS",0);
     myName = myProjection + " - " + myDatum;
   }  
   else
   {    
-    myProjection = mySpatialRefSys.GetAttrValue("PROJCS",1);
+  
+    myProjection = mySpatialRefSys.GetAttrValue("PROJCS",0);
     myCoordinateSystem = mySpatialRefSys.GetAttrValue("PROJECTION",0);
     myName = myProjection + " - " + myCoordinateSystem;
   } 
