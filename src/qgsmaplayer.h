@@ -71,12 +71,12 @@ class QgsMapLayer:public QObject
 	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
 	/*! Identify the feature(s) in this layer that are contained in the search rectangle
 	 */
-	virtual void identify(QgsRect *)=0;
+	virtual void identify(QgsRect *);
 	/*!Select features on the map canvas by dragging a rectangle*/
-	virtual void select(QgsRect *, bool lock)=0;
+	virtual void select(QgsRect *, bool lock);
 	/*! Display the attribute table for the layer
 	 */
-	virtual void table()=0;
+	virtual void table();
 	/*! Return the extent of the layer as a QRect
 	 */
 	const QgsRect extent();
