@@ -148,14 +148,14 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
 	// create the layer popup menu
 	popMenu = new QPopupMenu();
-  popMenu->insertItem("&Zoom to extent of selected layer", this, SLOT(zoomToLayerExtent()));
+	popMenu->insertItem("&Zoom to extent of selected layer", this, SLOT(zoomToLayerExtent()));
 	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
 	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
 	mapCursor = 0;
 
-  // set the legend control for the map canvas
-  mapCanvas->setLegend(mapLegend);
-  
+	// set the legend control for the map canvas
+	mapCanvas->setLegend(mapLegend);
+
 	// connect the "cleanup" slot
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
 	restoreWindowState();
@@ -176,7 +176,8 @@ void QgisApp::about()
 	watsNew += qgisVersion;
 	watsNew += "\n*Improved handling/management of PostGIS connections\n"
 	  "*Password prompt if the password is not stored with a connection\n"
-	  "*Windows size and postion and toolbar docking state is saved/restored\n";
+	  "*Windows size and position and toolbar docking state is saved/restored\n"
+	  "*Identify function for layers\n" "*Duplicate layers (layers with same name) are now handled properly\n";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
@@ -359,6 +360,18 @@ void QgisApp::identify()
 	delete mapCursor;
 	mapCursor = new QCursor(idenitfyBmp, identifyBmpMask, 1, 1);
 	mapCanvas->setCursor(*mapCursor);
+}
+
+void QgisApp::attributeTable()
+{
+	QListViewItem *li = legendView->currentItem();
+	QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
+	if (lyr) {
+		lyr->table();
+
+	} else {
+		QMessageBox::information(this, "No Layer Selected", "To open an attribute table, you must select a layer in the legend");
+	}
 }
 
 //void QgisApp::readWKB (const char *connInfo, QStringList tables)
@@ -548,15 +561,16 @@ void QgisApp::removeLayer()
 
 }
 
-void QgisApp::zoomToLayerExtent(){
-  
+void QgisApp::zoomToLayerExtent()
+{
+
 	// get the selected item
 	QListViewItem *li = legendView->currentItem();
 	QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
-    mapCanvas->setExtent(lyr->extent());
-    mapCanvas->clear();
-    mapCanvas->render2();
-  
+	mapCanvas->setExtent(lyr->extent());
+	mapCanvas->clear();
+	mapCanvas->render2();
+
 }
 
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
@@ -585,8 +599,8 @@ void QgisApp::testPluginFunctions()
 			std::cout << "Plugin name: " << pl->name() << std::endl;
 			std::cout << "Plugin version: " << pl->version() << std::endl;
 			std::cout << "Plugin description: " << pl->description() << std::endl;
-          QMessageBox::information(this,"Plugin Information","QGis loaded the following plugin:\nName: "
-            + pl->name() + "\nVersion: " + pl->version() + "\nDescription: " + pl->description());
+			QMessageBox::information(this, "Plugin Information", "QGis loaded the following plugin:\nName: "
+									 + pl->name() + "\nVersion: " + pl->version() + "\nDescription: " + pl->description());
 			// unload the plugin (delete it)
 			std::cout << "Attempting to resolve the unload function" << std::endl;
 			unload_t *ul = (unload_t *) myLib.resolve("unload");
@@ -594,13 +608,14 @@ void QgisApp::testPluginFunctions()
 				ul(pl);
 				std::cout << "Unloaded the plugin\n";
 			} else {
- 				std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
+				std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
 			}
 		}
-	} else{
-               QMessageBox::warning(this,"Unable to Load Plugin","QGis was unable to load the plugin from: ../plugins/libqgisplugin.so.1.0.0");
-        		std::cout << "Unable to load library" << std::endl;
-          }
+	} else {
+		QMessageBox::warning(this, "Unable to Load Plugin",
+							 "QGis was unable to load the plugin from: ../plugins/libqgisplugin.so.1.0.0");
+		std::cout << "Unable to load library" << std::endl;
+	}
 }
 
 void QgisApp::saveWindowState()
@@ -644,4 +659,3 @@ void QgisApp::restoreWindowState()
 	int y = settings.readNumEntry("/qgis/Geometry/y", (dh - 400) / 2);
 	setGeometry(x, y, w, h);
 }
-

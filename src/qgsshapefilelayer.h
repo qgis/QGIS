@@ -29,46 +29,52 @@ class OGRDataSource;
  * \brief Shapefile layer
  */
 
-class QgsShapeFileLayer : public QgsMapLayer  {
-Q_OBJECT
-public:
+class QgsShapeFileLayer:public QgsMapLayer
+{
+  Q_OBJECT public:
 
-    //! Constructor
-	QgsShapeFileLayer( QString baseName=0, QString path=0);
+	//! Constructor
+	  QgsShapeFileLayer(QString baseName = 0, QString path = 0);
 	//! Destructor
-	~QgsShapeFileLayer();
-  void identify(QgsRect *);
-       
-enum SHAPETYPE {
-	Point,
-	Line,
-	Polygon
-};
+	 ~QgsShapeFileLayer();
+	//! Identify feature found within the search rectangle
+	void identify(QgsRect *);
+	//! Display the attribute table
+	void table();
+	enum SHAPETYPE
+	{
+		Point,
+		Line,
+		Polygon
+	};
 
-private: // Private attributes
-void draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTransform *cXf);
-OGRDataSource *ogrDataSource;
-	
-OGRLayer *ogrLayer; 
+  private:						// Private attributes
+//! Draws the layer using coordinate transformation
+	void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf);
+	OGRDataSource *ogrDataSource;
+
+	OGRLayer *ogrLayer;
   /**  */
-  bool registered;
-     enum ENDIAN{
-	NDR=1,
-	XDR=0
-    };
-    enum WKBTYPE{
-	WKBPoint=1,
-	WKBLineString,
-	WKBPolygon,
-	WKBMultiPoint,
-	WKBMultiLineString,
-	WKBMultiPolygon
-    };	
-private: // Private methods
+	bool registered;
+	enum ENDIAN
+	{
+		NDR = 1,
+		XDR = 0
+	};
+	enum WKBTYPE
+	{
+		WKBPoint = 1,
+		WKBLineString,
+		WKBPolygon,
+		WKBMultiPoint,
+		WKBMultiLineString,
+		WKBMultiPolygon
+	};
+  private:						// Private methods
   /** No descriptions */
-  void registerFormats();
-  int endian();
-  
+	void registerFormats();
+	int endian();
+
 };
 
 #endif

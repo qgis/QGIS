@@ -30,7 +30,9 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgslegend.h  \
            qgslegenditem.h \
            qgslayerproperties.h \
-           qgsidentifyresults.h
+           qgsidentifyresults.h \
+	   qgsattributetable.h \
+	   qgsattributetabledisplay.h
            
 INTERFACES += qgsdbsourceselectbase.ui \
 					 qgisappbase.ui \
@@ -38,7 +40,8 @@ INTERFACES += qgsdbsourceselectbase.ui \
 					 qgslegenditembase.ui \
 					 qgsabout.ui \
 					 qgslayerpropertiesbase.ui \
-					 qgsidentifyresultsbase.ui
+					 qgsidentifyresultsbase.ui \
+					 qgsattributetablebase.ui
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgsdatabaselayer.cpp \
@@ -46,7 +49,7 @@ SOURCES += main.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
-	   			 qgsshapefilelayer.cpp \
+	    qgsshapefilelayer.cpp \
            qgsdbsourceselect.cpp \
            qgsnewconnection.cpp \
            qgsrect.cpp \
@@ -59,4 +62,6 @@ SOURCES += main.cpp \
            qgslinesymbol.cpp \
            qgspolygonsymbol.cpp \
            qgslayerproperties.cpp \
-	   qgsidentifyresults.cpp
+	   qgsidentifyresults.cpp \
+	   qgsattributetable.cpp \
+	   qgsattributetabledisplay.cpp

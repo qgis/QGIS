@@ -18,11 +18,21 @@
 #include <qlistview.h>
 #include "qgsidentifyresults.h"
 
-QgsIdentifyResults::QgsIdentifyResults(){
+QgsIdentifyResults::QgsIdentifyResults()
+{
 }
-QgsIdentifyResults::~QgsIdentifyResults(){
+
+QgsIdentifyResults::~QgsIdentifyResults()
+{
 }
+
 /** add an attribute and its value to the list */
-void QgsIdentifyResults::addAttribute(QString field, QString value){
-  QListViewItem *lvi = new QListViewItem(lstResults, field, value);
+void QgsIdentifyResults::addAttribute(QString field, QString value)
+{
+	QListViewItem *lvi = new QListViewItem(lstResults, field, value);
+}
+
+void QgsIdentifyResults::setTitle(QString title)
+{
+	setCaption("Identify Results - " + title);
 }

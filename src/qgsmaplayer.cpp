@@ -27,7 +27,7 @@ QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):layerName(ly
 	valid = true;
 	m_visible = true;
 	// create a default symbol
-	
+
 	// Generate the unique ID of this layer
 	QDateTime dt = QDateTime::currentDateTime();
 	ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
@@ -146,5 +146,9 @@ void QgsMapLayer::setFeatureType(const int &_newVal)
 }
 
 void QgsMapLayer::identify(QgsRect * r)
+{
+}
+
+void QgsMapLayer::table()
 {
 }

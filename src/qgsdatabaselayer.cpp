@@ -15,11 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
+#include <qapplication.h>
+#include <qcursor.h>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpointarray.h>
 #include <qbrush.h>
+
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgspoint.h"
@@ -27,9 +30,11 @@
 #include <qmessagebox.h>
 #include "qgsdatabaselayer.h"
 #include "qgsidentifyresults.h"
+#include "qgsattributetable.h"
+#include "qgsattributetabledisplay.h"
 
-QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table):
-QgsMapLayer(QgsMapLayer::DATABASE, table, conninfo), tableName(table)
+QgsDatabaseLayer::QgsDatabaseLayer(const char *conninfo, QString table):QgsMapLayer(QgsMapLayer::DATABASE, table, conninfo),
+tableName(table)
 {
 	// create the database layer and get the needed information
 	// about it from the database
@@ -420,14 +425,14 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 void QgsDatabaseLayer::identify(QgsRect * r)
 {
 // create a search filter  for identifying records
- 
-  QString sql = "select * from " + tableName;
-  sql += " where " + geometryColumn;
+
+	QString sql = "select * from " + tableName;
+	sql += " where " + geometryColumn;
 	sql += " && GeometryFromText('BOX3D(" + r->stringRep();
 	sql += ")'::box3d,-1)";
-  qWarning(sql);
-  // select the features
-   PgCursor pgs(dataSource, "identifyCursor");
+	qWarning(sql);
+	// select the features
+	PgCursor pgs(dataSource, "identifyCursor");
 
 	pgs.Declare((const char *) sql, false);
 	int res = pgs.Fetch();
@@ -435,28 +440,74 @@ void QgsDatabaseLayer::identify(QgsRect * r)
 	QTextOStream(&msg) << "Number of matching records: " << pgs.Tuples() << endl;
 //  qWarning(msg);
 //  std::cout << "Using following transform parameters:\n" << cXf->showParameters() << std::endl;
-  // create the results window
-  if(pgs.Tuples() > 0){
-    QgsIdentifyResults *ir = new QgsIdentifyResults();
-    // just show one result - modify this later
-    int numFields = pgs.Fields();
-    for(int i = 0; i < numFields; i++){
-      QString fld = pgs.FieldName(i);
-      int fldType = pgs.FieldType(i);
-      QString val;
-      if(fldType ==  16604 )    // geometry
-        val = "(geometry column)";
-      else 
-        val = pgs.GetValue(0,i);
-      ir->addAttribute(fld, val);
-      }
-      ir->show();
+	// create the results window
+	if (pgs.Tuples() > 0) {
+		QgsIdentifyResults *ir = new QgsIdentifyResults();
+		// just show one result - modify this later
+		int numFields = pgs.Fields();
+		for (int i = 0; i < numFields; i++) {
+			QString fld = pgs.FieldName(i);
+			int fldType = pgs.FieldType(i);
+			QString val;
+			if (fldType == 16604)	// geometry
+				val = "(geometry column)";
+			else
+				val = pgs.GetValue(0, i);
+			ir->addAttribute(fld, val);
+		}
+		ir->setTitle(name());
+		ir->show();
 
-  }else{
-      QMessageBox::information(0,"No features found","No features were found in the active layer at the point you clicked");
-    }
-  int foo = 0;
+	} else {
+		QMessageBox::information(0, "No features found", "No features were found in the active layer at the point you clicked");
+	}
+
 }
+void QgsDatabaseLayer::table()
+{
+	// display the attribute table
+	QString sql = "select * from " + tableName;
+	qWarning(sql);
+	// select the features
+	PgCursor pgs(dataSource, "attributeCursor");
+
+	pgs.Declare((const char *) sql, false);
+	int res = pgs.Fetch();
+	QString msg;
+	QTextOStream(&msg) << "Number of matching records: " << pgs.Tuples() << endl;
+	// create the results window
+	if (pgs.Tuples() > 0) {
+		QApplication::setOverrideCursor(Qt::WaitCursor);
+		QgsAttributeTableDisplay *at = new QgsAttributeTableDisplay();
+		at->table()->setNumRows(pgs.Tuples());
+		at->table()->setNumCols(pgs.Fields());
+		// set the column headers
+		QHeader *colHeader = at->table()->horizontalHeader();
+		for (int h = 0; h < pgs.Fields(); h++) {
+			colHeader->setLabel(h, pgs.FieldName(h));
+		}
+		// add the data to the rows
+		for (int ir = 0; ir < pgs.Tuples(); ir++) {
+			for (int ic = 0; ic < pgs.Fields(); ic++) {
+				int fldType = pgs.FieldType(ic);
+				QString val;
+				if (fldType == 16604)	// geometry -- naughty -- shouldnt code to a value
+					val = "(geometry column)";
+				else
+					val = pgs.GetValue(ir, ic);
+				at->table()->setText(ir, ic, val);
+			}
+
+		}
+		at->table()->setSorting(true);
+
+		QApplication::restoreOverrideCursor();
+		at->setTitle("Attribute table - " + name());
+		at->show();
+	}
+}
+
+
 int QgsDatabaseLayer::endian()
 {
 	char *chkEndian = new char[4];
