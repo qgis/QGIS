@@ -28,6 +28,7 @@
 class QRect;
 class QgsCoordinateTransform;
 class QgsMapLayer;
+class QgsMapLayerInterface;
 class QMouseEvent;
 class QgsLegend;
 class QColor;
@@ -50,6 +51,7 @@ public:
      * @param lyr Pointer to a layer derived from QgsMapLayer
      */
     void addLayer(QgsMapLayer *lyr);
+    void addLayer(QgsMapLayerInterface *lyr);
     /*! Draw the map using the symbology set for each layer
      */
     void render();
