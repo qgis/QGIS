@@ -238,6 +238,12 @@ void Plugin::showProject(QString theProjectFile)
     //let the httpdserver know we are finished and pass it back the output filename
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
   }
+  else
+  {
+    //let the httpdserver know we are finished and pass it back the canvas image
+    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+  }
+
 }
 //load project in qgis but dont send image back yet
 void Plugin::loadProject(QString theProjectFile)
