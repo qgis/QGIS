@@ -14,7 +14,6 @@
 //qt includes
 #include <qpushbutton.h>
 #include <qlineedit.h>
-#include <qspinbox.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qfile.h>
@@ -39,7 +38,25 @@ void PluginGui::pbnOK_clicked()
 {
   //check input file exists
   //
-  GraticuleCreator *  myGraticuleCreator = new GraticuleCreator(leOutputShapeFile->text(),spinLongInterval->value(),spinLatInterval->value());
+  std::cout << "GrativuleCreator called with: " << 
+      leOutputShapeFile->text() <<
+      leLongitudeInterval->text() <<
+      leLatitudeInterval->text() <<
+      leOriginLongitude->text() <<
+      leOriginLatitude->text() <<
+      leEndPointLongitude->text() << 
+      leEndPointLatitude->text() 
+      << std::endl;
+  
+  GraticuleCreator *  myGraticuleCreator = new GraticuleCreator(
+          leOutputShapeFile->text(),
+          leLongitudeInterval->text().toDouble(),
+          leLatitudeInterval->text().toDouble(),
+          leOriginLongitude->text().toDouble(),
+          leOriginLatitude->text().toDouble(),
+          leEndPointLongitude->text().toDouble(),
+          leEndPointLatitude->text().toDouble()
+          );
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
   // add it to the view using:

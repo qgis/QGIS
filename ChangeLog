@@ -3,6 +3,12 @@ ChangeLog,v 1.200 2004/10/21 17:27:35 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-09 [timlinux] 0.5.0devel21
+** Added options to graticule builder to allow you to define origin and
+enpoints and to set the graticule size at < 1 degree. Note that there is
+little error checking in there still, so putting in dodgy numbers may cause
+qgis to crash.
+
 2004-11-04 [timlinux] 0.5.0devel20
 ** Added scale dependent visibility support to both raster and vector layers.
 
