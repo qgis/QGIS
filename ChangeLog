@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.159 2004/07/10 17:20:11 larsl Exp
+ChangeLog,v 1.160 2004/07/17 20:26:06 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-07-17 [larsl] 0.4.0devel5
+** Added SVG cache and started using it in the Single Marker renderer
 
 2004-07-10 [larsl] 0.4.0devel4
 ** Added code to QgsProjectIo that saves and loads the provider key of a vector

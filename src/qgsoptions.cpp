@@ -22,6 +22,7 @@
 #include <qspinbox.h>
 #include "qgsoptions.h"
 #include "qgisapp.h"
+#include "qgssvgcache.h"
 /**
  * \class QgsOptions - Set user options and preferences
  * Constructor
@@ -44,6 +45,8 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
     cbxHideSplash->setChecked(hideSplashFlag);
     // set the current theme
     cmbTheme->setCurrentText(settings.readEntry("/qgis/theme"));
+    // set the SVG oversampling factor
+    spbSVGOversampling->setValue(QgsSVGCache::instance().getOversampling());
     // set the display update threshold
     spinBoxUpdateThreshold->setValue(settings.readNumEntry("/qgis/map/updateThreshold"));
         
