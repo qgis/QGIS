@@ -27,6 +27,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerproperties.h"
 
 /**This class contains the information for graduate symbol rendering*/
 class QgsGraduatedSymRenderer: public QgsRenderer
@@ -49,7 +50,7 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     /**Sets the number of the classicifation field
     \param field the number of the field to classify*/
     void setClassificationField(int field);
-    void initializeSymbology(QgsVectorLayer* layer);
+    void initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr=0);
     /**Returns the list with the render items*/
     std::list<QgsRangeRenderItem*>& items();
     /** Returns true*/

@@ -128,8 +128,8 @@ void QgsContColDialog::apply()
     }
     QgsRenderItem* maximumitem=new QgsRenderItem(maxsymbol,QString::number(maximum,'f')," ");
 
-    //set the render items to the render of m_vectorlayer
-    QgsContinuousColRenderer* renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->renderer());
+    //set the render items to the buffer renderer of the property dialog
+    QgsContinuousColRenderer* renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
     if(renderer)
     {
 	renderer->setMinimumItem(minimumitem);
@@ -191,11 +191,16 @@ void QgsContColDialog::apply()
     p.drawText(leftspace+gradientwidth+wordspace,rangeoffset+fm.height(),QString::number(minimum,'f',2));
     p.drawText(leftspace+gradientwidth+wordspace,rangeoffset+gradientheight,QString::number(maximum,'f',2));
 
-    m_vectorlayer->triggerRepaint();
     if(m_vectorlayer->legendItem())
     {
 	m_vectorlayer->legendItem()->setPixmap(0,(*pix));
     }
+
+    m_vectorlayer->setRenderer(renderer);
+    m_vectorlayer->setRendererDialog(this);
+    m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+
+    m_vectorlayer->triggerRepaint();
 }
 
 void QgsContColDialog::selectMinimumColor()

@@ -940,8 +940,8 @@ void QgisApp::layerProperties(QListViewItem * lvi)
         
         //TODO Fix this area below and above
         //this is a very hacky way to force the legend entry to refresh - the call above does ne happen for some reason
-        mapCanvas->render2();
-        mapLegend->update();
+        //mapCanvas->render2();
+        //mapLegend->update();
         
         
         /* else if ((lyr->type()==QgsMapLayer::VECTOR) || (lyr->type()==QgsMapLayer::DATABASE))

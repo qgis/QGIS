@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.21 2004/01/28 05:55:27 gsherman Exp */
+/* qgsprojectio.cpp,v 1.22 2004/01/28 14:01:31 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -139,39 +139,6 @@ bool QgsProjectIo::read(){
 			mne = mnl.toElement();
 			//QMessageBox::information(0,"Zorder", mne.text());
 			
-			
-
-
-                        //process symbology
-			/*QgsSymbol *sym = new QgsSymbol();
-			if ( type != "raster" ) {
-				mnl = node.namedItem("symbol"); 
-				QDomNode snode = mnl.namedItem("linewidth");
-				QDomElement lineElement = snode.toElement();
-				int lineWidth = lineElement.text().toInt();
-				
-				
-				snode = mnl.namedItem("outlinecolor");
-				QDomElement colorElement = snode.toElement();
-				int olRed = colorElement.attribute("red").toInt();
-				int olGreen = colorElement.attribute("green").toInt();
-				int olBlue = colorElement.attribute("blue").toInt();
-				
-				snode = mnl.namedItem("fillcolor");
-				colorElement = snode.toElement();
-				int fillRed = colorElement.attribute("red").toInt();
-				int fillGreen = colorElement.attribute("green").toInt();
-				int fillBlue = colorElement.attribute("blue").toInt();
-				
-				sym->setFillColor( QColor(fillRed, fillGreen, fillBlue));
-				sym->setColor(QColor(olRed, olGreen, olBlue));
-				sym->setLineWidth(lineWidth);
-				// get the linewidth information
-				}*/
-			
-			//QMessageBox::information(0,"Zorder", mne.text());
-			
-			
 			// add the layer to the maplayer
 			
 			if(type == "vector")
@@ -187,7 +154,6 @@ bool QgsProjectIo::read(){
 				provider = "ogr";
 			    }
 			    QgsVectorLayer *dbl = new QgsVectorLayer(dataSource, layerName, provider);
-			    //map->addLayer(dbl);
 			    
 			    QDomNode singlenode=node.namedItem("singlesymbol");
 			    QDomNode graduatednode=node.namedItem("graduatedsymbol");
@@ -413,8 +379,6 @@ bool QgsProjectIo::read(){
 				properties->setLegendType("continuous color");
 			    }
 			    
-			    
-			    //dbl->setSymbol(sym);
 			    dbl->setVisible(visible == "1");
 			    qWarning("adde den Layer");
           dbl->initContextMenu(qgisApp);

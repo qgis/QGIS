@@ -34,7 +34,7 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
     QgsGraSyDialog(QgsVectorLayer* layer);
     ~QgsGraSyDialog();
  public slots:
-     void apply() const;
+     void apply();
  protected slots:
      /**Creates a new extension widget*/
      void adjustNumberOfClasses();

@@ -21,6 +21,7 @@ class QgsFeature;
 class QgsCoordinateTransform;
 class QgsVectorLayer;
 class QPainter;
+class QgsVectorLayerProperties;
 
 
 
@@ -28,9 +29,11 @@ class QPainter;
 class QgsRenderer
 {
  public:
-    /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn
-     @param layer the vector layer associated with the renderer*/
-    virtual void initializeSymbology(QgsVectorLayer* layer)=0;
+    /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn. If pr is not 0, the renderer dialog is copied to the pointer in the layer properties instead of directly to the vector layer and no image is rendered 
+     @param layer the vector layer associated with the renderer
+     @param pr the layer properties class involved
+    */
+    virtual void initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr=0)=0;
     /**Renders a feature. A vector layer passes features to a renderer object for display*/
     virtual void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t)=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/

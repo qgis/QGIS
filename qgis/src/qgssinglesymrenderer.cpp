@@ -41,6 +41,7 @@ void QgsSingleSymRenderer::addItem(QgsRenderItem ri)
 
 void QgsSingleSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t)
 {
+    qWarning("rendere feature");
     p->setPen(m_item.getSymbol()->pen());
     p->setBrush(m_item.getSymbol()->brush());
     unsigned char *feature= f->getGeometry();
@@ -197,8 +198,14 @@ void QgsSingleSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoordina
 				delete[]feature;
 }
 
-void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer* layer)
+void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr)
 {
+    bool toproperties=false;//if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
+    if(pr)
+    {
+	toproperties=true;
+    }
+
     if(layer)
     {
 	QgsSymbol sy;
@@ -215,7 +222,16 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer* layer)
 	QFont f( "times", 12, QFont::Normal );
 	QFontMetrics fm(f);
 
-	QPixmap* pixmap=layer->legendPixmap();
+	
+	QPixmap* pixmap;
+	if(toproperties)
+	{
+	    pixmap=pr->getBufferPixmap();
+	}
+	else
+	{
+	    pixmap=layer->legendPixmap();
+	}
 	QString name=layer->name();
 	int width=40+fm.width(layer->name());
 	int height=(fm.height()+10>35) ? fm.height()+10 : 35;
@@ -257,11 +273,18 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer* layer)
 	addItem(ri);
 
 	QgsSiSyDialog* dialog=new QgsSiSyDialog(layer);
-	layer->setRendererDialog(dialog);
-	QgsLegendItem* item;
-	if(item=layer->legendItem())
+	if(toproperties)
 	{
-	    item->setPixmap(0,(*pixmap));
+	    pr->setBufferDialog(dialog);
+	}
+	else
+	{
+	    layer->setRendererDialog(dialog);
+	    QgsLegendItem* item;
+	    if(item=layer->legendItem())
+	    {
+		item->setPixmap(0,(*pixmap));
+	    }
 	}
     }
     else
