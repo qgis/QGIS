@@ -320,8 +320,8 @@ qgis_SOURCES =	main.cpp			\
 		qgsproject.cpp			\
 		qgsprojectproperties.cpp	\
 		qgsprojectproperty.cpp		\
- 		qgsprovidercountcalcevent.cpp	\
- 		qgsproviderextentcalcevent.cpp	\
+		qgsprovidercountcalcevent.cpp	\
+		qgsproviderextentcalcevent.cpp	\
 		qgsprovidermetadata.cpp		\
 		qgsproviderregistry.cpp		\
 		qgsrangerenderitem.cpp		\
@@ -390,25 +390,41 @@ qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS
 libqgis_la_SOURCES =				\
 		qgisapp.cpp			\
 		qgisapp.moc.cpp			\
-		qgisappbase.uic.cpp		\
 		qgisappbase.moc.uic.cpp		\
+		qgisappbase.uic.cpp		\
 		qgsacetateobject.cpp		\
 		qgsacetaterectangle.cpp		\
 		qgsattributeaction.cpp		\
 		qgscolortable.cpp		\
 		qgscomposer.cpp			\
-		qgscomposition.cpp		\
+		qgscomposer.moc.cpp		\
+		qgscomposerbase.uic.cpp		\
+		qgscomposerbase.moc.uic.cpp	\
 		qgscomposeritem.cpp		\
-		qgscomposermap.cpp		\
-		qgscomposervectorlegend.cpp	\
 		qgscomposerlabel.cpp		\
+		qgscomposerlabel.moc.cpp	\
+		qgscomposerlabelbase.uic.cpp	\
+		qgscomposerlabelbase.moc.uic.cpp	\
+		qgscomposermap.cpp		\
+		qgscomposermap.moc.cpp		\
+		qgscomposermapbase.uic.cpp	\
+		qgscomposermapbase.moc.uic.cpp  \
+		qgscompositionbase.uic.cpp	\
+		qgscompositionbase.moc.uic.cpp	\
+		qgscomposervectorlegend.cpp	\
+		qgscomposervectorlegend.moc.cpp \
+		qgscomposervectorlegendbase.uic.cpp \
+		qgscomposervectorlegendbase.moc.uic.cpp \
+		qgscomposerview.moc.cpp		\
 		qgscomposerview.cpp		\
+		qgscomposition.cpp		\
+		qgscomposition.moc.cpp		\
 		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
 		qgscoordinatetransform.moc.cpp  \
-		qgsmaptopixel.cpp		\
-		qgsfeatureattribute.cpp		\
+		qgsdataprovider.moc.cpp         \
 		qgsfeature.cpp			\
+		qgsfeatureattribute.cpp		\
 		qgsfield.cpp			\
 		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
@@ -419,29 +435,31 @@ libqgis_la_SOURCES =				\
 		qgsmaplayer.moc.cpp		\
 		qgsmaplayerregistry.cpp		\
 		qgsmaplayerregistry.moc.cpp	\
+		qgsmaptopixel.cpp		\
 		qgsmarkersymbol.cpp		\
 		qgspoint.cpp			\
 		qgspoint.moc.cpp		\
+		qgsprojectproperty.cpp		\
 		qgsprovidercountcalcevent.cpp	\
 		qgsproviderextentcalcevent.cpp	\
 		qgsproviderregistry.cpp		\
-		qgsprojectproperty.cpp		\
 		qgsrangerenderitem.cpp		\
 		qgsrasterlayer.cpp		\
 		qgsrasterlayer.moc.cpp		\
 		qgsrect.cpp			\
-		qgsrenderitem.cpp		\
-		qgsscalecalculator.cpp		\
 		qgsrenderer.cpp 		\
+		qgsrenderitem.cpp		\
 		qgsrunprocess.cpp		\
+		qgsrunprocess.moc.cpp		\
+		qgsscalecalculator.cpp		\
 		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssymbol.cpp			\
 		qgsuniquevalrenderer.cpp	\
 		qgsuvalmarenderer.cpp		\
-		qgsvectorfilewriter.cpp		\
 		qgsvectordataprovider.cpp	\
 		qgsvectordataprovider.moc.cpp	\
+		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayer.moc.cpp 
 
