@@ -29,6 +29,7 @@ pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
 				../../src/qgsmaplayer.cpp \
         ../../src/qgsvectorlayer.cpp \
         ../../src/qgsfield.cpp \
+        ../../src/qgssymbol.cpp \
 				$(pggeoprocessing_UI)
 
 nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
