@@ -154,7 +154,7 @@ QgsRasterLayer::~QgsRasterLayer()
 void QgsRasterLayer::showLayerProperties()
 {
     QgsRasterLayerProperties *myRasterLayerProperties = new QgsRasterLayerProperties(this);
-    
+
 }
 // emit a signal asking for a repaint
 void QgsRasterLayer::triggerRepaint()
@@ -187,12 +187,14 @@ bool QgsRasterLayer::hasBand(QString theBandName)
     {
         GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( i );
         QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+        std::cout << "band : " << i << std::endl;
         if  (myColorQString==theBandName)
         {
+        std::cout << "band : " << i << std::endl;
             std::cout << "Found band : " << theBandName << std::endl;
             return true;
         }
-        std::cout << "Found unmatched band : " << myIterator.key().latin1() << std::endl;
+        std::cout << "Found unmatched band : " << i << " " << myColorQString << std::endl;
     }
     return false;
 }
@@ -993,28 +995,33 @@ void QgsRasterLayer::calculateStats(QString theBandNameQString)
         RasterBandStats myRasterBandStats;
         GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( i );
         QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-        //see if we are calculating all bands or just a particular band
-        if (theBandNameQString=="" ||
-                myColorInterpretation==theBandNameQString ||
-                (myColorInterpretation=="Palette" &&
-                 ( theBandNameQString=="Red" ||
+        //Decide if we want to process this band...
+        if (theBandNameQString=="" || //process if no band name was passed to this fn
+                myColorInterpretation==theBandNameQString || //process if theband name passed to fn matches this band
+                (myColorInterpretation=="Palette" && //process if the current band is palette and the band name
+                 ( theBandNameQString=="Red" ||      //passed to this fn is red, green or blue
                    theBandNameQString=="Green" ||
                    theBandNameQString=="Blue"
                  )
                 )
            )
         {
-
+	    //check if we have previously gathered stats for this band...
+	    rasterStatsMap[myColorInterpretation];
+            //declare a colorTable to hold a palette - will only be used of the layer color interp is palette
             GDALColorTable *colorTable;
             if ( myColorInterpretation=="Palette" )
             {
+	    	//check if we have previously gathered stats for this band...
+	        RasterBandStats myTempRasterBandrStats = rasterStatsMap[theBandNameQString];
+		if (myTempRasterBandrStats.statsGatheredFlag) continue; //should revert to outer loop if true
                 colorTable = myGdalBand->GetColorTable();
-		myRasterBandStats.bandName=theBandNameQString;
+                myRasterBandStats.bandName=theBandNameQString;
             }
-	    else
-	    {
+            else
+            {
                 myRasterBandStats.bandName=myColorInterpretation;
-	    }
+            }
             myRasterBandStats.bandNo=i;
             std::cout << "Getting stats for band " << i << " (" << myColorInterpretation << ")" << std::endl;
             // get the dimensions of the raster
@@ -1023,143 +1030,132 @@ void QgsRasterLayer::calculateStats(QString theBandNameQString)
 
             myRasterBandStats.elementCountInt=myColsInt*myRowsInt;
             myRasterBandStats.noDataDouble=myGdalBand->GetNoDataValue();
-            //avoid collecting stats for rgb images for now
-            if (myColorInterpretation=="Gray" ||
-                    myColorInterpretation=="Undefined"  ||
-                    (myColorInterpretation=="Palette" &&
-                     ( theBandNameQString=="Red" ||
-                       theBandNameQString=="Green" ||
-                       theBandNameQString=="Blue"
-                     )
-                    )
-               )
+
+            //allocate a buffer to hold one row of ints
+            int myAllocationSizeInt = sizeof(uint)*myColsInt;
+            uint * myScanlineAllocInt = (uint*) CPLMalloc(myAllocationSizeInt);
+            bool myFirstIterationFlag = true;
+            //unfortunately we need to make two passes through the data to calculate stddev
+            for (int myCurrentRowInt=0; myCurrentRowInt < myRowsInt;myCurrentRowInt++)
             {
-                //allocate a buffer to hold one row of ints
-                int myAllocationSizeInt = sizeof(uint)*myColsInt;
-                uint * myScanlineAllocInt = (uint*) CPLMalloc(myAllocationSizeInt);
-                bool myFirstIterationFlag = true;
-                //unfortunately we need to make two passes through the data to calculate stddev
-                for (int myCurrentRowInt=0; myCurrentRowInt < myRowsInt;myCurrentRowInt++)
+                CPLErr myResult = myGdalBand->RasterIO(
+                                      GF_Read, 0, myCurrentRowInt, myColsInt, 1, myScanlineAllocInt, myColsInt, 1, GDT_UInt32, 0, 0 );
+                for (int myCurrentColInt=0; myCurrentColInt < myColsInt; myCurrentColInt++)
                 {
-                    CPLErr myResult = myGdalBand->RasterIO(
-                                          GF_Read, 0, myCurrentRowInt, myColsInt, 1, myScanlineAllocInt, myColsInt, 1, GDT_UInt32, 0, 0 );
-                    for (int myCurrentColInt=0; myCurrentColInt < myColsInt; myCurrentColInt++)
+                    double myDouble=0;
+                    //get the nth element from the current row
+                    if (myColorInterpretation!="Palette")
                     {
-                        double myDouble=0;
-                        //get the nth element from the current row
-                        if (myColorInterpretation!="Palette")
+                        myDouble=myScanlineAllocInt[myCurrentColInt];
+                    }
+                    else
+                    {
+                        //this is a palette layer so red / green / blue 'layers are 'virtual'
+                        //in that we need to obtain the palette entry and then get the r,g or g
+                        //component from that palette entry
+                        const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable,myScanlineAllocInt[myCurrentColInt]);
+                        //check colorEntry is valid
+                        if (myColorEntry!=NULL)
                         {
-                            myDouble=myScanlineAllocInt[myCurrentColInt];
+                            //check for alternate color mappings
+                            if (theBandNameQString=="Red")
+                            {
+                                myDouble=static_cast<double> (myColorEntry->c1);
+                            }
+                            if (theBandNameQString=="Green")
+                            {
+                                myDouble=static_cast<double> (myColorEntry->c2);
+                            }
+                            if (theBandNameQString=="Blue")
+                            {
+                                myDouble=static_cast<double> (myColorEntry->c3);
+                            }
                         }
+
+
+                    }
+                    //only use this element if we have a non null element
+                    if (myDouble != myRasterBandStats.noDataDouble )
+                    {
+                        if (myFirstIterationFlag)
+                        {
+                            //this is the first iteration so initialise vars
+                            myFirstIterationFlag=false;
+                            myRasterBandStats.minValDouble=myDouble;
+                            myRasterBandStats.maxValDouble=myDouble;
+                        } //end of true part for first iteration check
                         else
                         {
-                            //this is a palette layer so red / green / blue 'layers are 'virtual'
-                            //in that we need to obtain the palette entry and then get the r,g or g
-                            //component from that palette entry
-                            const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable,myScanlineAllocInt[myCurrentColInt]);
-                            //check colorEntry is valid
-                            if (myColorEntry!=NULL)
+                            //this is done for all subsequent iterations
+                            if (myDouble < myRasterBandStats.minValDouble)
                             {
-                                //check for alternate color mappings
-                                if (theBandNameQString=="Red")
-                                {
-                                    myDouble=static_cast<double> (myColorEntry->c1);
-                                }
-                                if (theBandNameQString=="Green")
-                                {
-                                    myDouble=static_cast<double> (myColorEntry->c2);
-                                }
-                                if (theBandNameQString=="Blue")
-                                {
-                                    myDouble=static_cast<double> (myColorEntry->c3);
-                                }
-                            }
-
-
-                        }
-                        //only use this element if we have a non null element
-                        if (myDouble != myRasterBandStats.noDataDouble )
-                        {
-                            if (myFirstIterationFlag)
-                            {
-                                //this is the first iteration so initialise vars
-                                myFirstIterationFlag=false;
                                 myRasterBandStats.minValDouble=myDouble;
-                                myRasterBandStats.maxValDouble=myDouble;
-                            } //end of true part for first iteration check
-                            else
-                            {
-                                //this is done for all subsequent iterations
-                                if (myDouble < myRasterBandStats.minValDouble)
-                                {
-                                    myRasterBandStats.minValDouble=myDouble;
-                                }
-                                if (myDouble > myRasterBandStats.maxValDouble)
-                                {
-                                    myRasterBandStats.maxValDouble=myDouble;
-                                }
-                                //only increment the running total if it is not a nodata value
-                                if (myDouble != myRasterBandStats.noDataDouble)
-                                {
-                                    myRasterBandStats.sumDouble += myDouble;
-                                    ++myRasterBandStats.elementCountInt;
-                                }
-                            } //end of false part for first iteration check
-                        } //end of nodata chec
-                    } //end of column wise loop
-                } //end of row wise loop
-                //
-                //end of first pass through data now calculate the range
-                myRasterBandStats.rangeDouble = myRasterBandStats.maxValDouble-myRasterBandStats.minValDouble;
-                //calculate the mean
-                myRasterBandStats.meanDouble = myRasterBandStats.sumDouble / myRasterBandStats.elementCountInt;
-                //for the second pass we will get the sum of the squares / mean
-                for (int myCurrentRowInt=0; myCurrentRowInt < myRowsInt;myCurrentRowInt++)
-                {
-                    CPLErr myResult = myGdalBand->RasterIO(
-                                          GF_Read, 0, myCurrentRowInt, myColsInt, 1, myScanlineAllocInt, myColsInt, 1, GDT_UInt32, 0, 0 );
-                    for (int myCurrentColInt=0; myCurrentColInt < myColsInt; myCurrentColInt++)
-                    {
-                        double myDouble=0;
-                        //get the nth element from the current row
-                        if (myColorInterpretation!="Palette")
-                        {
-                            myDouble=myScanlineAllocInt[myCurrentColInt];
-                        }
-                        else
-                        {
-                            //this is a palette layer so red / green / blue 'layers are 'virtual'
-                            //in that we need to obtain the palette entry and then get the r,g or g
-                            //component from that palette entry
-                            const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable,myScanlineAllocInt[myCurrentColInt]);
-                            //check colorEntry is valid
-                            if (myColorEntry!=NULL)
-                            {
-                                //check for alternate color mappings
-                                if (theBandNameQString=="Red")
-                                {
-                                    myDouble=myColorEntry->c1;
-                                }
-                                if (theBandNameQString=="Green")
-                                {
-                                    myDouble=myColorEntry->c2;
-                                }
-                                if (theBandNameQString=="Blue")
-                                {
-                                    myDouble=myColorEntry->c3;
-                                }
                             }
-
-
+                            if (myDouble > myRasterBandStats.maxValDouble)
+                            {
+                                myRasterBandStats.maxValDouble=myDouble;
+                            }
+                            //only increment the running total if it is not a nodata value
+                            if (myDouble != myRasterBandStats.noDataDouble)
+                            {
+                                myRasterBandStats.sumDouble += myDouble;
+                                ++myRasterBandStats.elementCountInt;
+                            }
+                        } //end of false part for first iteration check
+                    } //end of nodata chec
+                } //end of column wise loop
+            } //end of row wise loop
+            //
+            //end of first pass through data now calculate the range
+            myRasterBandStats.rangeDouble = myRasterBandStats.maxValDouble-myRasterBandStats.minValDouble;
+            //calculate the mean
+            myRasterBandStats.meanDouble = myRasterBandStats.sumDouble / myRasterBandStats.elementCountInt;
+            //for the second pass we will get the sum of the squares / mean
+            for (int myCurrentRowInt=0; myCurrentRowInt < myRowsInt;myCurrentRowInt++)
+            {
+                CPLErr myResult = myGdalBand->RasterIO(
+                                      GF_Read, 0, myCurrentRowInt, myColsInt, 1, myScanlineAllocInt, myColsInt, 1, GDT_UInt32, 0, 0 );
+                for (int myCurrentColInt=0; myCurrentColInt < myColsInt; myCurrentColInt++)
+                {
+                    double myDouble=0;
+                    //get the nth element from the current row
+                    if (myColorInterpretation!="Palette")
+                    {
+                        myDouble=myScanlineAllocInt[myCurrentColInt];
+                    }
+                    else
+                    {
+                        //this is a palette layer so red / green / blue 'layers are 'virtual'
+                        //in that we need to obtain the palette entry and then get the r,g or g
+                        //component from that palette entry
+                        const GDALColorEntry *myColorEntry = GDALGetColorEntry(colorTable,myScanlineAllocInt[myCurrentColInt]);
+                        //check colorEntry is valid
+                        if (myColorEntry!=NULL)
+                        {
+                            //check for alternate color mappings
+                            if (theBandNameQString=="Red")
+                            {
+                                myDouble=myColorEntry->c1;
+                            }
+                            if (theBandNameQString=="Green")
+                            {
+                                myDouble=myColorEntry->c2;
+                            }
+                            if (theBandNameQString=="Blue")
+                            {
+                                myDouble=myColorEntry->c3;
+                            }
                         }
-                        myRasterBandStats.sumSqrDevDouble += static_cast<double>(pow(myDouble - myRasterBandStats.meanDouble,2));
-                    } //end of column wise loop
-                } //end of row wise loop
-                //divide result by sample size - 1 and get square root to get stdev
-                myRasterBandStats.stdDevDouble = static_cast<double>(sqrt(myRasterBandStats.sumSqrDevDouble /
-                                                 (myRasterBandStats.elementCountInt - 1)));
-                CPLFree(myScanlineAllocInt);
-            }//end of gray / undefined raster color interp check
+
+
+                    }
+                    myRasterBandStats.sumSqrDevDouble += static_cast<double>(pow(myDouble - myRasterBandStats.meanDouble,2));
+                } //end of column wise loop
+            } //end of row wise loop
+            //divide result by sample size - 1 and get square root to get stdev
+            myRasterBandStats.stdDevDouble = static_cast<double>(sqrt(myRasterBandStats.sumSqrDevDouble /
+                                             (myRasterBandStats.elementCountInt - 1)));
+            CPLFree(myScanlineAllocInt);
             //add this band to the class stats map
             rasterStatsMap[myColorInterpretation]=myRasterBandStats;
         }//end of "" / bandNameQString check
@@ -1342,8 +1338,8 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
                 myDouble+=myAdjustedRasterBandStats.rangeDouble/100)
         {
             if (drawingStyle!=MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR &&
-	        drawingStyle!=PALETTED_SINGLE_BAND_PSEUDO_COLOR && 
-		drawingStyle!=SINGLE_BAND_PSEUDO_COLOR)
+                    drawingStyle!=PALETTED_SINGLE_BAND_PSEUDO_COLOR &&
+                    drawingStyle!=SINGLE_BAND_PSEUDO_COLOR)
             {
                 //draw legend as grayscale
                 int myGrayInt = static_cast<int>((255/myAdjustedRasterBandStats.rangeDouble) * myDouble);
