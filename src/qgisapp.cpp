@@ -36,6 +36,7 @@
 #include <qlayout.h>
 #include <qwmatrix.h>
 #include <qfiledialog.h>
+#include <qlibrary.h>
 #include <qvbox.h>
 #include <qlistview.h>
 #include <qsettings.h>
@@ -54,6 +55,7 @@
 #include "qgsabout.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "../plugins/qgisplugin.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
 
@@ -545,7 +547,26 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int )
 
 
 void QgisApp::testPluginFunctions(){
-  
+// try to load the class factory function
+    
+
+  QLibrary myLib( "/home/gsherman/development/qgis/plugins/libqgisplugin.so.1.0.0");
+  bool loaded = myLib.load();
+  if(loaded){
+    std::cout << "Loaded test plugin library" << std::endl;
+    std::cout << "Attempting to resolve the classFactory function" << std::endl;
+  create_t *cf = (create_t * ) myLib.resolve( "classFactory" );
+ 
+  if ( cf ) {
+               
+   QgisPlugin *pl = cf();
+   std::cout << "Plugin name is " << pl->pluginName() << std::endl;
+   std::cout << "Plugin version is " << pl->pluginVersion() << std::endl;
+   std::cout << "Plugin description is " << pl->pluginDescription() << std::endl;
+
+  }
+}else
+  std::cout << "Unable to load library" << std::endl;  
   }
 
 void QgisApp::saveWindowState(){
