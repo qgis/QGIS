@@ -1,13 +1,11 @@
-#include <iostream>
-#include <fstream>
-
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <qgsproject.h>
 
-//qt includes
 #include <qstring.h>
+
+
 
 class ProjectTest : public CppUnit::TestFixture 
 { 
@@ -18,6 +16,7 @@ class ProjectTest : public CppUnit::TestFixture
     CPPUNIT_TEST( testMapUnits );
     CPPUNIT_TEST( testDirtyFlag );
     CPPUNIT_TEST( readNullEntries );
+    CPPUNIT_TEST( testWriteEntries );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -117,32 +116,51 @@ class ProjectTest : public CppUnit::TestFixture
     {
         bool status;
 
-
-        bool b = QgsProject::instance()->readBoolEntry( mScope, mBoolValueKey, false, &status);
-
+        bool b = QgsProject::instance()->readBoolEntry( mScope, mBoolValueKey, false, &status );
         CPPUNIT_ASSERT( false == b && ! status );
 
-
-        int i = QgsProject::instance()->readNumEntry( mScope, mNumValueKey, 13, &status);
-
+        int i = QgsProject::instance()->readNumEntry( mScope, mNumValueKey, 13, &status );
         CPPUNIT_ASSERT( 13 == i && ! status );
 
-
-        double d = QgsProject::instance()->readDoubleEntry( mScope, mDoubleValueKey, 99.0, &status);
-
+        double d = QgsProject::instance()->readDoubleEntry( mScope, mDoubleValueKey, 99.0, &status );
         CPPUNIT_ASSERT( 99.0 == d && ! status );
 
-
-        QString s = QgsProject::instance()->readEntry( mScope, mStringValueKey, "FOO", &status);
-
+        QString s = QgsProject::instance()->readEntry( mScope, mStringValueKey, "FOO", &status );
         CPPUNIT_ASSERT( "FOO" == s && ! status );
 
-
-        QStringList sl = QgsProject::instance()->readListEntry( mScope, mStringListValueKey, &status);
-
+        QStringList sl = QgsProject::instance()->readListEntry( mScope, mStringListValueKey, &status );
         CPPUNIT_ASSERT( sl.empty() && ! status );
 
     } // readNullEntries
+
+
+    /** check that writing entries works */
+    void testWriteEntries()
+    {
+        CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mBoolValueKey, mBoolValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mNumValueKey, mNumValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mDoubleValueKey, mDoubleValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mStringValueKey, mStringValueConst ) );
+        CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mStringListValueKey, mStringListValueConst ) );
+
+        bool status;
+
+        bool b = QgsProject::instance()->readBoolEntry( mScope, mBoolValueKey, false, &status );
+        CPPUNIT_ASSERT( mBoolValueConst == b && status );
+
+        int i = QgsProject::instance()->readNumEntry( mScope, mNumValueKey, 13, &status );
+        CPPUNIT_ASSERT( mNumValueConst == i && status );
+
+        double d = QgsProject::instance()->readDoubleEntry( mScope, mDoubleValueKey, 99.0, &status );
+        CPPUNIT_ASSERT( mDoubleValueConst == d && status );
+
+        QString s = QgsProject::instance()->readEntry( mScope, mStringValueKey, "FOO", &status );
+        CPPUNIT_ASSERT( mStringValueConst == s && status );
+
+        QStringList sl = QgsProject::instance()->readListEntry( mScope, mStringListValueKey, &status );
+        CPPUNIT_ASSERT( mStringListValueConst == sl && status );
+
+    } // testWriteEntries
 
 
 private:
@@ -185,7 +203,6 @@ private:
 
     /// string list value const
     QStringList mStringListValueConst;
-
 
 }; // class ProjectTest
 
