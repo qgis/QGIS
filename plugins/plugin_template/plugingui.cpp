@@ -9,7 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "openmodellergui.h"
+#include "plugingui.h"
 
 //qt includes
 
@@ -35,5 +35,7 @@ void PluginGui::pbnOK_clicked()
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
   // add it to the view using:
   // emit drawRasterLayer(QString("layername"));
+  // or for a vector layer
+  // emit drawVectorLayer(QString("layername"));
   //
 } 
