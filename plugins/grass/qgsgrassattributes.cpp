@@ -56,7 +56,7 @@ extern "C" {
 #include "qgsgrassattributes.h"
 
 QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
-        QWidget * parent, const char * name, WFlags f ) :QgsGrassAttributesBase ( parent, name, f )
+        QWidget * parent, const char * name, WFlags f ) :QgsGrassAttributesBase ( parent, name, f)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassAttributes()" << std::endl;
@@ -65,7 +65,7 @@ QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *p
     mEdit = edit;
     mProvider = provider;
     mLine = line;
-	    
+      
     resultLabel->setText ( "" );
 
     // Remove old
@@ -167,7 +167,7 @@ void QgsGrassAttributes::setCat ( int tab, const QString & name, int cat )
 }
 
 void QgsGrassAttributes::addAttribute ( int tab, const QString &name, const QString &value, 
-	                                const QString &type )
+                                  const QString &type )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassAttributes::addAttribute(): " << name << ": " << value << std::endl;
@@ -207,34 +207,34 @@ void QgsGrassAttributes::updateAttributes ( )
     QTable *tb = (QTable *) tabCats->currentPage();
 
     if ( tb->numRows() > 2 ) {
-	QString sql;
-	
-	for ( int i = 2; i < tb->numRows(); i++ ) {
-	    if ( i > 2 ) sql.append (", ");
-	    
-	    if ( tb->text(i, 2) == "int" || tb->text(i, 2) == "double" ) {
-	        sql.append ( tb->text(i, 0) + " = " + tb->text(i, 1) );
-	    } else {
-		QString val = tb->text(i, 1);
-		val.replace("'","''");
-	        sql.append ( tb->text(i, 0) + " = '" + tb->text(i, 1) + "'" );
-	    }
-	}
+  QString sql;
+  
+  for ( int i = 2; i < tb->numRows(); i++ ) {
+      if ( i > 2 ) sql.append (", ");
+      
+      if ( tb->text(i, 2) == "int" || tb->text(i, 2) == "double" ) {
+          sql.append ( tb->text(i, 0) + " = " + tb->text(i, 1) );
+      } else {
+    QString val = tb->text(i, 1);
+    val.replace("'","''");
+          sql.append ( tb->text(i, 0) + " = '" + tb->text(i, 1) + "'" );
+      }
+  }
 
-	#ifdef QGISDEBUG
-	std::cerr << "sql: " << sql << std::endl;
-	#endif
+  #ifdef QGISDEBUG
+  std::cerr << "sql: " << sql << std::endl;
+  #endif
 
-	QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
+  QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
 
-	if ( !error->isEmpty() ) {
-	    QMessageBox::warning( 0, "Warning", *error );
-	    resultLabel->setText ( "ERROR" );
-	} else {
-	    resultLabel->setText ( "OK" );
-	}
+  if ( !error->isEmpty() ) {
+      QMessageBox::warning( 0, "Warning", *error );
+      resultLabel->setText ( "ERROR" );
+  } else {
+      resultLabel->setText ( "OK" );
+  }
 
-	delete error;
+  delete error;
     }
 }
 

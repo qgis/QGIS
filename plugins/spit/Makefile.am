@@ -10,8 +10,11 @@
 #
 # $Id$
 
+PREFIX=-DPREFIX=\"$(prefix)\"
 plugindir = ${pkglibdir}
+
 plugin_LTLIBRARIES = spitplugin.la
+bin_PROGRAMS = spit
 
 
 %.moc.cpp: %.h
@@ -32,7 +35,8 @@ spit_MOC = qgsspit.moc.cpp \
 	qgsspitbase.moc.cpp \
 	qgsmessageviewerbase.moc.cpp \
 	qgseditreservedwordsbase.moc.cpp \
-	qgseditreservedwordsdialog.moc.cpp
+	qgseditreservedwordsdialog.moc.cpp \
+	qgsscangeometries.moc.cpp
 
 spit_UI = qgsconnectiondialogbase.h \
 	qgsconnectiondialogbase.cpp \
@@ -41,12 +45,16 @@ spit_UI = qgsconnectiondialogbase.h \
 	qgsmessageviewerbase.h \
 	qgsmessageviewerbase.cpp \
 	qgseditreservedwordsbase.cpp \
-	qgseditreservedwordsbase.h
+	qgseditreservedwordsbase.h \
+	qgsscangeometries.h \
+	qgsscangeometries.ui.h \
+	qgsscangeometries.cpp
 
 spit_UIC = qgsconnectiondialogbase.ui \
 	qgsmessageviewerbase.ui \
 	qgsspitbase.ui \
-	qgseditreservedwordsbase.ui
+	qgseditreservedwordsbase.ui \
+	qgsscangeometries.ui
 
 
 spitplugin_la_SOURCES =  qgsspit.cpp \
@@ -63,6 +71,8 @@ spitplugin_la_SOURCES =  qgsspit.cpp \
 	qgseditreservedwordsdialog.h \
 	qgseditreservedwordsdialog.cpp \
 	$(spit_UI)
+
+spit_SOURCES = $(spitplugin_la_SOURCES) ../../src/qgspgutil.cpp  main.cpp $(SPIT_UIC) $(spit_MOC)
 
 nodist_spitplugin_la_SOURCES = $(spit_MOC)
 
@@ -82,4 +92,8 @@ spitplugin_la_LDFLAGS = -avoid-version -module
 spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
 
 
-EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm
+spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)
+#spit_LDFLAGS = -avoid-version -module
+spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
+
+EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm spit_icons.h

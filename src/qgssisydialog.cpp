@@ -183,7 +183,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
                     dense7->setOn(true);
                     break;
                 case Qt::NoBrush :
-                    solid->setOn(true);
+                    nopen->setOn(true);
                     break;
                 default :
                     solid->setOn(true);
@@ -207,6 +207,29 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
         QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
         QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
         QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
+
+	//connect fill style and line style buttons
+	QObject::connect(pbnLineSolid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(pbnLineDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(pbnLineDashDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(pbnLineDash, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(pbnLineDashDotDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(pbnLineNoPen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(solid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(fdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense4, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(horizontal, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(bdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(diagcross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense5, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(vertical, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense1, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense3, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense6, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(cross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense2, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(dense7, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(nopen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
     }
     else
     {
@@ -403,21 +426,17 @@ void QgsSiSyDialog::setOutlineColor(QColor& c)
 
 void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
 {
-#ifdef QGISDEBUG
-    qWarning("Setting outline style: "+QgsSymbologyUtils::penStyle2QString(pstyle));
-#endif
-
     // XXX use switch() instead
     if (pstyle==Qt::NoPen)
         (pbnLineNoPen->setOn(true));
     else if (pstyle==Qt::DashLine)
         (pbnLineDash->setOn(true));
     else if (pstyle==Qt::DotLine)
-        (pbnLineDash->setOn(true));
+        (pbnLineDot->setOn(true));
     else if (pstyle==Qt::DashDotLine)
-        (pbnLineDash->setOn(true));
+        (pbnLineDashDot->setOn(true));
     else if (pstyle==Qt::DashDotDotLine)
-        (pbnLineDash->setOn(true));
+        (pbnLineDashDotDot->setOn(true));
     else
         (pbnLineSolid->setOn(true)); //default to solid
 }
@@ -463,7 +482,7 @@ void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
     else if (fstyle==Qt::Dense7Pattern)
         (dense7->setOn(true));
     else if (fstyle==Qt::NoBrush)
-        (solid->setOn(true)); //default to no brush
+        (nopen->setOn(true)); //default to no brush
 }
 
 void QgsSiSyDialog::setOutlineWidth(int width)
@@ -482,11 +501,11 @@ Qt::PenStyle QgsSiSyDialog::getOutlineStyle()
         return Qt::NoPen;
     else if  (pbnLineDash->isOn())
         return Qt::DashLine;
-    else if  (pbnLineDash->isOn())
+    else if  (pbnLineDot->isOn())
         return Qt::DotLine ;
-    else if  (pbnLineDash->isOn())
+    else if  (pbnLineDashDot->isOn())
         return Qt::DashDotLine;
-    else if  (pbnLineDash->isOn())
+    else if  (pbnLineDashDotDot->isOn())
         return Qt::DashDotDotLine ;
     else
         return Qt::SolidLine; //default to solid
@@ -582,154 +601,3 @@ void QgsSiSyDialog::setLabel(QString label)
 }
 
 
-//
-// These are simple event triggers off the various pattern and line
-// style buttons
-//
-
-
-void QgsSiSyDialog::solid_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::fdiag_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::dense4_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::horizontal_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::diagcross_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::dense5_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::vertical_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::dense1_clicked()
-{
-
-    emit settingsChanged();
-}
-
-
-void QgsSiSyDialog::dense6_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::cross_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::dense2_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::dense7_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::bdiag_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::dense3_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::nopen_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::pbnLineSolid_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::pbnLineDashDot_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::pbnLineDash_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::pbnLineDashDotDot_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::pbnLineDot_clicked()
-{
-    emit settingsChanged();
-
-}
-
-
-void QgsSiSyDialog::pbnLineNoPen_clicked()
-{
-    emit settingsChanged();
-
-}

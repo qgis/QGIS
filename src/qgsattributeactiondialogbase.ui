@@ -106,7 +106,7 @@
                                         <enum>FollowStyle</enum>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clikcing on the item.</string>
+                                        <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</string>
                                     </property>
                                 </widget>
                                 <widget class="QLayoutWidget">
@@ -251,7 +251,7 @@
                                                 <string>Action:</string>
                                             </property>
                                             <property name="whatsThis" stdset="0">
-                                                <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</string>
+                                                <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</string>
                                             </property>
                                         </widget>
                                         <widget class="QLineEdit">
@@ -262,7 +262,7 @@
                                                 <string>Enter the action command here</string>
                                             </property>
                                             <property name="whatsThis" stdset="0">
-                                                <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</string>
+                                                <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</string>
                                             </property>
                                         </widget>
                                         <widget class="QPushButton">

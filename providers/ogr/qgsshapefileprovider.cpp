@@ -23,7 +23,6 @@
 //    tolerate geos.h without throwing a bunch of type errors. It
 //    appears that the windows version of GEOS may be compiled with 
 //    MINGW rather than VC++.
-#include <geos.h>
 #endif 
 #include "ogr_api.h"//only for a test
 
@@ -48,11 +47,11 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri): QgsVectorDataProvider()
   std::cerr << "Data source uri is " << uri << std::endl;
 #endif
   // try to open for update
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,TRUE);
+  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),TRUE);
   if(ogrDataSource == NULL)
   {
     // try to open read-only
-    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri,FALSE);
+    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),FALSE);
   //TODO Need to set a flag or something to indicate that the layer
   //TODO is in read-only mode, otherwise edit ops will fail
   }
@@ -111,6 +110,13 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri): QgsVectorDataProvider()
   {
     minmaxcache[i]=new double[2];
   }
+  // create the geos objects
+  geometryFactory = new geos::GeometryFactory();
+    assert(geometryFactory!=0);
+    // create the reader
+//    std::cerr << "Creating the wktReader\n";
+    wktReader = new geos::WKTReader(geometryFactory);
+
 }
 
 QgsShapeFileProvider::~QgsShapeFileProvider()
@@ -121,6 +127,8 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
   }
   delete[] minmaxcache;
 
+    delete geometryFactory;
+    delete wktReader;
 }
 
 /**
@@ -263,18 +271,21 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 #ifndef NOWIN32GEOSXXX
     // create the geos geometry factory
 //    std::cerr << "Creating the GEOS geometry factory\n";
-    geos::GeometryFactory *gf = new geos::GeometryFactory();
-    assert(gf!=0);
+//    geos::GeometryFactory *gf = new geos::GeometryFactory();
+//    assert(gf!=0);
     // create the reader
 //    std::cerr << "Creating the wktReader\n";
-    geos::WKTReader *wktReader = new geos::WKTReader(gf);
-    assert(wktReader !=0);
+//    geos::WKTReader *wktReader = new geos::WKTReader(gf);
+//    assert(wktReader !=0);
 #endif 
     OGRGeometry *geom;
 //    std::cerr << "Starting read of features\n";
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
       {
+#ifdef QGISDEBUG
+	  qWarning("Testing a geometry for intersection with geos");
+#endif
         if(mUseIntersect)
         {
     //TODO Following ifndef can be removed once WIN32 GEOS support
@@ -291,17 +302,28 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 //          std::cerr << "Using geos intersect to filter features\n";
           geom  =  fet->GetGeometryRef();
           char *wkt = new char[2 * geom->WkbSize()];
-
+#ifdef QGISDEBUG
+	  qWarning("before exportToWkt");
+#endif
           geom->exportToWkt(&wkt);
+#ifdef QGISDEBUG
+	  qWarning("after exportToWkt");
+#endif
           //std::cerr << "Passing " << wkt << " to goes\n";
 //          std::cerr << "Creating geos geometry from wkt\n";
+#ifdef QGISDEBUG
+	  qWarning("before readWkt");
+#endif	  
           geos::Geometry *geosGeom = wktReader->read(wkt);
+#ifdef QGISDEBUG
+	  qWarning("after readWkt");
+#endif
           assert(geosGeom != 0);
 //          std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
           // get the selection rectangle and create a geos geometry from it
           char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
           mSelectionRectangle->exportToWkt(&sWkt);
-//          std::cerr << "Passing " << sWkt << " to goes\n";
+//          std::cerr << "Passing " << sWkt << " to goes\n";	  
           geos::Geometry *geosRect = wktReader->read(sWkt);
           assert(geosRect != 0);
 //          std::cerr << "About to apply intersects function\n";
@@ -310,34 +332,45 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 #ifdef QGISDEBUG
 //          std::cerr << "Testing intersection using geos\n";
 #endif
+#ifdef QGISDEBUG
+	  qWarning("before geos intersection test");
+#endif
           if(geosGeom->intersects(geosRect))
+#ifdef QGISDEBUG
+	  qWarning("after geos intersection test");
+#endif
+          //if(geom->Overlaps(mSelectionRectangle))
           {
 //            std::cerr << "Intersection found\n";
             break;
+#ifdef QGISDEBUG
+	  qWarning("intersection test finished");
+#endif 
           }
 //          std::cerr << "Deleting objects used in geos intersect\n";
 #ifndef WIN32
           //XXX For some reason deleting these on win32 causes segfault
           //XXX Someday I'll figure out why...
-          delete[] wkt;  
-          delete[] sWkt;  
+          //delete[] wkt;  
+          //delete[] sWkt;  
 #endif
-          delete geosGeom;
-          delete geosRect;
+//          delete geosGeom;
+          //delete geosRect;
 #endif
         }
         else
         {
           break;
         }
+#ifdef QGISDEBUG
+	  qWarning("intersection test finished");
+#endif
       }
     }
     //TODO Following ifndef can be removed once WIN32 GEOS support
     //    is fixed
 #ifndef NOWIN32GEOSXXX
 //    std::cerr << "Deleting geometry factory and wktReader\n";
-    delete gf;
-    delete wktReader;
 #endif 
     if(fet){
       geom = fet->GetGeometryRef();
@@ -389,13 +422,13 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
            {
              // test this geometry to see if it should be
              // returned 
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG2 
              std::cerr << "Testing geometry using intersect" << std::endl; 
 #endif 
            }
            else
            {
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG2 
              std::cerr << "Testing geometry using mbr" << std::endl; 
 #endif 
              break;
@@ -452,7 +485,7 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
 {
   mUseIntersect = useIntersect;
   // spatial query to select features
-  //  std::cerr << "Selection rectangle is " << *rect << std::endl;
+   std::cerr << "Selection rectangle is " << *rect << std::endl;
   OGRGeometry *filter = 0;
   filter = new OGRPolygon();
   QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
@@ -475,12 +508,13 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) {
-    //      std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
+         std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
     ogrLayer->SetSpatialFilter(filter);
-    //      std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
+         std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
   }else{
 #ifdef QGISDEBUG    
     std::cerr << "Setting spatial filter failed!" << std::endl;
+    assert(result==OGRERR_NONE);
 #endif
   }
 }
@@ -596,6 +630,7 @@ void QgsShapeFileProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature *
     QString val;
     //val = ogrFet->GetFieldAsString(attindex);
     val = QString::fromUtf8(ogrFet->GetFieldAsString(attindex));
+    //val = QString::fromLatin1(ogrFet->GetFieldAsString(attindex));
     f->addAttribute(fld, val);
 }
 
@@ -699,10 +734,10 @@ bool QgsShapeFileProvider::isValid()
 }
 
 bool QgsShapeFileProvider::addFeature(QgsFeature* f)
-{
-  qWarning("try to commit a feature");
-  
-  
+{ 
+#ifdef QGISDEBUG
+    qWarning("in add Feature");
+#endif
     bool returnValue = true;
     OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
     OGRFeature* feature=new OGRFeature(fdef);
@@ -722,9 +757,6 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
           OGRLineString* l=new OGRLineString();
           int length;
           memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
-#ifdef QGISDEBUG
-          qWarning("length: "+QString::number(length));
-#endif
           l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
           feature->SetGeometry(l);
           break;
@@ -780,6 +812,7 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
           int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
           multil->importFromWkb(f->getGeometry(),size);
           feature->SetGeometry(multil);
+	  break;
         }
       case QGis::WKBMultiPolygon:
         {
@@ -810,29 +843,51 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
           int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
           multipol->importFromWkb(f->getGeometry(),size);
           feature->SetGeometry(multipol);
+	  break;
         }
+    }
 	//add possible attribute information
-       
+#ifdef QGISDEBUG
+	qWarning("before attribute commit section");
+#endif
 	for(int i=0;i<f->attributeMap().size();++i)
 	{
 	    QString s=(f->attributeMap())[i].fieldValue();
+#ifdef QGISDEBUG
+	    qWarning("adding attribute: "+s);
+#endif
 	    if(!s.isEmpty())
 	    {
 		if(fdef->GetFieldDefn(i)->GetType()==OFTInteger)
 		{
 		    feature->SetField(i,s.toInt());
+#ifdef QGISDEBUG
+	    qWarning("OFTInteger, attribute value: "+s.toInt());
+#endif
 		}
 		else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
 		{
 		    feature->SetField(i,s.toDouble());
+#ifdef QGISDEBUG
+	    qWarning("OFTReal, attribute value: "+QString::number(s.toDouble(),'f',3));
+#endif
 		}
 		else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
 		{
 		    feature->SetField(i,s.ascii());
+#ifdef QGISDEBUG
+	    qWarning("OFTString, attribute value: "+QString(s.ascii()));
+#endif
+		}
+		else
+		{
+#ifdef QGISDEBUG
+		    qWarning("no type found");
+#endif
 		}
 	    }
 	}
-    }
+    
 
     if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
     {
@@ -843,6 +898,7 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
     }
     ++numberFeatures;
     delete feature;
+    ogrLayer->SyncToDisk();
     return returnValue;
 }
 
@@ -865,7 +921,7 @@ bool QgsShapeFileProvider::addFeatures(std::list<QgsFeature*> flist)
  */
 QGISEXTERN QgsShapeFileProvider * classFactory(const char *uri)
 {
-  return new QgsShapeFileProvider(uri);
+  return new QgsShapeFileProvider(QString::fromUtf8(uri));
 }
 /** Required key function (used to map the plugin to a data store type)
 */

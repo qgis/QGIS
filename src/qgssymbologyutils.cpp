@@ -1273,7 +1273,10 @@ Qt::BrushStyle QgsSymbologyUtils::char2BrushStyle(const char *c)
   } else if (strcmp(c, "CustomPattern") == 0)
     {
       return Qt::CustomPattern;
-  } else                        //return a null string
+  } else if(strcmp(c, "NoBrush") == 0)
+{
+    return Qt::NoBrush;
+}else                        //return a null string
     {
       qWarning("Warning, no matching brush style found in QgsSymbologyUtils::char2BrushStyle");
       return Qt::NoBrush;

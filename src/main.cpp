@@ -40,7 +40,6 @@
 #include "qgsexception.h"
 #include "qgsproject.h"
 
-#include <splashscreen.h>
 static const char * const ident_ = "$Id$";
 
 /** print usage text

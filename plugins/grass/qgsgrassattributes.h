@@ -35,8 +35,8 @@ class QgsGrassAttributes: public QgsGrassAttributesBase
 public:
     //! Constructor
     QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
-	                 QWidget * parent = 0, const char * name = 0, 
-			 WFlags f = Qt::WType_Dialog | Qt::WStyle_Customize | Qt::WStyle_Tool );
+                   QWidget * parent = 0, const char * name = 0, 
+       WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_Dialog | Qt::WStyle_Tool);
 
     //! Destructor
     ~QgsGrassAttributes();

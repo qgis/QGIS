@@ -79,7 +79,9 @@ void QgsPgGeoprocessing::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
 
-  pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
+  int menuId = pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
+  pluginMenu->setWhatsThis(menuId, "Create a buffer for a PostgreSQL layer. "
+      "A new layer is created in the database with the buffered features.");
   //  pluginMenu->insertItem("&Unload Geoprocessing Plugin", this, SLOT(unload()));
 
   menu = ((QMainWindow *) qgisMainWindow)->menuBar();
@@ -89,6 +91,8 @@ void QgsPgGeoprocessing::initGui()
   // Create the action for tool
   bufferAction = new QAction("Buffer features", QIconSet(icon_buffer), "&Buffer",
       0, this, "buffer");
+  bufferAction->setWhatsThis("Create a buffer for a PostgreSQL layer. "
+      "A new layer is created in the database with the buffered features.");
   // Connect the action to the zoomPrevous slot
   connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
 
@@ -139,6 +143,7 @@ void QgsPgGeoprocessing::buffer()
         user = user.mid(user.find("=") + 1);
 
         // show dialog to fetch buffer distrance, new layer name, and option to
+        // add the new layer to the map
         QgsDlgPgBuffer *bb = new QgsDlgPgBuffer(qI);
 
         // set the label
@@ -321,10 +326,17 @@ void QgsPgGeoprocessing::buffer()
                 // host=localhost dbname=gis_data user=gsherman password= table=public.alaska (the_geom)
                 // Using addVectorLayer requires that be add a table=xxxx to the layer path since
                 // addVectorLayer is generic for all supported layers
-                qI->addVectorLayer(newLayerSource + "table=" + bb->schema() + "." + bb->bufferLayerName()
-                    + " (" + bb->geometryColumn() + ")",
-                    bb->schema() + "." + bb->bufferLayerName() + " (" + bb->geometryColumn() + ")", 
-                    "postgres");
+               std::cerr << "Building dataURI string" << std::endl; 
+                QString dataURI = newLayerSource + "table=" + bb->schema() + "." + bb->bufferLayerName()
+                    + " (" + bb->geometryColumn() + ")\n" +
+                    bb->schema() + "." + bb->bufferLayerName() + " (" + bb->geometryColumn() + ")\n" +
+                    "postgres"; 
+                    
+                    std::cerr << "Passing to addVectorLayer:\n" << dataURI << std::endl;
+                 qI->addVectorLayer(newLayerSource + "table=" + bb->schema() + "." + bb->bufferLayerName()
+                     + " (" + bb->geometryColumn() + ")",
+                 bb->schema() + "." + bb->bufferLayerName() + " (" + bb->geometryColumn() + ")", 
+                 "postgres"); 
 
               }
             } else {

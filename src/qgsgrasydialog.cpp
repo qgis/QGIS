@@ -91,7 +91,19 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     if (renderer)
     {
 	std::list < QgsRangeRenderItem * >list = renderer->items();
-	classificationComboBox->setCurrentItem(renderer->classificationField());
+	
+	//display the classification field
+	QString classfield="";
+	for(std::map<QString,int>::iterator it=mFieldMap.begin();it!=mFieldMap.end();++it)
+	{
+	    if(it->second==renderer->classificationField())
+	    {
+		classfield=it->first;
+		break;
+	    }
+	}
+	classificationComboBox->setCurrentText(classfield);
+
 	QGis::VectorType m_type = mVectorLayer->vectorType();
 	numberofclassesspinbox->setValue(list.size());
 	//fill the items of the renderer into mValues
@@ -233,8 +245,15 @@ void QgsGraSyDialog::apply()
 	int rowincrement = rowheight + rowspace;
 	int i=0;
 
-	for (std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+	for (int item=0;item<mClassBreakBox->count();++item)
         {
+	    QString classbreak=mClassBreakBox->text(item);
+	    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(classbreak);
+	    if(it==mEntries.end())
+	    {
+		continue;
+	    }
+	
 	    QgsSymbol* sy = new QgsSymbol();
 	    
 	    sy->pen().setColor(it->second->getSymbol()->pen().color());
@@ -368,7 +387,7 @@ void QgsGraSyDialog::adjustClassification()
     {
 	QgsRangeRenderItem* rritem = new QgsRangeRenderItem();
 	QgsSymbol* symbol = new QgsSymbol();
-	rritem->setLabel(sydialog.label());
+	rritem->setLabel("");
 	QPen pen;
 	QBrush brush;
 
@@ -426,46 +445,50 @@ void QgsGraSyDialog::adjustClassification()
 
 void QgsGraSyDialog::changeCurrentValue()
 {
+    sydialog.blockSignals(true);//block signals to prevent sydialog from changing the current QgsRenderItem
     QListBoxItem* item=mClassBreakBox->selectedItem();
-    QString value=item->text();
-    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
-    if(it!=mEntries.end())
+    if(item)
     {
-	QPen& pen=it->second->getSymbol()->pen();
-	QBrush& brush=it->second->getSymbol()->brush();
-	QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
-	QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
-	if(mVectorLayer->vectorType()!=QGis::Line)
+	QString value=item->text();
+	std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
+	if(it!=mEntries.end())
 	{
-	    sydialog.setFillColor(fcolor);
-	    sydialog.setFillStyle(brush.style());
+	    QPen& pen=it->second->getSymbol()->pen();
+	    QBrush& brush=it->second->getSymbol()->brush();
+	    QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
+	    QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
+	    if(mVectorLayer->vectorType()!=QGis::Line)
+	    {
+		sydialog.setFillColor(fcolor);
+		sydialog.setFillStyle(brush.style());
+	    }
+	    sydialog.setOutlineColor(ocolor);
+	    sydialog.setOutlineStyle(pen.style());
+	    sydialog.setOutlineWidth(pen.width());
+	    sydialog.setLabel(it->second->label());
 	}
-	sydialog.setOutlineColor(ocolor);
-	sydialog.setOutlineStyle(pen.style());
-	sydialog.setOutlineWidth(pen.width());
-	sydialog.setLabel(it->second->label());
     }
-    else
-    {
-	//no entry found
-    }
+    sydialog.blockSignals(false);
 }
 
 void QgsGraSyDialog::applySymbologyChanges()
 {
     QListBoxItem* item=mClassBreakBox->selectedItem();
-    QString value=item->text();
-    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
-    if(it!=mEntries.end())
+    if(item)
     {
-	QPen& pen=it->second->getSymbol()->pen();
-	QBrush& brush=it->second->getSymbol()->brush(); 
-	pen.setWidth(sydialog.getOutlineWidth());
-	pen.setColor(sydialog.getOutlineColor());
-	pen.setStyle(sydialog.getOutlineStyle());
-	brush.setColor(sydialog.getFillColor());
-	brush.setStyle(sydialog.getFillStyle());
-	it->second->setLabel(sydialog.label());
+	QString value=item->text();
+	std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
+	if(it!=mEntries.end())
+	{
+	    QPen& pen=it->second->getSymbol()->pen();
+	    QBrush& brush=it->second->getSymbol()->brush(); 
+	    pen.setWidth(sydialog.getOutlineWidth());
+	    pen.setColor(sydialog.getOutlineColor());
+	    pen.setStyle(sydialog.getOutlineStyle());
+	    brush.setColor(sydialog.getFillColor());
+	    brush.setStyle(sydialog.getFillStyle());
+	    it->second->setLabel(sydialog.label());
+	}
     }
 }
 

@@ -1,0 +1,68 @@
+\chapter{Introduction}
+
+Welcome to the wonderful world of Geographical Information Systems (GIS)! Quantum GIS (QGIS) is an Open Source Geographic Information System. The project was born in May of 2002 and was established as a project on SourceForge in June of the same year. We've worked hard to make GIS software (which is traditionaly expensive commerical software) a viable prospect for anyone with basic access to a Personal Computer. QGIS currently runs on most Unix platforms, Window, and OS X. QGIS is developed using the Qt toolkit (\url{http://www.trolltech.com}) and C++. This means that QGIS feels snappy to use and has a pleasing, easy to use graphical user interface. 
+
+QGIS aims to be an easy to use GIS, providing common functions and features. The initial goal was to provide a GIS data viewer. QGIS has reached that point in its evolution and is being used by many for their daily GIS data viewing needs. QGIS supports a number of raster and vector data formats, with new support easily added using the plugin architecture (see Appendix \ref{appdx_data_formats} for a full list of currenly supported data formats). QGIS is released under the GNU Public License (GPL). Devloping QGIS under this license means that you can (if you want to) inspect and modify the source code and guarantees that you, our happy user will always have access to a GIS program that is free of cost and can be freely modified. You should have received a full copy of the license with your copy of QGIS, and is also available as Appendix \ref{gpl_appendix}.  
+\begin{quote}
+\begin{center}
+\textbf{Note:} The latest version of this document can always be found at \newline
+http://qgis.sourceforge.net/docs/userguide.html 
+\end{center}
+\end{quote}
+
+\section{Major Features}
+
+QGIS has many common GIS features and functions. The major features
+are listed below. 
+
+\begin{compactenum}
+\item Support for spatially enabled PostgreSQL tables using PostGIS 
+\item Support for ESRI shapefiles and other vector formats support by the
+OGR library, including MapInfo files 
+\item Identify features 
+\item Display attribute table 
+\item Select features 
+\item Label features
+\item Persistent selections 
+\item Save and restore projects
+\item Support for raster formats supported by the GDAL library 
+\item Change vector symbology (single, graduated, unique value, and continuous) 
+\item SVG markers symbology (single, unique value, and graduated) 
+\item Display raster data such as digital elevation models, aerial photography
+or landsat imagery 
+\item Change raster symbology (grayscale, pseudocolor and multiband RGB) 
+\item Export to Mapserver map file 
+\item Preliminary digitizing support
+\item Map overview
+\item Plugins 
+\end{compactenum}
+
+
+\section{Whats New in 0.6}
+QGIS is still under development. In this release many new features have become available including:
+\begin{compactenum}
+\item GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.
+\item PostGIS editing support in provider
+\item Vector dialog redesign to improve usability
+\item Improvement in project handling (loading and saving)
+\item Scale dependent rendering
+\item User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete
+\item Interrupt drawing of features by hitting ESC
+\item Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer
+\item Create new vector layer (shapefile) for editing
+\item Windows installer
+ Mac OSX binary
+\item New options in the graticule builder plugin
+\item Enhancements to the GPS plugin
+\item Man page
+\item Save delimited text as shapefile
+\item Improved Delimited Text plugin, including preview of text file
+\item Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types
+\item Display SQL query used to create a PostGIS layer
+\item PostgreSQL query builder
+\item Ability to redefine the query used for PostgreSQL layers from the layer properties dialog
+\item North arrow, scalebar, and copyright plugins save their state in the project file
+\item Datasets with UTF8, Kanjii and CJK filenames now load properly
+
+\end{compactenum}
+

@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
+#include <cassert>
 #include <qsettings.h>
 #include <qpixmap.h>
 #include <qlistbox.h>
@@ -257,6 +258,7 @@ void QgsDbSourceSelect::setSql(QListViewItem *item)
 {
   // Parse out the table name
   QString table = item->text(1).left(item->text(1).find("("));
+  assert(pd != 0);
   // create a query builder object
   QgsPgQueryBuilder * pgb = new QgsPgQueryBuilder(table, pd, this);
   // set the current sql in the query builder sql box

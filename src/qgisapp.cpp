@@ -257,6 +257,48 @@ static char *identify_cursor[] = {
                                      "#############.##"
                                  };
 
+
+/** set the application title bar text
+
+  If the current project title is null
+     if the project file is null then
+         set title text to just application name and version
+     else
+         set set title text to the the project file name
+  else
+     set the title text to project title
+ */
+static
+void
+setTitleBarText_( QWidget & qgisApp )
+{
+    QString caption = QgisApp::tr("Quantum GIS - ");
+    caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName) + " ";
+
+    if ( QgsProject::instance()->title().isEmpty() )
+    {
+        if ( QgsProject::instance()->filename().isEmpty() )
+        {
+            // no project title nor file name, so just leave caption with
+            // application name and version
+        }
+        else
+        {
+            QFileInfo projectFileInfo( QgsProject::instance()->filename() );
+            caption += projectFileInfo.baseName();
+        }
+    }
+    else
+    {
+        caption += QgsProject::instance()->title();
+    }
+
+    qgisApp.setCaption( caption );
+} // setTitleBarText_( QWidget * qgisApp )
+
+
+
+
 // constructor starts here
 
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
@@ -275,9 +317,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
         gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
         gSplashScreen->setStatus(tr("Loading QGIS..."));
         qApp->processEvents();
-        // Set up the timer so the splash screen stays up for
-        // another 5 seconds, then kill it.
-        QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
+
         //  gSplashScreen->setStatus(tr("QGIS ready"));
     }
 
@@ -298,6 +338,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     if (!myHideSplashFlag)
     {
         gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
+        qApp->processEvents();
     }
     QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
     QSplitter *canvasLegendSplit = new QSplitter(frameMain);
@@ -306,10 +347,14 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mMapLegend = new QgsLegend(legendOverviewSplit, "theMapLegend", this);
     mMapLegend->addColumn(tr("Layers"));
     mMapLegend->setSorting(-1);
+    QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
 
     // "theOverviewCanvas" used to find canonical
     // instance later
     mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit, "theOverviewCanvas");
+    QWhatsThis::add(mOverviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
+    //tell the overview canvas it is an overview canvas so it will suppress labels etc
+    mOverviewCanvas->setIsOverviewCanvas(true);
     // lock the canvas to prevent user interaction
     mOverviewCanvas->userInteractionAllowed(false);
 
@@ -319,6 +364,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // "theMapCanvas" used to find this canonical
     // instance later
     mMapCanvas = new QgsMapCanvas(canvasLegendSplit, "theMapCanvas" );
+    QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
     // we need to cache the layer registry instance so plugins can get to it
     // now explicitly refer to Singleton -- mLayerRegistry = QgsMapLayerRegistry::instance();
     // resize it to fit in the frame
@@ -367,8 +413,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // menu when they are loaded by the plugin manager
     mPluginMenu->insertSeparator();
     // Add to the menubar
-    menuBar()->insertItem("&Plugins", mPluginMenu, -1, menuBar()->count() - 1);
-    
+    menuBar()->insertItem(tr("&Plugins"), mPluginMenu, -1, menuBar()->count() - 1);
+
 
     // create the layer popup menu
     mMapCursor = 0;
@@ -379,6 +425,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
 
     // set the legend control for the map canvas
     mMapCanvas->setLegend(mMapLegend);
+
 
     // disable functions based on build type
 #ifndef HAVE_POSTGRESQL
@@ -397,15 +444,19 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
 
     mProgressBar = new QProgressBar(100,this);
     mProgressBar->setMaximumWidth(100);
+    QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
     statusBar()->addWidget(mProgressBar, 1,true);
     mScaleLabel = new QLabel(QString("Scale"),this);
     mScaleLabel->setMinimumWidth(100);
+    QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
     statusBar()->addWidget(mScaleLabel, 0,true);
     mCoordsLabel = new QLabel(QString("Coordinates:"), this);
     mCoordsLabel->setMinimumWidth(200);
+    QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
     statusBar()->addWidget(mCoordsLabel, 0, true);
     mRenderSuppresionCBox = new QCheckBox(tr("Render"),this);
     mRenderSuppresionCBox->setChecked(true);
+    QWhatsThis::add(mRenderSuppresionCBox, tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
     statusBar()->addWidget(mRenderSuppresionCBox,0,true);
 
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
@@ -490,7 +541,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     if (! myHideSplashFlag)
     {
         gSplashScreen->setStatus(tr("Setting theme..."));
+        qApp->processEvents();
     }
+
     // get the users theme preference from the settings
     QString themeName = settings.readEntry("/qgis/theme","default");
 
@@ -508,6 +561,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     if (! myHideSplashFlag)
     {
         gSplashScreen->setStatus(tr("QGIS Ready"));
+
+        // Set up the timer so the splash screen stays up for
+        // another 1 seconds, then kill it.
+        QTimer::singleShot( 1000, this, SLOT(killSplashScreen()) );
+        qApp->processEvents();
     }
     // set the focus to the map canvase
     mMapCanvas->setFocus();
@@ -575,6 +633,22 @@ void QgisApp::about()
                + tr("Enhancements to the GPS plugin")
                + "<li>"
                + tr("Man page")
+               + "<li>"
+               + tr("Save delimited text as shapefile")
+               + "<li>"
+               + tr("Improved Delimited Text plugin, including preview of text file")
+               + "<li>"
+               + tr("Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types")
+               + "<li>"
+               + tr("Display SQL query used to create a PostGIS layer")
+               + "<li>"
+               + tr("PostgreSQL query builder")
+               + "<li>"
+               + tr("Ability to redefine the query used for PostgreSQL layers from the layer properties dialog")
+               + "<li>"
+               + tr("North arrow, scalebar, and copyright plugins save their state in the project file")
+               + "<li>"
+               + tr("Datasets with UTF8, Kanjii and CJK filenames now load properly")
                + "</ul></body></html>";
 
 
@@ -780,7 +854,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
         }
         else if (driverName.startsWith("MapInfo"))
         {
-            myFileFilters += createFileFilter_("MapInfo", "*.mif *.mid *.tab");
+            myFileFilters += createFileFilter_("MapInfo", "*.mif *.tab");
             // XXX needs file filter extension
         }
         else if (driverName.startsWith("DGN"))
@@ -856,7 +930,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 */
 static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles)
 {
-  
+
     bool haveLastUsedFilter = false;  // by default, there is no last
     // used filter
 
@@ -909,7 +983,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 */
 void QgisApp::addLayer()
 {
-  
+
     QString fileFilters;
 
     buildSupportedVectorFileFilter_(fileFilters);
@@ -1032,6 +1106,16 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
                          SIGNAL(keyPressed(QKeyEvent *)),
                          layer,
                          SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
     }
     else
     {
@@ -1159,6 +1243,16 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
                                  SIGNAL(keyPressed(QKeyEvent *)),
                                  layer,
                                  SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
             }
             else
             {
@@ -1278,6 +1372,16 @@ void QgisApp::addDatabaseLayer()
                                      SIGNAL(keyPressed(QKeyEvent *)),
                                      layer,
                                      SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
                 }
                 else
                 {
@@ -1307,7 +1411,6 @@ void QgisApp::addDatabaseLayer()
 void QgisApp::fileExit()
 {
     QApplication::exit();
-
 }
 
 void QgisApp::fileNew()
@@ -1322,16 +1425,22 @@ void QgisApp::fileNew()
         mMapCanvas->clear();
         mOverviewCanvas->clear();
 
-        QString caption = tr("Quantum GIS - ");
 
-        caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-        caption += " -- Untitled";
-        setCaption( caption );
-
+        QgsProject::instance()->title( QString::null );
         QgsProject::instance()->filename( QString::null );
+
+#ifdef QGISDEBUG
+        std::cout << "Clearing project properties" << std::endl;
+#endif
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
 
+        setTitleBarText_( *this );
+#ifdef QGISDEBUG
+        std::cout << "emiting new project signal" << std::endl ;
+#endif
+        //note by Tim: I did some casual egrepping and this signal doesnt actually
+        //seem to be connected to anything....why is it here? Just for future needs?
         emit newProject();
 
         mMapCanvas->freeze(false);
@@ -1355,15 +1464,12 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
         mOverviewCanvas->removeAll();
         mOverviewCanvas->clear();
 
-        QString caption = tr("Quantum GIS - ");
-        caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-        caption += " Untitled ";
-
-        setCaption( caption );
-
+        QgsProject::instance()->title( QString::null );
         QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
+
+        setTitleBarText_( *this );
 
         emit newProject();
     }
@@ -1388,7 +1494,11 @@ void QgisApp::newVectorLayer()
         //file dialog rejected
         return;
     }
-
+    // check to see if user specified the extension. if not, add it...
+    if(filename.find(QRegExp("\\.shp$")) == -1)
+    {
+      filename += ".shp";
+    }
     //strange, the 'provider way' does not work...
     /*QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
     QString ogrlib = pReg->library("ogr");
@@ -1502,16 +1612,12 @@ void QgisApp::fileOpen()
 
         if ( QgsProject::instance()->read() )
         {
-            QString caption = tr("Quantum GIS - ");
-            caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-
-            setCaption( caption + " " + QgsProject::instance()->title() );
-
+            setTitleBarText_( *this );
+            mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
             emit projectRead();     // let plug-ins know that we've read in a new
             // project so that they can check any project
             // specific plug-in state
         }
-
     }
 
 } // QgisApp::fileOpen
@@ -1534,10 +1640,7 @@ bool QgisApp::addProject(QString projectFile)
     {
         if ( QgsProject::instance()->read( projectFile ) )
         {
-            QString caption = tr("Quantum GIS - ");
-            caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-
-            setCaption( caption + " " + QgsProject::instance()->title() );
+            setTitleBarText_( *this );
 
             emit projectRead();       // let plug-ins know that we've read in a new
             // project so that they can check any project
@@ -1577,20 +1680,38 @@ void QgisApp::fileSave()
         {
             return;             // they didn't select anything, so just abort
         }
+        // make sure we have the .qgs extension in the file name
+        if(fullPath.find(QRegExp("\\.qgs$")) == -1)
+        {
+          fullPath += ".qgs";
+        }
 
         QgsProject::instance()->filename( fullPath );
     }
 
-    if ( QgsProject::instance()->write() )
+    try
     {
-        statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        if ( QgsProject::instance()->write() )
+        {
+            statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        }
+        else
+        {
+            QMessageBox::critical(this,
+                                  tr("Unable to save project"),
+                                  tr("Unable to save project to ") + QgsProject::instance()->filename() );
+        }
     }
-    else
+    catch ( std::exception & e )
     {
-        QMessageBox::critical(this,
-                              tr("Unable to save project"),
-                              tr("Unable to save project to ") + QgsProject::instance()->filename() );
+        QMessageBox::critical( 0x0,
+                               "Unable to save project " + QgsProject::instance()->filename(),
+                               e.what(),
+                               QMessageBox::Ok,
+                               QMessageBox::NoButton );
+
     }
+
 } // QgisApp::fileSave
 
 
@@ -1606,6 +1727,11 @@ void QgisApp::fileSaveAs()
     if ( fullPath.isNull() )
     {
         return;             // they didn't select anything, so just abort
+    }
+    // make sure the .qgs extension is included in the path name. if not, add it...
+    if (fullPath.find(QRegExp("\\.qgs$")) == -1)
+    {
+      fullPath += ".qgs";
     }
 
     QgsProject::instance()->filename( fullPath );
@@ -1626,6 +1752,14 @@ void QgisApp::fileSaveAs()
 
 void QgisApp::filePrint()
 {
+    //
+    //  Warn the user first that priting is experimental still
+    //
+    QString myHeading = "QGIS Printing Support is Experimental";
+    QString myMessage = "Please note that printing only works on A4 landscape at the moment.\n";
+    myMessage += "For other page sizes your mileage may vary.\n";
+    QMessageBox::information( this, tr(myHeading),tr(myMessage) );
+
     QPrinter myQPrinter;
     if(myQPrinter.setup(this))
     {
@@ -2278,7 +2412,8 @@ void QgisApp::removeLayer()
 #ifdef QGISDEBUG
     std::cout << "QGisApp Removing layer" << std::endl;
 #endif
-
+    //make sure canvase is not rendering first by faking an escape keypress
+    emit keyPressEvent(new QKeyEvent(QEvent::KeyPress ,Qt::Key_Escape,Qt::Key_Escape,0 ));
     mMapCanvas->freeze();
     QListViewItem *lvi = mMapLegend->currentItem();
     QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
@@ -2369,18 +2504,37 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
                     toolPopupCapture->setItemEnabled(0,TRUE);
                     toolPopupCapture->setItemEnabled(1,FALSE);
                     toolPopupCapture->setItemEnabled(2,FALSE);
+		    if(mMapCanvas->mapTool() == QGis::CaptureLine || mMapCanvas->mapTool() == QGis::CapturePolygon)
+		    {
+			mMapCanvas->setMapTool(QGis::CapturePoint);
+		    }
                 }
                 else if(vlayer->vectorType()==QGis::Line)
                 {
+#ifdef QGISDEBUG
+		    qWarning("QgisApp::currentLayerChanged: Line type recognized");
+		    qWarning("current map tool is: "+QString::number(mMapCanvas->mapTool()));
+#endif
                     toolPopupCapture->setItemEnabled(0,FALSE);
                     toolPopupCapture->setItemEnabled(1,TRUE);
                     toolPopupCapture->setItemEnabled(2,FALSE);
+		    if(mMapCanvas->mapTool() == QGis::CapturePoint || mMapCanvas->mapTool() == QGis::CapturePolygon)
+		    {
+#ifdef QGISDEBUG
+			qWarning("Changing map tool");
+#endif
+			mMapCanvas->setMapTool(QGis::CaptureLine);
+		    }
                 }
                 else if(vlayer->vectorType()==QGis::Polygon)
                 {
                     toolPopupCapture->setItemEnabled(0,FALSE);
                     toolPopupCapture->setItemEnabled(1,FALSE);
                     toolPopupCapture->setItemEnabled(2,TRUE);
+		    if(mMapCanvas->mapTool() == QGis::CapturePoint || mMapCanvas->mapTool() == QGis::CaptureLine)
+		    {
+			mMapCanvas->setMapTool(QGis::CapturePolygon);
+		    }
                 }
 
                 QgsVectorDataProvider* dprov=vlayer->getDataProvider();
@@ -2977,8 +3131,12 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     {
         // ask user for browser and use it
         bool ok;
-        QString text = QInputDialog::getText("QGIS Browser Selection",
-                                             "Enter the name of a web browser to use (eg. konqueror).\nEnter the full path if the browser is not in your PATH.\nYou can change this option later by selection Options from the Tools menu.",
+        QString myHeading = "QGIS Browser Selection";
+        QString myMessage = "Enter the name of a web browser to use (eg. konqueror).\n";
+        myMessage += "Enter the full path if the browser is not in your PATH.\n";
+        myMessage += "You can change this option later by selecting Preferences from the Settings menu.";
+        QString text = QInputDialog::getText(tr(myHeading),
+                                             tr(myMessage),
                                              QLineEdit::Normal,
                                              QString::null, &ok, this);
         if (ok && !text.isEmpty())
@@ -3096,6 +3254,19 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
                              SIGNAL(keyPressed(QKeyEvent * )),
                              layer,
                              SLOT(keyPressed(QKeyEvent* )));
+
+
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
+
 
             QgsProject::instance()->dirty(false); // XXX this might be redundant
 
@@ -3360,22 +3531,16 @@ void QgisApp::projectProperties()
 {
     QgsProjectProperties *pp = new QgsProjectProperties(this);
 
-    pp->setMapUnits(mMapCanvas->mapUnits());
-    pp->title( QgsProject::instance()->title() );
-
     if(pp->exec())
     {
         // set the map units for the project (ie the map canvas)
         mMapCanvas->setMapUnits(pp->mapUnits());
         QgsProject::instance()->title( pp->title() );
 
-        QString caption = tr("Quantum GIS - ");
-        caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
-
-        setCaption(caption + pp->title());
-
+        setTitleBarText_( *this );
     }
-}
+} // QgisApp::projectProperties
+
 
 QgsMapLayerRegistry * QgisApp::getLayerRegistry()
 {
@@ -3420,6 +3585,8 @@ void QgisApp::setTheme(QString themeName)
     actionAddNonDbLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_vector_layer.png")));
     actionAddRasterLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_raster_layer.png")));
     actionAddLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_pg_layer.png")));
+    actionRemoveLayer->setIconSet(QIconSet(QPixmap(iconPath + "/remove_layer.png")));
+    actionNewVectorLayer->setIconSet(QIconSet(QPixmap(iconPath + "/digitise_vector_layer.png")));
     actionAddAllToOverview->setIconSet(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")));
     actionHideAllLayers->setIconSet(QIconSet(QPixmap(iconPath + "/hide_all_layers.png")));
     actionShowAllLayers->setIconSet(QIconSet(QPixmap(iconPath + "/show_all_layers.png")));
@@ -3442,6 +3609,7 @@ void QgisApp::setTheme(QString themeName)
     actionZoomToSelected->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_selected.png")));
     actionPan->setIconSet(QIconSet(QPixmap(iconPath + "/pan.png")));
     actionZoomLast->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_last.png")));
+    actionZoomToLayer->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_layer.png")));
     actionIdentify->setIconSet(QIconSet(QPixmap(iconPath + "/identify.png")));
     actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
     actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
@@ -3727,7 +3895,16 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
                          SIGNAL(keyPressed(QKeyEvent * )),
                          theRasterLayer,
                          SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(theRasterLayer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
 
+            QObject::connect(theRasterLayer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
         // init the context menu so it can connect to slots in main app
         // XXX now taken care of in legend theRasterLayer->initContextMenu(this);
 
@@ -3782,7 +3959,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
         if(guiWarning)
         {
           // don't show the gui warning (probably because we are loading from command line)
-          QString msg(rasterFile.baseName() 
+          QString msg(rasterFile.baseName()
               + " is not a valid or recognized raster data source");
           QMessageBox::critical(this, "Invalid Data Source", msg);
         }

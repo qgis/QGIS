@@ -56,19 +56,56 @@ void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pai
 
   if (action != end())
   {
-    QString expanded_action = expandAction(action->action(), values, defaultValueIndex);
-    std::cout << "Running command '" << expanded_action << "'.\n";
-    QStringList args = QStringList::split(" ", expanded_action);
+    // The action will be divided into separate arguments that are
+    // passed to a QProcess instance. Spaces are used to delimit
+    // arguments, except for spaces inside pairs of ". A \" will be
+    // replaced by a ". The replacement of the %field_name is done
+    // after the parsing into arguments.
+    bool in_quote = false;
+    QStringList args;
+    QString current_arg;
+    QString cmd = action->action();
+    for (int i = 0; i < cmd.length(); ++i)
+    {
+      // Deal with \"
+      if (i < cmd.length()-1 && cmd[i] == '\\' && cmd[i+1] == '\"')
+      {
+	current_arg += '\"';
+	++i;
+      }
+      // Found a delimiter, create a new argument
+      else if (cmd[i].isSpace() && !in_quote && current_arg.length() > 0)
+      {
+	QString strippedCmd = current_arg.stripWhiteSpace();
+	if (strippedCmd.length() > 0)
+	  args << expandAction(strippedCmd, values, defaultValueIndex);
+	current_arg = "";
+      }
+      // Starting a new quote
+      else if (cmd[i] == '\"' && !in_quote)
+	in_quote = true;
+      // Ending a quote
+      else if (cmd[i] == '\"' && in_quote)
+	in_quote = false;
+      else
+	current_arg += cmd[i];
+    }
 
-    // This is beginning to duplicate the functionality in the
-    // Launcher plugin - perhaps that should be used instead?
-    
+    // Pick up the last argument if it has something of interest
+    if (!current_arg.stripWhiteSpace().isEmpty())
+      args << expandAction(current_arg.stripWhiteSpace(), values, defaultValueIndex);
+
+    QString whole_cmd;
+    for (int i = 0; i < args.count(); ++i)
+      whole_cmd += "[" + args[i] + "] ";
+    std::cout << "Running command: " << whole_cmd << "\n";
+
     process = new QProcess();
     process->setArguments(args);
     if (!process->start())
     {
       QMessageBox::critical(0, "Unable to run command", 
-			    "Unable to run the command \n" + expanded_action +
+			    "Unable to run the command \n" + whole_cmd +
 			    "\n", QMessageBox::Ok, QMessageBox::NoButton);
     }
     delete process;
@@ -78,7 +115,7 @@ void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pai
 QgsAttributeAction::aIter QgsAttributeAction::retrieveAction(unsigned int index) const
 {
   // This function returns an iterator so that it's easy to deal with
-  // an invalid index begin given.
+  // an invalid index being given.
   aIter a_iter = end();
 
   if (index >= 0 && index < mActions.size())

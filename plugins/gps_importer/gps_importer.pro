@@ -7,7 +7,8 @@ INCLUDEPATH += . ..\..\src \
           $(GEOS)\include
 LIBS += ..\..\src\libqgis.lib \
         $(GDAL)\lib\gdal_i.lib \
-        $(GEOS)\lib\geos.lib
+        $(GEOS)\lib\geos.lib \
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
 
 DLLDESTDIR= ..\..\win_build\lib\qgis
 CONFIG += qt dll thread rtti
