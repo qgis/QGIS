@@ -137,7 +137,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 
 	    if ( vector->labelOn() ) {
 	        double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
-		if ( plotStyle() == QgsComposition::Print ) {
+		if ( plotStyle() == QgsComposition::Postscript ) {
 		    fontScale *= 72.0 / mComposition->resolution();
 		}
 		vector->drawLabels (  painter, extent, transform, device, fontScale );
@@ -227,7 +227,8 @@ void QgsComposerMap::draw ( QPainter & painter )
 	painter.restore();
 
     } else if ( (plotStyle() == QgsComposition::Preview && mPreviewMode == Render) || 
-	         plotStyle() == QgsComposition::Print ) 
+	         plotStyle() == QgsComposition::Print ||
+	   	 plotStyle() == QgsComposition::Postscript ) 
     {
         std::cout << "render" << std::endl;
 	
