@@ -2731,14 +2731,6 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
       myQPainter.drawPixmap(0,myHeightInt-mNoPyramidPixmap.height(),mNoPyramidPixmap);
     }
     //
-    // Overlay the status icon which shows if a layer is in the overview or not
-    //
-    /*if (mShowInOverview)
-    {
-      myQPainter.drawPixmap(0,0,mInOverviewPixmap);
-      }*/
-
-    //
     // Overlay the layername
     //
     if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
@@ -2763,10 +2755,241 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 
 }                               //end of getLegendQPixmap function
 
+QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::getDetailedLegendQPixmap called" << std::endl;
+#endif
+  QFont myQFont("arial", 10, QFont::Normal);
+  QFontMetrics myQFontMetrics(myQFont);
+
+  int myFontHeight = (myQFontMetrics.height() );
+  const int myInterLabelSpacing = 5;
+  int myImageHeightInt = ((myFontHeight + (myInterLabelSpacing*2)) * theLabelCountInt);
+  int myLongestLabelWidthInt =  myQFontMetrics.width(this->name());
+  const int myHorizontalLabelSpacing = 5;
+  int myImageWidthInt = (myHorizontalLabelSpacing*2) + myLongestLabelWidthInt;
+  const int myColourBarWidthInt = 10;
+  //
+  // Get the adjusted matrix stats
+  //
+  GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
+  double noDataDouble = myGdalBand->GetNoDataValue();
+  QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+  QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
+  QPainter myQPainter;
+  //
+  // Create the legend pixmap - note it is generated on the preadjusted stats
+  //
+  if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
+  {
+
+    myLegendQPixmap = QPixmap(1, myImageHeightInt);
+    const double myIncrementDouble = static_cast<double>(myImageHeightInt)/255.0;
+    myQPainter.begin(&myLegendQPixmap);
+    int myPosInt = 0;
+    for (double myDouble = 0; myDouble < 255; myDouble += myIncrementDouble)
+    {
+      if (!invertHistogramFlag) //histogram is not inverted
+      {
+        //draw legend as grayscale
+        int myGrayInt = static_cast < int >(myDouble);
+        myQPainter.setPen(QPen(QColor(myGrayInt, myGrayInt, myGrayInt, QColor::Rgb), 0));
+      } else                //histogram is inverted
+      {
+        //draw legend as inverted grayscale
+        int myGrayInt = 255 - static_cast < int >(myDouble);
+        myQPainter.setPen(QPen(QColor(myGrayInt, myGrayInt, myGrayInt, QColor::Rgb), 0));
+      }                   //end of invert histogram  check
+      myQPainter.drawPoint(0,myPosInt++);
+    }
+  }                           //end of gray check
+  else if (drawingStyle == MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR ||
+          drawingStyle == PALETTED_SINGLE_BAND_PSEUDO_COLOR || drawingStyle == SINGLE_BAND_PSEUDO_COLOR)
+  {
+
+    //set up the three class breaks for pseudocolour mapping
+    double myRangeSizeDouble = 90;  //hard coded for now
+    double myBreakSizeDouble = myRangeSizeDouble / 3;
+    double myClassBreakMin1 = 0;
+    double myClassBreakMax1 = myClassBreakMin1 + myBreakSizeDouble;
+    double myClassBreakMin2 = myClassBreakMax1;
+    double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
+    double myClassBreakMin3 = myClassBreakMax2;
+    double myClassBreakMax3 = myClassBreakMin3 + myBreakSizeDouble;
+
+    //
+    // Create the legend pixmap - note it is generated on the preadjusted stats
+    //
+    myLegendQPixmap = QPixmap(1, myImageHeightInt);
+    const double myIncrementDouble = myImageHeightInt/myRangeSizeDouble;
+    myQPainter.begin(&myLegendQPixmap);
+    int myPosInt = 0;
+    for (double myDouble = 0; myDouble < 255; myDouble += myIncrementDouble)
+    for (double myDouble = 0; myDouble < myRangeSizeDouble; myDouble +=myIncrementDouble)
+    {
+      //draw pseudocolor legend
+      if (!invertHistogramFlag)
+      {
+        //check if we are in the first class break
+        if ((myDouble >= myClassBreakMin1) && (myDouble < myClassBreakMax1))
+        {
+          int myRedInt = 0;
+          int myBlueInt = 255;
+          int myGreenInt = static_cast < int >(((255 / myRangeSizeDouble) * (myDouble - myClassBreakMin1)) * 3);
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+          myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+        }
+        //check if we are in the second class break
+        else if ((myDouble >= myClassBreakMin2) && (myDouble < myClassBreakMax2))
+        {
+          int myRedInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3);
+          int myBlueInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3));
+          int myGreenInt = 255;
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myGreenInt=myBlueInt;
+          }
+          myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+        }
+        //otherwise we must be in the third classbreak
+        else
+        {
+          int myRedInt = 255;
+          int myBlueInt = 0;
+          int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin3) / 1) * 3)));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=myGreenInt;
+            myGreenInt=255-myGreenInt;
+          }
+          myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+        }
+      }                   //end of invert histogram == false check
+      else                  //invert histogram toggle is off
+      {
+        //check if we are in the first class break
+        if ((myDouble >= myClassBreakMin1) && (myDouble < myClassBreakMax1))
+        {
+          int myRedInt = 255;
+          int myBlueInt = 0;
+          int myGreenInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin1) / 1) * 3));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+          myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+        }
+        //check if we are in the second class break
+        else if ((myDouble >= myClassBreakMin2) && (myDouble < myClassBreakMax2))
+        {
+          int myRedInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3));
+          int myBlueInt = static_cast < int >(((255 / myRangeSizeDouble) * ((myDouble - myClassBreakMin2) / 1)) * 3);
+          int myGreenInt = 255;
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myGreenInt=myBlueInt;
+          }
+          myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+        }
+        //otherwise we must be in the third classbreak
+        else
+        {
+          int myRedInt = 0;
+          int myBlueInt = 255;
+          int myGreenInt = static_cast < int >(255 - (((255 / myRangeSizeDouble) * (myDouble - myClassBreakMin3)) * 3));
+          // testing this stuff still ...
+          if (colorRampingType==FREAK_OUT)
+          {
+            myRedInt=255-myGreenInt;
+          }
+          myQPainter.setPen(QPen(QColor(myRedInt, myGreenInt, myBlueInt, QColor::Rgb), 0));
+        }
+
+      }                   //end of invert histogram check
+      myQPainter.drawPoint(0,myPosInt++);
+    }
+
+  }                           //end of pseudocolor check
+  else if (drawingStyle == PALETTED_MULTI_BAND_COLOR || drawingStyle == MULTI_BAND_COLOR)
+  {
+    //
+    // Create the legend pixmap showing red green and blue band mappings
+    //
+    // TODO update this so it actually shows the mappings for paletted images
+    myLegendQPixmap = QPixmap(1, 3);
+    myQPainter.begin(&myLegendQPixmap);
+    //draw legend red part
+    myQPainter.setPen(QPen(QColor(224, 103, 103, QColor::Rgb), 0));
+    myQPainter.drawPoint(0, 0);
+    //draw legend green part
+    myQPainter.setPen(QPen(QColor(132, 224, 127, QColor::Rgb), 0));
+    myQPainter.drawPoint(0,1);
+    //draw legend blue part
+    myQPainter.setPen(QPen(QColor(127, 160, 224, QColor::Rgb), 0));
+    myQPainter.drawPoint(0,2);
+  }
+
+
+  myQPainter.end();
+
+
+
+  //create a matrix to
+  QWMatrix myQWMatrix;
+  //scale the raster legend up a bit bigger to the legend item size
+  //note that scaling parameters are factors, not absolute values,
+  // so scale (0.25,1) scales the painter to a quarter of its size in the x direction
+  //TODO We need to decide how much to scale by later especially for rgb images which are only 3x1 pix
+  //hard coding thes values for now.
+  if (myLegendQPixmap.height() == 3)
+  {
+    myQWMatrix.scale(myColourBarWidthInt,2);
+  }
+  else
+  {
+    myQWMatrix.scale(myColourBarWidthInt,2);
+  }
+  //apply the matrix
+  QPixmap myQPixmap2 = myLegendQPixmap.xForm(myQWMatrix);
+  QPainter myQPainter2(&myQPixmap2);
+  //
+  // Overlay the layername
+  //
+  if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
+  {
+    myQPainter2.setPen(Qt::white);
+  }
+  else
+  {
+    myQPainter2.setPen(Qt::black);
+  }
+  myQPainter2.setFont(myQFont);
+  myQPainter2.drawText(25, myImageHeightInt - 10, this->name());
+  //
+  // finish up
+  //
+  myLegendQPixmap = myQPixmap2;
+  myQPainter2.end();
+  //finish up
+
+  return myLegendQPixmap;
+
+}//end of getDetailedLegend
+
 //similar to above but returns a pointer. Implemented for qgsmaplayer interface
 QPixmap *QgsRasterLayer::legendPixmap()
 {
     m_legendPixmap=getLegendQPixmap(true);
+    //m_legendPixmap=getDetailedLegendQPixmap();
     return &m_legendPixmap;
 }
 
