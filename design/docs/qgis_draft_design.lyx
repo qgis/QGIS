@@ -3938,32 +3938,1656 @@ Save buffer layer to permanent store
 
 \layout Subsubsection
 
-Process Data Use Cases
-\layout Subparagraph
+Process Data - Union
+\layout Standard
 
-Union Use Case
-\layout Subparagraph
 
-Merge Use Case
-\layout Subparagraph
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-Intersect Use Case
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Process Data - Union 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Create a new data layer that contains the union of two existing layers
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layers needed for operation are loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+New data layer containing union of source layers is created
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No new data layer is created and application remains in state prior to beginning
+ of union operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to union features for the purpose of performing spatial analysis
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select layers to union
+\layout Enumerate
+
+Perform union operation
+\layout Enumerate
+
+Save resulting layer to permanent store
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Subsubsection
 
-Convert Data Use Cases
-\layout Subparagraph
+Process Data - Intersect 
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Process Data - Intersect 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Create a new data layer that contains the intersection of two existing layers
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layers needed for operation are loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+New data layer containing intersection of source layers is created
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No new data layer is created and application remains in state prior to beginning
+ of intersect operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to create a new layer representing the intersection of features
+ from two source layers
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select layers to intersect
+\layout Enumerate
+
+Perform intersect operation
+\layout Enumerate
+
+Save resulting layer to permanent store
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Process Data - Merge
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Process Data - Merge 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Create a new data layer that contains the contents of two existing layers.
+ The layers are 
+\begin_inset Quotes eld
+\end_inset 
+
+tiled
+\begin_inset Quotes erd
+\end_inset 
+
+ into one.
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layers needed for operation are loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+New data layer containing merge of source layers is created
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No new data layer is created and application remains in state prior to beginning
+ of merge operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to combine the features from two source layers into one
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select layers to merge
+\layout Enumerate
+
+Perform merge operation
+\layout Enumerate
+
+Save resulting layer to permanent store
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
 
 Change projection
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Change Projection
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Project a source data layer into a new map projection to create a new data
+ layer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer needed for operation is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer in desired projection is created from the source layer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No new data layer is created and application remains in state prior to beginning
+ of merge operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to a copy of a data layer in a different projection
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select layer to project
+\layout Enumerate
+
+Specify the projection of the source layer
+\layout Enumerate
+
+Specify the projection for the new layer
+\layout Enumerate
+
+Project the data
+\layout Enumerate
+
+Save resulting layer to permanent store
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Subsubsection
 
-Import Data Use Case
+Import Data
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Import Data
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Create a new data layer by importing data from a source not directly usable
+ with QGIS
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+New data layer is created
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No new data layer is created and application remains in state prior to beginning
+ of import operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to work with data not currently in a format supported by QGIS
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select layer to project
+\layout Enumerate
+
+Specify the projection of the source layer
+\layout Enumerate
+
+Specify the projection for the new layer
+\layout Enumerate
+
+Project the data
+\layout Enumerate
+
+Save resulting layer to permanent store
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Subsubsection
 
-Export Data Use Case
+Export Data
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Export Data
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Convert data from one format (source) to another (targert) for the purpose
+ of using it in another application.
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer needed for operation is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Export file is created
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Export file is not created and application remains in state prior to beginning
+ of export operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to export data for use by another application
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select data layer to export
+\layout Enumerate
+
+Choose output location
+\layout Enumerate
+
+Export the data
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Subsubsection
 
 Export Selected Set
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Export Selected Set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Convert a selected set of feature data from one format (source) to another
+ (targert) for the purpose of using it in another application.
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer needed for operation is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Export file is created
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Export file is not created and application remains in state prior to beginning
+ of export operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to export data for use by another application
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select data layer to export
+\layout Enumerate
+
+Select features to be included in the export
+\layout Enumerate
+
+Choose output location
+\layout Enumerate
+
+Export the features
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Subsubsection
 
-Select features
+Select Features
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Select Features
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Select features on the map canvas for purpose of using in another function
+ or operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Subfunction
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer needed for operation is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Features are selected and highlighted on map
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No selection set is created and application remains in state prior to beginning
+ of export operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to select features for use in another function or operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select data layer containing features of interest
+\layout Enumerate
+
+Interactively draw a box around features
+\layout Enumerate
+
+Select
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \the_end
