@@ -16,7 +16,6 @@
  ***************************************************************************/
  /* $Id$ */
 #include <iostream>
-#include <qsqldatabase.h>
 #include <qsettings.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
@@ -64,7 +63,8 @@ void QgsNewConnection::testConnection()
 	} else {
 		QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again "));
 	}
-	delete pd;
+  // free pg connection resources
+	PQfinish(pd);
 
 
 }
