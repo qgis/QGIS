@@ -89,6 +89,7 @@ void QgsAttributeTableDisplay::startEditing()
     btnStopEditing->setEnabled(true);
     btnClose->setEnabled(false);
     mMenuBar->setEnabled(true);
+    table()->setReadOnly(false);
 }
 
 void QgsAttributeTableDisplay::stopEditing()
@@ -110,4 +111,5 @@ void QgsAttributeTableDisplay::stopEditing()
     btnStopEditing->setEnabled(false);
     btnClose->setEnabled(true); 
     mMenuBar->setEnabled(false);
+    table()->setReadOnly(true);
 }

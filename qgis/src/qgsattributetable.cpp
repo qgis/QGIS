@@ -38,6 +38,8 @@ QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(
   setSelectionMode(QTable::MultiRow);
   QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
   connect(this, SIGNAL(contextMenuRequested(int, int, const QPoint&)), this, SLOT(popupMenu(int, int, const QPoint&)));
+  connect(this, SIGNAL(valueChanged(int, int)), this, SLOT(storeChangedValue(int,int)));
+  setReadOnly(true);
   setFocus();
 }
 
@@ -354,6 +356,11 @@ bool QgsAttributeTable::commitChanges(QgsVectorDataProvider* provider)
 
     if(provider)
     {
+	//change values
+	if(!provider->changeAttributeValues(mChangedValues))
+	{
+	    returnvalue=false;
+	}
 	//delete columns
 	if(!provider->deleteAttributes(mDeletedAttributes))
 	{
@@ -361,6 +368,7 @@ bool QgsAttributeTable::commitChanges(QgsVectorDataProvider* provider)
 	}
     }
     mEdited=false;
+    clearEditingStructures();
     return returnvalue;//soon
 }
 
@@ -371,6 +379,7 @@ bool QgsAttributeTable::rollBack(QgsVectorDataProvider* provider)
 	fillTable(provider);
     }
     mEdited=false;
+    clearEditingStructures();
     return true;
 }
 
@@ -413,4 +422,43 @@ void QgsAttributeTable::fillTable(QgsVectorDataProvider* provider)
 	    delete fet;
 	}
     }
+}
+
+void QgsAttributeTable::storeChangedValue(int row, int column)
+{
+    //id column is not editable
+    if(column>0)
+    {
+	//find feature id
+	int id=text(row,0).toInt();
+	QString attribute=horizontalHeader()->label(column);
+#ifdef QGISDEBUG
+	qWarning("feature id: "+QString::number(id));
+	qWarning("attribute: "+attribute);
+#endif
+	std::map<int,std::map<QString,QString> >::iterator iter=mChangedValues.find(id);
+	if(iter==mChangedValues.end())
+	{
+	    std::map<QString,QString> themap;
+	    mChangedValues.insert(std::make_pair(id,themap));
+	    iter=mChangedValues.find(id);
+	}
+	iter->second.erase(attribute);
+	iter->second.insert(std::make_pair(attribute,text(row,column)));
+#ifdef QGISDEBUG
+	qWarning("value: "+text(row,column));
+#endif	
+	mEdited=true;
+    }
+}
+
+void QgsAttributeTable::clearEditingStructures()
+{
+    mDeletedAttributes.clear();
+    mAddedAttributes.clear();
+    for(std::map<int,std::map<QString,QString> >::iterator iter=mChangedValues.begin();iter!=mChangedValues.end();++iter)
+    {
+	iter->second.clear();
+    }
+    mChangedValues.clear();
 }
