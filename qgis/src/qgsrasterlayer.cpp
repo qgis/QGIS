@@ -1831,9 +1831,9 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
     {
       double myRedValueDouble   = readValue ( myGdalRedData, myRedType,
                                        myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
-      double myGreenValueDouble = readValue ( myGdalGreenData, myRedType,
+      double myGreenValueDouble = readValue ( myGdalGreenData, myGreenType,
                                        myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
-      double myBlueValueDouble  = readValue ( myGdalBlueData, myRedType,
+      double myBlueValueDouble  = readValue ( myGdalBlueData, myBlueType,
                                        myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       // TODO: check all channels ?
