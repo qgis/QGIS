@@ -237,6 +237,10 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         climateDataProcessor->setTotalSolarRadFileName(leTotalSolarRadiation->text());
         climateDataProcessor->setWindSpeedFileName(leWindSpeed->text());
 
+        //turn off next button until one or more variables have been selected
+        setNextEnabled(currentPage(), false);
+        
+        
         /////////////////////////////////////////////////////////////////////
         //
         // OK now we need to update the list of available calculations that
@@ -566,13 +570,15 @@ void CDPWizard::lstVariablesToCalc_selectionChanged()
     myQString.sprintf("<p align=\"right\">(%i) Variables selected </p>",selectionSizeInt);
     lblVariableCount->setText(myQString);
 
-    if (!selectionSizeInt)
+    if (selectionSizeInt==0)
     {
-            //setNextEnabled(false); //doesnt work :-(
+        std::cout << "No variables selected so disabling next" << std::endl;
+        setNextEnabled(currentPage(), false); 
     }
     else
     {
-        //setNextEnabled(true);  //doesnt work :-(
+        std::cout << selectionSizeInt << " variables selected enabling next button" << std::endl;
+        setNextEnabled(currentPage(), true); 
     }
 
 }
@@ -638,7 +644,21 @@ checkInputFilenames();
 }
 
 
+void CDPWizard::leOutputPath_textChanged( const QString & theOutputPath)
+{
 
+  //Check the output path exists and is readable
+  QDir dirCheck(theOutputPath);                        
+  if ( (!dirCheck.exists()) & (!dirCheck.isReadable()) )
+  {      
+     setNextEnabled(currentPage(), false);
+  }
+  else
+  {
+     setNextEnabled(currentPage(), true);
+  }
+  
+}
 
 
 

@@ -1674,6 +1674,42 @@ Please wait while the climate variables are calculated. The top progress bar sho
         <receiver>CDPWizardBase</receiver>
         <slot>formSelected(const QString&amp;)</slot>
     </connection>
+    <connection>
+        <sender>spinFirstYearToCalc</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>spinFirstYearToCalc_valueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>spinFirstYearInFile</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>spinFirstYearInFile_valueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>spinLastYearToCalc</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>spinLastYearToCalc_valueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>pbtnOutputPath</sender>
+        <signal>clicked()</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>pbtnOutputPath_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>lstVariablesToCalc</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>lstVariablesToCalc_selectionChanged()</slot>
+    </connection>
+    <connection>
+        <sender>leOutputPath</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>CDPWizardBase</receiver>
+        <slot>leOutputPath_textChanged(const QString&amp;)</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>textEdit5</tabstop>
@@ -1735,6 +1771,12 @@ Please wait while the climate variables are calculated. The top progress bar sho
     <slot>formSelected( const QString &amp; thePageNameQString )</slot>
     <slot>accept()</slot>
     <slot>cboFileType_activated( const QString &amp; )</slot>
+    <slot>spinFirstYearToCalc_valueChanged( int )</slot>
+    <slot>spinFirstYearInFile_valueChanged( int )</slot>
+    <slot>spinLastYearToCalc_valueChanged( int )</slot>
+    <slot>pbtnOutputPath_clicked()</slot>
+    <slot>lstVariablesToCalc_selectionChanged()</slot>
+    <slot>leOutputPath_textChanged( const QString &amp; )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

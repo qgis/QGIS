@@ -231,8 +231,14 @@ public:
     * @return void
     */
     void leWindSpeed_textChanged( const QString & theFileNameString);
-
-
+ 
+    /**
+    * Reimplements method by the same name in parent class
+    * @param theOutputPath - path where output files will be stored
+    * @return void
+    */
+    void leOutputPath_textChanged( const QString & theOutputPath);
+    
     /**
     * Sets up the climateDataProcessor and calls its run method.
     * @return void - No return.

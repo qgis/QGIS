@@ -23,6 +23,7 @@ email                : t.sutton@reading.ac.uk
 //QT Includes
 #include <qtextstream.h>
 #include <qmessagebox.h>
+#include <qdir.h> 
 
 ClimateDataProcessor::ClimateDataProcessor()
 {
@@ -1081,6 +1082,7 @@ bool ClimateDataProcessor::run()
                     //loop logic still needs to be implemented properly for this to work!
                     sprintf(myYearChar,"%iBC",myCDPMainLoopInt);
                 }
+                                
                 myFileNameString =  outputFilePathString + myFileNameString + "_" + myYearChar +".asc";
                 FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
                 //write a standard header if one is available
