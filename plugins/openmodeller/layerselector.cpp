@@ -82,7 +82,14 @@ void LayerSelector::pbnOK_clicked()
   {
     if (myIterator.current()->isSelected())
     {
-      selectedLayersList+=myIterator.current()->text(0);
+      if (myIterator.current()->text(1)=="AIG")
+      {
+        selectedLayersList+=myIterator.current()->text(0);
+      }
+      else
+      {        
+        selectedLayersList+=(myIterator.current()->parent()->text(0) + myIterator.current()->text(0));
+      }
     }
     ++myIterator;
   }

@@ -818,51 +818,25 @@ lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
 void OpenModellerGui::pbnSelectLayerFile_clicked()
 {
   std::cout << " OpenModellerGui::pbnSelectLayerFile_clicked() " << std::endl;
-  QString myFileTypeQString;
-  QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
-  QString myFileNameQString = QFileDialog::getOpenFileName(
-          "" , //initial dir
-          myGDALFilterString,  //filters to select
-          this , //parent dialog
-          "OpenFileDialog" , //QFileDialog qt object name
-          "Select localities text file" , //caption
-          &myFileTypeQString //the pointer to store selected filter
-          );  
-  
-  if (myFileNameQString==NULL || myFileNameQString=="") return;
-  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
-  //check if the file is an arc/info binary grid in which case we should only use the
-  //directory name in which the adf file occurs
-  if (myFileNameQString.endsWith(".adf"))
+  QStringList myQStringList;
+  LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
+  if(myLayerSelector->exec())
   {
-    //try to find  unix path separater first (search backwards from end of line)
-    if (myFileNameQString.findRev('/') != -1)
-    {
-      myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('/')+1);
-    }
-    else //no forward slash found so assume dos and look for backslash
-    {
-      //try looking for dos separaters
-      myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('\\')+1);
-    }
-  }
-  
-  //test whether the file is GDAL compatible
-  if (isValidGdalFile(myFileNameQString))
-  {
-    std::cout << myFileNameQString << " is a valid GDAL file" << std::endl;
-    lstLayers->insertItem(myFileNameQString);
-    cboMaskLayer->insertItem(myFileNameQString);
-    cboMaskLayer->setCurrentItem(0);	  
-    //enable the user to carry on to the next page...
-    setNextEnabled(currentPage(),true);
-  }
-  else
-  {
-    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));       
-  } 
+    std::cout << "LayerSelector ok pressed" << std::endl;
+    myQStringList=myLayerSelector->getSelectedLayers();
 
-  lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
+    lstLayers->insertStringList( myQStringList ,0 );
+
+    lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
+    if (lstLayers->count() > 0) 
+    {
+      setNextEnabled(currentPage(),true);
+    }  
+    else 
+    {
+      setNextEnabled(currentPage(),false);
+    }
+  }
 }
 
 
