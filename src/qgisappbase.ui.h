@@ -251,3 +251,9 @@ void QgisAppBase::captureLine()
 }
 
 
+
+
+void QgisAppBase::about()
+{
+
+}
