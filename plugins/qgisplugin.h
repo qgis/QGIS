@@ -7,7 +7,7 @@
 * <ul>name
 * <li>version
 * <li>description
-* <li>guiElements
+* <li>gui
 * </ul>
 *
 * All QGis plugins must inherit from the abstract base class QgisPlugin. A
@@ -17,10 +17,11 @@
 * functions. Note that these functions must be declared as extern "C" in
 * order to be resolved properly and prevent C++ name mangling.
 */
-#include <qstring.h>
+
 #ifndef qgisplugin_h
 #define qgisplugin_h
 #include <qstring.h>
+
 #include "qgisplugingui.h"
 
 /*! \class QgisPlugin 
@@ -38,13 +39,14 @@ public:
 	//! Interface to gui element collection object
 	virtual QgisPluginGui *gui()=0;
 	//! Element types that can be added to the interface
-	enum ELEMENTS {
+	/* enum ELEMENTS {
 		MENU,
 		MENU_ITEM,
 		TOOLBAR,
 		TOOLBAR_BUTTON,
 	};
-};
+	*/
+}; 
 
 // Typedefs
 
@@ -52,7 +54,5 @@ public:
 typedef QgisPlugin* create_t();
 //! Typedef for the function to unload a plugin and free its resources
 typedef void unload_t(QgisPlugin *);
-//! Element type corresponding to one of the values in the ELEMENTS enum
-typedef int QGIS_GUI_TYPE;
 
 #endif //qgisplugin_h
