@@ -715,7 +715,7 @@ void OpenModellerGui::accept()
     QListBoxItem *myItem = lstProjLayers->item( myInt );
     projLayerNamesQStringList.append(myItem->text());      
   }
-  myQSettings.writeEntry("/openmodeller/projectionLayerNames",layerNamesQStringList);  
+  myQSettings.writeEntry("/openmodeller/projectionLayerNames",projLayerNamesQStringList);  
   
   
   maskNameQString=cboMaskLayer->currentText();
@@ -812,11 +812,22 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
       myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('\\')+1);
     }
   }
-  lstLayers->insertItem(myFileNameQString);
-  //also add the layer to the mask combo
-  cboMaskLayer->insertItem(myFileNameQString);
-  //enable the user to carry on to the next page...
-  setNextEnabled(currentPage(),true);
+  
+  //test whether the file is GDAL compatible
+  if (isValidGdalFile(myFileNameQString))
+  {
+    std::cout << myFileNameQString << " is a valid GDAL file" << std::endl;
+    lstLayers->insertItem(myFileNameQString);
+    cboMaskLayer->insertItem(myFileNameQString);
+    cboMaskLayer->setCurrentItem(0);	  
+    //enable the user to carry on to the next page...
+    setNextEnabled(currentPage(),true);
+  }
+  else
+  {
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));       
+  } 
+
 }
 
 
@@ -895,7 +906,7 @@ void OpenModellerGui::getProjList()
   }
   else
   {
-    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The projections file is not readable. Check you have the neccessary file permissions and try again. Only a small list of projectsion is now availiable."));      
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The projections file is not readable. Check you have the neccessary file permissions and try again. Only a small list of projections is now availiable."));      
     ProjectionWKTMap::Iterator myIterator;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
@@ -1078,11 +1089,11 @@ void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theL
   QFileInfo* fi;
 
   bool myInvalidFileFlag = false;
-  bool myInvalidProjectionFlag = false;
   QString myInvalidFileList;
 
   while( (fi = it.current() ) )
   {
+    //Ignore directories
     if( fi->fileName() == "." || fi->fileName() == ".." ) 
     {
       ++it;
@@ -1113,56 +1124,27 @@ void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theL
             (fi->extension(false)=="bil") ||
             (fi->extension(false)=="jpg")   )
     {      
-#ifdef WIN32
- //dont test layers with gdal
-#else
+
       //test whether the file is GDAL compatible
-
-      GDALAllRegister();
-      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( fi->absFilePath(), GA_ReadOnly );
-
-      if( myTestFile == NULL )
+      if (isValidGdalFile(fi->absFilePath()))
       {
-        //not GDAL compatible
-        myInvalidFileFlag = true;
+        std::cout << fi->absFilePath().ascii() << " is a valid GDAL file" << std::endl;
+	theListBox->insertItem(fi->absFilePath());
+        theComboBox->insertItem(fi->absFilePath());
+        theComboBox->setCurrentItem(0);	  
       }
       else
       {
-        std::cout << "GDAL opened " << fi->absFilePath().ascii() << " successfully" << std::endl;
-
-        //is GDAL compatible
-        //check whether it has projection information
-        if (myTestFile->GetProjectionRef()!=NULL)
-        {
-          //does not have projection info
-          myInvalidProjectionFlag = true;
-          myInvalidFileList += fi->absFilePath()+"\n";
-        }
-        else
-        {
-          //does have projection info
-          std::cout << "Current filename is: " << fi->absFilePath().ascii() << std::endl;
-          theListBox->insertItem(fi->absFilePath());
-          theComboBox->insertItem(fi->absFilePath());
-          theComboBox->setCurrentItem(0);	  
-        }
-
-        GDALClose(myTestFile);
-      }  
-#endif
-    }
-    ++it;
+        myInvalidFileFlag = true;
+        myInvalidFileList += fi->absFilePath()+"\n";         
+      } 
+    }  
+  ++it;
   }
-  /*
-  //FOLLOWING WARNING MESSAGES REMOVED AS THEY BECOME ANNOYING!  
+  
   if (myInvalidFileFlag)
   {
-  QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("One or more of the files you selected are not valid GDAL raster layers.  Please check and try again."));
-  }
-  */
-  if (myInvalidProjectionFlag)
-  {
-    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("One or more of the files you selected do not have valid GDAL projection information.  Please check and try again:\n\n "+myInvalidFileList));
+     QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("One or more of the files you selected are not valid GDAL files.  Please check the following files and try again:\n\n "+myInvalidFileList));
   }
 
 }   
@@ -1172,6 +1154,32 @@ bool OpenModellerGui::checkLocalitiesFileFormat(const QString)
 {
  //@todo DO ME!!
  return false;
+}
+
+bool OpenModellerGui::isValidGdalFile(const QString theFilename)
+{
+      //test whether the file is GDAL compatible
+      GDALAllRegister();
+      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( theFilename, GA_ReadOnly );
+
+      if( myTestFile == NULL )
+      {
+        //not GDAL compatible
+        GDALClose(myTestFile);
+	return false;
+      }
+      else
+      {
+        //is GDAL compatible
+	GDALClose(myTestFile);
+	return true;  
+      }
+}
+
+bool OpenModellerGui::isValidGdalProj(const QString theFilename)
+{
+//TO DO!!!
+return true;
 }
 
 void OpenModellerGui::mapCallback( float progress, void *extra_param )
@@ -1243,11 +1251,22 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
       myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('\\')+1);
     }
   }
-  lstProjLayers->insertItem(myFileNameQString);
-  //also add the layer to the mask combo
-  cboOutputMaskLayer->insertItem(myFileNameQString);
-  //enable the user to carry on to the next page...
-  setNextEnabled(currentPage(),true);
+  
+  //test whether the file is GDAL compatible
+  if (isValidGdalFile(myFileNameQString))
+  {
+    std::cout << myFileNameQString << " is a valid GDAL file" << std::endl;
+    lstProjLayers->insertItem(myFileNameQString);
+    cboOutputMaskLayer->insertItem(myFileNameQString);
+    cboOutputMaskLayer->setCurrentItem(0);	  
+    //enable the user to carry on to the next page...
+    setNextEnabled(currentPage(),true);
+  }
+  else
+  {
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));
+  } 
+  
 }
 
 void OpenModellerGui::pbnSelectLayerFolderProj_clicked()

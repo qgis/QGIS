@@ -74,6 +74,8 @@ public:
   void pbnSelectLayerFolderProj_clicked();
   void pbnRemoveLayerFileProj_clicked();
   void pbnSelectLayerFileProj_clicked();
+  bool isValidGdalFile(const QString theFilename);
+  bool isValidGdalProj(const QString theFilename);
   
 private:
     OpenModeller * mOpenModeller;
