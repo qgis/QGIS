@@ -295,7 +295,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
           delete[] sWkt;  
           delete geosGeom;
           delete geosRect;
-        }
+	}
         else
         {
           break;

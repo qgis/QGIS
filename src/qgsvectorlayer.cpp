@@ -363,23 +363,23 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 bool sel=selected.find(fet->featureId()) != selected.end();
                 m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
 
-                // get the wkb representation
-                feature = fet->getGeometry();
-                //  if (feature != 0) {
-                //    std::cout << featureCount << "'the feature is null\n";
-                //TODO - add this to the debug options -- if we decide to keep it
-                //wkbHeader header;
-                //memcpy((void *)&header,feature,sizeof(header));
-                //std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
-
-                // FIX for the endian problem on osx (possibly sparc?)
-                // TODO Restructure this whole wkb reading code to use
-                // wkb structures as defined at (among other places):
-                // http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
-                memcpy(&wkbType, (feature+1), sizeof(wkbType));
-
                 //  std::cout << "Feature type: " << wkbType << std::endl;
                 // read each feature based on its type
+
+		// get the wkb representation
+		feature = fet->getGeometry();
+		//  if (feature != 0) {
+		//    std::cout << featureCount << "'the feature is null\n";
+		//TODO - add this to the debug options -- if we decide to keep it
+		//wkbHeader header;
+		//memcpy((void *)&header,feature,sizeof(header));
+		//std::cout << "Endian:" << header.endian << " WkbType:" << header.wkbType << std::endl; 
+
+		// FIX for the endian problem on osx (possibly sparc?)
+		// TODO Restructure this whole wkb reading code to use
+		// wkb structures as defined at (among other places):
+		// http://publib.boulder.ibm.com/infocenter/db2help/index.jsp?topic=/com.ibm.db2.udb.doc/opt/rsbp4121.htm
+		memcpy(&wkbType, (feature+1), sizeof(wkbType));
 
                 switch (wkbType)
                 {
@@ -782,11 +782,11 @@ void QgsVectorLayer::select(int number)
 
       while (fet = dataProvider->getNextFeature(true))
       {
-        select(fet->featureId());
-        if (tabledisplay)
-        {
-          tabledisplay->table()->selectRowWithId(fet->featureId());
-        }
+	  select(fet->featureId());
+	  if (tabledisplay)
+	  {
+	      tabledisplay->table()->selectRowWithId(fet->featureId());
+	  }
       }
 
       if (tabledisplay)
