@@ -60,12 +60,8 @@ email                : tim at linfiniti.com
 
 */
 
-
-
-
-#ifdef WIN32
 #include <qapplication.h>
-#endif
+#include <qcursor.h>
 #include <qpainter.h>
 #include <qimage.h>
 #include <qfont.h>
@@ -1925,6 +1921,10 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   }
   myRasterBandStats.elementCountInt = rasterXDimInt * rasterYDimInt;
 
+
+  // let the user know we're going to possibly be taking a while
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
   //allocate a buffer to hold one row of ints
   int myAllocationSizeInt = sizeof(uint) * rasterXDimInt;
   uint *myScanlineAllocInt = (uint *) CPLMalloc(myAllocationSizeInt);
@@ -2057,6 +2057,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   //add this band to the class stats map
   rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
   emit setProgress(rasterYDimInt, rasterYDimInt); //reset progress
+  QApplication::restoreOverrideCursor(); //restore the cursor
   return myRasterBandStats;
 }                               //end of getRasterBandStats
 
@@ -2806,7 +2807,8 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
     return;
   }
   myQFile.close();
-
+  // let the user know we're going to possibly be taking a while
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   GDALAllRegister();
   //close the gdal dataset and reopen it in read / write mode
   delete gdalDataset;
@@ -2861,6 +2863,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
   delete gdalDataset;
   gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
   emit setProgress(0,0);
+  QApplication::restoreOverrideCursor();
 }
 RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
 {
