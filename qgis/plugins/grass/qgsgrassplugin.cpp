@@ -139,9 +139,13 @@ void QgsGrassPlugin::initGui()
     
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-    pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this, SLOT(addVector()));
-    pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
-    pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
+    int menuId = pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this,
+                                        SLOT(addVector()));
+    pluginMenu->setWhatsThis(menuId, "Add a GRASS vector layer to the map canvas.");
+    menuId = pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
+    pluginMenu->setWhatsThis(menuId, "Add a GRASS raster layer to the map canvas.");
+    menuId = pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
+    pluginMenu->setWhatsThis(menuId, "Edit a GRASS vector layer");
 
     menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
@@ -150,17 +154,19 @@ void QgsGrassPlugin::initGui()
     // Create the action for tool
     QAction *addVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
 	                                   "Add GRASS vector layer",0, this, "addVector");
+    addVectorAction->setWhatsThis("Adds a GRASS vector layer to the map canvas");
     QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
 	                                   "Add GRASS raster layer",0, this, "addRaster");
-
+    addRasterAction->setWhatsThis("Adds a GRASS raster layer to the map canvas");
     mRegionAction = new QAction("Display Current Grass Region", QIconSet(icon_grass_region), 
 	                        "Display Current Grass Region",0, this, "region", true);
+    mRegionAction->setWhatsThis("Displays the current GRASS region as a rectangle on the map canvas");
     QAction *editRegionAction = new QAction("Edit Current Grass Region", QIconSet(icon_grass_region_edit), 
 	                        "Edit Current Grass Region",0, this, "editRegion");
-
+    editRegionAction->setWhatsThis("Edit the current GRASS region");
     QAction *editAction = new QAction("Edit Grass Vector layer", QIconSet(icon_grass_edit), 
 	                        "Edit Grass Vector layer",0, this, "edit");
-    
+    editAction->setWhatsThis("Edit the currently selected GRASS vector layer.");
     if ( !QgsGrass::activeMode() )  {
 	mRegionAction->setEnabled(false);
 	editRegionAction->setEnabled(false);
