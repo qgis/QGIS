@@ -215,7 +215,11 @@ double QgsSiMaDialog::getScaleFactor() const {
 
 void QgsSiMaDialog::mIconView_selectionChanged(QIconViewItem * theIconViewItem)
 {
+#ifdef Q_OS_MACX
+    mSelectedMarker=mCurrentDir+"/"+theIconViewItem->text();
+#else
     mSelectedMarker=mCurrentDir+theIconViewItem->text();
+#endif
 
     //draw the SVG-Image on the button
     double scalefactor=mScaleSpin->value()/100.0;
