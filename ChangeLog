@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.42 2004/03/30 22:23:04 jobi Exp
+ChangeLog,v 1.43 2004/03/31 11:54:01 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-31 [jobi] 0.1.0devel20
+** fixed small bug
+** renamed plugins/gps_importer/shapefil.h to shapefile.h
 
 2004-03-31 [jobi] 0.1.0devel19
 A lot of small changes to make release work again
