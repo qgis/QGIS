@@ -830,6 +830,11 @@ bool QgsPostgresProvider::isValid(){
 
 bool QgsPostgresProvider::addFeature(QgsFeature* f)
 {
+  // need to create an insert statement to add the feature
+  // based on the geometry contained in the QgsFeature
+#ifdef QGISDEBUG
+  std::cerr << "WKT: " << f->wellKnownText() << std::endl; 
+#endif
     return false;
 }
 
