@@ -129,7 +129,7 @@ void QgsShapeFile::setDefaultTable(){
   table_name = name.section('.', 0, 0);
 }
 
-bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin){
+bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin){
   connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
@@ -148,7 +148,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
   message = conn->ErrorMessage();
   if(message != "") result = false;
 
-  query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'the_geom\', " + srid +
+  query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";            
   if(result) conn->ExecTuplesOk((const char *)query);
   message = conn->ErrorMessage();

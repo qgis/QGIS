@@ -32,6 +32,7 @@
 #include <qfiledialog.h>
 #include <qprogressdialog.h>
 #include <qmemarray.h>
+#include <qapplication.h>
 
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
@@ -39,13 +40,20 @@
 
 QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   populateConnectionList();
-  default_value = -1;
+  defSrid = -1;
+  defGeom = "the_geom";
   total_features = 0;
   setFixedSize(QSize(579, 504));
-  tblShapefiles->setColumnStretchable(2, true);
-  tblShapefiles->setColumnStretchable(3, true);
+  
   tblShapefiles->verticalHeader()->hide();
-  tblShapefiles->setLeftMargin(0);      
+  tblShapefiles->adjustColumn(3);
+  tblShapefiles->setLeftMargin(0);
+
+  chkUseDefaultSrid->setChecked(true);
+  chkUseDefaultGeom->setChecked(true);
+  useDefaultSrid();
+  useDefaultGeom();
+  
 }
 
 QgsSpit::~QgsSpit(){  
@@ -143,7 +151,8 @@ void QgsSpit::addFile()
     e->exec();
   }
   
-  tblShapefiles->repaintSelections();
+  tblShapefiles->adjustColumn(0);
+  tblShapefiles->setCurrentCell(-1, 0);  
 }
 
 void QgsSpit::removeFile()
@@ -164,6 +173,7 @@ void QgsSpit::removeFile()
   for(int i=0; i<temp.size(); i++)
     array[i] = temp[i];
   tblShapefiles->removeRows(array);
+  tblShapefiles->setCurrentCell(-1, 0);
 }
 
 void QgsSpit::removeAllFiles(){
@@ -171,18 +181,31 @@ void QgsSpit::removeAllFiles(){
   for(int n=0; n<tblShapefiles->numRows(); n++)
     array[n] = n;
 
+  fileList.clear();
   tblShapefiles->removeRows(array);
 }
 
-void QgsSpit::useDefault(){
-  if(chkUseDefault->isChecked()) {
-    default_value = spinSrid->value();
-    spinSrid->setValue(-1);
+void QgsSpit::useDefaultSrid(){
+  if(chkUseDefaultSrid->isChecked()) {
+    defaultSridValue = spinSrid->value();
+    spinSrid->setValue(defSrid);
     spinSrid->setEnabled(false);
   }
   else {
     spinSrid->setEnabled(true);
-    spinSrid->setValue(default_value);
+    spinSrid->setValue(defaultSridValue);
+  }
+}
+
+void QgsSpit::useDefaultGeom(){
+  if(chkUseDefaultGeom->isChecked()) {
+    defaultGeomValue = txtGeomName->text();
+    txtGeomName->setText(defGeom);
+    txtGeomName->setEnabled(false);
+  }
+  else {
+    txtGeomName->setEnabled(true);
+    txtGeomName->setText(defaultGeomValue);
   }
 }
 
@@ -205,6 +228,8 @@ void QgsSpit::helpInfo(){
 }
 
 void QgsSpit::import(){
+  tblShapefiles->setCurrentCell(-1, 0);
+    
   QString connName = cmbConnections->currentText();
   bool finished = false;
   if (!connName.isEmpty()) {
@@ -215,55 +240,78 @@ void QgsSpit::import(){
     PgDatabase *pd = new PgDatabase((const char *) connInfo);
 
   	if (pd->Status() == CONNECTION_OK) {     
-      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", total_features, this, "Progress");
+      QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", total_features, this, "Progress", true);
       pro->setProgress(0);
       pro->setAutoClose(true);
+      qApp->processEvents();
       //pro->setAutoReset(true);
-      pro->show();
 
       pd->ExecTuplesOk("BEGIN");
       
       for(int i=0; i<fileList.size() ; i++){
-        int rel_exists = false;
+        pro->show();
+        pro->setLabelText("Importing files\n"+QString(fileList[i]->getName()));
+        int rel_exists1 = 0;
+        int rel_exists2 = 0;
         QMessageBox *del_confirm;
-        QString query = "select f_table_name from geometry_columns where f_table_name=\'"+QString(fileList[i]->getTable())+"\'";
-        rel_exists = pd->ExecTuplesOk(query);
+        QString query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+QString(fileList[i]->getTable())+"\'";
+        pd->ExecTuplesOk(query);
+        rel_exists1 = pd->Tuples();
+        query = "SELECT relname FROM pg_stat_all_tables WHERE relname=\'"+QString(fileList[i]->getTable())+"\'";
+        pd->ExecTuplesOk(query);
+        rel_exists2 = pd->Tuples();
         
-        if(rel_exists){
-          del_confirm = new QMessageBox( "Import Shapefiles - Relation Exists",
+        if(rel_exists1 || rel_exists2){
+          del_confirm = new QMessageBox("Import Shapefiles - Relation Exists",
             "The Shapefile:\n"+QString(fileList[i]->getName())+"\nwill use ["+
             QString(fileList[i]->getTable())+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
-            "To avoid data loss change the \"Table Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
+            "To avoid data loss change the \"DB Relation Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
             "Do you want to overwrite the ["+QString(fileList[i]->getTable())+"] relation?",
           QMessageBox::Warning,
           QMessageBox::Yes | QMessageBox::Default,
           QMessageBox::No  | QMessageBox::Escape,
-          QMessageBox::NoButton );
+          QMessageBox::NoButton, this, "Relation Exists");
         }
-        if (!rel_exists || del_confirm->exec() == QMessageBox::Yes ){        
+        if ((!rel_exists1 && !rel_exists2) || del_confirm->exec() == QMessageBox::Yes){
+          if(rel_exists1){
+            query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
+              QString(fileList[i]->getTable())+"\', \'"+txtGeomName->text()+"')";
+            pd->ExecTuplesOk(query);
+          }
+          if(rel_exists2){
+            query = "DROP TABLE " + QString(fileList[i]->getTable());
+            pd->ExecTuplesOk(query);            
+          }
+          
           std::stringstream temp;
           temp << spinSrid->value();
-          if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, finished)){
+          if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), txtGeomName->text(),
+            QString(temp.str()), pd, pro, finished)){
             if(!finished){
               pro->close();
               QMessageBox::warning(this, "Import Shapefiles",
-              "Problem inserting features\nOne or more of your shapefiles may be corrupted");
+                "Problem inserting features\nOne or more of your shapefiles may be corrupted");
             }
             finished = true;
             break;
           }
-          else if(finished)
+          else if(finished){
+            pro->close();
             break;
-          else{
-            for(int i=0; i<tblShapefiles->numRows(); i++)
-              if(tblShapefiles->text(i,0)==QString(fileList[i]->getName())){
-                tblShapefiles->removeRow(i);
+          }
+          else{  // if file has been imported, remove it from the list
+            for(int j=0; j<tblShapefiles->numRows(); j++)
+              if(tblShapefiles->text(j,0)==QString(fileList[i]->getName())){
+                tblShapefiles->selectRow(j);
+                removeFile();
+                i--;
                 break;
               }
           }
         }
-        else if(fileList[i]==fileList.back())
-          pro->setProgress(pro->totalSteps());
+        else{
+          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+        }
       }
       
       if(finished)

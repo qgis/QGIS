@@ -33,14 +33,18 @@ class QgsSpit :public QgsSpitBase{
   void addFile();
   void removeFile();
   void removeAllFiles();
-  void useDefault();
+  void useDefaultSrid();
+  void useDefaultGeom();
   void changeEditAndRemove(int);
   void helpInfo();
   void import();
 
   private:
-  int default_value;
   int total_features;
   std::vector <QgsShapeFile *> fileList;
+  int defSrid;
+  QString defGeom;
+  int defaultSridValue;
+  QString defaultGeomValue;
 
 };

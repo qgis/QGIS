@@ -38,7 +38,7 @@ class QgsShapeFile : public QObject
   ~QgsShapeFile();
   int getFeatureCount();
   const char * getFeatureClass();
-  bool insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin);
+  bool insertLayer(QString dbname, QString geom_col, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin);
     
   bool is_valid();
   const char * getName();

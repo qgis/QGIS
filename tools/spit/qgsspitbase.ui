@@ -206,20 +206,6 @@
                         <string>Add ...</string>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="1" column="1">
-                    <property name="name">
-                        <cstring>spinSrid</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>1000000</number>
-                    </property>
-                    <property name="minValue">
-                        <number>-1</number>
-                    </property>
-                    <property name="value">
-                        <number>-1</number>
-                    </property>
-                </widget>
                 <widget class="QPushButton" row="0" column="1">
                     <property name="name">
                         <cstring>btnRemoveFile</cstring>
@@ -228,7 +214,7 @@
                         <string>Remove</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="0" column="2">
+                <widget class="QPushButton" row="0" column="2" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>btnRemoveAll</cstring>
                     </property>
@@ -236,7 +222,7 @@
                         <string>Remove All</string>
                     </property>
                 </widget>
-                <widget class="QTable" row="2" column="0" rowspan="1" colspan="4">
+                <widget class="QTable" row="4" column="0" rowspan="1" colspan="6">
                     <column>
                         <property name="text">
                             <string>File Name</string>
@@ -272,29 +258,6 @@
                     <property name="name">
                         <cstring>tblShapefiles</cstring>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>2</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>NoFocus</enum>
-                    </property>
-                    <property name="frameShape">
-                        <enum>Panel</enum>
-                    </property>
-                    <property name="lineWidth">
-                        <number>1</number>
-                    </property>
-                    <property name="midLineWidth">
-                        <number>0</number>
-                    </property>
-                    <property name="resizePolicy">
-                        <enum>AutoOne</enum>
-                    </property>
                     <property name="numRows">
                         <number>0</number>
                     </property>
@@ -304,10 +267,7 @@
                     <property name="showGrid">
                         <bool>false</bool>
                     </property>
-                    <property name="columnMovingEnabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="sorting">
+                    <property name="readOnly">
                         <bool>true</bool>
                     </property>
                     <property name="selectionMode">
@@ -317,7 +277,45 @@
                         <enum>FollowStyle</enum>
                     </property>
                 </widget>
-                <widget class="QLabel" row="1" column="0">
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>spinSrid</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>-1</number>
+                    </property>
+                    <property name="value">
+                        <number>-1</number>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>chkUseDefaultSrid</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Use Default</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="5">
+                    <property name="name">
+                        <cstring>chkUseDefaultGeom</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Use Default</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="3" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel1_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Geometry Column Name</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
                     <property name="name">
                         <cstring>textLabel1_2</cstring>
                     </property>
@@ -325,9 +323,9 @@
                         <string>SRID</string>
                     </property>
                 </widget>
-                <spacer row="0" column="3">
+                <spacer row="0" column="4" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>spacer6</cstring>
+                        <cstring>spacer8</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -337,34 +335,28 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>151</width>
+                            <width>241</width>
                             <height>31</height>
                         </size>
                     </property>
                 </spacer>
-                <spacer row="1" column="3">
+                <widget class="QLineEdit" row="2" column="5">
                     <property name="name">
-                        <cstring>spacer7</cstring>
+                        <cstring>txtGeomName</cstring>
+                    </property>
+                </widget>
+                <widget class="Line" row="1" column="0" rowspan="1" colspan="6">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>151</width>
-                            <height>31</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QCheckBox" row="1" column="2">
-                    <property name="name">
-                        <cstring>chkUseDefault</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Use Default</string>
                     </property>
                 </widget>
             </grid>
@@ -373,10 +365,10 @@
 </widget>
 <connections>
     <connection>
-        <sender>chkUseDefault</sender>
+        <sender>chkUseDefaultSrid</sender>
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
-        <slot>useDefault()</slot>
+        <slot>useDefaultSrid()</slot>
     </connection>
     <connection>
         <sender>btnRemoveAll</sender>
@@ -432,6 +424,12 @@
         <receiver>QgsSpitBase</receiver>
         <slot>helpInfo()</slot>
     </connection>
+    <connection>
+        <sender>chkUseDefaultGeom</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>useDefaultGeom()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>import()</slot>
@@ -441,9 +439,10 @@
     <slot>addFile()</slot>
     <slot>removeFile()</slot>
     <slot>removeAllFiles()</slot>
-    <slot>useDefault()</slot>
+    <slot>useDefaultSrid()</slot>
     <slot>helpInfo()</slot>
     <slot>aboutInfo()</slot>
+    <slot>useDefaultGeom()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
