@@ -146,7 +146,7 @@ void QgsGraMaDialog::apply()
         }
 
 	//font tor the legend text
-	QFont f("times", 12, QFont::Normal);
+	QFont f("arial", 10, QFont::Normal);
 	QFontMetrics fm(f);
 	
 	//spaces

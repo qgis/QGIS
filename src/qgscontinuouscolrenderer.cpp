@@ -81,7 +81,7 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
   int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
   
   //font tor the legend text
-  QFont f("times", 12, QFont::Normal);
+  QFont f("arial", 10, QFont::Normal);
   QFontMetrics fm(f);
 
   QPixmap *pixmap;
