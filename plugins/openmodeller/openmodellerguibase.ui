@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>OpenModellerGuiBase</class>
 <author>Tim Sutton</author>
 <widget class="QWizard">
@@ -8,12 +8,26 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>0</y>
+            <y>47</y>
             <width>600</width>
-            <height>497</height>
+            <height>400</height>
         </rect>
     </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
     <property name="minimumSize">
+        <size>
+            <width>600</width>
+            <height>400</height>
+        </size>
+    </property>
+    <property name="maximumSize">
         <size>
             <width>600</width>
             <height>400</height>
@@ -103,6 +117,8 @@
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Description:&lt;/h3&gt;
+
+
 
 The openModeller wizard will assist you in carrying out a species distribution model using the openModeller toolkit developed by CRIA, Brazil. Select an option from the picklist below to determine which type of model you wish to carry out. Details of the selected algorithm will be displayed below.</string>
                 </property>
@@ -427,8 +443,12 @@ The openModeller wizard will assist you in carrying out a species distribution m
                 <property name="text">
                     <string>&lt;h3&gt;Coordinate System:&lt;/h3&gt;
 
+
+
 &lt;p&gt;You need to specify how the locality data should be transformed to the same coordinate system as the independent variable landscape and climate layers so that the two datasets can be overlayed properly.
+
 &lt;/p&gt;
+
 &lt;p&gt;Specify the coordinate system using the WKT format (more information on the WKT format is available at the Open Gis Consortium &lt;a href="http://www.opengis.org/docs/01-009.pdf"&gt;Website&lt;/a&gt;).&lt;/p&gt;</string>
                 </property>
             </widget>
@@ -574,16 +594,28 @@ The openModeller wizard will assist you in carrying out a species distribution m
                 <property name="text">
                     <string>&lt;h3&gt;Locality Data:&lt;/h3&gt;
 
+
+
 In order to carry out a distribution model, you need to have a text file containing distribution data for the species you are interested in. This data should be in the form:
 
+
+
 &lt;font size=2&gt;&lt;pre&gt;
+
 #genus       species         longitude  latitude   altitude
+
 furcata      boliviana           -68.85    -11.15    325
+
 furcata      boliviana           -67.38    -14.32    232
+
 furcata      boliviana           -67.55    -14.33    196
 
+
+
 &lt;/pre&gt;
+
 &lt;/font&gt;
+
 Use the ellipsis [...] button below to select an appropriate file. If the localities file contains data for more than one taxon, select which taxon you would like to run this model on using the picklist below.</string>
                 </property>
             </widget>
@@ -637,6 +669,12 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                             <widget class="QLineEdit">
                                 <property name="name">
                                     <cstring>leLocalitiesFileName</cstring>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>LineEditPanel</enum>
+                                </property>
+                                <property name="frameShadow">
+                                    <enum>Sunken</enum>
                                 </property>
                                 <property name="readOnly">
                                     <bool>true</bool>
@@ -739,7 +777,11 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                 <property name="text">
                     <string>&lt;h3&gt;Environmental and Landscape Layers:&lt;/h3&gt;
 
+
+
 &lt;p&gt;Select the maps to be used as environmental continuous variables. Examples of this type of data could be average rainfall, average temperature, altitude etc. &lt;/p&gt;
+
+
 
 &lt;p&gt;The "Add Layer" button adds layers one-by-one whilst the "Add Folder" button selects all valid layers in the selected directory and sub-directories.&lt;/p&gt;</string>
                 </property>
@@ -947,6 +989,8 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                 <property name="text">
                     <string>&lt;h3&gt;Select Mask Layer:&lt;/h3&gt;
 
+
+
 Select a file that will be used to mask areas from the model.</string>
                 </property>
             </widget>
@@ -1039,6 +1083,8 @@ Select a file that will be used to mask areas from the model.</string>
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Algorithm Specific Parameters:&lt;/h3&gt;
+
+
 
 If you would like to specify any special parameters for the algorithm you have selected, use the form below. You will need to consult the algorithm documentation to find out what additional parameters can be specified.</string>
                 </property>
@@ -1286,7 +1332,11 @@ If you would like to specify any special parameters for the algorithm you have s
                 <property name="text">
                     <string>&lt;h3&gt;Output Destination:&lt;/h3&gt;
 
+
+
 &lt;p&gt;Specify where the model should be saved to disk.  Two files will be written with the same file name but with different extensions. The parameters file (.cfg) will contain a record of all the choices you have made in this wizard, and the model results will be saved as a tiff image.  The two files will be stored in the folder specified below.&lt;/p&gt;
+
+
 
 &lt;p&gt;For example choosing the file name "acacia_saligna" and folder name "/tmp/" will create two output files : "/tmp/acacia_saligna.cfg" and "/tmp/acacia_saligna.tif".&lt;/p&gt;</string>
                 </property>
@@ -1427,6 +1477,8 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Run Model:&lt;/h3&gt;
+
+
 
 &lt;p&gt;Press the finish button to run the model. The results will be displayed in the main application window on completion, and saved to disk using the output filename prefix you have selected.&lt;/p&gt;</string>
                 </property>
