@@ -450,19 +450,28 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 
             // get number of rings in the polygon
             numRings = (int *) (feature + 1 + sizeof(int));
-            //std::cout << "Number of rings: " << *numRings << std::endl;
-            ptr = feature + 1 + 2 * sizeof(int);
-            for (idx = 0; idx < *numRings; idx++)
-            {
-              // get number of points in the ring
-              nPoints = (int *) ptr;
-              //std::cout << "Number of points: " << *nPoints << std::endl;
+
+	    int *ringStart; // index of first point for each ring
+	    int *ringNumPoints; // number of points in each ring
+	    ringStart = new int[*numRings];
+	    ringNumPoints = new int[*numRings];
+
+	    int x0, y0, pdx;
+	    pdx = 0;
+            ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
+            for (idx = 0; idx < *numRings; idx++) {
+	      // get number of points in the ring
+	      nPoints = (int *) ptr;
+	      ringStart[idx] = pdx;
+	      ringNumPoints[idx] = *nPoints;
               ptr += 4;
-              pa = new QPointArray(*nPoints);
-              for (jdx = 0; jdx < *nPoints; jdx++)
-              {
+	      if ( idx == 0 ) {	
+                  pa = new QPointArray(*nPoints);
+	      } else {
+		  pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
+	      }
+              for (jdx = 0; jdx < *nPoints; jdx++) {
                 // add points to a point array for drawing the polygon
-                //   std::cout << "Adding points to array\n";
                 x = (double *) ptr;
                 ptr += sizeof(double);
                 y = (double *) ptr;
@@ -470,13 +479,30 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                 pt.setX(*x);
                 pt.setY(*y);
                 cXf->transform(&pt);
-                pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
+                pa->setPoint(pdx++, pt.xToInt(), pt.yToInt());
               }
-              // draw the ring
-              //std::cout << "Drawing the polygon\n";
-              p->drawPolygon(*pa);
-              delete pa;
+	      if ( idx == 0 ) { // remember last outer ring point
+		  x0 = pt.xToInt();
+		  y0 = pt.yToInt();
+	      } else { // return to x0,y0 (inner rings - islands)
+		  pa->setPoint(pdx++, x0, y0);
+	      }
             }
+	    // draw the polygon fill
+	    pen = p->pen(); // store current pen
+	    p->setPen ( Qt::NoPen ); // no boundary
+	    p->drawPolygon(*pa);
+
+	    // draw outline
+	    p->setPen ( pen );
+	    p->setBrush ( Qt::NoBrush );
+            for (idx = 0; idx < *numRings; idx++) {
+	        p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
+	    }
+	    
+	    delete pa;
+	    delete ringStart;
+	    delete ringNumPoints;
 
             break;
 
