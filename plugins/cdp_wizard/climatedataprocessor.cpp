@@ -23,7 +23,7 @@ email                : t.sutton@reading.ac.uk
 //QT Includes
 #include <qtextstream.h>
 #include <qmessagebox.h>
-#include <qdir.h> 
+#include <qdir.h>
 
 ClimateDataProcessor::ClimateDataProcessor()
 {
@@ -540,8 +540,8 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
 
         }
         //calculate the actual blocks numbers represented by the start & end years
-        int myCurrentBlockInt = ((theStartYearInt-1)*12);
-        int myEndBlockInt = (12*theStartYearInt);
+        int myCurrentBlockInt = ((theStartYearInt-1)*12)+1;
+        int myEndBlockInt = (12*theStartYearInt)+1;
 
         printf ("ClimatteDataProcessor::initialiseFileGroup Calculated start block : %i and end block is %i\n",
                 myCurrentBlockInt,
@@ -1082,7 +1082,7 @@ bool ClimateDataProcessor::run()
                     //loop logic still needs to be implemented properly for this to work!
                     sprintf(myYearChar,"%iBC",myCDPMainLoopInt);
                 }
-                                
+
                 myFileNameString =  outputFilePathString + myFileNameString + "_" + myYearChar +".asc";
                 FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
                 //write a standard header if one is available
