@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
@@ -30,51 +30,57 @@ class QgsPoint {
   
  public:
     /// Default constructor
-	QgsPoint();
+  QgsPoint();
     
-	/*! Create a point from x,y coordinates
-	 * @param x x coordinate
-	 * @param y y coordinate
-	 */
-	QgsPoint(double x, double y);
-	~QgsPoint();
-	/*! Sets the x value of the point
-	 * @param x x coordinate
-	 */
-	void setX(double x);
+  /*! Create a point from x,y coordinates
+   * @param x x coordinate
+   * @param y y coordinate
+   */
+  QgsPoint(double x, double y);
+  ~QgsPoint();
+  /*! Sets the x value of the point
+   * @param x x coordinate
+   */
+  void setX(double x);
 
-	/*! Sets the y value of the point
-	 * @param y y coordinate
-	 */
-	void setY(double y);
+  /*! Sets the y value of the point
+   * @param y y coordinate
+   */
+  void setY(double y);
     
     
-	/*! Get the x value of the point
-	 * @return x coordinate
-	 */
-	double x() const;
-	int xToInt();
-	/*! Get the y value of the point
-	 * @return y coordinate 
-	 */
-	double y(void) const;
-	int yToInt();
+  /*! Get the x value of the point
+   * @return x coordinate
+   */
+  double x() const;
+  int xToInt();
+  /*! Get the y value of the point
+   * @return y coordinate 
+   */
+  double y(void) const;
+  int yToInt();
 
-	//! String representation of the point (x,y)
-	QString stringRep() const;
-	//! As above but with precision for string representaiton of a point
-	QString stringRep(int thePrecision) const;
-	
-	//! equality operator
-	bool operator==(const QgsPoint &other);
+  //! String representation of the point (x,y)
+  QString stringRep() const;
+  //! As above but with precision for string representaiton of a point
+  QString stringRep(int thePrecision) const;
+  
+  /*! Return the well known text representation for the point.
+   * The wkt is created without an SRID.
+   * @return Well known text in the form POINT(x y)
+   */
+  QString wellKnownText();
+
+  //! equality operator
+  bool operator==(const QgsPoint &other);
     
-	//! Inequality operator
-	bool operator!=(const QgsPoint &other);
+  //! Inequality operator
+  bool operator!=(const QgsPoint &other);
     
-	/// Assignment
-	QgsPoint & operator=(const QgsPoint &other);
-	
-	
+  /// Assignment
+  QgsPoint & operator=(const QgsPoint &other);
+  
+  
 };
 
 inline QgsPoint::QgsPoint()
@@ -92,9 +98,9 @@ inline QgsPoint::~QgsPoint()
 
 inline bool operator==(const QgsPoint &p1, const QgsPoint &p2){
     if((p1.x() == p2.x()) && (p1.y() == p2.y()))
-	return true;
+  return true;
     else
-	return false;
+  return false;
 }
 
 inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
