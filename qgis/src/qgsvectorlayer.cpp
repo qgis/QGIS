@@ -824,6 +824,9 @@ void QgsVectorLayer::select(int number)
       if (! m_propertiesDialog)
       {
         m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
+	// Make sure that the UI starts out with the correct display
+	// field value
+	m_propertiesDialog->setDisplayField(displayField());
       }
 
       m_propertiesDialog->reset();
@@ -1140,7 +1143,11 @@ void QgsVectorLayer::select(int number)
       {
         delete m_propertiesDialog;
       }
+      
       m_propertiesDialog = properties;
+      // Make sure that the UI gets the correct display
+      // field value
+      m_propertiesDialog->setDisplayField(displayField());
     }
 
 
@@ -1409,6 +1416,14 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
     setDataProvider( providerKey );
 
+    // get and set the display field if it exists.
+    QDomNode displayFieldNode = layer_node.namedItem("displayfield");
+    if (!displayFieldNode.isNull())
+    {
+      QDomElement e = displayFieldNode.toElement();
+      setDisplayField(e.text());
+    }
+
     // create and bind a renderer to this layer
 
     QDomNode singlenode = layer_node.namedItem("singlesymbol");
@@ -1642,6 +1657,13 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
     provider.appendChild( providerText );
 
     layer_node.appendChild( provider );
+
+    // add the display field
+
+    QDomElement dField  = document.createElement( "displayfield" );
+    QDomText dFieldText = document.createTextNode( displayField() );
+    dField.appendChild( dFieldText );
+    layer_node.appendChild( dField );
 
     // add label node
 

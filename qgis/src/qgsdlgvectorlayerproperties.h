@@ -40,6 +40,8 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   void setLegendType(QString type);
   /**Returns the display name entered in the dialog*/
   QString displayName();
+  /**Sets the attribute that is used in the Identify Results dialog box*/
+  void setDisplayField(QString name);
   /**Sets the rendererDirty flag*/
   void setRendererDirty(bool enabled=true);
   /**Returns a pointer to the bufferDialog*/

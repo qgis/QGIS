@@ -82,14 +82,20 @@ bufferRenderer(layer->
 //  QTextOStream (&ur) << extent->xMax() << ", " << extent->yMax(); 
   lblUpperRight->setText(ur.sprintf("%16f, %16f", extent->xMax(), extent->yMax()));
   std::vector < QgsField > fields = dp->fields();
-  // populate the table and the display field drop-down with the field information
+  // populate the table and the display field drop-down with the field
+  // information
+
+  displayFieldComboBox->insertItem( "" );
   for (int i = 0; i < fields.size(); i++)
-    {
-      QgsField fld = fields[i];
-      QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
-                                             fld.type(), QString("%1").arg(fld.length()),
-                                             QString("%1").arg(fld.precision()));
-    }
+  {
+    QgsField fld = fields[i];
+    QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
+					   fld.type(), QString("%1").arg(fld.length()),
+					   QString("%1").arg(fld.precision()));
+    displayFieldComboBox->insertItem( fld.name() );
+  }
+  displayFieldComboBox->setCurrentItem(0); // the blank one
+
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
   spinMinimumScale->setValue(lyr->minScale());
@@ -213,6 +219,9 @@ void QgsDlgVectorLayerProperties::apply()
   layer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
   layer->setMinScale(spinMinimumScale->value());
   layer->setMaxScale(spinMaximumScale->value());
+
+  // update the display field
+  layer->setDisplayField(displayFieldComboBox->currentText());
   
   if (rendererDirty)
     {
@@ -304,6 +313,11 @@ QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
 void QgsDlgVectorLayerProperties::setLegendType(QString type)
 {
   legendtypecombobox->setCurrentText(tr(type));
+}
+
+void QgsDlgVectorLayerProperties::setDisplayField(QString name)
+{
+  displayFieldComboBox->setCurrentText(name);
 }
 
 void QgsDlgVectorLayerProperties::reset( void )
