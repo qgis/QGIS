@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.38 2004/03/26 13:48:56 jobi Exp
+dnl configure.in,v 1.39 2004/03/26 17:36:35 gsherman Exp
 
 AC_INIT
 
@@ -23,7 +23,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=13
+EXTRA_VERSION=16
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel
 else
@@ -167,46 +167,40 @@ AM_CONDITIONAL([HAVE_SPIT], [test "$ac_spit" = "yes"])
 
 
 dnl ---------------------------------------------------------------------------
-dnl GRASS and GRASS++ package
+dnl GRASS package
 dnl ---------------------------------------------------------------------------
-# AC_ARG_WITH(grass,
-#   AC_HELP_STRING([--with-grass=DIR],[GRASS Support (full path to GRASS binary package, e.g. --with-grass=/usr1/grass51/dist.i686-pc-linux-gnu)]))
+AC_ARG_WITH(grass,
+    AC_HELP_STRING([--with-grass=DIR],[GRASS Support (full path to GRASS binary package, e.g. --with-grass=/usr1/grass57/dist.i686-pc-linux-gnu)]))
 
-# AC_ARG_WITH(grasspp,
-#   AC_HELP_STRING([--with-grasspp=DIR],[Full path to GRASS++ binary package]))
+    AC_MSG_CHECKING([for GRASS])
 
-# AC_MSG_CHECKING([for GRASS])
+if test -n "$with_grass" -a x"$with_grass" != "xno"; then
+    # I don't know how to add library path to AC_CHECK_LIB()
+    GISLIB=`ls $with_grass/lib/libgrass_gis.*`  
+    if test ! -f "$GISLIB"; then
+	AC_MSG_ERROR( [GRASS library not found] )
+    fi
+    GRASS_LIB="-L$with_grass/lib/ -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form"
 
-# if test x"$with_grass" != "xno" -a "$with_grass" != "x" ; then
-#   # I don't know how to add library path to AC_CHECK_LIB()
-#   GISLIB=`ls $with_grass/lib/libgrass_gis.*`  
-#   if test ! -f "$GISLIB"; then
-#       AC_MSG_ERROR( [GRASS library not found] )
-#   fi
-#   GRASSPPLIB=`ls $with_grasspp/libgrass++.*`  
-#   if test ! -f "$GRASSPPLIB"; then
-#       AC_MSG_ERROR( [GRASS++ library not found] )
-#   fi
-#   GRASS_LIB="-L$with_grass/lib/ -L$with_grasspp -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass++"
- 
-#   GISINC=`ls $with_grass/include/gis.h`
-#   if test ! -f "$GISINC"; then
-#       AC_MSG_ERROR( [GRASS headers not found] )
-#   fi
-#   GRASSPPINC=`ls $with_grasspp/GRASS.h`  
-#   if test ! -f "$GRASSPPINC"; then
-#       AC_MSG_ERROR( [GRASS++ headers not found] )
-#   fi
-#   GRASS_INC="$with_grass/include/ $with_grasspp/"
-#   HAVE_GRASS=1
-#   AC_MSG_RESULT([yes])
-# else 
-#   AC_MSG_RESULT([no])
-# fi
+    GISINC=`ls $with_grass/include/gis.h`
+    if test ! -f "$GISINC"; then
+	AC_MSG_ERROR( [GRASS headers not found] )
+    fi
 
-# AC_SUBST(HAVE_GRASS)
-# AC_SUBST(GRASS_LIB)
-# AC_SUBST(GRASS_INC)
+    GRASS_INC="$with_grass/include/"
+    HAVE_GRASS=1
+    AC_MSG_RESULT([yes])
+    ac_grass="yes"
+else 
+    AC_MSG_RESULT([no])
+    ac_grass="no"
+fi
+
+AC_SUBST(HAVE_GRASS)
+AC_SUBST(GRASS_LIB)
+AC_SUBST(GRASS_INC)
+AM_CONDITIONAL([HAVE_GRASS], [test "$ac_grass" = "yes"])
+
 
 
 dnl ---------------------------------------------------------------------------
@@ -241,12 +235,14 @@ AC_CONFIG_FILES([
   providers/ogr/Makefile
   providers/postgres/Makefile
   providers/delimitedtext/Makefile
+  providers/grass/Makefile
   plugins/Makefile
   plugins/spit/Makefile
   plugins/example/Makefile
   plugins/maplayer/Makefile
   plugins/geoprocessing/Makefile
   plugins/gps_importer/Makefile
+  plugins/grass/Makefile
   plugins/openmodeller/Makefile
   doc/Makefile
   doc/skin/Makefile
@@ -270,6 +266,7 @@ echo "$PACKAGE $VERSION"
 echo "------------------------------------------"
 echo "GDAL/OGR      : $ac_gdalogr"
 echo "PostgreSQL    : $ac_postgresql"
+echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
 echo ""
 echo "Debug         : $ac_debug"
