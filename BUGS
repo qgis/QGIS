@@ -1,4 +1,4 @@
-BUGS,v 1.1 2004/02/13 16:18:45 gsherman Exp
+BUGS,v 1.2 2004/02/13 16:22:46 gsherman Exp
 Known issues and bugs in this release (QGIS 0.1pre1 'Moroz')
 RASTER:
 
@@ -6,7 +6,7 @@ VECTOR:
 1. OGR layers (for example shapefiles) do not reliably select or identify
    features. Any feature that intersects the MBR (minimum bounding rectangle)
    of the selection rectangle will be returned. This results in more features
-   being returned than desired.
-2. Zooming in very close can result in a scrambled display.
+   being returned than desired.[Bug 896254]
+2. Zooming in very close can result in a scrambled display. [Bug 895506]
 3. Drawing polygons with patterns other than solid may leave "holes" where the
-   polygons are not properly rendered.
+   polygons are not properly rendered.[Bug 889454]
