@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsSpitBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>579</width>
-            <height>504</height>
+            <height>506</height>
         </rect>
     </property>
     <property name="caption">
@@ -198,7 +198,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QTable" row="4" column="0" rowspan="1" colspan="6">
+                <widget class="QTable" row="4" column="0" rowspan="1" colspan="7">
                     <column>
                         <property name="text">
                             <string>File Name</string>
@@ -268,7 +268,7 @@
                         <string>Use Default</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="3" column="5">
+                <widget class="QCheckBox" row="3" column="5" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>chkUseDefaultGeom</cstring>
                     </property>
@@ -292,23 +292,9 @@
                         <string>SRID</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="2" column="5">
+                <widget class="QLineEdit" row="2" column="5" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>txtGeomName</cstring>
-                    </property>
-                </widget>
-                <widget class="Line" row="1" column="0" rowspan="1" colspan="6">
-                    <property name="name">
-                        <cstring>line1</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
                     </property>
                 </widget>
                 <widget class="QPushButton" row="0" column="0" rowspan="1" colspan="2">
@@ -335,6 +321,14 @@
                         <string>Remove All</string>
                     </property>
                 </widget>
+                <widget class="QPushButton" row="0" column="6">
+                    <property name="name">
+                        <cstring>btnGetSchema</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Get Schema</string>
+                    </property>
+                </widget>
                 <spacer row="0" column="5">
                     <property name="name">
                         <cstring>spacer7</cstring>
@@ -347,11 +341,25 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>201</width>
+                            <width>110</width>
                             <height>41</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="Line" row="1" column="0" rowspan="1" colspan="7">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
             </grid>
         </widget>
     </grid>
@@ -423,6 +431,12 @@
         <receiver>QgsSpitBase</receiver>
         <slot>useDefaultGeom()</slot>
     </connection>
+    <connection>
+        <sender>btnGetSchema</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>getSchema()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>import()</slot>
@@ -436,6 +450,7 @@
     <slot>helpInfo()</slot>
     <slot>aboutInfo()</slot>
     <slot>useDefaultGeom()</slot>
+    <slot>getSchema()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
