@@ -3,6 +3,9 @@
  @file projecttst.h
 
 */
+#include <iostream>
+
+using namespace std;
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -39,6 +42,8 @@ class ProjectTest : public CppUnit::TestFixture
     CPPUNIT_TEST( testWriteEntries );
     CPPUNIT_TEST( testRemoveEntry );
     CPPUNIT_TEST( testClearProperties );
+    CPPUNIT_TEST( testEntryList );
+    CPPUNIT_TEST( testSubkeyList );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -59,9 +64,9 @@ class ProjectTest : public CppUnit::TestFixture
 
         mBoolValueKey = "/values/bool";
 
-        mStringValueKey = "/values/string";
+        mStringValueKey = "/values/strings/string";
 
-        mStringListValueKey = "/values/stringlist";
+        mStringListValueKey = "/values/strings/stringlist";
 
 
         mNumValueConst = 42;
@@ -228,6 +233,97 @@ class ProjectTest : public CppUnit::TestFixture
         readNullEntries();
     } // testClearProperties
 
+
+    /** test entryList() 
+     */
+    void testEntryList()
+    {
+        // at first the entry list should be empty
+        QStringList entries = QgsProject::instance()->entryList( mScope, "/foo" );
+
+        CPPUNIT_ASSERT( entries.isEmpty() );
+
+        QgsProject::instance()->writeEntry( mScope, "/foo/bar", "one" );
+        QgsProject::instance()->writeEntry( mScope, "/foo/baz", "two" );
+        QgsProject::instance()->writeEntry( mScope, "/foo/quux", "three" );
+
+        QgsProject::instance()->writeEntry( mScope, "/foo/xmmy/blah", "four" );
+        QgsProject::instance()->writeEntry( mScope, "/foo/xmmy/bogus", "five" );
+
+        QgsProject::instance()->dumpProperties();
+
+        // So entrylist for /foo should return "bar", "baz", and "quux" but
+        // NOT "xmmy".  Nor should it contain any key values.
+
+        entries = QgsProject::instance()->entryList( mScope, "/foo" );
+
+        cerr << "entries: ";
+        for ( QStringList::iterator i = entries.begin();
+              i != entries.end();
+              ++i )
+        {
+            cerr << *i << " ";
+        }
+        cerr << "\n";
+
+        CPPUNIT_ASSERT( entries.find( "bar" ) != entries.end() );
+        CPPUNIT_ASSERT( entries.find( "baz" ) != entries.end() );
+        CPPUNIT_ASSERT( entries.find( "quux" ) != entries.end() );
+
+        CPPUNIT_ASSERT( entries.find( "xmmy" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "blah" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "bogus" ) == entries.end() );
+
+        CPPUNIT_ASSERT( entries.find( "one" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "two" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "three" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "four" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "five" ) == entries.end() );
+    }
+
+
+    void testSubkeyList()
+    {
+        // at first the entry list should be empty -- "bogus" known to be empty
+        QStringList entries = QgsProject::instance()->subkeyList( mScope, "/bogus" );
+        cerr << "subkeys: ";
+        for ( QStringList::iterator i = entries.begin();
+              i != entries.end();
+              ++i )
+        {
+            cerr << *i << " ";
+        }
+        cerr << "\n";
+
+        CPPUNIT_ASSERT( entries.isEmpty() );
+
+        // So subkeylist for /foo should return only "xmmy".
+
+        entries = QgsProject::instance()->subkeyList( mScope, "/foo" );
+
+        cerr << "subkeys: ";
+        for ( QStringList::iterator i = entries.begin();
+              i != entries.end();
+              ++i )
+        {
+            cerr << *i << " ";
+        }
+        cerr << "\n";
+
+        CPPUNIT_ASSERT( entries.find( "bar" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "baz" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "quux" ) == entries.end() );
+
+        CPPUNIT_ASSERT( entries.find( "xmmy" ) != entries.end() );
+        CPPUNIT_ASSERT( entries.find( "blah" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "bogus" ) == entries.end() );
+
+        CPPUNIT_ASSERT( entries.find( "one" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "two" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "three" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "four" ) == entries.end() );
+        CPPUNIT_ASSERT( entries.find( "five" ) == entries.end() );
+    }
 
 private:
 
