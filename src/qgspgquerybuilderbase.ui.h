@@ -66,3 +66,15 @@ void QgsPgQueryBuilderBase::getAllValues()
 void QgsPgQueryBuilderBase::getSampleValues()
 {
 }
+
+
+void QgsPgQueryBuilderBase::fieldDoubleClick( QListBoxItem *item )
+{
+    txtSQL->insert(item->text());
+}
+
+
+void QgsPgQueryBuilderBase::valueDoubleClick( QListBoxItem *item )
+{
+     txtSQL->insert(item->text());
+}
