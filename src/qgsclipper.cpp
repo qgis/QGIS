@@ -19,6 +19,7 @@
 
 #include "qgsclipper.h"
 
+#include <cmath>
 #include <iostream>
 
 bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to, 
