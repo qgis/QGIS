@@ -148,7 +148,6 @@ void QgsMapCanvas::render2()
 //  std::cout << "IN RENDER 2" << std::endl;
 			drawing = true;
 			QPainter *paint = new QPainter();
-			//paint->begin(this);replaced line
 			pmCanvas->fill(bgColor);
 			paint->begin(pmCanvas);
 			// calculate the translation and scaling parameters
@@ -199,10 +198,7 @@ void QgsMapCanvas::render2()
 			paint->end();
 			drawing = false;
 		}
-		// save the canvas pixmap
-		//delete pmCanvas;
-		//pmCanvas = new QPixmap();
-		//*pmCanvas = QPixmap::grabWindow(winId());
+ 
 		dirty = false;
 		repaint();
 	}
