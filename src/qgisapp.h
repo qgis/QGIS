@@ -360,6 +360,7 @@ public slots:
     void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
     void drawExtentRectangle(QPainter *);
     void updateMouseCoordinatePrecision();
+    void stopZoom();
 
 signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -437,6 +438,8 @@ private:
     QRect *mMapWindow;
     //! Current map tool
     int mMapTool;
+    //! The previously selected non zoom map tool.
+    int mPreviousNonZoomMapTool;
     //QCursor *mCursorZoomIn; //doesnt seem to be used anymore (TS)
     QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
