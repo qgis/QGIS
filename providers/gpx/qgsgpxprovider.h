@@ -157,7 +157,7 @@ public:
 
   bool supportsFeatureDeletion() const 
   {
-    return (mFeatureType == WaypointType);
+    return true;
   }
 
   QgsDataSourceURI *getURI()
