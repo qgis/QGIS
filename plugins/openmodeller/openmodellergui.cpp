@@ -40,6 +40,7 @@
 #include <qpushbutton.h>
 #include <imagewriter.h>
 #include <qpixmap.h>
+
 //
 //openmodeller includes
 #ifdef WIN32
@@ -61,7 +62,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-
+#include <climits>
 
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -226,7 +227,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 	      }
 	    else
 	      {
-	        mySpinBox->setMinValue(-32767);
+		mySpinBox->setMinValue(INT_MIN);
 	      }        
             if (!myParameter->has_max==0) 
 	      {
@@ -234,7 +235,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 	      }
 	    else
 	      {
-	        mySpinBox->setMaxValue(32767);
+		mySpinBox->setMaxValue(INT_MAX);
 	      }
 
             //Set value to previous otherwise to default
