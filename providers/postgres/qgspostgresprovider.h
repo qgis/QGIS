@@ -45,25 +45,26 @@ class QgsPostgresProvider:public QgsDataProvider
 //! Destructor
     virtual ~ QgsPostgresProvider();
 /**
-	* Get the first feature resutling from a select operation
-	* @return QgsFeature
-	*/
+  * Get the first feature resutling from a select operation
+  * @return QgsFeature
+  */
     QgsFeature *getFirstFeature(bool fetchAttributes = false);
     /** 
-	* Get the next feature resulting from a select operation
-	* @return QgsFeature
-	*/
+  * Get the next feature resulting from a select operation
+  * @return QgsFeature
+  */
     QgsFeature *getNextFeature(bool fetchAttributes = false);
+    bool getNextFeature(QgsFeature &feature, bool fetchAttributes=0);
 
     /** Get the feature type. This corresponds to 
-		*	WKBPoint,
-		*	WKBLineString,
-		*	WKBPolygon,
-		*	WKBMultiPoint,
-		*	WKBMultiLineString or
-		*	WKBMultiPolygon
- 	* as defined in qgis.h
-	*/
+    * WKBPoint,
+    * WKBLineString,
+    * WKBPolygon,
+    * WKBMultiPoint,
+    * WKBMultiLineString or
+    * WKBMultiPolygon
+  * as defined in qgis.h
+  */
     int geometryType();
     /** 
     * Get the number of features in the layer
@@ -74,32 +75,32 @@ class QgsPostgresProvider:public QgsDataProvider
     */
     int fieldCount();
     /**
-	* Select features based on a bounding rectangle. Features can be retrieved 
-	* with calls to getFirstFeature and getNextFeature.
-	* @param mbr QgsRect containing the extent to use in selecting features
-	*/
+  * Select features based on a bounding rectangle. Features can be retrieved 
+  * with calls to getFirstFeature and getNextFeature.
+  * @param mbr QgsRect containing the extent to use in selecting features
+  */
     void select(QgsRect * mbr, bool useIntersect=false);
     /** 
-		* Set the data source specification. This must be a valid database
-	* connection string:
+    * Set the data source specification. This must be a valid database
+  * connection string:
   * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
-	* @uri data source specification
-	*/
+  * @uri data source specification
+  */
     void setDataSourceUri(QString uri);
 
    /** 
-	* Get the data source specification. 
-	* @return data source specification as a string containing the host, user, 
+  * Get the data source specification. 
+  * @return data source specification as a string containing the host, user, 
   * dbname, password, and table
   * @see setDataSourceUri
-	*/
+  */
     QString getDataSourceUri();
 
     /**
-	* Identify features within the search radius specified by rect
-	* @param rect Bounding rectangle of search radius
-	* @return std::vector containing QgsFeature objects that intersect rect
-	*/
+  * Identify features within the search radius specified by rect
+  * @param rect Bounding rectangle of search radius
+  * @return std::vector containing QgsFeature objects that intersect rect
+  */
     virtual std::vector<QgsFeature>& identify(QgsRect * rect);
 
   /** 
