@@ -1147,6 +1147,75 @@ bool QgsPostgresProvider::deleteFeatures(std::list<int> id)
     return returnvalue;
 }
 
+bool QgsPostgresProvider::addAttributes(std::list<QString> const & name, std::list<QString> const & type)
+{
+    bool returnvalue=true;
+    std::list<QString>::const_iterator itert=type.begin();
+    for(std::list<QString>::const_iterator itern=name.begin();itern!=name.end();++itern)
+    {
+	QString sql="ALTER TABLE "+tableName+" ADD COLUMN "+(*itern)+" "+(*itert);
+	//send sql statement and do error handling
+	PGresult* result=PQexec(connection, (const char *)sql);
+	if(result==0)
+	{
+	    returnvalue=false;
+	    ExecStatusType message=PQresultStatus(result);
+	    if(message==PGRES_FATAL_ERROR)
+	    {
+		QMessageBox::information(0,"ALTER TABLE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+	    } 
+	}
+	++itert;
+    }
+    return returnvalue;
+}
+
+bool QgsPostgresProvider::deleteAttributes(std::list<QString> const & name)
+{
+    bool returnvalue=true;
+    for(std::list<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
+    {
+	QString sql="ALTER TABLE "+tableName+" DROP COLUMN "+(*iter);
+	//send sql statement and do error handling
+	PGresult* result=PQexec(connection, (const char *)sql);
+	if(result==0)
+	{
+	    returnvalue=false;
+	    ExecStatusType message=PQresultStatus(result);
+	    if(message==PGRES_FATAL_ERROR)
+	    {
+		QMessageBox::information(0,"ALTER TABLE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+	    }
+	}
+    }
+    return returnvalue;
+}
+
+bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
+{
+    bool returnvalue=true;
+    for(std::map<int,std::map<QString,QString> >::const_iterator iter=attr_map.begin();iter!=attr_map.end();++iter)
+    {
+	for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
+	{
+	    //TODO: collect several attribute changes for a feature in one statement (possibly more efficient)
+	    QString sql="UPDATE "+tableName+" SET "+(*siter).first+" = "+(*siter).second+" WHERE " +primaryKey+" = "+QString::number((*iter).first);
+            //send sql statement and do error handling
+	    PGresult* result=PQexec(connection, (const char *)sql);
+	    if(result==0)
+	    {
+		returnvalue=false;
+		ExecStatusType message=PQresultStatus(result);
+		if(message==PGRES_FATAL_ERROR)
+		{
+		    QMessageBox::information(0,"UPDATE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+		}
+	    }
+	}
+    }
+    return returnvalue;
+}
+
 bool QgsPostgresProvider::supportsSaveAsShapefile() const
 {
   return false;
