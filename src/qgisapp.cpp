@@ -2281,6 +2281,17 @@ void QgisApp::identify()
     mMapCanvas->setCursor(*mMapCursor);
 }
 
+void QgisApp::measure()
+{
+    mMapTool = QGis::Measure;
+    mMapCanvas->setMapTool(mMapTool);
+
+    QPixmap pm = QPixmap((const char **)  capture_point_cursor);
+    delete mMapCursor;
+    mMapCursor = new QCursor(pm, 8, 8);
+    mMapCanvas->setCursor(*mMapCursor);
+}
+
 void QgisApp::attributeTable()
 {
     QListViewItem *li = mMapLegend->currentItem();
@@ -3805,6 +3816,7 @@ void QgisApp::setTheme(QString themeName)
     actionIdentify->setIconSet(QIconSet(QPixmap(iconPath + "/identify.png")));
     actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
     actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
+    actionMeasure->setIconSet(QIconSet(QPixmap(iconPath + "/measure.png")));
 }
 void QgisApp::setupToolbarPopups(QString themeName)
 {

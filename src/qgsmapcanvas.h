@@ -55,7 +55,7 @@ class QgsMapLayerInterface;
 class QgsLegend;
 class QgsLegendView;
 class QgsAcetateObject;
-
+class QgsMeasure;
 
 
 /*! \class QgsMapCanvas
@@ -392,6 +392,8 @@ private:
   */
   void connectNotify( const char * signal );
 
+    //! Measure tool
+    QgsMeasure *mMeasure;
 }; // class QgsMapCanvas
 
 #endif

@@ -55,7 +55,8 @@ namespace QGis
     CapturePoint,
     CaptureLine,
     CapturePolygon,
-    EmitPoint
+    EmitPoint,
+    Measure
   };
 //! Used for symbology operations
   // Featuure types
