@@ -456,7 +456,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist, bool getnotcommited)
+QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist)
 {
   QgsFeature *f = 0;
   if (valid)
@@ -465,36 +465,16 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist, bool ge
     queryResult = PQexec(connection, (const char *)fetch);
     if(PQntuples(queryResult) == 0)
     {
-       
-	if(getnotcommited&&mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
-	{
-#ifdef QGISDEBUG
-	    qWarning("accessing feature in the cache");
-#endif //QGISDEBUG
-	    QgsFeature* addedfeature=*mAddedFeaturesIt;
-	    ++mAddedFeaturesIt;
-	       //copy the feature because it will be deleted in QgsVectorLayer::draw()
-	    QgsFeature* returnf=new QgsFeature(*addedfeature);
-	    return returnf;
-	}
 #ifdef QGISDEBUG
 	std::cerr << "Feature is null\n";
 #endif  
-	if(!mAddedFeatures.empty())
-	{
-	    mAddedFeaturesIt=mAddedFeatures.begin();
-	}
-      
 	PQexec(connection, "end work");
 	ready = false;
 	return 0;
     }
 
     int *noid;
-    bool cont=false;//flag for repeating the loop in case of deleted features
-    while(cont==false)
-    {
-	int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
+    int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
 #ifdef QGISDEBUG 
 	std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
 #endif  
@@ -525,23 +505,8 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist, bool ge
 		noid = &oid;
 	    }
 	}
-	//block feature if oid is contained in mDeletedFeatures
-	std::set<int>::iterator iter=mDeletedFeatures.find(*noid);
-	if(iter==mDeletedFeatures.end())
-	{
-	    cont=true;
-	}
-	else
-	{
-	    //we hit deleted feature, fetch the next
-	    fetch = "fetch forward 1 from qgisf";
-	    queryResult = PQexec(connection, (const char *)fetch);
-	    if(PQntuples(queryResult) == 0)
-	    {
-		cont=true;
-	    }
-	}
-    }
+	
+    
     
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry")); 
     if(returnedLength > 0)
@@ -934,13 +899,7 @@ bool QgsPostgresProvider::isValid(){
   return valid;
 }
 
-bool QgsPostgresProvider::startEditing()
-{
-    mEditable=true;
-    return true;
-}
-
-bool QgsPostgresProvider::commitFeature(QgsFeature* f)
+bool QgsPostgresProvider::addFeature(QgsFeature* f)
 {
     if(f)
     {
@@ -1045,13 +1004,6 @@ QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 
 bool QgsPostgresProvider::deleteFeature(int id)
 {
-    mDeletedFeatures.insert(id);
-    mModified=true;
-    return true;
-}
-
-bool QgsPostgresProvider::eraseFeature(int id)
-{
     QString sql("DELETE FROM "+tableName+" WHERE "+primaryKey+" = "+QString::number(id));
 #ifdef QGISDEBUG
     qWarning("delete sql: "+sql);
@@ -1109,6 +1061,32 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
     projAvailable = (proj[0].find("=1") > -1);
   }
   return postgisVersionInfo;
+}
+
+bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> flist)
+{
+    bool returnvalue=true;
+    for(std::list<QgsFeature*>::iterator it=flist.begin();it!=flist.end();++it)
+    {
+	if(!addFeature(*it))
+	{
+	    returnvalue=false;
+	}
+    }
+    return returnvalue;
+}
+
+bool QgsPostgresProvider::deleteFeatures(std::list<int> id)
+{
+    bool returnvalue=true; 
+    for(std::list<int>::iterator it=id.begin();it!=id.end();++it)
+    {
+	if(!deleteFeature(*it))
+	{
+	    returnvalue=false;
+	}
+    }
+    return returnvalue;
 }
 
 /**

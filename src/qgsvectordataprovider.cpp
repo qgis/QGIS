@@ -18,91 +18,19 @@
 #include "qgsfeature.h"
 
 
-QgsVectorDataProvider::QgsVectorDataProvider(): mEditable(false), mModified(false)
+QgsVectorDataProvider::QgsVectorDataProvider()
 {
 
 }
 
-bool QgsVectorDataProvider::startEditing()
+
+bool QgsVectorDataProvider::addFeatures(std::list<QgsFeature*> flist)
 {
-    //providers supporting editing need to overwrite this method
     return false;
 }
 
-void QgsVectorDataProvider::stopEditing()
+bool QgsVectorDataProvider::deleteFeatures(std::list<int> id)
 {
-    mEditable=false;
-}
-
-bool QgsVectorDataProvider::commitChanges()
-{
-    if(mEditable)
-    {
-	bool returnvalue=true;
-	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-	{
-	    if(!commitFeature(*it))
-	    {
-		returnvalue=false;
-	    }
-	    delete *it;
-	}
-	
-	for(std::set<int>::iterator it=mDeletedFeatures.begin();it!=mDeletedFeatures.end();++it)
-	{
-	    if(!eraseFeature(*it))
-	    {
-		returnvalue=false;
-	    }
-	}
-
-	mAddedFeatures.clear();
-	mDeletedFeatures.clear();
-	mModified=false;
-	return returnvalue;
-    }
-    else
-    {
-	return false;
-    }
-}
-
-bool QgsVectorDataProvider::rollBack()
-{
-    if(mEditable)
-    {
-	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-	{
-	    delete *it;
-	}
-	mAddedFeatures.clear();
-	mModified=false;
-	return true;
-    }
-    else
-    {
-	return false;
-    }
-}
-
-bool QgsVectorDataProvider::addFeature(QgsFeature* f)
-{
-    if(mEditable)
-    {
-	mAddedFeatures.push_back(f);
-	mAddedFeaturesIt=mAddedFeatures.begin();
-	mModified=true;
-	return true;
-    }
-    else
-    {
-	return false;
-    }
-}
-
-bool QgsVectorDataProvider::deleteFeature(int id)
-{
-    //needs to be done by subclasses, because not all providers support it
     return false;
 }
 
@@ -112,15 +40,14 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
   return "";
 }
 
-
-bool QgsVectorDataProvider::commitFeature(QgsFeature* f)
+bool QgsVectorDataProvider::supportsFeatureAddition()
 {
-    //needs to be done by subclasses
+    //needs to be overwritten by providers if they provide feature editing
     return false;
 }
 
-bool QgsVectorDataProvider::eraseFeature(int id)
+bool QgsVectorDataProvider::supportsFeatureDeletion()
 {
-    //needs to be done by subclasses
+    //needs to be overwritten by providers which support this
     return false;
 }

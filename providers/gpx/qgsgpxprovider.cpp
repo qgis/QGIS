@@ -143,10 +143,10 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   QgsFeature* feature = new QgsFeature(-1);
   bool success;
   if (fetchAttributes)
-    success = getNextFeature(feature, mAllAttributes, false);
+    success = getNextFeature(feature, mAllAttributes);
   else {
     std::list<int> emptyList;
-    success = getNextFeature(feature, emptyList, false);
+    success = getNextFeature(feature, emptyList);
   }
   if (success)
     return feature;
@@ -155,10 +155,9 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 }
 
 
-QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, 
-					    bool getnotcommited) {
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
   QgsFeature* feature = new QgsFeature(-1);
-  bool success = getNextFeature(feature, attlist, getnotcommited);
+  bool success = getNextFeature(feature, attlist);
   if (success)
     return feature;
   delete feature;
@@ -167,11 +166,10 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist,
 
 
 bool QgsGPXProvider::getNextFeature(QgsFeature* feature, 
-				    std::list<int>& attlist,
-				    bool getnotcommitted) {
-  bool result = false;
+				    std::list<int>& attlist) {
+    bool result = false;
   
-  std::list<int>::const_iterator iter;
+    /*std::list<int>::const_iterator iter;
   
   if (mFeatureType == WaypointType) {
     // go through the list of waypoints and return the first one that is in
@@ -371,7 +369,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
       }
     }
   }
-  
+    */
   return result;
 }
 
@@ -551,214 +549,7 @@ bool QgsGPXProvider::isValid(){
   return mValid;
 }
 
-bool QgsGPXProvider::startEditing() {
-  mEditable = true;
-  return true;
-}
-
-
-void QgsGPXProvider::stopEditing() {
-  mEditable = false;
-}
-
-
-bool QgsGPXProvider::commitChanges() {
-  for (int i = 0; i < mAddedFeatures.size(); ++i) {
-    if (mFeatureType == WaypointType)
-      data->addWaypoint(*dynamic_cast<Waypoint*>(mAddedFeatures[i]));
-    else if (mFeatureType == RouteType)
-      data->addRoute(*dynamic_cast<Route*>(mAddedFeatures[i]));
-    else if (mFeatureType == TrackType)
-      data->addTrack(*dynamic_cast<Track*>(mAddedFeatures[i]));
-    
-    delete mAddedFeatures[i];
-  }
-  mAddedFeatures.clear();
-  
-  // write back to file
-  QDomDocument qdd;
-  data->fillDom(qdd);
-  QFile file(mFileName);
-  if (file.open(IO_WriteOnly)) {
-    QTextStream stream(&file);
-    stream<<qdd.toString();
-  }
-  else {
-    std::cerr<<"Could not write \""<<mFileName<<"\""<<std::endl;
-    return false;
-  }
-
-  return true;
-}
-
-
-bool QgsGPXProvider::rollBack() {
-  for (int i = 0; i < mAddedFeatures.size(); ++i)
-    delete mAddedFeatures[i];
-  mAddedFeatures.clear();
-  return true;
-}
-
-
-bool QgsGPXProvider::addFeature(QgsFeature* f) {
-  if (!mEditable)
-    return false;
-  
-  GPSObject* obj = NULL;
-  
-  unsigned char* geo = f->getGeometry();
-  int id;
-  QGis::WKBTYPE ftype;
-  memcpy(&ftype, (geo + 1), sizeof(int));
-  
-  /* Do different things for different geometry types:
-     WKBPoint      -> add waypoint if this is a waypoint layer
-     WKBLineString -> add track if this is a track layer, route if this is a
-                      route layer
-     WKBPolygon and the WKBMulti types are not supported because they don't
-     make sense for GPX files. */
-  switch(ftype) {
-    
-    // the user is trying to add a point feature
-  case QGis::WKBPoint: {
-    if (mFeatureType != WaypointType) {
-      std::cerr<<"Tried to write point feature to non-point layer!"<<std::endl;
-      return false;
-    }
-    mAddedFeatures.push_back(new Waypoint);
-    Waypoint* wpt(dynamic_cast<Waypoint*>(mAddedFeatures[mAddedFeatures.size() - 1]));
-    wpt->lat = *((double*)(geo + 5 + sizeof(double)));
-    wpt->lon = *((double*)(geo + 5));
-    
-    // parse waypoint-specific attributes
-    std::vector<QgsFeatureAttribute>::const_iterator iter;
-    for (iter = f->attributeMap().begin(); 
-	 iter != f->attributeMap().end(); ++iter) {
-      if (iter->fieldName() == "ele") {
-	bool b;
-	double d = iter->fieldValue().toDouble(&b);
-	if (b)
-	  wpt->ele = d;
-	else
-	  wpt->ele = -std::numeric_limits<double>::max();
-      }
-      else if (iter->fieldName() == "sym")
-	wpt->sym = iter->fieldValue();
-    }
-    
-    obj = wpt;
-    
-    break;
-  }
-    
-    // the user is trying to add a line feature
-  case QGis::WKBLineString: {
-    if (mFeatureType == WaypointType) {
-      std::cerr<<"Tried to write line feature to point layer!"<<std::endl;
-      return false;
-    }
-    
-    // get the number of points
-    int length;
-    memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
-#ifdef QGISDEBUG
-    qWarning("length: "+QString::number(length));
-#endif
-    
-    GPSExtended* ext = NULL;
-    
-    // add route
-    if (mFeatureType == RouteType) {
-      mAddedFeatures.push_back(new Route);
-      Route* rte(dynamic_cast<Route*>(mAddedFeatures[mAddedFeatures.size() - 1]));
-      for (int i = 0; i < length; ++i) {
-	Routepoint rpt;
-	std::memcpy(&rpt.lon, geo + 9 + 16 * i, sizeof(double));
-	std::memcpy(&rpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
-
-	// update the route bounds
-	rte->xMin = (rte->xMin < rpt.lon ? rte->xMin : rpt.lon);
-	rte->xMax = (rte->xMax > rpt.lon ? rte->xMax : rpt.lon);
-	rte->yMin = (rte->yMin < rpt.lat ? rte->yMin : rpt.lat);
-	rte->yMax = (rte->yMax > rpt.lat ? rte->yMax : rpt.lat);
-	
-	rte->points.push_back(rpt);
-      }
-      
-      ext = rte;
-    }
-    
-    // add track
-    else if (mFeatureType == TrackType) {
-      mAddedFeatures.push_back(new Track);
-      Track* trk(dynamic_cast<Track*>(mAddedFeatures[mAddedFeatures.size() - 1]));
-      TrackSegment trkSeg;
-      for (int i = 0; i < length; ++i) {
-	Trackpoint tpt;
-	std::memcpy(&tpt.lon, geo + 9 + 16 * i, sizeof(double));
-	std::memcpy(&tpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
-	
-	// update the track bounds
-	trk->xMin = (trk->xMin < tpt.lon ? trk->xMin : tpt.lon);
-	trk->xMax = (trk->xMax > tpt.lon ? trk->xMax : tpt.lon);
-	trk->yMin = (trk->yMin < tpt.lat ? trk->yMin : tpt.lat);
-	trk->yMax = (trk->yMax > tpt.lat ? trk->yMax : tpt.lat);
-
-	trkSeg.points.push_back(tpt);
-      }
-      trk->segments.push_back(trkSeg);
-      
-      ext = trk;
-    }
-    
-    // parse GPSExtended-specific attributes
-    std::vector<QgsFeatureAttribute>::const_iterator iter;
-    for (iter = f->attributeMap().begin(); 
-	 iter != f->attributeMap().end(); ++iter) {
-      if (iter->fieldName() == "number") {
-	bool b;
-	int n = iter->fieldValue().toInt(&b);
-	if (b)
-	  ext->number = n;
-	else
-	  ext->number = std::numeric_limits<int>::max();
-      }
-    }
-    
-    obj = ext;
-    
-    break;
-  }
-    
-    // unsupported geometry - something's wrong
-  default:
-    return false;
-    
-  }
-  
-  // parse common attributes
-  std::vector<QgsFeatureAttribute>::const_iterator iter;
-  for (iter = f->attributeMap().begin(); 
-       iter != f->attributeMap().end(); ++iter) {
-    if (iter->fieldName() == "name")
-      obj->name = iter->fieldValue();
-    else if (iter->fieldName() == "cmt")
-      obj->cmt = iter->fieldValue();
-    else if (iter->fieldName() == "desc")
-      obj->desc = iter->fieldValue();
-    else if (iter->fieldName() == "src")
-      obj->src = iter->fieldValue();
-    else if (iter->fieldName() == "url")
-      obj->url = iter->fieldValue();
-    else if (iter->fieldName() == "urlname")
-      obj->urlname = iter->fieldValue();
-  }
-  
-  return true;
-}
-
-
-bool QgsGPXProvider::deleteFeature(int id) {
+bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
   return false;
 }
 
