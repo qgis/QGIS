@@ -1397,9 +1397,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 		}
 
 		//show the dialog to enter attribute values
-		f->attributeDialog();
-
-		vlayer->addFeature(f);
+		if(f->attributeDialog())
+		{
+		    vlayer->addFeature(f);
+		}
 		refresh();
 	    }
 	}
@@ -1523,13 +1524,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 		f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
 	      }
 	    
-	    //show the dialog to enter attribute values
-	    //if(vlayer->providerType().lower() != "grass")
+	    if(f->attributeDialog())
 	    {
-	      f->attributeDialog();
+		vlayer->addFeature(f);
 	    }
-	    
-	    vlayer->addFeature(f);
 	    
 	    //delete the acetate objects and the elements of mCaptureList
 	    removeEditingAcetates();
