@@ -80,9 +80,9 @@ void QgsLegendView::contentsMouseReleaseEvent( QMouseEvent* e)
 		mousePressed = FALSE;
 		unsetCursor();
 		if ( movingItem ) {
+			movingItem = NULL;
 			// tell qgsmapcanvas to reset layer order using the legend order
 			emit zOrderChanged(this);
 		}
-		movingItem = NULL;
 	}
 }
