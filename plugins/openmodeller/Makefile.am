@@ -29,6 +29,8 @@ pkglibdir = ${libdir}
 
 ## target plug-in 
 lib_LTLIBRARIES = libopenmodellerplugin.la
+## target binary file
+bin_PROGRAMS = omgui
 
 ## qt designer user-interface files
 plugin_UI = openmodellerguibase.ui
@@ -62,6 +64,26 @@ libopenmodellerplugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS
 libopenmodellerplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) -lqgis -L/usr/lib -lopenmodeller
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
+##
+##  For standalone executable
+##
+
+omgui_SOURCES = 	main.cpp \
+			openmodellergui.cpp \
+			openmodellergui.h \
+			request_file.cpp \
+			occurrences_file.cpp \
+			$(plugin_UISOURCES) \
+			$(plugin_UIHEADERS) \
+			$(plugin_UIMOC)
+
+nodist_omgui_SOURCES = openmodellergui.moc.cpp	
+
+omgui_LDADD = $(QT_LDADD) $(GDAL_LDADD)  -L/usr/lib -lopenmodeller
+omgui_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) -I/usr/local/include -I/usr/local/include/openmodeller 
+
+
+
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(plugin_UI) icon_om.xpm
