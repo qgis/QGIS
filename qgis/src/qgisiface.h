@@ -52,6 +52,8 @@ class QgisIface : public QgisInterface{
         bool addRasterLayer(QgsRasterLayer * theRasterLayer);
         //! Add a project
         bool addProject(QString theProjectName);
+        //! Start a new blank project
+        void newProject(bool thePromptToSaveFlag=false);
         //! Get pointer to the active layer (layer selected in the legend)
         QgsMapLayer *activeLayer();
         //! Get source of the active layer

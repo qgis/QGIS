@@ -236,6 +236,8 @@ private slots:
     void fileOpen();
     //! Create a new project
     void fileNew();
+    //! As above but allows forcing without prompt
+    void fileNew(bool thePromptToSaveFlag);
     //! Print the current map view frame
     void filePrint();
     //! Export current view as a mapserver map file
