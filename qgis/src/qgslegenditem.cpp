@@ -15,11 +15,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <qlabel.h>
+#include <qcheckbox.h>
 #include "qgssymbol.h"
+#include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 
-QgsLegendItem::QgsLegendItem ()
+
+QgsLegendItem::QgsLegendItem (QgsMapLayer *lyr, QWidget * parent, const char *name)
+	: QgsLegendItemBase(parent, name), layer(lyr)
 {
+  chkVisible->setChecked(lyr->visible());
+  lblLayerName->setText(lyr->name());
 }
 
 QgsLegendItem::~QgsLegendItem ()
