@@ -21,7 +21,9 @@
 #include <qlabel.h>
 #include <qlistview.h>
 #include <qcombobox.h>
+#include <qcheckbox.h>
 #include <qtextstream.h>
+#include <qtable.h>
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsfield.h"
@@ -43,6 +45,9 @@
 #include "qgscontcoldialog.h"
 #include "qobjectlist.h"
 #include "qgsgramadialog.h"
+#include "qgslabelattributes.h"
+#include "qgslabel.h"
+#include "qgslabeldialog.h"
 
 
 QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name):QgsDlgVectorLayerPropertiesBase(parent, name), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
@@ -88,6 +93,8 @@ bufferRenderer(layer->
       legendtypecombobox->insertItem(tr("Single Marker"));
       legendtypecombobox->insertItem(tr("Graduated Marker"));
   }
+
+  labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
   QObject::connect(btnApply, SIGNAL(clicked()), this, SLOT(apply()));
@@ -153,6 +160,9 @@ void QgsDlgVectorLayerProperties::apply()
       layer->setRenderer(bufferRenderer);
       layer->setRendererDialog(bufferDialog);
     }
+  
+  labelDialog->apply();
+  layer->setLabelOn(labelCheckBox->isChecked());
 
   QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(layer->rendererDialog());
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(layer->rendererDialog());
@@ -223,4 +233,10 @@ QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
 void QgsDlgVectorLayerProperties::setLegendType(QString type)
 {
   legendtypecombobox->setCurrentText(tr(type));
+}
+
+void QgsDlgVectorLayerProperties::reset( void )
+{
+    labelDialog->reset();
+    labelCheckBox->setChecked(layer->labelOn());
 }

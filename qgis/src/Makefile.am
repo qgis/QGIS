@@ -102,7 +102,10 @@ headers =		qgis.h					\
 			qgsoptions.h \
 			qgsacetateobject.h \
 			qgsacetaterectangle.h \
-			qgsvectorfilewriter.h
+			qgsvectorfilewriter.h \
+			qgslabelattributes.h			\
+			qgslabel.h				\
+			qgslabeldialog.h
 
 ## qt designer files for all the GUI stuff
 qgis_UIC =	qgisappbase.ui					\
@@ -181,7 +184,8 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsvectorlayerproperties.moc.cpp	\
 		splashscreen.moc.cpp \
 		qgsprojectproperties.moc.cpp \
-		qgsoptions.moc.cpp
+		qgsoptions.moc.cpp			\
+		qgslabeldialog.moc.cpp
 
 
 qgis_SOURCES =  main.cpp			\
@@ -249,7 +253,10 @@ qgis_SOURCES =  main.cpp			\
 		qgsoptions.cpp \
 		qgsacetateobject.cpp \
 		qgsacetaterectangle.cpp \
-		qgsvectorfilewriter.cpp
+		qgsvectorfilewriter.cpp 	\
+		qgslabelattributes.cpp		\
+		qgslabel.cpp			\
+		qgslabeldialog.cpp		
 
 postgresHEADERS = qgsdbsourceselect.h qgsnewconnection.h
 postgresSOURCES = qgsdbsourceselect.cpp qgsnewconnection.cpp
