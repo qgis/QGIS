@@ -94,7 +94,8 @@ void LayerSelector::pbnOK_clicked()
   QListViewItemIterator myIterator (listParent);
   while (myIterator.current())
   {
-    if (myIterator.current()->isSelected())
+    //Check whether the item is selected and that it is not a directory or the tree root
+    if ((myIterator.current()->isSelected()) && !((myIterator.current()->text(1)=="DIR") || (myIterator.current()->text(1)=="")))
     {
       if (myIterator.current()->text(1)=="AIG")
       {
