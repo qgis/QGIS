@@ -97,11 +97,11 @@ void OpenModellerGuiBase::leOutputDirectory_textChanged( const QString & )
 }
 
 
-void OpenModellerGuiBase::pbnSelectLayerFolder_clicked()
+/*void OpenModellerGuiBase::pbnSelectLayerFolder_clicked()
 {
 
 }
-
+*/
 
 
 void OpenModellerGuiBase::pbnDefaultParameters_clicked()
@@ -116,13 +116,37 @@ void OpenModellerGuiBase::pbnSelectLayerFileProj_clicked()
 }
 
 
-void OpenModellerGuiBase::pbnSelectLayerFolderProj_clicked()
+/*void OpenModellerGuiBase::pbnSelectLayerFolderProj_clicked()
+{
+
+}
+*/
+
+void OpenModellerGuiBase::pbnRemoveLayerFileProj_clicked()
 {
 
 }
 
 
-void OpenModellerGuiBase::pbnRemoveLayerFileProj_clicked()
+void OpenModellerGuiBase::pbnCopyLayers_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::pbnOtherInputMask_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::pbnOtherOutputMask_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::pbnOtherOutputFormat_clicked()
 {
 
 }

@@ -466,7 +466,19 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   
   
   }
-
+  if (thePageNameQString==tr("Step 6 of 9"))
+  {
+  //MASK AND FORMAT LAYERS 
+  
+  for ( unsigned int i = 0; i < cboOutputMaskLayer->count(); i++ )
+  {
+     cboOutputMaskLayer->setCurrentItem( i );
+     QString item = cboOutputMaskLayer->currentText();
+     cboOutputFormatLayer->insertItem(item);
+  }	
+    
+  
+  }
 
   if (thePageNameQString==tr("Step 8 of 9")) 
   {  
@@ -647,7 +659,10 @@ void OpenModellerGui::makeConfigFile()
     myQTextStream << tr("\n\n##\n");
     myQTextStream << tr("# A layer that specifies the region of interest for model projection\n");      
     myQTextStream << tr("Output Mask = ") << outputMaskNameQString << "\n";
-    myQTextStream << tr("\n\n##\n");                             
+    myQTextStream << tr("\n\n##\n"); 
+    myQTextStream << tr("# A layer that specifies the region of interest for model projection\n");      
+    myQTextStream << tr("Output Format = ") << outputFormatQString << "\n";
+    myQTextStream << tr("\n\n##\n");                                    
     myQTextStream << tr("## Model Output Settings\n");
     myQTextStream << tr("##\n\n");   
      
@@ -736,6 +751,7 @@ void OpenModellerGui::accept()
   
   maskNameQString=cboMaskLayer->currentText();
   outputMaskNameQString=cboOutputMaskLayer->currentText();
+  outputFormatQString=cboOutputFormatLayer->currentText();
   taxonNameQString=cboTaxon->currentText();
   makeConfigFile();
   parseAndRun(outputFileNameQString+".cfg");
@@ -1071,7 +1087,7 @@ void OpenModellerGui::leOutputDirectory_textChanged( const QString &theOutputDir
   }
 }
 
-void OpenModellerGui::pbnSelectLayerFolder_clicked()
+/*void OpenModellerGui::pbnSelectLayerFolder_clicked()
 {
   QSettings settings;
 
@@ -1097,7 +1113,7 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   //enable the user to carry on to the next page...
   setNextEnabled(currentPage(),true);	    
 }
-
+*/
 void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theListBox, QComboBox* theComboBox)
 {
   QDir dir(dirname);
@@ -1344,7 +1360,7 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
   }
 }
 
-void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
+/*void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
 {
   QSettings settings;
 
@@ -1368,6 +1384,7 @@ void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
   //enable the user to carry on to the next page...
   setNextEnabled(currentPage(),true);	    
 }
+*/
 
 void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
 {  
@@ -1430,3 +1447,89 @@ bool OpenModellerGui::checkLayersMatch()
   }
 }
 
+void OpenModellerGui::pbnCopyLayers_clicked()
+{
+lstProjLayers->clear();
+for ( unsigned int i = 0; i < lstLayers->count(); i++ )
+{
+	QListBoxItem *item = lstLayers->item( i );
+	lstProjLayers->insertItem(item->text());
+}
+
+//enable the user to carry on to the next page...
+lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
+setNextEnabled(currentPage(),true);
+}
+
+
+void OpenModellerGui::pbnOtherInputMask_clicked()
+{
+  std::cout << " OpenModellerGui::pbnOtherInputMask_clicked() " << std::endl;
+  QString myFileTypeQString;
+  QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          "" , //initial dir
+          myGDALFilterString,  //filters to select
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select layer file" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );  
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
+  if (myFileNameQString==NULL || myFileNameQString=="") return;
+ 
+  //store directory where localities file is for next time
+  QSettings settings;
+  settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
+
+  cboMaskLayer->insertItem(myFileNameQString);
+  cboMaskLayer->setCurrentItem(cboMaskLayer->count()-1);
+} 
+
+void OpenModellerGui::pbnOtherOutputMask_clicked()
+{
+  std::cout << " OpenModellerGui::pbnOtherOutputMask_clicked() " << std::endl;
+  QString myFileTypeQString;
+  QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          "" , //initial dir
+          myGDALFilterString,  //filters to select
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select layer file" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );  
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
+  if (myFileNameQString==NULL || myFileNameQString=="") return;
+ 
+  //store directory where localities file is for next time
+  QSettings settings;
+  settings.writeEntry("/openmodeller/otherOutputMaskDirectory", myFileNameQString );
+
+  cboOutputMaskLayer->insertItem(myFileNameQString);
+  cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
+} 
+
+void OpenModellerGui::pbnOtherOutputFormat_clicked()
+{
+  std::cout << " OpenModellerGui::pbnOtherOutputFormat_clicked() " << std::endl;
+  QString myFileTypeQString;
+  QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          "" , //initial dir
+          myGDALFilterString,  //filters to select
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select layer file" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );  
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
+  if (myFileNameQString==NULL || myFileNameQString=="") return;
+ 
+  //store directory where localities file is for next time
+  QSettings settings;
+  settings.writeEntry("/openmodeller/otherOutputFormatDirectory", myFileNameQString );
+
+  cboOutputFormatLayer->insertItem(myFileNameQString);
+  cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
+} 

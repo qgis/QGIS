@@ -67,13 +67,17 @@ public:
   void cboModelAlgorithm_highlighted( const QString &theModelAlgorithm );
   void leOutputFileName_textChanged( const QString &theOutputFileName);
   void leOutputDirectory_textChanged( const QString &theOutputDirectory);
-  void pbnSelectLayerFolder_clicked();
   void traverseDirectories(const QString& dirname, QListBox*, QComboBox*);
   bool checkLocalitiesFileFormat(const QString);
   void pbnDefaultParameters_clicked();
-  void pbnSelectLayerFolderProj_clicked();
+  //void pbnSelectLayerFolder_clicked();
+  //void pbnSelectLayerFolderProj_clicked();
   void pbnRemoveLayerFileProj_clicked();
   void pbnSelectLayerFileProj_clicked();
+  void pbnCopyLayers_clicked();
+  void pbnOtherInputMask_clicked();
+  void pbnOtherOutputMask_clicked();
+  void pbnOtherOutputFormat_clicked();
   static bool isValidGdalFile(const QString theFilename);
   static bool isValidGdalProj(const QString theFilename); 
   
@@ -89,6 +93,7 @@ private:
     QString outputMaskNameQString;
     QStringList extraParametersQStringList;
     QString outputFileNameQString;
+    QString outputFormatQString;
     bool useTheseSettingsAgainFlag;
     typedef QMap<QString, QWidget *> ParametersMap;
     //setup QMap object and layout for the frame into which the controls will go
