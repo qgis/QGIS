@@ -285,7 +285,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
             {
 #ifdef QGISDEBUG
                 std::cout << myIter->first <<  QString(": false\n");
-\#endif
+#endif
 
                 //need to add some logic here to select the inserted item
                 lstVariablesToCalc->insertItem(myIter.key());

@@ -9,7 +9,7 @@
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
+    <description/>
     <secondaryLanguages/>
   </general>
   <kdevautoproject>
@@ -77,11 +77,11 @@
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs></programargs>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <programargs/>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -126,13 +126,7 @@
       <toc>w3c-uaag10</toc>
       <toc>wxwindows_bugs</toc>
     </ignoretocs>
-    <ignoreqt_xml>
-      <toc>Guide to the Qt Translation Tools</toc>
-      <toc>Qt Assistant Manual</toc>
-      <toc>Qt Designer Manual</toc>
-      <toc>Qt Reference Documentation</toc>
-      <toc>qmake User Guide</toc>
-    </ignoreqt_xml>
+    <ignoreqt_xml/>
     <ignoredoxygen>
       <toc>KDE Libraries (Doxygen)</toc>
     </ignoredoxygen>
@@ -141,7 +135,13 @@
       <apidocDir>doc/html/</apidocDir>
     </projectdoc>
     <ignorekdocs/>
-    <ignoredevhelp/>
+    <ignoredevhelp>
+      <toc>libgimpbase</toc>
+      <toc>libgimpcolor</toc>
+      <toc>libgimpmath</toc>
+      <toc>glib</toc>
+      <toc>gobject</toc>
+    </ignoredevhelp>
   </kdevdoctreeview>
   <kdevfilecreate>
     <filetypes/>
