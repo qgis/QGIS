@@ -838,6 +838,7 @@ void QgisApp::socketConnectionClosed(){
 			if(result ==0){
 				// show more info
 				QgsMessageViewer *mv = new QgsMessageViewer(this);
+				mv->setCaption("QGIS - Changes in CVS");
 				mv->setMessage(parts[2]);
 				mv->exec();
 			}	
