@@ -179,11 +179,13 @@ QString QgsRect::asPolygon() const
 
    foo.precision(8);
    foo.setf(QTextStream::fixed);
-
+   // NOTE: a polygon isn't a polygon unless its closed. In the case of 
+   //       a rectangle, that means 5 points (last == first)
    foo <<  xmin << " " <<  ymin << ", " 
        <<  xmin << " " <<  ymax << ", " 
        <<  xmax << " " <<  ymax << ", " 
-       <<  xmax << " " <<  ymin ;
+       <<  xmax << " " <<  ymin << ", "
+       <<  xmin << " " <<  ymin;
 
    return rep;
 
