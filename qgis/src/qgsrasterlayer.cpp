@@ -1908,6 +1908,7 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
   <li>myRasterBandStats.meanDouble
   <li>myRasterBandStats.sumSqrDevDouble
   <li>myRasterBandStats.stdDevDouble
+  <li>myRasterBandStats.histogram
   </ul>
 
   @seealso RasterBandStats
@@ -1951,6 +1952,10 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
 
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
+
+  //calculate the histogram for this band
+  myGdalBand->GetHistogram( -0.5, 255.5, 256, myRasterBandStats.histogram, FALSE, FALSE, GDALDummyProgress, NULL );
+  
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
 
   //declare a colorTable to hold a palette - will only be used if the layer color interp is palette ???

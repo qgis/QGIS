@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsRasterLayerPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,12 +8,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>628</width>
-            <height>518</height>
+            <width>759</width>
+            <height>539</height>
         </rect>
     </property>
     <property name="caption">
         <string>Raster Layer Properties</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
     </property>
     <property name="sizeGripEnabled">
         <bool>true</bool>
@@ -321,7 +324,7 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Andale Sans UI"&gt;
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:helvetica"&gt;
 &lt;p style="margin-top:14px"&gt;&lt;span style="font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
@@ -331,292 +334,6 @@
                                 </property>
                             </widget>
                         </grid>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>TabPage</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Advanced Symbology</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QGroupBox" row="0" column="0">
-                        <property name="name">
-                            <cstring>grpBoxRed</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                        <property name="title">
-                            <string>Red</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>pixmapScaleRed</cstring>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>255</red>
-                                        <green>0</green>
-                                        <blue>0</blue>
-                                    </color>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>Box</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Plain</enum>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="scaledContents">
-                                    <bool>true</bool>
-                                </property>
-                            </widget>
-                            <widget class="QSlider" row="0" column="1">
-                                <property name="name">
-                                    <cstring>sliderMaxRed</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="value">
-                                    <number>0</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="tickmarks">
-                                    <enum>NoMarks</enum>
-                                </property>
-                            </widget>
-                            <widget class="QSlider" row="1" column="0">
-                                <property name="name">
-                                    <cstring>sliderMinRed</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="0" column="1">
-                        <property name="name">
-                            <cstring>grpBoxGreen</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Green</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QSlider" row="0" column="1">
-                                <property name="name">
-                                    <cstring>sliderMaxGreen</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="value">
-                                    <number>0</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>pixmapScaleGreen</cstring>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>0</red>
-                                        <green>170</green>
-                                        <blue>0</blue>
-                                    </color>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>Box</enum>
-                                </property>
-                                <property name="scaledContents">
-                                    <bool>true</bool>
-                                </property>
-                            </widget>
-                            <widget class="QSlider" row="1" column="0">
-                                <property name="name">
-                                    <cstring>sliderMinGreen</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="0" column="2">
-                        <property name="name">
-                            <cstring>grpBoxBlue</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Blue</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QSlider" row="0" column="1">
-                                <property name="name">
-                                    <cstring>sliderMaxBlue</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="value">
-                                    <number>0</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                            </widget>
-                            <widget class="QSlider" row="1" column="0">
-                                <property name="name">
-                                    <cstring>sliderMinBlue</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>pixmapScaleBlue</cstring>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>0</red>
-                                        <green>0</green>
-                                        <blue>255</blue>
-                                    </color>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>Box</enum>
-                                </property>
-                                <property name="scaledContents">
-                                    <bool>true</bool>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="0" column="3">
-                        <property name="name">
-                            <cstring>grpBoxGray</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Gray</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QSlider" row="1" column="0">
-                                <property name="name">
-                                    <cstring>sliderMinGray</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QSlider" row="0" column="1">
-                                <property name="name">
-                                    <cstring>sliderMaxGray</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>255</number>
-                                </property>
-                                <property name="value">
-                                    <number>0</number>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>pixmapScaleGray</cstring>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>218</red>
-                                        <green>218</green>
-                                        <blue>210</blue>
-                                    </color>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>Box</enum>
-                                </property>
-                                <property name="scaledContents">
-                                    <bool>true</bool>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QButtonGroup" row="1" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>bgrpBehaviour</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Behaviour</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QRadioButton" row="0" column="0">
-                                <property name="name">
-                                    <cstring>rbtnBehaviourScaleToLimits</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Scale histogram to the limits defined above (displays all data)</string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton" row="1" column="0">
-                                <property name="name">
-                                    <cstring>rbtnBehaviourExcludeUsingLimits</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Exclude values outside the above ranges (after color mapping)</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&lt;b&gt;&lt;font color="#ff0000"&gt;Please Note :&lt;/font&gt; Advanced Symbology not implemented yet!&lt;/b&gt;</string>
-                        </property>
                     </widget>
                 </grid>
             </widget>
@@ -1015,8 +732,8 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Andale Sans UI"&gt;
-&lt;p style="margin-top:18px"&gt;&lt;span style="font-size:21pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:helvetica"&gt;
+&lt;p style="margin-top:18px"&gt;&lt;span style="font-size:22pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
 &lt;p&gt;&lt;span style="color:#ff0000"&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -1054,6 +771,330 @@
                         </property>
                         <property name="text">
                             <string>Pyramid Resolutions</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Advanced Symbology</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QGroupBox" row="0" column="0">
+                        <property name="name">
+                            <cstring>grpBoxRed</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="title">
+                            <string>Red</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>pixmapScaleRed</cstring>
+                                </property>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>255</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>Box</enum>
+                                </property>
+                                <property name="frameShadow">
+                                    <enum>Plain</enum>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="scaledContents">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                            <widget class="QSlider" row="0" column="1">
+                                <property name="name">
+                                    <cstring>sliderMaxRed</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="value">
+                                    <number>0</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="tickmarks">
+                                    <enum>NoMarks</enum>
+                                </property>
+                            </widget>
+                            <widget class="QSlider" row="1" column="0">
+                                <property name="name">
+                                    <cstring>sliderMinRed</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QGroupBox" row="0" column="1">
+                        <property name="name">
+                            <cstring>grpBoxGreen</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Green</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QSlider" row="0" column="1">
+                                <property name="name">
+                                    <cstring>sliderMaxGreen</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="value">
+                                    <number>0</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>pixmapScaleGreen</cstring>
+                                </property>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>0</red>
+                                        <green>170</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>Box</enum>
+                                </property>
+                                <property name="scaledContents">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                            <widget class="QSlider" row="1" column="0">
+                                <property name="name">
+                                    <cstring>sliderMinGreen</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QGroupBox" row="0" column="2">
+                        <property name="name">
+                            <cstring>grpBoxBlue</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Blue</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QSlider" row="0" column="1">
+                                <property name="name">
+                                    <cstring>sliderMaxBlue</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="value">
+                                    <number>0</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                            </widget>
+                            <widget class="QSlider" row="1" column="0">
+                                <property name="name">
+                                    <cstring>sliderMinBlue</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>pixmapScaleBlue</cstring>
+                                </property>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>0</red>
+                                        <green>0</green>
+                                        <blue>255</blue>
+                                    </color>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>Box</enum>
+                                </property>
+                                <property name="scaledContents">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QGroupBox" row="0" column="3">
+                        <property name="name">
+                            <cstring>grpBoxGray</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Gray</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QSlider" row="1" column="0">
+                                <property name="name">
+                                    <cstring>sliderMinGray</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                            </widget>
+                            <widget class="QSlider" row="0" column="1">
+                                <property name="name">
+                                    <cstring>sliderMaxGray</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>255</number>
+                                </property>
+                                <property name="value">
+                                    <number>0</number>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>pixmapScaleGray</cstring>
+                                </property>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>218</red>
+                                        <green>218</green>
+                                        <blue>210</blue>
+                                    </color>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>Box</enum>
+                                </property>
+                                <property name="scaledContents">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QButtonGroup" row="1" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>bgrpBehaviour</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Behaviour</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton" row="0" column="0">
+                                <property name="name">
+                                    <cstring>rbtnBehaviourScaleToLimits</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Scale histogram to the limits defined above (displays all data)</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="1" column="0">
+                                <property name="name">
+                                    <cstring>rbtnBehaviourExcludeUsingLimits</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Exclude values outside the above ranges (after color mapping)</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;b&gt;&lt;font color="#ff0000"&gt;Please Note :&lt;/font&gt; Advanced Symbology not implemented yet!&lt;/b&gt;</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Histogram</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>pixHistogram</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>356</width>
+                                <height>356</height>
+                            </size>
+                        </property>
+                        <property name="frameShape">
+                            <enum>Box</enum>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="scaledContents">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QListBox" row="0" column="1">
+                        <property name="name">
+                            <cstring>lstHistogramLabels</cstring>
                         </property>
                     </widget>
                 </grid>
@@ -1153,6 +1194,11 @@
         </widget>
     </grid>
 </widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="727">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000029e49444154388d95925b48530118c7ff3b3bd3b9a6392f9b97b42413a7b912b1de7ab10cc44c3408c5348d0a0c347b29848c2233d0613d1651122a09f950a1f83012ba4b379b28a37969a6a6e7ecd2e6e639673b971e62656e41fddfbeefe3fffbe0ff7dc07f28e63cb2355d7848666277b047fc8b31ba05a99a4edc966b3121aca0849f86189c91e10c2b2b3d09b1b152cd946572879c64f977b639aaa97fb888d049a440830260ffeb3686e92be105a3e3f148b95713a7aca93ba93ffad25a21a61849497d1cdf22f6e205007558f3eaea1d4340b8c6cc398e4975a7b24700a8c80c90fa4ef5bcae8d949a2f1aa623b5f20200f2b0192895dfdb299f55e95b0b60d6ea790380511d41f3b2e84d3b149189fafaeced8d0d79fb81df19fc020c0d9d51f132ba98e1fcf07302a815c6a66e849e88c7d52c2a61ed74e54ea8a31548cf509701880c01e4e64a495cc01311acfd82109027a147a4c11ed6e9879393370100542a790a005508c06c76ba7970120010840c5b8a34e70e64e71516713983b5d5056332990c0060a73916801402282b7be0b2bb58330044a9481c346ccd8f18152d4d5539a5b189e4155e14c171023ebca52700f8c28528be7e4e75b10c0f829061d2b2e4ecbf35599b911ed7ed62a8287f40c0ab67cb6ba6e1857b00fc2100721b88b366d352e7a38f0e3bcda0aa2c8b34ec4a746be33591003035e10cdcb86e36badddc684747d59f678caa8442598c768146efe0a7cf71272e3ffd3231ee98696ddb333063631b045184d7cbfb9c76a18f65efb6aeb1f60684910280565581fb91fbd08d9fdf96f6c4547ac14a554b56aa5a72f95afcbd03e5768582280c9ae4eb0022009f221f0b220d088b1803e059fcca8c7bdcfe54dbec6acce0a065fea6f1fd258fdb6fc2ba67da2842aec3e60d3d128006400c00d9fac10f3d4b18bb5f2121880000000049454e44ae426082</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>buttonOk</sender>
