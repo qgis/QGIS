@@ -26,7 +26,16 @@ SUBDIRS = src providers plugins doc tools i18n
 
 pkginclude_HEADERS = qgsconfig.h
 
-release: distdir
+UIcheck:
+	@UIS=`find . -name *.ui` && \
+	if [ `grep "UI version" $$UIS | sed -e '/3.1/d' | wc -l` -ne 0 ]; then \
+		echo -e "\nWrong UI version:"; \
+		grep "UI version" $$UIS | sed -e '/3.1/d' -e 's/:.*version="\([0-9\.]*\)".*/ is version \1/g'; \
+		echo; \
+		exit 1; \
+	fi
+
+release: UIcheck distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(AMTAR)$(TAR) chozf $(distdir).tar.gz $(distdir)
 	rm -f $(distdir)/qgis.spec
