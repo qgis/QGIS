@@ -52,7 +52,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
 	if (mVectorLayer->propertiesDialog())
         {
-#ifndef WIN32
+#ifdef WIN32
 	    renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
 #else
 	    renderer = (QgsSingleSymRenderer * )(layer->propertiesDialog()->getBufferRenderer());
@@ -60,7 +60,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 	} 
 	else
         {
-#ifndef WIN32
+#ifdef WIN32
 	    renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
 #else
 	    renderer = (QgsSingleSymRenderer *)(layer->renderer());
@@ -72,6 +72,9 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 #ifdef QGISDEBUG
     qWarning("Setting up renderer");
 #endif
+	// get the renderer item first
+	QgsRenderItem *ri = renderer->item();
+  //if(ri)
     outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
     outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
     lblFillColor->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());

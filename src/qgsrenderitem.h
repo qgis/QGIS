@@ -66,10 +66,6 @@ class QgsRenderItem {
 
 };
 
-inline QgsSymbol* QgsRenderItem::getSymbol()
-{
-    return mSymbol;
-}
 
 inline const QString& QgsRenderItem::value() const
 {
