@@ -236,10 +236,10 @@ void QgsMapCanvas::render2()
           // update the currentExtent to match the device coordinates
           //GS - removed the current extent update to fix bug --
           //TODO remove the next 4 lines after we're sure this works ok
-          /*currentExtent.setXmin(dxmin);
+          currentExtent.setXmin(dxmin);
             currentExtent.setXmax(dxmax);
             currentExtent.setYmin(dymin);
-            currentExtent.setYmax(dymax); */
+            currentExtent.setYmax(dymax); 
           
           // render all layers in the stack, starting at the base
           std::list < QString >::iterator li = zOrder.begin();
