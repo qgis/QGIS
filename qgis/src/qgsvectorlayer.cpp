@@ -76,6 +76,7 @@
 #include "qgslabel.h"
 #include "qgscoordinatetransform.h"
 #include "qgsattributedialog.h"
+#include "qgsclipper.h"
 //#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
@@ -2306,7 +2307,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 	  ptFrom = ptTo;
 	else
 	{
-	  if (QgsMapToPixel::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
+	  if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
 	    p->drawLine(static_cast<int>(trimmedFrom.x()),
 			static_cast<int>(trimmedFrom.y()),
 			static_cast<int>(trimmedTo.x()),
@@ -2365,7 +2366,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 	    ptFrom = ptTo;
 	  else
 	  {
-	    if (QgsMapToPixel::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
+	    if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
 	      p->drawLine(static_cast<int>(trimmedFrom.x()),
 			  static_cast<int>(trimmedFrom.y()),
 			  static_cast<int>(trimmedTo.x()),
@@ -2413,7 +2414,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         }
         else
         {
-          pa->resize ( pa->size() + *nPoints + 1 ); // better to calc size for all rings before?
+	  // better to calc size for all rings before?
+          pa->resize ( pa->size() + *nPoints + 1 ); 
         }
         for (jdx = 0; jdx < *nPoints; jdx++)
         {
@@ -2430,21 +2432,25 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           if (projectionsEnabledFlag)
           {
             //reproject the point to the map coordinate system
-                      try {
-          myProjectedPoint=mCoordinateTransform->transform(pt);
-                }
-      catch (QgsCsException &e)
-      {
-        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
-      }
-            //transform from projected coordinate system to pixel position on map canvas
+	    try 
+	    {
+	      myProjectedPoint=mCoordinateTransform->transform(pt);
+	    }
+	    catch (QgsCsException &e)
+	    {
+	      qDebug( "Transform error caught in %s line %d:\n%s", 
+		      __FILE__, __LINE__, e.what());
+	    }
+            //transform from projected coordinate system to pixel 
+	    // position on map canvas
             theMapToPixelTransform->transform(&myProjectedPoint);
           }
           else
           {
             myProjectedPoint=theMapToPixelTransform->transform(pt);
           }
-          pa->setPoint(pdx++, static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
+          pa->setPoint(pdx++, static_cast<int>(myProjectedPoint.x()), 
+		              static_cast<int>(myProjectedPoint.y()));
         }
         if ( idx == 0 )
         { // remember last outer ring point
@@ -2456,6 +2462,9 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           pa->setPoint(pdx++, x0, y0);
         }
       }
+
+      //      QgsMapToPixel::trimPolygon(pa);
+
       // draw the polygon fill
       pen = p->pen(); // store current pen
       p->setPen ( Qt::NoPen ); // no boundary
@@ -2515,21 +2524,25 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
             if (projectionsEnabledFlag)
             {
               //reproject the point to the map coordinate system
-          try {
-          myProjectedPoint=mCoordinateTransform->transform(pt);
-                }
-      catch (QgsCsException &e)
-      {
-        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
-      }
-              //transform from projected coordinate system to pixel position on map canvas
+	      try 
+	      {
+		myProjectedPoint=mCoordinateTransform->transform(pt);
+	      }
+	      catch (QgsCsException &e)
+	      {
+		qDebug( "Transform error caught in %s line %d:\n%s", 
+			__FILE__, __LINE__, e.what());
+	      }
+              //transform from projected coordinate system to 
+	      // pixel position on map canvas
               theMapToPixelTransform->transform(&myProjectedPoint);
             }
             else
             {
               myProjectedPoint=theMapToPixelTransform->transform(pt);
             }
-            pa->setPoint(jdx, static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
+            pa->setPoint(jdx, static_cast<int>(myProjectedPoint.x()), 
+			      static_cast<int>(myProjectedPoint.y()));
           }
           // draw the ring
           p->drawPolygon(*pa);
