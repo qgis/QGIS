@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE KDevPrjSession>
+<KDevPrjSession>
+ <LastCompileConfig>(Default)</LastCompileConfig>
+ <Mainframe MaximizeMode="1" />
+ <DocsAndViews NumberOfDocuments="5" >
+  <Doc0 CursorPosLine="14" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="20" FileName="/home/denisa/qgis/spit/qgsspit.h" >
+   <View0 Top="0" Width="904" Attach="1" Height="508" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  </Doc0>
+  <Doc1 CursorPosLine="88" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="4" FileName="/home/denisa/qgis/spit/qgsconnectiondialog.cpp" >
+   <View0 Top="0" Width="904" Attach="1" Height="508" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  </Doc1>
+  <Doc2 CursorPosLine="15" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="36" FileName="/home/denisa/qgis/spit/qgsspit.cpp" >
+   <View0 Top="0" Width="904" Attach="1" Height="508" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  </Doc2>
+  <Doc3 CursorPosLine="162" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="56" FileName="/home/denisa/qgis/spit/qgsconnectiondialogbase.cpp" >
+   <View0 Top="0" Width="904" Attach="1" Height="508" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
+  </Doc3>
+  <Doc4 CursorPosLine="0" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/denisa/qgis/spit/qgsspitbase.h" >
+   <View0 Top="0" Width="904" Attach="1" Height="508" Left="0" Focus="1" Type="KWriteView" MinMaxMode="0" />
+  </Doc4>
+ </DocsAndViews>
+</KDevPrjSession>
