@@ -91,7 +91,11 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
         {
             qWarning("Warning, typecast failed in qgssimadialog.cpp on line 42 or 46");
         }
-
+	
+	//set the dir to the default svg dir
+        mCurrentDir=QString(PKGDATAPATH)+"/svg/";
+        visualizeMarkers(mCurrentDir);
+        mDirectoryEdit->setText(mCurrentDir);
         //QString(PKGDATAPATH);
     }
 }
