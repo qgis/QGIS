@@ -983,7 +983,7 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
     // following conditions:
     // 1) the column has data type of int4.
     // 2) the column has a unique constraint or primary key constraint
-               //    on it.
+    //    on it.
     // 3) the constraint applies just to the column of interest (i.e.,
     //    it isn't a constraint over multiple columns.
     sql = "select * from pg_constraint where conkey[1] = "
@@ -1075,27 +1075,41 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
 		  << " columns with indices to choose from\n.";
 #endif
       }
-      // XXX Remove when findTableColumns() is enhanced.
-      //
-      // Temporary hack to choose a column called 'oid' to
-      // allow for none of the above working due to the
-      // findTableColumns() function currently not detecting
-      // underlying tables if a view refers to a second view.
-      if (key == "" && cols.find("oid") != cols.end())
-	key = "oid";
     }
   }
+  // XXX Remove when findTableColumns() is enhanced.
+  //
+  // Temporary hack to choose a column called 'oid' to
+  // allow for none of the above working due to the
+  // findTableColumns() function currently not detecting
+  // underlying tables if a view refers to a second view.
+  if (key == "" && cols.find("oid") != cols.end())
+    key = "oid";
+
   return key;
 }
 
+
+void QgsPostgresProvider::findTableColumns(QString select_cmd, 
+					   table_cols& cols)
+{
+  //table_cols& temp_cols;
+  findColumns(select_cmd, cols);
+
+  // Loop over the columns
+
+  // Now see if the found relations are views. If so, call
+  // ourselves until there are no views left.
+
+}
 // Finds out the underlying tables and columns for each column in the
 // view defined by the given select statement.
 
 // XXX need to make this recursive to deal with views that refer to
 // views, etc, to get the table at the bottom of each view column.
 
-void QgsPostgresProvider::findTableColumns(QString select_cmd, 
-			std::map<QString, std::pair<QString, QString> >& cols)
+void QgsPostgresProvider::findColumns(QString select_cmd, 
+					   table_cols& cols)
 {
   QRegExp col_regexp("SELECT *(.+) *FROM");
   col_regexp.setCaseSensitive(false);
