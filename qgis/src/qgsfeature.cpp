@@ -522,17 +522,21 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point)
 
 	    case QGis::WKBLineString:
 	    {
-		int* npoints=(int*)(geometry+5);
+		unsigned char* ptr=geometry+5;
+		int* npoints=(int*)ptr;
+		ptr+=sizeof(int);
 		for(int index=0;index<*npoints;++index)
 		{
-		    tempx = (double*) (geometry+9+index*2*sizeof(double));
-		    tempy = (double*) (geometry+9+(index*2+1)*sizeof(double));
+		    tempx = (double*)ptr;
+		    ptr+=sizeof(double);
+		    tempy = (double*)ptr;
 		    if(point.sqrDist(*tempx,*tempy)<actdist)
 		    {
 			x=*tempx;
 			y=*tempy;
 			actdist=point.sqrDist(*tempx,*tempy);
 		    }
+		    ptr+=sizeof(double);
 		}
 		break;
 	    }
@@ -547,30 +551,100 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point)
 		    ptr+=sizeof(int);
 		    for(int index2=0;index2<*npoints;++index2)
 		    {
-			tempx=(double*)(ptr);
-			tempy=(double*)(ptr+sizeof(double));
+			tempx=(double*)ptr;
+			ptr+=sizeof(double);
+			tempy=(double*)ptr;
 			if(point.sqrDist(*tempx,*tempy)<actdist)
 			{
 			    x=*tempx;
 			    y=*tempy;
 			    actdist=point.sqrDist(*tempx,*tempy);
 			}
-			ptr+=2*sizeof(double);
+			ptr+=sizeof(double);
 		    }
 		}
 	    }
 		break;
 
 	    case QGis::WKBMultiPoint:
-		//soon...
+	    {
+		unsigned char* ptr=geometry+5;
+		int* npoints=(int*)ptr;
+		ptr+=sizeof(int);
+		for(int index=0;index<*npoints;++index)
+		{
+		    tempx=(double*)ptr;
+		    tempy=(double*)(ptr+sizeof(double));
+		    if(point.sqrDist(*tempx,*tempy)<actdist)
+			{
+			    x=*tempx;
+			    y=*tempy;
+			    actdist=point.sqrDist(*tempx,*tempy);
+			}
+		    ptr+=(2*sizeof(double));
+		}
+	    }
 		break;
 
 	    case QGis::WKBMultiLineString:
-		//soon...
+	    {
+		unsigned char* ptr=geometry+5;
+		int* nlines=(int*)ptr;
+		int* npoints;
+		ptr+=sizeof(int);
+		for(int index=0;index<*nlines;++index)
+		{
+		    npoints=(int*)ptr;
+		    ptr+=sizeof(int);
+		    for(int index2=0;index2<*npoints;++index2)
+		    {
+			tempx=(double*)ptr;
+			ptr+=sizeof(double);
+			tempy=(double*)ptr;
+			if(point.sqrDist(*tempx,*tempy)<actdist)
+			{
+			    x=*tempx;
+			    y=*tempy;
+			    actdist=point.sqrDist(*tempx,*tempy);
+			}
+			ptr+=sizeof(double);
+			
+		    }
+		}
+	    }
 		break;
 
 	    case QGis::WKBMultiPolygon:
-		//...
+	    {
+		unsigned char* ptr=geometry+5;
+		int* npolys=(int*)ptr;
+		int* nrings;
+		int* npoints;
+		ptr+=sizeof(int);
+		for(int index=0;index<*npolys;++index)
+		{
+		    nrings=(int*)ptr;
+		    ptr+=sizeof(int);
+		    for(int index2=0;index2<*nrings;++index2)
+		    {
+			npoints=(int*)ptr;
+			ptr+=sizeof(int);
+			for(int index3=0;index3<*npoints;++index3)
+			{
+			   tempx=(double*)ptr;
+			   ptr+=sizeof(double);
+			   tempy=(double*)ptr;
+			   if(point.sqrDist(*tempx,*tempy)<actdist)
+			   {
+			       x=*tempx;
+			       y=*tempy;
+			       actdist=point.sqrDist(*tempx,*tempy);
+			   }
+			   ptr+=sizeof(double); 
+			}
+		    }
+		}
+	    }
 		break;
 
 	    default:
