@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>466</width>
-            <height>545</height>
+            <height>547</height>
         </rect>
     </property>
     <property name="caption">
@@ -942,12 +942,6 @@
         <receiver>QgsRasterLayerPropertiesBase</receiver>
         <slot>apply()</slot>
     </connection>
-    <connection>
-        <sender>cboxShowDebugInfo</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>QgsRasterLayerPropertiesBase</receiver>
-        <slot>cboxShowDebugInfo_toggled(bool)</slot>
-    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsrasterlayerpropertiesbase.ui.h</include>
@@ -965,7 +959,6 @@
     <slot>rbtnSingleBand_toggled( bool )</slot>
     <slot>rbtnThreeBand_toggled( bool )</slot>
     <slot>apply()</slot>
-    <slot>cboxShowDebugInfo_toggled( bool )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
