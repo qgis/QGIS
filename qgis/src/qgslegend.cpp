@@ -286,21 +286,25 @@ void QgsLegend::removeLayer( QString const & layer_key )
                                 // we don't then arbitrarily set firstChild()
                                 // to be the current layer
 
-        QListViewItemIterator select_it(this, QListViewItemIterator::Selected);
+        // not Qt 3.1.2 compatible QListViewItemIterator select_it(this, QListViewItemIterator::Selected);
+        QListViewItemIterator select_it(this);
 
         for ( ; select_it.current(); ++select_it )
         {
-            // if we even find ONE SELECTED ITEM, we're done since there's
-            // still at least one other layer that's selected
-
-            // Wellll, ok, we'll have to possibly set the current item
-            if ( makeNewCurrentItem )
+            if ( it.current()->isSelected() )
             {
-                setCurrentItem( select_it.current() );
-                emit currentChanged( firstChild() );
-            }
+                // if we even find ONE SELECTED ITEM, we're done since there's
+                // still at least one other layer that's selected
 
-            break;
+                // Wellll, ok, we'll have to possibly set the current item
+                if ( makeNewCurrentItem )
+                {
+                    setCurrentItem( select_it.current() );
+                    emit currentChanged( firstChild() );
+                }
+
+                break;
+            }
         }
 
         if ( ! select_it.current() )
