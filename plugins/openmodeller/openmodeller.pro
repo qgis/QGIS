@@ -10,45 +10,43 @@ TEMPLATE = lib   # to build as a dll
 TARGET = omgui #will produce omgui.dll 
 
 #inc path for qgis plugin
-INCLUDEPATH += . %GDAL%\include ..\..\qgis_win32\plugins ..\..\qgis_win32\src
+INCLUDEPATH += . 
+INCLUDEPATH += ..\..\qgis_win32\plugins 
+INCLUDEPATH += ..\..\qgis_win32\src
+INCLUDEPATH += $(GDAL)\include
+INCLUDEPATH += $(OM_HOME)\src\inc 
+INCLUDEPATH += $(OM_HOME)\src\inc\serialization
+INCLUDEPATH += $(OM_HOME)\console
 
 
 #libs for dll
-LIBS += $(GDAL)\lib\gdal_i.lib 
 LIBS += ..\..\qgis_win32\src\libqgis.lib 
+LIBS += $(GDAL)\lib\gdal_i.lib 
 LIBS += libopenmodeller.lib
 LIBS += libexpatMT.lib 
 
+contains( CONFIG, debug ) { 
+  LIBS += $(OM_HOME)\lib\debug\libopenmodeller.lib 
+} else {
+  LIBS += $(OM_HOME)\lib\libopenmodeller.lib 
+}
+
 # config for dll
-#CONFIG += qt dll thread rtti #release version without debug symbols
-CONFIG += qt dll thread rtti debug console #debug version
+CONFIG += qt dll thread rtti #release version without debug symbols
+#CONFIG += qt dll thread rtti debug console #debug version
 
 DEFINES+=_WINDOWS
 DEFINES+=CORE_DLL_IMPORT 
 
 #qgis plugin mode
 HEADERS += plugin.h 
-HEADERS += algorithm_factory.hh \
-           file_parser.hh \
-           list.hh \
-           map_format.hh \
-           occurrence.hh \
+HEADERS += list.hh \
            occurrences_file.hh \
-           om.hh \
-           om_alg_parameter.hh \
-           om_algorithm.hh \
-           om_algorithm_metadata.hh \
-           om_control.hh \
-           om_defs.hh \
-           om_log.hh \
-           om_occurrences.hh \
-           om_sampled_data.hh \
-           om_sampler.hh \
+           request_file.hh \
+           imagewriter.h \
            openmodellergui.h \
-           openmodellerguibase.ui.h \
-           os_specific.hh \
-           random.hh \
-           request_file.hh
+           openmodellerguibase.ui.h 
+           
 INTERFACES += openmodellerguibase.ui
 
 #plugin mode
@@ -56,5 +54,44 @@ SOURCES += plugin.cpp
 SOURCES += list.cpp \
            occurrences_file.cpp \
            openmodellergui.cpp \
-           file_parser.cpp \
+           imagewriter.cpp \
            request_file.cpp 
+           
+# -------------------------------------------
+# check for GDAL include and lib files
+# -------------------------------------------
+
+!exists( $$(GDAL)\include\gdal.h ) {
+  message( "Could not find GDAL include files." )
+  message( "Check whether the GDAL environment variable is set correctly. ")
+  message( "Current value: GDAL=$$(GDAL)" )
+  error  ( "GDAL include files are missing." )
+}
+
+!exists( $$(GDAL)\lib\gdal_i.lib ) {
+  message( "Could not find GDAL library file." )
+  message( "Check whether the GDAL environment variable is set correctly. ")
+  message( "Current value: GDAL=$$(GDAL)" )
+  error  ( "GDAL library file is missing." )
+}
+
+
+# -------------------------------------------
+# check for OM include and lib files
+# -------------------------------------------
+
+!exists( $$(OM_HOME)\src\inc\om_control.hh ) {
+  message( "Could not find OpenModeller include files." )
+  message( "Check whether the OM_HOME env. variable is set correctly. ")
+  message( "Current value: OM_HOME=$$(OM_HOME)" )
+  error  ( "OpenModeller include files are missing." )
+}
+
+!exists( $$(OM_HOME)\lib\libopenmodeller.lib ) {
+  message( "Could not find OpenModeller library file." )
+  message( "Check whether the OM_HOME env. variable is set correctly. ")
+  message( "Current value: OM_HOME=$$(OM_HOME)" )
+  error  ( "OpenModeller library file is missing." )
+}
+
+# -------------------------------------------

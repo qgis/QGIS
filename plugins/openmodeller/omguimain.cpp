@@ -33,7 +33,7 @@ OmGuiMain::OmGuiMain()
   myScrollView->addChild(myVBox);
   mPictureWidget = new QLabel(myVBox);
   myScrollView->setResizePolicy(QScrollView::AutoOneFit);
-  show();
+  //show();
   runWizard();
 }
 
