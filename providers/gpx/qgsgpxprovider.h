@@ -32,8 +32,8 @@ class GPSData;
 
 /**
 \class QgsGPXProvider
-\brief Data provider for GPX (GPS eXchange) and LOC (Geocaching.com) files
-* This provider adds the ability to load GPX and LOC files as vector layers.
+\brief Data provider for GPX (GPS eXchange) files
+* This provider adds the ability to load GPX files as vector layers.
 * 
 */
 class QgsGPXProvider : public QgsDataProvider {

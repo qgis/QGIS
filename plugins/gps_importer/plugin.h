@@ -73,7 +73,7 @@ class Plugin:public QObject, public QgisPlugin
   //! show the help document
   void help();
   
-  //! load a GPX or LOC file
+  //! load a GPX file
   void loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
 		   bool loadTracks);
   void importGPSFile(QString inputFilename, QString inputFormat, 

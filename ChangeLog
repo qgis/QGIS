@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.190 2004/09/21 12:55:51 timlinux Exp
+ChangeLog,v 1.191 2004/09/23 09:07:48 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-23 [larsl] 0.4.0devel38
+** Removed support for loading Geocaching.com LOC files
 
 2004-09-20 [tim] 0.4.0devel37
 ** Shameless acknowledge not keeping this file up to date!
