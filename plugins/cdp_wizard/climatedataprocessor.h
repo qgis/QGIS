@@ -46,7 +46,7 @@ struct FileWriterStruct
  *@author Tim Sutton
  */
 
-class ClimateDataProcessor : QObject {
+class ClimateDataProcessor : public QObject {
     Q_OBJECT;
     public:
         /** Default constructor */

@@ -127,6 +127,24 @@ bool CDPWizard::initialise()
     //
     climateDataProcessor = new ClimateDataProcessor();
 
+    //hook uo signals and slots
+    connect(climateDataProcessor,SIGNAL(numberOfYearsToCalc(int)),
+                                 this,SLOT(numberOfYearsToCalc(int)));
+    connect(climateDataProcessor,SIGNAL(numberOfVariablesToCalc(int)),
+                                 this,SLOT(numberOfVariablesToCalc(int)));
+    connect(climateDataProcessor,SIGNAL(numberOfCellsToCalc(int)),
+                                 this,SLOT(numberOfCellsToCalc(int)));
+    connect(climateDataProcessor,SIGNAL(yearStart(QString)),
+                                 this,SLOT(yearStart(QString )));
+    connect(climateDataProcessor,SIGNAL(yearDone()),
+                                 this,SLOT(yearDone()));
+    connect(climateDataProcessor,SIGNAL(variableStart(QString )),
+                                 this,SLOT(variableStart(QString )));
+    connect(climateDataProcessor,SIGNAL(variableDone()),
+                                 this,SLOT(variableDone()));
+    connect(climateDataProcessor,SIGNAL(cellDone(float)),
+                                 this,SLOT(cellDone(float)));
+
     //Load default settings
     loadDefaults();
 
@@ -217,16 +235,17 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     if (thePageNameQString==tr("Raw data file selection"))
     {
 #ifdef QGISDEBUG
-    std::cout << "Opening Raw Data File Selection page" << std::endl;
+        std::cout << "Opening Raw Data File Selection page" << std::endl;
 #endif
-    checkInputFilenames();
+
+        checkInputFilenames();
     }
 
     if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
     {
-//#ifdef QGISDEBUG
+        //#ifdef QGISDEBUG
         std::cout << "Leaving file selection page" << std::endl;
-//#endif
+        //#endif
         /** @todo Add some checking to make sure each file exists and is readable and valid for its type */
         climateDataProcessor->setMeanTempFileName(leMeanTemp->text());
         climateDataProcessor->setMinTempFileName(leMinTemp->text());
@@ -253,10 +272,10 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         climateDataProcessor->setInputFileType(cboFileType->currentText().latin1());
         //Should not need to have the next line here - it slows everythinf down!
         //climateDataProcessor->makeFileGroups(0);
-//#ifdef QGISDEBUG
+        //#ifdef QGISDEBUG
 
         std::cout << "Getting available calculations list" << std::endl;
-//#endif
+        //#endif
 
         climateDataProcessor->makeAvailableCalculationsMap();
         // and then update the list box
@@ -264,20 +283,20 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         //List the calculations in  availableCalculationsMap  using an iterator
         QMap<QString, bool> myAvailableCalculationsMap = climateDataProcessor->getAvailableCalculationsMap();
         QMap<QString, bool>::const_iterator myIter;
-//#ifdef QGISDEBUG
+        //#ifdef QGISDEBUG
 
         std::cout << myAvailableCalculationsMap.size() << " available calculations in list which are:" << std::endl;
         std::cout << climateDataProcessor->getDescription() << std::endl;
-//#endif
+        //#endif
         //clear the current entries from the box
         lstVariablesToCalc->clear();
         for (myIter=myAvailableCalculationsMap.begin(); myIter != myAvailableCalculationsMap.end(); myIter++)
         {
             if (myIter.data())
             {
-//#ifdef QGISDEBUG
+                //#ifdef QGISDEBUG
                 std::cout << myIter.key() << QString(": true\n");
-//#endif
+                //#endif
 
                 //need to add some logic here to select the inserted item
                 lstVariablesToCalc->insertItem(myIter.key());
@@ -339,94 +358,138 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
     if (thePageNameQString==tr("Progress")) //we do this when we start the calculation
     {
-      qApp->processEvents();
-      run();
+        qApp->processEvents();
+        run();
     }
 } //end of formSelected
 
 void CDPWizard::run()
 {
-        int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
-        QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
-        QString myQString;
+    int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
+    QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
+    QString myQString;
 
-        // get the first year in file value
-        climateDataProcessor->setFileStartYearInt(spinFirstYearInFile->value());
+    // get the first year in file value
+    climateDataProcessor->setFileStartYearInt(spinFirstYearInFile->value());
 
-        // get the first year in file to be processed in this job
-        climateDataProcessor->setJobStartYearInt(spinFirstYearToCalc->value());
+    // get the first year in file to be processed in this job
+    climateDataProcessor->setJobStartYearInt(spinFirstYearToCalc->value());
 
-        // get the last year in file to be processed in this job
-        climateDataProcessor->setJobEndYearInt(spinLastYearToCalc->value());
+    // get the last year in file to be processed in this job
+    climateDataProcessor->setJobEndYearInt(spinLastYearToCalc->value());
 
-        // get the ouput file path
-        climateDataProcessor->setOutputFilePathString(leOutputPath->text());
+    // get the ouput file path
+    climateDataProcessor->setOutputFilePathString(leOutputPath->text());
 
-        // get the input file type
-        climateDataProcessor->setInputFileType(cboFileType->currentText());
+    // get the input file type
+    climateDataProcessor->setInputFileType(cboFileType->currentText());
 
-        // get the ouput file type
-        climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
+    // get the ouput file type
+    climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
 
-        //
-        // find out if datafiles are in series (discrete files for each month)
-        // We are using the isVisible property for the label, but we cant guarantee
-        // that the wizard page on which the label occurs will be visible so we need
-        // to use the isVisibleTo(parent) property, with a reference to the wzard page as parent
-        //
-        QWidget *  myPageWidget = page(1);
+    //
+    // find out if datafiles are in series (discrete files for each month)
+    // We are using the isVisible property for the label, but we cant guarantee
+    // that the wizard page on which the label occurs will be visible so we need
+    // to use the isVisibleTo(parent) property, with a reference to the wzard page as parent
+    //
+    QWidget *  myPageWidget = page(1);
 #ifdef QGISDEBUG
 
-        std::cout << "\nFile in series label visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
+    std::cout << "\nFile in series label visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
 #endif
 
-        if (lblFileSeriesNote->isVisibleTo(myPageWidget))
-        {
+    if (lblFileSeriesNote->isVisibleTo(myPageWidget))
+    {
 #ifdef QGISDEBUG
-            std::cout << "Setting files in series flag to true" << std::endl;
+        std::cout << "Setting files in series flag to true" << std::endl;
 #endif
 
-            climateDataProcessor->setFilesInSeriesFlag(true);
-        }
-        else
-        {
+        climateDataProcessor->setFilesInSeriesFlag(true);
+    }
+    else
+    {
 #ifdef QGISDEBUG
-            std::cout << "Setting files in series flag to false" << std::endl;
+        std::cout << "Setting files in series flag to false" << std::endl;
 #endif
 
-            climateDataProcessor->setFilesInSeriesFlag(false);
-        }
+        climateDataProcessor->setFilesInSeriesFlag(false);
+    }
 
 
-        //setup the climate data processor's filereaders
-        /** @todo see what this hardcoding means and remove if possible */
-        if (!climateDataProcessor->makeFileGroups (1))    //hardcoding year 1 for now
+    //setup the climate data processor's filereaders
+    /** @todo see what this hardcoding means and remove if possible */
+    if (!climateDataProcessor->makeFileGroups (1))    //hardcoding year 1 for now
+    {
+        std::cerr << "cdpwizards call to make file groups failed!" << std::endl;
+        return;
+    }
+    //add each selected user calculation to the user calculation map
+    // Go through all items of the first ListBox
+    for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
+    {
+        QListBoxItem *myQListBoxItem = lstVariablesToCalc->item( i );
+        // if the item is selected...
+        if ( myQListBoxItem->isSelected() )
         {
-          std::cerr << "cdpwizards call to make file groups failed!" << std::endl;
-          return;
+            climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
         }
-        //add each selected user calculation to the user calculation map
-        // Go through all items of the first ListBox
-        for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
-        {
-            QListBoxItem *myQListBoxItem = lstVariablesToCalc->item( i );
-            // if the item is selected...
-            if ( myQListBoxItem->isSelected() )
-            {
-                climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
-            }
-        }
+    }
 
-        //get a summary of the climate dataprocessor class now
+    //get a summary of the climate dataprocessor class now
 #ifdef QGISDEBUG
-        std::cout << climateDataProcessor->getDescription() << endl;
+    std::cout << climateDataProcessor->getDescription() << endl;
 #endif
-        //
-        //now we let the climatedataprocessor run!
-        //
-        climateDataProcessor->run();
-        setFinishEnabled( step_6, TRUE );
+    //
+    //now we let the climatedataprocessor run!
+    //
+    climateDataProcessor->run();
+    setFinishEnabled( step_6, TRUE );
 } //end of run()
+
+//
+// Next bunch of methods oare slots for signals
+// emitted by climatedataprocessor
+//
+
+void CDPWizard::numberOfYearsToCalc(int theNumberInt)
+{
+
+}
+void CDPWizard::numberOfVariablesToCalc(int theNumberInt)
+{
+}
+void CDPWizard::numberOfCellsToCalc(int theNumberInt)
+{
+   progressCurrentTask->setTotalSteps(theNumberInt);
+}
+void CDPWizard::yearStart(QString theNameQString)
+{
+}
+void CDPWizard::yearDone()
+{
+}
+void CDPWizard::variableStart(QString theNameQString)
+{
+}
+void CDPWizard::variableDone()
+{
+  //dont set progress to 0 - 0 has a special qt meaning of 'busy'
+  progressCurrentTask->setProgress(1);
+  qApp->processEvents();
+}
+void CDPWizard::cellDone(float theResultFloat)
+{
+  progressCurrentTask->setProgress(progressCurrentTask->progress()+1);
+  qApp->processEvents();
+}
+
+
+//
+// End of slots linked to climateDataProcessor
+//
+
+
 
 void CDPWizard::accept()
 {
@@ -441,246 +504,246 @@ void CDPWizard::checkInputFilenames()
 {
     if (leMeanTemp->text() =="" && leMinTemp->text() =="" && leMaxTemp->text() ==""  && leDiurnalTemp->text()=="" && leMeanPrecipitation->text()=="" && leFrostDays->text()=="" && leFrostDays->text()=="" && leTotalSolarRadiation->text()=="" && leWindSpeed->text() =="" )
     {
-      setNextEnabled(currentPage(),false);
+        setNextEnabled(currentPage(),false);
     }
     else
     {
-      setNextEnabled(currentPage(),true);
+        setNextEnabled(currentPage(),true);
     }
 
 }
 
 void CDPWizard::pbtnMeanTemp_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Mean Temperature","Select Mean Temperature");
-  leMeanTemp->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Mean Temperature","Select Mean Temperature");
+    leMeanTemp->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 
 void CDPWizard::pbtnMinTemp_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Minimum Temperature","Select Minumum Temperature");
-  leMinTemp->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Minimum Temperature","Select Minumum Temperature");
+    leMinTemp->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 
 void CDPWizard::pbtnMaxTemp_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Max Temperature","Select Max Temperature");
-  leMaxTemp->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Max Temperature","Select Max Temperature");
+    leMaxTemp->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 
 void CDPWizard::pbtnDiurnalTemp_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Diurnal Temperature","Select Diurnal Temperature");
-  leDiurnalTemp->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Diurnal Temperature","Select Diurnal Temperature");
+    leDiurnalTemp->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 
 void CDPWizard::pbtnMeanPrecipitation_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Mean Precipitation","Select Mean Precipitation");
-  leMeanPrecipitation->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Mean Precipitation","Select Mean Precipitation");
+    leMeanPrecipitation->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 
 void CDPWizard::pbtnFrostDays_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Frost Days","Select Frost Days");
-  leFrostDays->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Frost Days","Select Frost Days");
+    leFrostDays->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 
 void CDPWizard::pbtnTotalSolarRad_clicked()
 {
-  QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Total Solar Radiation","Select Total Solar Radiation");
-  leTotalSolarRadiation->setText(myFileNameQString);
-  checkInputFilenames();
+    QString myFileNameQString = QFileDialog::getOpenFileName ("sample_data/","*.asc;*.grd",0,"Select Total Solar Radiation","Select Total Solar Radiation");
+    leTotalSolarRadiation->setText(myFileNameQString);
+    checkInputFilenames();
 }
 
 void CDPWizard::pbtnOutputPath_clicked()
 {
-  QString myFileNameQString = QFileDialog::getExistingDirectory(QString::null,0, QString("select dir"), QString("select dir"), true, true);
-  leOutputPath->setText(myFileNameQString);
+    QString myFileNameQString = QFileDialog::getExistingDirectory(QString::null,0, QString("select dir"), QString("select dir"), true, true);
+    leOutputPath->setText(myFileNameQString);
 }
 
 
 void CDPWizard::spinFirstYearInFile_valueChanged( int theInt)
 {
-   if (cbxYearType->currentText()=="AD")
-   {
-      //
-      //Year type is AD
-      //
+    if (cbxYearType->currentText()=="AD")
+    {
+        //
+        //Year type is AD
+        //
 
-      //check firstyeartocalc is not lower then firstyearinfile
-      if (theInt > spinFirstYearToCalc->value())
-      {
-        spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-      }
+        //check firstyeartocalc is not lower then firstyearinfile
+        if (theInt > spinFirstYearToCalc->value())
+        {
+            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+        }
 
-      //check lastyeartocalc is not lower then firstyearinfile
-      if (theInt > spinLastYearToCalc->value())
-      {
-        spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-      }
+        //check lastyeartocalc is not lower then firstyearinfile
+        if (theInt > spinLastYearToCalc->value())
+        {
+            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+        }
 
-      //set lower bounds of first and last year spin boxes to first year in file
-      spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
-      spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
-      spinFirstYearToCalc->setMaxValue(3000);
-      spinLastYearToCalc->setMaxValue(3000);
+        //set lower bounds of first and last year spin boxes to first year in file
+        spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
+        spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
+        spinFirstYearToCalc->setMaxValue(3000);
+        spinLastYearToCalc->setMaxValue(3000);
     }
 
-   else
-   {
-      //
-      //Year type is BP
-      //
+    else
+    {
+        //
+        //Year type is BP
+        //
 
-      //check firstyeartocalc is not higher then firstyearinfile
-      if (theInt < spinFirstYearToCalc->value())
-      {
-        spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-      }
+        //check firstyeartocalc is not higher then firstyearinfile
+        if (theInt < spinFirstYearToCalc->value())
+        {
+            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+        }
 
-      //check lastyeartocalc is not lower then firstyearinfile
-      if (theInt < spinLastYearToCalc->value())
-      {
-        spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-      }
+        //check lastyeartocalc is not lower then firstyearinfile
+        if (theInt < spinLastYearToCalc->value())
+        {
+            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+        }
 
-      //set lower and upper bounds
-      spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
-      spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
-      spinFirstYearToCalc->setMinValue(0);
-      spinLastYearToCalc->setMinValue(0);
-   }
+        //set lower and upper bounds
+        spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
+        spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
+        spinFirstYearToCalc->setMinValue(0);
+        spinLastYearToCalc->setMinValue(0);
+    }
 }
 
 void CDPWizard::spinFirstYearToCalc_valueChanged( int theInt)
 {
-   if (cbxYearType->currentText()=="AD")
-   {
-      //
-      //Year type is AD
-      //
+    if (cbxYearType->currentText()=="AD")
+    {
+        //
+        //Year type is AD
+        //
 
-      if (theInt > spinLastYearToCalc->value())
-      {
-        spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-      }
-   }
+        if (theInt > spinLastYearToCalc->value())
+        {
+            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+        }
+    }
 
-   else
-   {
-      //
-      //Year type is BP
-      //
+    else
+    {
+        //
+        //Year type is BP
+        //
 
-      if (theInt < spinLastYearToCalc->value())
-      {
-        spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-      }
+        if (theInt < spinLastYearToCalc->value())
+        {
+            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
+        }
 
-   }
+    }
 
 }
 
 void CDPWizard::spinLastYearToCalc_valueChanged( int theInt)
 {
-   if (cbxYearType->currentText()=="AD")
-   {
-      //
-      //Year type is AD
-      //
+    if (cbxYearType->currentText()=="AD")
+    {
+        //
+        //Year type is AD
+        //
 
-      if (theInt < spinFirstYearToCalc->value())
-      {
-        spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
-      }
-   }
+        if (theInt < spinFirstYearToCalc->value())
+        {
+            spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
+        }
+    }
 
-   else
-   {
-      //
-      //Year type is BP
-      //
+    else
+    {
+        //
+        //Year type is BP
+        //
 
-      if (theInt > spinFirstYearToCalc->value())
-      {
-        spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
-      }
+        if (theInt > spinFirstYearToCalc->value())
+        {
+            spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
+        }
 
-   }
+    }
 }
 
 void CDPWizard::cbxYearType_highlighted( const QString & theYearType )
 {
-  std::cout << "Setting year type to " << theYearType << std::endl;
-  spinFirstYearToCalc->setSuffix(theYearType);
-  spinLastYearToCalc->setSuffix(theYearType);
+    std::cout << "Setting year type to " << theYearType << std::endl;
+    spinFirstYearToCalc->setSuffix(theYearType);
+    spinLastYearToCalc->setSuffix(theYearType);
 
-  if (theYearType=="AD")
-  {
-      //
-      //Year type is AD
-      //
+    if (theYearType=="AD")
+    {
+        //
+        //Year type is AD
+        //
 
-      if (spinFirstYearInFile->value()>3000)
-      {
-         spinFirstYearInFile->setValue(2000);
-      }
+        if (spinFirstYearInFile->value()>3000)
+        {
+            spinFirstYearInFile->setValue(2000);
+        }
 
-      if (spinFirstYearToCalc->value() < spinFirstYearInFile->value())
-      {
-         spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-      }
+        if (spinFirstYearToCalc->value() < spinFirstYearInFile->value())
+        {
+            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+        }
 
-      if (spinLastYearToCalc->value() < spinFirstYearInFile->value())
-      {
-         spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-      }
+        if (spinLastYearToCalc->value() < spinFirstYearInFile->value())
+        {
+            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+        }
 
-      spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
-      spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
-      spinFirstYearToCalc->setMaxValue(3000);
-      spinLastYearToCalc->setMaxValue(3000);
-
-
-  }
-
-  else
-  {
-
-      //
-      //Year type is BP
-      //
-
-      if (spinFirstYearToCalc->value() > spinFirstYearInFile->value())
-      {
-         spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-      }
-
-      if (spinLastYearToCalc->value() > spinFirstYearInFile->value())
-      {
-         spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-      }
-
-      spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
-      spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
-      spinFirstYearToCalc->setMinValue(0);
-      spinLastYearToCalc->setMinValue(0);
+        spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
+        spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
+        spinFirstYearToCalc->setMaxValue(3000);
+        spinLastYearToCalc->setMaxValue(3000);
 
 
-  }
+    }
+
+    else
+    {
+
+        //
+        //Year type is BP
+        //
+
+        if (spinFirstYearToCalc->value() > spinFirstYearInFile->value())
+        {
+            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
+        }
+
+        if (spinLastYearToCalc->value() > spinFirstYearInFile->value())
+        {
+            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
+        }
+
+        spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
+        spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
+        spinFirstYearToCalc->setMinValue(0);
+        spinLastYearToCalc->setMinValue(0);
+
+
+    }
 }
 
 
@@ -698,7 +761,7 @@ void CDPWizard::lstVariablesToCalc_selectionChanged()
         if ( item->isSelected() )
         {
             // increment the count of selected items
-           selectionSizeInt++;
+            selectionSizeInt++;
         }
     }
     myQString.sprintf("<p align=\"right\">(%i) Variables selected </p>",selectionSizeInt);
@@ -718,70 +781,69 @@ void CDPWizard::lstVariablesToCalc_selectionChanged()
 
 void CDPWizard::cboFileType_textChanged( const QString & )
 {
-
 }
 
 
 void CDPWizard::leMeanTemp_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leMinTemp_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leMaxTemp_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leDiurnalTemp_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leMeanPrecipitation_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leFrostDays_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leTotalSolarRadiation_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leWindSpeed_textChanged( const QString & )
 {
-checkInputFilenames();
+    checkInputFilenames();
 }
 
 
 void CDPWizard::leOutputPath_textChanged( const QString & theOutputPath)
 {
 
-  //Check the output path exists and is readable
-  QDir dirCheck(theOutputPath);
-  if ( (!dirCheck.exists()) & (!dirCheck.isReadable()) )
-  {
-     setNextEnabled(currentPage(), false);
-  }
-  else
-  {
-     setNextEnabled(currentPage(), true);
-  }
+    //Check the output path exists and is readable
+    QDir dirCheck(theOutputPath);
+    if ( (!dirCheck.exists()) & (!dirCheck.isReadable()) )
+    {
+        setNextEnabled(currentPage(), false);
+    }
+    else
+    {
+        setNextEnabled(currentPage(), true);
+    }
 
 }

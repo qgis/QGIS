@@ -225,25 +225,25 @@ public:
     * @return void
     */
     void leWindSpeed_textChanged( const QString & theFileNameString);
- 
+
     /**
     * Reimplements method by the same name in parent class
     * @param theOutputPath - path where output files will be stored
     * @return void
     */
     void leOutputPath_textChanged( const QString & theOutputPath);
-    
+
     /**
     * Sets up the climateDataProcessor and calls its run method.
     * @return void - No return.
     */
     void run();
-    
-   /**
-    * Reimplements method by the same name in parent class
-    * @param theYearType - format for dates either AD or BP
-    * @return void
-    */
+
+    /**
+     * Reimplements method by the same name in parent class
+     * @param theYearType - format for dates either AD or BP
+     * @return void
+     */
     void cbxYearType_highlighted( const QString & theYearType );
 
 private:
@@ -290,6 +290,66 @@ public slots: // Public slots
     * @return void
     */
     void formSelected(const QString &thePageNameQString);
+
+    //
+    // This next lot of slots are for linking up to the climatedataprocessor
+    //
+
+    /**
+     * A slot for notices of how many years'
+     * data will be calculated.
+     *@param theNumberInt - The total number of years
+     *@return void - No return
+     */
+    void numberOfYearsToCalc(int theNumberInt);
+    /**
+    * A slot for notices of how many variables
+    * are going to be calculated for each years data.
+    *@param theNumberInt - The total number of variables
+    *@return void - No return
+    */
+    void numberOfVariablesToCalc(int theNumberInt);
+    /**
+    * A slot for notices of how many cells
+    * will be passed through in each block.
+    *@param theNumberInt - The total number of cells in any block
+    *@return void - No return
+    */
+    void numberOfCellsToCalc(int theNumberInt);
+    /**
+    * A slot for notices of that we are about to
+    * start processing data for a given year.
+    *@param theNameQString - A String containing the year e.g. '1998' or '20000BP'
+    *@return void - No return
+    */
+    void yearStart(QString theNameQString);
+    /**
+    * A slot for notices of that we have
+    * completed processing the current year.
+    *@return void - No return
+    */
+    void yearDone();
+    /**
+    * A slot for notices of that we are about to
+    * start calculating a variable for one years data.
+    *@param theNameQString - A String containing the variable name e.g.
+    *                        'Precipitation over coolest month'
+    *@return void - No return
+    */
+    void variableStart(QString theNameQString);
+    /**
+    * A slot for notices of that we
+    * completed calculating the given variable.
+    *@return void - No return
+    */
+    void variableDone();
+    /**
+    * A slot for notices of that we
+    * have completed calculating a given cell.
+    *@param theResultFloat - The calculated value for a cell
+    *@return void - No return
+    */
+    void cellDone(float theResultFloat);
 
 };
 

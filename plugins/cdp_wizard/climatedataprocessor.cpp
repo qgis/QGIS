@@ -1012,18 +1012,16 @@ bool ClimateDataProcessor::run()
     std::cout << "Go and have a cup of tea cause this may take a while!" << std::endl;
     std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
-    //This is the MAIN OUTER LOOP:
-    //cycle through each year block, doing all the requested calculations for that year
     int myOffsetInt = jobStartYearInt - fileStartYearInt;
     int myNumberOfIterationsInt = (jobEndYearInt - jobStartYearInt) +1;
     //work out how many variables we are going to calculate
-    int myNumberOfVariables = 0;
+    int myNumberOfVariablesInt = 0;
     QMap<QString, bool>::const_iterator myIter;
     for (myIter=availableCalculationsMap.begin(); myIter != availableCalculationsMap.end(); myIter++)
     {
         if (myIter.data()) //true
         {
-            myNumberOfVariables++;
+            myNumberOfVariablesInt++;
         }
     }
     //
@@ -1070,12 +1068,20 @@ bool ClimateDataProcessor::run()
 
 
     int myCurrentYearInt = jobStartYearInt; //this will be changed on each iteration
+
+    //send singals so progress monitors can set themselves up
+    emit numberOfYearsToCalc(myNumberOfIterationsInt);
+    emit numberOfVariablesToCalc(myNumberOfVariablesInt);
+    emit numberOfCellsToCalc(myNumberOfCells);
+
+    //This is the MAIN OUTER LOOP:
+    //cycle through each year block, doing all the requested calculations for that year
     bool myFirstLoopFlag = true;
     for (int myCDPMainLoopInt = jobStartYearInt;
             myCDPMainLoopInt < (jobEndYearInt +1);
             myCDPMainLoopInt ++)
     {
-
+        emit yearStart(QString::number(myCDPMainLoopInt));
         if (myFirstLoopFlag)
         {
             myFirstLoopFlag=false;
@@ -1160,6 +1166,7 @@ bool ClimateDataProcessor::run()
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature"])
         {
+            emit variableStart("Mean temperature");
             std::cout << "ClimateDataProcessor::run - Mean temperature requested" << std::endl;
             //move to start of the current data matrix
             meanTempFileGroup->moveToDataStart();
@@ -1191,7 +1198,9 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     return false;
                 }
+                emit cellDone(myFloat);
             }
+            emit variableDone();
 
         }
         if (diurnalTempFileGroup && diurnalTempFileNameString != "" &&
@@ -2253,6 +2262,7 @@ bool ClimateDataProcessor::run()
 
             }
         }
+        emit yearDone();
     }//This is the END OF MAIN OUTER LOOP:
     //presume all went ok - need to add better error checking later
     return true;
