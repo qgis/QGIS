@@ -97,15 +97,21 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 
     // Add to canvas
     setCanvas(mComposition->canvas());
-    QCanvasRectangle::setZ(70);
+    QCanvasRectangle::setZ(50);
     setActive(true);
     QCanvasRectangle::show();
     QCanvasRectangle::update(); // ?
     
+    // Set map to the first available if any
+    std::vector<QgsComposerMap*> maps = mComposition->maps();
 
-    // Potemkin
-    mMapComboBox->insertItem( "Map 1" );
-
+    if ( maps.size() > 0 ) {
+	mMap = maps[0]->id();
+    } else {
+	mMap = 0;
+    }
+     
+    setOptions();
     writeSettings();
 }
 
@@ -121,9 +127,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *painter )
     int titleSize = (int) ( 25.4 * mComposition->scale() * mTitleFont.pointSize() / 72);
     int sectionSize = (int) ( 25.4 * mComposition->scale() * mSectionFont.pointSize() / 72);
     int size = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
-
-    
-    std::cout << "font size in canvas units = " << size << std::endl;
 
     // Metrics 
     QFont titleFont ( mTitleFont );
@@ -152,9 +155,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *painter )
     sectionFont.setPointSize ( sectionSize );
     font.setPointSize ( size );
 
-    std::cout << "title font size in canvas units = " << titleSize << std::endl;
-    std::cout << "font size in canvas units = " << size << std::endl;
-
     // Not sure about Style Strategy, QFont::PreferMatch?
     titleFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
     sectionFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
@@ -172,50 +172,63 @@ QRect QgsComposerVectorLegend::render ( QPainter *painter )
     int width = 2 * mMargin + titleMetrics.width ( mTitle ); 
     int height = mMargin + mSymbolSpace + titleMetrics.height(); // mSymbolSpace?
     
-    int nlayers = mMapCanvas->layerCount();
-    for ( int i = 0; i < nlayers; i++ ) {
-	QgsMapLayer *layer = mMapCanvas->getZpos(i);
-	if ( !layer->visible() ) continue;
-	if ( layer->type() != QgsMapLayer::VECTOR ) continue;
+    // Layers
+    QgsComposerMap *map = mComposition->map ( mMap );
+    if ( map ) {
+	int nlayers = mMapCanvas->layerCount();
+	for ( int i = 0; i < nlayers; i++ ) {
+	    QgsMapLayer *layer = mMapCanvas->getZpos(i);
+	    if ( !layer->visible() ) continue;
+	    if ( layer->type() != QgsMapLayer::VECTOR ) continue;
 
-	QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
-	QgsRenderer *renderer = vector->renderer();
-	
-	height += mSymbolSpace;
+	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
+	    QgsRenderer *renderer = vector->renderer();
+	    
+	    height += mSymbolSpace;
 
-	// Symbol
-        if ( painter ) {
-	    if ( typeid (*renderer) == typeid(QgsSingleSymRenderer) ) {
-		QgsSingleSymRenderer *r = dynamic_cast <QgsSingleSymRenderer *> (renderer);
-		QgsRenderItem *ri = r->item();
-		QgsSymbol *sym = ri->getSymbol();
-		
-		painter->setPen ( sym->pen() );
-		painter->setBrush ( sym->brush() );
-		
-		if ( vector->vectorType() == QGis::Point ) {
-		    painter->drawRect( mMargin+mSymbolWidth/2-2, height+mSymbolHeight/2-2, 5, 5 );
-		} else if ( vector->vectorType() == QGis::Line ) {
-		    painter->drawLine ( mMargin, height+mSymbolHeight/2, 
-					mMargin+mSymbolWidth, height+mSymbolHeight/2 );
-		} else if ( vector->vectorType() == QGis::Polygon ) {
-		    painter->drawRect ( mMargin, height, mSymbolWidth, mSymbolHeight );
+	    // Symbol
+	    if ( painter ) {
+		if ( typeid (*renderer) == typeid(QgsSingleSymRenderer) ) {
+		    QgsSingleSymRenderer *r = dynamic_cast <QgsSingleSymRenderer *> (renderer);
+		    QgsRenderItem *ri = r->item();
+		    QgsSymbol *sym = ri->getSymbol();
+		    
+		    QPen pen = sym->pen();
+		    double widthScale = map->widthScale() * mComposition->scale();
+		    if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+			widthScale *= mComposition->viewScale();
+		    }
+		    pen.setWidth ( (int)  ( widthScale * pen.width() ) );
+		    painter->setPen ( pen );
+		    painter->setBrush ( sym->brush() );
+		    
+		    if ( vector->vectorType() == QGis::Point ) {
+			double scale = map->symbolScale() * mComposition->scale();
+			painter->drawRect( (int)(mMargin+mSymbolWidth/2-(scale*3)), 
+				           (int)(height+mSymbolHeight/2-(scale*3)), 
+					   (int)(scale*6), (int)(scale*6) );
+		    } else if ( vector->vectorType() == QGis::Line ) {
+			painter->drawLine ( mMargin, height+mSymbolHeight/2, 
+					    mMargin+mSymbolWidth, height+mSymbolHeight/2 );
+		    } else if ( vector->vectorType() == QGis::Polygon ) {
+			painter->drawRect ( mMargin, height, mSymbolWidth, mSymbolHeight );
+		    }
 		}
 	    }
-	}
 	
-	// Label 
-	x = (int) ( 2*mMargin + mSymbolWidth );
-	y = (int) ( height + mSymbolHeight/2 + metrics.height()/2 );
-        if ( painter ) {
-            painter->setPen ( mPen );
-	    painter->setFont ( font );
-            painter->drawText( x, y, layer->name() );	
-	}
+	    // Label 
+	    x = (int) ( 2*mMargin + mSymbolWidth );
+	    y = (int) ( height + mSymbolHeight/2 + metrics.height()/2 );
+	    if ( painter ) {
+		painter->setPen ( mPen );
+		painter->setFont ( font );
+		painter->drawText( x, y, layer->name() );	
+	    }
 
-	int w = 3*mMargin + mSymbolWidth + metrics.width(layer->name());
-	if ( w > width ) width = w;
-	height += mSymbolHeight;
+	    int w = 3*mMargin + mSymbolWidth + metrics.width(layer->name());
+	    if ( w > width ) width = w;
+	    height += mSymbolHeight;
+	}
     }
 
     height += mMargin;
@@ -318,9 +331,17 @@ void QgsComposerVectorLegend::changeFont ( void )
 
 void QgsComposerVectorLegend::previewModeChanged ( int i )
 {
-    //mPreviewMode = (PreviewMode) mPreviewModeComboBox->currentItem();
     mPreviewMode = (PreviewMode) i;
     std::cout << "mPreviewMode = " << mPreviewMode << std::endl;
+    writeSettings();
+}
+
+void QgsComposerVectorLegend::mapChanged ( int i )
+{
+    mMap = mMaps[i];
+    recalculate();
+    QCanvasRectangle::update();
+    QCanvasRectangle::canvas()->update();
     writeSettings();
 }
 
@@ -362,6 +383,28 @@ void QgsComposerVectorLegend::recalculate ( void )
 
 void QgsComposerVectorLegend::setOptions ( void )
 { 
+    mMapComboBox->clear();
+    std::vector<QgsComposerMap*> maps = mComposition->maps();
+
+    mMaps.clear();
+    
+    bool found = false;
+    mMapComboBox->insertItem ( "", 0 );
+    mMaps.push_back ( 0 );
+    for ( int i = 0; i < maps.size(); i++ ) {
+	mMapComboBox->insertItem ( maps[i]->name(), i+1 );
+	mMaps.push_back ( maps[i]->id() );
+
+	if ( maps[i]->id() == mMap ) {
+	    found = true;
+	    mMapComboBox->setCurrentItem ( i+1 );
+	}
+    }
+
+    if ( ! found ) {
+	mMap = 0;
+	mMapComboBox->setCurrentItem ( 0 );
+    }
 }
 
 void QgsComposerVectorLegend::setSelected (  bool s ) 
@@ -373,6 +416,12 @@ void QgsComposerVectorLegend::setSelected (  bool s )
 bool QgsComposerVectorLegend::selected( void )
 {
     return mSelected;
+}
+
+QWidget *QgsComposerVectorLegend::options ( void )
+{
+    setOptions ();
+    return ( dynamic_cast <QWidget *> (this) ); 
 }
 
 bool QgsComposerVectorLegend::writeSettings ( void )  

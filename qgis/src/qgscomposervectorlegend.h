@@ -101,6 +101,7 @@ public:
     // Reimplement QgsComposerItem:
     void setSelected( bool s );
     bool selected( void );
+    QWidget *options ( void );
     bool writeSettings ( void );
     bool readSettings ( void );
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
@@ -131,6 +132,9 @@ public slots:
     // Called by GUI if preview style was changed
     void previewModeChanged ( int i );
 
+    // Called by GUI when map selection changed
+    void mapChanged ( int i );
+
 private:
     // Pointer to composition
     QgsComposition *mComposition;
@@ -138,8 +142,11 @@ private:
     // Pointer to map canvas
     QgsMapCanvas *mMapCanvas;
     
-    // Pointer to composer map 
-    QgsComposerMap *mMap;
+    // Composer map id or 0
+    int mMap;
+
+    // Vector of map id for maps in combobox
+    std::vector<int> mMaps;
 
     // Title 
     QString mTitle;

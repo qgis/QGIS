@@ -69,7 +69,7 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 
     // Add to canvas
     setCanvas(mComposition->canvas());
-    QCanvasPolygonalItem::setZ(30);
+    QCanvasPolygonalItem::setZ(100);
     setActive(true);
     QCanvasPolygonalItem::show();
     QCanvasPolygonalItem::update(); // ?
@@ -100,9 +100,6 @@ void QgsComposerLabel::draw ( QPainter & painter )
     }
     
     font.setPointSize ( size );
-
-
-    std::cout << "font size in canvas units = " << size << std::endl;
 
     // Not sure about Style Strategy, QFont::PreferMatch ?
     font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias ) );
@@ -149,8 +146,6 @@ void QgsComposerLabel::changeFont ( void )
 
 QRect QgsComposerLabel::boundingRect ( void ) const
 {
-    std::cout << "QgsComposerLabel::boundingRect" << std::endl;
-    
     // Recalculate sizes according to current font size
     
     int size = (int) ( 25.4 * mComposition->scale() * mFont.pointSize() / 72);
@@ -164,8 +159,6 @@ QRect QgsComposerLabel::boundingRect ( void ) const
     int w = metrics.width ( mText );
     int h = metrics.height();
     QRect r ( (int)(x - w/2), (int) (y - h/2), w, h );
-
-    std::cout << "w = " << w << " h = " << h << std::endl;
 
     return r;
 }
@@ -214,6 +207,12 @@ void QgsComposerLabel::setSelected (  bool s )
 bool QgsComposerLabel::selected( void )
 {
     return mSelected;
+}
+
+QWidget *QgsComposerLabel::options ( void )
+{
+    setOptions ();
+    return ( dynamic_cast <QWidget *> (this) );
 }
 
 bool QgsComposerLabel::writeSettings ( void )  

@@ -44,8 +44,11 @@ void QgsComposerItem::setSelected( bool s )
 
 bool QgsComposerItem::selected( void ) { return mSelected; }
 
+int QgsComposerItem::id(void) { return mId; }
 
 void QgsComposerItem::showOptions ( QWidget * parent ) { }
+
+QWidget *QgsComposerItem::options ( void ) { return 0; }
 
 bool QgsComposerItem::writeSettings ( void )  { return true; }
 
