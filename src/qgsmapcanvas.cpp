@@ -95,7 +95,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	incrementZpos();
 	lyr->setZ(layers.size() - 1);
 	updateZpos();
-	zOrder.push_back(lyr->name());  
+	zOrder.push_back(lyr->name());
 	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
 	//lyr->zpos = 0;
 }
@@ -106,77 +106,79 @@ void QgsMapCanvas::incrementZpos()
 void QgsMapCanvas::updateZpos()
 {
 }
-QgsMapLayer *QgsMapCanvas::getZpos(int )
+QgsMapLayer *QgsMapCanvas::getZpos(int)
 {
-//	QString name = zOrder[index];
-//	return layers[name];
+//  QString name = zOrder[index];
+//  return layers[name];
 	return 0;
 }
+
 QgsMapLayer *QgsMapCanvas::layerByName(QString name)
 {
 	return layers[name];
 
 }
+
 void QgsMapCanvas::render2()
 {
-QString msg = frozen?"frozen":"thawed";
+	QString msg = frozen ? "frozen" : "thawed";
 //std::cout << "Map canvas is " << msg << std::endl;
-if(!frozen){
-	if (!drawing) {
-//	std::cout << "IN RENDER 2" << std::endl;
-		drawing = true;
-		QPainter *paint = new QPainter();
-		paint->begin(this);
+	if (!frozen) {
+		if (!drawing) {
+//  std::cout << "IN RENDER 2" << std::endl;
+			drawing = true;
+			QPainter *paint = new QPainter();
+			paint->begin(this);
 
-		// calculate the translation and scaling parameters
-		double muppX, muppY;
-		muppY = currentExtent.height() / height();
-		muppX = currentExtent.width() / width();
-//		std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
-		m_mupp = muppY > muppX ? muppY : muppX;
-		// calculate the actual extent of the mapCanvas
-		double dxmin, dxmax, dymin, dymax, whitespace;
-		if (muppY > muppX) {
-			dymin = currentExtent.yMin();
-			dymax = currentExtent.yMax();
-			whitespace = ((width() * m_mupp) - currentExtent.width()) / 2;
-			dxmin = currentExtent.xMin() - whitespace;
-			dxmax = currentExtent.xMax() + whitespace;
-		} else {
-			dxmin = currentExtent.xMin();
-			dxmax = currentExtent.xMax();
-			whitespace = ((height() * m_mupp) - currentExtent.height()) / 2;
-			dymin = currentExtent.yMin() - whitespace;
-			dymax = currentExtent.yMax() + whitespace;
+			// calculate the translation and scaling parameters
+			double muppX, muppY;
+			muppY = currentExtent.height() / height();
+			muppX = currentExtent.width() / width();
+//      std::cout << "MuppX is: " << muppX << "\nMuppY is: " << muppY << std::endl;
+			m_mupp = muppY > muppX ? muppY : muppX;
+			// calculate the actual extent of the mapCanvas
+			double dxmin, dxmax, dymin, dymax, whitespace;
+			if (muppY > muppX) {
+				dymin = currentExtent.yMin();
+				dymax = currentExtent.yMax();
+				whitespace = ((width() * m_mupp) - currentExtent.width()) / 2;
+				dxmin = currentExtent.xMin() - whitespace;
+				dxmax = currentExtent.xMax() + whitespace;
+			} else {
+				dxmin = currentExtent.xMin();
+				dxmax = currentExtent.xMax();
+				whitespace = ((height() * m_mupp) - currentExtent.height()) / 2;
+				dymin = currentExtent.yMin() - whitespace;
+				dymax = currentExtent.yMax() + whitespace;
 
-		}
-//		std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
-//		  endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
-		coordXForm->setParameters(m_mupp, dxmin, dymin, height());	//currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
-		// update the currentExtent to match the device coordinates
-		currentExtent.setXmin(dxmin);
-		currentExtent.setXmax(dxmax);
-		currentExtent.setYmin(dymin);
-		currentExtent.setYmax(dymax);
-		// render all layers in the stack, starting at the base
-		std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
-//		std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
-		while (mi != layers.end()) {
-			QgsMapLayer *ml = (*mi).second;
-			if(ml){
-			//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-//			std::cout << "Rendering " << ml->name() << std::endl;
-			if (ml->visible())
-				ml->draw(paint, &currentExtent, coordXForm);
-			mi++;
-			//  mi.draw(p, &fullExtent);
 			}
-		}
+//      std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
+//        endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
+			coordXForm->setParameters(m_mupp, dxmin, dymin, height());	//currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
+			// update the currentExtent to match the device coordinates
+			currentExtent.setXmin(dxmin);
+			currentExtent.setXmax(dxmax);
+			currentExtent.setYmin(dymin);
+			currentExtent.setYmax(dymax);
+			// render all layers in the stack, starting at the base
+			std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
+//      std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+			while (mi != layers.end()) {
+				QgsMapLayer *ml = (*mi).second;
+				if (ml) {
+					//    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+//          std::cout << "Rendering " << ml->name() << std::endl;
+					if (ml->visible())
+						ml->draw(paint, &currentExtent, coordXForm);
+					mi++;
+					//  mi.draw(p, &fullExtent);
+				}
+			}
 
-		paint->end();
-		drawing = false;
+			paint->end();
+			drawing = false;
+		}
 	}
-}
 }
 
 void QgsMapCanvas::render()
@@ -220,12 +222,12 @@ void QgsMapCanvas::render()
   paint->end();
   */
 }
-void QgsMapCanvas::paintEvent(QPaintEvent * )
+void QgsMapCanvas::paintEvent(QPaintEvent *)
 {
-  if (!drawing)
+	if (!drawing)
 		render2();
-//	else
-//		std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
+//  else
+//      std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
 }
 
 QgsRect QgsMapCanvas::extent()
@@ -260,16 +262,18 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 	boxStartPoint = e->pos();
 	switch (mapTool) {
 	  case QGis::ZoomIn:
+	  case QGis::ZoomOut:
 		  zoomBox.setRect(0, 0, 0, 0);
 		  break;
+
 	  case QGis::Pan:
 		  // create a pixmap to use in panning the map canvas
 		  tempPanImage = new QPixmap();
-		  
+
 		  //*tempPanImage = QPixmap::grabWidget(this);
-		  	*tempPanImage = QPixmap::grabWindow(winId());
-		  
-		  
+		  *tempPanImage = QPixmap::grabWindow(winId());
+
+
 		  backgroundFill = new QPixmap(tempPanImage->width(), tempPanImage->height());
 		  backgroundFill->fill(bgColor);
 		  break;
@@ -283,6 +287,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	QPainter paint;
 	QPen pen(Qt::gray);
 	QgsPoint ll, ur;
+   QgsRect *zoomRect ;
 	if (dragging) {
 		dragging = false;
 		switch (mapTool) {
@@ -309,6 +314,32 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  clear();
 			  render2();
 			  break;
+		  case QGis::ZoomOut:
+			  // erase the rubber band box
+			  paint.begin(this);
+			  paint.setPen(pen);
+			  paint.setRasterOp(Qt::XorROP);
+			  paint.drawRect(zoomBox);
+			  paint.end();
+			  // store the rectangle
+			  zoomBox.setRight(e->pos().x());
+			  zoomBox.setBottom(e->pos().y());
+			  // scale the extent so the current view fits inside the zoomBox
+			  ll = coordXForm->toMapCoordinates(zoomBox.left(), zoomBox.bottom());
+			  ur = coordXForm->toMapCoordinates(zoomBox.right(), zoomBox.top());
+              zoomRect = new QgsRect( ll, ur);
+              double sf;
+			  if (zoomBox.width() > zoomBox.height()) {
+              sf = currentExtent.width()/zoomRect->width();
+			  } else {
+              sf = currentExtent.height()/zoomRect->height();
+			  }
+          delete zoomRect;
+			  currentExtent.scale(sf);
+			  clear();
+			  render2();
+			  break;
+
 		  case QGis::Pan:
 			  // new extent based on offset
 			  delete tempPanImage;
@@ -351,9 +382,10 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 		QPainter paint;
 		QPen pen(Qt::gray);
 		// this is a drag-type operation (zoom, pan or other maptool)
-		
+
 		switch (mapTool) {
 		  case QGis::ZoomIn:
+		  case QGis::ZoomOut:
 			  // draw the rubber band box as the user drags the mouse
 			  dragging = true;
 
@@ -425,35 +457,37 @@ int QgsMapCanvas::layerCount()
 
 void QgsMapCanvas::layerStateChange()
 {
-if(!frozen){
-	clear();
-	render2();
+	if (!frozen) {
+		clear();
+		render2();
 	}
 }
 
-void QgsMapCanvas::freeze(bool frz){
+void QgsMapCanvas::freeze(bool frz)
+{
 	frozen = frz;
 }
 
-void QgsMapCanvas::remove(QString key){
-	std::map<QString,QgsMapLayer *>newLayers;
+void QgsMapCanvas::remove(QString key)
+{
+	std::map < QString, QgsMapLayer * >newLayers;
 
-  std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
-		while (mi != layers.end()) {
-			QgsMapLayer *ml = (*mi).second;
-			if(ml->name() != key)
-				newLayers[ml->name()] = ml;
-    	
-			mi++;
+	std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
+	while (mi != layers.end()) {
+		QgsMapLayer *ml = (*mi).second;
+		if (ml->name() != key)
+			newLayers[ml->name()] = ml;
 
-			}
+		mi++;
+
+	}
 
 
-	
+
 	QgsMapLayer *l = layers[key];
-	
-	
+
+
 	layers = newLayers;
 	delete l;
-  zOrder.remove(key);
+	zOrder.remove(key);
 }

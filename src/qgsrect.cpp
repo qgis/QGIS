@@ -15,11 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 #include <qstring.h>
+#include "qgspoint.h"
 #include "qgsrect.h"
 QgsRect::QgsRect(double minX, double minY, double maxX, double maxY):xmin(minX), ymin(minY), xmax(maxX), ymax(maxY)
 {
 }
-
+QgsRect::QgsRect(QgsPoint p1, QgsPoint p2){
+  xmin = p1.x();
+  xmax = p2.x();
+  ymin = p1.y();
+  ymax = p2.y();
+  normalize();
+}
 QgsRect::~QgsRect()
 {
 }
