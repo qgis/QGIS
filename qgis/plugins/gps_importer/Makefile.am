@@ -96,5 +96,4 @@ pluginguibase.h \
 pluginguibase.ui.h \
 plugingui.h \
 plugin.h \
-utils.h \
-waypointtoshape.h
+utils.h

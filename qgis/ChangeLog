@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.50 2004/04/02 19:18:41 mcoletti Exp
+ChangeLog,v 1.51 2004/04/02 22:14:27 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-02 [jobi] 0.1.0devel27
+** Added version checks for autoconf, automake and libtool                                                                                                     
+** Small bugfixes                                                                                                                                       
 
 2004-04-02 [mcoletti] 0.1.0devel26
 Rolling forward QgsFeature::setGeometry() interface change whereby the size of
