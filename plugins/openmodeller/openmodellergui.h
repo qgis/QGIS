@@ -69,9 +69,12 @@ public:
   void leOutputFileName_textChanged( const QString &theOutputFileName);
   void leOutputDirectory_textChanged( const QString &theOutputDirectory);
   void pbnSelectLayerFolder_clicked();
-  void traverseDirectories(const QString& dirname);
+  void traverseDirectories(const QString& dirname, QListBox*);
   bool checkLocalitiesFileFormat(const QString);
   void pbnDefaultParameters_clicked();
+  void pbnSelectLayerFolderProj_clicked();
+  void pbnRemoveLayerFileProj_clicked();
+  void pbnSelectLayerFileProj_clicked();
   
 private:
     OpenModeller * mOpenModeller;
@@ -80,6 +83,7 @@ private:
     QString coordinateSystemQString;
     QString taxonNameQString;
     QStringList layerNamesQStringList;
+    QStringList projLayerNamesQStringList;
     QString maskNameQString;
     QStringList extraParametersQStringList;
     QString outputFileNameQString;

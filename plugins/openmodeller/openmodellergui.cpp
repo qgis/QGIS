@@ -292,7 +292,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   std::cout << thePageNameQString.ascii() << " has focus " << std::endl;
   QString myQString;
   QSettings settings;
-  if (thePageNameQString==tr("myParameter->typicalStep 1 of 8")) //we do this when arriving at the mode selection page
+  if (thePageNameQString==tr("Step 1 of 9")) //we do this when arriving at the mode selection page
   {
     //select the last model used by getting the name from qsettings
     QString myModelName = settings.readEntry("/openmodeller/modelName");
@@ -307,7 +307,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     }
 
   }
-  if (thePageNameQString==tr("Step 2 of 8")) //we do this after leaving the file selection page
+  if (thePageNameQString==tr("Step 2 of 9")) //we do this after leaving the file selection page
   {
     settings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
     getParameterList(cboModelAlgorithm->currentText());
@@ -328,7 +328,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     std::cout << "step 2 ready" << std::endl;
 
   }
-  if (thePageNameQString==tr("Step 3 of 8")) //we do this after leaving the file selection page
+  if (thePageNameQString==tr("Step 3 of 9")) //we do this after leaving the file selection page
   {
     setNextEnabled(currentPage(),false);
     settings.writeEntry("/openmodeller/coordSystem",cboCoordinateSystem->currentText());        
@@ -346,9 +346,10 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
       } 
     }
   }
-  if (thePageNameQString==tr("Step 4 of 8")) 
+  if (thePageNameQString==tr("Step 4 of 9")) 
   {  
-
+  //MODEL CREATION LAYERSET
+  
     const QString myFileNameQString =  settings.readEntry("/openmodeller/layerNames");
     //tokenise the setting list (its separated by ^e)
     const QString mySeparatorQString = "^e";
@@ -383,14 +384,47 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
       setNextEnabled(currentPage(),true);
     }
   }
-  if (thePageNameQString==tr("Step 6 of 8"))
+  if (thePageNameQString==tr("Step 5 of 9"))
   {
-
-
+  //MODEL PROJECTION LAYERSET
+  
+    const QString myProjFileNameQString =  settings.readEntry("/openmodeller/projectionLayerNames");
+    //tokenise the setting list (its separated by ^e)
+    const QString myProjSeparatorQString = "^e";
+    QStringList myProjFileNameQStringList =  QStringList::split (myProjSeparatorQString, myProjFileNameQString, false ); 
+    //only try to restore the list of layers used in the last session if the list is empty
+    if (myProjFileNameQStringList.size() > 0 && lstProjLayers->count()==0)
+    {
+      //loop through the layer names
+      QStringList::Iterator myProjIterator= myProjFileNameQStringList.begin();
+      QString myProjLastFileNameQString="";
+      while( myProjIterator!= myProjFileNameQStringList.end() ) 
+      {
+        QString myProjFileNameQString=*myProjIterator;
+        if (myProjFileNameQString!=myProjLastFileNameQString)
+        {
+          lstProjLayers->insertItem(myProjFileNameQString);
+        }
+        myProjLastFileNameQString=*myProjIterator;
+        ++myProjIterator;
+      }     
+      //enable the user to carry on to the next page...
+      setNextEnabled(currentPage(),true);
+    }
+    if ( lstProjLayers->count()==0)
+    {
+      setNextEnabled(currentPage(),false);
+    }  
+    else
+    {
+      setNextEnabled(currentPage(),true);
+    }
+  
+  
   }
 
 
-  if (thePageNameQString==tr("Step 7 of 8")) 
+  if (thePageNameQString==tr("Step 8 of 9")) 
   {  
     //
     // Extract parameters and their values from map and add to QStringList ready for reading 
@@ -443,7 +477,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     }
   } 
 
-  else if (thePageNameQString==tr("Step 8 of 8"))
+  else if (thePageNameQString==tr("Step 9 of 9"))
   {
 
     QSettings myQSettings;
@@ -468,7 +502,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     else
     {
       //Filename is invalid so switch back to previous page and warn user
-      showPage(QWizard::page(6));
+      showPage(QWizard::page(7));
       std::cout << "Filename '" << outputFileNameQString.ascii() << "' is invalid" << std::endl;
       QMessageBox::warning(this,"Error opening output file!","The output filename and/or directory you specified is invalid.\n Please check and try again.");
 
@@ -495,8 +529,8 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   }
 
   //tell oM to use our locally made callback fn
-  mOpenModeller->setModelCallback( mapCallback, progressBar1);
-  mOpenModeller->setMapCallback( mapCallback, progressBar1);
+  mOpenModeller->setModelCallback( mapCallback, creationProgressBar);
+  mOpenModeller->setMapCallback( mapCallback, projectionProgressBar);
 
   if ( ! mOpenModeller->run() )
   {
@@ -547,17 +581,25 @@ void OpenModellerGui::makeConfigFile()
     {          
       myQTextStream << tr("Map = ") << *myIterator << "\n";
     }
-    myQTextStream << tr("# A layer that species the region of interest\n");      
+    myQTextStream << tr("# A layer that specifies the region of interest\n");      
     myQTextStream << tr("Mask = ") << maskNameQString << "\n";
-
     myQTextStream << tr("\n\n##\n");                 
     myQTextStream << tr("## Model Output Settings\n");
     myQTextStream << tr("##\n\n");   
+     
+    myQTextStream << tr("## Map projection layers)\n");     
+    // Iterate through the items in the projection layers list
+    for ( QStringList::Iterator myIterator = projLayerNamesQStringList.begin(); myIterator != projLayerNamesQStringList.end(); ++myIterator)
+    {          
+      myQTextStream << tr("Output map = ") << *myIterator << "\n";
+    }
+    
+    
     // NOTE by Tim: not too sure what this next option does - will have to sak Mauro
     // I think it just sets the ouput file extents etc
     // I am hardcoding it to match the first layer in the collection for now
     myQTextStream << tr("# File to be used as the output format.\n") ;
-    myQTextStream << tr("Output format = ") << layerNamesQStringList.front() << "\n";
+    myQTextStream << tr("Output format = ") << layerNamesQStringList.front() << "\n";                
     myQTextStream << tr("# Output file name (should end in .tif)\n");
     myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
     myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
@@ -618,6 +660,16 @@ void OpenModellerGui::accept()
   }
   myQSettings.writeEntry("/openmodeller/layerNames",layerNamesQStringList);
 
+  //build up the projection layers qstringlist
+  projLayerNamesQStringList.clear();
+  for ( unsigned int myInt = 0; myInt < lstProjLayers->count(); myInt++ )
+  {
+    QListBoxItem *myItem = lstProjLayers->item( myInt );
+    projLayerNamesQStringList.append(myItem->text());      
+  }
+  myQSettings.writeEntry("/openmodeller/projectionLayerNames",layerNamesQStringList);  
+  
+  
   maskNameQString=cboMaskLayer->currentText();
   taxonNameQString=cboTaxon->currentText();
   makeConfigFile();
@@ -625,7 +677,9 @@ void OpenModellerGui::accept()
 
   QApplication::restoreOverrideCursor();
   //close the dialog
-  done(1);
+  //done(1);
+  
+  
 }
 
 void OpenModellerGui::cboModelAlgorithm_activated(  const QString &theAlgorithmQString)
@@ -952,7 +1006,7 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
 
   settings.writeEntry("/openmodeller/layersDirectory",myLayersDirectoryQString);
-  traverseDirectories(myLayersDirectoryQString);
+  traverseDirectories(myLayersDirectoryQString, lstLayers);
 
 
 
@@ -963,7 +1017,7 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   setNextEnabled(currentPage(),true);	    
 }
 
-void OpenModellerGui::traverseDirectories(const QString& dirname)
+void OpenModellerGui::traverseDirectories(const QString& dirname, QListBox* theListBox)
 {
   QDir dir(dirname);
   dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
@@ -988,7 +1042,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
     //check to see if entry is a directory - if so iterate through it
     if(fi->isDir() && fi->isReadable() )
     {
-      traverseDirectories(fi->absFilePath() );
+      traverseDirectories(fi->absFilePath(), theListBox);
     }
 
     //check to see if its an adf file type
@@ -998,7 +1052,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
       if (fi->fileName()=="hdr.adf")
       {
         std::cout << "Current filename is: " << fi->dirPath(true).ascii() << std::endl;
-        lstLayers->insertItem(fi->dirPath(true));
+        theListBox->insertItem(fi->dirPath(true));
         cboMaskLayer->insertItem(fi->dirPath(true)); 
       }
     }
@@ -1109,4 +1163,86 @@ void OpenModellerGui::pbnDefaultParameters_clicked()
 
 }
 
+void OpenModellerGui::pbnSelectLayerFileProj_clicked()
+{
+  std::cout << " OpenModellerGui::pbnSelectLayerFileProj_clicked() " << std::endl;
+  QString myFileTypeQString;
+  QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          "" , //initial dir
+          myGDALFilterString,  //filters to select
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select localities text file" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );  
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
+  if (myFileNameQString==NULL || myFileNameQString=="") return;
+  //check if the file is an arc/info binary grid in which case we should only use the
+  //directory name in which the adf file occurs
+  if (myFileNameQString.endsWith(".adf"))
+  {
+    //try to find  unix path separater first (search backwards from end of line)
+    if (myFileNameQString.findRev('/') != -1)
+    {
+      myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('/')+1);
+    }
+    else //no forward slash found so assume dos and look for backslash
+    {
+      //try looking for dos separaters
+      myFileNameQString=myFileNameQString.mid(0,myFileNameQString.findRev('\\')+1);
+    }
+  }
+  lstProjLayers->insertItem(myFileNameQString);
+  //enable the user to carry on to the next page...
+  setNextEnabled(currentPage(),true);
+}
 
+void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
+{
+  QSettings settings;
+
+  QString myLayersDirectoryQString = QFileDialog::getExistingDirectory(
+          settings.readEntry("/openmodeller/projectionLayersDirectory"), //initial dir
+          this,
+          "get existing directory",
+          "Choose a directory",
+          TRUE );
+
+  if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
+
+  settings.writeEntry("/openmodeller/projectionLayersDirectory",myLayersDirectoryQString);
+  traverseDirectories(myLayersDirectoryQString, lstProjLayers);
+
+
+
+  //lstLayers->insertItem(myFileNameQString);
+  //also add the layer to the mask combo
+  //cboMaskLayer->insertItem(myFileNameQString);
+  //enable the user to carry on to the next page...
+  setNextEnabled(currentPage(),true);	    
+}
+
+void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
+{  
+  int myLayersCount = lstProjLayers->count();
+
+  for ( unsigned int myInt = 0; myInt < myLayersCount; myInt++ )
+  {
+    QListBoxItem *myItem = lstProjLayers->item( myInt );
+    // if the item is selected...
+    if ( myItem->isSelected() )
+    {
+      //remove the item if it is selected
+      lstProjLayers->removeItem(myInt);
+      myInt--;
+      myLayersCount--;
+    }
+  }
+  //if user has removed last list entry, disable next button
+  if ( lstProjLayers->count()==0)
+  {
+    setNextEnabled(currentPage(),false);
+  }
+
+}

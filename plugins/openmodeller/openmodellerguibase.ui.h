@@ -108,3 +108,21 @@ void OpenModellerGuiBase::pbnDefaultParameters_clicked()
 {
 
 }
+
+
+void OpenModellerGuiBase::pbnSelectLayerFileProj_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::pbnSelectLayerFolderProj_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::pbnRemoveLayerFileProj_clicked()
+{
+
+}
