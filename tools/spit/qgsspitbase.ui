@@ -9,8 +9,14 @@
             <x>0</x>
             <y>0</y>
             <width>605</width>
-            <height>612</height>
+            <height>614</height>
         </rect>
+    </property>
+    <property name="baseSize">
+        <size>
+            <width>605</width>
+            <height>612</height>
+        </size>
     </property>
     <property name="caption">
         <string>SPIT - Shapefile to PostGIS Import Tool</string>
