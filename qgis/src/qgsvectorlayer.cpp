@@ -787,7 +787,7 @@ void QgsVectorLayer::select(int number)
       if(dataProvider->supportsSaveAsShapefile())
       {
         // add the save as shapefile menu item
-        popMenu->insertSeparator(); 
+        popMenu->insertSeparator();
         popMenu->insertItem(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
       }
 
@@ -1125,6 +1125,11 @@ void QgsVectorLayer::select(int number)
       {
         dataProvider->setSubsetString(subset);
       }
+      //trigger a recalculate extents request to any attached canvases
+#ifdef QGISDEBUG
+      std::cout << "Subset query changed, emitting recalculateExtents() signal" << std::endl;
+#endif
+      emit recalculateExtents();
     }
     int QgsVectorLayer::fieldCount() const
     {
@@ -1354,9 +1359,9 @@ void QgsVectorLayer::select(int number)
 
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
-#ifdef QGISDEBUG 
-  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl; 
-#endif 
+#ifdef QGISDEBUG
+  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl;
+#endif
   // process the attribute actions
   mActions.readXML(layer_node);
 
@@ -1452,8 +1457,8 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     }
     else if(!uniquemarkernode.isNull())
     {
-	renderer = new QgsUValMaRenderer;
-	renderer->readXML(uniquemarkernode, *this);
+        renderer = new QgsUValMaRenderer;
+        renderer->readXML(uniquemarkernode, *this);
     }
 
     // Test if labeling is on or off
@@ -1710,14 +1715,14 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         rawXML += temp_str;
 
 #ifdef QGISDEBUG
-	std::cout << rawXML << std::endl << std::flush;
+        std::cout << rawXML << std::endl << std::flush;
 #endif
 
         const char * s = rawXML.c_str(); // debugger probe
 
         if ( ! rendererDOM.setContent( rawXML, &errorMsg, &errorLine, &errorColumn ) )
         {
-            qDebug( "%s:%d XML import error at line %d column %d " + errorMsg, 
+            qDebug( "%s:%d XML import error at line %d column %d " + errorMsg,
                     __FILE__, __LINE__, errorLine, errorColumn );
 
             return false;
@@ -1780,7 +1785,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         rawXML   += temp_str;
 
 #ifdef QGISDEBUG
-	std::cout << rawXML << std::endl << std::flush;
+        std::cout << rawXML << std::endl << std::flush;
 #endif
         const char * s = rawXML.c_str(); // debugger probe
 
@@ -2134,6 +2139,6 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTran
 
 void QgsVectorLayer::saveAsShapefile(){
   // call the dataproviders saveAsShapefile method
-  dataProvider->saveAsShapefile();  
+  dataProvider->saveAsShapefile();
 //  QMessageBox::information(0,"Save As Shapefile", "Someday...");
 }

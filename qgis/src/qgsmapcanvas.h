@@ -256,6 +256,10 @@ public slots:
      */
     void showInOverview( QgsMapLayer * maplayer, bool visible );
 
+    /** Called when we want to recalculate the extents for the canvas - for
+        example if a user changes a layers subset query */
+
+    void recalculateExtents();
 
 signals:
     /** Let the owner know how far we are with render operations */

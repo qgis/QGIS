@@ -342,6 +342,9 @@ signals:
     void showInOverview(QgsMapLayer * maplayer, bool);
     //@}
 
+    /** This is used to send a request that any mapcanvas using this layer update its extents */
+    void recalculateExtents();
+
 protected:
 
     /** called by readXML(), used by children to read state specific to them from

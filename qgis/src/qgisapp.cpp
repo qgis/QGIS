@@ -1082,6 +1082,16 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
                          SIGNAL(keyPressed(QKeyEvent *)),
                          layer,
                          SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
     }
     else
     {
@@ -1209,6 +1219,16 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
                                  SIGNAL(keyPressed(QKeyEvent *)),
                                  layer,
                                  SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
             }
             else
             {
@@ -1328,6 +1348,16 @@ void QgisApp::addDatabaseLayer()
                                      SIGNAL(keyPressed(QKeyEvent *)),
                                      layer,
                                      SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
                 }
                 else
                 {
@@ -3174,6 +3204,19 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
                              layer,
                              SLOT(keyPressed(QKeyEvent* )));
 
+
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
+
+
             QgsProject::instance()->dirty(false); // XXX this might be redundant
 
             statusBar()->message(mMapCanvas->extent().stringRep(2));
@@ -3801,7 +3844,16 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
                          SIGNAL(keyPressed(QKeyEvent * )),
                          theRasterLayer,
                          SLOT(keyPressed(QKeyEvent* )));
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(theRasterLayer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
 
+            QObject::connect(theRasterLayer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
         // init the context menu so it can connect to slots in main app
         // XXX now taken care of in legend theRasterLayer->initContextMenu(this);
 

@@ -1878,3 +1878,13 @@ bool QgsMapCanvas::writeXML(QDomNode & layerNode, QDomDocument & doc)
 
     return true;
 }
+
+void QgsMapCanvas::recalculateExtents()
+{
+#ifdef QGISDEBUG
+   std::cout << "QgsMapCanvas::recalculateExtents() called !" << std::endl;
+#endif
+
+  //gsherman magick goes here
+
+}
