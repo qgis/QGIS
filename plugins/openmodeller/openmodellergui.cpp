@@ -40,14 +40,12 @@
 OpenModellerGui::OpenModellerGui()
  : OpenModellerGuiBase()
 {
-  _log.info( "\n%s qgis openModeller plugin starting.\n\n", "" );
 }
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
    
-  _log.info( "\n%s qgis openModeller plugin starting.\n\n", "" );
 }  
 OpenModellerGui::~OpenModellerGui()
 {
