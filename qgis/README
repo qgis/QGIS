@@ -1,29 +1,56 @@
+README for QGIS version 0.1pre1 'Moroz'
 Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
-built for Linux/Unix. QGIS will offer support for vector and raster formats. 
-Currently QGIS supports shapefiles and PostgreSQL/PostGIS layers.  
+built for Linux/Unix. QGIS offers support for vector and raster formats. 
+Currently QGIS supports many common vector and raster formats shapefiles
+and PostgreSQL/PostGIS layers. 
 
-Planned features include:
+This is a milestone release for QGIS. This release adds:
+  1. support for raster layers
+  2. Symbology support for creating single, graduated, and continuous
+     rendering on vector layers
+  3. Buffer plugin for PostGIS layers
+  4. Improved user interface
+  5. Help files in HTML and PDF
 
-    * Read and edit shapefiles
-    * Display georeferenced rasters (tiff, png, geotiff)
-    * Plugins to dynamically add new functionality to the application
-    * Support for database tables
-    * Support for spatially enabled tables in PostgreSQL using PostGIS
-    * Map output
-    * Script engine
-    * Metadata support
+Supported raster formats include:
+  Grass
+  USGS DEM
+  ArcInfo binary grid
+  ArcInfo ASCII grid
+  ERDAS Imagine
+  SDTS
+  GeoTiff
+  Tiff with world file
 
-Preliminary Standards
-QGis will be developed using the following:
+Supported vector formats include:
+  ESRI Shapefiles
+  PostgreSQL/PostGIS
+  
 
-    * Qt GUI library
-    * Doxygen for documenting the API
+NOTE -- This is pre-release version of QGIS. There are known issues and
+bugs in this release, however it is still quite functional (see BUGS for a
+list of known issues). Please follow the installation instructions carefully. 
+After untarring the distribution, you can find the HTML version of the 
+installation document in qgis/doc/index.html. The installation document is 
+also available as PDF in the same directory.
 
-Resources
-PostGIS Geographic Objects for PostgreSQL
-Shapefile specification
-FGDC Metadata
-
-If you are interested in joining the QGis team, send a message to the 
-project admin using the link on the QGis Summary page on Sourceforge.net.
+HELP US --  Please submit bug reports using the QGIS bug tracker at:
+            http://sourceforge.net/tracker/?group_id=55820&atid=478378
+            When reporting a bug, either login to SourceForge or, if you don't
+            have a SourceForge id, provide an email address where we can 
+            request additional information.
+  
+            Please do not use the Bugs forum to report bugs.
+  
+SUPPORT -   You can get support in the following ways:
+            1.  Using the Help forum at:
+                http://sourceforge.net/forum/forum.php?forum_id=186685
+            2.  Joining the qgis-users mailing list at:
+                http://lists.sourceforge.net/lists/listinfo/qgis-user
+            3.  Using IRC by joining the #qgis channel on irc.freenode.net. 
+                Please wait around for a response to your question as many 
+                folks on the channel are doing other things and it may take a 
+                while for them to notice your question.
+     
+      
 
