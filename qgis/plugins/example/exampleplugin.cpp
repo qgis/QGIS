@@ -16,7 +16,7 @@
 #include <iostream>
 #include "../../src/qgisapp.h"
 
-#include "qgistestplugin.h" 
+#include "exampleplugin.h" 
 #include <qaction.h>
 // xpm for creating the toolbar icon
 #include "matrix1.xpm"
@@ -24,7 +24,7 @@
 /**
 * Constructor for the plugin
 */
-QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI) 
+ExamplePlugin::ExamplePlugin(QgisApp *qgis, QgisIface *_qI) 
 : qgisMainWindow(qgis), qI(_qI){
 	pName = "Test Plugin";
 	pVersion = "Version 0.0";
@@ -34,23 +34,8 @@ QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI)
 	
 	// see if we can popup a message box in qgis on load
 	QMessageBox::information(qgisMainWindow,"Message From Plugin", "This message is from within the test plugin");
-	// add a test menu
-	    QPopupMenu *pluginMenu = new QPopupMenu( qgisMainWindow );
-
-        pluginMenu->insertItem("&Open", this, SLOT(open()));
-        pluginMenu->insertItem(  "&New" , this, SLOT(newThing()));
-	// a test toolbar
-        QMenuBar *menu = ((QMainWindow *)qgisMainWindow)->menuBar();
-
-        menu->insertItem( "&PluginMenu", pluginMenu );
-		QAction *zoomPreviousAction = new QAction( "Zoom Previous",QIconSet(icon_matrix), "&Zoom Previous", CTRL+Key_S, qgisMainWindow, "zoomFull" );
-		
-        connect( zoomPreviousAction, SIGNAL( activated() ) , this, SLOT( zoomPrevious() ) );
-		
-		QToolBar * fileTools = new QToolBar( (QMainWindow *)qgisMainWindow, "zoom operations" );
-        fileTools->setLabel( "Zoom Operations" );
-		zoomPreviousAction->addTo(fileTools);
-		
+	
+		// call a function defined in the QgisIface class
 		int foo = qI->getInt();
 		/*
 		QgisIface *qI2 = qgisMainWindow->getInterface();
@@ -69,34 +54,55 @@ QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI)
 	   std::cout << "Result of getInt is: " << foo << std::endl;
 
 }
-QgisTestPlugin::~QgisTestPlugin(){
+ExamplePlugin::~ExamplePlugin(){
 	
 }
-QString QgisTestPlugin::name(){
+QString ExamplePlugin::name(){
 	return pName;
 }
-QString QgisTestPlugin::version(){
+QString ExamplePlugin::version(){
 	return pVersion;
 	
 }
-QString QgisTestPlugin::description(){
+QString ExamplePlugin::description(){
 	return pDescription;
 	
 }
+int ExamplePlugin::type(){
+  return QgisPlugin::UI;
+}
 
-void QgisTestPlugin::open(){
+void ExamplePlugin::initGui(){
+  // add a test menu
+	    QPopupMenu *pluginMenu = new QPopupMenu( qgisMainWindow );
+
+        pluginMenu->insertItem("&Open", this, SLOT(open()));
+        pluginMenu->insertItem(  "&New" , this, SLOT(newThing()));
+	// a test toolbar
+        QMenuBar *menu = ((QMainWindow *)qgisMainWindow)->menuBar();
+
+        menu->insertItem( "&PluginMenu", pluginMenu );
+		QAction *zoomPreviousAction = new QAction( "Zoom Previous",QIconSet(icon_matrix), "&Zoom Previous", CTRL+Key_S, qgisMainWindow, "zoomFull" );
+		
+        connect( zoomPreviousAction, SIGNAL( activated() ) , this, SLOT( zoomPrevious() ) );
+		
+		QToolBar * fileTools = new QToolBar( (QMainWindow *)qgisMainWindow, "zoom operations" );
+        fileTools->setLabel( "Zoom Operations" );
+		zoomPreviousAction->addTo(fileTools);
+}
+void ExamplePlugin::open(){
 	QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the open menu");
 }
-void QgisTestPlugin::newThing(){
+void ExamplePlugin::newThing(){
 	QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the new menu");
 }
 
-void QgisTestPlugin::zoomPrevious(){
+void ExamplePlugin::zoomPrevious(){
 	qI->zoomPrevious();
 }
 
 extern "C" QgisPlugin * classFactory(QgisApp *qgis, QgisIface *qI){
-	return new QgisTestPlugin(qgis, qI);
+	return new ExamplePlugin(qgis, qI);
 }
 extern "C" QString name(){
 	return QString("Test Plugin");
@@ -104,6 +110,10 @@ extern "C" QString name(){
 extern "C" QString description(){
 	return QString("Default QGIS Test Plugin");
 }
+extern "C" int type(){
+  return QgisPlugin::UI;
+}
 extern "C" void unload(QgisPlugin *p){
 	delete p;
 }
+
