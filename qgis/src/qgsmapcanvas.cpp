@@ -304,7 +304,7 @@ QgsMapLayer *QgsMapCanvas::layerByName(QString name)
 void QgsMapCanvas::refresh()
 {
   imp_->dirty = true;
-  render2();
+  render();
 } // refresh
 
 
@@ -313,7 +313,7 @@ void QgsMapCanvas::refresh()
 // to the pmCanvas (ie the gui map display). The idea is that you can pass
 // an alternative device such as one that will be used for printing or 
 // saving a map view as an image file.
-void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
+void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
     QString msg = imp_->frozen ? "frozen" : "thawed";
 
@@ -419,7 +419,7 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
       repaint();
     }
 
-} // render2
+} // render
 
 
 
@@ -474,50 +474,6 @@ void QgsMapCanvas::currentScale(int thePrecision)
 
 
 
-//Render is deprecated! Use Render2
-void QgsMapCanvas::render()
-{
-/*  QPainter *paint = new QPainter();
-  paint->begin(this);
-  currentExtent = fullExtent;
-  mapWindow->setLeft(currentExtent.xMin());
-  mapWindow->setBottom(currentExtent.yMin());
-  
-    // determine the dominate direction for the mapcanvas
-      if (width () > height ())
-	{
-	  mapWindow->setWidth(currentExtent.width());
-	  mapWindow->setHeight(currentExtent.width());
-	}
-      else
-	{
-	  mapWindow->setWidth(currentExtent.height());
-	  mapWindow->setHeight(currentExtent.height());
-	}
-     
-      paint->setWindow(*mapWindow);
-     
- QRect v = paint->viewport ();
-      int d = QMIN (v.width (), v.height ());
-      int dm = QMAX(v.width(), v.height());
-           paint->setViewport (v.left () + (v.width () - d) / 2,
-       		 v.top () + (v.height () - d) / 2, d, d);
-      
-  // render all layers in the stack, starting at the base
-  map<QString,QgsMapLayer *>::iterator mi = layers.begin();
-  int yTransform =  currentExtent.yMax();//mapWindow->bottom() -  abs(mapWindow->height() - currentExtent.height())/2;
-  while(mi != layers.end()){
-    QgsMapLayer *ml = (*mi).second;
-    //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
-    ml->draw(paint, &currentExtent, yTransform);
-    mi++;
-    //  mi.draw(p, &fullExtent);
-  }
-  paint->end();
-  */
-
-} // render
-
 
 void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap)
 {
@@ -526,7 +482,7 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap)
   //
   if (theQPixmap != NULL)
   {
-    render2(theQPixmap);
+    render(theQPixmap);
     theQPixmap->save(theFileName,"PNG");
   }
   else //use the map view
@@ -547,7 +503,7 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
   {
       if (!imp_->drawing)
       {
-          render2();
+          render();
       }
   }
 } // paintEvent
@@ -581,7 +537,7 @@ void QgsMapCanvas::zoomFullExtent()
   imp_->currentExtent = imp_->fullExtent;
 
   clear();
-  render2();
+  render();
   emit extentsChanged(imp_->currentExtent.stringRep(2));
 } // zoomFullExtent
 
@@ -595,7 +551,7 @@ void QgsMapCanvas::zoomPreviousExtent()
       imp_->currentExtent = imp_->previousExtent;
       imp_->previousExtent = tempRect;
       clear();
-      render2();
+      render();
       emit extentsChanged(imp_->currentExtent.stringRep(2));
   }
 } // zoomPreviousExtent
@@ -629,7 +585,7 @@ void QgsMapCanvas::zoomToSelected()
           imp_->currentExtent.setXmax(rect.xMax() + 25);
           imp_->currentExtent.setYmax(rect.yMax() + 25);
           clear();
-          render2();
+          render();
 	  emit extentsChanged(imp_->currentExtent.stringRep(2));
           return;
         }
@@ -642,7 +598,7 @@ void QgsMapCanvas::zoomToSelected()
           imp_->currentExtent.setXmax(rect.xMax());
           imp_->currentExtent.setYmax(rect.yMax());
           clear();
-          render2();
+          render();
 	  emit extentsChanged(imp_->currentExtent.stringRep(2));
           return;
         }
@@ -705,7 +661,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             imp_->currentExtent.normalize();
 	    emit extentsChanged(imp_->currentExtent.stringRep(2));
             clear();
-            render2();
+            render();
             
             break;
           case QGis::ZoomOut:
@@ -753,7 +709,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               std::cout << "Center of currentExtent after scaling is " << imp_->currentExtent.center() << std::endl;
 #endif
               clear();	
-              render2();
+              render();
 	      emit extentsChanged(imp_->currentExtent.stringRep(2));
             }
             break;
@@ -792,7 +748,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
                 }
               clear();	
-              render2();
+              render();
 	      emit extentsChanged(imp_->currentExtent.stringRep(2));
             }
             break;
@@ -1013,7 +969,7 @@ void QgsMapCanvas::layerStateChange()
   if (!imp_->frozen)
     {
       clear();
-      render2();
+      render();
     }
 } // layerStateChange
 
