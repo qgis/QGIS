@@ -29,6 +29,7 @@ public:
     void pbnOK_clicked();
     void pbnCancel_clicked();    
     void setText(QString);
+    void setPlacement(QString);
 
 public slots:
     void setEnabled(bool); 
