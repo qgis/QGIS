@@ -14,7 +14,7 @@
 #ifndef OPENMODELLERGUI_H
 #define OPENMODELLERGUI_H
 
-#include <openmodellerguibase.h>
+#include <openmodellerguibase.uic.h>
 #include <qstringlist.h>
 #include <openmodeller/om.hh>
 /**
