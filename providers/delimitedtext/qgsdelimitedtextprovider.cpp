@@ -50,6 +50,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
   std::cerr << "xField is: " << mXField << std::endl; 
   std::cerr << "yField is: " << mYField << std::endl; 
 #endif
+  // Set the selection rectangle to null
+  mSelectionRectangle = 0;
   // assume the layer is invalid until proven otherwise
   mValid = false;
   if(!mFileName.isEmpty() && !mDelimiter.isEmpty() && !mXField.isEmpty() && !mYField.isEmpty()){
@@ -60,15 +62,15 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
       // sure the the delimited file is properly formed.
       mFile = new QFile(mFileName);
       if ( mFile->open( IO_ReadOnly ) ) {
-        TextStream stream( mFile );
+        QTextStream stream( mFile );
         QString line;
-        int i = 1;
+        mNumberFeatures = 0;
         int xyCount = 0;
         // set the initial extent
         mExtent = new QgsRect(9999999999999.0,9999999999999.0,-9999999999999.0,-9999999999999.0);
         while ( !stream.atEnd() ) {
           line = stream.readLine(); // line of text excluding '\n'
-          if(i == 1){
+          if(mNumberFeatures++ == 0){
             // Get the fields from the header row and store them in the 
             // fields vector
 #ifdef QGISDEBUG
@@ -136,14 +138,15 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
               }
             }
           }
-          i++;
         }
-        mNumberFeatures = i;
+        mNumberFeatures--;
 
         if(xyCount == 2)
         {
 #ifdef QGISDEBUG
           std::cerr << "Data store is valid" << std::endl; 
+          std::cerr << "Number of features " << mNumberFeatures << std::endl; 
+          std::cerr << "Extents " << mExtent->stringRep() << std::endl; 
 #endif
           mValid = true;
         }else
@@ -215,7 +218,7 @@ if(fetchAttributes){
 getFeatureAttributes(feat, f);
 }
 }
-     */
+*/
   }
 return f;
 }
@@ -227,11 +230,13 @@ return f;
  */
 QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
 {
-
+  // We must manually check each point to see if it is within the
+  // selection rectangle
   QgsFeature *f = 0;
+  bool processPoint;
   if(mValid){
     // read the line
-    QTextStream stream( mFileName );
+    QTextStream stream( mFile );
     QString line;
     if ( !stream.atEnd() ) {
       line = stream.readLine(); // line of text excluding '\n'
@@ -240,10 +245,28 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
       if(parts.size() == attributeFields.size()){
         double x = parts[fieldPositions[mXField]].toDouble();
         double y = parts[fieldPositions[mYField]].toDouble();
-        // create WKBPoint
+        if(mSelectionRectangle == 0)
+        {
+          // no selection in place
+          processPoint = true;
+        }else
+        {
+          // check to see if point is in bounds
+          processPoint = boundsCheck(x, y);
+        }
+        if(processPoint)
+        {
 
-        // get the attributes if requested
-        if(fetchAttributes){
+          // create WKBPoint
+          wkbPoint *geometry = new wkbPoint;
+          geometry->byteOrder = endian();
+          geometry->wkbType = 1;
+          geometry->x = x;
+          geometry->y = y;
+          f->setGeometry((unsigned char *)geometry);
+          // get the attributes if requested
+          if(fetchAttributes){
+          }
         }
       }
     }
@@ -273,7 +296,7 @@ std::cerr << "Feature is null\n";
 std::cerr << "Read attempt on an invalid shapefile data source\n";
 #endif
 }
-     */
+*/
 }
 return f;
 }
@@ -285,27 +308,12 @@ return f;
  */
 void QgsDelimitedTextProvider::select(QgsRect *rect, bool useIntersect)
 {
-  /*
-  // spatial query to select features
-  //  std::cerr << "Selection rectangle is " << *rect << std::endl;
-  OGRGeometry *filter = 0;
-  filter = new OGRPolygon();
-  QString wktExtent = QString("POLYGON ((%1))").arg(rect->stringRep());
-  const char *wktText = (const char *)wktExtent;
 
-  OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
-  //TODO - detect an error in setting the filter and figure out what to
-  //TODO   about it. If setting the filter fails, all records will be returned
-  if (result == OGRERR_NONE) {
-  //      std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
-  ogrLayer->SetSpatialFilter(filter);
-  //      std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
-  }else{
-#ifdef QGISDEBUG    
-std::cerr << "Setting spatial filter failed!" << std::endl;
-#endif
-}
-   */
+  // Setting a spatial filter doesn't make much sense since we have to
+  // compare each point against the rectangle.
+  // We store the rect and use it in getNextFeature to determine if the
+  // feature falls in the selection area
+  mSelectionRectangle = new QgsRect((*rect));
 }
 
 /**
@@ -348,7 +356,7 @@ std::vector<QgsFeature>& QgsDelimitedTextProvider::identify(QgsRect * rect)
 return gPtr;
 
 }
- */
+*/
 int QgsDelimitedTextProvider::endian()
 {
   char *chkEndian = new char[4];
@@ -475,6 +483,17 @@ void QgsDelimitedTextProvider::fillMinMaxCash()
 bool QgsDelimitedTextProvider::isValid(){
   return mValid;
 }
+/** 
+ * Check to see if the point is within the selection rectangle
+ */
+bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
+{
+  return ((x < mSelectionRectangle->xMax()) &&
+      (x > mSelectionRectangle->xMin()) &&
+      (y < mSelectionRectangle->yMax()) &&
+      (y > mSelectionRectangle->yMin()));
+
+}
 /**
  * Class factory to return a pointer to a newly created 
  * QgsDelimitedTextProvider object
@@ -484,7 +503,7 @@ extern "C" QgsDelimitedTextProvider * classFactory(const char *uri)
   return new QgsDelimitedTextProvider(uri);
 }
 /** Required key function (used to map the plugin to a data store type)
- */
+*/
 extern "C" QString providerKey(){
   return QString("delimitedtext");
 }
