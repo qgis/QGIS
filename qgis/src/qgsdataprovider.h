@@ -29,6 +29,10 @@ class QgsField;
 class QgsDataProvider {
 
 public: 
+  /**
+  * We need this so the subclass destructors get called
+  */
+  virtual ~QgsDataProvider() {};
   /** 
   * Get the first feature resulting from a select operation
   * @return QgsFeature

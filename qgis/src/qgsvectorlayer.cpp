@@ -203,6 +203,8 @@ QgsVectorLayer::~QgsVectorLayer()
   {
     delete m_propertiesDialog;
   }
+  // delete the provider object
+  delete dataProvider;
   // delete the popu pmenu
   delete popMenu;
   // delete the provider lib pointer
