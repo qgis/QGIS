@@ -31,8 +31,10 @@ public:
     ~OmGuiMain();
     void fileExit();
     void runWizard();
+    void saveMapAsImage();
   public slots:
     void drawModelImage (QString theFileName);
+    
 };
 
 #endif

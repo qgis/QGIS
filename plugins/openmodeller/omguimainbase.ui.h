@@ -21,3 +21,12 @@ void OmGuiMainBase::runWizard()
 {
 
 }
+
+
+
+
+
+void OmGuiMainBase::saveMapAsImage()
+{
+
+}

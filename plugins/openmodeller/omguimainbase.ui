@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>OmGuiMainBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>openModeller GUI Version 1</string>
+        <string>openModeller - Model Viewer</string>
     </property>
     <property name="icon">
         <pixmap>image0</pixmap>
@@ -40,7 +40,12 @@
         <separator/>
         <separator/>
         <action name="runWizardAction"/>
+        <action name="fileSave_asAction"/>
+        <separator/>
         <action name="fileExitAction"/>
+    </item>
+    <item text="Help" name="Help">
+        <action name="helpAboutAction"/>
     </item>
 </menubar>
 <toolbars>
@@ -65,7 +70,32 @@
             <cstring>runWizardAction</cstring>
         </property>
         <property name="text">
-            <string>Run Wizard</string>
+            <string>Run &amp;Wizard</string>
+        </property>
+        <property name="menuText">
+            <string>Run &amp;Wizard</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSave_asAction</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;Save image as...</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Save image as...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>helpAboutAction</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;About</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;About</string>
         </property>
     </action>
 </actions>
@@ -87,6 +117,12 @@
         <receiver>OmGuiMainBase</receiver>
         <slot>runWizard()</slot>
     </connection>
+    <connection>
+        <sender>fileSave_asAction</sender>
+        <signal>activated()</signal>
+        <receiver>OmGuiMainBase</receiver>
+        <slot>saveMapAsImage()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">omguimainbase.ui.h</include>
@@ -94,6 +130,7 @@
 <slots>
     <slot>fileExit()</slot>
     <slot>runWizard()</slot>
+    <slot>saveMapAsImage()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
