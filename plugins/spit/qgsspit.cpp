@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 
 #include <qlistbox.h>
 #include <qtable.h>
@@ -758,6 +758,9 @@ void QgsSpit::editColumns( int row, int col, int button, const QPoint &mousePos 
   // words are displayed differently so they are easy to spot
   QgsEditReservedWordsDialog *srw = new QgsEditReservedWordsDialog( this );
   srw->setCaption( fileList[ row ] ->getTable().upper() + " - Edit Column Names" );
+  // set the description to indicate that we are editing column names, not
+  // necessarily dealing with reserved words (although that is a possibility too)
+  srw->setDescription(tr("Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word"));
   // load the reserved words list
   srw->setReservedWords( pgu->reservedWords() );
   // load the columns and set their status
