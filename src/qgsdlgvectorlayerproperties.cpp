@@ -62,6 +62,7 @@
 #include "qgslabel.h"
 #include "qgslabeldialog.h"
 #include "qgsattributeactiondialog.h"
+#include "qgspgquerybuilder.h"
 
 
 QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name, bool modal):QgsDlgVectorLayerPropertiesBase(parent, name, modal), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
@@ -371,5 +372,29 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
 
 void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
 {
+  // launch the query builder using the PostgreSQL connection
+  // from the provider
 
+  // get the data provider
+  QgsVectorDataProvider *dp = 
+    dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  // cast to postgres provider type
+  QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) dp;
+  // create the query builder object using the table name
+  // and postgres connection from the provider
+  QgsPgQueryBuilder *pqb = 
+    new QgsPgQueryBuilder(myPGProvider->getTableName(), 
+        myPGProvider->pgConnection());
+  // Set the sql in the query builder to the same in the prop dialog
+  // (in case the user has already changed it)
+  pqb->setSql(txtSubsetSQL->text());
+  // Open the query builder
+  if(pqb->exec())
+  {
+    // if the sql is changed, update it in the prop subset text box
+    txtSubsetSQL->setText(pqb->sql());
+    //TODO If the sql is changed in the prop dialog, the layer extent should be recalculated
+  }
+  // delete the query builder object
+  delete pqb;
 }

@@ -180,6 +180,10 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
   /** Accessor for sql where clause used to limit dataset */
   QString subsetString() {return sqlWhereClause;};
+  //! Get the postgres connection
+  PGconn * pgConnection() {return connection;}; 
+  //! Get the table name associated with this provider instance
+  QString getTableName() {return tableName;};
   /** mutator for sql where clause used to limit dataset size */
   void setSubsetString(QString theSQL) {sqlWhereClause=theSQL;};
 private:
