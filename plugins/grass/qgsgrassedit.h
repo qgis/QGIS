@@ -1,0 +1,312 @@
+/***************************************************************************
+    qgsgrassselect.h  -  Select GRASS layer dialog
+                             -------------------
+    begin                : March, 2004
+    copyright            : (C) 2004 by Radim Blazek
+    email                : blazek@itc.it
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSGRASSEDIT_H
+#define QGSGRASSEDIT_H
+
+#include <qpointarray.h>
+#include <qcursor.h>
+#include <qpen.h>
+#include <qpainter.h>
+
+// Must be here, so that it is included to moc file
+#include "../../src/qgspoint.h"
+#include "../../src/qgisiface.h"
+#include "../../src/qgscoordinatetransform.h"
+
+class QgsGrassProvider;
+#include "qgsgrasseditbase.h"
+#include "qgsgrassselectbase.h"
+
+typedef struct {
+    int field;
+    int maxCat;
+} MaxCat;
+
+/*! \class QgsGrassEdit
+ *  \brief GRASS vector edit.
+ *
+ */
+//class QgsGrassEdit: public QgsGrassSelectBase
+class QgsGrassEdit: public QgsGrassEditBase
+{
+    Q_OBJECT;
+
+public:
+    //! Tools
+    enum EditTools {     
+	NONE,
+	NEW_POINT,
+	NEW_LINE,
+	NEW_BOUNDARY,
+	NEW_CENTROID,
+	MOVE_VERTEX,
+	ADD_VERTEX,
+	DELETE_VERTEX,
+	SPLIT_LINE,
+	MOVE_LINE,
+	DELETE_LINE,
+	EDIT_CATS,
+	EDIT_ATTRIBUTES
+    }; 
+
+    //! Icons
+    enum Icons {     
+	ICON_NONE,
+	ICON_CROSS,
+	ICON_X,
+	ICON_BOX
+    };
+
+    // Symbology codes */
+    enum SymbCode {
+	SYMB_BACKGROUND,
+	SYMB_HIGHLIGHT,
+	SYMB_DYNAMIC,
+	SYMB_POINT,
+	SYMB_LINE,
+	SYMB_BOUNDARY_0, /* No areas */
+	SYMB_BOUNDARY_1, /* 1 area */
+	SYMB_BOUNDARY_2, /* 2 areas */
+	SYMB_CENTROID_IN,    /* Centroid in area */
+	SYMB_CENTROID_OUT,   /* Centroid outside area */
+	SYMB_CENTROID_DUPL,  /* Duplicate centroid in area */
+	SYMB_NODE_0,     /* Node without lines (points or centroids) */
+	SYMB_NODE_1,     /* Node with 1 line */
+	SYMB_NODE_2,     /* Node with 2 lines */
+	SYMB_COUNT       /* MUST BE LAST, number of symbology layers */
+    };
+
+    enum CatMode {
+	CAT_MODE_NEXT = 0,
+	CAT_MODE_MANUAL,
+	CAT_MODE_NOCAT
+    };
+
+    //! Constructor
+    QgsGrassEdit ( QgisIface *iface, QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+
+    //! Destructor
+    ~QgsGrassEdit();
+
+    //! Close editing
+    bool isValid (void); 
+
+    //! Close editing
+    static bool isRunning (void); 
+
+    //! Set new tool and close old one if any
+    void startTool (int); 
+
+public slots:
+    // TODO: once available in QGIS, use only one reciver for all signals
+    
+    //! Mouse event receiver
+    void mouseEventReceiverMove ( QgsPoint & ); 
+    
+    //! Mouse event receiver
+    void mouseEventReceiverClick ( QgsPoint & ); 
+    
+    //! Called when rendering is finished
+    void postRender ( QPainter * ); 
+
+    // Slots to start tools (is it possible to pass tool to startTool() directly from GUI ?)
+    void newPoint (void);       // digitize new point
+    void newLine (void);        // digitize new line
+    void newBoundary (void);    // digitize new boundary
+    void newCentroid (void);    // digitize new centroid
+    void moveVertex (void);     // move vertex of existing line/boundary
+    void addVertex (void);      // add new vertex to existing line/boundary
+    void deleteVertex (void);   // delete vertex of existing line/boundary
+    void splitLine (void);      // split existing line/boundary
+    void moveLine (void);       // move existing line/boundary
+    void deleteLine (void);     // delete existing line/boundary
+    void editCats (void);       // edit element categories
+    void editAttributes (void); // edit element attributes
+
+    //! Category mode was changed
+    void catModeChanged ( void );
+
+    //! Field was changed
+    void fieldChanged ( void );
+
+    //! Close editing
+    void closeEdit (void); 
+
+private:
+    //! Editing is already running
+    static bool mRunning;
+    
+    //! Point / node size (later make editable array of Sizes)
+    int mSize;
+
+    //! Display all lines and nodes
+    void displayMap (void); 
+
+    //! Set point array to icon
+    void setIconPoints ( QPointArray &points, int type, int size ); 
+
+    /** 
+     *  Display icon 
+     *  @param x x coordinate in map units
+     *  @param y y coordinate in map units
+     *  @param type ICON_CROSS, ICON_X
+     *  @param size size in pixels, should be odd number
+     */
+    void displayIcon (double x, double y, const QPen & pen, int type, int size, QPainter *painter = 0); 
+
+    //! Last dynamicaly drawn points
+    //struct line_pnts *mLastDynamicPoints;
+    QPointArray mLastDynamicPoints;
+
+    //! Last dynamicaly drawn icon type
+    int mLastDynamicIcon;
+    double mLastDynamicIconX;
+    double mLastDynamicIconY;
+
+    /** 
+     *  Display dynamic drawing (XOR)
+     *  Old drawing (in mLastDynamicPoints) is deleted first, and new one is drawn and 
+     *  mLastDynamicPoints is set to Points.
+     *  SYMB_DYNAMIC color is used
+     */
+    void displayDynamic ( struct line_pnts *Points );
+
+    /** Display dynamic icon */
+    void displayDynamic ( double x, double y, int type, int size ); 
+
+    /* Display dynamic points + icon */
+    void displayDynamic ( struct line_pnts *Points, double x, double y, int type, int size ); 
+
+    /* Display last dynamic points + icon */
+    void displayLastDynamic ( void ) ;
+
+    /** Erase dynamic */
+    void eraseDynamic ( void ); 
+
+    /** 
+     *  Display map element (lines and points)
+     *  @param line line number
+     */
+    void displayElement (int line, const QPen & pen, int size, QPainter *painter = 0); 
+
+    /** 
+     *  Erase element and its nodes using SYMB_BACKGROUD
+     *  @param line line number
+     */
+    void eraseElement ( int line ); 
+
+    /** 
+     *  Display one node 
+     *  @param painter pointer to painter or 0
+     *  @param node node number
+     *  @param size size in pixels, should be odd number
+     */
+    void displayNode ( int node, const QPen & pen, int size, QPainter *painter = 0); 
+
+    //! Status: true - active vector was successfully opened for editing
+    bool mValid;
+    
+    //! Pointer to the QGIS interface object
+    QgisIface *mIface;
+
+    //! Pointer to canvas 
+    QgsMapCanvas *mCanvas;
+
+    //! Pointer to vector provider 
+    QgsGrassProvider *mProvider;
+    
+    //! Current tool (EditTools)
+    int mTool;
+    
+    //! If tool is not closed and another QGIS tool is selected, suspend is set to true.
+    //  GRASS Edit will continue if the same tool is selected later.
+    bool mSuspend;
+
+    //! Currently digitized line points, 
+    //  points of currently mooving line (original coordinates)
+    struct line_pnts *mEditPoints;
+
+    //! Working structure for line points
+    struct line_pnts *mPoints;
+
+    //! Working category structure
+    struct line_cats *mCats;
+
+    //! Vector of maximum used category values for each field
+    std::vector<MaxCat> mMaxCats;
+
+    //! Canvas pixmap
+    QPixmap *mPixmap;
+
+    //! Transformation
+    QgsCoordinateTransform *mTransform;
+
+    //! Last point where user clicked (map units)
+    QgsPoint mLastPoint;
+
+    //! Selected line or 0
+    int mSelectedLine;
+
+    //! Selected segment or vertex (first is 0) (MOVE_VERTEX, ADD_VERTEX, DELETE_VERTEX)
+    int mSelectedPart;
+
+    //! Appand a new vertex at the end (not insert into existing segment)
+    bool mAddVertexEnd;
+
+    //! Vector of symbology codes for lines, indexes of lines start at 1, always resize nlines+1
+    std::vector<int> mLineSymb;
+
+    //! Vector of symbology codes for nodes, indexes of nodes start at 1, always resize nnodes+1
+    std::vector<int> mNodeSymb;
+
+    //! Vector of pens for symbology codes
+    std::vector<QPen> mSymb;
+
+    /** 
+     *  Read line symbology from map
+     *  @return symbology code
+     */
+    int lineSymbFromMap ( int line );
+
+    /** 
+     *  Read node symbology from map
+     *  @return symbology code
+     */
+    int nodeSymbFromMap ( int node );
+
+    /** 
+     *  Set symbology of updated lines and nodes from map
+     */
+    void updateSymb ( void );
+
+    /** 
+     *  Display updated lines and nodes
+     */
+    void displayUpdated ( void );
+
+    /** Write new element. Current field category is taken. */
+    void writeLine (  int type, struct line_pnts *Points );
+
+    /** Get Current threshold in map units */
+    double threshold ( void );
+
+    /** Snap to nearest node in current threshold */
+    void snap ( QgsPoint & point );
+    void snap ( double *x, double *y);
+
+};
+
+#endif // QGSGRASSEDIT_H

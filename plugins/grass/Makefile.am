@@ -24,33 +24,43 @@ plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = grassplugin.la
 
 plugin_MOC = qgsgrassplugin.moc.cpp \
-	     qgsgrassselectbase.moc.cpp
+	     qgsgrassselectbase.moc.cpp \
+	     qgsgrasseditbase.moc.cpp \
+	     qgsgrassedit.moc.cpp
 
 plugin_UI = qgsgrassselectbase.h \
-	     qgsgrassselectbase.cpp
+	    qgsgrassselectbase.cpp \
+	    qgsgrasseditbase.h \
+	    qgsgrasseditbase.cpp
 
 plugin_UIC = qgsgrassselectbase.ui \
-       qgsgrassselectbase.ui.h
+	     qgsgrassselectbase.ui.h \
+	     qgsgrasseditbase.ui \
+	     qgsgrasseditbase.ui.h
 
-grassplugin_la_SOURCES =  qgsgrassplugin.cpp \
-			      qgsgrassplugin.h \
-			      qgsgrassselect.cpp \
-            qgsgrassselect.h \
-			      ../../providers/grass/qgsgrass.cpp \
-			      ../../providers/grass/qgsgrass.h \
-			      $(plugin_UI)\
-            ../../src/qgssymbol.cpp
+grassplugin_la_SOURCES = qgsgrassplugin.cpp \
+			 qgsgrassplugin.h \
+			 qgsgrassselect.cpp \
+			 qgsgrassselect.h \
+			 qgsgrassedit.cpp \
+			 qgsgrassedit.h \
+			 ../../providers/grass/qgsgrass.h \
+			 ../../providers/grass/qgsgrassprovider.h \
+			 $(plugin_UI) \
+			 ../../src/qgssymbol.cpp
 
 nodist_grassplugin_la_SOURCES = $(plugin_MOC)
 
 # UI dependencies      
 qgsgrassselectbase.cpp: qgsgrassselectbase.h qgsgrassselectbase.ui
 qgsgrassselectbase.h: qgsgrassselectbase.ui
+qgsgrasseditbase.cpp: qgsgrasseditbase.h qgsgrasseditbase.ui
+qgsgrasseditbase.h: qgsgrasseditbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
-grassplugin_la_LIBADD = $(QT_LDADD) $(GRASS_LIB) $(PG_LIB)
+grassplugin_la_LIBADD = $(QT_LDADD)  -L${pkglibdir} -lgrassprovider $(GRASS_LIB) $(PG_LIB)
 grassplugin_la_LDFLAGS = -avoid-version -module
 grassplugin_la_CXXFLAGS = $(CXXFLAGS) -I$(GRASS_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC) -I../../src/
 
