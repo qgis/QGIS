@@ -19,6 +19,7 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include "splashscreen.h"
+#include "qfont.h"
 static const char* const image0_data[] = { 
 "704 293 31527 3",
 "Qt. c #000000",
@@ -33038,8 +33039,6 @@ void qt_wait_for_window_manager( QWidget *widget );
 
 void SplashScreen::finish( QWidget *mainWin )
 {
-  // wait for a few seconds
-  sleep(3);
 #if defined(Q_WS_X11)
     qt_wait_for_window_manager( mainWin );
 #endif
@@ -33056,8 +33055,10 @@ void SplashScreen::setStatus( const QString &message, int alignment, const QColo
     QPixmap textPix = image0;
     QPainter painter( &textPix, this );
     painter.setPen( color );
+    QFont myQFont( "arial", 18, QFont::Bold );
+    painter.setFont( myQFont );
     QRect r = rect();
-    r.setRect( r.x() + 10, r.y() + 10, r.width() - 20, r.height() - 20 );
+    r.setRect( r.x() + 50, r.y() + 200, r.width() - 20, r.height() - 20 );
     painter.drawText( r, alignment, message );
     setErasePixmap( textPix );
     repaint();
