@@ -105,7 +105,7 @@ void PluginGui::openPointDialog() {
   }
   
   QgsRasterLayer* layer = new QgsRasterLayer(raster, "Raster");
-  QgsPointDialog* dlg = new QgsPointDialog(layer, worldfile, this, NULL, true);
+  QgsPointDialog* dlg = new QgsPointDialog(layer, this, NULL, true);
   connect(dlg, SIGNAL(loadLayer(QString)), this, SLOT(loadLayer(QString)));
   dlg->show();
 }

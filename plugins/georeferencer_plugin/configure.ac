@@ -6,7 +6,7 @@ AC_INIT(plugin, 0.1, tim@linfiniti.com)
 
 AC_CONFIG_SRCDIR([plugingui.h])
 
-AM_INIT_AUTOMAKE(plugin, 0.1)
+AM_INIT_AUTOMAKE(qgis_georef_plugin, 0.1)
 
 # Checks for programs.
 AC_PROG_CXX

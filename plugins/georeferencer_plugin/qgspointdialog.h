@@ -28,9 +28,8 @@ class QgsPointDialog : public QgsPointDialogBase
 Q_OBJECT
 public:
   QgsPointDialog();
-  QgsPointDialog(QgsRasterLayer* layer, const QString& worldfile,
-		 QWidget* parent = 0, const char* name = 0, 
-		 bool modal = FALSE, WFlags fl = 0);
+  QgsPointDialog(QgsRasterLayer* layer, QWidget* parent = 0, 
+		 const char* name = 0, bool modal = FALSE, WFlags fl = 0);
   ~QgsPointDialog();
 
 public slots:
@@ -41,12 +40,14 @@ public slots:
   void pbnGenerateWorldFile_clicked();
   void pbnGenerateAndLoad_clicked();
   void pbnSelectWorldFile_clicked();
+  void pbnSelectModifiedRaster_clicked();
   void tbnZoomIn_changed(int);
   void tbnZoomOut_changed(int);
   void tbnZoomToLayer_clicked();
   void tbnPan_changed(int);
   void tbnAddPoint_changed(int);
   void tbnDeletePoint_changed(int);
+  void enableRelevantControls(void);
   
 signals:
   
@@ -57,11 +58,11 @@ private:
   void showCoordDialog(QgsPoint& pixelCoords);
   void deleteDataPoint(QgsPoint& pixelCoords);
   bool generateWorldFile();
+  QString guessWorldFileName(const QString& raster);
   
   QgsMapCanvas* mCanvas;
   QCursor* mCursor;
   QgsRasterLayer* mLayer;
-  QString mWorldfile;
   
   std::vector<QgsPoint> mPixelCoords, mMapCoords;
   std::vector<QString> mAcetateIDs;

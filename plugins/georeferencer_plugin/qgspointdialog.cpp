@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include <qtoolbutton.h>
+#include <qpushbutton.h>
 #include <qcombobox.h>
 #include <qfiledialog.h>
 #include <qframe.h>
@@ -12,6 +13,7 @@
 #include "qgspointdialog.h"
 #include "mapcoordsdialog.h"
 #include "qgsleastsquares.h"
+#include "qgsimagewarper.h"
 
 #include "zoom_in.xpm"
 #include "zoom_out.xpm"
@@ -23,11 +25,10 @@ QgsPointDialog::QgsPointDialog() {
 }
 
 
-QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, const QString& worldfile,
-			       QWidget* parent, const char* name, 
-			       bool modal, WFlags fl) 
+QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, 
+			       const char* name, bool modal, WFlags fl) 
   : QgsPointDialogBase(parent, name, modal, fl), 
-    mLayer(layer), mWorldfile(worldfile), mCursor(NULL) {
+    mLayer(layer), mCursor(NULL) {
   
   // set up the canvas
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
@@ -40,7 +41,7 @@ QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, const QString& worldfile,
   tbnAddPoint->setOn(true);
   
   // load previously added points
-  QFile pointFile(mWorldfile + ".points");
+  QFile pointFile(mLayer->source() + ".points");
   if (pointFile.open(IO_ReadOnly)) {
     QTextStream points(&pointFile);
     QString tmp;
@@ -58,7 +59,7 @@ QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, const QString& worldfile,
   mCanvas->freeze(false);
   connect(mCanvas, SIGNAL(xyClickCoordinates(QgsPoint&)),
 	  this, SLOT(handleCanvasClick(QgsPoint&)));
-  leSelectWorldFile->setText(worldfile);
+  leSelectWorldFile->setText(guessWorldFileName(mLayer->source()));
 }
 
 
@@ -106,7 +107,10 @@ void QgsPointDialog::pbnGenerateWorldFile_clicked() {
 void QgsPointDialog::pbnGenerateAndLoad_clicked() {
   if (generateWorldFile()) {
     delete mCanvas;
-    emit loadLayer(mLayer->source());
+    if (cmbTransformType->currentItem() == 0)
+      emit loadLayer(mLayer->source());
+    else 
+      emit loadLayer(leSelectModifiedRaster->text());
     delete mLayer;
     accept();
   }
@@ -124,6 +128,20 @@ void QgsPointDialog::pbnSelectWorldFile_clicked() {
 }
 
 
+void QgsPointDialog::pbnSelectModifiedRaster_clicked() {
+  QString filename = 
+    QFileDialog::getSaveFileName(".",
+				 NULL,
+				 this,
+				 "Save modified raster file"
+				 "Choose a name for the world file");
+  if (filename.right(4) != ".tif")
+    filename += ".tif";
+  leSelectModifiedRaster->setText(filename);
+  leSelectWorldFile->setText(guessWorldFileName(filename));
+}
+
+
 bool QgsPointDialog::generateWorldFile() {
   QgsPoint origin(0, 0);
   double pixelSize = 1;
@@ -135,15 +153,18 @@ bool QgsPointDialog::generateWorldFile() {
     if (cmbTransformType->currentItem() == 0)
       QgsLeastSquares::linear(mMapCoords, mPixelCoords, origin, pixelSize);
     else if (cmbTransformType->currentItem() == 1) {
-      QMessageBox::critical(this, "Not implemented!",
-			    "A Helmert transform requires a rotation of the "
-			    "original raster file. This is not yet "
-			    "supported.");
-      return false;
-      /*
-	QgsLeastSquares::helmert(mMapCoords, mPixelCoords, 
-	origin, pixelSize, rotation);
-      */
+      int res = 
+	QMessageBox::warning(this, "Warning",
+			     "A Helmert transform requires modifications in "
+			     "the raster layer.\nThe modifed raster will be "
+			     "saved in a new file and a world file will be "
+			     "generated for this new file instead.\nAre you "
+			     "sure that this is what you want?",
+			     QMessageBox::No, QMessageBox::Yes);
+      if (res == QMessageBox::No)
+	return false;
+      QgsLeastSquares::helmert(mMapCoords, mPixelCoords, 
+			       origin, pixelSize, rotation);
     }
     else if (cmbTransformType->currentItem() == 2) {
       QMessageBox::critical(this, "Not implemented!",
@@ -158,15 +179,13 @@ bool QgsPointDialog::generateWorldFile() {
     return false;
   }
 
-  std::cerr<<"================="<<std::endl
-	   <<pixelSize<<std::endl
-	   <<0<<std::endl
-	   <<0<<std::endl
-	   <<-pixelSize<<std::endl
-	   <<origin.x()<<std::endl
-	   <<origin.y()<<std::endl
-	   <<"================="<<std::endl
-	   <<"ROTATION: "<<(rotation*180/3.14159265)<<std::endl;
+  // warp the raster
+  double xOffset, yOffset;
+  if (rotation != 0) {
+    QgsImageWarper warper(-rotation);
+    warper.warp(mLayer->source(), leSelectModifiedRaster->text(), 
+		xOffset, yOffset);
+  }
   
   // write the world file
   QFile file(leSelectWorldFile->text());
@@ -180,11 +199,11 @@ bool QgsPointDialog::generateWorldFile() {
 	<<0<<endl
 	<<0<<endl
 	<<-pixelSize<<endl
-	<<origin.x()<<endl
-	<<origin.y()<<endl;  
+	<<(origin.x() - xOffset * pixelSize)<<endl
+	<<(origin.y() + yOffset * pixelSize)<<endl;  
   
   // write the data points in case we need them later
-  QFile pointFile(leSelectWorldFile->text() + ".points");
+  QFile pointFile(mLayer->source() + ".points");
   if (pointFile.open(IO_WriteOnly)) {
     QTextStream points(&pointFile);
     points<<"mapX\tmapY\tpixelX\tpixelY"<<endl;
@@ -300,4 +319,41 @@ void QgsPointDialog::deleteDataPoint(QgsPoint& pixelCoords) {
       break;
     }
   }
+}
+
+
+void QgsPointDialog::enableRelevantControls() {
+  if (cmbTransformType->currentItem() == 0) {
+    leSelectModifiedRaster->setEnabled(false);
+    pbnSelectModifiedRaster->setEnabled(false);
+  }
+  else {
+    leSelectModifiedRaster->setEnabled(true);
+    pbnSelectModifiedRaster->setEnabled(true);
+  }
+  
+  if ((cmbTransformType->currentItem() == 0 &&
+       !leSelectWorldFile->text().isEmpty()) ||
+      (!leSelectWorldFile->text().isEmpty() &&
+       !leSelectModifiedRaster->text().isEmpty())) {
+    pbnGenerateWorldFile->setEnabled(true);
+    pbnGenerateAndLoad->setEnabled(true);
+  }
+  else {
+    pbnGenerateWorldFile->setEnabled(false);
+    pbnGenerateAndLoad->setEnabled(false);
+  }
+}
+
+
+QString QgsPointDialog::guessWorldFileName(const QString& raster) {
+  int point = raster.findRev('.');
+  QString worldfile = "";
+  if (point != -1 && point != raster.length() - 1) {
+    worldfile = raster.left(point + 1);
+    worldfile += raster.at(point + 1);
+    worldfile += raster.at(raster.length() - 1);
+    worldfile += 'w';
+  }
+  return worldfile;
 }
