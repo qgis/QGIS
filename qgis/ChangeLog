@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.84 2004/05/19 06:10:24 gsherman Exp
+ChangeLog,v 1.85 2004/05/19 15:18:38 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-19 [larsl] 0.2.0devel27
+** Implemented getNextFeature(list<int>&) in the GPX provider
 
 2004-05-18 [gsherman] 0.2.0devel26
 ** Saved the qgsappbase.ui and the qgsprojectpropertiesbase.ui files (modified
