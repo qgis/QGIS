@@ -171,7 +171,10 @@ void QgsGrassPlugin::initGui()
     qDebug( "%s:%d Valid GRASS gisBase is: %s", __FILE__, __LINE__, (const char*)gisBase );
 #endif
     QString gisBaseEnv = "GISBASE=" + gisBase;
-    putenv(const_cast<char *>(gisBaseEnv.ascii()));
+    /* _Correct_ putenv() implementation is not making copy! */ 
+    char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
+    strcpy ( gisBaseEnvChar, const_cast<char *>(gisBaseEnv.ascii()) ); 
+    putenv( gisBaseEnvChar );
     settings.writeEntry("/qgis/grass/gisbase", gisBase);
 
     mCanvas = qGisInterface->getMapCanvas();
