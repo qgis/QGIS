@@ -1,3 +1,6 @@
+#ifndef QGISPLUGINTOOLBAR_H
+#define QGISPLUGINTOOLBAR_H
+
 #include <map>
 #include "qgispluginguielement"
 /*! \class QgisPluginToolbar
@@ -18,3 +21,5 @@ private:
 	//! Map to define slot called when a toolbar button is activated
 	std::map<QString toolName, QString toolSlot> toolSlots;
 };
+
+#endif // QGISPLUGINTOOLBAR_H

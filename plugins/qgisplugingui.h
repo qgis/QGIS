@@ -1,3 +1,6 @@
+#ifndef QGISPLUGINGUI_H
+#define QGISPLUGINGUI_H
+
 #include <vector>
 class QgisPluginGuiElement;
 
@@ -22,3 +25,5 @@ public:
 private:
 	std::vector<QgisPluginGuiElement> elements;
 };
+
+#endif // QGISPLUGINGUI_H
