@@ -26,12 +26,13 @@ plugin_LTLIBRARIES = grassplugin.la
 grassplugin_la_SOURCES =  qgsgrassplugin.cpp \
 			      qgsgrassplugin.h \
 			      qgsgrassselect.cpp \
-                              qgsgrassselect.h \
+            qgsgrassselect.h \
 			      ../../providers/grass/qgsgrass.cpp \
 			      ../../providers/grass/qgsgrass.h \
 			      $(plugin_UI)\
-			      $(plugin_MOC)
-
+			      $(plugin_MOC) \
+            ../../src/qgssymbol.cpp
+            
 plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassselectbase.moc.cpp
 
