@@ -56,6 +56,8 @@
 #include <qwmatrix.h>
 #include <qwhatsthis.h>
 #include <qimage.h>
+#include <qprinter.h>
+#include <qpaintdevicemetrics.h> 
 
 #include <iostream>
 #include <iomanip>
@@ -1620,6 +1622,34 @@ void QgisApp::fileSaveAs()
   delete pio;
   projectIsDirty = false;
 }
+
+void QgisApp::filePrint()
+{
+  QPrinter myQPrinter;
+  if(myQPrinter.setup(this))
+  {
+#ifdef QGISDEBUG
+    std::cout << "Printing......" << std::endl;
+#endif
+    // Ithought we could just do this:
+    //mapCanvas->render(&myQPrinter);
+    //but it doesnt work so now we try this....
+    QPaintDeviceMetrics myMetrics( &myQPrinter ); // need width/height of printer surface
+    QPainter myQPainter;
+    myQPainter.begin( &myQPrinter ); 
+    
+    QPixmap myQPixmap(myMetrics.width(),myMetrics.height());
+    myQPixmap.fill();
+    mapCanvas->freeze(false);
+    mapCanvas->setDirty(true);
+    mapCanvas->render(&myQPixmap);
+
+
+    myQPainter.drawPixmap(0,0, myQPixmap);
+    myQPainter.end();
+  }
+}
+
 void QgisApp::saveMapAsImage()
 {
   //create a map to hold the QImageIO names and the filter names
