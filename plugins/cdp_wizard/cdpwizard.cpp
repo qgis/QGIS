@@ -328,6 +328,12 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
     if (thePageNameQString==tr("Progress")) //we do this when we start the calculation
     {
+      run();
+    }
+} //end of formSelected
+
+void CDPWizard::run()
+{
         int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
         QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
         QString myQString;
@@ -414,9 +420,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         //
         climateDataProcessor->run();
         setFinishEnabled( step_6, TRUE );
-
-    }
-}               //end of formSelected
+} //end of run()
 
 void CDPWizard::accept()
 {

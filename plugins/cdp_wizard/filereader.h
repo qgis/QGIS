@@ -252,11 +252,24 @@ public:
    bool moveToHeader();
   /** Move the internal file pointer to the start of the file header. */
    bool moveToDataStart();
-  /** Use the header info for a given file type to determine the begining of the data block and position the
-  *    dataStartOffset there. This method will need to be called explicitly by the client app so that when multiple
-  *   copies of the same file are being opened, we dont need to do the same thing each time.*/
-   QValueVector <QFile::Offset> getBlockMarkers();
+  /**
+  * Use the header info for a given file type to determine the
+  * begining of the data block(s) and position the
+  * dataStartOffset there. This method will need to be called
+  * explicitly by the client app so that when multiple
+  * copies of the same file are being opened, we dont need to
+  * do the same thing each time.
+  * @param forceFlag - Force parsing file for block markers. By default this
+  * is set to false and the file will only be parsed if an accompanying
+  * .bmr file is found.
+  * @return QValueVector <QFile::Offset> - a qvalue vector contining a series of
+  * file offsets (ulongs) which mark the start of each data block.
+  */
+   QValueVector <QFile::Offset> getBlockMarkers(bool forceFlag=false);
 
+  /**
+  *
+  */
   bool setBlockMarkers(QValueVector <QFile::Offset> theBlockMarkers);
   /** Read property of int taskProgressInt. */
   const int gettaskProgressInt();

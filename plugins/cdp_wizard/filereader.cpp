@@ -26,6 +26,7 @@ FileReader::~FileReader()
 
 bool FileReader::openFile(const QString theFileNameQString)
 {
+    filenameString=theFileNameQString;
     filePointer = new QFile ( theFileNameQString );
     if ( !filePointer->open( IO_ReadOnly | IO_Translate) )
     {
@@ -953,29 +954,15 @@ const QFile::Offset FileReader::getDataStartOffset()
 
 bool FileReader::setDataStartOffset( QFile::Offset theNewVal)
 {
-
     try
-
     {
-
         dataStartOffset = theNewVal;
-
-
-
         return true;
-
     }
-
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
 
 /** Move the internal file pointer to the start of the file header. */
@@ -1033,322 +1020,219 @@ bool FileReader::moveToDataStart()
     }
 
     catch (...)
-
     {
-
         return false;
-
     }
-
-
-
 }
 
 
-
-/** Use the header info for a given file type to determine the begining of the data block and position the
-
- *    dataStartOffset there. This method will need to be called explicitly by the client app so that when multiple
-
- *   copies of the same file are being opened, we dont need to do the same thing each time.*/
-
-QValueVector <QFile::Offset> FileReader::getBlockMarkers()
-
+QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
 {
-
     //
-
     // Set up some vars
-
     //
-
-
-
-
-
     QFile::Offset myFileOffset; //store the current position in the file
-
     long myMatrixRowsLong;
-
     long myFileSizeLong;
-
     long myFileOffsetLong;  //where we are in the currently open file
-
     myFileOffsetLong=0;
-
     //clear the vector
-
     dataBlockMarkersVector.clear();
 
+    //
+    //see if we can retrieve the block markers from the .bmr file (if one exists)
+    //
 
+    QString myBmrFileName = filenameString;
+    std::cout << "Setting block markers file to : " << filenameString << std::endl;
+    bool myBmrExistsFlag=false;
+    //replace the extension with .bmr - we assum the extension is last 3 chars
+    myBmrFileName =  myBmrFileName.left(myBmrFileName.length()-3) + QString("bmr");
+    std::cout << "Looking for block markers file : " << myBmrFileName << std::endl;
+    if (QFile::exists(myBmrFileName))
+    {
+      QFile myBmrFile( myBmrFileName );
+      if ( !myBmrFile.open( IO_ReadOnly | IO_Translate) )
+      {
+          std::cerr << "Cannot open file : " << myBmrFileName << std::endl;
+      }
+      else if (forceFlag)
+      {
+          std::cerr << "Bmr file ignored - forceFlag is true " << std::endl;
+      }
+      else
+      {
+#ifdef QGISDEBUG
+        std::cout << "Opened block marker file : " << myBmrFileName << " successfully." << std::endl;
+#endif
+        // now open the text stream on the filereader
+        QTextStream myTextStream(&myBmrFile);
+        while (!myTextStream.eof())
+        {
+          myTextStream >> myFileOffset ;
+          dataBlockMarkersVector.push_back(myFileOffset);
+        }
+        myBmrExistsFlag=true;
+        myBmrFile.close();
+      }
+    }
+    if (myBmrExistsFlag)
+    {
+      //no need to do any further parsing because we were able to
+      // get the cached bmrs from file
+      return dataBlockMarkersVector;
+    }
+
+
+    //
+    // Open the bmr file for writing seeing that it doesnt exists
+    // or the calling fn has asked for forced parsing
+    //
+    std::cout << "Opening block markers file to persist bmr's : " << myBmrFileName << std::endl;
+    QFile myBmrFile( myBmrFileName );
+    QTextStream myOuputTextStream;
+    if ( !myBmrFile.open( IO_WriteOnly ) )
+    {
+        std::cerr << "Cannot open file : " << myBmrFileName << std::endl;
+    }
+    else
+    {
+#ifdef QGISDEBUG
+      std::cout << "Opened block marker file : " << myBmrFileName << " successfully." << std::endl;
+#endif
+      // now open the text stream on the filereader
+      myOuputTextStream.setDevice(&myBmrFile);
+    }
 
     //if the datafile is a an arc/info grid file, there is only one data block
-
     if (fileType==ARCINFO_GRID || fileType==CRES)
-
     {
-
-
-
         for (int i=1; i <= headerLinesInt; i++)
-
         {
-
-
-
             //read a line from the file - this will advance the file pointer
-
             *textStream->readLine();
-
-
-
         }
-
         myFileOffset=filePointer->at();
-
         dataStartOffset=myFileOffset;
-
-        dataBlockMarkersVector.push_back(myFileOffset);       //was *dataStartOffset
-
+        dataBlockMarkersVector.push_back(myFileOffset);
+        myOuputTextStream << myFileOffset;
+        myBmrFile.close();
         return dataBlockMarkersVector;
-
     }
-
 #ifdef QGISDEBUG
-
     printf ("FileReader::getBlockMarkers block xDimLong is %i, block yDimLong is %i.\n",
-
             xDimLong, yDimLong);
-
 #endif
 
-
-
     //
-
     // Start parsing the file
-
     //
 
-
-
 #ifdef QGISDEBUG
-
     std::cout << "FileReader::getBlockMarkers() - moving to the start of the file" << filePointer->name() << std::endl;
-
 #endif
-
     if (!filePointer->exists())
-
     {
-
         return false;
-
     }
-
     //make sure were at the start of the file -> retruns false if we fail to move there
-
     if (!filePointer->at(0))
-
     {
-
         return 0;
-
     }
-
 #ifdef QGISDEBUG
-
     std::cout << "FileReader::getBlockMarkers() - skipping " << headerLinesInt << " file header line(s)" << std::endl;
-
 #endif
-
+    //skip header lines at the top of the file
     for (int i=1; i <= headerLinesInt; i++)
-
     {
-
-        //read an impossibly long line - fgets will stop if it hits a newline
-
-        *textStream->readLine();
-
+         *textStream->readLine();
     }
-
-
-
     //Calculate number of rows in a month (depends on FileType)
-
+    /** @todo Its going to better to avoid using colsPerRow
+    /*  if possible and rather just read in in x * y elements */
     myMatrixRowsLong = ((xDimLong * yDimLong) / columnsPerRowLong);
-
 #ifdef QGISDEBUG
-
     std::cout << "FileReader::getBlockMarkers() - looping through rest of file with month header size of " << monthHeaderLinesInt << " lines and data block size of " << myMatrixRowsLong << " lines." << std::endl;
-
 #endif
-
     //loop through the rest of the file getting the start pos for each datablock
-
     do
-
     {
-
 #ifdef QGISDEBUG
-
-        //std::cout << "FileReader::getBlockMarkers()  getting header block " << std::endl;
-
+        std::cout << "FileReader::getBlockMarkers()  getting header block " << std::endl;
 #endif
-
         //skip the datablock headers
-
         if (monthHeaderLinesInt > 0)
-
         {
-
             for (int i=1; i <= monthHeaderLinesInt; i++)
-
             {
-
                 //read an impossibly long line - fgets will stop if it hits a newline
-
                 *textStream->readLine();
-
 #ifdef QGISDEBUG
-
-                //std::cout << myLineQString;
-
+                std::cout << myLineQString;
 #endif
-
             }
-
         }
-
 #ifdef QGISDEBUG
-
         else
-
         {
-
             std::cout << "no datablock header" << std::endl;
-
         }
-
         //std::cout << "FileReader::getBlockMarkers()  getting data block " << std::endl;
-
 #endif
 
         //so the file pointer is now offset() the start of the datablock - add it to the vector
-
         myFileOffset=filePointer->at();
-
         dataBlockMarkersVector.push_back(myFileOffset);
-
+        //write this marker to our bmr file
+        myOuputTextStream << myFileOffset << "\n";
         //now skip the data objects for this datablock
-
         for (int i=1; i <= myMatrixRowsLong; i++)
-
         {
-
             *textStream->readLine();
-
 #ifdef QGISDEBUG
-
             //std::cout << myLineQString; //print out the first line of each datablock
-
 #endif
-
-
-
         }
-
         //calculate where we are in the file and update the progress member var
-
-
-
         myFileOffsetLong = filePointer->at();
-
-
-
         /* Note we cannot simply divide two longs and expect to get a float!
-
          * as the following excerpt from Spencer Collyer shows:
-
          *
-
          * The problem is that the expression is being evaluated using integer
-
          * arithmetic. This is the way C++ (and C) do their arithmetic if there are
-
          * no floating point values involved. The division 10388820/108262440 in
-
          * integer maths gives you 0, and so the whole expression will return 0.
-
          *
-
          * As it looks like you want a floating point result, you need to force one
-
          * of the numbers to be floating point. If they are actual constants, just
-
          * make one of the numbers in the division sub-expression floating point
-
          * (e.g. 10388820/108262440.0 would work) and the whole expression will be
-
          * evaluated using fp maths.
-
          */
-
-
-
         taskProgressInt = static_cast<int>(( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 );
-
 #ifdef QGISDEBUGNONONO
-
         std::cout << "Task Progress: " << ( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 << std::endl;
-
         std::cout << "Position " << myFileOffsetLong << "/" << myFileSizeLong << " ("
-
         << taskProgressInt << ") : ";
-
         for (int i=1;i<(taskProgressInt/10);i++)
-
         {
-
             std::cout << "*";
-
         }
-
         std::cout << std::endl;
-
 #endif
-
-
-
-
-
     }
     while (!filePointer->atEnd()) ;
-
-
-
-
-
 #ifdef QGISDEBUG
-
     std::cout << "FileReader::getBlockMarkers() - read markers for " << dataBlockMarkersVector.size() << " data block(s)" << std::endl;
-
     std::cout << "FileReader::getBlockMarkers() - moving back to the start of the file" << std::endl;
-
 #endif
-
     filePointer->at(0);
-
 #ifdef QGISDEBUG
-
     std::cout << "FileReader::getBlockMarkers() - finished - returning vector of datablock start positions" << std::endl;
-
 #endif
-
-
-
+    myBmrFile.close();
     return  dataBlockMarkersVector;
-
 }
 
 

@@ -284,26 +284,80 @@ class ClimateDataProcessor {
          *    want to perform this calculation
          *    @see addUserCalculation */
         bool  makeAvailableCalculationsMap();
-        /** Get the list of available calculations */
+        /**
+        * Accessor for the list of available calculations.
+        * @return QMap<QString, bool>  - wherethe string is the name of the calculation and
+        * bool indicates true if the user has asked for the calculation to be carried out,
+        * false if he hasnt.
+        */
         QMap <QString, bool > getAvailableCalculationsMap();
 
-        /**  Add a calculation to the list of those requested to be carried out by the user */
+        /**
+        * Add a calculation to the list of those requested to be carried out by the user.
+        * The available availableCalculationsMap will be searched for a string match, and
+        * if a match is found that map entry will be tagged as true - 'please calculate'
+        * if it is currently false.
+        * @param theCalculationNameString - the name of the calculation to be enabled.
+        * @return bool - Returns false if no matching calculation name is found.
+         */
         bool addUserCalculation(QString theCalculationNameString);
 
-        /** Start the data analysis process. When everything else is set up, this is the method to call! */
+        /**
+        * Start the data analysis process.
+        * When everything else is set up, this is the method to call!
+        * @return bool - A boolean indicating success or failure of the operation.
+        */
         bool run();
 
-        /** get a Description of the ClimateDataProcessor vars. */
+        /**
+        * This is a helper method that will return a Description of the ClimateDataProcessor vars.
+        * This will indicate things like whether the files are in series or not, what calculations
+        * are available in the available calculations map, and whether they are tagged true for
+        * execution or not.
+        * @return QString - containing the summary description for this climatedataprocessor.
+        */
         QString getDescription();
 
-        /** Mutator for bool filesInSeriesFlag. */
-        void setFilesInSeriesFlag( const bool theFlagl);
-        /** Accessor for bool filesInSeriesFlag. */
+        /**
+        * Mutator for bool filesInSeriesFlag.
+        * When files are in series, it means that the file format only contains one months
+        * data block per file and that there should be 12 such files to provide monthly
+        * data for an entire year. The files should be suffixed with the month numer they
+        * represent e.g.
+        * meanTemp01.asc
+        * meanTemp02.asc
+        * meanTemp03.asc
+        * meanTemp04.asc
+        * meanTemp05.asc
+        * meanTemp06.asc
+        * meanTemp07.asc
+        * meanTemp08.asc
+        * meanTemp09.asc
+        * meanTemp10.asc
+        * meanTemp11.asc
+        * meanTemp12.asc
+        * @param theFlag - a flag indicating true if files are in series, otherwise false.
+        * @return void - No return.
+        */
+        void setFilesInSeriesFlag( const bool theFlag);
+        /**
+        * Accessor for bool filesInSeriesFlag.
+        * @see setFilesInSeriesFlag
+        * @return bool - true if files are in series.
+        */
         const bool getFilesInSeriesFlag();
 
-        /** Mutator for QString outputHeaderString. */
+        /**
+        * If the output format requires a header (e.g. Arc/Info ASCII grid, you can
+        * define one using this method.
+        * @param theOutputHeaderString - a QString containing the new header.
+        * @return void - No return.
+        */
         void setOutputHeaderString( const QString& theOutputHeaderString);
-        /** Accessor for QString outputHeaderString. */
+        /**
+        * Accessor for QString outputHeaderString.
+        * @return QString - the currently set file header.
+        */
         const QString getOutputHeaderString();
 
     private:

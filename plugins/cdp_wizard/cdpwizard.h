@@ -233,6 +233,11 @@ public:
     void leWindSpeed_textChanged( const QString & theFileNameString);
 
 
+    /**
+    * Sets up the climateDataProcessor and calls its run method.
+    * @return void - No return.
+    */
+    void run();
 
 private:
     /**

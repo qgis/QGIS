@@ -24,8 +24,6 @@ email                : t.sutton@reading.ac.uk
 #include <qtextstream.h>
 #include <qmessagebox.h>
 
-
-
 ClimateDataProcessor::ClimateDataProcessor()
 {
     std::cout << "Climate Data Processor constructor called." << std::endl;
@@ -49,39 +47,21 @@ ClimateDataProcessor::ClimateDataProcessor()
 
 
 }
-/*
-ClimateDataProcessor::ClimateDataProcessor(
-        int theFileStartYear,
-        int theJobStartYear,
-        int theJobEndYear,
-        QString theInputFileTypeString,
-        QString theOutputFileTypeString)
-{
-
-  std::cout << "Climate Data Processor constructoror (with initial values) called." << std::endl;
-
-}
-*/
 
 /** Destructor */
 ClimateDataProcessor::~ClimateDataProcessor()
 {}
 
 
-/** Read property of QString outputHeaderString. */
 const QString ClimateDataProcessor::getOutputHeaderString()
 {
     return outputHeaderString;
 }
-/** Write property of QString outputHeaderString. */
+
 void ClimateDataProcessor::setOutputHeaderString( const QString& theOutputHeaderString)
 {
     outputHeaderString = theOutputHeaderString;
 }
-
-/**This is a private method. It is asimple method to populate the
- * fileTypeMap attribute - this will usually be called by the
- * constructor(s). All keys (file type strings) will be  stored in upper case.*/
 
 bool ClimateDataProcessor::makeInputFileTypeMap()
 {
@@ -204,10 +184,6 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
     return true;
 }
 
-/**This is a private method. It is a simple method to populate the
- * outputFileTypeMap attribute - this will usually be called by the
- * constructor(s). All keys (file type strings) will be  stored in upper case.*/
-
 bool ClimateDataProcessor::makeOutputFileTypeMap()
 {
     QString myString;
@@ -264,117 +240,108 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
     return true;
 }
 
-
-
-
-
-/** Read property of FileNameString  meanTempFileNameString. */
 const QString  ClimateDataProcessor::getMeanTempFileName()
 {
     return meanTempFileNameString;
 }
-/** Write property of FileNameString  meanTempFileNameString. */
+
 void ClimateDataProcessor::setMeanTempFileName( QString theFileNameString)
 {
     meanTempFileNameString = theFileNameString;
     std::cout << "meanTempFileNameString set to : " << meanTempFileNameString << std::endl;
 }
-/** Read property of FileNameString  minTempFileNameString. */
+
 const QString  ClimateDataProcessor::getMinTempFileName()
 {
     return minTempFileNameString;
 }
-/** Write property of FileNameString  minTempFileNameString. */
+
 void ClimateDataProcessor::setMinTempFileName( QString theFileNameString)
 {
     minTempFileNameString = theFileNameString;
     std::cout << "minTempFileNameString set to : " << minTempFileNameString << std::endl;
 }
-/** Read property of FileNameString  maxTempFileNameString. */
+
 const QString  ClimateDataProcessor::getMaxTempFileName()
 {
     return maxTempFileNameString;
 }
-/** Write property of FileNameString  maxTempFileNameString. */
+
 void ClimateDataProcessor::setMaxTempFileName( QString theFileNameString)
 {
     maxTempFileNameString = theFileNameString;
     std::cout << "maxTempFileNameString set to : " << maxTempFileNameString << std::endl;
 }
-/** Read property of FileNameString  diurnalTempFileNameString. */
+
 const QString  ClimateDataProcessor::getDiurnalTempFileName()
 {
     return diurnalTempFileNameString;
 }
-/** Write property of FileNameString  diurnalTempFileNameString. */
+
 void ClimateDataProcessor::setDiurnalTempFileName( QString theFileNameString)
 {
     diurnalTempFileNameString = theFileNameString;
     std::cout << "diurnalTempFileNameString set to : " << diurnalTempFileNameString << std::endl;
 }
-/** Read property of FileNameString  meanPrecipFileNameString. */
+
 const QString  ClimateDataProcessor::getMeanPrecipFileName()
 {
     return meanPrecipFileNameString;
 }
-/** Write property of FileNameString  meanPrecipFileNameString. */
+
 void ClimateDataProcessor::setMeanPrecipFileName( QString theFileNameString)
 {
     meanPrecipFileNameString = theFileNameString;
     std::cout << "meanPrecipFileNameString set to : " << meanPrecipFileNameString << std::endl;
 }
-/** Read property of FileNameString  frostDaysFileNameString. */
+
 const QString  ClimateDataProcessor::getFrostDaysFileName()
 {
 
     std::cout << "frostDaysFileNameString set to : " << frostDaysFileNameString << std::endl;
     return frostDaysFileNameString;
 }
-/** Write property of FileNameString  frostDaysFileNameString. */
+
 void ClimateDataProcessor::setFrostDaysFileName( QString theFileNameString)
 {
     frostDaysFileNameString = theFileNameString;
     std::cout << "frostDaysFileNameString set to : " << frostDaysFileNameString << std::endl;
 }
-/** Read property of FileNameString  totalSolarRadFileNameString. */
+
 const QString  ClimateDataProcessor::getTotalSolarRadFileName()
 {
     return totalSolarRadFileNameString;
 }
-/** Write property of FileNameString  totalSolarRadFileNameString. */
+
 void ClimateDataProcessor::setTotalSolarRadFileName( QString theFileNameString)
 {
     totalSolarRadFileNameString = theFileNameString;
 
     std::cout << "totalSolarRadFileNameString set to : " << totalSolarRadFileNameString << std::endl;
 }
-/** Read property of FileNameString  windSpeedFileNameString. */
+
 const QString  ClimateDataProcessor::getWindSpeedFileName()
 {
     return windSpeedFileNameString;
 }
-/** Write property of FileNameString  windSpeedFileNameString. */
+
 void ClimateDataProcessor::setWindSpeedFileName( QString theFileNameString)
 {
     windSpeedFileNameString = theFileNameString;
     std::cout << "windSpeedFileNameString set to : " << windSpeedFileNameString << std::endl;
 }
-/** Read property of QString  outputFilePathString. */
+
 const QString  ClimateDataProcessor::getOutputFilePathString()
 {
     return outputFilePathString;
 }
-/** Write property of QString  outputFilePathString. */
+
 void ClimateDataProcessor::setOutputFilePathString( QString theFilePathString)
 {
     outputFilePathString = theFilePathString;
     std::cout << "outputFilePathString set to : " << outputFilePathString << std::endl;
 }
 
-/**  Set up the filegroups for each FileName that has been registered
- *    @param theStartYearInt Base 1 value used when processing data in series to shift the
- *           internal file pointer to the correct year. Default is 1.
- */
 bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
 {
 
@@ -474,20 +441,6 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     {
         windSpeedFileGroup = initialiseFileGroup(windSpeedFileNameString,theStartYearInt);
     }
-
-
-
-    /* // this is just for debugging purposes
-       QValueVector <float> myVector = meanTempFileGroup->getElementVector();
-       for (int i=0;i < myVector.size(); i++)
-       {
-       std::cout << myVector[i] << ",";
-       }
-       std::cout << std::endl;
-
-    */
-    //presume all went ok - need to add better error checking later
-
     return true;
 }
 /*   Construct a filegroup given a base file name.
@@ -1018,7 +971,6 @@ QMap <QString, bool > ClimateDataProcessor::getAvailableCalculationsMap()
 
 }
 
-/**  Add a calculation to the list of those requested to be carried out by the user */
 bool ClimateDataProcessor::addUserCalculation(QString theCalculationNameString)
 {
     QMap<QString, bool>::iterator myMapIterator = availableCalculationsMap.begin();
