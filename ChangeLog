@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.133 2004/06/14 22:37:36 larsl Exp
+ChangeLog,v 1.134 2004/06/15 23:17:59 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-16 [larsl] 0.3.0devel38
+** Added new menu / toolbar option to add all loaded layers into the overview.
 
 2004-06-15 [larsl] 0.3.0devel37
 ** More preparation for GPS upload code
