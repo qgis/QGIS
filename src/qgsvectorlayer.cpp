@@ -84,18 +84,26 @@ const char *cOgrLib = (const char *)ogrlib;
 #endif
 // load the data provider
 	QLibrary *myLib = new QLibrary((const char *)ogrlib);
+  #ifdef DEBUG
 	std::cout << "Library name is " << myLib->library() << std::endl;
+  #endif
 	bool loaded = myLib->load();
 	if (loaded) {
-		std::cout << "Loaded data provider library" << std::endl;
-		std::cout << "Attempting to resolve the classFactory function" << std::endl;
+		#ifdef DEBUG
+    std::cout << "Loaded data provider library" << std::endl;
+    std::cout << "Attempting to resolve the classFactory function" << std::endl;
+    #endif
 		create_it *cf = (create_it *) myLib->resolve("classFactory");
     valid = false; // assume the layer is invalid until we determine otherwise
 		if (cf) {
-			std::cout << "Getting pointer to a dataProvider object from the library\n";
+			#ifdef DEBUG
+      std::cout << "Getting pointer to a dataProvider object from the library\n";
+      #endif
 			dataProvider = cf(vectorLayerPath);
 			if (dataProvider) {
-				std::cout << "Instantiated the data provider plugin\n";
+				#ifdef DEBUG
+        std::cout << "Instantiated the data provider plugin\n";
+        #endif
          
 				if(dataProvider->isValid()){
           valid = true;
@@ -103,7 +111,9 @@ const char *cOgrLib = (const char *)ogrlib;
 				QgsRect *mbr = dataProvider->extent();
         // show the extent
 				QString s = mbr->stringRep();
-				std::cout << "Extent of layer: " << s << std::endl;
+				#ifdef DEBUG
+        std::cout << "Extent of layer: " << s << std::endl;
+        #endif
 				// store the extent
 				layerExtent.setXmax(mbr->xMax());
 				layerExtent.setXmin(mbr->xMin());
@@ -126,13 +136,17 @@ const char *cOgrLib = (const char *)ogrlib;
          setLayerName(layerTitle);
          }
 			} else {
-				std::cout << "Unable to instantiate the data provider plugin\n";
+				#ifdef DEBUG
+        std::cout << "Unable to instantiate the data provider plugin\n";
+        #endif
         valid = false;
 			}
 		}
 	} else {
     valid = false;
-		std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
+		#ifdef DEBUG
+    std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
+    #endif
 	}
 	//TODO - fix selection code that formerly used
   //       a boolean vector and set every entry to false
@@ -184,7 +198,9 @@ void QgsVectorLayer::setDisplayField(){
    for(int j=0; j< fields.size(); j++){
      
 			QString fldName = fields[j].getName();
-					std::cout << "Checking field " << fldName << std::endl;
+			#ifdef DEBUG		
+      std::cout << "Checking field " << fldName << std::endl;
+      #endif
 					if (fldName.find("name", false) > -1) {
 						idxName = fldName;
 						break;
@@ -274,10 +290,10 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 		while ((fet = dataProvider->getNextFeature(attributesneeded))) {//true is necessary for graduated symbol
 
 			if (fet == 0) {
-				std::cout << "get next feature returned null\n";
+				#ifdef DEBUG
+        std::cout << "get next feature returned null\n";
+        #endif
 			} else {
-			//	std::cout << "get next feature returned valid feature\n";
-
 				//if feature is selected, change the color of the painter
 				//TODO fix this selection code to work with the provider
 				//if ((*selected)[(fet->featureId())] == true)
@@ -439,7 +455,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 				      break;
 
             default:
-              std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+            #ifdef DEBUG  
+            std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+            #endif
               break;
 				}
 				delete[] feature;
@@ -499,7 +517,9 @@ void QgsVectorLayer::identify(QgsRect * r)
         featureNode->setText(0, fieldIndex);
         std::vector<QgsFeatureAttribute> attr = fet->attributeMap();
         for(int i=0; i < attr.size(); i++){
+          #ifdef DEBUG
           std::cout << attr[i].fieldName()<< " == " << fieldIndex << std::endl;
+          #endif
           if(attr[i].fieldName().lower() == fieldIndex){
             featureNode->setText(1, attr[i].fieldValue());
           }
@@ -508,7 +528,9 @@ void QgsVectorLayer::identify(QgsRect * r)
        
 			}
 
-		std::cout << "Feature count on identify: " << featureCount << std::endl;
+		#ifdef DEBUG
+      std::cout << "Feature count on identify: " << featureCount << std::endl;
+      #endif
 		if (ir) {
 			ir->setTitle(name());
 			ir->show();
@@ -960,7 +982,9 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
 		    break;
 
 		    default:
-			std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+			#ifdef DEBUG
+        std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
+        #endif
 			break;
 		    
 	    }

@@ -9,7 +9,7 @@ libpostgresprovider_la_SOURCES = qgspostgresprovider.cpp \
                        ../../src/qgspoint.cpp \
                        ../../src/qgsfield.cpp       
                        
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) -I../include $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 
 libpostgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) 
 endif

@@ -278,7 +278,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   plib += "/lib";
   providerRegistry = QgsProviderRegistry::instance(plib);
   // set the provider plugin path 
+  #ifdef DEBUG
   std::cout << "Setting plugin lib dir to " << plib << std::endl;
+  #endif
   // connect the "cleanup" slot
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
@@ -287,7 +289,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mySplash->finish( this );
   delete mySplash;
   
+  #ifdef DEBUG
   std::cout << "Plugins are installed in " << plib << std::endl;
+  #endif
   // set the dirty flag to false -- no changes yet
   projectIsDirty = false;
 }
@@ -905,7 +909,9 @@ void QgisApp::newLayerProperties()
 }
 void QgisApp::newLayerProperties(QListViewItem *lvi)
 {
+  #ifdef DEBUG
   std::cout << "Showing new layer properties dialog" << std::endl;
+  #endif
   QgsMapLayer *lyr;
    lyr = ((QgsLegendItem *)lvi)->layer();
    QgsVectorLayer *vectorLayer = (QgsVectorLayer*)lyr;
@@ -1062,11 +1068,15 @@ void QgisApp::actionPluginManager_activated(){
 }
 void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
 	QLibrary *myLib = new QLibrary(fullPath);
-		std::cout << "Library name is " << myLib->library() << std::endl;
+	#ifdef DEBUG	
+  std::cout << "Library name is " << myLib->library() << std::endl;
+  #endif
 		bool loaded = myLib->load();
 		if (loaded) {
-			std::cout << "Loaded test plugin library" << std::endl;
-			std::cout << "Attempting to resolve the classFactory function" << std::endl;
+			#ifdef DEBUG
+      std::cout << "Loaded test plugin library" << std::endl;
+      std::cout << "Attempting to resolve the classFactory function" << std::endl;
+      #endif
 			
       type_t *pType = (type_t *) myLib->resolve("type");
       
@@ -1085,7 +1095,9 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
                 QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
               }
             }else{
+              #ifdef DEBUG
               std::cout << "Unable to find the class factory for " << fullPath << std::endl;
+              #endif
             }
           }
           break;
@@ -1104,13 +1116,17 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
                 QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
               }
             }else{
+              #ifdef DEBUG
               std::cout << "Unable to find the class factory for " << fullPath << std::endl;
+              #endif
             }
           }
           break;
           default:
           // type is unknown
-            std::cout << "Plugin " << fullPath << " did not return a valid type and cannot be loaded" << std::endl;
+          #ifdef DEBUG  
+          std::cout << "Plugin " << fullPath << " did not return a valid type and cannot be loaded" << std::endl;
+          #endif
             break;
         }
        
@@ -1119,7 +1135,9 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
 				} */
 			
 		}else{
-			std::cout << "Failed to load " << fullPath << "\n";
+			#ifdef DEBUG
+      std::cout << "Failed to load " << fullPath << "\n";
+      #endif
 		}
 }
 void QgisApp::testMapLayerPlugins(){
@@ -1129,40 +1147,60 @@ void QgisApp::testMapLayerPlugins(){
 		QMessageBox::information(this,tr("No MapLayer Plugins"), tr("No MapLayer plugins in ../plugins/maplayer"));
 	}else{
 		for(unsigned i = 0; i < mlpDir.count(); i++){
-		std::cout << "Getting information for plugin: " << mlpDir[i] << std::endl;
-		std::cout << "Attempting to load the plugin using dlopen\n";
+		#ifdef DEBUG
+      std::cout << "Getting information for plugin: " << mlpDir[i] << std::endl;
+      std::cout << "Attempting to load the plugin using dlopen\n";
+      #endif
 		void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
 	             if (!handle) {
-			std::cout << "Error in dlopen: " <<  dlerror() << std::endl;
+			#ifdef DEBUG
+                 std::cout << "Error in dlopen: " <<  dlerror() << std::endl;
+      #endif
 		     }else{
-			std::cout << "dlopen suceeded" << std::endl;
+			#ifdef DEBUG
+           std::cout << "dlopen suceeded" << std::endl;
+      #endif
 			dlclose(handle);
 		     }
 		
 		QLibrary *myLib = new QLibrary("../plugins/maplayer/" + mlpDir[i]);
-		std::cout << "Library name is " << myLib->library() << std::endl;
+		#ifdef DEBUG
+    std::cout << "Library name is " << myLib->library() << std::endl;
+    #endif
 		bool loaded = myLib->load();
 		if (loaded) {
-			std::cout << "Loaded test plugin library" << std::endl;
-			std::cout << "Attempting to resolve the classFactory function" << std::endl;
+			#ifdef DEBUG
+      std::cout << "Loaded test plugin library" << std::endl;
+      std::cout << "Attempting to resolve the classFactory function" << std::endl;
+      #endif
 			create_it *cf = (create_it *) myLib->resolve("classFactory");
 	
 			if (cf) {
-				std::cout << "Getting pointer to a MapLayerInterface object from the library\n";
+				#ifdef DEBUG
+        std::cout << "Getting pointer to a MapLayerInterface object from the library\n";
+        #endif
 				QgsMapLayerInterface *pl = cf();
 				if(pl){
-					std::cout << "Instantiated the maplayer test plugin\n";
+					#ifdef DEBUG
+          std::cout << "Instantiated the maplayer test plugin\n";
+          #endif
 					// set the main window pointer for the plugin
 					pl->setQgisMainWindow(this);
-					std::cout << "getInt returned " << pl->getInt() << " from map layer plugin\n";
+					#ifdef DEBUG
+          std::cout << "getInt returned " << pl->getInt() << " from map layer plugin\n";
+          #endif
 					// set up the gui
 					pl->initGui();
 				}else{
-					std::cout << "Unable to instantiate the maplayer test plugin\n";
+					#ifdef DEBUG
+          std::cout << "Unable to instantiate the maplayer test plugin\n";
+          #endif
 				}
 			}
 		}else{
-			std::cout << "Failed to load " << mlpDir[i] << "\n";
+			#ifdef DEBUG
+      std::cout << "Failed to load " << mlpDir[i] << "\n";
+      #endif
 		}
 	}
 }
@@ -1182,11 +1220,17 @@ void QgisApp::testPluginFunctions()
 	}else{
 		
 		for(unsigned i = 0; i < pluginDir.count(); i++){
-		std::cout << "Getting information for plugin: " << pluginDir[i] << std::endl;
+		#ifdef DEBUG
+      std::cout << "Getting information for plugin: " << pluginDir[i] << std::endl;
+      #endif
 		QLibrary *myLib = new QLibrary("../plugins/" + pluginDir[i]);//"/home/gsherman/development/qgis/plugins/" + pluginDir[i]);
-		std::cout << "Library name is " << myLib->library() << std::endl;
+		#ifdef DEBUG
+    std::cout << "Library name is " << myLib->library() << std::endl;
+    #endif
 		//QLibrary myLib("../plugins/" + pluginDir[i]);
-		std::cout << "Attempting to load " << + "../plugins/" + pluginDir[i] << std::endl;
+		#ifdef DEBUG
+    std::cout << "Attempting to load " << + "../plugins/" + pluginDir[i] << std::endl;
+    #endif
 	/*	void *handle = dlopen("/home/gsherman/development/qgis/plugins/" + pluginDir[i], RTLD_LAZY);
 	             if (!handle) {
                       std::cout << "Error in dlopen: " <<  dlerror() << std::endl;
@@ -1199,26 +1243,36 @@ void QgisApp::testPluginFunctions()
 */
 		bool loaded = myLib->load();
 		if (loaded) {
-			std::cout << "Loaded test plugin library" << std::endl;
-			std::cout << "Getting the name of the plugin" << std::endl;
+			#ifdef DEBUG
+      std::cout << "Loaded test plugin library" << std::endl;
+      std::cout << "Getting the name of the plugin" << std::endl;
+      #endif
 			name_t *pName = (name_t *) myLib->resolve("name");
 			if(pName){
         QMessageBox::information(this,tr("Name"), tr("Plugin %1 is named %2").arg(pluginDir[i]).arg(pName()));
 			}
-			std::cout << "Attempting to resolve the classFactory function" << std::endl;
+			#ifdef DEBUG
+      std::cout << "Attempting to resolve the classFactory function" << std::endl;
+      #endif
 			create_t *cf = (create_t *) myLib->resolve("classFactory");
 	
 			if (cf) {
-				std::cout << "Getting pointer to a QgisPlugin object from the library\n";
+				#ifdef DEBUG
+        std::cout << "Getting pointer to a QgisPlugin object from the library\n";
+        #endif
 				QgisPlugin *pl = cf(this, qgisInterface);
-				std::cout << "Displaying name, version, and description\n";
+				#ifdef DEBUG
+        std::cout << "Displaying name, version, and description\n";
 				std::cout << "Plugin name: " << pl->name() << std::endl;
 				std::cout << "Plugin version: " << pl->version() << std::endl;
-				std::cout << "Plugin description: " << pl->description() << std::endl;
+        std::cout << "Plugin description: " << pl->description() << std::endl;
+        #endif
 				QMessageBox::information(this, tr("Plugin Information"), tr("QGis loaded the following plugin:") + 
           tr("Name: %1").arg(pl->name())  + "\n" +tr("Version: %1").arg(pl->version()) + "\n" + tr("Description: %1").arg(pl->description()));
 				// unload the plugin (delete it)
-				std::cout << "Attempting to resolve the unload function" << std::endl;
+				#ifdef DEBUG
+        std::cout << "Attempting to resolve the unload function" << std::endl;
+        #endif
 				/*
 				unload_t *ul = (unload_t *) myLib.resolve("unload");
 				if (ul) {
@@ -1232,7 +1286,9 @@ void QgisApp::testPluginFunctions()
 		} else {
 			QMessageBox::warning(this, tr("Unable to Load Plugin"),
 								 tr("QGIS was unable to load the plugin from: %1").arg(pluginDir[i]));
-			std::cout << "Unable to load library" << std::endl;
+			#ifdef DEBUG
+                 std::cout << "Unable to load library" << std::endl;
+       #endif
 		}
 		}
 	}
