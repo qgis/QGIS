@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.12 2003/12/26 15:56:30 stevehalasz Exp */
+/* qgsprojectio.cpp,v 1.13 2004/01/13 15:15:31 timlinux Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -21,6 +21,7 @@
  #include <qmessagebox.h>
  #include <qcolor.h>
  #include "qgsmaplayer.h"
+ #include "qvariant.h"
  #ifdef POSTGRESQL
  #include "qgsdatabaselayer.h"
  #endif
@@ -176,10 +177,51 @@ bool QgsProjectIo::read(){
 				shpl->setSymbol(sym);
 				shpl->setVisible(visible == "1");
 			} else if ( type == "raster" ) {
-				QgsRasterLayer *rastl = new QgsRasterLayer(dataSource, layerName);
+				QgsRasterLayer *myRasterLayer = new QgsRasterLayer(dataSource, layerName);
 				
-				map->addLayer(rastl);
-				rastl->setVisible(visible == "1");
+				map->addLayer(myRasterLayer);
+                                
+				myRasterLayer->setVisible(visible == "1");
+                                
+				mnl = node.namedItem("rasterproperties"); 
+                                
+				QDomNode snode = mnl.namedItem("showDebugOverlayFlag");
+				QDomElement myElement = snode.toElement();
+                                QVariant myQVariant = (QVariant) myElement.attribute("boolean");
+				myRasterLayer->setShowDebugOverlayFlag(myQVariant.toBool());
+
+				snode = mnl.namedItem("showGrayAsColorFlag");
+				myElement = snode.toElement();
+                                myQVariant = (QVariant) myElement.attribute("boolean");
+				myRasterLayer->setShowGrayAsColorFlag(myQVariant.toBool());				
+				snode = mnl.namedItem("invertHistogramFlag");
+				myElement = snode.toElement();
+                                myQVariant = (QVariant) myElement.attribute("boolean");
+				myRasterLayer->setInvertHistogramFlag(myQVariant.toBool());
+
+				snode = mnl.namedItem("stdDevsToPlotDouble");
+				myElement = snode.toElement();
+				myRasterLayer->setStdDevsToPlot(myElement.text().toDouble());                                                         
+
+				snode = mnl.namedItem("transparencyLevelInt");
+				myElement = snode.toElement();
+				myRasterLayer->slot_setTransparency(myElement.text().toInt());  
+
+				snode = mnl.namedItem("redBandNameQString");
+				myElement = snode.toElement();
+				myRasterLayer->setRedBandName(myElement.text());                                                                         				
+				snode = mnl.namedItem("greenBandNameQString");
+				myElement = snode.toElement();
+				myRasterLayer->setGreenBandName(myElement.text()); 
+                                
+				snode = mnl.namedItem("blueBandNameQString");
+				myElement = snode.toElement();
+				myRasterLayer->setBlueBandName(myElement.text());               
+
+				snode = mnl.namedItem("grayBandNameQString");
+				myElement = snode.toElement();
+				myRasterLayer->setGrayBandName(myElement.text());                                                                                   			
+                                
 			}
 			map->setExtent(savedExtent);
 		}
@@ -204,12 +246,17 @@ switch(action){
 	}
 	return fullPath;
 }
+
 void QgsProjectIo::setFileName(QString fn){
 	fullPath = fn;
 	}
+        
 QString QgsProjectIo::fullPathName(){
 	return fullPath;
 	}
+        
+        
+        
 void QgsProjectIo::writeXML(){
 	std::ofstream xml(fullPath);
 	if(!xml.fail()){
@@ -278,6 +325,55 @@ void QgsProjectIo::writeXML(){
 				
 				xml << "\t\t</symbol>\n";
 			}
+                        else //raster layer properties
+                        {
+                          //cast the maplayer to rasterlayer
+                          QgsRasterLayer *myRasterLayer = (QgsRasterLayer *) lyr;
+                          //Raster flag to indicate whether debug infor overlay should be rendered onto the raster
+                          xml << "\t\t<rasterproperties>\n";
+                            xml << "\t\t\t<showDebugOverlayFlag boolean=\"" ;
+                            if (myRasterLayer->getShowDebugOverlayFlag())
+                            {
+                              xml << "true\"/>\n";
+                            }
+                            else
+                            {
+                              xml << "true\"/>\n";
+                            }                           
+                            // Raster flag indicating whether grayscale images should be rendered as pseudocolor
+                            xml << "\t\t\t<showGrayAsColorFlag boolean=\"" ;
+                            if (myRasterLayer->getShowGrayAsColorFlag())
+                            {
+                              xml << "true\"/>\n";
+                            }
+                            else
+                            {
+                              xml << "true\"/>\n";
+                            }                             
+                            //Raster : flag indicating whether the histogram should be inverted or not 
+                            xml << "\t\t\t<invertHistogramFlag boolean=\"" ;
+                            if (myRasterLayer->getInvertHistogramFlag())
+                            {
+                              xml << "true\"/>\n";
+                            }
+                            else
+                            {
+                              xml << "true\"/>\n";
+                            }                              
+                            //Raster : Number of stddev to plot (0) to ignore -->
+                            xml << "\t\t\t<stdDevsToPlotDouble>" << myRasterLayer->getStdDevsToPlot() << "</stdDevsToPlotDouble>\n" ;
+                            //Raster transparency for this layer should be 0-255 -->
+                            xml << "\t\t\t<transparencyLevelInt>" << myRasterLayer->getTransparency() << "</transparencyLevelInt>\n" ;     
+                            //Raster : the band to be associated with the color red - usually red -->
+                            xml << "\t\t\t<redBandNameQString>" << myRasterLayer->getRedBandName() << "</redBandNameQString>\n" ;                             
+                            //Raster : the band to be associated with the color green - usually green -->
+                            xml << "\t\t\t<greenBandNameQString>" << myRasterLayer->getGreenBandName() << "</greenBandNameQString>\n" ; 
+                            //Raster : the band to be associated with the color blue - usually blue -->
+                            xml << "\t\t\t<blueBandNameQString>" << myRasterLayer->getBlueBandName() << "</blueBandNameQString>\n" ; 
+                            //Raster :  the band to be associated with the grayscale only ouput - usually gray  -->
+                            xml << "\t\t\t<grayBandNameQString>" << myRasterLayer->getGrayBandName() << "</grayBandNameQString>\n" ; 
+                          xml << "\t\t</rasterproperties>\n";                          
+                        }
 			xml << "\t</maplayer>\n";
 		}
 		xml << "</projectlayers>\n";
