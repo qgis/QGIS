@@ -1082,3 +1082,11 @@ QgsProject::properties( QString const & scope )
 {
     return imp_->properties_[scope];
 } // QgsProject::properties
+
+
+
+void
+QgsProject::clearProperties()
+{
+    imp_->properties_.clear();
+} // QgsProject::clearProperties()

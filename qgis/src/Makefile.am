@@ -357,6 +357,7 @@ libqgis_la_SOURCES =				\
 		qgsuniquevalrenderer.cpp	\
 		qgsuvalmarenderer.cpp		\
 		qgsvectorfilewriter.cpp		\
+		qgsvectordataprovider.cpp	\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayer.moc.cpp 
 
