@@ -155,7 +155,8 @@ void QgsPgGeoprocessing::buffer()
             user = user.mid(user.find("=") + 1);
 
             // show dialog to fetch buffer distrance, new layer name, and option to
-            QgsDlgPgBuffer *bb = new QgsDlgPgBuffer();
+            QgsDlgPgBuffer *bb = new QgsDlgPgBuffer(qI);
+            
             // set the label
             QString lbl = tr("Buffer features in layer %1").arg(tableName);
             bb->setBufferLabel(lbl);
@@ -416,7 +417,6 @@ void QgsPgGeoprocessing::unload()
     menu->removeItem(menuId);
     delete toolBar;
 }
-
 /** 
 * Required extern functions needed  for every plugin 
 * These functions can be called prior to creating an instance

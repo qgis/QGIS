@@ -21,11 +21,12 @@
 #ifndef QGSDLGPGBUFFER_H
 #define QGSDLGPGBUFFER_H
 #include "qgsdlgpgbufferbase.h"
+class QgisIface;
 class QgsDlgPgBuffer:public QgsDlgPgBufferBase
 {
   Q_OBJECT public:
   //! Constructor
-    QgsDlgPgBuffer(QWidget * parent = 0, const char *name = 0);
+    QgsDlgPgBuffer( QgisIface * _qI = 0, QWidget * parent = 0, const char *name = 0);
     //! Destructor
     QgsDlgPgBuffer::~QgsDlgPgBuffer();
     //! Set the information label in the dialog
@@ -54,5 +55,10 @@ class QgsDlgPgBuffer:public QgsDlgPgBufferBase
     void setBufferLayerName(QString name);
     //! Set the geometry column on the dialog
     void setGeometryColumn(QString name);
+    public slots:
+    void help();
+    private:
+      //! Pointer to the QGIS interface object
+    QgisIface *qI;
 };
 #endif // QGSDLGPGBUFFER_H
