@@ -312,7 +312,10 @@ void QgsMapCanvas::render()
   paint->end();
   */
 }
-
+void QgsMapCanvas::saveAsImage(QString theFileName)
+{
+  pmCanvas->save(theFileName,"PNG");
+}
 void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 {
   if (!dirty)

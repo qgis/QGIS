@@ -105,8 +105,10 @@ class QgsMapCanvas:public QWidget
     friend class QgsLegend;
     public slots:
         /**Sets dirty=true and calls render2()*/
-  void refresh();
+   void refresh();
 	void render2();
+    //! Save the convtents of the map canvas to disk as an image
+    void saveAsImage(QString theFileName);
 	//! This slot is connected to the visibility change of one or more layers
 	void layerStateChange();
 	//! sets z order based on order of layers in the legend
