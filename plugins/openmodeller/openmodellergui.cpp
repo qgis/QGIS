@@ -47,6 +47,8 @@
 #include <stdio.h>
 #include <iostream>
 
+
+
 OpenModellerGui::OpenModellerGui()
  : OpenModellerGuiBase()
 {
@@ -292,6 +294,9 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
     QMessageBox::warning( this,"openModeller Wizard Error","Error reading request file!");
     return;
   }
+  
+  //tell oM to use our locally made callback fn
+  myOpenModeller.setMapCallback( mapCallback );
 
   if ( ! myOpenModeller.run() )
   {
@@ -857,4 +862,8 @@ bool OpenModellerGui::checkLocalitiesFileFormat(const QString)
 
 }
 
+void OpenModellerGui::mapCallback( float progress, void *extra_param )
+{
+  std::cout << "Map creation progress : " << ( 100 * progress ) << std::endl;
+}
 
