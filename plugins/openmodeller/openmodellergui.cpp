@@ -91,9 +91,6 @@ OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool moda
   //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
 
-  cboInputMaskLayer->setDuplicatesEnabled(false);
-  cboOutputMaskLayer->setDuplicatesEnabled(false);
-  cboOutputFormatLayer->setDuplicatesEnabled(false);
 }
 
  
@@ -261,7 +258,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             //add label and control to form
             mLayout->addWidget(myLabel, i, 0);
             mLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Expanding),i,1);
-	    mLayout->addWidget(mySpinBox, i, 2);
+	        mLayout->addWidget(mySpinBox, i, 2);
             //mLayout->setRowSpacing(i,30);
 	    
 	    
@@ -449,9 +446,9 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
         if (myProjFileNameQString!=myProjLastFileNameQString)
         {
           lstProjLayers->insertItem(myProjFileNameQString);
-	  //also add the layer to the mask combo
+	      //also add the layer to the mask combo
           cboOutputMaskLayer->insertItem(myProjFileNameQString);
-	  cboOutputFormatLayer->insertItem(myProjFileNameQString);
+     	  cboOutputFormatLayer->insertItem(myProjFileNameQString);
         }
         myProjLastFileNameQString=*myProjIterator;
         ++myProjIterator;
@@ -478,20 +475,70 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     QString myInputMask = settings.readEntry("/openmodeller/inputMaskFile");
     QString myOutputMask = settings.readEntry("/openmodeller/outputMaskFile");
     QString myOutputFormat = settings.readEntry("/openmodeller/outputFormatFile");
-    if (!myInputMask.isEmpty())
+    bool  myFlag = false;
+	int i=0;
+	if (!myInputMask.isEmpty())
     {
-      cboInputMaskLayer->insertItem(myInputMask);
-      cboInputMaskLayer->setCurrentText(myInputMask);
+	  //loop through combo entries and check there is not already one for
+	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
+	  //editable combo boxes
+	  for (i=0; i < cboInputMaskLayer->count(); i++)
+	  {
+        cboInputMaskLayer->setCurrentItem(i);
+		
+		if (cboInputMaskLayer->currentText().compare(myInputMask))
+		{
+			myFlag=true;
+			break;
+		}
+	  }
+	  if (!myFlag)
+	  {
+        cboInputMaskLayer->insertItem(myInputMask);
+        cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
+	  }
     }
     if (!myOutputMask.isEmpty())
     {
-      cboOutputMaskLayer->insertItem(myOutputMask);
-      cboOutputMaskLayer->setCurrentText(myOutputMask);
+	  //loop through combo entries and check there is not already one for
+	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
+	  //editable combo boxes
+	  myFlag = false;
+	  for (i=0; i < cboInputMaskLayer->count(); i++)
+	  {
+        cboOutputMaskLayer->setCurrentItem(i);
+		if (cboOutputMaskLayer->currentText().compare(myOutputMask))
+		{
+			myFlag=true;
+			break;
+		}
+	  }
+	  if (!myFlag)
+	  {
+        cboOutputMaskLayer->insertItem(myOutputMask);
+        cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
+	  }
     }
     if (!myOutputFormat.isEmpty())
     {
-      cboOutputFormatLayer->insertItem(myOutputFormat);
-      cboOutputFormatLayer->setCurrentText(myOutputFormat);    
+	  //loop through combo entries and check there is not already one for
+	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
+	  //editable combo boxes
+	  myFlag = false;
+	  for ( i=0; i < cboOutputFormatLayer->count(); i++)
+	  {
+        cboOutputFormatLayer->setCurrentItem(i);
+		if (cboOutputFormatLayer->currentText().compare(myOutputMask))
+		{
+			myFlag=true;
+			break;
+		}
+	  }
+	  if (!myFlag)
+	  {
+        cboOutputFormatLayer->insertItem(myOutputFormat);
+        cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
+	  }
     }
   }
 
@@ -692,13 +739,7 @@ void OpenModellerGui::makeConfigFile()
     {          
       myQTextStream << tr("Output map = ") << *myIterator << "\n";
     }
-    
-    
-    // NOTE by Tim: not too sure what this next option does - will have to sak Mauro
-    // I think it just sets the ouput file extents etc
-    // I am hardcoding it to match the first layer in the collection for now
-    myQTextStream << tr("# File to be used as the output format.\n") ;
-    myQTextStream << tr("Output format = ") << layerNamesQStringList.front() << "\n";                
+              
     myQTextStream << tr("# Output file name (should end in .tif)\n");
     myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
     myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
@@ -719,7 +760,7 @@ void OpenModellerGui::makeConfigFile()
     // Iterate through the items in the extra parameters list
     for ( QStringList::Iterator myIterator = extraParametersQStringList.begin(); myIterator != extraParametersQStringList.end(); ++myIterator)
     {          
-      myQTextStream << tr("Parameters = ") << *myIterator << "\n";
+      myQTextStream << tr("Parameter = ") << *myIterator << "\n";
     }        
 
     myQTextStream << tr("\n\n###########################################\n");
@@ -1291,7 +1332,7 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
   }
   //store directory where localities file is for next time
   QSettings settings;
-  settings.writeEntry("/openmodeller/otherInputMaskDirectory", myFileNameQString );
+  settings.writeEntry("/openmodeller/otherInputMaskFile", myFileNameQString );
   cboInputMaskLayer->insertItem(myFileNameQString);
   cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
   
@@ -1325,7 +1366,7 @@ void OpenModellerGui::pbnOtherOutputMask_clicked()
   }
   //store directory where localities file is for next time
   QSettings settings;
-  settings.writeEntry("/openmodeller/otherOutputMaskDirectory", myFileNameQString );
+  settings.writeEntry("/openmodeller/otherOutputMaskLayer", myFileNameQString );
 
   cboOutputMaskLayer->insertItem(myFileNameQString);
   cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count()-1);
@@ -1338,7 +1379,7 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
   QString myFileTypeQString;
   QString myGDALFilterString="GDAL (*.tif; *.asc; *.bil;*.jpg;*.adf)";
   QString myFileNameQString = QFileDialog::getOpenFileName(
-          "" , //initial dir
+          "" , //initial dir TODO get from settings : otherOutputFormatDirectory
           myGDALFilterString,  //filters to select
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
@@ -1361,7 +1402,8 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
 
   //store directory where localities file is for next time
   QSettings settings;
-  settings.writeEntry("/openmodeller/otherOutputFormatDirectory", myFileNameQString );
+
+  settings.writeEntry("/openmodeller/otherOutputFormatLayer", myFileNameQString );
  
   cboOutputFormatLayer->insertItem(myFileNameQString);
   cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
