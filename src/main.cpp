@@ -207,9 +207,6 @@ int main(int argc, char *argv[])
   //a.setStyle("Windows");
 
   QgisApp *qgis = new QgisApp();
-  //
-  // Now we can instantiate the splashscreen global that is declared in qgisapp.h
-  //
   a.setMainWidget(qgis);
 
 
@@ -255,6 +252,15 @@ int main(int argc, char *argv[])
       }
     }
   }
+
+  /////////////////////////////////////////////////////////////////////
+  // Load a project file if one was specified
+  /////////////////////////////////////////////////////////////////////
+  if(myProjectFileName!="")
+  {
+    qgis->addProject(myProjectFileName);
+  }
+
 
   /////////////////////////////////////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
