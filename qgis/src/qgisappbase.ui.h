@@ -69,3 +69,8 @@ void QgisAppBase::about()
 {
 
 }
+
+void QgisAppBase::testButton()
+{
+
+}
