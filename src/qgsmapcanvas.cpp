@@ -628,7 +628,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
   int myHeight=0;
   int myWidth=0;
-  if (! mCanvasProperties->frozen && mCanvasProperties->dirty)
+  if ((!mCanvasProperties->frozen && mCanvasProperties->dirty) ||
+      theQPaintDevice)
   {
     if (!mCanvasProperties->drawing)
     {
@@ -673,7 +674,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       muppY = mCanvasProperties->currentExtent.height() / myHeight;
       muppX = mCanvasProperties->currentExtent.width() / myWidth;
       mCanvasProperties->m_mupp = muppY > muppX ? muppY : muppX;
-
+      
       // calculate the actual extent of the mapCanvas
       double dxmin, dxmax, dymin, dymax, whitespace;
 
@@ -695,7 +696,13 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       }
 
       //update the scale shown on the statusbar
-      currentScale(0);
+      // XXX This function seems to change the mCanvasProperties->m_mupp -
+      // is that really intended? We've just gone through a lot of trouble
+      // to calculate it in _this_ function. Anyway, we can't let it change
+      // the mupp if we're rendering to an alternative device (it uses the
+      // widget size in its calculations).
+      if (!theQPaintDevice)
+	currentScale(0);
 
 #ifdef QGISDEBUG
 
