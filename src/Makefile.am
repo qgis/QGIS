@@ -7,7 +7,9 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
 bin_PROGRAMS = qgis
+
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -110,6 +112,7 @@ qgis_SOURCES =  qgisapp.cpp \
 		qgsdlgvectorlayerproperties.h \
 		$(qgis_UI) \
 		$(qgis_MOC)
+
 qgis_MOC = 	qgisappbase.moc.cpp \
           	qgisapp.moc.cpp\
 						qgisinterface.moc.cpp\
@@ -205,6 +208,7 @@ qgis_UIC = qgisappbase.ui \
           qgsrasterlayerpropertiesbase.ui \
           qgsdlgvectorlayerpropertiesbase.ui \
           qgsoptionsbase.ui
+
 # UI dependencies			
 gsattributetablebase.cpp: gsattributetablebase.h qgsattributetablebase.ui
 gsattributetablebase.h: qgsattributetablebase.ui
@@ -264,13 +268,14 @@ postgresMOC = 	qgsdbsourceselectbase.moc.cpp \
 								qgsnewconnectionbase.moc.cpp
 
 # if PostgreSQL support requested, add PostgreSQL files				
-if POSTGRESDB
+if HAVE_POSTGRESDB
 qgis_SOURCES += $(postgresSOURCES)
 qgis_UI += $(postgresUI) 
 qgis_MOC += $(postgresMOC)
 # add required defines for compiling PostgreSQL
 PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
 endif
+
 PREFIX=-DPREFIX=\"$(prefix)\"
 BUILT_SOURCES = $(qgis_MOC) $(qgis_UI)
 qgis_LDADD := $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
