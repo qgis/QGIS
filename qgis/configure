@@ -1195,8 +1195,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-          ac_config_commands="$ac_config_commands Makefile"
-
           ac_config_commands="$ac_config_commands src/Makefile"
 
 
@@ -1239,7 +1237,7 @@ echo "$as_me: error: GDAL is compiled without OGR support." >&2;}
 fi
 
 GDAL_LIB="`$GDAL_CONFIG --libs`"
-GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
+GDAL_CFLAGS="`$GDAL_CONFIG --prefix`/include"
 echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 
@@ -1931,7 +1929,6 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "src/platform.pro" ) CONFIG_FILES="$CONFIG_FILES src/platform.pro" ;;
-  "Makefile" ) CONFIG_COMMANDS="$CONFIG_COMMANDS Makefile" ;;
   "src/Makefile" ) CONFIG_COMMANDS="$CONFIG_COMMANDS src/Makefile" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -2284,7 +2281,6 @@ ac_abs_top_srcdir=`cd "$ac_dir" && cd $ac_top_srcdir && pwd`
   { echo "$as_me:$LINENO: executing $ac_dest commands" >&5
 echo "$as_me: executing $ac_dest commands" >&6;}
   case $ac_dest in
-    Makefile ) $QTDIR/bin/qmake -o Makefile qgis.pro ;;
     src/Makefile ) $QTDIR/bin/qmake -o src/Makefile src/src.pro ;;
   esac
 done
