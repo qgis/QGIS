@@ -190,7 +190,7 @@ if test x"$ac_debug" = "xno" ; then
 	DEBUG_QGIS=-DNO_DEBUG
 	AC_MSG_RESULT([no])
 else
-	DEBUG_QGIS=-DDEBUG
+	DEBUG_QGIS=-DQGISDEBUG
 	AC_MSG_RESULT([yes])
 fi
 AC_SUBST(DEBUG_QGIS)
