@@ -109,6 +109,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
     setDataProvider( providerKey );
   }
   // XXXX Is it just me or is selection colour not actually used anywhere? TS
+  //there is the mSelectionColor that is widely used by renderers
   //draw the selected features the colour set in project file
   //(defaults to yellow)
   int myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
