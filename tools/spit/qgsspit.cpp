@@ -142,6 +142,7 @@ void QgsSpit::removeFile()
     if ( it.current()->isSelected() ){
       for(std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit!=fileList.end(); vit++){
         if((*vit)->getName()==(const char *)it.current()->text(0)){
+          total_features -= (*vit)->getFeatureCount();
           fileList.erase(vit);
           break;
         }
@@ -208,7 +209,7 @@ void QgsSpit::import(){
       for(int i=0; i<fileList.size(); i++){
         std::stringstream temp;
         temp << spinSrid->value();
-        if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro, total_features)){
+        if(!fileList[i]->insertLayer(settings.readEntry(key + "/database"), QString(temp.str()), pd, pro)){
           QMessageBox::warning(this, "Import Shapefiles", "Problem inserting features");
           error = true;
           break;
@@ -219,7 +220,7 @@ void QgsSpit::import(){
         pd->ExecCommandOk("ROLLBACK");
       else{
         int temp = pd->ExecCommandOk("COMMIT");
-        std::cout<<"commit " << temp << " " << pd->ErrorMessage() << std::endl;
+        std::cout<<"commit " << temp << " " << pd->ErrorMessage() << total_features << " " << pro->progress() << std::endl;
       }
     }
     else 

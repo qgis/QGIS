@@ -112,7 +112,7 @@ const char * QgsShapeFile::getName(){
   return filename;
 }
 
-bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro, int tot=0){
+bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro){
   bool result = true;
   char * geo_temp;
   QString table(filename);
@@ -133,25 +133,30 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
 
   //adding the data into the table
   for(int m=0;OGRFeature *feat = ogrLayer->GetNextFeature(); m++){
-    std::stringstream out;
-    out << m;
-    query = "INSERT INTO "+table+"values( "+out.str()+", ";
-    OGRGeometry *geom = feat->GetGeometryRef();
-    
-    int num = geom->WkbSize();
-    char * geo_temp = new char[num*3];
-    geom->exportToWkt(&geo_temp);
-    QString geometry(geo_temp);
-    
-    int numFields = feat->GetFieldCount();
-    for(int n=0; n<numFields; n++)
-      query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
-    query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
 
-    conn->ExecTuplesOk((const char *)query);
+      std::stringstream out;
+      out << m;
+      query = "INSERT INTO "+table+"values( "+out.str()+", ";
+      OGRGeometry *geom = feat->GetGeometryRef();
+      
+      int num = geom->WkbSize();
+      char * geo_temp = new char[num*3];
+      geom->exportToWkt(&geo_temp);
+      QString geometry(geo_temp);
+    
+      int numFields = feat->GetFieldCount();
+      for(int n=0; n<numFields; n++)
+        query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
+      query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
 
-    pro->setProgress(pro->progress()+1);  
-    delete[] geo_temp;
+      conn->ExecTuplesOk((const char *)query);
+
+      pro->setProgress(pro->progress()+1);
+
+      delete geom;
+      delete feat; 
+      delete[] geo_temp;
+
   }   
 
   return result;
