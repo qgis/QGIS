@@ -127,6 +127,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     }
     else //GRAY_OR_UNDEFINED
     {
+        calculateStats("");
         redBandNameQString="Not Set"; //sensible default
         greenBandNameQString="Not Set"; //sensible default
         blueBandNameQString="Not Set"; //sensible default
@@ -144,7 +145,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     stdDevsToPlotDouble = 0; // sensible default
     transparencyLevelInt = 255; //sensible default 0 is transparent
     showDebugOverlayFlag=false; //sensible default
-    calculateStats("");
+    
 }
 
 QgsRasterLayer::~QgsRasterLayer()
