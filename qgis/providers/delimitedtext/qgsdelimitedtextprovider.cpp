@@ -125,10 +125,10 @@ email                : sherman at mrcc.com
             //  fieldsMatch = false;
             //}
             /*
-            std::cout << "Record hit line " << lineNumber << ": " <<
-              parts[fieldPositions[mXField]] << ", " <<
-              parts[fieldPositions[mYField]] << std::endl;
-              */
+               std::cout << "Record hit line " << lineNumber << ": " <<
+               parts[fieldPositions[mXField]] << ", " <<
+               parts[fieldPositions[mYField]] << std::endl;
+               */
             // Get the x and y values, first checking to make sure they
             // aren't null.
             QString sX = parts[fieldPositions[mXField]];
@@ -458,7 +458,7 @@ void QgsDelimitedTextProvider::select(QgsRect *rect, bool useIntersect)
   reset();
   // Reset the feature id to 0
   mFid = 0;
-  
+
 }
 
 /**
@@ -570,7 +570,10 @@ std::vector<QgsField>& QgsDelimitedTextProvider::fields(){
 }
 
 void QgsDelimitedTextProvider::reset(){
+  // Reset the file pointer to BOF
   mFile->reset();
+  // Reset feature id to 0
+  mFid = 0;
   // Skip ahead one line since first record is always assumed to be
   // the header record
   QTextStream stream( mFile );
@@ -581,7 +584,8 @@ QString QgsDelimitedTextProvider::minValue(int position)
 {
   if(position>=fieldCount())
   {
-    std::cerr << "Warning: access requested to invalid position in QgsDelimitedTextProvider::minValue(..)" << std::endl;
+    std::cerr << "Warning: access requested to invalid position "
+      << "in QgsDelimitedTextProvider::minValue(..)" << std::endl;
   }
   if(mMinMaxCacheDirty)
   {
@@ -595,7 +599,8 @@ QString QgsDelimitedTextProvider::maxValue(int position)
 {
   if(position>=fieldCount())
   {
-    std::cerr << "Warning: access requested to invalid position in QgsDelimitedTextProvider::maxValue(..)" << std::endl;
+    std::cerr << "Warning: access requested to invalid position "
+      << "in QgsDelimitedTextProvider::maxValue(..)" << std::endl;
   }
   if(mMinMaxCacheDirty)
   {
@@ -650,8 +655,8 @@ bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
       ((y < mSelectionRectangle->yMax()) &&
        (y > mSelectionRectangle->yMin())));
   QString hit = inBounds?"true":"false";
-//  std::cerr << "Checking if " << x << ", " << y << " is in " << 
-    //mSelectionRectangle->stringRep() << ": " << hit << std::endl; 
+  //  std::cerr << "Checking if " << x << ", " << y << " is in " << 
+  //mSelectionRectangle->stringRep() << ": " << hit << std::endl; 
   return inBounds;
 }
 /**
