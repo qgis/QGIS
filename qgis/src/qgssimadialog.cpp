@@ -79,6 +79,7 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
                 p.scale(scalefactor,scalefactor);
                 p.drawPicture(0,0,pic);
                 pmPreview->setPixmap(pixmap);
+		pmPreview->setName(svgfile);
 
             }
             else
