@@ -117,11 +117,11 @@ void Plugin::projectRead()
     //default text to start with - try to fetch it from qgsproject
 
 
-    mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","FontName","Arial"));
-    mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","FontSize",14));
-    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","Label","(c) QGIS 2004");
-    mPlacement = QgsProject::instance()->readEntry("CopyrightLabel","Placement","Bottom Right");
-    mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","Enabled",true);
+    mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Arial"));
+    mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",14));
+    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label","(c) QGIS 2004");
+    mPlacement = QgsProject::instance()->readEntry("CopyrightLabel","/Placement","Bottom Right");
+    mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
     // todo - read & store state of font color
     mLabelQColor = QColor(Qt::black);
 
@@ -227,25 +227,25 @@ void Plugin::setFont(QFont theQFont)
 {
     mQFont = theQFont;
     //save state to the project file.....
-    QgsProject::instance()->writeEntry("CopyrightLabel","FontName",theQFont.family());
+    QgsProject::instance()->writeEntry("CopyrightLabel","/FontName",theQFont.family());
     //save state to the project file.....
-    QgsProject::instance()->writeEntry("CopyrightLabel","FontSize", theQFont.pointSize()  );
+    QgsProject::instance()->writeEntry("CopyrightLabel","/FontSize", theQFont.pointSize()  );
     refreshCanvas();
 }
 //! change the copyright text
 void Plugin::setLabel(QString theLabelQString)
 {
     mLabelQString = theLabelQString;
-    QgsProject::instance()->writeEntry("CopyrightLabel","Label", mLabelQString  );
+    QgsProject::instance()->writeEntry("CopyrightLabel","/Label", mLabelQString  );
     refreshCanvas();
 }
 //! change the copyright text colour
 void Plugin::setColor(QColor theQColor)
 {
     mLabelQColor = theQColor;
-    QgsProject::instance()->writeEntry("CopyrightLabel","ColorRedPart", mLabelQColor.red());
-    QgsProject::instance()->writeEntry("CopyrightLabel","ColorGreenPart", mLabelQColor.green());
-    QgsProject::instance()->writeEntry("CopyrightLabel","ColorBluePart", mLabelQColor.blue());
+    QgsProject::instance()->writeEntry("CopyrightLabel","/ColorRedPart", mLabelQColor.red());
+    QgsProject::instance()->writeEntry("CopyrightLabel","/ColorGreenPart", mLabelQColor.green());
+    QgsProject::instance()->writeEntry("CopyrightLabel","/ColorBluePart", mLabelQColor.blue());
     refreshCanvas();
 }
 
@@ -253,7 +253,7 @@ void Plugin::setColor(QColor theQColor)
 void Plugin::setPlacement(QString theQString)
 {
     mPlacement = theQString;
-    QgsProject::instance()->writeEntry("CopyrightLabel","Placement", mPlacement);
+    QgsProject::instance()->writeEntry("CopyrightLabel","/Placement", mPlacement);
     refreshCanvas();
 }
 
@@ -261,7 +261,7 @@ void Plugin::setPlacement(QString theQString)
 void Plugin::setEnable(bool theBool)
 {
     mEnable = theBool;
-    QgsProject::instance()->writeEntry("CopyrightLabel","Enabled", mEnable );
+    QgsProject::instance()->writeEntry("CopyrightLabel","/Enabled", mEnable );
     refreshCanvas();
 }
 
