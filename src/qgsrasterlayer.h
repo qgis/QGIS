@@ -215,6 +215,8 @@ struct RasterBandStats
     /** \brief The number of cells in the band. Equivalent to height x width. 
      * TODO: check if NO_DATA are excluded!*/
     int elementCountInt;    
+    /** \brief A histogram storing the distribution of values within the raster. */
+    int histogram[256];
 };
 
 /** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
@@ -333,6 +335,9 @@ public:
      void showLayerProperties();
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
      void drawThumbnail(QPixmap * theQPixmap);
+    /** \brief Get an 8x8 pixmap of the colour palette. If the layer has no palette a white pixmap will be returned. */
+     QPixmap getPaletteAsPixmap();
+     
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).  */
     void draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform, QPaintDevice* dst);
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
