@@ -1,7 +1,30 @@
 QGIS Change Log
-ChangeLog,v 1.62 2004/04/29 07:45:58 timlinux Exp
+ChangeLog,v 1.63 2004/05/03 11:02:56 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... developement version
+
+2004-05-03 [ts] 0.2.0devel3
+**Added three new widgets to status bar:
+scale - which shows the scale in the form 1:50000 *
+coordinates - shows coordinates of mouse on map in its own widget
+progressbar - shows the progress of any task that emits signals connected to
+showProgress slot
+
+**Added signal / slot mechanism for showExtents and set fp precision to 2 (see
+below)
+
+** stringRep function in QgsRect and QgsPoint now overloaded to allow setting
+floating point precision for display. QgisApp & canvas are currently hard
+coding this to 2 but I plan to make this user configurable in the options
+panel.
+
+**Added example of using progress indicator to raster stats gathering procedure.
+You can see this in action by setting ak_shade example dataset to singleband
+pseudocolor and you will see progress indicator advancing as stats are
+gathered.
+
+*NOTE: scale calculations may not be correct at this point - they are still
+under development.
 
 2004-04-27 [ts] 0.2.0devel2
 
