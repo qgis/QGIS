@@ -45,7 +45,11 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
 
     //find out the numerical fields of mVectorLayer
     QgsVectorDataProvider *provider;
+#ifndef WIN32
     if (provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider()))
+#else
+    if (provider = (QgsVectorDataProvider*)(mVectorLayer->getDataProvider()))
+#endif
     {
 	std::vector < QgsField > &fields = provider->fields();
 	int fieldnumber = 0;
@@ -76,11 +80,19 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
     
     if (mVectorLayer->propertiesDialog())
     {
+#ifndef WIN32
 	renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->propertiesDialog()->getBufferRenderer());
+#else
+	renderer = (QgsContinuousColRenderer * )(layer->propertiesDialog()->getBufferRenderer());
+#endif
     } 
     else
     {
+#ifndef WIN32
 	renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());
+#else
+	renderer = (QgsContinuousColRenderer * )(layer->renderer());
+#endif
     }
 
     classificationComboBox->setCurrentItem(renderer->classificationField());
@@ -130,7 +142,11 @@ void QgsContColDialog::apply()
     
     //find the minimum and maximum for the classification variable
     double minimum, maximum;
+#ifndef WIN32
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider());
+#else
+    QgsVectorDataProvider *provider = (QgsVectorDataProvider*)(mVectorLayer->getDataProvider());
+#endif
     if (provider)
     {
 	minimum = provider->minValue(classfield).toDouble();
@@ -173,11 +189,19 @@ void QgsContColDialog::apply()
     QgsContinuousColRenderer *renderer;
     if (mVectorLayer->propertiesDialog())
     {
+#ifndef WIN32
 	renderer = dynamic_cast < QgsContinuousColRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+#else
+	renderer = (QgsContinuousColRenderer * )(mVectorLayer->propertiesDialog()->getBufferRenderer());
+#endif
     } 
     else
     {
+#ifndef WIN32
 	renderer = dynamic_cast < QgsContinuousColRenderer * >(mVectorLayer->renderer());
+#else
+	renderer = (QgsContinuousColRenderer * )(mVectorLayer->renderer());
+#endif
     }
     
     if (renderer)
