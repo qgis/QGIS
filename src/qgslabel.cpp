@@ -143,12 +143,6 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
 	font.setUnderline ( (bool) value.toInt() );
     }
     
-    value = fieldValue ( Color, feature );
-    if ( value.isEmpty() ) {
-        pen.setColor ( mLayerAttributes->color() );
-    } else { 
-	pen.setColor ( QColor(value) );
-    }
 
     /* Coordinates */
     double x, y, xoffset, yoffset, ang;
@@ -240,9 +234,25 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     
     painter->save();
     painter->setFont ( font );
-    painter->setPen ( pen );
     painter->translate ( x, y );
     painter->rotate ( -ang );
+    //draw the buffer if needed
+    if (mLayerAttributes->bufferSizeIsSet())
+    {
+      pen.setColor ( mLayerAttributes->bufferColor() );
+      painter->setPen ( pen );
+      for (int x = 0 - mLayerAttributes->bufferSize(); x < mLayerAttributes->bufferSize(); x++)
+        for (int y = 0 - mLayerAttributes->bufferSize(); y < mLayerAttributes->bufferSize(); y++)
+          painter->drawText ( dx+x, dy+y, text );
+    }
+    //revert to main font colour
+    value = fieldValue ( Color, feature );
+    if ( value.isEmpty() ) {
+        pen.setColor ( mLayerAttributes->color() );
+    } else { 
+	pen.setColor ( QColor(value) );
+    }
+    painter->setPen ( pen );
     painter->drawText ( dx, dy, text );
     painter->restore();
 }
