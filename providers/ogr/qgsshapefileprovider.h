@@ -17,10 +17,14 @@ email                : sherman at mrcc.com
 /* $Id$ */
 
 #include "../../src/qgsdataprovider.h"
+
 class QgsFeature;
 class QgsField;
 class OGRDataSource;
 class OGRLayer;
+class OGRFeature;
+class OGREnvelope;
+
 /**
   \class QgsShapeFileProvider
   \brief Data provider for ESRI shapefiles
