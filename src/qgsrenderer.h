@@ -19,12 +19,20 @@
 #include <map>
 class QString;
 
+/*! \class QgsRenderer
+* \brief Base class for all renderers
+*/
 class QgsRenderer {
+	//! Type of renderer
 	int type;
+	//! Field name used to render layer
 	QString field;
+	//! map of render items (ie. classes)
 	map<QString, QgsRenderItem>items;
 	public:
+	//! Constructor
 	QgsRenderer(int _type, QString _field);
+	//! Add a render item (class) to the renderer
 	void addItem(QString key, QgsRenderItem ri);
 	
 
