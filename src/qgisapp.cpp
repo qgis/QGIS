@@ -234,19 +234,13 @@ void QgisApp::about()
 	QString watsNew = "Version ";
 	watsNew += QGis::qgisVersion;
 	watsNew += "\n"
-	"**Multiple features displayed with the Identify tool\n" 
-	"**Identify function returns and displays attributes for multiple\n"
-	"   features found within the search radius\n"
-	"**Fixes to endian handling on big endian machines\n"
-	"**Support for PostgreSQL 7.3 schemas for database layers\n"
-	"**Features in shapefiles can be selected by dragging a selection\n"
-	"  box or selecting the records in the attribute table\n"
-	"**Zoom to extent of selected features (Shapefiles only)\n"
-	"**Bug fix: Bug that prevented reopening of the attribute table once\n"
-	"  it was initally displayed and closed\n"
-	"**Bug fix: Bug that prevented lines from being drawn with widths\n"
-	"  other than 1 pixel\n"
-	"**Build system has changed for building with PostgreSQL support.\n"
+	"** New build system (uses GNU Automake/Autoconf)\n"
+  "** Improvement to sorting in attribute table\n"
+  "** Persistent selections (shapefiles only)\n"
+  "** Display order can be changed by dragging a layer to a new position in the legend\n"
+  "** Export QGIS view as a Mapserver map file\n"
+  "** Fix for crash on SuSE 9.0 when moving mouse in legend area\n"
+  "\n"
 		;
 
 
