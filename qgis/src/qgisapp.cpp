@@ -350,9 +350,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mPluginMenu = new QPopupMenu(this);  
   menuBar()->insertItem("&Plugins", mPluginMenu, -1, menuBar()->count() - 1);
 
-  //add the empty plugin toolbar
-  mPluginToolBar = new QToolBar(this, "Plugins");
-  
   // create the layer popup menu
   mMapCursor = 0;
 
@@ -468,6 +465,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   if (!myHideSplashFlag)
   {
+    // Set up the timer so the splash screen stays up for
+    // another 5 seconds, then kill it.
     QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
     gSplashScreen->setStatus(tr("QGIS ready"));
   }
