@@ -31,14 +31,13 @@
 #include <qgisapp.h>
 #include <qgssymbol.h>
 #include <qgsfield.h>
-
+#include "qgscoordinatetransform.h"
 class QgsFeature;
 class QPopupMenu;
 class QgsLegendItem;
 class QDomNode;
 class QDomDocument;
 class QEvent;
-class QgsCoordinateTransform;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
@@ -414,6 +413,9 @@ protected:
     //   QAction* mActionInOverview;
     /** A flag to let the draw() render loop know if the user has requested drawing be cancelled */
     bool mDrawingCancelled;
+
+    //! A QgsCoordinateTransform is used for on the fly reprojection of map layers
+    QgsCoordinateTransform * mCoordinateTransform;    
 private:                       // Private attributes
 
     /// QgsMapLayer not copyable
@@ -431,8 +433,6 @@ private:                       // Private attributes
     //! Tag for embedding additional information
     QString tag;
 
-    //! A QgsCoordinateTransform is used for on the fly reprojection of map layers
-    QgsCoordinateTransform * gCoordinateTransfrom;
     
     /**  true if visible ? */
     bool m_visible;

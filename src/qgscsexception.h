@@ -19,11 +19,11 @@
 #define QGSCSEXCEPTION_H
 
 #include "qgsexception.h"
-class QgsCsException : public QgsExecption
+class QgsCsException : public QgsException
 {
   public:
-    QgsCsException(std::string const &what) : QgsExecption(what){}
-    QgsCsException(QString const &what) : QgsExecption((const char *)what){}
+    QgsCsException(std::string const &what) : QgsException(what){};
+    QgsCsException(QString const &what) : QgsException(what){};
     
 };
 #endif //QGCSEXCEPTION_H
