@@ -122,33 +122,23 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	}
 
 	updateFullExtent(lyr->extent());
-	// increment zpos for all layers in the map
-	incrementZpos();
-	lyr->setZ(layers.size() - 1);
-	updateZpos();
 	zOrder.push_back(lyr->getLayerID());
 	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
 	dirty = true;
-	//lyr->zpos = 0;
 }
 
-void QgsMapCanvas::incrementZpos()
-{
-}
-void QgsMapCanvas::updateZpos()
-{
-}
 QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 {
-//  iterate over the layers and return the layer at postion idx
-std::map<QString,QgsMapLayer *>::iterator mi = layers.begin();
-while (mi != layers.end()) {
-	QgsMapLayer *ml = (*mi).second;
-	if (ml->z() == idx)
-		return ml;
-	mi++;
-}
-	return 0;
+	//  iterate over the zOrder and return the layer at postion idx
+	std::list<QString>::iterator zi = zOrder.begin();
+	for (int i = 0; i < idx; i++) {
+		if (i < zOrder.size()) {
+			zi++;
+		}
+	}
+	
+	QgsMapLayer *ml = layers[*zi];
+	return ml;
 }
 
 void QgsMapCanvas::setZOrderFromLegend(QgsLegendView *lv)

@@ -89,10 +89,6 @@ class QgsMapLayer:public QObject
 	virtual void setlabelField(const QString & _newVal);
   /** Read property of QString labelField. */
 	virtual const QString & labelField();
-  /** No descriptions */
-	void setZ(int zorder);
-  /** No descriptions */
-	int z();
 	//! Visibility of the layer
 	bool visible();
 	//! set visibility
@@ -116,8 +112,6 @@ class QgsMapLayer:public QObject
   protected:
 	//! Extent of the layer
 	  QgsRect layerExtent;
-	//! Position in the map stack 
-	int zpos;
 	//! Indicates if the layer is valid and can be drawn
 	bool valid;
 	QString dataSource;
