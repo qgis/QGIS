@@ -67,6 +67,7 @@ QgisApp::QgisApp(QWidget *parent, const char * name, WFlags fl ) : QgisAppBase(p
 QgisApp::~QgisApp(){
 }
 void QgisApp::addLayer(){
+  // only supports postgis layers at present
   // show the postgis dialog
   QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
   if(dbs->exec()){
@@ -83,20 +84,13 @@ void QgisApp::addLayer(){
       QgsDatabaseLayer *lyr = new QgsDatabaseLayer(connInfo, *it);
       // add it to the mapcanvas collection
       mapCanvas->addLayer(lyr);
-  
+      // no drawing done -- need to pass the layer collection
+      // to the rendering engine (yet to be written)
       ++it;
     }
     
   }
-  // show the file dialog
-  /*
-    QFileDialog* fd = new QFileDialog( this, "file dialog", TRUE );
-    fd->setMode( QFileDialog::ExistingFile );
-    fd->setFilter("Shapefiles (*.shp)" );
-    if(fd->exec()){
-    QStringList files = fd->selectedFiles();
-    }
-  */
+
 }
 void QgisApp::fileExit(){
   QApplication::exit();
