@@ -291,35 +291,33 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 // This method will probably be removed again in the near future!
 void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst, double scale)
 {
-  if ( /*1 == 1 */ m_renderer)
+#ifdef QGISDEBUG
+  qWarning("Starting draw of labels");
+#endif
+
+  if ( /*1 == 1 */ m_renderer && mLabelOn)
   {
-    // select the records in the extent. The provider sets a spatial filter
-    // and sets up the selection set for retrieval
+    std::list<int> attributes=m_renderer->classificationAttributes();
+    // Add fields required for labels
+    mLabel->addRequiredFields ( &attributes );
+
 #ifdef QGISDEBUG
     qWarning("Selecting features based on view extent");
 #endif
+
+    int featureCount = 0;
+    // select the records in the extent. The provider sets a spatial filter
+    // and sets up the selection set for retrieval
     dataProvider->reset();
     dataProvider->select(viewExtent);
-    int featureCount = 0;
-    //  QgsFeature *ftest = dataProvider->getFirstFeature();
-#ifdef QGISDEBUG
-    qWarning("Starting draw of labels");
-#endif
-    QgsFeature *fet;
-    std::list<int> attributes=m_renderer->classificationAttributes();
-    if ( mLabelOn )
-    { // Add fields required for labels
-      mLabel->addRequiredFields ( &attributes );
-    }
-    else
-    {
-      return;
-    }
+
     //main render loop
+    QgsFeature *fet;
+
     while((fet = dataProvider->getNextFeature(attributes)))
     {
       // Render label
-      if ( mLabelOn && (fet != 0))
+      if ( fet != 0 )
       {
         if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
         {
