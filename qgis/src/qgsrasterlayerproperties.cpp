@@ -959,33 +959,30 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       {
         int myBinValue = myRasterBandStats.histogramVector->at(myBin);
 #ifdef QGISDEBUG
-        std::cout << myBinValue << std::endl;
+        std::cout << "Testing if " << myBinValue << " is less than " << myMinVal  << "or greater then " <<myMaxVal  <<  std::endl;
 #endif
-        if ( myIteratorInt==1)
+        if ( myBin==0)
         {
           myMinVal = myBinValue;
           myMaxVal = myBinValue;
-          continue;
         }
 
         if (myBinValue  > myMaxVal)
         {
           myMaxVal = myBinValue;
-#ifdef QGISDEBUG
-          std::cout << "(max)" << std::endl;
-#endif
         }
         if ( myBinValue < myMinVal)
         {
           myMinVal = myBinValue;
-#ifdef QGISDEBUG
-          std::cout << "(min)" << std::endl;
-#endif
         }
       }
     }
   }
 
+#ifdef QGISDEBUG
+          std::cout << "max " << myMaxVal << std::endl;
+          std::cout << "min " << myMinVal << std::endl;
+#endif
   
 
   //create the image onto which graph and axes will be drawn
