@@ -1634,6 +1634,14 @@ void QgisApp::fileSaveAs()
 
 void QgisApp::filePrint()
 {
+    //
+    //  Warn the user first that priting is experimental still
+    //
+    QString myHeading = "QGIS Printing Support is Experimental";
+    QString myMessage = "Please note that printing only works on A4 landscape at the moment.\n";
+    myMessage += "For other page sizes your mileage may vary.\n";
+    QMessageBox::information( this, tr(myHeading),tr(myMessage) );
+
     QPrinter myQPrinter;
     if(myQPrinter.setup(this))
     {
