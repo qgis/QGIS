@@ -6,8 +6,13 @@
 # $Id$
 ####################################################################
 TEMPLATE = lib or app for a standalone exe
-INCLUDEPATH += . ..\..\qgis_win32 ..\..\qgis_win32\src ..\..\qgis_win32\plugins 
-LIBS += ..\..\qgis_win32\src\libqgis.lib 
+INCLUDEPATH += . \
+               $(GDAL)\include \
+               ..\..\qgis_win32 \
+               ..\..\qgis_win32\src \
+               ..\..\qgis_win32\plugins 
+LIBS += ..\..\qgis_win32\src\libqgis.lib \
+        $(GDAL)\lib\gdal_i.lib
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\qgis_win32\win_build\lib\qgis
 
@@ -20,6 +25,8 @@ HEADERS += cdpwizard.h \
            filereader.h \
            filewriter.h \
            plugin.h \
+           imagewriter.h \
+           meridianswitcher.h \
            testdatamaker.h
 INTERFACES += cdpwizardbase.ui
 SOURCES += cdpwizard.cpp \
@@ -30,4 +37,6 @@ SOURCES += cdpwizard.cpp \
            filewriter.cpp \
            main.cpp \
            plugin.cpp \
+           imagewriter.cpp \
+           meridianswitcher.cpp \
            testdatamaker.cpp
