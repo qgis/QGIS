@@ -408,7 +408,7 @@ public:
     /** \brief accessor for transparency level.  */
     unsigned int getTransparency();
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
-    void setTransparency(unsigned int); //
+    void setTransparency(int); //
     /** \brief Call any inline image manipulation filters */
     void filterLayer(QImage * theQImage);
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red colour). */
@@ -732,6 +732,9 @@ public:
     
     
 public slots:    
+    /** \brief Slot called when the popup menu transparency slider has been moved.*/
+    void popupTransparencySliderMoved(int);
+     
     /** \brief Create  gdal pyramid overviews  for this layer.
     * This will speed up performance at the expense of hard drive space.
     * Also, write access to the file is required. If no paramter is passed in
