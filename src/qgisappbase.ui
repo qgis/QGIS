@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>610</width>
-            <height>468</height>
+            <height>470</height>
         </rect>
     </property>
     <property name="font">
@@ -73,6 +73,7 @@
     </item>
     <item text="View" name="PopupMenu_2">
         <action name="actionAddNonDbLayer"/>
+        <action name="actionAddRasterLayer"/>
         <action name="actionAddLayer"/>
     </item>
     <item text="&amp;Tools" name="PopupMenu_4">
@@ -465,6 +466,14 @@
             <string>Export to MapServer</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionAddRasterLayer</cstring>
+        </property>
+        <property name="text">
+            <string>Add a raster layer</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -524,18 +533,6 @@
 </images>
 <connections>
     <connection>
-        <sender>actionHelpAbout</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>about()</slot>
-    </connection>
-    <connection>
-        <sender>actionPluginManager</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>actionPluginManager_activated()</slot>
-    </connection>
-    <connection>
         <sender>actionAddLayer</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
@@ -548,22 +545,16 @@
         <slot>addLayer()</slot>
     </connection>
     <connection>
-        <sender>actionOpenTable</sender>
+        <sender>actionAddRasterLayer</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
-        <slot>attributeTable()</slot>
+        <slot>addRasterLayer()</slot>
     </connection>
     <connection>
         <sender>actionCheckQgisVersion</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
         <slot>checkQgisVersion()</slot>
-    </connection>
-    <connection>
-        <sender>drawAction</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>drawLayers()</slot>
     </connection>
     <connection>
         <sender>actionExportMapServer</sender>
@@ -602,10 +593,22 @@
         <slot>fileSaveAs()</slot>
     </connection>
     <connection>
+        <sender>actionHelpAbout</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>about()</slot>
+    </connection>
+    <connection>
         <sender>actionIdentify</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
         <slot>identify()</slot>
+    </connection>
+    <connection>
+        <sender>actionOpenTable</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>attributeTable()</slot>
     </connection>
     <connection>
         <sender>actionOptions</sender>
@@ -618,6 +621,12 @@
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
         <slot>pan()</slot>
+    </connection>
+    <connection>
+        <sender>actionPluginManager</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>actionPluginManager_activated()</slot>
     </connection>
     <connection>
         <sender>actionSelect</sender>
@@ -650,16 +659,16 @@
         <slot>zoomIn()</slot>
     </connection>
     <connection>
-        <sender>actionZoomOut</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>zoomOut()</slot>
-    </connection>
-    <connection>
         <sender>actionZoomLast</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
         <slot>zoomPrevious()</slot>
+    </connection>
+    <connection>
+        <sender>actionZoomOut</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>zoomOut()</slot>
     </connection>
     <connection>
         <sender>actionZoomToSelected</sender>
@@ -667,7 +676,16 @@
         <receiver>QgisAppBase</receiver>
         <slot>zoomToSelected()</slot>
     </connection>
+    <connection>
+        <sender>drawAction</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>drawLayers()</slot>
+    </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
+</includes>
 <slots>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
@@ -695,6 +713,7 @@
     <slot>checkQgisVersion()</slot>
     <slot>select()</slot>
     <slot>exportMapServer()</slot>
+    <slot>addRasterLayer()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -70,6 +70,7 @@
 #endif
 #include "qgsmessageviewer.h"
 #include "qgsshapefilelayer.h"
+#include "qgsrasterlayer.h"
 #include "qgslayerproperties.h"
 #include "qgsabout.h"
 #include "qgspluginmanager.h"
@@ -301,6 +302,42 @@ void QgisApp::addLayer()
 
 
 }
+
+void QgisApp::addRasterLayer()
+{
+	mapCanvas->freeze();
+	QStringList files = QFileDialog::getOpenFileNames("GeoTIFF (*.tif);;All files (*.*)", 0, this, "open files dialog",
+													  "Select one or more layers to add");
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	QStringList::Iterator it = files.begin();
+	while (it != files.end()) {
+		QFileInfo fi(*it);
+		QString base = fi.baseName();
+
+		// create the layer
+		QgsRasterLayer *lyr = new QgsRasterLayer(*it, base);
+		QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
+		
+		if (lyr->isValid()) {
+			// add it to the mapcanvas collection
+			mapCanvas->addLayer(lyr);
+		} else {
+			QString msg = *it;
+			msg += " is not a valid or recognized data source";
+			QMessageBox::critical(this, "Invalid Data Source", msg);
+		}
+
+		++it;
+	}
+	
+	mapLegend->update();
+	qApp->processEvents();
+	mapCanvas->freeze(false);
+	mapCanvas->render2();
+	QApplication::restoreOverrideCursor();
+	statusBar()->message(mapCanvas->extent().stringRep());
+}
+
 #ifdef POSTGRESQL
 void QgisApp::addDatabaseLayer()
 {

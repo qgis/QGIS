@@ -99,7 +99,11 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 		  fill = new QColor(red, green, blue);
 		  sym->setFillColor(*fill);
 		  break;
-
+	  // temporary hack to allow addition of raster layers
+	  // raster layers don't have symbology. should this symbol
+	  // related code be in qgsshapefilelayer.cpp?
+	  default:
+		  sym = new QgsMarkerSymbol();
 	}
 	red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
 	green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
