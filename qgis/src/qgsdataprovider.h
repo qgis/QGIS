@@ -36,7 +36,8 @@ public:
   */
   virtual ~QgsDataProvider() {};
 
-
+  /** Used to ask the layer for its projection as a WKT string. Must be reimplemented by each provider. */
+  virtual QString getProjectionWKT()  = 0 ;
   
   /** 
     * Set the data source specification. This may be a path or database

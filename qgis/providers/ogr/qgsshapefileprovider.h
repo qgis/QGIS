@@ -18,7 +18,6 @@ email                : sherman at mrcc.com
 
 #include "../../src/qgsvectordataprovider.h"
 #include <geos.h>
-
 class QgsFeature;
 class QgsField;
 class OGRDataSource;
@@ -36,6 +35,8 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
   public:
     QgsShapeFileProvider(QString uri = 0);
     virtual ~ QgsShapeFileProvider();
+    /** Used to ask the layer for its projection as a WKT string. Implements virtual method of same name in      QgsDataProvider. */
+    QString getProjectionWKT()  {return QString("Not implemented yet");} ;    
     /**
      * Get the first feature resutling from a select operation
      * @return QgsFeature
