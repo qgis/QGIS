@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" 
-"../../build/webapp/resources/schema/dtd/document-v12.dtd">
+"../../resources/schema/dtd/document-v12.dtd">
 <document>
 	<header>
 		<title>QGIS User Guide</title>
@@ -58,12 +58,12 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 				Assuming the QGIS is installed in the PATH, you can start QGIS by typing:
 				<code>qgis</code>.</p>
 				<p>
-				In addition, you can start QGIS by specifying one or more datafiles on the commandline. For example, 
+				In addition, you can start QGIS by specifying one or more datafiles on the command line. For example, 
 				assuming you are in your data directory, you could start QGIS with two shapefiles and a raster file set to 
 				load on startup:
 				</p>
 				<p><code>qgis ak_shade.tif alaska.shp majrivers.shp </code></p>		
-				<p><img alt="QGIS Load Data On Start" src="images/qgis_load_data_on_startup.png"/></p>
+				<p><img alt="QGIS Load Data On Startup" src="images/qgis_load_data_on_startup.png"/></p>
 				<note>Your window decorations (title bar, etc.) may appear different depending on your operating system
 				and window manager</note>				
 			</section>
@@ -94,8 +94,8 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 						<li><img alt="New Project" src="images/gis_add_raster_layer.png"/> - Start a new QGIS project. If you 
 						already have a project ope, you will be asked if you would like to save the existing one first.</li>
 						<li><img alt="Open Project" src="images/gis_add_raster_layer.png"/> - Open a previously saved project.</li>
-						<li><img alt="Save Project" src="images/gis_add_raster_layer.png"/> - Save the current project.</li>
-						<li><img alt="Save Project As" src="images/gis_add_raster_layer.png"/> - Save project under a new file name.</li>
+						<li><img alt="Save Project" src="images/filesave.png"/> - Save the current project.</li>
+						<li><img alt="Save Project As" src="images/filesaveas.png"/> - Save project under a new file name.</li>
 						<li><img alt="Add Postgis Layer(s)" src="images/gis_add_pg_layer.png"/> - Add one or more layers 
 						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
 						<li><img alt="Add Vector Layer(s)" src="images/gis_add_vector_layer.png"/> - Add one or more layers 
@@ -103,14 +103,14 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 						<li><img alt="Add Raster Layers" src="images/gis_add_raster_layer.png"/> - Add one or more raster layers
 						to the map view. </li>
 						<li><img alt="Reload" src="images/gis_add_raster_layer.png"/> - Reload the current map view (refreshes display)</li>
-						<li><img alt="Zoom In" src="images/gis_add_raster_layer.png"/> - Zoom in the map display by dragging a rectangle</li>
-						<li><img alt="Zoom Out" src="images/gis_add_raster_layer.png"/> - Zoom out of the map display by dragging a rectangle.
+						<li><img alt="Zoom In" src="images/zoomin.png"/> - Zoom in the map display by dragging a rectangle</li>
+						<li><img alt="Zoom Out" src="images/viewmag-.png"/> - Zoom out of the map display by dragging a rectangle.
 						Dragging a small rectangle will zoom out a long way, dragging a large rectangle will zoom out a little way.</li>
-						<li><img alt="Zoom Full Extent" src="images/gis_add_raster_layer.png"/> - Zoom out until all features in all map layers
+						<li><img alt="Zoom Full Extent" src="images/gis_view_all.png"/> - Zoom out until all features in all map layers
 						are visible.</li>
-						<li><img alt="Zoom to Selected" src="images/gis_add_raster_layer.png"/> - Zoom to fit all selected features in the 
+						<li><img alt="Zoom to Selected" src="images/gis_zoom_to_selected.png"/> - Zoom to fit all selected features in the 
 						map view.</li>
-						<li><img alt="Pan" src="images/gis_add_raster_layer.png"/> - Pan in the map display area.</li>
+						<li><img alt="Pan" src="images/gis_pan.png"/> - Pan in the map display area.</li>
 						<li><img alt="Zoom to Previous" src="images/gis_add_raster_layer.png"/> - Zoom to last extents.</li>
 						<li><img alt="Identify" src="images/gis_add_raster_layer.png"/> - Show information about a feature (applies only to vector data).</li>
 						<li><img alt="Select Features" src="images/gis_add_raster_layer.png"/> - Select features in the map display (applies only to vector data).</li>
