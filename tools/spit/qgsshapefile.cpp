@@ -83,6 +83,7 @@ const char * QgsShapeFile::getFeatureClass(){
                     break;
           case 'C': num << (int)fda.field_length << std::ends;
                     column_types.push_back((const char *)QString("varchar(" + num.str() + ")"));
+                    std::cout << column_types[field_count] << std::endl;
                     break;
           case 'L': column_types.push_back("boolean");
                     break;
@@ -147,9 +148,15 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
         char * geo_temp = new char[num*3];
         geom->exportToWkt(&geo_temp);
         QString geometry(geo_temp);
-    
-        for(int n=0; n<column_names.size(); n++)
-          query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
+
+        char quotes;
+        for(int n=0; n<column_types.size(); n++){
+          if(column_types[n] == "int" || column_types[n] == "float")
+            quotes = ' ';
+          else
+            quotes = '\'';
+          query += quotes+QString(feat->GetFieldAsString(n))+QString(quotes + ", ");
+        }
         query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
         conn->ExecTuplesOk((const char *)query);
 
