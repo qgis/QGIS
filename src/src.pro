@@ -27,7 +27,8 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgsmarkersymbol.h \
            qgslinesymbol.h \
            qgspolygonsymbol.h \
-           qgslegend.h
+           qgslegend.h  \
+           qgslegenditem.h
            
 INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui
 SOURCES += main.cpp \
@@ -42,4 +43,5 @@ SOURCES += main.cpp \
            qgsrect.cpp \
            qgspoint.cpp \
            qgscoordinatetransform.cpp \
-           qgslegend.cpp
+           qgslegend.cpp \
+           qgslegenditem.cpp
