@@ -27,7 +27,7 @@
 
 class QgsAttributeTable;
 class QgsVectorLayer;
-class QMenuBar;
+class QPopupMenu;
 
 /**
   *@author Gary E.Sherman
@@ -43,12 +43,13 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
 	void setTitle(QString title);
  protected:
 	QgsVectorLayer* mLayer;
-	QMenuBar* mMenuBar;
+	QPopupMenu* edit;
  protected slots:
      void deleteAttributes();
      void addAttribute();
      void startEditing();
      void stopEditing();
+     void selectedToTop();
 };
 
 #endif

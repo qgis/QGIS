@@ -484,3 +484,31 @@ void QgsAttributeTable::removeAttrColumn(const QString& name)
 	}
     }
 }
+
+void QgsAttributeTable::bringSelectedToTop()
+{
+    blockSignals(true);
+    int swaptorow=0;
+    std::list<QTableSelection> selections;
+    for(int i=0;i<numSelections();++i)
+    {
+	selections.push_back(selection(i));
+    }
+
+    QTableSelection sel;
+
+    for(std::list<QTableSelection>::iterator iter=selections.begin();iter!=selections.end();++iter)
+    {
+	for(int j=iter->topRow();j<=iter->bottomRow();++j)
+	{
+#ifdef QGISDEBUG
+	    qWarning("swapping rows "+QString::number(j)+" and "+QString::number(swaptorow));
+#endif	    
+	    swapRows(j,swaptorow);
+	    selectRow(swaptorow);
+	    ++swaptorow;
+	}
+	removeSelection(*iter);
+    }
+    blockSignals(false);
+}
