@@ -186,3 +186,9 @@ void QgisAppBase::saveMapAsImage()
 {
 
 }
+
+
+void QgisAppBase::whatsThis()
+{
+
+}
