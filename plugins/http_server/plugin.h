@@ -1,11 +1,11 @@
 /***************************************************************************
-                          plugin.h 
- Functions:
-                             -------------------
-    begin                : Jan 21, 2004
-    copyright            : (C) 2004 by Tim Sutton
-    email                : tim@linfiniti.com
-  
+  plugin.h 
+Functions:
+-------------------
+begin                : Jan 21, 2004
+copyright            : (C) 2004 by Tim Sutton
+email                : tim@linfiniti.com
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /*  $Id$ */
+/*  $Id$ */
 #ifndef PLUGIN
 #define PLUGIN
 #include <qgisplugin.h>
@@ -27,10 +27,10 @@
 #include <qwidget.h>
 #include "httpdaemon.h"
 /**
-* \class Plugin
-* \brief OpenModeller plugin for QGIS
-*
-*/
+ * \class Plugin
+ * \brief OpenModeller plugin for QGIS
+ *
+ */
 class Plugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
@@ -45,13 +45,22 @@ class Plugin:public QObject, public QgisPlugin
   virtual void initGui();
   //! Destructor
   virtual ~ Plugin();
-  public slots:
+public slots:
   //! Show the dialog box
   void run();
-  //!draw a raster layer in the qui
-  void drawRasterLayer(QString);
-  //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-  void drawVectorLayer(QString,QString,QString);
+  //! Load a project file
+  void loadProject(QString theProjectFile);
+  //! Load a raster file on its own
+  void loadRasterFile(QString theRasterFile);
+  //! Load a raster file over a project
+  void loadRasterFile(QString theRasterFile, QString theProjectFile);
+  //! Load a vector file on its own
+  void loadVectorFile(QString theVectorFile);
+  //! Load a vector file over a project
+  void loadVectorFile(QString theVectorFile, QString theProjectFile);
+
+
+
   //! unload the plugin
   void unload();
   //! show the help document
@@ -62,9 +71,9 @@ class Plugin:public QObject, public QgisPlugin
   void stopServer();
   //! Passed by the http daemon when it receives a new request
   void requestReceived(QString);
-  
-private:
-  
+
+    private:
+
   HttpDaemon * mHttpDaemon;
   int pluginType;
   //! Id of the plugin's menu. Used for unloading

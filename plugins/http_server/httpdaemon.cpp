@@ -27,6 +27,33 @@ HttpDaemon::HttpDaemon( QObject* parent ) : QServerSocket(8081,1,parent)
 HttpDaemon::~HttpDaemon()
 {
 }
+//
+// Accessors and mutators
+//
+
+void HttpDaemon::setProject(QString theProject)
+{
+ mProject=theProject;
+}
+
+QString HttpDaemon::project()
+{
+ return mProject;
+}
+
+void HttpDaemon::setBasePath(QString theBasePath)
+{
+ mBasePath=theBasePath;
+}
+QString HttpDaemon::basePath()
+{
+  return mBasePath;
+}
+
+
+//
+// Web Server Functions
+//
 void HttpDaemon::newConnection( int theSocket )
 {
   // When a new client connects, the server constructs a QSocket and all
@@ -53,12 +80,16 @@ void HttpDaemon::readClient()
   if (myQSocket->canReadLine() )
   {
     QString myLineString = myQSocket->readLine();
+    //emit the request we got so it can be logged
+    emit requestReceived(myLineString);
     QStringList myTokens = QStringList::split( QRegExp("[ \n\r][ \n\r]*"),myLineString );
     if ( myTokens[0] == "GET" )
     {
+      emit requestReceived(QString("Get Request Received"));
       //check if we got a reasonable request, if we didnt we will close the connection straightaway
       if (myTokens[1])
       {
+        emit requestReceived(QString("Found at least one parameter to get request..."));
         //strip off leading "/"	    
         QString myTokenString = myTokens[1];	      
         myTokenString.replace(QRegExp("^/"),"");
@@ -67,23 +98,84 @@ void HttpDaemon::readClient()
         myTokens = QStringList::split( QString("="),myTokenString );
         //see if the key part is valid
         myTokenString = myTokens[0];
-        if (myTokenString != "mapfile")
+        emit requestReceived(QString("Token 0 : ")+ myTokenString);
+        //
+        // Command : project
+        //
+        // the project command is used to load a .qgs project file
+        // this functionality may well be removed in the future.
+        //
+        if (myTokenString == "project")
         {
-          closeStreamWithError(QString("Request is not for a mapfile. Currently only mapfile requests are supported."));
+          //see if the value part is valid (it must include a .qgs file!
+          myTokenString = myTokens[1];
+          if (myTokenString.right(4) != QString(".qgs"))
+          {
+            closeStreamWithError(QString("Project request made but no valid project parameter passed."));
+            return;
+          }
+          mProject=myTokenString;
+          emit clearMap();
+          requestCompleted(QString("Project now set to ") + myTokenString);
           return;
         }
-        //see if the value part is valid (it must include a .qgs file!
-        myTokenString = myTokens[1];
-        if (myTokenString.right(4) != QString(".qgs"))
+        //
+        // Command : showRasterLayer
+        //
+        // The show raster layer command is used to show a raster layer that exists
+        // on the server's file system. All paths will be relative to the 
+        // HttpDaemon basePath member. Any ../ will be stripped out of the path
+        // to prevent the user requesting a file that is not below basePath.
+        //
+        // The mProject (if set) will be reloaded and the specified rasterLayer will
+        // be displayed over the top of that.
+        // 
+        else if (myTokenString == "showRasterLayer")
         {
-          closeStreamWithError(QString("Mapfile request made but no valid mapfile parameter passed."));
-          return;
+          myTokenString = myTokens[1];
+          if (mProject=="" || mProject==NULL)
+          {
+            //load the raster on its own
+            emit clearMap();
+            emit loadRasterFile(myTokenString);
+          }
+          else
+          {
+            //load it over the project
+            emit loadProject(mProject);
+            emit loadRasterFile(myTokenString,mProject);
+          }
         }
-        else //everything looks ok!
+        //
+        // Command : showVectorLayer
+        //
+        // The show vector layer command is used to show a vector layer that exists
+        // on the server's file system. All paths will be relative to the 
+        // HttpDaemon basePath member. Any ../ will be stripped out of the path
+        // to prevent the user requesting a file that is not below basePath.
+        //
+        // The mProject (if set) will be reloaded and the specified vector will
+        // be displayed over the top of that.
+        // 
+        else if (myTokenString == "showVectorLayer")
         {
-          //emit request received (to be displayed in debug tab of gui)
-          //and processed by plugin (request must be a qgs project!)
-          emit requestReceived(myTokenString);
+          myTokenString = myTokens[1];
+          if (mProject=="" || mProject==NULL)
+          {
+            //load the vector on its own
+            emit clearMap();
+            emit loadVectorFile(myTokenString);
+          }
+          else
+          {
+            //load it over the project
+            emit loadProject(mProject);
+            emit loadVectorFile(myTokenString,mProject);
+          }
+        }
+        else //something was wrong!
+        {
+          closeStreamWithError(QString("Request is not for a valid."));
           return;
         }
       }

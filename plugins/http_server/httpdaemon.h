@@ -33,10 +33,21 @@ public:
   HttpDaemon( QObject* parent=0 );
   ~HttpDaemon();
   void newConnection( int socket );
-
+  //accessor and mutator for current project
+  void setProject(QString);
+  QString project();
+  //accessor and mutator for base path
+  void setBasePath(QString);
+  QString basePath();
 signals:
-  void requestReceived(QString); //passes out qgs project file name
-  void makeMap(QString); //passed out
+  void requestReceived(QString); //used to notify listeners when a web client connects
+  void loadProject(QString); //loads the project file
+  void loadRasterFile(QString);//loads a rasterfile on its own using defaults 
+  void loadRasterFile(QString,QString);//loads a rasterfile (arg1) over the current project (arg2)
+  void loadVectorFile(QString);//loads a vector file on its own using defaults
+  void loadVectorFile(QString,QString);//loads a vectorfile (arg1) over the current project (arg2)
+  void setExtents(int,int,int,int);//zooms to x1,y1 - x2,y2
+  void clearMap(); //remove all layers from the map
   void newConnect(QString); //passed out
   void endConnect(QString); //passed out
   void wroteToClient(QString); //passed out
@@ -44,11 +55,13 @@ signals:
 public slots:
   void requestCompleted(QString); //used to return text to the browser
   void requestCompleted( QPixmap *theQPixmap); //used to return an image to the browser
+  void closeStreamWithError(QString);
 
 private slots:
   void readClient();
   void discardClient();
-  void closeStreamWithError(QString);
 private:
+  QString mBasePath;
+  QString mProject;
 };
 #endif

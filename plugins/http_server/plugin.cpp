@@ -109,25 +109,12 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"QGis Http Server",true,0);
   //listen for when the layer has been made so we can draw it
-  
+
   connect(mHttpDaemon, SIGNAL(newConnect(QString)), myPluginGui, SLOT(newConnect(QString)));
   connect(mHttpDaemon, SIGNAL(endConnect(QString)), myPluginGui, SLOT(endConnect(QString)));
   connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToClient(QString)));
   connect(mHttpDaemon, SIGNAL(requestReceived(QString)), myPluginGui, SLOT(requestReceived(QString)));
-  connect(mHttpDaemon, SIGNAL(requestReceived(QString)), this, SLOT(requestReceived(QString)));
   myPluginGui->show();
-}
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void Plugin::drawRasterLayer(QString theQString)
-{
-  qGisInterface->addRasterLayer(theQString);
-}
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
-{
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -146,6 +133,10 @@ void Plugin::unload()
 void Plugin::startServer()
 { 
   mHttpDaemon = new HttpDaemon( this );
+  connect(mHttpDaemon, SIGNAL(loadRasterFile(QString)), this, SLOT(loadRasterFile(QString)));
+  connect(mHttpDaemon, SIGNAL(loadRasterFile(QString,QString)), this, SLOT(loadRasterFile(QString,QString)));
+  connect(mHttpDaemon, SIGNAL(loadVectorFile(QString)),this, SLOT(loadVectorFile(QString))) ;
+  connect(mHttpDaemon, SIGNAL(loadVectorFile(QString,QString)), this, SLOT(loadVectorFile(QString,QString)));
 
 }
 
@@ -157,25 +148,59 @@ void Plugin::stopServer()
   
 }
 
-void Plugin::requestReceived(QString theQString)
+void Plugin::loadProject(QString theProjectFile)
 {
-  std::cout << "Recevied request to open " << theQString << std::endl;
+  std::cout << "Recevied loadProject request to open " << theProjectFile << std::endl;
   //do all the stuff needed to open the project and take a snapshot of it
-  if (qGisInterface->addProject(theQString))
-  {
-    //let the httpdserver know we are finished and pass it back the output filename
-    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
-
-  }
-  else
+  if (!qGisInterface->addProject(theProjectFile))
   {
     //let the httpdserver know we are finished and pass it back the output filename
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
   }
 }
 
+void Plugin::loadRasterFile(QString theRasterFile)
+{
 
+  if ( qGisInterface->addRasterLayer(theRasterFile))
+  {
+    //let the httpdserver know we are finished and pass it back the canvas image
+    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+  }
+  else
+  {
+    //let the httpdserver know we are finished and pass it back the error
+    mHttpDaemon->closeStreamWithError(QString("Failed opening raster layer : ")+theRasterFile);
+  }
+}
 
+void Plugin::loadRasterFile(QString theRasterFile, QString theProjectFile)
+{
+  loadProject(theProjectFile);
+  loadRasterFile(theRasterFile);
+}
+
+void Plugin::loadVectorFile(QString theVectorFile)
+{
+
+  // Add a vector layer given vectorLayerPath, layer name, providerKey ("ogr" or "postgres");
+  if ( qGisInterface->addVectorLayer(theVectorFile, QString("MapLayer"),QString("ogr")))
+  {
+    //let the httpdserver know we are finished and pass it back the canvas image
+    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+  }
+  else
+  {
+    //let the httpdserver know we are finished and pass it back the error
+    mHttpDaemon->closeStreamWithError(QString("Failed opening vector layer : ")+theVectorFile);
+  }
+}
+
+void Plugin::loadVectorFile(QString theVectorFile, QString theProjectFile)
+{
+  loadProject(theProjectFile);
+  loadVectorFile(theVectorFile);
+}
 
 
 ///////////////////////////////////////////////////////////
