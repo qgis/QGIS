@@ -1,8 +1,8 @@
 /***************************************************************************
-                         qgsgeomtypedialog.cpp  -  description
+                         qgsdelattrdialog.h  -  description
                              -------------------
-    begin                : October 2004
-    copyright            : (C) 2004 by Marco Hugentobler
+    begin                : January 2005
+    copyright            : (C) 2005 by Marco Hugentobler
     email                : marco.hugentobler@autoform.ch
  ***************************************************************************/
 
@@ -14,36 +14,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
-#include "qgsgeomtypedialog.h"
-#include <qradiobutton.h>
 
-QgsGeomTypeDialog::QgsGeomTypeDialog(): QgsGeomTypeDialogBase()
+#ifndef QGSDELATTRDIALOG_H
+#define QGSDELATTRDIALOG_H
+
+#ifdef WIN32
+#include "qgsdelattrdialogbase.h"
+#else
+#include "qgsdelattrdialogbase.uic.h"
+#endif
+
+#include <list.h>
+
+class QHeader;
+
+class QgsDelAttrDialog: public QgsDelAttrDialogBase
 {
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    mPointRadioButton->setChecked(true);
-}
+    Q_OBJECT
+ public:
+    QgsDelAttrDialog(QHeader* header);
+    const std::list<QString>* selectedAttributes();
+ protected:
+    std::list<QString> mSelectedItems;
+};
 
-QgsGeomTypeDialog::~QgsGeomTypeDialog()
-{
-
-}
-
-QGis::WKBTYPE QgsGeomTypeDialog::selectedType()
-{
-    if(mPointRadioButton->isChecked())
-    {
-	return QGis::WKBPoint;
-    }
-    else if(mLineRadioButton->isChecked())
-    {
-	return QGis::WKBLineString;
-    }
-    else if(mPolygonRadioButton->isChecked())
-    {
-	return QGis::WKBPolygon;
-    }
-
-    return QGis::WKBUnknown;
-}
+#endif
