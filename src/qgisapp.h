@@ -25,6 +25,7 @@ class QScrollView;
 class QgsPoint;
 class QgsLegend;
 class QVBox;
+class QCursor;
 class QListView;
 class QListViewItem;
 #include "qgisappbase.h"
@@ -55,6 +56,7 @@ public:
 	void zoomFull();
 	//! Set map tool to pan
 	void pan();
+	void identify();
 	//! Read Well Known Binary stream from PostGIS
 	//void readWKB(const char *, QStringList tables);
 	//! Draw a point on the map canvas
@@ -85,7 +87,7 @@ QListView *legendView;
 QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
 QgsLegend *mapLegend;
-
+QCursor *mapCursor;
 //! scale factor
  double scaleFactor;
  //! Current map window extent in real-world coordinates

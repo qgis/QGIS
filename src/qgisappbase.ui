@@ -400,6 +400,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>addDatabaseLayer()</slot>
     </connection>
+    <connection>
+        <sender>actionIdentify</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>identify()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
