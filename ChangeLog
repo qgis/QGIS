@@ -1,9 +1,19 @@
 QGIS Change Log
-ChangeLog,v 1.23 2004/02/27 05:51:37 gsherman Exp
+ChangeLog,v 1.24 2004/02/27 08:46:51 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
 
-2004-02-26 [ts] 0.1.0devel3
+2004-02-27 [ts]
+** Changed cl parser to getopt
+   Moved project loading out of loop that loads layers - you now need to specify
+   --project filename to load a filename. This ensures that you only try to load 
+   one project file.
+   Added --snapshot filename parameter that will load layers and project files
+   specified, take a screenie of the map view and save it to disk as filename - 
+   this is under construction still.
+   Added saveMapAsImage(QString) to qgisapp so above cl option can be used.
+ 
+2004-02-26 [ts]
 ** Added a tab to raster layer properties dialog to show metadata about the
    raster layer (using gdal metadata)
 
