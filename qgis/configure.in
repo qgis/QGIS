@@ -158,6 +158,7 @@ AC_CONFIG_FILES([
   plugins/spit/Makefile
   plugins/example/Makefile
   plugins/maplayer/Makefile
+  plugins/geoprocessing/Makefile
 ])
 
 AC_OUTPUT
