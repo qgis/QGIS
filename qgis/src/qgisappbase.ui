@@ -233,7 +233,7 @@
             <cstring>mPluginToolBar</cstring>
         </property>
         <property name="label">
-            <string>Toolbar</string>
+            <string>Plugins Toolbar</string>
         </property>
     </toolbar>
 </toolbars>
