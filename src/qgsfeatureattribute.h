@@ -48,6 +48,10 @@ public:
 	*/
   QString const & fieldValue() const;
 
+  void setFieldName(QString name){field=name;}
+
+  void setFieldValue(QString thevalue){value=thevalue;}
+
 private:
 
   //! attribute field name

@@ -15,6 +15,7 @@ email                : sherman at mrcc.com
 /* $Id$ */
 
 #include "qgsfeature.h"
+#include "qgsattributedialog.h"
 
 #include <iostream>
 
@@ -211,4 +212,16 @@ bool QgsFeature::isValid() const
 void QgsFeature::setValid(bool validity)
 {
   mValid = validity;
+}
+
+void QgsFeature::attributeDialog()
+{
+    QgsAttributeDialog attdialog(&attributes);
+    if(attdialog.exec()==QDialog::Accepted)
+    {
+	for(int i=0;i<attributes.size();++i)
+	{
+	    attributes[i].setFieldValue(attdialog.value(i));
+	}
+    }
 }
