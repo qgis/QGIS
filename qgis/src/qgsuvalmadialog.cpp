@@ -27,6 +27,8 @@
 #include "qgssvgcache.h"
 #include "qgsrenderitem.h"
 #include "qgsuvalmarenderer.h"
+
+#include <qapplication.h> //needed for finding qApp->qApplicationDirPath()
 #include <qwidgetstack.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
@@ -304,6 +306,9 @@ void QgsUValMaDialog::changeClassificationAttribute(int nr)
 	    QgsMarkerSymbol* sym = 
 	      dynamic_cast<QgsMarkerSymbol*>(it->second->getSymbol());
 	    assert(sym != NULL);
+#ifdef WIN32
+            QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
 	    sym->setPicture(QString(PKGDATAPATH) + "/svg/symbol/Cross4.svg");
 	    sym->setScaleFactor(minSize + (maxSize - minSize) * frac);
 	    ++number;
