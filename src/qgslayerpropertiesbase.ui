@@ -39,25 +39,6 @@
                 <attribute name="title">
                     <string>Symbology</string>
                 </attribute>
-                <widget class="QFrame">
-                    <property name="name">
-                        <cstring>frmOutlineColor</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>85</x>
-                            <y>15</y>
-                            <width>31</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
-                    <property name="frameShape">
-                        <enum>StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                </widget>
                 <widget class="QLabel">
                     <property name="name">
                         <cstring>TextLabel1_2</cstring>
@@ -74,57 +55,6 @@
                         <string>Fill Color</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnSetColor</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>120</x>
-                            <y>15</y>
-                            <width>26</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnSetFillColor</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>120</x>
-                            <y>50</y>
-                            <width>26</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                </widget>
-                <widget class="QFrame">
-                    <property name="name">
-                        <cstring>frmFillColor</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>85</x>
-                            <y>50</y>
-                            <width>31</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
-                    <property name="frameShape">
-                        <enum>StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                </widget>
                 <widget class="QLabel">
                     <property name="name">
                         <cstring>TextLabel1</cstring>
@@ -139,6 +69,45 @@
                     </property>
                     <property name="text">
                         <string>Outline color</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnSetFillColor</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>90</x>
+                            <y>45</y>
+                            <width>35</width>
+                            <height>25</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnSetColor</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>90</x>
+                            <y>15</y>
+                            <width>35</width>
+                            <height>25</height>
+                        </rect>
+                    </property>
+                    <property name="paletteForegroundColor">
+                        <color>
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="text">
+                        <string></string>
                     </property>
                 </widget>
             </widget>

@@ -408,12 +408,24 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 	}
 	QgsLayerProperties *lp = new QgsLayerProperties(lyr);
 	if (lp->exec()) {
+		qApp->processEvents();
 		// apply changes
 		mapCanvas->render2();
 	}
 }
 void QgisApp::removeLayer()
 {
+	mapCanvas->freeze();
+	QListViewItem *lvi = legendView->currentItem();
+	QgsMapLayer *lyr = ((QgsLegendItem *) lvi)->layer();
+	mapCanvas->remove(lyr->name());
+	mapLegend->update();
+	mapCanvas->freeze(false);
+	// draw the map
+	mapCanvas->clear();
+	mapCanvas->render2();
+	
+	
 }
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int i)
 {

@@ -17,6 +17,7 @@
  ***************************************************************************/
 #include <qframe.h>
 #include <qcolordialog.h>
+#include <qpushbutton.h>
 #include "qgsmaplayer.h"
 #include "qgssymbol.h"
 #include "qgslayerproperties.h"
@@ -25,8 +26,10 @@ QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 {
 	// populate the property sheet based on the layer properties
 	sym = layer->symbol();
-	frmOutlineColor->setBackgroundColor(sym->color());
-	frmFillColor->setBackgroundColor(sym->fillColor());
+
+	btnSetColor->setPaletteBackgroundColor(sym->color());
+	
+	btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
 	setCaption("Layer Properties - " + lyr->name());
 }
 
@@ -38,7 +41,8 @@ void QgsLayerProperties::selectFillColor()
 
 	QColor fc = QColorDialog::getColor(sym->fillColor(), this);
 	if (fc.isValid()) {
-		frmFillColor->setBackgroundColor(fc);
+		
+		btnSetFillColor->setPaletteBackgroundColor(fc);
 		sym->setFillColor(fc);
 	}
 }
@@ -46,7 +50,8 @@ void QgsLayerProperties::selectOutlineColor()
 {
 	QColor oc = QColorDialog::getColor(sym->color(), this);
 	if (oc.isValid()) {
-		frmOutlineColor->setBackgroundColor(oc);
+		
+		btnSetColor->setPaletteBackgroundColor(oc);
 		sym->setColor(oc);
 	}
 }
