@@ -209,7 +209,7 @@
 &lt;p&gt;Select a GPX or LOC file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX é o &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;formato para troca de dados de GPS&lt;/a&gt;, o qual é utilizado para armazenar informações sobre waypoints, rotas e trilhas. LOC é o formato de waypoints do &lt;a href=&quot;http://www.geocaching.com&quot;&gt;geocaching.com.&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Selecione um arquivo GPX ou LOC e depois selecione o tipo de feição que deseja carregar.&lt;/p&gt;
@@ -370,7 +370,7 @@
     </message>
     <message>
         <source>Load GPX or LOC</source>
-        <translation>Carregar GPX ou LOC</translation>
+        <translation type="obsolete">Carregar GPX ou LOC</translation>
     </message>
     <message>
         <source>Import other file</source>
@@ -389,7 +389,7 @@ and a name for the new layer. All file formats can not store waypoints, routes, 
 tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;QGIS pode carregar arquivos GPX e LOC, mas é possível fazer a conversão de outros
 formatos para GPX utilizando o GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
@@ -648,6 +648,34 @@ nas propriedades do projeto.&lt;/p&gt;
         <source>Automatically snap to round number on resize</source>
         <translation>Arredondar números automaticamente ao redimensionar</translation>
     </message>
+    <message>
+        <source>Load GPX file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
+&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QFileDialog</name>
@@ -658,6 +686,10 @@ nas propriedades do projeto.&lt;/p&gt;
     <message>
         <source>Save file dialog</source>
         <translation>Salvar Arquivo</translation>
+    </message>
+    <message>
+        <source>Open an OGR Supported Data Source</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -748,7 +780,7 @@ nas propriedades do projeto.&lt;/p&gt;
     </message>
     <message>
         <source>Sourceforge Project Page: http://sourceforge.net/projects/qgis</source>
-        <translation>Página do Projeto no Sourceforge: http://sourceforge.net/projects/qgis</translation>
+        <translation type="obsolete">Página do Projeto no Sourceforge: http://sourceforge.net/projects/qgis</translation>
     </message>
     <message>
         <source>Version</source>
@@ -948,7 +980,7 @@ nas propriedades do projeto.&lt;/p&gt;
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
-        <translation>Site: http://qgis.org</translation>
+        <translation type="obsolete">Site: http://qgis.org</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
@@ -969,6 +1001,18 @@ nas propriedades do projeto.&lt;/p&gt;
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantum GIS is licensed under the GNU General Public License</source>
+        <translation type="unfinished">Quantum GIS está sob a licença GNU General Public License</translation>
+    </message>
+    <message>
+        <source>http://www.gnu.org/licenses</source>
+        <translation type="unfinished">http://www.gnu.org/licenses</translation>
     </message>
 </context>
 <context>
@@ -1533,6 +1577,22 @@ nas propriedades do projeto.&lt;/p&gt;
         <source>Map Edit Tools</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capture points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugins Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAbout</name>
@@ -1554,7 +1614,7 @@ nas propriedades do projeto.&lt;/p&gt;
     </message>
     <message>
         <source>Quantum GIS (qgis)</source>
-        <translation>Quantum GIS (qgis)</translation>
+        <translation type="obsolete">Quantum GIS (qgis)</translation>
     </message>
     <message>
         <source>What&apos;s New</source>
@@ -1562,15 +1622,15 @@ nas propriedades do projeto.&lt;/p&gt;
     </message>
     <message>
         <source>License</source>
-        <translation>Licença</translation>
+        <translation type="obsolete">Licença</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation>http://www.gnu.org/licenses</translation>
+        <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation>Quantum GIS está sob a licença GNU General Public License</translation>
+        <translation type="obsolete">Quantum GIS está sob a licença GNU General Public License</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -1626,11 +1686,32 @@ nas propriedades do projeto.&lt;/p&gt;
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <source>Peter Brewer</source>
         <translation>Peter Brewer</translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
+&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Home Page</source>
+        <translation type="unfinished">Página do QGIS</translation>
+    </message>
+    <message>
+        <source>Subscribe to the QGIS-User mailing list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Providers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2139,6 +2220,10 @@ nas propriedades do projeto.&lt;/p&gt;
         <source>Unique Value</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unique Value Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerPropertiesBase</name>
@@ -2235,10 +2320,6 @@ nas propriedades do projeto.&lt;/p&gt;
         <translation>Tipo da legenda:</translation>
     </message>
     <message>
-        <source>Display/label field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Labels</source>
         <translation type="unfinished">Labels</translation>
     </message>
@@ -2314,44 +2395,44 @@ de Escala</translation>
     <name>QgsGraSyExtensionWidget</name>
     <message>
         <source>Lower</source>
-        <translation>Limite inferior</translation>
+        <translation type="obsolete">Limite inferior</translation>
     </message>
     <message>
         <source>Upper</source>
-        <translation>Limite superior</translation>
+        <translation type="obsolete">Limite superior</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Identificação</translation>
+        <translation type="obsolete">Identificação</translation>
     </message>
     <message>
         <source>Outline
 Color</source>
-        <translation>Cor da
+        <translation type="obsolete">Cor da
 borda</translation>
     </message>
     <message>
         <source>Outline
 Style</source>
-        <translation>Estilo  da
+        <translation type="obsolete">Estilo  da
 Borda</translation>
     </message>
     <message>
         <source>Outline
 Width</source>
-        <translation>Largura da
+        <translation type="obsolete">Largura da
 Borda</translation>
     </message>
     <message>
         <source>Fill
 Color</source>
-        <translation>Preencher
+        <translation type="obsolete">Preencher
 Cor</translation>
     </message>
     <message>
         <source>Fill
 Pattern</source>
-        <translation>Padrão de
+        <translation type="obsolete">Padrão de
 preenchimento</translation>
     </message>
 </context>
@@ -2720,6 +2801,228 @@ Ajuda do QGIS</translation>
     <message>
         <source>Close</source>
         <translation>Fechar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLUDialogBase</name>
+    <message>
+        <source>Enter class bounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <source>Upper value</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsLabelDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation type="unfinished">Forma1</translation>
+    </message>
+    <message>
+        <source>Source:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field containing label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Rocks!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font size units are in ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency:</source>
+        <translation type="unfinished">Transparência:</translation>
+    </message>
+    <message>
+        <source>Colour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Offset (pts):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Offset (pts):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset units are in ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer Labels?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer size is in ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size is in map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size is in points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Below Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Below Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle (deg):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>°</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use best judgement when labels collide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data Defined Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Font family:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Italic:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Underline:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Bold:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Coordinate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Coordinate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Placement:</source>
+        <translation type="unfinished">Posicionamento:</translation>
+    </message>
+    <message>
+        <source>&amp;Colour:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4026,6 +4329,10 @@ feições sem aumentar o zoom na camada.
         <source>Fill</source>
         <translation>Preenchimento</translation>
     </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Identificação</translation>
+    </message>
 </context>
 <context>
     <name>QgsSpitBase</name>
@@ -4198,6 +4505,21 @@ feições sem aumentar o zoom na camada.
     </message>
 </context>
 <context>
+    <name>QgsUValMaDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation type="unfinished">Forma1</translation>
+    </message>
+    <message>
+        <source>Classification Field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation type="unfinished">Novo Item</translation>
+    </message>
+</context>
+<context>
     <name>QgsVectorLayer</name>
     <message>
         <source>No features found</source>
@@ -4240,15 +4562,15 @@ feições sem aumentar o zoom na camada.
     <name>QgsVectorLayerProperties</name>
     <message>
         <source>single symbol</source>
-        <translation>Único Símbolo</translation>
+        <translation type="obsolete">Único Símbolo</translation>
     </message>
     <message>
         <source>graduated symbol</source>
-        <translation>símbolo graduado</translation>
+        <translation type="obsolete">símbolo graduado</translation>
     </message>
     <message>
         <source>continuous color</source>
-        <translation>cor contínua</translation>
+        <translation type="obsolete">cor contínua</translation>
     </message>
 </context>
 <context>
