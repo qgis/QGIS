@@ -153,7 +153,8 @@ void Plugin::renderNorthArrow()
 if (mEnable)
 {
   QPixmap myQPixmap; //to store the north arrow image in
-  QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
+  QString myFileNameQString = QString(PKGDATAPATH) + 
+      QString("/images/north_arrows/default.png");
   //std::cout << "Trying to load " << myFileNameQString << std::cout;
   if (myQPixmap.load(myFileNameQString))
   {
@@ -165,12 +166,11 @@ if (mEnable)
     double centerYDouble = myQPixmap.height()/2;
     //save the current canvas rotation
     myQPainter.save();
-    //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
-
-    //rotate the canvas
-    myQPainter.rotate( mRotationInt );
-    //work out how to shift the image so that it appears in the center of the canvas
+    //
+    //work out how to shift the image so that it rotates
+    //           properly about its center
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
+    //
     const double PI = 3.14159265358979323846;
     double myRadiansDouble = (PI/180) * mRotationInt;
     int xShift = static_cast<int>((
@@ -186,42 +186,32 @@ if (mEnable)
     int myHeight = qGisInterface->getMapCanvas()->height();
     int myWidth = qGisInterface->getMapCanvas()->width();
 
+#ifdef QGISDEBUG
+      std::cout << "Rendering n-arrow at " << mPlacement << std::endl; 
+#endif
     //Determine placement of label from form combo box
     if (mPlacement==tr("Bottom Left"))
     {
-#ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at bottom left: x = " << xShift 
-          << " y = " << myHeight-(myQPixmap.height()-yShift)  
-          << "Rotation : " << mRotationInt << std::endl;
-#endif
-      myQPainter.drawPixmap(xShift,myHeight-(myQPixmap.height()+yShift),myQPixmap);	
+      myQPainter.translate(0,myHeight-myQPixmap.height());	
     }
     else if (mPlacement==tr("Top Right"))
     {
-#ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at top right: x = "  << myWidth - myQPixmap.width()
-          << " y = " << myHeight-(myQPixmap.height()-yShift) << std::endl;
-#endif
-      myQPainter.drawPixmap(myWidth-myQPixmap.width(),yShift,myQPixmap);	
+      myQPainter.translate(myWidth-myQPixmap.width(),0);	
     }
     else if (mPlacement==tr("Bottom Right"))
     {
-#ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at bottom right: x = " << xShift-(myQPixmap.width()-xShift) 
-          << " y = " << myHeight-(myQPixmap.height()-yShift) << std::endl;
-#endif
-      myQPainter.drawPixmap(myWidth-(myQPixmap.width()-xShift),myHeight-(myQPixmap.height()-yShift),myQPixmap);	
+      myQPainter.translate(myWidth-myQPixmap.width(),
+                           myHeight-myQPixmap.height());	
     }
     else // defaulting to top left
     {
-#ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at top left: x = " << xShift << " y = " << yShift << std::endl;
-#endif
-      myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
+      //no need to translate for TL corner because we're already at the origin
+      myQPainter.translate(0, 0); 
     }
-
-
-
+    //rotate the canvas by the north arrow rotation amount
+    myQPainter.rotate( mRotationInt );
+    //Now we can actually do the drawing
+    myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
 
     //unrotate the canvase again
     myQPainter.restore();
