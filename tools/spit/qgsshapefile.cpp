@@ -163,6 +163,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";            
   if(result) res = PQexec(conn, (const char *)query);
+  std::cout << PQresStatus(PQresultStatus(res)) << std::endl;
   /*if(PQresultStatus(res)!=PGRES_COMMAND_OK){
     result = false;    
   }
