@@ -334,7 +334,7 @@ public:
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
      void drawThumbnail(QPixmap * theQPixmap);
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).  */
-    void draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform, QPaintDevice* src, QPaintDevice* dst);
+    void draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform, QPaintDevice* dst);
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
     void draw (QPainter * theQPainter, RasterViewPort * myRasterViewPort);
     
