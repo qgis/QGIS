@@ -258,8 +258,6 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
     qWarning("in changeClassificationAttribute, nr is: "+QString::number(nr));
 #endif
 
-    //todo: reset sdialog
-
     //delete old entries
     for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
@@ -293,6 +291,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 		ritemptr=new QgsRenderItem(symbol,"","");
 		mValues.insert(std::make_pair(value,ritemptr));
 	    }
+	    delete f;
 	}
 
 	//set symbology for all QgsSiSyDialogs
