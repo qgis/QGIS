@@ -97,6 +97,8 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	    QgsSymbol* sym=new QgsSymbol();
 	    sym->setPen(item->getSymbol()->pen());
 	    sym->setBrush(item->getSymbol()->brush());
+	    sym->setPointSymbol(item->getSymbol()->pointSymbol());
+	    sym->setPointSize(item->getSymbol()->pointSize());
 	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
 	    mValues.insert(std::make_pair(itemvalue,ritem));
 	    mClassBreakBox->insertItem(itemvalue);
@@ -169,6 +171,8 @@ void QgsUValDialog::apply()
 	    QgsSymbol* newsymbol=new QgsSymbol();
 	    newsymbol->setPen(symbol->pen());
 	    newsymbol->setBrush(symbol->brush());
+	    newsymbol->setPointSymbol(symbol->pointSymbol());
+	    newsymbol->setPointSize(symbol->pointSize());
 	    QgsRenderItem* ritem=new QgsRenderItem(newsymbol,it->first,it->second->label());
 	    renderer->insertValue(it->first,ritem);
 	    //find out the width of the string
@@ -251,15 +255,15 @@ void QgsUValDialog::apply()
 	}
 	else if (mVectorLayer->vectorType() == QGis::Point)
 	{
-	    p.drawRect(leftspace + symbolwidth / 2, intermheight + (int) ((rowheight+rowspace) * (row + 0.5)),5,5);
+	   // p.drawRect(leftspace + symbolwidth / 2, intermheight + (int) ((rowheight+rowspace) * (row + 0.5)),5,5);
+	    QPixmap pm = sym->getPointSymbolAsPixmap();
+	    p.drawPixmap ( (int) (leftspace+symbolwidth/2-pm.width()/2), (int) (intermheight+(rowheight+rowspace)*(row+0.5)-pm.height()/2), pm );
 	}
 	p.setPen(Qt::black);
 	p.drawText(leftspace+symbolwidth+wordspace, intermheight+row*(rowheight+rowspace)+rowheight, it->first);
 	p.drawText(leftspace+symbolwidth+2*wordspace+widestvalue, intermheight+row*(rowheight+rowspace)+rowheight, it->second->label());
 	++row;
     }
-
-    
     
     mVectorLayer->updateItemPixmap();
     mVectorLayer->triggerRepaint();
@@ -347,15 +351,7 @@ void QgsUValDialog::changeCurrentValue()
     std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
     if(it!=mValues.end())
     {
-	QPen& pen=it->second->getSymbol()->pen();
-	QBrush& brush=it->second->getSymbol()->brush();
-	QColor fcolor(brush.color().red(),brush.color().green(),brush.color().blue());
-	QColor ocolor(pen.color().red(),pen.color().green(),pen.color().blue());
-	sydialog.setFillColor(fcolor);
-	sydialog.setFillStyle(brush.style());
-	sydialog.setOutlineColor(ocolor);
-	sydialog.setOutlineStyle(pen.style());
-	sydialog.setOutlineWidth(pen.width());
+	sydialog.set( it->second->getSymbol() );
 	sydialog.setLabel(it->second->label());
     }
     else
@@ -372,13 +368,7 @@ void QgsUValDialog::applySymbologyChanges()
   std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
   if(it!=mValues.end())
   {
-      QPen& pen=it->second->getSymbol()->pen();
-      QBrush& brush=it->second->getSymbol()->brush(); 
-      pen.setWidth(sydialog.getOutlineWidth());
-      pen.setColor(sydialog.getOutlineColor());
-      pen.setStyle(sydialog.getOutlineStyle());
-      brush.setColor(sydialog.getFillColor());
-      brush.setStyle(sydialog.getFillStyle());
+      sydialog.apply( it->second->getSymbol() );
       it->second->setLabel(sydialog.label());
   }
 }

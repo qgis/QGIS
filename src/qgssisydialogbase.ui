@@ -8,18 +8,18 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>372</width>
-            <height>421</height>
+            <width>374</width>
+            <height>462</height>
         </rect>
     </property>
     <property name="caption">
         <string>Single Symbol</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout2</cstring>
             </property>
@@ -42,7 +42,108 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QButtonGroup" row="1" column="0">
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>mGroupPoint</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Point</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Symbol</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>mPointSymbolComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>50</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="sizeLimit">
+                        <number>25</number>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer5</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>56</width>
+                            <height>26</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Size</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox">
+                    <property name="name">
+                        <cstring>mPointSizeSpinBox</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>3</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>3</number>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QButtonGroup">
             <property name="name">
                 <cstring>grpOutlineStyle</cstring>
             </property>
@@ -193,7 +294,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="2" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBox5</cstring>
             </property>
@@ -448,14 +549,14 @@
                                 </size>
                             </property>
                             <property name="minValue">
-                                <number>1</number>
+                                <number>0</number>
                             </property>
                         </widget>
                     </hbox>
                 </widget>
             </grid>
         </widget>
-        <widget class="QButtonGroup" row="3" column="0">
+        <widget class="QButtonGroup">
             <property name="name">
                 <cstring>grpPattern</cstring>
             </property>
@@ -915,7 +1016,7 @@
                 </widget>
             </grid>
         </widget>
-    </grid>
+    </vbox>
 </widget>
 <includes>
     <include location="local" impldecl="in implementation">qgssisydialogbase.ui.h</include>
