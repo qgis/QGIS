@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgspostgresprovider.h  -  Data provider for PostgrSQL/PostGIS layers
+      qgspostgresprovider.h  -  Data provider for PostgreSQL/PostGIS layers
                              -------------------
     begin                : Jan 2, 2004
     copyright            : (C) 2003 by Gary E.Sherman
@@ -15,13 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
+#ifndef QGSPOSTGRESPROVIDER_H
+#define QGSPOSTGRESPROVIDER_H
+
 extern "C"
 {
 #include <libpq-fe.h>
 }
 #include "../../src/qgsvectordataprovider.h"
+#include "../../src/qgsrect.h"
 #include <list>
-#include<qstring.h>
+#include <fstream>
+#include <qstring.h>
+#include <qobject.h>
+//#include <qmutex.h>
 
 class QgsFeature;
 class QgsField;
@@ -29,9 +37,12 @@ class OGRDataSource;
 class OGRLayer;
 #include "qgsdatasourceuri.h"
 
+#include "qgspostgrescountthread.h"
+#include "qgspostgresextentthread.h"
+
 /**
 \class QgsPostgresProvider
-\brief Data provider for PostgrSQL/PostGIS layers.
+\brief Data provider for PostgreSQL/PostGIS layers.
  
 This provider implements the
 interface defined in the QgsDataProvider class to provide access to spatial
@@ -39,6 +50,9 @@ data residing in a PostgreSQL/PostGIS enabled database.
 */
 class QgsPostgresProvider:public QgsVectorDataProvider
 {
+  
+  Q_OBJECT
+
 public:
   /**
   * Constructor for the provider. The uri must be in the following format:
@@ -142,6 +156,12 @@ public:
   */
   QString endianString();
 
+  /**
+   * Changes the stored extent for this layer to the supplied extent.
+   * For example, this is called when the extent worker thread has a result.
+   */ 
+  void setExtent( QgsRect* newExtent );
+  
   /** Return the extent for this data layer
   */
   virtual QgsRect *extent();
@@ -237,6 +257,26 @@ public:
   
   /**Returns a bitmask containing the supported capabilities*/
   int capabilities() const;
+  
+signals:
+  /** 
+   *   This is emitted whenever the worker thread has fully calculated the
+   *   PostGIS extents for this layer, and its event has been received by this
+   *   provider.
+   */  
+  void fullExtentCalculated();
+
+  /**
+   *   This is emitted when this provider is satisfied that all objects
+   *   have had a chance to adjust themselves after they'd been notified that
+   *   the full extent is available.
+   *
+   *   \note  It currently isn't being emitted because we don't have an easy way
+   *          for the overview canvas to only be repainted.  In the meantime
+   *          we are satisfied for the overview to reflect the new extent
+   *          when the user adjusts the extent of the main map canvas.
+   */
+  void repaintRequested();
 
 private:
 
@@ -249,6 +289,14 @@ private:
 
   //! Data source URI struct for this layer
   QgsDataSourceURI mUri;
+
+
+  //! Child thread for calculating extents.
+  QgsPostgresExtentThread mExtentThread;
+  
+  //! Child thread for calculating count.
+  QgsPostgresCountThread mCountThread;
+
 
   /**
   * Pointer to the PostgreSQL query result object. If this pointer is 0,
@@ -361,4 +409,11 @@ private:
   //! Calculate the extents of the layer
   void calculateExtents();
 
+  /**
+   * Event sink for events from threads
+   */
+  void customEvent ( QCustomEvent * e );
+
 };
+
+#endif
