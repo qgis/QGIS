@@ -759,7 +759,11 @@ public:
     /** \brief Similar to above but returns a pointer. Implemented for qgsmaplayer interface. 
      * Always overlays legend name!*/
     QPixmap * legendPixmap(); 
-
+    
+    /** \brief Use this method when you want an annotated legend suitable for print output etc. 
+     * @param int theLabelCountInt Number of vertical labels to display (defaults to 3)
+     * */
+    QPixmap getDetailedLegendQPixmap(int theLabelCount);
     /** tailor the right-click context menu with raster layer only stuff 
 
       @note called by QgsMapLayer::initContextMenu();
