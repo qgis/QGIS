@@ -1,5 +1,85 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>PluginGuiBase</name>
+    <message>
+        <source>QGIS Plugin Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS Download File Importer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select the GPS dowload file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output (Shape) File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum time gap (s):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum distance gap (dd):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graticule Builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is a template for your plugin gui. Please modify this as needed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QFileDialog</name>
+    <message>
+        <source>open files dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>No Data Providers</source>
@@ -83,10 +163,6 @@
     </message>
     <message>
         <source>Available Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select one or more layers to add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -263,10 +339,6 @@
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>open files dialog</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -472,6 +544,130 @@
         <source>QGIS SourceForge Page</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Help Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close all layers and exit QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the QGIS Help Contents in a web browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the QGIS home page in a web browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the QGIS SourceForge project page in a web browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Map As Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whats this?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAbout</name>
@@ -567,6 +763,10 @@
         <source>Lars Luthman</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Peter Brewer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableBase</name>
@@ -581,10 +781,6 @@
 </context>
 <context>
     <name>QgsConnectionDialogBase</name>
-    <message>
-        <source>Connection Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Connection Information</source>
         <translation type="unfinished"></translation>
@@ -637,6 +833,18 @@
         <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Create a New PostGIS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5432</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsContColDialogBase</name>
@@ -654,6 +862,10 @@
     </message>
     <message>
         <source>Maximum Value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -752,6 +964,151 @@
     </message>
 </context>
 <context>
+    <name>QgsDelimitedTextPluginGuiBase</name>
+    <message>
+        <source>Create a Layer from a Delimited Text File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help on using the plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens the Delimited Text Plugin help in your configured browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse the header row and update the X and Y field lists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add layer using the deimiter, file, and x/y fields specifed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the dialog without adding anything to the map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing x values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing y values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select the file containing delimited text with lat/lon coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimeter box to specify what the delimeter is for your file (e.g. space, commar or tab). Note this box accepts regex entries so use \t for tab and so on. After choosing a delimeter, press the parse button to see what field names have been detected in your file.&lt;/p&gt;
+&lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name to display in the map legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name displayed in the map legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimited Text Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimited text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full path to the delimited text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse to find the delimited text file to be processed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsDlgPgBufferBase</name>
     <message>
         <source>Buffer features</source>
@@ -830,6 +1187,14 @@
     </message>
     <message>
         <source>Continuous Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graduated Marker</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -929,6 +1294,49 @@
     </message>
 </context>
 <context>
+    <name>QgsGraMaDialogBase</name>
+    <message>
+        <source>graduated Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification Field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Classes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraMaExtensionWidget</name>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale
+Factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGraSyDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -984,6 +1392,45 @@ Color</source>
     <message>
         <source>Fill
 Pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassSelectBase</name>
+    <message>
+        <source>Add GRASS Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gisdbase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select or type map name (wildcards &apos;*&apos; and &apos;?&apos; accepted for rasters)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1059,62 +1506,6 @@ Pattern</source>
 </context>
 <context>
     <name>QgsLayerPropertiesBase</name>
-    <message>
-        <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>TextLabel2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbology</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fill Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsLegendItemBase</name>
@@ -1305,6 +1696,33 @@ Pattern</source>
     </message>
 </context>
 <context>
+    <name>QgsMarkerDialogBase</name>
+    <message>
+        <source>Choose a marker symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMessageViewer</name>
     <message>
         <source>QGIS Message</source>
@@ -1395,6 +1813,18 @@ Pattern</source>
         <source>Save Password</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5432</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -1448,6 +1878,32 @@ Pattern</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search Radius for Identifying Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Specify the value in thousandths.  
+The search radius is calculated as:
+&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&lt;/ul&gt;
+By default QGIS uses a value of 5. Increase the value if you have trouble
+identifying features without zooming in very close.
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide splash screen at startup</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1585,6 +2041,26 @@ Pattern</source>
         <source>Pixel Size:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Extent: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped area: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
@@ -1618,6 +2094,10 @@ Pattern</source>
     </message>
     <message>
         <source>Pseudocolor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Freak Out</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1812,6 +2292,21 @@ Pattern</source>
     </message>
 </context>
 <context>
+    <name>QgsSiMaDialogBase</name>
+    <message>
+        <source>QgsSiMaDialogBase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale Factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSiSyDialogBase</name>
     <message>
         <source>Single Symbol</source>
@@ -1918,6 +2413,10 @@ Pattern</source>
     </message>
     <message>
         <source>Remove All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global Schema</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -102,7 +102,7 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
 
 QString QgsMarkerDialog::defaultDir()
 {
-    QString dir = QString(PREFIX)+"/share/qgis/svg"; 
+    QString dir = QString(PKGDATAPATH)+"/svg"; 
     return dir;
 }
 

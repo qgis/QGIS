@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.58 2004/04/18 23:44:39 jobi Exp
+ChangeLog,v 1.59 2004/04/22 08:10:34 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-22 [jobi] 0.1.0devel35
+** added install routine for svg files
+** added new translations
+** adjusted paths in the cpp files
 
 2004-04-19 [jobi] 0.1.0devel34
 ** Changed to simple macros for detecting QT and GDAL
