@@ -262,9 +262,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
 #else
   mapLegend = new QgsLegend(canvasLegendSplit); //frameMain);
+#endif
   mapLegend->addColumn(tr("Layers"));
   mapLegend->setSorting(-1);
-#endif
 
 #ifdef QGISDEBUG
   mOverviewLabel = new QLabel(legendOverviewSplit);
