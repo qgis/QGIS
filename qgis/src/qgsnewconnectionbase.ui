@@ -112,6 +112,12 @@
                     <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>0</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                 </spacer>
             </vbox>
         </widget>
@@ -279,12 +285,6 @@
         <signal>clicked()</signal>
         <receiver>QgsNewConnectionBase</receiver>
         <slot>testConnection()</slot>
-    </connection>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsNewConnectionBase</receiver>
-        <slot>accept()</slot>
     </connection>
     <connection>
         <sender>buttonOk</sender>
