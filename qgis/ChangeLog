@@ -1,7 +1,17 @@
 QGIS Change Log
-ChangeLog,v 1.195 2004/10/18 05:36:30 gsherman Exp
+ChangeLog,v 1.196 2004/10/18 18:55:26 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-10-18 [larsl] 0.5.0devel6
+** Removed duplicate code, added bounds calculation for digitized features in the GPX provider
+
+2004-10-18 [larsl] 0.5.0devel5
+** Changes to the GPX provider:
+   * Implemented isEditable(), isModified(), commitChanges(), and rollBack()
+   * Removed the useless lat and lon attributes in waypoint features
+   * Cleaned up the attribute parsing in addFeature()
+   GPX editing should now work again.
 
 2004-10-17 [gsherman] 0.5.0devel4
 ** OGR provider now uses GEOS to select features when doing identify and
