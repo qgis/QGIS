@@ -47,7 +47,17 @@ bool QgsVectorDataProvider::commitChanges()
 	    }
 	    delete *it;
 	}
+	
+	for(std::set<int>::iterator it=mDeletedFeatures.begin();it!=mDeletedFeatures.end();++it)
+	{
+	    if(!eraseFeature(*it))
+	    {
+		returnvalue=false;
+	    }
+	}
+
 	mAddedFeatures.clear();
+	mDeletedFeatures.clear();
 	mModified=false;
 	return returnvalue;
     }
@@ -92,7 +102,7 @@ bool QgsVectorDataProvider::addFeature(QgsFeature* f)
 
 bool QgsVectorDataProvider::deleteFeature(int id)
 {
-    //not yet implemented
+    //needs to be done by subclasses, because not all providers support it
     return false;
 }
 
@@ -104,6 +114,12 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
 
 
 bool QgsVectorDataProvider::commitFeature(QgsFeature* f)
+{
+    //needs to be done by subclasses
+    return false;
+}
+
+bool QgsVectorDataProvider::eraseFeature(int id)
 {
     //needs to be done by subclasses
     return false;

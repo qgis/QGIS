@@ -2,7 +2,7 @@
     qgsvectordataprovider.h - DataProvider Interface for vector layers
      --------------------------------------
     Date                 : 23-Sep-2004
-    Copyright            : (C) 200 by Marco Hugentobler
+    Copyright            : (C) 2004 by Marco Hugentobler
     email                : marco.hugentobler@autoform.ch
  ***************************************************************************
  *                                                                         *
@@ -16,6 +16,7 @@
 #ifndef QGSVECTORDATAPROVIDER_H
 #define QGSVECTORDATAPROVIDER_H
 #include "qgsdataprovider.h"
+#include <set>
 
 /**Base class for vector data providers*/
 class QgsVectorDataProvider: public QgsDataProvider
@@ -96,7 +97,7 @@ class QgsVectorDataProvider: public QgsDataProvider
        @return true in case of success and false in case of failure*/
     virtual bool addFeature(QgsFeature* f);
 
-    /**Deletes a feature
+    /**Deletes a feature (but not not write it to disk yes)
        @param id the number of the feature
        @return true in case of success and false in case of failure*/
     virtual bool deleteFeature(int id);
@@ -149,9 +150,15 @@ class QgsVectorDataProvider: public QgsDataProvider
     bool mModified;
     /**Features which are added but not yet commited*/
     std::list<QgsFeature*> mAddedFeatures;
-    /**Commits a feature
+    /**Ids of features to delete*/
+    std::set<int> mDeletedFeatures;
+    /**Commits the addition of a feature
      @return true in case of success and false in case of failure*/
     virtual bool commitFeature(QgsFeature* f);
+    /**Commits the deletion of a feature
+     @return true in case of success and false in case of faiure*/
+    virtual bool eraseFeature(int id);
+    
     /**If getNextFeature needs to returns pointers to not commited features, 
     this member points to the latest feature*/
     std::list<QgsFeature*>::iterator mAddedFeaturesIt;

@@ -171,10 +171,18 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   /**Returns the default value for attribute @c attr for feature @c f. */
   QString getDefaultValue(const QString& attr, QgsFeature* f);
 
+  /**Deletes a feature
+       @param id the number of the feature
+       @return true in case of success and false in case of failure*/
+  virtual bool deleteFeature(int id);
+
  protected:
   /**Commits a feature
      @return true in case of success and false in case of failure*/
   bool commitFeature(QgsFeature* f);
+  /**Commits the deletion of a feature
+     @return true in case of success and false in case of faiure*/
+  bool eraseFeature(int id);
   
 private:
       std::vector < QgsFeature > features;
