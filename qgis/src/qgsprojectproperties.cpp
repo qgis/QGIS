@@ -349,6 +349,7 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
   if(theWKT.find(QRegExp("^GEOGCS")) == 0)
   {
     myProjection = "LatLong";
+    //XXX This isn't the datum, its really the Geographic coordinate system name
     myDatum = mySpatialRefSys.GetAttrValue("GEOGCS",0);
     myName = myProjection + " - " + myDatum;
   }  
