@@ -18,6 +18,7 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 class QCanvas;
+class QRect;
 class QCanvasView;
 #include "qgisappbase.h"
 /**
@@ -36,11 +37,14 @@ public:
  	void zoomOut();
   	void zoomIn();
 	void readWKB(const char *);
+	void drawPoint(double x, double y);
 private:
-QCanvasView *cv;
-QCanvas *canvas;
+	//QCanvasView *cv;
+//QCanvas *canvas;
 QgsMapCanvas *mapCanvas;
 QWidget *mapToc;
+ double scaleFactor;
+ QRect *mapWindow;
 
 };
 
