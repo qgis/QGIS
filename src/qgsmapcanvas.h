@@ -111,7 +111,7 @@ class QgsMapCanvas : public QWidget
     /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * @param frz Boolean specifying if the canvas should be frozen (true) or
-     * thawed (false). Default is true. 
+     * thawed (false). Default is true.
      */
     void freeze(bool frz = true);
 
@@ -178,18 +178,24 @@ signals:
     void xyCoordinates(QgsPoint & p);
 
     //! Emitted when the scale of the map changes
-    void scaleChanged(QString);  
+    void scaleChanged(QString);
 
     //! Emitted when the extents of the map change
-    void extentsChanged(QString);  
+    void extentsChanged(QString);
 
-    //! Emitted when the canvas has rendered
-    void renderComplete();
+    /** Emitted when the canvas has rendered.
+    /* Passes a pointer to the painter on
+    * which the map was drawn. This is useful for plugins
+    * that wish to draw on the map after it has been rendered.
+    * Passing the painter allows plugins to work when the
+    * map is being rendered onto a pixmap other than the mapCanvas
+    * own pixmap member. */
+    void renderComplete(QPainter *);
 
     /** emitted whenever a layer is added to the map canvas */
     void addedLayer(QgsMapLayer * lyr);
 
-    /** emitted whenever a layer is deleted from the map canvas 
+    /** emitted whenever a layer is deleted from the map canvas
         @param the key of the deleted layer
     */
     void removedLayer( QString layer_key );
@@ -198,7 +204,7 @@ private:
 
     /// this class is non-copyable
     /**
-       @note 
+       @note
 
        Otherwise std::auto_ptr would pass the object responsiblity on to the
        copy like a hot potato leaving the copyer in a weird state.
