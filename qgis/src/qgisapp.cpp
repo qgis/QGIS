@@ -310,6 +310,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // "theOverviewCanvas" used to find canonical
     // instance later
     mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit, "theOverviewCanvas");
+    //tell the overview canvas it is an overview canvas so it will suppress labels etc
+    mOverviewCanvas->setIsOverviewCanvas(true);
     // lock the canvas to prevent user interaction
     mOverviewCanvas->userInteractionAllowed(false);
 
@@ -368,7 +370,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mPluginMenu->insertSeparator();
     // Add to the menubar
     menuBar()->insertItem("&Plugins", mPluginMenu, -1, menuBar()->count() - 1);
-    
+
 
     // create the layer popup menu
     mMapCursor = 0;
@@ -856,7 +858,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 */
 static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles)
 {
-  
+
     bool haveLastUsedFilter = false;  // by default, there is no last
     // used filter
 
@@ -909,7 +911,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 */
 void QgisApp::addLayer()
 {
-  
+
     QString fileFilters;
 
     buildSupportedVectorFileFilter_(fileFilters);
@@ -3782,7 +3784,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
         if(guiWarning)
         {
           // don't show the gui warning (probably because we are loading from command line)
-          QString msg(rasterFile.baseName() 
+          QString msg(rasterFile.baseName()
               + " is not a valid or recognized raster data source");
           QMessageBox::critical(this, "Invalid Data Source", msg);
         }

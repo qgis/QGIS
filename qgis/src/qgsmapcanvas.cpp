@@ -314,6 +314,8 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 {
     // by default, the canvas is rendered
     mRenderFlag = true;
+    //by default we assume we are not an overview canvas
+    mIsOverviewCanvas = false;
     setEraseColor(mCanvasProperties->bgColor);
 
     setMouseTracking(true);
@@ -734,33 +736,37 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #endif
 
                 // render all labels for vector layers in the stack, starting at the base
-                li = mCanvasProperties->zOrder.begin();
-                // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
-                while (li != mCanvasProperties->zOrder.end())
+                //first check that this is not an overview canvas ( and suppress labels if it is)
+                if (!mIsOverviewCanvas)
                 {
-                    emit setProgress((myRenderCounter++),mCanvasProperties->zOrder.size());
-                    QgsMapLayer *ml = mCanvasProperties->layers[*li];
-
-                    if (ml)
+                    li = mCanvasProperties->zOrder.begin();
+                    // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+                    while (li != mCanvasProperties->zOrder.end())
                     {
+                        emit setProgress((myRenderCounter++),mCanvasProperties->zOrder.size());
+                        QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+                        if (ml)
+                        {
 #ifdef QGISDEBUG
-                        std::cout << "Rendering " << ml->name() << std::endl;
+                            std::cout << "Rendering " << ml->name() << std::endl;
 #endif
 
-                        if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))
-                        {
-                            //only make labels if the layer is visible
-                            //after scale dep viewing settings are checked
-                            if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale)
-                                    || (!ml->scaleBasedVisibility()))
+                            if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))
                             {
-                                ml->drawLabels(paint,
-                                               &mCanvasProperties->currentExtent,
-                                               mCanvasProperties->coordXForm,
-                                               this);
+                                //only make labels if the layer is visible
+                                //after scale dep viewing settings are checked
+                                if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale)
+                                        || (!ml->scaleBasedVisibility()))
+                                {
+                                    ml->drawLabels(paint,
+                                                   &mCanvasProperties->currentExtent,
+                                                   mCanvasProperties->coordXForm,
+                                                   this);
+                                }
                             }
+                            li++;
                         }
-                        li++;
                     }
                 }
             }

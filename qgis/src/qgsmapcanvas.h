@@ -145,6 +145,11 @@ class QgsMapCanvas : public QWidget
     //! Return the state of the canvas (dirty or not)
     bool isDirty() const;
 
+    //! accessor for mIsOverviewCanvas member
+    bool isOverviewCanvas();
+    //! mutator for mIsOverviewCanvas member
+    void setIsOverviewCanvas(bool theFlag) { mIsOverviewCanvas = theFlag; };
+
     //! Calculate the scale and return as a string
     void currentScale(int thePrecision);
 
@@ -357,6 +362,8 @@ private:
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
 
+    //! lets us know whether this canvas is being used as an overview canvas or note
+    bool mIsOverviewCanvas;
   /** debugging member
       invoked when a connect() is made to this object
   */
