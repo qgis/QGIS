@@ -8,7 +8,28 @@
 *****************************************************************************/
 #include <iostream>
 
+
 void QgsLabelDialogBase::init ()
 {
     std::cout << "Label Dialog Base Created!" << std::endl;   
+    
+}
+
+
+void QgsLabelDialogBase::changeFont()
+{
+
+}
+
+
+
+void QgsLabelDialogBase::changeBufferColor()
+{
+
+}
+
+
+void QgsLabelDialogBase::changeFontColor()
+{
+
 }
