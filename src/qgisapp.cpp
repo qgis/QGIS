@@ -1,11 +1,11 @@
 /***************************************************************************
-                          qgisapp.cpp  -  description
-                             -------------------
-							 
-    begin                : Sat Jun 22 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
-             Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
+													qgisapp.cpp  -  description
+														 -------------------
+														 
+		begin                : Sat Jun 22 2002
+		copyright            : (C) 2002 by Gary E.Sherman
+		email                : sherman at mrcc.com
+						 Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
 ***************************************************************************/
 
 /***************************************************************************
@@ -71,7 +71,6 @@
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
-#include "qgslegendview.h"
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
 #include <splashscreen.h>
@@ -245,12 +244,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mySplash->setStatus(tr("Setting up QGIS gui..."));
   QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter(frameMain);
-  legendView = new QgsLegendView(split);
-  legendView->addColumn(tr("Layers"));
-  legendView->setSorting(-1);
 
-
-  mapLegend = new QgsLegend(legendView);  //frameMain);
+  mapLegend = new QgsLegend(split); //frameMain);
+  mapLegend->addColumn(tr("Layers"));
+  mapLegend->setSorting(-1);
   // mL = new QScrollView(split);
   //add a canvas
   mapCanvas = new QgsMapCanvas(split);
@@ -262,16 +259,16 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   FrameLayout->addWidget(split, 0, 0);
   mapLegend->setBackgroundColor(QColor(192, 192, 192));
   mapLegend->setMapCanvas(mapCanvas);
-  legendView->setResizeMode(QListView::AllColumns);
+  mapLegend->setResizeMode(QListView::AllColumns);
   QString caption = tr("Quantum GIS - ");
   caption += QGis::qgisVersion;
   setCaption(caption);
   connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
-  connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
-  connect(legendView, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
+  connect(mapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
+  connect(mapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
           this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
-  connect(legendView, SIGNAL(zOrderChanged(QgsLegendView *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegendView *)));
-  connect(legendView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(clickLegendMenu(QListViewItem *)));
+  connect(mapLegend, SIGNAL(zOrderChanged(QgsLegend *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegend *)));
+  connect(mapLegend, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(currentLayerChanged(QListViewItem *)));
 
   // create the layer popup menu
   mapCursor = 0;
@@ -346,14 +343,14 @@ void QgisApp::about()
 
 
 /**
-
-  Convenience function for readily creating file filters.
-
-  Given a long name for a file filter and a regular expression, return
-  a file filter string suitable for use in a QFileDialog::OpenFiles()
-  call.  The regular express, glob, will have both all lower and upper
-  case versions added.
-
+	
+	Convenience function for readily creating file filters.
+	
+	Given a long name for a file filter and a regular expression, return
+	a file filter string suitable for use in a QFileDialog::OpenFiles()
+	call.  The regular express, glob, will have both all lower and upper
+	case versions added.
+	
 */
 static QString createFileFilter_(QString const &longName, QString const &glob)
 {
@@ -363,19 +360,19 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
 
 
 /**
-   Builds the list of file filter strings to later be used by
-   QgisApp::addLayer()
-
-   We query OGR for a list of supported raster formats; we then build
-   a list of file filter strings from that list.  We return a string
-   that contains this list that is suitable for use in a a
-   QFileDialog::getOpenFileNames() call.
-
-   XXX Most of the file name filters need to be filled in; however we
-   XXX may want to wait until we've tested each format before committing
-   XXX them permanently instead of blindly relying on OGR to properly 
-   XXX supply all needed spatial data.
-
+	 Builds the list of file filter strings to later be used by
+	 QgisApp::addLayer()
+	 
+	 We query OGR for a list of supported raster formats; we then build
+	 a list of file filter strings from that list.  We return a string
+	 that contains this list that is suitable for use in a a
+	 QFileDialog::getOpenFileNames() call.
+	 
+	 XXX Most of the file name filters need to be filled in; however we
+	 XXX may want to wait until we've tested each format before committing
+	 XXX them permanently instead of blindly relying on OGR to properly 
+	 XXX supply all needed spatial data.
+	 
  */
 static void buildSupportedVectorFileFilter_(QString & fileFilters)
 {
@@ -478,79 +475,70 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
 
 /**
-   Open files, preferring to have the default file selector be the
-   last one used, if any; also, prefer to start in the last directory
-   associated with filterName.
-
-   @param filterName the name of the filter; used for persistent store
-                     key
-   @param filters    the file filters used for QFileDialog
-
-   @param selectedFiles string list of selected files; will be empty
-                        if none selected
-
-   @note
-
-   Stores persistent settings under /qgis/UI/.  The sub-keys will be
-   filterName and filterName + "Dir".
-
-   Opens dialog on last directory associated with the filter name, or
-   the current working directory if this is the first time invoked
-   with the current filter name.
-
+	 Open files, preferring to have the default file selector be the
+	 last one used, if any; also, prefer to start in the last directory
+	 associated with filterName.
+	 
+	 @param filterName the name of the filter; used for persistent store
+										 key
+	 @param filters    the file filters used for QFileDialog
+	 
+	 @param selectedFiles string list of selected files; will be empty
+												if none selected
+												
+	 @note
+	 
+	 Stores persistent settings under /qgis/UI/.  The sub-keys will be
+	 filterName and filterName + "Dir".
+	 
+	 Opens dialog on last directory associated with the filter name, or
+	 the current working directory if this is the first time invoked
+	 with the current filter name.
+	 
 */
-static
-void
-openFilesRememberingFilter_( QString const & filterName,
-                             QString const & filters,
-                             QStringList & selectedFiles )
+static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles)
 {
-   bool haveLastUsedFilter = false; // by default, there is no last
-                                // used filter
+  bool haveLastUsedFilter = false;  // by default, there is no last
+  // used filter
 
-   QSettings settings;          // where we keep last used filter in
-                                // persistant state
+  QSettings settings;           // where we keep last used filter in
+  // persistant state
 
-   QString   lastUsedFilter = settings.readEntry( "/qgis/UI/" + filterName, 
-                                                  QString::null,
-                                                  &haveLastUsedFilter );
+  QString lastUsedFilter = settings.readEntry("/qgis/UI/" + filterName,
+                                              QString::null,
+                                              &haveLastUsedFilter);
 
-   QString   lastUsedDir    = settings.readEntry( "/qgis/UI/" + filterName + "Dir", 
-                                                  "." );
+  QString lastUsedDir = settings.readEntry("/qgis/UI/" + filterName + "Dir",
+                                           ".");
 
 
-   std::auto_ptr<QFileDialog> openFileDialog( new QFileDialog( lastUsedDir,
-                                                               filters, 
-                                                               0, 
-                                                               QFileDialog::tr("open files dialog")));
+  std::auto_ptr < QFileDialog > openFileDialog(new QFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog")));
 
-   // allow for selection of more than one file
-   openFileDialog->setMode( QFileDialog::ExistingFiles );
+  // allow for selection of more than one file
+  openFileDialog->setMode(QFileDialog::ExistingFiles);
 
-   if ( haveLastUsedFilter ) // set the filter to the last one used
-   {
-      openFileDialog->setSelectedFilter( lastUsedFilter );
-   }
+  if (haveLastUsedFilter)       // set the filter to the last one used
+    {
+      openFileDialog->setSelectedFilter(lastUsedFilter);
+    }
 
-   if ( openFileDialog->exec() == QDialog::Accepted )
-   {
+  if (openFileDialog->exec() == QDialog::Accepted)
+    {
       selectedFiles = openFileDialog->selectedFiles();
-   }
+    }
 
-   settings.writeEntry( "/qgis/UI/" + filterName, 
-                        openFileDialog->selectedFilter() );
+  settings.writeEntry("/qgis/UI/" + filterName, openFileDialog->selectedFilter());
 
 
-   settings.writeEntry( "/qgis/UI/" + filterName + "Dir", 
-                        openFileDialog->dirPath() );
+  settings.writeEntry("/qgis/UI/" + filterName + "Dir", openFileDialog->dirPath());
 
-} // openFilesRememberingFilter_
+}                               // openFilesRememberingFilter_
 
 
 
 
 /**
-   This method prompts the user for a list of vector filenames with a dialog. 
+	 This method prompts the user for a list of vector filenames with a dialog. 
 */
 void QgisApp::addLayer()
 {
@@ -563,27 +551,24 @@ void QgisApp::addLayer()
   QString pOgr = providerRegistry->library("ogr");
 
   if (pOgr.isEmpty())
-  {
+    {
 #ifdef QGISDEBUG
-     qDebug( "unable to get OGR registry" );
+      qDebug("unable to get OGR registry");
 #endif
-  }
-  else
+  } else
     {
       mapCanvas->freeze();
-      
+
       QStringList selectedFiles;
 
-      openFilesRememberingFilter_( "lastVectorFileFilter",
-                                   fileFilters,
-                                   selectedFiles );
-      if ( selectedFiles.isEmpty() )
-      {
-         // no files were selected, so just bail
-         mapCanvas->freeze( false );
-         return;
-      }
-      addLayer( selectedFiles );
+      openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles);
+      if (selectedFiles.isEmpty())
+        {
+          // no files were selected, so just bail
+          mapCanvas->freeze(false);
+          return;
+        }
+      addLayer(selectedFiles);
     }
 }                               // QgisApp::addLayer()
 
@@ -606,7 +591,7 @@ void QgisApp::addLayer(QStringList const &theLayerQStringList)
         {
           if (true)
             {
-//            if (isValidVectorFileName(*it)) {
+              //            if (isValidVectorFileName(*it)) {
 
               QFileInfo fi(*it);
               QString base = fi.baseName();
@@ -657,16 +642,16 @@ void QgisApp::addLayer(QStringList const &theLayerQStringList)
 
 
 /**
-   The subset of GDAL formats that we currently support.
-
-   @note
-
-   Some day this won't be necessary as there'll be a time when
-   theoretically we'll support everything that GDAL can throw at us.
-
-   These are GDAL driver description strings.
+	 The subset of GDAL formats that we currently support.
+	 
+	 @note
+	 
+	 Some day this won't be necessary as there'll be a time when
+	 theoretically we'll support everything that GDAL can throw at us.
+	 
+	 These are GDAL driver description strings.
 */
-static const char *const supportedRasterFormats_[] = { 
+static const char *const supportedRasterFormats_[] = {
   "SDTS",
   "AIG",
   "AAIGrid",
@@ -680,10 +665,10 @@ static const char *const supportedRasterFormats_[] = {
 
 
 /**
-   returns true if the given raster driver name is one currently
-   supported, otherwise it returns false
-
-   @param driverName GDAL driver description string
+	 returns true if the given raster driver name is one currently
+	 supported, otherwise it returns false
+	 
+	 @param driverName GDAL driver description string
 */
 static bool isSupportedRasterDriver_(QString const &driverName)
 {
@@ -700,7 +685,7 @@ static bool isSupportedRasterDriver_(QString const &driverName)
       // GS - At Qt 3.1.2, the case sensitive argument. So we change the
       // driverName to lower case before testing
       QString format = supportedRasterFormats_[i];
-      if ( driverName.lower().startsWith(format.lower()) )
+      if (driverName.lower().startsWith(format.lower()))
         {
           return true;
         }
@@ -715,14 +700,14 @@ static bool isSupportedRasterDriver_(QString const &driverName)
 
 
 /**
-   Builds the list of file filter strings to later be used by
-   QgisApp::addRasterLayer()
-
-   We query GDAL for a list of supported raster formats; we then build
-   a list of file filter strings from that list.  We return a string
-   that contains this list that is suitable for use in a a
-   QFileDialog::getOpenFileNames() call.
-
+	 Builds the list of file filter strings to later be used by
+	 QgisApp::addRasterLayer()
+	 
+	 We query GDAL for a list of supported raster formats; we then build
+	 a list of file filter strings from that list.  We return a string
+	 that contains this list that is suitable for use in a a
+	 QFileDialog::getOpenFileNames() call.
+	 
  */
 static void buildSupportedRasterFileFilter_(QString & fileFilters)
 {
@@ -749,9 +734,9 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
 
   QStringList metadataTokens;   // essentially the metadata string delimited by '='
 
-  QString     catchallFilter;   // for Any file(*.*), but also for those
-                                // drivers with no specific file
-                                // filter
+  QString catchallFilter;       // for Any file(*.*), but also for those
+  // drivers with no specific file
+  // filter
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
@@ -830,36 +815,35 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
               // XXX add check for SDTS; in that case we want (*CATD.DDF)
               fileFilters += createFileFilter_(driverLongName, "*." + driverExtension);
 
-              break;         // ... to next driver, if any.
+              break;            // ... to next driver, if any.
             }
 
           ++driverMetadata;
 
         }                       // each metadata item
 
-      if ( driverExtension.isEmpty() && ! driverLongName.isEmpty() )
-      {
-         // Then what we have here is a driver with no corresponding
-         // file extension; e.g., GRASS.  In which case we append the
-         // string to the "catch-all" which will match all file types.
-         // (I.e., "*.*") We use the driver description intead of the
-         // long time to prevent the catch-all line from getting too
-         // large.
+      if (driverExtension.isEmpty() && !driverLongName.isEmpty())
+        {
+          // Then what we have here is a driver with no corresponding
+          // file extension; e.g., GRASS.  In which case we append the
+          // string to the "catch-all" which will match all file types.
+          // (I.e., "*.*") We use the driver description intead of the
+          // long time to prevent the catch-all line from getting too
+          // large.
 
-         // ... OTOH, there are some drivers with missing
-         // DMD_EXTENSION; so let's check for them here and handle
-         // them appropriately
+          // ... OTOH, there are some drivers with missing
+          // DMD_EXTENSION; so let's check for them here and handle
+          // them appropriately
 
-         // USGS DEMs use "*.dem"
-         if ( driverDescription.startsWith("USGSDEM") )
-         {
-            fileFilters += createFileFilter_(driverLongName, "*.dem");
-         }
-         else
-         {
-            catchallFilter += QString(driver->GetDescription()) + " ";
-         }
-      }
+          // USGS DEMs use "*.dem"
+          if (driverDescription.startsWith("USGSDEM"))
+            {
+              fileFilters += createFileFilter_(driverLongName, "*.dem");
+          } else
+            {
+              catchallFilter += QString(driver->GetDescription()) + " ";
+            }
+        }
 
       driverExtension = driverLongName = "";  // reset for next driver
 
@@ -884,15 +868,13 @@ void QgisApp::addRasterLayer()
 
   QStringList selectedFiles;
 
-  openFilesRememberingFilter_( "lastRasterFileFilter",
-                               fileFilters,
-                               selectedFiles );
+  openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles);
 
-  if ( selectedFiles.isEmpty() )
-  {
-     // no files were selected, so just bail
-     return;
-  }
+  if (selectedFiles.isEmpty())
+    {
+      // no files were selected, so just bail
+      return;
+    }
 
   addRasterLayer(selectedFiles);
 
@@ -904,15 +886,16 @@ void QgisApp::addRasterLayer()
 void QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 {
   if (theFileNameQStringList.empty())
-  {
-    // no files selected so bail out, but
-    // allow mapCanvas to handle events
-    // first
-    mapCanvas->freeze(false);
-    return;
-  } else {
-    mapCanvas->freeze();
-  }
+    {
+      // no files selected so bail out, but
+      // allow mapCanvas to handle events
+      // first
+      mapCanvas->freeze(false);
+      return;
+  } else
+    {
+      mapCanvas->freeze();
+    }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
   for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); myIterator != theFileNameQStringList.end();
@@ -1241,7 +1224,7 @@ void QgisApp::identify()
 
 void QgisApp::attributeTable()
 {
-  QListViewItem *li = legendView->currentItem();
+  QListViewItem *li = mapLegend->currentItem();
   if (li)
     {
       QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
@@ -1285,7 +1268,7 @@ void QgisApp::drawPoint(double x, double y)
 
 void QgisApp::drawLayers()
 {
-//  std::cout << "In  QgisApp::drawLayers()" << std::endl;
+  std::cout << "In  QgisApp::drawLayers()" << std::endl;
   mapCanvas->setDirty(true);
   mapCanvas->render2();
 }
@@ -1301,13 +1284,13 @@ void QgisApp::testButton()
 {
   /* QgsShapeFileLayer *sfl = new QgsShapeFileLayer("foo");
      mapCanvas->addLayer(sfl); */
-//      delete sfl;
+  //      delete sfl;
 
 }
 
 void QgisApp::layerProperties()
 {
-  layerProperties(legendView->currentItem());
+  layerProperties(mapLegend->currentItem());
 }
 
 void QgisApp::layerProperties(QListViewItem * lvi)
@@ -1319,7 +1302,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
   } else
     {
       // get the selected item
-      QListViewItem *li = legendView->currentItem();
+      QListViewItem *li = mapLegend->currentItem();
       lyr = ((QgsLegendItem *) li)->layer();
     }
 
@@ -1389,7 +1372,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 
 
 
-//  lyr->showLayerProperties();
+  //  lyr->showLayerProperties();
 }
 
 //>>>>>>> 1.97.2.17
@@ -1397,7 +1380,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 void QgisApp::removeLayer()
 {
   mapCanvas->freeze();
-  QListViewItem *lvi = legendView->currentItem();
+  QListViewItem *lvi = mapLegend->currentItem();
   QgsMapLayer *lyr = ((QgsLegendItem *) lvi)->layer();
   mapCanvas->remove(lyr->getLayerID());
   mapLegend->update();
@@ -1413,7 +1396,7 @@ void QgisApp::zoomToLayerExtent()
 {
 
   // get the selected item
-  QListViewItem *li = legendView->currentItem();
+  QListViewItem *li = mapLegend->currentItem();
   QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
   mapCanvas->setExtent(lyr->extent());
   mapCanvas->clear();
@@ -1435,7 +1418,7 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
     }
 }
 
-void QgisApp::clickLegendMenu(QListViewItem * lvi)
+void QgisApp::currentLayerChanged(QListViewItem * lvi)
 {
   if (lvi)
     {
@@ -1827,11 +1810,11 @@ void QgisApp::restoreWindowState()
 void QgisApp::checkQgisVersion()
 {
   QApplication::setOverrideCursor(Qt::WaitCursor);
-/* QUrlOperator op = new QUrlOperator( "http://mrcc.com/qgis/version.txt" );
-connect(op, SIGNAL(data()), SLOT(urlData()));
-connect(op, SIGNAL(finished(QNetworkOperation)), SLOT(urlFinished(QNetworkOperation)));
+  /* QUrlOperator op = new QUrlOperator( "http://mrcc.com/qgis/version.txt" );
+     connect(op, SIGNAL(data()), SLOT(urlData()));
+     connect(op, SIGNAL(finished(QNetworkOperation)), SLOT(urlFinished(QNetworkOperation)));
 
-op.get(); */
+     op.get(); */
   socket = new QSocket(this);
   connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
   connect(socket, SIGNAL(connectionClosed()), SLOT(socketConnectionClosed()));
@@ -1905,7 +1888,7 @@ void QgisApp::socketConnectionClosed()
 void QgisApp::socketError(int e)
 {
   QApplication::restoreOverrideCursor();
-// get errror type
+  // get errror type
   QString detail;
   switch (e)
     {
@@ -2003,7 +1986,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer()
 {
-  QListViewItem *lvi = legendView->currentItem();
+  QListViewItem *lvi = mapLegend->currentItem();
   QgsMapLayer *lyr = 0;
   if (lvi)
     {
@@ -2015,7 +1998,7 @@ QgsMapLayer *QgisApp::activeLayer()
 QString QgisApp::activeLayerSource()
 {
   QString source;
-  QListViewItem *lvi = legendView->currentItem();
+  QListViewItem *lvi = mapLegend->currentItem();
   QgsMapLayer *lyr = 0;
   if (lvi)
     {

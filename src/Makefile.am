@@ -67,8 +67,6 @@ qgis_SOURCES =  qgisapp.cpp \
 		qgslegend.h \
 		qgslegenditem.cpp \
 		qgslegenditem.h \
-		qgslegendview.cpp \
-		qgslegendview.h \
 		qgslinestyledialog.cpp \
 		qgslinestyledialog.h \
 		qgslinesymbol.cpp \
@@ -148,7 +146,6 @@ qgis_MOC = 	splashscreen.moc.cpp \
 						qgslegend.moc.cpp \
 						qgslegenditem.moc.cpp\
 						qgslegenditembase.moc.cpp \
-						qgslegendview.moc.cpp \
 						qgslinestyledialog.moc.cpp \
 						qgslinestyledialogbase.moc.cpp \
 						qgsmapcanvas.moc.cpp \
