@@ -3,6 +3,9 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-22 [mcoletti] 0.5.0devel29
+** QgsProject properties now re-designed to be similar to QSettings
+	
 2004-11-20 [timlinux] 0.5.0devel28
 ** Added the capability to interrupt the rendering of the currently drawing map
 layer by pressing the escape key. Repeat and rinse to interrupt drawing of all
