@@ -25,9 +25,7 @@
 #include <qstring.h>
 #endif
 
-#ifndef QGSPOINT_H
-#include <qgspoint.h>
-#endif
+#include "qgspoint.h"
 
 
 /*! \class QgsRect

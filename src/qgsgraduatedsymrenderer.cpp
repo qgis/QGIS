@@ -21,8 +21,8 @@
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
 #include <qdom.h>
-
-inline QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
+//XXX Inlining this destructor kills build on WIN32 - sorry
+QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
 {
     //free the memory first
     /*for (std::list < QgsRangeRenderItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it)
