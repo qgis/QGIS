@@ -266,7 +266,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // Splash screen global is declared in qgisapp.h header
   //
   QSettings settings;
-  bool myHideSplashFlag = false;
+  myHideSplashFlag = false;
   myHideSplashFlag = settings.readBoolEntry("/qgis/hideSplash");
 
   if (!myHideSplashFlag)
@@ -274,6 +274,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
     gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
     gSplashScreen->setStatus(tr("Loading QGIS..."));
     qApp->processEvents();
+    // Set up the timer so the splash screen stays up for
+    // another 5 seconds, then kill it.
+    QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
+  //  gSplashScreen->setStatus(tr("QGIS ready"));
   }
 
   // register all GDAL and OGR plug-ins
@@ -453,6 +457,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mOverviewCanvas, SLOT(remove(QString)));
 
   
+  if (! myHideSplashFlag)
+  {
+    gSplashScreen->setStatus(tr("Setting theme..."));
+  }
   // get the users theme preference from the settings
   QString themeName = settings.readEntry("/qgis/theme","default");
   
@@ -460,16 +468,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   setTheme(themeName);
   setupToolbarPopups(themeName);
 
+  if (! myHideSplashFlag)
+  {
+    gSplashScreen->setStatus(tr("QGIS Ready"));
+  }
   // set the focus to the map canvase
   mMapCanvas->setFocus();
 
-  if (!myHideSplashFlag)
-  {
-    // Set up the timer so the splash screen stays up for
-    // another 5 seconds, then kill it.
-    QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
-    gSplashScreen->setStatus(tr("QGIS ready"));
-  }
  
 } // QgisApp ctor
 
@@ -3320,6 +3325,10 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
 void QgisApp::killSplashScreen()
 {
+  // Set the hide flag to true in case someone
+  // tries to set the status after we have killed the splash
+  // screen
+    myHideSplashFlag = true;   
     gSplashScreen->finish(this);
     delete gSplashScreen;
 }

@@ -22,6 +22,7 @@
 #include <qpainter.h>
 #include <qpicture.h>
 #include <qsettings.h>
+#include <qmessagebox.h>
 
 #include "qgssvgcache.h"
 
@@ -45,15 +46,15 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   
   // if we already have the pixmap, return it
   if (iter != pixmapMap.end()) {
-    std::cerr<<"SVGCACHE: "<<filename<<"["<<scaleFactor
+    std::cerr<<"SVGCACHE: "<<filename.ascii()<<"["<<scaleFactor
 	     <<"] is already loaded"<<std::endl;
     return iter->second;
   }
   
   // if not, try to load it
-  std::cerr<<"SVGCACHE: loading "<<filename<<"["<<scaleFactor<<"]"<<std::endl;
+  std::cerr<<"SVGCACHE: loading "<<filename.ascii()<<"["<<scaleFactor<<"]"<<std::endl;
   QPicture pic;
-  pic.load(filename,"svg");
+  if( pic.load(filename,"svg")){
   int width=pic.boundingRect().width();
   width=static_cast<int>(static_cast<double>(width)*scaleFactor);
   int height=pic.boundingRect().height();
@@ -104,6 +105,10 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   }
   
   return pixmap;
+  }else{
+    QMessageBox::warning(0, "No SVG Support", "This version of Qt does not provide support for SVG Markers. Please donate to the QGIS project if you want this fixed");
+    return 0;
+  }
 }
   
 
