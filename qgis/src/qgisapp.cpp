@@ -66,6 +66,7 @@
 #include <qpaintdevicemetrics.h> 
 #include <qclipboard.h>
 #include <qapplication.h>
+#include <qtoolbutton.h>
 
 #include <iostream>
 #include <iomanip>
@@ -455,6 +456,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   
   // set the theme 
   setTheme(themeName);
+  setupToolbarPopups(themeName);
 
   // set the focus to the map canvase
   mMapCanvas->setFocus();
@@ -2455,6 +2457,7 @@ void QgisApp::options()
   {
     // set the theme if it changed
    setTheme(optionsDialog->theme()); 
+   setupToolbarPopups(optionsDialog->theme());
   }
       
 }
@@ -2888,7 +2891,63 @@ void QgisApp::setTheme(QString themeName)
   actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
   actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
 }
+void QgisApp::setupToolbarPopups(QString themeName)
+{
+  // setup the toolbar popup menus that create a single toolbar icon
+  // and a menu that is popped up when the mouse is held down (ala
+  // the famous web browser Back button)
+  QString iconPath = mAppDir +"/share/qgis/themes/" + themeName;
 
+  // Setup the overview tools 
+  // the toolbutton for the overview group:
+  tbtnOverviewTools->setIconSet(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")));
+  toolPopupOverviews = new QPopupMenu();
+  toolPopupOverviews->insertItem(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")),
+      "Add all layers to the overview map",
+      this, SLOT(addAllToOverview()));
+  toolPopupOverviews->insertItem(QIconSet(QPixmap(iconPath + "/remove_all_from_overview.png")),
+      "Remove all layers from the overview map",
+      this, SLOT(removeAllFromOverview()));
+  tbtnOverviewTools->setPopup(toolPopupOverviews);
+  tbtnOverviewTools->setPopupDelay(0);
+  // connect the top overview tool to the appropriate slot
+  connect(tbtnOverviewTools, SIGNAL(clicked()), this, SLOT(addAllToOverview()));
+
+  // setup the add/remove all tools
+  // the toolbutton for the display group:
+  tbtnDisplayTools->setIconSet(QIconSet(QPixmap(iconPath + "/show_all_layers.png")));
+  toolPopupDisplay = new QPopupMenu();
+   toolPopupDisplay->insertItem(QIconSet(QPixmap(iconPath + "/show_all_layers.png")),
+      "Show all layers",
+      this, SLOT(showAllLayers()));
+  toolPopupDisplay->insertItem(QIconSet(QPixmap(iconPath + "/hide_all_layers.png")),
+      "Hide all layers",
+      this, SLOT(hideAllLayers()));
+  tbtnDisplayTools->setPopup(toolPopupDisplay);
+  tbtnDisplayTools->setPopupDelay(0);
+  // connect the top overview tool to the appropriate slot
+  connect(tbtnDisplayTools, SIGNAL(clicked()), this, SLOT(showAllLayers()));
+
+  // setup the capture (digitize) tools
+   // the toolbutton for the capture group:
+  tbtnCaptureTools->setIconSet(QIconSet(QPixmap(iconPath + "/digitising_point.png")));
+  toolPopupCapture = new QPopupMenu();
+   toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_point.png")),
+      "Capture points",
+      this, SLOT(capturePoint()));
+  toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_line.png")),
+      "Capture lines",
+      this, SLOT(captureLine()));
+  toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_general.png")),
+      "Capture polygons",
+      this, SLOT(capturePolygon()));
+  tbtnCaptureTools->setPopup(toolPopupCapture);
+  tbtnCaptureTools->setPopupDelay(0);
+  // connect the top overview tool to the appropriate slot
+  connect(tbtnCaptureTools, SIGNAL(clicked()), this, SLOT(capturePoint()));
+
+ 
+}
 void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
 {
   if (theVisibilityFlag)

@@ -144,6 +144,8 @@ public:
     QgsMapLayerRegistry * getLayerRegistry() { return mLayerRegistry; };
     //! Set theme (icons)
     void setTheme(QString themeName="default");
+    //! Setup the toolbar popup menus for a given theme
+    void setupToolbarPopups(QString themeName);
 private:
 
     //! Add a vector layer to the map
@@ -319,6 +321,12 @@ private:
     QPopupMenu * mPopupMenu;
     //! Top level plugin menu
     QPopupMenu *mPluginMenu;
+    //! Popup menu for the map overview tools
+    QPopupMenu *toolPopupOverviews;
+    //! Popup menu for the display tools
+    QPopupMenu *toolPopupDisplay;
+    //! Popup menu for the capture tools
+    QPopupMenu *toolPopupCapture;
     //! Legend list view control
     //doesnt see to be used...(TS)
     //QgsLegendView *mLegendView;
