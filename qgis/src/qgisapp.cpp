@@ -101,7 +101,7 @@ QgisApp::addLayer ()
 	  ++it;
 	}
       qApp->processEvents();
-      mapCanvas->render();
+      mapCanvas->render2();
 
     }
 

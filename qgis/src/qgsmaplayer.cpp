@@ -44,7 +44,11 @@ const QgsRect QgsMapLayer::extent(){
 QgsRect QgsMapLayer::calculateExtent(){
   
 }
-void QgsMapLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
+void QgsMapLayer::draw(QPainter *, QgsRect *viewExtent, int yTransform){
+  cout << "In QgsMapLayer::draw" << endl;
+}
+
+void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *){
   cout << "In QgsMapLayer::draw" << endl;
 }
 

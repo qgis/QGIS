@@ -3,6 +3,7 @@
 #include <qpointarray.h>
 #include <qbrush.h>
 #include "qgsrect.h"
+#include "qgspoint.h"
 #include <libpq++.h>
 #include <qmessagebox.h>
 #include "qgsdatabaselayer.h"
@@ -181,30 +182,30 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	// get the number of polygons
 	ptr = feature + 5;
 	numPolygons = (int *)ptr;
-	  for(kdx = 0; kdx < *numPolygons; kdx++){
-	    //skip the endian and feature type info and
-	    // get number of rings in the polygon
-	    ptr = feature + 14;
-	    numRings = (int *)ptr;
+	for(kdx = 0; kdx < *numPolygons; kdx++){
+	  //skip the endian and feature type info and
+	  // get number of rings in the polygon
+	  ptr = feature + 14;
+	  numRings = (int *)ptr;
+	  ptr += 4;
+	  for(idx = 0; idx < *numRings; idx++){
+	    // get number of points in the ring
+	    nPoints = (int *)ptr;
 	    ptr += 4;
-	    for(idx = 0; idx < *numRings; idx++){
-	      // get number of points in the ring
-	      nPoints = (int *)ptr;
-	      ptr += 4;
-	      pa = new QPointArray(*nPoints);
-	      for(jdx = 0; jdx < *nPoints; jdx++){
-		// add points to a point array for drawing the polygon
-		x = (double *) ptr;
-		ptr += sizeof(double);
-		y = (double *) ptr;
-		ptr += sizeof(double);
-		pa->setPoint(jdx,(int)*x, yTransform - (int)*y);
-	      }
-	      // draw the ring
-	      p->drawPolygon(*pa);
-	      delete pa;
+	    pa = new QPointArray(*nPoints);
+	    for(jdx = 0; jdx < *nPoints; jdx++){
+	      // add points to a point array for drawing the polygon
+	      x = (double *) ptr;
+	      ptr += sizeof(double);
+	      y = (double *) ptr;
+	      ptr += sizeof(double);
+	      pa->setPoint(jdx,(int)*x, yTransform - (int)*y);
 	    }
+	    // draw the ring
+	    p->drawPolygon(*pa);
+	    delete pa;
 	  }
+	}
 	break;
       }
  
@@ -213,6 +214,170 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 
 
 }
+void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTransform *cXf){
+  // painter is active (begin has been called
+  /* Steps to draw the layer
+     1. get the features in the view extent by SQL query
+     2. read WKB for a feature
+     3. transform
+     4. draw
+  */
+  PgCursor pgs(dataSource, "drawCursor");
+  QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
+  sql +=   "') as features from " + tableName;
+  sql += " where " + geometryColumn;
+  sql +=  " && GeometryFromText('BOX3D(" + viewExtent->stringRep();
+  sql += ")'::box3d,-1)";
+  qWarning(sql);
+  pgs.Declare((const char *)sql, true);
+  int res = pgs.Fetch();
+  cout << "Number of matching records: " << pgs.Tuples() << endl;
+  cout << "Using following transform parameters:\n" << cXf->showParameters() 
+       << endl;
+  for (int idx = 0; idx < pgs.Tuples (); idx++)
+    {
+      // allocate memory for the item
+      char *feature = new char[pgs.GetLength (idx, 0) + 1];
+      memset (feature, '\0', pgs.GetLength (idx, 0) + 1);
+      memcpy (feature, pgs.GetValue (idx, 0), pgs.GetLength (idx, 0));
+      wkbType = (int)feature[1];
+      //cout << "Feature type: " << wkbType << endl;
+      // read each feature based on its type
+      double *x;
+      double *y;
+      int *nPoints;
+      int *numRings;
+      int *numPolygons;
+      int numPoints;
+      int numLineStrings;
+      int idx,jdx,kdx;
+      char *ptr;
+      char lsb;
+      int ttype;
+      QgsPoint pt;
+      QPointArray *pa;
+      switch(wkbType){
+      case WKBPoint:
+	p->setPen(Qt::red);
+	x = (double *) (feature + 5);
+	y = (double *) (feature + 5 + sizeof (double));
+	pt = cXf->transform(*x,*y);
+	p->drawRect (pt.xToInt(), pt.yToInt(), 5,  5);
+	break;
+      case WKBLineString:
+	p->setPen(Qt::blue);
+	// get number of points in the line
+	numPoints = (int)(feature + 1 + sizeof(int));
+	ptr = feature + 1 + 2 * sizeof(int);
+	for(idx = 0; idx < numPoints; idx++){
+	  x = (double *) ptr;
+	  ptr += sizeof(double);
+	  y = (double *) ptr;
+	  ptr += sizeof(double);
+	  // transform the point
+	  pt = cXf->transform(*x, *y);
+	  if(idx == 0)
+	    p->moveTo(pt.xToInt(),pt.yToInt());
+	  else
+	    p->lineTo(pt.xToInt(),pt.yToInt());
+	    
+	}
+	break;
+      case WKBMultiLineString:
+	p->setPen(Qt::blue);
+	numLineStrings =  (int)(feature[5]);
+	ptr = feature+9;
+	for(jdx = 0; jdx < numLineStrings; jdx++){
+	  // each of these is a wbklinestring so must handle as such
+	  lsb = *ptr;
+	  ptr += 5; // skip type since we know its 2
+	  nPoints = (int *)ptr;
+	  ptr += sizeof(int);
+	  for(idx = 0; idx < *nPoints; idx++){
+	    x = (double *) ptr;
+	    ptr += sizeof(double);
+	    y = (double *) ptr;
+	    ptr += sizeof(double);
+	    // transform the point
+	    pt = cXf->transform(*x, *y);
+	    if(idx == 0)
+	      p->moveTo(pt.xToInt(),pt.yToInt());
+	    else
+	      p->lineTo(pt.xToInt(),pt.yToInt());
+	    
+	  }
+	}
+	break;
+      case WKBPolygon:
+	p->setPen(Qt::blue);
+	// get number of rings in the polygon
+	numRings = (int *)(feature + 1 + sizeof(int));
+	ptr = feature + 1 + 2 * sizeof(int);
+	for(idx = 0; idx < *numRings; idx++){
+	  // get number of points in the ring
+	  nPoints = (int *)ptr;
+	  ptr += 4;
+	  pa = new QPointArray(*nPoints);
+	  for(jdx = 0; jdx < *nPoints; jdx++){
+	    // add points to a point array for drawing the polygon
+	    x = (double *) ptr;
+	    ptr += sizeof(double);
+	    y = (double *) ptr;
+	    ptr += sizeof(double);
+	    pt = cXf->transform(*x, *y);
+	    pa->setPoint(jdx,pt.xToInt(), pt.yToInt());
+	  }
+	  // draw the ring
+	  p->drawPolygon(*pa);
+	    
+	}
+	break;
+      case WKBMultiPolygon:
+	p->setPen(Qt::darkGreen);
+	QBrush brush(Qt::green);
+	p->setBrush(brush);
+	// get the number of polygons
+	ptr = feature + 5;
+	numPolygons = (int *)ptr;
+	for(kdx = 0; kdx < *numPolygons; kdx++){
+	  //skip the endian and feature type info and
+	  // get number of rings in the polygon
+	  ptr = feature + 14;
+	  numRings = (int *)ptr;
+	  ptr += 4;
+	  for(idx = 0; idx < *numRings; idx++){
+	    // get number of points in the ring
+	    nPoints = (int *)ptr;
+	    ptr += 4;
+	    pa = new QPointArray(*nPoints);
+	    for(jdx = 0; jdx < *nPoints; jdx++){
+	      // add points to a point array for drawing the polygon
+	      x = (double *) ptr;
+	      ptr += sizeof(double);
+	      y = (double *) ptr;
+	      ptr += sizeof(double);
+	      // cout << "Transforming " << *x << "," << *y << " to ";
+		
+	      pt = cXf->transform(*x, *y);
+	      //cout << pt.xToInt() << "," << pt.yToInt() << endl;
+	      pa->setPoint(jdx,pt.xToInt(), pt.yToInt());
+	     
+	    }
+	    // draw the ring
+	    p->drawPolygon(*pa);
+	    delete pa;
+	  }
+	}
+	break;
+      }
+ 
+    }
+
+
+
+}
+
+
 int QgsDatabaseLayer::endian(){
   char *chkEndian = new char[4];
   memset (chkEndian, '\0', 4);
