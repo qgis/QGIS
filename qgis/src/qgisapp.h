@@ -42,9 +42,10 @@ class QgisApp:public QgisAppBase
 	QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
 
 	 ~QgisApp();
-	 private:
-	 QgisInterface *getInterface();
+	public:
+	 QgisIface *getInterface();
 	 int getInt();
+	  private:
 	 //private:
 	//public slots:
 	//! Add a layer to the map

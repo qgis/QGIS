@@ -1,6 +1,6 @@
 /* Test plugin for QGis
-* This code is a test plugin for QGis and a demonstration of the API
-* All QGis plugins must inherit from the abstract base class QgisPlugin. A
+* This code is an example plugin for QGIS and a demonstration of the API
+* All QGIS plugins must inherit from the abstract base class QgisPlugin. A
 * plugin must implement the virtual functions defined in QgisPlugin:
 * 	*name
 *	*version
@@ -11,10 +11,18 @@
 * In addition, a plugin must implement a the classFactory and unload
 * functions. Note that these functions must be declared as extern "C"
 */
+
+// includes
 #include <iostream>
 #include "../src/qgisapp.h"
 #include "qgistestplugin.h" 
 #include <qaction.h>
+// xpm for creating the toolbar icon
+#include "matrix1.xpm"
+
+/**
+* Constructor for the plugin
+*/
 QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI) 
 : qgisMainWindow(qgis), qI(_qI){
 	pName = "Test Plugin";
@@ -32,29 +40,30 @@ QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI)
         QMenuBar *menu = ((QMainWindow *)qgisMainWindow)->menuBar();
 
         menu->insertItem( "&PluginMenu", pluginMenu );
-		QAction *fileSaveAction = new QAction( "Save File","&Save", CTRL+Key_S, qgisMainWindow, "save" );
-        connect( fileSaveAction, SIGNAL( activated() ) , this, SLOT( save() ) );
+		QAction *zoomPreviousAction = new QAction( "Zoom Previous",QIconSet(icon_matrix), "&Zoom Previous", CTRL+Key_S, qgisMainWindow, "zoomFull" );
 		
-		QToolBar * fileTools = new QToolBar( (QMainWindow *)qgisMainWindow, "file operations" );
-        fileTools->setLabel( "File Operations" );
-		fileSaveAction->addTo(fileTools);
+        connect( zoomPreviousAction, SIGNAL( activated() ) , this, SLOT( zoomPrevious() ) );
 		
-		//int foo = qgisMainWindow->getInt();
+		QToolBar * fileTools = new QToolBar( (QMainWindow *)qgisMainWindow, "zoom operations" );
+        fileTools->setLabel( "Zoom Operations" );
+		zoomPreviousAction->addTo(fileTools);
+		
+		int foo = qI->getInt();
 		/*
-		QgisInterface *qI = qgisMainWindow->getInterface();
-		if(qI)
-			std::cout << "qI pointer is good" << std::endl;
+		QgisIface *qI2 = qgisMainWindow->getInterface();
+		if(qI2)
+			std::cout << "qI2 pointer is good" << std::endl;
 		else
-			std::cout << "qI pointer is bad" << std::endl;
+			std::cout << "qI2 pointer is bad" << std::endl;
 		*/
 		//zoomFullX();
-       qI->zoomFull2();
+       qI->zoomFull();
 	  // qgisMainWindow->zoomFull();
 	  	QMessageBox::information(qgisMainWindow,"Message From Plugin", "Click Ok to zoom previous");
 	
 	   qI->zoomPrevious();
 	   
-	//   std::cout << "Result of getInt is: " << foo << std::endl;
+	   std::cout << "Result of getInt is: " << foo << std::endl;
 
 }
 QgisTestPlugin::~QgisTestPlugin(){
@@ -79,8 +88,7 @@ void QgisTestPlugin::newThing(){
 	QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the new menu");
 }
 
-void QgisTestPlugin::save(){
-	QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the save toolbar function");
+void QgisTestPlugin::zoomPrevious(){
 	qI->zoomPrevious();
 }
 
