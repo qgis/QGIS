@@ -13,7 +13,7 @@
 #define QGSGPSDEVICEDIALOG_H
 
 #include "qgsgpsdevicedialogbase.h"
-#include "qgsbabelformat.h"
+#include "qgsgpsdevice.h"
 
 #include <qstring.h>
 
@@ -21,7 +21,7 @@
 class QgsGPSDeviceDialog : public QgsGPSDeviceDialogBase {
   Q_OBJECT
 public:
-  QgsGPSDeviceDialog(BabelMap& devices);
+  QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& devices);
 
 public slots:
   void slotNewDevice();
@@ -35,8 +35,8 @@ signals:
 
 private:
   void writeDeviceSettings();
-
-  BabelMap& mDevices;
+  
+  std::map<QString, QgsGPSDevice*>& mDevices;
 };
 
 #endif

@@ -26,7 +26,7 @@
 
 class QgsBabelFormat {
 public:
-  QgsBabelFormat();
+  QgsBabelFormat(const QString& name = "");
   virtual ~QgsBabelFormat() { }
   
   const QString& name() const;
@@ -47,6 +47,7 @@ public:
   
 protected:
   
+  QString mName;
   bool mSupportsImport, mSupportsExport, mSupportsWaypoints;
   bool mSupportsRoutes, mSupportsTracks;
 };

@@ -31,6 +31,8 @@ gpsimporterplugin_la_SOURCES = \
 	qgsgpsplugin.cpp \
 	qgsbabelformat.h \
 	qgsbabelformat.cpp \
+	qgsgpsdevice.h \
+	qgsgpsdevice.cpp \
 	qgsgpsplugingui.cpp \
 	qgsgpsdevicedialog.cpp \
 	$(plugin_UI)\
