@@ -459,11 +459,10 @@ void QgisApp::addRasterLayer()
     }
   }
 
-  
+  mapLegend->update();
   qApp->processEvents();
   mapCanvas->freeze(false);
   mapCanvas->render2();
-  mapLegend->update();
   QApplication::restoreOverrideCursor();
   statusBar()->message(mapCanvas->extent().stringRep());
 }
