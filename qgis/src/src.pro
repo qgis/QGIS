@@ -25,6 +25,7 @@ CONFIG += qt thread debug
 LIBS += -L$/usr/local/lib -lgdal.1.1
 SOURCES += main.cpp \
            qgisapp.cpp \
+           qgisinterface.cpp \
            qgsdatasource.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
@@ -45,8 +46,10 @@ SOURCES += main.cpp \
            qgsattributetabledisplay.cpp \
            qgsrenderer.cpp \
            qgsrenderitem.cpp \
-           qgsprojectio.cpp 
+           qgsprojectio.cpp \
+	   qgisiface.cpp
 HEADERS += qgisapp.h \
+           qgisinterface.h \
            qgisappbase.ui.h \
            qgsdatasource.h \
            qgsmapcanvas.h \
@@ -69,7 +72,8 @@ HEADERS += qgisapp.h \
            qgsattributetabledisplay.h \
            qgsrenderer.h \
            qgsrenderitem.h \
-           qgsprojectio.h 
+           qgsprojectio.h \
+           qgisiface.h 
 FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
