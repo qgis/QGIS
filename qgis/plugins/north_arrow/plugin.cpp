@@ -41,6 +41,7 @@ email                : tim@linfiniti.com
 #include <qfont.h>
 #include <qpicture.h>
 #include <qpointarray.h>
+#include <qpaintdevicemetrics.h>
 
 //non qt includes
 #include <iostream>
@@ -168,9 +169,10 @@ void Plugin::renderNorthArrow(QPainter * theQPainter)
                                       (centerYDouble * cos(myRadiansDouble))
                                     ) - centerYDouble);
 
-      //Get canvas dimensions
-      int myHeight = qGisInterface->getMapCanvas()->height();
-      int myWidth = qGisInterface->getMapCanvas()->width();
+      // need width/height of paint device
+      QPaintDeviceMetrics myMetrics( theQPainter->device() );
+      int myHeight = myMetrics.height();
+      int myWidth = myMetrics.width();
 
 #ifdef QGISDEBUG
       std::cout << "Rendering n-arrow at " << mPlacement << std::endl;
