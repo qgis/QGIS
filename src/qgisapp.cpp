@@ -3747,8 +3747,13 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
     {
         mMapCanvas->freeze(false);
         QApplication::restoreOverrideCursor();
-        QString msg(rasterFile.baseName() + " is not a valid or recognized raster data source");
-        QMessageBox::critical(this, "Invalid Data Source", msg);
+        if(guiWarning)
+        {
+          // don't show the gui warning (probably because we are loading from command line)
+          QString msg(rasterFile.baseName() 
+              + " is not a valid or recognized raster data source");
+          QMessageBox::critical(this, "Invalid Data Source", msg);
+        }
         return false;
     }
     else
