@@ -68,7 +68,7 @@ if test "$PG_CONFIG" = "no" ; then
   AC_MSG_RESULT([no])
 else
   HAVE_PG=1
-  PG_LIB="-L`$PG_CONFIG --libdir` -lpq++"
+  PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
   PG_INC="`$PG_CONFIG --includedir`"
   AC_MSG_RESULT([yes])
   AC_MSG_CHECKING([for postgreSQL libs])

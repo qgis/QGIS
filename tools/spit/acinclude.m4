@@ -28,14 +28,17 @@ QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 AC_MSG_CHECKING([Qt version])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTDIR/include/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-    2*)
-        QT_MAJOR="2"
+    33*)
+        QT_MAJOR="3"
     ;;
-    3*)
+    32*)
+        QT_MAJOR="3"
+    ;;
+    31*)
         QT_MAJOR="3"
     ;;
     *)
-        AC_MSG_ERROR([*** Don't know how to handle this Qt major version])
+        AC_MSG_ERROR([*** Qt version 3.1.x or higher is required])
     ;;
 esac
 AC_MSG_RESULT([$QT_VER ($QT_MAJOR)])
@@ -63,10 +66,21 @@ QT_CXXFLAGS="-I$QTDIR/include"
 
 QT_IS_EMBEDDED="no"
 # On unix, figure out if we're doing a static or dynamic link
+
 case "${host}" in
     *-cygwin)
 	AC_DEFINE_UNQUOTED(WIN32, "", Defined if on Win32 platform)
-        if test -f "$QTDIR/lib/qt.lib" ; then
+   echo "$QTDIR/lib/qt-mt$QT_VER.lib"
+         if test -f "$QTDIR/lib/qt-mt$QT_VER.lib" ; then
+            QT_LIB="qt-mt$QT_VER.lib"
+            QT_IS_STATIC="no"
+            QT_IS_MT="yes"
+           
+        elif test -f "$QTDIR/lib/qt$QT_VER.lib" ; then
+            QT_LIB="qt$QT_VER.lib"
+            QT_IS_STATIC="no"
+            QT_IS_MT="no"
+        elif test -f "$QTDIR/lib/qt.lib" ; then
             QT_LIB="qt.lib"
             QT_IS_STATIC="yes"
             QT_IS_MT="no"
@@ -74,38 +88,33 @@ case "${host}" in
             QT_LIB="qt-mt.lib" 
             QT_IS_STATIC="yes"
             QT_IS_MT="yes"
-        elif test -f "$QTDIR/lib/qt$QT_VER.lib" ; then
-            QT_LIB="qt$QT_VER.lib"
-            QT_IS_STATIC="no"
-            QT_IS_MT="no"
-        elif test -f "$QTDIR/lib/qt-mt$QT_VER.lib" ; then
-            QT_LIB="qt-mt$QT_VER.lib"
-            QT_IS_STATIC="no"
-            QT_IS_MT="yes"
         fi
         ;;
 
     *)
+      QT_IS_DYNAMIC=`ls $QTDIR/lib/libqt*.so 2> /dev/null`
+
+      if test "x$QT_IS_DYNAMIC" = x;  then
         QT_IS_STATIC=`ls $QTDIR/lib/libqt*.a 2> /dev/null`
         if test "x$QT_IS_STATIC" = x; then
             QT_IS_STATIC="no"
+            AC_MSG_ERROR([*** Couldn't find any Qt libraries])
         else
             QT_IS_STATIC="yes"
         fi
-	#echo "QT_IS_STATIC=$QT_IS_STATIC"
-        if test x$QT_IS_STATIC = xno ; then
-            QT_IS_DYNAMIC=`ls $QTDIR/lib/*.so 2> /dev/null` 
-            if test "x$QT_IS_DYNAMIC" = x;  then
-                AC_MSG_ERROR([*** Couldn't find any Qt libraries])
-            fi
-        fi
-
+       else
+	    QT_IS_STATIC="no"
+       fi
+QT_IS_MT="unknown"
         if test "x`ls $QTDIR/lib/libqt.a* 2> /dev/null`" != x ; then
             QT_LIB="-lqt"
             QT_IS_MT="no"
         elif test "x`ls $QTDIR/lib/libqt-mt.so* 2> /dev/null`" != x ; then
             QT_LIB="-lqt-mt"
             QT_IS_MT="yes"
+        elif test "x`ls $QTDIR/lib/libqt.so* 2> /dev/null`" != x ; then
+            QT_LIB="-lqt"
+            QT_IS_MT="no"
         elif test "x`ls $QTDIR/lib/libqte.* 2> /dev/null`" != x ; then
             QT_LIB="-lqte"
             QT_IS_MT="no"

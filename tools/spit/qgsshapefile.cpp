@@ -129,7 +129,7 @@ void QgsShapeFile::setDefaultTable(){
   table_name = name.section('.', 0, 0);
 }
 
-bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin){
+bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, PGconn * conn, QProgressDialog * pro, bool &fin){
   connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
@@ -144,19 +144,20 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
       query += ", ";
   }
   query += ")";  
-  conn->ExecTuplesOk((const char *)query);
-  message = conn->ErrorMessage();
+  PGresult *res = PQexec(conn, (const char *)query);
+  message = PQresultErrorMessage(res);  
   if(message != ""){
     // flag error and send query and error message to stdout on debug
     result = false;
     qWarning(query);
-    qWarning(conn->ErrorMessage());
+    qWarning(PQresultErrorMessage(res));
   }
+  PQclear(res);
 
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";            
-  if(result) conn->ExecTuplesOk((const char *)query);
-  message = conn->ErrorMessage();
+  if(result) res = PQexec(conn, (const char *)query);
+  message = PQresultErrorMessage(res);
   if(message != "") result = false;
 
   //adding the data into the table
@@ -183,9 +184,11 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
           else
             quotes = "\'";
           query += quotes;
+          
           // escape single quotes to prevent sql syntax error (no effect for numerics)
           QString val = feat->GetFieldAsString(n);
-          val.replace("'","''");
+          val.replace("\'","\\\'");
+          val.replace("\'","\\\'");
           // add escaped value to the query 
           query += val;
           query += QString(quotes + ", ");
@@ -193,14 +196,14 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
         
-       
-        if(result) conn->ExecTuplesOk((const char *)query);
-        message = conn->ErrorMessage();
+        PQclear(res);       
+        if(result) res = PQexec(conn, (const char *)query);
+        message = PQresultErrorMessage(res);
         if(message != ""){
           // flag error and send query and error message to stdout on debug
           result = false;
           qWarning(query);
-          qWarning(conn->ErrorMessage());
+          qWarning(PQresultErrorMessage(res));
         }
         pro->setProgress(pro->progress()+1);
         qApp->processEvents();
@@ -210,6 +213,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
     }
   }
   ogrLayer->ResetReading();
+  PQclear(res);
   return result;
 }
 
