@@ -231,9 +231,10 @@ QString QgsVectorLayer::providerType()
 /** 
  * sets the preferred display field based on some fuzzy logic
  */
-void QgsVectorLayer::setDisplayField()
+void QgsVectorLayer::setDisplayField(QString fldName)
 {
-  // Determine the field index for the feature column of the identify
+  // If fldName is provided, use it as the display field, otherwise
+  // determine the field index for the feature column of the identify
   // dialog. We look for fields containing "name" first and second for
   // fields containing "id". If neither are found, the first field
   // is used as the node.
@@ -241,28 +242,51 @@ void QgsVectorLayer::setDisplayField()
   QString idxId="";
 
   std::vector < QgsField > fields = dataProvider->fields();
+  if(!fldName.isEmpty())
+  {
+    // find the index for this field
+    //
+    for(int i = 0; i < fields.size(); i++)
+    {
+      if(QString(fields[i].name()) == fldName)
+      {
+        fieldIndex = i;
+        break;
+      }
+    }
+  }else{
   int j = 0;
   for (int j = 0; j < fields.size(); j++)
   {
 
     QString fldName = fields[j].name();
 #ifdef QGISDEBUG
-    std::cout << "Checking field " << fldName << std::endl;
+    std::cerr << "Checking field " << fldName << std::endl;
 #endif
+    // Check the fields and keep the first one that matches.
+    // We assume that the user has organized the data with the
+    // more "interesting" field names first. As such, name should
+    // be selected before oldname, othername, etc.
     if (fldName.find("name", false) > -1)
     {
-      idxName = fldName;
-      break;
+      if(idxName.isEmpty())
+      {
+        idxName = fldName;
+      }
     }
     if (fldName.find("descrip", false) > -1)
     {
-      idxName = fldName;
-      break;
+      if(idxName.isEmpty())
+      {
+        idxName = fldName;
+      }
     }
     if (fldName.find("id", false) > -1)
     {
-      idxId = fldName;
-      break;
+      if(idxId.isEmpty())
+      {
+        idxId = fldName;
+      }
     }
   }
 
@@ -281,6 +305,7 @@ void QgsVectorLayer::setDisplayField()
     {
       fieldIndex = fields[0].name();
     }
+  }
   }
 }
 
