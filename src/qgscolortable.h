@@ -91,6 +91,12 @@ public:
     /** \brief Print to stderr - for debuging */
     void print ( void );
 
+    /** \brief Minimum value */
+    double min ( void );
+
+    /** \brief Maximum value */
+    double max ( void );
+
 private:
     /** \brief vector of discrete values */
     std::vector<DISCRETE> mDiscrete;
@@ -100,6 +106,12 @@ private:
 
     /** \brief color table interpretation */
     int  mInterp;
+
+    /** \brief min value */
+    double mMin;
+
+    /** \brief max value */
+    double mMax;
 };
 
 #endif
