@@ -309,6 +309,8 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
       mCanvasProperties( new CanvasProperties(width(), height()) ),
       mUserInteractionAllowed(true) // by default we allow a user to interact with the canvas
 {
+  // by default, the canvas is rendered
+  mRenderFlag = true;
   setEraseColor(mCanvasProperties->bgColor);
 
   setMouseTracking(true);
@@ -669,7 +671,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       mCanvasProperties->currentExtent.setYmax(dymax);
       int myRenderCounter=1;
       //bail out if user has requested rendering to be suppressed (usually in statusbar checkbox in gui
-      if (mRenderSuppresionFlag)
+      if (!mRenderFlag)
       {
         // do nothing but continue processing after main render loop
         // so all render complete etc events will
@@ -1754,7 +1756,15 @@ QgsScaleCalculator::units QgsMapCanvas::mapUnits() const
 }
 
 
-
+void QgsMapCanvas::setRenderFlag(bool theFlag)
+{
+   mRenderFlag = theFlag;
+  // render the map
+  if(mRenderFlag)
+  {
+    refresh();
+  }
+}
 
 void QgsMapCanvas::connectNotify( const char * signal )
 {
