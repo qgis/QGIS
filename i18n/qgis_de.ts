@@ -3,11 +3,11 @@
     <name>PluginGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Plugin Vorlage</translation>
     </message>
     <message>
         <source>GPS Download File Importer</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS-Downloaddatei Importeur</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -17,23 +17,28 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;(new line)
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Beschreibung&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p&gt;Eine GPS Downloaddatei that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;(new line)
+&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;(new line)
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;(new line)
+&lt;/body&gt;&lt;/html&gt;(new line)</translation>
     </message>
     <message>
         <source>Input File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabedatei:</translation>
     </message>
     <message>
         <source>Output (Shape) File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabedatei (Shapefile):</translation>
     </message>
     <message>
         <source>Minimum time gap (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Mindestzeitabstand (s):</translation>
     </message>
     <message>
         <source>Minimum distance gap (dd):</source>
-        <translation type="unfinished"></translation>
+        <translation>Mindestentfernung (dd):</translation>
     </message>
     <message>
         <source>...</source>
@@ -49,7 +54,7 @@
     </message>
     <message>
         <source>Graticule Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradnetz Bauer</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
@@ -57,26 +62,44 @@
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Beschreibung&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Dieses Plugin erzeugt ein Gradnetz als Shapefile, welches man Überlagerung in der QGIS Kartenansicht verwenden kann.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Breitengradinterval:</translation>
     </message>
     <message>
         <source>Longitude Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Längengradinterval:</translation>
     </message>
     <message>
         <source>This is a template for your plugin gui. Please modify this as needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist eine Vorlage für eine Plugin GUI. Bitte auf die Bedürfnisse anpassen.</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
+&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Beschreibung&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Eine GPS Downloaddatei auswählen, die in ein Shapefile umgewandelt werden soll und das Plugin übernimmt diesen Job! &lt;/p&gt;
+&lt;p&gt;Mit dem minimalen Zeitabstand kann man dem Importeur mitteilen in welchem Zeitintervall er neue Objekte setzen soll. &lt;/p&gt;
+&lt;p&gt;Mit dem minimalen Entfernungsabstand legt man die Distanz zwischen zwei Messungen, die als Start eines neuen Objekts betrachtet werden soll.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
-        <translation type="unfinished">Öffne Dateidialog</translation>
+        <translation>Öffne Dateidialog</translation>
     </message>
 </context>
 <context>
@@ -295,7 +318,7 @@
     </message>
     <message>
         <source>QGIS - Changes in CVS</source>
-        <translation>QGIS - Änderungen im CVS</translation>
+        <translation type="obsolete">QGIS - Änderungen im CVS</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
@@ -348,6 +371,14 @@
     <message>
         <source>open files dialog</source>
         <translation type="obsolete">Öffne Dateidialog</translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation>Speichere Kartenbild nach</translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in CVS Since Last Release</source>
+        <translation>QGIS - Änderungen im CVS seit dem letzten Release</translation>
     </message>
 </context>
 <context>
@@ -554,127 +585,127 @@
     </message>
     <message>
         <source>Help Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe Toolbar</translation>
     </message>
     <message>
         <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne eine vorher gespeicherte QGIS Projektdatei. Die Ebenen (Raster und Vektor), abgelegt in der Projektdatei werden geladen und im Kartenbereich angezeigt</translation>
     </message>
     <message>
         <source>Close all layers and exit QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Schliesse alle Ebenen und beende QGIS</translation>
     </message>
     <message>
         <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge der Karte eine PostgreSQL Ebene hinzu. Dies erfordert eine ordentlich eingerichtete und laufende PostgreSQL Datenbank und die PostGIS Erweiterungen.</translation>
     </message>
     <message>
         <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Erneuere die Karte durch löschen des Kartenbereichs und Neuzeichnen aller sichtbaren Ebenen</translation>
     </message>
     <message>
         <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoome auf das volle Ausmaß aller Ebenen der Karte. Dies bringt Alles auf der Karte in die Vollansicht</translation>
     </message>
     <message>
         <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
-        <translation type="unfinished"></translation>
+        <translation>In die Karte hineinzoomen. Ziehe die Maus (linke Taste gedrückt halten) um ein Rechteck um den zuvergrössernden Bereich zu ziehem, dann die Taste loslassen.</translation>
     </message>
     <message>
         <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebe die Kartenansicht durch ziehen der Maus (linke Taste gedrückt halten). Der dargestellte Bereich wird sich nach dem loslassen des Taste ändern.</translation>
     </message>
     <message>
         <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Herauszoomen um mehr von der Karte zu sehen. Ziehe die Maus (linke Taste gedrückt halten) um ein Rechteck um einen Bereich zu ziehen. Die aktuelle Ansicht wird herausgezoomt und verkleinert um in das Rechteck zu passen.</translation>
     </message>
     <message>
         <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoome auf die Ausmasse der gewählten Objete in der aktiven Ebene. Die Ansicht wird so gezoomt, das alle gewählten Objekte sichtbar sind. Wenn keine Objekte ausgewählt sind, ändert sich die Ansicht nicht.</translation>
     </message>
     <message>
         <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifiziere ein Objekt in der aktiven Ebene (die aktive Ebene ist die Hervorgehobene in der Legende). Identifizieren, sucht nach Objekten in der Nähe wo mit der Maus geklickt wird und stellt die Informationen über das Resultat dar. Der Suchradius kann im QGIS Einstellungsdialog angepasst werden.</translation>
     </message>
     <message>
         <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle Objekte in der aktiven Ebene durch ziehen der Maus um ein Rechteck um die interessanten Obejekte zu ziehen. Wenn die Maustaste losgelassen wird, werden die Objekte ausgewählt und in einer anderen Farbe dargestellt (Standard ist Gelb)</translation>
     </message>
     <message>
         <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige den Über QGIS Dialog an. Über QGIS enthält Informationen über die aktuelle Version, Mitwirkende und verfügbare Plugins.</translation>
     </message>
     <message>
         <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge eine Vektorebene zum Kartenbereich hinzu. Die unterstützten Formate sind jene die von der OGR Bibliothek zurverfügunggestellt werden. Für eine Liste der unterstützten Formate, siehe http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
     </message>
     <message>
         <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne Attributstabelle für die gewählte Vektorebene. Die Zeilen können durch Klicken auf den Spaltennamen der Kopfzeile sortiert werden.</translation>
     </message>
     <message>
         <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoome zur letzten Ansicht. QGIS speichert nur eine vorherige Ansicht, deshalb wechselt wiederholtes klicken zum wechseln der Ansicht.</translation>
     </message>
     <message>
         <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne Optionsdialog um die QGIS- Eigenschaften zu setzen, wie den Webbrowser und den Suchradius zum Erkennen.</translation>
     </message>
     <message>
         <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere aktuelle Karte als QGIS Projekt. Ein QGIS Projekt kann später geöffnet werden und alle Ebenen und Einstellungen werden wiederhergestellt.</translation>
     </message>
     <message>
         <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere aktuelle Karte als neues QGIS Projekt. Ein QGIS Projekt kann später geöffnet werden und alle Ebenen und Einstellungen werden wiederhergestellt.</translation>
     </message>
     <message>
         <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstelle neues, leeres QGIS Projekt. Alle Ebenen werden gelöscht und eine leere Kartenansicht erstellt.</translation>
     </message>
     <message>
         <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffnet den Plugin Manager und erlaubt es die geladenen Plugins anzusehen oder ein neues zu laden. Der Plugin Manager listed die Verfügbaren Plugins und eine Beschreibung der Eigenschaften.</translation>
     </message>
     <message>
         <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontaktiert den QGIS Versionsserver und liefert Informationen über die aktuelle Version und  neue Eigenschaften/Änderungen die in der Entwicklungsversion verfügbar sind.</translation>
     </message>
     <message>
         <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstellt eine Mapserverdatei (.map) aus der aktuellen QGIS Ansicht. Die .map Datei kann verwendet werden um ein Mapserver Projekt zu erstellen.</translation>
     </message>
     <message>
         <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge eine Rasterebene zum Kartenbereich hinzu. Die unterstützten Rasterformate enthalten die meisten, die von der GDAL Bibliothek zur Verfügung gestellt werden. Siehe http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>Open the QGIS Help Contents in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne den QGIS Hilfeinhalt in einem Webbrowser</translation>
     </message>
     <message>
         <source>Open the QGIS home page in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne die QGIS Homepage in einem Webbrowser</translation>
     </message>
     <message>
         <source>Open the QGIS SourceForge project page in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne die QGIS SourceForge Projektseite in einem Webbrowser</translation>
     </message>
     <message>
         <source>Save Map As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere Karte als Bild</translation>
     </message>
     <message>
         <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere die aktuelle Kartenansicht als PNG Bild. Die Bildgröße wird genau so groß sein wie der Kartenbereich.</translation>
     </message>
     <message>
         <source>Whats this?</source>
-        <translation type="unfinished"></translation>
+        <translation>Was ist das?</translation>
     </message>
     <message>
         <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
-        <translation type="unfinished"></translation>
+        <translation>Was ist das? - Wähle dieses Werkzeug und klicke dann auf einen Toolbarknopf oder Menueintrag um mehr Informationen zu erhalten</translation>
     </message>
 </context>
 <context>
@@ -773,7 +804,7 @@
     </message>
     <message>
         <source>Peter Brewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Peter Brewer</translation>
     </message>
 </context>
 <context>
@@ -847,15 +878,15 @@
     </message>
     <message>
         <source>Create a New PostGIS connection</source>
-        <translation type="unfinished">Neue PostGIS Verbindung erzeugen</translation>
+        <translation>Erzeuge neue PostGIS Verbindung</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <source>5432</source>
-        <translation type="unfinished">5432</translation>
+        <translation>5432</translation>
     </message>
 </context>
 <context>
@@ -878,7 +909,7 @@
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Randbreite:</translation>
     </message>
 </context>
 <context>
@@ -979,83 +1010,79 @@
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
         <source>Create a Layer from a Delimited Text File</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstelle eine Ebene aus einer Textdatendatei</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Hilfe</translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <source>Help on using the plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe zur Verwendung des Plugins</translation>
     </message>
     <message>
         <source>Opens the Delimited Text Plugin help in your configured browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne die Hilfe des Textdaten Plugins im konfigurierten Browser</translation>
     </message>
     <message>
         <source>Parse</source>
-        <translation type="unfinished"></translation>
+        <translation>Verarbeite</translation>
     </message>
     <message>
         <source>Parse the header row and update the X and Y field lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Verarbeite Kopfzeile und erneuere X und Y Feldliste</translation>
     </message>
     <message>
         <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verarbeite Kopfzeile der Eingabedatei und erneuere die X und Y Feld Dropdown Liste. Verwende diesen Knopf um die Feldliste zu erneuern wenn das Trennzeichen geändert wurde nachdem die Textdatendatei gewählt wurde.</translation>
     </message>
     <message>
         <source>Add Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add layer using the deimiter, file, and x/y fields specifed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene hinzufügen</translation>
     </message>
     <message>
         <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge eine Ebene mit den angegebenen Parametern und für sie der Karte hinzu. Der Dialog bleibt offen um das öffnen weiterer Ebenen zu erlauben.</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Schließen</translation>
+        <translation>Schliessen</translation>
     </message>
     <message>
         <source>Close the dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog schliessen</translation>
     </message>
     <message>
         <source>Close the dialog without adding anything to the map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schliesse den Dialog ohne irgendwas der Karte hinzuzufügen.</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;X Feld&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name of the field containing x values</source>
-        <translation type="unfinished"></translation>
+        <translation>Benenne das Feld welches die x Werte enthält</translation>
     </message>
     <message>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benenne das Feld welches die x Werte enthält. Wähle ein Feld aus der Liste. Diese wird durch verarbeiten der Kopfzeile der Textdatendatei erzeugt.</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Y Feld&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name of the field containing y values</source>
-        <translation type="unfinished"></translation>
+        <translation>Benenne das Feld welches die y Werte enthält</translation>
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benenne das Feld welches die y Werte enthält. Wähle ein Feld aus der Liste. Diese wird durch verarbeiten der Kopfzeile der Textdatendatei erzeugt.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -1065,59 +1092,68 @@
 &lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Beschreibung&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Wähle eine Datei, die Text mit durch Trennzeichen geteilten Breiten/Längen-Koordinaten enthält, die als Punktebene verwendet werden soll und das Plugin übernimmt diesen Job!&lt;/p&gt;
+&lt;p&gt;Verwende die Ebenennamens Box um den in der Legende angezeigten Namen der neuen Ebene anzugeben. In der Trennzeichenbox kann man das Trennzeichen (z.B. Space, Komma oder Tabulator) für die Datei angebene. Beachte diese Box akzeptiert Regex-Einträge, also kann man \t für Tabulator verwenden und so weiter. Nach wählen des Trennzeichens, kann man durch drücken von Verarbeiten die neu erkannten Feldnamen der Datei sehen.&lt;/p&gt;
+&lt;p&gt;Mit den X und Y Feldern kann man festlegen welches Spalten Länge und Breite representieren.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenenname</translation>
     </message>
     <message>
         <source>Name to display in the map legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der in der Kartenlegende angezeigt wird</translation>
     </message>
     <message>
         <source>Name displayed in the map legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Name welche in der Kartenlegende dargestellt wird</translation>
     </message>
     <message>
         <source>Delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Trennzeichen</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trennzeichen das zum aufspalten der Felder in der Textdatei verwendet wird. Das Trennzeichen kann mehr als ein Zeichen sein.</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trennzeichen das zum aufspalten der Felder in der Textdatendatei verwendet wird. Das Trennzeichen kann 1 oder mehrere Zeichen lang sein.</translation>
     </message>
     <message>
         <source>Delimited Text Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Textdatenebene</translation>
     </message>
     <message>
         <source>Delimited text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Textdatendatei</translation>
     </message>
     <message>
         <source>Full path to the delimited text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Vollständiger Pfad zur Textdatendatei</translation>
     </message>
     <message>
         <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vollständiger Pfad zur Textdatendatei. Um die Felder in der Datei ordentlich verarbeiten zu können, muß das Trennzeichen vor der Eingabe des Dateinamens definiert sein. Zum Wählen der Eingabedatei den Durchsuchen- Knopf rechts des Feldes verwenden.</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Browse to find the delimited text file to be processed</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen zum Finden der zuverarbeitenden Textdatendatei</translation>
     </message>
     <message>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwende diesen Knopf zum Durchsuchen nach dem Ort der Textdatendatei. Dieser Knopf ist nicht aktiv bis ein Trennzeichen in der &lt;i&gt;Trennzeichen&lt;/i&gt; Box eingegeben wurde. Wenn die Datei erst einmal gewählt wurde, werden die X und Y Feld Dropdownboxen mit den Feldern aus der Textdatendatei gefüllt.</translation>
+    </message>
+    <message>
+        <source>Add layer using the delimiter, file, and x/y fields specified</source>
+        <translation>Füge Ebene mit gewähltem Trennzeichen, Datei und x/y Feldern hinzu</translation>
     </message>
 </context>
 <context>
@@ -1203,11 +1239,11 @@
     </message>
     <message>
         <source>Single Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfacher Marker</translation>
     </message>
     <message>
         <source>Graduated Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Abgestufter Marker</translation>
     </message>
 </context>
 <context>
@@ -1309,43 +1345,44 @@
     <name>QgsGraMaDialogBase</name>
     <message>
         <source>graduated Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>abgestufter Marker</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation type="unfinished">Modus:</translation>
+        <translation>Modus:</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation type="unfinished">Klassifizierungsfeld:</translation>
+        <translation>Klassifizierungsfeld:</translation>
     </message>
     <message>
         <source>Number of Classes:</source>
-        <translation type="unfinished">Anzahl Klassen:</translation>
+        <translation>Anzahl Klassen:</translation>
     </message>
 </context>
 <context>
     <name>QgsGraMaExtensionWidget</name>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Untere</translation>
+        <translation>Untere</translation>
     </message>
     <message>
         <source>Upper</source>
-        <translation type="unfinished">Obere</translation>
+        <translation>Obere</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Beschriftung</translation>
+        <translation>Beschriftung</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild</translation>
     </message>
     <message>
         <source>Scale
 Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalierungs-
+Faktor</translation>
     </message>
 </context>
 <context>
@@ -1416,39 +1453,39 @@ Muster</translation>
     <name>QgsGrassSelectBase</name>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge GRASS Vektorebene hinzu</translation>
     </message>
     <message>
         <source>Gisdbase</source>
-        <translation type="unfinished"></translation>
+        <translation>Gisdbase</translation>
     </message>
     <message>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Ort</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen</translation>
     </message>
     <message>
         <source>Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartenset</translation>
     </message>
     <message>
         <source>Map name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartenname</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Select or type map name (wildcards &apos;*&apos; and &apos;?&apos; accepted for rasters)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle oder schreibe Kartenname (Wildcards &apos;*&apos; und &apos;?&apos; werden für Raster akzeptiert)</translation>
     </message>
 </context>
 <context>
@@ -1772,7 +1809,7 @@ Muster</translation>
     <name>QgsMarkerDialogBase</name>
     <message>
         <source>Choose a marker symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle Markersymbol</translation>
     </message>
     <message>
         <source>Directory</source>
@@ -1959,7 +1996,7 @@ Muster</translation>
     </message>
     <message>
         <source>Search Radius for Identifying Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchradius für die Identifizierung von Objekten</translation>
     </message>
     <message>
         <source>Value</source>
@@ -1973,11 +2010,17 @@ The search radius is calculated as:
 By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Wert in Tausend angeben.  
+Suchradius wird errechnet durch:
+&lt;ul&gt; &lt;i&gt;(Kartenansichtsbreite) * ( Wert/1000.0)&lt;/i&gt;
+&lt;/ul&gt;
+Standardmässig verwendet QGIS einen Wert von 5. Erhöhen Sie den Wert, bei Problemen
+mit dem Erkennen von Objekten ohne sehr weit hineinzuzoomen.
+&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Hide splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstecke Splashscreen beim Start</translation>
     </message>
 </context>
 <context>
@@ -2116,23 +2159,23 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished">Rot</translation>
+        <translation>Rot</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished">Grün</translation>
+        <translation>Grün</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished">Blau</translation>
+        <translation>Blau</translation>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterausmaß:</translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschnittsbereich:</translation>
     </message>
 </context>
 <context>
@@ -2171,7 +2214,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Freak Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgeflippt</translation>
     </message>
 </context>
 <context>
@@ -2371,15 +2414,15 @@ identifying features without zooming in very close.
     <name>QgsSiMaDialogBase</name>
     <message>
         <source>QgsSiMaDialogBase</source>
-        <translation type="unfinished"></translation>
+        <translation>QgsSiMaDialogBase</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild</translation>
     </message>
     <message>
         <source>Scale Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalierungsfaktor</translation>
     </message>
 </context>
 <context>
@@ -2493,7 +2536,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Global Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Globales Schema</translation>
     </message>
 </context>
 <context>

@@ -18,7 +18,9 @@ EXTRA_DIST = doc \
 	COPYING \
 	NEWS \
 	qgis.spec \
-	qgsconfig.h.in
+	qgsconfig.h.in \
+	create_qm_files.sh \
+	update_ts_files.sh
 
 SUBDIRS = src providers plugins doc tools i18n
 

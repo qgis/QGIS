@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.59 2004/04/22 08:10:34 jobi Exp
+ChangeLog,v 1.60 2004/04/25 14:04:34 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-25 [jobi] 0.1.0devel36
+** Added i18n tools to EXTRA_DIST
+** Updated German translation
+** fixed a typo -> other translations changed too
 
 2004-04-22 [jobi] 0.1.0devel35
 ** added install routine for svg files

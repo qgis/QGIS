@@ -84,7 +84,7 @@
             <property name="text">
                 <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:18pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select the GPS dowload file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
 &lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
