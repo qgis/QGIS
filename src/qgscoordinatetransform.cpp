@@ -22,6 +22,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString th
   mSourceWKT = theSourceWKT;
   mDestWKT = theDestWKT;
   //XXX Who spells initialize initialise?
+  //XXX A: Its the queen's english....
   initialise();
 }
 
