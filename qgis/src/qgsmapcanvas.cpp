@@ -1080,6 +1080,7 @@ void QgsMapCanvas::remove(QString key)
     //by the MapLayerRegistry. All we do now is remove any local reference to this layer.
     //delete mCanvasProperties->layers[key];   // first delete the map layer itself
 
+		mCanvasProperties->layers[key] = 0;
     mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
 
     // XXX after removing this layer, we should probably compact the
@@ -1115,8 +1116,7 @@ void QgsMapCanvas::remove(QString key)
 
     // signal that we've erased this layer
     emit removedLayer( key );
-
-} // remove
+				}
 
 
 

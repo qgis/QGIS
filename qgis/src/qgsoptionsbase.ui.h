@@ -31,6 +31,7 @@ void QgsOptionsBase::saveOptions()
  settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
  settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
  settings.writeEntry("/qgis/theme",cmbTheme->currentText());
+ settings.writeEntry("/qgis/map/updateThreshold", spinBoxUpdateThreshold->value());
  accept();
 }
 
