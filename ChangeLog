@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.192 2004/10/09 16:14:40 gsherman Exp
+ChangeLog,v 1.193 2004/10/11 21:08:52 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-10-11 [gsherman] 0.5.0devel2
+** Added man page (qgis.man) that gets installed in man1 as qgis.1
 
 2004-10-09 [gsherman] 0.5.0devel1
 ** Changed name to Simon
