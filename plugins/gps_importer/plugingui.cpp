@@ -36,11 +36,13 @@
 PluginGui::PluginGui() : PluginGuiBase()
 {
   populateDeviceComboBox();
+  tabWidget->removePage(tabWidget->page(1));
 }
 PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : PluginGuiBase( parent, name, modal, fl )
 {
   populateDeviceComboBox();
+  tabWidget->removePage(tabWidget->page(1));
 } 
 PluginGui::~PluginGui()
 {
@@ -76,7 +78,7 @@ void PluginGui::pbnOK_clicked()
   }
   
   // or import a download file?
-  else if (tabWidget->currentPageIndex() == 1) {
+  else if (tabWidget->currentPageIndex() == 666) {
     
     //check input file exists
     //
@@ -221,7 +223,7 @@ void PluginGui::enableRelevantControls()
   }
   
   // import download file
-  else if (tabWidget->currentPageIndex() == 1) {
+  else if (tabWidget->currentPageIndex() == 666) {
     if ( (leOutputShapeFile->text()=="") || (leInputFile->text()=="") )
     {
       pbnOK->setEnabled(false);
