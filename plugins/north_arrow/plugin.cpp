@@ -25,6 +25,7 @@ email                : tim@linfiniti.com
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include "plugin.h"
+#include "qgsproject.h"
 
 
 #include <qtoolbar.h>
@@ -105,11 +106,28 @@ void Plugin::initGui()
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the arrow each time the map is rendered
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderNorthArrow(QPainter *)));
+  //this resets this plugin up if a project is loaded
+  connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
+  projectRead();
   refreshCanvas();
 
 }
+
+void Plugin::projectRead()
+{
+#ifdef QGISDEBUG
+    std::cout << "+++++++++ north arrow plugin - project read slot called...." << std::endl;
+#endif
+    //default text to start with - try to fetch it from qgsproject
+
+    mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
+    mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement","Top Left");
+    mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
+    refreshCanvas();
+}
+
 //method defined in interface
 void Plugin::help()
 {
@@ -237,6 +255,7 @@ void Plugin::unload()
 void Plugin::rotationChanged(int theInt)
 {
   mRotationInt = theInt;
+  QgsProject::instance()->writeEntry("NorthArrow","/Rotation", mRotationInt  );
   refreshCanvas();
 }
 
@@ -244,12 +263,14 @@ void Plugin::rotationChanged(int theInt)
 void Plugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
+  QgsProject::instance()->writeEntry("NorthArrow","/Placement", mPlacement);
   refreshCanvas();
 }
 
 void Plugin::setEnabled(bool theBool)
 {
   mEnable = theBool;
+  QgsProject::instance()->writeEntry("NorthArrow","/Enabled", mEnable );
   refreshCanvas();
 }
 
