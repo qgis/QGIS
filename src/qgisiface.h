@@ -2,9 +2,9 @@
                           qgisiface.h 
  Interface class for exposing functions in QgisApp for use by plugins
                              -------------------
-    begin                : 2004-02-11
-copyright            : (C) 2004 by Gary E.Sherman
-email                : sherman at mrcc.com
+  begin                : 2004-02-11
+  copyright            : (C) 2004 by Gary E.Sherman
+  email                : sherman at mrcc.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -61,6 +61,15 @@ class QgisIface : public QgisInterface{
          * url to the QGIS documentation directory path (<prefix>/share/doc)
          */
         void openURL(QString url, bool useQgisDocDirectory=true);
+
+        /** 
+         * Get the menu info mapped by menu name (key is name, value is menu id)
+         */
+        std::map<QString,int> menuMapByName();
+        /** 
+         * Get the menu info mapped by menu id (key is menu id, value is name)
+         */
+        std::map<int,QString> menuMapById();
     private:
         //! Pointer to the QgisApp object
         QgisApp *qgis;
