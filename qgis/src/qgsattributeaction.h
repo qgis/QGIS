@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsattributeaction.h 
 
- This class that stores and control the managment and execution of actions 
+ These classes store and control the managment and execution of actions 
  associated with particulay Qgis layers. Actions are defined to be
  external programs that are run with user-specified inputs that can 
  depend on the contents of layer attributes.
@@ -27,13 +27,17 @@
 
 #include <qstring.h>
 #include <qobject.h>
-#include <qprocess.h>
 
 #include <list>
 #include <vector>
 #include <utility>
+
+#include "qgsrunprocess.h"
+
 class QDomNode;
 class QDomDocument;
+class QgsMessageViewer;
+
 
 /*! \class QgsAction
  * \brief Utility class that encapsulates an action and associated information
@@ -42,7 +46,7 @@ class QgsAction
 {
  public:
   QgsAction(QString name, QString action, bool capture) :
-    mName(name), mAction(action), mCaptureStdout(capture) {}
+    mName(name), mAction(action), mCaptureOutput(capture) {}
 
   //! The name of the action
   QString name() const { return mName; }
@@ -50,16 +54,14 @@ class QgsAction
   //! The action
   QString action() const { return mAction; }
 
-  //! Whether to capture stdout for display when this action is run
-  bool capture() const { return mCaptureStdout; }
+  //! Whether to capture output for display when this action is run
+  bool capture() const { return mCaptureOutput; }
 
  private:
   QString mName;
   QString mAction;
-  bool mCaptureStdout;
+  bool mCaptureOutput;
 };
-
-class QProcess;
 
 /*! \class QgsAttributeAction
  * \brief Storage and management of actions associated with Qgis layer
@@ -128,9 +130,6 @@ class QgsAttributeAction
 
   // Stores the name/action pairs.
   AttributeActions mActions;
-
-  QProcess* process;
-
 };
 
 #endif
