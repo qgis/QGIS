@@ -4,10 +4,10 @@
 
 INCLUDES = -I../../src
 
-#lib_LTLIBRARIES = libqgisgrass.la
+lib_LTLIBRARIES = libqgisgrass.la
 
 plugindir = ${pkglibdir}
-plugin_LTLIBRARIES = libgrassprovider.la 
+plugin_LTLIBRARIES = grassprovider.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -18,35 +18,26 @@ plugin_LTLIBRARIES = libgrassprovider.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-#libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
-#	                qgsgrassprovider.h \
-#			qgsgrass.cpp \
-#                       qgsgrass.h \
-#		        ../../src/qgsfeature.cpp \
-#			../../src/qgsfeatureattribute.cpp \
-#			../../src/qgsrect.cpp \
-#			../../src/qgspoint.cpp \
-#			../../src/qgsfield.cpp 
+grassprovider_la_SOURCES = provider.cpp \
+			qgsgrassprovider.h
 
-libgrassprovider_la_SOURCES = provider.cpp \
-			qgsgrassprovider.cpp \
-	                qgsgrassprovider.h \
+grassprovider_la_LIBADD = $(QT_LDADD) libqgisgrass.la
+grassprovider_la_LDFLAGS = -avoid-version -module
+grassprovider_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+
+libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
+			qgsgrassprovider.h \
 			qgsgrass.cpp \
-                        qgsgrass.h \
-		        ../../src/qgsfeature.cpp \
+			qgsgrass.h \
+			../../src/qgsfeature.cpp \
 			../../src/qgsfeatureattribute.cpp \
 			../../src/qgsrect.cpp \
 			../../src/qgspoint.cpp \
-			../../src/qgsfield.cpp 
+			../../src/qgsfield.cpp
 
-#libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)
-#libqgisgrass_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
-#libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) -I$(GRASS_INC) -I$(PG_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
-
-libgrassprovider_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)  $(GDAL_LDADD)
-libgrassprovider_la_LDFLAGS = -avoid-version -module
-libgrassprovider_la_CXXFLAGS = -I$(GRASS_INC) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)
+libqgisgrass_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
+libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) 
 if HAVE_POSTGRESQL
-libgrassprovider_la_CXXFLAGS += -I$(PG_INC)
+libqgisgrass_la_CXXFLAGS += -I$(PG_INC)
 endif
-
