@@ -224,8 +224,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgshelpviewer.moc.cpp			\
 		qgsidentifyresults.moc.cpp		\
 		qgslabeldialog.moc.cpp			\
-		qgslegenditem.moc.cpp			\
-		qgslegend.moc.cpp			\
 		qgslinestyledialog.moc.cpp		\
 		qgsludialog.moc.cpp			\
 		qgsmapcanvas.moc.cpp			\
@@ -296,8 +294,6 @@ qgis_SOURCES =	main.cpp			\
 		qgslabelattributes.cpp		\
 		qgslabel.cpp			\
 		qgslabeldialog.cpp		\
-		qgslegend.cpp			\
-		qgslegenditem.cpp		\
 		qgsline.cpp			\
 		qgslinestyledialog.cpp		\
 		qgslinesymbol.cpp		\
@@ -383,7 +379,7 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 					$(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
 
 
-qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD)
+qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) libqgis.la
 qgis_LDFLAGS = -rdynamic
 qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS)
 
@@ -429,6 +425,10 @@ libqgis_la_SOURCES =				\
 		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
 		qgslabel.cpp			\
+		qgslegend.cpp			\
+		qgslegend.moc.cpp			\
+		qgslegenditem.cpp		\
+		qgslegenditem.moc.cpp			\
 		qgsmapcanvas.cpp		\
 		qgsmapcanvas.moc.cpp		\
 		qgsmaplayer.cpp			\
