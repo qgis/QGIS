@@ -9,6 +9,12 @@ MINOR_VERSION=`sed -n -e 's/MINOR_VERSION=//p' configure.in`
 MICRO_VERSION=`sed -n -e 's/MICRO_VERSION=//p' configure.in`
 EXTRA_VERSION=`sed -n -e 's/EXTRA_VERSION=//p' configure.in`
 
+if [ "a$@" != "a" ]; then
+	EXTRAS="ChangeLog configure.in"
+else
+	EXTRAS=""
+fi
+
 #
 # Change Extra Version
 #
@@ -23,7 +29,7 @@ mv configure.in.tmp configure.in
 echo "************************************************************" > ${TMPFILE}
 echo "Please write above that line of stars! Rest will be removed." >> ${TMPFILE}
 
-cvs diff 2> /dev/null | sed -e "/^?/d" -e "/^Index: /d" >> ${TMPFILE}
+cvs diff $@ ${EXTRAS} 2> /dev/null | sed -e "/^?/d" -e "/^Index: /d" >> ${TMPFILE}
 
 ${EDITOR} ${TMPFILE}
 
@@ -46,6 +52,6 @@ mv ChangeLog.tmp ChangeLog
 # Commit
 #
 
-cvs commit -m "${MSG}"
+cvs commit -m "${MSG}" $@ ${EXTRAS}
 
 rm ${TMPFILE}
