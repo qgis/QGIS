@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.179 2004/09/02 01:54:53 mcoletti Exp
+ChangeLog,v 1.180 2004/09/08 15:31:01 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-08 [larsl] 0.4.0devel27
+** Fixed bug that crashed QGIS when the user selected records in the attribute
+   table for a layer that used the single marker renderer
 
 2004-09-01 [mcoletti] 0.4.0devel26
 Start of new qgs project file class.  Obviously work-in-progress.
