@@ -3032,7 +3032,11 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
     QObject::connect(theRasterLayer, 
             SIGNAL(setStatus(QString)), 
             this, 
-            SLOT(showStatusMessage(QString)));            
+            SLOT(showStatusMessage(QString)));
+     
+    // init the context menu so it can connect to slots in main app
+    theRasterLayer->initContextMenu(this);
+       
     // add it to the mapcanvas collection
     mMapCanvas->addLayer(theRasterLayer);
 
@@ -3043,9 +3047,6 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
             SLOT(setLayerOverviewStatus(QString,bool)));           
 
     mProjectIsDirtyFlag = true;
-
-    // init the context menu so it can connect to slots in main app
-    theRasterLayer->initContextMenu(this);
   } 
   else
   {
