@@ -27,6 +27,7 @@
 #include <qfileinfo.h>
 #include <qpixmap.h>
 #include <qsplitter.h>
+#include <qpopupmenu.h>
 #include <qrect.h>
 #include <qpoint.h>
 #include <qpainter.h>
@@ -60,12 +61,12 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   QGridLayout *FrameLayout =
     new QGridLayout (frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter (frameMain);
-  lv = new QListView(split);
-  lv->addColumn("Layers");
-  lv->setSorting(-1);
+  legendView = new QListView(split);
+  legendView->addColumn("Layers");
+  legendView->setSorting(-1);
  
   
-  mapLegend = new QgsLegend(lv);	//frameMain);
+  mapLegend = new QgsLegend(legendView);	//frameMain);
  // mL = new QScrollView(split);
   //add a canvas
   mapCanvas = new QgsMapCanvas (split);
@@ -77,13 +78,20 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   FrameLayout->addWidget (split, 0, 0);
   mapLegend->setBackgroundColor (QColor (192, 192, 192));
   mapLegend->setMapCanvas(mapCanvas);
-  lv->setResizeMode(QListView::AllColumns);
+  legendView->setResizeMode(QListView::AllColumns);
   QString caption = "Quantum GIS - ";
   caption += QGis::qgisVersion; 
   setCaption(caption);
   connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
 	   SLOT (showMouseCoordinate (QgsPoint &)));
-	connect (lv, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
+	connect (legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
+  connect (legendView, SIGNAL(rightButtonPressed ( QListViewItem *, const QPoint &, int )),
+  				this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int )));
+
+	// create the layer popup menu
+	popMenu = new QPopupMenu();
+	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
+	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
 
 }
 
@@ -374,7 +382,23 @@ void QgisApp::testButton ()
 //      delete sfl;
 
 }
+void QgisApp::layerProperties(){
+	layerProperties(legendView->currentItem());
+}
 void QgisApp::layerProperties(QListViewItem *lvi){
-		QgsMapLayer *lyr = ((QgsLegendItem *)lvi)->layer();
+QgsMapLayer *lyr;
+if(lvi)
+		lyr = ((QgsLegendItem *)lvi)->layer();
+else{
+	// get the selected item
+		QListViewItem *li =  legendView->currentItem();
+		
+		lyr = ((QgsLegendItem *)li)->layer();
+}
 		QMessageBox::information(this,"Layer Properties",lyr->name());
 }
+void QgisApp::removeLayer(){
+}
+void QgisApp::rightClickLegendMenu(QListViewItem *lvi, const QPoint &pt, int i){
+	popMenu->exec(pt);
+} 

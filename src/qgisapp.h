@@ -67,7 +67,13 @@ public:
 public slots:
 	void showMouseCoordinate(QgsPoint &);
 	void layerProperties(QListViewItem *);
+	void layerProperties();
+	void rightClickLegendMenu(QListViewItem *, const QPoint &, int );
+	void removeLayer();
 private:
+//! Popup menu
+QPopupMenu *popMenu;
+QListView *legendView;
 	//! Map canvas
 QgsMapCanvas *mapCanvas;
 //! Table of contents (legend) for the map
