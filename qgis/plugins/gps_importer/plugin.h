@@ -86,6 +86,11 @@ class Plugin:public QObject, public QgisPlugin
 		       QString layerName);
   void uploadToGPS(QgsVectorLayer* gpxLayer, QString protocol,
 		   QString deviceFilename);
+
+ signals:
+  
+  void closeGui();
+
     private:
 
 
