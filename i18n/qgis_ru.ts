@@ -80,16 +80,6 @@
         <source>Copyright Label Plugin</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:20pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Selected text can also be formatted using the &apos;Font&apos; button.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message encoding="UTF-8">
         <source>© QGIS 2004</source>
         <translation type="unfinished"></translation>
