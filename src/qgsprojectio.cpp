@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.49 2004/08/13 11:37:56 rabla Exp */
+/* qgsprojectio.cpp,v 1.50 2004/08/15 00:52:47 gsherman Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -101,9 +101,11 @@ std::list<QString> QgsProjectIo::read(QString path)
   myZOrder.clear();
   if(path.isNull())
   {
+    // no project file selected - get one using a QFileDialog
     path = selectFileName();
   }
-
+  // if user cancelled the QFileDialog, path will be null
+  if(!path.isNull()){
   std::auto_ptr<QDomDocument> doc;
 
   if (!path.isEmpty())
@@ -134,7 +136,9 @@ std::list<QString> QgsProjectIo::read(QString path)
 
     file.close();
     //enable the hourglass
-    qWarning("opened document" + file.name());
+#ifdef QGISDEBUG
+    std::cout << "Opened document " << file.name().ascii() << std::endl;
+#endif
     // get the extent
     QDomNodeList extents = doc->elementsByTagName("extent");
     QDomNode extentNode = extents.item(0);
@@ -177,6 +181,9 @@ std::list<QString> QgsProjectIo::read(QString path)
       //QMessageBox::information(0,"Layer Name", mne.text());
       QString layerName = mne.text();
       
+#ifdef QGISDEBUG
+      std::cout << "Map layer " << layerName.ascii() << " type is: " << type.ascii() << std::endl;
+#endif
       //process data source
       mnl = node.namedItem("datasource");
       mne = mnl.toElement();
@@ -357,10 +364,10 @@ std::list<QString> QgsProjectIo::read(QString path)
       }
       mMapCanvas->setExtent(savedExtent);
     }
-
+  }
+  }
     QApplication::restoreOverrideCursor();
     return myZOrder;
-  }
 }
 
 QString QgsProjectIo::selectFileName()
