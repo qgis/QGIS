@@ -272,8 +272,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mySplash->setStatus(tr("Loading plugins..."));
 
   // Get pointer to the provider registry singleton
-  providerRegistry = QgsProviderRegistry::instance();
-
+  providerRegistry = QgsProviderRegistry::instance(PLUGINS);
+  // set the provider plugin path 
+  std::cout << "Setting plugin lib dir to " << PLUGINS << std::endl;
   // connect the "cleanup" slot
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
@@ -281,6 +282,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapCanvas->setFocus();
   mySplash->finish( this );
   delete mySplash;
+  QString plib = PLUGINS;
+  std::cout << "Plugins are installed in " << plib << std::endl;
 }
 
 QgisApp::~QgisApp()

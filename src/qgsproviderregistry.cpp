@@ -31,26 +31,27 @@ typedef QString description_t();
 typedef bool isprovider_t();
 
 QgsProviderRegistry* QgsProviderRegistry::_instance = 0;
-QgsProviderRegistry* QgsProviderRegistry::instance () 
+QgsProviderRegistry* QgsProviderRegistry::instance (char *pluginPath) 
 {
   if (_instance == 0){ 
-    _instance = new QgsProviderRegistry();
+    _instance = new QgsProviderRegistry(pluginPath);
   }
  return _instance;
 }
-QgsProviderRegistry::QgsProviderRegistry(){
+QgsProviderRegistry::QgsProviderRegistry(char *pluginPath){
 // At startup, examine the libs in the qgis/lib dir and store those that
 // are a provider shared lib
 // check all libs in the current plugin directory and get name and descriptions
 //TODO figure out how to register and identify data source plugin for a specific
 //TODO layer type
-char **argv = qApp->argv();
+/* char **argv = qApp->argv();
 QString appDir = argv[0];
 int bin = appDir.findRev("/bin", -1, false);
 QString baseDir = appDir.left(bin);
-QString libDir = baseDir + "/lib";
+QString libDir = baseDir + "/lib"; */
+libDir = pluginPath;
 QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
-	
+  std::cerr <<  "Checking " << libDir << " for provider plugins" << std::endl;
 	if(pluginDir.count() == 0){
     QString msg = QObject::tr("No Data Provider Plugins", "No QGIS data provider plugins found in:");
     msg += "\n" + libDir + "\n\n";
@@ -83,6 +84,7 @@ QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDi
           }
         }
 			}
+      delete myLib;
 		}
 }
 }
@@ -117,4 +119,10 @@ QString QgsProviderRegistry::pluginList(bool asHTML){
     }
   }
   return list;
+}
+void QgsProviderRegistry::setLibDirectory(QString path){
+  libDir = path;
+}
+QString QgsProviderRegistry::libDirectory(){
+  return libDir;
 }
