@@ -1,0 +1,19 @@
+## $Id$
+
+plugindir = ${pkglibdir}
+plugin_LTLIBRARIES = gpxprovider.la 
+
+gpxprovider_la_SOURCES = qgsgpxprovider.cpp		\
+                         gpsdata.cpp			\
+			 ../../src/qgsfeature.cpp		\
+			 ../../src/qgsfeatureattribute.cpp	\
+			 ../../src/qgsrect.cpp		\
+			 ../../src/qgspoint.cpp		\
+			 ../../src/qgsfield.cpp
+
+
+gpxprovider_la_LIBADD = $(QT_LDADD)
+gpxprovider_la_LDFLAGS = -avoid-version -module
+gpxprovider_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS)
+
+EXTRA_DIST = qgsgpxprovider.h gpsdata.h
