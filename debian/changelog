@@ -1,0 +1,23 @@
+qgis (0.0.13+cvs.20040108-1) unstable; urgency=low
+
+  * Latest CVS version
+  
+  * Build depends on libqt3-mt-dev
+
+ -- Steve Halasz <debian@adkgis.org>  Thu,  8 Jan 2004 11:13:05 -0500
+
+qgis (0.0.13+cvs.20040107-1) unstable; urgency=low
+
+  * Install man page
+  
+  * Link with libxerces21 instead of libxerces23 since gdal uses the
+    former
+
+ -- Steve Halasz <debian@adkgis.org>  Wed,  7 Jan 2004 12:33:09 -0500
+
+qgis (0.0.13+cvs.20031231-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Steve Halasz <debian@adkgis.org>  Wed, 31 Dec 2003 10:07:40 -0500
+

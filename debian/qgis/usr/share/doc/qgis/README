@@ -1,0 +1,29 @@
+Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
+built for Linux/Unix. QGIS will offer support for vector and raster formats. 
+Currently QGIS supports shapefiles and PostgreSQL/PostGIS layers.  
+
+Planned features include:
+
+    * Read and edit shapefiles
+    * Display georeferenced rasters (tiff, png, geotiff)
+    * Plugins to dynamically add new functionality to the application
+    * Support for database tables
+    * Support for spatially enabled tables in PostgreSQL using PostGIS
+    * Map output
+    * Script engine
+    * Metadata support
+
+Preliminary Standards
+QGis will be developed using the following:
+
+    * Qt GUI library
+    * Doxygen for documenting the API
+
+Resources
+PostGIS Geographic Objects for PostgreSQL
+Shapefile specification
+FGDC Metadata
+
+If you are interested in joining the QGis team, send a message to the 
+project admin using the link on the QGis Summary page on Sourceforge.net.
+

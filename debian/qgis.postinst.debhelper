@@ -1,0 +1,3 @@
+# Automatically added by dh_installmenu
+if [ "$1" = "configure" ] && [ -x /usr/bin/update-menus ]; then update-menus ; fi
+# End automatically added section
