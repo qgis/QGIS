@@ -205,6 +205,7 @@ void QgisApp::about()
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
 	watsNew += "\n*Preliminary Plugin Manager implementation\n"
+		"*Version check under tools menu\n"
 		"*Fix for PostGIS bug when srid != -1\n"
 		"*Database Connections can now be deleted\n"
 		"*Fixes to Database Connection dialog\n";
