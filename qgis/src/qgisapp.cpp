@@ -399,12 +399,13 @@ QgisApp::addRasterLayer()
   QString myUSGSAsciiDemFilterString="USGS Ascii DEM (*.dem;*.DEM)";
   QString myGrassFilterString="Grass raster (*.*)";
   QString mySDTSFilterString="SDTS (*CATD*.DDF)";
-  QString myAllRasterFormats = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DDF)";
+  QString myAllRasterFormatsFilterString = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DEM;*.DDF)";
+  QString myOtherFormatsFilterString = "Other (*.*)";
   //QString myBilFilterString="Band Interleaved by Line (*.bil)";
   //QString myJpgFilterString="Geo jpg (*.jpg)";
 
   QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
-          myAllRasterFormats + ";;" +
+          myAllRasterFormatsFilterString + ";;" +
           myArcInfoBinaryGridFilterString + ";;" +
           myArcInfoAsciiGridFilterString + ";;" +
           myERDASFilterString + ";;" +
@@ -413,7 +414,8 @@ QgisApp::addRasterLayer()
           myGeoTiffFilterString + ";;" +
           myGrassFilterString + ";;" +
           myUSGSAsciiDemFilterString + ";;" + 
-	  mySDTSFilterString, //filters to select
+	  mySDTSFilterString + ";;" +
+          myOtherFormatsFilterString, //filters to select 
           "" , //initial dir
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
