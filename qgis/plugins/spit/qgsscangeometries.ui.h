@@ -6,6 +6,14 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
+#include <qtimer.h>
+#include <qapplication.h>
+void QgsScanGeometries::init()
+{
+  QTimer *timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(timerFired()));
+  timer->start(100);
+}
 void QgsScanGeometries::setFileInfo( QString info)
 {
     lblFileInfo->setText(info);
@@ -18,4 +26,10 @@ void QgsScanGeometries::setStatus( int status )
 {
     progressBar1->setProgress(progressBar1->progress() +2);
    
+}
+void QgsScanGeometries::timerFired()
+{
+    
+    progressBar1->setProgress(progressBar1->progress() +10);
+    qApp->processEvents();
 }

@@ -74,13 +74,14 @@ bool QgsShapeFile::scanGeometries()
   while((feat = ogrLayer->GetNextFeature()))
   {
 // update the progress counter
-    if(++progressCount == progressThreshold)
-    {
-      progressCount = 0;
-      sg->setStatus(0);
+//    if(++progressCount == progressThreshold)
+//    {
+//      progressCount = 0;
+//      sg->setStatus(0);
       qApp->processEvents();
-    }
+//    }
 
+ 
 
     //    feat->DumpReadable(NULL);
     OGRGeometry *geom = feat->GetGeometryRef();

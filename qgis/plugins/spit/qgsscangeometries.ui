@@ -43,6 +43,10 @@
 <slots>
     <slot>setFileInfo( QString info )</slot>
     <slot>setStatus( int status )</slot>
+    <slot>timerFired()</slot>
 </slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
