@@ -24,6 +24,8 @@
 #include <qcheckbox.h>
 #include <qtextstream.h>
 #include <qtable.h>
+#include <qlayout.h>
+
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsfield.h"
@@ -94,7 +96,9 @@ bufferRenderer(layer->
       legendtypecombobox->insertItem(tr("Graduated Marker"));
   }
 
-  labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame );
+  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
+  layout->addWidget( labelDialog );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
   QObject::connect(btnApply, SIGNAL(clicked()), this, SLOT(apply()));
@@ -243,6 +247,6 @@ void QgsDlgVectorLayerProperties::setLegendType(QString type)
 
 void QgsDlgVectorLayerProperties::reset( void )
 {
-    labelDialog->reset();
+    labelDialog->init();
     labelCheckBox->setChecked(layer->labelOn());
 }
