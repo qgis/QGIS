@@ -1,9 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.194 2004/10/16 17:09:45 gsherman Exp
+ChangeLog,v 1.195 2004/10/18 05:36:30 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
-2004-10-11 [gsherman] 0.5.0devel3
+2004-10-17 [gsherman] 0.5.0devel4
+** OGR provider now uses GEOS to select features when doing identify and
+   select operations.
+
+2004-10-16 [gsherman] 0.5.0devel3
 ** Fixed OGR filters in the add layer dialog box using fix in qgsproject-branch
 ** Reverted images in qgisappbase.ui to XPM so QGIS will compile on Qt < 3.x
 
