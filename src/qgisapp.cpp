@@ -35,6 +35,7 @@
 #include <iomanip>
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
+#include "qgslegend.h"
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
 #include "qgis.h"
@@ -50,7 +51,7 @@ QgisApp::QgisApp (QWidget * parent, const char *name, WFlags fl):
   QGridLayout *FrameLayout =
     new QGridLayout (frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter (frameMain);
-  mapToc = new QWidget (split);	//frameMain);
+  mapLegend = new QgsLegend (split);	//frameMain);
   //add a canvas
   mapCanvas = new QgsMapCanvas (split);
   // resize it to fit in the frame
@@ -59,7 +60,7 @@ QgisApp::QgisApp (QWidget * parent, const char *name, WFlags fl):
   mapCanvas->setBackgroundColor (Qt::white); //QColor (220, 235, 255));
   mapCanvas->setMinimumWidth (400);
     FrameLayout->addWidget (split, 0, 0);
-  mapToc->setBackgroundColor (QColor (192, 192, 192));
+  mapLegend->setBackgroundColor (QColor (192, 192, 192));
   connect( mapCanvas, SIGNAL( xyCoordinates(QgsPoint &) ), this, SLOT( showMouseCoordinate(QgsPoint &) ) );
 
 }
