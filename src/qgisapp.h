@@ -29,6 +29,7 @@ class QCursor;
 class QListView;
 class QListViewItem;
 class QgsMapLayer;
+class QSocket;
 #include "qgisappbase.h"
 #include "qgisiface.h"
 class QgsMapCanvas;
@@ -111,6 +112,12 @@ class QgisApp:public QgisAppBase
 	void fileOpen();
 	//! Create a new project
 	void fileNew();
+	//! Check qgis version against the qgis version server
+	void checkQgisVersion();
+	void socketConnected();
+	void socketConnectionClosed();
+	void socketReadyRead();
+	void socketError(int e);
   private:
 //! Popup menu
 	  QPopupMenu * popMenu;
@@ -132,6 +139,8 @@ class QgisApp:public QgisAppBase
 	//! full path name of the current map file (if it has been saved or loaded)
 	QString fullPath;
 	QgisIface *qgisInterface;
+	QSocket *socket;
+	QString versionMessage;
 	friend class QgisIface;
 };
 
