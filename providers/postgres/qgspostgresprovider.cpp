@@ -1110,25 +1110,10 @@ QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
 }
 
 
-void QgsPostgresProvider::findTableColumns(QString select_cmd, 
-					   table_cols& cols)
-{
-  //table_cols& temp_cols;
-  findColumns(select_cmd, cols);
-
-  // Loop over the columns
-
-  // Now see if the found relations are views. If so, call
-  // ourselves until there are no views left.
-
-}
 // Finds out the underlying tables and columns for each column in the
 // view defined by the given select statement.
 
-// XXX need to make this recursive to deal with views that refer to
-// views, etc, to get the table at the bottom of each view column.
-
-void QgsPostgresProvider::findColumns(QString select_cmd, 
+void QgsPostgresProvider::findTableColumns(QString select_cmd, 
 					   table_cols& cols)
 {
   QRegExp col_regexp("SELECT *(.+) *FROM");
@@ -1137,18 +1122,48 @@ void QgsPostgresProvider::findColumns(QString select_cmd,
   if (col_regexp.search(select_cmd) > -1)
   {
 #ifdef QGISDEBUG
-    std::cout << "Column definitions are: " << col_regexp.cap(1) << std::endl;
+    std::cerr << "Column definitions are: " << col_regexp.cap(1) << std::endl;
 #endif
     // Now split the columns definitions on commas to get at actual
-    // column definitions
-    QStringList fields = QStringList::split(QRegExp(" *, *"),
-					    col_regexp.cap(1));
+    // column definitions. The complication is that if column
+    // definitions involve SQL functions there may be commas inside
+    // braces. This precludes using something simple like
+    // QStringList::split() and so the splitting is done the laborous
+    // way. 
 
+    QStringList fields;
+    QString cmd = col_regexp.cap(1);
+    QString current_item;
+    bool in_braces = false;
+
+    for (int i = 0; i < cmd.length(); ++i)
+    {
+      // new item, store preceeding one if it's got something in it
+      if (cmd[i] == ',' && !in_braces && !current_item.isEmpty()) 
+      {
+	fields.push_back(current_item);
+	current_item = "";
+      }
+      else
+	current_item += cmd[i];
+
+      if (cmd[i] == '(')
+	in_braces = true;
+      else if (cmd[i] == ')' && in_braces)
+	in_braces = false;
+    }
+    // Grab the last item if worthwhile
+    if (!current_item.isEmpty())
+      fields.push_back(current_item);
+
+    // Pick apart the fields to determine the table name, table
+    // column name, and view column name
     for (QStringList::iterator i = fields.begin(); i != fields.end(); ++i)
     {
       QString f = (*i).simplifyWhiteSpace();
 
-      QString view_col_name, table_col_name, table_name;
+      QString view_col_name = "", table_col_name = "", 
+	table_name = "";
       // if the view column name is renamed, there will be the
       // 'AS' command, so split on that if present.
       QRegExp rename_regexp("(.+) AS (.+)");
@@ -1170,8 +1185,8 @@ void QgsPostgresProvider::findColumns(QString select_cmd,
 	table_col_name = tt[1];
       }
       else
-	qWarning("The view column definition '" + table_col_name +
-		 "' is not in the full form.");
+	std::cerr << "The view column definition '" << f 
+		  << "' is not in relation.column form." << std::endl;
 
       // If there was no 'AS', the view column name is the same as
       // the column name from the underlying table.
@@ -1179,20 +1194,21 @@ void QgsPostgresProvider::findColumns(QString select_cmd,
 	view_col_name = table_col_name;
 
 #ifdef QGISDEBUG
-      std::cout << "View column '" << view_col_name << "' comes from " 
+      std::cerr << "View column '" << view_col_name << "' comes from " 
 		<< table_name << "." << table_col_name << std::endl;
 #endif
       // If there are braces () in the table_col_name this probably
       // indicates that some sql function is being used to transform
       // the underlying column. This is probably not
       // suitable so exclude such columns from the result.
-      if (!view_col_name.contains('('))
+      if (!table_name.contains('('))
 	cols[view_col_name] = 
 	  std::make_pair<QString, QString>(table_name, table_col_name);
       else
       {
 #ifdef QGISDEBUG
-	std::cout << "View column '" << view_col_name << "' contains "
+	std::cerr << "The definition for view column '" 
+	  << view_col_name << "' contains "
 	  "an open bracket in the definition which probably means that "
 	  "a postgreSQL function is being used to derive the column and "
 	  "hence that it is unsuitable for use as a key into the "
@@ -1204,6 +1220,42 @@ void QgsPostgresProvider::findColumns(QString select_cmd,
   else
     std::cerr << "Couldn't extract view column definitions from '"
 	      << select_cmd << "'." << std::endl;
+
+  // Now ensure that the tables and columns that we found are tables,
+  // and not views.
+  /*
+
+  // work in progress
+
+  // A cache for our results. The key is the table name.
+  typedef std::map<QString, table_cols> cache_type;
+  cache_type cache;
+  static table_cols::iterator iter = cols.begin();
+
+  for (; iter != cols.end(); ++iter)
+  {
+    // Is it a view?
+
+    // Is it in the cache?
+    cache_type::const_iterator i = cache.find(iter->second.first);
+    if (i != cache.end())
+    {
+      // Store results
+      iter->second = i->second;      
+    }
+    else
+    {
+      // Get view definition
+
+      // Call recursively
+      table_cols temp_cols;
+      findTableColumns(VIEW_DEF, temp_cols);
+      // Store results
+      iter->second = temp_cols[iter->second.first].second;
+
+    }
+  }
+  */
 }
 
 // Returns the minimum value of an attribute
