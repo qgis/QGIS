@@ -1321,7 +1321,7 @@ void QgisApp::fileNew()
         mOverviewCanvas->clear();
         setCaption(tr("Quantum GIS -- Untitled"));
 
-        QgsProject::instance()->filename("");
+        QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
 
@@ -1350,7 +1350,7 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
 
         setCaption(tr("Quantum GIS -- Untitled"));
 
-        QgsProject::instance()->filename("");
+        QgsProject::instance()->filename( QString::null );
         QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
         QgsProject::instance()->dirty(false);
 
