@@ -58,13 +58,8 @@ public:
   
   /** Accessor for projection */
   QString projectionWKT();
-  /** Set the projection passing only its 'friendly name'. If it doesnt exist in the 
-   *  projections list ( as simple text file ) and error will occur */
-  bool setProjectionWKT(QString theName);
-  /** Set the projection passing only its 'friendly name'. If it doesnt exist in the 
-   *  projections list ( as simple text file ) it will be added to the list */
-  bool setProjectionWKT(QString theName, QString theWKT);
-
+  /** Get a short human readable name from a WKT */
+  QString getWKTShortName(QString theWKT);
 public slots:
   /** 
    * Slot called when a new button (unit) is selected
