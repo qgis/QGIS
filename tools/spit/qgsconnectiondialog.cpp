@@ -3,7 +3,7 @@
                              -------------------
     begin                : Thu Dec 10 2003
     copyright            : (C) 2003 by Denis Antipov
-    email                : 
+    email                :
  ***************************************************************************/
 
 /***************************************************************************
@@ -38,8 +38,7 @@ QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, boo
     }
 		txtName->setText(connName);
 	}
-  setMinimumSize(QSize(411, 230));
-  setMaximumSize(QSize(411, 230));
+  setFixedSize(QSize(411, 230));
 }
 
 QgsConnectionDialog::~QgsConnectionDialog()

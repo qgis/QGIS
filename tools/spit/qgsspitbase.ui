@@ -65,7 +65,7 @@
                         <cstring>btnEdit</cstring>
                     </property>
                     <property name="text">
-                        <string>Edit</string>
+                        <string>Edit ...</string>
                     </property>
                 </widget>
                 <widget class="QPushButton" row="1" column="1">
@@ -73,7 +73,7 @@
                         <cstring>btnNew</cstring>
                     </property>
                     <property name="text">
-                        <string>New</string>
+                        <string>New ...</string>
                     </property>
                 </widget>
             </grid>
@@ -85,22 +85,6 @@
             <property name="title">
                 <string>Shapefile List</string>
             </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnAddFile</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>30</y>
-                        <width>118</width>
-                        <height>29</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Add</string>
-                </property>
-            </widget>
             <widget class="QPushButton">
                 <property name="name">
                     <cstring>btnRemoveFile</cstring>
@@ -131,55 +115,6 @@
                 </property>
                 <property name="text">
                     <string>Remove All</string>
-                </property>
-            </widget>
-            <widget class="QListView">
-                <column>
-                    <property name="text">
-                        <string>File Name</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <column>
-                    <property name="text">
-                        <string>Feature Class</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <column>
-                    <property name="text">
-                        <string>Features</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <property name="name">
-                    <cstring>lstShapefiles</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>110</y>
-                        <width>535</width>
-                        <height>220</height>
-                    </rect>
-                </property>
-                <property name="selectionMode">
-                    <enum>Extended</enum>
                 </property>
             </widget>
             <widget class="QCheckBox">
@@ -236,14 +171,77 @@
                     <number>-1</number>
                 </property>
             </widget>
-        </widget>
-        <widget class="QPushButton" row="2" column="5">
-            <property name="name">
-                <cstring>btnAbout</cstring>
-            </property>
-            <property name="text">
-                <string>About</string>
-            </property>
+            <widget class="QListView">
+                <column>
+                    <property name="text">
+                        <string>File Name</string>
+                    </property>
+                    <property name="clickable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizable">
+                        <bool>true</bool>
+                    </property>
+                </column>
+                <column>
+                    <property name="text">
+                        <string>Feature Class</string>
+                    </property>
+                    <property name="clickable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizable">
+                        <bool>true</bool>
+                    </property>
+                </column>
+                <column>
+                    <property name="text">
+                        <string>Features</string>
+                    </property>
+                    <property name="clickable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizable">
+                        <bool>true</bool>
+                    </property>
+                </column>
+                <property name="name">
+                    <cstring>lstShapefiles</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>110</y>
+                        <width>535</width>
+                        <height>220</height>
+                    </rect>
+                </property>
+                <property name="selectionMode">
+                    <enum>Extended</enum>
+                </property>
+                <property name="allColumnsShowFocus">
+                    <bool>true</bool>
+                </property>
+                <property name="showSortIndicator">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnAddFile</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>30</y>
+                        <width>118</width>
+                        <height>29</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Add ...</string>
+                </property>
+            </widget>
         </widget>
         <widget class="QPushButton" row="2" column="1">
             <property name="name">
@@ -266,7 +264,7 @@
                 <cstring>btnHelp</cstring>
             </property>
             <property name="text">
-                <string>Help</string>
+                <string>Help ...</string>
             </property>
         </widget>
         <spacer row="2" column="6">
@@ -376,12 +374,6 @@
         <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
         <slot>newConnection()</slot>
-    </connection>
-    <connection>
-        <sender>btnAbout</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsSpitBase</receiver>
-        <slot>aboutInfo()</slot>
     </connection>
     <connection>
         <sender>btnHelp</sender>

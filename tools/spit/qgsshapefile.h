@@ -31,13 +31,16 @@ class QgsShapeFile
   ~QgsShapeFile();
 
   const char * getFeatureCount();
-  const char * QgsShapeFile::getFeatureClass();
+  const char * getFeatureClass();
+  bool is_valid();
+  const char * getName();
 
 
   private:
   OGRDataSource *ogrDataSource;
   OGRLayer * ogrLayer;
   bool valid;
+  const char * filename;
   //const char *featureType = {"null", "Point", "Line", "Polygon", "MultiPoint", "MultiLine", "MultiPolygon"};
 
 };

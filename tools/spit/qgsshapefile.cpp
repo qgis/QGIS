@@ -23,19 +23,16 @@
 #include "cpl_error.h"
 #include "qgsshapefile.h"
 
-QgsShapeFile::QgsShapeFile(QString filename){
-
-  valid = false;
+QgsShapeFile::QgsShapeFile(QString name){
+  filename = (const char*)name;
   OGRRegisterAll();
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) filename);
   if (ogrDataSource != NULL){
     valid = true;
     ogrLayer = ogrDataSource->GetLayer(0);
-
   }
-  else 
-    qWarning(filename + " Invalid!" + CPLGetLastErrorMsg());
-  
+  else
+    valid = false;
 }
 
 QgsShapeFile::~QgsShapeFile(){
@@ -66,4 +63,12 @@ const char * QgsShapeFile::getFeatureClass(){
   }
   ogrLayer->ResetReading();    
   return valid?res:NULL;
+}
+
+bool QgsShapeFile::is_valid(){
+  return valid;
+}
+
+const char * QgsShapeFile::getName(){
+  return filename;
 }

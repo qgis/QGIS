@@ -1,3 +1,20 @@
+/***************************************************************************
+                          qgsspit.cpp  -  description
+                             -------------------
+    begin                : Fri Dec 19 2003
+    copyright            : (C) 2003 by Denis Antipov
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 
 #include<qmessagebox.h>
 #include <libpq++.h>
@@ -13,12 +30,15 @@
 #include <qcheckbox.h>
 #include <qinputdialog.h>
 #include <qfiledialog.h>
+#include <qprogressdialog.h>
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
+#include "qgsmessageviewer.h"
 
 QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   populateConnectionList();
   default_value = -1;
+  setFixedSize(QSize(579, 504));
 }
 
 QgsSpit::~QgsSpit(){}
@@ -33,9 +53,6 @@ void QgsSpit::populateConnectionList(){
 		++it;
 	}
   if(cmbConnections->count()==0) changeEditAndRemove(0);
-  
-  setMinimumSize(QSize(579, 504));
-  setMaximumSize(QSize(579, 504));
 }
 
 void QgsSpit::newConnection()
@@ -77,23 +94,37 @@ void QgsSpit::removeConnection()
 void QgsSpit::addFile()
 {
   QListViewItemIterator n(lstShapefiles);
+  QString error = "";
   bool exist;
+  bool is_error = false;
+
   QStringList files = QFileDialog::getOpenFileNames(
     "Shapefiles (*.shp);; All Files (*)", "", this, "add file dialog", "Add Shapefiles" );
-    
+  
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it ){
     exist = false;
-    for(;n.current();++n)
-        if(n.current()->text(0) == *it){
-          exist = true;
-          break;
-        }
+    if(lstShapefiles->findItem(*it, 0)!=0)
+      exist = true;
     if(!exist){
       QgsShapeFile * file = new QgsShapeFile(*it);
-      QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
-      lvi->setText(1, file->getFeatureClass());
-      lvi->setText(2, file->getFeatureCount());
+      if(file->is_valid()){
+        fileList.push_back(file);
+        QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
+        lvi->setText(1, file->getFeatureClass());
+        lvi->setText(2, file->getFeatureCount());
+      }
+      else{
+        error += *it + "\n";
+        is_error = true;
+      }
     }
+  }
+  
+  if(is_error){
+    error = "The following Shapefile(s) could not be loaded:\n\n" + error;
+    QgsMessageViewer * e = new QgsMessageViewer(this, "error");
+    e->setMessage(error);
+    e->exec();
   }
 }
 
@@ -132,4 +163,17 @@ void QgsSpit::changeEditAndRemove(int mode){
     btnEdit->setEnabled(true);
     btnRemove->setEnabled(true);
   }
+}
+
+void QgsSpit::helpInfo(){
+  QString message = "General Interface Help:\n\n";
+  QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
+  e->setMessage(message);
+  e->exec();
+}
+
+void QgsSpit::import(){
+  QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", 100, this, "Progress");
+  pro->setAutoClose(true);
+  pro->exec();
 }
