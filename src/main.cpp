@@ -21,6 +21,8 @@
 #include <qtextcodec.h>
 #include <qtranslator.h>
 #include <qstyle.h>
+#include <qpixmap.h>
+#include <splashscreen.h>
 //#include "qgis.h"
 #include "qgisapp.h"
 
@@ -29,6 +31,12 @@ int main(int argc, char *argv[])
 
 
 	QApplication a(argc, argv);
+	   //
+	// Set up the splash screen
+	//
+	SplashScreen *mySplash = new SplashScreen(  );
+	mySplash->setStatus("Loading QGis...");
+
 	// a.setFont(QFont("helvetica", 11));
 	QTranslator tor(0);
 	// set the location where your .qm files are in load() below as the last parameter instead of "."
@@ -45,7 +53,11 @@ int main(int argc, char *argv[])
 	qgis->show();
 	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 
-
+        mySplash->finish( qgis );
+        delete mySplash;
+        //
+        //turn control over to the main application loop...
+        //
 	int result = a.exec();
 
 	return result;
