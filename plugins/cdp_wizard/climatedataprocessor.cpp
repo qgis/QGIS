@@ -463,7 +463,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         //need to add some error handling here...
 
 
-        for (int myInt=2; myInt <= 13; myInt++)
+        for (int myInt=1; myInt < 12; myInt++)
         {
 
             char myNumberPartChar[10];
@@ -473,12 +473,12 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
             if (myInt < 11)
             {
                 int myFileNoInt = myInt;
-                sprintf(myNumberPartChar, "0%i.",myFileNoInt-1);
+                sprintf(myNumberPartChar, "0%i.",myFileNoInt);
             }
             else if(myInt<100)
             {
                 int myFileNoInt = myInt;
-                sprintf(myNumberPartChar, "%i.",myFileNoInt-1);
+                sprintf(myNumberPartChar, "%i.",myFileNoInt);
             }
             QString myNumberPartString(myNumberPartChar);
 
@@ -550,7 +550,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         //now we loop through 12 blocks to create our filegroup
         //this is the loop that sets up file readers - one per data
         //block for the required year, for the current month.
-        for (int myInt=myCurrentBlockInt; myInt <= myEndBlockInt; ++myInt)
+        for (int myInt=myCurrentBlockInt; myInt < myEndBlockInt; ++myInt)
         {
             FileReader *myFileReader2 = new FileReader();
             myFileReader2->openFile(theFileNameString);
