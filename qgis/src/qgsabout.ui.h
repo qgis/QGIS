@@ -28,7 +28,9 @@ void QgsAbout::init()
 #endif
 
   QFile file(appPath + "/doc/AUTHORS" );
+#ifdef QGISDEBUG
   printf ("Readng authors file " + file.name() + ".............................................\n");
+#endif
   if ( file.open( IO_ReadOnly ) ) {
     QTextStream stream( &file );
     QString line;
@@ -38,7 +40,9 @@ void QgsAbout::init()
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
       if (line.left(1)=="#") continue;
+#ifdef QGISDEBUG 
       printf( "Contributor: %3d: %s\n", i++, line.latin1() );
+#endif 
       QStringList myTokens = QStringList::split("\t",line);
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
       lines += myTokens[0];
@@ -84,9 +88,13 @@ void QgsAbout::showAuthorPic( QListBoxItem * theItem)
 
   QString myString = listBox1->currentText();
   myString = myString.replace(" ","_");
+#ifdef QGISDEBUG 
   printf ("Loading mug: %s", myString.ascii()); 
+#endif 
   myString =QString(appPath + "/images/developers/") + myString + QString(".jpg");
+#ifdef QGISDEBUG 
   printf ("Loading mug: %s\n", myString.ascii()); 
+#endif 
   QPixmap *pixmap = new QPixmap(myString);
   pixAuthorMug->setPixmap(*pixmap);
   /* Uncomment this block to use preloaded images
