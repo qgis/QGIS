@@ -9,13 +9,27 @@
 
 
 
-void PluginGuiBase::pbnOK_clicked()
+
+
+void PluginGuiBase::pbnCancel_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void PluginGuiBase::pbnSelectFileName_clicked()
+{
+
+}
+
+
+void PluginGuiBase::leOutputFileName_textChanged( const QString & )
+{
+
+}
+
+
+void PluginGuiBase::pbnOK_clicked()
 {
 
 }

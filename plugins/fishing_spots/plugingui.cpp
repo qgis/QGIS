@@ -20,23 +20,28 @@
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <qstring.h>
+#include <qfiledialog.h>
 //standard includes
 #include <iostream>
 #include <assert.h>
 //shapefile making stuff
 #include "shapefilemaker.h"
-
+/** Alternate constructor for use when this plugin is going to be an app main widget. */
 PluginGui::PluginGui() : PluginGuiBase()
 {
   
-  tabMain->removePage(tabRegex);
+  //Comment out the next line if you are debuggin stuff
+  tabMain->hide();
+  //tabMain->removePage(tabRegex);
 }
 
 PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : PluginGuiBase( parent, name, modal, fl )
 {
    
-  tabMain->removePage(tabRegex);
+  //Comment out the next line if you are debuggin stuff
+  tabMain->hide();
+  //tabMain->removePage(tabRegex);
 }  
 PluginGui::~PluginGui()
 {
@@ -44,6 +49,13 @@ PluginGui::~PluginGui()
 
 void PluginGui::pbnOK_clicked()
 {
+  
+  if (leOutputFileName->text()=="") 
+  {
+    QMessageBox::warning( this, "Fishing spots",
+                "Output filename is invalid.\n"
+                    "Fix it and try again" );
+  }
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
   // add it to the view using:
@@ -358,7 +370,7 @@ void PluginGui::requestGetFinished(int id)
   //
   // Now build the shapefile
   //
-  createShapefile(QString(""));
+  createShapefile(leOutputFileName->text());
   finish();
 }
 
@@ -373,7 +385,7 @@ void PluginGui::finish()
 
   mQhttp.closeConnection();
   //close the dialog
-  //done(1);
+  done(1);
 }
 
 
@@ -382,10 +394,28 @@ void PluginGui::finish()
 void PluginGui::createShapefile(QString theShapefileName)
 {
 
+  ShapefileMaker * myShapefileMaker = new ShapefileMaker(theShapefileName);
   for (int myIteratorInt = 0; myIteratorInt <= mFishingSpotsVector.size(); ++myIteratorInt)
   {
         FishingSpot myFishingSpot = mFishingSpotsVector[myIteratorInt];
+        myShapefileMaker->writePoint(theShapefileName, static_cast<double>(0-myFishingSpot.longitude), static_cast<double>(myFishingSpot.latitude) );
         std::cerr << myFishingSpot.label << " :: " << myFishingSpot.latitude << " :: " << myFishingSpot.longitude << std::endl;
   }
+  delete myShapefileMaker;
+  //clear the spots list
+  mFishingSpotsVector.clear(); 
+  emit drawVectorLayer(QString("./"),QString(theShapefileName),QString("ogr"));
+}
+
+void PluginGui::pbnSelectFileName_clicked()
+{
+  std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
+  QString myOutputFileNameQString = QFileDialog::getSaveFileName(
+          ".",
+          "ESRI Shapefile (*.shp)",
+          this,
+          "save file dialog"
+          "Choose a filename to save under" );
+  leOutputFileName->setText(myOutputFileNameQString);
 
 }

@@ -7,63 +7,64 @@
 ShapefileMaker::ShapefileMaker(QString theOutputFileName)
 {
     std::cout << "ShapefileMaker constructor called with " << theOutputFileName << std::endl;
-    DBFHandle myDbfHandle;		/* handle for dBase file */
-    SHPHandle myShapeHandle;		/* handle for shape files .shx and .shp */
     /* Open and prepare output files */
-    myDbfHandle = createDbf(theOutputFileName);
-    myShapeHandle = createShapeFile(theOutputFileName);
+    mDbfHandle = createDbf(theOutputFileName);
+    mShapeHandle = createShapeFile(theOutputFileName);
+    mCurrentRecInt=0;
     //test the write point routine....
-    //generatePoints(theInputFileName,myDbfHandle,myShapeHandle);
-    //generateGraticule(myDbfHandle,myShapeHandle,theXIntervalDouble,theYIntervalDouble);
-    DBFClose( myDbfHandle );
-    SHPClose( myShapeHandle );
-    return;
+    //generatePoints(theInputFileName,mDbfHandle,mShapeHandle);
+    //generateGraticule(mDbfHandle,mShapeHandle,theXIntervalDouble,theYIntervalDouble);
 }
+
 ShapefileMaker::ShapefileMaker(QString theOutputFileName, double theXIntervalDouble, double theYIntervalDouble)
 {
     std::cout << "ShapefileMaker constructor called with " << theOutputFileName
     << " for output file and " << theXIntervalDouble << "," << theYIntervalDouble << " for x,y interval " << std::endl;
-    DBFHandle myDbfHandle;		/* handle for dBase file */
-    SHPHandle myShapeHandle;		/* handle for shape files .shx and .shp */
+    DBFHandle mDbfHandle;		/* handle for dBase file */
+    SHPHandle mShapeHandle;		/* handle for shape files .shx and .shp */
     /* Open and prepare output files */
-    myDbfHandle = createDbf(theOutputFileName);
-    myShapeHandle = createShapeFile(theOutputFileName);
+    mDbfHandle = createDbf(theOutputFileName);
+    mShapeHandle = createShapeFile(theOutputFileName);
     //test the write point routine....
-    //generatePoints(theInputFileName,myDbfHandle,myShapeHandle);
-    generateGraticule(myDbfHandle,myShapeHandle,theXIntervalDouble,theYIntervalDouble);
-    DBFClose( myDbfHandle );
-    SHPClose( myShapeHandle );
+    //generatePoints(theInputFileName,mDbfHandle,mShapeHandle);
+    generateGraticule(mDbfHandle,mShapeHandle,theXIntervalDouble,theYIntervalDouble);
     return;
+}
+
+ShapefileMaker::~ShapefileMaker()
+{
+    DBFClose( mDbfHandle );
+    SHPClose( mShapeHandle );
 }
 
 /* DbfName need not include the file extension. */
 DBFHandle ShapefileMaker::createDbf (QString theDbfName )
 {
-    DBFHandle myDbfHandle;
+    DBFHandle mDbfHandle;
     //remove the path part of the dbf name
     QFileInfo myFileInfo( theDbfName );
     QString myBaseString = myFileInfo.baseName();  // excludes any extension
     //create the dbf
-    myDbfHandle = DBFCreate( myBaseString+".dbf" );
+    mDbfHandle = DBFCreate( myBaseString+".dbf" );
     //create an index field named after the base part of the file name
 
-    DBFAddField( myDbfHandle, myBaseString+"_id", FTInteger, 11, 0 );
+    DBFAddField( mDbfHandle, myBaseString+"_id", FTInteger, 11, 0 );
     //create a second arbitary attribute field
-    DBFAddField( myDbfHandle, "Date", FTString, 12, 0 );
+    DBFAddField( mDbfHandle, "Label", FTString, 255, 0 );
     //close the dbf
-    DBFClose( myDbfHandle );
+    DBFClose( mDbfHandle );
     //reopen
-    myDbfHandle = DBFOpen( myBaseString+".dbf", "r+b" );
+    mDbfHandle = DBFOpen( myBaseString+".dbf", "r+b" );
     //exit this fn giving
-    return myDbfHandle;
+    return mDbfHandle;
 }
 
 SHPHandle ShapefileMaker::createShapeFile(QString theFileName )
 {
-    SHPHandle myShapeHandle;
-    //myShapeHandle = SHPCreate(theFileName, SHPT_POINT );
-    myShapeHandle = SHPCreate(theFileName, SHPT_ARC );
-    return myShapeHandle;
+    SHPHandle mShapeHandle;
+    mShapeHandle = SHPCreate(theFileName, SHPT_POINT );
+    //mShapeHandle = SHPCreate(theFileName, SHPT_ARC );
+    return mShapeHandle;
 }
 
 void ShapefileMaker::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt, QString theLabel)
@@ -96,6 +97,14 @@ void ShapefileMaker::writePoint(SHPHandle theShapeHandle, int theRecordInt, doub
     myShapeObject = SHPCreateObject( SHPT_POINT, theRecordInt, 0, NULL, NULL, 1, &theXDouble, &theYDouble, NULL, NULL );
     SHPWriteObject( theShapeHandle, -1, myShapeObject );
     SHPDestroyObject( myShapeObject );
+}
+
+void ShapefileMaker::writePoint(QString theLabel, double theXDouble, double theYDouble )
+{
+  writeDbfRecord (mDbfHandle, mCurrentRecInt,  theLabel);
+  writePoint(mShapeHandle,mCurrentRecInt,theXDouble,theYDouble);
+  mCurrentRecInt++;
+
 }
 
 void ShapefileMaker::writeLine(SHPHandle theShapeHandle, 

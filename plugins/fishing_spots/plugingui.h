@@ -60,7 +60,7 @@ public:
     void pbnOK_clicked();
     void pbnCancel_clicked();
     void check();
-
+    void pbnSelectFileName_clicked();
     
 protected slots:
 
@@ -75,7 +75,7 @@ signals:
 
 signals:
    void drawRasterLayer(QString);
-   void drawVectorrLayer(QString,QString,QString);
+   void drawVectorLayer(QString,QString,QString);
 
 private:
 

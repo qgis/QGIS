@@ -13,11 +13,12 @@ class ShapefileMaker
     public:
         ShapefileMaker(QString theOutputFileName);
         ShapefileMaker(QString theOutputFileName, double theXIntervalDouble, double theYIntervalDouble);
-        ~ShapefileMaker() {};
-        DBFHandle ShapefileMaker::createDbf (QString theDbfName ) ;
-        SHPHandle ShapefileMaker::createShapeFile(QString theFileName ); 
+        ~ShapefileMaker() ;
+        DBFHandle createDbf (QString theDbfName ) ;
+        SHPHandle createShapeFile(QString theFileName ); 
         void writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt, QString theLabel) ;
         void writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double y ); 
+        void writePoint(QString theLabel, double theXDouble, double theYDouble ); 
         static void writeLine(SHPHandle theShapeHandle, 
                 int theRecordInt, 
                 int theCoordinateCountInt, 
@@ -27,5 +28,9 @@ class ShapefileMaker
         void generatePoints (QString theInputFileName, DBFHandle theDbfHandle, SHPHandle theShapeHandle);
 
     private:
+        DBFHandle mDbfHandle;		/* handle for dBase file */
+        SHPHandle mShapeHandle;		/* handle for shape files .shx and .shp */
+        int mCurrentRecInt;            /* current record number */
+
 };
 #endif
