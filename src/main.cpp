@@ -73,6 +73,16 @@ void usage( std::string const & appName )
 } // usage()
 
 
+/* Test to determine if this program was started on Mac OS X by double-clicking
+ * the application bundle rather then from a command line. If clicked, argv[1]
+ * contains a process serial number in the form -psn_0_1234567. Don't process
+ * the command line arguments in this case because argv[1] confuses the processing.
+ */
+bool bundleclicked(int argc, char *argv[])
+{
+	return ( argc > 1 && memcmp(argv[1], "-psn_", 5) == 0 );
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -100,91 +110,95 @@ int main(int argc, char *argv[])
 
   // This is the 'leftover' arguments collection
   QStringList * myFileList=new QStringList();
+
 #ifndef WIN32
-
-  //////////////////////////////////////////////////////////////// 
-  // USe the GNU Getopts utility to parse cli arguments
-  // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
-  ///////////////////////////////////////////////////////////////
-  int optionChar;
-  while (1)
+  if ( !bundleclicked(argc, argv) )
   {
-    static struct option long_options[] =
-    {
-      /* These options set a flag. */
-      {"help", no_argument, 0, 'h'},
-      /* These options don't set a flag.
-       *  We distinguish them by their indices. */
-      {"snapshot", required_argument, 0, 's'},
-      {"lang",     required_argument, 0, 'l'},
-      {"project",  required_argument, 0, 'p'},
-      {0, 0, 0, 0}
-    };
-    /* getopt_long stores the option index here. */
-    int option_index = 0;
 
-    optionChar = getopt_long (argc, argv, "slp",
-            long_options, &option_index);
+	//////////////////////////////////////////////////////////////// 
+	// USe the GNU Getopts utility to parse cli arguments
+	// Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
+	///////////////////////////////////////////////////////////////
+	int optionChar;
+	while (1)
+	{
+	  static struct option long_options[] =
+	  {
+		/* These options set a flag. */
+		{"help", no_argument, 0, 'h'},
+		/* These options don't set a flag.
+		 *  We distinguish them by their indices. */
+		{"snapshot", required_argument, 0, 's'},
+		{"lang",     required_argument, 0, 'l'},
+		{"project",  required_argument, 0, 'p'},
+		{0, 0, 0, 0}
+	  };
 
-    /* Detect the end of the options. */
-    if (optionChar == -1)
-      break;
+	  /* getopt_long stores the option index here. */
+	  int option_index = 0;
 
-    switch (optionChar)
-    {
-        case 0:
-            /* If this option set a flag, do nothing else now. */
-            if (long_options[option_index].flag != 0)
-              break;
-            printf ("option %s", long_options[option_index].name);
-            if (optarg)
-              printf (" with arg %s", optarg);
-            printf ("\n");
-            break;
+	  optionChar = getopt_long (argc, argv, "slp",
+			  long_options, &option_index);
 
-        case 's':
-            mySnapshotFileName=optarg;
-            break;
+	  /* Detect the end of the options. */
+	  if (optionChar == -1)
+		break;
 
-        case 'l':
-            myTranslationFileName=optarg;
-            break;
+	  switch (optionChar)
+	  {
+		case 0:
+		  /* If this option set a flag, do nothing else now. */
+		  if (long_options[option_index].flag != 0)
+			break;
+		  printf ("option %s", long_options[option_index].name);
+		  if (optarg)
+			printf (" with arg %s", optarg);
+		  printf ("\n");
+		  break;
 
-        case 'p':
-            myProjectFileName=optarg;
-            break;
+		case 's':
+		  mySnapshotFileName = optarg;
+		  break;
 
-        case 'h':
-        case '?':
-            usage( argv[0] );
-            return 2;		// XXX need standard exit codes
-            break;
+		case 'l':
+		  myTranslationFileName = optarg;
+		  break;
 
-        default:
-            std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
-            return 1;		// XXX need standard exit codes
-    }
-  }
+		case 'p':
+		  myProjectFileName = optarg;
+		  break;
 
+		case 'h':
+		case '?':
+		  usage( argv[0] );
+		  return 2;		// XXX need standard exit codes
+		  break;
 
-  // Add any remaining args to the file list - we will attempt to load them 
-  // as layers in the map view further down....
+		default:
+		  std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
+		  return 1;		// XXX need standard exit codes
+	  }
+	}
+
+	// Add any remaining args to the file list - we will attempt to load them 
+	// as layers in the map view further down....
 #ifdef QGISDEBUG
-  std::cout << "Files specified on command line: " << optind << std::endl;
+	std::cout << "Files specified on command line: " << optind << std::endl;
 #endif
-  if (optind < argc)
-  {
-    while (optind < argc)
-    {
+	if (optind < argc)
+	{
+	  while (optind < argc)
+	  {
 #ifdef QGISDEBUG
-      int idx = optind;
-      std::cout << idx << ": " << argv[idx] << std::endl;
+		int idx = optind;
+		std::cout << idx << ": " << argv[idx] << std::endl;
 #endif
-      myFileList->append(argv[optind++]);
-    }
+		myFileList->append(argv[optind++]);
+	  }
+	}
   }
-
 #endif //WIN32
+
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviours...
   ////////////////////////////////////////////////////////////////////
