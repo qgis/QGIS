@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsNewConnectionBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>394</width>
-            <height>248</height>
+            <height>253</height>
         </rect>
     </property>
     <property name="caption">
@@ -44,11 +44,10 @@
                 </property>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>buttonOk</cstring>
+                        <cstring>btnOk</cstring>
                     </property>
                     <property name="font">
                         <font>
-                            <pointsize>10</pointsize>
                         </font>
                     </property>
                     <property name="text">
@@ -66,11 +65,10 @@
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>buttonCancel</cstring>
+                        <cstring>btnCancel</cstring>
                     </property>
                     <property name="font">
                         <font>
-                            <pointsize>10</pointsize>
                         </font>
                     </property>
                     <property name="text">
@@ -85,11 +83,10 @@
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>buttonHelp</cstring>
+                        <cstring>btnHelp</cstring>
                     </property>
                     <property name="font">
                         <font>
-                            <pointsize>10</pointsize>
                         </font>
                     </property>
                     <property name="text">
@@ -128,7 +125,6 @@
             <property name="font">
                 <font>
                     <family>Helvetica [Urw]</family>
-                    <pointsize>10</pointsize>
                 </font>
             </property>
             <property name="title">
@@ -337,7 +333,7 @@
 </widget>
 <connections>
     <connection>
-        <sender>buttonCancel</sender>
+        <sender>btnCancel</sender>
         <signal>clicked()</signal>
         <receiver>QgsNewConnectionBase</receiver>
         <slot>reject()</slot>
@@ -349,10 +345,16 @@
         <slot>testConnection()</slot>
     </connection>
     <connection>
-        <sender>buttonOk</sender>
+        <sender>btnOk</sender>
         <signal>clicked()</signal>
         <receiver>QgsNewConnectionBase</receiver>
         <slot>saveConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsNewConnectionBase</receiver>
+        <slot>helpInfo()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -363,13 +365,14 @@
     <tabstop>txtPassword</tabstop>
     <tabstop>chkStorePassword</tabstop>
     <tabstop>btnConnect</tabstop>
-    <tabstop>buttonOk</tabstop>
-    <tabstop>buttonCancel</tabstop>
-    <tabstop>buttonHelp</tabstop>
+    <tabstop>btnOk</tabstop>
+    <tabstop>btnCancel</tabstop>
+    <tabstop>btnHelp</tabstop>
 </tabstops>
 <slots>
     <slot>saveConnection()</slot>
     <slot>testConnection()</slot>
+    <slot>helpInfo()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
