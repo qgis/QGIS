@@ -1961,7 +1961,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
   // open help in user browser
   if (useQgisDocDirectory)
     {
-      url = appDir + "/share/doc/" + url;
+      url = appDir + "/share/qgis/doc/" + url;
     }
   // find a browser
   QSettings settings;
