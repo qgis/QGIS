@@ -474,6 +474,12 @@ libqgis_la_SOURCES =				\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayer.moc.cpp 		\
+		qgspointstylewidgetbase.uic.cpp	\
+		qgspointstylewidgetbase.moc.uic.cpp	\
+		qgslinestylewidgetbase.uic.cpp		\
+		qgslinestylewidgetbase.moc.uic.cpp	\
+		qgsfillstylewidgetbase.uic.cpp		\
+		qgsfillstylewidgetbase.moc.uic.cpp		
 		qgspointstylewidget.cpp		\
 		qgspointstylewidget.moc.cpp	\
 		qgslinestylewidget.cpp		\
