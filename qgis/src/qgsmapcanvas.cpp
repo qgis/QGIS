@@ -677,13 +677,21 @@ void QgsMapCanvas::freeze(bool frz)
 void QgsMapCanvas::remove(QString key)
 {
 	std::map < QString, QgsMapLayer * >newLayers;
-
+	
 	std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
 	while (mi != layers.end()) {
 		QgsMapLayer *ml = (*mi).second;
-		if (ml->getLayerID() != key)
+		if (ml->getLayerID() != key) {
 			newLayers[ml->getLayerID()] = ml;
-
+			
+			// recalculate full extent
+			if (newLayers.size() == 1) {
+				fullExtent = ml->extent();
+				fullExtent.scale(1.1);
+			}
+			updateFullExtent(ml->extent());
+		}
+		
 		mi++;
 
 	}
