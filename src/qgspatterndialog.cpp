@@ -19,6 +19,7 @@ QgsPatternDialog::QgsPatternDialog(QWidget* parent, const char* name, bool modal
     dense5->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern"));
     dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
     dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
+    nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
 
     QObject::connect(okbutton,SIGNAL(clicked()),this,SLOT(queryPattern()));
     QObject::connect(cancelbutton,SIGNAL(clicked()),this,SLOT(reject()));
@@ -87,6 +88,10 @@ void QgsPatternDialog::queryPattern()
     else if(dense3->isOn())
     {
 	m_pattern=Qt::Dense3Pattern;
+    }
+    else if(nopen->isOn())
+    {
+	m_pattern=Qt::NoBrush;
     }
     accept();
 }
