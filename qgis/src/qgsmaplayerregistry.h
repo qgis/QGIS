@@ -40,7 +40,11 @@ public:
 
  //! Returns the instance pointer, creating the object on the first call
  static QgsMapLayerRegistry * instance();
-
+/*! Return the number of registered layers.
+ *
+ * */
+ const int count();
+ 
  //! Retrieve a pointer to a loaded plugin by id
  QgsMapLayer * mapLayer(QString theLayerId);
 

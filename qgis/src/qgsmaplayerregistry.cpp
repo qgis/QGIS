@@ -46,7 +46,11 @@ QgsMapLayerRegistry::QgsMapLayerRegistry(QObject *parent, const char *name) : QO
 #endif
   // constructor does nothing
 }
-
+// get the layer count (number of registered layers)
+const int QgsMapLayerRegistry::count()
+{
+  return mMapLayers.size();
+}
  //! Get a vector layer from the registry - the the requested key does not exist or
  //does not correspond to a vector layer, null returned!
  QgsVectorLayer * QgsMapLayerRegistry::getVectorLayer(QString theLayerId)

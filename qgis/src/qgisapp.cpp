@@ -2443,7 +2443,9 @@ void QgisApp::removeAllLayers()
 
 void QgisApp::zoomToLayerExtent()
 {
-
+// zoom only if one or more layers loaded
+  if(QgsMapLayerRegistry::instance()->count() > 0) 
+  {
     // get the selected item
     QListViewItem *li = mMapLegend->currentItem();
     QgsMapLayer *layer = ((QgsLegendItem *) li)->layer();
@@ -2453,6 +2455,7 @@ void QgisApp::zoomToLayerExtent()
 
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);
+  }
 }
 
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
