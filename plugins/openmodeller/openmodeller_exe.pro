@@ -8,8 +8,8 @@
 TEMPLATE = app
 
 # config for standalone mode
-CONFIG += qt rtti thread release
-#CONFIG += qt rtti thread debug console
+# CONFIG += qt rtti thread release
+CONFIG += qt rtti thread debug console
 
 # for icon file under windows
 # see http://www.qiliang.net/qt/appicon.html#1
@@ -45,9 +45,10 @@ HEADERS += list.hh \
            omguimain.h \
            omguimainbase.ui.h \
            imagewriter.h \
+           layerselector.h \
            request_file.hh
 
-INTERFACES += openmodellerguibase.ui omguimainbase.ui
+INTERFACES += openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui
 
 SOURCES += main.cpp \ 
            list.cpp \
@@ -55,6 +56,7 @@ SOURCES += main.cpp \
            openmodellergui.cpp \
            omguimain.cpp \
            imagewriter.cpp \
+           layerselector.cpp \
            request_file.cpp
 
 # -------------------------------------------

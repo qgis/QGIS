@@ -819,7 +819,9 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
 {
   std::cout << " OpenModellerGui::pbnSelectLayerFile_clicked() " << std::endl;
   QStringList myQStringList;
-  LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
+  QSettings mySettings;
+  QString myBaseDir = mySettings.readEntry("/openmodeller/layersDirectory","c:\tmp"); //initial dir
+  LayerSelector * myLayerSelector = new LayerSelector(myBaseDir, this,"Input Layers",true,0);
   if(myLayerSelector->exec())
   {
     std::cout << "LayerSelector ok pressed" << std::endl;
@@ -1105,7 +1107,9 @@ void OpenModellerGui::pbnDefaultParameters_clicked()
 void OpenModellerGui::pbnSelectLayerFileProj_clicked()
 {
   QStringList myQStringList;
-  LayerSelector * myLayerSelector = new LayerSelector(this,"Input Layers",true,0);
+  QSettings mySettings;
+  QString myBaseDir = mySettings.readEntry("/openmodeller/projectionLayersDirectory","c:\tmp"); //initial dir
+  LayerSelector * myLayerSelector = new LayerSelector(myBaseDir, this,"Input Layers",true,0);
   if(myLayerSelector->exec())
   {
     std::cout << "LayerSelector ok pressed" << std::endl;

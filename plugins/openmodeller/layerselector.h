@@ -31,7 +31,7 @@ class LayerSelector : public LayerSelectorBase
 {
 Q_OBJECT
 public:
-    LayerSelector( QWidget* parent , const char* name , bool modal , WFlags fl  );
+    LayerSelector( QString theBaseDir, QWidget* parent , const char* name , bool modal , WFlags fl  );
     ~LayerSelector() {};
     
 public slots:

@@ -27,17 +27,14 @@
 //standard includes
 #include <iostream>
 
-#ifndef WIN32
-  //gdal includes
-  #include "gdal_priv.h"
-#endif
+#include "gdal_priv.h"
 
 
-LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , WFlags fl  )
+LayerSelector::LayerSelector( QString theBaseDir, QWidget* parent , const char* name , bool modal , WFlags fl  )
   : LayerSelectorBase( parent, name, modal, fl )
 {
   QSettings mySettings;
-  baseDirString = mySettings.readEntry("/openmodeller/projectionLayersDirectory","/tmp"), //initial dir
+  baseDirString = theBaseDir;
   lblBaseDir->setText(tr("Base Dir: ") + baseDirString);
   listFileTree->clear();
   listFileTree->setRootIsDecorated(true);
@@ -49,6 +46,7 @@ LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , 
   listFileTree->setColumnWidth(2,10);
   listFileTree->setResizeMode(QListView::AllColumns);
   listParent = new QListViewItem(listFileTree,baseDirString);
+  std::cout << "Recursing directories" << std::endl;
   traverseDirectories(baseDirString,listParent);
   listParent->setOpen(true);
   listFileTree->triggerUpdate();
@@ -114,6 +112,7 @@ void LayerSelector::pbnCancel_clicked()
 
 void LayerSelector::traverseDirectories(const QString& theDirName, QListViewItem* theParentListViewItem)
 {
+	std::cout << "Recursing into : " << theDirName << std::endl;
   QDir myDirectory(theDirName);
   myDirectory.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
   std::cout << "Current directory is: " << theDirName.ascii() << std::endl;
