@@ -33,6 +33,7 @@
 #include "qgspolygonsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerinterface.h"
 
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 :QWidget(parent, name)
@@ -61,6 +62,10 @@ void QgsMapCanvas::setLegend(QgsLegend * legend)
 void QgsMapCanvas::setDirty(bool _dirty){
 	dirty = _dirty;
 }
+void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr){
+	// add a maplayer interface to a layer type defined in a plugin
+	
+}	
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 // give the layer a default symbol

@@ -28,7 +28,10 @@ virtual void setQgisMainWindow(QMainWindow *qgis) = 0;
 virtual int getInt()=0;
 // setup the plugin's GUI
 virtual void initGui()=0;
+// unload the plugin
 virtual void unload()=0;
+// draw function
+virtual void draw() = 0;
 
 };
 #endif // QGSMAPLAYERINTERFACE_H
