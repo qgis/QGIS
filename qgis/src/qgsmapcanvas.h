@@ -62,6 +62,8 @@ public:
     void setExtent(QgsRect );
     void zoomFullExtent();
     void zoomPreviousExtent();
+    /**Zooms to the extend of the selected features*/
+    void zoomToSelected();
   /** Sets the map tool currently being used on the canvas */
   void setMapTool(int tool);
   /** Write property of QColor bgColor. */

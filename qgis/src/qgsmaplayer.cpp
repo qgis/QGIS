@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <cfloat>
 #include <iostream>
 #include <qdatetime.h>
 #include "qgsrect.h"
@@ -68,9 +69,16 @@ const QgsRect QgsMapLayer::extent()
 	return layerExtent;
 }
 
-QgsRect QgsMapLayer::calculateExtent()
+QgsRect QgsMapLayer::bBoxOfSelected()
 {
 
+}
+
+QgsRect QgsMapLayer::calculateExtent()
+{
+    //just to prevent any crashes
+    QgsRect rect(DBL_MAX,DBL_MAX,DBL_MIN,DBL_MIN);
+    return rect;
 }
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {

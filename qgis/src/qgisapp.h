@@ -67,6 +67,8 @@ class QgisApp:public QgisAppBase
 	void zoomFull();
 	//! Zoom to the previous extent
 	void zoomPrevious();
+	//! Zoom to selected features
+	void zoomToSelected();
 	//! Set map tool to pan
 	void pan();
 	//! Identify feature(s) on the currently selected layer

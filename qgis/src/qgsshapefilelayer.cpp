@@ -17,6 +17,7 @@
  ***************************************************************************/
  /*  $Id$  */
  
+#include <cfloat>
 #include <iostream>
 #include <strstream>
 #include <qapplication.h>
@@ -95,6 +96,48 @@ QgsShapeFileLayer::~QgsShapeFileLayer()
     {
 	tabledisplay->close();
     }
+}
+
+QgsRect QgsShapeFileLayer::bBoxOfSelected()
+{
+    double xmin=DBL_MAX;//edge coordinates of the bounding box
+    double ymin=DBL_MAX;
+    double xmax=DBL_MIN;
+    double ymax=DBL_MIN;
+
+    //find the selected features and use their geometries to extend the bounding box
+    for(int i=0;i<selected->count();i++)
+    {
+	if((*selected)[i]==true)
+	{
+	    OGRFeature* fet = ogrLayer->GetFeature(i);
+	    OGRGeometry* geom = fet->GetGeometryRef();
+	    OGRwkbGeometryType type=geom->getGeometryType();
+	    
+	    OGREnvelope bbox;
+	    geom->getEnvelope(&bbox);
+	    if(bbox.MinX<xmin)
+	    {
+		xmin=bbox.MinX;
+	    }
+	    if(bbox.MinY<ymin)
+	    {
+		ymin=bbox.MinY;
+	    }
+	    if(bbox.MaxX>xmax)
+	    {
+		xmax=bbox.MaxX;
+	    }
+	    if(bbox.MaxY>ymax)
+	    {
+		ymax=bbox.MaxY;
+	    }
+	    
+	}
+    }
+
+    QgsRect rect(xmin,ymin,xmax,ymax);
+    return rect;
 }
 
 /** No descriptions */

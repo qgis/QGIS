@@ -35,6 +35,11 @@ void QgisAppBase::zoomOut()
 
 }
 
+void QgisAppBase::zoomToSelected()
+{
+
+}
+
 
 
 void QgisAppBase::init()
