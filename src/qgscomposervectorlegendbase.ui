@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>212</width>
-            <height>198</height>
+            <height>275</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -27,6 +27,19 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_2</cstring>
+            </property>
+            <property name="text">
+                <string>Title</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mTitleLineEdit</cstring>
+            </property>
+        </widget>
         <widget class="QLabel">
             <property name="name">
                 <cstring>textLabel1</cstring>
@@ -140,13 +153,20 @@
         <sender>mMapComboBox</sender>
         <signal>activated(int)</signal>
         <receiver>QgsComposerVectorLegendBase</receiver>
-        <slot>mapChanged(int)</slot>
+        <slot>mapSelectionChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>mTitleLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerVectorLegendBase</receiver>
+        <slot>titleChanged()</slot>
     </connection>
 </connections>
 <slots>
     <slot>changeFont()</slot>
     <slot>previewModeChanged(int)</slot>
-    <slot>mapChanged(int)</slot>
+    <slot>mapSelectionChanged(int)</slot>
+    <slot>titleChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
