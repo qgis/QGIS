@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include <qstring.h>
 #include <qtextstream.h>
 #include "qgspoint.h"
@@ -50,7 +51,7 @@ int QgsPoint::yToInt()
 	return (int) m_y;
 }
 
-QString QgsPoint::stringRep()
+QString QgsPoint::stringRep()  const
 {
 	QString rep;
 	QTextOStream ot(&rep);
@@ -85,3 +86,5 @@ QgsPoint & QgsPoint::operator=(const QgsPoint & other)
 
 	return *this;
 }
+
+

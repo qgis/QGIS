@@ -1,3 +1,14 @@
+Version 0.0.5-alpha October 5, 2002
+ * Removing a layer from the map no longer crashes the application
+ * Fixed multiple render bug when adding a layer
+ * Data source is shown in Layer Properties dialog
+ * Display name of a layer can be changed using the Layer Properties dialog
+ * Line widths can be set for a layer using the Layer Properties dialog
+ * Zoom out now works 
+ * Zoom Previous added to toolbar
+ * Toolbar has been rearranged and new icons added
+ * Help|About QGis now contains Version, Whats New, and License information
+ 
 Version 0.0.4-alpha August 15, 2002
  * Added Layer Properties dialog
  * User can set color for layers
@@ -14,15 +25,19 @@ Version 0.0.3-alpha August 10, 2002
   * Primitive legend that allows control of layer visibility
   * About Quantum GIS implemented
   * Other internal changes
+  
 July 26, 2002
 	Drawing code now properly displays layers and calculates extents when
 	zooming. Zoom is still fixed zoom in rather than interactive.
+	
 July 20, 2002
 	Repaint automatic for layers.
+	
 July 18, 2002
 	Point, line and polygon PostGis layers can be drawn. Still issues with
 	map exent and positioning of layers on the canvas. Drawing is manual and
 	not tied to the paint event. No zooming or panning yet.
+	
 July 10, 2002
 	Layers can be selected and added to the map canvas collection however
 	the rendering code is currently disabled and being reorganized. So if

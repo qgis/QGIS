@@ -57,6 +57,7 @@ public:
     QgsRect extent();
     void setExtent(QgsRect );
     void zoomFullExtent();
+    void zoomPreviousExtent();
   /** Sets the map tool currently being used on the canvas */
   void setMapTool(int tool);
   /** Write property of QColor bgColor. */
@@ -93,6 +94,8 @@ public slots:
     QgsRect fullExtent;
     //! Current extent
     QgsRect currentExtent;
+    //! Previous view extent
+    QgsRect previousExtent;
     QRect *mapWindow;
     QgsCoordinateTransform *coordXForm;
   /**  */

@@ -17,6 +17,7 @@
 
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
+#include <iostream>
 class QString;
 
 class QgsPoint {
@@ -59,7 +60,7 @@ class QgsPoint {
 	double y(void) const;
 	int yToInt();
 	//! String representation of the point (x,y)
-	QString stringRep();
+	QString stringRep() const;
 	//! equality operator
 	bool operator==(const QgsPoint &other);
     
@@ -69,10 +70,18 @@ class QgsPoint {
 	/// Assignment
 	QgsPoint & operator=(const QgsPoint &other);
 };
+
 inline bool operator==(const QgsPoint &p1, const QgsPoint &p2){
     if((p1.x() == p2.x()) && (p1.y() == p2.y()))
 	return true;
     else
 	return false;
 }
+
+inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
+{
+   os << p.stringRep();
+   return os;
+}
+  
 #endif //QGSPOINT_H
