@@ -327,7 +327,7 @@ The openModeller wizard will assist you in carrying out a species distribution m
 In order to carry out a distribution model, you need to have a text file containing distribution data for the species you are interested in. This data should be in the form:
 
 &lt;font size=2&gt;&lt;pre&gt;
-#species    subspecies         longitude  latitude   altitude
+#genus       species         longitude  latitude   altitude
 furcata      boliviana           -68.85    -11.15    325
 furcata      boliviana           -67.38    -14.32    232
 furcata      boliviana           -67.55    -14.33    196

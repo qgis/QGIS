@@ -257,6 +257,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }
   if (thePageNameQString==tr("Step 7 of 8")) 
   {  
+    leOutputDirectory->setText(settings.readEntry("/openmodeller/outputDirectory"));
+    
     if ( leOutputFileName->text()=="")
     {
       setNextEnabled(currentPage(),false);
@@ -268,6 +270,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }  
   else if (thePageNameQString==tr("Step 8 of 8"))
   {
+    settings.writeEntry("/openmodeller/outputDirectory",leOutputDirectory->text());
     setFinishEnabled(currentPage(),true);
   }
 }
@@ -307,6 +310,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 void OpenModellerGui::makeConfigFile()
 {
     QFile myQFile( outputFileNameQString+".cfg");
+    std::cout << "Config file name: " << outputFileNameQString << std::endl;
     if ( myQFile.open( IO_WriteOnly ) ) {
         QTextStream myQTextStream( &myQFile );
         //write the header to the file
@@ -419,8 +423,8 @@ void OpenModellerGui::accept()
   
   
   //pull all the form data into local class vars.
-  outputFileNameQString=leOutputFileName->text();
-  myQSettings.writeEntry("/openmodeller/outputFileName",outputFileNameQString);
+  outputFileNameQString=leOutputDirectory->text()+leOutputFileName->text();
+  myQSettings.writeEntry("/openmodeller/fullOutputFileName",outputFileNameQString);
   localitiesFileNameQString=leLocalitiesFileName->text();
   myQSettings.writeEntry("/openmodeller/localitiesFileName",localitiesFileNameQString);
   //build up the map layers qstringlist
