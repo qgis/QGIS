@@ -841,6 +841,7 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
 
 void QgisApp::addRasterLayer()
 {
+  mapCanvas->freeze();
   QString fileFilters;
 
   // build the file filters based on the loaded GDAL drivers
@@ -868,12 +869,15 @@ void QgisApp::addRasterLayer()
 void QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 {
   if (theFileNameQStringList.empty())
-    {                           // no files selected so bail out, but
-      // allow mapCanvas to handle events
-      // first
-      mapCanvas->freeze(false);
-      return;
-    }
+  {
+    // no files selected so bail out, but
+    // allow mapCanvas to handle events
+    // first
+    mapCanvas->freeze(false);
+    return;
+  } else {
+    mapCanvas->freeze();
+  }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
   for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); myIterator != theFileNameQStringList.end();
