@@ -106,9 +106,6 @@ protected:
    
 };
 
-inline QgsRect::QgsRect(double minX, double minY, double maxX, double maxY):xmin(minX), ymin(minY), xmax(maxX), ymax(maxY)
-{
-}
 
 inline QgsRect::~QgsRect()
 {
