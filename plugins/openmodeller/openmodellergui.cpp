@@ -29,6 +29,8 @@
 #include <qsettings.h>
 #include <qcursor.h>
 #include <qapplication.h> 
+#include <qdir.h> 
+#include <qfileinfo.h>
 
 //
 //openmodeller includes
@@ -36,6 +38,9 @@
 #include <openmodeller/om.hh>
 #include <om_alg_parameter.hh>
 #include <request_file.hh>
+
+//gdal includes
+#include "gdal_priv.h"
 
 //standard includes
 #include <stdlib.h>
@@ -166,13 +171,14 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   {
     //select the last model used by getting the name from qsettings
     QString myModelName = settings.readEntry("/openmodeller/modelName");
+     
     if (myModelName=="")
     {
       //do nothing
     }
     else
     {
-      cboModelAlgorithm->setCurrentText(tr(myModelName));
+      cboModelAlgorithm->setCurrentText(tr(myModelName));      
     }
 
   }
@@ -448,29 +454,21 @@ void OpenModellerGui::cboModelAlgorithm_activated(  const QString &theAlgorithmQ
 }
 
 
-void OpenModellerGui::pbnSelectOutputFile_clicked()
+void OpenModellerGui::pbnSelectOutputDirectory_clicked()
 {
   QSettings settings;
   std::cout << " OpenModellerGui::pbnSelectOutputFile_clicked() " << std::endl;
-    QString myOutputFileNameQString = QFileDialog::getSaveFileName(
-                    settings.readEntry("/openmodeller/outputFileName"), //initial dir
-                    "All Files (*.)",
+            
+    QString myOutputDirectoryQString = QFileDialog::getExistingDirectory(
+                    settings.readEntry("/openmodeller/outputDirectory"), //initial dir
                     this,
-                    "save file dialog"
-                    "Choose a filename to save under" );
-    leOutputFileName->setText(myOutputFileNameQString);
+                    "get existing directory",
+                    "Choose a directory",
+                    TRUE );
+    leOutputDirectory->setText(myOutputDirectoryQString);
+       
     
-    //store output filename for use next time
-    settings.writeEntry("/openmodeller/outputFileName",myOutputFileNameQString);
-    
-    if ( leOutputFileName->text()=="")
-    {
-      setNextEnabled(currentPage(),false);
-    }  
-    else
-    {
-      setNextEnabled(currentPage(),true);
-    }
+
 }
 
 void OpenModellerGui::pbnRemoveParameter_clicked()
@@ -508,8 +506,10 @@ void OpenModellerGui::pbnAddParameter_clicked()
 
 
 void OpenModellerGui::pbnRemoveLayerFile_clicked()
-{
-    for ( unsigned int myInt = 0; myInt< lstLayers->count(); myInt++ )
+{  
+   int myLayersCount = lstLayers->count();
+
+    for ( unsigned int myInt = 0; myInt < myLayersCount; myInt++ )
     {
         QListBoxItem *myItem = lstLayers->item( myInt );
         // if the item is selected...
@@ -518,7 +518,9 @@ void OpenModellerGui::pbnRemoveLayerFile_clicked()
             //remove the item if it is selected
             lstLayers->removeItem(myInt);
             //also remove the item from the mask layer combo
-           cboMaskLayer->removeItem(myInt);
+            cboMaskLayer->removeItem(myInt);
+	    myInt--;
+	    myLayersCount--;
         }
     }
     //if user has removed last list entry, disable next button
@@ -669,6 +671,186 @@ void OpenModellerGui::leLocalitiesFileName_returnPressed()
   localitiesFileNameQString = leLocalitiesFileName->text();
     //enable the user to carry on to the next page...
   setNextEnabled(currentPage(),true);
+}
+
+void OpenModellerGui::cboModelAlgorithm_highlighted( const QString &theModelAlgorithm )
+{
+    OpenModeller  myOpenModeller;
+    AlgMetadata **myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
+    AlgMetadata *myAlgorithmMetadata;
+  
+    while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
+    {
+      QString myAlgorithmNameQString=myAlgorithmMetadata->id;
+      if (myAlgorithmNameQString==theModelAlgorithm)
+        {
+          txtAlgorithmDescription->setText(myAlgorithmMetadata->description);
+        }
+    }
+}
+
+void OpenModellerGui::leOutputFileName_textChanged( const QString &theOutputFileName)
+{
+    QSettings settings;
+    
+    //store output filename for use next time
+    settings.writeEntry("/openmodeller/outputFileName",theOutputFileName);    
+    
+    //check whether next button should be enabled or disabled
+    if ( !leOutputFileName->text().isEmpty() && !leOutputDirectory->text().isEmpty() )
+    {
+      setNextEnabled(currentPage(),true);
+    }  
+    else
+    {
+      setNextEnabled(currentPage(),false);  
+    }
+
+}
+
+void OpenModellerGui::leOutputDirectory_textChanged( const QString &theOutputDirectory)
+{
+    QSettings settings;
+    
+    //store output directory for use next time
+    settings.writeEntry("/openmodeller/outputDirectory",theOutputDirectory);    
+    
+    //check whether next button should be enabled or disabled
+    if ( !leOutputFileName->text().isEmpty() && !leOutputDirectory->text().isEmpty() )
+    {
+      setNextEnabled(currentPage(),true);
+    }  
+    else
+    {
+      setNextEnabled(currentPage(),false);  
+    }
+}
+
+void OpenModellerGui::pbnSelectLayerFolder_clicked()
+{
+  QSettings settings;
+              
+  QString myLayersDirectoryQString = QFileDialog::getExistingDirectory(
+                    settings.readEntry("/openmodeller/layersDirectory"), //initial dir
+                    this,
+                    "get existing directory",
+                    "Choose a directory",
+                    TRUE );
+  
+  if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
+  
+  traverseDirectories(myLayersDirectoryQString);
+  
+  
+  
+  //lstLayers->insertItem(myFileNameQString);
+  //also add the layer to the mask combo
+  //cboMaskLayer->insertItem(myFileNameQString);
+  //enable the user to carry on to the next page...
+  setNextEnabled(currentPage(),true);	    
+}
+
+void OpenModellerGui::traverseDirectories(const QString& dirname)
+{
+  QDir dir(dirname);
+  dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks );
+  std::cout << "Current directory is: " << dirname << std::endl;
+  
+  const QFileInfoList* fileinfolist = dir.entryInfoList();
+  QFileInfoListIterator it(*fileinfolist);
+  QFileInfo* fi;
+  
+  bool myInvalidFileFlag = false;
+  bool myInvalidProjectionFlag = false;
+  QString myInvalidFileList;
+  
+  while( (fi = it.current() ) )
+  {
+    if( fi->fileName() == "." || fi->fileName() == ".." ) 
+    {
+      ++it;
+      continue;
+    }
+    
+    //check to see if entry is a directory - if so iterate through it
+    if(fi->isDir() && fi->isReadable() )
+    {
+      traverseDirectories(fi->absFilePath() );
+    }
+    
+    //check to see if its an adf file type
+    //only add the hdr.adf files to ensure multiple adf files from one directory aren't added
+    else if (fi->extension(false)=="adf")
+    {
+      if (fi->fileName()=="hdr.adf")
+      {
+        std::cout << "Current filename is: " << fi->dirPath(true) << std::endl;
+        lstLayers->insertItem(fi->dirPath(true));
+        cboMaskLayer->insertItem(fi->dirPath(true)); 
+      }
+    }
+    
+    //check to see if entry is of the other required file types
+    else if ((fi->extension(false)=="tif") ||
+             (fi->extension(false)=="asc") ||
+	     (fi->extension(false)=="bil") ||
+	     (fi->extension(false)=="jpg")   )
+    {      
+      //test whether the file is GDAL compatible
+
+      GDALAllRegister();
+      GDALDataset * myTestFile = (GDALDataset *)GDALOpen( fi->absFilePath(), GA_ReadOnly );
+
+      if( myTestFile == NULL )
+      {
+        //not GDAL compatible
+        myInvalidFileFlag = true;
+      }
+      else
+      {
+      std::cout << "GDAL opened " << fi->absFilePath() << " successfully" << std::endl;
+       
+	//is GDAL compatible
+        //check whether it has projection information
+        if (myTestFile->GetProjectionRef()!=NULL)
+	{
+	  //does not have projection info
+          myInvalidProjectionFlag = true;
+	  myInvalidFileList += fi->absFilePath()+"\n";
+	}
+	else
+	{
+	  //does have projection info
+          std::cout << "Current filename is: " << fi->absFilePath() << std::endl;
+          lstLayers->insertItem(fi->absFilePath());
+          cboMaskLayer->insertItem(fi->absFilePath());
+	  cboMaskLayer->setCurrentItem(0);	  
+	}
+	
+	GDALClose(myTestFile);
+      }  
+    }
+    ++it;
+  }
+  /*
+  //FOLLOWING WARNING MESSAGES REMOVED AS THEY BECOME ANNOYING!  
+  if (myInvalidFileFlag)
+  {
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("One or more of the files you selected are not valid GDAL raster layers.  Please check and try again."));
+  }
+  */
+  if (myInvalidProjectionFlag)
+  {
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("One or more of the files you selected do not have valid GDAL projection information.  Please check and try again:\n\n "+myInvalidFileList));
+  }
+  
+}   
+
+
+bool OpenModellerGui::checkLocalitiesFileFormat(const QString)
+{
+
+
 }
 
 

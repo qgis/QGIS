@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>577</width>
-            <height>438</height>
+            <width>621</width>
+            <height>478</height>
         </rect>
     </property>
     <property name="caption">
@@ -18,6 +18,9 @@
     </property>
     <property name="icon">
         <pixmap>image0</pixmap>
+    </property>
+    <property name="iconText">
+        <string></string>
     </property>
     <widget class="QWidget">
         <property name="name">
@@ -93,26 +96,52 @@ The openModeller wizard will assist you in carrying out a species distribution m
                     <cstring>cboModelAlgorithm</cstring>
                 </property>
             </widget>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>lblSelectAlgorithm</cstring>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Select model algorithm:&lt;/b&gt;</string>
-                </property>
-            </widget>
             <widget class="QTextEdit" row="3" column="1">
                 <property name="name">
                     <cstring>txtAlgorithmDescription</cstring>
                 </property>
                 <property name="frameShape">
-                    <enum>Panel</enum>
+                    <enum>MenuBarPanel</enum>
                 </property>
                 <property name="frameShadow">
-                    <enum>Plain</enum>
+                    <enum>Raised</enum>
+                </property>
+                <property name="hScrollBarMode">
+                    <enum>AlwaysOff</enum>
                 </property>
                 <property name="text">
-                    <string>Description of the selected algorithm... coming soon.</string>
+                    <string>Description of the selected algorithm is added here programmatically</string>
+                </property>
+                <property name="readOnly">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QLabel" row="1" column="1">
+                <property name="name">
+                    <cstring>lblSelectAlgorithm</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>0</width>
+                        <height>21</height>
+                    </size>
+                </property>
+                <property name="maximumSize">
+                    <size>
+                        <width>32767</width>
+                        <height>21</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>&lt;b&gt;Select model algorithm:&lt;/b&gt;</string>
                 </property>
             </widget>
         </grid>
@@ -413,7 +442,7 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="4">
+            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="5">
                 <property name="name">
                     <cstring>tbrAlgorithmDescription_2_2_2</cstring>
                 </property>
@@ -443,7 +472,9 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                 <property name="text">
                     <string>&lt;h3&gt;Environmental and Landscape Layers:&lt;/h3&gt;
 
-Select the maps to be used as environmental continuous variables. Examples of this type of data could be average rainfall, average temperature, altitude etc.</string>
+&lt;p&gt;Select the maps to be used as environmental continuous variables. Examples of this type of data could be average rainfall, average temperature, altitude etc. &lt;/p&gt;
+
+&lt;p&gt;The "Add Layer" button adds layers one-by-one whilst the "Add Folder" button selects all valid layers in the selected directory and sub-directories.&lt;/p&gt;</string>
                 </property>
             </widget>
             <widget class="QLabel" row="0" column="0" rowspan="3" colspan="1">
@@ -468,9 +499,12 @@ Select the maps to be used as environmental continuous variables. Examples of th
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget class="QListBox" row="2" column="1" rowspan="1" colspan="4">
+            <widget class="QListBox" row="2" column="1" rowspan="1" colspan="5">
                 <property name="name">
                     <cstring>lstLayers</cstring>
+                </property>
+                <property name="selectionMode">
+                    <enum>Extended</enum>
                 </property>
             </widget>
             <widget class="QLabel" row="1" column="1">
@@ -487,7 +521,7 @@ Select the maps to be used as environmental continuous variables. Examples of th
                     <string>&lt;b&gt;Environmental layers:&lt;/b&gt;</string>
                 </property>
             </widget>
-            <widget class="QPushButton" row="1" column="4">
+            <widget class="QPushButton" row="1" column="5">
                 <property name="name">
                     <cstring>pbnRemoveLayerFile</cstring>
                 </property>
@@ -509,28 +543,6 @@ Select the maps to be used as environmental continuous variables. Examples of th
                     <string>X</string>
                 </property>
             </widget>
-            <widget class="QPushButton" row="1" column="3">
-                <property name="name">
-                    <cstring>pbnSelectLayerFile</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>4</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>30</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>...</string>
-                </property>
-            </widget>
             <spacer row="1" column="2">
                 <property name="name">
                     <cstring>spacer29</cstring>
@@ -543,11 +555,49 @@ Select the maps to be used as environmental continuous variables. Examples of th
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>250</width>
+                        <width>60</width>
                         <height>20</height>
                     </size>
                 </property>
             </spacer>
+            <widget class="QPushButton" row="1" column="4">
+                <property name="name">
+                    <cstring>pbnSelectLayerFolder</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>0</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="text">
+                    <string>Add Folder</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" row="1" column="3">
+                <property name="name">
+                    <cstring>pbnSelectLayerFile</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>0</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                    <size>
+                        <width>32767</width>
+                        <height>32767</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Add Layer</string>
+                </property>
+            </widget>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -611,7 +661,7 @@ Select the maps to be used as environmental continuous variables. Examples of th
                     <enum>Box</enum>
                 </property>
                 <property name="text">
-                    <string>&lt;h3&gt;Select Mask Layer&lt;/h3&gt;
+                    <string>&lt;h3&gt;Select Mask Layer:&lt;/h3&gt;
 
 Select a file that will be used to mask areas from the model.</string>
                 </property>
@@ -779,7 +829,7 @@ Select a file that will be used to mask areas from the model.</string>
                     <enum>Box</enum>
                 </property>
                 <property name="text">
-                    <string>&lt;h3&gt;Algorithm Specific Parameters&lt;/h3&gt;
+                    <string>&lt;h3&gt;Algorithm Specific Parameters:&lt;/h3&gt;
 
 If you would like to specify any special parameters for the algorithm you have selected, use the form below. You will need to consult the algorithm documentation to find out what additional parameters can be specified.</string>
                 </property>
@@ -871,7 +921,29 @@ If you would like to specify any special parameters for the algorithm you have s
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="2">
+            <widget class="QLabel" row="0" column="0" rowspan="3" colspan="1">
+                <property name="name">
+                    <cstring>pmAcmeLogo_14</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="frameShape">
+                    <enum>Box</enum>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image1</pixmap>
+                </property>
+                <property name="scaledContents">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QTextBrowser" row="0" column="1">
                 <property name="name">
                     <cstring>tbrAlgorithmDescription_2_2_2_2_2_2</cstring>
                 </property>
@@ -901,63 +973,74 @@ If you would like to specify any special parameters for the algorithm you have s
                 <property name="text">
                     <string>&lt;h3&gt;Output Destination:&lt;/h3&gt;
 
-&lt;p&gt;Specify where the model should be saved to disk.  Two files will be written - the parameters file that contains a record of all the choices you have made in this wizard, and a model results as a tiff image. You only need to specify the base name of the parameters file - the tiff image will be saved to a file with a similar name. &lt;/p&gt;
+&lt;p&gt;Specify where the model should be saved to disk.  Two files will be written with the same file name but with different extensions. The parameters file (.cfg) will contain a record of all the choices you have made in this wizard, and the model results will be saved as a tiff image.  The two files will be stored in the folder specified below.&lt;/p&gt;
 
-&lt;p&gt;For example choosing /tmp/acacia_saligna will create two output files : /tmp/acacia_saligna.cfg and /tmp/acacia_saligna.tif - the former containing the model parameters, and the latter the model outputs.&lt;/p&gt;</string>
+&lt;p&gt;For example choosing the file name "acacia_saligna" and folder name "/tmp/" will create two output files : "/tmp/acacia_saligna.cfg" and "/tmp/acacia_saligna.tif".&lt;/p&gt;</string>
                 </property>
             </widget>
-            <widget class="QLabel" row="0" column="0" rowspan="4" colspan="1">
+            <widget class="QLayoutWidget" row="1" column="1">
                 <property name="name">
-                    <cstring>pmAcmeLogo_14</cstring>
+                    <cstring>layout6</cstring>
                 </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>5</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="frameShape">
-                    <enum>Box</enum>
-                </property>
-                <property name="pixmap">
-                    <pixmap>image1</pixmap>
-                </property>
-                <property name="scaledContents">
-                    <bool>true</bool>
-                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>lblSelectLocalitiesFile_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;b&gt;File name prefix:&lt;/b&gt;</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="1" column="0">
+                        <property name="name">
+                            <cstring>leOutputFileName</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="3" column="0">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLineEdit">
+                                <property name="name">
+                                    <cstring>leOutputDirectory</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnSelectOutputDirectory</cstring>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>30</width>
+                                        <height>32767</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string>...</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>lblSelectLocalitiesFile_3_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;b&gt;Output folder:&lt;/b&gt;</string>
+                        </property>
+                    </widget>
+                </grid>
             </widget>
-            <widget class="QLineEdit" row="2" column="1">
+            <spacer row="2" column="1">
                 <property name="name">
-                    <cstring>leOutputFileName</cstring>
-                </property>
-            </widget>
-            <widget class="QPushButton" row="2" column="2">
-                <property name="name">
-                    <cstring>pbnSelectOutputFile</cstring>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>30</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>...</string>
-                </property>
-            </widget>
-            <widget class="QLabel" row="1" column="1" rowspan="1" colspan="2">
-                <property name="name">
-                    <cstring>lblSelectLocalitiesFile_3</cstring>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Select the output parameters file name:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <spacer row="3" column="1">
-                <property name="name">
-                    <cstring>spacer21</cstring>
+                    <cstring>spacer9</cstring>
                 </property>
                 <property name="orientation">
                     <enum>Vertical</enum>
@@ -968,7 +1051,7 @@ If you would like to specify any special parameters for the algorithm you have s
                 <property name="sizeHint">
                     <size>
                         <width>21</width>
-                        <height>91</height>
+                        <height>71</height>
                     </size>
                 </property>
             </spacer>
@@ -1094,12 +1177,6 @@ If you would like to specify any special parameters for the algorithm you have s
 </images>
 <connections>
     <connection>
-        <sender>pbnSelectOutputFile</sender>
-        <signal>clicked()</signal>
-        <receiver>OpenModellerGuiBase</receiver>
-        <slot>pbnSelectOutputFile_clicked()</slot>
-    </connection>
-    <connection>
         <sender>leOutputFileName</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>OpenModellerGuiBase</receiver>
@@ -1147,13 +1224,37 @@ If you would like to specify any special parameters for the algorithm you have s
         <receiver>OpenModellerGuiBase</receiver>
         <slot>formSelected(const QString&amp;)</slot>
     </connection>
+    <connection>
+        <sender>cboModelAlgorithm</sender>
+        <signal>highlighted(const QString&amp;)</signal>
+        <receiver>OpenModellerGuiBase</receiver>
+        <slot>cboModelAlgorithm_highlighted(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>pbnSelectOutputDirectory</sender>
+        <signal>clicked()</signal>
+        <receiver>OpenModellerGuiBase</receiver>
+        <slot>pbnSelectOutputDirectory_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>leOutputDirectory</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>OpenModellerGuiBase</receiver>
+        <slot>leOutputDirectory_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>pbnSelectLayerFolder</sender>
+        <signal>clicked()</signal>
+        <receiver>OpenModellerGuiBase</receiver>
+        <slot>pbnSelectLayerFolder_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">openmodellerguibase.ui.h</include>
 </includes>
 <slots>
     <slot>pbRun_clicked()</slot>
-    <slot>pbnSelectOutputFile_clicked()</slot>
+    <slot>pbnSelectOutputDirectory_clicked()</slot>
     <slot>leOutputFileName_textChanged( const QString &amp; )</slot>
     <slot>pbnRemoveParameter_clicked()</slot>
     <slot>pbnAddParameter_clicked()</slot>
@@ -1162,6 +1263,9 @@ If you would like to specify any special parameters for the algorithm you have s
     <slot>pbnSelectLocalitiesFile_clicked()</slot>
     <slot>leLocalitiesFileName_returnPressed()</slot>
     <slot>formSelected( const QString &amp; )</slot>
+    <slot>cboModelAlgorithm_highlighted( const QString &amp; )</slot>
+    <slot>leOutputDirectory_textChanged( const QString &amp; )</slot>
+    <slot>pbnSelectLayerFolder_clicked()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

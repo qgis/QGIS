@@ -43,7 +43,7 @@ public:
   void formSelected(const QString &thePageNameQString);
   void leLocalitiesFileName_textChanged( const QString &theFileNameQString );
   void setSpeciesList(QString theFileNameQSting);
-  void pbnSelectOutputFile_clicked();
+  void pbnSelectOutputDirectory_clicked();
   void pbnRemoveParameter_clicked();
   void pbnAddParameter_clicked();
   void pbnRemoveLayerFile_clicked();
@@ -51,7 +51,13 @@ public:
   void pbnSelectLocalitiesFile_clicked();
   void leLocalitiesFileName_returnPressed();
   void accept();
-
+  void cboModelAlgorithm_highlighted( const QString &theModelAlgorithm );
+  void leOutputFileName_textChanged( const QString &theOutputFileName);
+  void leOutputDirectory_textChanged( const QString &theOutputDirectory);
+  void pbnSelectLayerFolder_clicked();
+  void traverseDirectories(const QString& dirname);
+  bool checkLocalitiesFileFormat(const QString);
+  
 private:
     QString modelNameQString;
     QString localitiesFileNameQString;
@@ -62,6 +68,7 @@ private:
     QStringList extraParametersQStringList;
     QString outputFileNameQString;
     bool useTheseSettingsAgainFlag;
+    
 signals:
    void drawRasterLayer(QString);
 };
