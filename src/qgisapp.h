@@ -100,6 +100,8 @@ class QgisApp:public QgisAppBase
 	void fileSave();
 	//! Save project as
 	void fileSaveAs();
+	//! Open a project
+	void fileOpen();
   private:
 //! Popup menu
 	  QPopupMenu * popMenu;

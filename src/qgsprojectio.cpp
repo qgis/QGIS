@@ -14,8 +14,11 @@
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
+ #include <qdom.h>
  #include <qmessagebox.h>
+ #include <qcolor.h>
  #include "qgsmaplayer.h"
+ #include "qgsdatabaselayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectio.h"
  
@@ -42,7 +45,101 @@ void QgsProjectIo::write(){
 	}
 }
 void QgsProjectIo::read(){
-	selectFileName();
+	QString path = selectFileName();
+	QDomDocument *doc;
+	if(!path.isEmpty()){
+	doc = new QDomDocument( "qgisdocument" );
+    QFile file( path );
+    if ( !file.open( IO_ReadOnly ) )
+        return;
+    if ( !doc->setContent( &file ) ) {
+        file.close();
+        return;
+    }
+    file.close();
+	
+	QDomNodeList nl = doc->elementsByTagName("maplayer");
+	QString layerCount;
+	layerCount = layerCount.setNum(nl.count());
+	//QMessageBox::information(0, "Number of map layers", layerCount);
+	QString wk;
+	// process the map layer nodes
+	for(int i = 0; i < nl.count(); i++){
+		QDomNode node = nl.item(i);
+		QDomElement element = node.toElement();
+		QString type = element.attribute("type");
+		QString visible = element.attribute("visible");
+		
+		//QMessageBox::information(0,"Type of map layer", type);
+		// process layer name
+		QDomNode mnl = node.namedItem("layername"); 
+		QTextStream ts( &wk, IO_WriteOnly );
+		ts << mnl.nodeType();
+		//QMessageBox::information(0,"Node Type", wk);
+		QDomElement mne = mnl.toElement();
+		//QMessageBox::information(0,"Layer Name", mne.text());
+		QString layerName = mne.text();
+		
+		//process data source
+		mnl = node.namedItem("datasource"); 
+		mne = mnl.toElement();
+		//QMessageBox::information(0,"Datasource Name", mne.text());
+		QString dataSource = mne.text();
+		
+		//process zorder
+		mnl = node.namedItem("zorder"); 
+		mne = mnl.toElement();
+		//QMessageBox::information(0,"Zorder", mne.text());
+		
+		//process symbology
+		mnl = node.namedItem("symbol"); 
+		QDomNode snode = mnl.namedItem("linewidth");
+		QDomElement lineElement = snode.toElement();
+		int lineWidth = lineElement.text().toInt();
+		
+		
+		snode = mnl.namedItem("outlinecolor");
+		QDomElement colorElement = snode.toElement();
+		int olRed = colorElement.attribute("red").toInt();
+		int olGreen = colorElement.attribute("green").toInt();
+		int olBlue = colorElement.attribute("blue").toInt();
+		
+		snode = mnl.namedItem("fillcolor");
+		colorElement = snode.toElement();
+		int fillRed = colorElement.attribute("red").toInt();
+		int fillGreen = colorElement.attribute("green").toInt();
+		int fillBlue = colorElement.attribute("blue").toInt();
+		
+		QgsSymbol *sym = new QgsSymbol();
+		sym->setFillColor( QColor(fillRed, fillGreen, fillBlue));
+		sym->setColor(QColor(olRed, olGreen, olBlue));
+		sym->setLineWidth(lineWidth);
+		// get the linewidth information
+		
+		//QMessageBox::information(0,"Zorder", mne.text());
+		
+		
+		// add the layer to the maplayer
+		
+		if(type = "database"){
+			
+				QgsDatabaseLayer *dbl = new QgsDatabaseLayer(dataSource, layerName);
+				
+				map->addLayer(dbl);
+				dbl->setSymbol(sym);
+				dbl->setVisible(visible == "1");
+		}else{
+			if(type == "vector"){
+			}else{
+				if(type == "raster"){
+				}
+				}
+			}
+			
+	
+	}
+	
+	}
 }
 QString QgsProjectIo::selectFileName(){
 if(action == SAVE && fullPath.isEmpty()){
@@ -97,9 +194,11 @@ void QgsProjectIo::writeXML(){
 			QgsSymbol *sym = lyr->symbol();
 			xml << "\t\t\t<linewidth>" << sym->lineWidth() << "</linewidth>\n";
 			QColor outlineColor = sym->color();
-			xml << "\t\t\t<outlinecolor red=\"" << outlineColor.red() << "\" green=\"" << outlineColor.green() << "\" blue=\"" << outlineColor.blue() << "\" />\n";
+			xml << "\t\t\t<outlinecolor red=\"" << outlineColor.red() << "\" green=\"" 
+				<< outlineColor.green() << "\" blue=\"" << outlineColor.blue() << "\" />\n";
 			QColor fillColor = sym->fillColor();
-			xml << "\t\t\t<fillcolor red=\"" << fillColor.red() << "\" green=\"" << fillColor.green() << "\" blue=\"" << fillColor.blue() << "\" />\n";
+			xml << "\t\t\t<fillcolor red=\"" << fillColor.red() << "\" green=\"" 
+				<< fillColor.green() << "\" blue=\"" << fillColor.blue() << "\" />\n";
 
 			xml << "\t\t</symbol>\n";
 			xml << "\t</maplayer>\n";
