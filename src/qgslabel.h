@@ -32,7 +32,7 @@ class QgsField;
 class QgsMapCanvas;
 class QgsLabelAttributes;
 class QgsRect;
-class QgsCoordinateTransform;
+class QgsMapToPixel;
 
 /** Render class to display labels */
 class QgsLabel
@@ -70,7 +70,7 @@ public:
     void dialog( QWidget * parent = 0 );
 
     void renderLabel ( QPainter* painter, QgsRect* viewExtent, 
-	               QgsCoordinateTransform *transform, QPaintDevice *device,
+	               QgsMapToPixel *transform, QPaintDevice *device,
 		       QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes=0);
     
     /** Reads the renderer configuration from an XML file

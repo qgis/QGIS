@@ -27,7 +27,7 @@
 #include "../../src/qgisapp.h"
 #include "../../src/qgspoint.h"
 #include "../../src/qgisiface.h"
-#include "../../src/qgscoordinatetransform.h"
+#include "../../src/qgsmaptopixel.h"
 
 class QgsGrassProvider;
 #include "qgsgrasseditbase.h"
@@ -276,7 +276,7 @@ private:
     QPixmap *mPixmap;
 
     //! Transformation
-    QgsCoordinateTransform *mTransform;
+    QgsMapToPixel *mTransform;
 
     //! Last point where user clicked (map units)
     QgsPoint mLastPoint;

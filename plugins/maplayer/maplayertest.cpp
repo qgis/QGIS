@@ -10,7 +10,7 @@ void MapLayerTest::setQgisMainWindow(QMainWindow *app){
 	qgisApp = app;
 }
 // set the coordinate transform for drawing the layer
-void MapLayerTest::setCoordinateTransform(QgsCoordinateTransform *xform){
+void MapLayerTest::setCoordinateTransform(QgsMapToPixel *xform){
 	coordTransform = xform;
 }
 void MapLayerTest::initGui(){

@@ -172,9 +172,7 @@
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
-    <references>
-      <pcs>Qt</pcs>
-    </references>
+    <references/>
   </kdevcppsupport>
   <kdevdocumentation>
     <projectdoc>

@@ -19,7 +19,7 @@
 /* $Id$ */
 #include <qstring.h>
 #include <qpainter.h>
-#include <qgscoordinatetransform.h>
+#include <qgsmaptopixel.h>
 #include <qgspoint.h>
 #include <qgsrect.h>
 #include "qgsline.h"
@@ -39,7 +39,7 @@ void QgsAcetateLines::add(QgsLine &line)
 {
   mLineCollection->push_back(line);
 }
-void QgsAcetateLines::draw(QPainter *painter, QgsCoordinateTransform *cXf)
+void QgsAcetateLines::draw(QPainter *painter, QgsMapToPixel *cXf)
 {
   painter->setPen(QColor(255,0,0));
   painter->setBrush(Qt::NoBrush);

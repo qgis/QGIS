@@ -22,7 +22,7 @@
 class QPainter;
 class QgsRect;
 class QLibrary;
-class QgsCoordinateTransform;
+class QgsMapToPixel;
 class OGRLayer;
 class OGRDataSource;
 class QgsDataProvider;
@@ -292,12 +292,12 @@ protected:
   void startEditing();
   void stopEditing();
 
-  void drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTransform * cXf, QPicture* marker, double markerScaleFactor);
+  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor);
 
 private:                       // Private attributes
 
   //! Draws the layer labels using coordinate transformation
-  void drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
+  void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
 
     /** tailor the right-click context menu with vector layer only stuff 
 
@@ -306,7 +306,7 @@ private:                       // Private attributes
     void initContextMenu_(QgisApp *);
 
   //! Draws the layer using coordinate transformation
-  void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
+  void draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
   //! Pointer to data provider derived from the abastract base class QgsDataProvider
   QgsVectorDataProvider *dataProvider;
   //! index of the primary label field

@@ -25,7 +25,7 @@
 #include <iostream>
 #include "qgspoint.h"
 #include "qpainter.h"
-#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgsdlgvectorlayerproperties.h"

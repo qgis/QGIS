@@ -806,7 +806,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 
 void QgsRasterLayer::draw(QPainter * theQPainter,
                           QgsRect * theViewExtent,
-                          QgsCoordinateTransform * theQgsCoordinateTransform,
+                          QgsMapToPixel * theQgsMapToPixel,
                           QPaintDevice* dst)
 {
   //Dont waste time drawing if transparency is at 0 (completely transparent)
@@ -867,8 +867,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-  myRasterViewPort->topLeftPoint = theQgsCoordinateTransform->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
-  myRasterViewPort->bottomRightPoint = theQgsCoordinateTransform->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
+  myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
+  myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
   myRasterViewPort->drawableAreaXDimInt = static_cast<int>(myRasterViewPort->bottomRightPoint.x()) - static_cast<int>(myRasterViewPort->topLeftPoint.x());
   myRasterViewPort->drawableAreaYDimInt = static_cast<int>(myRasterViewPort->bottomRightPoint.y()) - static_cast<int>(myRasterViewPort->topLeftPoint.y());

@@ -18,7 +18,7 @@
 /* $Id$ */
 #include <qstring.h>
 #include <qpainter.h>
-#include <qgscoordinatetransform.h>
+#include <qgsmaptopixel.h>
 #include <qgspoint.h>
 #include <qgsrect.h>
 #include "qgsacetaterectangle.h"
@@ -33,7 +33,7 @@ QgsAcetateRectangle::~QgsAcetateRectangle()
 }
 
 
-void QgsAcetateRectangle::draw(QPainter *painter, QgsCoordinateTransform *cXf)
+void QgsAcetateRectangle::draw(QPainter *painter, QgsMapToPixel *cXf)
 {
   painter->setPen(QColor(255,0,0));
   painter->setBrush(Qt::NoBrush);

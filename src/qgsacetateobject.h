@@ -21,7 +21,7 @@
 #define QGSACETATEOBJECT_H
 class QgsPoint;
 class QPainter;
-class QgsCoordinateTransform;
+class QgsMapToPixel;
 
 /*! \class QgsAcetateObject
 * \brief Base class for all objects that are drawn on the acetate layer of a map canvas.
@@ -29,7 +29,7 @@ class QgsCoordinateTransform;
 * An acetate object is a graphic or text object that is drawn on top of the map canvas 
 * after rendering of all map elements is completed. Acetate objects can be drawn in
 * device coordinates or map coordinates. Drawing in map coordinates requires passing
-* a QgsCoordinateTransform object to the draw function.
+* a QgsMapToPixel object to the draw function.
 *
 * The draw function must be overridden in a subclass to provide the specfic logic for
 * drawing the object.
@@ -62,7 +62,7 @@ public:
    * this parameter is not specified, coordinates are assumed to be device coordinates
    * rather than map coordinates.
    */
-  virtual void  draw (QPainter * painter, QgsCoordinateTransform * cXf=0)=0;
+  virtual void  draw (QPainter * painter, QgsMapToPixel * cXf=0)=0;
    /** 
     * Set the origin point
     * @param value Point of origin

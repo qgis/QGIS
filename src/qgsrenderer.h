@@ -19,7 +19,7 @@
 #define QGSRENDERER_H
 
 class QgsFeature;
-class QgsCoordinateTransform;
+class QgsMapToPixel;
 class QgsVectorLayer;
 class QPainter;
 class QgsDlgVectorLayerProperties;

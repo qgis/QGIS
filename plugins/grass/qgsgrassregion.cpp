@@ -48,7 +48,7 @@
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgisiface.h"
 #include "../../src/qgsmapcanvas.h"
-#include "../../src/qgscoordinatetransform.h"
+#include "../../src/qgsmaptopixel.h"
 #include "../../src/qgspoint.h"
 
 extern "C" {
@@ -384,7 +384,7 @@ void QgsGrassRegion::displayRegion()
     points[3].setX(mWindow.west); points[3].setY(mWindow.north);
     points[4].setX(mWindow.west); points[4].setY(mWindow.south);
     
-    QgsCoordinateTransform *transform = mCanvas->getCoordinateTransform();
+    QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
 
     for ( int i = 0; i < 5; i++ ) {
         transform->transform( &(points[i]) );

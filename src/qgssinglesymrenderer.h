@@ -23,7 +23,7 @@
 #include "qgsrenderitem.h"
 #include "qgspoint.h"
 #include "qpainter.h"
-#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 #include "qgsdlgvectorlayerproperties.h"
 class QgsFeature;
 
