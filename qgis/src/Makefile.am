@@ -141,7 +141,7 @@ headers =	qgisapp.h					\
 		qgsfillstylewidget.h				\
 		splashscreen.h				
 
-#		qgsvectorsymbologywidget.h			\
+#		qgsvectorsymbologywidget.h			
 
 ## qt designer files for all the GUI stuff
 
@@ -186,7 +186,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsfillstylewidgetbase.ui		\
 		qgslinestylewidgetbase.ui
 
-#		qgsvectorsymbologywidgetbase.ui		\
+#		qgsvectorsymbologywidgetbase.ui		
 
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
@@ -266,7 +266,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgslinestylewidget.moc.cpp		\
 		splashscreen.moc.cpp 
 
-#		qgsvectorsymbologywidget.moc.cpp	\
+#		qgsvectorsymbologywidget.moc.cpp	
 
 qgis_SOURCES =	main.cpp			\
 		qgisapp.cpp			\
@@ -368,7 +368,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsfillstylewidget.cpp		\
 		splashscreen.cpp 
 
-#		qgsvectorsymbologywidget.cpp	\
+#		qgsvectorsymbologywidget.cpp	
 
 postgresHEADERS = qgsdbsourceselect.h		\
 		  qgsnewconnection.h		\
