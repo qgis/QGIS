@@ -18,7 +18,8 @@
 #ifndef QGSSHAPEFILELAYER_H
 #define QGSSHAPEFILELAYER_H
 
-#include <qgsmaplayer.h>
+
+#include "qgsmaplayer.h"
 
 /*! \class QgsShapeFileLayer
  * \brief Shapefile layer
@@ -37,6 +38,12 @@ enum SHAPETYPE {
 	Polygon
 };
 
+private: // Private attributes
+  /**  */
+  bool registered;
+private: // Private methods
+  /** No descriptions */
+  void registerFormats();
 };
 
 #endif

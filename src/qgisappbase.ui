@@ -100,6 +100,7 @@
         </property>
         <action name="actionAddLayer"/>
         <action name="drawAction"/>
+        <action name="actionTestButton"/>
     </toolbar>
 </toolbars>
 <actions>
@@ -228,6 +229,17 @@
             <string>&amp;About Quantum GIS</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionTestButton</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image7</iconset>
+        </property>
+        <property name="text">
+            <string>Test button</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -250,6 +262,9 @@
     </image>
     <image name="image6">
         <data format="XPM.GZ" length="4446">789c85975973163d0e85eff9152974474de9ebb7f7aea9b920242c217b8004a6e642b6bb591308094b3235ff7dd4e73821eb4c44917ab065cbc792dcfcf568e9607b63e9d15f0f4e4eedf4635c8a1fecfbd2a3f4e3f0f0ec9ffffac7bf1f3c2ceb25ffb318baa5f2e1df1e3cdc395d8a4b9b5f8fc619cce72f49811f703173d5ba75e07d70ac86aa9f598699eb625818e6cb7ee6926cabe0851b36b36370e9568177c1d56ce074c935780fdccc86f57b706b65c07c7993b90e9cff0adccd86f18d4b66bc2fc8c3603ccf6bf0301b58c9436bdcef37d8dc02c6b95f980de3cfc1d1166101fe044e6ed4f329786c8a86e7ff4c1e82613f3925fb7930ae389fcf76c3f80179889c6f384f53ce86f9d0bba966c3fc45e6a669311ff134b535d4cbd6c14dd337d4a323873252bfc7e0d68dfa7c215b61388f40af6608438cd8ff0c1c66c3fc6f978c713901475f9f7a3ecbdc47ccd723f0d44c2df325ccdc166dd9f23c13391491fa7d04bb5a91f337c1553394d4ab20bbe13cfa32739d79043bb58c077ab4f8c17acbe0ce05c17ed282fb60d1c0bfc0c36c584fc061368cff20878e7a0ae38db361be81d36c609e6f749b309ff18db14838bf528f69368cbf22c726e1fe14f9d8155dd9311f50bfdd6236cc7f4a8e7de2fd20deae74fd79feb5cc31e2be15f5d755b361fc3bd9f7e379510f282fea7978c9584fbf646e3aeaf901dc84c47c91861c1789f7c7f5bb6eea11af9d93fbb2673ed6e07ee803d637e8d30dfda2673e7ccd5cf7dc8ff10c7e1ee617f7b35826ae8f7ce817837728c4b3478e1e20c6919fbefb38309fde936315a1bfd69907ea2fe4ca99fb6f81ebb62f592fd0b36fe234723df4c3be4dc5c8fb39cebcc8fc0edc7b7ab1de7f92a325d6e30a786853cd78a0571ffa89f1ea1a792807eaf7041cdb89f36593eced0ef12af4ebd3b0c87aec925391b83ef2ddd5a807ea9f398ed44bf7324f09f51190af43d17635cea3e82fbe7a1ca8c70e3955d4c3a0ef50c6c8f36905aebc7d329fd1ff06341cf8af905337227e41be0f5dea33bf05f71e3feb753b73cdfd7437739bd7473d0d83376cf66bd4ef60a94cac4ff46befd69531df196fb4d2581f8c37a6867a09f4b632c511f717f09e58358c03cf877e62b5ef4f7d4a709312e72bf2cf5af7477e19fab9756d9fdfaf65721a395fd06fad4fd3c87c87be66ce38bfa15e2dfa7abcefe799d3c8f711fdde3c3bb99ee13c73b765ff31f4e750fa7a8c07f186aa6b188f9d923d1ee627ee2bd45d9bc7d7c87ebf3c2ffa5168c66aa4de8827b41e10f31ff5e9dd69e2fe82fc0c367623f5453f09c1ef87f7017d829f8ee386fe1ac6b1cee7473e84a92fb37ec8cf588cfdc47a44bdc6c55872be9c67aeb2ff94b91e910f82fe12ab0b7f5dcd1c26c68bf7d0bb6599582fe476ece9aff85ef26e5cb35f08faa517479fcf7794394ccccfedcc916c64eb277eafe82772eaf27bf09a7cb19fa19fc43014793ef49bab8dfddc4ec83e9ff7f122f390e3bd60cbf1a11fc5f1625cca4b867f403dc62976817a22ff53e9f1439f80fb49751c23f512f29826dee729792a26d6cb4ae64566d4676ac669a2bec8f7d47901b3deb89ea526f7ff823c9513f3ff247335510f9cc7ab63627c8af728259fcffa40fd7bf68ff9be8fc91e0ffb2bee732c52ccf988f77e5cf87ce63bead3b367cabc4ef6f5391ff5e78f7f95cf83ef3fcff62af71fe4af674337414fddca3c4cfcde809eae6ecf7143bf1d93df17df63f4238f26cf37f41fdf7dc1fb52e487ef1e26be7f782f7db53eebb59c39725cf17e388d13fdf13d3ae167e69dd30b5351d3a051d39f7fbb6d7f7c74d449dfeb07fda89ff4b37ed1c3ffe7a347fa55bfe9b17ed7133dd51ffa537fe9efffe5a3677aae8f75599fe88aaeea537da6cff585aedd1d63f679a9ebeeb1a19bbaa5dbbaa3bbbaa7aff4b5beb9cf47f7f5c0a37aeb1eefb4d085965a69ad8db6da69b8c7a7d74154444c0b09ba2351928c32c97bf9201feff6914ff259bec8a11cc957f9e61ec7f25d4ee4547ec84ff9758fcf6f399373792ccbf2445664559eca33792e2f644d5ecafa3d3e1bb2295bb22d3bb22b7bf24a5ecb1bd99703792befa4b84f3759482995d4d2482b9df4fea8aaf9cb64fe297d9f8f251b6db2f7f6c13eda27fb6c5fecd08eecab7df3cfef5b5e177960c7f6dd4eecd47ed84ffb65bfedccceedb12ddb135bb9e9f527df6cd59eda337b6e2f6ccd5edaba6dd8a66dd9b6eddcf4ba9ad71ec7aeedd92b7b6d6fe6986cdf0eecadbdbbe975bd16b267e4dffe7fa9857f3fdcf2ca1a54565f5a75317a9f57f6a975c31a6badb3debde2953deff0baf0b9f418aefadced75e113142788febbbeaed235af6b3edc23f82b7ed3e78f5708fefbaa4ff608f1b64ff69a2d5ef1b953b79b37709147d9275eb7db3ed7f2e03f7f7ff05ff0ee59a6</data>
+    </image>
+    <image name="image7">
+        <data format="XPM.GZ" length="1226">789cc5d3c10ac2300c00d07bbf222cb722dd9c1741fc04c5a3201e4615f430059d0711ffdd2ada364d8a3010c30e813cb2a4b4a586e56206ba54e7aee9f616ecae3981de5cdaf6ba5a4f6faa18d5e0be1a86c54015062ccc8f87ed33479763e5625cbd4a5fa287411f598328a1d8c485388f0ce96f244347202818b60e336917d130c24d98826f9f3f9f8c61bb894622c9398be48f465e8c190191bb81463c23660ced85c4840ac629355177afd064cda7292686c67bfe74e614f91fe6df6998fc47efbdbfb94fd403df21d37e</data>
     </image>
 </images>
 <connections>
@@ -307,17 +322,24 @@
         <receiver>QgisAppBase</receiver>
         <slot>about()</slot>
     </connection>
+    <connection>
+        <sender>actionTestButton</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>testButton()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
 </includes>
 <slots>
+    <slot>about()</slot>
     <slot>addLayer()</slot>
     <slot>drawLayers()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
     <slot>init()</slot>
-    <slot>about()</slot>
+    <slot>testButton()</slot>
     <slot>pan()</slot>
     <slot>zoomFull()</slot>
     <slot>zoomIn()</slot>

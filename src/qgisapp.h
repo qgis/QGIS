@@ -54,6 +54,8 @@ public:
 	void drawPoint(double x, double y);
 	//! draw layers
 	void drawLayers();
+	//! test function
+	void testButton();
 public slots:
 	void showMouseCoordinate(QgsPoint &);	
 private:

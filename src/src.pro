@@ -3,7 +3,7 @@
 ######################################################################
 TARGET = qgis
 TEMPLATE = app
-LIBS += -L$(PGSQL)/lib -lpq++
+LIBS += -L$(PGSQL)/lib -lpq++ -lgdal
 INCLUDEPATH += $(PGSQL)/include
 CONFIG += qt thread debug
 
@@ -38,6 +38,7 @@ SOURCES += main.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
+	   qgsshapefilelayer.cpp \
            qgsdbsourceselect.cpp \
            qgsnewconnection.cpp \
            qgsrect.cpp \
