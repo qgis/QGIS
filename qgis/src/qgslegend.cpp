@@ -18,7 +18,11 @@
 
 #include "qgslegend.h"
 
-QgsLegend::QgsLegend(QWidget *parent, const char *name) :QScrollView(parent,name){
+QgsLegend::QgsLegend (QWidget * parent, const char *name):QScrollView (parent,
+	     name)
+{
 }
-QgsLegend::~QgsLegend(){
+
+QgsLegend::~QgsLegend ()
+{
 }
