@@ -150,8 +150,10 @@ private:
     void addLayer();
     //! Add a raster layer to the map (will prompt user for filename using dlg
     void addRasterLayer();
-    //! Add a raster layer to the map (passed in as a ptr)
-    bool addRasterLayer(QgsRasterLayer * theRasterLayer);
+    //! Add a raster layer to the map (passed in as a ptr). It waont force a refresh unless you explicitly 
+    //use the force redraw flag.
+    //
+    bool addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedrawFlag=false);
     //@todo We should move these next two into vector layer class
     /** This helper checks to see whether the filename appears to be a valid vector file name */
     bool isValidVectorFileName (QString theFileNameQString);
