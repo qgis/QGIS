@@ -28,6 +28,7 @@
 #include <qdict.h>
 
 class QDomNode;
+class QDomElement;
 class QDomDocument;
 class QStringList;
 
@@ -93,9 +94,9 @@ public:
        @param node     the parent (or encompassing) property node
        @param documetn the overall project file DOM document
     */
-    virtual bool writeXML(QString const &nodeName, 
-                          QDomNode & node,
-                          QDomDocument & document) = 0;
+    virtual bool writeXML(QString const & nodeName, 
+                          QDomElement   & element,
+                          QDomDocument  & document) = 0;
 
     /** return the node's value
 
@@ -154,8 +155,8 @@ public:
     bool readXML(QDomNode & keyNode);
 
     bool writeXML( QString const & nodeName, 
-                   QDomNode & node, 
-                   QDomDocument & document );
+                   QDomElement   & element,
+                   QDomDocument  & document );
 
     size_t count() const
     { return 0; }
@@ -262,7 +263,7 @@ public:
 
     bool readXML(QDomNode & keyNode);
 
-    bool writeXML(QString const &nodeName, QDomNode & node, QDomDocument & document);
+    bool writeXML(QString const &nodeName, QDomElement & element, QDomDocument & document);
 
     /// how many elements are contained within this one?
     size_t count() const

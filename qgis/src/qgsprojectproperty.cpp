@@ -314,10 +314,12 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
 } // QgsPropertyValue::readXML
 
 
-
+/**
+   @param element created by parent QgsPropertyKey
+*/
 bool QgsPropertyValue::writeXML( QString const & nodeName, 
-                                 QDomNode & node, 
-                                 QDomDocument & document )
+                                 QDomElement   & keyElement, 
+                                 QDomDocument  & document )
 {
     QDomElement valueElement = document.createElement( nodeName );
 
@@ -350,7 +352,7 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
         valueElement.appendChild( valueText );
     }
 
-    node.appendChild( valueElement );
+    keyElement.appendChild( valueElement );
 
     return true;
 } // QgsPropertyValue::writeXML
@@ -486,14 +488,19 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
 } // QgsPropertyKey::readXML(QDomNode & keyNode)
 
 
-
-bool QgsPropertyKey::writeXML(QString const &nodeName, QDomNode & node, QDomDocument & document)
+/**
+  Property keys will always create a DOM element for itself and then
+  recursively call writeXML for any constituent properties.
+*/
+bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QDomDocument & document)
 {
-    // if this is a leaf note, we don't need to add a wrapping element;
-    // otherwise there'd be a redundant XML tag
-    if ( ! isLeaf() )
+    // If it's an _empty_ node (i.e., one with no properties) we need to emit
+    // an empty place holder; else create new DOM elements as necessary.
+
+    QDomElement keyElement = document.createElement(nodeName); // DOM element for this property key
+
+    if ( ! properties_.isEmpty() )
     {
-        QDomElement keyElement = document.createElement(nodeName);
         for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
         {
             if (!i.current()->writeXML(i.currentKey(), keyElement, document))
@@ -501,28 +508,9 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomNode & node, QDomDocu
                 return false;
             }
         }
-        node.appendChild(keyElement);
-    }
-    else
-    {
-        // Note that since this is a leaf node, there should be only one
-        // property -- and naturally that will be the first one.  However, if
-        // it's an _empty_ leaf node (i.e., one with no properties) we need to
-        // emit an empty place holder.
-
-        if ( properties_.isEmpty() )
-        {
-            QDomElement keyElement = document.createElement(nodeName);
-            node.appendChild(keyElement);
-        }
-        else
-        {
-            QDictIterator< QgsProperty > i(properties_);
-            return i.current()->writeXML( name(), node, document );
-        }
     }
 
-
+    element.appendChild(keyElement);
 
     return true;
 } // QgsPropertyKey::writeXML
