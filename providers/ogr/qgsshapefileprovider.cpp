@@ -14,6 +14,7 @@
 #include <ogr_geometry.h>
 #include <cpl_error.h>
 #include <qmessagebox.h>
+#include <geos.h>
 
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
@@ -29,6 +30,8 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):mEditable(false), mModif
 {
   OGRRegisterAll();
 
+  // set the selection rectangle pointer to 0
+  mSelectionRectangle = 0;
   // make connection to the data source
 #ifdef QGISDEBUG
   std::cerr << "Data source uri is " << uri << std::endl;
@@ -204,7 +207,7 @@ bool QgsShapeFileProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
     OGRFeature *fet;
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
-	break;
+        break;
     }
     if(fet){
       OGRGeometry *geom = fet->GetGeometryRef();
@@ -261,12 +264,57 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     //std::cerr << "getting next feature\n";
     // skip features without geometry
     OGRFeature *fet;
+    // create the geos geometry factory
+    geos::GeometryFactory *gf = new geos::GeometryFactory();
+    // create the reader
+    geos::WKTReader *wktReader = new geos::WKTReader(gf);
+    OGRGeometry *geom;
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
-	break;
+      {
+        if(mUseIntersect)
+        {
+          // Test this geometry to see if it should be
+          // returned. This dies big time using the GDAL GEOS
+          // functionality so we implement our own logic using
+          // the geos library. The select functions has already
+          // narrowed the selection to those features with the MBR
+          // of the selection rectangle.
+          // 
+          // get the feature geometry and create a geos geometry from it
+          geom  =  fet->GetGeometryRef();
+          char *wkt = new char[2 * geom->WkbSize()];
+          geom->exportToWkt(&wkt);
+          //std::cerr << "Passing " << wkt << " to goes\n";
+          geos::Geometry *geosGeom = wktReader->read(wkt);
+          //std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
+          // get the selection rectangle and create a geos geometry from it
+          char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
+          mSelectionRectangle->exportToWkt(&sWkt);
+          //std::cerr << "Passing " << sWkt << " to goes\n";
+          geos::Geometry *geosRect = wktReader->read(sWkt);
+          //std::cerr << "About to apply contains function\n";
+
+          // test the geometry
+          if(geosGeom->intersects(geosRect))
+          {
+            break;
+          }
+          delete[] wkt;  
+          delete[] sWkt;  
+          delete geosGeom;
+          delete geosRect;
+        }
+        else
+        {
+          break;
+        }
+      }
     }
+    delete gf;
+    delete wktReader;
     if(fet){
-      OGRGeometry *geom = fet->GetGeometryRef();
+      geom = fet->GetGeometryRef();
 
       // get the wkb representation
       unsigned char *feature = new unsigned char[geom->WkbSize()];
@@ -274,7 +322,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 
       OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
       QString featureTypeName =   
-          featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+        featureDefinition ? QString(featureDefinition->GetName()) : QString("");
 
       f = new QgsFeature(fet->GetFID(), featureTypeName);
       f->setGeometry(feature, geom->WkbSize());
@@ -282,10 +330,6 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
       if(fetchAttributes){
         getFeatureAttributes(fet, f);
       }
-      /*   char *wkt = new char[2 * geom->WkbSize()];
-           geom->exportToWkt(&wkt);
-           f->setWellKnownText(wkt);
-           delete[] wkt;  */
       delete fet;
     }else{
 #ifdef QGISDEBUG
@@ -312,49 +356,66 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist, bool g
        // skip features without geometry
        OGRFeature *fet;
        while ((fet = ogrLayer->GetNextFeature()) != NULL) {
-	 if (fet->GetGeometryRef())
-	   break;
+
+         if (fet->GetGeometryRef())
+         {
+           if(mUseIntersect)
+           {
+             // test this geometry to see if it should be
+             // returned 
+#ifdef QGISDEBUG 
+             std::cerr << "Testing geometry using intersect" << std::endl; 
+#endif 
+           }
+           else
+           {
+#ifdef QGISDEBUG 
+             std::cerr << "Testing geometry using mbr" << std::endl; 
+#endif 
+             break;
+           }
+         }
        }
        if(fet)
        {
-	 OGRGeometry *geom = fet->GetGeometryRef();
+         OGRGeometry *geom = fet->GetGeometryRef();
          // get the wkb representation
-	 unsigned char *feature = new unsigned char[geom->WkbSize()];
-	 geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
+         unsigned char *feature = new unsigned char[geom->WkbSize()];
+         geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
          OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
          QString featureTypeName =   
-             featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+           featureDefinition ? QString(featureDefinition->GetName()) : QString("");
 
-	 f = new QgsFeature(fet->GetFID(), featureTypeName);
-	 f->setGeometry(feature, geom->WkbSize());
-	 for(std::list<int>::iterator it=attlist.begin();it!=attlist.end();++it)
-	 {
-	     getFeatureAttribute(fet,f,*it);
-	 }
-	 delete fet;
+         f = new QgsFeature(fet->GetFID(), featureTypeName);
+         f->setGeometry(feature, geom->WkbSize());
+         for(std::list<int>::iterator it=attlist.begin();it!=attlist.end();++it)
+         {
+           getFeatureAttribute(fet,f,*it);
+         }
+         delete fet;
        }
        else
        {
 	   if(getnotcommited&&mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
 	   {
 #ifdef QGISDEBUG
-	       qWarning("accessing feature in the cache");
+         qWarning("accessing feature in the cache");
 #endif //QGISDEBUG
-	       QgsFeature* addedfeature=*mAddedFeaturesIt;
-	       ++mAddedFeaturesIt;
-	       //copy the feature because it will be deleted in QgsVectorLayer::draw()
-	       QgsFeature* returnf=new QgsFeature(*addedfeature);
-	       return returnf;
-	   }
+         QgsFeature* addedfeature=*mAddedFeaturesIt;
+         ++mAddedFeaturesIt;
+         //copy the feature because it will be deleted in QgsVectorLayer::draw()
+         QgsFeature* returnf=new QgsFeature(*addedfeature);
+         return returnf;
+     }
 #ifdef QGISDEBUG
-	   std::cerr << "Feature is null\n";
+     std::cerr << "Feature is null\n";
 #endif  
            // probably should reset reading here
-	   ogrLayer->ResetReading();
-	   if(!mAddedFeatures.empty())
-	   {
-	       mAddedFeaturesIt=mAddedFeatures.begin();
-	   }
+     ogrLayer->ResetReading();
+     if(!mAddedFeatures.empty())
+     {
+         mAddedFeaturesIt=mAddedFeatures.begin();
+     }
        }
    }
    else
@@ -370,16 +431,29 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist, bool g
  * Select features based on a bounding rectangle. Features can be retrieved
  * with calls to getFirstFeature and getNextFeature.
  * @param mbr QgsRect containing the extent to use in selecting features
+ * @param useIntersect If true, an intersect test will be used in selecting
+ * features. In OGR, this is a two pass affair. The mUseIntersect value is
+ * stored. If true, a secondary filter (using GEOS) is applied to each
+ * feature in the getNextFeature function.
  */
 void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
 {
+  mUseIntersect = useIntersect;
   // spatial query to select features
   //  std::cerr << "Selection rectangle is " << *rect << std::endl;
   OGRGeometry *filter = 0;
   filter = new OGRPolygon();
-  QString wktExtent = QString("POLYGON ((%1))").arg(rect->stringRep());
+  QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
   const char *wktText = (const char *)wktExtent;
 
+  if(useIntersect)
+  {
+    // store the selection rectangle for use in filtering features during
+    // an identify and display attributes
+    //    delete mSelectionRectangle;
+    mSelectionRectangle = new OGRPolygon();
+    mSelectionRectangle->importFromWkt((char **)&wktText);
+  }
   OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
@@ -387,17 +461,6 @@ void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
     //      std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     //      std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
-    /*  int featureCount = 0;
-        while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
-        if (fet) {
-        select(fet->GetFID());
-        if (tabledisplay) {
-        tabledisplay->table()->selectRowWithId(fet->GetFID());
-        (*selected)[fet->GetFID()] = true;
-        }
-        } 
-        }
-        ogrLayer->ResetReading();*/
   }else{
 #ifdef QGISDEBUG    
     std::cerr << "Setting spatial filter failed!" << std::endl;
@@ -611,132 +674,130 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 {
     if(mEditable)
     {
-	mAddedFeatures.push_back(f);
-	mAddedFeaturesIt=mAddedFeatures.begin();
-	mModified=true;
-	return true;
+  mAddedFeatures.push_back(f);
+  mAddedFeaturesIt=mAddedFeatures.begin();
+  mModified=true;
+  return true;
     }
     else
     {
-	return false;
+  return false;
     }
 }
 
 bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
 {
-    qWarning("try to commit a feature");
-    if(mEditable)
+  qWarning("try to commit a feature");
+  if(mEditable)
+  {
+    bool returnValue = true;
+    OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
+    OGRFeature* feature=new OGRFeature(fdef);
+    QGis::WKBTYPE ftype;
+    memcpy(&ftype, (f->getGeometry()+1), sizeof(int));
+    switch(ftype)
     {
-	bool returnValue = true;
-	OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
-	OGRFeature* feature=new OGRFeature(fdef);
-	QGis::WKBTYPE ftype;
-	memcpy(&ftype, (f->getGeometry()+1), sizeof(int));
-	switch(ftype)
-	{
-	    case QGis::WKBPoint:
-	    {
-		OGRPoint* p=new OGRPoint();
-		p->importFromWkb(f->getGeometry(),1+sizeof(int)+2*sizeof(double));
-		feature->SetGeometry(p);
-		break;
-	    }
-	    case QGis::WKBLineString:
-	    {
-		OGRLineString* l=new OGRLineString();
-		int length;
-		memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
+      case QGis::WKBPoint:
+        {
+          OGRPoint* p=new OGRPoint();
+          p->importFromWkb(f->getGeometry(),1+sizeof(int)+2*sizeof(double));
+          feature->SetGeometry(p);
+          break;
+        }
+      case QGis::WKBLineString:
+        {
+          OGRLineString* l=new OGRLineString();
+          int length;
+          memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
 #ifdef QGISDEBUG
-		qWarning("length: "+QString::number(length));
+          qWarning("length: "+QString::number(length));
 #endif
-		l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
-		feature->SetGeometry(l);
-		break;
-	    }
-	    case QGis::WKBPolygon:
-	    {
-		OGRPolygon* pol=new OGRPolygon();
-		int numrings;
-		int totalnumpoints=0;
-		int numpoints;//number of points in one ring
-		unsigned char* ptr=f->getGeometry()+1+sizeof(int);
-		memcpy(&numrings,ptr,sizeof(int));
-		ptr+=sizeof(int);
-		for(int i=0;i<numrings;++i)
-		{
-		    memcpy(&numpoints,ptr,sizeof(int));
-		    ptr+=sizeof(int);
-		    totalnumpoints+=numpoints;
-		    ptr+=(2*sizeof(double));
-		}
-		pol->importFromWkb(f->getGeometry(),1+2*sizeof(int)+numrings*sizeof(int)+totalnumpoints*2*sizeof(double));
-		feature->SetGeometry(pol);
-		break;
-	    }
-	    case QGis::WKBMultiPoint:
-	    {
-		OGRMultiPoint* multip= new OGRMultiPoint();
-		int count;
-		//determine how many points
-		memcpy(&count,f->getGeometry()+1+sizeof(int),sizeof(int));
-		multip->importFromWkb(f->getGeometry(),1+2*sizeof(int)+count*2*sizeof(double));
-		feature->SetGeometry(multip);
-		break;
-	    }
-	    case QGis::WKBMultiLineString:
-	    {
-		OGRMultiLineString* multil=new OGRMultiLineString();
-		int numlines;
-		memcpy(&numlines,f->getGeometry()+1+sizeof(int),sizeof(int));
-		int totalpoints=0;
-		int numpoints;//number of point in one line
-		unsigned char* ptr=f->getGeometry()+9;
-		for(int i=0;i<numlines;++i)
-		{
-		    memcpy(&numpoints,ptr,sizeof(int));
-		    ptr+=4;
-		    for(int j=0;j<numpoints;++j)
-		    {
-			ptr+=16;
-			totalpoints+=2;
-		    }
-		}
-		int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
-		multil->importFromWkb(f->getGeometry(),size);
-		feature->SetGeometry(multil);
-	    }
-	    case QGis::WKBMultiPolygon:
-	    {
-		OGRMultiPolygon* multipol=new OGRMultiPolygon();
-		int numpolys;
-		memcpy(&numpolys,f->getGeometry()+1+sizeof(int),sizeof(int));
-		int numrings;//number of rings in one polygon
-		int totalrings=0;
-		int totalpoints=0;
-		int numpoints;//number of points in one ring
-		unsigned char* ptr=f->getGeometry()+9;
-		
-		for(int i=0;i<numpolys;++i)
-		{
-		    memcpy(&numrings,ptr,sizeof(int));
-		    ptr+=4;
-		    for(int j=0;j<numrings;++j)
-		    {
-			totalrings++;
-			memcpy(&numpoints,ptr,sizeof(int));
-			for(int k=0;k<numpoints;++k)
-			{
-			    ptr+=16;
-			    totalpoints+=2;
-			}
-		    }
-		}
-		int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
-		multipol->importFromWkb(f->getGeometry(),size);
-		feature->SetGeometry(multipol);
-	    }
-	}
-	
+          l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
+          feature->SetGeometry(l);
+          break;
+        }
+      case QGis::WKBPolygon:
+        {
+          OGRPolygon* pol=new OGRPolygon();
+          int numrings;
+          int totalnumpoints=0;
+          int numpoints;//number of points in one ring
+          unsigned char* ptr=f->getGeometry()+1+sizeof(int);
+          memcpy(&numrings,ptr,sizeof(int));
+          ptr+=sizeof(int);
+          for(int i=0;i<numrings;++i)
+          {
+            memcpy(&numpoints,ptr,sizeof(int));
+            ptr+=sizeof(int);
+            totalnumpoints+=numpoints;
+            ptr+=(2*sizeof(double));
+          }
+          pol->importFromWkb(f->getGeometry(),1+2*sizeof(int)+numrings*sizeof(int)+totalnumpoints*2*sizeof(double));
+          feature->SetGeometry(pol);
+          break;
+        }
+      case QGis::WKBMultiPoint:
+        {
+          OGRMultiPoint* multip= new OGRMultiPoint();
+          int count;
+          //determine how many points
+          memcpy(&count,f->getGeometry()+1+sizeof(int),sizeof(int));
+          multip->importFromWkb(f->getGeometry(),1+2*sizeof(int)+count*2*sizeof(double));
+          feature->SetGeometry(multip);
+          break;
+        }
+      case QGis::WKBMultiLineString:
+        {
+          OGRMultiLineString* multil=new OGRMultiLineString();
+          int numlines;
+          memcpy(&numlines,f->getGeometry()+1+sizeof(int),sizeof(int));
+          int totalpoints=0;
+          int numpoints;//number of point in one line
+          unsigned char* ptr=f->getGeometry()+9;
+          for(int i=0;i<numlines;++i)
+          {
+            memcpy(&numpoints,ptr,sizeof(int));
+            ptr+=4;
+            for(int j=0;j<numpoints;++j)
+            {
+              ptr+=16;
+              totalpoints+=2;
+            }
+          }
+          int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
+          multil->importFromWkb(f->getGeometry(),size);
+          feature->SetGeometry(multil);
+        }
+      case QGis::WKBMultiPolygon:
+        {
+          OGRMultiPolygon* multipol=new OGRMultiPolygon();
+          int numpolys;
+          memcpy(&numpolys,f->getGeometry()+1+sizeof(int),sizeof(int));
+          int numrings;//number of rings in one polygon
+          int totalrings=0;
+          int totalpoints=0;
+          int numpoints;//number of points in one ring
+          unsigned char* ptr=f->getGeometry()+9;
+
+          for(int i=0;i<numpolys;++i)
+          {
+            memcpy(&numrings,ptr,sizeof(int));
+            ptr+=4;
+            for(int j=0;j<numrings;++j)
+            {
+              totalrings++;
+              memcpy(&numpoints,ptr,sizeof(int));
+              for(int k=0;k<numpoints;++k)
+              {
+                ptr+=16;
+                totalpoints+=2;
+              }
+            }
+          }
+          int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
+          multipol->importFromWkb(f->getGeometry(),size);
+          feature->SetGeometry(multipol);
+        }
 	//add possible attribute information
        
 	for(int i=0;i<f->attributeMap().size();++i)
@@ -758,21 +819,23 @@ bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
 		}
 	    }
 	}
+    }
 
-	if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
-	{
-	    //writing failed
-	    QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
-	    returnValue = false;
-	}
-	++numberFeatures;
-	delete feature;
-	return returnValue;
-    }
-    else//layer not editable
+    if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
     {
-	return false;
+      //writing failed
+      QMessageBox::warning (0, "Warning", "Writing of the feature failed",
+          QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+      returnValue = false;
     }
+    ++numberFeatures;
+    delete feature;
+    return returnValue;
+  }
+  else//layer not editable
+  {
+    return false;
+  }
 }
 
 bool QgsShapeFileProvider::deleteFeature(int id)
@@ -781,22 +844,22 @@ bool QgsShapeFileProvider::deleteFeature(int id)
     int test=ogrLayer->TestCapability("OLCDeleteFeature");
     if(!test)
     {
-	    qWarning("no support for deletion of features");	
+      qWarning("no support for deletion of features");  
     }
 #endif
     OGRErr message=ogrLayer->DeleteFeature(id);
     switch(message)
     {
-	case OGRERR_UNSUPPORTED_OPERATION:
+  case OGRERR_UNSUPPORTED_OPERATION:
 #ifdef QGISDEBUG
-	    qWarning("driver does not support deletion");
+      qWarning("driver does not support deletion");
 #endif
-	    return false;
-	case OGRERR_NONE:
+      return false;
+  case OGRERR_NONE:
 #ifdef QGISDEBUG
-	    qWarning("deletion successfull");
+      qWarning("deletion successfull");
 #endif
-	    break;
+      break;
     }
     return true;*/
     return false;
@@ -818,23 +881,23 @@ bool QgsShapeFileProvider::commitChanges()
 {
     if(mEditable)
     {
-	bool returnvalue=true;
-	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-	{
-	    if(!commitFeature(*it))
-	    {
-		returnvalue=false;
-	    }
-	    delete *it;
-	}
-	ogrLayer->SyncToDisk();
-	mAddedFeatures.clear();
-	mModified=false;
-	return returnvalue;
+  bool returnvalue=true;
+  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  {
+      if(!commitFeature(*it))
+      {
+    returnvalue=false;
+      }
+      delete *it;
+  }
+  ogrLayer->SyncToDisk();
+  mAddedFeatures.clear();
+  mModified=false;
+  return returnvalue;
     }
     else
     {
-	return false;
+  return false;
     }
 }
 
@@ -842,17 +905,17 @@ bool QgsShapeFileProvider::rollBack()
 {
     if(mEditable)
     {
-	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-	{
-	    delete *it;
-	}
-	mAddedFeatures.clear();
-	mModified=false;
-	return true;
+  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  {
+      delete *it;
+  }
+  mAddedFeatures.clear();
+  mModified=false;
+  return true;
     }
     else
     {
-	return false;
+  return false;
     }
 }
 

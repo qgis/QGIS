@@ -24,6 +24,7 @@ class OGRDataSource;
 class OGRLayer;
 class OGRFeature;
 class OGREnvelope;
+class OGRPolygon;
 
 /**
   \class QgsShapeFileProvider
@@ -79,6 +80,7 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
      * Select features based on a bounding rectangle. Features can be retrieved 
      * with calls to getFirstFeature and getNextFeature.
      * @param mbr QgsRect containing the extent to use in selecting features
+     * @param useIntersect Use geos functions to determine the selected set
      */
     void select(QgsRect * mbr, bool useIntersect = false);
     /** 
@@ -195,6 +197,8 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     OGREnvelope *extent_;
     OGRLayer *ogrLayer;
     bool valid;
+    //! Flag to indicate that spatial intersect should be used in selecting features
+    bool mUseIntersect;
     int geomType;
     long numberFeatures;
     enum ENDIAN
@@ -211,6 +215,8 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     double **minmaxcache;
     /**Fills the cash and sets minmaxcachedirty to false*/
     void fillMinMaxCash();
+    //! Selection rectangle 
+    OGRPolygon * mSelectionRectangle;
 
 
 };
