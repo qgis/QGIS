@@ -220,7 +220,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName):QgsMapLayer(RASTE
   showDebugOverlayFlag = false; //sensible default
   //  Transparency slider for popup meni
   //  QSlider ( int minValue, int maxValue, int pageStep, int value, Orientation orientation, QWidget * parent, const char * name = 0 )
-  mTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,QSlider::Horizontal,popMenu);
+  mTransparencySlider = new QSlider(0,255,5,0,QSlider::Horizontal,popMenu);
   mTransparencySlider->setTickmarks(QSlider::Both);
   mTransparencySlider->setTickInterval(25);
   mTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
@@ -324,31 +324,6 @@ void QgsRasterLayer::setDrawingStyle(QString theDrawingStyleQString)
   }
 }
 
-//
-//should be between 0 and 255
-void QgsRasterLayer::setTransparency(int theInt)
-{
-#ifdef QGISDEBUG
-  std::cout << "Set transparency called with : " << theInt << std::endl;
-#endif
-  if (theInt > 255)
-  {
-    transparencyLevelInt = 255;
-  }
-  else if (theInt < 0)
-  {
-    transparencyLevelInt = 0;
-  }
-  else
-  {
-    transparencyLevelInt = theInt;
-  }
-  mTransparencySlider->setValue(transparencyLevelInt);
-}
-unsigned int QgsRasterLayer::getTransparency()
-{
-  return transparencyLevelInt;
-}
 
 /** This method looks to see if a given band name exists. Note
   that in muliband layers more than one "Undefined" band can exist! */
@@ -2229,6 +2204,21 @@ void QgsRasterLayer::popupTransparencySliderMoved(int theInt)
     transparencyLevelInt = 255-theInt;
   }
   triggerRepaint();
+}
+//
+//should be between 0 and 255
+void QgsRasterLayer::setTransparency(int theInt)
+{
+#ifdef QGISDEBUG
+  std::cout << "Set transparency called with : " << theInt << std::endl;
+#endif
+  mTransparencySlider->setValue(255-theInt);
+  //delegate rest to transparency slider
+  
+}
+unsigned int QgsRasterLayer::getTransparency()
+{
+  return transparencyLevelInt;
 }
 
 QString QgsRasterLayer::getMetadata()
