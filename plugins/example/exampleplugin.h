@@ -3,22 +3,36 @@
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qmainwindow.h>
-#include <qmessagebox.h>
-#include <qpopupmenu.h>
-#include <qmenubar.h>
+
+class QMessageBox;
+class QToolBar;
+class QMenuBar;
+class QPopupMenu;
 //#include "qgsworkerclass.h"
 #include "../../src/qgisapp.h"
 
 /**
 * \class ExamplePlugin
-* \brief An example QGIS plugin, illustrating how to add menu items, a toolbar, 
-* and perform an operation on the map canvas.
+* \brief Example plugin for QGIS
 *
-* When loaded, this plugin adds a new menu to QGIS with two items. It also
-* adds a toolbar that has one button. When clicked, the button zooms the 
-* map to the previous view.
+* This code is an example plugin for QGIS and a demonstration of the API
+* All QGIS plugins must inherit from the abstract base class QgisPlugin. A
+* plugin must implement the virtual functions defined in QgisPlugin:
+* 	*name
+*	  *version
+*	  *description
+*   *type
 *
-* This class must inherit from QObject and QgisPlugin.
+* In addition, a plugin must implement a the classFactory and unload
+* functions. Note that these functions must be declared as extern "C"
+*
+* This plugin is not very useful. When loaded, it installs a new menu with two 
+* items and  illustrates how to connect the items to slots which handle menu events. 
+* It also installs a toolbar with one button. When clicked, the button zooms the
+* map to the previous extent.
+* 
+* After the UI elements are initialized the plugin zooms the map canvas to the
+* full extent of all layers.
 */
 class ExamplePlugin : public QObject, public QgisPlugin{
 Q_OBJECT
@@ -52,15 +66,32 @@ public:
   //! Destructor
 	virtual ~ExamplePlugin();
 public slots:
+//! open something
 	void open();
+  //! create something new
 	void newThing();
+  //! zoom the map to the previous extent
 	void zoomPrevious();
+  //! unload the plugin
+  void unload();
 private:
+//! Name of the plugin
 	QString pName;
+  //! Version
 	QString pVersion;
+  //! Descrption of the plugin
 	QString pDescription;
+  //! Plugin type as defined in QgisPlugin::PLUGINTYPE
 	int ptype;
+  //! Id of the plugin's menu. Used for unloading
+  int menuId;
+  //! Pointer to our toolbar
+  QToolBar *toolBar;
+  //! Pointer to our menu
+  QMenuBar *menu; 
+  //! Pionter to QGIS main application object
 	QgisApp *qgisMainWindow;
+  //! Pointer to the QGIS interface object
 	QgisIface *qI;
 };
 
