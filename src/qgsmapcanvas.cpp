@@ -486,7 +486,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
       while (li != mCanvasProperties->zOrder.end())
       {
-        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
+        emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size()*2);
         QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
         if (ml)
@@ -505,6 +505,32 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       }
 #ifdef QGISDEBUG
       std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
+#endif
+      
+      // render all labels for vector layers in the stack, starting at the base
+      li = mCanvasProperties->zOrder.begin();
+      // std::cout << "MAP LAYER COUNT: " << layers.size() << std::endl;
+      while (li != mCanvasProperties->zOrder.end())
+      {
+        emit setProgress((myRenderCounter++)*2,mCanvasProperties->zOrder.size()*2);
+        QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+        if (ml)
+        {
+#ifdef QGISDEBUG
+          std::cout << "Rendering " << ml->name() << std::endl;
+#endif
+          if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))
+          {
+            ml->drawLabels(paint, &mCanvasProperties->currentExtent, mCanvasProperties->coordXForm, this);
+          }
+
+          li++;
+        }
+      }
+
+#ifdef QGISDEBUG
+      std::cout << "Done rendering map labels...emitting renderComplete(paint)\n";
 #endif
       emit renderComplete(paint);
       // draw the acetate layer

@@ -320,7 +320,54 @@ void QgsVectorLayer::setDisplayField(QString fldName)
     setLabelField(fieldIndex);
   }
 }
-
+// NOTE this is a temporary method added by Tim to prevent label clipping
+// which was occurring when labeller was called in the main draw loop
+// This method will probably be removed again in the near future!
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
+{
+  if ( /*1 == 1 */ m_renderer)
+  {
+    // select the records in the extent. The provider sets a spatial filter
+    // and sets up the selection set for retrieval
+#ifdef QGISDEBUG
+    qWarning("Selecting features based on view extent");
+#endif
+    dataProvider->reset();
+    dataProvider->select(viewExtent);
+    int featureCount = 0;
+    //  QgsFeature *ftest = dataProvider->getFirstFeature();
+#ifdef QGISDEBUG
+    qWarning("Starting draw of labels");
+#endif
+    QgsFeature *fet;
+    std::list<int> attributes=m_renderer->classificationAttributes();
+    if ( mLabelOn ) { // Add fields required for labels
+	mLabel->addRequiredFields ( &attributes );
+    }
+    else
+    {
+      return;
+    }    
+    //main render loop
+    while((fet = dataProvider->getNextFeature(attributes)))
+    {
+	// Render label
+	if ( mLabelOn && (fet != 0)) {
+	    bool sel=selected.find(fet->featureId()) != selected.end();
+	    mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
+	}
+	delete fet;
+        featureCount++;
+      }
+      
+#ifdef QGISDEBUG
+      std::cerr << "Total features processed is " << featureCount << std::endl;
+#endif
+      qApp->processEvents();
+    
+  }
+}
+  
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
 {
   if ( /*1 == 1 */ m_renderer)
@@ -370,9 +417,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     int wkbType;
     
     std::list<int> attributes=m_renderer->classificationAttributes();
-    if ( mLabelOn ) { // Add fields required for labels
-	mLabel->addRequiredFields ( &attributes );
-    }
     
     while((fet = dataProvider->getNextFeature(attributes)))
     {
@@ -599,10 +643,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             break;
         }
 
-	// Render labels
-	if ( mLabelOn ) {
-	    mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
-	}
 
 	delete fet;
 
@@ -623,7 +663,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
     }
   }
-
+  
+  
   int QgsVectorLayer::endian()
   {
     char *chkEndian = new char[4];
