@@ -27,7 +27,7 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --with-qtdir=/usr/share/qt3
+	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --with-qtdir=/usr/share/qt3 --disable-spit --without-postgresql --disable-debug
 
 
 build: build-stamp
@@ -54,6 +54,7 @@ endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
+	rm -f config.status config.log
 
 
 	dh_clean 
@@ -68,7 +69,8 @@ install: build
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/qgis
 	
 	# Install menu pixmap
-	 install -o root -g root -m 644 debian/qgis-icon.xpm $(CURDIR)/debian/qgis/usr/share/pixmaps
+	install -o root -g root -m 644 debian/qgis-icon.xpm $(CURDIR)/debian/qgis/usr/share/pixmaps
+
 
 
 # Build architecture-independent files here.
