@@ -102,10 +102,12 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 	    ((QLineEdit*)ext->getWidget(1,number))->setText((*it)->upper_value());
 	    ((QLineEdit*)ext->getWidget(2,number))->setText((*it)->label());
 	    ((QPushButton*)ext->getWidget(3,number))->setPaletteBackgroundColor((*it)->getSymbol()->pen().color());
-	    ((QPushButton*)ext->getWidget(4,number))->setText(QgsSymbologyUtils::penStyle2QString((*it)->getSymbol()->pen().style()));
+	    ((QPushButton*)ext->getWidget(4,number))->setName(QgsSymbologyUtils::penStyle2Char((*it)->getSymbol()->pen().style()));
+	    ((QPushButton*)ext->getWidget(4,number))->setPixmap(QgsSymbologyUtils::penStyle2Pixmap((*it)->getSymbol()->pen().style()));
 	    ((QSpinBox*)ext->getWidget(5,number))->setValue((*it)->getSymbol()->pen().width());
 	    ((QPushButton*)ext->getWidget(6,number))->setPaletteBackgroundColor((*it)->getSymbol()->brush().color());
-	    ((QPushButton*)ext->getWidget(7,number))->setText(QgsSymbologyUtils::brushStyle2QString((*it)->getSymbol()->brush().style()));
+	    ((QPushButton*)ext->getWidget(7,number))->setName(QgsSymbologyUtils::brushStyle2Char((*it)->getSymbol()->brush().style()));
+	    ((QPushButton*)ext->getWidget(7,number))->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap((*it)->getSymbol()->brush().style()));
 	    number++;
 	}
 
@@ -278,13 +280,15 @@ void QgsGraSyDialog::apply()
 	    if(m_vectorlayer->vectorType()==QGis::Polygon)
 	    {
 		sy.pen().setColor(((QPushButton*)(ext->getWidget(3,0)))->paletteBackgroundColor());
-		sy.pen().setStyle(QgsSymbologyUtils::qString2PenStyle((((QPushButton*)(ext->getWidget(4,0)))->text())));
+		//sy.pen().setStyle(QgsSymbologyUtils::qString2PenStyle((((QPushButton*)(ext->getWidget(4,0)))->text())));
+		sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton*)(ext->getWidget(4,0)))->name())));
 		sy.pen().setWidth(((QSpinBox*)(ext->getWidget(5,0)))->value());
 	    }
 	    else
 	    {
 		sy.pen().setColor(((QPushButton*)(ext->getWidget(3,i)))->paletteBackgroundColor());
-		sy.pen().setStyle(QgsSymbologyUtils::qString2PenStyle((((QPushButton*)(ext->getWidget(4,i)))->text())));
+		//sy.pen().setStyle(QgsSymbologyUtils::qString2PenStyle((((QPushButton*)(ext->getWidget(4,i)))->text())));
+		sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle((((QPushButton*)(ext->getWidget(4,i)))->name())));
 		sy.pen().setWidth(((QSpinBox*)(ext->getWidget(5,i)))->value());
 	    }
 
@@ -295,7 +299,8 @@ void QgsGraSyDialog::apply()
 
 	    if(m_vectorlayer->vectorType()==QGis::Polygon)
 	    {
-		sy.brush().setStyle(QgsSymbologyUtils::qString2BrushStyle((((QPushButton*)(ext->getWidget(7,i)))->text())));
+		//sy.brush().setStyle(QgsSymbologyUtils::qString2BrushStyle((((QPushButton*)(ext->getWidget(7,i)))->text())));
+		sy.brush().setStyle(QgsSymbologyUtils::char2BrushStyle((((QPushButton*)(ext->getWidget(7,i)))->name())));
 	    }
 	    else if (m_vectorlayer->vectorType()==QGis::Point)
 	    {
