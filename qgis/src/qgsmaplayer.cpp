@@ -73,6 +73,8 @@ QgsMapLayer::QgsMapLayer(int type,
     mMinScale = 0;
     mMaxScale = 100000000;
     mScaleBasedVisibility = false;
+    
+
 
 }
 
