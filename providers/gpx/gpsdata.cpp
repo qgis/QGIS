@@ -417,18 +417,14 @@ bool GPSData::parseDom(QDomDocument& qdd) {
   // ignore the <?xml... tags
   QDomNode node, node2, node3, node4;
   node = qdd.firstChild();
-  while ((node.nodeName() != "gpx") && (node.nodeName() != "loc"))
+  while (node.nodeName() != "gpx")
     node = node.nextSibling();
   
-  // there must be a gpx or loc element
+  // there must be a gpx element
   if (node.isNull())
     return false;
   
-  // what format?
-  if (node.nodeName() == "gpx")
-    return parseGPX(node);
-  else
-    return parseLOC(node);
+  return parseGPX(node);
 }
 
 
@@ -511,46 +507,6 @@ bool GPSData::parseGPX(QDomNode& node) {
     node = node.nextSibling();
   } 
   
-  return true;
-}
-
-
-bool GPSData::parseLOC(QDomNode& node) {
-  // start parsing waypoint tags
-  node = node.firstChild();
-  QDomNode node2, node3;
-  while (!node.isNull()) {
-    if (node.nodeName() == "waypoint") {
-      Waypoint wpt;
-      
-      // name is optional
-      if (!(node2 = node.namedItem("name")).isNull())
-	wpt.name = (const char*)node2.firstChild().nodeValue();
-      
-      // link is optional
-      if (!(node2 = node.namedItem("link")).isNull())
-	wpt.url = (const char*)node2.firstChild().nodeValue();
-      
-      // coord with lat and lon is required
-      if ((node2 = node.namedItem("coord")).isNull())
-	return false;
-      if ((node3 = node2.attributes().namedItem("lat")).isNull())
-	return false;
-      wpt.lat = node3.nodeValue().toDouble();
-      if ((node3 = node2.attributes().namedItem("lon")).isNull())
-	return false;
-      wpt.lon = node3.nodeValue().toDouble();
-      
-      // update the extent
-      xMin = xMin < wpt.lon ? xMin : wpt.lon;
-      xMax = xMax > wpt.lon ? xMax : wpt.lon;
-      yMin = yMin < wpt.lat ? yMin : wpt.lat;
-      yMax = yMax > wpt.lat ? yMax : wpt.lat;
-      
-      waypoints.push_back(wpt);
-    }
-    node = node.nextSibling();
-  }
   return true;
 }
 

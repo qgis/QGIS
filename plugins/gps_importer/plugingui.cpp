@@ -62,7 +62,7 @@ void PluginGui::pbnOK_clicked()
   
   // what should we do?
   switch (tabWidget->currentPageIndex()) {
-  // add a GPX/LOC layer?
+  // add a GPX layer?
   case 0:
     emit loadGPXFile(leGPXFile->text(), cbGPXWaypoints->isChecked(), 
 		     cbGPXRoutes->isChecked(), cbGPXTracks->isChecked());
@@ -169,7 +169,7 @@ void PluginGui::pbnDLOutput_clicked()
 
 void PluginGui::enableRelevantControls() 
 {
-  // load GPX/LOC
+  // load GPX
   if (tabWidget->currentPageIndex() == 0) {
     if ((leGPXFile->text()==""))
     {
@@ -186,18 +186,10 @@ void PluginGui::enableRelevantControls()
       pbnOK->setEnabled(true);
       cbGPXWaypoints->setEnabled(true);
       cbGPXWaypoints->setChecked(true);
-      if (leGPXFile->text().right(4).lower() != ".loc") {
-	cbGPXRoutes->setEnabled(true);
-	cbGPXTracks->setEnabled(true);
-	cbGPXRoutes->setChecked(true);
-	cbGPXTracks->setChecked(true);
-      }
-      else {
-	cbGPXRoutes->setEnabled(false);
-	cbGPXTracks->setEnabled(false);
-	cbGPXRoutes->setChecked(false);
-	cbGPXTracks->setChecked(false);
-      }
+      cbGPXRoutes->setEnabled(true);
+      cbGPXTracks->setEnabled(true);
+      cbGPXRoutes->setChecked(true);
+      cbGPXTracks->setChecked(true);
     }
   }
   
@@ -252,14 +244,13 @@ void PluginGui::pbnGPXSelectFile_clicked()
 {
   std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
   QString myFileTypeQString;
-  QString myFilterString="GPS eXchange format (*.gpx);;"
-    "Geocaching waypoints (*.loc)";
+  QString myFilterString="GPS eXchange format (*.gpx)";
   QString myFileNameQString = QFileDialog::getOpenFileName(
           "." , //initial dir
           myFilterString,  //filters to select
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
-          "Select GPX or LOC file" , //caption
+          "Select GPX file" , //caption
           &myFileTypeQString //the pointer to store selected filter
           );
   std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
@@ -382,6 +373,8 @@ void PluginGui::populateULLayerComboBox() {
 
 
 void PluginGui::populateIMPBabelFormats() {
+  babelFormats["Geocaching.com .loc"] =
+    BabelFormatInfo("geo", true, false, false);
   babelFormats["Magellan Mapsend"] = 
     BabelFormatInfo("mapsend", true, true, true);
   babelFormats["Garmin PCX5"] = 

@@ -1,6 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
-  Import tool for various worldmap analysis output files
+  plugin.cpp - GPS related tools
 Functions:
 
 -------------------
@@ -201,7 +200,7 @@ void Plugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
   //check if input file is readable
   QFileInfo fileInfo(filename);
   if (!fileInfo.isReadable()) {
-    QMessageBox::warning(NULL, "GPX/LOC Loader",
+    QMessageBox::warning(NULL, "GPX Loader",
 			 "Unable to read the selected file.\n"
 			 "Please reselect a valid file." );
     return;
