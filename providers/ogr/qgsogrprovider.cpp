@@ -844,10 +844,10 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
   return returnValue;
 }
 
-bool QgsOgrProvider::addFeatures(std::list<QgsFeature*> flist)
+bool QgsOgrProvider::addFeatures(std::list<QgsFeature*> const flist)
 {
   bool returnvalue=true;
-  for(std::list<QgsFeature*>::iterator it=flist.begin();it!=flist.end();++it)
+  for(std::list<QgsFeature*>::const_iterator it=flist.begin();it!=flist.end();++it)
   {
     if(!addFeature(*it))
     {

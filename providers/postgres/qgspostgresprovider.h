@@ -197,12 +197,12 @@ public:
 
   /**Adds a list of features
        @return true in case of success and false in case of failure*/
-  bool addFeatures(std::list<QgsFeature*> flist);
+  bool addFeatures(std::list<QgsFeature*> const flist);
 
   /**Deletes a list of features
        @param id list of feature ids
        @return true in case of success and false in case of failure*/
-  bool deleteFeatures(std::list<int> id);
+  bool deleteFeatures(std::list<int> const & id);
 
   /**Adds new attributes
        @param name list with attribute names
