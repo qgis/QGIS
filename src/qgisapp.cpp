@@ -2574,12 +2574,14 @@ void QgisApp::inOverview( bool in_overview )
 void QgisApp::removeLayer()
 {
 #ifdef QGISDEBUG
-    std::cout << "QGisApp Removing layer" << std::endl;
+  std::cout << "QGisApp Removing layer" << std::endl;
 #endif
-    //make sure canvase is not rendering first by faking an escape keypress
-    emit keyPressEvent(new QKeyEvent(QEvent::KeyPress ,Qt::Key_Escape,Qt::Key_Escape,0 ));
-    mMapCanvas->freeze();
-    QListViewItem *lvi = mMapLegend->currentItem();
+  //make sure canvase is not rendering first by faking an escape keypress
+  emit keyPressEvent(new QKeyEvent(QEvent::KeyPress ,Qt::Key_Escape,Qt::Key_Escape,0 ));
+  mMapCanvas->freeze();
+  QListViewItem *lvi = mMapLegend->currentItem();
+  if(lvi)
+  {
     QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
     //call the registry to unregister the layer. It will in turn
     //fire a qt signal to notify any objects using that layer that they should
@@ -2598,6 +2600,7 @@ void QgisApp::removeLayer()
     // draw the map
     mMapCanvas->clear();
     mMapCanvas->render();
+  }
 }
 
 
