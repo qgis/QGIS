@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qpointarray.h>
@@ -88,8 +89,8 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
      3. transform
      4. draw
   */
-  cout << "Drawing layer using view extent " << viewExtent->stringRep() <<
-    " with a y transform of " << yTransform << endl;
+  std::cout << "Drawing layer using view extent " << viewExtent->stringRep() <<
+    " with a y transform of " << yTransform << std::endl;
   PgCursor pgs(dataSource, "drawCursor");
   QString sql = "select asbinary(" + geometryColumn + ",'" + endianString();
   sql +=   "') as features from " + tableName;
@@ -98,8 +99,10 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
   sql += ")'::box3d,-1)";
   qWarning(sql);
   pgs.Declare((const char *)sql, true);
+  //! \todo Check return from Fecth();
   int res = pgs.Fetch();
-  cout << "Number of matching records: " << pgs.Tuples() << endl;
+  
+  std::cout << "Number of matching records: " << pgs.Tuples() << std::endl;
   for (int idx = 0; idx < pgs.Tuples (); idx++)
     {
       // allocate memory for the item
@@ -107,7 +110,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
       memset (feature, '\0', pgs.GetLength (idx, 0) + 1);
       memcpy (feature, pgs.GetValue (idx, 0), pgs.GetLength (idx, 0));
       wkbType = (int)feature[1];
-      //cout << "Feature type: " << wkbType << endl;
+      //std::cout << "Feature type: " << wkbType << std::endl;
       // read each feature based on its type
       double *x;
       double *y;
@@ -142,7 +145,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	    p->moveTo((int) *x, yTransform - (int) *y);
 	  else
 	    p->lineTo((int) *x, yTransform - (int) *y);
-	    
+
 	}
 	break;
       case WKBMultiLineString:
@@ -164,7 +167,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	      p->moveTo((int) *x, yTransform - (int) *y);
 	    else
 	      p->lineTo((int) *x, yTransform - (int) *y);
-	    
+
 	  }
 	}
 	break;
@@ -188,7 +191,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	  }
 	  // draw the ring
 	  p->drawPolygon(*pa);
-	    
+
 	}
 	break;
       case WKBMultiPolygon:
@@ -224,7 +227,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	}
 	break;
       }
- 
+
     }
 
 
@@ -250,8 +253,8 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
   QString msg;
   QTextOStream(&msg) << "Number of matching records: " << pgs.Tuples() << endl;
   qWarning(msg);
-  cout << "Using following transform parameters:\n" << cXf->showParameters() 
-       << endl;
+  std::cout << "Using following transform parameters:\n" << cXf->showParameters()
+       << std::endl;
   for (int idx = 0; idx < pgs.Tuples (); idx++)
     {
       // allocate memory for the item
@@ -259,7 +262,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
       memset (feature, '\0', pgs.GetLength (idx, 0) + 1);
       memcpy (feature, pgs.GetValue (idx, 0), pgs.GetLength (idx, 0));
       wkbType = (int)feature[1];
-      //cout << "Feature type: " << wkbType << endl;
+      //std::cout << "Feature type: " << wkbType << std::endl;
       // read each feature based on its type
       double *x;
       double *y;
@@ -271,7 +274,6 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
       int idx,jdx,kdx;
       char *ptr;
       char lsb;
-      int ttype;
       QgsPoint pt;
       QPointArray *pa;
       switch(wkbType){
@@ -298,7 +300,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
 	    p->moveTo(pt.xToInt(),pt.yToInt());
 	  else
 	    p->lineTo(pt.xToInt(),pt.yToInt());
-	    
+
 	}
 	break;
       case WKBMultiLineString:
@@ -322,7 +324,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
 	      p->moveTo(pt.xToInt(),pt.yToInt());
 	    else
 	      p->lineTo(pt.xToInt(),pt.yToInt());
-	    
+
 	  }
 	}
 	break;
@@ -347,7 +349,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
 	  }
 	  // draw the ring
 	  p->drawPolygon(*pa);
-	    
+
 	}
 	break;
       case WKBMultiPolygon:
@@ -374,10 +376,10 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, QgsCoordinateTrans
 	      ptr += sizeof(double);
 	      y = (double *) ptr;
 	      ptr += sizeof(double);
-	      // cout << "Transforming " << *x << "," << *y << " to ";
-		
+	      // std::cout << "Transforming " << *x << "," << *y << " to ";
+
 	      pt = cXf->transform(*x, *y);
-	      //cout << pt.xToInt() << "," << pt.yToInt() << endl;
+	      //std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
 	      pa->setPoint(jdx,pt.xToInt(), pt.yToInt());
 	     
 	    }

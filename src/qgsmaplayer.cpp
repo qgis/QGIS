@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <iostream>
 #include "qgsrect.h"
+#include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
 QgsMapLayer::QgsMapLayer(int type, QString lyrname ) 
@@ -45,11 +46,19 @@ QgsRect QgsMapLayer::calculateExtent(){
   
 }
 void QgsMapLayer::draw(QPainter *, QgsRect *viewExtent, int yTransform){
-  cout << "In QgsMapLayer::draw" << endl;
+  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *){
-  cout << "In QgsMapLayer::draw" << endl;
+  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 
+/** Read property of QgsSymbol * m_symbol. */
+const QgsSymbol * QgsMapLayer::symbol(){
+	return m_symbol;
+}
+/** Write property of QgsSymbol * m_symbol. */
+void QgsMapLayer::setSymbol( QgsSymbol * _newVal){
+	m_symbol = _newVal;
+}

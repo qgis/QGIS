@@ -22,7 +22,8 @@
 #include "qgsdatasource.h"
 #include "qgsrect.h"
 #include "qgscoordinatetransform.h"
-
+#include "qgssymbol.h"
+//Class QgsSymbol;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
@@ -66,6 +67,10 @@ class QgsMapLayer : public QgsDataSource  {
      *@return True if the layer is valid and can be accessed
      */
     bool isValid();
+  /** Write property of QgsSymbol * symbol. */
+  virtual void setSymbol( QgsSymbol * _newVal);
+  /** Read property of QgsSymbol * symbol. */
+  virtual const QgsSymbol * symbol();
 
  public: // Public attributes
     //! Layers enum defining the types of layers that can be added to a map
@@ -89,6 +94,8 @@ class QgsMapLayer : public QgsDataSource  {
 
     //! Tag for embedding additional information
     QString tag;
+  /**  */
+  QgsSymbol * m_symbol;
  
 };
 
