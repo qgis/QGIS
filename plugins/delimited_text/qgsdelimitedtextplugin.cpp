@@ -90,6 +90,11 @@ int QgsDelimitedTextPlugin::type()
 {
   return QgisPlugin::UI;
 }
+//method defined in interface
+void Plugin::help()
+{
+  //implement me!
+}
 
 /*
  * Initialize the GUI interface for the plugin 
