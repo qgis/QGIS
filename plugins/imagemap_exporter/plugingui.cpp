@@ -141,7 +141,7 @@ void PluginGui::pbnOK_clicked()
 	  file<<"\" ";
 	  // not sure if this is correct - I want to check if the ring is solid
 	  // or a hole, polygonIsHole() calculates the winding
-	  if (r != 0 && polygonIsHole((double*)(ringBegin + 4), numPoints))
+	  if (polygonIsHole((double*)(ringBegin + 4), numPoints))
 	    file<<"nohref";
 	  else
 	    file<<"href=\""<<url<<"\"";
@@ -201,10 +201,12 @@ bool PluginGui::polygonIsHole(double* points, int nPoints)
   }
   
   // calculate the angles for the two rays and compare
-  double a1 = std::atan((points[(leftmost+1)*2+1] - points[leftmost*2+1]) /
-			(points[(leftmost+1)*2] - points[leftmost*2]));
-  double a2 = std::atan((points[(leftmost-1)*2+1] - points[leftmost*2+1]) /
-			(points[(leftmost-1)*2] - points[leftmost*2]));
+  int h = (leftmost == 0 ? nPoints - 1 : leftmost - 1);
+  int j = (leftmost == nPoints - 1 ? 0 : leftmost + 1);
+  double a1 = std::atan((points[j*2+1] - points[leftmost*2+1]) /
+			(points[j*2] - points[leftmost*2]));
+  double a2 = std::atan((points[h*2+1] - points[leftmost*2+1]) /
+			(points[h*2] - points[leftmost*2]));
   if (a1 > a2)
     return false;
   return true;
