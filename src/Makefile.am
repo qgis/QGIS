@@ -38,6 +38,7 @@ headers =							\
 		qgis.h						\
 		qgisiface.h					\
 		qgisinterface.h					\
+		qgsacetatelines.h        \
 		qgsacetateobject.h				\
 		qgsacetaterectangle.h				\
 		qgsattributedialog.h				\
@@ -213,6 +214,7 @@ qgis_SOURCES =					\
 		qgisapp.cpp			\
 		qgisiface.cpp			\
 		qgisinterface.cpp		\
+		qgsacetatelines.cpp \
 		qgsacetateobject.cpp		\
 		qgsacetaterectangle.cpp		\
 		qgsattributedialog.cpp		\
