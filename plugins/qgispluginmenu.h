@@ -19,7 +19,7 @@ public:
 	virtual ~QgisPluginMenu();
 private:
 	//! Map to define slot called when a menu item is activated
-	std::map<QString menuItemName, QString menuItemSlot> itemSlots;
+	std::map<QString menuItemName, QString menuItemSlot> itemSlots; 
 };
 
 #endif QGISPLUGINMENU_H
