@@ -3,6 +3,9 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-27 [larsl] 0.5.0devel30
+** Fixed feature addition in GPX layers, it now works again
+
 2004-11-22 [mcoletti] 0.5.0devel29
 ** QgsProject properties now re-designed to be similar to QSettings
 	

@@ -216,7 +216,7 @@ class GPSData {
   static void releaseData(const QString& filename);
   
   
-  /** operator<< is our friend. */
+  /** operator<< is our friend. For debugging, not for file I/O. */
   friend std::ostream& operator<<(std::ostream& os, const GPSData& d);
   
  protected:
