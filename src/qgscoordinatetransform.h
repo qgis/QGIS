@@ -1,9 +1,9 @@
 /***************************************************************************
-                          qgscoordinatetransform.h  -  description
+                          QgsCoordinateTransform.cpp  -  description
                              -------------------
-    begin                : Sat Jun 22 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
+    begin                : Dec 2004
+    copyright            : (C) 2004 Tim Sutton
+    email                : tim at linfiniti.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,112 +19,108 @@
 #define QGSCOORDINATETRANSFORM_H
 
 #include "qgspoint.h"
+#include <ogr_api.h>
+#include <ogr_spatialref.h>
+#include <cpl_error.h>
+
 class QgsPoint;
 class QPoint;
+class QString;
 
 /*! \class QgsCoordinateTransform
-* \brief Class for doing transforms between map coordinates and device coordinates.
+* \brief Class for doing transforms between two map coordinate systems.
 *
-* This class can convert device coordinates to map coordinates and vice versa.
+* This class can convert map coordinates to a different spatial reference system.
 */
 class QgsCoordinateTransform{
  public:
- /* Constructor
- * @param mupp Map units per pixel
- * @param ymax Maximum y value of the map canvas
- * @param ymin Minimum y value of the map canvas
- * @param xmin Minimum x value of the map canvas
- */
-    QgsCoordinateTransform(double mupp=0, double ymax = 0, double ymin=0,
-			   double xmin = 0);
+
+    QgsMapToPixel(QString theSourceWKT, QString theDestWKT  );
 		 //! destructor
-    ~QgsCoordinateTransform();
-    /*! Transform the point from map (world) coordinates to device coordinates
+    ~QgsMapToPixel();
+    
+    /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * @param p Point to transform
-    * @return QgsPoint in device coordinates
-    */
+    * @return QgsPoint in Destination Coordinate System
+    */    
     QgsPoint transform(QgsPoint p);
-    void transform(QgsPoint* p);
-    /*! Transform the point specified by x,y from map (world) coordinates to device coordinates
+    
+    /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
     * @param x x cordinate o point to transform
-	* @param y y coordinate of point to transform
-    * @return QgsPoint in device coordinates
+    * @param y y coordinate of point to transform
+    * @return QgsPoint in Destination Coordinate System
     */
     QgsPoint transform(double x, double y);
-       /*! Tranform device coordinates to map (world)  coordinates
-    * @param x x coordinate of point to be converted to map cooordinates
-    * @param y y coordinate of point to be converted to map cooordinates
-    * @return QgsPoint in map coordinates
-    */
-    QgsPoint toMapCoordinates(int x, int y);
-     /*! Tranform device coordinates to map (world)  coordinates
-    * @param p Point to be converted to map cooordinates
-    * @return QgsPoint in map coorndiates
-    */
-    QgsPoint toMapCoordinates(QPoint p);
-    
-    QgsPoint toMapPoint(int x, int y);
-    /*! Set map units per pixel
-    * @param mupp Map units per pixel
-    */
-    void setMapUnitsPerPixel(double mupp);
-    //! Set maximum y value
-    void setYmax(double ymax);
-    //! Set minimum y value
-    void setYmin(double ymin);
-    //! set minimum x value
-    void setXmin(double xmin);
-    /*! Set parameters for use in tranfsorming coordinates
-    * @param mupp Map units per pixel
-    * @param xmin Minimum x value
-    * @param ymin Minimum y value
-    * @param ymax Maximum y value
-    */
-    void setParameters(double mupp, double xmin, double ymin, double ymax);
-    //! String representation of the parameters used in the transform
+
     QString showParameters();
  private:
-    double mapUnitsPerPixel;
-    double yMax;
-    double yMin;
-    double xMin;
-    double xMax;
-
+    OGRCreateCoordinateTransformation gSourceToDestXForm;
+    bool gInputIsDegrees;
 };
 
-inline QgsCoordinateTransform::QgsCoordinateTransform(double mupp, 
-                                                      double ymax,
-                                                      double ymin, 
-                                                      double xmin)
-    : mapUnitsPerPixel(mupp), 
-      yMax(ymax), 
-      yMin(ymin), 
-      xMin(xmin),
-      xMax(0)                   // XXX wasn't originally specified?  Why?
+inline QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString theDestWKT )
 {
+  OGRSpatialReference myInputSpatialRefSys, myOutputSpatialRefSys;
+ 
+  if ( myInputSpatialRefSys.importFromWkt( &theSourceWKT ) != OGRERR_NONE ||
+       myOutputSpatialRefSys.importFromWkt( &theDestWKT ) != OGRERR_NONE )
+    {
+      printf( 1, "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
+		   theSourceWKT, theDestWKT );
+    }
+
+  gSourceToDestXForm = OGRCreateCoordinateTransformation( &myInputSpatialRefSys, &myOutputSpatialRefSys );
+
+  if ( ! gSourceToDestXForm )
+    {
+      printf( 1, "QgsCoordinateTransform - invalid projection:\n myInputSpatialRefSys: (%s)\n myOutputSpatialRefSys: (%s)\n",
+		   theSourceWKT, theDestWKT );
+    }
+
+  // Deactivate GDAL error messages.
+  //CPLSetErrorHandler( errorHandler );
+
+  // Guess if the source o dest CS is in degrees.
+  //Searchf for this phrase in each wkt:  "unit[\"degree\"" 
 }
 
-inline QgsCoordinateTransform::~QgsCoordinateTransform()
+inline QgsMapToPixel::~QgsMapToPixel()
 {
+  delete gSourceToDestXForm;
 }
-inline QgsPoint QgsCoordinateTransform::transform(double x, double y)
+inline QgsPoint QgsMapToPixel::transform(double x, double y)
 {
 	return (transform(QgsPoint(x, y)));
 }
 
-inline QgsPoint QgsCoordinateTransform::transform(QgsPoint p)
+inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint)
 {
 	// transform x
-	double dx = (p.x() - xMin) / mapUnitsPerPixel;
-	double dy = yMax - ((p.y() - yMin)) / mapUnitsPerPixel;
-	// double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
-	return QgsPoint(dx, dy);
+	double x = thePoint.x(); 
+	double y = thePoint.y();
+	if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
+	{
+	  //something bad happened....
+	  return null;
+	}
+	else
+	{
+	  return QgsPoint(x, y);
+	}	
 }
-
-inline void QgsCoordinateTransform::transform(QgsPoint* p)
+inline QgsPoint QgsMapToPixel::transform(double theX, double theY)
 {
-    p->setX((p->x()-xMin)/mapUnitsPerPixel);
-    p->setY(yMax-((p->y() - yMin)) / mapUnitsPerPixel);
+	// transform x
+	double x = theX; 
+	double y = theY;
+	if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
+	{
+	  //something bad happened....
+	  return null;
+	}
+	else
+	{
+	  return QgsPoint(x, y);
+	}	
 }
-
-#endif // QGSCOORDINATETRANSFORM_H
+#endif // QGSCSTRANSFORM_H
