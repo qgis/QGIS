@@ -162,10 +162,10 @@ QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
 
 void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 {
-#ifdef QGISDEBUG
+/*#ifdef QGISDEBUG
     qDebug( "%s:%d QgsDlgVectorLayerProperties::alterLayerDialog(%s)", 
             __FILE__, __LINE__, dialogString );
-#endif
+	    #endif*/
   if (rendererDirty)
     {
       widgetStackRenderers->removeWidget(bufferDialog);
