@@ -286,6 +286,7 @@ signals:
     void xyCoordinates(QgsPoint & p);
     /** emits mouse position when the canvas is clicked */
     void xyClickCoordinates(QgsPoint &p);
+    void xyClickCoordinates(QgsPoint &p, Qt::ButtonState button);
 
     //! Emitted when the scale of the map changes
     void scaleChanged(QString);
