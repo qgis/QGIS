@@ -23,34 +23,32 @@ plugin_LTLIBRARIES = delimitedtextlayerplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-delimitedtextlayerplugin_la_SOURCES =  plugin.cpp \
-			      plugin.h \
-			      plugingui.cpp \
-			      plugingui.h \
-			      ../../src/qgsmaplayer.cpp\
-			      ../../src/qgsrasterlayer.cpp\
-			      ../../src/qgsvectorlayer.cpp\
-			      $(plugin_UI)\
-			      $(plugin_MOC)
 
-plugin_MOC = plugin.moc.cpp \
-	     ../../src/qgsmaplayer.moc.cpp \
-	     ../../src/qgsrasterlayer.moc.cpp \
-	     ../../src/qgsvectorlayer.moc.cpp \
-	     plugingui.moc.cpp \
+plugin_MOC = plugin.moc.cpp			\
+	     ../../src/qgsmaplayer.moc.cpp	\
+	     ../../src/qgsrasterlayer.moc.cpp	\
+	     ../../src/qgsvectorlayer.moc.cpp	\
+	     plugingui.moc.cpp			\
 	     pluginguibase.moc.cpp
 
-plugin_UI = pluginguibase.h \
+plugin_UI = pluginguibase.h			\
 	    pluginguibase.cpp 
 
 plugin_UIC = pluginguibase.ui
 
-# UI dependencies      
-pluginguibase.cpp: pluginguibase.h pluginguibase.ui
+
+delimitedtextlayerplugin_la_SOURCES =  plugin.cpp		\
+			      plugingui.cpp			\
+			      ../../src/qgsmaplayer.cpp		\
+			      ../../src/qgsrasterlayer.cpp	\
+			      ../../src/qgsvectorlayer.cpp	\
+			      $(plugin_UI)			\
+			      $(plugin_MOC)
+
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS)
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS)
 
 delimitedtextlayerplugin_la_LIBADD = $(QT_LDADD)
 delimitedtextlayerplugin_la_LDFLAGS = -avoid-version -module
