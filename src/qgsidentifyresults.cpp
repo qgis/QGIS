@@ -56,6 +56,10 @@ void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 void QgsIdentifyResults::popupContextMenu(QListViewItem* item, 
 					  const QPoint& p, int i)
 {
+  // if the user clicked below the end of the attribute list, just return
+  if (item == NULL)
+    return;
+  
   // The assumption is made that an instance of QgsIdentifyResults is
   // created for each new Identify Results dialog box, and that the
   // contents of the popup menu doesn't change during the time that
