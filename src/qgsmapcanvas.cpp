@@ -756,12 +756,12 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
   QgsPoint ll, ur;
 
   if (mCanvasProperties->dragging)
-    {
-      mCanvasProperties->dragging = false;
+  {
+    mCanvasProperties->dragging = false;
 
-      switch (mCanvasProperties->mapTool)
-      {
-          case QGis::ZoomIn:
+    switch (mCanvasProperties->mapTool)
+    {
+        case QGis::ZoomIn:
             // erase the rubber band box
             paint.begin(this);
             paint.setPen(pen);
@@ -782,12 +782,12 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             mCanvasProperties->currentExtent.setXmax(ur.x());
             mCanvasProperties->currentExtent.setYmax(ur.y());
             mCanvasProperties->currentExtent.normalize();
-      emit extentsChanged(mCanvasProperties->currentExtent);
+            emit extentsChanged(mCanvasProperties->currentExtent);
             clear();
             render();
 
             break;
-          case QGis::ZoomOut:
+        case QGis::ZoomOut:
             {
               // erase the rubber band box
               paint.begin(this);
@@ -815,15 +815,15 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                  std::cout << "Center of zoom out rectangle is " << cer << std::endl;
                  std::cout << "Zoom out rectangle should have ll of " << ll << " and ur of " << ur << std::endl;
                  std::cout << "Zoom out rectangle is " << mCanvasProperties->currentExtent << std::endl;
-               */
+                 */
               double sf;
               if (mCanvasProperties->zoomBox.width() > mCanvasProperties->zoomBox.height())
-                {
-                  sf = tempRect.width() / mCanvasProperties->currentExtent.width();
+              {
+                sf = tempRect.width() / mCanvasProperties->currentExtent.width();
               } else
-                {
-                  sf = tempRect.height() / mCanvasProperties->currentExtent.height();
-                }
+              {
+                sf = tempRect.height() / mCanvasProperties->currentExtent.height();
+              }
               //center = new QgsPoint(zoomRect->center());
               //  delete zoomRect;
               mCanvasProperties->currentExtent.expand(sf);
@@ -833,11 +833,11 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #endif
               clear();
               render();
-        emit extentsChanged(mCanvasProperties->currentExtent);
+              emit extentsChanged(mCanvasProperties->currentExtent);
             }
             break;
 
-          case QGis::Pan:
+        case QGis::Pan:
             {
               // use start and end box points to calculate the extent
               QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->boxStartPoint);
@@ -850,33 +850,33 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
 
               if (end.x() < start.x())
-                {
-                  mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
-                  mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
+              {
+                mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+                mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
               } else
-                {
-                  mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
-                  mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
-                }
+              {
+                mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+                mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
+              }
 
               if (end.y() < start.y())
-                {
-                  mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
-                  mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
+              {
+                mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+                mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
 
               } else
-                {
-                  mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
-                  mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
+              {
+                mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+                mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
 
-                }
+              }
               clear();
               render();
-        emit extentsChanged(mCanvasProperties->currentExtent);
+              emit extentsChanged(mCanvasProperties->currentExtent);
             }
             break;
 
-          case QGis::Select:
+        case QGis::Select:
             // erase the rubber band box
             paint.begin(this);
             paint.setPen(pen);
@@ -887,43 +887,44 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
 
             if (lyr)
+            {
+              QgsPoint ll, ur;
+
+              // store the rectangle
+              mCanvasProperties->zoomBox.setRight(e->pos().x());
+              mCanvasProperties->zoomBox.setBottom(e->pos().y());
+
+              ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
+              ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
+
+              QgsRect *search = new QgsRect(ll.x(), ll.y(), ur.x(), ur.y());
+
+              if (e->state() == 513) // XXX 513? Magic numbers bad!
               {
-                QgsPoint ll, ur;
-
-                // store the rectangle
-                mCanvasProperties->zoomBox.setRight(e->pos().x());
-                mCanvasProperties->zoomBox.setBottom(e->pos().y());
-
-                ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
-                ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
-
-                QgsRect *search = new QgsRect(ll.x(), ll.y(), ur.x(), ur.y());
-
-                if (e->state() == 513) // XXX 513? Magic numbers bad!
-                  {
-                    lyr->select(search, true);
-                } else
-                  {
-                    lyr->select(search, false);
-                  }
-                delete search;
-            } else
+                lyr->select(search, true);
+              } else
               {
-                QMessageBox::warning(this,
-                                     tr("No active layer"),
-                                     tr("To select features, you must choose an layer active by clicking on its name in the legend"));
+                lyr->select(search, false);
               }
-        }
+              delete search;
+            } else
+            {
+              QMessageBox::warning(this,
+                      tr("No active layer"),
+                      tr("To select features, you must choose an layer active by clicking on its name in the legend"));
+            }
+    }
   } else
+  {
+    // map tools that rely on a click not a drag
+    switch (mCanvasProperties->mapTool)
     {
-      // map tools that rely on a click not a drag
-      switch (mCanvasProperties->mapTool)
-        {
-          case QGis::Identify:
-            // call identify method for selected layer
-            QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
+        case QGis::Identify:
+            {
+              // call identify method for selected layer
+              QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
 
-            if (lyr)
+              if (lyr)
               {
 
                 // create the search rectangle
@@ -939,15 +940,24 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 lyr->identify(search);
 
                 delete search;
-            } else
-            {
+              } else
+              {
                 QMessageBox::warning(this,
-                                     tr("No active layer"),
-                                     tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
+                        tr("No active layer"),
+                        tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
+              }
             }
             break;
-        }
+
+        case QGis::CapturePoint:
+            QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+            emit xyClickCoordinates(idPoint);
+#ifdef QGISDEBUG
+            std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
+#endif
+            break;
     }
+  }
 } // mouseReleaseEvent
 
 
