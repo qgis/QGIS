@@ -1800,9 +1800,10 @@ std::vector<QgsFeatureAttribute> *QgsGrassProvider::attributes ( int field, int 
     for (int i = 0; i < nColumns; i++) {
 	dbColumn *column = db_get_table_column (databaseTable, i);
 	db_convert_column_value_to_string (column, &dbstr);
-	std::cerr << "Value: " << db_get_string(&dbstr) << std::endl;
-        att->push_back ( QgsFeatureAttribute( db_get_column_name(column), 
-		                              db_get_string(&dbstr) ) );
+
+        QString v = mEncoding->toUnicode(db_get_string(&dbstr));
+	std::cerr << "Value: " << v << std::endl;
+        att->push_back ( QgsFeatureAttribute( db_get_column_name(column), v ) );
     }
 
     db_close_cursor (&databaseCursor);
@@ -1849,8 +1850,27 @@ QString *QgsGrassProvider::updateAttributes ( int field, int cat, const QString 
     db_init_string (&dbstr);
     QString query;
     
-    query.sprintf("update %s set %s where %s = %d", fi->table, values.latin1(), fi->key, cat );
-    db_set_string (&dbstr, (char *)query.latin1());
+    query = "update " + QString(fi->table) + " set " + values + " where " + QString(fi->key) 
+	    + " = " + QString::number(cat);
+
+    #ifdef QGISDEBUG
+    std::cerr << "query: " << query << std::endl;
+    #endif
+
+    // For some strange reason, mEncoding->fromUnicode(query) does not work, 
+    // but probably it is not correct, because Qt widgets will use current locales for input
+    //  -> it is possible to edit only in current locales at present
+    // QCString qcs = mEncoding->fromUnicode(query);
+
+    QCString qcs = query.local8Bit();
+    #ifdef QGISDEBUG
+    std::cerr << "qcs: " << qcs << std::endl;
+    #endif
+    
+    char *cs = new char[qcs.length() + 1];
+    strcpy(cs, (const char *)qcs);
+    db_set_string (&dbstr, cs );
+    delete[] cs;
     
     #ifdef QGISDEBUG
     std::cerr << "SQL: " << db_get_string(&dbstr) << std::endl;
