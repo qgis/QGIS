@@ -57,6 +57,8 @@ email                : sherman at mrcc.com
 #include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrect.h"
+#include "qgslabelattributes.h"
+#include "qgslabel.h"
 
 //#include "wkbheader.h"
 
@@ -159,6 +161,10 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
           // upper case the first letter of the layer name
           layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
           setLayerName(layerTitle);
+  
+	  // label
+          mLabel = new QgsLabel ( dataProvider->fields() ); 
+	  mLabelOn = false;
         }
       } else
       {
@@ -175,6 +181,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
     std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
 #endif
   }
+  
   //TODO - fix selection code that formerly used
   //       a boolean vector and set every entry to false
 
@@ -361,7 +368,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     QgsPoint pt;
     QPointArray *pa;
     int wkbType;
+    
     std::list<int> attributes=m_renderer->classificationAttributes();
+    if ( mLabelOn ) { // Add fields required for labels
+	mLabel->addRequiredFields ( &attributes );
+    }
+    
     while((fet = dataProvider->getNextFeature(attributes)))
     {
       // If update threshold is greater than 0, check to see if
@@ -586,6 +598,11 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
             break;
         }
+
+	// Render labels
+	if ( mLabelOn ) {
+	    mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
+	}
 
 	delete fet;
 
@@ -822,11 +839,13 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
     {
       if (m_propertiesDialog)
       {
+	m_propertiesDialog->reset();
         m_propertiesDialog->raise();
         m_propertiesDialog->show();
       } else
       {
         m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
+	m_propertiesDialog->reset();
         m_propertiesDialog->show();
       }
     }
@@ -1271,3 +1290,19 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     triggerRepaint();
     return resvalue;
 }
+
+QgsLabel * QgsVectorLayer::label()
+{
+    return mLabel;
+}
+
+void QgsVectorLayer::setLabelOn ( bool on )
+{
+    mLabelOn = on;
+}
+
+bool QgsVectorLayer::labelOn ( void )
+{
+    return mLabelOn;
+}
+
