@@ -71,3 +71,8 @@ void PluginGui::setText(QString theTextQString)
 {
   txtCopyrightText->setText(theTextQString);
 }
+
+void PluginGui::setPlacement(QString thePlacementQString)
+{
+  cboPlacement->setCurrentText(tr(thePlacementQString));
+}
