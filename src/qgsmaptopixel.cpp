@@ -76,21 +76,17 @@ QString QgsMapToPixel::showParameters()
 
 }
 
-void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to, 
+bool QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to, 
 			     QgsPoint& tFrom, QgsPoint& tTo)
 {
   // The limits for X11 screen coordinates. Actual value is 32767, but
-  // we allow a little bit if space of rounding errors in the
+  // we allow a little bit of space for rounding errors in the
   // calculations below.
-  static const int minX = -32760;
-  static const int maxX =  32760;
-  static const int minY = -32760;
-  static const int maxY =  32760;
+  static const double minX = -32760;
+  static const double maxX =  32760;
+  static const double minY = -32760;
+  static const double maxY =  32760;
   static const double SMALL_NUM = 1e-6;
-
-  // One thing in our favour is that if this function is called we
-  // already know that the line intersects the region that is visible
-  // on the screen, so there's no need to check for that intersection.
 
   // To determine the intersection between a line given by the points
   // A and B, and the line given by the points C and D, calculate
@@ -122,6 +118,13 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
   //
   // P = A + r*(B-A)
   //
+  // Also do a check to see if the line segment is inside or outside
+  // the limits. If outside, return false to let the caller know that
+  // the shouldn't plot the line segment. 
+  // 
+  // This function has more than one exit point - as soon as the code
+  // determines that it has trimmed the lines appropriately, it exits,
+  // to reduce CPU effort.
 
   // Once we have adjusted both the to and from points, there is no
   // point in doing further checks, so return from the function
@@ -136,13 +139,14 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
     tTo = to;
     
     // Check the top boundary
-    double r_n = (from.y() -     minY)  * (maxX     - minX);
-    double   d = - (to.y() - from.y())  * (maxX   - minX);
-    double s_n = (from.y() -     minY)  * (to.x() - from.x()) 
-               - (from.x() -     minX)  * (to.y() - from.y());
+    double r_n = (from.y() -     minY)  * (maxX - minX);
+    double   d = - (to.y() - from.y())  * (maxX - minX);
+    double s_n;
 
-    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM != 0.0)
+    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
     {
+      s_n = (from.y() -     minY)  * (to.x() - from.x()) 
+          - (from.x() -     minX)  * (to.y() - from.y());
       double r_nOverd = r_n / d;
       double s_nOverd = s_n / d;
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
@@ -168,11 +172,11 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
     // the right border
     r_n = -(from.x() - maxX)     * (maxY   - minY);
       d =  (to.x()   - from.x()) * (maxY   - minY);
-    s_n = (from.y()  - minY)     * (to.x() - from.x()) 
-        - (from.x()  - maxX)     * (to.y() - from.y());
 
-    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM != 0.0)
+    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
     {
+      s_n = (from.y()  - minY)     * (to.x() - from.x()) 
+          - (from.x()  - maxX)     * (to.y() - from.y());
       double r_nOverd = r_n / d;
       double s_nOverd = s_n / d;
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
@@ -197,16 +201,16 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
 
     // Done both ends of the line, so leave.
     if (toDone && fromDone)
-      return;
+      return true;
 
     // the left border
     r_n = - (from.x() - minX)     * (maxY   - minY);
       d =   (to.x()   - from.x()) * (maxY   - minY);
-    s_n =   (from.y() - minY)     * (to.x() - from.x()) 
-          - (from.x() - minX)     * (to.y() - from.y());
 
-    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM != 0.0)
+    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
     {
+      s_n =   (from.y() - minY)     * (to.x() - from.x()) 
+	    - (from.x() - minX)     * (to.y() - from.y());
       double r_nOverd = r_n / d;
       double s_nOverd = s_n / d;
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
@@ -231,16 +235,16 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
 
     // Done both ends of the line, so leave.
     if (toDone && fromDone)
-      return;
+      return true;
 
     // the bottom border
     r_n = (from.y() - maxY)     * (maxX   - minX);
       d = - (to.y() - from.y()) * (maxX   - minX);
-    s_n = (from.y() - maxY)     * (to.x() - from.x())
-        - (from.x() - minX)     * (to.y() - from.y());
 
-    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM != 0.0)
+    if (fabs(d) > SMALL_NUM && fabs(r_n) > SMALL_NUM)
     {
+      s_n = (from.y() - maxY)     * (to.x() - from.x())
+          - (from.x() - minX)     * (to.y() - from.y());
       double r_nOverd = r_n/d;
       double s_nOverd = s_n/d;
       if (r_nOverd >= 0.0 && r_nOverd <= 1.0 &&
@@ -262,6 +266,9 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
 	}
       }
     }
+    // If the line hasn't been trimmed yet, it is entirely outside the
+    // boundary, so tell the calling code.
+    return false;
   }
   else
   {
@@ -269,11 +276,13 @@ void QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
     tFrom = from;
     tTo = to;
   }
-  /*
+
   // Too verbose for QGISDEBUG, but handy sometimes.
+  /*
   std::cerr << "Point 1 trimmed from " << from.x() << ", " << from.y() 
 	    << " to " << tFrom.x() << ", " << tFrom.y() << '\n'
 	    << "Point 2 trimmed from " << to.x() << ", " << to.y() 
 	    << " to " << tTo.x() << ", " << tTo.y() << "\n\n";
   */
+  return true;
 }
