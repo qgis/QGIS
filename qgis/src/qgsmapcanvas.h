@@ -99,6 +99,8 @@ class QgsMapCanvas:public QWidget
     void removeAll();
     //! Flag the canvas as dirty and needed a refresh
     void setDirty(bool _dirty);
+    //! Return the state of the canvas (dirty or not)
+    bool isDirty();
     //! Declare the legend class as a friend of the map canvas
     friend class QgsLegend;
     public slots:

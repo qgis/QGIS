@@ -284,6 +284,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   delete mySplash;
   QString plib = PLUGINS;
   std::cout << "Plugins are installed in " << plib << std::endl;
+  // set the dirty flag to false -- no changes yet
+  projectIsDirty = false;
 }
 
 QgisApp::~QgisApp()
@@ -352,6 +354,7 @@ void QgisApp::addLayer()
 		    lyr->setRenderer(renderer);
 		    renderer->initializeSymbology(lyr);
 		    mapCanvas->addLayer(lyr);
+        projectIsDirty = true;
 		} else {
 			QString msg = *it + " ";
 			msg += tr("is not a valid or recognized data source");
@@ -447,6 +450,7 @@ QgisApp::addRasterLayer()
     {
       // add it to the mapcanvas collection
       mapCanvas->addLayer( layer );
+      projectIsDirty = true;
     } else 
     {
       QString msg( *it + " is not a valid or recognized raster data source" );
@@ -543,6 +547,7 @@ void QgisApp::addDatabaseLayer()
         renderer->initializeSymbology(lyr);
         // add it to the mapcanvas collection
         mapCanvas->addLayer(lyr);
+        projectIsDirty = true;
       }else{
         std::cerr << *it << " is an invalid layer - not loaded" << std::endl;
         QMessageBox::critical(this, tr("Invalid Layer"),
@@ -579,24 +584,34 @@ void QgisApp::fileExit()
 
 }
 void QgisApp::fileNew(){
-	mapCanvas->removeAll();
-	setCaption(tr("Quantum GIS -- Untitled"));
-	mapCanvas->clear();
-	mapLegend->update();
-	fullPath = "";
+  int answer= saveDirty();
+ 
+  if(answer != QMessageBox::Cancel){
+    mapCanvas->removeAll();
+    setCaption(tr("Quantum GIS -- Untitled"));
+    mapCanvas->clear();
+    mapLegend->update();
+    fullPath = "";
+    projectIsDirty = false;
+  }
 }
 void QgisApp::fileOpen(){
-	mapCanvas->freeze(true);
-	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN, this);
-	
-	if(pio->read()){
-		setCaption(tr("Quantum GIS --") +" " + pio->baseName());
-		fullPath = pio->fullPathName();
-		}
-	delete pio;
-	
-	mapLegend->update();
-	mapCanvas->freeze(false);
+  int answer= saveDirty();
+ 
+  if(answer != QMessageBox::Cancel){
+    mapCanvas->freeze(true);
+    QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::OPEN, this);
+    
+    if(pio->read()){
+      setCaption(tr("Quantum GIS --") +" " + pio->baseName());
+      fullPath = pio->fullPathName();
+      }
+    delete pio;
+    
+    mapLegend->update();
+    mapCanvas->freeze(false);
+    projectIsDirty = false;
+  }
 }
 void QgisApp::fileSave(){
 	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::SAVE);
@@ -606,6 +621,7 @@ void QgisApp::fileSave(){
 		statusBar()->message(tr("Saved map to:") +" "  + pio->fullPathName());
 	}
 	delete pio;
+  projectIsDirty = false;
 }
 
 void QgisApp::fileSaveAs(){
@@ -615,6 +631,7 @@ void QgisApp::fileSaveAs(){
 		statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
 	}
 	delete pio;	
+   projectIsDirty = false;
 }
 
 void QgisApp::exportMapServer(){
@@ -1401,6 +1418,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 			renderer->initializeSymbology(lyr);
 			// add it to the mapcanvas collection
 			mapCanvas->addLayer(lyr);
+      projectIsDirty = true;
 			//qWarning("incrementing iterator");
 		/*! \todo Need legend scrollview and legenditem classes */
 		mapLegend->update();
@@ -1415,4 +1433,20 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 	mapCanvas->freeze(false);
 	mapCanvas->render2();
 	QApplication::restoreOverrideCursor();
+}
+int QgisApp::saveDirty(){
+   int answer = 0;
+   mapCanvas->freeze(true);
+   if((projectIsDirty || mapCanvas->isDirty()) && mapCanvas->layerCount() > 0){
+    // prompt user to save
+    answer =  QMessageBox::information(this, "Save?","Do you want to save the current project?",
+    QMessageBox::Yes | QMessageBox::Default,
+    QMessageBox::No,
+    QMessageBox::Cancel | QMessageBox::Escape);
+    if(answer == QMessageBox::Yes){
+      fileSave();
+    }
+  }
+  mapCanvas->freeze(false);
+  return answer;
 }
