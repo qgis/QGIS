@@ -174,6 +174,7 @@ void QgsComposerMap::cache ( void )
     mCacheExtent.setXmax ( mCacheExtent.xMin() + w * scale );
     mCacheExtent.setYmax ( mCacheExtent.yMin() + h * scale );
 	    
+    // TODO: I saw Qtmessage: "QPaintDevice: Cannot destroy paint device that is being painted"
     delete mCachePixmap;
     // I think that monochrome makes a bit faster but not too much
     mCachePixmap = new QPixmap ( w, h, -1, QPixmap::BestOptim ); 
@@ -183,9 +184,10 @@ void QgsComposerMap::cache ( void )
 
     std::cout << "transform = " << transform.showParameters() << std::endl;
     
+    mCachePixmap->fill(QColor(255,255,255));
+
     QPainter p(mCachePixmap);
     
-    mCachePixmap->fill(QColor(255,255,255));
     draw( &p, &mCacheExtent, &transform, mCachePixmap );
     p.end();
 
@@ -451,6 +453,13 @@ bool QgsComposerMap::readSettings ( void )
     return true;
 }
 
+bool QgsComposerMap::removeSettings ( void )
+{
+    QString path;
+    path.sprintf("/composition_%d/map_%d", mComposition->id(), mId );
+    return QgsProject::instance()->removeEntry ( "Compositions", path );
+}
+    
 bool QgsComposerMap::writeXML( QDomNode & node, QDomDocument & document, bool temp )
 {
     return true;

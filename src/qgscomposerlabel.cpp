@@ -286,6 +286,13 @@ bool QgsComposerLabel::readSettings ( void )
     return true;
 }
 
+bool QgsComposerLabel::removeSettings ( void )
+{
+    QString path;
+    path.sprintf("/composition_%d/label_%d", mComposition->id(), mId );
+    return QgsProject::instance()->removeEntry ( "Compositions", path );
+}
+
 bool QgsComposerLabel::writeXML( QDomNode & node, QDomDocument & document, bool temp )
 {
     return true;

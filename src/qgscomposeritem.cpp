@@ -53,6 +53,8 @@ QWidget *QgsComposerItem::options ( void ) { return 0; }
 bool QgsComposerItem::writeSettings ( void )  { return true; }
 
 bool QgsComposerItem::readSettings ( void )  { return true; }
+
+bool QgsComposerItem::removeSettings ( void )  { return true; }
     
 bool QgsComposerItem::writeXML( QDomNode & node, QDomDocument & doc, bool templ ) { return true; }
 

@@ -68,6 +68,7 @@ class QImage;
 class QFont;
 class QPen;
 class QRect;
+class QPopupMenu;
 
 
 class QgsMapCanvas;
@@ -113,6 +114,7 @@ public:
     QWidget *options ( void );
     bool writeSettings ( void );
     bool readSettings ( void );
+    bool removeSettings ( void );
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
     bool readXML( QDomNode & node );
      
@@ -134,6 +136,18 @@ public:
     /** \brief Set values in GUI to current values */
     void setOptions ( void );
 
+    /** \brief Is layer on/off ? */
+    bool layerOn ( QString id );
+
+    /** \brief set layer on/off */
+    void setLayerOn ( QString id, bool on );
+
+    /** \brief get layer group, 0 == no group */
+    int layerGroup ( QString id );
+
+    /** \brief set layer group, 0 == no group */
+    void setLayerGroup ( QString id, int group );
+
 public slots:
     // Open font dialog
     void changeFont ( void );
@@ -149,6 +163,15 @@ public slots:
 
     // Called when map was changed
     void mapChanged ( int id );
+
+    // Show popup menu
+    void showLayersPopupMenu ( QListViewItem * lvi, const QPoint & pt, int );
+
+    // Layer status changed
+    void layerChanged ( QListViewItem *lvi );
+
+    // Combine selected layers
+    void groupLayers( void );
 
 private:
     // Pointer to composition
@@ -190,6 +213,18 @@ private:
 
     /** \brief Number of layers when cache was created  */
     int mNumCachedLayers;
+
+    /** \brief Keeps info if the layer is on or off */
+    std::map<QString,bool> mLayersOn;
+
+    /** \brief layer groups */
+    std::map<QString,int> mLayersGroups;
+
+    /** \brief new layer group id */
+    int mNextLayerGroup;
+
+    /** \brief Layers list popup menu */
+    QPopupMenu *mLayersPopupMenu;
 };
 
 #endif
