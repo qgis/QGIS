@@ -165,7 +165,7 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
     {
   //first find out the value for the classification attribute
   std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-  double value = vec[0].fieldValue().toDouble();
+  //double value = vec[0].fieldValue().toDouble();
   
   double fvalue = vec[mClassificationField].fieldValue().toDouble();
   double minvalue = mMinimumItem->value().toDouble();
