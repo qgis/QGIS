@@ -179,16 +179,25 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             int myRedValueInt=0; //color 1 int
             int myGreenValueInt=0; //color 2 int
             int myBlueValueInt=0; //color 3 int
-            //check for alternate color mappings
-            if (redBandNameQString=="Red") myRedValueInt=colorEntry->c1;
-            if (redBandNameQString=="Green") myRedValueInt=colorEntry->c2;
-            if (redBandNameQString=="Blue") myRedValueInt=colorEntry->c3;
-            if (greenBandNameQString=="Red") myGreenValueInt=colorEntry->c1;
-            if (greenBandNameQString=="Green") myGreenValueInt=colorEntry->c2;
-            if (greenBandNameQString=="Blue") myGreenValueInt=colorEntry->c3;
-            if (blueBandNameQString=="Red") myBlueValueInt=colorEntry->c1;
-            if (blueBandNameQString=="Green") myBlueValueInt=colorEntry->c2;
-            if (blueBandNameQString=="Blue") myBlueValueInt=colorEntry->c3;
+            //check colorEntry is valid
+            if (colorEntry!=NULL)
+            { 
+	      //check for alternate color mappings
+              if (redBandNameQString=="Red") myRedValueInt=colorEntry->c1;
+              if (redBandNameQString=="Green") myRedValueInt=colorEntry->c2;
+              if (redBandNameQString=="Blue") myRedValueInt=colorEntry->c3;
+              if (greenBandNameQString=="Red") myGreenValueInt=colorEntry->c1;
+              if (greenBandNameQString=="Green") myGreenValueInt=colorEntry->c2;
+              if (greenBandNameQString=="Blue") myGreenValueInt=colorEntry->c3;
+              if (blueBandNameQString=="Red") myBlueValueInt=colorEntry->c1;
+              if (blueBandNameQString=="Green") myBlueValueInt=colorEntry->c2;
+              if (blueBandNameQString=="Blue") myBlueValueInt=colorEntry->c3;
+            }
+            else
+            {
+              //there is no guarantee that there will be a matching palette entry for
+              //every cell in the raster. If there is no match, do nothing.
+            }
             if (invertHistogramFlag)
             {
               myRedValueInt=255-myRedValueInt; 
