@@ -41,7 +41,6 @@
 #include "qgsmaplayerinterface.h"
 #include "qgsvectorlayer.h"
 
-
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name):QWidget(parent, name)
 {
   mapWindow = new QRect();
@@ -161,7 +160,7 @@ void QgsMapCanvas::refresh()
 // saving a map view as an image file.
 void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
 {
-  QString msg = frozen ? "frozen" : "thawed";
+    QString msg = frozen ? "frozen" : "thawed";
  #ifdef QGISDEBUG
   std::cout << "Map canvas is " << msg << std::endl;
   #endif
@@ -182,6 +181,7 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
           {
             paint->begin(theQPaintDevice);
           }
+
           // calculate the translation and scaling parameters
           double muppX, muppY;
           muppY = currentExtent.height() / height();
@@ -233,7 +233,7 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
                   std::cout << "Rendering " << ml->name() << std::endl;
 #endif
                   if (ml->visible())
-                    ml->draw(paint, &currentExtent, coordXForm);
+                    ml->draw(paint, &currentExtent, coordXForm,pmCanvas,this);
                   li++;
                   //  mi.draw(p, &fullExtent);
                 }

@@ -115,7 +115,7 @@ class QgsVectorLayer:public QgsMapLayer
  
   private:						// Private attributes
 //! Draws the layer using coordinate transformation
-	void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf);
+	void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* src, QPaintDevice* dst);
 	//! Pointer to data provider derived from the abastract base class QgsDataProvider
 	QgsDataProvider *dataProvider;
   //! index of the primary label field

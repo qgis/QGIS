@@ -52,6 +52,7 @@ email                : sherman at mrcc.com
 #include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrect.h"
+
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
 #endif
@@ -263,7 +264,7 @@ void QgsVectorLayer::setDisplayField()
     }
 }
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf)
+void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* src, QPaintDevice* dst)
 {
   if ( /*1 == 1 */ m_renderer)
     {
@@ -276,9 +277,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
        */
       
 	QPen pen;
-	/**Pointer to a marker image*/
+	/*Pointer to a marker image*/
 	QPicture marker;
-	/**Scale factor of the marker image*/
+	/*Scale factor of the marker image*/
 	double markerScaleFactor=1;
 
       // select the records in the extent. The provider sets a spatial filter
@@ -312,7 +313,11 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
       int wkbType;
       while ((fet = dataProvider->getNextFeature(attributesneeded)))
       {
-        
+	  if(featureCount%1000==0)//copy the drawing buffer every 1000 elements
+	  {
+	      bitBlt(dst,0,0,src,0,0,-1,-1,Qt::CopyROP,false);
+	  }
+
                               //true is necessary for graduated symbol
 #ifdef QGISDEBUG
   std::cout << "Fetched next feature" << std::endl;
@@ -377,7 +382,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                         cXf->transform(&pt);
                         //std::cout << "drawing marker for feature " << featureCount << "\n";
                         p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
-	  
 			p->scale(markerScaleFactor,markerScaleFactor);
 			p->drawPicture(pt.xToInt()/markerScaleFactor-marker.boundingRect().width()/2, pt.yToInt()/markerScaleFactor-marker.boundingRect().height()/2, marker);
 			p->resetXForm(); 

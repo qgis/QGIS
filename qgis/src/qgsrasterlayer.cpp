@@ -353,7 +353,7 @@ void QgsRasterLayer::drawThumbnail(QPixmap * theQPixmap)
   delete myQPainter;
 }
 
-void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform)
+void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCoordinateTransform * theQgsCoordinateTransform, QPaintDevice* src, QPaintDevice* dst)
 {
   //Dont waste time drawing if transparency is at 0 (completely transparent)
   if (transparencyLevelInt == 0)
