@@ -91,7 +91,9 @@ headers =		qgis.h					\
 			qgssymbol.h				\
 			qgssymbologyutils.h			\
 			qgsuniquevalrenderer.h			\
+			qgsuvalmarenderer.h			\
 			qgsuvaldialog.h				\
+			qgsuvalmadialog.h			\
 			qgsvectorlayer.h			\
 			splashscreen.h				\
 			qgisapp.h \
@@ -128,6 +130,7 @@ qgis_UIC =	qgisappbase.ui					\
 		qgssimadialogbase.ui				\
 		qgssisydialogbase.ui				\
 		qgsuvaldialogbase.ui				\
+		qgsuvalmadialogbase.ui				\
 		qgslabeldialogbase.ui				\
 		qgsprojectpropertiesbase.ui
 
@@ -181,6 +184,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgssimadialog.moc.cpp			\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
+		qgsuvalmadialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp			\
 		splashscreen.moc.cpp \
 		qgsprojectproperties.moc.cpp \
@@ -244,7 +248,9 @@ qgis_SOURCES =  main.cpp			\
 		qgssymbol.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuniquevalrenderer.cpp	\
+		qgsuvalmarenderer.cpp	\
 		qgsuvaldialog.cpp		\
+		qgsuvalmadialog.cpp		\
 		qgsvectorlayer.cpp		\
 		splashscreen.cpp \
 		qgsscalecalculator.cpp  \

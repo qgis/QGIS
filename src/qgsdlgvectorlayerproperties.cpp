@@ -37,6 +37,7 @@
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgsuniquevalrenderer.h"
+#include "qgsuvalmarenderer.h"
 #include "qgssimarenderer.h"
 #include "qgssimadialog.h"
 #include "qgslegenditem.h"
@@ -47,6 +48,7 @@
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
 #include "qgsuvaldialog.h"
+#include "qgsuvalmadialog.h"
 #include "qobjectlist.h"
 #include "qgsgramadialog.h"
 #include "qgslabelattributes.h"
@@ -94,6 +96,7 @@ bufferRenderer(layer->
   {
       legendtypecombobox->insertItem(tr("Single Marker"));
       legendtypecombobox->insertItem(tr("Graduated Marker"));
+      legendtypecombobox->insertItem(tr("Unique Value Marker"));
   }
 
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
@@ -147,6 +150,9 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   } else if(string == tr("Unique Value"))
   {
       bufferRenderer = new QgsUniqueValRenderer();
+  } else if(string == tr("Unique Value Marker"))
+  {
+      bufferRenderer = new QgsUValMaRenderer();
   }
   bufferRenderer->initializeSymbology(layer, this);
 
@@ -177,6 +183,7 @@ void QgsDlgVectorLayerProperties::apply()
   QgsSiMaDialog* smdialog = dynamic_cast < QgsSiMaDialog * >(layer->rendererDialog());
   QgsGraMaDialog* gmdialog = dynamic_cast< QgsGraMaDialog * >(layer->rendererDialog());
   QgsUValDialog* udialog = dynamic_cast< QgsUValDialog * > (layer->rendererDialog());
+  QgsUValMaDialog* umdialog = dynamic_cast< QgsUValMaDialog * > (layer->rendererDialog());
 
   if (sdialog)
     {
@@ -199,6 +206,10 @@ void QgsDlgVectorLayerProperties::apply()
   else if(udialog)
   {
       udialog->apply();
+  }
+  else if(umdialog)
+  {
+      umdialog->apply();
   }
 
   rendererDirty = false;

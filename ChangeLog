@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.183 2004/09/12 16:40:43 larsl Exp
+ChangeLog,v 1.184 2004/09/13 19:34:04 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-13 [larsl] 0.4.0devel31
+** Added the unique value marker renderer
 
 2004-09-12 [larsl] 0.4.0devel30
 ** Scale down SVG symbols

@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.52 2004/08/27 21:23:40 mhugent Exp */
+/* qgsprojectio.cpp,v 1.53 2004/09/13 19:34:05 larsl Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -36,6 +36,7 @@ email                : sherman at mrcc.com
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgsuniquevalrenderer.h"
+#include "qgsuvalmarenderer.h"
 #include "qgssymbologyutils.h"
 #include "qgssisydialog.h"
 #include "qgssimadialog.h"
@@ -269,6 +270,7 @@ std::list<QString> QgsProjectIo::read(QString path)
         QDomNode singlemarkernode = node.namedItem("singlemarker");
         QDomNode graduatedmarkernode = node.namedItem("graduatedmarker");
 	QDomNode uniquevaluenode = node.namedItem("uniquevalue");
+	QDomNode uniquevaluemarkernode = node.namedItem("uniquevaluemarker");
 
         QgsRenderer* renderer;
 
@@ -301,6 +303,11 @@ std::list<QString> QgsProjectIo::read(QString path)
 	{
 	    renderer = new QgsUniqueValRenderer();
 	    renderer->readXML(uniquevaluenode,*dbl);
+	}
+	else if(!uniquevaluemarkernode.isNull())
+	{
+	    renderer = new QgsUValMaRenderer();
+	    renderer->readXML(uniquevaluemarkernode,*dbl);
 	}
 
 	// Label
