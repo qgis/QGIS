@@ -251,6 +251,14 @@ const QColor & QgsLabelAttributes::color ( void )
 }
 
   /* Buffer */
+bool QgsLabelAttributes::bufferEnabled()
+{
+  return mBufferEnabledFlag;
+}
+void QgsLabelAttributes::setBufferEnabled(bool useBufferFlag)
+{
+ mBufferEnabledFlag=useBufferFlag;   
+}
 void QgsLabelAttributes::setBufferSize ( double size, int type )
 {
     mBufferSizeType = type;

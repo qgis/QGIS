@@ -1336,6 +1336,18 @@
         <receiver>QgsLabelDialogBase</receiver>
         <slot>changeFontColor()</slot>
     </connection>
+    <connection>
+        <sender>chkUseBuffer</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>QgsLabelDialogBase</receiver>
+        <slot>chkUseBuffer_toggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>cbxUseCollisionDetection</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>QgsLabelDialogBase</receiver>
+        <slot>cbxUseCollisionDetection_toggled(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgslabeldialogbase.ui.h</include>
@@ -1344,6 +1356,8 @@
     <slot>changeFont()</slot>
     <slot>changeBufferColor()</slot>
     <slot>changeFontColor()</slot>
+    <slot>chkUseBuffer_toggled( bool )</slot>
+    <slot>cbxUseCollisionDetection_toggled( bool )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

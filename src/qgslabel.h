@@ -57,6 +57,7 @@ public:
 	YOffset,
 	Angle,
 	Alignment,
+        BufferEnabled,
 	BufferSize,
 	BufferColor,
 	BufferBrush,

@@ -251,7 +251,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     //
     // Draw a buffer behind the text if one is desired
     //
-    if (mLabelAttributes->bufferSizeIsSet())
+    if (mLabelAttributes->bufferSizeIsSet() && mLabelAttributes->bufferEnabled())
     {
       int myBufferSize = static_cast<int>(mLabelAttributes->bufferSize());
       if (mLabelAttributes->bufferColorIsSet())
@@ -485,6 +485,9 @@ void QgsLabel::readXML( const QDomNode& node )
     mLabelAttributes->setBufferSize ( el.attribute("value").toDouble(), type );
     setLabelField ( BufferSize, el.attribute("field") );
 
+    el = node.namedItem("bufferenabled").toElement();
+    mLabelAttributes->setItalic ( (bool)el.attribute("on").toInt() );
+    setLabelField ( BufferEnabled, el.attribute("field") );
 }
 
 void QgsLabel::writeXML(std::ostream& xml)
@@ -541,6 +544,7 @@ void QgsLabel::writeXML(std::ostream& xml)
     xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize() << "\" units=\"" 
 	<< (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()) << "\" field=\"" << mLabelField[BufferSize].ascii() << "\" />\n";
 
+    xml << "\t\t\t<bufferenabled on=\"" << mLabelAttributes->bufferEnabled() << "\" field=\"" << mLabelField[BufferEnabled].ascii() << "\" />\n";
     
     xml << "\t\t</labelattributes>\n";
 }
