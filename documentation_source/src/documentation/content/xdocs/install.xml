@@ -4,7 +4,7 @@
 <document>
 	<header>
 		<title>QGIS Installation Guide</title>
-		<subtitle>For Version 0.1 <em>Moroz</em></subtitle>
+    <subtitle>For Version 0.2 <em>(Pumpkin)</em></subtitle>
 		<authors>
 			<person name="Gary E. Sherman" email="sherman at mrcc.com"/>
       <person name="Tim Sutton" email="tim at linfiniti.com"/>
@@ -16,7 +16,7 @@
 			<p>
     
    This document briefly describes how to build QGIS from the source distribution. 
-   The information below is for <strong>version 0.1 <em>Moroz</em></strong> of QGIS.  </p>
+   The information below is for <strong>version 0.2 <em>Pumpkin</em></strong> of QGIS.  </p>
    <note>The latest version of this document can always be found at <link href="http://qgis.sourceforge.net/docs/install.html">
    http://qgis.sourceforge.net/docs/install.html
 </link></note>
@@ -44,7 +44,7 @@ If you are building QGIS <strong>without PostgreSQL</strong>, skip to the sectio
 		</section>
 		<section>
 			<title>PostgreSQL</title>
-			<p>QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x is recommended with QGIS version 0.1. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below).
+			<p>QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x is recommended with QGIS version 0.2. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below).
 				</p>
 				<ol>
 					<li>Download PostgreSQL source from <link href="http://www.postgresql.org">www.postgresql.org</link>
@@ -294,7 +294,7 @@ installed in /usr/local/qgis.</p>
 <source>make
 make install
 </source>
-<note>As of this version, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location</note>
+<note>As of version 0.1, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location</note>
 </section>
 		<p>
 		<link href="http://sourceforge.net/"><img src="http://sourceforge.net/sflogo.php?group_id=55820&amp;type=1" width="88" height="31" alt="SourceForge.net Logo"/></link>

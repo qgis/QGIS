@@ -77,9 +77,12 @@ be used to configure the chosen Forrest skin.
   <project-name>QGIS</project-name>
   <project-description>Quantum GIS</project-description>
   <project-url>http://qgis.org/</project-url>
+  <!--
   <project-logo>images/project.png</project-logo>
-  <!-- Alternative static image:
-  <project-logo>images/project-logo.gif</project-logo> -->
+ -->
+  <!-- Alternative static image:-->
+
+  <project-logo>images/project-logo.gif</project-logo>
 
   <!-- optional group logo
        skin: forrest-site renders it at the top-left corner -->
