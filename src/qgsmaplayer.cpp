@@ -19,10 +19,10 @@
 #include <iostream>
 #include <qdatetime.h>
 #include <qpopupmenu.h>
+#include <qlistview.h>
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
-
 QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):internalName(lyrname), layerType(type), dataSource(source),
 m_legendItem(0)
 {
@@ -38,6 +38,13 @@ m_legendItem(0)
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
   ID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
+
+#ifdef WIN32
+  //TODO Fix this to use the right path
+  //  const char *PKGDATAPATH = "foo";
+#endif
+  mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
+
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -147,6 +154,11 @@ void QgsMapLayer::toggleShowInOverview()
     //set the checkbox using the property in the maplayer superclass
     popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
   }
+  //
+  //update the legend item
+  //
+  ((QCheckListItem *) m_legendItem)->setPixmap(0, *(this->legendPixmap()));
+
   emit showInOverview(ID,mShowInOverview);
 }
 

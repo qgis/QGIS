@@ -2420,6 +2420,14 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
       myQPainter.drawPixmap(0,myHeightInt-mNoPyramidPixmap.height(),mNoPyramidPixmap);
     }
     //
+    // Overlay the status icon which shows if a layer is in the overview or not
+    //
+    if (mShowInOverview)
+    {
+      myQPainter.drawPixmap(0,0,mInOverviewPixmap);
+    }
+    
+    //
     // Overlay the layername
     //
     if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
