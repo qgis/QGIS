@@ -305,6 +305,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   QString plib = PREFIX;
   plib += "/lib/qgis";
   providerRegistry = QgsProviderRegistry::instance(plib);
+  // load any plugins that were running in the last session
+  std::cerr << "About to restore plugins session" << std::endl;
+  restoreSessionPlugins(plib);
   // set the provider plugin path 
 #ifdef QGISDEBUG
   std::cout << "Setting plugin lib dir to " << plib << std::endl;
@@ -327,6 +330,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // set the dirty flag to false -- no changes yet
   projectIsDirty = false;
 }
+
+
 
 QgisApp::~QgisApp()
 {
@@ -377,7 +382,58 @@ void QgisApp::about()
 
 }
 
+/** Load up any plugins used in the last session
+ */
 
+void QgisApp::restoreSessionPlugins(QString thePluginDirString)
+{
+
+  QSettings mySettings;
+  std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString << std::endl;
+  // check all libs in the current plugin directory and get name and descriptions
+  QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+
+  if (myPluginDir.count() == 0)
+  {
+    //erk! do nothing
+    return;
+  } else
+  {
+    for (unsigned i = 0; i < myPluginDir.count(); i++)
+    {
+      QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
+      std::cerr << "Examining " << myFullPath << std::endl;
+      QLibrary *myLib = new QLibrary(myFullPath);
+      bool loaded = myLib->load();
+      if (loaded)
+      {
+        std::cerr << "Loaded " << myLib->library() << std::endl;
+        name_t * myName =(name_t *) myLib->resolve("name");
+        description_t *  myDescription = (description_t *)  myLib->resolve("description");
+        version_t *  myVersion =  (version_t *) myLib->resolve("version");
+        if (myName && myDescription  && myVersion )
+        {
+          //check if the plugin was active on last session
+          QString myEntryName = myName();
+          if (mySettings.readEntry("/qgis/Plugins/" + myEntryName)=="true")
+          {
+            std::cerr << " -------------------- loading " << myEntryName << std::endl;
+            loadPlugin(myName(), myDescription(), myFullPath);
+          }
+        }
+        else
+        {
+          std::cerr << "Failed to get name, description, or type for " << myLib->library() << std::endl;
+        }
+      } 
+      else
+      {
+        std::cerr << "Failed to load " << myLib->library() << std::endl;
+      }
+    }
+  }
+
+}
 
 
 /**
@@ -1841,16 +1897,16 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
   } else
     {
       QLibrary *myLib = new QLibrary(fullPath);
-#ifdef QGISDEBUG
-      std::cout << "Library name is " << myLib->library() << std::endl;
-#endif
+//#ifdef QGISDEBUG
+      std::cerr << "Library name is " << myLib->library() << std::endl;
+//#endif
       bool loaded = myLib->load();
       if (loaded)
         {
-#ifdef QGISDEBUG
-          std::cout << "Loaded test plugin library" << std::endl;
-          std::cout << "Attempting to resolve the classFactory function" << std::endl;
-#endif
+//#ifdef QGISDEBUG
+          std::cerr << "Loaded test plugin library" << std::endl;
+          std::cerr << "Attempting to resolve the classFactory function" << std::endl;
+//#endif
 
           type_t *pType = (type_t *) myLib->resolve("type");
 
@@ -1882,9 +1938,9 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
                     } 
                     else
                     {
-#ifdef QGISDEBUG
-                      std::cout << "Unable to find the class factory for " << fullPath << std::endl;
-#endif
+//#ifdef QGISDEBUG
+                      std::cerr << "Unable to find the class factory for " << fullPath << std::endl;
+//#endif
                     }
 
                   }
@@ -1913,17 +1969,17 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
                         }
                   } else
                     {
-#ifdef QGISDEBUG
-                      std::cout << "Unable to find the class factory for " << fullPath << std::endl;
-#endif
+//#ifdef QGISDEBUG
+                      std::cerr << "Unable to find the class factory for " << fullPath << std::endl;
+//#endif
                     }
                 }
                 break;
               default:
                 // type is unknown
-#ifdef QGISDEBUG
-                std::cout << "Plugin " << fullPath << " did not return a valid type and cannot be loaded" << std::endl;
-#endif
+//#ifdef QGISDEBUG
+                std::cerr << "Plugin " << fullPath << " did not return a valid type and cannot be loaded" << std::endl;
+//#endif
                 break;
             }
 
@@ -1933,9 +1989,9 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
 
       } else
         {
-#ifdef QGISDEBUG
-          std::cout << "Failed to load " << fullPath << "\n";
-#endif
+//#ifdef QGISDEBUG
+          std::cerr << "Failed to load " << fullPath << "\n";
+//#endif
         }
     }
 }

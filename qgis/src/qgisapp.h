@@ -185,6 +185,8 @@ private:
   void removeLayer();
   //! zoom to extent of layer
   void zoomToLayerExtent();
+  //! load any plugins used in the last qgis session
+  void restoreSessionPlugins(QString thePluginDirString);
   //! test plugin functionality
   void testPluginFunctions();
   //! test maplayer plugins
