@@ -42,6 +42,8 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
 	bgColor = QColor(Qt::white);
 	setMouseTracking(true);
 	drawing = false;
+	dirty = true;
+	pmCanvas = 0;
 }
 
 QgsMapCanvas::~QgsMapCanvas()
@@ -54,7 +56,9 @@ void QgsMapCanvas::setLegend(QgsLegend * legend)
 {
 	mapLegend = legend;
 }
-
+void QgsMapCanvas::setDirty(bool _dirty){
+	dirty = _dirty;
+}
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 // give the layer a default symbol
@@ -104,6 +108,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	updateZpos();
 	zOrder.push_back(lyr->getLayerID());
 	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+	dirty = true;
 	//lyr->zpos = 0;
 }
 
@@ -130,7 +135,7 @@ void QgsMapCanvas::render2()
 {
 	QString msg = frozen ? "frozen" : "thawed";
 //std::cout << "Map canvas is " << msg << std::endl;
-	if (!frozen) {
+	if (!frozen && dirty) {
 		if (!drawing) {
 //  std::cout << "IN RENDER 2" << std::endl;
 			drawing = true;
@@ -185,6 +190,11 @@ void QgsMapCanvas::render2()
 			paint->end();
 			drawing = false;
 		}
+		// save the canvas pixmap
+		 delete pmCanvas;
+		 pmCanvas = new QPixmap();
+		 *pmCanvas = QPixmap::grabWindow(winId());
+		dirty = false;
 	}
 }
 
@@ -231,8 +241,13 @@ void QgsMapCanvas::render()
 }
 void QgsMapCanvas::paintEvent(QPaintEvent *)
 {
-	if (!drawing)
-		render2();
+	if(!dirty){
+		// just bit blit the image to the canvas
+		bitBlt(this, 0, 0, pmCanvas);
+	}else{
+		if (!drawing)
+			render2();
+	}
 //  else
 //      std::cout << "Can't paint in paint event -- drawing = true" << std::endl;
 }
@@ -249,6 +264,7 @@ void QgsMapCanvas::setExtent(QgsRect r)
 
 void QgsMapCanvas::clear()
 {
+	dirty = true;
 	QPainter *p = new QPainter();
 	p->begin(this);
 	p->eraseRect(this->rect());
@@ -435,6 +451,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
 		}
 	}
+}
+void QgsMapCanvas::resizeEvent(QResizeEvent *e){
+	dirty = true;
 }
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {

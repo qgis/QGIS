@@ -69,7 +69,7 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.7";
+static const char *qgisVersion = "0.0.8";
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -191,7 +191,7 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*QGis can be built without PostgreSQL support";
+	watsNew += "\n*During repaint, the data store is only accessed if map state or extent has changed";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
