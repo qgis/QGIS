@@ -65,11 +65,11 @@
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="obsolete">Cancelar</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Graticule Builder</source>
@@ -230,7 +230,7 @@
     </message>
     <message>
         <source>Show?</source>
-        <translation>Exibir?</translation>
+        <translation type="obsolete">Exibir?</translation>
     </message>
     <message>
         <source>Placement on screen</source>
@@ -291,12 +291,41 @@
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:23pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Digite seu rótulo de copyright abaixo. Este plugin suporte html básico para formatação do rótulo. Por exemplo:&lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;texto em negrito&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Itálico&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished">Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Cancelar</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished">Alt+C</translation>
+    </message>
+    <message>
+        <source>Enable North Arrow</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -394,7 +423,7 @@
     </message>
     <message>
         <source>Web Page: http://qgis.sourceforge.net</source>
-        <translation>Web Site: http://qgis.sourceforge.net</translation>
+        <translation type="obsolete">Web Site: http://qgis.sourceforge.net</translation>
     </message>
     <message>
         <source>Sourceforge Project Page: http://sourceforge.net/projects/qgis</source>
@@ -596,6 +625,26 @@
         <source>Extents: </source>
         <translation>Extensão:</translation>
     </message>
+    <message>
+        <source>Web Page: http://qgis.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Would you like to add this layer to the overview map?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -605,11 +654,11 @@
     </message>
     <message>
         <source>File</source>
-        <translation>Arquivo</translation>
+        <translation type="obsolete">Arquivo</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>Exibir</translation>
+        <translation type="obsolete">Exibir</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -665,7 +714,7 @@
     </message>
     <message>
         <source>Zoom In</source>
-        <translation>Mais Zoom</translation>
+        <translation type="obsolete">Mais Zoom</translation>
     </message>
     <message>
         <source>Zoom &amp;In</source>
@@ -685,7 +734,7 @@
     </message>
     <message>
         <source>Zoom &amp;out</source>
-        <translation>M&amp;enos Zoom</translation>
+        <translation type="obsolete">M&amp;enos Zoom</translation>
     </message>
     <message>
         <source>Zoom to selected features</source>
@@ -773,7 +822,7 @@
     </message>
     <message>
         <source>Export current view as a Mapserver file</source>
-        <translation>Exportar a visão atual para arquivo Mapserver</translation>
+        <translation type="obsolete">Exportar a visão atual para arquivo Mapserver</translation>
     </message>
     <message>
         <source>Export to MapServer</source>
@@ -909,7 +958,7 @@
     </message>
     <message>
         <source>Save Map As Image</source>
-        <translation>Salvar mapa como imagem</translation>
+        <translation type="obsolete">Salvar mapa como imagem</translation>
     </message>
     <message>
         <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
@@ -934,6 +983,170 @@
     <message>
         <source>Set properties for the current project, including map units</source>
         <translation>Define as propriedades para o projeto atual, incluindo a unidade de medida do mapa</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Open Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a &amp;PostGIS Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Refresh </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom &amp;Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Zoom to selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I&amp;dentify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a &amp;Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;previous extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Save Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Project &amp;As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin &amp;Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check QGIS &amp;Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export As Mapserver file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export As &amp;Mapserver file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a &amp;Raster Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export As Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E&amp;xport As Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Whats this?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift+F1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project &amp;Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">Propriedades</translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation type="unfinished">&amp;Propriedades</translation>
+    </message>
+    <message>
+        <source>Properties for the selected layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1246,7 +1459,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation>Ajuda</translation>
+        <translation type="obsolete">Ajuda</translation>
     </message>
     <message>
         <source>Help on using the plugin</source>
@@ -1258,7 +1471,7 @@
     </message>
     <message>
         <source>Parse</source>
-        <translation>Analisar</translation>
+        <translation type="obsolete">Analisar</translation>
     </message>
     <message>
         <source>Parse the header row and update the X and Y field lists</source>
@@ -1270,7 +1483,7 @@
     </message>
     <message>
         <source>Add Layer</source>
-        <translation>Adicionar layer</translation>
+        <translation type="obsolete">Adicionar layer</translation>
     </message>
     <message>
         <source>Add layer using the deimiter, file, and x/y fields specifed</source>
@@ -1282,7 +1495,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation>Fechar</translation>
+        <translation type="obsolete">Fechar</translation>
     </message>
     <message>
         <source>Close the dialog</source>
@@ -1386,6 +1599,38 @@
     <message>
         <source>Add layer using the delimiter, file, and x/y fields specified</source>
         <translation>Adicionar camada utilizando o delimitador, arquivo, e campos x/y specificados</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Ajuda</translation>
+    </message>
+    <message>
+        <source>Alt+H</source>
+        <translation type="unfinished">Alt+H</translation>
+    </message>
+    <message>
+        <source>&amp;Parse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Fechar</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished">Alt+C</translation>
     </message>
 </context>
 <context>
@@ -1784,11 +2029,11 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="obsolete">Cancelar</translation>
     </message>
     <message>
         <source>Feature</source>
@@ -1797,6 +2042,10 @@ Ajuda do QGIS</translation>
     <message>
         <source>Value</source>
         <translation>Valor</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Fechar</translation>
     </message>
 </context>
 <context>
@@ -2185,7 +2434,7 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Preferences</source>
-        <translation>Preferências</translation>
+        <translation type="obsolete">Preferências</translation>
     </message>
     <message>
         <source>epiphany</source>
@@ -2213,11 +2462,11 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Preferred browser (used to open Help documents)</source>
-        <translation>Navegador preferido (utilizado para abrir documentos de ajuda)</translation>
+        <translation type="obsolete">Navegador preferido (utilizado para abrir documentos de ajuda)</translation>
     </message>
     <message>
         <source>The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
-        <translation>O navegador precisa estar no PATH, ou, pode-se especificar o caminho completo acima</translation>
+        <translation type="obsolete">O navegador precisa estar no PATH, ou, pode-se especificar o caminho completo acima</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
@@ -2233,7 +2482,7 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation>Mapa</translation>
+        <translation type="obsolete">Mapa</translation>
     </message>
     <message>
         <source>Search Radius for Identifying Features</source>
@@ -2241,7 +2490,7 @@ Ajuda do QGIS</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation>Valor</translation>
+        <translation type="obsolete">Valor</translation>
     </message>
     <message>
         <source>&lt;html&gt;Specify the value in thousandths.  
@@ -2251,7 +2500,7 @@ The search radius is calculated as:
 By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</source>
-        <translation>&lt;html&gt;Especifique o valor em milhares.
+        <translation type="obsolete">&lt;html&gt;Especifique o valor em milhares.
 O raio de busca é calculado assim:
 &lt;ul&gt; &lt;i&gt;(Largura de visualização do mapa) * ( Valor/1000.0)&lt;/i&gt;
 &lt;/ul&gt;
@@ -2262,6 +2511,54 @@ identificando feições sem executar um zoom muito perto.
     <message>
         <source>Hide splash screen at startup</source>
         <translation>Não exibir a tela inicial (splash screen)</translation>
+    </message>
+    <message>
+        <source>&amp;Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Splash Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Icon Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;
+&lt;b&gt;Note:&lt;/b&gt; 
+Specify the value in thousandths.  
+The search radius is calculated as:
+&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&lt;/ul&gt;
+By default QGIS uses a value of 5. Increase the value if you have trouble
+identifying features without zooming in very close.
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help &amp;Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open help documents with</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2533,16 +2830,68 @@ identificando feições sem executar um zoom muito perto.
 
 </translation>
     </message>
+    <message>
+        <source>Data Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_Byte - Eight bit unsigned integer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_Int16 - Sixteen bit signed integer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_Int32 - Thirty two bit signed integer </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_Float32 - Thirty two bit floating point </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_Float64 - Sixty four bit floating point </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_CInt16 - Complex Int16 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_CInt32 - Complex Int32 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_CFloat32 - Complex Float32 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDT_CFloat64 - Complex Float64 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine raster data type.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Columns:</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;Colunas:</translation>
+        <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Colunas:</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Rows:</source>
-        <translation>&lt;p align=&quot;right&quot;&gt;Fileiras:</translation>
+        <translation type="obsolete">&lt;p align=&quot;right&quot;&gt;Fileiras:</translation>
     </message>
     <message>
         <source>No Data:</source>
@@ -2571,6 +2920,14 @@ identificando feições sem executar um zoom muito perto.
     <message>
         <source>Freak Out</source>
         <translation>Barbarizar</translation>
+    </message>
+    <message>
+        <source>Columns:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rows:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2625,11 +2982,11 @@ identificando feições sem executar um zoom muito perto.
     </message>
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Columns: &lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;Colunas: &lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Colunas: &lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Rows: &lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;right&quot;&gt;Fileiras: &lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p align=&quot;right&quot;&gt;Fileiras: &lt;/p&gt;</translation>
     </message>
     <message>
         <source>No Data:</source>
@@ -2815,6 +3172,22 @@ identificando feições sem executar um zoom muito perto.
     <message>
         <source>Pyramid Resolutions</source>
         <translation>Resoluções das Pirâmides</translation>
+    </message>
+    <message>
+        <source>Thumbnail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rows:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Palette:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
