@@ -749,7 +749,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           {
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
-            std::cout << "Rendering " << ml->name() << std::endl;
+            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name() << std::endl;
             std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
             std::cout << "Input extent: " << ml->extent().stringRep() << std::endl;
             try
@@ -816,7 +816,6 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             if (ml)
             {
 #ifdef QGISDEBUG
-              std::cout << "Rendering " << ml->name() << std::endl;
 #endif
 
               if (ml->visible() && (ml->type() != QgsMapLayer::RASTER))

@@ -868,7 +868,15 @@ void QgsVectorLayer::removeSelection()
 
 void QgsVectorLayer::triggerRepaint()
 {
+#ifdef QGISDEBUG
+    std::cerr << "QgsVectorLayer: triggerRepaint called" << std::endl;
+#endif
+  
   emit repaintRequested();
+
+#ifdef QGISDEBUG
+    std::cerr << "QgsVectorLayer: repaintRequested emitted" << std::endl;
+#endif
 }
 
 void QgsVectorLayer::invalidateTableDisplay()
@@ -1312,6 +1320,7 @@ long QgsVectorLayer::updateFeatureCount() const
   }
   return dataProvider->updateFeatureCount();
 }
+
 void QgsVectorLayer::updateExtents()
 {
   if ( ! dataProvider )
@@ -1322,7 +1331,7 @@ void QgsVectorLayer::updateExtents()
   else
   {
 #ifdef QGISDEBUG
-    qDebug("***Getting current extents from the provider***");
+    qDebug("QgsVectorLayer: Getting current extents from the provider");
     qDebug(dataProvider->extent()->stringRep());
 #endif
     // get the extent of the layer from the provider
@@ -1331,6 +1340,9 @@ void QgsVectorLayer::updateExtents()
     layerExtent.setXmax(dataProvider->extent()->xMax());
     layerExtent.setYmax(dataProvider->extent()->yMax());
   }
+  
+  // Send this (hopefully) up the chain to the map canvas
+  emit recalculateExtents();
 }
 
 QString QgsVectorLayer::subsetString()
@@ -1809,7 +1821,18 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         if (dataProvider->isValid())
         {
           valid = true;
+          
+          // TODO: Check if the provider has the capability to send fullExtentCalculated
+          connect(dataProvider, SIGNAL( fullExtentCalculated() ), 
+                  this,           SLOT( updateExtents() ) 
+                 );
 
+          // Connect the repaintRequested chain from the data provider to this map layer
+          // in the hope that the map canvas will notice       
+          connect(dataProvider, SIGNAL( repaintRequested() ), 
+                  this,           SLOT( triggerRepaint() ) 
+                 );
+          
           // get the extent
           QgsRect *mbr = dataProvider->extent();
 

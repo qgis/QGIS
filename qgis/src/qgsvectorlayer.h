@@ -296,6 +296,8 @@ public slots:
    */
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst, double scale);
 
+  
+ 
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
   QgsAttributeTableDisplay * tabledisplay;

@@ -75,6 +75,8 @@ class QgsRect
     void expand(double, QgsPoint *c = 0);
     //! return the intersection with the given rectangle
     QgsRect intersect(QgsRect *rect);
+    //! expand the rectangle so that covers both the original rectangle and the given rectangle
+    void combineExtentWith(QgsRect *rect);
     //! test if rectangle is empty
     bool isEmpty();
     //! returns string representation of form xmin,ymin xmax,ymax
@@ -91,12 +93,17 @@ class QgsRect
      * @param r1 QgsRect to assign from
      */
     QgsRect & operator=(const QgsRect &r1);
- private:
+ 
+protected:
+
+    // These are protected instead of private so that things like
+    // the QgsPostGisBox3d can get at them.
     
     double xmin;
     double ymin;
     double xmax;
     double ymax;
+   
 };
 
 inline QgsRect::QgsRect(double minX, double minY, double maxX, double maxY):xmin(minX), ymin(minY), xmax(maxX), ymax(maxY)

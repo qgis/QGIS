@@ -29,6 +29,8 @@
 */
 #include "qgsconfig.h"
 
+#include <qevent.h>
+
 namespace QGis
 { 
   // Version constants
@@ -93,5 +95,18 @@ namespace QGis
     "WKBMultiLineString",
     "WKBMultiPolygon" 
   };
+  
+  //! User defined event types
+  enum UserEvent
+  {
+    // These first two are useful for threads to alert their parent data providers
+  
+    //! The extents have been calculated by a provider of a layer
+    ProviderExtentCalcEvent = (QEvent::User + 1),
+    
+    //! The row count has been calculated by a provider of a layer
+    ProviderCountCalcEvent
+  };
+  
 }
 #endif

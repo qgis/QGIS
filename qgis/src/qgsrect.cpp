@@ -104,6 +104,18 @@ QgsRect QgsRect::intersect(QgsRect * rect)
   intersection.setYmax(ymax < rect->yMax()?ymax:rect->yMax());
   return intersection;
 }
+
+void QgsRect::combineExtentWith(QgsRect * rect)
+{
+ 
+  xmin = ( (xmin < rect->xMin())? xmin : rect->xMin() );
+  xmax = ( (xmax > rect->xMax())? xmax : rect->xMax() );
+
+  ymin = ( (ymin < rect->yMin())? ymin : rect->yMin() );
+  ymax = ( (ymax > rect->yMax())? ymax : rect->yMax() );
+
+}
+
 bool QgsRect::isEmpty()
 {
   if (xmax <= xmin || ymax <= ymin)

@@ -18,13 +18,18 @@
 
 #include <set>
 #include <map>
+#include <qobject.h>
 #include <qgsdataprovider.h>
 #include <qtextcodec.h>
 
 /** Base class for vector data providers
  */
+ 
 class QgsVectorDataProvider : public QgsDataProvider
 {
+ 
+ Q_OBJECT
+     
  public:
 
     enum Capability
@@ -175,6 +180,7 @@ class QgsVectorDataProvider : public QgsDataProvider
 
   void setEncoding(const QString& e);
   QString encoding() const;
+
 
 protected:
     /**Encoding*/
