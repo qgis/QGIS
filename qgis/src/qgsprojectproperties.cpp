@@ -179,9 +179,11 @@ void QgsProjectProperties::apply()
       QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",0);
     }
     //notify all layers the output projection has changed
-    emit setDestWKT(mProjectionsMap[cboProjection->currentText()]);
+    //emit setDestWKT(mProjectionsMap[cboProjection->currentText()]);
+    emit setDestWKT(mProjectionsMap[lstCoordinateSystems->currentItem()->text(0)]);
     //update the project props
-    QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[cboProjection->currentText()]);
+    //QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[cboProjection->currentText()]);
+    QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[lstCoordinateSystems->currentItem()->text(0)]);
     
     //set the snapping tolerance for digitising (we write as text but read will convert to a num
     QgsProject::instance()->writeEntry("Digitizing","/Tolerance",leSnappingTolerance->text());
@@ -256,27 +258,43 @@ void QgsProjectProperties::getProjList()
     //determine the current project projection so we can select the correct entry in the combo
     QString myProjectionName = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",GEOWKT);
     QString mySelectedKey = getWKTShortName(myProjectionName);
+    QListViewItem * mySelectedItem = NULL;
     //make sure we dont allow duplicate entries into the combo
-    cboProjection->setDuplicatesEnabled(false);
-    //no add each key to our combo
+    //cboProjection->setDuplicatesEnabled(false);
+    //no add each key to our list view
     ProjectionWKTMap::Iterator myIterator;
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
-      cboProjection->insertItem(myIterator.key());
+      //cboProjection->insertItem(myIterator.key());
       
       //XXX Add to the tree view
       if(myIterator.key().find("LatLong") > -1)
       {
-        new QListViewItem(geoList, myIterator.key());
+        if (myIterator.key()==mySelectedKey)
+        {
+          mySelectedItem = new QListViewItem(geoList, myIterator.key());
+        }
+        else
+        {
+          new QListViewItem(geoList, myIterator.key());
+        }        
       }
       else
       {
-        new QListViewItem(projList, myIterator.key());
+        if (myIterator.key()==mySelectedKey)
+        {
+          mySelectedItem = new QListViewItem(projList, myIterator.key());
+        }
+        else
+        {
+          new QListViewItem(projList, myIterator.key());
+        }        
       }
       
 
     }
+    /**
     //make sure all the loaded layer WKT's and the active project projection exist in the 
     //combo box too....
     std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
@@ -294,6 +312,8 @@ void QgsProjectProperties::getProjList()
     
     //set the combo entry to the current entry for the project
     cboProjection->setCurrentText(mySelectedKey);
+    */
+    lstCoordinateSystems->setCurrentItem(mySelectedItem);
   }
   else
   {
@@ -303,7 +323,16 @@ void QgsProjectProperties::getProjList()
     for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
     {
       //std::cout << "Widget map has: " <<myIterator.key().ascii() << std::endl;
-      cboProjection->insertItem(myIterator.key());
+      //cboProjection->insertItem(myIterator.key());
+      if(myIterator.key().find("LatLong") > -1)
+      {
+        new QListViewItem(geoList, myIterator.key());
+      }
+      else
+      {
+        new QListViewItem(projList, myIterator.key());
+      }
+
     }
   }   
 
@@ -340,7 +369,7 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
   {
     return NULL;
   }
-  std::cout << theWKT << std::endl;
+  //std::cout << theWKT << std::endl;
   //check if the coordinate system is projected or not
 
   // if the spatial ref sys starts with GEOGCS, the coordinate
@@ -349,9 +378,8 @@ QString QgsProjectProperties::getWKTShortName(QString theWKT)
   if(theWKT.find(QRegExp("^GEOGCS")) == 0)
   {
     myProjection = "LatLong";
-    //XXX This isn't the datum, its really the Geographic coordinate system name
-    myDatum = mySpatialRefSys.GetAttrValue("GEOGCS",0);
-    myName = myProjection + " - " + myDatum;
+    myCoordinateSystem = mySpatialRefSys.GetAttrValue("GEOGCS",0);
+    myName = myProjection + " - " + myCoordinateSystem;
   }  
   else
   {    
