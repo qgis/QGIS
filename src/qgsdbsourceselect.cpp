@@ -24,6 +24,7 @@
 #include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
+#include <qgroupbox.h>
 #include "xpm/point_layer.xpm"
 #include "xpm/line_layer.xpm"
 #include "xpm/polygon_layer.xpm"
@@ -41,6 +42,8 @@ qgisApp(app)
   populateConnectionList();
   // connect the double-click signal to the addSingleLayer slot in the parent
 
+  //disable the 'where clause' box for 0.4 release
+  groupBox3->hide();
 
 }
 
