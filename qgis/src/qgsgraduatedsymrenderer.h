@@ -50,6 +50,8 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     \param field the number of the field to classify*/
     void setClassificationField(int field);
     void initializeSymbology(QgsVectorLayer* layer);
+    /**Returns the list with the render items*/
+    std::list<QgsRangeRenderItem*>& items();
     /** Returns true*/
     bool needsAttributes();
  protected:
@@ -78,6 +80,11 @@ inline int QgsGraduatedSymRenderer::classificationField() const
 inline void QgsGraduatedSymRenderer::setClassificationField(int field)
 {
     m_classificationField=field;
+}
+
+inline std::list<QgsRangeRenderItem*>& QgsGraduatedSymRenderer::items()
+{
+    return m_items;
 }
 
 inline bool QgsGraduatedSymRenderer::needsAttributes()

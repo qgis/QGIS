@@ -384,10 +384,6 @@ private:
     double minGrayDouble;
     // maximum gray value - used in scaling procedure
     double maxGrayDouble;
-
-    
-signals:
-    void repaintRequested();
 };
 
 #endif

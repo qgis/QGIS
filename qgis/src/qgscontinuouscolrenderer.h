@@ -44,6 +44,10 @@ class QgsContinuousColRenderer: public QgsRenderer
     void setMinimumItem(QgsRenderItem* it);
     /**Sets the item for the maximum value. The item has to be created using the new operator and is automatically deleted when inserting a new item or when the instance is destroyed*/
     void setMaximumItem(QgsRenderItem* it);
+    /**Returns the item for the minimum value*/
+    QgsRenderItem* minimumItem();
+    /**Returns the item for the maximum value*/
+    QgsRenderItem* maximumItem();
     /** Returns true*/
     bool needsAttributes();
  protected:
@@ -63,6 +67,16 @@ inline QgsContinuousColRenderer::QgsContinuousColRenderer(): m_minimumItem(0), m
 inline void QgsContinuousColRenderer::setClassificationField(int id)
 {
     m_classificationField=id;
+}
+
+inline QgsRenderItem* QgsContinuousColRenderer::minimumItem()
+{
+    return m_minimumItem;
+}
+
+inline QgsRenderItem* QgsContinuousColRenderer::maximumItem()
+{
+    return m_maximumItem;
 }
 
 inline bool QgsContinuousColRenderer::needsAttributes()

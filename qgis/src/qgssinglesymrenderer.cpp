@@ -63,9 +63,7 @@ void QgsSingleSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoordina
 				char lsb;
 				QgsPoint pt;
 				QPointArray *pa;
-				//OGRFieldDefn *fldDef;
-				QString fld;
-				QString val;
+			       
 				switch (wkbType) {
 				  case QGis::WKBPoint:
 					 
