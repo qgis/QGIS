@@ -1416,3 +1416,21 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
         return false;
       }
     }
+    
+    // return state of scale dependent rendering. True if features should
+    // only be rendered if between mMinimumScale and mMaximumScale
+    bool QgsVectorLayer::scaleDependentRender()
+    {
+      return mScaleDependentRender;
+    }
+
+    // Return the minimum scale at which the layer is rendered
+    int QgsVectorLayer::minimumScale()
+    {
+      return mMinimumScale;
+    }
+    // Return the maximum scale at which the layer is rendered
+    int QgsVectorLayer::maximumScale()
+    {
+      return mMaximumScale;
+    }
