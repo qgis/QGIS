@@ -53,6 +53,7 @@ void QgsAttributeActionDialog::init()
   // Can these be moved to the .ui file?
   attributeActionTable->setColumnStretchable(0, true);
   attributeActionTable->setColumnStretchable(1, true);
+  attributeActionTable->setColumnStretchable(2, true);
 
   // Start from a fresh slate.
   for (int i = attributeActionTable->numRows()-1; i >= 0; --i)
@@ -67,6 +68,14 @@ void QgsAttributeActionDialog::init()
     attributeActionTable->insertRows(i);
     attributeActionTable->setText(i, 0, iter->name());
     attributeActionTable->setText(i, 1, iter->action());
+    QCheckTableItem* cp = new QCheckTableItem(attributeActionTable, "");
+    cp->setEnabled(false);
+    if (iter->capture())
+      cp->setChecked(true);
+    else
+      cp->setChecked(false);
+
+    attributeActionTable->setItem(i, 2, cp);
   }
 }
 
@@ -181,15 +190,21 @@ void QgsAttributeActionDialog::insert(int pos)
   else
     name = uniqueName(actionName->text());
 
-  QString action = actionAction->text();
-
   // Expand the table to have a row with index pos
   int numRows = attributeActionTable->numRows();
   if (pos >= numRows)
     attributeActionTable->insertRows(numRows, pos-numRows+1);
 
   attributeActionTable->setText(pos, 0, name);
-  attributeActionTable->setText(pos, 1, action);
+  attributeActionTable->setText(pos, 1, actionAction->text());
+  QCheckTableItem* cp = new QCheckTableItem(attributeActionTable, "");
+  cp->setEnabled(false);
+  if (captureCB->isChecked())
+    cp->setChecked(true);
+  else
+    cp->setChecked(false);
+
+  attributeActionTable->setItem(pos, 2, cp);
 }
 
 void QgsAttributeActionDialog::update()
@@ -227,8 +242,10 @@ void QgsAttributeActionDialog::apply()
     if (!attributeActionTable->text(i, 0).isEmpty() &&
 	!attributeActionTable->text(i, 1).isEmpty())
     {
+      QCheckTableItem* cp = (QCheckTableItem*) (attributeActionTable->item(i, 2));
       mActions->addAction(attributeActionTable->text(i, 0),
-			  attributeActionTable->text(i, 1));
+			  attributeActionTable->text(i, 1),
+			  cp->isChecked());
     }
   }
 }
@@ -242,6 +259,8 @@ void QgsAttributeActionDialog::rowSelected(int row, int col, int button,
 
   actionName->setText(attributeActionTable->text(row, 0));
   actionAction->setText(attributeActionTable->text(row, 1));
+  QCheckTableItem* cp = (QCheckTableItem*) (attributeActionTable->item(row, 2));
+  captureCB->setChecked(cp->isChecked());
 }
 
 QString QgsAttributeActionDialog::uniqueName(QString name)

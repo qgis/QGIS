@@ -24,9 +24,9 @@
 /*  $Id$ */
 
 #include <iostream>
+#include <vector>
 
 #include <qstringlist.h>
-#include <qmessagebox.h>
 #include <qdom.h>
 
 #include "qgsattributeaction.h"
@@ -95,20 +95,9 @@ void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pai
     if (!current_arg.stripWhiteSpace().isEmpty())
       args << expandAction(current_arg.stripWhiteSpace(), values, defaultValueIndex);
 
-    QString whole_cmd;
-    for (int i = 0; i < args.count(); ++i)
-      whole_cmd += "[" + args[i] + "] ";
-    std::cout << "Running command: " << whole_cmd << "\n";
-
-    process = new QProcess();
-    process->setArguments(args);
-    if (!process->start())
-    {
-      QMessageBox::critical(0, "Unable to run command", 
-			    "Unable to run the command \n" + whole_cmd +
-			    "\n", QMessageBox::Ok, QMessageBox::NoButton);
-    }
-    delete process;
+    // The QgsRunProcess instance created by this static function
+    // deletes itself when no longer needed.
+    QgsRunProcess::create(args, action->capture());
   }
 }
 
@@ -197,3 +186,4 @@ bool QgsAttributeAction::readXML(QDomNode& layer_node)
   }
   return true;
 }
+
