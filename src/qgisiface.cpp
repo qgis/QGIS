@@ -69,6 +69,11 @@ bool QgisIface::addProject(QString theProjectName)
   return qgis->addProject(theProjectName);
 }
 
+void QgisIface::newProject(bool thePromptToSaveFlag)
+{
+  qgis->fileNew(thePromptToSaveFlag);
+}
+
 QgsMapLayer *QgisIface::activeLayer()
 {
   return qgis->activeLayer();

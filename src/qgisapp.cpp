@@ -1147,7 +1147,27 @@ void QgisApp::fileNew()
     }
 } // fileNew
 
+//as file new but accepts flags to indicate whether we should prompt to save
+void QgisApp::fileNew(bool thePromptToSaveFlag)
+{
+  if (thePromptToSaveFlag)
+  {
+    //just delegate this out
+    fileNew();
+  }
+  else
+  {
+      mMapCanvas->removeAll();
+      mOverviewCanvas->removeAll();
+      mOverviewCanvas->clear();
+      setCaption(tr("Quantum GIS -- Untitled"));
+      mMapCanvas->clear();
+      // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
+      mFullPathName = "";
+      mProjectIsDirtyFlag = false;
 
+  }
+}
 void QgisApp::fileOpen()
 {
   int answer = saveDirty();

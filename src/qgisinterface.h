@@ -61,6 +61,8 @@ class QgisInterface : public QWidget{
     virtual bool addRasterLayer(QgsRasterLayer * theRasterLayer)=0;
     //! Add a project
     virtual bool addProject(QString theProject)=0; 
+    //! Start a blank project
+    virtual void newProject(bool thePromptToSaveFlag=false)=0; 
 
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer()=0;
