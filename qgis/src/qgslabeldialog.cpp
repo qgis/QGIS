@@ -52,17 +52,24 @@
 #define PIXMAP_WIDTH 200
 #define PIXMAP_HEIGHT 20
 
-QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) : QgsLabelDialogBase (parent)
+QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) 
+    : QgsLabelDialogBase (parent),
+      mLabel(label),
+      mFontColor(Qt::black),
+      mBufferColor(Qt::black),
+      mFont("Helvetica")
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
 //    std::cerr << "QgsLabelDialog::QgsLabelDialog()" << std::endl;
-    #endif
+#endif
 
-    mLabel = label;
+    Q_CHECK_PTR( label );
+
     init();
 }
 
-void QgsLabelDialog::init ( void )
+
+void QgsLabelDialog::init ( )
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsLabelDialog::init" << std::endl;
