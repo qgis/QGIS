@@ -1,19 +1,25 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
- *                                                                         *
- *   This is a plugin generated from the QGIS plugin template              *
+                          qgsgpsplugingui.h 
+ Functions:
+                             -------------------
+    begin                : Jan 21, 2004
+    copyright            : (C) 2004 by Tim Sutton
+    email                : tim@linfiniti.com
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+ /*  $Id$ */
+
+#ifndef QGSGPSPLUGINGUI_H
+#define QGSGPSPLUGINGUI_H
 
 #include "../../src/qgsvectorlayer.h"
-#include "pluginguibase.h"
+#include "qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
 
 #include <vector>
@@ -24,18 +30,18 @@
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class QgsGPSPluginGui : public QgsGPSPluginGuiBase
 {
   Q_OBJECT
 public:
-  PluginGui(const BabelMap& importers, BabelMap& devices, 
-	    std::vector<QgsVectorLayer*> gpxMapLayers, QWidget* parent, 
-	    const char* name , bool modal , WFlags);
-  ~PluginGui();
+  QgsGPSPluginGui(const BabelMap& importers, BabelMap& devices, 
+		  std::vector<QgsVectorLayer*> gpxMapLayers, QWidget* parent, 
+		  const char* name , bool modal , WFlags);
+  ~QgsGPSPluginGui();
 
 public slots:
 
-  void openDeviceEditor();
+  void slotOpenDeviceEditor();
   void slotDevicesUpdated();
   
 private:
@@ -75,11 +81,11 @@ signals:
   
 private:
   
-  std::vector<QgsVectorLayer*> gpxLayers;
+  std::vector<QgsVectorLayer*> mGPXLayers;
   const BabelMap& mImporters;
   BabelMap& mDevices;
-  QString babelFilter;
-  QString impFormat;
+  QString mBabelFilter;
+  QString mImpFormat;
 };
 
 #endif

@@ -1,13 +1,11 @@
 /***************************************************************************
   qgsbabelformat.cpp - import/export formats for GPSBabel
-Functions:
+   -------------------
+  begin                : Oct 20, 2004
+  copyright            : (C) 2004 by Lars Luthman
+  email                : larsl@users.sourceforge.net
 
--------------------
-begin                : Oct 20, 2004
-copyright            : (C) 2004 by Lars Luthman
-email                : larsl@users.sourceforge.net
-
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -32,25 +30,25 @@ QgsBabelFormat::QgsBabelFormat()
 }
 
 
-const QString& QgsBabelFormat::getName() const {
+const QString& QgsBabelFormat::name() const {
   static QString name = "";
   return name;
 }
 
 
-QStringList QgsBabelFormat::getImportCommand(const QString& babel, 
-					     const QString& featuretype,
-					     const QString& input, 
-					     const QString& output) const {
+QStringList QgsBabelFormat::importCommand(const QString& babel, 
+					  const QString& featuretype,
+					  const QString& input, 
+					  const QString& output) const {
   QStringList empty;
   return empty;
 }
 
 
-QStringList QgsBabelFormat::getExportCommand(const QString& babel,
-					     const QString& featuretype,
-					     const QString& input,
-					     const QString& output) const {
+QStringList QgsBabelFormat::exportCommand(const QString& babel,
+					  const QString& featuretype,
+					  const QString& input,
+					  const QString& output) const {
   QStringList empty;
   return empty;
 }
@@ -93,10 +91,10 @@ QgsSimpleBabelFormat::QgsSimpleBabelFormat(const QString& format,
 }
 
 
-QStringList QgsSimpleBabelFormat::getImportCommand(const QString& babel, 
-						   const QString& featuretype,
-						   const QString& input,
-						   const QString& output)const{
+QStringList QgsSimpleBabelFormat::importCommand(const QString& babel, 
+						const QString& featuretype,
+						const QString& input,
+						const QString& output)const{
   QStringList args;
   args<<babel<<featuretype<<"-i"<<mFormat<<"-o"<<"gpx"<<input<<output;
   return args;
@@ -122,10 +120,10 @@ QgsBabelCommand::QgsBabelCommand(const QString& importCmd,
 }
 
 
-QStringList QgsBabelCommand::getImportCommand(const QString& babel, 
-					      const QString& featuretype,
-					      const QString& input,
-					      const QString& output) const {
+QStringList QgsBabelCommand::importCommand(const QString& babel, 
+					   const QString& featuretype,
+					   const QString& input,
+					   const QString& output) const {
   QStringList copy;
   QStringList::const_iterator iter;
   for (iter = mImportCmd.begin(); iter != mImportCmd.end(); ++iter) {
@@ -144,10 +142,10 @@ QStringList QgsBabelCommand::getImportCommand(const QString& babel,
 }
 
 
-QStringList QgsBabelCommand::getExportCommand(const QString& babel, 
-					      const QString& featuretype,
-					      const QString& input,
-					      const QString& output) const {
+QStringList QgsBabelCommand::exportCommand(const QString& babel, 
+					   const QString& featuretype,
+					   const QString& input,
+					   const QString& output) const {
   QStringList copy;
   QStringList::const_iterator iter;
   for (iter = mExportCmd.begin(); iter != mExportCmd.end(); ++iter) {

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          plugin.h 
+                          qgsgpsplugin.h 
  Functions:
                              -------------------
     begin                : Jan 21, 2004
@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSGPSPLUGIN_H
+#define QGSGPSPLUGIN_H
 #include "qgsbabelformat.h"
 #include "../qgisplugin.h"
 #include <qwidget.h>
@@ -26,47 +26,28 @@
 
 class QgsVectorLayer;
 
-/**
-* \class Plugin
-* \brief OpenModeller plugin for QGIS
-*
+/** A plugin with various GPS tools.
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsGPSPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT
 public:
-      /** 
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
-       * QGIS when it attempts to instantiate the plugin.
-       * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object. 
-       */
-  Plugin(QgisApp * , QgisIface * );
-  /**
-   * Virtual function to return the name of the plugin. The name will be used when presenting a list 
-   * of installable plugins to the user
-   */
-  virtual QString name();
-  /**
-   * Virtual function to return the version of the plugin. 
-   */
-  virtual QString version();
-  /**
-   * Virtual function to return a description of the plugins functions 
-   */
-  virtual QString description();
-  /**
-   * Return the plugin type
-   */
-  virtual int type();
+  /** Constructor for a plugin. The QgisApp and QgisIface pointers 
+      are passed by QGIS when it attempts to instantiate the plugin.
+      @param qgis Pointer to the QgisApp object
+      @param qI Pointer to the QgisIface object. 
+  */
+  QgsGPSPlugin(QgisApp * , QgisIface * );
+
   //! init the gui
   virtual void initGui();
   //! Destructor
-  virtual ~ Plugin();
-  public slots:
+  virtual ~QgsGPSPlugin();
+
+public slots:
   //! Show the dialog box
   void run();
-  //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
+  //! Add a vector layer given vectorLayerPath, baseName, providerKey
   void drawVectorLayer(QString,QString,QString);
   //! unload the plugin
   void unload();
@@ -87,36 +68,31 @@ public:
   void uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 		   QString port);
 
- signals:
+signals:
   
   void closeGui();
 
- private:
+private:
   
+  //! Initializes all variables needed to run GPSBabel.
   void setupBabel();
 
-
-  //! Name of the plugin
-  QString pluginNameQString;
-  //! Version
-  QString pluginVersionQString;
-  //! Descrption of the plugin
-  QString pluginDescriptionQString;
-  //! Plugin type as defined in QgisPlugin::PLUGINTYPE
-  int pluginType;
   //! Id of the plugin's menu. Used for unloading
-  int menuIdInt;
+  int mMenuId;
   //! Pointer to our menu
-  QMenuBar *menuBarPointer;
+  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
+  QgisApp *mMainWindowPointer;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisIface *mQGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
-  QAction *myQActionPointer;
+  QAction *mQActionPointer;
   
+  //! The path to the GPSBabel program
   QString mBabelPath;
+  //! Importers for external GPS data file formats
   std::map<QString, QgsBabelFormat*> mImporters;
+  //! Upload/downloaders for GPS devices
   std::map<QString, QgsBabelFormat*> mDevices;
 };
 
