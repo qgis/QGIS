@@ -53,6 +53,8 @@ class QgsSingleSymRenderer: public QgsRenderer
     bool needsAttributes();
     /**Returns an empty list, since no classification attributes are used*/
     virtual std::list<int> classificationAttributes();
+    /**Returns the renderers name*/
+    virtual QString name();
  protected:
     QgsRenderItem* mItem;
     /**Color to draw selected features*/

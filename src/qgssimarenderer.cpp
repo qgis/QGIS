@@ -207,3 +207,8 @@ std::list<int> QgsSiMaRenderer::classificationAttributes()
     std::list<int> list;
     return list;//return an empty list
 }
+
+QString QgsSiMaRenderer::name()
+{
+    return "Single Marker";
+}

@@ -244,3 +244,8 @@ std::list<int> QgsSingleSymRenderer::classificationAttributes()
     std::list<int> list;
     return list;//return an empty list
 }
+
+QString QgsSingleSymRenderer::name()
+{
+    return "Single Symbol";
+}

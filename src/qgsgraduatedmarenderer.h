@@ -51,6 +51,8 @@ class QgsGraduatedMaRenderer: public QgsRenderer
     virtual bool needsAttributes();
     /**Returns a list with the index of the classification attribute*/
     virtual std::list<int> classificationAttributes();
+    /**Returns the renderers name*/
+    QString name();
  protected:
     /**Name of the classification field (it must be a numerical field)*/
     int mClassificationField;

@@ -29,7 +29,7 @@ class QColor;
 
 #include <fstream>
 #include <list>
-
+#include <qstring.h>
 
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
 class QgsRenderer
@@ -55,6 +55,8 @@ class QgsRenderer
     virtual bool needsAttributes()=0;
     /**Returns a list with indexes of classification attributes*/
     virtual std::list<int> classificationAttributes()=0;
+    /**Returns the renderers name*/
+    virtual QString name()=0;
 };
 
 #endif // QGSRENDERER_H
