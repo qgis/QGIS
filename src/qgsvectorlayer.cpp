@@ -25,6 +25,7 @@
 #include <iosfwd>
 #include <cfloat>
 #include <cstring>
+#include <cmath>
 #include <sstream>
 #include <memory>
 
@@ -2068,6 +2069,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   QgsPoint pt,myProjectedPoint;
   QgsPoint ptFrom, ptTo;
   QgsPoint trimmedFrom, trimmedTo;
+#if defined(Q_WS_X11)
+  bool needToTrim = false;
+#endif
+
 
   QPen pen;
 
@@ -2120,6 +2125,9 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       unsigned char *ptr;
       int *nPoints;
       int idx;
+#if defined(Q_WS_X11)
+      needToTrim = false;
+#endif
 
       // get number of points in the line
       ptr = feature + 5;
@@ -2155,23 +2163,31 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           ptTo=theMapToPixelTransform->transform(pt);
 	  //std::cerr << theMapToPixelTransform->showParameters() << '\n';
         }
+#if defined(Q_WS_X11)
+	  if (std::abs(ptTo.x())   > QgsClipper::maxX ||
+	      std::abs(ptTo.y())   > QgsClipper::maxY)
+	    needToTrim = true;
+#endif
         if (idx == 0)
 	  ptFrom = ptTo;
 	else
 	{
 #if defined(Q_WS_X11)
 	  // Work around a +/- 32768 limitation on coordinates in X11
-	  if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
-	    p->drawLine(static_cast<int>(trimmedFrom.x()),
-			static_cast<int>(trimmedFrom.y()),
-			static_cast<int>(trimmedTo.x()),
-			static_cast<int>(trimmedTo.y()));
-#else
-	  p->drawLine(static_cast<int>(ptFrom.x()),
-		      static_cast<int>(ptFrom.y()),
-		      static_cast<int>(ptTo.x()),
-		      static_cast<int>(ptTo.y()));
+	  if (needToTrim)
+	  {
+	    if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
+	      p->drawLine(static_cast<int>(trimmedFrom.x()),
+			  static_cast<int>(trimmedFrom.y()),
+			  static_cast<int>(trimmedTo.x()),
+			  static_cast<int>(trimmedTo.y()));
+	  }
+	  else
 #endif
+	    p->drawLine(static_cast<int>(ptFrom.x()),
+			static_cast<int>(ptFrom.y()),
+			static_cast<int>(ptTo.x()),
+			static_cast<int>(ptTo.y()));
 	  ptFrom = ptTo;
 	}
       }
@@ -2183,6 +2199,9 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       int idx, jdx, numLineStrings;
       int *nPoints;
       char lsb;
+#if defined(Q_WS_X11)
+      needToTrim = false;
+#endif
 
       numLineStrings = (int) (feature[5]);
       ptr = feature + 9;
@@ -2222,23 +2241,31 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           {
             ptTo=theMapToPixelTransform->transform(pt);
           }
+#if defined(Q_WS_X11)
+	  if (std::abs(ptTo.x())   > QgsClipper::maxX ||
+	      std::abs(ptTo.y())   > QgsClipper::maxY)
+	    needToTrim = true;
+#endif
 	  if (idx == 0)
 	    ptFrom = ptTo;
 	  else
 	  {
 #if defined(Q_WS_X11)
 	    // Work around a +/- 32768 limitation on coordinates in X11
-	    if (QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
-	      p->drawLine(static_cast<int>(trimmedFrom.x()),
-			  static_cast<int>(trimmedFrom.y()),
-			  static_cast<int>(trimmedTo.x()),
-			  static_cast<int>(trimmedTo.y()));
-#else
+	    if (needToTrim)
+	    {
+	      if(QgsClipper::trimLine(ptFrom, ptTo, trimmedFrom, trimmedTo))
+		p->drawLine(static_cast<int>(trimmedFrom.x()),
+			    static_cast<int>(trimmedFrom.y()),
+			    static_cast<int>(trimmedTo.x()),
+			    static_cast<int>(trimmedTo.y()));
+	    }
+	    else
+#endif
 	      p->drawLine(static_cast<int>(ptFrom.x()),
 			  static_cast<int>(ptFrom.y()),
 			  static_cast<int>(ptTo.x()),
 			  static_cast<int>(ptTo.y()));
-#endif
 	    ptFrom = ptTo;
 	  }
         }
@@ -2252,6 +2279,9 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       int idx, jdx;
       int *numRings, *nPoints;
       QPointArray *pa;
+#if defined(Q_WS_X11)
+      needToTrim = false;
+#endif
 
       // get number of rings in the polygon
       numRings = (int *) (feature + 1 + sizeof(int));
@@ -2317,6 +2347,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           {
             myProjectedPoint=theMapToPixelTransform->transform(pt);
           }
+#if defined(Q_WS_X11)
+	    if (std::abs(myProjectedPoint.x()) > QgsClipper::maxX ||
+		std::abs(myProjectedPoint.y()) > QgsClipper::maxY)
+	      needToTrim = true;
+#endif
           pa->setPoint(pdx++, static_cast<int>(myProjectedPoint.x()), 
 		              static_cast<int>(myProjectedPoint.y()));
         }
@@ -2336,7 +2371,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       p->setPen ( Qt::NoPen ); // no boundary
 #if defined(Q_WS_X11)
       // Work around a +/- 32768 limitation on coordinates in X11
-      QgsClipper::trimPolygon(pa);
+      if (needToTrim)
+	QgsClipper::trimPolygon(pa);
 #endif
       p->drawPolygon(*pa);
 
@@ -2378,6 +2414,9 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           // get number of points in the ring
           nPoints = (int *) ptr;
           ptr += 4;
+#if defined(Q_WS_X11)
+	  needToTrim = false;
+#endif
           pa = new QPointArray(*nPoints);
           for (jdx = 0; jdx < *nPoints; jdx++)
           {
@@ -2411,13 +2450,19 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
             {
               myProjectedPoint=theMapToPixelTransform->transform(pt);
             }
+#if defined(Q_WS_X11)
+	    if (std::abs(myProjectedPoint.x()) > QgsClipper::maxX ||
+		std::abs(myProjectedPoint.y()) > QgsClipper::maxY)
+	      needToTrim = true;
+#endif
             pa->setPoint(jdx, static_cast<int>(myProjectedPoint.x()), 
 			      static_cast<int>(myProjectedPoint.y()));
           }
           // draw the ring
 #if defined(Q_WS_X11)
 	  // Work around a +/- 32768 limitation on coordinates in X11
-	  QgsClipper::trimPolygon(pa);
+	  if (needToTrim)
+	    QgsClipper::trimPolygon(pa);
 #endif
           p->drawPolygon(*pa);
           delete pa;
