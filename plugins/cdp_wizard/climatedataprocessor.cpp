@@ -21,6 +21,7 @@ email                : t.sutton@reading.ac.uk
 #include "filegroup.h"
 #include <iostream>
 #include <qtextstream.h> //used to convert from a string to an int
+#include <qmessagebox.h>
 //#include <algorithm>
 //#include <cctype>
 
@@ -568,12 +569,32 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         //need to add some error handling here...
         //create a separate filereader object so we can get the blockmarkers
         FileReader *myFileReader = new FileReader();
-        myFileReader->openFile(theFileNameString);
-        myFileReader->setFileType(inputFileType);
+        if ( !myFileReader->openFile(theFileNameString))
+        {
+            QMessageBox::critical( 0, "CDP Wizard",
+                                   QString("The file you have selected could not be opened:\n\n" + theFileNameString +
+                                   "\n\n Halting climate data proceesing." ));
+            return false;
+        }
+        if ( !myFileReader->setFileType(inputFileType))
+        {
+            QMessageBox::critical( 0, "CDP Wizard",
+                                   QString("The file type could not be set for:\n\n" + theFileNameString +
+                                   "\n\n Halting climate data proceesing." ));
+            return false;
+        }
         //when we open the first filereader in the, we find
         //the block markers which will then be  assicgned to all other
         //filereaders we open as the filereaders all use the same file
         QValueVector <QFile::Offset> myDataBlockMarkersVector = myFileReader->getBlockMarkers();
+        if (myDataBlockMarkersVector==0)  //chesk if null returned
+        {
+            QMessageBox::critical( 0, "CDP Wizard",
+                                   QString("Error - failed to get block markers for :\n\n" + theFileNameString +
+                                   "\n\n Halting climate data proceesing." ));
+            return false;
+
+        }
         //calculate the actual blocks numbers represented by the start & end years
         int myCurrentBlockInt = ((theStartYearInt-1)*12);
         int myEndBlockInt = (12*theStartYearInt);

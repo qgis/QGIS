@@ -245,7 +245,10 @@ bool FileReader::setFileType( const FileTypeEnum theNewVal){
 #endif
       headerLinesInt = 6;
       monthHeaderLinesInt = 0;
-      assert(filePointer);
+      if (filePointer==0)
+      {
+        return false;
+      }
       //Just testing remove this later! vvvvvvvvv
       //fseek(filePointer,0,SEEK_END);
       //long myFileSizeLong = ftell(filePointer);
@@ -597,7 +600,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
   // Set up some vars
   //
 
-  QString myLineQString[65535];  //temporary holder for fgetted lines
+
   QFile::Offset myFileOffset; //store the current position in the file
   long myMatrixRowsLong;
   long myFileSizeLong;
@@ -615,9 +618,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
 
     //read a line from the file - this will advance the file pointer
     myTextStream.readLine();
-#ifdef QGISDEBUG
-      std::cout << myLineQString ;
-#endif
+
     }
     myFileOffset=filePointer->at();
     dataStartOffset=myFileOffset;
@@ -634,10 +635,17 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
   //
 
 #ifdef QGISDEBUG
-  std::cout << "FileReader::getBlockMarkers() - moving to the start of the file" << std::endl;
+  std::cout << "FileReader::getBlockMarkers() - moving to the start of the file" << filePointer->name() << std::endl;
 #endif
-  //make sure were at the start of the file
-  filePointer->at(0);
+  if (!filePointer->exists())
+  {
+    return false;
+  }
+  //make sure were at the start of the file -> retruns false if we fail to move there
+  if (!filePointer->at(0))
+  {
+    return 0;
+  }
 #ifdef QGISDEBUG
   std::cout << "FileReader::getBlockMarkers() - skipping " << headerLinesInt << " file header line(s)" << std::endl;
 #endif
@@ -645,7 +653,6 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
   {
     //read an impossibly long line - fgets will stop if it hits a newline
     myTextStream.readLine();
-    if (debugModeFlag) std::cout << myLineQString ;
   }
 
   //Calculate number of rows in a month (depends on FileType)
@@ -710,7 +717,7 @@ myTextStream.readLine();
      */
 
     taskProgressInt = static_cast<int>(( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 );
-#ifdef QGISDEBUG
+#ifdef QGISDEBUGNONONO
        std::cout << "Task Progress: " << ( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 << std::endl;
        std::cout << "Position " << myFileOffsetLong << "/" << myFileSizeLong << " ("
        << taskProgressInt << ") : ";

@@ -1,7 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="0" />
+ <DocsAndViews NumberOfDocuments="1" >
+  <Doc0 NumberOfViews="1" URL="file:/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
+   <View0 line="0" Type="???" >
+    <AdditionalSettings Top="2" Width="1207" Attach="1" Height="757" Left="2" MinMaxMode="0" />
+   </View0>
+  </Doc0>
+ </DocsAndViews>
  <pluginList>
   <kdevbookmarks>
    <bookmarks/>
@@ -14,7 +20,9 @@
    <valgrind path="" params="" />
   </kdevvalgrind>
   <kdevdebugger>
-   <breakpointList/>
+   <breakpointList>
+    <breakpoint0 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:406" type="1" condition="" enabled="1" />
+   </breakpointList>
   </kdevdebugger>
  </pluginList>
 </KDevPrjSession>

@@ -382,8 +382,11 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
 
         //setup the climate data processor's filereaders
-        climateDataProcessor->makeFileGroups (1);    //hardcoding year 1 for now
-
+        if (!climateDataProcessor->makeFileGroups (1))    //hardcoding year 1 for now
+        {
+          std::cerr << "cdpwizards call to make file groups failed!" << std::endl;
+          return;
+        }
         //add each selected user calculation to the user calculation map
         // Go through all items of the first ListBox
         for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
