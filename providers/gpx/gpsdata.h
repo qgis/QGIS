@@ -224,7 +224,7 @@ class GPSData {
   double xMin, xMax, yMin, yMax;
   
   /** This is used internally to store GPS data objects (one per file). */
-  typedef std::map<QString, std::pair<GPSData, unsigned> > DataMap;
+  typedef std::map<QString, std::pair<GPSData*, unsigned> > DataMap;
   
   /** This is the static container that maps filenames to GPSData objects and
       does reference counting, so several providers can use the same GPSData 
