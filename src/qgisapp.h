@@ -130,7 +130,7 @@ public:
     /** Set the extents of the map canvas */
     void setExtent(QgsRect theRect);
     
-    //! Remove all layers from the map and legend
+    //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
     /** opens a qgis project file
     @returns false if unable to open the project
@@ -250,6 +250,13 @@ private slots:
     void addAllToOverview();
     //! Remove all loaded layers from the overview - overides qgisappbase method
     void removeAllFromOverview();
+    //reimplements method from base (gui) class
+    void hideAllLayers();
+    //reimplements method from base (gui) class
+    void showAllLayers();
+
+
+    
     //! Export current view as a mapserver map file
     void exportMapServer();
     //! Return pointer to the active layer
