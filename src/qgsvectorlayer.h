@@ -280,6 +280,8 @@ protected:
   std::set<int> mDeleted;
   /**Features which are not commited*/
   std::list<QgsFeature*> mAddedFeatures;
+  /**Changed attributes which are not commited */
+  std::map<int,std::map<QString,QString> > mChangedAttributes;
   /**Renderer object which holds the information about how to display the features*/
   QgsRenderer *m_renderer;
   /**Label */
