@@ -162,7 +162,18 @@ public slots:
     //! remove the layer defined by key
     void remove (QString key);
 
-    //! remove all layers from the map
+    /** remove all layers from the map
+
+        @note this does <i>not</i> iteratively call remove() since we're
+        deleting all map layers reference at once; if we did this iteratively,
+        then we'd be unnecessarily have the corresponding legend object
+        deleting legend items.  We want the legend object to get <i>one</i>
+        signal, clear(), to remove all <i>its</i> items.
+
+        @note dirty set to true
+
+        @note emits removedAll() signal
+     */
     void removeAll();
 
     /**Sets dirty=true and calls render()*/
@@ -194,6 +205,19 @@ public slots:
     //! accessor to flag indicating whether the user can interact with the canvase
     bool isUserInteractionAllowed();
 
+    /** possibly add or remove the given layer from the overview map canvas
+
+      @note 
+
+      Yes, of the two canvas instances, this slot is relevant only to the
+      overview map canvas, and thus is a hint that they should be two separate
+      classes.
+
+      @param maplayer is layer to be possibly added or removed from overview canvas
+      @param b is true if visible in over view
+     */
+    void showInOverview( QgsMapLayer * maplayer, bool visible );
+
 signals:
     /** Let the owner know how far we are with render operations */
     void setProgress(int,int);
@@ -224,6 +248,12 @@ signals:
         @param the key of the deleted layer
     */
     void removedLayer( QString layer_key );
+
+    /**
+       emitted when removeAll() invoked to let observers know that the canvas is
+       now empty
+     */
+    void removedAll();
 
 private:
 
@@ -279,6 +309,13 @@ private:
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)
     bool mUserInteractionAllowed;
+
+  /** debugging member
+      invoked when a connect() is made to this object 
+  */
+  void connectNotify( const char * signal );
+
+
 }; // class QgsMapCanvas
 
 #endif

@@ -20,7 +20,7 @@
 #include "qgspoint.h"
 #include "qgsrect.h"
 
-QgsRect::QgsRect(QgsPoint p1, QgsPoint p2)
+QgsRect::QgsRect(QgsPoint const & p1, QgsPoint const & p2)
 {
   xmin = p1.x();
   xmax = p2.x();

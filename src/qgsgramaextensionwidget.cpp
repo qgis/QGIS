@@ -57,7 +57,7 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
        //find the minimum and maximum of the classification variable
        double minimum, maximum;
 
-       QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+       QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
        if (provider)
        {
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
@@ -213,7 +213,7 @@ void QgsGraMaExtensionWidget::setClassification(QgsGraSyDialog::mode mode, int f
     mClassField=field;
     mMode=mode;
 
-    QgsVectorDataProvider *provider=mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
 
     if (provider)
     {

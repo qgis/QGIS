@@ -15,10 +15,13 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
-#include <iostream>
-#include <qstring.h>
-#include <qtextstream.h>
+
+
 #include "qgspoint.h"
+
+#include <qtextstream.h>
+
+
 
 QString QgsPoint::stringRep() const
 {
@@ -35,10 +38,14 @@ QString QgsPoint::stringRep(int thePrecision) const
   QString::number( m_y,'f',thePrecision);
   return rep;
 }
+
+
 QString QgsPoint::wellKnownText()
 {
   return QString("POINT(%1 %2)").arg(QString::number(m_x, 'f', 18)).arg(QString::number(m_y, 'f', 18));
 }
+
+
 // operators
 bool QgsPoint::operator==(const QgsPoint & other)
 {

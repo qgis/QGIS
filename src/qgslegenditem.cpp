@@ -16,19 +16,24 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
+
 #include <qlabel.h>
 #include <qcheckbox.h>
+
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
+#include "qgsproject.h"
 
 
-QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent)
+QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent, QAction * actionInOverview)
     : QCheckListItem(parent, "", QCheckListItem::CheckBox), 
       m_layer(lyr),
-      layerName( lyr->name() )
+      layerName( lyr->name() ),
+      mActionInOverview( actionInOverview )
 {
-  activate();
+    // activate(); commented out because it was toggling layer visibility on,
+    // even if it was off (due to activate() triggering update)
   setOn(lyr->visible());
   setPixmap( 0, *lyr->legendPixmap() );
 }
@@ -47,6 +52,9 @@ void QgsLegendItem::setLayerName(const QString & _newVal)
   // commented out because this will cause the name to be rendered next to the
   // legend item pixmap, which <em>already</em> contains the layer name
   //setText( 0, _newVal );
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 } // QgsLegendItem::setLayerName()
 
 
@@ -60,6 +68,9 @@ void QgsLegendItem::setLayerName(const QString & _newVal)
 void QgsLegendItem::stateChange(bool vis)
 {
   m_layer->setVisible(vis);
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 QgsMapLayer *QgsLegendItem::layer()
@@ -74,7 +85,15 @@ QString QgsLegendItem::layerID() const
 } // layerID
 
 
-//void QgsLegendItem::setOn( bool b )
-//{
-//    m_layer->setVisible( b );
-//} // setOn
+void QgsLegendItem::setOn( bool b )
+{
+#ifdef QGISDEBUG
+    std::cerr << __FILE__ << ":" << __LINE__ 
+              << " setOn(" << b 
+              << ")\n";
+#endif
+    // commented out because this would cause infinite loop since signals/slots handle this m_layer->setVisible( b );
+
+    QCheckListItem::setOn( b );
+} // setOn
+

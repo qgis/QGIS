@@ -35,7 +35,8 @@
 class QgsFeature;
 class QPopupMenu;
 class QgsLegendItem;
-
+class QDomNode;
+class QDomDocument;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
@@ -88,7 +89,8 @@ public:
   virtual QgsRect calculateExtent();
 
   /*! Accesor for mShowInOverviewFlag */
-  bool showInOverviewStatus() {return mShowInOverview;};
+  bool showInOverviewStatus() {return mShowInOverview;}
+
   
   virtual void draw(QPainter *, QgsRect *, int);
   virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * ,QPaintDevice *);
@@ -196,8 +198,22 @@ public:
   /**Returns a pointer to the legend pixmap*/
   virtual QPixmap *legendPixmap();
 
-  /** All inherited layers must be able to display a conext menu if requested */
-  virtual void initContextMenu(QgisApp * app) = 0;
+  /** 
+      All inherited layers must be able to display a conext menu if requested 
+
+      @note Calls initContextMenu_()
+  */
+  void initContextMenu(QgisApp * app);
+
+  /** 
+      Allows children to tailor context menu
+
+      @note Calls initContextMenu_()
+  */
+  virtual void initContextMenu_(QgisApp * app)
+  {
+      // NOP; children can optionally over-ride
+  }
 
   /**Returns a pointer to the legend item*/
   QgsLegendItem *legendItem();
@@ -208,17 +224,68 @@ public:
   /**True if the layer can be edited*/
   virtual bool isEditable()=0;
 
+  /** sets state from DOM document
+
+     @param layer_node is DOM node corresponding to ``maplayer'' tag
+
+     @note
+
+     The DOM node corresponds to a DOM document project file XML element read
+     by QgsProject.
+
+     This, in turn, calls readXML_(), which is over-rideable by sub-classes so
+     that they can read their own specific state from the given DOM node.
+
+     Invoked by QgsProject::read().
+
+     @returns true if successful
+
+   */
+  bool readXML( QDomNode & layer_node );
+
+
+  /** stores state in DOM node
+
+     @param layer_node is DOM node corresponding to ``projectlayers'' tag
+
+     @note
+
+     The DOM node corresponds to a DOM document project file XML element to be
+     written by QgsProject.
+
+     This, in turn, calls writeXML_(), which is over-rideable by sub-classes so
+     that they can write their own specific state to the given DOM node.
+
+     Invoked by QgsProject::write().
+
+     @returns true if successful
+
+  */
+  bool writeXML( QDomNode & layer_node, QDomDocument & document );
+
 public  slots:
 
   //! set visibility
   void setVisible(bool vis);
+
   /*! Slot connected to popup menus of derived classes. Used to indicate whether this layer
    * should be shown or hidden in the map overview. */
-  virtual void toggleShowInOverview();
+  //virtual void toggleShowInOverview();
+
   /**Copies the legend pixmap of this layer to the legenditem and adds an overview glasses if necessary*/
   void updateItemPixmap();
+
   /**Ensures that the overview item in the popup menu is checked/ unchecked correctly*/
   void updateOverviewPopupItem();
+
+  /** set whether this layer is in the overview or not 
+
+  @note this will hopefully eventually supercede toggleOverviewStatus() since
+  this makes explicit the state change
+
+  */
+  virtual void inOverview( bool );
+
 
 signals:
 
@@ -234,9 +301,24 @@ signals:
   virtual void repaintRequested();
 
   /** This is used to notify the application whether this layer should be shown in overview or not. */
-  void showInOverview(QString theLayerId, bool);
+  //@{
+  //void showInOverview(QString theLayerId, bool);
+  void showInOverview(QgsMapLayer * maplayer, bool);
+  //@}
 
 protected:
+
+  /** called by readXML(), used by children to read state specific to them from 
+      project files.
+  */
+  virtual bool readXML_( QDomNode & layer_node );
+
+
+  /** called by writeXML(), used by children to write state specific to them to 
+      project files.
+  */
+  virtual bool writeXML_( QDomNode & layer_node, QDomDocument & document );
+
 
   //! Extent of the layer
   QgsRect layerExtent;
@@ -269,11 +351,25 @@ protected:
 
   //! context menu
   QPopupMenu *popMenu;
+
+  //! label for popMenu
+  QLabel * myPopupLabel;
+
   //! checkable item id in popmenu that sets overview status
   int mShowInOverviewItemId;
 
   /** Whether this layer is to be shown in the overview map or not */
   bool mShowInOverview;
+
+//   /** action item for pop-up menu
+
+//       @note obviously should be in synch with mShowInOverview
+
+//       Is set in context menu.
+
+//       @todo this is a GUI element and should not be here
+//   */
+//   QAction* mActionInOverview;
 
 private:                       // Private attributes
 
@@ -288,6 +384,11 @@ private:                       // Private attributes
 
   /**  true if visible ? */
   bool m_visible;
+
+  /** debugging member
+      invoked when a connect() is made to this object 
+  */
+  void connectNotify( const char * signal );
 
 
 public:                        // Public attributes

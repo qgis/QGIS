@@ -325,7 +325,7 @@ void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl
     cdialog->apply();
 }
 
-void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
+void QgsContinuousColRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<continuoussymbol>\n";
     xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).ascii() <<

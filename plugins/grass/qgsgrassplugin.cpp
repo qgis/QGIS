@@ -325,7 +325,9 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
 
     for ( int i = 0; i < 5; i++ ) {
         transform->transform( &(points[i]) );
-        pointArray.setPoint( i, points[i].xToInt(), points[i].yToInt() );
+        pointArray.setPoint( i, 
+                             static_cast<int>(points[i].x()), 
+                             static_cast<int>(points[i].y()) );
     }
 
     painter->setPen ( mRegionPen );

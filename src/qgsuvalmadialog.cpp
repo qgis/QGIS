@@ -44,7 +44,7 @@ QgsUValMaDialog::QgsUValMaDialog(QgsVectorLayer* vl): QgsUValMaDialogBase(), mVe
 
     //find out the fields of mVectorLayer
     QgsVectorDataProvider *provider;
-    if (provider = mVectorLayer->getDataProvider())
+    if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
     {
 	std::vector < QgsField > &fields = provider->fields();
 	QString str;
@@ -264,7 +264,7 @@ void QgsUValMaDialog::changeClassificationAttribute(int nr)
     }
     mValues.clear();
     
-    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
     if (provider)
     {
 	QString value;

@@ -231,7 +231,7 @@ void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     gdialog->apply();
 }
 
-void QgsGraduatedMaRenderer::writeXML(std::ofstream& xml)
+void QgsGraduatedMaRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<graduatedmarker>\n";
     xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()) +

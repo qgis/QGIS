@@ -78,7 +78,7 @@ public:
     void readXML(const QDomNode& node);
 
     /** Writes the contents of the renderer to a configuration file */
-    void writeXML(std::ofstream& xml);
+    void writeXML(std::ostream& xml);
 
     //! add vector of required fields to existing list of fields
     void addRequiredFields ( std::list<int> *fields );

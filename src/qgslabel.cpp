@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
 #include <iostream>
 #include <fstream>
 #include <math.h> //needed for win32 build (ts)
@@ -37,7 +36,12 @@
 #include "qgslabeldialog.h"
 #include "qgslabel.h"
 
-#define PI 3.141592654
+// use M_PI define PI 3.141592654
+
+
+static const char * const ident_ = 
+   "$Id$";
+
 
 QgsLabel::QgsLabel( std::vector<QgsField>& fields )
 {
@@ -195,7 +199,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     } else {
         ang = value.toDouble();
     }
-    double rad = ang*PI/180;
+    double rad = ang * M_PI/180;
     
     x = x + xoffset * cos(rad) - yoffset * sin(rad);
     y = y - xoffset * sin(rad) - yoffset * cos(rad);
@@ -483,7 +487,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
 }
 
-void QgsLabel::writeXML(std::ofstream& xml)
+void QgsLabel::writeXML(std::ostream& xml)
 {
     
     xml << "\t\t<labelattributes>\n";

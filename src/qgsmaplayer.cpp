@@ -15,26 +15,40 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
+
 #include <cfloat>
 #include <iostream>
+
 #include <qapplication.h>
 #include <qdatetime.h>
 #include <qpopupmenu.h>
 #include <qlistview.h>
+#include <qlabel.h>
+#include <qpainter.h>
+#include <qdom.h> 
+
+
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
-#include <qpainter.h>
 
-QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):internalName(lyrname), layerType(type), dataSource(source),
-m_legendItem(0)
+
+
+
+QgsMapLayer::QgsMapLayer(int type, 
+                         QString lyrname, 
+                         QString source)
+    : internalName(lyrname), 
+      layerType(type), 
+      dataSource(source),
+      m_legendItem(0),
+      m_visible(true),
+      mShowInOverview(false),
+      mShowInOverviewItemId(0),
+      valid(true) // assume the layer is valid (data source exists and can be
+                  // used) until we learn otherwise
+
 {
-  // assume the layer is valid (data source exists and can be used)
-  // until we learn otherwise
-  valid = true;
-  m_visible = true;
-  mShowInOverview = false;
-  mShowInOverviewItemId =0;
   // Set the display name = internal name
   layerName = internalName;
 
@@ -48,7 +62,11 @@ QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
   mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
   mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
 
+  //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
+
 }
+
+
 
 QgsMapLayer::~QgsMapLayer()
 {
@@ -118,6 +136,145 @@ const QString & QgsMapLayer::labelField()
   return m_labelField;
 }
 
+
+bool QgsMapLayer::readXML( QDomNode & layer_node )
+{
+    QDomElement element = layer_node.toElement();
+
+    // XXX not needed? QString type = element.attribute("type");
+
+    QString visible = element.attribute("visible");
+
+    if ( "1" == visible )
+    {
+        setVisible( true );
+    }
+    else
+    {
+        setVisible( false );
+    }
+
+    QString showInOverview = element.attribute("showInOverviewFlag");
+
+    if ( "1" == showInOverview )
+    {
+        mShowInOverview = true;
+    }
+    else
+    {
+        mShowInOverview = false;
+    }
+
+    // set data source
+    QDomNode mnl = layer_node.namedItem("datasource");
+    QDomElement mne = mnl.toElement();
+    dataSource = mne.text();
+
+    const char * dataSourceStr = dataSource.ascii(); // debugger probe
+
+    // set name
+    mnl = layer_node.namedItem("layername");
+    mne = mnl.toElement();
+    setLayerName( mne.text() );
+
+    const char * layerNameStr = mne.text().ascii(); // debugger probe
+
+    // process zorder
+    mnl = layer_node.namedItem("zorder");
+    mne = mnl.toElement();
+    // XXX and do what with it?
+
+    // now let the children grab what they need from the DOM node.
+    return readXML_( layer_node );
+
+} // void QgsMapLayer::readXML
+
+
+bool QgsMapLayer::readXML_( QDomNode & layer_node )
+{
+    // NOP by default; children will over-ride with behavior specific to them
+
+    return true;
+} // void QgsMapLayer::readXML_
+
+
+
+bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    // general layer metadata
+    QDomElement maplayer = document.createElement( "maplayer" );
+
+    // visible flag
+    if ( visible() )
+    {
+        maplayer.setAttribute( "visible", 1 );
+    }
+    else
+    {
+        maplayer.setAttribute( "visible", 0 );
+    }
+
+
+    // show in overview flag
+    if ( showInOverviewStatus() )
+    {
+        maplayer.setAttribute( "showInOverviewFlag", 1 );
+    }
+    else
+    {
+        maplayer.setAttribute( "showInOverviewFlag", 0 );
+    }
+
+    // data source
+    QDomElement dataSource = document.createElement( "datasource" );
+    QDomText dataSourceText = document.createTextNode( source() );
+    dataSource.appendChild( dataSourceText );
+
+    maplayer.appendChild( dataSource );
+
+
+    // layer name
+    QDomElement layerName = document.createElement( "layername" );
+    QDomText layerNameText = document.createTextNode( name() );
+    layerName.appendChild( layerNameText );
+
+    maplayer.appendChild( layerName );
+
+    // zorder
+
+    // XXX Where do I get this information?  Since it's not map layer
+    // XXX specific, and specific to map canvas, shouldn't that be in
+    // XXX QgsMapCanvas::writeXML() instead?  For that matter, if we read and
+    // XXX write layers in a known order, then we don't need to store a z order,
+    // XXX right?
+
+    QDomElement zOrder = document.createElement( "zorder" );
+    QDomText zOrderText = document.createTextNode( "0" ); // XXX hard-coded to zero
+    zOrder.appendChild( zOrderText );
+
+    maplayer.appendChild( zOrder );
+
+
+    // now append layer node to map layer node
+
+    layer_node.appendChild( maplayer );
+
+    return writeXML_( maplayer, document );
+
+} // bool QgsMapLayer::writeXML
+
+
+
+bool QgsMapLayer::writeXML_( QDomNode & layer_node, QDomDocument & document )
+{
+    // NOP by default; children will over-ride with behavior specific to them
+
+    return true;
+} // void QgsMapLayer::writeXML_
+
+
+
+
 /** Write property of QString labelField. */
 void QgsMapLayer::setLabelField(const QString & _newVal)
 {
@@ -138,37 +295,58 @@ void QgsMapLayer::setVisible(bool vis)
 {
   if (m_visible != vis)
   {
-    ((QCheckListItem *) m_legendItem)->setOn(vis);
+      // XXX should this happen automatically via signals/slots? ((QCheckListItem *) m_legendItem)->setOn(vis);
     m_visible = vis;
     emit visibilityChanged();
   }
 }  /** Read property of int featureType. */
 
-void QgsMapLayer::toggleShowInOverview()
+
+
+void QgsMapLayer::inOverview( bool b )
 {
-  if (mShowInOverview==false)
-  {
-#ifdef QGISDEBUG
-    std::cout << "Map layer " << ID << " requested to be added to the overview " << std::endl;
-#endif
-    mShowInOverview=true;
-  }
-  else
-  {
-#ifdef QGISDEBUG
-    std::cout << "Map layer " << ID << " requested to be removed from the overview " << std::endl;
-#endif
-    mShowInOverview=false;
-  }
-  //update the show in overview popup menu item
-  updateOverviewPopupItem();
-  updateItemPixmap();
-  emit showInOverview(ID,mShowInOverview);
-}
+    // will we have to propogate changes?
+    bool updateNecessary = mShowInOverview != b;
+
+    mShowInOverview = b;
+
+    if ( updateNecessary ) // update the show in overview popup menu item
+    {
+        updateOverviewPopupItem();
+        updateItemPixmap();
+
+        emit showInOverview(this,mShowInOverview);
+    }
+} // QgsMapLayer::inOverview
+
+
+
+// void QgsMapLayer::toggleShowInOverview()
+// {
+//   if (mShowInOverview==false)
+//   {
+// #ifdef QGISDEBUG
+//     std::cout << "Map layer " << ID << " requested to be added to the overview " << std::endl;
+// #endif
+//     mShowInOverview=true;
+//   }
+//   else
+//   {
+// #ifdef QGISDEBUG
+//     std::cout << "Map layer " << ID << " requested to be removed from the overview " << std::endl;
+// #endif
+//     mShowInOverview=false;
+//   }
+//   //update the show in overview popup menu item
+//   updateOverviewPopupItem();
+//   updateItemPixmap();
+//   emit showInOverview(ID,mShowInOverview);
+// }
+
 
 void QgsMapLayer::updateItemPixmap()
 {
-  if (m_legendItem)
+  if (m_legendItem)             // XXX should we know about our legend?
   {
       QPixmap pix=*(this->legendPixmap());
       if(mShowInOverview)
@@ -266,3 +444,40 @@ std::vector<QgsField> const & QgsMapLayer::fields() const
 
     return bogus;
 } // QgsMapLayer::fields()
+
+
+
+void QgsMapLayer::connectNotify( const char * signal )
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsMapLayer connected to " << signal << "\n";
+#endif
+} //  QgsMapLayer::connectNotify
+
+
+void QgsMapLayer::initContextMenu(QgisApp * app)
+{
+    popMenu = new QPopupMenu();
+    myPopupLabel = new QLabel( popMenu );
+
+    myPopupLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
+
+    // now set by children
+    // myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
+
+    popMenu->insertItem(myPopupLabel,0);
+
+    popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
+    popMenu->insertSeparator();
+
+    popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
+
+    app->actionInOverview->addTo( popMenu );
+
+    popMenu->insertSeparator();
+    popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
+
+    // now give the sub-classes a chance to tailor the context menu
+    initContextMenu_( app );
+
+} // QgsMapLayer::initContextMenu(QgisApp * app)

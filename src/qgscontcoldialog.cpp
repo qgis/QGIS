@@ -45,7 +45,7 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
 
     //find out the numerical fields of mVectorLayer
     QgsVectorDataProvider *provider;
-    if (provider = mVectorLayer->getDataProvider())
+    if (provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider()))
     {
 	std::vector < QgsField > &fields = provider->fields();
 	int fieldnumber = 0;
@@ -130,7 +130,7 @@ void QgsContColDialog::apply()
     
     //find the minimum and maximum for the classification variable
     double minimum, maximum;
-    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider());
     if (provider)
     {
 	minimum = provider->minValue(classfield).toDouble();

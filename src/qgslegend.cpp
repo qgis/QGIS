@@ -33,6 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
+#include "qgisapp.h"
 
 
 static const char *const ident_ = "$Id$";
@@ -44,9 +45,13 @@ const int AUTOSCROLL_MARGIN = 16;
 
    set movingItem pointer to 0 to prevent SuSE 9.0 crash
 */
-QgsLegend::QgsLegend(QWidget * parent, const char *name):QListView(parent, name), mousePressed(false), movingItem(0)
+QgsLegend::QgsLegend(QWidget * parent, const char *name, QgisApp * qgis_app )
+    : QListView(parent, name), mousePressed(false), movingItem(0), mQgisApp(qgis_app)
 {
+    connect( this, SIGNAL(selectionChanged(QListViewItem *)), 
+             this, SLOT(updateLegendItem(QListViewItem *)) );
 }
+
 
 QgsLegend::~QgsLegend()
 {
@@ -141,7 +146,7 @@ void QgsLegend::update()
               std::cerr << __FILE__ << ":" << __LINE__
                 << " didn't find " << currentMapLayer->name() << "'s legend item ... adding new item\n";
 
-              QgsLegendItem *lvi = new QgsLegendItem(currentMapLayer, this);
+              QgsLegendItem *lvi = new QgsLegendItem(currentMapLayer, this, mQgisApp->actionInOverview);
               currentMapLayer->setLegendItem(lvi);
 	      currentMapLayer->updateItemPixmap();
           } else
@@ -157,7 +162,7 @@ void QgsLegend::update()
       while (zi != map->zOrders().end())
         {
           QgsMapLayer *lyr = map->layerByName(*zi);
-          QgsLegendItem *lvi = new QgsLegendItem(lyr, this);  // lyr->name(), QCheckListItem::CheckBox );
+          QgsLegendItem *lvi = new QgsLegendItem(lyr, this, mQgisApp->actionInOverview);  // lyr->name(), QCheckListItem::CheckBox );
           lyr->setLegendItem(lvi);
           lvi->setPixmap(0, *lyr->legendPixmap());
           zi++;
@@ -205,7 +210,11 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
       return;
     }
 
-  QgsLegendItem *legend_item = new QgsLegendItem(layer, this);
+  layer->initContextMenu(mQgisApp);
+
+  const char * layerName = layer->name().ascii(); // debugger probe
+
+  QgsLegendItem *legend_item = new QgsLegendItem(layer, this, mQgisApp->actionInOverview);
 
   // done in QgsLegendItem ctor legend_item->setPixmap( 0, *layer->legendPixmap() );
 
@@ -331,7 +340,14 @@ void QgsLegend::removeLayer(QString layer_key)
       // XXX signal/slot system network
     }
 
-}                               // removeLayer
+} // QgsLegend::removeLayer
+
+
+
+void QgsLegend::removeAll()
+{
+    clear();
+} // QgsLegend::removeAll()
 
 
 
@@ -451,3 +467,38 @@ int QgsLegend::getItemPos(QListViewItem * item)
     }
   return index;
 }
+
+
+void QgsLegend::connectNotify( const char * signal )
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsLegend connected to " << signal << "\n";
+#endif
+} //  QgsLegend::connectNotify( const char * signal )
+
+
+
+
+void QgsLegend::updateLegendItem( QListViewItem * li )
+{
+    QgsLegendItem * qli = dynamic_cast<QgsLegendItem*>(li);
+
+    if ( ! qli )
+    {
+        qDebug( "QgsLegend::updateLegendItem(): couldn't get QgsLegendItem" );
+        return;
+    }
+
+    if ( qli->layer()->showInOverviewStatus() && ! mQgisApp->actionInOverview->isOn() )
+    {
+        mQgisApp->actionInOverview->setOn(true);
+    }
+    else
+    {
+        if ( mQgisApp->actionInOverview->isOn() )
+        {
+            mQgisApp->actionInOverview->setOn(false);
+        }
+    }
+
+} // QgsLegend::updateLegendItem
