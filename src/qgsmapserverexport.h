@@ -16,7 +16,12 @@
 
 #ifndef QGSMAPSERVEREXPORT_H
 #define QGSMAPSERVEREXPORT_H
+#ifdef WIN32
+#include "qgsmapserverexportbase.h"
+#else
 #include "qgsmapserverexportbase.uic.h"
+#endif
+
 class QgsMapCanvas;
 
 /*! \class QgsMapServerExport

@@ -40,8 +40,11 @@ class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
 class QgsMapLayerRegistry;
-
+#ifdef WIN32
+#include "qgisappbase.h"
+#else
 #include "qgisappbase.uic.h"
+#endif
 #include "qgisiface.h"
 #include "splashscreen.h"
 #include "qgsconfig.h"

@@ -18,8 +18,9 @@
  ***************************************************************************/
 /* $Id$ */
 
+#ifndef WIN32
 #include <dlfcn.h>
-
+#endif
 #include <qaction.h>
 #include <qapplication.h>
 #include <qbitmap.h>
@@ -83,13 +84,18 @@
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
+#ifdef WIN32
+#include "qgsmessageviewer.h"
+#include "qgsabout.h"
+#else
+#include "qgsabout.uic.h"
 #include "qgsmessageviewer.uic.h"
+#endif
 #include "qgshelpviewer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayer.h"
-#include "qgsabout.uic.h"
 #include "qgspluginmanager.h"
 #include "qgsmaplayerinterface.h"
 #include "qgis.h"
@@ -350,6 +356,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
     gSplashScreen->setStatus(tr("Loading plugins..."));
   }
 
+  // store the application dir
+#ifdef WIN32
+  mAppDir = qApp->applicationDirPath();
+  QString PLUGINPATH = mAppDir + "/lib/qgis";
+#else
+  mAppDir = PREFIX;
+#endif
   // Get pointer to the provider registry singleton
   QString plib = PLUGINPATH;
   mProviderRegistry = QgsProviderRegistry::instance(plib);
@@ -386,8 +399,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
 
   
-  // store the application dir
-  mAppDir = PREFIX;
   // get the users theme preference from the settings
   QString themeName = settings.readEntry("/qgis/theme","default");
   
@@ -563,7 +574,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
   if (!driverRegistrar)
     {
-      qWarning("unable to get OGRDriverManager");
+	    QMessageBox::warning(0,"OGR Driver Manger","unable to get OGRDriverManager");
       return;                   // XXX good place to throw exception if we 
     }                           // XXX decide to do exceptions
 
@@ -2303,6 +2314,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
 }
 void QgisApp::testMapLayerPlugins()
 {
+#ifndef WIN32
   // map layer plugins live in their own directory (somewhere to be determined)
   QDir mlpDir("../plugins/maplayer", "*.so.1.0.0", QDir::Name | QDir::IgnoreCase, QDir::Files);
   if (mlpDir.count() == 0)
@@ -2377,6 +2389,7 @@ void QgisApp::testMapLayerPlugins()
             }
         }
     }
+#endif //#ifndef WIN32
 }
 void QgisApp::testPluginFunctions()
 {
@@ -2407,7 +2420,7 @@ void QgisApp::testPluginFunctions()
 #endif
               //QLibrary myLib("../plugins/" + pluginDir[i]);
 #ifdef QGISDEBUG
-              std::cout << "Attempting to load " << +"../plugins/" + pluginDir[i] << std::endl;
+              std::cout << "Attempting to load " << "../plugins/" + pluginDir[i] << std::endl;
 #endif
               /*  void *handle = dlopen("/home/gsherman/development/qgis/plugins/" + pluginDir[i], RTLD_LAZY);
                  if (!handle) {
@@ -2490,10 +2503,16 @@ void QgisApp::saveWindowState()
   // store window geometry
   QPoint p = this->pos();
   QSize s = this->size();
-
+  QRect fg = this->frameGeometry();
+int y = this->y();
   settings.writeEntry("/qgis/Geometry/maximized", this->isMaximized());
   settings.writeEntry("/qgis/Geometry/x", p.x());
+#ifdef WIN32
+  // y value creeps under win32 by the value of the title bar height
+  settings.writeEntry("/qgis/Geometry/y", p.y() + 30);
+#else
   settings.writeEntry("/qgis/Geometry/y", p.y());
+#endif
   settings.writeEntry("/qgis/Geometry/w", s.width());
   settings.writeEntry("/qgis/Geometry/h", s.height());
 
@@ -2923,6 +2942,9 @@ void QgisApp::populateMenuMaps()
 int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
 {
   mPluginMenu->insertItem(menuText, menu);
+  // added cuz windows wants the return
+  // TODO - fix this up later 
+  return 0;
 }
 
 // slot to update the progress bar in the status bar

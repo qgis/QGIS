@@ -102,7 +102,13 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
 
 QString QgsMarkerDialog::defaultDir()
 {
+#ifdef WIN32
+	//TODO fix this to use appropriate path on windows 
+	//qgis install
+	QString dir = "Foo";
+#else
     QString dir = QString(PKGDATAPATH)+"/svg"; 
+#endif
     return dir;
 }
 

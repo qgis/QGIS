@@ -21,7 +21,9 @@
 #include "splashscreen.h"
 #include "qfont.h"
 #include "qgis.h"
-
+#ifdef WIN32
+QString PKGDATAPATH = qApp->applicationDirPath() + "/qgis/share";
+#endif
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
   splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"));

@@ -142,7 +142,13 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget()
 
 void QgsGraMaExtensionWidget::selectMarker()
 {
+#ifdef WIN32
+	//TODO fix this so it uses the path gained using
+	//QApplication::applicationPathDir()
+    QgsMarkerDialog mdialog("");
+#else
     QgsMarkerDialog mdialog(QString(PKGDATAPATH)+"/svg");
+#endif
 
     if(mdialog.exec()==QDialog::Accepted)
     {

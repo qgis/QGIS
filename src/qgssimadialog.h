@@ -19,8 +19,11 @@
 
 #ifndef QGSSIMADIALOG_H
 #define QGSSIMADIALOG_H
-
+#ifdef WIN32
+#include "qgssimadialogbase.h"
+#else
 #include "qgssimadialogbase.uic.h"
+#endif
 
 #include <qiconview.h>
 

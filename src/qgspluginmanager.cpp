@@ -27,7 +27,9 @@
 
 #define TESTLIB
 #ifdef TESTLIB
+#ifndef WIN32
 #include <dlfcn.h>
+#endif
 #endif
 QgsPluginManager::QgsPluginManager(QWidget * parent, const char *name):QgsPluginManagerBase(parent, name)
 {
@@ -70,6 +72,7 @@ void QgsPluginManager::getPluginDescriptions()
       for (unsigned i = 0; i < pluginDir.count(); i++)
         {
 #ifdef TESTLIB
+#ifndef WIN32
           // test code to help debug loading problems
           QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
           void *handle = dlopen((const char *) lib, RTLD_LAZY);
@@ -82,8 +85,8 @@ void QgsPluginManager::getPluginDescriptions()
               std::cout << "dlopen suceeded" << std::endl;
               dlclose(handle);
             }
-
-#endif
+#endif //#ifndef WIN32
+#endif //#ifdef TESTLIB
 
 
           std::cout << "Examining " << txtPluginDir->text() << "/" << pluginDir[i] << std::endl;

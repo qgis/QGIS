@@ -21,7 +21,11 @@
 class QgsVectorLayer;
 #include "qgssymbol.h"
 class QString;
+#ifdef WIN32
+#include "qgsvectorlayerpropertiesbase.h"
+#else
 #include "qgsvectorlayerpropertiesbase.uic.h"
+#endif
 #include "qgsrenderer.h"
 #include "qpixmap.h"
 
