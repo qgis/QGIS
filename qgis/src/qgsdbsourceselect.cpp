@@ -1,9 +1,11 @@
 #include <libpq++.h>
 #include <iostream>
 #include <qsettings.h>
+#include <qpixmap.h>
 #include <qlistbox.h>
 #include <qstringlist.h>
 #include <qcombobox.h>
+#include "qgisicons.h"
 #include "qgsdbsourceselect.h"
 #include "qgsnewconnection.h"
 
@@ -27,6 +29,20 @@ void QgsDbSourceSelect::addNewConnection(){
   if(nc->exec()){
   }
 }
+void QgsDbSourceSelect::editConnection(){
+ 
+  QgsNewConnection *nc = new QgsNewConnection();
+  // populate the fields with the stored setting parameters
+  QSettings settings;
+
+  QString key = "/Qgis/connections/" + cmbConnections->currentText();
+  QString host = settings.readEntry(key+"/host");
+  QString database = settings.readEntry(key+"/database");
+  QString username = settings.readEntry(key+"/username");
+  QString password = settings.readEntry(key+"/password");
+  if(nc->exec()){
+  }
+}
 
 void QgsDbSourceSelect::dbConnect(){
   // populate the table list
@@ -41,9 +57,16 @@ void QgsDbSourceSelect::dbConnect(){
   PgDatabase *pd = new PgDatabase((const char *)conninfo);
   cout << pd->ErrorMessage();
   if(pd->Status()==CONNECTION_OK){
+    // create the pixmaps for the layer types
+    QPixmap pxPoint;
+    pxPoint = QPixmap(layer_points);
+    QPixmap pxLine;
+    pxLine = QPixmap(layer_lines);
+    QPixmap pxPoly;
+    pxPoly = QPixmap(layer_polygon);
     qDebug("Connection succeeded");
     // get the list of tables
-    QString sql =  "select f_table_name from geometry_columns where f_table_schema ='"
+    QString sql =  "select * from geometry_columns where f_table_schema ='"
       + settings.readEntry(key+"/database") + "'";
     qDebug("Fetching tables using: " + sql);
     int result = pd->ExecTuplesOk((const char *)sql);
@@ -53,7 +76,19 @@ void QgsDbSourceSelect::dbConnect(){
       qDebug( msg);
       for(int idx = 0; idx < pd->Tuples(); idx++){
 	QString v = pd->GetValue(idx,"f_table_name");
-	lstTables->insertItem(v);
+	QString type = pd->GetValue(idx,"type");
+	QPixmap *p;
+	if(type == "POINT" || type == "MULTIPOINT")
+	  p = &pxPoint;
+	else
+	  if(type == "MULTIPOLYGON" || type == "POLYGON")
+	    p = &pxPoly;
+	  else
+	    if(type == "LINESTRING" || type == "MULTILINESTRING")
+	      p = &pxLine;
+	    else
+	      p = 0;
+	lstTables->insertItem(*p,v);
       }
     }else{
       qDebug( "Unable to get list of spatially enabled tables from geometry_columns table");

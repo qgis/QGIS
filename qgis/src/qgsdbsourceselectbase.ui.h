@@ -26,3 +26,9 @@ void QgsDbSourceSelectBase::addNewConnection()
 {
 
 }
+
+
+void QgsDbSourceSelectBase::editConnection()
+{
+
+}
