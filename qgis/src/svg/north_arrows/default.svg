@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"
+[
+ <!ATTLIST svg
+  xmlns:xlink CDATA #FIXED "http://www.w3.org/1999/xlink">
+]>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   id="svg548"
+   sodipodi:version="0.32"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="128pt"
+   height="128pt"
+   sodipodi:docbase="/home/aps02ts/dev/cpp/qgis/src/svg/north_arrows"
+   sodipodi:docname="/home/aps02ts/dev/cpp/qgis/src/svg/north_arrows/default.svg">
+  <defs
+     id="defs550">
+    <linearGradient
+       id="linearGradient555">
+      <stop
+         style="stop-color:#000;stop-opacity:1;"
+         offset="0"
+         id="stop556" />
+      <stop
+         style="stop-color:#fff;stop-opacity:1;"
+         offset="1"
+         id="stop557" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient555"
+       id="linearGradient558" />
+    <radialGradient
+       xlink:href="#linearGradient555"
+       id="radialGradient559"
+       cx="0.50000006"
+       cy="0.50000000"
+       fx="0.50000006"
+       fy="0.50000000"
+       r="0.49999997"
+       gradientUnits="objectBoundingBox"
+       spreadMethod="pad" />
+  </defs>
+  <sodipodi:namedview
+     id="base" />
+  <g
+     id="g565"
+     transform="translate(6.753387,2.251129)">
+    <rect
+       style="font-size:12;fill:#ffff00;fill-opacity:0.715278;fill-rule:evenodd;stroke:#000000;stroke-width:0.761124pt;"
+       id="rect551"
+       width="27.013505"
+       height="111.913116"
+       x="58.207690"
+       y="40.047150"
+       ry="0.00000000" />
+    <path
+       style="fill:#ffff00;fill-rule:evenodd;stroke:black;stroke-opacity:1;stroke-width:1pt;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:0.717647;"
+       d="M 46.9521 39.7255 L 8.68292 39.7255 L 80.719 1.13481 L 154.363 39.404 L 46.9521 39.7255 z "
+       id="path554"
+       transform="translate(-7.718143,0.321589)" />
+    <text
+       style="fill:black;stroke:none;font-family:Arial Black;font-style:normal;font-weight:normal;font-size:72;fill-opacity:1;stroke-opacity:1;stroke-width:1pt;stroke-linejoin:miter;stroke-linecap:butt;text-anchor:start;writing-mode:lr;"
+       x="-0.00000191"
+       y="151.960266"
+       id="text560">
+      <tspan
+         x="-0.00000191"
+         y="151.960266"
+         sodipodi:role="line"
+         id="tspan563">
+N</tspan>
+    </text>
+  </g>
+</svg>
