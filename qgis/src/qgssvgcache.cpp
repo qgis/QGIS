@@ -54,7 +54,7 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   // if not, try to load it
   std::cerr<<"SVGCACHE: loading "<<filename.ascii()<<"["<<scaleFactor<<"]"<<std::endl;
   QPicture pic;
-  if( pic.load(filename,"svg")){
+  pic.load(filename,"svg");
   int width=pic.boundingRect().width();
   width=static_cast<int>(static_cast<double>(width)*scaleFactor);
   int height=pic.boundingRect().height();
@@ -105,10 +105,6 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
   }
   
   return pixmap;
-  }else{
-    QMessageBox::warning(0, "No SVG Support", "This version of Qt does not provide support for SVG Markers. Please donate to the QGIS project if you want this fixed");
-    return 0;
-  }
 }
   
 
