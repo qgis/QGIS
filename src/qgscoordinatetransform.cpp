@@ -17,32 +17,7 @@
 #include <qstring.h>
 #include <qtextstream.h>
 #include <qpoint.h>
-
-#include "qgspoint.h"
 #include "qgscoordinatetransform.h"
-
-QgsCoordinateTransform::QgsCoordinateTransform(double mupp, double ymax,
-	   double ymin, double xmin):mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin)
-{
-}
-
-QgsCoordinateTransform::~QgsCoordinateTransform()
-{
-}
-
-QgsPoint QgsCoordinateTransform::transform(QgsPoint p)
-{
-	// transform x
-	double dx = (p.x() - xMin) / mapUnitsPerPixel;
-	double dy = yMax - ((p.y() - yMin)) / mapUnitsPerPixel;
-	// double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
-	return QgsPoint(dx, dy);
-}
-
-QgsPoint QgsCoordinateTransform::transform(double x, double y)
-{
-	return (transform(QgsPoint(x, y)));
-}
 
 QgsPoint QgsCoordinateTransform::toMapPoint(int x, int y)
 {

@@ -16,8 +16,11 @@
  ***************************************************************************/
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
+
+#include "qgspoint.h"
 class QgsPoint;
 class QPoint;
+
 /*! \class QgsCoordinateTransform
 * \brief Class for doing transforms between map coordinates and device coordinates.
 *
@@ -86,4 +89,27 @@ class QgsCoordinateTransform{
     double xMax;
 
 };
+
+inline QgsCoordinateTransform::QgsCoordinateTransform(double mupp, double ymax,
+	   double ymin, double xmin):mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin)
+{
+}
+
+inline QgsCoordinateTransform::~QgsCoordinateTransform()
+{
+}
+inline QgsPoint QgsCoordinateTransform::transform(double x, double y)
+{
+	return (transform(QgsPoint(x, y)));
+}
+
+inline QgsPoint QgsCoordinateTransform::transform(QgsPoint p)
+{
+	// transform x
+	double dx = (p.x() - xMin) / mapUnitsPerPixel;
+	double dy = yMax - ((p.y() - yMin)) / mapUnitsPerPixel;
+	// double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
+	return QgsPoint(dx, dy);
+}
+
 #endif // QGSCOORDINATETRANSFORM_H
