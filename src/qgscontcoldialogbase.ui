@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>442</width>
-            <height>96</height>
+            <width>408</width>
+            <height>143</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,7 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QComboBox" row="0" column="1">
+        <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>classificationComboBox</cstring>
             </property>
@@ -42,6 +42,48 @@
             </property>
             <property name="text">
                 <string>Classification Field:</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mincolorbutton</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>maxcolorbutton</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string></string>
             </property>
         </widget>
         <widget class="QLabel" row="1" column="0">
@@ -72,9 +114,9 @@
                 <string>Maximum Value:</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="1" column="1">
+        <widget class="QLabel" row="3" column="0">
             <property name="name">
-                <cstring>mincolorbutton</cstring>
+                <cstring>outlinewidthlabel</cstring>
             </property>
             <property name="minimumSize">
                 <size>
@@ -82,38 +124,32 @@
                     <height>20</height>
                 </size>
             </property>
-            <property name="paletteBackgroundColor">
-                <color>
-                    <red>255</red>
-                    <green>255</green>
-                    <blue>255</blue>
-                </color>
-            </property>
             <property name="text">
-                <string></string>
+                <string>Outline Width:</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="2" column="1">
+        <widget class="QSpinBox" row="3" column="1">
             <property name="name">
-                <cstring>maxcolorbutton</cstring>
+                <cstring>outlinewidthspinbox</cstring>
             </property>
-            <property name="minimumSize">
+        </widget>
+        <spacer row="3" column="2">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
                 <size>
-                    <width>0</width>
+                    <width>111</width>
                     <height>20</height>
                 </size>
             </property>
-            <property name="paletteBackgroundColor">
-                <color>
-                    <red>255</red>
-                    <green>255</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string></string>
-            </property>
-        </widget>
+        </spacer>
     </grid>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>

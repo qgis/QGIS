@@ -31,6 +31,7 @@
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
+#include <qspinbox.h>
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(), m_vectorlayer(layer)
 {
@@ -92,6 +93,8 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
           mincolorbutton->setPaletteBackgroundColor(minitem->getSymbol()->brush().color());
           maxcolorbutton->setPaletteBackgroundColor(maxitem->getSymbol()->brush().color());
         }
+      outlinewidthspinbox->setValue(minitem->getSymbol()->pen().width());
+      outlinewidthspinbox->setMinValue(1);
     }
 }
 
@@ -137,22 +140,25 @@ void QgsContColDialog::apply()
   QgsSymbol minsymbol;
   if (m_vectorlayer->vectorType() == QGis::Line)
     {
-      minsymbol.setPen(QPen(mincolorbutton->paletteBackgroundColor()));
-  } else
+      minsymbol.setPen(QPen(mincolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
+    } 
+  else
     {
       minsymbol.setBrush(QBrush(mincolorbutton->paletteBackgroundColor()));
-      minsymbol.setPen(QPen(QColor(0, 0, 0), 1));
+      minsymbol.setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
   QgsRenderItem *minimumitem = new QgsRenderItem(minsymbol, QString::number(minimum, 'f'), " ");
+
 
   QgsSymbol maxsymbol;
   if (m_vectorlayer->vectorType() == QGis::Line)
     {
-      maxsymbol.setPen(QPen(maxcolorbutton->paletteBackgroundColor()));
-  } else
+      maxsymbol.setPen(QPen(maxcolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
+    } 
+  else
     {
       maxsymbol.setBrush(QBrush(maxcolorbutton->paletteBackgroundColor()));
-      maxsymbol.setPen(QPen(QColor(0, 0, 0), 1));
+      maxsymbol.setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
   QgsRenderItem *maximumitem = new QgsRenderItem(maxsymbol, QString::number(maximum, 'f'), " ");
 
