@@ -1,7 +1,7 @@
 #ifndef _WAYPOINTTOSHAPE_H_
 #define _WAYPOINTTOSHAPE_H_
 
-#include "shapefil.h"
+#include "shapefile.h"
 #include "utils.h"
 
 //qt includes
