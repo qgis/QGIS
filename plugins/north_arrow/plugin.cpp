@@ -122,6 +122,7 @@ void Plugin::run()
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+  connect(myPluginGui, SIGNAL(enableNorthArrow(bool)), this, SLOT(setEnable(bool)));
   myPluginGui->show();
 
 }
@@ -145,6 +146,10 @@ void Plugin::refreshCanvas()
 }
 
 void Plugin::renderNorthArrow()
+{
+
+//Large IF statement controlled by enable check box
+if (mEnable)
 {
   QPixmap myQPixmap; //to store the north arrow image in
   QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
@@ -234,6 +239,7 @@ void Plugin::renderNorthArrow()
     myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
     myQPainter.end();
   }
+}
 
 }
 // Unload the plugin by cleaning up the GUI
@@ -257,6 +263,10 @@ void Plugin::setPlacement(QString theQString)
   mPlacement = theQString;
 }
 
+void Plugin::setEnable(bool theBool)
+{
+  mEnable = theBool;
+}
 
 
 
