@@ -46,7 +46,10 @@ headers =  	qgis.h					\
 	   	qgsfeature.h				\
 	   	qgsfeatureattribute.h			\
 	   	qgsfield.h				\
+		qgsgraduatedmarenderer.h		\
 	   	qgsgraduatedsymrenderer.h		\
+		qgsgramadialog.h			\
+		qgsgramaextensionwidget.h		\
 	   	qgsgrasydialog.h			\
 	   	qgsgrasyextensionwidget.h		\
 	   	qgshelpviewer.h				\
@@ -95,6 +98,7 @@ qgis_UIC = 	qgisappbase.ui					\
 		qgsattributetablebase.ui			\
 		qgscontcoldialogbase.ui				\
 		qgsdlgvectorlayerpropertiesbase.ui		\
+		qgsgramadialogbase.ui				\
 		qgsgrasydialogbase.ui				\
 		qgshelpviewerbase.ui				\
 		qgsidentifyresultsbase.ui			\
@@ -137,6 +141,8 @@ qgis_MOC = 	qgisapp.moc.cpp				\
 		qgsattributetable.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
 		qgsdlgvectorlayerproperties.moc.cpp	\
+		qgsgramadialog.moc.cpp			\
+		qgsgramaextensionwidget.moc.cpp		\
 		qgsgrasydialog.moc.cpp			\
 		qgsgrasyextensionwidget.moc.cpp		\
 		qgshelpviewer.moc.cpp			\
@@ -174,7 +180,10 @@ qgis_SOURCES =  main.cpp			\
 		qgsfeature.cpp			\
 		qgsfeatureattribute.cpp		\
 		qgsfield.cpp			\
+		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
+		qgsgramadialog.cpp		\
+		qgsgramaextensionwidget.cpp	\
 		qgsgrasydialog.cpp		\
 		qgsgrasyextensionwidget.cpp	\
 		qgshelpviewer.cpp		\

@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsgrasydialog.h  -  description
+                          qgsgramadialog.h  -  description
                              -------------------
-    begin                : Oct 2003
-    copyright            : (C) 2003 by Marco Hugentobler
-    email                : mhugent@geo.unizh.ch
+    begin                : April 2004
+    copyright            : (C) 2004 by Marco Hugentobler
+    email                : marco.hugentobler@autoform.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,39 +16,36 @@
  ***************************************************************************/
 /* $Id */
 
-#ifndef QGSGRASYDIALOG_H
-#define QGSGRASYDIALOG_H
+#ifndef QGSGRAMADIALOG_H
+#define QGSGRAMADIALOG_H
 
-#include "qgsgrasydialogbase.uic.h"
+#include "qgsgramadialogbase.uic.h"
 #include <map>
 
-class QgsGraSyExtensionWidget;
+class QgsGraMaExtensionWidget;
 class QgsVectorLayer;
-class QScrollView;
 
-class QgsGraSyDialog: public QgsGraSyDialogBase
+class QgsGraMaDialog: public QgsGraMaDialogBase
 {
     Q_OBJECT
- public:
-    /**Enumeration describing the automatic settings of values*/
-    enum mode{EMPTY, EQUAL_INTERVAL, QUANTILES};
-    QgsGraSyDialog(QgsVectorLayer* layer);
-    ~QgsGraSyDialog();
- public slots:
+ public: 
+    QgsGraMaDialog(QgsVectorLayer* layer);
+    ~QgsGraMaDialog();
+ protected:
+    /**Pointer to the curret extension widget*/
+    QgsGraMaExtensionWidget* ext;
+    /**Pointer to the associated vector layer*/
+    QgsVectorLayer* mVectorLayer;
+    /**Stores the names and numbers of the fields with numeric values*/
+     std::map<QString,int> mFieldMap;
+public slots:
      void apply();
- protected slots:
+protected slots:
      /**Creates a new extension widget*/
      void adjustNumberOfClasses();
- protected:
-     /**Pointer to the curret extension widget*/
-     QgsGraSyExtensionWidget* ext;
-     /**Pointer to the associated vector layer*/
-     QgsVectorLayer* mVectorLayer;
-     /**Stores the names and numbers of the fields with numeric values*/
-     std::map<QString,int> mFieldMap;
- private:
+private:
      /**Default constructor is privat to not use is*/
-     QgsGraSyDialog();
+     QgsGraMaDialog();
 };
 
 #endif

@@ -327,8 +327,7 @@ void QgsGraSyDialog::apply()
             }
 	    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
             {
-		QgsRangeRenderItem *item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, ((QLineEdit *) (ext->getWidget(2, i)))->text());
-		
+		QgsRangeRenderItem *item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, label);
 		renderer->addItem(item);
 		//add the symbol to the picture
 

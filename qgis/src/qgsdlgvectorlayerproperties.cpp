@@ -29,6 +29,7 @@
 #include "qgsdataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymrenderer.h"
+#include "qgsgraduatedmarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgssimarenderer.h"
@@ -37,9 +38,12 @@
 #include <qwidgetstack.h>
 #include <qpushbutton.h>
 #include "qgssisydialog.h"
+#include "qgsgramadialog.h"
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
 #include "qobjectlist.h"
+#include "qgsgramadialog.h"
+
 
 QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name):QgsDlgVectorLayerPropertiesBase(parent, name), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
 bufferRenderer(layer->
@@ -79,6 +83,7 @@ bufferRenderer(layer->
   if( layer->vectorType()==QGis::Point )
   {
       legendtypecombobox->insertItem(tr("Single Marker"));
+      legendtypecombobox->insertItem(tr("Graduated Marker"));
   }
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
@@ -122,6 +127,9 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & string)
   } else if (string == tr("Single Marker"))
   {
       bufferRenderer = new QgsSiMaRenderer();
+  } else if (string == tr("Graduated Marker"))
+  {
+      bufferRenderer = new QgsGraduatedMaRenderer();
   }
   bufferRenderer->initializeSymbology(layer, this);
 
@@ -147,6 +155,7 @@ void QgsDlgVectorLayerProperties::apply()
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(layer->rendererDialog());
   QgsContColDialog *cdialog = dynamic_cast < QgsContColDialog * >(layer->rendererDialog());
   QgsSiMaDialog* smdialog = dynamic_cast < QgsSiMaDialog * >(layer->rendererDialog());
+  QgsGraMaDialog* gmdialog = dynamic_cast< QgsGraMaDialog * >(layer->rendererDialog());
 
   if (sdialog)
     {
@@ -161,6 +170,10 @@ void QgsDlgVectorLayerProperties::apply()
   else if(smdialog)
   {
       smdialog->apply();
+  }
+  else if(gmdialog)
+  {
+      gmdialog->apply();
   }
 
   rendererDirty = false;
