@@ -52,42 +52,39 @@
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
-QgisApp::QgisApp (QWidget * parent, const char *name,
-		  WFlags fl):QgisAppBase (parent, name, fl)
+QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(parent, name, fl)
 {
-  OGRRegisterAll ();
-  QPixmap icon;
-  icon = QPixmap (qgis_xpm);
-  setIcon (icon);
-  QGridLayout *FrameLayout =
-    new QGridLayout (frameMain, 1, 2, 4, 6, "mainFrameLayout");
-  QSplitter *split = new QSplitter (frameMain);
-  legendView = new QListView(split);
-  legendView->addColumn("Layers");
-  legendView->setSorting(-1);
- 
-  
-  mapLegend = new QgsLegend(legendView);	//frameMain);
- // mL = new QScrollView(split);
-  //add a canvas
-  mapCanvas = new QgsMapCanvas (split);
-  // resize it to fit in the frame
-  //    QRect r = frmCanvas->rect();
-  //    canvas->resize(r.width(), r.height());
-  mapCanvas->setBackgroundColor (Qt::white);	//QColor (220, 235, 255));
-  mapCanvas->setMinimumWidth (400);
-  FrameLayout->addWidget (split, 0, 0);
-  mapLegend->setBackgroundColor (QColor (192, 192, 192));
-  mapLegend->setMapCanvas(mapCanvas);
-  legendView->setResizeMode(QListView::AllColumns);
-  QString caption = "Quantum GIS - ";
-  caption += QGis::qgisVersion; 
-  setCaption(caption);
-  connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
-	   SLOT (showMouseCoordinate (QgsPoint &)));
-	connect (legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
-  connect (legendView, SIGNAL(rightButtonPressed ( QListViewItem *, const QPoint &, int )),
-  				this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int )));
+	OGRRegisterAll();
+	QPixmap icon;
+	icon = QPixmap(qgis_xpm);
+	setIcon(icon);
+	QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
+	QSplitter *split = new QSplitter(frameMain);
+	legendView = new QListView(split);
+	legendView->addColumn("Layers");
+	legendView->setSorting(-1);
+
+
+	mapLegend = new QgsLegend(legendView);	//frameMain);
+	// mL = new QScrollView(split);
+	//add a canvas
+	mapCanvas = new QgsMapCanvas(split);
+	// resize it to fit in the frame
+	//    QRect r = frmCanvas->rect();
+	//    canvas->resize(r.width(), r.height());
+	mapCanvas->setBackgroundColor(Qt::white);	//QColor (220, 235, 255));
+	mapCanvas->setMinimumWidth(400);
+	FrameLayout->addWidget(split, 0, 0);
+	mapLegend->setBackgroundColor(QColor(192, 192, 192));
+	mapLegend->setMapCanvas(mapCanvas);
+	legendView->setResizeMode(QListView::AllColumns);
+	QString caption = "Quantum GIS - ";
+	caption += QGis::qgisVersion;
+	setCaption(caption);
+	connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
+	connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
+	connect(legendView, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
+			this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
 
 	// create the layer popup menu
 	popMenu = new QPopupMenu();
@@ -96,153 +93,152 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
 
 }
 
-QgisApp::~QgisApp ()
+QgisApp::~QgisApp()
 {
 }
-void QgisApp::about(){
-  QgsAbout *abt = new QgsAbout();
-  QString versionString = "Version ";
-  versionString += QGis::qgisVersion;
-  abt->setVersion(versionString);
-  QString urls = "Web Page: http://qgis.sourceforge.net\nSourceforge Project Page: http://sourceforge.net/projects/qgis";
-  abt->setURLs(urls);
-  QString watsNew =  "Version ";
-  watsNew += QGis::qgisVersion;
-  watsNew += "\n* Random color now assigned to a layer when added\n"
-  					"  instead of all layers being the same color by type\n"
-					  "* Right-click menu to remove a layer or edit properties\n"
-						"* Properties page for layer. Allows setting of color and\n"
-						"  other options.";
-
-	 abt->setWhatsNew(watsNew);
-	 abt->exec();
-  
-}
-void QgisApp::addLayer ()
+void QgisApp::about()
 {
-  QStringList files =
-    QFileDialog::getOpenFileNames ("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
-				   "Select one or more layers to add");
-  QStringList::Iterator it = files.begin ();
-  while (it != files.end ())
-    {
+	QgsAbout *abt = new QgsAbout();
+	QString versionString = "Version ";
+	versionString += QGis::qgisVersion;
+	abt->setVersion(versionString);
+	QString urls = "Web Page: http://qgis.sourceforge.net\nSourceforge Project Page: http://sourceforge.net/projects/qgis";
+	abt->setURLs(urls);
+	QString watsNew = "Version ";
+	watsNew += QGis::qgisVersion;
+	watsNew += "\n* Random color now assigned to a layer when added\n"
+	  "  instead of all layers being the same color by type\n"
+	  "* Right-click menu to remove a layer or edit properties\n"
+	  "* Properties page for layer. Allows setting of color and\n" "  other options.";
 
-
-      QFileInfo fi (*it);
-      QString base = fi.baseName ();
-
-
-      // create the layer
-
-      QgsShapeFileLayer *lyr = new QgsShapeFileLayer (*it, base);
-      // give it a random color
-
-      if(lyr->isValid()){
-	      // add it to the mapcanvas collection
-	      mapCanvas->addLayer (lyr);
-	      }else{
-	        QString msg = *it;
-	        msg += " is not a valid or recognized data source";
-	      	QMessageBox::critical(this,"Invalid Data Source",msg);
-	      }
-
-      ++it;
-    }
-  qApp->processEvents ();
-  // update legend
-  /*! \todo Need legend scrollview and legenditem classes */
-  // draw the map
-  mapLegend->update();
-  mapCanvas->render2 ();
-  statusBar ()->message (mapCanvas->extent ().stringRep ());
-
-
+	abt->setWhatsNew(watsNew);
+	abt->exec();
 
 }
 
-void QgisApp::addDatabaseLayer ()
+void QgisApp::addLayer()
 {
-  // only supports postgis layers at present
-  // show the postgis dialog
-  QgsDbSourceSelect *dbs = new QgsDbSourceSelect ();
-  if (dbs->exec ())
-    {
-      // add files to the map canvas
-      QStringList tables = dbs->selectedTables ();
-      QString connInfo = dbs->connInfo ();
-      // for each selected table, connect to the datbase, parse the WKT geometry,
-      // and build a cavnasitem for it
-      // readWKB(connInfo,tables);
-      QStringList::Iterator it = tables.begin ();
-      while (it != tables.end ())
-	{
+	QStringList files = QFileDialog::getOpenFileNames("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
+													  "Select one or more layers to add");
+	QStringList::Iterator it = files.begin();
+	while (it != files.end()) {
 
-	  // create the layer
-	  QgsDatabaseLayer *lyr = new QgsDatabaseLayer (connInfo, *it);
-	  // give it a random color
 
-	  // add it to the mapcanvas collection
-	  mapCanvas->addLayer (lyr);
+		QFileInfo fi(*it);
+		QString base = fi.baseName();
 
-	  ++it;
+
+		// create the layer
+
+		QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
+		// give it a random color
+
+		if (lyr->isValid()) {
+			// add it to the mapcanvas collection
+			mapCanvas->addLayer(lyr);
+		} else {
+			QString msg = *it;
+			msg += " is not a valid or recognized data source";
+			QMessageBox::critical(this, "Invalid Data Source", msg);
+		}
+
+		++it;
 	}
-      qApp->processEvents ();
-      // update legend
-      /*! \todo Need legend scrollview and legenditem classes */
-      mapLegend->update();
-      // draw the map
-      mapCanvas->render2 ();
-      statusBar ()->message (mapCanvas->extent ().stringRep ());
+	qApp->processEvents();
+	// update legend
+	/*! \todo Need legend scrollview and legenditem classes */
+	// draw the map
+	mapLegend->update();
+	mapCanvas->render2();
+	statusBar()->message(mapCanvas->extent().stringRep());
 
-    }
-
-}
-void QgisApp::fileExit ()
-{
-  QApplication::exit ();
-
-}
-
-void QgisApp::zoomIn ()
-{
-  /*  QWMatrix m = mapCanvas->worldMatrix();
-     m.scale( 2.0, 2.0 );
-     mapCanvas->setWorldMatrix( m );
-   */
-
-  mapTool = QGis::ZoomIn;
-  mapCanvas->setMapTool (mapTool);
-  // scale the extent
-  /* QgsRect ext = mapCanvas->extent();
-     ext.scale(0.5);
-     mapCanvas->setExtent(ext);
-     statusBar()->message(ext.stringRep());
-     mapCanvas->clear();
-     mapCanvas->render2(); */
-
-}
-
-void QgisApp::zoomOut ()
-{
-  mapTool = QGis::ZoomOut;
-  mapCanvas->setMapTool (mapTool);
-  /*    QWMatrix m = mapCanvas->worldMatrix();
-     m.scale( 0.5, 0.5 );
-     mapCanvas->setWorldMatrix( m );
-   */
 
 
 }
 
-void QgisApp::pan ()
+void QgisApp::addDatabaseLayer()
 {
-  mapTool = QGis::Pan;
-  mapCanvas->setMapTool (mapTool);
+	// only supports postgis layers at present
+	// show the postgis dialog
+	mapCanvas->setEnabled(false);
+	QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
+	if (dbs->exec()) {
+		// add files to the map canvas
+		QStringList tables = dbs->selectedTables();
+		QString connInfo = dbs->connInfo();
+		// for each selected table, connect to the datbase, parse the WKT geometry,
+		// and build a cavnasitem for it
+		// readWKB(connInfo,tables);
+		QStringList::Iterator it = tables.begin();
+		while (it != tables.end()) {
+
+			// create the layer
+			QgsDatabaseLayer *lyr = new QgsDatabaseLayer(connInfo, *it);
+			// give it a random color
+
+			// add it to the mapcanvas collection
+			mapCanvas->addLayer(lyr);
+
+			++it;
+		}
+		qApp->processEvents();
+		// update legend
+		/*! \todo Need legend scrollview and legenditem classes */
+		mapLegend->update();
+		// draw the map
+		mapCanvas->render2();
+		statusBar()->message(mapCanvas->extent().stringRep());
+
+	}
+	mapCanvas->setEnabled(true);
 }
 
-void QgisApp::zoomFull ()
+void QgisApp::fileExit()
 {
-  mapCanvas->zoomFullExtent ();
+	QApplication::exit();
+
+}
+
+void QgisApp::zoomIn()
+{
+	/*  QWMatrix m = mapCanvas->worldMatrix();
+	   m.scale( 2.0, 2.0 );
+	   mapCanvas->setWorldMatrix( m );
+	 */
+
+	mapTool = QGis::ZoomIn;
+	mapCanvas->setMapTool(mapTool);
+	// scale the extent
+	/* QgsRect ext = mapCanvas->extent();
+	   ext.scale(0.5);
+	   mapCanvas->setExtent(ext);
+	   statusBar()->message(ext.stringRep());
+	   mapCanvas->clear();
+	   mapCanvas->render2(); */
+
+}
+
+void QgisApp::zoomOut()
+{
+	mapTool = QGis::ZoomOut;
+	mapCanvas->setMapTool(mapTool);
+	/*    QWMatrix m = mapCanvas->worldMatrix();
+	   m.scale( 0.5, 0.5 );
+	   mapCanvas->setWorldMatrix( m );
+	 */
+
+
+}
+
+void QgisApp::pan()
+{
+	mapTool = QGis::Pan;
+	mapCanvas->setMapTool(mapTool);
+}
+
+void QgisApp::zoomFull()
+{
+	mapCanvas->zoomFullExtent();
 }
 
 //void QgisApp::readWKB (const char *connInfo, QStringList tables)
@@ -351,62 +347,67 @@ void QgisApp::zoomFull ()
 //}
 
 
-void QgisApp::drawPoint (double x, double y)
+void QgisApp::drawPoint(double x, double y)
 {
-  QPainter paint;
-  //  QWMatrix mat (scaleFactor, 0, 0, scaleFactor, 0, 0);
-  paint.begin (mapCanvas);
-  // paint.setWorldMatrix(mat);
-  paint.setWindow (*mapWindow);
+	QPainter paint;
+	//  QWMatrix mat (scaleFactor, 0, 0, scaleFactor, 0, 0);
+	paint.begin(mapCanvas);
+	// paint.setWorldMatrix(mat);
+	paint.setWindow(*mapWindow);
 
-  paint.setPen (Qt::blue);
-  paint.drawPoint ((int) x, (int) y);
-  paint.end ();
+	paint.setPen(Qt::blue);
+	paint.drawPoint((int) x, (int) y);
+	paint.end();
 }
 
-void QgisApp::drawLayers ()
+void QgisApp::drawLayers()
 {
-  std::cout << "In  QgisApp::drawLayers()" << std::endl;
-  mapCanvas->render2 ();
+	std::cout << "In  QgisApp::drawLayers()" << std::endl;
+	mapCanvas->render2();
 }
 
-void QgisApp::showMouseCoordinate (QgsPoint & p)
+void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
-  statusBar ()->message (p.stringRep ());
-  //qWarning("X,Y is: " + p.stringRep());
+	statusBar()->message(p.stringRep());
+	//qWarning("X,Y is: " + p.stringRep());
 
 }
 
-void QgisApp::testButton ()
+void QgisApp::testButton()
 {
-  QgsShapeFileLayer *sfl = new QgsShapeFileLayer ("foo");
-  mapCanvas->addLayer (sfl);
+	QgsShapeFileLayer *sfl = new QgsShapeFileLayer("foo");
+	mapCanvas->addLayer(sfl);
 //      delete sfl;
 
 }
-void QgisApp::layerProperties(){
+
+void QgisApp::layerProperties()
+{
 	layerProperties(legendView->currentItem());
 }
-void QgisApp::layerProperties(QListViewItem *lvi){
-QgsMapLayer *lyr;
-if(lvi)
-		lyr = ((QgsLegendItem *)lvi)->layer();
-else{
-	// get the selected item
-		QListViewItem *li =  legendView->currentItem();
-		
-		lyr = ((QgsLegendItem *)li)->layer();
-}
-		QgsLayerProperties *lp = new QgsLayerProperties(lyr);
-		if(	lp->exec()){
-			// apply changes
-			mapCanvas->render2();
-			}
-}
-void QgisApp::removeLayer(){
-}
-void QgisApp::rightClickLegendMenu(QListViewItem *lvi, const QPoint &pt, int i){
-if(lvi)
-	popMenu->exec(pt);
-}
 
+void QgisApp::layerProperties(QListViewItem * lvi)
+{
+	QgsMapLayer *lyr;
+	if (lvi)
+		lyr = ((QgsLegendItem *) lvi)->layer();
+	else {
+		// get the selected item
+		QListViewItem *li = legendView->currentItem();
+
+		lyr = ((QgsLegendItem *) li)->layer();
+	}
+	QgsLayerProperties *lp = new QgsLayerProperties(lyr);
+	if (lp->exec()) {
+		// apply changes
+		mapCanvas->render2();
+	}
+}
+void QgisApp::removeLayer()
+{
+}
+void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int i)
+{
+	if (lvi)
+		popMenu->exec(pt);
+}

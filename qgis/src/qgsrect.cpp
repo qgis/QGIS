@@ -16,121 +16,115 @@
  ***************************************************************************/
 #include <qstring.h>
 #include "qgsrect.h"
-QgsRect::QgsRect (double minX, double minY, double maxX,
-		  double maxY):xmin (minX), ymin (minY), xmax (maxX),
-ymax (maxY)
+QgsRect::QgsRect(double minX, double minY, double maxX, double maxY):xmin(minX), ymin(minY), xmax(maxX), ymax(maxY)
 {
 }
 
-QgsRect::~QgsRect ()
+QgsRect::~QgsRect()
 {
 }
-void QgsRect::setXmin (double x)
+void QgsRect::setXmin(double x)
 {
-  xmin = x;
-}
-
-void QgsRect::setXmax (double x)
-{
-  xmax = x;
+	xmin = x;
 }
 
-void QgsRect::setYmin (double y)
+void QgsRect::setXmax(double x)
 {
-  ymin = y;
+	xmax = x;
 }
 
-void QgsRect::setYmax (double y)
+void QgsRect::setYmin(double y)
 {
-  ymax = y;
+	ymin = y;
 }
 
-double QgsRect::xMax () const
+void QgsRect::setYmax(double y)
 {
-  return xmax;
+	ymax = y;
 }
 
-double QgsRect::xMin () const
+double QgsRect::xMax() const
 {
-  return xmin;
+	return xmax;
 }
 
-double QgsRect::yMax () const
+double QgsRect::xMin() const
 {
-  return ymax;
+	return xmin;
 }
 
-double QgsRect::yMin () const
+double QgsRect::yMax() const
 {
-  return ymin;
+	return ymax;
 }
 
-double QgsRect::width () const
+double QgsRect::yMin() const
 {
-  return xmax - xmin;
+	return ymin;
 }
 
-double QgsRect::height () const
+double QgsRect::width() const
 {
-  return ymax - ymin;
+	return xmax - xmin;
 }
 
-void QgsRect::normalize ()
+double QgsRect::height() const
 {
-  double temp;
-  if (xmin > xmax)
-    {
-      temp = xmin;
-      xmin = xmax;
-      xmax = temp;
-    }
-  if (ymin > ymax)
-    {
-      temp = ymin;
-      ymin = ymax;
-      ymax = temp;
-    }
-}
-void QgsRect::scale (double scaleFactor)
-{
-  // scale from the center
-  double centerX = xmin + width () / 2;
-  double centerY = ymin + height () / 2;
-  xmin = centerX - (width () * scaleFactor) / 2;
-  xmax = xmin + width () * scaleFactor;
-  ymin = centerY - (height () * scaleFactor) / 2;
-  ymax = ymin + height () * scaleFactor;
+	return ymax - ymin;
 }
 
-QString QgsRect::stringRep () const
+void QgsRect::normalize()
 {
-  QString tmp;
-  QString rep = tmp.setNum (xmin);;
-  rep += " ";
-  rep += tmp.setNum (ymin);
-  rep += ",";
-  rep += tmp.setNum (xmax);
-  rep += " ";
-  rep += tmp.setNum (ymax);
-  return rep;
+	double temp;
+	if (xmin > xmax) {
+		temp = xmin;
+		xmin = xmax;
+		xmax = temp;
+	}
+	if (ymin > ymax) {
+		temp = ymin;
+		ymin = ymax;
+		ymax = temp;
+	}
+}
+void QgsRect::scale(double scaleFactor)
+{
+	// scale from the center
+	double centerX = xmin + width() / 2;
+	double centerY = ymin + height() / 2;
+	xmin = centerX - (width() * scaleFactor) / 2;
+	xmax = xmin + width() * scaleFactor;
+	ymin = centerY - (height() * scaleFactor) / 2;
+	ymax = ymin + height() * scaleFactor;
 }
 
-bool QgsRect::operator== (const QgsRect & r1)
+QString QgsRect::stringRep() const
 {
-  return (r1.xMax () == this->xMax () && r1.xMin () == this->xMin () &&
-	  r1.yMax () == this->yMax () && r1.yMin () == this->yMin ());
+	QString tmp;
+	QString rep = tmp.setNum(xmin);;
+	rep += " ";
+	rep += tmp.setNum(ymin);
+	rep += ",";
+	rep += tmp.setNum(xmax);
+	rep += " ";
+	rep += tmp.setNum(ymax);
+	return rep;
 }
 
-QgsRect & QgsRect::operator= (const QgsRect & r)
+bool QgsRect::operator==(const QgsRect & r1)
 {
-  if (&r != this)
-    {
-      xmax = r.xMax ();
-      xmin = r.xMin ();
-      ymax = r.yMax ();
-      ymin = r.yMin ();
-    }
-  return *this;
+	return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() && r1.yMax() == this->yMax() && r1.yMin() == this->yMin());
+}
+
+QgsRect & QgsRect::operator=(const QgsRect & r)
+{
+	if (&r != this) {
+		xmax = r.xMax();
+		xmin = r.xMin();
+		ymax = r.yMax();
+		ymin = r.yMin();
+	}
+	return *this;
 
 
 }

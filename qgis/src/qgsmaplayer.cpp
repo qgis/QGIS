@@ -19,106 +19,114 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 
-QgsMapLayer::QgsMapLayer (int type, QString lyrname, QString source) :
-layerName (lyrname), layerType (type), dataSource(source)
+QgsMapLayer::QgsMapLayer(int type, QString lyrname, QString source):layerName(lyrname), layerType(type), dataSource(source)
 {
-  // assume the layer is valid (data source exists and can be used)
-  // until we learn otherwise
-  valid = true;
-  m_visible = true;
-  // create a default symbol
-  
+	// assume the layer is valid (data source exists and can be used)
+	// until we learn otherwise
+	valid = true;
+	m_visible = true;
+	// create a default symbol
+
 }
 
-QgsMapLayer::~QgsMapLayer ()
+QgsMapLayer::~QgsMapLayer()
 {
 }
-const int QgsMapLayer::type ()
+const int QgsMapLayer::type()
 {
-  return layerType;
+	return layerType;
 }
 
 /** Write property of QString layerName. */
-void QgsMapLayer::setlayerName (const QString & _newVal)
+void QgsMapLayer::setlayerName(const QString & _newVal)
 {
-  layerName = _newVal;
+	layerName = _newVal;
 }
 
 /** Read property of QString layerName. */
-const QString QgsMapLayer::name ()
+const QString QgsMapLayer::name()
 {
-  return layerName;
+	return layerName;
 }
 
-const QgsRect QgsMapLayer::extent ()
+const QgsRect QgsMapLayer::extent()
 {
-  return layerExtent;
+	return layerExtent;
 }
 
-QgsRect QgsMapLayer::calculateExtent ()
+QgsRect QgsMapLayer::calculateExtent()
 {
 
 }
-void QgsMapLayer::draw (QPainter *, QgsRect * viewExtent, int yTransform)
+void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
-  std::cout << "In QgsMapLayer::draw" << std::endl;
+	std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::draw (QPainter *, QgsRect *, QgsCoordinateTransform *)
+void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *)
 {
-  std::cout << "In QgsMapLayer::draw" << std::endl;
+	std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 
 /** Read property of QgsSymbol * m_symbol. */
-QgsSymbol *QgsMapLayer::symbol ()
+QgsSymbol *QgsMapLayer::symbol()
 {
-  return m_symbol;
+	return m_symbol;
 }
 
 /** Write property of QgsSymbol * m_symbol. */
-void QgsMapLayer::setSymbol (QgsSymbol * _newVal)
+void QgsMapLayer::setSymbol(QgsSymbol * _newVal)
 {
-  m_symbol = _newVal;
+	m_symbol = _newVal;
 }
 
 /** Read property of QString labelField. */
-const QString & QgsMapLayer::labelField ()
+const QString & QgsMapLayer::labelField()
 {
-  return m_labelField;
+	return m_labelField;
 }
 
 /** Write property of QString labelField. */
-void QgsMapLayer::setlabelField (const QString & _newVal)
+void QgsMapLayer::setlabelField(const QString & _newVal)
 {
-  m_labelField = _newVal;
+	m_labelField = _newVal;
 }
 
 /** No descriptions */
-int QgsMapLayer::z ()
+int QgsMapLayer::z()
 {
-  return zpos;
+	return zpos;
 }
 
 /** No descriptions */
-void QgsMapLayer::setZ (int zorder)
+void QgsMapLayer::setZ(int zorder)
 {
-  zpos = zorder;
+	zpos = zorder;
 }
-bool QgsMapLayer::isValid(){
+
+bool QgsMapLayer::isValid()
+{
 	return valid;
-	}
-bool QgsMapLayer::visible(){
+}
+
+bool QgsMapLayer::visible()
+{
 	return m_visible;
 }
-void QgsMapLayer::setVisible(bool vis){
+
+void QgsMapLayer::setVisible(bool vis)
+{
 	m_visible = vis;
 	emit visibilityChanged();
-	}/** Read property of int featureType. */
-const int& QgsMapLayer::featureType(){
+}	 /** Read property of int featureType. */
+const int &QgsMapLayer::featureType()
+{
 	return feature;
 }
+
 /** Write property of int featureType. */
-void QgsMapLayer::setFeatureType( const int& _newVal){
+void QgsMapLayer::setFeatureType(const int &_newVal)
+{
 	feature = _newVal;
 }

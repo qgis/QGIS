@@ -32,98 +32,100 @@
  * This class is the base class for all map layer types (shapefile,
  * raster, database). 
  */
-class QgsMapLayer : public QObject {
-   Q_OBJECT
- public: 
-    /*! Constructor
-     * @param type Type of layer as defined in LAYERS enum
-     * @param lyrname Display Name of the layer
-     */
-    QgsMapLayer(int type=0, QString lyrname=QString::null, QString source=QString::null);
-    //! Destructor
-    virtual ~QgsMapLayer();
-    /*! Get the type of the layer
-     * @return Integer matching a value in the LAYERS enum
-     */
-    const int type();
-    /*! Set the name of the layer
-      # @param name New name for the layer
-    */
-    void setlayerName( const QString& name);
-    /*! Get the name of the layer
-     * @return the layer name
-     */
-    const QString name();
-    /*! Virtual function to calculate the extent of the current layer.
-     * This function must be overridden in all child classes and implemented
-     * based on the layer type
-     */
-    virtual QgsRect calculateExtent();
-    virtual void draw(QPainter *, QgsRect *, int);
-    virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform *cXf);
-    /*! Return the extent of the layer as a QRect
-     */
-    const QgsRect extent();
-    /*! Returns the status of the layer. An invalid layer is one which has a bad datasource
-     * or other problem. Child classes set this flag when intialized
-     *@return True if the layer is valid and can be accessed
-     */
-    bool isValid();
+class QgsMapLayer:public QObject
+{
+  Q_OBJECT
+  public:
+	/*! Constructor
+	 * @param type Type of layer as defined in LAYERS enum
+	 * @param lyrname Display Name of the layer
+	 */
+	QgsMapLayer(int type = 0, QString lyrname = QString::null, QString source = QString::null);
+	//! Destructor
+	  virtual ~ QgsMapLayer();
+	/*! Get the type of the layer
+	 * @return Integer matching a value in the LAYERS enum
+	 */
+	const int type();
+	/*! Set the name of the layer
+	   # @param name New name for the layer
+	 */
+	void setlayerName(const QString & name);
+	/*! Get the name of the layer
+	 * @return the layer name
+	 */
+	const QString name();
+	/*! Virtual function to calculate the extent of the current layer.
+	 * This function must be overridden in all child classes and implemented
+	 * based on the layer type
+	 */
+	virtual QgsRect calculateExtent();
+	virtual void draw(QPainter *, QgsRect *, int);
+	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
+	/*! Return the extent of the layer as a QRect
+	 */
+	const QgsRect extent();
+	/*! Returns the status of the layer. An invalid layer is one which has a bad datasource
+	 * or other problem. Child classes set this flag when intialized
+	 *@return True if the layer is valid and can be accessed
+	 */
+	bool isValid();
   /** Write property of QgsSymbol * symbol. */
-  virtual void setSymbol( QgsSymbol * _newVal);
+	virtual void setSymbol(QgsSymbol * _newVal);
   /** Read property of QgsSymbol * symbol. */
-  virtual QgsSymbol * symbol();
+	virtual QgsSymbol *symbol();
   /** Write property of QString labelField. */
-  virtual void setlabelField( const QString& _newVal);
+	virtual void setlabelField(const QString & _newVal);
   /** Read property of QString labelField. */
-  virtual const QString& labelField();
+	virtual const QString & labelField();
   /** No descriptions */
-  void setZ(int zorder);
+	void setZ(int zorder);
   /** No descriptions */
-  int z();
-  //! Visibility of the layer
+	int z();
+	//! Visibility of the layer
 	bool visible();
 	//! set visibility
 	void setVisible(bool vis);
   /** Write property of int featureType. */
-  virtual void setFeatureType( const int& _newVal);
+	virtual void setFeatureType(const int &_newVal);
   /** Read property of int featureType. */
-  virtual const int& featureType();
- public: // Public attributes
-    //! Layers enum defining the types of layers that can be added to a map
-    enum LAYERS {
-	VECTOR,
-	RASTER,
-	DATABASE
-    }  ;
- signals:
- 	void visibilityChanged(void);
- protected:
-    //! Extent of the layer
-    QgsRect layerExtent; 
-    //! Position in the map stack 
-    int zpos;
-    //! Indicates if the layer is valid and can be drawn
-    bool valid;
-    QString dataSource;
-    int feature;
- private: // Private attributes
-    /** Name of the layer - used for display  */
-    QString layerName;
-    /** Type of the layer (eg. vector, raster, database  */
-    int layerType;
+	virtual const int &featureType();
+  public:						// Public attributes
+	//! Layers enum defining the types of layers that can be added to a map
+	enum LAYERS
+	{
+		VECTOR,
+		RASTER,
+		DATABASE
+	};
+	signals:
+	void visibilityChanged(void);
+  protected:
+	//! Extent of the layer
+	  QgsRect layerExtent;
+	//! Position in the map stack 
+	int zpos;
+	//! Indicates if the layer is valid and can be drawn
+	bool valid;
+	QString dataSource;
+	int feature;
+  private:						// Private attributes
+	/** Name of the layer - used for display  */
+	  QString layerName;
+	/** Type of the layer (eg. vector, raster, database  */
+	int layerType;
 
-    //! Tag for embedding additional information
-    QString tag;
+	//! Tag for embedding additional information
+	QString tag;
   /**  */
-  QgsSymbol * m_symbol;
-  
-    bool m_visible;
+	QgsSymbol *m_symbol;
+
+	bool m_visible;
   /**  */
-  
-public: // Public attributes
+
+  public:						// Public attributes
   /**  */
-  QString m_labelField;
+	  QString m_labelField;
 };
 
 #endif

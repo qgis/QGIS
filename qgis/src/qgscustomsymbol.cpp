@@ -17,10 +17,10 @@
 
 #include "qgscustomsymbol.h"
 
-QgsCustomSymbol::QgsCustomSymbol ()
+QgsCustomSymbol::QgsCustomSymbol()
 {
 }
 
-QgsCustomSymbol::~QgsCustomSymbol ()
+QgsCustomSymbol::~QgsCustomSymbol()
 {
 }

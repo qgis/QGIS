@@ -107,6 +107,8 @@ public slots:
   std::vector<QColor> initialColor;
   void incrementZpos();
   void updateZpos();
+  //! Flag indicating a map refresh is in progress
+  bool drawing;
 
 };
 

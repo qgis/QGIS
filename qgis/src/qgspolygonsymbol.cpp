@@ -15,8 +15,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-  #include "qgspolygonsymbol.h"
-QgsPolygonSymbol::QgsPolygonSymbol(){
+#include "qgspolygonsymbol.h"
+QgsPolygonSymbol::QgsPolygonSymbol()
+{
 }
-QgsPolygonSymbol::~QgsPolygonSymbol(){
+
+QgsPolygonSymbol::~QgsPolygonSymbol()
+{
 }
