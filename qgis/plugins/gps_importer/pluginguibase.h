@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Fri Mar 5 13:08:43 2004
+** Created: Die Mär 23 15:00:22 2004
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -46,15 +46,17 @@ public:
     QSpinBox* spinMinTimeGap;
     QSpinBox* spinMinDistanceGap;
     QPushButton* pbnCancel;
+    QPushButton* pbnOK;
     QLineEdit* leInputFile;
     QLineEdit* leOutputShapeFile;
-    QPushButton* pbnOK;
 
 public slots:
     virtual void pbnOK_clicked();
     virtual void pbnSelectInputFile_clicked();
     virtual void pbnSelectOutputFile_clicked();
     virtual void pbnCancel_clicked();
+    virtual void leInputFile_textChanged( const QString & theQString );
+    virtual void leOutputShapeFile_textChanged( const QString & theQString );
 
 protected:
 

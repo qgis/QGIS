@@ -72,6 +72,19 @@ class QgsPoint {
 	QgsPoint & operator=(const QgsPoint &other);
 };
 
+inline QgsPoint::QgsPoint()
+{
+}
+
+inline QgsPoint::QgsPoint(double x, double y):m_x(x), m_y(y)
+{
+
+}
+
+inline QgsPoint::~QgsPoint()
+{
+}
+
 inline bool operator==(const QgsPoint &p1, const QgsPoint &p2){
     if((p1.x() == p2.x()) && (p1.y() == p2.y()))
 	return true;
@@ -83,6 +96,36 @@ inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
 {
    os << p.stringRep();
    return os;
+}
+
+inline double QgsPoint::x() const
+{
+  return m_x;
+}
+
+inline double QgsPoint::y() const
+{
+  return m_y;
+}
+
+inline int QgsPoint::xToInt()
+{
+  return (int) m_x;
+}
+
+inline int QgsPoint::yToInt()
+{
+  return (int) m_y;
+}
+
+inline void QgsPoint::setX(double x)
+{
+    m_x=x;
+}
+
+inline void QgsPoint::setY(double y)
+{
+    m_y=y;
 }
   
 #endif //QGSPOINT_H
