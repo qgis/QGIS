@@ -16,8 +16,15 @@
  ***************************************************************************/
 
 #include <vector>
+#include <algorithm>
+#include <qstringlist.h>
+#include <qsettings.h>
 #include "qgsspitbase.h"
 #include "qgsshapefile.h"
+extern "C"
+{
+  #include <libpq-fe.h>
+}
 
 class QgsSpit :public QgsSpitBase{
   public:
@@ -36,14 +43,18 @@ class QgsSpit :public QgsSpitBase{
   void useDefaultSrid();
   void useDefaultGeom();
   void helpInfo();
+	void getSchema();
+	void updateSchema();
   void import();
 
   private:
+	PGconn* checkConnection();
+	QStringList schema_list;
   int total_features;
   std::vector <QgsShapeFile *> fileList;
   int defSrid;
   QString defGeom;
   int defaultSridValue;
   QString defaultGeomValue;
-
+	QString gl_key;
 };
