@@ -450,7 +450,98 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
 
 QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist)
 {
-    return 0;//soon
+     // We must manually check each point to see if it is within the
+  // selection rectangle
+  QgsFeature *f = 0;
+  bool processPoint;
+  if(mValid){
+    // read the line
+    QTextStream stream( mFile );
+    QString line;
+    if ( !stream.atEnd() ) {
+      line = stream.readLine(); // line of text excluding '\n'
+      // create the geometry from the x, y fields
+      QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
+      // Get the x and y values, first checking to make sure they
+      // aren't null.
+      QString sX = parts[fieldPositions[mXField]];
+      QString sY = parts[fieldPositions[mYField]];
+      //std::cout << "x ,y " << sX << ", " << sY << std::endl; 
+      bool xOk = true;
+      bool yOk = true;
+      double x = sX.toDouble(&xOk);
+      double y = sY.toDouble(&yOk);
+      if(xOk && yOk)
+      {
+        if(mSelectionRectangle == 0)
+        {
+          // no selection in place
+          processPoint = true;
+        }else
+        {
+          // check to see if point is in bounds
+          processPoint = boundsCheck(x, y);
+          if(!processPoint)
+          {
+            // we need to continue to read until we get a hit in the
+            // selection rectangle or the EOF is reached
+            while(!stream.atEnd() && !processPoint)
+            {
+              line = stream.readLine();
+
+              // create the geometry from the x, y fields
+              parts = QStringList::split(QRegExp(mDelimiter), line, true);
+              // Get the x and y values, first checking to make sure they
+              // aren't null.
+              sX = parts[fieldPositions[mXField]];
+              sY = parts[fieldPositions[mYField]];
+              //std::cout << "x ,y " << sX << ", " << sY << std::endl; 
+              xOk = true;
+              yOk = true;
+              x = sX.toDouble(&xOk);
+              y = sY.toDouble(&yOk);
+              if(xOk && yOk)
+              {
+                processPoint = boundsCheck(x, y);
+              }
+
+            }
+          }
+        }
+        if(processPoint)
+        {
+          //std::cout << "Processing " << x << ", " << y << std::endl; 
+          // create WKBPoint
+          wkbPoint wkbPt;
+          unsigned char * geometry = new unsigned char[sizeof(wkbPt)];
+          geometry[0] = endian();
+          int type = 1;
+          void *ptr = geometry+1;
+          memcpy((void*)(geometry +1), &type, 4);
+          memcpy((void*)(geometry +5), &x, sizeof(x));
+          memcpy((void*)(geometry +13), &y, sizeof(y));
+          /*
+             geometry->byteOrder = endian();
+             geometry->wkbType = 1;
+             geometry->x = x;
+             geometry->y = y;
+             */
+          f = new QgsFeature();
+          f->setGeometry(geometry, sizeof(wkbPt));
+          //std::cerr << "Setting feature id to " << mFid << std::endl; 
+          f->setFeatureId(mFid++);
+          
+          // add the attributes to the attribute map
+	      for(std::list<int>::iterator iter=attlist.begin();iter!=attlist.end();++iter)
+	      {
+		  f->addAttribute(attributeFields.at(*iter).name(), parts[*iter]);
+	      }
+        }
+      }
+    }
+
+  }
+  return f;
 }
 
 /**

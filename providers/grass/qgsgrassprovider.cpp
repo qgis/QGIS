@@ -922,6 +922,31 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
     }
 }
 
+void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int>& attlist)
+{
+#ifdef QGISDEBUG
+    std::cerr << "setFeatureAttributes cat = " << cat << std::endl;
+    #endif
+    if ( mLayers[layerId].nColumns > 0 ) {
+	// find cat
+	GATT key;
+	key.cat = cat;
+	GATT *att = (GATT *) bsearch ( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
+		                       sizeof(GATT), cmpAtt);
+
+	if ( att != NULL ) {
+	    for (std::list<int>::iterator iter=attlist.begin(); iter!=attlist.end();++iter)
+	    {
+		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), att->values[*iter]);	
+	    }
+	}
+    } else { 
+	QString tmp;
+	tmp.sprintf("%d", cat );
+	feature->addAttribute ( "cat", tmp);
+    }
+}
+
 /** Get pointer to map */
 struct Map_info *QgsGrassProvider::layerMap ( int layerId )
 {
