@@ -62,7 +62,7 @@
 #include <iostream>
 #include <iomanip>
 #include <memory>
-
+#include <vector>
 
 
 #ifndef GDAL_PRIV_H_INCLUDED
@@ -294,6 +294,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mMapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
           this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
   connect(mMapLegend, SIGNAL(zOrderChanged(QgsLegend *)), mMapCanvas, SLOT(setZOrderFromLegend(QgsLegend *)));
+  connect(mMapLegend, SIGNAL(zOrderChanged(QgsLegend *)), this, SLOT(setOverviewZOrder(QgsLegend *)));
   connect(mMapLegend, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(currentLayerChanged(QListViewItem *)));
 
   // add the whats this toolbar button
@@ -3086,4 +3087,48 @@ void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
     mOverviewCanvas->zoomFullExtent();
     std::cout << " Removed layer " << theLayerId << " from overview map" << std::endl;
   }
+}
+
+void QgisApp::setOverviewZOrder(QgsLegend * lv)
+{
+#ifdef QGISDEBUG    
+    std::cout << " Resetting z-order of overview map" << std::endl;
+#endif      
+  //we must clear the overview canvas first to ensure layers are added again
+  //in the correect order!
+  mOverviewCanvas->clear();
+  mOverviewCanvas->freeze(false);
+  QListViewItemIterator it(lv);
+  std::vector<QString> myOverviewLayerVector;
+  /** Move to the end of the list first, making sure all layers are removed as we go */
+  while (it.current())
+  {
+    QgsLegendItem *li = (QgsLegendItem *) it.current();
+    QgsMapLayer *lyr = li->layer();
+    QString myLayerId = lyr->getLayerID();
+    mOverviewCanvas->remove(myLayerId);
+#ifdef QGISDEBUG    
+    std::cout << " Removed layer " << myLayerId << " from overview map" << std::endl;
+#endif      
+    myOverviewLayerVector.push_back(myLayerId);
+    ++it;
+  }
+  std::vector<QString>::reverse_iterator myIterator=myOverviewLayerVector.rbegin();
+  while (myIterator != myOverviewLayerVector.rend())
+  {
+    QgsMapLayer *lyr = mMapLayerRegistry->mapLayer(*myIterator);
+    if (lyr->showInOverviewStatus())
+    {
+      mOverviewCanvas->addLayer(lyr);
+#ifdef QGISDEBUG    
+    std::cout << " Added layer " << *myIterator << " to overview map" << std::endl;
+#endif      
+    }
+    myIterator++;
+  }
+
+  mOverviewCanvas->render();
+  mOverviewCanvas->zoomFullExtent();
+  mOverviewCanvas->refresh();
+
 }
