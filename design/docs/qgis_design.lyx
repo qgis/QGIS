@@ -1,0 +1,3899 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass report
+\language american
+\inputencoding latin1
+\fontscheme default
+\graphics default
+\float_placement !ht
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage a4
+\use_geometry 0
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+
+\layout Title
+
+Quantum GIS Design Document
+\layout Author
+
+Mark Coletti
+\layout Standard
+
+
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset 
+
+
+\layout Standard
+
+
+\begin_inset FloatList figure
+
+\end_inset 
+
+
+\layout Standard
+
+
+\begin_inset FloatList table
+
+\end_inset 
+
+
+\layout Chapter
+
+Introduction
+\layout Standard
+
+This document describes the requirements and design for Quantum GIS (QGIS),
+ a desktop GIS application for Linux and Unix.
+ This document presents use cases, high-level class diagrams, and additional
+ information about the design and implementaion of QGIS.
+ 
+\layout Standard
+
+QGIS is hosted on SourceForge at http://qgis.sourceforge.net.
+ The current release of QGIS is a viewer with a minimal feature set, including
+ loading data (shapefiles and PostgreSQL layers), browsing, and identifying
+ features.
+\layout Standard
+
+The design outlined in this document represents the next phase of QGIS developme
+nt, which will move the application to a flexible and extensible platform
+ for working with spatial data.
+\layout Standard
+
+Note that it's presumed that the reader is familiar with C++, object-oriented
+ design, and UML.
+\layout Chapter
+
+Requirements
+\layout Section
+
+Organization
+\layout Standard
+
+This section describes the functional requirements of Quantum GIS.
+ First, a general overview of capabilities of QGIS is given; this is followed
+ by sections that refine that requirement description by analyzing the users
+ (actors) and possible use-cases.
+\layout Section
+
+General Requirements
+\layout Standard
+
+QGIS will provide GIS functionality somewhere between a simple viewer and
+ an industrial strength application.
+ Some of the major design requirements include:
+\layout Itemize
+
+Ability to render and browse data in many formats:
+\begin_deeper 
+\layout Itemize
+
+Spatio-temporal data using a feature-centric model
+\layout Itemize
+
+Shapefiles
+\layout Itemize
+
+PostgreSQL / PostGIS layers
+\layout Itemize
+
+Raster
+\end_deeper 
+\layout Itemize
+
+Support for Geography Markup Language (GML)
+\layout Itemize
+
+Support for Web Feature Service (WFS)
+\layout Itemize
+
+Edit PostgreSQL / PostGIS layers
+\layout Itemize
+
+Perform analytical operations
+\begin_deeper 
+\layout Itemize
+
+Buffer
+\layout Itemize
+
+Spatial selections (touching, contained-by, overlapping, etc.)
+\end_deeper 
+\layout Itemize
+
+Extensible plugin interface
+\begin_deeper 
+\layout Itemize
+
+All major functionality is provided via plugins
+\end_deeper 
+\layout Section
+
+Actors
+\layout Standard
+
+The viewer requirements are driven by how it is to be used.
+ Before the exact nature of this use can be discussed, it's important to
+ first identifiy the types of users (
+\begin_inset Quotes eld
+\end_inset 
+
+actors
+\begin_inset Quotes erd
+\end_inset 
+
+ in design parlance).
+ After all, each type of user will approach the viewer with different goals,
+ each of which will have to be effectable in the viewer.
+\layout Standard
+
+There are five different actors relevent to the viewer.
+ They are the 
+\begin_inset Quotes eld
+\end_inset 
+
+Casual User
+\begin_inset Quotes erd
+\end_inset 
+
+, 
+\begin_inset Quotes eld
+\end_inset 
+
+Casual GIS User
+\begin_inset Quotes erd
+\end_inset 
+
+, 
+\begin_inset Quotes eld
+\end_inset 
+
+Home GIS User
+\begin_inset Quotes erd
+\end_inset 
+
+, 
+\begin_inset Quotes eld
+\end_inset 
+
+Earth Science Information Center help desk staffer
+\begin_inset Quotes erd
+\end_inset 
+
+, and 
+\begin_inset Quotes eld
+\end_inset 
+
+GIS professional
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:actors}
+\end_inset 
+
+ depicts these roles and their relationship.
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Caption
+
+
+\begin_inset Graphics
+
+\end_inset 
+
+
+\end_inset 
+
+
+\layout Standard
+
+
+\begin_inset Float figure
+wide true
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename actors.eps
+	display grayscale
+	width 100col%
+	subcaptionText "Actor"
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:actors}
+
+\end_inset 
+
+SDTS Viewer actor roles and their relationships
+\end_inset 
+
+
+\layout Subsection
+
+Casual User
+\layout Standard
+
+The casual user would infrequently use the viewer and would possess at most
+ a modicum of GIS knowledge.
+ They may only have a single SDTS dataset to view.
+ They would want to quickly view a given area and perhaps print what they
+ see.
+ They also may wish to verify SDTS data integrity by looking at it.
+\layout Subsection
+
+Home GIS User
+\layout Standard
+
+A 
+\begin_inset Quotes eld
+\end_inset 
+
+Home GIS User
+\begin_inset Quotes erd
+\end_inset 
+
+ is a type of 
+\begin_inset Quotes eld
+\end_inset 
+
+Casual User
+\begin_inset Quotes erd
+\end_inset 
+
+ that would be a lay person that is perhaps interested in viewing geospatial
+ data of special interest, say of the area where they live.
+ They are curious to see what the data looks like, or may intend to use
+ images in, say, a personal web site.
+ It's important that they be able to easily save what they see into a standard
+ format or to print on their printer.
+ They would use the viewer infrequently.
+ They, too, would also use the viewer to verify that their data is correct.
+ They would not necessarily know a lot about GIS.
+\layout Subsection
+
+Casual GIS User
+\layout Standard
+
+Another 
+\begin_inset Quotes eld
+\end_inset 
+
+Casual User
+\begin_inset Quotes erd
+\end_inset 
+
+ is the 
+\begin_inset Quotes eld
+\end_inset 
+
+Casual GIS User,
+\begin_inset Quotes erd
+\end_inset 
+
+ who would be a professional that has occasional use of geospatial data.
+ They probably don't have any high-end GIS tools.
+ They may be a graphic artist that wishes to generate quick images for a
+ company banner, or an engineer that wants to print out a rough map of a
+ transportation grid.
+ They also would want to quickly verify the correctness of data.
+\layout Subsection
+
+Educator
+\layout Standard
+
+A teacher or professor may use the browser as a tool to educate students
+ about geography or GIS related topics.
+\layout Subsection
+
+ESIC help desk staffer
+\layout Standard
+
+The ESIC answers SDTS related questions from USGS customers.
+ Occasionally these questions require a staffer to pull up the same dataset
+ that the client is using to insure its quality or to find a particular
+ feature for the client.
+ The staffer would frequently use the viewer in their work.
+ The staffer may also print metadata or an image to fax to a client; alternative
+ly they may wish to save this same information into a format suitable for
+ sending via e-mail.
+ A staffer may also wish to quickly restore a 
+\begin_inset Quotes eld
+\end_inset 
+
+browsing state;
+\begin_inset Quotes erd
+\end_inset 
+
+ that is, being able to load a dataset and restore a previous view of that
+ dataset.
+\layout Standard
+
+Note that this isn't a principal use case as obviously the ESIC staffers
+ will be a minority of the type of users; moreover the focus for the viewer
+ is clearly targeted to both the casual and professional user.
+ However it is not only possible that ESIC related use cases will overlap
+ use cases derived from other roles and thus emphasize their relative importance
+, but that use cases specific to ESIC personnel may also serendipitously
+ prove to be useful to those other roles.
+\layout Subsection
+
+GIS Professional
+\layout Standard
+
+A GIS professional would presumably have high-grade GIS tools, such as Arcinfo,
+ available to them.
+ However, they may want to view a dataset prior to converting it to a proprietar
+y format to insure that they have the correct data and that it's error-free.
+ This role is similar to an ESIC staffer as the GIS professional would also
+ want to perform identical tasks; that is, they also wish to check a dataset's
+ integrity and quickly find a particular feature.
+ Naturally the GIS professional would have a great deal of GIS related knowledge.
+ They may use the browser frequently.
+\layout Section
+
+Use Cases
+\layout Standard
+
+This section describes the use cases that the viewer will have to address,
+ and naturally are driven by one or more actor roles.
+ The following use cases will be described in more detail in the following
+ sections:
+\layout Itemize
+
+buffer features
+\layout Itemize
+
+select features based on relationship to other features
+\begin_deeper 
+\layout Itemize
+
+touching
+\layout Itemize
+
+contained
+\layout Itemize
+
+overlapping
+\end_deeper 
+\layout Itemize
+
+browseData
+\begin_deeper 
+\layout Itemize
+
+zoom
+\begin_deeper 
+\layout Itemize
+
+zoom full
+\layout Itemize
+
+zoom selected
+\layout Itemize
+
+pan
+\end_deeper 
+\end_deeper 
+\layout Itemize
+
+loadData
+\layout Itemize
+
+union
+\layout Itemize
+
+intersect
+\layout Itemize
+
+merge
+\layout Itemize
+
+identify
+\layout Itemize
+
+edit data
+\layout Itemize
+
+findFeature
+\layout Itemize
+
+getHelp
+\layout Itemize
+
+setPreferences
+\layout Itemize
+
+saveProject
+\layout Itemize
+
+restoreProject
+\layout Itemize
+
+exportData
+\layout Itemize
+
+saveImage
+\layout Itemize
+
+print
+\begin_deeper 
+\layout Itemize
+
+printImage
+\layout Itemize
+
+printMetadata
+\layout Itemize
+
+printFeatureInformation
+\end_deeper 
+\layout Standard
+
+
+\begin_inset Float figure
+wide true
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename usecases.eps
+	display grayscale
+	width 100text%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:useCases}
+
+\end_inset 
+
+SDTS viewer use cases
+\end_inset 
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:useCases}
+\end_inset 
+
+ shows all the use cases and their respective relationships.
+ There are three driving use cases, which are highlighted in the figure:
+ verifyData, saveImage, and print.
+ That is, the user will have one or more of these use cases as goals when
+ using the browser.
+\layout Subsection
+
+browseData
+\layout Standard
+
+This is the most important use case -- that is, being able to examine a
+ given SDTS dataset.
+ This includes viewing different parts of the data, querying features, and
+ examining attendant metadata.
+ 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Table~
+\backslash 
+ref{table:browsecase}
+\end_inset 
+
+ shows the general steps for browseData.
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Change View
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Redisplay View
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+<<extension point>>
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+[continue until done]
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:browsecase}
+
+\end_inset 
+
+browseData Use Case
+\end_inset 
+
+
+\begin_inset Quotes eld
+\end_inset 
+
+Change View
+\begin_inset Quotes erd
+\end_inset 
+
+ means changing the view point, or toggling the visibility of a feature
+ type, a portion of the data, or a thematic layer.
+ The marked extension point is for the verifyData, saveViewContext, and
+ saveImage use cases.
+\layout Subsubsection
+
+pan
+\layout Standard
+
+If only a subset of the data is rendered in the main window and the user
+ wishes to see data that is in another area, then the user could use the
+ pan use case to render the other area of interest.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select new area
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Redisplay View
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:pan}
+
+\end_inset 
+
+pan Use Case
+\end_inset 
+
+
+\layout Subsubsection
+
+zoom
+\layout Standard
+
+This is similar to the pan use case that what data is rendered in the main
+ window is changed.
+ However, instead of moving the area covered by the main window to another
+ part of the data set, the size of the covered area is changed instead.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select new area
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Redisplay View
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:zoom}
+
+\end_inset 
+
+zoom Use Case
+\end_inset 
+
+
+\layout Subsection
+
+findFeature
+\layout Standard
+
+This use case, as shown in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:findFeature}
+\end_inset 
+
+, denotes where a user is looking for a specific entity within an SDTS dataset.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Feature
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Show Feature
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:findFeature}
+
+\end_inset 
+
+findFeature Use Case
+\end_inset 
+
+findFeature extends the browseData use case in that a user can locate a
+ specific feature by browsing for it.
+ Alternatively the user should be able to directly express their search
+ for a particular feature.
+\layout Subsection
+
+loadData
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Table~
+\backslash 
+ref{table:loadData}
+\end_inset 
+
+ show the semantics for the loadData use case, where a user loads a specific
+ SDTS dataset.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Find CATD file
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\lang english
+  
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Allow for file system navigationto locate SDTS catalog file(i.e., a CATD module)
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Load data
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\lang english
+ 
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Open and read in appropriate modules
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:loadData}
+
+\end_inset 
+
+loadData Use Case
+\end_inset 
+
+
+\layout Subsection
+
+print
+\layout Standard
+
+This use case is a generalization of the printFeatureInformation, printMetaData,
+ and printImage use cases, and is shown in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:print}
+\end_inset 
+
+.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Something
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Show that Something
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Choose Output Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Output Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print to Output Target
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:print}
+
+\end_inset 
+
+print Use Case
+\end_inset 
+
+
+\layout Subsection
+
+printImage
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Table~
+\backslash 
+ref{table:printImage}
+\end_inset 
+
+ describes where a user wishes to print out part or all of a given dataset.
+ That is, the user will print a copy of a rendered SDTS dataset to a file
+ or a printer.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Data
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Show Data
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Choose Output Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Output Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print to Target
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:printImage}
+
+\end_inset 
+
+printImage Use Case
+\end_inset 
+
+
+\layout Subsection
+
+printMetadata
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Table~
+\backslash 
+ref{table:printMetaData}
+\end_inset 
+
+ shows where the user wants to print out some or all of the dataset's metadata.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Metadata
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Show Metadata
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Choose Output Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Output Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print to Target
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:printMetaData}
+
+\end_inset 
+
+printMetaData Use Case
+\end_inset 
+
+
+\layout Subsection
+
+printFeatureInformation
+\layout Standard
+
+This use case entails finding a given feature and printing its metadata
+ to a file or printer and is depicted in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:printFeatureInformation}
+\end_inset 
+
+.
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Feature
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Show Feature
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Choose Output Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Output Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Print to Target
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:printFeatureInformation}
+
+\end_inset 
+
+printFeatureInformation Use Case
+\end_inset 
+
+
+\layout Subsection
+
+verifyData
+\layout Standard
+
+Here, the user wants to ensure that they got the correct data and that the
+ data isn't damaged or corrupted in some way.
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+ Table~
+\backslash 
+ref{table:verifyData}
+\end_inset 
+
+ details the use case steps.
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Load Data
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Read Data
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+[insure data is valid]
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:verifyData}
+
+\end_inset 
+
+verifyData Use Case
+\end_inset 
+
+This extends the browseData use case in that the user may browse the data
+ to insure its fidelity.
+ A user may also use findFeature to verify data -- that is, a missing feature
+ may indicate an erroneous data set.
+\layout Subsection
+
+saveImage
+\layout Standard
+
+This use case entails taking the current view and saving it in a common
+ graphic format, such as GIF, PNG, or JPEG and is shown in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:saveImage}
+\end_inset 
+
+.
+ Although a user can presumably take a screen snapshot, crop it, and save
+ it into a specific format, some of the user roles would lack these skills
+ and available tools.
+ (E.g.
+ the Casual GIS User) Even those users that did have the right tools and
+ knowledge would find it convenient to save what they see into a file using
+ the viewer itself.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Format
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Format
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Save View
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Write View to Target in Format
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:saveImage}
+
+\end_inset 
+
+saveImage Use Case
+\end_inset 
+
+The format will obviously be one of the previously mentioned formats.
+ However the target could be a file or even a printer; if the latter, then
+ the format is more-or-less irrelevent, so this implies that saving a view
+ to a file or sending to a printer are mutually exclusive.
+\layout Subsection
+
+restoreViewContext
+\layout Standard
+
+Occasionally a user will want to look at the same data more than once; moreover
+ they may want to return to the last view location.
+ That is, they desire to return the viewer to a previous state.
+ Although they can manually do so, restoring the viewers 
+\begin_inset Quotes eld
+\end_inset 
+
+browse state
+\begin_inset Quotes erd
+\end_inset 
+
+ can be laborious and is not guaranteed to restore
+\emph on 
+ 
+\emph default 
+an 
+\emph on 
+exact
+\emph default 
+ view.
+ The restoreViewContext use case allows a previous view context to be restored
+ and is shown in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:restoreViewContext}
+\end_inset 
+
+.
+ 
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Load Context
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Restore Context from Target
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:restoreViewContext}
+
+\end_inset 
+
+restoreViewContext Use Case
+\end_inset 
+
+
+\layout Subsection
+
+saveViewContext
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Table~
+\backslash 
+ref{table:saveViewContext}
+\end_inset 
+
+ shows the use case that is implied in the previous section.
+ After all, if there's a way to restore a view, then there must be a view
+ saving mechainism.
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Target
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Remember Target
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Save Context
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Write Context to Target
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:saveViewContext}
+
+\end_inset 
+
+saveViewContext
+\end_inset 
+
+
+\layout Subsection
+
+getHelp
+\layout Standard
+
+Though we'd like to think that the viewer will be intuitive, there will
+ be times when the user needs to learn how to do something within the viewer
+ -- or to see if a given functionality is even available.
+ The getHelp use case addresses these needs, and the semantics are show
+ in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:getHelp}
+\end_inset 
+
+.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Ask for Help
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Display Help
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:getHelp}
+
+\end_inset 
+
+getHelp use case semantics
+\end_inset 
+
+
+\layout Subsection
+
+setPreferences
+\layout Standard
+
+This use case allows the user to tailor how the view is rendered.
+ For example, they can set what is shown, what colors are used for what,
+ and how lines are drawn.
+ There are three general use case types of preferences, setVisible, setRasterAtt
+ributes, setLineAttributes, which are detailed in the next three sub-sections.
+ They all follow the general semantics shown in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+table~
+\backslash 
+ref{table:setPreferences}
+\end_inset 
+
+.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User Intentions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+System Response
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Select Viewer Attribute
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Acknowledge Selection
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Set Attribute Value
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Re-render with Changed Value
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{table:setPreferences}
+
+\end_inset 
+
+setPreferences general use case
+\end_inset 
+
+
+\layout Subsubsection
+
+setVisible
+\layout Standard
+
+The user may wish to exclude some things from being shown to better see
+ other details.
+ Here the user can toggle some dataset entity's visibility.
+ This could be a specific type of feature or entire thematic layers.
+\layout Subsubsection
+
+setRasterAttributes
+\layout Standard
+
+The user can set how raster data is rendered.
+ The following raster attributes can be set:
+\layout Itemize
+
+shading model 
+\begin_deeper 
+\layout Itemize
+
+flat 
+\layout Itemize
+
+gouroud
+\end_deeper 
+\layout Itemize
+
+color scheme
+\begin_deeper 
+\layout Itemize
+
+rgb
+\layout Itemize
+
+gray scale
+\layout Itemize
+
+hsv
+\layout Itemize
+
+tailorable
+\end_deeper 
+\layout Itemize
+
+contrast
+\layout Itemize
+
+brightness
+\layout Itemize
+
+level of detail
+\layout Subsubsection
+
+setVectorAttributes
+\layout Standard
+
+The user can set how line data is displayed and assign specific line types
+ to certain vector-based features.
+ The following line attributes can be set:
+\layout Itemize
+
+color
+\layout Itemize
+
+thickness
+\layout Itemize
+
+type
+\begin_deeper 
+\layout Itemize
+
+solid
+\layout Itemize
+
+dashed
+\layout Itemize
+
+tailored
+\end_deeper 
+\layout Itemize
+
+anti-aliased
+\layout Chapter
+
+Design
+\layout Section
+
+User Interface Design
+\layout Standard
+
+This chapter describes the viewer's user interface.
+ Each use-case should have one or more GUI components, the one notable use
+ case being verifyData.
+ That use case is supported by the findFeature and browseData use cases,
+ as show in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+figure~
+\backslash 
+ref{fig:useCases}
+\end_inset 
+
+.
+ First we show the main application interface, and then the contents of
+ the top-level menus.
+ Then we address each use case's user-interface implementation.
+\layout Subsection
+
+Main application interface
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:mainUI}
+\end_inset 
+
+ shows what the top level application interface looks like.
+ It's divided into a menu bar, toolbar, status bar, and display area.
+ The menu bar is the top-most component, and contains the file, edit, view,
+ and help sub-menus.
+ Immediately below the menu bar is the toolbar, which provides short-cuts
+ for commonly used functions.
+ The user can open a dataset, save an image or view context, view information
+ about the current dataset, or get help on any of the interface components.
+ The bottom-most component is the status bar where menu item explanatory
+ text is displayed.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename main.eps
+	display grayscale
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:mainUI}
+
+\end_inset 
+
+Main user interface
+\end_inset 
+
+
+\layout Subsection
+
+File menu
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:fileMenuUI}
+\end_inset 
+
+ shows the file menu.
+ It has menu entries for creating a new view, opening a dataset, saving
+ the current view, or saving the view as an image, closing the current dataset,
+ printing the dataset, and exiting the application.
+ Not that all of these support alternative key stroke access as well as
+ accelerator keys.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename mainmenu.eps
+	display color
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:fileMenuUI}
+
+\end_inset 
+
+File menu contents
+\end_inset 
+
+
+\layout Subsection
+
+Edit menu
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:editMenuUI} 
+\end_inset 
+
+shows the edit menu.
+ Currently the only entry is to set the browser's preferences.
+ Note that it, too, has single keystroke access and an accelerator key.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename editmenu.eps
+	display color
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:editMenuUI}
+
+\end_inset 
+
+Edit menu contents
+\end_inset 
+
+
+\layout Subsection
+
+View menu
+\layout Standard
+
+The view menu, as shown in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+figure~
+\backslash 
+ref{fig:viewMenuUI}
+\end_inset 
+
+, has entries for toggling the display of the toolbar and status bar.
+ The 
+\begin_inset Quotes eld
+\end_inset 
+
+Detail
+\begin_inset Quotes erd
+\end_inset 
+
+ item invokes the dataset information display dialog.
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename viewmenu.eps
+	display color
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:viewMenuUI}
+
+\end_inset 
+
+View menu contents
+\end_inset 
+
+
+\layout Subsection
+
+loadData
+\layout Standard
+
+
+\begin_inset LatexCommand \label{section:loadData}
+
+\end_inset 
+
+Each SDTS dataset is comprised of modules of which one contains a manifest
+ of all its modules, including itself.
+ This module is the Catalog/Directory module which the standard dictates
+ must have the mnemonic 
+\begin_inset Quotes eld
+\end_inset 
+
+CATD
+\begin_inset Quotes erd
+\end_inset 
+
+ somewhere in its file name.
+ The CATD module is a convenient way of locating the rest of the dataset's
+ files; each CATD record contains a file name and the corresponding module
+ type.
+ So, we can use the CATD module as a means of opening any other files we
+ need, and also can offer hints on the type of data we'll be reading.
+ That is, we can deterimine 
+\emph on 
+a priori 
+\emph default 
+whether we'll be reading raster or vector data (or both) by the presence
+ of raster or vector related module listings in a CATD module.
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:loadData}
+\end_inset 
+
+ shows what the loadData file dialog should look like.
+ Note that the 
+\begin_inset Quotes eld
+\end_inset 
+
+File type
+\begin_inset Quotes erd
+\end_inset 
+
+ field will have 
+\begin_inset Quotes eld
+\end_inset 
+
+SDTS
+\begin_inset Quotes erd
+\end_inset 
+
+ and will have a regular expression suitable to match CATD modules.
+ (I.e., a case insenstive 
+\begin_inset Quotes eld
+\end_inset 
+
+*catd*ddf) There is a second file type that can be loaded, one for restoring
+ a view context; its corresponding file name regular expression is 
+\begin_inset Quotes eld
+\end_inset 
+
+*.svc
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ View contexts are further explained in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+section~
+\backslash 
+ref{section:viewContext}
+\end_inset 
+
+.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename loadData.eps
+	display grayscale
+	width 97text%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:loadData}
+
+\end_inset 
+
+Prototype for file dialog to load a SDTS dataset
+\end_inset 
+
+
+\layout Standard
+
+This dialog can be invoked in one of the following way.
+\layout Itemize
+
+From the top level 
+\begin_inset Quotes eld
+\end_inset 
+
+File
+\begin_inset Quotes erd
+\end_inset 
+
+ menu's 
+\begin_inset Quotes eld
+\end_inset 
+
+Open
+\begin_inset Quotes erd
+\end_inset 
+
+ entry
+\layout Itemize
+
+The accelerator key sequence 
+\begin_inset Quotes eld
+\end_inset 
+
+Alt-F, 'O'
+\begin_inset Quotes erd
+\end_inset 
+
+
+\layout Itemize
+
+Clicking the folder icon on the main menu bar
+\layout Standard
+
+A previously loaded dataset can be accessed in a list of the last five documents
+ from the main 
+\begin_inset Quotes eld
+\end_inset 
+
+File
+\begin_inset Quotes erd
+\end_inset 
+
+ menu
+\layout Subsection
+
+saveImage
+\layout Standard
+
+
+\begin_inset LatexCommand \label{section:saveImage}
+
+\end_inset 
+
+Once invoked, a dialog similar to 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+figure~
+\backslash 
+ref{fig:loadData}
+\end_inset 
+
+ is displayed.
+ The user can the following image file types from the 
+\begin_inset Quotes eld
+\end_inset 
+
+File Type
+\begin_inset Quotes erd
+\end_inset 
+
+ field: GIF, JPEG, and PNG.
+ Note that this same dialog will be used in 
+\begin_inset Quotes eld
+\end_inset 
+
+saveViewContext
+\begin_inset Quotes erd
+\end_inset 
+
+; the user selects a file type of 
+\begin_inset Quotes eld
+\end_inset 
+
+View Context
+\begin_inset Quotes erd
+\end_inset 
+
+ instead of GIF, JPEG, or PNG.
+\layout Standard
+
+This dialog can be invoked by:
+\layout Itemize
+
+From the top level 
+\begin_inset Quotes eld
+\end_inset 
+
+File
+\begin_inset Quotes erd
+\end_inset 
+
+ menu's 
+\begin_inset Quotes eld
+\end_inset 
+
+Save As
+\begin_inset Quotes erd
+\end_inset 
+
+ entry
+\layout Itemize
+
+The accelerator key sequence of 
+\begin_inset Quotes eld
+\end_inset 
+
+Alt-F, 'S'
+\begin_inset Quotes erd
+\end_inset 
+
+
+\layout Itemize
+
+The accelerator key sequence of 
+\begin_inset Quotes eld
+\end_inset 
+
+Control-S
+\begin_inset Quotes erd
+\end_inset 
+
+
+\layout Itemize
+
+Clicking the floppy disk icon on the main menu bar
+\layout Subsection
+
+print
+\layout Standard
+
+There are three different types of things for a user to print.
+ First, the current data as seen in the view port.
+ Second, a specific feature.
+ And, thirdly, metadata either for the entire dataset, or some subset thereof.
+\layout Standard
+
+All of these functions are available through the print dialog; 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+figure~
+\backslash 
+ref{fig:print}
+\end_inset 
+
+ shows a mock-up of this dialog.
+\layout Standard
+
+Note that there's a functional overlap between this use case and the saveImage
+ use case.
+ That is, one can print an image to a file with this dialog, which is semantical
+ly identical to saveImage.
+ However, users may find the notion of using a print dialog to save an image
+ unintuitive, so this functionality will be in both places.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename qprintdlg-m.eps
+	display grayscale
+	width 95text%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:print}
+
+\end_inset 
+
+print dialog
+\end_inset 
+
+
+\layout Standard
+
+The print dialog is accessible the following ways:
+\layout Itemize
+
+As the 
+\begin_inset Quotes eld
+\end_inset 
+
+print
+\begin_inset Quotes erd
+\end_inset 
+
+ option from the main window's 
+\begin_inset Quotes eld
+\end_inset 
+
+File
+\begin_inset Quotes erd
+\end_inset 
+
+ menu
+\layout Itemize
+
+clicking on the printer icon on the main menu bar
+\layout Itemize
+
+The accelerator key sequence 
+\begin_inset Quotes eld
+\end_inset 
+
+Control-P
+\begin_inset Quotes erd
+\end_inset 
+
+
+\layout Subsubsection
+
+printImage
+\layout Standard
+
+The print dialog shall have an option that specifies whether you want the
+ view window contents to be printed.
+\layout Subsubsection
+
+printFeature
+\layout Standard
+
+The print dialog shall have an option that specifies whether you want selected
+ features printed.
+ This ties in to the printMetaData use case implementation.
+ That is, do you want to print the feature 
+\emph on 
+image
+\emph default 
+, its metadata, or both?
+\layout Subsubsection
+
+printMetaData
+\layout Standard
+
+This is covered in the previous section.
+\layout Subsection
+
+browseData
+\layout Standard
+
+
+\begin_inset LatexCommand \label{section:browseData}
+
+\end_inset 
+
+The main view window of the viewer renders all or part of the dataset.
+ The user can pan by moving the pan wheels located at the left and bottom
+ of the render area.
+ The left wheel controls vertical movement and the bottom wheel controls
+ horizontal movement.
+ The arrow keys can also be used to move the view point up, down, left,
+ or right.
+\layout Standard
+
+Zooming is done spinning the zoom wheel, located on the right side of the
+ render area.
+ Alternatively, the keypad '+' and '-' keys will zoom in and out of the
+ image, respectively.
+\layout Subsection
+
+findFeature
+\layout Standard
+
+
+\begin_inset LatexCommand \label{section:findFeature}
+
+\end_inset 
+
+This use case is implemented in a separate dialog.
+ It shall be comprised of a list of features identified in the current dataset.
+ It will also allow the user to search for a particular feature by name;
+ they will enter a string and press a 
+\begin_inset Quotes eld
+\end_inset 
+
+search
+\begin_inset Quotes erd
+\end_inset 
+
+ button.
+ Any matching features will be highlighted in the list.
+\layout Standard
+
+Clicking on any of the listed features will display that feature's detailed
+ information.
+\layout Standard
+
+The user can also use this dialog to have the display view shifted to were
+ the feature is located.
+\layout Standard
+
+Also, metadata for features selected by the mouse while the viewer is in
+ pick mode can be shown.
+\layout Standard
+
+(Should this be an alternative means for setting vector attributes? This
+ would save the user from using a separate dialog.)
+\layout Subsection
+
+saveViewContext
+\layout Standard
+
+
+\begin_inset LatexCommand \label{section:viewContext}
+
+\end_inset 
+
+A 
+\begin_inset Quotes eld
+\end_inset 
+
+view context
+\begin_inset Quotes erd
+\end_inset 
+
+ contains the following browser state information:
+\layout Itemize
+
+current dataset
+\layout Itemize
+
+visible layers
+\layout Itemize
+
+viewpoint position and attitude
+\layout Itemize
+
+miscellaneous view settings (e.g., line color, rendering options, etc.)
+\layout Standard
+
+Saving this information allows the user to quickly return to a particular
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+view
+\begin_inset Quotes erd
+\end_inset 
+
+ of a given SDTS dataset, thus saving the time needed to open the dataset,
+ navigate to a particular point, set the view perspective, turning on or
+ off layers, and setting viewer options.
+\layout Standard
+
+This information is saved from the same file dialog used by the 
+\begin_inset Quotes eld
+\end_inset 
+
+saveImage
+\begin_inset Quotes erd
+\end_inset 
+
+ use case implementation.
+ As mentioned in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+section~
+\backslash 
+ref{section:saveImage}
+\end_inset 
+
+, the user selects a 
+\begin_inset Quotes eld
+\end_inset 
+
+view context
+\begin_inset Quotes erd
+\end_inset 
+
+ file type in the save dialog, and sets the file name and directory.
+ Invoking 
+\begin_inset Quotes eld
+\end_inset 
+
+save
+\begin_inset Quotes erd
+\end_inset 
+
+ writes the context to the given file.
+\layout Subsection
+
+restoreViewContext
+\layout Standard
+
+This use case shares the loadData use case implementation as described in
+ 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+section~
+\backslash 
+ref{section:loadData}
+\end_inset 
+
+.
+\layout Subsection
+
+getHelp
+\layout Standard
+
+The user can get help through a variety of means.
+ First, all the main menu bar icons will have terse tooltip text that explains
+ that button's function; this tooltip text will automatically display when
+ the user hovers the mouse cursor over the button's image for more than
+ a few seconds.
+ Secondly, each menu item has explanatory text that is displayed as the
+ user navigates through the menu system; this text is displayed at the bottom
+ of the main window.
+\begin_inset Foot
+collapsed true
+
+\layout Standard
+
+On the other hand, Constantine has stated he dislikes this as the user may
+ not notice help text displayed clear at the other end of where their eyes
+ are focused; i.e., they're looking at the top where the menus are and so
+ fail to see helpful text being displayed at the bottom.
+ I'm toying with the notion of displaying menu item help text at the 
+\emph on 
+top
+\emph default 
+, but am still vacillating.
+ After all, this does violate a GUI idiom, albeit one that may need to change.)
+\end_inset 
+
+Thirdly, there is a more sophisticated, hierarchically organized help system
+ that has its own dialog, which will be available via the following:
+\layout Itemize
+
+by selecting the 
+\begin_inset Quotes eld
+\end_inset 
+
+Help
+\begin_inset Quotes erd
+\end_inset 
+
+ item on the main window bar
+\layout Itemize
+
+by clicking the question mark icon on the main window bar
+\layout Subsection
+
+setPreferences
+\layout Standard
+
+
+\begin_inset LatexCommand \label{section:setPreferences}
+
+\end_inset 
+
+There are three categories of viewer preferences.
+ That is, there are those that affect vector objects, raster objects, and
+ viewer specific states.
+ (The last being for such things as toggling use of anti-aliasing.)
+\layout Standard
+
+The viewer specific states can be modified directly from the main menu bar
+ under the edit menu's 
+\begin_inset Quotes eld
+\end_inset 
+
+Preferences
+\begin_inset Quotes erd
+\end_inset 
+
+ item.
+ This invokes a preferences dialog that has entries where browser options
+ can be set.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename theme.eps
+	display color
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:theme}
+
+\end_inset 
+
+dataset details dialog mockup
+\end_inset 
+
+
+\layout Subsubsection
+
+setVisible
+\layout Standard
+
+A user can toggle a layer's visibility using the 
+\begin_inset Quotes eld
+\end_inset 
+
+detail
+\begin_inset Quotes erd
+\end_inset 
+
+ dialog, which is shown in figure
+\begin_inset LatexCommand \ref[ref:fig:theme]{fig:theme}
+
+\end_inset 
+
+.
+ However, the user may wish to toggle individual objects.
+ This would be done through the features dialog.
+ The user first needs to select the object or objects that they wish to
+ hide or show.
+ They can do this either by directly picking the object in the main window
+ by clicking on it, or by finding and selecting the object in the features
+ dialog.
+ Once the object is selected, they can toggle its visibility by checking
+ or unchecking a 
+\begin_inset Quotes eld
+\end_inset 
+
+visibility
+\begin_inset Quotes erd
+\end_inset 
+
+ attribute.
+\layout Subsubsection
+
+setRasterAttributes
+\layout Standard
+
+Double-clicking on a raster layer in the 
+\begin_inset Quotes eld
+\end_inset 
+
+Details
+\begin_inset Quotes erd
+\end_inset 
+
+ dialog will invoke the raster attributes dialog.
+ If the raster layer is for a DEM, the user can select color and shading
+ models used to render the scene.
+ For other raster types (e.g., DOQs), the user can set contrast and brightness.
+\layout Subsubsection
+
+setVectorAttributes
+\layout Standard
+
+A vector attributes dialog is invoked by double-clicking on a vector layer
+ in the layers dialog.
+ The use can set line color and types in this dialog.
+\layout Section
+
+Top level design
+\layout Standard
+
+From the most coarse grained persepctive, the SDTS viewer is comprised of
+ a few packages the most important being the package for the core viewer
+ functionality.
+ That package isn't alone, though.
+ The viewer package relies on several external packages.
+ The viewer will need to read SDTS data, be able to manipulate that data
+ in the geography domain, and be able to render that data; each of these
+ needs has one or more corresponding packages as depicted in 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+figure~
+\backslash 
+ref{fig:packages}
+\end_inset 
+
+ and is shown in the following:
+\layout Itemize
+
+The sdts++ package is responsible for providing SDTS reading functionality
+\layout Itemize
+
+The GIS tools package will contain such functions as projection transformations
+ and coordinate conversions
+\layout Itemize
+
+The Coin Open Inventor 3D graphics C++ Toolkit package, which also provides
+ a Qt compliant interface
+\layout Itemize
+
+The Qt GUI C++ toolkit
+\layout Itemize
+
+OpenGL is an open standard for 3D object manipulation and rendering
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename packages.eps
+	display color
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:packages}
+
+\end_inset 
+
+top-level packages
+\end_inset 
+
+Each of these three packages will be discussed in more detail in the following
+ sections.
+ After that, the remainder of this chapter will focus on the main viewer
+ package.
+\layout Subsection
+
+sdts++
+\layout Standard
+
+sdts++ is a free, open-source C++ toolkit for reading and writing SDTS data.
+ We'll be using sdts++ to read SDTS datasets.
+\layout Subsection
+
+GIS tools
+\layout Standard
+
+Rendering the data correctly implies that some form of GIS functionality
+ exists.
+ This would include any spatial data transforms and other operators.
+\layout Subsection
+
+Coin Open Inventor C++ toolkit
+\layout Standard
+
+Open Inventor is another industry standard for a C++ library for manipulating
+ 2D and 3D objects.
+ Open Inventor employs OpenGL.
+\layout Subsection
+
+OpenGL
+\layout Standard
+
+OpenGL is an industry standard in 2D and 3D object modelling and rendering,
+ and is available for both Microsoft Windows and X/Windows platforms.
+\layout Subsection
+
+Qt
+\layout Standard
+
+Qt is a C++ GUI toolkit that works on both Microsoft Windows and X/Windows
+ platforms.
+ Moreover, it provides for OpenGL interaction, which can either be used
+ directly, or through the Coin Open Inventor toolkit.
+\layout Subsection
+
+viewer
+\layout Standard
+
+The viewer design uses a variant of the Model-View-Controller (MVC) paradigm.
+ The MVC architecture dictates that the data is contained in a Model component,
+ a View gives a unique rendering of that data, and a Controller is responsible
+ for handling user events.
+ 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:staticDesign}
+\end_inset 
+
+ shows the browser's version of the MVC architecture.
+ The View component is implemented in an SdtsviewerView class.
+ The Model component is implemented in the SdtsviewerDoc class.
+ The Controller, as in most implementations, is not an explicit class; instead
+ the top level class, Sdtsviewer and the View component, SdtsviewerView,
+ handle user generated events such as mouse movements and pressed keys and
+ translate those into changes in the rendered view.
+ Since this is a browser and not an editor, the Model component only changes
+ when data is loaded; after that, the data is immutable.
+\layout Standard
+
+Sdtsviewer is the top level widget, and provides the functionality of QMainWindo
+w.
+ That is, it implements the top level menus, toolbar, and a main rendering
+ area.
+ It also contains a SdtsviewerDoc (i.e., the model) and a SdtsviewerView (i.e.,
+ the viewer).
+ The SdtsviewerView inherits from the Coin Open Inventor Qt widget, SoQtFullView
+er.
+ This widget provides for a main render area for the Open Inventor scenegraph
+ that contains the actual 3D objects corresponding to SDTS spatial objects.
+ In turn, it provides a pop-up menu that one can use to tailor how the scene
+ is rendered and the spin-wheel widgets that are used to pan and zoom the
+ view.
+ SdtsviewerDoc inherits from QObject to take advantage of Qt's signal/slot
+ mechanism.
+ In this case, this is to implement the Observer design pattern such that
+ view's can be notified when the data changes.
+ (In this case, when data is loaded.
+ There should be no further changes after that.)
+\layout Standard
+
+SdtsviewerDoc has a Dataset object.
+ This object contains all the spatial and meta data for a given dataset.
+ SdtsviewerDoc uses an SDTSImporter object to populate its Dataset object.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename design1.eps
+	display color
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:staticDesign}
+
+\end_inset 
+
+static top-level design
+\end_inset 
+
+The Dataset object, in addition to containing certain metadata, contains
+ Layer objects; each of these Layer objects represents a thematic sub-set
+ of the current SDTS dataset.
+ (E.g., hydrography, hysography, transportation, etc.) These Layer objects
+ can, in turn, represent vector or raster data; and, in the case of raster
+ data, raster images or heightfields.
+ A dataset also contains attributes and features; they aren't bound to a
+ particular layer because some features may easily belong to more than one
+ layer.
+ A feature is a manifestation of some attribute.
+ (Not really.
+ I have to really think hard about how to adequately handle features and
+ attributes.
+ The current design needs a lot of work on attributes and features.) The
+ Dataset class is associated with an Open Inventor scenegraph that contains
+ all the Open Inventor spatial objects that represent SDTS spatial objects.
+ The scene graph contains an SoNodeKit for each of these spatial objects.
+ (We decided to use an SoNodeKit instead of an SoNode because it's possible
+ to change the rendering attribute of a specific node.
+ However, we don't want to incur the resource penalty of putting SoAttribute
+ objects in front of every SoNode since that would be a waste of resources;
+ and manually adding them in when we DID want to change how a specific feature
+ was rendered would be a pain.
+ Fortunately SoNodeKits do all that for us.
+ We can change how a specific node kit is rendered without having an impact
+ on any other nodes.
+ We can also group transform attributes for collections of spatial objects.)
+ A Layer is going to have a relationship with a specific SoNodeKit; i.e.,
+ it wil be its entry point in the general scenegraph.
+ That is, each Layer corresponds to a sub-tree in the scenegraph; and so
+ each Layer has a handle on the root SoNodeKit in that subtree.
+ The SDTSImporter, naturally, populates a Dataset with Layers, Features,
+ Attributes, and the corresponding Scenegraph with spatial objects in the
+ form of SoNodeKit objects.
+ 
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+Figure~
+\backslash 
+ref{fig:datasetDesign}
+\end_inset 
+
+ depicts these classes and their relationships.
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename staticdesign.eps
+	display color
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:datasetDesign}
+
+\end_inset 
+
+Detailed Dataset class design
+\end_inset 
+
+foo
+\layout Subsubsection
+
+loadData implementation
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename loadDataDiagram.eps
+	display grayscale
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{fig:loadDataColloboration}
+
+\end_inset 
+
+loadData colloboration diagram
+\end_inset 
+
+
+\the_end
