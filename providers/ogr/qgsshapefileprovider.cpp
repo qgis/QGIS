@@ -135,33 +135,33 @@ QgsFeature *QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
 	*/
 QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 {
-    
+  
 	QgsFeature *f = 0;
 	if(valid){
 		//std::cerr << "getting next feature\n";
 		OGRFeature *fet = ogrLayer->GetNextFeature();
 		if(fet){
-            OGRGeometry *geom = fet->GetGeometryRef();
+      OGRGeometry *geom = fet->GetGeometryRef();
 			
 			// get the wkb representation
 			unsigned char *feature = new unsigned char[geom->WkbSize()];
 			geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
-            f = new QgsFeature(fet->GetFID());
-            f->setGeometry(feature);
-            if(fetchAttributes){
-              getFeatureAttributes(fet, f);
-            }
-          /*   char *wkt = new char[2 * geom->WkbSize()];
-            geom->exportToWkt(&wkt);
-            f->setWellKnownText(wkt);
-            delete[] wkt;  */
-            delete fet;
+      f = new QgsFeature(fet->GetFID());
+      f->setGeometry(feature);
+      if(fetchAttributes){
+        getFeatureAttributes(fet, f);
+      }
+      /*   char *wkt = new char[2 * geom->WkbSize()];
+      geom->exportToWkt(&wkt);
+      f->setWellKnownText(wkt);
+      delete[] wkt;  */
+      delete fet;
 		}else{
 			#ifdef QGISDEBUG
       std::cerr << "Feature is null\n";
       #endif
-            // probably should reset reading here
-            ogrLayer->ResetReading();
+      // probably should reset reading here
+      ogrLayer->ResetReading();
 		}
     
 		
@@ -169,7 +169,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     #ifdef QGISDEBUG    
     std::cerr << "Read attempt on an invalid shapefile data source\n";
     #endif
-    }
+  }
 	return f;
 }
 
@@ -178,39 +178,39 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 	* with calls to getFirstFeature and getNextFeature.
 	* @param mbr QgsRect containing the extent to use in selecting features
 	*/
-void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
-{
+  void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
+  {
     // spatial query to select features
-  //  std::cerr << "Selection rectangle is " << *rect << std::endl;
+    //  std::cerr << "Selection rectangle is " << *rect << std::endl;
     OGRGeometry *filter = 0;
-	filter = new OGRPolygon();
-	QString wktExtent = QString("POLYGON ((%1))").arg(rect->stringRep());
-	const char *wktText = (const char *)wktExtent;
-
-	OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
+    filter = new OGRPolygon();
+    QString wktExtent = QString("POLYGON ((%1))").arg(rect->stringRep());
+    const char *wktText = (const char *)wktExtent;
+    
+    OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
     //TODO - detect an error in setting the filter and figure out what to
     //TODO   about it. If setting the filter fails, all records will be returned
-	if (result == OGRERR_NONE) {
-  //      std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
-		ogrLayer->SetSpatialFilter(filter);
-  //      std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
-	/* 	int featureCount = 0;
-		while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
-			if (fet) {
-				select(fet->GetFID());
-				if (tabledisplay) {
-					tabledisplay->table()->selectRowWithId(fet->GetFID());
-					(*selected)[fet->GetFID()] = true;
-				}
-			} 
-		}
-		ogrLayer->ResetReading();*/
-	}else{
-    #ifdef QGISDEBUG    
-    std::cerr << "Setting spatial filter failed!" << std::endl;
-    #endif
+    if (result == OGRERR_NONE) {
+      //      std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
+      ogrLayer->SetSpatialFilter(filter);
+      //      std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
+      /* 	int featureCount = 0;
+      while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
+        if (fet) {
+          select(fet->GetFID());
+          if (tabledisplay) {
+            tabledisplay->table()->selectRowWithId(fet->GetFID());
+            (*selected)[fet->GetFID()] = true;
+          }
+        } 
+      }
+      ogrLayer->ResetReading();*/
+    }else{
+      #ifdef QGISDEBUG    
+      std::cerr << "Setting spatial filter failed!" << std::endl;
+      #endif
     }
-}
+  }
 
 	/**
 		* Set the data source specification. This may be a path or database
