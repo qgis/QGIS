@@ -53,7 +53,7 @@
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
-
+#include "qgsprojectio.h"
 #ifdef PGDB
 #include <libpq++.h>
 #include "qgsdbsourceselect.h"
@@ -311,6 +311,15 @@ void QgisApp::fileExit()
 {
 	QApplication::exit();
 
+}
+
+void QgisApp::fileSave(){
+	QgsProjectIo *pio = new QgsProjectIo(mapCanvas, QgsProjectIo::SAVE);
+	pio->write();
+	delete pio;
+}
+
+void QgisApp::fileSaveAs(){
 }
 
 void QgisApp::zoomIn()

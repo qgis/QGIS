@@ -107,6 +107,7 @@ class QgsMapLayer:public QObject
 		RASTER,
 		DATABASE
 	};
+	
 	  signals:void visibilityChanged(void);
   protected:
 	//! Extent of the layer
