@@ -683,6 +683,7 @@ void QgsPostgresProvider::reset()
 #endif
   // set up the cursor
   PQexec(connection,"end work");
+
   PQexec(connection,"begin work");
   PQexec(connection, (const char *)declare);
   //--std::cout << "Error: " << PQerrorMessage(connection) << std::endl;
@@ -761,10 +762,10 @@ QString QgsPostgresProvider::getPrimaryKey(){
 	  QObject::tr("The table or view has no oid column. \n"
 	  "This is most likely because it is a view.\n"
 	  "For Qgis to work correctly the view must have a"
-	  " column called oid. This column should have an integer"
-	  " type and be unique for each row in the view."
+	  " column called oid.\nThis column should have an integer"
+	  " type and be unique for each row in the view.\n"
           " For better performance, the column should"
-          " also be indexed or be derived come from an indexed"
+          " also be indexed or be\n derived from an indexed"
           " column."));
       QApplication::setOverrideCursor(Qt::waitCursor);
     }
@@ -1229,40 +1230,44 @@ void QgsPostgresProvider::calculateExtents()
 #endif
   PGresult *result = PQexec(connection, (const char *) sql);
   std::string box3d = PQgetvalue(result, 0, 0);
-  std::string s;
 
-  box3d = box3d.substr(box3d.find_first_of("(")+1);
-  box3d = box3d.substr(box3d.find_first_not_of(" "));
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  double minx = strtod(s.c_str(), NULL);
+  if (box3d != "")
+  {
+    std::string s;
 
-  box3d = box3d.substr(box3d.find_first_of(" ")+1);
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  double miny = strtod(s.c_str(), NULL);
+    box3d = box3d.substr(box3d.find_first_of("(")+1);
+    box3d = box3d.substr(box3d.find_first_not_of(" "));
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double minx = strtod(s.c_str(), NULL);
 
-  box3d = box3d.substr(box3d.find_first_of(",")+1);
-  box3d = box3d.substr(box3d.find_first_not_of(" "));
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  double maxx = strtod(s.c_str(), NULL);
+    box3d = box3d.substr(box3d.find_first_of(" ")+1);
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double miny = strtod(s.c_str(), NULL);
 
-  box3d = box3d.substr(box3d.find_first_of(" ")+1);
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  double maxy = strtod(s.c_str(), NULL);
+    box3d = box3d.substr(box3d.find_first_of(",")+1);
+    box3d = box3d.substr(box3d.find_first_not_of(" "));
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double maxx = strtod(s.c_str(), NULL);
 
-  layerExtent.setXmax(maxx);
-  layerExtent.setXmin(minx);
-  layerExtent.setYmax(maxy);
-  layerExtent.setYmin(miny);
+    box3d = box3d.substr(box3d.find_first_of(" ")+1);
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double maxy = strtod(s.c_str(), NULL);
+
+    layerExtent.setXmax(maxx);
+    layerExtent.setXmin(minx);
+    layerExtent.setYmax(maxy);
+    layerExtent.setYmin(miny);
 #ifdef QGISDEBUG
-  QString xMsg;
-  QTextOStream(&xMsg).precision(18);
-  QTextOStream(&xMsg).width(18);
-  QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
-    xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
-  std::cerr << xMsg << std::endl;
+    QString xMsg;
+    QTextOStream(&xMsg).precision(18);
+    QTextOStream(&xMsg).width(18);
+    QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
+      xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
+    std::cerr << xMsg << std::endl;
 #endif
-  // clear query result
-  PQclear(result);
+    // clear query result
+    PQclear(result);
+  }
 }
 
 bool QgsPostgresProvider::deduceEndian()
@@ -1282,6 +1287,7 @@ bool QgsPostgresProvider::deduceEndian()
 #endif
 
   // get the same value using a binary cursor
+
   PQexec(connection,"begin work");
   QString oidDeclare = QString("declare oidcursor binary cursor for select oid from %1 where oid = %2").arg(tableName).arg(oidValue);
   // set up the cursor
