@@ -23,6 +23,7 @@
 #include <qdir.h>
 #include <qstring.h>
 #include <qdatetime.h>
+#include <qmessagebox.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsdataprovider.h"
@@ -236,15 +237,13 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 {
     int cat, type, id, idx;
     unsigned char *wkb;
-		int wkbsize;
+    int wkbsize;
 
     #ifdef QGISDEBUG
     std::cout << "QgsGrassProvider::getNextFeature() mNextCidx = " << mNextCidx 
     	      << " fetchAttributes = " << fetchAttributes << std::endl;
     #endif
     
-    if ( mCidxFieldIndex >= mCidxFieldNumCats ) return 0;
-
     // Get next line/area id
     int found = 0;
     while ( mNextCidx < mCidxFieldNumCats ) {
@@ -265,7 +264,6 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 
     // TODO int may be 64 bits (memcpy)
     if ( type & (GV_POINTS | GV_LINES) ) { /* points or lines */
-	
 	Vect_read_line ( mMap, mPoints, mCats, id);
 	int npoints = mPoints->n_points;
 	
@@ -464,7 +462,6 @@ int QgsGrassProvider::endian()
 
 QgsRect *QgsGrassProvider::extent()
 {
-    QgsRect r( mMapBox.W, mMapBox.S, mMapBox.E, mMapBox.N);
     return new QgsRect( mMapBox.W, mMapBox.S, mMapBox.E, mMapBox.N);
 }
 
@@ -618,8 +615,10 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
             #endif
 	    dbCursor databaseCursor;
 	    if ( db_open_select_cursor(databaseDriver, &dbstr, &databaseCursor, DB_SCROLL) != DB_OK ){
-		std::cerr << "Cannot open select cursor" << std::endl;
+		layer.nColumns = 0;
 		db_close_database_shutdown_driver ( databaseDriver );
+		QMessageBox::warning( 0, "Warning", "Cannot select attributes from table '" + 
+			         QString(layer.fieldInfo->table) + "'" );
 	    } else {
 		int nRecords = db_get_num_rows ( &databaseCursor );
                 #ifdef QGISDEBUG
@@ -662,65 +661,71 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 		    layer.fields.push_back ( QgsField( db_get_column_name(column), ctypeStr, 
 		                     db_get_column_length(column), db_get_column_precision(column) ) );
 		    
-		    if ( strcmp ( db_get_column_name(column), layer.fieldInfo->key) == 0 ) {
+		    if ( G_strcasecmp ( db_get_column_name(column), layer.fieldInfo->key) == 0 ) {
 			layer.keyColumn = i;
 		    }
 		}
 
 		if ( layer.keyColumn < 0 ) {
-		    std::cerr << "Key column not found" << std::endl;
-		}
+		    layer.fields.clear();
+                    layer.nColumns = 0;
 
-		// Read attributes to the memory
-		layer.attributes = (GATT *) malloc ( nRecords * sizeof(GATT) );
-		while ( 1 ) {
-		    int more;
-			    
-		    if ( db_fetch (&databaseCursor, DB_NEXT, &more) != DB_OK ) {
-			std::cout << "Cannot fetch DB record" << std::endl;
-			break;
-		    }
-		    if ( !more ) break; // no more records
-
-		    // Check cat value
-		    dbColumn *column = db_get_table_column (databaseTable, layer.keyColumn);
-		    dbValue *value = db_get_column_value(column);
-		    layer.attributes[layer.nAttributes].cat = db_get_value_int (value);
-		    if ( layer.attributes[layer.nAttributes].cat < 1 ) continue; 
-
-		    layer.attributes[layer.nAttributes].values = (char **) malloc ( layer.nColumns * sizeof(char*) );
-
-		    for (int i = 0; i < layer.nColumns; i++) {
-			column = db_get_table_column (databaseTable, i);
-			int sqltype = db_get_column_sqltype(column);
-		        int ctype = db_sqltype_to_Ctype ( sqltype );
-			value = db_get_column_value(column);
-			db_convert_value_to_string ( value, sqltype, &dbstr);
-
-			#ifdef QGISDEBUG
-			std::cout << "column: " << db_get_column_name(column) << std::endl;
-			std::cout << "value: " << db_get_string(&dbstr) << std::endl;
-			#endif
-
-			layer.attributes[layer.nAttributes].values[i] = strdup ( db_get_string(&dbstr) );
-
-			double dbl;
-			if ( ctype == DB_C_TYPE_INT ) {
-			    dbl = db_get_value_int ( value );
-			} else if ( ctype == DB_C_TYPE_DOUBLE ) {
-			    dbl = db_get_value_double ( value );
-			} else {
-			    dbl = 0;
+		    QMessageBox::warning( 0, "Warning", "Key column '" + QString(layer.fieldInfo->key) + 
+			         "' not found in the table '" + QString(layer.fieldInfo->table) + "'" );
+		} else {
+		    // Read attributes to the memory
+		    layer.attributes = (GATT *) malloc ( nRecords * sizeof(GATT) );
+		    while ( 1 ) {
+			int more;
+				
+			if ( db_fetch (&databaseCursor, DB_NEXT, &more) != DB_OK ) {
+			    std::cout << "Cannot fetch DB record" << std::endl;
+			    break;
 			}
-			
-			if ( dbl < layer.minmax[i][0] ) {
-	                    layer.minmax[i][0] = dbl;
-                        }
-	                if ( dbl > layer.minmax[i][1] ) {
-	                    layer.minmax[i][1] = dbl;
-	                }
+			if ( !more ) break; // no more records
+
+			// Check cat value
+			dbColumn *column = db_get_table_column (databaseTable, layer.keyColumn);
+			dbValue *value = db_get_column_value(column);
+			layer.attributes[layer.nAttributes].cat = db_get_value_int (value);
+			if ( layer.attributes[layer.nAttributes].cat < 1 ) continue; 
+
+			layer.attributes[layer.nAttributes].values = (char **) malloc ( layer.nColumns * sizeof(char*) );
+
+			for (int i = 0; i < layer.nColumns; i++) {
+			    column = db_get_table_column (databaseTable, i);
+			    int sqltype = db_get_column_sqltype(column);
+			    int ctype = db_sqltype_to_Ctype ( sqltype );
+			    value = db_get_column_value(column);
+			    db_convert_value_to_string ( value, sqltype, &dbstr);
+
+			    #ifdef QGISDEBUG
+			    std::cout << "column: " << db_get_column_name(column) << std::endl;
+			    std::cout << "value: " << db_get_string(&dbstr) << std::endl;
+			    #endif
+
+			    layer.attributes[layer.nAttributes].values[i] = strdup ( db_get_string(&dbstr) );
+
+			    double dbl;
+			    if ( ctype == DB_C_TYPE_INT ) {
+				dbl = db_get_value_int ( value );
+			    } else if ( ctype == DB_C_TYPE_DOUBLE ) {
+				dbl = db_get_value_double ( value );
+			    } else {
+				dbl = 0;
+			    }
+			    
+			    if ( dbl < layer.minmax[i][0] ) {
+				layer.minmax[i][0] = dbl;
+			    }
+			    if ( dbl > layer.minmax[i][1] ) {
+				layer.minmax[i][1] = dbl;
+			    }
+			}
+			layer.nAttributes++;
 		    }
-		    layer.nAttributes++;
+		    // Sort attributes by category
+		    qsort ( layer.attributes, layer.nAttributes, sizeof(GATT), cmpAtt );
 		}
 		db_close_cursor (&databaseCursor);
 		db_close_database_shutdown_driver ( databaseDriver );
@@ -730,8 +735,6 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 		std::cerr << "number of attributes = " << layer.nAttributes << std::endl;
                 #endif
 
-		// Sort attributes by category
-		qsort ( layer.attributes, layer.nAttributes, sizeof(GATT), cmpAtt );
 	    }
 	}
     }

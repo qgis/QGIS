@@ -34,7 +34,8 @@ struct GLAYER {
     int     mapId;                 // map ID in maps vector
     struct  Map_info   *map;       // map header
     struct  field_info *fieldInfo; // field info
-    int     nColumns;              // number of columns in database table
+    int     nColumns;              // number of columns in database table, if 0, attributes are not available
+                                   // and category (column name 'cat') is used instead
     int     keyColumn;             // number of key column
     std::vector<QgsField> fields;  // description of layer fields
     int     nAttributes;           // number of attributes read to the memory (may be < nRecords)

@@ -67,6 +67,10 @@ QString QgsGrassSelect::lastLayer;
 void QgsGrassSelect::setLocations()
 {
     elocation->clear();
+    emapset->clear();
+    emap->clear();
+    elayer->clear();
+
     QDir d = QDir( egisdbase->text() );
 
     int idx = 0;
@@ -97,6 +101,10 @@ void QgsGrassSelect::setMapsets()
     #endif
     
     emapset->clear();
+    emap->clear();
+    elayer->clear();
+
+    if ( elocation->count() < 1 ) return;
 
     // Location directory    
     QString ldpath = egisdbase->text() + "/" + elocation->currentText();
@@ -112,13 +120,13 @@ void QgsGrassSelect::setMapsets()
 	if ( QFile::exists ( windf ) ) {
 	    emapset->insertItem ( ld[i], -1 );
 	    if ( ld[i] == lastMapset ) {
-	    	sel = idx;
+		sel = idx;
 	    }
-            idx++;
+	    idx++;
 	}
     }
     if ( idx >= 0 ) {
-        emapset->setCurrentItem(sel);
+	emapset->setCurrentItem(sel);
     }
 
     setMaps();
@@ -132,6 +140,9 @@ void QgsGrassSelect::setMaps()
 
     // Replaced by text box to enable wild cards
     emap->clear();
+    elayer->clear();
+
+    if ( emapset->count() < 1 ) return;
 
     // Mapset directory    
     QString ldpath = egisdbase->text() + "/" + elocation->currentText() + "/" + emapset->currentText();
@@ -172,7 +183,7 @@ void QgsGrassSelect::setMaps()
 
     }
     if ( idx >= 0 ) {
-        emap->setCurrentItem(sel);
+	emap->setCurrentItem(sel);
     } else {
 	emap->clearEdit(); // set box line empty
     }
@@ -186,10 +197,10 @@ void QgsGrassSelect::setLayers()
     std::cerr << "setLayers()" << std::endl;
     #endif
     
-    if (type != VECTOR ) return;
-
-    // Replaced by text box to enable wild cards
     elayer->clear();
+    
+    if (type != VECTOR ) return;
+    if ( emap->count() < 1 ) return;
 
     // Set location
     QgsGrass::setLocation ( egisdbase->text(), elocation->currentText() );
@@ -198,16 +209,17 @@ void QgsGrassSelect::setLayers()
     QgsGrass::resetError();
     Vect_set_open_level (2);
     struct Map_info map;
-    int level = Vect_open_old_head (&map, (char *) emap->currentText().ascii(), (char *) emapset->currentText().ascii());
+    int level = Vect_open_old_head (&map, (char *) emap->currentText().ascii(), 
+	                            (char *) emapset->currentText().ascii());
+
+    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+	return;
+    }
 
     if ( level < 2 ) {
         std::cerr << "Cannot open vector on level 2" << std::endl;
 	QMessageBox::warning( 0, "Warning", "Cannot open vector on level 2 (topology not available)." );
-	return;
-    }
-
-    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
 	return;
     }
 

@@ -68,7 +68,8 @@ QString QgsGrass::getDefaultMapset ( void ) {
 void QgsGrass::setLocation( QString gisdbase, QString location )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::setLocation()" << std::endl;
+    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase << " location = "
+	      << location  << std::endl;
     #endif
     init();
 
