@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>593</width>
-            <height>432</height>
+            <width>491</width>
+            <height>431</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -25,165 +25,133 @@
     <property name="icon">
         <pixmap>image0</pixmap>
     </property>
-    <spacer>
+    <grid>
         <property name="name">
-            <cstring>spacer2</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>441</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>87</x>
-                <y>399</y>
-                <width>441</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>pixmapLabel2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>11</y>
-                <width>150</width>
-                <height>381</height>
-            </rect>
-        </property>
-        <property name="maximumSize">
-            <size>
-                <width>150</width>
-                <height>32767</height>
-            </size>
-        </property>
-        <property name="pixmap">
-            <pixmap>image1</pixmap>
-        </property>
-        <property name="scaledContents">
-            <bool>true</bool>
-        </property>
-    </widget>
-    <widget class="QTextEdit">
-        <property name="name">
-            <cstring>teInstructions_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>192</x>
-                <y>45</y>
-                <width>390</width>
-                <height>347</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+        <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>pixmapLabel2</cstring>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>150</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="pixmap">
+                <pixmap>image1</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="Line" row="0" column="1" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>2</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="frameShape">
+                <enum>VLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="2">
+            <property name="name">
+                <cstring>txtHeading</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>24</pointsize>
+                    <bold>1</bold>
+                </font>
+            </property>
+            <property name="text">
+                <string>Plugin Template</string>
+            </property>
+            <property name="alignment">
+                <set>AlignCenter</set>
+            </property>
+        </widget>
+        <widget class="QTextEdit" row="1" column="2">
+            <property name="name">
+                <cstring>teInstructions_2</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin was generated using QGIS External plugin template. Please modify it according to your needs.&lt;/p&gt;
-&lt;p&gt;Tim Sutton 2004&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
-        </property>
-        <property name="wordWrap">
-            <enum>WidgetWidth</enum>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>txtHeading</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>190</x>
-                <y>10</y>
-                <width>197</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <property name="font">
-            <font>
-                <pointsize>24</pointsize>
-                <bold>1</bold>
-            </font>
-        </property>
-        <property name="text">
-            <string>Plugin Template</string>
-        </property>
-        <property name="alignment">
-            <set>AlignCenter</set>
-        </property>
-    </widget>
-    <widget class="Line">
-        <property name="name">
-            <cstring>line1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>10</y>
-                <width>2</width>
-                <height>381</height>
-            </rect>
-        </property>
-        <property name="maximumSize">
-            <size>
-                <width>2</width>
-                <height>32767</height>
-            </size>
-        </property>
-        <property name="frameShape">
-            <enum>VLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Vertical</enum>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>pbnOK</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>534</x>
-                <y>398</y>
-                <width>48</width>
-                <height>23</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>OK</string>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>pbnCancel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>390</y>
-                <width>70</width>
-                <height>23</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Cancel</string>
-        </property>
-    </widget>
+            </property>
+            <property name="wordWrap">
+                <enum>WidgetWidth</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>441</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnOK</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </grid>
 </widget>
 <images>
     <image name="image0">
