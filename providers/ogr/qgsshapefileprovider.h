@@ -51,7 +51,7 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     *@param attlist a list containing the indexes of the attribute fields to copy
     *@param getnotcommited flag indicating if not commited features should be returned
     */
-    QgsFeature *getNextFeature(std::list<int>& attlist);
+    QgsFeature *getNextFeature(std::list<int> const& attlist);
     /** 
      * Get the next feature resutling from a select operation
      * @return True if the feature was read. This does not indicate
@@ -69,15 +69,15 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
       WKBMultiPolygon
      * as defined in qgis.h
      */
-    int geometryType();
+    int geometryType() const;
     /** 
      * Get the number of features in the layer
      */
-    long featureCount();
+    long featureCount() const;
     /** 
      * Get the number of fields in the layer
      */
-    int fieldCount();
+    int fieldCount() const;
     /**
      * Select features based on a bounding rectangle. Features can be retrieved 
      * with calls to getFirstFeature and getNextFeature.
@@ -106,10 +106,6 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
      */
     virtual std::vector < QgsFeature > &identify(QgsRect * rect);
 
-    /** Return endian-ness for this layer
-    */
-    int endian();
-
     /** Return the extent for this data layer
     */
     virtual QgsRect *extent();
@@ -122,7 +118,7 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     /**
      * Get the field information for the layer
      */
-    std::vector < QgsField > &fields();
+    std::vector < QgsField > const & fields() const;
 
     /* Reset the layer - for an OGRLayer, this means clearing the
      * spatial filter and calling ResetReading

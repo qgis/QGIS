@@ -407,7 +407,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
+QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int> const& attlist)
 {
    QgsFeature *f = 0; 
    if(valid)
@@ -447,7 +447,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
 
          f = new QgsFeature(fet->GetFID(), featureTypeName);
          f->setGeometry(feature, geom->WkbSize());
-         for(std::list<int>::iterator it=attlist.begin();it!=attlist.end();++it)
+         for(std::list<int>::const_iterator it=attlist.begin();it!=attlist.end();++it)
          {
            getFeatureAttribute(fet,f,*it);
          }
@@ -566,28 +566,6 @@ unsigned char * QgsShapeFileProvider::getGeometryPointer(OGRFeature *fet){
 }
 
 
-int QgsShapeFileProvider::endian()
-{
-#ifdef WIN32
-  return NDR;
-#else
-    // XXX why re-calculate this all the time?  Why not just calculate this
-    // XXX once and return the value?  For that matter, some machines have
-    // XXX endian.h, which stores the constant variable for local endian-ness.
-    if ( 23 == htons( 23 ) )
-    {
-        // if host byte order is same as network (big-endian) byte order, then
-        // this is a big-endian environment
-        return XDR;
-    }
-    
-    // otherwise this must be little-endian
-
-    return NDR;
-#endif
-}
-
-
 // TODO - make this function return the real extent_
 QgsRect *QgsShapeFileProvider::extent()
 {
@@ -597,21 +575,24 @@ QgsRect *QgsShapeFileProvider::extent()
 /** 
  * Return the feature type
  */
-int QgsShapeFileProvider::geometryType(){
+int QgsShapeFileProvider::geometryType() const
+{
   return geomType;
 }
 
 /** 
  * Return the feature type
  */
-long QgsShapeFileProvider::featureCount(){
+long QgsShapeFileProvider::featureCount() const
+{
   return numberFeatures;
 }
 
 /**
  * Return the number of fields
  */
-int QgsShapeFileProvider::fieldCount(){
+int QgsShapeFileProvider::fieldCount() const
+{
   return attributeFields.size();
 }
 
@@ -651,7 +632,7 @@ void QgsShapeFileProvider::getFeatureAttributes(OGRFeature *ogrFet, QgsFeature *
   }
 }
 
-std::vector < QgsField > &QgsShapeFileProvider::fields()
+std::vector<QgsField> const & QgsShapeFileProvider::fields() const
 {
   return attributeFields;
 }

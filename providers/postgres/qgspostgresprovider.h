@@ -47,50 +47,61 @@ public:
   * and query the table.
   */
   QgsPostgresProvider(QString uri = 0);
+
   //! Destructor
   virtual ~ QgsPostgresProvider();
-  /** Used to ask the layer for its projection as a WKT string. Implements virtual method of same name in QgsDataProvider. */
+
+  /** Used to ask the layer for its projection as a WKT string. Implements
+   * virtual method of same name in QgsDataProvider. */
   QString getProjectionWKT()  {return QString("Not implemented yet");} ;
+
   /**
     * Get the first feature resutling from a select operation
     * @return QgsFeature
     */
   QgsFeature *getFirstFeature(bool fetchAttributes = false);
+
   /**
   * Get the next feature resulting from a select operation
   * @return QgsFeature
   */
   QgsFeature *getNextFeature(bool fetchAttributes = false);
   bool getNextFeature(QgsFeature &feature, bool fetchAttributes=0);
+
   /**Get the next feature resulting from a select operation.
    *@param attlist a list containing the indexes of the attribute fields to copy
    *@param getnotcommited flag indicating if not commited features should be returned
    */
-  QgsFeature* getNextFeature(std::list<int>& attlist);
+  QgsFeature* getNextFeature(std::list<int> const & attlist);
   /** Get the feature type. This corresponds to
-  * WKBPoint,
-  * WKBLineString,
-  * WKBPolygon,
-  * WKBMultiPoint,
-  * WKBMultiLineString or
-  * WKBMultiPolygon
-  * as defined in qgis.h
-  */
-  int geometryType();
+   * WKBPoint,
+   * WKBLineString,
+   * WKBPolygon,
+   * WKBMultiPoint,
+   * WKBMultiLineString or
+   * WKBMultiPolygon
+   * as defined in qgis.h
+   */
+
+  int geometryType() const;
+
   /**
-  * Get the number of features in the layer
-  */
-  long featureCount();
+   * Get the number of features in the layer
+   */
+  long featureCount() const;
+
   /**
-  * Get the number of fields in the layer
-  */
-  int fieldCount();
+   * Get the number of fields in the layer
+   */
+  int fieldCount() const;
+
   /**
   * Select features based on a bounding rectangle. Features can be retrieved
   * with calls to getFirstFeature and getNextFeature.
   * @param mbr QgsRect containing the extent to use in selecting features
   */
   void select(QgsRect * mbr, bool useIntersect=false);
+
   /**
   * Get the data source URI structure used by this layer
    */
@@ -127,11 +138,6 @@ public:
   virtual std::vector<QgsFeature>& identify(QgsRect * rect);
 
   /**
-  * Return endian-ness for this layer
-  * @see ENDIAN
-  */
-  int endian();
-  /**
   * Return a string representation of the endian-ness for the layer
   */
   QString endianString();
@@ -139,25 +145,27 @@ public:
   /** Return the extent for this data layer
   */
   virtual QgsRect *extent();
+
   /**
   * Get the attributes associated with a feature
   */
   void getFeatureAttributes(int oid, QgsFeature *f);
+
   /**Get the attributes with indices contained in attlist*/
-  void getFeatureAttributes(int oid, QgsFeature *f, std::list<int>& attlist);
-  /**
-  * Get the name of the primary key for the layer
-  */
+  void getFeatureAttributes(int oid, QgsFeature *f, std::list<int> const& attlist);
+
+  /**  * Get the name of the primary key for the layer
+   */
   QString getPrimaryKey();
   /**
-  * Get the field information for the layer
-  * @return vector of QgsField objects
-  */
-  std::vector<QgsField>& fields();
+   * Get the field information for the layer
+   * @return vector of QgsField objects
+   */
+  std::vector<QgsField> const & fields() const;
 
   /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
-  * pointer and setting it to 0
-  */
+   * pointer and setting it to 0
+   */
   void reset();
 
   /**Returns the minimum value of an attributs
@@ -167,15 +175,20 @@ public:
   /**Returns the maximum value of an attributs
        @param position the number of the attribute*/
   QString maxValue(int position);
+
   /**Returns true if layer is valid
   */
   bool isValid();
+
   //! get postgis version string
   QString postgisVersion(PGconn *);
+
   //! get status of GEOS capability
   bool hasGEOS(PGconn *);
+
   //! get status of GIST capability
   bool hasGIST(PGconn *);
+
   //! get status of PROJ4 capability
   bool hasPROJ(PGconn *);
 
@@ -197,22 +210,31 @@ public:
 
   //! Flag to indicate if the provider can export to shapefile
   bool supportsSaveAsShapefile();
+
   /** Accessor for sql where clause used to limit dataset */
   QString subsetString() {return sqlWhereClause;};
+
   //! Get the postgres connection
   PGconn * pgConnection() {return connection;};
+
   //! Get the table name associated with this provider instance
   QString getTableName() {return tableName;};
+
   /** mutator for sql where clause used to limit dataset size */
   void setSubsetString(QString theSQL); //{sqlWhereClause = theSQL;};
+
 private:
+
   std::vector < QgsFeature > features;
   std::vector < bool > *selected;
   std::vector < QgsField > attributeFields;
   std::map < int, int > attributeFieldsIdMap;
+
   QString dataSourceUri;
+
   //! Data source URI struct for this layer
   QgsDataSourceURI mUri;
+
   /**
   * Pointer to the PostgreSQL query result object. If this pointer is 0,
   * there is no current selection set. Any future getNextFeature requests
@@ -220,98 +242,100 @@ private:
   */
   PGresult *queryResult;
   /**
-  * Flag indicating if the layer data source is a valid PostgreSQL layer
-  */
+   * Flag indicating if the layer data source is a valid PostgreSQL layer
+   */
   bool valid;
   /**
-  * Name of the table with no schema
-  */
+   * Name of the table with no schema
+   */
   QString tableName;
   /**
-  * Name of the table with schema included
-  */
+   * Name of the table with schema included
+   */
   QString schemaTableName;
   /**
-  * SQL statement used to limit the features retreived
-  */
+   * SQL statement used to limit the features retreived
+   */
   QString sqlWhereClause;
   /**
-  * Primary key column for fetching features. If there is no primary key
-  * the oid is used to fetch features.
-  */
+   * Primary key column for fetching features. If there is no primary key
+   * the oid is used to fetch features.
+   */
   QString primaryKey;
   /**
-  * Index (column number) of the primary key
-  */
+   * Index (column number) of the primary key
+   */
   int primaryKeyIndex;
   /**
    * Data type for the primary key
    */
   QString primaryKeyType;
   /**
-  * Name of the geometry column in the table
-  */
+   * Name of the geometry column in the table
+   */
   QString geometryColumn;
   /**
-  * Geometry type
-  */
+   * Geometry type
+   */
   int geomType;
   /**
-  * SQL to select all records in this layer
-  */
+   * SQL to select all records in this layer
+   */
   QString selectSQL;
   /**
-  * Connection pointer
-  */
+   * Connection pointer
+   */
   PGconn *connection;
   /**
-  * Spatial reference id of the layer
-  */
+   * Spatial reference id of the layer
+   */
   QString srid;
   /**
-  * Rectangle that contains the extent (bounding box) of the layer
-  */
+   * Rectangle that contains the extent (bounding box) of the layer
+   */
   QgsRect layerExtent;
+    
+  /**
+   * Number of features in the layer
+   */
+  long numberFeatures;
 
   /**
-  * Number of features in the layer
-  */
-  long numberFeatures;
-  /**
-  * Enum defining endian types:
-  *
-  * NDR = little endian
-  *
-  * XDR = big endian
-  * @see endian
-  */
-  enum ENDIAN
-  {
-    NDR = 1,
-    XDR = 0
-  };
-  /**
-  * Flag indicating whether data from binary cursors must undergo an
-  * endian conversion prior to use
+   * Flag indicating whether data from binary cursors must undergo an
+   * endian conversion prior to use
+   @note 
+       
+   XXX Umm, it'd be helpful to know what we're swapping from and to.  
+   XXX Presumably this means swapping from big-endian (network) byte order
+   XXX to little-endian; but the inverse transaction is possible, too, and 
+   XXX that's not reflected in this variable
   */
   bool swapEndian;
+    
   bool ready;
   std::ofstream pLog;
 
   //! PostGIS version string
   QString postgisVersionInfo;
+
   //! GEOS capability
   bool geosAvailable;
+
   //! GIST capability
   bool gistAvailable;
+
   //! PROJ4 capability
   bool projAvailable;
+
   /**Writes a single feature*/
   bool addFeature(QgsFeature* f);
+
   /**Deletes a feature*/
   bool deleteFeature(int id);
+
   //! Get the feature count based on the where clause
   long getFeatureCount();
+
   //! Calculate the extents of the layer
   void calculateExtents();
 };

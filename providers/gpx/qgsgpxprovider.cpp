@@ -177,7 +177,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 }
 
 
-QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int> const & attlist) {
   QgsFeature* feature = new QgsFeature(-1);
   bool success = getNextFeature(feature, attlist);
   if (success)
@@ -188,7 +188,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 
 
 bool QgsGPXProvider::getNextFeature(QgsFeature* feature, 
-				    std::list<int>& attlist) {
+				    std::list<int> const & attlist) {
   bool result = false;
   
   std::list<int>::const_iterator iter;
@@ -410,7 +410,8 @@ std::vector<QgsFeature>& QgsGPXProvider::identify(QgsRect * rect) {
   // select the features
   select(rect);
   // temporary fix to get this to compile under windows
-  std::vector<QgsFeature> features;
+  // XXX What the heck is going on here?
+  static std::vector<QgsFeature> features;
   return features;
 }
 
@@ -425,20 +426,7 @@ return gPtr;
 
 }
 */
-int QgsGPXProvider::endian() {
-  char *chkEndian = new char[4];
-  memset(chkEndian, '\0', 4);
-  chkEndian[0] = 0xE8;
 
-  int *ce = (int *) chkEndian;
-  int retVal;
-  if (232 == *ce)
-    retVal = NDR;
-  else
-    retVal = XDR;
-  delete[]chkEndian;
-  return retVal;
-}
 
 
 // Return the extent of the layer
@@ -450,7 +438,8 @@ QgsRect *QgsGPXProvider::extent() {
 /** 
  * Return the feature type
  */
-int QgsGPXProvider::geometryType() {
+int QgsGPXProvider::geometryType() const
+{
   return mGeomType;
 }
 
@@ -458,7 +447,8 @@ int QgsGPXProvider::geometryType() {
 /** 
  * Return the feature type
  */
-long QgsGPXProvider::featureCount() {
+long QgsGPXProvider::featureCount() const
+{
   if (mFeatureType == WaypointType)
     return data->getNumberOfWaypoints();
   if (mFeatureType == RouteType)
@@ -472,12 +462,14 @@ long QgsGPXProvider::featureCount() {
 /**
  * Return the number of fields
  */
-int QgsGPXProvider::fieldCount() {
+int QgsGPXProvider::fieldCount() const
+{
   return attributeFields.size();
 }
 
 
-std::vector<QgsField>& QgsGPXProvider::fields(){
+std::vector<QgsField> const & QgsGPXProvider::fields() const
+{
   return attributeFields;
 }
 
