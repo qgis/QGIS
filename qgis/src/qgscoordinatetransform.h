@@ -19,6 +19,7 @@
 #define QGSCOORDINATETRANSFORM_H
 
 #include "qgspoint.h"
+#include "qgscsexception.h"
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
 #include <cpl_error.h>
@@ -93,7 +94,7 @@ inline QgsPoint QgsMapToPixel::transform(double x, double y)
 	return (transform(QgsPoint(x, y)));
 }
 
-inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint)
+inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint) throws QgsCsException
 {
 	// transform x
 	double x = thePoint.x(); 
@@ -101,7 +102,7 @@ inline QgsPoint QgsMapToPixel::transform(QgsPoint thePoint)
 	if ( ! gSourceToDestXForm->Transform( 1, &x, &y ) )
 	{
 	  //something bad happened....
-	  return null;
+	  throw QgsCsException("Coordinate transform failed";
 	}
 	else
 	{
