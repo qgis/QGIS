@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgisAppBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -81,13 +81,13 @@
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddRasterLayer"/>
         <action name="actionAddLayer"/>
-        <action name="actionAddAllToOverview"/>
         <action name="actionRemoveLayer"/>
-        <action name="actionRemoveAllFromOverview"/>
+        <action name="actionNewVectorLayer"/>
         <action name="actionInOverview"/>
+        <action name="actionAddAllToOverview"/>
+        <action name="actionRemoveAllFromOverview"/>
         <action name="actionShowAllLayers"/>
         <action name="actionHideAllLayers"/>
-        <action name="actionNewVectorLayer"/>
         <separator/>
         <action name="actionOpenTable"/>
         <action name="actionLayerProperties"/>
