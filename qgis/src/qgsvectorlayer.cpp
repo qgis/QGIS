@@ -362,7 +362,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     QPointArray *pa;
     int wkbType;
     std::list<int> attributes=m_renderer->classificationAttributes();
-    //while ((fet = dataProvider->getNextFeature(attributesneeded)))
     while((fet = dataProvider->getNextFeature(attributes)))
     {
       // If update threshold is greater than 0, check to see if
@@ -376,10 +375,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         }
       }
 
-      //true is necessary for graduated symbol
-#ifdef QGISDEBUG
-      // std::cout << "Fetched next feature" << std::endl;
-#endif
       if (fet == 0)
       {
 #ifdef QGISDEBUG
@@ -387,36 +382,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
 #endif
       } else
       {
-        //if feature is selected, change the color of the painter
 	  bool sel=selected.find(fet->featureId()) != selected.end();
-	  /*if (selected.find(fet->featureId()) != selected.end())
-        {
-          // must change color of pen since it holds not only color
-          // but line width
-          if(vectorType() == QGis::Line)
-          {
-            pen.setColor(selectionColor);
-          }
-          else
-          {
-            pen.setColor(Qt::black);
-          }
-          p->setPen(pen);
-          p->setBrush(QBrush(selectionColor));
-        }
-        else
-        {
+	  m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
 
-          //pass the feature to the renderer
-          m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor);
-	  }*/
-
-	 m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel); 
-
-        /* OGRGeometry *geom = fet->GetGeometryRef();
-           if (!geom) {
-           std::cout << "geom pointer is null" << std::endl;
-           } */
         // get the wkb representation
         feature = fet->getGeometry();
         //  if (feature != 0) {
@@ -624,10 +592,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
         //std::cout << "deleting feature[]\n";
         //      std::cout << geom->getGeometryName() << std::endl;
         featureCount++;
-        //delete fet;
       }
       //qApp->processEvents();
-      // delete fet;
       }
 #ifdef QGISDEBUG
       std::cerr << "Total features processed is " << featureCount << std::endl;
