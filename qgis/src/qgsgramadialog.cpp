@@ -284,11 +284,6 @@ void QgsGraMaDialog::apply()
 		double scalefactor=((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble();
 		int actrowheight=(int)(pic.boundingRect().height()*scalefactor);
 		actrowheight= (actrowheight > rowheight) ? actrowheight : rowheight;
-		qWarning("offset: "+QString::number(offset));
-		qWarning("row: "+QString::number(i));
-		qWarning("scalefactor: "+QString::number(scalefactor));
-		qWarning("actrowheight: "+QString::number(actrowheight));
-		qWarning("rowheight: " +QString::number(rowheight));
 		p.scale(scalefactor,scalefactor);
 		p.drawPicture((int)(leftspace/scalefactor),(int)(offset/scalefactor),pic);
 		p.resetXForm();
