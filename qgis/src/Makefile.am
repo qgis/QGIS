@@ -98,7 +98,6 @@ headers =	qgisapp.h					\
 		qgsmarkerdialog.h				\
 		qgsmarkersymbol.h				\
 		qgsmeasure.h					\
-		qgsvectorsymbologywidget.h			\
 		qgsoptions.h					\
 		qgspatterndialog.h				\
 		qgspluginitem.h					\
@@ -141,6 +140,8 @@ headers =	qgisapp.h					\
 		qgslinestylewidget.h				\
 		qgsfillstylewidget.h				\
 		splashscreen.h				
+
+#		qgsvectorsymbologywidget.h			\
 
 ## qt designer files for all the GUI stuff
 
