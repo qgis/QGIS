@@ -49,9 +49,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
     //downcast the maplayer to rasterlayer
     rasterLayer = (QgsRasterLayer *) lyr;
 
+#ifdef DEBUG
     //populate the metadata tab's text browser widget with gdal metadata info
     txtbMetadata->setText(rasterLayer->getMetadata());
-
+#else
+    tabSymbology->removePage( tabMetadata );
+#endif
     //display the raster dimensions and no data value
     lblColumns->setText(tr("<p align=\"center\">Columns:") + QString::number(rasterLayer->getRasterXDim()) + "</p>");
     lblRows->setText(tr("<p align=\"right\">Rows:") + QString::number(rasterLayer->getRasterYDim()) + "</p>");
