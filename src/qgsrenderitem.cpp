@@ -38,7 +38,7 @@ void QgsRenderItem::setSymbol(QgsSymbol s)
   sym = s;
 }
 
-const QString & QgsRenderItem::label() const const
+const QString & QgsRenderItem::label() const
 {
   return m_label;
 }
