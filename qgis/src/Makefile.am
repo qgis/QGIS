@@ -47,6 +47,14 @@ headers =	qgisapp.h					\
 		qgsattributetabledisplay.h			\
 		qgsattributetable.h				\
 		qgscolortable.h					\
+		qgscomposer.h					\
+		qgscomposition.h				\
+		qgscomposeritem.h				\
+		qgscomposermap.h				\
+		qgscomposervectorlegend.h			\
+		qgscomposerlabel.h				\
+		qgscomposerview.h				\
+		qgscomposition.h				\
 		qgscontcoldialog.h				\
 		qgscontinuouscolrenderer.h			\
 		qgscoordinatetransform.h			\
@@ -130,6 +138,11 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsattributedialogbase.ui		\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
+		qgscomposerbase.ui			\
+		qgscompositionbase.ui			\
+		qgscomposermapbase.ui			\
+		qgscomposervectorlegendbase.ui		\
+		qgscomposerlabelbase.ui		     	\
 		qgscontcoldialogbase.ui			\
 		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
@@ -185,6 +198,12 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributeactiondialog.moc.cpp	\
 		qgsattributedialog.moc.cpp		\
 		qgsattributetable.moc.cpp		\
+		qgscomposer.moc.cpp			\
+		qgscomposition.moc.cpp			\
+		qgscomposermap.moc.cpp			\
+		qgscomposervectorlegend.moc.cpp		\
+		qgscomposerlabel.moc.cpp		\
+		qgscomposerview.moc.cpp			\
 		qgsattributetabledisplay.moc.cpp		\
 		qgscoordinatetransform.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
@@ -236,6 +255,13 @@ qgis_SOURCES =	main.cpp			\
 		qgsattributetable.cpp		\
 		qgsattributetabledisplay.cpp	\
 		qgscolortable.cpp		\
+		qgscomposer.cpp			\
+		qgscomposition.cpp		\
+		qgscomposeritem.cpp		\
+		qgscomposermap.cpp		\
+		qgscomposervectorlegend.cpp	\
+		qgscomposerlabel.cpp		\
+		qgscomposerview.cpp		\
 		qgscontcoldialog.cpp		\
 		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
@@ -355,6 +381,13 @@ libqgis_la_SOURCES =				\
 		qgsacetaterectangle.cpp		\
 		qgsattributeaction.cpp		\
 		qgscolortable.cpp		\
+		qgscomposer.cpp			\
+		qgscomposition.cpp		\
+		qgscomposeritem.cpp		\
+		qgscomposermap.cpp		\
+		qgscomposervectorlegend.cpp	\
+		qgscomposerlabel.cpp		\
+		qgscomposerview.cpp		\
 		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
 		qgscoordinatetransform.moc.cpp  \

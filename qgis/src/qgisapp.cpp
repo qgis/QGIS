@@ -114,6 +114,7 @@
 #include "qgsoptions.h"
 #include "qgsprojectproperties.h"
 #include "qgsvectorfilewriter.h"
+#include "qgscomposer.h"
 
 
 #include "xpm/qgis.xpm"
@@ -585,6 +586,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // set the focus to the map canvase
     mMapCanvas->setFocus();
 
+    // Map composer
+    mComposer = new QgsComposer(this);
 
 } // QgisApp ctor
 
@@ -1906,7 +1909,7 @@ void QgisApp::openProject(int pathIndex)
     }
 } // QgisApp::openProject
 
-
+/*
 void QgisApp::filePrint()
 {
     //
@@ -1941,6 +1944,13 @@ void QgisApp::filePrint()
         myQPainter.drawPixmap(0,0, myQPixmap);
         myQPainter.end();
     }
+}
+*/
+
+void QgisApp::filePrint()
+{
+    mComposer->open();
+    mComposer->zoomFull();
 }
 
 void QgisApp::saveMapAsImage()

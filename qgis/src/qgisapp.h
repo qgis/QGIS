@@ -44,6 +44,7 @@ class QgsMapLayerRegistry;
 class QgsRasterLayer;
 class QCheckBox;
 class QEvent;
+class QgsComposer;
 #ifdef WIN32
 #include "qgisappbase.h"
 #else
@@ -455,6 +456,9 @@ private:
     std::map<int, QString>mMenuMapById;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
+
+    //! Map composer
+    QgsComposer *mComposer;
 
     //! How to determine the number of decimal places used to
     //! display the mouse position
