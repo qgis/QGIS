@@ -30,9 +30,6 @@
 #include "../../src/qgsrect.h"
 
 
-#define DOUBLE_NA (std::numeric_limits<double>::signaling_NaN())
-
-
 /** This is the parent class for all GPS data classes (except tracksegment).
     It contains the variables that all GPS objects can have.
 */
@@ -138,7 +135,7 @@ class GPSData {
       successfully its index will be returned, otherwise a negative number
       will be returned. */
   int addWaypoint(double lat, double lon, std::string name = "", 
-		  double ele = DOUBLE_NA);
+		  double ele = -std::numeric_limits<double>::max());
 
   /** This function tries to add a new route. If the route was added
       successfully its index will be returned, otherwise a negative number

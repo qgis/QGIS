@@ -147,7 +147,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	  result->addAttribute("name", wpt.name.c_str());
 	  result->addAttribute("lat", QString("%1").arg(wpt.lat));
 	  result->addAttribute("lon", QString("%1").arg(wpt.lon));
-	  if (isnan(wpt.ele))
+	  if (wpt.ele == -std::numeric_limits<double>::max())
 	    result->addAttribute("ele", "");
 	  else
 	    result->addAttribute("ele", QString("%1").arg(wpt.ele));
@@ -279,7 +279,7 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	    result->addAttribute("lon", QString("%1").arg(wpt.lon));
 	    break;
 	  case 3:
-	    if (isnan(wpt.ele))
+	    if (wpt.ele == -std::numeric_limits<double>::max())
 	      result->addAttribute("ele", "");
 	    else
 	      result->addAttribute("ele", QString("%1").arg(wpt.ele));
