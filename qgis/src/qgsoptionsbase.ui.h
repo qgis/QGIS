@@ -27,6 +27,8 @@ void QgsOptionsBase::init()
       hideSplashFlag =true;
     }
     cbxHideSplash->setChecked(hideSplashFlag);
+    // set the visibility flag for newly added layers
+    chkAddedVisibility->setChecked(!settings.readBoolEntry("/qgis/new_layers_visible", true));
 }
 void QgsOptionsBase::saveOptions()
 {
@@ -34,6 +36,7 @@ void QgsOptionsBase::saveOptions()
  settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
  settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
  settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
+ settings.writeEntry("/qgis/new_layers_visible",!chkAddedVisibility->isChecked());
  if(cmbTheme->currentText().length() == 0)
  {
    settings.writeEntry("/qgis/theme", "default");

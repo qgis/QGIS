@@ -44,6 +44,13 @@ class QgsOptions :public QgsOptionsBase{
      * @return theme name (a directory name in the themes directory)
      */
     QString theme();
+    /**
+     * Return the desired state of newly added layers. If a layer
+     * is to be drawn when added to the map, this function returns
+     * true.
+     */
+    bool newVisible();
+
     public slots:
       //! Slot to change the theme this is handled when the user 
       // activates or highlights a theme name in the drop-down list
