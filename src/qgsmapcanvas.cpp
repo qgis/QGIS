@@ -38,7 +38,6 @@
 #include "qgsmaplayer.h"
 #include "qgslegend.h"
 #include "qgslegenditem.h"
-#include "qgsdatabaselayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmarkersymbol.h"
 #include "qgspolygonsymbol.h"

@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <list>
+#include <qdom.h>
 
 class QString;
 class QWidget;
