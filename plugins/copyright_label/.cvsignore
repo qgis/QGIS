@@ -1,0 +1,10 @@
+.deps
+.libs
+Makefile
+Makefile.in
+*.la
+*.lo
+*.moc.cpp
+pluginguibase.cpp
+pluginguibase.h
+

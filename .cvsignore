@@ -1,0 +1,16 @@
+Makefile
+Makefile.in
+aclocal.m4
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+libtool
+ltmain.sh
+qgis.spec
+qgsconfig.h
+qgsconfig.h.in
+stamp-h1
+autom4te.cache
