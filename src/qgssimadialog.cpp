@@ -199,12 +199,7 @@ void QgsSiMaDialog::apply()
     p.setFont(f);
     p.drawText((int)(leftspace+betweenspace+pic.boundingRect().width()*ms->scaleFactor()), pix->height()-bottomspace,name);
 
-    if (mVectorLayer->legendItem())
-    {
-        mVectorLayer->legendItem()->setPixmap(0, (*pix));
-        //updateMarkerSize(0);
-    }
-
+    mVectorLayer->updateItemPixmap();
 
     if (mVectorLayer->propertiesDialog())
     {

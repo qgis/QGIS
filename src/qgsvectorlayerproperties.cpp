@@ -118,10 +118,7 @@ void QgsVectorLayerProperties::apply()
       rendererDirty = false;
       //copy the bufferPixmap to the vectorlayer and to its legend item
       *(layer->legendPixmap()) = bufferPixmap;
-      if (layer->legendItem())
-        {
-          layer->legendItem()->setPixmap(0, bufferPixmap);
-        }
+      layer->updateItemPixmap();
     }
   accept();
   layer->triggerRepaint();

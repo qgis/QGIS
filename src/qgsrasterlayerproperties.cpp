@@ -467,8 +467,7 @@ void QgsRasterLayerProperties::apply()
   pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
   pixmapLegend->repaint(false);
-  QgsLegendItem *myLegendItem = rasterLayer->legendItem();
-  ((QCheckListItem *) myLegendItem)->setPixmap(0, *rasterLayer->legendPixmap());
+  rasterLayer->updateItemPixmap();
 
   rasterLayer->setLayerName(leDisplayName->text());
   //see if the user would like debug overlays
@@ -801,8 +800,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
   pixmapLegend->repaint(false);
-  QgsLegendItem *myLegendItem = rasterLayer->legendItem();
-  ((QCheckListItem *) myLegendItem)->setPixmap(0, *rasterLayer->legendPixmap());
+  rasterLayer->updateItemPixmap();
   //populate the metadata tab's text browser widget with gdal metadata info
   txtbMetadata->setText(rasterLayer->getMetadata());
 }

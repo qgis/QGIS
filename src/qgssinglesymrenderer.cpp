@@ -129,10 +129,7 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
         {
 	    layer->setRendererDialog(dialog);
 	    QgsLegendItem *item;
-	    if (item = layer->legendItem())
-            {
-		item->setPixmap(0, (*pixmap));
-            }
+	    layer->updateItemPixmap();
         }
     } 
     else
