@@ -240,6 +240,7 @@ void QgsSpit::import(){
   QString connName = cmbConnections->currentText();
   bool finished = false;
   PGresult *res;
+  QString query;
   if (connName.isEmpty()){
     QMessageBox::warning(this, "Import Shapefiles", "You need to specify a Connection first");
   }
@@ -268,8 +269,9 @@ void QgsSpit::import(){
           pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
           continue;
         }
-        
-        res = PQexec(pd, "BEGIN");
+
+        query = "BEGIN";
+        res = PQexec(pd, query);
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           qWarning(PQresultErrorMessage(res));
         }
@@ -279,33 +281,32 @@ void QgsSpit::import(){
         
         fileList[i]->setTable(tblShapefiles->text(i, 3));
         pro->setLabelText("Importing files\n"+fileList[i]->getName());
-        int rel_exists1 = 0;
-        int rel_exists2 = 0;
-        QString query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+fileList[i]->getTable()+"\'";
+        bool rel_exists1 = false;
+        bool rel_exists2 = false;
+        query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+fileList[i]->getTable()+"\'";
         res = PQexec(pd, (const char *)query);
+        rel_exists1 = (PQntuples(res)>0);
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           qWarning(PQresultErrorMessage(res));
         }
         else {
           PQclear(res);
         }
-        
-        //rel_exists1 = PQntuples(res);
         
         query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+fileList[i]->getTable()+"\'";
         res = PQexec(pd, (const char *)query);
+        qWarning(query);
+        rel_exists2 = (PQntuples(res)>0);
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           qWarning(PQresultErrorMessage(res));
         }
         else {
           PQclear(res);
         }
-        //rel_exists2 = PQntuples(res);
 
-        //std::cout<< rel_exists1 << " " << rel_exists2 << std::endl;
-        
+        qWarning(QString("reason1 = %0; reason2 = %1;").arg(rel_exists1, rel_exists2));
         QMessageBox *del_confirm;
-        if(rel_exists1!=0 || rel_exists2!=0){
+        if(rel_exists1 || rel_exists2){
           del_confirm = new QMessageBox("Import Shapefiles - Relation Exists",
             "The Shapefile:\n"+fileList[i]->getName()+"\nwill use ["+
             QString(fileList[i]->getTable())+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
@@ -316,9 +317,9 @@ void QgsSpit::import(){
           QMessageBox::No  | QMessageBox::Escape,
           QMessageBox::NoButton, this, "Relation Exists");
 
-          if (del_confirm->exec() == QMessageBox::Yes && rel_exists1!=0){
-            query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
-              fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";
+          if (del_confirm->exec() == QMessageBox::Yes && rel_exists1){
+            query = "DROP TABLE " + fileList[i]->getTable();            
+            qWarning(query);
             res = PQexec(pd, (const char *)query);
             if(PQresultStatus(res)!=PGRES_COMMAND_OK){
               qWarning(PQresultErrorMessage(res));
@@ -327,8 +328,9 @@ void QgsSpit::import(){
               PQclear(res);
             }            
           }
-          else if (del_confirm->exec() == QMessageBox::Yes && rel_exists2!=0){
-            query = "DROP TABLE " + fileList[i]->getTable();
+          else if (del_confirm->exec() == QMessageBox::Yes && rel_exists2){
+            query = "DELETE FROM GEOMETRY_COLUMNS WHERE F_TABLE_NAME=\'"+fileList[i]->getTable()+"\'";            
+            qWarning(query);
             res = PQexec(pd, (const char *)query);
             if(PQresultStatus(res)!=PGRES_COMMAND_OK){
               qWarning(PQresultErrorMessage(res));
@@ -338,7 +340,8 @@ void QgsSpit::import(){
             }
           }
           else {
-      	    res = PQexec(pd, "ROLLBACK");
+            query = "ROLLBACK";
+      	    res = PQexec(pd, query);
             if(PQresultStatus(res)!=PGRES_COMMAND_OK){
               qWarning(PQresultErrorMessage(res));
             }
@@ -353,7 +356,8 @@ void QgsSpit::import(){
           if(!finished){
             QMessageBox::warning(this, "Import Shapefiles",
               "Problem inserting features from file:\n"+fileList[i]->getName());
-            res = PQexec(pd, "ROLLBACK");
+            query = "ROLLBACK";
+            res = PQexec(pd, query);
             if(PQresultStatus(res)!=PGRES_COMMAND_OK){
               qWarning(PQresultErrorMessage(res));
             }
@@ -364,7 +368,8 @@ void QgsSpit::import(){
           pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
         }
         else{  // if file has been imported, remove it from the list
-          res = PQexec(pd, "COMMIT");
+          query = "COMMIT";
+          res = PQexec(pd, query);
           if(PQresultStatus(res)!=PGRES_COMMAND_OK){
             qWarning(PQresultErrorMessage(res));
           }
