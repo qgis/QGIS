@@ -530,9 +530,9 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
 
 void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
 {
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cerr << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
-//#endif
+#endif
   //create the outout image that the layer will be drawn on before placing it in the qcanvas
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   // QPixmap * myQPixmap=new QPixmap(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt);
@@ -1353,11 +1353,15 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
 #endif
       if (myRasterBandStats.bandName == theBandNameQString)
         {
+#ifdef QGISDEBUG
 	std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString << std::endl;
+#endif
           return myRasterBandStats.bandNoInt;
         }
     }
+#ifdef QGISDEBUG
   std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString << std::endl;  
+#endif
   return 0;                     //no band was found
 }
 
