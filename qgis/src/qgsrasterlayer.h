@@ -754,8 +754,8 @@ public slots:
     /** \brief Create  gdal pyramid overviews  for this layer.
     * This will speed up performance at the expense of hard drive space.
     * Also, write access to the file is required. If no paramter is passed in
-    * it will default to the class member pyramid list. */
-    void buildPyramids(RasterPyramidList);
+    * it will default to nearest neighbor resampling. */
+    void buildPyramids(RasterPyramidList,QString theResamplingMethod="NEAREST");
     /** \brief Used at the moment by the above function but hopefully will later
     be useable by any operation that needs to notify the user of its progress. */
 /*

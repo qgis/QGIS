@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>636</width>
-            <height>458</height>
+            <width>637</width>
+            <height>478</height>
         </rect>
     </property>
     <property name="caption">
@@ -400,7 +400,7 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Andale Sans UI"&gt;
 &lt;p style="margin-top:14px"&gt;&lt;span style="font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
@@ -989,17 +989,17 @@
                             <widget class="QComboBox">
                                 <item>
                                     <property name="text">
-                                        <string>Average Magphase</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
                                         <string>Average</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property name="text">
                                         <string>Nearest Neighbour</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Average Magphase</string>
                                     </property>
                                 </item>
                                 <property name="name">
@@ -1029,8 +1029,8 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
-&lt;p style="margin-top:18px"&gt;&lt;span style="font-size:24pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Andale Sans UI"&gt;
+&lt;p style="margin-top:18px"&gt;&lt;span style="font-size:21pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
 &lt;p&gt;&lt;span style="color:#ff0000"&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
