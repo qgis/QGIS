@@ -121,10 +121,19 @@ int main(int argc, char *argv[])
 
   // Add any remaining args to the file list - we will attempt to load them 
   // as layers in the map view further down....
+#ifdef QGISDEBUG
+  std::cout << "Files specified on command line: " << optind << std::endl;
+#endif
   if (optind < argc)
   {
     while (optind < argc)
+    {
+#ifdef QGISDEBUG
+      int idx = optind;
+      std::cout << idx << ": " << argv[idx] << std::endl;
+#endif
       myFileList->append(argv[optind++]);
+    }
   }
   
   /////////////////////////////////////////////////////////////////////
@@ -179,6 +188,9 @@ int main(int argc, char *argv[])
     std::cout << "    vectors, and QGIS project files (.qgs): " << std::endl ;
     std::cout << "     1. Rasters - Supported formats include GeoTiff, DEM " << std::endl ;
     std::cout << "        and others supported by GDAL" << std::endl ;
+    std::cout << "     2. Vectors - Supported formats include ESRI Shapefiles " << std::endl ;
+    std::cout << "        and others supported by OGR and PostgreSQL layers using" << std::endl ;
+    std::cout << "        the PostGIS extension" << std::endl ;
     return 0;
   }
 
@@ -195,12 +207,16 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   // autoload any filenames that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
+#ifdef QGISDEBUG
+    std::cout << "Number of files in myFileList: " << myFileList->count() << std::endl;
+#endif
   for ( QStringList::Iterator myIterator = myFileList->begin(); myIterator != myFileList->end(); ++myIterator ) 
   {
-    QString myLayerName = *myIterator;
+    
 #ifdef QGISDEBUG
-    printf("Trying to load file : %s\n", myLayerName);
+    std::cout << "Trying to load file : " << *myIterator << std::endl;
 #endif
+    QString myLayerName = *myIterator;
     // try to add all these layers - any unsupported file types will
     // be rejected automatically
     // The funky bool ok is so this can be debugged a bit easier...
