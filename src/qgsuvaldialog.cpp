@@ -89,9 +89,15 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 
 QgsUValDialog::~QgsUValDialog()
 {
-    for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
+    std::map<QString, QgsRenderItem *>::iterator myValueIterator = mValues.begin();
+    while ( myValueIterator != mValues.end() )
     {
-	delete it->second;
+        delete myValueIterator->second;
+        
+        mValues.erase( myValueIterator );
+        
+        myValueIterator = mValues.begin(); // since iterator invalidated due to
+                                        // erase(), reset to new first element
     }
     mClassBreakBox->setCurrentItem(0);
 }
