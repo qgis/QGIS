@@ -12,7 +12,11 @@
 #ifndef PLUGINGUI_H
 #define PLUGINGUI_H
 
-#include <pluginguibase.uic.h>
+#ifdef WIN32
+  #include <pluginguibase.h>
+#else
+  #include <pluginguibase.uic.h>
+#endif
 #include <qstring.h>
 /**
 @author Tim Sutton
