@@ -62,6 +62,9 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QStrin
 tabledisplay(0), m_renderer(0), m_propertiesDialog(0),
 m_rendererDialog(0)
 {
+  // initialize the identify results pointer
+  ir = 0;
+  
 #ifdef DEBUG
   std::cerr << "VECTORLAYERPATH: " << vectorLayerPath << std::endl;
   std::cerr << "BASENAME: " << baseName << std::endl;
@@ -86,7 +89,7 @@ m_rendererDialog(0)
 
 #endif
   // load the data provider
-  QLibrary *myLib = new QLibrary((const char *) ogrlib);
+ myLib = new QLibrary((const char *) ogrlib);
 #ifdef DEBUG
   std::cout << "Library name is " << myLib->library() << std::endl;
 #endif
@@ -176,6 +179,9 @@ m_rendererDialog(0)
 
 QgsVectorLayer::~QgsVectorLayer()
 {
+  #ifdef DEBUG
+  std::cerr << "In QgsVectorLayer destructor" << std::endl;
+  #endif
   if (tabledisplay)
     {
       tabledisplay->close();
@@ -193,6 +199,10 @@ QgsVectorLayer::~QgsVectorLayer()
     {
       delete m_propertiesDialog;
     }
+    // delete the popu pmenu
+    delete popMenu;
+    // delete the provider lib pointer
+    delete myLib;
 }
 
 QString QgsVectorLayer::providerType()
@@ -326,10 +336,13 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
           if (fet == 0)
             {
 #ifdef DEBUG
-              std::cout << "get next feature returned null\n";
+              std::cerr << "get next feature returned null\n";
 #endif
           } else
             {
+               #ifdef DEBUG
+                  std::cerr << "!!!!!!!!!!!!!!!!!!!!!!!Feature geometry: " << fet->wellKnownText() << std::endl;
+               #endif
               //if feature is selected, change the color of the painter
               //TODO fix this selection code to work with the provider
               //if ((*selected)[(fet->featureId())] == true)
@@ -454,7 +467,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                             // draw the ring
                             //std::cout << "Drawing the polygon\n";
                             p->drawPolygon(*pa);
-
+                            delete pa;
                           }
 
                         break;
@@ -508,16 +521,24 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                   delete[]feature;
               } else
                 {
+                 
                   //pass the feature to the renderer
                   m_renderer->renderFeature(p, fet, cXf);
                 }
               //std::cout << "deleting feature[]\n";
               //      std::cout << geom->getGeometryName() << std::endl;
               featureCount++;
-              //std::cout << "Feature count: " << featureCount << std::endl;
+              #ifdef DEBUG
+              std::cout << "Feature count: " << featureCount << std::endl;
+              #endif
               //delete[]feature;
             }
+           // delete fet;
         }
+        #ifdef DEBUG
+        std::cerr << "Total features processed is " << featureCount << std::endl;
+        #endif
+        delete brush;
       qApp->processEvents();
   } else
     {
@@ -551,7 +572,10 @@ void QgsVectorLayer::identify(QgsRect * r)
   QgsFeature *fet;
   unsigned char *feature;
   // display features falling within the search radius
-  QgsIdentifyResults *ir = 0;
+  if(ir){
+    delete ir;
+  }
+  ir = 0;
   while ((fet = dataProvider->getNextFeature(true)))
     {
       featureCount++;
