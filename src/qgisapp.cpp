@@ -111,7 +111,11 @@
 #include "../plugins/qgisplugin.h"
 #include "qgsoptions.h"
 #include "qgsprojectproperties.h"
+#include "qgsvectorfilewriter.h"
+
+
 #include "xpm/qgis.xpm"
+
 #include <ogrsf_frmts.h>
 
 /* typedefs for plugins */
@@ -2745,12 +2749,36 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
 void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 {
 #ifdef QGISDEBUG    
-    std::cout << "Capture point (clicked on map) at position " << theQgsPoint.stringRep(2) << std::endl;
+  std::cout << "Capture point (clicked on map) at position " << theQgsPoint.stringRep(2) << std::endl;
 #endif      
   QClipboard *myClipboard = QApplication::clipboard();
-  myClipboard->setText(theQgsPoint.stringRep(2));
-  QString myMessage = "Clipboard contents set to: ";
-  statusBar()->message(myMessage + myClipboard->text());
+  //if we are on x11 system put text into selection ready for middle button pasting
+  if (myClipboard->supportsSelection())
+  {
+    myClipboard->setText(theQgsPoint.stringRep(2),QClipboard::Selection);
+    QString myMessage = "Clipboard contents set to: ";
+    statusBar()->message(myMessage + myClipboard->text(QClipboard::Selection));
+  }
+  else
+  {
+    //user has an inferior operating system....
+    myClipboard->setText(theQgsPoint.stringRep(2),QClipboard::Clipboard );
+    QString myMessage = "Clipboard contents set to: ";
+    statusBar()->message(myMessage + myClipboard->text(QClipboard::Clipboard));
+  }
+#ifdef QGISDEBUG    
+  /* Well use this in ver 0.5 when we do digitising! */
+  /*
+     QgsVectorFileWriter myFileWriter("/tmp/test.shp", wkbPoint);
+     if (myFileWriter.initialise())
+     {
+     myFileWriter.createField("TestInt",OFTInteger,8,0);
+     myFileWriter.createField("TestRead",OFTReal,8,3);
+     myFileWriter.createField("TestStr",OFTString,255,0);
+     myFileWriter.writePoint(&theQgsPoint);
+     }
+     */
+#endif      
 }
 
 
@@ -2760,10 +2788,7 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 //
 // Only functions relating to raster layer management in this
 // section (look for a similar comment block to this to find
-// the end of this section). I am hoping to move many of the
-// raster layer loading fn's below into QgsRasterLayer
-// Only ones that require a gui or are particularly wired in
-// to the mapCanvas instance etc will remain here.
+// the end of this section). 
 //
 // Tim Sutton
 //
