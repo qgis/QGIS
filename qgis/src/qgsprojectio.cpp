@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.51 2004/08/26 18:57:37 mcoletti Exp */
+/* qgsprojectio.cpp,v 1.52 2004/08/27 21:23:40 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -35,6 +35,7 @@ email                : sherman at mrcc.com
 #include "qgsgraduatedmarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
+#include "qgsuniquevalrenderer.h"
 #include "qgssymbologyutils.h"
 #include "qgssisydialog.h"
 #include "qgssimadialog.h"
@@ -267,6 +268,7 @@ std::list<QString> QgsProjectIo::read(QString path)
         QDomNode continuousnode = node.namedItem("continuoussymbol");
         QDomNode singlemarkernode = node.namedItem("singlemarker");
         QDomNode graduatedmarkernode = node.namedItem("graduatedmarker");
+	QDomNode uniquevaluenode = node.namedItem("uniquevalue");
 
         QgsRenderer* renderer;
 
@@ -295,6 +297,11 @@ std::list<QString> QgsProjectIo::read(QString path)
           renderer = new QgsGraduatedMaRenderer();
           renderer->readXML(graduatedmarkernode,*dbl);
         }
+	else if(!uniquevaluenode.isNull())
+	{
+	    renderer = new QgsUniqueValRenderer();
+	    renderer->readXML(uniquevaluenode,*dbl);
+	}
 
 	// Label
 	dbl->setLabelOn ( (bool) node.namedItem("label").toElement().text().toInt() );
@@ -363,6 +370,9 @@ std::list<QString> QgsProjectIo::read(QString path)
 
         myMapLayerRegistry->addMapLayer(myRasterLayer);
         myZOrder.push_back(myRasterLayer->getLayerID());
+#ifdef QGISDEBUG
+	qWarning("added "+myRasterLayer->getLayerID()+" to the registry");
+#endif
       }
       mMapCanvas->setExtent(savedExtent);
     }

@@ -51,6 +51,8 @@ class QgsUniqueValRenderer: public QgsRenderer
     void setClassificationField(int field);
     /**Returns the index of the classification field*/
     int classificationField();
+    /**Returns the values*/
+    std::map<QString,QgsRenderItem*>& items();
  protected:
     /**Field index used for classification*/
     int mClassificationField;
