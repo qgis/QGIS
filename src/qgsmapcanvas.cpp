@@ -617,9 +617,8 @@ void QgsMapCanvas::refresh()
 // saving a map view as an image file.
 void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
-  QString msg = mCanvasProperties->frozen ? "frozen" : "thawed";
 #ifdef QGISDEBUG
-
+  QString msg = mCanvasProperties->frozen ? "frozen" : "thawed";
   std::cout << ".............................." << std::endl;
   std::cout << "...........Rendering.........." << std::endl;
   std::cout << ".............................." << std::endl;
@@ -757,21 +756,27 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name() << std::endl;
-            std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
+            std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() 
+		      << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() 
+		      << std::endl;
             std::cout << "Input extent: " << ml->extent().stringRep() << std::endl;
             try
             {
-              std::cout << "Transformed extent" << ml->coordinateTransform()->transform(ml->extent()).stringRep() << std::endl;
+              std::cout << "Transformed extent" 
+			<< ml->coordinateTransform()->transform(ml->extent()).stringRep() 
+			<< std::endl;
             }
             catch (QgsCsException &e)
             {
-              qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+              qDebug( "Transform error caught in %s line %d:\n%s", 
+		      __FILE__, __LINE__, e.what());
             }
 #endif
 
             if (ml->visible())
             {
-              if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale)
+              if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale 
+		   && ml->maxScale() > mCanvasProperties->mScale)
                   || (!ml->scaleBasedVisibility()))
               {
                 //we need to find out the extent of the canvas in the layer's
@@ -787,7 +792,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 }
                 catch (QgsCsException &e)
                 {
-                  qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+                  qDebug( "Transform error caught in %s line %d:\n%s", 
+			  __FILE__, __LINE__, e.what());
                 }
                 ml->draw(paint,
                          &myProjectedRect,
@@ -797,7 +803,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #ifdef QGISDEBUG
               else
               {
-                std::cout << "Layer not rendered because it is not within the defined visibility scale range" << std::endl;
+                std::cout << "Layer not rendered because it is not within "
+			  << "the defined visibility scale range" << std::endl;
               }
 #endif
 
@@ -829,7 +836,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
               {
                 //only make labels if the layer is visible
                 //after scale dep viewing settings are checked
-                if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale && ml->maxScale() > mCanvasProperties->mScale)
+                if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale 
+		     && ml->maxScale() > mCanvasProperties->mScale)
                     || (!ml->scaleBasedVisibility()))
                 {
                   ml->drawLabels(paint,
@@ -852,7 +860,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
       emit renderComplete(paint);
       // draw the acetate layer
-      std::map <QString, QgsAcetateObject *>::iterator ai = mCanvasProperties->acetateObjects.begin();
+      std::map <QString, QgsAcetateObject *>::iterator 
+	ai = mCanvasProperties->acetateObjects.begin();
       while(ai != mCanvasProperties->acetateObjects.end())
       {
         QgsAcetateObject *acObj = ai->second;
@@ -941,7 +950,17 @@ void QgsMapCanvas::currentScale(int thePrecision)
   //
 
   //@todo return a proper value
-  QString myScaleString = QString("Scale 1: ")+QString::number(mCanvasProperties->mScale,'f',thePrecision);
+  QString myScaleString("Scale ");
+  
+  if (mCanvasProperties->mScale == 0)
+    myScaleString = "";
+  else if (mCanvasProperties->mScale >= 1)
+    myScaleString += QString("1: ")
+      + QString::number(mCanvasProperties->mScale,'f',thePrecision);
+  else
+    myScaleString += QString::number(1.0/mCanvasProperties->mScale, 'f', thePrecision)
+      + QString(": 1");
+
   emit scaleChanged(myScaleString) ;
 #ifdef QGISDEBUG
 
