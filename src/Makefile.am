@@ -57,6 +57,7 @@ headers =							\
 		qgsdatasourceuri.h \
 		qgsdlgvectorlayerproperties.h \
 	  qgsexception.h \
+	  qgscsexception.h \
 		qgsfeatureattribute.h \
 		qgsfeature.h \
 		qgsfield.h \
