@@ -31,17 +31,21 @@
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
 {
     //insert editing popup
-    mMenuBar = new QMenuBar(this, "mMenuBar");
+    QMenuBar* mMenuBar = new QMenuBar(this, "mMenuBar");
     mMenuBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mMenuBar->sizePolicy().hasHeightForWidth() ) );
     mMenuBar->setMinimumSize( QSize( 0, 40 ) );
 
     QgsAttributeTableBaseLayout->addMultiCellWidget( mMenuBar, 0, 0, 0, 4 );
 
-    QPopupMenu* edit = new QPopupMenu(this);
+    edit = new QPopupMenu(this);
+    QPopupMenu* selection = new QPopupMenu(this);
+
     edit->insertItem(tr("&Add Attribute..."), this, SLOT(addAttribute()), CTRL+Key_A);
     edit->insertItem(tr("&Delete Attributes..."), this, SLOT(deleteAttributes()), CTRL+Key_D);
+    selection->insertItem(tr("&Bring selected to top"), this, SLOT(selectedToTop()), CTRL+Key_T);
     mMenuBar->insertItem(tr("&Edit"), edit);
-    mMenuBar->setEnabled(false);
+    mMenuBar->insertItem(tr("&Selected"),selection);
+    edit->setEnabled(false);
 
     btnStopEditing->setEnabled(false);
     if(!layer->getDataProvider()->supportsAttributeEditing())
@@ -96,7 +100,7 @@ void QgsAttributeTableDisplay::startEditing()
     btnStartEditing->setEnabled(false);
     btnStopEditing->setEnabled(true);
     btnClose->setEnabled(false);
-    mMenuBar->setEnabled(true);
+    edit->setEnabled(true);
     table()->setReadOnly(false);
     table()->setColumnReadOnly(0,true);//id column is not editable
 }
@@ -119,6 +123,11 @@ void QgsAttributeTableDisplay::stopEditing()
     btnStartEditing->setEnabled(true);
     btnStopEditing->setEnabled(false);
     btnClose->setEnabled(true); 
-    mMenuBar->setEnabled(false);
+    edit->setEnabled(false);
     table()->setReadOnly(true);
+}
+
+void QgsAttributeTableDisplay::selectedToTop()
+{
+    table()->bringSelectedToTop();
 }

@@ -72,6 +72,8 @@ class QgsAttributeTable:public QTable
       bool rollBack(QgsVectorLayer* layer);
       /**Fills the contents of a provider into this table*/
       void fillTable(QgsVectorLayer* layer);
+      /**Swaps the selected rows such that the selected ones are on the top of the table*/
+      void bringSelectedToTop();
       
       public slots:
       void columnClicked(int col);
