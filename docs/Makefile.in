@@ -1,5 +1,4 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision$ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -248,9 +247,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-#>- all: all-recursive
-#>+ 1
-all: docs-am  all-recursive
+all: all-recursive
 
 .SUFFIXES:
 
@@ -263,16 +260,12 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-#>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  qgis/docs/Makefile
-#>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  qgis/docs/Makefile
-	cd $(top_srcdir) && perl admin/am_edit qgis/docs/Makefile.in
+	  $(AUTOMAKE) --gnu  qgis/docs/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
-	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -286,48 +279,48 @@ $(RECURSIVE_TARGETS):
 	dot_seen=no; \
 	target=`echo $@ | sed s/-recursive//`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
-	echo "Making $$target in $$subdir"; \
-	if test "$$subdir" = "."; then \
-	dot_seen=yes; \
-	local_target="$$target-am"; \
-	else \
-	local_target="$$target"; \
-	fi; \
-	(cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	|| case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
 	done; \
 	if test "$$dot_seen" = "no"; then \
-	$(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
 	fi; test -z "$$fail"
 
 mostlyclean-recursive clean-recursive distclean-recursive \
-	maintainer-clean-recursive:
+maintainer-clean-recursive:
 	@set fnord $(MAKEFLAGS); amf=$$2; \
 	dot_seen=no; \
 	case "$@" in \
-	distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	*) list='$(SUBDIRS)' ;; \
+	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
+	  *) list='$(SUBDIRS)' ;; \
 	esac; \
 	rev=''; for subdir in $$list; do \
-	if test "$$subdir" = "."; then :; else \
-	rev="$$subdir $$rev"; \
-	fi; \
+	  if test "$$subdir" = "."; then :; else \
+	    rev="$$subdir $$rev"; \
+	  fi; \
 	done; \
 	rev="$$rev ."; \
 	target=`echo $@ | sed s/-recursive//`; \
 	for subdir in $$rev; do \
-	echo "Making $$target in $$subdir"; \
-	if test "$$subdir" = "."; then \
-	local_target="$$target-am"; \
-	else \
-	local_target="$$target"; \
-	fi; \
-	(cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	|| case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
 	done && test -z "$$fail"
 tags-recursive:
 	list='$(SUBDIRS)'; for subdir in $$list; do \
-	test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
 	done
 
 tags: TAGS
@@ -335,34 +328,34 @@ tags: TAGS
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
 TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-	$(TAGS_FILES) $(LISP)
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
-	if test "$$subdir" = .; then :; else \
-	test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	fi; \
+	  if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	  fi; \
 	done; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	|| etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
-	&& cd $(top_srcdir) \
-	&& gtags -i $(GTAGS_ARGS) $$here
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
@@ -374,32 +367,32 @@ distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	$(mkinstalldirs) "$(distdir)/$$dir"; \
-	fi; \
-	if test -d $$d/$$file; then \
-	cp -pR $$d/$$file $(distdir) \
-	|| exit 1; \
-	else \
-	test -f $(distdir)/$$file \
-	|| cp -p $$d/$$file $(distdir)/$$file \
-	|| exit 1; \
-	fi; \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
 	done
 	for subdir in $(SUBDIRS); do \
-	if test "$$subdir" = .; then :; else \
-	test -d $(distdir)/$$subdir \
-	|| mkdir $(distdir)/$$subdir \
-	|| exit 1; \
-	(cd $$subdir && \
-	$(MAKE) $(AM_MAKEFLAGS) \
-	top_distdir="$(top_distdir)" \
-	distdir=../$(distdir)/$$subdir \
-	distdir) \
-	|| exit 1; \
-	fi; \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    (cd $$subdir && \
+	      $(MAKE) $(AM_MAKEFLAGS) \
+	        top_distdir="$(top_distdir)" \
+	        distdir=../$(distdir)/$$subdir \
+	        distdir) \
+	      || exit 1; \
+	  fi; \
 	done
 check-am: all-am
 check: check-recursive
@@ -418,8 +411,8 @@ install-am: all-am
 installcheck: installcheck-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	`test -z '$(STRIP)' || \
-	echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
@@ -430,9 +423,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-recursive
-#>+ 1
-clean: kde-rpo-clean  clean-recursive
+clean: clean-recursive
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
@@ -491,33 +482,3 @@ uninstall-info: uninstall-info-recursive
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
-#>+ 2
-docs-am:
-
-#>+ 6
-force-reedit:
-		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  qgis/docs/Makefile
-	cd $(top_srcdir) && perl admin/am_edit qgis/docs/Makefile.in
-
-
-#>+ 2
-final:
-	$(MAKE) all-am
-#>+ 2
-final-install:
-	$(MAKE) install-am
-#>+ 2
-no-final:
-	$(MAKE) all-am
-#>+ 2
-no-final-install:
-	$(MAKE) install-am
-#>+ 3
-cvs-clean:
-	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
-
-#>+ 3
-kde-rpo-clean:
-	-rm -f *.rpo
