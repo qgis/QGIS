@@ -48,6 +48,15 @@ void QgsRect::normalize(){
     ymax = temp;
   }
 }
+void QgsRect::scale(double scaleFactor){
+  // scale from the center
+  double centerX = xmin + width()/2;
+  double centerY = ymin + height()/2;
+  xmin = centerX - (width()*scaleFactor)/2;
+  xmax = xmin + width()*scaleFactor;
+  ymin = centerY - (height()*scaleFactor)/2;
+  ymax = ymin + height()*scaleFactor;
+}
 QString QgsRect::stringRep() const{
   QString tmp;
   QString rep = tmp.setNum(xmin);;

@@ -36,6 +36,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
   // update extent if warranted
   if(layers.size() == 1){
     fullExtent = lyr->extent();
+    currentExtent = fullExtent;
   }
 
   // set zpos to something...
@@ -44,8 +45,8 @@ void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
 void QgsMapCanvas::render2(){
  QPainter *paint = new QPainter();
   paint->begin(this);
-  currentExtent = fullExtent;
-  QRect v = paint->viewport();
+  //currentExtent = fullExtent;
+  QRect v = rect();// paint->viewport();
   // calculate the translation and scaling parameters
   double muppX, muppY;
       muppY = currentExtent.height()/height();
@@ -107,5 +108,23 @@ void QgsMapCanvas::render(){
   paint->end();
 }
 void QgsMapCanvas::paintEvent(QPaintEvent *pe){
+  render2();
+}
+QgsRect QgsMapCanvas::extent(){
+  return currentExtent;
+}
+void QgsMapCanvas::setExtent(QgsRect r){
+  currentExtent = r;
+}
+void QgsMapCanvas::clear(){
+  QPainter *p = new QPainter();
+  p->begin(this);
+  p->eraseRect(this->rect());
+  p->end();
+  
+}
+void QgsMapCanvas::zoomFullExtent(){
+  currentExtent = fullExtent;
+  clear();
   render2();
 }
