@@ -20,6 +20,7 @@
 class QCanvas;
 class QRect;
 class QCanvasView;
+class QStringList;
 #include "qgisappbase.h"
 /**
   *@author Gary E.Sherman
@@ -36,7 +37,7 @@ public:
 	void fileExit();
  	void zoomOut();
   	void zoomIn();
-	void readWKB(const char *);
+	void readWKB(const char *, QStringList tables);
 	void drawPoint(double x, double y);
 private:
 	//QCanvasView *cv;

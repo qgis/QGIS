@@ -76,6 +76,7 @@ void QgsDbSourceSelect::dbConnect(){
     // get the list of tables
     QString sql =  "select * from geometry_columns where f_table_schema ='"
       + settings.readEntry(key+"/database") + "'";
+    sql += " order by f_table_name";
     qDebug("Fetching tables using: " + sql);
     int result = pd->ExecTuplesOk((const char *)sql);
     if(result){
