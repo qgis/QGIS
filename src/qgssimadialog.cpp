@@ -196,8 +196,7 @@ void QgsSiMaDialog::apply()
 
 void QgsSiMaDialog::selectMarker()
 {
-    //QString svgfile=QFileDialog::getOpenFileName(QString::null,"Pictures (*.svg)",0,0,"Choose a marker picture");
-    QgsMarkerDialog mdialog(QDir::homeDirPath());
+    QgsMarkerDialog mdialog;
     if(mdialog.exec()==QDialog::Accepted)
     {
 	QString svgfile=mdialog.selectedMarker();

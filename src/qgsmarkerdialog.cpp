@@ -24,6 +24,7 @@
 #include <qpicture.h>
 #include <qpushbutton.h>
 #include <qpainter.h>
+#include <qapplication.h>
 
 QgsMarkerDialog::QgsMarkerDialog(QString startdir): QgsMarkerDialogBase(0,0,true,Qt::WStyle_StaysOnTop), mCurrentDir(startdir)
 {
@@ -96,5 +97,14 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
 	QIconViewItem* ivi=new QIconViewItem(mIconView,*it,pix);
 	
     }
+}
+
+QString QgsMarkerDialog::defaultDir()
+{
+    QString dir=qApp->applicationDirPath();
+    int position=dir.findRev("/",-1);
+    dir.truncate(position);
+    dir.append("/src/svg/symbol");
+    return dir;
 }
 

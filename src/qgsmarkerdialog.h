@@ -29,11 +29,13 @@ class QgsMarkerDialog: public QgsMarkerDialogBase
     Q_OBJECT
  public:
     /**Constructor. If no directory is specified, the home directory is used*/
-    QgsMarkerDialog(QString startdir=QDir::homeDirPath());
+    QgsMarkerDialog(QString startdir=QgsMarkerDialog::defaultDir());
     /**Destructor*/
     virtual ~QgsMarkerDialog();
     /**Returns the path of the selected SVG marker*/
     QString selectedMarker();
+    /**Returns the path to the qgis default directory for svg symbols*/
+    static QString defaultDir();
     
     public slots:
     /**Brings up the file dialog and triggers visualizeMarkers*/
