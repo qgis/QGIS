@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qobject.h>
 #include <ogrsf_frmts.h>
 #include <qprogressdialog.h>
@@ -51,6 +52,7 @@ class QgsShapeFile : public QObject
   void setDefaultTable();
   std::vector <QString> column_names;
   std::vector <QString> column_types;
+  void setColumnNames(QStringList);
 
 
   private:

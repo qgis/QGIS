@@ -61,12 +61,12 @@ QString QgsShapeFile::getFeatureClass(){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){
       geom_type = QString(geom->getGeometryName());
-			char * esc_str = new char[geom_type.length()*2+1];
-			PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
-			geom_type = QString(esc_str);
-			
-			delete[] esc_str;
-			
+      char * esc_str = new char[geom_type.length()*2+1];
+      PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
+      geom_type = QString(esc_str);
+      
+      delete[] esc_str;
+      
       QString file(filename);
       file.replace(file.length()-3, 3, "dbf");
       // open the dbf file
@@ -78,7 +78,7 @@ QString QgsShapeFile::getFeatureClass(){
       Fda fda;
       QString str_type = "varchar(";
       for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read +=sizeof(fda)){
-      	dbf.read((char *)&fda, sizeof(fda));
+        dbf.read((char *)&fda, sizeof(fda));
         switch(fda.field_type){
           case 'N': if((int)fda.field_decimal>0)
                       column_types.push_back("float");
@@ -137,6 +137,15 @@ void QgsShapeFile::setDefaultTable(){
   table_name = name.section('.', 0, 0);
 }
 
+void QgsShapeFile::setColumnNames(QStringList columns)
+{
+  column_names.clear();
+  for (QStringList::Iterator it = columns.begin(); it != columns.end(); ++it) 
+  {
+    column_names.push_back(*it);       
+  }
+}
+
 bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, QProgressDialog * pro, bool &fin){
   connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
@@ -146,17 +155,17 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
   for(int n=0; n<column_names.size() && result; n++){
     if(!column_names[n][0].isLetter())
       result = false;
-		char * esc_str = new char[column_names[n].length()*2+1];
-		PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
+    char * esc_str = new char[column_names[n].length()*2+1];
+    PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
     query += esc_str;
     query += " ";
     query += column_types[n];
     if(n<column_names.size()-1)
       query += ", ";
-		delete[] esc_str;
+    delete[] esc_str;
   }
   query += " )";
-  
+
   PGresult *res = PQexec(conn, (const char *)query);
   qWarning(query);
   if(PQresultStatus(res)!=PGRES_COMMAND_OK){
@@ -167,7 +176,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
   else {
     PQclear(res);
   }
-	
+
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + geom_type + "\', 2)";            
   if(result) res = PQexec(conn, (const char *)query);
@@ -175,9 +184,9 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     result = false;    
   }
   else{
-  	qWarning(query);
-  	qWarning(PQresultErrorMessage(res));
-  	PQclear(res);
+    qWarning(query);
+    qWarning(PQresultErrorMessage(res));
+    PQclear(res);
   }
 
   //adding the data into the table
@@ -186,13 +195,13 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
       fin = true;
       break;
     }
-    
+
     OGRFeature *feat = ogrLayer->GetNextFeature();
     if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
       if(geom){
         query = "INSERT INTO "+schema+"."+table_name+QString(" VALUES( %1, ").arg(m);
-        
+
         int num = geom->WkbSize();
         char * geo_temp = new char[num*3];
         geom->exportToWkt(&geo_temp);
@@ -205,20 +214,20 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           else
             quotes = "\'";
           query += quotes;
-          
+
           // escape the string value
           QString val = feat->GetFieldAsString(n);
-					char * esc_str = new char[val.length()*2+1];
-					PQescapeString(esc_str, (const char *)val.lower(), val.length());
-          
+          char * esc_str = new char[val.length()*2+1];
+          PQescapeString(esc_str, (const char *)val.lower(), val.length());
+
           // add escaped value to the query 
           query += esc_str;
           query += QString(quotes + ", ");
-					
-					delete[] esc_str;
+
+          delete[] esc_str;
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
-        
+
         if(result)
           res = PQexec(conn, (const char *)query);
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
@@ -227,9 +236,9 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           qWarning(PQresultErrorMessage(res));
         }
         else {
-           PQclear(res);
+          PQclear(res);
         }
-        
+
         pro->setProgress(pro->progress()+1);
         qApp->processEvents();
         delete[] geo_temp;
