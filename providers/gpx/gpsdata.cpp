@@ -202,19 +202,23 @@ Track& GPSData::getTrack(int index) {
 }
 
 
-int GPSData::addWaypoint(double lat, double lon, std::string name, 
+int GPSData::addWaypoint(double lat, double lon, QString name, 
 			 double ele) {
   Waypoint wpt;
   wpt.lat = lat;
   wpt.lon = lon;
   wpt.name = name;
   wpt.ele = ele;
+  xMax = xMax > wpt.lon ? xMax : wpt.lon;
+  xMin = xMin < wpt.lon ? xMin : wpt.lon;
+  yMax = yMax > wpt.lat ? yMax : wpt.lat;
+  yMin = yMin < wpt.lat ? yMin : wpt.lat;
   waypoints.push_back(wpt);
   return waypoints.size() - 1;
 }
 
 
-int GPSData::addRoute(std::string name) {
+int GPSData::addRoute(QString name) {
   Route rte;
   rte.name = name;
   routes.push_back(rte);
@@ -222,7 +226,7 @@ int GPSData::addRoute(std::string name) {
 }
 
 
-int GPSData::addTrack(std::string name) {
+int GPSData::addTrack(QString name) {
   Track trk;
   trk.name = name;
   return tracks.size() - 1;
