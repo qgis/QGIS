@@ -38,11 +38,19 @@ Quantum GIS Design Document
 
 QGIS Core Design Team
 \begin_inset Foot
-collapsed false
+collapsed true
 
 \layout Standard
 
 Gary E Sherman, Mark Coletti, Denis Antipov
+\end_inset 
+
+
+\layout Standard
+\pagebreak_top \pagebreak_bottom 
+
+\begin_inset LatexCommand \tableofcontents{}
+
 \end_inset 
 
 
@@ -141,7 +149,7 @@ The answers to these questions are not clear-cut.
  A list of high-level goals for the QGIS project are enumerated below.
  The reader can perhaps use this information to answer these and other questions
  related to the project:
-\layout Subsubsection
+\layout Subsection
 
 List of Goals
 \layout Enumerate
@@ -408,7 +416,7 @@ In the sections that follow, the use cases are presented in no particular
  order.
 \layout Subsubsection
 
-Load Data
+Load Data 
 \layout Standard
 
 
@@ -416,7 +424,7 @@ Load Data
 <lyxtabular version="3" rows="9" columns="2">
 <features>
 <column alignment="right" valignment="top" width="2in">
-<column alignment="block" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
@@ -593,13 +601,13 @@ Description of Steps:
 
 \layout Enumerate
 
-User decides to view a dataset
+Decision is made to view a dataset
 \layout Enumerate
 
-User navigates to the location of the dataset
+Navigate to the location of the dataset
 \layout Enumerate
 
-User selects dataset
+Select dataset
 \layout Enumerate
 
 Dataset is displayed
@@ -611,4 +619,3356 @@ Dataset is displayed
 \end_inset 
 
 
+\layout Subsubsection
+
+Browse Data
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Browse Data
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Browse through a loaded data set and its features
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running, data set loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Ability to browse, look at the needed information about loaded data
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Unable to browse and look at the loaded data information
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to browse the features and other information about the data set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to view the features and other info
+\layout Enumerate
+
+User sees a list of available items in the data set
+\layout Enumerate
+
+User chooses the desired item in the browse set
+\layout Enumerate
+
+The details about the item are displayed
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Load Plugin
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Load plugin
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Load a plugin into the 'core' system form the available list of installed
+ plugins
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Plugin loaded and the the new tools corresponding to the plugin appear available
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is in the initial or the previous plugin state 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to view data with a different plugin, or wants to add certain
+ functionality to the existing state
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to load a new plugin
+\layout Enumerate
+
+User inspects all the installed plugins
+\layout Enumerate
+
+User selects a plugin
+\layout Enumerate
+
+A plugin is loaded and new functionality added
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Find Feature
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Find feature
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Find a feature on a map or loaded data set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running and a data set loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+A feature that corresponds to the search condition found if such exists
+ and not found if not exists
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+A feature that exists and corresponds to the search conditions not found
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to find a feature on a map or data set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to find a feature in a loaded data set
+\layout Enumerate
+
+User submits a search query that would identify somehow the feature
+\layout Enumerate
+
+A feature is displayed if found or a message notifying that it was not found
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Identify Feature
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Identify Feature
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+After selecting a feature on a map, display its attributes
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running and a data set loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Attributes of a feature displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Nothing displayed when a feature selected
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to view attributes of a feature
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to view attributes of a particular feature
+\layout Enumerate
+
+User chooses a feature on the map
+\layout Enumerate
+
+User selects a feature
+\layout Enumerate
+
+Attributes are displayed
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Get Help
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Get Help
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Load help system
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Help system loaded and the menu of help topics displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is in 'helpless' state 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs help with an application or one of its plugins
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User finds out that they don't know as much about QGIS as they thought they
+ did
+\layout Enumerate
+
+User launches help system
+\layout Enumerate
+
+User selects one of the topics/subtopics of interest
+\layout Enumerate
+
+User is enlightened about rich QGIS functionality and how to use it
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Customize
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Customize
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Customize application user interface
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running a plugin that is being customized loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Interface changes according to customization
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No changes occus after customization
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to change the interface
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to change the interface
+\layout Enumerate
+
+User launches the customization system
+\layout Enumerate
+
+User adjusts the interface according to the customizationsystem
+\layout Enumerate
+
+Changes in the interface take effect
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Save Project
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Save Project
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Save entire project in a specified file format
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running, data set(s) loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Current project saved in a file
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Current project not saved in a file 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to save the layout of map, layers, etc.
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to save the current project
+\layout Enumerate
+
+User chooses location and filename for the project
+\layout Enumerate
+
+The project saved in a file
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Restore Project
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Restore Project
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Load a project from a previously saved file
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Project loaded and all the data sets restored in the saved condition
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Project is not restored
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to restore the project that was saved
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to restore a project
+\layout Enumerate
+
+User navigates to the location of the project
+\layout Enumerate
+
+User selects a project
+\layout Enumerate
+
+Project is restored
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Navigate
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Navigate
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Pan and Zoom on a data set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running, data set loaded and rendered
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data set is zoomed or panned
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No changes to the view of a data set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to zoom or pan on a data set
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to zoom or pan on a data set
+\layout Enumerate
+
+User uses zoom or pan
+\layout Enumerate
+
+The view is zoomed or panned
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Save Image
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Save Image
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Save the current view of the data set in an image file
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running, data set loaded and rendered
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+An image displaying the current view of a data set saved
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No image saved
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to save the current view of a data set as an image
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to save an image
+\layout Enumerate
+
+User chooses the location and filename of the image
+\layout Enumerate
+
+The image saved 
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Print
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Print
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Output on a printer the current data set as an image, metadata, and its
+ set of features
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running, a dataset loaded and rendered
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+The different types of data (image, metadata, feature set) being output
+ on a printer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+No attempt to output data on a printer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wants to output data on a printer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to output data set on a printer
+\layout Enumerate
+
+User chooses the type of data output (image, metadata, feature set)
+\layout Enumerate
+
+User selects a printer
+\layout Enumerate
+
+Dataset is output on a printer in a specified format
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Write Script 
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Write Script
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Write a script to perform some QGIS function in an automated manner
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Script is completed and tested
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Script is not saved and application is in pre-script state
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs a script to perform a repititve or specialized operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Identify need for the script
+\layout Enumerate
+
+Open the script editor
+\layout Enumerate
+
+Write and test script in iterative fashion
+\layout Enumerate
+
+Save script for future use
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\newline 
+
+\layout Subsubsection
+
+Run Script 
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Run Script
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Execute a stored script to perform a task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Application is running with appropriate or required data loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Script performs desired function
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Script exits gracefully 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to perform a repetitive or complex task for which a script exists
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Identify script that can be used to perform the desired task
+\layout Enumerate
+
+Select the script
+\layout Enumerate
+
+Additional requirements necessary to execute the script are met
+\layout Enumerate
+
+Execute script
+\layout Enumerate
+
+Result of script is reported to the user or displayed on the map canvas
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Edit Data 
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Edit Data
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Edit data to change the attributes, spatial location, or shape of a feature
+ or features 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer to be edited has been loaded
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data is changed and saved to the data store
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data is not changed but remains in the state prior to beginning the edit
+ operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to modify data 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Enter edit mode
+\layout Enumerate
+
+Locate feature to be modified
+\layout Enumerate
+
+Edit the feature
+\layout Enumerate
+
+Save data
+\layout Enumerate
+
+Exit edit mode
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Digitize 
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Digitize Data
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Create a new data layer or add to an existing layer by digitizing information
+ from a raster image on the screen (heads-up digitizing)
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Raster is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+New features are added to the data layer and saved to the data store
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Existing data is not changed but remains in the state prior to beginning
+ the edit operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to create new data from a raster 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Loads or create the target layer 
+\layout Enumerate
+
+Enter edit mode
+\layout Enumerate
+
+Digitize features using the underlying raster
+\layout Enumerate
+
+Add attributes to each feature as it is completed
+\layout Enumerate
+
+Save data
+\layout Enumerate
+
+Exit edit mode
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Buffer Feature
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Buffer Feature
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Create a new data layer or add to an existing layer by digitizing information
+ from a raster image on the screen (heads-up digitizing)
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Raster is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+New features are added to the data layer and saved to the data store
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Existing data is not changed but remains in the state prior to beginning
+ the edit operation
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User needs to create new data from a raster 
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Loads or create the target layer 
+\layout Enumerate
+
+Enter edit mode
+\layout Enumerate
+
+Digitize features using the underlying raster
+\layout Enumerate
+
+Add attributes to each feature as it is completed
+\layout Enumerate
+
+Save data
+\layout Enumerate
+
+Exit edit mode
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Process Data Use Cases
+\layout Subparagraph
+
+Union Use Case
+\layout Subparagraph
+
+Merge Use Case
+\layout Subparagraph
+
+Intersect Use Case
+\layout Subsubsection
+
+Convert Data Use Cases
+\layout Subparagraph
+
+Change projection
+\layout Subsubsection
+
+Import Data Use Case
+\layout Subsubsection
+
+Export Data Use Case
+\layout Subsubsection
+
+Export Selected Set
+\layout Subsubsection
+
+Select features
 \the_end
