@@ -21,6 +21,7 @@
 #include "../plugins/qgisplugin.h"
 #include "qgspluginmanager.h"
 #include "qgspluginitem.h"
+#include "qgsproviderregistry.h"
 
 #define TESTLIB
 #ifdef TESTLIB
@@ -30,12 +31,14 @@ QgsPluginManager::QgsPluginManager(QWidget *parent, const char * name)
  : QgsPluginManagerBase(parent, name)
 {
   // set the default lib dir to the qgis install directory/lib
-  char **argv = qApp->argv();
+  QgsProviderRegistry *pr =  QgsProviderRegistry::instance();
+ /*  char **argv = qApp->argv();
   QString appDir = argv[0];
   int bin = appDir.findRev("/bin", -1, false);
   QString baseDir = appDir.left(bin);
-  QString libDir = baseDir + "/lib";
-  txtPluginDir->setText(libDir);
+  QString libDir = baseDir + "/lib"; */
+  
+  txtPluginDir->setText(pr->libDirectory());
   getPluginDescriptions();
 }
 
