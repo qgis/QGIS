@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.115 2004/06/08 14:16:34 larsl Exp
+ChangeLog,v 1.116 2004/06/08 20:39:45 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-08 [larsl] 0.3.0devel20
+** Call GPSBabel using QProcess instead of system(), show a progress bar while
+   GPSBabel is running, show the messages printed to GPSBabel's stderr if
+   something goes wrong
 
 2004-06-08 [larsl] 0.3.0devel19
 ** Started adding GPS data download capability. Only tracklogs from Garmin

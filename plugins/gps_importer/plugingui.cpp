@@ -12,9 +12,13 @@
 #include "plugingui.h"
 
 //qt includes
+#include <qapplication.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
+#include <qeventloop.h>
 #include <qfileinfo.h>
+#include <qprocess.h>
+#include <qprogressdialog.h>
 #include <qpushbutton.h>
 #include <qtabwidget.h>
 #include <qlineedit.h>
@@ -27,6 +31,7 @@
 //standard includes
 #include <cstdlib>
 #include <iostream>
+
 
 PluginGui::PluginGui() : PluginGuiBase()
 {
@@ -94,21 +99,41 @@ void PluginGui::pbnOK_clicked()
     emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
   }
   
-  // or download GPS data from a device?
+  // or start downloading GPS data from a device?
   else {
     
-    // try to download the data using GPSBabel
-    QString command("gpsbabel -t -i garmin -o gpx %1 %2");
-    command = command.arg(cmbDLDevice->currentText()).arg(leDLOutput->text());
-    std::cerr<<command<<std::endl;
-    int babelStatus = std::system((const char*)command);
-    if (WEXITSTATUS(babelStatus) != 0) {
-      QMessageBox::warning( this, "Data Download Error",
-			    "Unable to download data from the device.");
+    // try to start the gpsbabel process
+    QStringList babelArgs;
+    babelArgs<<"gpsbabel"<<"-t"<<"-i"<<"garmin"<<"-o"<<"gpx"
+	     <<cmbDLDevice->currentText()<<leDLOutput->text();
+    QProcess babelProcess(babelArgs);
+    if (!babelProcess.start()) {
+      QMessageBox::warning(this, "Could not start process",
+			   "Could not start GPSBabel!");
       return;
     }
     
-    // try to load the GPX file
+    // wait for gpsbabel to finish (or the user to cancel)
+    QProgressDialog progressDialog("Downloading data...", "Cancel", 0,
+				   this, 0, true);
+    progressDialog.show();
+    for (int i = 0; babelProcess.isRunning(); ++i) {
+      QApplication::eventLoop()->processEvents(0);
+      progressDialog.setProgress(i/64);
+      if (progressDialog.wasCancelled())
+	return;
+    }
+    
+    // did we get any data?
+    if (babelProcess.exitStatus() != 0) {
+      QString babelError(babelProcess.readStderr());
+      QString errorMsg("Could not download data from GPS!\n\n");
+      errorMsg += babelError;
+      QMessageBox::warning(this, "Error downloading data", errorMsg);
+      return;
+    }
+    
+    // add the layer
     emit drawVectorLayer(leDLOutput->text() + "?type=track", 
 			 leDLBasename->text() + ", tracks", "gpx");
   }
