@@ -1,4 +1,3 @@
-
 /***************************************************************************
                           qgspluginmanager.h 
                Plugin manager for loading/unloading QGIS plugins
@@ -27,22 +26,33 @@
 #endif
 
 class QgsPluginItem;
-/**
+/*!
+ * \brief Plugin manager for loading/unloading plugins
 @author Gary Sherman
 */
 class QgsPluginManager : public QgsPluginManagerBase
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+  public:
+    //! Constructor
     QgsPluginManager(QWidget *parent=0, const char *name=0);
-
+    //! Destructor
     ~QgsPluginManager();
-	void browseFiles();
-	void getPluginDescriptions();
-  void unload();
-	std::vector<QgsPluginItem> getSelectedPlugins();
-public slots:
-  void apply();
+    //! Browse to a location (directory) containing QGIS plugins
+    void browseFiles();
+    //! Get description of plugins (name, etc)
+    void getPluginDescriptions();
+    //! Unload the selected plugins
+    void unload();
+    //! Gets the selected plugins
+    std::vector<QgsPluginItem> getSelectedPlugins();
+    public slots:
+    //! Load selected plugins and close the dialog
+    void apply();
+    //! Select all plugins by setting their checkbox on
+    void selectAll();
+    //! Clear all selections by clearing the plugins checkbox
+    void clearAll();
 };
 
 #endif
