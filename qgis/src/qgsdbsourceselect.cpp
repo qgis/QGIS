@@ -43,7 +43,13 @@ void QgsDbSourceSelect::editConnection(){
   if(nc->exec()){
   }
 }
-
+void QgsDbSourceSelect::addTables(){
+  //store the table info
+  for(int idx=0; idx <lstTables->numRows(); idx++){
+    if(lstTables->isSelected(idx))
+      m_selectedTables += lstTables->text(idx);
+  }
+}
 void QgsDbSourceSelect::dbConnect(){
   // populate the table list
   QSettings settings;
@@ -53,8 +59,8 @@ void QgsDbSourceSelect::dbConnect(){
   QString database = "dbname="+settings.readEntry(key+"/database");
   QString username = "user="+settings.readEntry(key+"/username");
   QString password = "password="+settings.readEntry(key+"/password");
-  QString conninfo = host +" " + database + " " + username + " " + password;
-  PgDatabase *pd = new PgDatabase((const char *)conninfo);
+  m_connInfo = host +" " + database + " " + username + " " + password;
+  PgDatabase *pd = new PgDatabase((const char *)m_connInfo);
   cout << pd->ErrorMessage();
   if(pd->Status()==CONNECTION_OK){
     // create the pixmaps for the layer types
@@ -97,4 +103,10 @@ void QgsDbSourceSelect::dbConnect(){
   }else{
     qDebug( "Connection failed");
   }
+}
+QStringList QgsDbSourceSelect::selectedTables(){
+  return m_selectedTables;
+}
+QString  QgsDbSourceSelect::connInfo(){
+  return m_connInfo;
 }

@@ -58,20 +58,21 @@ QgisApp::QgisApp(QWidget *parent, const char * name, WFlags fl ) : QgisAppBase(p
 QgisApp::~QgisApp(){
 }
 void QgisApp::addLayer(){
-  QStringList list = qApp->libraryPaths();
-  QString msg;
-  QStringList::Iterator it = list.begin();
-  while( it != list.end() ) {
-    msg += "\n" + *it;
-    ++it;
-  }
-   
-  //  QMessageBox::information(this,"Search Paths",msg);
-
   // show the postgis dialog
   QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
   if(dbs->exec()){
     // add files to the map canvas
+    QStringList tables = dbs->selectedTables();
+    QString connInfo = dbs->connInfo();
+    // for each selected table, connect to the datbase, parse the WKT geometry,
+    // and build a cavnasitem for it
+ QStringList::Iterator it = tables.begin();
+  while( it != tables.end() ) {
+    
+    
+    ++it;
+  }
+    
   }
   // show the file dialog
   /*
