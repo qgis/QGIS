@@ -65,6 +65,7 @@
 #include "qgsshapefilelayer.h"
 #include "qgslayerproperties.h"
 #include "qgsabout.h"
+#include "qgspluginmanager.h"
 #include "qgis.h"
 #include "qgisapp.h"
 #include "../plugins/qgisplugin.h"
@@ -660,6 +661,12 @@ QgisIface * QgisApp::getInterface(){
 int QgisApp::getInt(){
 	return 99;
 }
+void QgisApp::actionPluginManager_activated(){
+	QgsPluginManager *pm = new QgsPluginManager(this);
+	pm->show();
+	
+
+}
 void QgisApp::testPluginFunctions()
 {
 // try to load plugins from the plugin directory and test each one
@@ -690,6 +697,11 @@ void QgisApp::testPluginFunctions()
 		bool loaded = myLib->load();
 		if (loaded) {
 			std::cout << "Loaded test plugin library" << std::endl;
+			std::cout << "Getting the name of the plugin" << std::endl;
+			name_t *pName = (name_t *) myLib->resolve("name");
+			if(pName){
+				QMessageBox::information(this,"Name", "Plugin " + pluginDir[i] + " is named " + pName());
+			}
 			std::cout << "Attempting to resolve the classFactory function" << std::endl;
 			create_t *cf = (create_t *) myLib->resolve("classFactory");
 	

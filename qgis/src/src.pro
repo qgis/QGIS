@@ -3,25 +3,6 @@
 # Subdir relative project main directory: ./src
 # Target is an application:  qgis
 
-TARGET = qgis
-TEMPLATE = app
-exists ( $(PGSQL)/bin/psql ) {
-	message ( "Configuring to build with PostgreSQL support" )
-	LIBS += -L$(PGSQL)/lib  -lpq++
-	INCLUDEPATH += $(PGSQL)/include
-	DEFINES += PGDB HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
-	SOURCES += qgsdatabaselayer.cpp \
-		qgsdbsourceselect.cpp \
-		qgsnewconnection.cpp 
-	HEADERS += qgsdbsourceselectbase.ui.h \
-	 	qgsdatabaselayer.h \
-		qgsdbsourceselect.h \
-		qgsnewconnection.h 
-	FORMS += qgsdbsourceselectbase.ui \
-		qgsnewconnectionbase.ui 
-}
-CONFIG += qt thread debug
-
 LIBS += -L$/usr/local/lib -lgdal.1.1
 SOURCES += main.cpp \
            qgisapp.cpp \
@@ -47,7 +28,8 @@ SOURCES += main.cpp \
            qgsrenderer.cpp \
            qgsrenderitem.cpp \
            qgsprojectio.cpp \
-	   qgisiface.cpp
+           qgisiface.cpp \
+	   qgspluginmanager.cpp
 HEADERS += qgisapp.h \
            qgisinterface.h \
            qgisappbase.ui.h \
@@ -73,10 +55,33 @@ HEADERS += qgisapp.h \
            qgsrenderer.h \
            qgsrenderitem.h \
            qgsprojectio.h \
-           qgisiface.h 
+           qgisiface.h \
+	   qgspluginmanager.h
 FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
          qgslayerpropertiesbase.ui \
          qgsidentifyresultsbase.ui \
-         qgsattributetablebase.ui 
+         qgsattributetablebase.ui \
+         qgspluginmanagerbase.ui 
+TEMPLATE = app 
+CONFIG += debug \
+          warn_on \
+          qt \
+          thread 
+TARGET = qgis 
+exists ( $(PGSQL)/bin/psql ){
+  message ( "Configuring to build with PostgreSQL support" )
+  LIBS += -L$(PGSQL)/lib -lpq++
+  INCLUDEPATH += $(PGSQL)/include
+  DEFINES += PGDB HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
+  SOURCES += qgsdatabaselayer.cpp \
+             qgsdbsourceselect.cpp \
+             qgsnewconnection.cpp 
+  HEADERS += qgsdbsourceselectbase.ui.h \
+             qgsdatabaselayer.h \
+             qgsdbsourceselect.h \
+             qgsnewconnection.h 
+  FORMS += qgsdbsourceselectbase.ui \
+           qgsnewconnectionbase.ui 
+}
