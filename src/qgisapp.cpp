@@ -18,6 +18,8 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <config.h>
+
 #include <dlfcn.h>
 
 #include <qaction.h>
@@ -74,7 +76,7 @@
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
 
-#ifdef POSTGRESQL
+#ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
 #include "qgsmessageviewer.h"
@@ -288,7 +290,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // set the legend control for the map canvas
   mapCanvas->setLegend(mapLegend);
   // disable functions based on build type
-#ifndef POSTGRESQL
+#ifndef HAVE_POSTGRESQL
   actionAddLayer->removeFrom(PopupMenu_2);
   actionAddLayer->removeFrom(DataToolbar);
 #endif
@@ -334,7 +336,7 @@ void QgisApp::about()
   QgsAbout *abt = new QgsAbout();
   QString versionString = tr("Version ");
   versionString += QGis::qgisVersion;
-#ifdef POSTGRESQL
+#ifdef HAVE_POSTGRESQL
   versionString += tr(" with PostgreSQL support");
 #else
   versionString += tr(" (no PostgreSQL support)");
@@ -1271,7 +1273,7 @@ bool QgisApp::isValidVectorFileName(QString * theFileNameQString)
 
 
 
-#ifdef POSTGRESQL
+#ifdef HAVE_POSTGRESQL
 void QgisApp::addDatabaseLayer()
 {
   // check to see if we have a postgres provider available

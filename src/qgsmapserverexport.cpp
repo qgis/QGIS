@@ -14,6 +14,8 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
+#include <config.h>
+
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -231,7 +233,7 @@ void QgsMapserverExport::writeMapFile()
                 mapFile << "  DATA " << lyr->source() << std::endl;
                 break;
                 //TODO FIX THIS TO DEAL WITH EXPORT USING QgsVectorLayer objects
-                /* #ifdef POSTGRESQL
+                /* #ifdef HAVE_POSTGRESQL
                    case QgsMapLayer::DATABASE:
                    QgsDatabaseLayer *dblyr = (QgsDatabaseLayer *)lyr;
                    mapFile << "  CONNECTION \"" << lyr->source() << "\"" 

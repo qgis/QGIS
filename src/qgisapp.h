@@ -18,6 +18,9 @@
 
 #ifndef QGISAPP_H
 #define QGISAPP_H
+
+#include <config.h>
+
 class QCanvas;
 class QRect;
 class QCanvasView;
@@ -129,7 +132,7 @@ private:
         /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
         bool isValidVectorFileName (QString * theFileNameQString);
 
-  #ifdef POSTGRESQL
+  #ifdef HAVE_POSTGRESQL
   //! Add a databaselayer to the map
   void addDatabaseLayer();
   #endif

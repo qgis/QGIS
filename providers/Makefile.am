@@ -1,5 +1,5 @@
-if HAVE_POSTGRESDB
-POSTGRES = postgres
+if HAVE_POSTGRESQL
+POSTGRESQL = postgres
 endif
 
-SUBDIRS = ogr $(POSTGRES)
+SUBDIRS = ogr $(POSTGRESQL)
