@@ -75,7 +75,21 @@ CONFIG += debug \
           qt \
           thread 
 TARGET = qgis 
-exists ( $(PGSQL)/bin/psql ){
+
+# conditional tests for optional modules
+
+#.............................
+#PostgreSQL support
+#.............................
+contains (DEFINES, postgres){
+ message ("Checking PostgreSQL environment")
+}
+contains ( DEFINES, postgres ){
+MYPGSQL=$$(PGSQL)
+count(MYPGSQL, 1){
+message ("PGSQL environment variable is defined")
+
+
   message ( "Configuring to build with PostgreSQL support" )
   LIBS += -L$(PGSQL)/lib -lpq++
   INCLUDEPATH += $(PGSQL)/include
@@ -89,4 +103,9 @@ exists ( $(PGSQL)/bin/psql ){
              qgsnewconnection.h 
   FORMS += qgsdbsourceselectbase.ui \
            qgsnewconnectionbase.ui 
+}
+count(MYPGSQL, 0){
+message ("PGSQL environment variable is not defined. PostgreSQL excluded from build")
+message ("To build with PostgreSQL support set PGSQL to point to your Postgres installation")
+}
 }
