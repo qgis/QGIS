@@ -39,14 +39,14 @@
 QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), mVectorLayer(0)
 {
 #ifdef QGISDEBUG
-    qWarning("constructor QgsSiSyDialog");
+    qWarning("constructor QgsSiSyDialog called WITHOUT a layer");
 #endif
 }
 
 QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVectorLayer(layer)
 {
 #ifdef QGISDEBUG
-    qWarning("constructor QgsSiSyDialog");
+    qWarning("constructor QgsSiSyDialog called WITH a layer");
 #endif
 
     if (layer)
@@ -368,6 +368,10 @@ void QgsSiSyDialog::setOutlineColor(QColor& c)
 
 void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
 {
+#ifdef QGISDEBUG
+    qWarning("Setting outline style: "+QgsSymbologyUtils::penStyle2QString(pstyle));
+#endif
+
     if (pstyle==Qt::NoPen)
         (pbnLineNoPen->setOn(true));
     else if (pstyle==Qt::DashLine)
@@ -380,10 +384,6 @@ void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
         (pbnLineDash->setOn(true));
     else
         (pbnLineSolid->setOn(true)); //default to solid
-#ifdef QGISDEBUG
-
-    qWarning("Setting outline style: "+QgsSymbologyUtils::penStyle2QString(pstyle));
-#endif
 }
 
 void QgsSiSyDialog::setFillColor(QColor& c)
@@ -393,6 +393,10 @@ void QgsSiSyDialog::setFillColor(QColor& c)
 
 void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
 {
+#ifdef QGISDEBUG
+    qWarning("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle));
+#endif
+
     if (fstyle==Qt::SolidPattern)
         (solid->setOn(true));
     else if (fstyle==Qt::HorPattern)
@@ -422,7 +426,7 @@ void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
     else if (fstyle==Qt::Dense7Pattern)
         (dense7->setOn(true));
     else if (fstyle==Qt::NoBrush)
-        (solid->setOn(true));
+        (solid->setOn(true)); //default to no brush
 }
 
 void QgsSiSyDialog::setOutlineWidth(int width)
