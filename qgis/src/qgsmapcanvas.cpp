@@ -22,6 +22,7 @@
 #include <qpainter.h>
 #include <qrect.h>
 #include <qevent.h>
+#include <qlistview.h>
 #include <qpixmap.h>
 #include <qmessagebox.h>
 #include "qgsrect.h"
@@ -29,6 +30,8 @@
 
 #include "qgsmaplayer.h"
 #include "qgslegend.h"
+#include "qgslegenditem.h"
+#include "qgslegendview.h"
 #include "qgsdatabaselayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmarkersymbol.h"
@@ -139,6 +142,19 @@ while (mi != layers.end()) {
 	mi++;
 }
 	return 0;
+}
+
+void QgsMapCanvas::setZOrderFromLegend(QgsLegendView *lv)
+{
+	zOrder.clear();
+	QListViewItemIterator it( lv );
+	while ( it.current() ) {
+		QgsLegendItem *li = (QgsLegendItem *) it.current();
+		QgsMapLayer *lyr = li->layer();
+		zOrder.push_front(lyr->getLayerID());
+		++it;
+	}
+	refresh();
 }
 
 QgsMapLayer *QgsMapCanvas::layerByName(QString name)
