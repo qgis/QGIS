@@ -1217,12 +1217,6 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	//show the dialog to enter attribute values
 	f->attributeDialog();
 
-        // also need to store the well known text so feature
-        // can be inserted into postgis layer if applicable.
-        // We set the geometry but not the SRID. The provider
-        // will add the SRID when setting the WKT
-        QString wkt = idPoint.wellKnownText();
-        f->setWellKnownText(wkt);
         vlayer->addFeature(f);
         refresh();
           }
@@ -1295,25 +1289,33 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       }
       else//polygon
       {
-          size=1+3*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+          size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
           wkb= new unsigned char[size];
           int wkbtype=QGis::WKBPolygon;
-          int length=mCaptureList.size();
+          int length=mCaptureList.size()+1;//+1 because the first point is needed twice
           int numrings=1;
           memcpy(&wkb[1],&wkbtype, sizeof(int));
           memcpy(&wkb[5],&numrings,sizeof(int));
           memcpy(&wkb[9],&length, sizeof(int));
           int position=1+3*sizeof(int);
           double x,y;
-          for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+	  std::list<QgsPoint>::iterator it;
+          for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
           {
-        x=it->x();
-        memcpy(&wkb[position],&x,sizeof(double));
-        position+=sizeof(double);
-        y=it->y();
-        memcpy(&wkb[position],&y,sizeof(double));
-        position+=sizeof(double);
-          } 
+	      x=it->x();
+	      memcpy(&wkb[position],&x,sizeof(double));
+	      position+=sizeof(double);
+	      y=it->y();	       
+	      memcpy(&wkb[position],&y,sizeof(double));
+	      position+=sizeof(double);
+          }
+	  //close the polygon
+	  it=mCaptureList.begin();
+	  x=it->x();
+	  memcpy(&wkb[position],&x,sizeof(double));
+	  position+=sizeof(double);
+	  y=it->y();
+	  memcpy(&wkb[position],&y,sizeof(double));
       }
       f->setGeometry(&wkb[0],size);
 
