@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.34 2004/03/30 07:08:17 mhugent Exp */
+/* qgsprojectio.cpp,v 1.35 2004/04/17 17:36:02 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -681,7 +681,13 @@ void QgsProjectIo::writeXML()
                   qWarning("Warning, cast failed in QgsProjectIo, line 309");
                 }
 
-              QgsSingleSymRenderer *srenderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
+	      QgsRenderer* renderer;
+	      if(renderer=layer->renderer())
+	      {
+		  renderer->writeXML(xml);
+	      }
+
+              /*QgsSingleSymRenderer *srenderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
               QgsGraduatedSymRenderer *grenderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
               QgsContinuousColRenderer *crenderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());
 	      QgsSiMaRenderer *smrenderer = dynamic_cast < QgsSiMaRenderer * >(layer->renderer());
@@ -816,8 +822,8 @@ void QgsProjectIo::writeXML()
 		    }else
 		    {
 			qWarning("warning, type cast failed in qgsprojectio.cpp line 715"); 
-		    }
-		}
+			}
+			}*/
 
             
           } else                //raster layer properties

@@ -42,6 +42,8 @@ class QgsGraduatedMaRenderer: public QgsRenderer
     void setClassificationField(int field);
     /**Returns the list with the render items*/
     std::list<QgsRangeRenderItem*>& items();
+    /**Writes the contents of the renderer to a configuration file*/
+    virtual void writeXML(std::ofstream& xml);
     virtual bool needsAttributes();
  protected:
     /**Name of the classification field (it must be a numerical field)*/
