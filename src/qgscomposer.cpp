@@ -28,6 +28,12 @@
 #include <qobjectlist.h>
 #include <qpaintdevicemetrics.h>
 #include <qdom.h>
+#include <qsettings.h>
+#include <qdesktopwidget.h>
+#include <qapplication.h>
+#include <qevent.h>
+#include <qvaluelist.h>
+#include <qsplitter.h>
 
 #include "qgisapp.h"
 #include "qgsproject.h"
@@ -53,6 +59,9 @@ QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
     QGridLayout *l = new QGridLayout(mViewFrame, 1, 1 );
     l->addWidget( mView, 0, 0 );
 
+    mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame, 1, 1 );
+    mItemOptionsLayout = new QGridLayout( mItemOptionsFrame, 1, 1 );
+
     mCompositionNameComboBox->insertItem( "Map 1" );
 
     mComposition  = new QgsComposition( this, 1 );
@@ -64,6 +73,12 @@ QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
     if ( ! connect( mQgis, SIGNAL( newProject() ), this, SLOT(newProject()) ) ) {
         qDebug( "unable to connect to newProject" );
     }
+
+    // Doesn't work, there is not such signal I think (copy from QgisApp)
+    if ( ! connect(mQgis, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()) ) ) { 
+        qDebug( "unable to connect to aboutToQuit" );
+    }
+    restoreWindowState();
 
     selectItem(); // Set selection tool
 }
@@ -104,12 +119,11 @@ void QgsComposer::removeWidgetChildren ( QWidget *w )
 void QgsComposer::showCompositionOptions ( QWidget *w ) {
     std::cout << "QgsComposer::showCompositionOptions" << std::endl;
 
-    removeWidgetChildren ( mItemOptionsFrame );
+    removeWidgetChildren ( mCompositionOptionsFrame );
     
     if ( w ) { 
 	w->reparent ( mCompositionOptionsFrame, QPoint(0,0), TRUE );
-	QGridLayout *l = new QGridLayout( mCompositionOptionsFrame, 1, 1 );
-	l->addWidget( w, 0, 0 );
+	mCompositionOptionsLayout->addWidget( w, 0, 0 );
     }
 }
 
@@ -123,10 +137,8 @@ void QgsComposer::showItemOptions ( QWidget *w )
 
     if ( w ) {
         w->reparent ( mItemOptionsFrame, QPoint(0,0), TRUE );
-	QGridLayout *l = new QGridLayout( mItemOptionsFrame, 1, 1 );
 
-	// TODO: Cannot convince ItemOptions to expand in composer
-	l->addWidget( w, 0, 0 );
+	mItemOptionsLayout->addWidget( w, 0, 0 );
         mOptionsTabWidget->setCurrentPage (1);
     }
 }
@@ -163,6 +175,7 @@ void QgsComposer::zoomFull(void)
     m.scale( scale, scale );
 
     mView->setWorldMatrix( m );
+    mView->repaintContents();
 }
 
 void QgsComposer::zoomIn(void)
@@ -170,6 +183,7 @@ void QgsComposer::zoomIn(void)
     QWMatrix m = mView->worldMatrix();
     m.scale( 2.0, 2.0 );
     mView->setWorldMatrix( m );
+    mView->repaintContents();
 }
 
 void QgsComposer::zoomOut(void)
@@ -177,6 +191,7 @@ void QgsComposer::zoomOut(void)
     QWMatrix m = mView->worldMatrix();
     m.scale( 0.5, 0.5 );
     mView->setWorldMatrix( m );
+    mView->repaintContents();
 }
 
 void QgsComposer::print(void)
@@ -383,6 +398,52 @@ void QgsComposer::addLabel(void)
     actionAddLabel->setOn ( true );
 }
 
+void QgsComposer::moveEvent ( QMoveEvent *e ) { saveWindowState(); }
+void QgsComposer::resizeEvent ( QResizeEvent *e ) { saveWindowState(); }
+
+void QgsComposer::saveWindowState()
+{
+    std::cout << "QgsComposer::saveWindowState" << std::endl;
+    QSettings settings;
+
+    QPoint p = this->pos();
+    QSize s = this->size();
+
+    settings.writeEntry("/qgis/Composer/geometry/x", p.x());
+    settings.writeEntry("/qgis/Composer/geometry/y", p.y());
+    settings.writeEntry("/qgis/Composer/geometry/w", s.width());
+    settings.writeEntry("/qgis/Composer/geometry/h", s.height());
+
+    QValueList<int> list = mSplitter->sizes();
+    QValueList<int>::Iterator it = list.begin();
+    settings.writeEntry("/qgis/Composer/geometry/wiev", (int)(*it) );
+    it++;
+    settings.writeEntry("/qgis/Composer/geometry/options", (int)(*it) );
+}
+
+void QgsComposer::restoreWindowState()
+{
+    QSettings settings;
+
+    QDesktopWidget *d = QApplication::desktop();
+    int dw = d->width();
+    int dh = d->height();
+    int w = settings.readNumEntry("/qgis/Composer/geometry/w", 600);
+    int h = settings.readNumEntry("/qgis/Composer/geometry/h", 400);
+    int x = settings.readNumEntry("/qgis/Composer/geometry/x", (dw - 600) / 2);
+    int y = settings.readNumEntry("/qgis/Composer/geometry/y", (dh - 400) / 2);
+    resize(w, h);
+    move(x, y);
+
+    // This doesn't work
+    QValueList<int> list;
+    w = settings.readNumEntry("/qgis/Composer/geometry/view", 300);
+    list.push_back( w );
+    w = settings.readNumEntry("/qgis/Composer/geometry/options", 300);
+    list.push_back( w );
+    mSplitter->setSizes ( list );
+}
+
 void QgsComposer::projectRead(void)
 {
     std::cout << "QgsComposer::projectRead" << std::endl;
@@ -401,24 +462,16 @@ void QgsComposer::newProject(void)
 
     if ( mComposition ) delete mComposition;
 	
-    std::cout << ">>" << std::endl;
     mComposition  = new QgsComposition( this, 1 );
-    std::cout << ">>" << std::endl;
     mComposition->setActive ( true );
-    std::cout << ">>" << std::endl;
 
     // If composer is visible, create default immediately, otherwise wait for the first open()
     if ( isVisible() ) {
-    std::cout << "->>" << std::endl;
 	mComposition->createDefault();
-    std::cout << "->>" << std::endl;
 	mFirstTime = false;
-    std::cout << "->>" << std::endl;
     } else {
 	mFirstTime = true;
-    std::cout << ">>" << std::endl;
     }
-    std::cout << ">>" << std::endl;
 }
 
 bool QgsComposer::writeSettings ( void )

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>215</width>
-            <height>128</height>
+            <height>112</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -31,6 +31,14 @@
             <property name="name">
                 <cstring>mTextLineEdit</cstring>
             </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
         </widget>
         <widget class="QPushButton">
             <property name="name">
@@ -38,7 +46,7 @@
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
-                    <hsizetype>7</hsizetype>
+                    <hsizetype>5</hsizetype>
                     <vsizetype>0</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
@@ -48,6 +56,23 @@
                 <string>Font</string>
             </property>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>11</width>
+                    <height>26</height>
+                </size>
+            </property>
+        </spacer>
     </vbox>
 </widget>
 <connections>

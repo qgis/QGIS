@@ -28,15 +28,17 @@
 #include <qimage.h>
 #include <qlineedit.h>
 #include <qpointarray.h>
+#include <qlabel.h>
 
 #include "qgsproject.h"
 #include "qgsrect.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
-
+#include "qgsscalecalculator.h"
 
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
     : QCanvasRectangle(x,y,width,height,0)
@@ -45,12 +47,13 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
     mNumCachedLayers;
+    mName.sprintf ( tr("Map %d"), mId );
     
     mSelected = false;
 
     // Add to canvas
     setCanvas(mComposition->canvas());
-    QCanvasRectangle::setZ(100);
+    QCanvasRectangle::setZ(20);
     setActive(true);
     QCanvasRectangle::show();
     QCanvasRectangle::update(); // ?
@@ -71,6 +74,8 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mPreviewModeComboBox->setCurrentItem ( Cache );
 
     mWidthScale = 1.0 / mComposition->scale();
+    mSymbolScale = 1.0;
+    mFontScale = 1.0;
 
     writeSettings();
 }
@@ -88,7 +93,27 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	QgsMapLayer *layer = mMapCanvas->getZpos(i);
 
 	if ( !layer->visible() ) continue;
-	layer->draw( painter, extent, transform, device );
+
+	if ( layer->type() == QgsMapLayer::VECTOR ) {
+	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
+
+	    double widthScale = mWidthScale * mComposition->scale();
+	    if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+		widthScale *= mComposition->viewScale();
+	    }
+	    double symbolScale = mSymbolScale * mComposition->scale();
+	    vector->draw( painter, extent, transform, device, widthScale, symbolScale );
+
+	    if ( vector->labelOn() ) {
+	        double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
+		if ( plotStyle() == QgsComposition::Print ) {
+		    fontScale *= 72.0 / mComposition->resolution();
+		}
+		vector->drawLabels (  painter, extent, transform, device, fontScale );
+	    }
+	} else {
+	    layer->draw( painter, extent, transform, device );
+	}
     }
     mMapCanvas->freeze(false);
 }
@@ -230,9 +255,11 @@ void QgsComposerMap::sizeChanged ( void )
     writeSettings();
 }
 
-void QgsComposerMap::widthScaleChanged ( void ) 
+void QgsComposerMap::scaleChanged ( void ) 
 {
     mWidthScale = mWidthScaleLineEdit->text().toDouble();
+    mSymbolScale = mSymbolScaleLineEdit->text().toDouble();
+    mFontScale = mFontScaleLineEdit->text().toDouble();
 
     cache();
     QCanvasRectangle::update();
@@ -281,12 +308,31 @@ void QgsComposerMap::recalculate ( void )
 
 void QgsComposerMap::setOptions ( void )
 { 
+    mNameLabel->setText ( mName );
+    
     mWidthLineEdit->setText ( QString("%1").arg( mComposition->toMM(QCanvasRectangle::width()), 0,'g') );
     mHeightLineEdit->setText ( QString("%1").arg( mComposition->toMM(QCanvasRectangle::height()),0,'g') );
     
-    mScaleLineEdit->setText ( QString("%1").arg(1/mScale,0,'g') );
+    // Scale
+    double scale;
+    switch ( QgsProject::instance()->mapUnits() ) {
+	case QgsScaleCalculator::METERS :
+	    scale = 1000. * mComposition->scale() / mScale; 
+            mScaleLineEdit->setText ( QString("%1").arg((int)scale) );
+	    break;
+	case QgsScaleCalculator::FEET :
+	    scale = 304.8 * mComposition->scale() / mScale; 
+            mScaleLineEdit->setText ( QString("%1").arg((int)scale) );
+	    break;
+	case QgsScaleCalculator::DEGREES :
+	    scale = mComposition->scale() / mScale;
+            mScaleLineEdit->setText ( QString("%1").arg(scale,0,'f') );
+	    break;
+    }
     
     mWidthScaleLineEdit->setText ( QString("%1").arg(mWidthScale,0,'g',2) );
+    mSymbolScaleLineEdit->setText ( QString("%1").arg(mSymbolScale,0,'g',2) );
+    mFontScaleLineEdit->setText ( QString("%1").arg(mFontScale,0,'g',2) );
 }
 
 void QgsComposerMap::setCurrentExtent ( void )
@@ -308,6 +354,21 @@ bool QgsComposerMap::selected( void )
 {
     return mSelected;
 }
+
+QWidget *QgsComposerMap::options ( void )
+{
+    setOptions ();
+    return ( dynamic_cast <QWidget *> (this) );
+}
+
+QString QgsComposerMap::name ( void ) 
+{
+    return mName;
+}
+
+double QgsComposerMap::widthScale (void ) { return mWidthScale ; }
+double QgsComposerMap::symbolScale (void ) { return mSymbolScale ; }
+double QgsComposerMap::fontScale (void ) { return mFontScale ; }
 
 bool QgsComposerMap::writeSettings ( void )  
 {

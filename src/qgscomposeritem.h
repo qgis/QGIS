@@ -44,6 +44,12 @@ public:
 
     /** \brief Is selected */
     virtual bool selected( void );
+    
+    /** item id */
+    int id ( void );
+
+    /** Update otions and return pointer to options widget */
+    virtual QWidget *options ( void );
 
     /** Create option controls
      * @param parent widget where options are created
