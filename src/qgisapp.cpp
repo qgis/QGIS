@@ -250,6 +250,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(legendView, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
           this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
   connect(legendView, SIGNAL(zOrderChanged(QgsLegendView *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegendView *)));
+  connect(legendView, SIGNAL(currentChanged(QListViewItem *)),
+          this, SLOT(clickLegendMenu(QListViewItem *)));
 
   // create the layer popup menu
   /* popMenu = new QPopupMenu();
@@ -1026,6 +1028,42 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
     QPopupMenu *popMenu = lyr->contextMenu();
     if(popMenu){
       popMenu->exec(pt);
+    }
+  }
+}
+
+void QgisApp::clickLegendMenu(QListViewItem * lvi)
+{
+  if (lvi) {
+    // disable/enable toolbar buttons as appropriate based on selected
+    // layer type
+    QgsMapLayer *lyr = ((QgsLegendItem *) lvi)->layer();
+    if (lyr->type() == QgsMapLayer::RASTER) {
+      actionIdentify->setEnabled( FALSE );
+      actionSelect->setEnabled( FALSE );
+      actionOpenTable->setEnabled( FALSE );
+      // if one of these map tools is selected, set cursor to default
+      if (mapTool == QGis::Identify || mapTool == QGis::Select || mapTool == QGis::Table) {
+        delete mapCursor;
+        mapCursor = new QCursor();
+        mapCanvas->setCursor(*mapCursor);
+      }
+    } else {
+      actionIdentify->setEnabled( TRUE );
+      actionSelect->setEnabled( TRUE );
+      actionOpenTable->setEnabled( TRUE );
+      // if one of these map tools is selected, make sure appropriate cursor gets set
+      switch (mapTool) {
+        case QGis::Identify:
+          identify();
+          break;
+        case QGis::Select:
+          select();
+          break;
+        case QGis::Table:
+          attributeTable();
+          break;
+      }
     }
   }
 }

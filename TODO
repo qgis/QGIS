@@ -1,4 +1,4 @@
-TODO,v 1.12 2004/01/28 04:53:14 gsherman Exp
+TODO,v 1.13 2004/02/04 19:40:47 stevehalasz Exp
 TODO List for getting to version 0.1 (in no order of importance)
  1. Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
     needing attention are customized raster settings and symbology for vector
@@ -9,9 +9,9 @@ TODO List for getting to version 0.1 (in no order of importance)
     name and a suitable pixmap.  Will improve later.
  4. [DONE (TS/GS)] Implement context menus for raster and vector layers.
     Will add advanced functions later.
- 5. Toolbar buttons related to layer functions need to be disabled when not
-    appropriate (eg. table and select buttons when a raster is selected in 
-    the legend)
+ 5. [DONE (SH)] Toolbar buttons related to layer functions need to be disabled
+    when not appropriate (eg. table and select buttons when a raster is
+    selected in the legend)
  6. SPIT integration needs to be completed. The libpq++ dependency must be
     removed and the current open bugs (sf.net) need to be resolved.
  7. Adjust the open dialog for "shapefiles" to allow other formats supported
