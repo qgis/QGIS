@@ -49,17 +49,29 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   int sqlStart = uri.find(" sql");
   int tableStart = uri.find("table=");
 #ifdef QGISDEBUG
-  std::cout << "URI: " << uri << std::endl;
-  std::cout << "tableStart: " << tableStart << std::endl;
-  std::cout << "sqlStart: " << sqlStart << std::endl;
+  qDebug( "****************************************");
+  qDebug(  "****   Postgresql Layer Creation   *****" );
+  qDebug(  "****************************************");
+  qDebug(  "URI: " + uri );
+  QString msg;
+  
+  qDebug(  "tableStart: " + msg.setNum(tableStart) );
+  qDebug(  "sqlStart: " + msg.setNum(sqlStart));
 #endif 
   tableName = uri.mid(tableStart + 6, sqlStart - tableStart -6);
-  sqlWhereClause = uri.mid(sqlStart + 5);
+ if(sqlStart > -1)
+ { 
+    sqlWhereClause = uri.mid(sqlStart + 5);
+ }
+ else
+ {
+   sqlWhereClause = QString::null;
+ }
   QString connInfo = uri.left(uri.find("table="));
 #ifdef QGISDEBUG
-  std::cout << "Table name is " << tableName << std::endl;
-  std::cout << "SQL is " << sqlWhereClause << std::endl;
-  std::cout << "Connection info is " << connInfo << std::endl;
+  qDebug( "Table name is " + tableName);
+  qDebug( "SQL is " + sqlWhereClause );
+  qDebug( "Connection info is " + connInfo);
 #endif
   // calculate the schema if specified
   QString schema = "";
