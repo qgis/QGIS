@@ -13,8 +13,8 @@ class QPopupMenu;
 class QgisInterface : public QWidget{
   Q_OBJECT
     public:
-      QgisInterface(QgisApp *qgis=0, const char *name=0) {};
-      virtual ~QgisInterface() {};
+      QgisInterface(QgisApp *qgis=0, const char *name=0) ;
+      virtual ~QgisInterface() ;
     public slots:
       virtual void zoomFull()=0;
       virtual void zoomPrevious()=0;
