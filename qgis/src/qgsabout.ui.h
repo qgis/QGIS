@@ -12,14 +12,22 @@
 #include <qstringlist.h>
 #include <qtextstream.h>
 #include <qstring.h>
+#include <qapplication.h>
 #include <qstringlist.h>
 
 void QgsAbout::init()
 {
     //read the authors file to populate the contributors list
     QStringList lines;
-    QFile file( "AUTHORS" );
-    printf ("Readng authors file.............................................\n");
+
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString appPath = qApp->applicationDirPath() + "/share/qgis";
+#else
+  QString appPath = QString(PKGDATAPATH);
+#endif
+    
+    QFile file(appPath + "/doc/AUTHORS" );
+    printf ("Readng authors file " + file.name() + ".............................................\n");
     if ( file.open( IO_ReadOnly ) ) {
         QTextStream stream( &file );
         QString line;
@@ -58,10 +66,16 @@ void QgsAbout::showAuthorPic( QListBoxItem * theItem)
 {
     //replace spaces in author name
     printf ("Loading mug: "); 
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString appPath = qApp->applicationDirPath() + "/share/qgis";
+#else
+  QString appPath = QString(PKGDATAPATH);
+#endif
+
     QString myString = listBox1->currentText();
      myString = myString.replace(" ","_");
         printf ("Loading mug: %s", myString.ascii()); 
-    myString =QString("src/images/developers/") + myString + QString(".jpg");
+    myString =QString(appPath + "/images/developers/") + myString + QString(".jpg");
     printf ("Loading mug: %s\n", myString.ascii()); 
     QPixmap *pixmap = new QPixmap(myString);
   pixAuthorMug->setPixmap(*pixmap);
