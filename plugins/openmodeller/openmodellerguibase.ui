@@ -8,15 +8,15 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>47</y>
+            <y>0</y>
             <width>600</width>
-            <height>400</height>
+            <height>438</height>
         </rect>
     </property>
     <property name="sizePolicy">
         <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>1</vsizetype>
+            <hsizetype>3</hsizetype>
+            <vsizetype>3</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
@@ -29,8 +29,8 @@
     </property>
     <property name="maximumSize">
         <size>
-            <width>600</width>
-            <height>400</height>
+            <width>1024</width>
+            <height>768</height>
         </size>
     </property>
     <property name="font">
@@ -58,6 +58,9 @@
         <grid>
             <property name="name">
                 <cstring>unnamed</cstring>
+            </property>
+            <property name="resizeMode">
+                <enum>FreeResize</enum>
             </property>
             <widget class="QLabel" row="0" column="0" rowspan="4" colspan="1">
                 <property name="name">
@@ -117,6 +120,8 @@
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Description:&lt;/h3&gt;
+
+
 
 
 
@@ -445,9 +450,13 @@ The openModeller wizard will assist you in carrying out a species distribution m
 
 
 
+
+
 &lt;p&gt;You need to specify how the locality data should be transformed to the same coordinate system as the independent variable landscape and climate layers so that the two datasets can be overlayed properly.
 
+
 &lt;/p&gt;
+
 
 &lt;p&gt;Specify the coordinate system using the WKT format (more information on the WKT format is available at the Open Gis Consortium &lt;a href="http://www.opengis.org/docs/01-009.pdf"&gt;Website&lt;/a&gt;).&lt;/p&gt;</string>
                 </property>
@@ -596,25 +605,37 @@ The openModeller wizard will assist you in carrying out a species distribution m
 
 
 
+
+
 In order to carry out a distribution model, you need to have a text file containing distribution data for the species you are interested in. This data should be in the form:
+
+
 
 
 
 &lt;font size=2&gt;&lt;pre&gt;
 
+
 #genus       species         longitude  latitude   altitude
+
 
 furcata      boliviana           -68.85    -11.15    325
 
+
 furcata      boliviana           -67.38    -14.32    232
+
 
 furcata      boliviana           -67.55    -14.33    196
 
 
 
+
+
 &lt;/pre&gt;
 
+
 &lt;/font&gt;
+
 
 Use the ellipsis [...] button below to select an appropriate file. If the localities file contains data for more than one taxon, select which taxon you would like to run this model on using the picklist below.</string>
                 </property>
@@ -779,7 +800,11 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
 
 
 
+
+
 &lt;p&gt;Select the maps to be used as environmental continuous variables. Examples of this type of data could be average rainfall, average temperature, altitude etc. &lt;/p&gt;
+
+
 
 
 
@@ -991,6 +1016,8 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
 
 
 
+
+
 Select a file that will be used to mask areas from the model.</string>
                 </property>
             </widget>
@@ -1083,6 +1110,8 @@ Select a file that will be used to mask areas from the model.</string>
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Algorithm Specific Parameters:&lt;/h3&gt;
+
+
 
 
 
@@ -1334,7 +1363,11 @@ If you would like to specify any special parameters for the algorithm you have s
 
 
 
+
+
 &lt;p&gt;Specify where the model should be saved to disk.  Two files will be written with the same file name but with different extensions. The parameters file (.cfg) will contain a record of all the choices you have made in this wizard, and the model results will be saved as a tiff image.  The two files will be stored in the folder specified below.&lt;/p&gt;
+
+
 
 
 
@@ -1477,6 +1510,8 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Run Model:&lt;/h3&gt;
+
+
 
 
 

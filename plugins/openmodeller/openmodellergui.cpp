@@ -36,7 +36,6 @@
 #include <qspinbox.h>
 #include <qtooltip.h> 
 #include <qprogressbar.h>
-
 //
 //openmodeller includes
 #ifdef WIN32
@@ -65,7 +64,12 @@
 : OpenModellerGuiBase()
 {
   getAlgorithmList();
-  //dummy constructor - this is changed later in the code
+  mParametersScrollView = new QScrollView(frameParameters);
+  mParametersVBox = new QVBox (mParametersScrollView->viewport());
+  mParametersScrollView->addChild(mParametersVBox);
+  mParametersFrame = new QFrame(mParametersVBox);
+  //temporarily make a layout
+  //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
 }
 
@@ -73,9 +77,14 @@
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
   getAlgorithmList();
-  //dummy constructor - this is changed later in the code
+  mParametersScrollView = new QScrollView(frameParameters);
+  mParametersVBox = new QVBox (mParametersScrollView->viewport());
+  mParametersScrollView->addChild(mParametersVBox);
+  mParametersFrame = new QFrame(mParametersVBox);
+  //temporarily make a layout
+  //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
-}  
+}
 
 OpenModellerGui::~OpenModellerGui()
 {
@@ -143,6 +152,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
     std::cout << "mLayout exists so deleting" << std::endl;
     delete mLayout;
   }
+  //mLayout = new QGridLayout(mParametersFrame,myRowCountInt+1,3); 
   mLayout = new QGridLayout(frameParameters,myRowCountInt+1,3); 
   //mLayout->setColSpacing(0,200);
   mLayout->setColSpacing(1,10);
@@ -185,7 +195,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
         for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
         {
           QString myParameterType(myParameter->type);
-          std::cout << "Parameter " << myParameter->name << " is a " << myParameterType << std::endl;
+          std::cout << "Parameter " << QString(myParameter->name).ascii() << " is a " << myParameterType.ascii() << std::endl;
 
           if (myParameterType=="Integer")
           {
@@ -229,10 +239,10 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             mLabelsMap[myParameter->name] = myLabel;
 
           }
-
-          if (myParameterType=="Real")
+          else if (myParameterType.compare("Real") || myParameterType.compare("Double"))
           {
-            std::cout << myParameter->id << " parameter is float type" << std::endl;
+            std::cout << myParameter->id << " parameter is " << myParameterType.ascii() 
+                      << " type" << std::endl;
 
             //Create components
             QLineEdit * myLineEdit = new QLineEdit (frameParameters, ("le"+QString(myParameter->id)));

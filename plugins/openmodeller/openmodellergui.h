@@ -14,19 +14,20 @@
 #ifndef OPENMODELLERGUI_H
 #define OPENMODELLERGUI_H
 
-#ifdef WIN32
-  #include <openmodellerguibase.h>
-#else
-  #include <openmodellerguibase.uic.h>
-#endif
+//qt includes
 #include <qstringlist.h>
 #include <qstring.h>
+#include <qscrollview.h>
+#include <qmap.h> 
+#include <qvbox.h>
 #ifdef WIN32
+  #include <openmodellerguibase.h>
   #include "om.hh"
 #else
+  #include <openmodellerguibase.uic.h>
   #include <openmodeller/om.hh>
 #endif
-#include <qmap.h> 
+
 
 
 /**
@@ -89,7 +90,10 @@ private:
     ParameterLabels mLabelsMap;
     typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
     ProjectionWKTMap mProjectionsMap;
-    QGridLayout* mLayout;
+    QScrollView * mParametersScrollView ;
+    QVBox * mParametersVBox; //will be placed in the above layout
+    QFrame * mParametersFrame; //will be placed in the above 
+    QGridLayout* mLayout; //will be placed in the above 
     void getProjList();
     
 signals:
