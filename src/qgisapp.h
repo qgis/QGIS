@@ -157,6 +157,8 @@ private:
   void helpContents();
 	//! Check qgis version against the qgis version server
 	void checkQgisVersion();
+  //! options dialog slot
+  void options();
 	void socketConnected();
 	void socketConnectionClosed();
 	void socketReadyRead();
