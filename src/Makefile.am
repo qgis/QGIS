@@ -97,6 +97,7 @@ headers =	qgisapp.h					\
 		qgsmarkerdialog.h				\
 		qgsmarkersymbol.h				\
 		qgsmeasure.h					\
+		qgsvectorsymbologywidget.h			\
 		qgsoptions.h					\
 		qgspatterndialog.h				\
 		qgspluginitem.h					\
@@ -169,6 +170,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsmarkerdialogbase.ui			\
 		qgsmessageviewer.ui			\
 		qgsmeasurebase.ui			\
+		qgsvectorsymbologywidgetbase.ui		\
 		qgsoptionsbase.ui			\
 		qgspatterndialogbase.ui			\
 		qgspluginmanagerbase.ui			\
@@ -241,6 +243,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsmapserverexport.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
 		qgsmeasure.moc.cpp			\
+		qgsvectorsymbologywidget.moc.cpp	\
 		qgsoptions.moc.cpp			\
 		qgspatterndialog.moc.cpp		\
 		qgspluginmanager.moc.cpp		\
@@ -317,6 +320,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsmarkerdialog.cpp		\
 		qgsmarkersymbol.cpp		\
 		qgsmeasure.cpp			\
+		qgsvectorsymbologywidget.cpp	\
 		qgsoptions.cpp			\
 		qgspatterndialog.cpp		\
 		qgspluginitem.cpp		\
