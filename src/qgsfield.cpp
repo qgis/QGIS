@@ -12,11 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
-#include <qstring.h>
+
 #include "qgsfield.h"
 
-QgsField::QgsField(QString nam, QString typ, int len, int prec):mName(nam), mType(typ), mLength(len), mPrecision(prec)
+#include <qstring.h>
+
+
+static const char * const ident_ = 
+   "$Id$";
+
+
+QgsField::QgsField(QString nam, QString typ, int len, int prec)
+    :mName(nam), mType(typ), mLength(len), mPrecision(prec)
 {
   // lower case the field name since some stores use upper case 
   // (eg. shapefiles)
@@ -26,32 +33,33 @@ QgsField::QgsField(QString nam, QString typ, int len, int prec):mName(nam), mTyp
 QgsField::~QgsField()
 {
 }
-QString QgsField::name()
+
+QString const & QgsField::name() const
 {
   return mName;
 }
 
-QString QgsField::type()
+QString const & QgsField::type() const
 {
   return mType;
 }
 
-int QgsField::length()
+int QgsField::length() const
 {
   return mLength;
 }
 
-int QgsField::precision()
+int QgsField::precision() const
 {
   return mPrecision;
 }
 
-void QgsField::setName(QString nam)
+void QgsField::setName(QString const & nam)
 {
   mName = nam;
 }
 
-void QgsField::setType(QString typ)
+void QgsField::setType(QString const & typ)
 {
   mType = typ;
 }
