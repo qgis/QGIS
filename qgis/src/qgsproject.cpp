@@ -85,7 +85,7 @@ public:
     */
     virtual bool setValue( QStringList & keyName, QVariant const & value ) = 0;
 
-    /** dumps out the keys and values 
+    /** dumps out the keys and values
 
        @note used for debugging
     */
@@ -147,7 +147,7 @@ public:
         : value_(value)
     {}
 
-    virtual ~PropertyValue() 
+    virtual ~PropertyValue()
     {}
 
     /// just returns the value
@@ -307,7 +307,7 @@ public:
                     }
                     else
                     {
-                        qDebug( "qgsproject.cpp:%d non <value> element ``%s'' in string list", 
+                        qDebug( "qgsproject.cpp:%d non <value> element ``%s'' in string list",
                                 __LINE__, (const char*)values.item(i).nodeName().utf8() );
                     }
 
@@ -503,7 +503,10 @@ public:
                 return false;
 
                 break;
-
+//
+// QGIS DIES NOT SUPPORT THESE VARIANT TYPES IN VERSION 3.1 DISABLING FOR NOW
+//
+/*
             case QVariant::LongLong :
                 value_ = QVariant(subkeyElement.text()).asLongLong();
                 break;
@@ -511,7 +514,7 @@ public:
             case QVariant::ULongLong :
                 value_ = QVariant(subkeyElement.text()).asULongLong();
                 break;
-
+*/
             default :
                 qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
                         __FILE__, __LINE__, (const char*)typeString.utf8() );
@@ -570,7 +573,7 @@ public:
 private:
 
     /** We use QVariant as it's very handy to keep multiple types and provides
-        type conversions  
+        type conversions
     */
     QVariant value_;
 
@@ -627,7 +630,7 @@ public:
 
 
 
-    virtual ~PropertyKey() 
+    virtual ~PropertyKey()
     {}
 
 
@@ -732,7 +735,7 @@ public:
         }
         else
         {
-            qDebug( "%s:%d cannot find key %s to remove", 
+            qDebug( "%s:%d cannot find key %s to remove",
                     __FILE__, __LINE__,  (const char*)currentKey.utf8() );
 
             return false;
@@ -763,7 +766,7 @@ public:
 
                 if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey ) )
                 {
-                    qDebug( "%s:%d unable to parse key value %s", 
+                    qDebug( "%s:%d unable to parse key value %s",
                             __FILE__, __LINE__, (const char*)subkeys.item(i).nodeName().utf8() );
                 }
             }
@@ -775,7 +778,7 @@ public:
 
                 if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey) )
                 {
-                    qDebug( "%s:%d unable to parse subkey %s", 
+                    qDebug( "%s:%d unable to parse subkey %s",
                             __FILE__, __LINE__, (const char*)subkeys.item(i).nodeName().utf8() );
                 }
             }
@@ -874,7 +877,7 @@ QgsProject::~QgsProject()
 
 
 
-QgsProject * 
+QgsProject *
 QgsProject::instance()
 {
     if ( ! QgsProject::theProject_ )
@@ -924,7 +927,7 @@ bool QgsProject::dirty() const
 } // bool QgsProject::dirty() const
 
 
-void QgsProject::dirty( bool b ) 
+void QgsProject::dirty( bool b )
 {
     imp_->dirty = b;
 } // bool QgsProject::dirty()
@@ -1045,8 +1048,8 @@ _getScopeProperties( QDomNode const & scopeNode,
         QDomNode currentProperty = properties.item(i);
         QDomNode currentValue    = currentProperty.firstChild(); // should only have one child
 
-        qDebug( "Got property %s:%s (%s)", 
-                currentProperty.nodeName(), 
+        qDebug( "Got property %s:%s (%s)",
+                currentProperty.nodeName(),
                 currentValue.nodeValue(),
                 currentProperty.toElement().attributeNode("type").value() );
 
@@ -1055,7 +1058,7 @@ _getScopeProperties( QDomNode const & scopeNode,
         QVariant restoredValue;
 
         // get the type associated with the value first
-        QVariant::Type type = 
+        QVariant::Type type =
             QVariant::nameToType( currentProperty.toElement().attributeNode("type").value() );
 
         switch ( type )
@@ -1222,7 +1225,7 @@ _getScopeProperties( QDomNode const & scopeNode,
         }
 
 
-        project_properties[ scopeName ].append( QgsProject::PropertyValue( currentProperty.nodeName(), 
+        project_properties[ scopeName ].append( QgsProject::PropertyValue( currentProperty.nodeName(),
                                                                            restoredValue ) );
 
         ++i;
@@ -1290,7 +1293,7 @@ _getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project
     {
         QDomNode curr_scope_node = scopes.item( i );
 
-        qDebug( "found %d property node(s) for scope %s", 
+        qDebug( "found %d property node(s) for scope %s",
                 curr_scope_node.childNodes().count(),
                 (const char*)curr_scope_node.nodeName().utf8() );
 
@@ -1298,7 +1301,7 @@ _getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project
 
         if ( ! project_properties[curr_scope_node.nodeName()].readXML( curr_scope_node ) )
         {
-            qDebug ("%s:%d unable to read XML for property %s", 
+            qDebug ("%s:%d unable to read XML for property %s",
                     __FILE__, __LINE__, (const char*)curr_scope_node.nodeName().utf8() );
         }
 
@@ -1417,11 +1420,11 @@ _findQgisApp()
     QWidgetListIt it( *list );  // iterate over the widgets
     QWidget * w;
 
-    while ( (w=it.current()) != 0 ) 
+    while ( (w=it.current()) != 0 )
     {   // for each top level widget...
 
         if ( "QgisApp" == w->name() )
-        { 
+        {
             qgisApp = dynamic_cast<QgisApp*>(w);
             break;
         }
@@ -1538,13 +1541,13 @@ bool
 _getMapLayers( QDomDocument const & doc )
 {
     // Layer order is implicit in the order they are stored in the project file
-    
+
     QDomNodeList nl = doc.elementsByTagName("maplayer");
 
     // XXX what is this used for? QString layerCount( QString::number(nl.count()) );
-    
+
     QString wk;
-    
+
     // process the map layer nodes
 
     if ( 0 == nl.count() )      // if we have no layers to process, bail
@@ -1554,23 +1557,23 @@ _getMapLayers( QDomDocument const & doc )
 
     for (size_t i = 0; i < nl.count(); i++)
     {
-	QDomNode    node    = nl.item(i);
+        QDomNode    node    = nl.item(i);
         QDomElement element = node.toElement();
 
         QString type = element.attribute("type");
 
 
         QgsMapLayer * mapLayer;
-#ifdef QGISDEBUG 
-        std::cerr << "type is " << type << std::endl; 
-#endif 
-	if (type == "vector")
-	{
-	    mapLayer = new QgsVectorLayer;
+#ifdef QGISDEBUG
+        std::cerr << "type is " << type << std::endl;
+#endif
+        if (type == "vector")
+        {
+            mapLayer = new QgsVectorLayer;
         }
         else if (type == "raster")
         {
-	    mapLayer = new QgsRasterLayer;
+            mapLayer = new QgsRasterLayer;
         }
 
         Q_CHECK_PTR( mapLayer );
@@ -1580,10 +1583,10 @@ _getMapLayers( QDomDocument const & doc )
 #ifdef QGISDEBUG
             std::cerr << __FILE__ << " : " << __LINE__
                       << " unable to create layer\n";
-#endif                  
+#endif
             return false;
         }
-        
+
         // have the layer restore state that is stored in DOM node
         mapLayer->readXML( node );
 
@@ -1599,10 +1602,10 @@ _getMapLayers( QDomDocument const & doc )
 
 //             // make connection
 //             if ( qgisApp )
-//             { 
-//                 QObject::connect(mapLayer, 
-//                                  SIGNAL(showInOverview(QString,bool)), 
-//                                  qgisApp, 
+//             {
+//                 QObject::connect(mapLayer,
+//                                  SIGNAL(showInOverview(QString,bool)),
+//                                  qgisApp,
 //                                  SLOT(setLayerOverviewStatus(QString,bool)));
 //             }
 //         }
@@ -1672,7 +1675,7 @@ QgsRect _getFullExtent( QString const & canonicalMapCanvasName )
 
         return QgsRect();       // XXX some sort of error value?  Exception?
     }
-    
+
 
     return theMapCanvas->fullExtent();
 
@@ -1708,7 +1711,7 @@ QgsRect _getExtent( QString const & canonicalMapCanvasName )
 
         return QgsRect();       // XXX some sort of error value?  Exception?
     }
-    
+
 
     return theMapCanvas->extent();
 
@@ -1736,8 +1739,8 @@ QgsProject::read( QFileInfo const & file )
 bool
 QgsProject::read( )
 {
-    std::auto_ptr<QDomDocument> doc = 
-	std::auto_ptr<QDomDocument>(new QDomDocument("qgis"));
+    std::auto_ptr<QDomDocument> doc =
+        std::auto_ptr<QDomDocument>(new QDomDocument("qgis"));
 
     if ( ! imp_->file.open(IO_ReadOnly) )
     {
@@ -1746,7 +1749,7 @@ QgsProject::read( )
 
         throw QgsIOException( "Unable to open " + imp_->file.name() );
 
-	return false;		// XXX raise exception? Ok now superfluous 
+        return false;           // XXX raise exception? Ok now superfluous
                                 // XXX because of exception.
     }
 
@@ -1757,7 +1760,7 @@ QgsProject::read( )
     if ( ! doc->setContent(&imp_->file, &errorMsg, &line, &column) )
     {
 // want to make this class as GUI independent as possible; so commented out
-//         QMessageBox::critical( 0x0, "Project File Read Error", 
+//         QMessageBox::critical( 0x0, "Project File Read Error",
 //                                errorMsg + " at line " + QString::number( line ) +
 //                                " column " + QString::number( column ) );
 
@@ -1767,11 +1770,11 @@ QgsProject::read( )
 
         qDebug( (const char*)errorString.utf8() );
 
-	imp_->file.close();
+        imp_->file.close();
 
         throw QgsException( errorString + " for file " + imp_->file.name() );
 
-	return false;           // XXX superfluous because of exception
+        return false;           // XXX superfluous because of exception
     }
 
     imp_->file.close();
@@ -1851,7 +1854,7 @@ QgsProject::read( )
 
 
 
-bool 
+bool
 QgsProject::write( QFileInfo const & file )
 {
     imp_->file.setName( file.filePath() );
@@ -1860,7 +1863,7 @@ QgsProject::write( QFileInfo const & file )
 } // QgsProject::write( QFileInfo const & file )
 
 
-bool 
+bool
 QgsProject::write( )
 {
     // if we have problems creating or otherwise writing to the project file,
@@ -1873,14 +1876,14 @@ QgsProject::write( )
 
         throw QgsIOException( "Unable to open " + imp_->file.name() );
 
-	return false;		// XXX raise exception? Ok now superfluous 
+        return false;           // XXX raise exception? Ok now superfluous
                                 // XXX because of exception.
     }
 
     QDomImplementation DOMImplementation;
 
     QDomDocumentType documentType = DOMImplementation.createDocumentType("qgis","http://mrcc.com/qgis.dtd","SYSTEM");
-    std::auto_ptr<QDomDocument> doc = 
+    std::auto_ptr<QDomDocument> doc =
         std::auto_ptr<QDomDocument>( new QDomDocument( documentType ) );
 
 
@@ -1921,12 +1924,12 @@ QgsProject::write( )
 
     QDomText unitsText = doc->createTextNode( unitsString );
     unitsNode.appendChild( unitsText );
-    
+
     // extents and layers info are written by the map canvas
     // find the canonical map canvas
     QgsMapCanvas *theMapCanvas = _findMapCanvas( "theMapCanvas" );
     theMapCanvas->writeXML(qgisNode, *doc);
-    
+
     if( ! theMapCanvas )
     {
         qDebug( "Unable to find canvas widget theMapCanvas" );
@@ -1957,7 +1960,7 @@ QgsProject::write( )
             // <$scope>
             if ( ! curr_scope.data().writeXML( curr_scope.key(), propertiesElement, *doc ) )
             {
-                qDebug ( "%s:%d error create property %s's DOM objects", 
+                qDebug ( "%s:%d error create property %s's DOM objects",
                          __FILE__, __LINE__, (const char*)curr_scope.key().utf8() );
             }
             // </$scope>
@@ -2047,7 +2050,7 @@ QgsProject::writeEntry ( QString const & scope, const QString & key, const QStri
 
 
 
-QStringList 
+QStringList
 QgsProject::readListEntry ( QString const & scope, const QString & key, bool * ok ) const
 {
     QStringList keyTokens = QStringList::split( '/', key );
@@ -2071,8 +2074,8 @@ QgsProject::readListEntry ( QString const & scope, const QString & key, bool * o
 
 
 QString
-QgsProject::readEntry ( QString const & scope, 
-                        const QString & key, 
+QgsProject::readEntry ( QString const & scope,
+                        const QString & key,
                         const QString & def,
                         bool * ok ) const
 {
@@ -2097,9 +2100,9 @@ QgsProject::readEntry ( QString const & scope,
 
 
 int
-QgsProject::readNumEntry ( QString const & scope, 
-                           const QString & key, 
-                           int def, 
+QgsProject::readNumEntry ( QString const & scope,
+                           const QString & key,
+                           int def,
                            bool * ok ) const
 {
     QStringList keyTokens = QStringList::split( '/', key );
@@ -2123,9 +2126,9 @@ QgsProject::readNumEntry ( QString const & scope,
 
 
 double
-QgsProject::readDoubleEntry ( QString const & scope, 
-                              const QString & key, 
-                              double def, 
+QgsProject::readDoubleEntry ( QString const & scope,
+                              const QString & key,
+                              double def,
                               bool * ok ) const
 {
     QStringList keyTokens = QStringList::split( '/', key );
@@ -2149,8 +2152,8 @@ QgsProject::readDoubleEntry ( QString const & scope,
 
 
 bool
-QgsProject::readBoolEntry ( QString const & scope, 
-                            const QString & key, 
+QgsProject::readBoolEntry ( QString const & scope,
+                            const QString & key,
                             bool def,
                             bool * ok ) const
 {
