@@ -489,9 +489,12 @@ void QgsLegend::updateLegendItem( QListViewItem * li )
         return;
     }
 
-    if ( qli->layer()->showInOverviewStatus() && ! mQgisApp->actionInOverview->isOn() )
+    if ( qli->layer()->showInOverviewStatus())
     {
-        mQgisApp->actionInOverview->setOn(true);
+	if(!mQgisApp->actionInOverview->isOn())
+	{
+	    mQgisApp->actionInOverview->setOn(true);
+	}
     }
     else
     {
