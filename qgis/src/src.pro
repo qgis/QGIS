@@ -22,7 +22,11 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgsnewconnection.h \
            qgsrect.h \
            qgspoint.h \
-           qgscoordinatetransorm.h
+           qgscoordinatetransform.h \
+           qgssymbol.h \
+           qgsmarkersymbol.h \
+           qgslinesymbol.h \
+           qgspolygonsymbol.h
            
 INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui
 SOURCES += main.cpp \
