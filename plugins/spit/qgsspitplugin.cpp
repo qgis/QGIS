@@ -89,12 +89,8 @@ void QgsSpitPlugin::initGui()
                                               0, this, "spit");
     // Connect the action to the spit slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
-    // Add the toolbar
-    toolBar = new QToolBar((QMainWindow *) qgisMainWindow, "spit");
-    toolBar->setLabel("SPIT");
-    // Add the spit tool to the toolbar
-    spitAction->addTo(toolBar);
-    
+     // Add the icon to the toolbar
+  qI->addToolBarIcon(spitAction); 
 
 }
 
