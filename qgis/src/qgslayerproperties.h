@@ -41,6 +41,7 @@ public:
 	void selectOutlineColor();
 	//! Name to display in legend
 	QString displayName();
+	void setLineWidth(int w);
 private:
 	QgsMapLayer *layer;
 	QgsSymbol *sym;
