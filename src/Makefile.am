@@ -11,7 +11,7 @@
 PREFIX=-DPREFIX=\"$(prefix)\"
 PLUGINPATH=-DPLUGINPATH=\"$(libdir)/qgis\"
 
-AM_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
+AM_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 
 
 
@@ -235,9 +235,6 @@ qgis_SOURCES     += $(postgresSOURCES)
 # qgis_UIHEADERS += $(postgresUIHEADERS) 
 # qgis_UISOURCES += $(postgresUISOURCES) 
 # qgis_UIMOC     += $(postgresUIMOC)
-
-# add required defines for compiling PostgreSQL
-#PGDB = -DPOSTGRESQL -DHAVE_NAMESPACE_STD -DHAVE_CXX_STRING_HEADER -DDLLIMPORT=""
 
 endif
 

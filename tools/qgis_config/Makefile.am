@@ -10,18 +10,13 @@
 
 PREFIX=-DPREFIX=\"$(prefix)\"
 INCLUDE_DIR=-DINCLUDE_DIR=\"${prefix}/include\"
-LIB_DIR=-DLIB_DIR=\"${exec_prefix}/lib\"
+LIB_DIR=-DLIB_DIR=\"${libdir}\"
 BIN_DIR=-DBIN_DIR=\"${exec_prefix}/bin\"
-
-AM_CXXFLAGS = $(PREFIX) $(INCLUDE_DIR) $(LIB_DIR) $(BIN_DIR) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEBUG_QGIS)
 
 ## main app
 bin_PROGRAMS = qgis_config
 
 ## ancillary library for plug-ins
 
-headers =  qgis_config.h
-
 qgis_config_SOURCES =  qgis_config.cpp
-
-qgis_config_LDADD = $(LDADD) 
+qgis_CXXFLAGS = $(PREFIX) $(INCLUDE_DIR) $(LIB_DIR) $(BIN_DIR) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEBUG_QGIS)

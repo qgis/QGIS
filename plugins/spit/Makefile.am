@@ -11,7 +11,7 @@
 # $Id$
 
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC)  -I../../src
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
 
 
 plugindir = ${pkglibdir}
