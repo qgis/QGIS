@@ -241,6 +241,9 @@ inline QgsPoint QgsCoordinateTransform::inverseTransform(QgsPoint thePoint)
 inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect theRect)
 {
   if (mShortCircuit || !mInitialisedFlag) return theRect;
+#ifdef QGISDEBUG   
+  std::cout << "Rect inverse projection..." << std::endl;
+#endif  
   // transform x
   double x1 = theRect.xMin(); 
   double y1 = theRect.yMin();
@@ -257,8 +260,7 @@ inline QgsRect QgsCoordinateTransform::inverseTransform(QgsRect theRect)
   else
   {
 #ifdef QGISDEBUG 
-    std::cout << "Rect inverse projection..." 
-              << "Xmin : " 
+    std::cout << "Xmin : " 
               << theRect.xMin() 
 	      << "-->" << x1 
 	      << ", Ymin: " 
