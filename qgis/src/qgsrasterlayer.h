@@ -66,6 +66,7 @@ class GDALRasterBand;
 struct RasterBandStats
 {
     QString bandName;
+    bool statsGatheredFlag; //use so we can only gather stats once for a layer
     int bandNo;
     double minValDouble;
     double maxValDouble;
@@ -299,6 +300,12 @@ public:
     void setRasterLayerType( RASTER_LAYER_TYPE theRasterLayerType ) { rasterLayerType=theRasterLayerType; };
     //get a legend image for this layer
     QPixmap getLegendQPixmap();
+    //similar to above but returns a pointer. Implemented for qgsmaplayer interface
+    QPixmap * legendPixmap()
+    {
+      QPixmap myQPixmap = getLegendQPixmap();
+      return new QPixmap(myQPixmap);
+    };    
     // emit a signal asking for a repaint
     void triggerRepaint();
     
