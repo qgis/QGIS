@@ -140,8 +140,15 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     /**Writes a list of features to the file*/
     bool addFeatures(std::list<QgsFeature*> flist);
 
-    bool supportsFeatureAddition(){return true;}
-    QgsDataSourceURI * getURI(){ return 0;};
+    bool supportsFeatureAddition() const 
+    { 
+        return true;
+    }
+
+    QgsDataSourceURI * getURI()
+    { 
+        return 0;
+    }
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
