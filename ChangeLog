@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.156 2004/07/05 09:43:45 larsl Exp
+ChangeLog,v 1.157 2004/07/05 18:07:26 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-07-05 [ts] 0.4.0devel2
+** Added option for forcing redraw when adding a raster - intended for use by
+   plugins.
 
 2004-07-05 [larsl] 0.4.0devel1
 ** Moved lots of code from PluginGui to Plugin in the GPS plugin, use signals
