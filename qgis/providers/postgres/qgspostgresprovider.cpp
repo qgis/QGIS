@@ -262,8 +262,20 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
           QString fieldType = PQgetvalue(oidResult, 0, 0);
           QString fieldSize = PQgetvalue(oidResult, 0, 1);
           PQclear(oidResult);
-          //--std::cout << "Field: " << fieldName << ", " << fieldType << " (" << fldtyp << "),  " << fieldSize << ", " <<
-          //  fieldModifier << std::endl;
+        sql = "select oid from pg_class where relname = '" + tableName + "'";
+        PGresult *tresult= PQexec(pd, (const char *)sql);
+        QString tableoid = PQgetvalue(tresult, 0, 0);
+        PQclear(tresult);
+        sql = "select attnum from pg_attribute where attrelid = " + tableoid + " and attname = '" + fieldName + "'";
+        tresult = PQexec(pd, (const char *)sql);
+        QString attnum = PQgetvalue(tresult, 0, 0);
+        PQclear(tresult);
+#ifdef QGISDEBUG
+          std::cerr << "Field: " << attnum << " maps to " << i << " " << fieldName << ", " 
+                  << fieldType << " (" << fldtyp << "),  " << fieldSize << ", "  
+                  << fieldModifier << std::endl;
+#endif
+        attributeFieldsIdMap[attnum.toInt()] = i;
           attributeFields.push_back(QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
           // add to the select sql statement
           if(i > 0){
@@ -532,7 +544,9 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
       + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
+#ifdef QGISDEBUG
   std::cout << "Binary cursor: " << declare << std::endl; 
+#endif
   if(useIntersect){
     declare += " where intersects(" + geometryColumn;
     declare += ", GeometryFromText('BOX3D(" + rect->stringRep();
@@ -797,7 +811,7 @@ QString QgsPostgresProvider::getPrimaryKey(){
       std::cerr << "Table has a concatenated primary key" << std::endl;
 #endif
     }
-    primaryKeyIndex = columns[0].toInt()-1;
+    primaryKeyIndex = attributeFieldsIdMap[columns[0].toInt()];
     QgsField fld = attributeFields[primaryKeyIndex];
     // if the primary key is 4-byte integer we use it
     if(fld.type() == "int4")
