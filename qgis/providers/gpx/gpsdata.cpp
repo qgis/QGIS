@@ -30,32 +30,32 @@ bool GPSObject::parseNode(const QDomNode& node) {
   // name is optional
   node2 = node.namedItem("name");
   if (!node2.isNull())
-    name = (const char*)node2.firstChild().nodeValue();
+    name = node2.firstChild().nodeValue();
   
   // cmt is optional
   node2 = node.namedItem("cmt");
   if (!node2.isNull())
-    cmt = (const char*)node2.firstChild().nodeValue();
+    cmt = node2.firstChild().nodeValue();
   
   // desc is optional
   node2 = node.namedItem("desc");
   if (!node2.isNull())
-    desc = (const char*)node2.firstChild().nodeValue();
+    desc = node2.firstChild().nodeValue();
   
   // src is optional
   node2 = node.namedItem("src");
   if (!node2.isNull())
-    src = (const char*)node2.firstChild().nodeValue();
+    src = node2.firstChild().nodeValue();
   
   // url is optional
   node2 = node.namedItem("url");
   if (!node2.isNull())
-    url = (const char*)node2.firstChild().nodeValue();
+    url = node2.firstChild().nodeValue();
   
   // urlname is optional
   node2 = node.namedItem("urlname");
   if (!node2.isNull())
-    urlname = (const char*)node2.firstChild().nodeValue();
+    urlname = node2.firstChild().nodeValue();
   
   return true;
 }
@@ -126,7 +126,7 @@ bool GPSPoint::parseNode(const QDomNode& node) {
   // sym is optional
   node2 = node.namedItem("sym");
   if (!node2.isNull())
-    sym = (const char*)node2.firstChild().nodeValue();
+    sym = node2.firstChild().nodeValue();
   
   return true;
 }
