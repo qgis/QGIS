@@ -42,9 +42,11 @@ public:
 	//! Name to display in legend
 	QString displayName();
 	void setLineWidth(int w);
+	QgsSymbol * getSymbol();
 private:
 	QgsMapLayer *layer;
 	QgsSymbol *sym;
+	QgsSymbol newSym;
 };
 
 #endif
