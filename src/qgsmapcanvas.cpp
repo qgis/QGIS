@@ -962,88 +962,93 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             break;
 
         case QGis::CapturePoint:
-	{
+  {
             QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-	    emit xyClickCoordinates(idPoint);
-	    
-	    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-	    
-	    if(vlayer)
-	    {
-		QgsFeature f(0,"WKBPoint");
-		int size=5+2*sizeof(double);
-		unsigned char *wkb = new unsigned char[size];
-		int wkbtype=QGis::WKBPoint;
-		double x=idPoint.x();
-		double y=idPoint.y();
-		memcpy(&wkb[1],&wkbtype, sizeof(int));
-		memcpy(&wkb[5], &x, sizeof(double));
-		memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
-		f.setGeometry(&wkb[0],size);
+      emit xyClickCoordinates(idPoint);
+      
+      QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+      
+      if(vlayer)
+      {
+    QgsFeature f(0,"WKBPoint");
+    int size=5+2*sizeof(double);
+    unsigned char *wkb = new unsigned char[size];
+    int wkbtype=QGis::WKBPoint;
+    double x=idPoint.x();
+    double y=idPoint.y();
+    memcpy(&wkb[1],&wkbtype, sizeof(int));
+    memcpy(&wkb[5], &x, sizeof(double));
+    memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+    f.setGeometry(&wkb[0],size);
+    // also need to store the well known text so feature
+    // can be inserted into postgis layer if applicable.
+    // We set the geometry but not the SRID. The provider
+    // will add the SRID when setting the WKT
+    QString wkt = idPoint.wellKnownText();
+    f.setWellKnownText(wkt);
+    vlayer->addFeature(&f);
+    refresh();
+      }
+      else
+      {
+    //not a vectorlayer
+      }
 
-		vlayer->addFeature(&f);
-		refresh();
-	    }
-	    else
-	    {
-		//not a vectorlayer
-	    }
-
-	    //add the feature to the active layer
+      //add the feature to the active layer
 #ifdef QGISDEBUG
             std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
 #endif
-	}
+  }
             break;
 
-	case QGis::CaptureLine:
-	    
-	    mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
-	    if(mCaptureList.size()>1)
-	    {
-		QPainter paint(this);
-		paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
-		std::list<QgsPoint>::iterator it=mCaptureList.end();
-		--it;
-		--it;
-		QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-		paint.drawLine(lastpoint.x(),lastpoint.y(),e->x(),e->y());
-	    }
-	    if(e->button()==Qt::RightButton)
-	    {
-		QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-		if(vlayer)
-		{
-		    //create QgsFeature with wkb representation
-		    QgsFeature f(0,"WKBLineString");
-		    int size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
-		    unsigned char *wkb= new unsigned char[size];
-		    int wkbtype=QGis::WKBLineString;
-		    int length=mCaptureList.size();
-		    memcpy(&wkb[1],&wkbtype, sizeof(int));
-		    memcpy(&wkb[5],&length, sizeof(int));
-		    int position=1+2*sizeof(int);
-		    double x,y;
-		    for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
-		    {
-			x=it->x();
-			memcpy(&wkb[position],&x,sizeof(double));
-			position+=sizeof(double);
-			y=it->y();
-			memcpy(&wkb[position],&y,sizeof(double));
-			position+=sizeof(double);
-		    }
-		    f.setGeometry(&wkb[0],size);
-		    vlayer->addFeature(&f);
-		    mCaptureList.clear();
-		    refresh();
-		}
-		else
-		{
-		    //not a vector layer
-		}
-	    }
-	    break;
+  case QGis::CaptureLine:
+      
+      mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
+      if(mCaptureList.size()>1)
+      {
+    QPainter paint(this);
+    paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
+    std::list<QgsPoint>::iterator it=mCaptureList.end();
+    --it;
+    --it;
+    QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+    paint.drawLine(lastpoint.x(),lastpoint.y(),e->x(),e->y());
+      }
+      if(e->button()==Qt::RightButton)
+      {
+    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+    if(vlayer)
+    {
+        //create QgsFeature with wkb representation
+        QgsFeature f(0,"WKBLineString");
+        int size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+        unsigned char *wkb= new unsigned char[size];
+        int wkbtype=QGis::WKBLineString;
+        int length=mCaptureList.size();
+        memcpy(&wkb[1],&wkbtype, sizeof(int));
+        memcpy(&wkb[5],&length, sizeof(int));
+        int position=1+2*sizeof(int);
+        double x,y;
+        for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+        {
+      x=it->x();
+      memcpy(&wkb[position],&x,sizeof(double));
+      position+=sizeof(double);
+      y=it->y();
+      memcpy(&wkb[position],&y,sizeof(double));
+      position+=sizeof(double);
+        }
+        f.setGeometry(&wkb[0],size);
+        vlayer->addFeature(&f);
+        mCaptureList.clear();
+        refresh();
+    }
+    else
+    {
+        //not a vector layer
+    }
+      }
+      break;
     }
   }
 } // mouseReleaseEvent
@@ -1219,7 +1224,7 @@ void QgsMapCanvas::remove(QString key)
     //by the MapLayerRegistry. All we do now is remove any local reference to this layer.
     //delete mCanvasProperties->layers[key];   // first delete the map layer itself
 
-		mCanvasProperties->layers[key] = 0;
+    mCanvasProperties->layers[key] = 0;
     mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
 
     // XXX after removing this layer, we should probably compact the
@@ -1255,7 +1260,7 @@ void QgsMapCanvas::remove(QString key)
 
     // signal that we've erased this layer
     emit removedLayer( key );
-				}
+        }
 
 
 
