@@ -307,7 +307,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // but an equivalent query should be possible in other
   // databases.
   sql = "select pg_class.relname, pg_attribute.attname from "
-    "pg_attribute, pg_class where pg_type.typname = 'geometry' and "
+    "pg_attribute, pg_class, pg_type where pg_type.typname = 'geometry' and "
     "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid "
     "and cast(pg_class.relname as character varying) not in "
     "(select f_table_name from geometry_columns)";
@@ -335,7 +335,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       QString column = PQgetvalue(result, i, PQfnumber(result, "attname"));
       
       QString query = "select GeometryType(" + 
-	column + "), current_schema() from " + table + " limit 1";
+	column + "), current_schema() from " + table + 
+	" where " + column + " is not null limit 1";
       PGresult* gresult = PQexec(pg, (const char*) query);
       if (gresult)
       {
