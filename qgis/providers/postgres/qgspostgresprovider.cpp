@@ -2110,9 +2110,9 @@ bool QgsPostgresProvider::getGeometryDetails()
  * Class factory to return a pointer to a newly created 
  * QgsPostgresProvider object
  */
-QGISEXTERN QgsPostgresProvider * classFactory(const char *uri)
+QGISEXTERN QgsPostgresProvider * classFactory(const QString *uri)
 {
-  return new QgsPostgresProvider(uri);
+  return new QgsPostgresProvider(*uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */
