@@ -30,6 +30,7 @@ QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, const char *name, bool 
   dot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DotLine"));
   dashdot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotLine"));
   dashdotdot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine"));
+  nopen->setPixmap(QgsSymbologyUtils::char2LinePixmap("NoPen"));
 
   QObject::connect(okbutton, SIGNAL(clicked()), this, SLOT(queryStyle()));
   QObject::connect(cancelbutton, SIGNAL(clicked()), this, SLOT(reject()));
@@ -46,18 +47,26 @@ void QgsLineStyleDialog::queryStyle()
   if (solid->isOn())
     {
       m_style = Qt::SolidLine;
-  } else if (dash->isOn())
+    } 
+  else if (dash->isOn())
     {
       m_style = Qt::DashLine;
-  } else if (dot->isOn())
+    } 
+  else if (dot->isOn())
     {
       m_style = Qt::DotLine;
-  } else if (dashdot->isOn())
+    } 
+  else if (dashdot->isOn())
     {
       m_style = Qt::DashDotLine;
-  } else if (dashdotdot->isOn())
+    } 
+  else if (dashdotdot->isOn())
     {
       m_style = Qt::DashDotDotLine;
+    }
+  else if (nopen->isOn())
+    {
+      m_style = Qt::NoPen;
     }
   accept();
 }
