@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-//*  $Id$  */
+/* $Id$ */
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qfont.h>
@@ -75,17 +75,89 @@ void QgsAttributeTable::columnClicked(int col)
 	QObject::connect(this,SIGNAL(selectionChanged()),this,SLOT(handleChangedSelections()));
 
 	//change the sorting order after each sort
-	if(sort_ascending==true)
-	{
-	    sort_ascending=false;
-	}
-	else
-	{
-	    sort_ascending=true;
-	}
+	(sort_ascending==true) ? sort_ascending=false: sort_ascending=true;
 
 	QApplication::restoreOverrideCursor();
 }
+
+void QgsAttributeTable::keyPressEvent(QKeyEvent* ev)
+{
+    if(ev->key()==Qt::Key_Control||ev->key()==Qt::Key_Shift)
+    {
+	lockKeyPressed=true;
+    }
+}
+
+void QgsAttributeTable::keyReleaseEvent(QKeyEvent* ev)
+{
+    if(ev->key()==Qt::Key_Control||ev->key()==Qt::Key_Shift)
+    {
+	lockKeyPressed=false;
+    }
+}
+
+void QgsAttributeTable::handleChangedSelections()
+{   
+    QTableSelection cselection;
+    if(lockKeyPressed==false)
+    {
+	//clear the list and evaluate the last selection
+	emit selectionRemoved();
+    }
+    
+    //if there is no current selection, there is nothing to do
+    if(currentSelection()==-1)
+    {
+	emit repaintRequested();
+	return;
+    }
+
+    cselection=selection(currentSelection());
+    
+    for(int index=cselection.topRow();index<=cselection.bottomRow();index++)
+    {
+	emit selected(text(index,0).toInt());
+    }
+
+    //emit repaintRequested();
+   
+}
+
+void QgsAttributeTable::insertFeatureId(int id, int row)
+{
+    rowIdMap.insert(id,row);
+}
+
+void QgsAttributeTable::selectRowWithId(int id)
+{
+    QMap<int,int>::iterator it=rowIdMap.find(id);
+    selectRow(it.data());
+}
+
+void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
+{
+    //if the first entry contains a letter, sort alphanumerically, otherwise numerically
+    QString firstentry=text(0,col);
+    bool containsletter=false;
+    for(uint i=0;i<firstentry.length();i++)
+    {
+	if(firstentry.ref(i).isLetter())
+	{
+	    containsletter=true;
+	}
+    }
+
+    if(containsletter)
+    {
+	qsort(0,numRows()-1,col,ascending,true);
+    }
+    else
+    {
+	qsort(0,numRows()-1,col,ascending,false);
+    }
+
+    repaintContents();
+}	  
 
 int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool alphanumeric)
 {
@@ -151,88 +223,8 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
     }
 }
 
-void QgsAttributeTable::keyPressEvent(QKeyEvent* ev)
-{
-    if(ev->key()==Qt::Key_Control||ev->key()==Qt::Key_Shift)
-    {
-	lockKeyPressed=true;
-    }
-}
-
-void QgsAttributeTable::keyReleaseEvent(QKeyEvent* ev)
-{
-    if(ev->key()==Qt::Key_Control||ev->key()==Qt::Key_Shift)
-    {
-	lockKeyPressed=false;
-    }
-}
-
-void QgsAttributeTable::handleChangedSelections()
-{   
-    QTableSelection cselection;
-    if(lockKeyPressed==false)
-    {
-	//clear the list and evaluate the last selection
-	emit selectionRemoved();
-    }
-    
-    //if there is no current selection, there is nothing to do
-    if(currentSelection()==-1)
-    {
-	emit repaintRequested();
-	return;
-    }
-
-    cselection=selection(currentSelection());
-    
-    for(int index=cselection.topRow();index<=cselection.bottomRow();index++)
-    {
-	emit selected(text(index,0).toInt());
-    }
-
-    emit repaintRequested();
-   
-}
-
-void QgsAttributeTable::insertFeatureId(int id)
-{
-    rowIdMap.insert(id,id+1);
-}
-
-void QgsAttributeTable::selectRowWithId(int id)
-{
-    QMap<int,int>::iterator it=rowIdMap.find(id);
-    selectRow(it.data());
-}
-
-void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
-{
-    //if the first entry contains a letter, sort alphanumerically, otherwise numerically
-    QString firstentry=text(0,col);
-    bool containsletter=false;
-    for(uint i=0;i<firstentry.length();i++)
-    {
-	if(firstentry.ref(i).isLetter())
-	{
-	    containsletter=true;
-	}
-    }
-
-    if(containsletter)
-    {
-	qsort(0,numRows()-1,col,ascending,true);
-    }
-    else
-    {
-	qsort(0,numRows()-1,col,ascending,false);
-    }
-
-    repaintContents();
-}
-
 void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, bool alphanumeric)
 {
-    //add the following modifications later: avoid worst case, call selection sort for short ranges
     int i,j;
     QString v;
     if(upper>lower)
@@ -258,4 +250,11 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
 	qsort(lower, i-1, col, ascending, alphanumeric);
 	qsort(i+1, upper, col, ascending, alphanumeric);
     }
-}	  
+}
+
+void QgsAttributeTable::contentsMouseReleaseEvent(QMouseEvent* e)
+{
+    contentsMouseMoveEvent(e);//send out a move event to keep the selections updated 
+    emit repaintRequested();
+}
+

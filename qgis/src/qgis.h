@@ -12,7 +12,7 @@
 /* $Id$ */
 
 namespace QGis
-{
+{ 
 	// Version constants
 	//
 	// Version string 
@@ -44,6 +44,22 @@ namespace QGis
 		WKBMultiLineString,
 		WKBMultiPolygon
 	};
+	enum VectorType
+	    {
+		Point,
+		Line,
+		Polygon
+	    };
 
+  //! description strings for feature types
+ static const char *qgisFeatureTypes[] = {
+    "Null",
+    "WKBPoint",
+		"WKBLineString",
+		"WKBPolygon",
+		"WKBMultiPoint",
+		"WKBMultiLineString",
+    "WKBMultiPolygon" 
+  };
 }
 #endif
