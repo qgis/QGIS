@@ -110,7 +110,7 @@ class QgsMapCanvas:public QWidget
 	//! This slot is connected to the visibility change of one or more layers
 	void layerStateChange();
 	//! sets z order based on order of layers in the legend
-	void setZOrderFromLegend(QgsLegendView *lv);
+	void setZOrderFromLegend(QgsLegend *lv);
  
  signals: 
  void xyCoordinates(QgsPoint & p);

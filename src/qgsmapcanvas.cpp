@@ -31,7 +31,6 @@
 #include "qgsmaplayer.h"
 #include "qgslegend.h"
 #include "qgslegenditem.h"
-#include "qgslegendview.h"
 #include "qgsdatabaselayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmarkersymbol.h"
@@ -163,7 +162,7 @@ QgsMapLayer *QgsMapCanvas::getZpos(int idx)
   return ml;
 }
 
-void QgsMapCanvas::setZOrderFromLegend(QgsLegendView * lv)
+void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 {
   zOrder.clear();
   QListViewItemIterator it(lv);
