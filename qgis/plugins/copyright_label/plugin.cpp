@@ -94,10 +94,14 @@ void Plugin::initGui()
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // This calls the north arrow renderer everytime the cnavas has drawn itself
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete()), this, SLOT(renderLabel()));
-    
+ 
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
   toolBarPointer->setLabel("Copyright Label");
+  mLabelQString = QString("© QGIS 2004");
+  mQFont = QFont("time", 24, QFont::Bold);
+  mLabelQColor = QColor(Qt::black);
+  
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
   refreshCanvas();
@@ -118,6 +122,9 @@ void Plugin::run()
   //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
   //refresh the canvas when the user presses ok
   connect(myPluginGui, SIGNAL(refreshCanvas()), this, SLOT(refreshCanvas()));
+  connect(myPluginGui, SIGNAL(changeFont(QFont )), this, SLOT(setFont(QFont )));
+  connect(myPluginGui, SIGNAL(changeLabel(QString )), this, SLOT(setLabel(QString )));
+  connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -151,10 +158,10 @@ void Plugin::renderLabel()
   //could use somthing like next line to draw a pic instead of text
   //myQPainter.drawImage(-70, 0, myQImage);
   
-  QFont myQFont("time", 24, QFont::Bold);
-  myQPainter.setFont(myQFont);
-  myQPainter.setPen(Qt::white);
-  myQPainter.drawText(10, myQPixmap->height()-10, QString("© QGIS 2004"));
+   
+  myQPainter.setFont(mQFont);
+  myQPainter.setPen(mLabelQColor);
+  myQPainter.drawText(10, myQPixmap->height()-10, mLabelQString);
   
   //myQPainter.rotate(myRotationInt);
 }
@@ -165,6 +172,32 @@ void Plugin::unload()
   menuBarPointer->removeItem(menuIdInt);
   delete toolBarPointer;
 }
+
+
+  //! change the copyright font
+  void Plugin::setFont(QFont theQFont)
+  {
+    mQFont = theQFont;
+  }
+  //! change the copyright text
+  void Plugin::setLabel(QString theLabelQString)
+  {
+    mLabelQString = theLabelQString;
+  }
+  //! change the copyright text colour
+  void Plugin::setColor(QColor theQColor)
+  {
+    mLabelQColor = theQColor;
+  }
+  
+
+
+
+
+
+
+
+
 /** 
  * Required extern functions needed  for every plugin 
  * These functions can be called prior to creating an instance

@@ -20,9 +20,10 @@
 #ifndef PLUGIN
 #define PLUGIN
 #include "../qgisplugin.h"
-#include <qwidget.h>
-
 #include "../../src/qgisapp.h"
+#include <qwidget.h>
+#include <qfont.h>
+#include <qcolor.h>
 
 /**
 * \class Plugin
@@ -59,8 +60,21 @@ class Plugin:public QObject, public QgisPlugin
   void unload();
   //! show the help document
   void help();
+  //! change the copyright font
+  void setFont(QFont);
+  //! change the copyright text
+  void setLabel(QString);
+  //! change the copyright font colour
+  void setColor(QColor);
+  
     private:
-
+  //! This is the font that will be used for the copyright label
+  QFont mQFont;
+  //! This is the string that will be used for the copyright label
+  QString mLabelQString;
+  //! This is the colour for the copyright label
+  QColor mLabelQColor;
+  
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
