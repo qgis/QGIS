@@ -433,7 +433,9 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
         }
         else
         {
+#ifdef QGISDEBUG
           std::cerr << "Failed to get name, description, or type for " << myLib->library() << std::endl;
+#endif
         }
       } 
       else
@@ -1915,16 +1917,16 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath)
   } else
     {
       QLibrary *myLib = new QLibrary(fullPath);
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
       std::cerr << "Library name is " << myLib->library() << std::endl;
-//#endif
+#endif
       bool loaded = myLib->load();
       if (loaded)
         {
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
           std::cerr << "Loaded test plugin library" << std::endl;
           std::cerr << "Attempting to resolve the classFactory function" << std::endl;
-//#endif
+#endif
 
           type_t *pType = (type_t *) myLib->resolve("type");
 
