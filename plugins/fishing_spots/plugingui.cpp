@@ -23,6 +23,8 @@
 //standard includes
 #include <iostream>
 #include <assert.h>
+//shapefile making stuff
+#include "shapefilemaker.h"
 
 PluginGui::PluginGui() : PluginGuiBase()
 {

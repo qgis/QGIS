@@ -51,6 +51,12 @@ libFishingSpots_la_SOURCES = plugin.cpp \
 	plugin.h \
 	plugingui.cpp \
 	plugingui.h \
+	utils.c \
+	shpopen.c \
+	dbfopen.c \
+	shapefile.h \
+	shapefilemaker.cpp \
+	shapefilemaker.h \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
