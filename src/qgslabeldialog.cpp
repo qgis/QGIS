@@ -208,34 +208,43 @@ void QgsLabelDialog::init ( void )
     spinYOffset->setValue(0);
   }
   spinAngle->setValue(myLabelAttributes->angle()); 
-  /*
 
   //the values here may seem a bit counterintuitive - basically everything 
   //is the reverse of the way you think it should be...
   //TODO investigate in QgsLabel why this needs to be the case
-  if (radioAboveLeft->isChecked())   myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignBottom);
-  if (radioBelowLeft->isChecked())   myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignTop);
-  if (radioAboveRight->isChecked())  myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignBottom);
-  if (radioBelowRight->isChecked())  myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignTop);
-  if (radioLeft->isChecked())        myLabelAttributes->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  if (radioRight->isChecked())       myLabelAttributes->setAlignment(Qt::AlignLeft  | Qt::AlignVCenter);
-  if (radioAbove->isChecked())       myLabelAttributes->setAlignment(Qt::AlignBottom| Qt::AlignHCenter); 
-  if (radioBelow->isChecked())       myLabelAttributes->setAlignment(Qt::AlignTop   | Qt::AlignHCenter); 
-  if (radioOver->isChecked())        myLabelAttributes->setAlignment(Qt::AlignCenter);
+  //TODO add support for corners (e.g. bottom right) to xml serialiser
+  
+  if ( myLabelAttributes->alignment() == (Qt::AlignRight | Qt::AlignBottom  )) radioAboveLeft->setChecked(true)   ;
+  if ( myLabelAttributes->alignment() == (Qt::AlignRight | Qt::AlignTop     )) radioBelowLeft->setChecked(true)   ; 
+  if ( myLabelAttributes->alignment() == (Qt::AlignLeft  | Qt::AlignBottom  )) radioAboveRight->setChecked(true)  ;
+  if ( myLabelAttributes->alignment() == (Qt::AlignLeft  | Qt::AlignTop     )) radioBelowRight->setChecked(true)  ;
+  if ( myLabelAttributes->alignment() == (Qt::AlignRight | Qt::AlignVCenter )) radioLeft->setChecked(true)        ;
+  if ( myLabelAttributes->alignment() == (Qt::AlignLeft  | Qt::AlignVCenter )) radioRight->setChecked(true)       ;
+  if ( myLabelAttributes->alignment() == (Qt::AlignBottom| Qt::AlignHCenter )) radioAbove->setChecked(true)       ; 
+  if ( myLabelAttributes->alignment() == (Qt::AlignTop   | Qt::AlignHCenter )) radioBelow->setChecked(true)       ; 
+  if ( myLabelAttributes->alignment() == Qt::AlignCenter                   ) radioOver->setChecked(true)        ;  
 
-  myLabelAttributes->setBufferColor(mBufferColor); 
-  myTypeInt = 0;
-  if ( radioBufferUnitsPoints->isChecked() )
+  mBufferColor = myLabelAttributes->bufferColor(); 
+  if (myLabelAttributes->bufferSizeIsSet())
   {
-  myTypeInt = QgsLabelAttributes::PointUnits; 
-  } 
-  else 
-  { 
-  myTypeInt = QgsLabelAttributes::MapUnits;
+    int myTypeInt = myLabelAttributes->bufferSizeType();
+    if ( myTypeInt == QgsLabelAttributes::PointUnits )
+    {
+      radioBufferUnitsPoints->setChecked(true);
+    } 
+    else 
+    { 
+      radioBufferUnitsMap->setChecked(true);
+    }
+    spinBufferSize->setValue(myLabelAttributes->bufferSize());
   }
-  myLabelAttributes->setBufferSize(spinBufferSize->value(), myTypeInt);
+  else //defaults for when no offset is defined
+  {
+    spinBufferSize->setValue(0);
+  }
+  
+  spinBufferSize->setValue(myLabelAttributes->bufferSize());
   //TODO - transparency attributes for buffers
-  */
 
 }
 
