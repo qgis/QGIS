@@ -666,7 +666,8 @@ void QgisApp::addLayer(QStringList const &theLayerQStringList)
 
    These are GDAL driver description strings.
 */
-static const char *const supportedRasterFormats_[] = { "SDTS",
+static const char *const supportedRasterFormats_[] = { 
+  "SDTS",
   "AIG",
   "AAIGrid",
   "GTiff",
@@ -690,7 +691,7 @@ static bool isSupportedRasterDriver_(QString const &driverName)
 
   while (supportedRasterFormats_[i][0]) // while not end of string list
     {
-      if (driverName == supportedRasterFormats_[i])
+      if ( driverName.startsWith(supportedRasterFormats_[i]) )
         {
           return true;
         }
