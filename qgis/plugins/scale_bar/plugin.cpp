@@ -268,9 +268,8 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     }
 
     //Set pen to draw with
-    //Perhaps enable colour selection in future?
-    QPen pen( mColour, 2 );             
-    theQPainter->setPen( pen ); 
+    QPen myForegroundPen( mColour, 2 );             
+    QPen myBackgroundPen( Qt::white, 4 );             
 
     //Cast myScaleBarWidth to int for drawing
     int myScaleBarWidthInt = (int) myScaleBarWidth;
@@ -279,6 +278,17 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     if (mStyle==tr("Tick Down"))
     {    
       QPointArray myTickDownArray(4);
+      //draw a buffer first so bar shows up on dark images
+      theQPainter->setPen( myBackgroundPen ); 
+      myTickDownArray.putPoints(0,4,
+              myOriginX                    , (myOriginY + myMajorTickSize) ,  
+              myOriginX                    ,  myOriginY                    ,
+              (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
+              (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
+              ); 	 
+      theQPainter->drawPolyline(myTickDownArray);    
+      //now draw the bar itself in user selected color
+      theQPainter->setPen( myForegroundPen ); 
       myTickDownArray.putPoints(0,4,
               myOriginX                    , (myOriginY + myMajorTickSize) ,  
               myOriginX                    ,  myOriginY                    ,
@@ -290,6 +300,17 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     else if (mStyle==tr("Tick Up"))
     {
       QPointArray myTickUpArray(4);
+      //draw a buffer first so bar shows up on dark images
+      theQPainter->setPen( myBackgroundPen ); 
+      myTickUpArray.putPoints(0,4,
+              myOriginX                    ,  myOriginY                    ,  
+              myOriginX                    ,  myOriginY + myMajorTickSize  ,
+              (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
+              (myScaleBarWidthInt + myOriginX),  myOriginY
+              ); 
+      theQPainter->drawPolyline(myTickUpArray);
+      //now draw the bar itself in user selected color
+      theQPainter->setPen( myForegroundPen ); 
       myTickUpArray.putPoints(0,4,
               myOriginX                    ,  myOriginY                    ,  
               myOriginX                    ,  myOriginY + myMajorTickSize  ,
@@ -301,6 +322,15 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     else if (mStyle==tr("Bar"))
     {
       QPointArray myBarArray(2);
+      //draw a buffer first so bar shows up on dark images
+      theQPainter->setPen( myBackgroundPen ); 
+      myBarArray.putPoints(0,2,
+              myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),  
+              (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
+              ); 
+      theQPainter->drawPolyline(myBarArray);
+      //now draw the bar itself in user selected color
+      theQPainter->setPen( myForegroundPen ); 
       myBarArray.putPoints(0,2,
               myOriginX                    ,  (myOriginY + (myMajorTickSize/2)),  
               (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
@@ -310,6 +340,18 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     else if (mStyle==tr("Box"))
     {
       QPointArray myBoxArray(5);
+      //draw a buffer first so bar shows up on dark images
+      theQPainter->setPen( myBackgroundPen ); 
+      myBoxArray.putPoints(0,5,
+              myOriginX                    ,  myOriginY,  
+              (myScaleBarWidthInt + myOriginX),  myOriginY,
+              (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
+              myOriginX                    , (myOriginY+myMajorTickSize),
+              myOriginX                    ,  myOriginY
+              ); 
+      theQPainter->drawPolyline(myBoxArray);
+      //now draw the bar itself in user selected color
+      theQPainter->setPen( myForegroundPen ); 
       myBoxArray.putPoints(0,5,
               myOriginX                    ,  myOriginY,  
               (myScaleBarWidthInt + myOriginX),  myOriginY,
