@@ -84,6 +84,9 @@ class QgsMapToPixel{
     void setParameters(double mupp, double xmin, double ymin, double ymax);
     //! String representation of the parameters used in the transform
     QString showParameters();
+
+    static void trimLine(const QgsPoint& from, const QgsPoint& to, 
+			 QgsPoint& tFrom, QgsPoint& tTo);
  private:
     double mapUnitsPerPixel;
     double yMax;
@@ -119,6 +122,7 @@ inline QgsPoint QgsMapToPixel::transform(QgsPoint p)
 	double dx = (p.x() - xMin) / mapUnitsPerPixel;
 	double dy = yMax - ((p.y() - yMin)) / mapUnitsPerPixel;
 	// double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
+	//std::cerr << "Point to pixel...X : " << p.x() << "-->" << dx << ", Y: " << p.y() << " -->" << dy << std::endl;
 	return QgsPoint(dx, dy);
 }
 
@@ -127,11 +131,13 @@ inline void QgsMapToPixel::transform(QgsPoint* p)
     float x = ((p->x()-xMin)/mapUnitsPerPixel);
     float y = (yMax-((p->y() - yMin)) / mapUnitsPerPixel);
 #ifdef QGISDEBUG 
-    //std::cout << "Point to pixel...X : " << p->x() << "-->" << x << ", Y: " << p->y() << " -->" << y << std::endl;
+    //std::cerr << "Point to pixel...X : " << p->x() << "-->" << x << ", Y: " << p->y() << " -->" << y << std::endl;
 #endif     
     p->setX(x);
     p->setY(y);
 
 }
+
+
 
 #endif // QGSMAPTOPIXEL
