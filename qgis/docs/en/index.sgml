@@ -1,0 +1,74 @@
+
+<!doctype linuxdoc system>
+<article>
+<title>The Qgis Handbook
+<author>Gary E.Sherman <tt>sherman at mrcc dot com</tt>
+<date>Version 0.0.2 , Sat Jul 27 09:11:07 AKDT 2002
+<abstract>
+This Handbook describes Qgis Version 0.0.2
+</abstract>
+
+<toc>
+
+<sect>Introduction
+<p>
+<sect1>Changes
+<p>
+
+<sect>Installation
+<p>
+<sect1>How to obtain Qgis 
+<p>
+
+<sect1>Requirements
+<p>
+
+<sect1>Compilation and installation
+<p>
+
+In order to compile and install Qgis on your system, type the following in
+the base directory of the Qgis distribution:
+
+<tscreen><verb>
+% ./configure
+% make
+% make install
+</verb></tscreen>
+
+<p>
+Since Qgis uses <verb>autoconf</verb> you should have not trouble
+compiling it.
+Should you run into problems please report them to the the author at 
+<htmlurl url="mailto:sherman at mrcc dot com" name = "Gary E.Sherman">
+
+
+<p>
+<sect> Usage <p>
+<sect1> General Usage
+<p>
+<sect> Another Section
+<p>
+
+<sect>Questions and Answers<p>
+
+<sect>Copyright<p>
+
+Qgis Copyright 2002 Gary E.Sherman , sherman at mrcc dot com
+
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+<p>
+</article>
