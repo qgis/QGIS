@@ -1,47 +1,100 @@
-<!DOCTYPE kdevelop>
+<?xml version = '1.0'?>
 <kdevelop>
   <general>
-    <author>Gary Sherman</author>
-    <email>sherman at mrcc.com</email>
-    <projectmanagement>KDevTrollProject</projectmanagement>
+    <author>Tim Sutton</author>
+    <email>aps02ts@linux</email>
+    <version>$VERSION$</version>
+    <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
-    <keywords>
-      <keyword>Qt</keyword>
-    </keywords>
-    <version/>
-    <description/>
     <ignoreparts/>
+    <projectdirectory>.</projectdirectory>
+    <absoluteprojectpath>false</absoluteprojectpath>
+    <description></description>
+    <secondaryLanguages/>
   </general>
-  <kdevfileview>
-    <groups>
-      <group pattern="*.cpp;*.cxx;*.h" name="Sources" />
-      <group pattern="*.ui" name="User Interface" />
-      <group pattern="*.png" name="Icons" />
-      <group pattern="*" name="Others" />
-    </groups>
-    <tree>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
-    </tree>
-  </kdevfileview>
-  <kdevdoctreeview>
-    <ignoretocs>
-      <toc>gtk</toc>
-      <toc>gnustep</toc>
-      <toc>python</toc>
-      <toc>php</toc>
-      <toc>perl</toc>
-    </ignoretocs>
-    <projectdoc>
-      <userdocDir>/home/gsherman/development/qgis/html/</userdocDir>
-      <apidocDir>/home/gsherman/development/qgis/html/</apidocDir>
-    </projectdoc>
-  </kdevdoctreeview>
+  <kdevautoproject>
+    <general>
+      <activetarget>src/qgis</activetarget>
+      <useconfiguration>default</useconfiguration>
+    </general>
+    <run>
+      <mainprogram>src/qgis</mainprogram>
+      <directoryradio>executable</directoryradio>
+      <customdirectory>/</customdirectory>
+      <programargs></programargs>
+      <terminal>false</terminal>
+      <autocompile>true</autocompile>
+      <envvars/>
+    </run>
+    <configurations>
+      <optimized>
+        <builddir>optimized</builddir>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <cxxflags>-O2 -g0</cxxflags>
+        <configargs>--prefix=/home/aps02ts</configargs>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
+      </optimized>
+      <debug>
+        <configargs>--enable-debug=full --prefix=$HOME</configargs>
+        <builddir>debug</builddir>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <cxxflags>-O0 -g3</cxxflags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
+      </debug>
+      <default>
+        <configargs>--prefix=$HOME</configargs>
+        <builddir></builddir>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags>-O0 -g3</cxxflags>
+        <f77flags></f77flags>
+      </default>
+    </configurations>
+    <make>
+      <envvars>
+        <envvar value="1" name="WANT_AUTOCONF_2_5" />
+        <envvar value="1" name="WANT_AUTOMAKE_1_6" />
+      </envvars>
+      <abortonerror>true</abortonerror>
+      <numberofjobs>1</numberofjobs>
+      <dontact>false</dontact>
+      <makebin></makebin>
+    </make>
+  </kdevautoproject>
   <kdevdebugger>
     <general>
-      <dbgshell/>
-      <programargs/>
-      <gdbpath/>
+      <dbgshell>libtool</dbgshell>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -51,86 +104,56 @@
       <demanglenames>true</demanglenames>
     </display>
   </kdevdebugger>
-  <kdevtrollproject>
-    <general>
-      <activedir></activedir>
-    </general>
-    <run>
-      <mainprogram>./src/qgis</mainprogram>
-      <programargs/>
-    </run>
-    <envvars>
-      <envvar value="/usr/local/pgsql" name="PGSQL" />
-    </envvars>
-    <subclassing/>
-  </kdevtrollproject>
+  <kdevfilecreate>
+    <filetypes/>
+    <useglobaltypes>
+      <type ext="ui" />
+      <type ext="cpp" />
+      <type ext="h" />
+    </useglobaltypes>
+  </kdevfilecreate>
+  <kdevdoctreeview>
+    <projectdoc>
+      <userdocDir>html/</userdocDir>
+      <apidocDir>html/</apidocDir>
+    </projectdoc>
+    <ignoreqt_xml/>
+    <ignoredoxygen/>
+    <ignorekdocs/>
+    <ignoretocs/>
+    <ignoredevhelp/>
+  </kdevdoctreeview>
   <cppsupportpart>
-    <codecompletion>
-      <codehinting outputview="1" enablech="0" selectview="0" />
-    </codecompletion>
-    <classstore>
-      <enablepcs>false</enablepcs>
-      <enablepp>false</enablepp>
-      <preparsing/>
-    </classstore>
     <filetemplates>
-      <choosefiles>false</choosefiles>
-      <interfaceURL/>
-      <implementationURL/>
       <interfacesuffix>.h</interfacesuffix>
       <implementationsuffix>.cpp</implementationsuffix>
-      <lowercasefilenames>true</lowercasefilenames>
     </filetemplates>
   </cppsupportpart>
-  <kdevclassview>
-    <folderhierarchy>true</folderhierarchy>
-    <depthoffolders>2</depthoffolders>
-  </kdevclassview>
-  <kdevcvs>
-    <cvsoptions>-f</cvsoptions>
-    <commitoptions></commitoptions>
-    <updateoptions>-dP</updateoptions>
-    <addoptions></addoptions>
-    <removeoptions>-f</removeoptions>
-    <diffoptions>-u3 -p</diffoptions>
-    <logoptions></logoptions>
-    <revertoptions>-C -d -P</revertoptions>
-    <rshoptions></rshoptions>
-  </kdevcvs>
-  <dist>
-    <custom>false</custom>
-    <bzip>false</bzip>
-    <archname/>
-    <appname/>
-    <version/>
-    <release/>
-    <vendor/>
-    <licence/>
-    <summary/>
-    <group/>
-    <packager/>
-    <description/>
-    <changelog/>
-    <devpackage>false</devpackage>
-    <docspackage>false</docspackage>
-    <appicon>false</appicon>
-    <arch>2</arch>
-    <genHTML>false</genHTML>
-    <useRPM>false</useRPM>
-    <ftpkde>false</ftpkde>
-    <appskde>false</appskde>
-    <url/>
-  </dist>
   <kdevcppsupport>
     <codecompletion>
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
       <includeEnums>true</includeEnums>
-      <includeTypedefs>false</includeTypedefs>
+      <includeTypedefs>true</includeTypedefs>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
-      <codeCompletionDelay>250</codeCompletionDelay>
+      <automaticHeaderCompletion>true</automaticHeaderCompletion>
+      <codeCompletionDelay>400</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
+      <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
+    <references>
+      <pcs>Qt</pcs>
+      <pcs>GDAL</pcs>
+    </references>
   </kdevcppsupport>
+  <kdevfileview>
+    <groups>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+    </groups>
+    <tree>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+    </tree>
+  </kdevfileview>
 </kdevelop>
