@@ -68,7 +68,7 @@ if [ "$AC_ERROR" = "1" ]; then
 	tput sgr0
 fi
 
-# Check autoconf version
+# Check libtool version
 LT_VERSION=`libtool --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\).*$#\1 \2#p'`
 LT_V1=`echo $LT_VERSION | awk '{print $1}'`
 LT_V2=`echo $LT_VERSION | awk '{print $2}'`
