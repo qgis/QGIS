@@ -116,7 +116,7 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0">
+                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
                         <property name="name">
                             <cstring>lblLayerSource</cstring>
                         </property>
@@ -124,12 +124,12 @@
                             <string>Layer Source:</string>
                         </property>
                     </widget>
-                    <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="2">
+                    <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="5">
                         <property name="name">
                             <cstring>leDisplayName</cstring>
                         </property>
                     </widget>
-                    <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="2">
+                    <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="5">
                         <property name="name">
                             <cstring>leLayerSource</cstring>
                         </property>
@@ -137,7 +137,7 @@
                             <bool>false</bool>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="2" column="0">
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
                         <property name="name">
                             <cstring>lblDisplayName</cstring>
                         </property>
@@ -145,7 +145,7 @@
                             <string>Display Name:</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="4" column="0">
+                    <widget class="QLabel" row="4" column="0" rowspan="1" colspan="3">
                         <property name="name">
                             <cstring>lblDisplayName_2</cstring>
                         </property>
@@ -153,7 +153,7 @@
                             <string>Legend:</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
+                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="5">
                         <property name="name">
                             <cstring>pixmapLegend</cstring>
                         </property>
@@ -167,7 +167,7 @@
                             <bool>true</bool>
                         </property>
                     </widget>
-                    <widget class="QCheckBox" row="6" column="0" rowspan="1" colspan="2">
+                    <widget class="QCheckBox" row="6" column="0" rowspan="1" colspan="5">
                         <property name="name">
                             <cstring>cboxShowDebugInfo</cstring>
                         </property>
@@ -175,7 +175,116 @@
                             <string>Show debug info as overlay on raster?</string>
                         </property>
                     </widget>
+                    <widget class="QLabel" row="7" column="2">
+                        <property name="name">
+                            <cstring>lblColumns</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;p align="center"&gt;Columns: &lt;/p&gt;</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="8" column="2">
+                        <property name="name">
+                            <cstring>pixmapThumbnail</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>120</width>
+                                <height>120</height>
+                            </size>
+                        </property>
+                        <property name="frameShape">
+                            <enum>StyledPanel</enum>
+                        </property>
+                        <property name="scaledContents">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="8" column="1">
+                        <property name="name">
+                            <cstring>lblRows</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;p align="right"&gt;Rows: &lt;/p&gt;</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="8" column="3">
+                        <property name="name">
+                            <cstring>lblNoData</cstring>
+                        </property>
+                        <property name="text">
+                            <string>No Data:</string>
+                        </property>
+                    </widget>
+                    <spacer row="7" column="3">
+                        <property name="name">
+                            <cstring>spacer6</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>81</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
                     <spacer row="7" column="1">
+                        <property name="name">
+                            <cstring>spacer7</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>121</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <spacer row="8" column="4">
+                        <property name="name">
+                            <cstring>spacer8</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>41</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <spacer row="8" column="0">
+                        <property name="name">
+                            <cstring>spacer9</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>21</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <spacer row="9" column="2">
                         <property name="name">
                             <cstring>spacer2</cstring>
                         </property>
@@ -188,7 +297,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>21</width>
-                                <height>70</height>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
