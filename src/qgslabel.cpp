@@ -473,6 +473,7 @@ QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
         break;
     case QGis::WKBMultiPolygon:
         {
+        /*
             unsigned char *ptr;
             int idx, jdx, kdx;
             int *numPolygons, *numRings;
@@ -506,6 +507,7 @@ QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
             }
             break;
 
+        */
         }
     }
     return QgsPoint ( point );
