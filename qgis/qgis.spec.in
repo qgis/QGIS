@@ -47,6 +47,8 @@ Steve Halasz <stevehalasz at users.sourceforge.net>
 export CFLAGS="$RPM_OPT_FLAGS"
 ./configure --prefix=%{prefix}
 make
+strip src/qgis
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
