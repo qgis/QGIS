@@ -148,7 +148,6 @@ private:
     bool isValidVectorFileName (QString theFileNameQString);
     /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
     bool isValidVectorFileName (QString * theFileNameQString);
-
 #ifdef HAVE_POSTGRESQL
     //! Add a databaselayer to the map
     void addDatabaseLayer();
@@ -265,6 +264,8 @@ private slots:
     //! Set project properties, including map untis
     void projectProperties();
     /*  void urlData(); */
+    /** Used to (re)set the zordering of the overview map*/
+    void setOverviewZOrder(QgsLegend * );
 public slots:
     void showProgress(int theProgress, int theTotalSteps);
     void showExtents(QgsRect theExtents);
