@@ -2660,7 +2660,7 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
         QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
         if (layer->type() == QgsMapLayer::RASTER)
         {
-            actionIdentify->setEnabled(FALSE);
+            //actionIdentify->setEnabled(FALSE);
             actionSelect->setEnabled(FALSE);
             actionOpenTable->setEnabled(FALSE);
             // if one of these map tools is selected, set cursor to default
