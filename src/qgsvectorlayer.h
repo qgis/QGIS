@@ -137,7 +137,6 @@ class QgsVectorLayer:public QgsMapLayer
 	};
   private:						// Private methods
 	int endian();
-	signals:void repaintRequested();
 
 };
 

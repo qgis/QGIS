@@ -45,8 +45,12 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
 	displaynamefield->setText(m_vectorlayer->name());
 	outlinecolorbutton->setPaletteBackgroundColor(((QgsSingleSymRenderer*)(layer->renderer()))->item()->getSymbol()->pen().color());
 	stylebutton->setText(tr("SolidLine"));
-	outlinewidthspinbox->setValue(((QgsSingleSymRenderer*)(layer->renderer()))->item()->getSymbol()->pen().width());
-	fillcolorbutton->setPaletteBackgroundColor(((QgsSingleSymRenderer*)(layer->renderer()))->item()->getSymbol()->brush().color());
+	QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(layer->renderer());
+	if(renderer)
+	{
+	    outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
+	    fillcolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
+	}
 	patternbutton->setText(tr("SolidPattern"));
 
 	if(m_vectorlayer&&m_vectorlayer->vectorType()==QGis::Line)
