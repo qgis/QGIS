@@ -133,7 +133,7 @@ void QgsProjectProperties::getProjList()
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
   QString theFileNameQString = PKGDATAPATH;
-  theFileNameQString += "resources/wkt_defs.txt";
+  theFileNameQString += "/resources/wkt_defs.txt";
 
   
   QFile myQFile( theFileNameQString );
