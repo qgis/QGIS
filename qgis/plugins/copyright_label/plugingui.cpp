@@ -13,6 +13,7 @@
 #include <qtextedit.h>
 #include <qsimplerichtext.h>
 #include <qcombobox.h>
+#include <qcheckbox.h>
 //qt includes
 
 //standard includes
@@ -34,7 +35,7 @@ PluginGui::~PluginGui()
 void PluginGui::pbnOK_clicked()
 {
   //
-  // If you have a produced a raster layer using your plugin, you can ask qgis to 
+  // If you have a produced a raster layer using your plugin, you can ask qgis to
   // add it to the view using:
   // emit drawRasterLayer(QString("layername"));
   // or for a vector layer
@@ -46,6 +47,7 @@ void PluginGui::pbnOK_clicked()
   emit changeLabel(txtCopyrightText->text());
   emit changeColor(txtCopyrightText->color());
   emit changePlacement(cboPlacement->currentText());
+  emit enableCopyrightLabel(cboxEnabled->isChecked());
   
   done(1);
 } 
