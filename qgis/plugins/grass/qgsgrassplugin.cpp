@@ -270,7 +270,7 @@ void QgsGrassPlugin::edit()
     }
 
     QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, 
-	                                 Qt::WType_Dialog | Qt::WStyle_Customize | Qt::WStyle_Tool  );
+	                                 Qt::WType_Dialog );
 
     if ( ed->isValid() ) {
         ed->show();
@@ -345,7 +345,7 @@ void QgsGrassPlugin::changeRegion(void)
 
     QgsGrassRegion *reg = new QgsGrassRegion(this, qgisMainWindowPointer, qGisInterface, 
 	                         qgisMainWindowPointer, 0, 
-				 Qt::WType_Dialog | Qt::WStyle_Customize | Qt::WStyle_Tool  );
+				 Qt::WType_Dialog );
 
     reg->show();
 }
