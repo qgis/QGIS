@@ -1,7 +1,16 @@
 QGIS Change Log
-ChangeLog,v 1.174 2004/08/22 14:39:35 larsl Exp
+ChangeLog,v 1.175 2004/08/26 16:48:24 mcoletti Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-25 [mcoletti] 0.4.0devel20
+Now explicitly use QgsMapLayerRegistry instance instead of data members.  (Of
+which two both referred to the same instance.)
+
+2004-08-25 [mcoletti] 0.4.0devel19
+Deleted two data members that referred to the Singleton object
+QgsMapLayerRegistry.  Now explicitly use QgsMapLayerRegistry::instance(),
+which emphasizes that you're accessing a Singleton.
 
 2004-08-22 [larsl] 0.4.0devel18
 ** Fixed a bug that caused SVG markers to be huge when oversampling was turned on
