@@ -20,6 +20,7 @@
 #define QGSATTRIBUTETABLE_H
 
 #include <qtable.h>
+#include <qmap.h>
 
 /**
   *@author Gary E.Sherman
@@ -33,6 +34,8 @@ class QgsAttributeTable:public QTable
       QgsAttributeTable(QWidget * parent = 0, const char *name = 0);
       ~QgsAttributeTable();
 
+      /**Inserts the feature with the specified id into rowIdMap. This function has to be called (e.g. from QgsShapeFileLayer) when a row is inserted into the table*/
+      void insertFeatureId(int id);
       /**Selects the row which belongs to the feature with the specified id*/
       void selectRowWithId(int id);
 
@@ -43,6 +46,8 @@ class QgsAttributeTable:public QTable
       protected:
       /**Flag telling if the ctrl-button or the shift-button is pressed*/
       bool lockKeyPressed;
+      /**Search tree to find a row corresponding to a feature id*/
+      QMap<int,int> rowIdMap;
       void keyPressEvent(QKeyEvent* ev);
       void keyReleaseEvent(QKeyEvent* ev);
         signals:
