@@ -71,4 +71,6 @@ typedef QString name_t();
 typedef QString description_t();
 //! Typedef for getting the plugin type without instantiating the plugin
 typedef int type_t();
+//! Typedef for getting the plugin version without instantiating the plugin
+typedef QString version_t();
 #endif //qgisplugin_h
