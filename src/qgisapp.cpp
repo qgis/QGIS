@@ -1596,15 +1596,28 @@ void QgisApp::fileOpen()
 
     if (answer != QMessageBox::Cancel)
     {
-        QString fullPath =
-            QFileDialog::getOpenFileName("./", QObject::tr("QGis files (*.qgs)"), 0, 0,
-                                         QObject::tr("Choose a QGIS project file to open"));
-
-        if ( fullPath.isEmpty() )   // if they didn't select anything, just return
+        // Retrieve last used project dir from persistent settings
+        QSettings settings;
+        QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+        
+        QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0, 
+                                                        QFileDialog::tr("Choose a QGIS project file to open"));
+        openFileDialog->setMode(QFileDialog::ExistingFile);
+        
+        QString fullPath;
+        if (openFileDialog->exec() == QDialog::Accepted)
         {
+            fullPath = openFileDialog->selectedFile();
+        } else {
+            // if they didn't select anything, just return
             return;
         }
-
+        
+        // Persist last used project dir
+        settings.writeEntry("/qgis/UI/lastProjectDir", openFileDialog->dirPath());
+        
+        delete openFileDialog;
+        
         // clear out any stuff from previous project
         removeAllLayers();
 
@@ -1718,16 +1731,28 @@ void QgisApp::fileSave()
 
 void QgisApp::fileSaveAs()
 {
-    // XXX maybe as a convenience have it remember the last directory we
-    // XXX saved project files to to use that instead of "./"
-    QString fullPath =
-        QFileDialog::getSaveFileName("./", QObject::tr("QGis files (*.qgs)"), 0, 0,
-                                     QObject::tr("Choose a QGIS project file"));
-
-    if ( fullPath.isNull() )
+    // Retrieve last used project dir from persistent settings
+    QSettings settings;
+    QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+    
+    QFileDialog * saveFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0, 
+                                                    QFileDialog::tr("Choose a QGIS project file"));
+    saveFileDialog->setMode(QFileDialog::AnyFile);
+    
+    QString fullPath;
+    if (saveFileDialog->exec() == QDialog::Accepted)
     {
-        return;             // they didn't select anything, so just abort
+        fullPath = saveFileDialog->selectedFile();
+    } else {
+        // if they didn't select anything, just return
+        return;
     }
+    
+    // Persist last used project dir
+    settings.writeEntry("/qgis/UI/lastProjectDir", saveFileDialog->dirPath());
+    
+    delete saveFileDialog;
+    
     // make sure the .qgs extension is included in the path name. if not, add it...
     if (fullPath.find(QRegExp("\\.qgs$")) == -1)
     {
