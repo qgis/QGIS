@@ -267,7 +267,7 @@ void QgsVectorLayer::setDisplayField()
   }
 
   //if there were no fields in the dbf just return - otherwise qgis segfaults!
-  if (j==0) return;
+  if (fields.size() == 0) return;
 
   if (idxName.length() > 0)
   {
