@@ -126,8 +126,6 @@ void Plugin::projectRead()
     mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
     // todo - read & store state of font color
     mLabelQColor = QColor(Qt::black);
-
-    refreshCanvas();
 }
 //method defined in interface
 void Plugin::help()
