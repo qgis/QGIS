@@ -449,11 +449,33 @@ void QgsComposer::projectRead(void)
     std::cout << "QgsComposer::projectRead" << std::endl;
     
     if ( mComposition ) delete mComposition;
-	
     mComposition  = new QgsComposition( this, 1 );
-    mComposition->setActive ( true );
-    mComposition->readSettings ( );
+	
+    // Read composition if it is defined in project
+    QStringList l = QgsProject::instance()->subkeyList ( "Compositions", "" );
 
+    bool found = false;
+    for ( QStringList::iterator it = l.begin(); it != l.end(); ++it ) {
+	std::cout << "key: " << (*it).ascii() << std::endl;
+        if ( (*it).compare ( "composition_1" ) == 0 ) {
+	    found = true;
+	    break;
+	}
+    }
+    
+    if ( found ) {
+        mComposition->readSettings ( );
+	mFirstTime = false;
+    } else { 
+	if ( isVisible() ) {
+	    mComposition->createDefault();
+	    mFirstTime = false;
+	} else {
+	    mFirstTime = true;
+	}
+    }
+    
+    mComposition->setActive ( true );
 }
 
 void QgsComposer::newProject(void)

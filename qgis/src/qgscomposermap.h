@@ -53,12 +53,14 @@ class QgsComposition;
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
 class QgsComposerMap : public QgsComposerMapBase, public QCanvasRectangle, public QgsComposerItem
-//class QgsComposerMap : public QCanvasSprite, public QgsComposerItem
 {
     Q_OBJECT
 
 public:
+    /** Constructor. */
     QgsComposerMap( QgsComposition *composition, int id, int x, int y, int width, int height );
+    /** Constructor. Settings are read from project. */
+    QgsComposerMap( QgsComposition *composition, int id );
     ~QgsComposerMap();
 
     /** \brief Preview style  */
@@ -67,6 +69,9 @@ public:
 	Render,      // Render the map
 	Rectangle    // Display only rectangle
     };
+
+    /** \brief Initialise GUI and other settings, shared by constructors */
+    void init ( void );
 
     // Reimplement QgsComposerItem:
     void setSelected( bool s );
