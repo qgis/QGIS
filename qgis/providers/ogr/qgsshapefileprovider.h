@@ -63,7 +63,7 @@ public:
 	* with calls to getFirstFeature and getNextFeature.
 	* @param mbr QgsRect containing the extent to use in selecting features
 	*/
-	void select(QgsRect *mbr);
+	void select(QgsRect *mbr, bool useIntersect=false);
 	/** 
 		* Set the data source specification. This may be a path or database
 	* connection string

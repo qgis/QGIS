@@ -367,18 +367,26 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 	* with calls to getFirstFeature and getNextFeature.
 	* @param mbr QgsRect containing the extent to use in selecting features
 	*/
-void QgsPostgresProvider::select(QgsRect * rect)
+void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 {
     // spatial query to select features
     //--std::cout << "Selection rectangle is " << *rect << std::endl;
     QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
       + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
-    declare += " where " + geometryColumn;
-    declare += " && GeometryFromText('BOX3D(" + rect->stringRep();
-    declare += ")'::box3d,";
-    declare += srid;
-    declare += ")";          
+      if(useIntersect){
+        declare += " where intersects(" + geometryColumn;
+        declare += ", GeometryFromText('BOX3D(" + rect->stringRep();
+        declare += ")'::box3d,";
+        declare += srid;
+        declare += "))";
+      }else{
+        declare += " where " + geometryColumn;
+        declare += " && GeometryFromText('BOX3D(" + rect->stringRep();
+        declare += ")'::box3d,";
+        declare += srid;
+        declare += ")";
+      }
     //--std::cout << "Selecting features using: " << declare << std::endl;
     // set up the cursor
     if(ready){

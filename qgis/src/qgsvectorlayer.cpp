@@ -500,7 +500,7 @@ int QgsVectorLayer::endian()
 void QgsVectorLayer::identify(QgsRect * r)
 {
   	QApplication::setOverrideCursor(Qt::waitCursor);
-  dataProvider->select(r);
+  dataProvider->select(r,true);
 		int featureCount = 0;
     QgsFeature *fet;
 		unsigned char *feature;
@@ -633,7 +633,7 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
 	}
     }
 
-    dataProvider->select(rect);
+    dataProvider->select(rect, true);
 	
     QgsFeature* fet;
 

@@ -178,7 +178,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 	* with calls to getFirstFeature and getNextFeature.
 	* @param mbr QgsRect containing the extent to use in selecting features
 	*/
-void QgsShapeFileProvider::select(QgsRect *rect)
+void QgsShapeFileProvider::select(QgsRect *rect, bool useIntersect)
 {
     // spatial query to select features
   //  std::cerr << "Selection rectangle is " << *rect << std::endl;
