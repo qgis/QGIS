@@ -9,7 +9,8 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 PREFIX=-DPREFIX=\"$(prefix)\"
-PLUGINPATH=-DPLUGINPATH=\"$(libdir)/qgis\"
+PLUGINPATH=-DPLUGINPATH=\"$(pkglibdir)\"
+I18NPATH=-DI18NPATH=\"$(pkgdatadir)/i18n\"
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -253,7 +254,7 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 
 
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
-qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(I18NPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 
 libqgis_la_SOURCES = qgssymbol.cpp qgsmaplayer.cpp qgsrasterlayer.cpp qgsvectorlayer.cpp qgsmaplayer.moc.cpp qgsrasterlayer.moc.cpp qgsvectorlayer.moc.cpp qgsfield.cpp qgsfeature.cpp qgsfeatureattribute.cpp
 #libqgis_la_LIBFLAGS = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
