@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.168 2004/08/18 07:51:29 jobi Exp
+ChangeLog,v 1.169 2004/08/19 05:49:30 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-14 [gsherman] 0.4.0devel13
+** Moved common toobar icons to drop-down tool menus. This includes the
+   overview, hide/show all, and capture tools
 
 2004-08-18 [jobi] 0.4.0devel12
 ** added Italian translation thanx to Maurizio Napolitano
