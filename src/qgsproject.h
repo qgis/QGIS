@@ -188,6 +188,11 @@ public:
      */
     Properties & properties( QString const & scope );
 
+    /**
+       removes all project properties
+    */
+    void clearProperties();
+
 private:
 
     QgsProject(); // private 'cause it's a singleton
