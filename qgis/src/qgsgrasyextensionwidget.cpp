@@ -37,8 +37,9 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 #ifdef QGISDEBUG
     qWarning("constructor QgsGraSyExtensionWidget");
 #endif
- 
-    setResizePolicy(QScrollView::AutoOneFit);
+    
+    resizeContents(150,50*(mNumberOfClasses+1));//what can i do to set an initial widget size and use QScrollView::AutoOneFit?
+    setResizePolicy(QScrollView::AutoOneFit/*Manual*/);
     mGridLayout->setSpacing(5);
 
     //fill the title line into the grid layout
@@ -98,19 +99,22 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
     {
 
 	QLineEdit *ltextfield = new QLineEdit(mWidget);
+	ltextfield->setMinimumWidth(20);
 	mGridLayout->addWidget(ltextfield, i, 0);
 	m_widgetvector[8 * (i - 1)] = ltextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
 	QLineEdit *utextfield = new QLineEdit(mWidget);
+	utextfield->setMinimumWidth(20);
 	mGridLayout->addWidget(utextfield, i, 1);
 	m_widgetvector[8 * (i - 1) + 1] = utextfield;
-	ltextfield->setAlignment(Qt::AlignLeft);
+	utextfield->setAlignment(Qt::AlignLeft);
 
 	QLineEdit *labeltextfield = new QLineEdit(mWidget);
+	labeltextfield->setMinimumWidth(20);
 	mGridLayout->addWidget(labeltextfield, i, 2);
 	m_widgetvector[8 * (i - 1) + 2] = labeltextfield;
-	ltextfield->setAlignment(Qt::AlignLeft);
+	labeltextfield->setAlignment(Qt::AlignLeft);
 
 	QPushButton *outlinecolorbutton = new QPushButton(mWidget);
 	outlinecolorbutton->setMinimumWidth(20);
@@ -146,10 +150,7 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
 	m_widgetvector[8 * (i - 1) + 7] = fillpatternbutton;
 	QObject::connect(fillpatternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
 
-
-
-
-	//apply a nice color range from blue to red as default
+        //apply a nice color range from blue to red as default
 	if (i == 1)
         {
 	    if (m_type == QGis::Line)
@@ -207,11 +208,10 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfiel
         }
     }
 
-    mWidget->resize(150,mWidget->height());
     addChild(mWidget);
-    //resizeContents(150,50*(mNumberOfClasses+1));
-    //updateContents();
-  
+    mWidget->show(); 
+    resizeContents(150,50*(mNumberOfClasses+1));
+    updateContents();
 }
 
 QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(): QScrollView(0)
