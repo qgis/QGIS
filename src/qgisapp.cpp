@@ -62,6 +62,7 @@
 #include "qgslegendview.h"
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
+#include <splashscreen.h>
 
 #ifdef POSTGRESQL
 #include "qgsdbsourceselect.h"
@@ -152,76 +153,85 @@ static unsigned char select_cursor_mask_bits[] = {
 
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(parent, name, fl)
 {
-	OGRRegisterAll();
-	QPixmap icon;
-	icon = QPixmap(qgis_xpm);
-	setIcon(icon);
-	// store startup location
-	QDir *d = new QDir();
-	startupPath = d->absPath();
-	delete d;
-	QBitmap zoomincur;
-//  zoomincur = QBitmap(cursorzoomin);
-	QBitmap zoomincurmask;
-//  zoomincurmask = QBitmap(cursorzoomin_mask);
+  //
+  // Set up the splash screen
+  //
+  SplashScreen *mySplash = new SplashScreen(  );
+  mySplash->setStatus(tr("Loading QGIS..."));
+  OGRRegisterAll();
+  QPixmap icon;
+  icon = QPixmap(qgis_xpm);
+  setIcon(icon);
+  // store startup location
+  QDir *d = new QDir();
+  startupPath = d->absPath();
+  delete d;
+  QBitmap zoomincur;
+  //  zoomincur = QBitmap(cursorzoomin);
+  QBitmap zoomincurmask;
+  //  zoomincurmask = QBitmap(cursorzoomin_mask);
 
-	QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
-	QSplitter *split = new QSplitter(frameMain);
-	legendView = new QgsLegendView(split);
-	legendView->addColumn(tr("Layers"));
-	legendView->setSorting(-1);
+  mySplash->setStatus(tr("Setting up QGIS gui..."));
+  QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
+  QSplitter *split = new QSplitter(frameMain);
+  legendView = new QgsLegendView(split);
+  legendView->addColumn(tr("Layers"));
+  legendView->setSorting(-1);
 
 
-	mapLegend = new QgsLegend(legendView);	//frameMain);
-	// mL = new QScrollView(split);
-	//add a canvas
-	mapCanvas = new QgsMapCanvas(split);
-	// resize it to fit in the frame
-	//    QRect r = frmCanvas->rect();
-	//    canvas->resize(r.width(), r.height());
-	mapCanvas->setBackgroundColor(Qt::white);	//QColor (220, 235, 255));
-	mapCanvas->setMinimumWidth(400);
-	FrameLayout->addWidget(split, 0, 0);
-	mapLegend->setBackgroundColor(QColor(192, 192, 192));
-	mapLegend->setMapCanvas(mapCanvas);
-	legendView->setResizeMode(QListView::AllColumns);
-	QString caption = tr("Quantum GIS - ");
-	caption += QGis::qgisVersion;
-	setCaption(caption);
-	connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
-	connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
-	connect(legendView, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
-			this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
-	connect(legendView, SIGNAL(zOrderChanged(QgsLegendView *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegendView *)));
+  mapLegend = new QgsLegend(legendView);	//frameMain);
+  // mL = new QScrollView(split);
+  //add a canvas
+  mapCanvas = new QgsMapCanvas(split);
+  // resize it to fit in the frame
+  //    QRect r = frmCanvas->rect();
+  //    canvas->resize(r.width(), r.height());
+  mapCanvas->setBackgroundColor(Qt::white);	//QColor (220, 235, 255));
+  mapCanvas->setMinimumWidth(400);
+  FrameLayout->addWidget(split, 0, 0);
+  mapLegend->setBackgroundColor(QColor(192, 192, 192));
+  mapLegend->setMapCanvas(mapCanvas);
+  legendView->setResizeMode(QListView::AllColumns);
+  QString caption = tr("Quantum GIS - ");
+  caption += QGis::qgisVersion;
+  setCaption(caption);
+  connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
+  connect(legendView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
+  connect(legendView, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
+          this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
+  connect(legendView, SIGNAL(zOrderChanged(QgsLegendView *)), mapCanvas, SLOT(setZOrderFromLegend(QgsLegendView *)));
 
-	// create the layer popup menu
-	popMenu = new QPopupMenu();
-	popMenu->insertItem(tr("&Zoom to extent of selected layer"), this, SLOT(zoomToLayerExtent()));
-	popMenu->insertItem(tr("&Open attribute table"), this, SLOT(attributeTable()));
-	popMenu->insertSeparator();
-	popMenu->insertItem(tr("&Properties"), this, SLOT(layerProperties()));
-	popMenu->insertSeparator();
-	popMenu->insertItem(tr("&Remove"), this, SLOT(removeLayer()));
-	mapCursor = 0;
-	// create the interfce
-	qgisInterface = new QgisIface(this);
-	///qgisInterface->setParent(this);
-	// set the legend control for the map canvas
-	mapCanvas->setLegend(mapLegend);
-	// disable functions based on build type
-	#ifndef POSTGRESQL
-		actionAddLayer->removeFrom(PopupMenu_2);
-		actionAddLayer->removeFrom(DataToolbar);
-	#endif
- 
+  // create the layer popup menu
+  popMenu = new QPopupMenu();
+  popMenu->insertItem(tr("&Zoom to extent of selected layer"), this, SLOT(zoomToLayerExtent()));
+  popMenu->insertItem(tr("&Open attribute table"), this, SLOT(attributeTable()));
+  popMenu->insertSeparator();
+  popMenu->insertItem(tr("&Properties"), this, SLOT(layerProperties()));
+  popMenu->insertSeparator();
+  popMenu->insertItem(tr("&Remove"), this, SLOT(removeLayer()));
+  mapCursor = 0;
+  // create the interfce
+  qgisInterface = new QgisIface(this);
+  ///qgisInterface->setParent(this);
+  // set the legend control for the map canvas
+  mapCanvas->setLegend(mapLegend);
+  // disable functions based on build type
+#ifndef POSTGRESQL
+  actionAddLayer->removeFrom(PopupMenu_2);
+  actionAddLayer->removeFrom(DataToolbar);
+#endif
+  mySplash->setStatus(tr("Loading plugins..."));
+
   // Get pointer to the provider registry singleton
   providerRegistry = QgsProviderRegistry::instance();
-  
-	// connect the "cleanup" slot
-	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
-	restoreWindowState();
-   // set the focus to the map canvase
+
+  // connect the "cleanup" slot
+  connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
+  restoreWindowState();
+  // set the focus to the map canvase
   mapCanvas->setFocus();
+  mySplash->finish( this );
+  delete mySplash;
 }
 
 QgisApp::~QgisApp()
