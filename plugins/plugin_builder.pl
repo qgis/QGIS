@@ -66,6 +66,10 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   system("cp -r plugin_template $pluginDir");
   # remove the CVS directory 
   system("rm -rf $pluginDir/CVS");
+  # remove the images/CVS directory 
+  system("rm -rf $pluginDir/images/CVS");
+  # remove the sample_data/CVS directory 
+  system("rm -rf $pluginDir/sample_data/CVS");
   
   # Substitute the plugin specific vars in the various files
   # This is a brute force approach but its quick and dirty :)
