@@ -24,7 +24,7 @@
 #include "qgsdelattrdialogbase.uic.h"
 #endif
 
-#include <list.h>
+#include <list>
 
 class QHeader;
 

@@ -78,6 +78,8 @@ class QgsAttributeTable:public QTable
       void popupItemSelected(int id);
       protected slots:
 	  void handleChangedSelections();
+      /**Writes changed values to 'mChangedValues'*/
+      void storeChangedValue(int row, int column);
 
       protected:
       /**Flag telling if the ctrl-button or the shift-button is pressed*/
@@ -104,6 +106,8 @@ class QgsAttributeTable:public QTable
       /**Method used by sortColumn (implementation of a quicksort)*/
       void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
       void contentsMouseReleaseEvent(QMouseEvent* e);
+      /**Clears mAddedAttributes, mDeletedAttributes and mChangedValues*/
+      void clearEditingStructures();
 
         signals:
 
