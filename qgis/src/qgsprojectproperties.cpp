@@ -29,7 +29,11 @@
 QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
     : QgsProjectPropertiesBase(parent, name)
 {
-    QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
+  //    out with the old
+    //    QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
+    //    in with the new...
+    setMapUnits(QgsProject::instance()->mapUnits());
+    title(QgsProject::instance()->title());
 }
 
 QgsProjectProperties::~QgsProjectProperties()
