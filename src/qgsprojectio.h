@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.h,v 1.5 2004/02/21 20:54:26 gsherman Exp */
+/* qgsprojectio.h,v 1.6 2004/06/10 23:07:08 timlinux Exp */
 
 #ifndef _QGSPROJECTIO_H_
 #define _QGSPROJECTIO_H_
 
-class QgsMapCanvas;
 class QgisApp;
+class QgsMapLayerRegistry;
+class QgsRect;
 /*! \class QgsProjectIo
 * \brief Class to handle reading and writing a Qgis project file
 */
@@ -26,13 +27,12 @@ class QgsProjectIo
 {
 
 public:
-  QgsProjectIo(QgsMapCanvas *map=0, int action=SAVE, QgisApp *qgis=0);
+  QgsProjectIo(int action=SAVE, QgisApp *qgis=0);
   ~QgsProjectIo();
   //! Read the file and create the map
   bool read(QString path=0);
   //! Write the contents of the map to a file
-  bool write();
-  void setMapCanvas(QgsMapCanvas *map);
+  bool write(QgsRect theExtent);
   //! Open a file dialog, the type determined by action (SAVE AS or OPEN)
   QString selectFileName();
   //! get the basename of the file (no path, just the file name)
@@ -47,13 +47,13 @@ public:
 	OPEN
 	};
   private:
-  void writeXML(void);
+  void writeXML(QgsRect theExtent);
   QString fileName;
   QString fullPath;
   bool neverSaved;
-  QgsMapCanvas *map;
   //! pointer to the main app for connecting slots
   QgisApp *qgisApp;
+  QgsMapLayerRegistry * mMapLayerRegistry;
   int action;
 };
 

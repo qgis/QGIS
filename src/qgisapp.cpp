@@ -1612,7 +1612,7 @@ void QgisApp::fileOpen()
   if (answer != QMessageBox::Cancel)
     {
       mMapCanvas->freeze(true);
-      QgsProjectIo *pio = new QgsProjectIo(mMapCanvas, QgsProjectIo::OPEN, this);
+      QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, this);
 
       if (pio->read())
         {
@@ -1630,9 +1630,9 @@ void QgisApp::fileOpen()
 
 void QgisApp::fileSave()
 {
-  QgsProjectIo *pio = new QgsProjectIo(mMapCanvas, QgsProjectIo::SAVE);
+  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVE);
   pio->setFileName(mFullPathName);
-  if (pio->write())
+  if (pio->write(mMapCanvas->extent()))
     {
       setCaption(tr("Quantum GIS --") + " " + pio->baseName());
       statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
@@ -1644,8 +1644,8 @@ void QgisApp::fileSave()
 
 void QgisApp::fileSaveAs()
 {
-  QgsProjectIo *pio = new QgsProjectIo(mMapCanvas, QgsProjectIo::SAVEAS);
-  if (pio->write())
+  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVEAS);
+  if (pio->write(mMapCanvas->extent()))
     {
       setCaption(tr("Quantum GIS --") + " " + pio->baseName());
       statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
@@ -1782,7 +1782,7 @@ bool QgisApp::addProject(QString projectFile)
   // adds a saved project to qgis, usually called on startup by
   // specifying a project file on the command line
   bool returnValue = false;
-  QgsProjectIo *pio = new QgsProjectIo(mMapCanvas, QgsProjectIo::OPEN, this);
+  QgsProjectIo *pio = new QgsProjectIo(QgsProjectIo::OPEN, this);
 #ifdef QGISDEBUG
   std::cout << "Loading Project - about to call ProjectIO->read()" << std::endl;
 #endif
@@ -2086,6 +2086,17 @@ void QgisApp::removeLayer()
   mMapCanvas->clear();
   mMapCanvas->render();
 }
+void QgisApp::removeAllLayers()
+{
+  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
+  {
+    mMapLayerRegistry->removeMapLayer( myMapIterator->first );
+  }
+  mOverviewCanvas->clear();
+  mMapCanvas->clear();
+} //remove all layers 
 
 void QgisApp::zoomToLayerExtent()
 {
@@ -2788,6 +2799,47 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
   }
     
 }
+
+void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
+{
+  mMapCanvas->freeze();
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  if(theMapLayer->isValid())
+  {
+    // Register this layer with the layers registry
+    mMapLayerRegistry->addMapLayer(theMapLayer);
+    // init the context menu so it can connect to slots in main app
+    theMapLayer->initContextMenu(this);
+    // add it to the mapcanvas collection
+    mMapCanvas->addLayer(theMapLayer);
+    //connect up a request from the raster layer to show in overview map
+    QObject::connect(theMapLayer, 
+            SIGNAL(showInOverview(QString,bool)), 
+            this, 
+            SLOT(setLayerOverviewStatus(QString,bool)));           
+
+    mProjectIsDirtyFlag = true;
+    statusBar()->message(mMapCanvas->extent().stringRep(2));
+
+  }else
+  {
+    QMessageBox::critical(this,"Layer is not valid",
+            "The layer is not a valid layer and can not be added to the map");
+  }
+  qApp->processEvents();
+  mMapCanvas->freeze(false);
+  mMapCanvas->render();
+  QApplication::restoreOverrideCursor();
+
+}
+
+void QgisApp::setExtent(QgsRect theRect)
+{
+  mMapCanvas->setExtent(theRect);
+}
+
+
+
 
 int QgisApp::saveDirty()
 {

@@ -115,6 +115,14 @@ public:
     */
     bool addRasterLayer(QFileInfo const & rasterFile);
 
+    /** Add a 'pre-made' map layer to the project */
+    void addMapLayer(QgsMapLayer *theMapLayer);
+   
+    /** Set the extents of the map canvas */
+    void setExtent(QgsRect theRect);
+    
+    //! Remove all layers from the map and legend
+    void removeAllLayers();
     /** opens a qgis project file
     @returns false if unable to open the project
 

@@ -1,8 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.122 2004/06/10 15:38:53 sbr00pwb Exp
+ChangeLog,v 1.123 2004/06/10 23:10:16 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+2004-06-10 [ts] 0.3.0devel27
+** Modified projectio (serialisation and deserialisation of project files) to use maplayerregistry and not mapcanvas.
 
+** Implemented state handling of 'showInOverview' property in project io.
 2004-06-10 [petebr] 0.3.0devel26
 Tidied up the SPIT gui to match the plugin template.
 Fixed bug in scale bar which displayed the bar the wrong size!
