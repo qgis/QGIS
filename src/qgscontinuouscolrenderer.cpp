@@ -188,9 +188,20 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPict
 	    maxcolor = mMaximumItem->getSymbol()->fillColor();
         }
 
-	int red = int (maxcolor.red() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.red() * (maxvalue - fvalue) / (maxvalue - minvalue));
-	int green = int (maxcolor.green() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.green() * (maxvalue - fvalue) / (maxvalue - minvalue));
-	int blue =  int (maxcolor.blue() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.blue() * (maxvalue - fvalue) / (maxvalue - minvalue));
+	int red,green,blue;
+
+	if((maxvalue - minvalue)!=0)
+	{
+	    red = int (maxcolor.red() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.red() * (maxvalue - fvalue) / (maxvalue - minvalue));
+	    green = int (maxcolor.green() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.green() * (maxvalue - fvalue) / (maxvalue - minvalue));
+	    blue =  int (maxcolor.blue() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.blue() * (maxvalue - fvalue) / (maxvalue - minvalue));
+	}
+	else
+	{
+	    red = int (mincolor.red());
+	    green = int (mincolor.green());
+	    blue = int (mincolor.blue());
+	}
 
 	if (wkbType == QGis::WKBLineString || wkbType == QGis::WKBMultiLineString ||wkbType == QGis::WKBPoint)
         {
