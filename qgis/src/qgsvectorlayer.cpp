@@ -1558,7 +1558,8 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #endif
             //XXX - This was a dynamic cast but that kills the Windows
             //      version big-time with an abnormal termination error
-            dataProvider = (QgsVectorDataProvider*)(classFactory(dataSource));
+            dataProvider = (QgsVectorDataProvider*)(classFactory((const
+                            char*)(dataSource.utf8())));
 
             if (dataProvider)
             {

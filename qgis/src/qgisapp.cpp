@@ -2397,7 +2397,8 @@ void QgisApp::removeLayer()
 #ifdef QGISDEBUG
     std::cout << "QGisApp Removing layer" << std::endl;
 #endif
-
+    //make sure canvase is not rendering first by faking an escape keypress
+    emit keyPressEvent(new QKeyEvent(QEvent::KeyPress ,Qt::Key_Escape,Qt::Key_Escape,0 ));
     mMapCanvas->freeze();
     QListViewItem *lvi = mMapLegend->currentItem();
     QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();

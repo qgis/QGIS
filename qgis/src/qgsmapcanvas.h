@@ -179,6 +179,8 @@ class QgsMapCanvas : public QWidget
     */
     bool writeXML( QDomNode & layerNode, QDomDocument & doc );
 
+    //! true if canvas currently drawing
+    bool isDrawing();
 public slots:
 
     /*! Adds a layer to the map canvas.
@@ -362,8 +364,7 @@ private:
     //! Updates the z order for layers on the map
     void updateZpos();
 
-    //! true if canvas currently drawing
-    bool isDrawing();
+
 
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)
