@@ -13,6 +13,16 @@
 
 namespace QGis
 {
+	// Version constants
+	//
+	// Version string 
+	static const char *qgisVersion = "0.0.13 Development - September-October 2003";
+	// Version number used for comparing versions using the "Check QGIS Version" function
+	static const int qgisVersionInt = 13;
+	
+	// Enumerations
+	//
+	// Maptool enumeration
 	enum MapTools
 	{
 		ZoomIn,
@@ -24,6 +34,7 @@ namespace QGis
 		Select
 	};
 //! Used for symbology operations
+	// Featuure types
 	enum WKBTYPE
 	{
 		WKBPoint = 1,
