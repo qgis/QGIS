@@ -2427,6 +2427,10 @@ void QgisApp::removeLayer()
     mOverviewCanvas->clear();
     mOverviewCanvas->render();
     mMapCanvas->freeze(false);
+
+    //remove remaining digitising acetates
+    mMapCanvas->removeEditingAcetates();
+
     // draw the map
     mMapCanvas->clear();
     mMapCanvas->render();
@@ -2571,6 +2575,11 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
                 break;
             }
         }
+
+	//let the mapcanvas know that the current layer changed
+	//so any remaining digitizing acetates can be removed
+	mMapCanvas->removeEditingAcetates();
+
         // notify the project we've made a change
         QgsProject::instance()->dirty(true);
     }

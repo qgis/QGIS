@@ -888,14 +888,13 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 	    }
 	}
     
-
-    if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
-    {
-      //writing failed
-      QMessageBox::warning (0, "Warning", "Writing of the feature failed",
-          QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
-      returnValue = false;
-    }
+	if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
+	{
+	    //writing failed
+	    QMessageBox::warning (0, "Warning", "Writing of the feature failed",
+	    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+	    returnValue = false;
+	}
     ++numberFeatures;
     delete feature;
     ogrLayer->SyncToDisk();
