@@ -24,6 +24,7 @@
 #include <qwidget.h>
 #include <qfont.h>
 #include <qcolor.h>
+#include <qsimplerichtext.h>
 
 /**
 * \class Plugin
@@ -66,6 +67,9 @@ class Plugin:public QObject, public QgisPlugin
   void setLabel(QString);
   //! change the copyright font colour
   void setColor(QColor);
+  //! set copyright label placement
+  void setPlacement(QString);
+
   
     private:
   //! This is the font that will be used for the copyright label
@@ -74,6 +78,8 @@ class Plugin:public QObject, public QgisPlugin
   QString mLabelQString;
   //! This is the colour for the copyright label
   QColor mLabelQColor;
+  //! Placement of the copyright label
+  QString mPlacement;
   
   int pluginType;
   //! Id of the plugin's menu. Used for unloading

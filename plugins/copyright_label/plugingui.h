@@ -37,6 +37,8 @@ signals:
    void changeFont(QFont);
    void changeLabel(QString);
    void changeColor(QColor);
+   void changePlacement(QString);
+   
 };
 
 #endif
