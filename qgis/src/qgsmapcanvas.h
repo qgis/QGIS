@@ -79,8 +79,10 @@ class QgsMapCanvas : public QWidget
     //! Returns the mupp (map units per pixel) for the canvas
     double mupp() const;
 
-    //! Returns the exent for all layers on the map canvas
+    //! Returns the current zoom exent of the map canvas
     QgsRect const & extent() const;
+    //! Returns the combined exent for all layers on the map canvas
+    QgsRect const & fullExtent() const;
 
     //! Set the extent of the map canvas
     void setExtent(QgsRect const & r);
@@ -118,7 +120,9 @@ class QgsMapCanvas : public QWidget
      * thawed (false). Default is true.
      */
     void freeze(bool frz = true);
-
+    
+    /*! Accessor for frozen status of canvas */
+    bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
     void setDirty(bool _dirty);
