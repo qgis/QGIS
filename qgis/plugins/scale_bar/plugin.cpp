@@ -140,7 +140,6 @@ void Plugin::projectRead()
     int myGreenInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorGreenPart",0);
     int myBlueInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorBluePart",0);
     mColour = QColor(myRedInt,myGreenInt,myBlueInt);
-    refreshCanvas();
 }
 //method defined in interface
 void Plugin::help()
