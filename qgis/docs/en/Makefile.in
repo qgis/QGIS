@@ -1,5 +1,4 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision$ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -242,9 +241,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 DIST_COMMON = Makefile.am Makefile.in
-#>- all: all-am
-#>+ 1
-all: docs-am  all-am
+all: all-am
 
 .SUFFIXES:
 
@@ -257,46 +254,37 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-#>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  qgis/docs/en/Makefile
-#>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  qgis/docs/en/Makefile
-	cd $(top_srcdir) && perl admin/am_edit qgis/docs/en/Makefile.in
+	  $(AUTOMAKE) --gnu  qgis/docs/en/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
-	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 uninstall-info-am:
 tags: TAGS
 TAGS:
 
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=index.sgml 
-
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = ../../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	$(mkinstalldirs) "$(distdir)/$$dir"; \
-	fi; \
-	if test -d $$d/$$file; then \
-	cp -pR $$d/$$file $(distdir) \
-	|| exit 1; \
-	else \
-	test -f $(distdir)/$$file \
-	|| cp -p $$d/$$file $(distdir)/$$file \
-	|| exit 1; \
-	fi; \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
 	done
 check-am: all-am
 check: check-am
@@ -315,8 +303,8 @@ install-am: all-am
 installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	`test -z '$(STRIP)' || \
-	echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
@@ -327,9 +315,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-am
-#>+ 1
-clean: kde-rpo-clean  clean-am
+clean: clean-am
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
@@ -377,103 +363,31 @@ uninstall-am: uninstall-info-am uninstall-local
 
 
 install-data-local:
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index.html $(prefix)/doc/qgis/index.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(prefix)/doc/qgis/index.html
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index-1.html $(prefix)/doc/qgis/index-1.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index-1.html $(DESTDIR)$(prefix)/doc/qgis/index-1.html
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index-2.html $(prefix)/doc/qgis/index-2.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index-2.html $(DESTDIR)$(prefix)/doc/qgis/index-2.html
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index-3.html $(prefix)/doc/qgis/index-3.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index-3.html $(DESTDIR)$(prefix)/doc/qgis/index-3.html
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index-4.html $(prefix)/doc/qgis/index-4.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index-4.html $(DESTDIR)$(prefix)/doc/qgis/index-4.html
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index-5.html $(prefix)/doc/qgis/index-5.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index-5.html $(DESTDIR)$(prefix)/doc/qgis/index-5.html
-#>- 	$(mkinstalldirs) $(prefix)/doc/qgis/
-#>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc/qgis/
-#>- 	$(INSTALL_DATA) $(srcdir)/index-6.html $(prefix)/doc/qgis/index-6.html
-#>+ 1
-	$(INSTALL_DATA) $(srcdir)/index-6.html $(DESTDIR)$(prefix)/doc/qgis/index-6.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index.html $(prefix)/doc/qgis/index.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index-1.html $(prefix)/doc/qgis/index-1.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index-2.html $(prefix)/doc/qgis/index-2.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index-3.html $(prefix)/doc/qgis/index-3.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index-4.html $(prefix)/doc/qgis/index-4.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index-5.html $(prefix)/doc/qgis/index-5.html
+	$(mkinstalldirs) $(prefix)/doc/qgis/
+	$(INSTALL_DATA) $(srcdir)/index-6.html $(prefix)/doc/qgis/index-6.html
 
 uninstall-local:
-#>- 	-rm -f $(prefix)/doc/qgis/index.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index.html
-#>- 	-rm -f $(prefix)/doc/qgis/index-1.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index-1.html
-#>- 	-rm -f $(prefix)/doc/qgis/index-2.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index-2.html
-#>- 	-rm -f $(prefix)/doc/qgis/index-3.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index-3.html
-#>- 	-rm -f $(prefix)/doc/qgis/index-4.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index-4.html
-#>- 	-rm -f $(prefix)/doc/qgis/index-5.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index-5.html
-#>- 	-rm -f $(prefix)/doc/qgis/index-6.html
-#>+ 1
-	-rm -f $(DESTDIR)$(prefix)/doc/qgis/index-6.html
+	-rm -f $(prefix)/doc/qgis/index.html
+	-rm -f $(prefix)/doc/qgis/index-1.html
+	-rm -f $(prefix)/doc/qgis/index-2.html
+	-rm -f $(prefix)/doc/qgis/index-3.html
+	-rm -f $(prefix)/doc/qgis/index-4.html
+	-rm -f $(prefix)/doc/qgis/index-5.html
+	-rm -f $(prefix)/doc/qgis/index-6.html
 
 ####### kdevelop will overwrite this part!!! (end)############
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
-#>+ 2
-docs-am:
-
-#>+ 6
-force-reedit:
-		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  qgis/docs/en/Makefile
-	cd $(top_srcdir) && perl admin/am_edit qgis/docs/en/Makefile.in
-
-
-#>+ 2
-final:
-	$(MAKE) all-am
-#>+ 2
-final-install:
-	$(MAKE) install-am
-#>+ 2
-no-final:
-	$(MAKE) all-am
-#>+ 2
-no-final-install:
-	$(MAKE) install-am
-#>+ 3
-cvs-clean:
-	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
-
-#>+ 3
-kde-rpo-clean:
-	-rm -f *.rpo
