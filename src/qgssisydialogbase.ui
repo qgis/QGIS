@@ -48,7 +48,7 @@
             </property>
             <property name="maximumSize">
                 <size>
-                    <width>300</width>
+                    <width>350</width>
                     <height>200</height>
                 </size>
             </property>
@@ -72,6 +72,15 @@
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                    <property name="default">
+                        <bool>false</bool>
+                    </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
                 </widget>
                 <widget class="QPushButton" row="0" column="1">
                     <property name="name">
@@ -81,6 +90,12 @@
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -94,6 +109,9 @@
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
                 </widget>
                 <widget class="QPushButton" row="1" column="2">
                     <property name="name">
@@ -103,6 +121,9 @@
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -116,6 +137,9 @@
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
                 </widget>
                 <widget class="QPushButton" row="1" column="0">
                     <property name="name">
@@ -127,6 +151,9 @@
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
                 </widget>
             </grid>
         </widget>
@@ -136,7 +163,7 @@
             </property>
             <property name="maximumSize">
                 <size>
-                    <width>300</width>
+                    <width>350</width>
                     <height>32767</height>
                 </size>
             </property>
@@ -398,7 +425,7 @@
             </property>
             <property name="maximumSize">
                 <size>
-                    <width>300</width>
+                    <width>350</width>
                     <height>300</height>
                 </size>
             </property>
@@ -416,17 +443,13 @@
                     <property name="name">
                         <cstring>dense1</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -434,17 +457,13 @@
                     <property name="name">
                         <cstring>dense6</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -452,30 +471,19 @@
                     <property name="name">
                         <cstring>fdiag</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
                     </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
                 </widget>
                 <widget class="QPushButton" row="0" column="0">
                     <property name="name">
                         <cstring>solid</cstring>
-                    </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
                     </property>
                     <property name="backgroundOrigin">
                         <enum>WindowOrigin</enum>
@@ -489,22 +497,21 @@
                     <property name="default">
                         <bool>false</bool>
                     </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
                 </widget>
                 <widget class="QPushButton" row="1" column="1">
                     <property name="name">
                         <cstring>diagcross</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -512,17 +519,13 @@
                     <property name="name">
                         <cstring>dense4</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -530,17 +533,13 @@
                     <property name="name">
                         <cstring>horizontal</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -548,17 +547,13 @@
                     <property name="name">
                         <cstring>dense5</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -566,17 +561,13 @@
                     <property name="name">
                         <cstring>dense3</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -584,17 +575,13 @@
                     <property name="name">
                         <cstring>dense7</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -602,17 +589,13 @@
                     <property name="name">
                         <cstring>nopen</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string>Clear</string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -620,17 +603,13 @@
                     <property name="name">
                         <cstring>vertical</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -638,17 +617,13 @@
                     <property name="name">
                         <cstring>cross</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -656,17 +631,13 @@
                     <property name="name">
                         <cstring>bdiag</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -674,17 +645,13 @@
                     <property name="name">
                         <cstring>dense2</cstring>
                     </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>255</red>
-                            <green>255</green>
-                            <blue>255</blue>
-                        </color>
-                    </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="flat">
                         <bool>true</bool>
                     </property>
                 </widget>
