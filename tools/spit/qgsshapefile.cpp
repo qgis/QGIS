@@ -72,7 +72,7 @@ QString QgsShapeFile::getFeatureClass(){
 
       Fda fda;
       QString str_type = "varchar(";
-      for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read += sizeof(fda)){
+      for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read +=sizeof(fda)){
       	dbf.read((char *)&fda, sizeof(fda));
         switch(fda.field_type){
           case 'N': if((int)fda.field_decimal>0)
@@ -164,13 +164,14 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
     ", \'" + QString(geom_type) + "\', 2)";            
   if(result) res = PQexec(conn, (const char *)query);
   std::cout << PQresStatus(PQresultStatus(res)) << std::endl;
-  /*if(PQresultStatus(res)!=PGRES_COMMAND_OK){
+  if(PQresultStatus(res)!=PGRES_TUPLES_OK){
     result = false;    
   }
-  else{*/
-  qWarning(PQresultErrorMessage(res));
-  PQclear(res);
-//  }
+  else{
+  	qWarning(query);
+  	qWarning(PQresultErrorMessage(res));
+  	PQclear(res);
+  }
 
   //adding the data into the table
   for(int m=0;m<features && result; m++){
