@@ -296,10 +296,13 @@ void QgsSpit::getSchema(){
 		// get the schema names
     if (PQresultStatus(schemas) == PGRES_TUPLES_OK) {
 			schema_list.clear();
+			bool pub_trigger = false;
     	for (int i = 0; i < PQntuples(schemas); i++) {
         schema_list << QString(PQgetvalue(schemas, i, 0));
+				if(schema_list[i]=="public")
+					pub_trigger = true;
       }
-			if(schema_list.size()==0)
+			if(!pub_trigger)
 				schema_list<<"public";
     }
     PQclear(schemas);
