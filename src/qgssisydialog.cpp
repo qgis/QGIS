@@ -60,8 +60,10 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
 	{
 	    outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
 	    fillcolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
-	    patternbutton->setText(QgsSymbologyUtils::brushStyle2QString(renderer->item()->getSymbol()->brush().style()));
-	    stylebutton->setText(QgsSymbologyUtils::penStyle2QString((renderer->item()->getSymbol()->pen().style())));
+	    patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(renderer->item()->getSymbol()->brush().style()));
+	    patternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap(patternbutton->name()));
+	    stylebutton->setName(QgsSymbologyUtils::penStyle2Char(renderer->item()->getSymbol()->pen().style()));
+	    stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
 	    outlinecolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->pen().color());
 	}
 
@@ -104,7 +106,8 @@ void QgsSiSyDialog::selectOutlineStyle()
     QgsLineStyleDialog linestyledialog;
     if(linestyledialog.exec()==QDialog::Accepted)
     {
-	stylebutton->setText(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()));
+	stylebutton->setName(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()).ascii());
+	stylebutton->setPixmap(QgsSymbologyUtils::qString2LinePixmap(QString::fromAscii(stylebutton->name())));
     }
     m_vectorlayer->propertiesDialog()->raise();
     raise();
@@ -122,7 +125,8 @@ void QgsSiSyDialog::selectFillPattern()
    QgsPatternDialog patterndialog;
     if(patterndialog.exec()==QDialog::Accepted)
     {
-	patternbutton->setText(QgsSymbologyUtils::brushStyle2QString(patterndialog.pattern()));
+	patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
+	patternbutton->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
     }
     m_vectorlayer->propertiesDialog()->raise();
     raise();
@@ -133,8 +137,8 @@ void QgsSiSyDialog::apply()
     //query the values of the widgets and set the symbology of the vector layer
     QgsSymbol sy(QColor(255,0,0));
     sy.brush().setColor(fillcolorbutton->paletteBackgroundColor());
-    sy.brush().setStyle(QgsSymbologyUtils::qString2BrushStyle(patternbutton->text()));
-    sy.pen().setStyle(QgsSymbologyUtils::qString2PenStyle(stylebutton->text()));
+    sy.brush().setStyle(QgsSymbologyUtils::char2BrushStyle(patternbutton->name()));
+    sy.pen().setStyle(QgsSymbologyUtils::char2PenStyle(stylebutton->name()));
     sy.pen().setWidth(outlinewidthspinbox->value());
     sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
     QgsRenderItem ri(sy,"blabla", "blabla");

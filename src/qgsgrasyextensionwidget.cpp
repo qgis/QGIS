@@ -100,7 +100,8 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
 	m_widgetvector[8*(i-1)+3]=outlinecolorbutton;
 	QObject::connect(outlinecolorbutton,SIGNAL(clicked()),this,SLOT(selectColor()));
 	QPushButton* outlinestylebutton=new QPushButton(this);
-	outlinestylebutton->setText(tr("SolidLine"));
+	outlinestylebutton->setName("SolidLine");
+	outlinestylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
 	m_gridlayout->addWidget(outlinestylebutton,i,4);
 	m_widgetvector[8*(i-1)+4]=outlinestylebutton;
 	QObject::connect(outlinestylebutton,SIGNAL(clicked()),this,SLOT(selectOutlineStyle()));
@@ -113,7 +114,8 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
 	m_widgetvector[8*(i-1)+6]=fillcolorbutton;
 	QObject::connect(fillcolorbutton,SIGNAL(clicked()),this,SLOT(selectColor()));
 	QPushButton* fillpatternbutton=new QPushButton(this);
-	fillpatternbutton->setText(tr("SolidPattern"));					   
+	fillpatternbutton->setName("SolidPattern");
+	fillpatternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
 	m_gridlayout->addWidget(fillpatternbutton,i,7);
 	m_widgetvector[8*(i-1)+7]=fillpatternbutton;
 	QObject::connect(fillpatternbutton,SIGNAL(clicked()),this,SLOT(selectFillPattern()));
@@ -206,7 +208,8 @@ void QgsGraSyExtensionWidget::selectFillPattern()
     QgsPatternDialog patterndialog;
     if(patterndialog.exec()==QDialog::Accepted)
     {
-	((QPushButton*)sender())->setText(QgsSymbologyUtils::brushStyle2QString(patterndialog.pattern()));
+	((QPushButton*)sender())->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
+	((QPushButton*)sender())->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
     }
     m_vectorlayer->propertiesDialog()->raise();
     m_vectorlayer->rendererDialog()->raise();
@@ -218,7 +221,8 @@ void QgsGraSyExtensionWidget::selectOutlineStyle()
     QgsLineStyleDialog linestyledialog;
     if(linestyledialog.exec()==QDialog::Accepted)
     {
-	((QPushButton*)sender())->setText(QgsSymbologyUtils::penStyle2QString(linestyledialog.style()));
+	((QPushButton*)sender())->setName(QgsSymbologyUtils::penStyle2Char(linestyledialog.style()));
+	((QPushButton*)sender())->setPixmap(QgsSymbologyUtils::penStyle2Pixmap(linestyledialog.style()));
     }
     m_vectorlayer->propertiesDialog()->raise();
     m_vectorlayer->rendererDialog()->raise();
