@@ -87,14 +87,14 @@ public:
 
        @note used for debugging
     */
-    virtual void dump( ostream & os ) const = 0;
+    virtual void dump( ) const = 0;
 
     /**
        restores property hierarchy to given DOM node
 
        Used for restoring properties from project file
      */
-    virtual bool readXML( QDomNode & layer_node ) = 0;
+    virtual bool readXML( QDomNode & keyNode ) = 0;
 
     /**
        adds property hierarchy to given DOM node
@@ -179,7 +179,7 @@ public:
         return true;
     }
 
-    virtual void dump( ostream & os ) const
+    virtual void dump( ) const
     {
         if ( QVariant::StringList == value_.type() )
         {
@@ -189,19 +189,304 @@ public:
                   i != sl.end();
                   ++i )
             {
-                os << "[" << *i << "] ";
+                qDebug( "[%s] ", (*i).ascii() );
             }
         }
         else
         {
-            os << value_.toString() << "\n";
+            qDebug( "%s", value_.toString().ascii() );
         }
     }
 
-    /* virtual */ bool readXML( QDomNode & layer_node )
+    /* virtual */ bool readXML( QDomNode & keyNode )
     {
+        // this *should* be a DOM element node
+        QDomElement subkeyElement = keyNode.toElement();
+
+        // get the type so that we can properly parse the key value
+        QString typeString = subkeyElement.attribute( "type" );
+
+        if ( QString::null == typeString )
+        {
+            qDebug( "%s:%d null ``type'' attribute for %s",
+                    __FILE__, __LINE__, keyNode.nodeName().ascii() );
+
+            return false;
+        }
+
+        // the values come in as strings; we need to restore them to their
+        // original values *and* types
+        value_.clear();
+
+        // get the type associated with the value first
+        QVariant::Type type = QVariant::nameToType( typeString );
+
+        // This huge switch is left-over from an earlier incarnation of
+        // QgsProject where there was a fine level of granularity for value
+        // types.  The current interface, borrowed from QSettings, supports a
+        // very small sub-set of these types.  However, I've left all the
+        // other types just in case the interface is expanded to include these
+        // other types.
+
+        switch ( type )
+        {
+            case QVariant::Invalid :
+                qDebug( "%s:%d invalid value type %s .. ",
+                        __FILE__, __LINE__, typeString.ascii() );
+
+                return false;
+
+                break;
+
+            case QVariant::Map :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::List :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::String :
+                value_ = subkeyElement.text(); // no translating necessary
+                break;
+
+            case QVariant::StringList :
+            {
+                size_t i = 0;
+                QDomNodeList values = keyNode.childNodes();
+
+                // all the QStringList values will be inside <value> elements
+                QStringList valueStringList;
+
+                while ( i < values.count() )
+                {
+                    if ( "value" == values.item(i).nodeName() )
+                    { // <value>s have only one element, which contains actual string value
+                        valueStringList.append( values.item(i).firstChild().nodeValue() );
+                    }
+                    else
+                    {
+                        qDebug( "qgsproject.cpp:%d non <value> element ``%s'' in string list", 
+                                __LINE__, values.item(i).nodeName().ascii() );
+                    }
+
+                    ++i;
+                }
+
+                value_ = valueStringList;
+
+                break;
+            }
+            case QVariant::Font :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Pixmap :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Brush :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Rect :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Size :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Color :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Palette :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::ColorGroup :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::ColorGroup", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::IconSet :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Point :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Image :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Int :
+                value_ = QVariant(subkeyElement.text()).asInt();
+
+                break;
+
+            case QVariant::UInt :
+                value_ = QVariant(subkeyElement.text()).asUInt();
+
+                break;
+
+            case QVariant::Bool :
+                value_ = QVariant(subkeyElement.text()).asBool();
+
+                break;
+
+            case QVariant::Double :
+                value_ = QVariant(subkeyElement.text()).asDouble();
+
+                break;
+
+            case QVariant::CString :
+                value_ = QVariant(subkeyElement.text()).asCString();
+
+                break;
+
+            case QVariant::PointArray :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::PointArray", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Region :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Bitmap :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Cursor :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::SizePolicy :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::SizePolicy", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Date :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Date", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Time :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Time", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::DateTime :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::DateTime", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::ByteArray :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::BitArray :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::KeySequence :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::Pen :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
+
+                return false;
+
+                break;
+
+            case QVariant::LongLong :
+                value_ = QVariant(subkeyElement.text()).asLongLong();
+                break;
+
+            case QVariant::ULongLong :
+                value_ = QVariant(subkeyElement.text()).asULongLong();
+                break;
+
+            default :
+                qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
+                        __FILE__, __LINE__, typeString.ascii() );
+        }
+
         return true;
-    }
+
+    } // readXML
+
+
 
     /* virtual */ bool writeXML( QString const & nodeName, QDomNode & node, QDomDocument & document )
     {
@@ -371,18 +656,56 @@ public:
         return true;
     }
 
-    virtual void dump( ostream & os ) const
+    virtual void dump( ) const
     {
         for ( QDictIterator<Property> i(properties_); i.current(); ++i )
         {
-            os << "<" << i.currentKey() << ">\n";
-            i.current()->dump( os );
-            os << "</" << i.currentKey() << ">\n";
+            qDebug( "<%s>", i.currentKey().ascii() );
+            i.current()->dump( );
+            qDebug( "</%s>", i.currentKey().ascii() );
         }
     }
 
-    /* virtual */ bool readXML( QDomNode & layer_node )
+    /* virtual */ bool readXML( QDomNode & keyNode )
     {
+        size_t i = 0;
+        QDomNodeList subkeys = keyNode.childNodes();
+
+        while ( i < subkeys.count() )
+        {
+            // if the current node is an element that has a "type" attribute,
+            // then we know it's a leaf node; i.e., a subkey _value_, and not
+            // a subkey
+            if ( subkeys.item(i).hasAttributes() && // if we have attributes
+                 subkeys.item(i).isElement() && // and we're an element
+                 subkeys.item(i).toElement().hasAttribute("type") ) // and we have a "type" attribute
+            {                                                       // then we're a key value
+                properties_.replace( subkeys.item(i).nodeName(), new PropertyValue );
+
+                QDomNode subkey = subkeys.item(i);
+
+                if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey ) )
+                {
+                    qDebug( "%s:%d unable to parse key value %s", 
+                            __FILE__, __LINE__, subkeys.item(i).nodeName().ascii() );
+                }
+            }
+            else // otherwise it's a subkey, so just recurse on down the remaining keys
+            {
+                properties_.replace( subkeys.item(i).nodeName(), new PropertyKey );
+
+                QDomNode subkey = subkeys.item(i);
+
+                if ( ! properties_[subkeys.item(i).nodeName()]->readXML( subkey) )
+                {
+                    qDebug( "%s:%d unable to parse subkey %s", 
+                            __FILE__, __LINE__, subkeys.item(i).nodeName().ascii() );
+                }
+            }
+
+            ++i;
+        }
+
         return true;
     }
 
@@ -545,14 +868,16 @@ static
 void
 dump_( QMap< QString, PropertyKey > const & property_list )
 {
+    qDebug( "current properties:" );
+
     for ( QMap< QString, PropertyKey >::const_iterator curr_scope =
               property_list.begin();
           curr_scope != property_list.end();
           curr_scope++ )
     {
-        cerr << "<" << curr_scope.key().ascii() << ">\n";
-        curr_scope.data().dump( cerr );
-        cerr << "</" << curr_scope.key().ascii() << ">\n";
+        qDebug( "<%s>", curr_scope.key().ascii() );
+        curr_scope.data().dump( );
+        qDebug( "</%s>", curr_scope.key().ascii() );
     }
 } // dump_
 
@@ -831,55 +1156,65 @@ _getScopeProperties( QDomNode const & scopeNode,
   Restore any optional properties found in "doc" to "properties".
 
   <properties> tags for all optional properties.  Within that there will be
-  scope tags.  In the following example there exist two properties in the
-  "fsplugin" scope.
+  scope tags.  In the following example there exist one property in the
+  "fsplugin" scope.  "layers" is a list containing three string values.
 
     <properties>
         <fsplugin>
-            <layer type="QString" >railroad</layer>
-            <layer type="QString" >athen-road</layer>
+            <layers type="QStringList" >
+                <value>railroad</value>
+                <value>hydrop</value>
+                <value>athen-road</value>
+            </layers>
         </fsplugin>
     </properties>
+
  */
-// static
-// void
-// _getProperties( QDomDocument const & doc, QMap< QString, QgsProject::Properties > & project_properties )
-// {
-//     QDomNodeList properties = doc.elementsByTagName("properties");
+static
+void
+_getProperties( QDomDocument const & doc, QMap< QString, PropertyKey > & project_properties )
+{
+    QDomNodeList properties = doc.elementsByTagName("properties");
 
-//     if ( properties.count() > 1 )
-//     {
-//         qDebug( "there appears to be more than one ``properties'' XML tag ... bailing" );
-//         return;
-//     }
-//     else if ( properties.count() < 1 ) // no properties found, so we're done
-//     {
-//         return;
-//     }
+    if ( properties.count() > 1 )
+    {
+        qDebug( "there appears to be more than one ``properties'' XML tag ... bailing" );
+        return;
+    }
+    else if ( properties.count() < 1 ) // no properties found, so we're done
+    {
+        return;
+    }
 
-//     size_t i = 0;
-//     QDomNodeList scopes = properties.item(0).childNodes(); // item(0) because there should only be ONE
-//                                                            // "properties" node
-//     if ( scopes.count() < 1 )
-//     {
-//         qDebug( "empty ``properties'' XML tag ... bailing" );
-//         return;
-//     }
+    size_t i = 0;
+    QDomNodeList scopes = properties.item(0).childNodes(); // item(0) because there should only be ONE
+                                                           // "properties" node
+    if ( scopes.count() < 1 )
+    {
+        qDebug( "empty ``properties'' XML tag ... bailing" );
+        return;
+    }
 
-//     while ( i < scopes.count() )
-//     {
-//         QDomNode curr_scope_node = scopes.item( i );
+    while ( i < scopes.count() )
+    {
+        QDomNode curr_scope_node = scopes.item( i );
 
-//         qDebug( "found %d property node(s) for scope %s", 
-//                 curr_scope_node.childNodes().count(),
-//                 curr_scope_node.nodeName().ascii() );
+        qDebug( "found %d property node(s) for scope %s", 
+                curr_scope_node.childNodes().count(),
+                curr_scope_node.nodeName().ascii() );
 
-//         _getScopeProperties( curr_scope_node, project_properties );
+        // DEPRECATED _getScopeProperties( curr_scope_node, project_properties );
 
-//         ++i;
-//     }
+        if ( ! project_properties[curr_scope_node.nodeName()].readXML( curr_scope_node ) )
+        {
+            qDebug ("%s:%d unable to read XML for property %s", 
+                    __FILE__, __LINE__, curr_scope_node.nodeName().ascii() );
+        }
 
-// } // _getProperties
+        ++i;
+    }
+
+} // _getProperties
 
 
 
@@ -1402,7 +1737,12 @@ QgsProject::read( )
 
 
     // now get any properties
-    //_getProperties( *doc, imp_->properties_ );
+    _getProperties( *doc, imp_->properties_ );
+
+    qDebug( "%s:%d %d properties read", __FILE__, __LINE__, imp_->properties_.count() );
+
+    dump_( imp_->properties_ );
+
 
     // can't be dirty since we're allegedly in pristine state
     dirty( false );
