@@ -23,7 +23,7 @@
 /**
  *@author Gary E.Sherman
  */
-
+class QRect;
 class QgsMapLayer : public QgsDataSource  {
 
 	public: 
@@ -35,6 +35,8 @@ class QgsMapLayer : public QgsDataSource  {
   void setlayerName( const QString& _newVal);
   /** Read property of QString layerName. */
   const QString name();
+  virtual void calculateExtent();
+  const QRect extent();
 
 
 public: // Public attributes
@@ -43,14 +45,16 @@ enum LAYERS {
 	RASTER,
 DATABASE
 }  ;
-
+ protected:
+ QRect layerExtent; 
+  //! Position in the map stack 
+  int zpos;
 private: // Private attributes
   /** Name of the layer - used for display  */
   QString layerName;
   /** Type of the layer (eg. vector, raster, database  */
   int layerType;
-  //! Position in the map stack 
-  int zpos;
+
   //! Tag for embedding additional information
   QString tag;
  
