@@ -49,7 +49,6 @@ plugin_MOC = plugin.moc.cpp \
 	../../src/qgsmaplayer.moc.cpp \
 	../../src/qgsvectorlayer.moc.cpp 
 
-
 plugin_UI = pluginguibase.h \
 	    pluginguibase.cpp 
 
@@ -69,11 +68,17 @@ libgpsimporterplugin_la_LDFLAGS = -avoid-version -module
 ##
 
 gpsimporter_SOURCES = main.cpp \
+	waypointtoshape.cpp \
+	waypointtoshape.h \
+	utils.c \
+	shpopen.c \
+	dbfopen.c \
+	shapefile.h \
 	plugingui.cpp \
 	pluginguibase.cpp \
 	$(standalone_MOC) 
 
-gpsimporter_LDADD = $(QT_LDADD) libgpsimporterplugin.la
+gpsimporter_LDADD = $(QT_LDADD) 
 gpsimporter_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
 
 standalone_MOC = plugingui.moc.cpp \
