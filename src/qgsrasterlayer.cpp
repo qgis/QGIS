@@ -27,5 +27,6 @@ void QgsRasterLayer::draw(QPainter * p, QRect * viewExtent)
 {
 }
 
-void QgsRasterLayer::identify(QgsRect *r){
-  }
+void QgsRasterLayer::identify(QgsRect * r)
+{
+}

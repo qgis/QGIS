@@ -38,7 +38,7 @@ QgsLayerProperties::QgsLayerProperties(QgsMapLayer * lyr):layer(lyr)
 	sym = layer->symbol();
 
 	btnSetColor->setPaletteBackgroundColor(sym->color());
-	
+
 	btnSetFillColor->setPaletteBackgroundColor(sym->fillColor());
 	spinLineWidth->setValue(sym->lineWidth());
 	setCaption("Layer Properties - " + lyr->name());
@@ -49,10 +49,10 @@ QgsLayerProperties::~QgsLayerProperties()
 }
 void QgsLayerProperties::selectFillColor()
 {
-	
+
 	QColor fc = QColorDialog::getColor(sym->fillColor(), this);
 	if (fc.isValid()) {
-		
+
 		btnSetFillColor->setPaletteBackgroundColor(fc);
 		sym->setFillColor(fc);
 	}
@@ -61,18 +61,18 @@ void QgsLayerProperties::selectOutlineColor()
 {
 	QColor oc = QColorDialog::getColor(sym->color(), this);
 	if (oc.isValid()) {
-		
+
 		btnSetColor->setPaletteBackgroundColor(oc);
 		sym->setColor(oc);
 	}
 }
 
-QString QgsLayerProperties::displayName(){
+QString QgsLayerProperties::displayName()
+{
 	return txtDisplayName->text();
 }
 
-void QgsLayerProperties::setLineWidth(int w){
+void QgsLayerProperties::setLineWidth(int w)
+{
 	sym->setLineWidth(w);
 }
-
-	

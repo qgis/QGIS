@@ -48,9 +48,11 @@ const QString QgsMapLayer::name()
 {
 	return layerName;
 }
-QString QgsMapLayer::source(){
+
+QString QgsMapLayer::source()
+{
 	return dataSource;
-	}
+}
 const QgsRect QgsMapLayer::extent()
 {
 	return layerExtent;
@@ -62,12 +64,12 @@ QgsRect QgsMapLayer::calculateExtent()
 }
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
-//	std::cout << "In QgsMapLayer::draw" << std::endl;
+//  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 void QgsMapLayer::draw(QPainter *, QgsRect *, QgsCoordinateTransform *)
 {
-//	std::cout << "In QgsMapLayer::draw" << std::endl;
+//  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 
@@ -133,5 +135,6 @@ void QgsMapLayer::setFeatureType(const int &_newVal)
 	feature = _newVal;
 }
 
-void QgsMapLayer::identify(QgsRect *r){
-  }
+void QgsMapLayer::identify(QgsRect * r)
+{
+}
