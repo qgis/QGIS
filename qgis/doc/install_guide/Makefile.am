@@ -18,9 +18,6 @@ docdata_DATA =  \
 								install.html \
 								internals.pl \
 								labels.pl \
-								Makefile \
-								Makefile.am \
-								Makefile.in \
 								next_g.png \
 								next.png \
 								nx_grp_g.png \
