@@ -30,7 +30,7 @@ pkglibdir = ${libdir}
 lib_LTLIBRARIES = climatedataprocessingwizard.la
 
 ## qt designer user-interface files
-plugin_UI = pluginguibase.ui
+plugin_UI = cdpwizardbase.ui
 
 ## uic created headers
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
@@ -42,13 +42,23 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp plugingui.moc.cpp
+plugin_MOC = plugin.moc.cpp cdpwizard.moc.cpp
 
 
 climatedataprocessingwizard_la_SOURCES = plugin.cpp \
 	plugin.h \
-	plugingui.cpp \
-	plugingui.h \
+	cdpwizard.cpp \
+	cdpwizard.h \
+	climatedataprocessor.cpp \
+	climatedataprocessor.h \
+	dataprocessor.cpp \
+	dataprocessor.h \
+	filegroup.cpp \
+	filegroup.h \
+	filereader.cpp \
+	filereader.h \
+	filewriter.cpp \
+	filewriter.h \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
