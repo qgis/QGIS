@@ -55,9 +55,15 @@ void QgsOptionsBase::themeChanged(const QString & )
 
 void QgsOptionsBase::findBrowser()
 {
+    QString filter;
+#ifdef WIN32
+    filter = "Applications (*.exe)";
+#else
+    filter = "All Files (*)";
+#endif
 cmbBrowser->setCurrentText(QFileDialog::getOpenFileName(
                     "./",
-                    "Applications (*.exe)",
+                    filter, 
                     this,
                     "open file dialog",
                     "Choose a browser" ));
