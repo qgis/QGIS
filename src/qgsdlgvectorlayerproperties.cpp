@@ -33,6 +33,7 @@
 #include <qwidget.h>
 #include <qgroupbox.h>
 #include <qwhatsthis.h>
+#include <qregexp.h>
 
 
 #include "qgis.h"
@@ -83,10 +84,7 @@ bufferRenderer(layer->
   QWhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
   QWhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
   QWhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
-  QWhatsThis::add(lblGeometryType, tr("Geometry type of the features in this layer"));
-  QWhatsThis::add(lblFeatureCount, tr("The number of features in this layer"));
-  // display type and feature count
-  lblGeometryType->setText(QGis::qgisVectorGeometryType[layer->vectorType()]);
+
   //we are dealing with a pg layer here so that we can enable the sql box
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   //see if we are dealing with a pg layer here
@@ -106,29 +104,15 @@ bufferRenderer(layer->
   {
     grpSubset->setEnabled(false);
   }
-  QString numFeatures;
-  numFeatures = numFeatures.setNum(layer->featureCount());
-  lblFeatureCount->setText(numFeatures);
-  QgsRect *extent = dp->extent();
-  QString ll;
-  //QTextOStream (&ll) << extent->xMin() << ", " << extent->yMin();
-  lblLowerLeft->setText(ll.sprintf("%16f, %16f", extent->xMin(), extent->yMin()));
-  QString ur;
-//  QTextOStream (&ur) << extent->xMax() << ", " << extent->yMax();
-  lblUpperRight->setText(ur.sprintf("%16f, %16f", extent->xMax(), extent->yMax()));
-  std::vector<QgsField> fields = dp->fields();
-  // populate the table and the display field drop-down with the field
-  // information
 
-  for (int i = 0; i < fields.size(); i++)
+   //get field list for display field combo
+  std::vector<QgsField> myFields = dp->fields();
+  for (int i = 0; i < myFields.size(); i++)
   {
-    QgsField fld = fields[i];
-    QListViewItem *lvi = new QListViewItem(listViewFields, fld.name(),
-                                           fld.type(), QString("%1").arg(fld.length()),
-                                           QString("%1").arg(fld.precision()));
-    displayFieldComboBox->insertItem( fld.name() );
-  }
-
+    QgsField myField = myFields[i];            
+    displayFieldComboBox->insertItem( myField.name() );
+  }   
+  
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
   spinMinimumScale->setValue(lyr->minScale());
@@ -151,6 +135,7 @@ bufferRenderer(layer->
   layout->addWidget( labelDialog );
 
   QGridLayout *actionLayout = new QGridLayout( actionOptionsFrame );
+  std::vector<QgsField> fields = dp->fields();
   actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields,
                                                 actionOptionsFrame );
   actionLayout->addWidget( actionDialog,0,0 );
@@ -160,6 +145,9 @@ bufferRenderer(layer->
   //insert the renderer dialog of the vector layer into the widget stack
   widgetStackRenderers->addWidget(bufferDialog);
   widgetStackRenderers->raiseWidget(bufferDialog);
+  
+  //set the metadata contents
+  teMetadata->setText(getMetadata());
 
 }
 
@@ -418,4 +406,136 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
   // delete the query builder object
   delete pqb;
 #endif
+}
+
+QString QgsDlgVectorLayerProperties::getMetadata()
+{
+  QString myMetadataQString = "<html><body>";
+  myMetadataQString += "<table width=\"100%\">";
+  
+  //-------------
+  
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("General:");
+  myMetadataQString += "</td></tr>";
+  //geom type
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("Geometry type of the features in this layer : ") + 
+                       QGis::qgisVectorGeometryType[layer->vectorType()];
+  myMetadataQString += "</td></tr>";
+  //feature count
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("The number of features in this layer : ") + 
+                       QString::number(layer->featureCount());
+  myMetadataQString += "</td></tr>";
+
+  //-------------
+  QgsVectorDataProvider *myDataProvider = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  QgsRect *myExtent = myDataProvider->extent();  
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Extents:");
+  myMetadataQString += "</td></tr>";
+  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("In layer spatial reference system units : ") + 
+                       tr("xMin,yMin ") + 
+                       QString::number(myExtent->xMin()) + 
+                       "," + 
+                       QString::number( myExtent->yMin()) +
+                       tr(" : xMax,yMax ") + 
+                       QString::number(myExtent->xMax()) + 
+                       "," + 
+                       QString::number(myExtent->yMax());
+  myMetadataQString += "</td></tr>";
+  //extents in project cs
+  QgsRect myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("In project spatial reference system units : ") + 
+                       tr("xMin,yMin ") + 
+                       QString::number(myProjectedExtent.xMin()) + 
+                       "," + 
+                       QString::number( myProjectedExtent.yMin()) +
+                       tr(" : xMax,yMax ") + 
+                       QString::number(myProjectedExtent.xMax()) + 
+                       "," + 
+                       QString::number(myProjectedExtent.yMax());
+  myMetadataQString += "</td></tr>";
+
+  // 
+  // Display layer spatial ref system
+  //
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Layer Spatial Reference System:");
+  myMetadataQString += "</td></tr>";  
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += layer->coordinateTransform()->sourceWKT().replace(QRegExp("\"")," \"");                       
+  myMetadataQString += "</td></tr>";
+
+  // 
+  // Display project (output) spatial ref system
+  //  
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Project (Output) Spatial Reference System:");
+  myMetadataQString += "</td></tr>";  
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += layer->coordinateTransform()->destWKT().replace(QRegExp("\"")," \"");                       
+  myMetadataQString += "</td></tr>";
+  
+      
+  //
+  // Add the info about each field in the attribute table
+  //
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Attribute field info:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+
+  // Start a nested table in this trow
+  myMetadataQString += "<table width=\"100%\">";
+  myMetadataQString += "<tr><th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Field") + "</font>";
+  myMetadataQString += "</th>";
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Type") + "</font>";
+  myMetadataQString += "</th>";
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Length") + "</font>";
+  myMetadataQString += "</th>";
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Precision") + "</font>";
+  myMetadataQString += "</th>";      
+  myMetadataQString += "<tr>";
+ 
+  //get info for each field by looping through them
+  std::vector<QgsField> myFields = myDataProvider->fields();
+  for (int i = 0; i < myFields.size(); i++)
+  {
+ 
+    QgsField myField = myFields[i];
+    
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += myField.name();
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"white\">";
+    myMetadataQString += myField.type();
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"white\">";
+    myMetadataQString += QString("%1").arg(myField.length());
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"white\">";
+    myMetadataQString += QString("%1").arg(myField.precision());
+    myMetadataQString += "</td></tr>";
+  } 
+
+  //close field list
+  myMetadataQString += "</table>"; //end of nested table
+  myMetadataQString += "</td></tr>"; //end of stats container table row
+  //
+  // Close the table
+  //
+
+  myMetadataQString += "</table>";
+  myMetadataQString += "</body></html>";
+  return myMetadataQString;
+
 }
