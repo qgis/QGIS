@@ -1,0 +1,630 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass article
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage a4
+\use_geometry 1
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\headheight 0.2in
+\headsep 0.25in
+\footskip 0.5in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+
+Quantum GIS Design Document
+\layout Author
+
+QGIS Core Design Team
+\begin_inset Foot
+collapsed false
+
+\layout Standard
+
+Gary E Sherman, Mark Coletti, Denis Antipov
+\end_inset 
+
+
+\layout Section
+
+Introduction
+\layout Standard
+
+This document describes the requirements and design for Quantum GIS (QGIS),
+ a desktop GIS application for Linux and Unix.
+ This document presents use cases, high-level class diagrams, and additional
+ information about the design and implementaion of QGIS.
+ 
+\layout Standard
+
+QGIS is hosted on SourceForge at http://qgis.sourceforge.net.
+ The current release of QGIS is a viewer with a minimal feature set, including
+ loading data, browsing, and identifying features.
+\layout Standard
+
+The design outlined in this document represents the next phase of QGIS developme
+nt, which will move the application to a flexible and extensible platform
+ for working with spatial data.
+\layout Standard
+
+Note that it's presumed that the reader is familiar with C++, object-oriented
+ design, and UML.
+\layout Section
+
+History
+\layout Standard
+
+The QGIS project was registered with SourceForge on June 15, 2002.
+ Since that time, QGIS has developed into a minimally functional viewer
+ with support for shapefiles
+\begin_inset Foot
+collapsed true
+
+\layout Standard
+
+ESRI format for file-based spatial data.
+\end_inset 
+
+ and vector data stored in a PostgreSQL
+\begin_inset Foot
+collapsed false
+
+\layout Standard
+
+PostgreSQL Relational Database - http://www.postgresql.org
+\end_inset 
+
+ database using the PostGIS
+\begin_inset Foot
+collapsed false
+
+\layout Standard
+
+PostGIS extension - http://postgis.refractions.net
+\end_inset 
+
+ extensions.\SpecialChar ~
+
+\layout Standard
+
+The development thus far has been useful in developing an understanding
+ of the challenges involved in developing a more robust Open Source desktop
+ GIS application.
+ In March 2003, planning began to restructure QGIS in order to make it more
+ extensible and to provide a means to add advanced functionality through
+ the use of plugins.
+\layout Standard
+
+The current version of QGIS (0.0.9) is still usable as a simple GIS viewer
+ for shapefiles and PostGIS layers.
+ 
+\layout Section
+
+Goals
+\layout Standard
+
+There are already other Open Source GIS projects available today.
+ Many have asked what purpose QGIS will serve:
+\layout Itemize
+
+Will QGIS be a complete desktop GIS application? 
+\layout Itemize
+
+Will it compete with commercial products?
+\layout Itemize
+
+Why are you developing another GIS application?
+\layout Standard
+
+The answers to these questions are not clear-cut.
+ A list of high-level goals for the QGIS project are enumerated below.
+ The reader can perhaps use this information to answer these and other questions
+ related to the project:
+\layout Subsubsection
+
+List of Goals
+\layout Enumerate
+
+Provide an easy to use desktop GIS application
+\layout Enumerate
+
+Provide an easy to install application for users with minimum system experience
+\layout Enumerate
+
+Support common data formats
+\layout Enumerate
+
+Provide the foundation for more advanced tools (plugins)
+\layout Enumerate
+
+Become a tool for spatial data collection
+\layout Enumerate
+
+Support data analysis and conversion
+\layout Enumerate
+
+Print/plot maps
+\layout Enumerate
+
+Integrate with Internet mapping technologies
+\layout Standard
+
+Section 
+\begin_inset LatexCommand \ref{sec:Requirements}
+
+\end_inset 
+
+ provides details about the functional requirements.
+\layout Section
+
+
+\begin_inset LatexCommand \label{sec:Requirements}
+
+\end_inset 
+
+Requirements
+\layout Standard
+
+This section describes the functional requirements of Quantum GIS.
+ These functional requirements drive the use cases discussed in Section
+ 
+\begin_inset LatexCommand \ref{sec:Use-Cases}
+
+\end_inset 
+
+.
+\layout Standard
+
+QGIS will provide GIS functionality somewhere between a simple viewer and
+ an industrial strength application.
+ The ultimate nature of QGIS is only limited by the talent of those software
+ engineers who will provide advanced capabilities through plugins.
+\layout Standard
+
+Some of the major design requirements include:
+\layout Itemize
+
+Extensible architecture using plugins
+\layout Itemize
+
+Internationalization
+\layout Itemize
+
+Integrated scripting language
+\layout Itemize
+
+Projection on-the-fly
+\layout Itemize
+
+Ability to render and browse data in many formats:
+\begin_deeper 
+\layout Itemize
+
+Spatio-temporal data using a feature-centric model
+\layout Itemize
+
+Shapefiles
+\layout Itemize
+
+PostgreSQL / PostGIS layers
+\layout Itemize
+
+Raster
+\end_deeper 
+\layout Itemize
+
+Support for OpenGIS implementation Specifications
+\begin_deeper 
+\layout Itemize
+
+Geography Markup Language (GML)
+\layout Itemize
+
+Web Feature Service (WFS) 
+\end_deeper 
+\layout Section
+
+
+\begin_inset LatexCommand \label{sec:Use-Cases}
+
+\end_inset 
+
+Use Cases
+\layout Standard
+
+Use cases provide a means to identify and visualize the major goal oriented
+ tasks the application should address.
+ 
+\layout Subsection
+
+Actors
+\layout Standard
+
+Actors are really persons (or physical entities) that use a system to acheive
+ a specific goal (these goals are expressed as use cases).
+ A number of actors could be defined for QGIS, however at this point the
+ simple approach is taken.
+ The actors are:
+\layout Itemize
+
+Casual GIS User
+\layout Itemize
+
+Professional GIS User
+\layout Standard
+
+These two actors are sufficient to frame the development and discussion
+ of QGIS use cases.
+\layout Subsection
+
+Primary Use Cases
+\layout Standard
+
+The primary use cases for QGIS are listed below in no particular order of
+ importance:
+\layout Itemize
+
+Load data
+\layout Itemize
+
+Browse data
+\layout Itemize
+
+Install plugin
+\layout Itemize
+
+Find feature
+\layout Itemize
+
+Identify feature
+\layout Itemize
+
+Get help
+\layout Itemize
+
+Customize 
+\layout Itemize
+
+Save project
+\layout Itemize
+
+Restore project
+\layout Itemize
+
+Navigate map
+\begin_deeper 
+\layout Itemize
+
+Pan
+\layout Itemize
+
+Zoom
+\end_deeper 
+\layout Itemize
+
+Save image
+\layout Itemize
+
+Print
+\begin_deeper 
+\layout Itemize
+
+Print image
+\layout Itemize
+
+Print metadata
+\layout Itemize
+
+Print feature information
+\end_deeper 
+\layout Itemize
+
+Write script
+\layout Itemize
+
+Run script
+\layout Itemize
+
+Edit data
+\begin_deeper 
+\layout Itemize
+
+Digitize
+\end_deeper 
+\layout Itemize
+
+Buffer feature
+\layout Itemize
+
+Process data
+\begin_deeper 
+\layout Itemize
+
+Union
+\layout Itemize
+
+Merge
+\layout Itemize
+
+Intersect
+\end_deeper 
+\layout Itemize
+
+Convert data
+\begin_deeper 
+\layout Itemize
+
+Change projection
+\end_deeper 
+\layout Itemize
+
+Import data
+\layout Itemize
+
+Export data
+\begin_deeper 
+\layout Itemize
+
+Export selected set
+\end_deeper 
+\layout Itemize
+
+Select features
+\begin_deeper 
+\layout Itemize
+
+Select by attribute
+\layout Itemize
+
+Select spatially
+\end_deeper 
+\layout Subsection
+
+Case Descriptions
+\layout Standard
+
+In the sections that follow, the use cases are presented in no particular
+ order.
+\layout Subsubsection
+
+Load Data
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="10" columns="2">
+<features>
+<column alignment="block" valignment="top" leftline="true" width="1.5in">
+<column alignment="left" valignment="top" leftline="true" rightline="true" width="1.5in">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Use Case
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Load Data
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Goal in Context
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Load a data set from a data store and display it
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Scope & Level
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Primary task
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Preconditions
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Application is running
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Success End Condition
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Data set is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Failed End Condition
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Application is in pre-load state 
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Primary Actor(s)
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Trigger
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+User wants to view data
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\series bold 
+Description of Steps
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+User decides to view a dataset
+\layout Enumerate
+
+User navigates to the location of the dataset
+\layout Enumerate
+
+User selects dataset
+\layout Enumerate
+
+Dataset is displayed
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\the_end
