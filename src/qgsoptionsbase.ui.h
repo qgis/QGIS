@@ -7,6 +7,7 @@
 ** place of a destructor.
 *****************************************************************************/
 #include <qsettings.h>
+#include <qfiledialog.h>
 
 void QgsOptionsBase::init()
 {
@@ -49,4 +50,15 @@ void QgsOptionsBase::addTheme(QString item)
 void QgsOptionsBase::themeChanged(const QString & )
 {
 
+}
+
+
+void QgsOptionsBase::findBrowser()
+{
+cmbBrowser->setCurrentText(QFileDialog::getOpenFileName(
+                    "./",
+                    "Applications (*.exe)",
+                    this,
+                    "open file dialog",
+                    "Choose a browser" ));
 }
