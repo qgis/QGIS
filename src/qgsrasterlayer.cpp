@@ -51,7 +51,17 @@ and the code easy to read (especially by people who did not write it!).
 The [name] part of the variable should be short and descriptive, usually a noun.
  
 The [type] part of the variable should be the type class of the variable written out in full.
+
+
+DEBUG DIRECTIVES:
+
+When compiling you can make sure DEBUG is defined by including -DDEBUG in the gcc command (e.g. gcc -DDEBUG myprog.c ) if you 
+wish to see edbug messages printed to stdout.
+
 */
+
+
+
 
 #include <qpainter.h>
 #include <qimage.h>
@@ -72,7 +82,6 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     //popMenu is the contextmenu obtained by right clicking on the legend
     //it is a member of the qgsmaplayer base class
     popMenu=0;
-    //std::cout << "QgsRasterLayer::QgsRasterLayer()" << std::endl;
     
     // set the layer name (uppercase first character)
     QString layerTitle = baseName;
@@ -86,7 +95,6 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
         valid = FALSE;
         return;
     }
-    //std::cout << "Raster Count: " << gdalDataset->GetRasterCount() << std::endl;
 
     if( gdalDataset->GetGeoTransform( adfGeoTransform ) == CE_None )
     {
@@ -229,19 +237,27 @@ unsigned int QgsRasterLayer::getTransparency()
     that in muliband layers more than one "Undefined" band can exist! */
 bool QgsRasterLayer::hasBand(QString theBandName)
 {
+#ifdef DEBUG
     std::cout << "Looking for band : " << theBandName << std::endl;
+#endif    
     for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
     {
         GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( i );
         QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+#ifdef DEBUG
         std::cout << "band : " << i << std::endl;
+#endif        
         if  (myColorQString==theBandName)
         {
+#ifdef DEBUG
             std::cout << "band : " << i << std::endl;
             std::cout << "Found band : " << theBandName << std::endl;
+#endif            
             return true;
         }
+#ifdef DEBUG
         std::cout << "Found unmatched band : " << i << " " << myColorQString << std::endl;
+#endif        
     }
     return false;
 }
@@ -398,7 +414,9 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             }
             else
             {
+#ifdef DEBUG
               std::cout << "PALETTED_SINGLE_BAND_GRAY drawing type detected..." << std::endl;
+#endif              
               int myBandNoInt=1;
               drawPalettedSingleBandGray(theQPainter, myRasterViewPort, myBandNoInt,grayBandNameQString);
 
@@ -424,11 +442,15 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
             break;
             // a layer containing 2 or more bands, but using only one band to produce a grayscale image
         case MULTI_BAND_SINGLE_BAND_GRAY:
+#ifdef DEBUG
             std::cout << "MULTI_BAND_SINGLE_BAND_GRAY drawing type detected..." << std::endl;
+#endif            
             //check the band is set!
             if (grayBandNameQString==tr("Not Set"))
             {
+#ifdef DEBUG
               std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString << std::endl;
+#endif              
               break;
             }
             else
@@ -476,7 +498,9 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
                                         RasterViewPort * theRasterViewPort,
                                         int theBandNoInt)
 {
+#ifdef DEBUG
     std::cout << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
+#endif    
     //create the outout image that the layer will be drawn on before placing it in the qcanvas
     GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
     // QPixmap * myQPixmap=new QPixmap(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt);
@@ -500,9 +524,13 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
 
     QImage myQImage=QImage(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt,32);
     myQImage.setAlphaBuffer(true);
+#ifdef DEBUG
     std::cout << "draw gray band Retrieving stats" << std::endl;
+#endif    
     RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+#ifdef DEBUG
     std::cout << "draw gray band Git stats" << std::endl;
+#endif    
     double myRangeDouble=myRasterBandStats.rangeDouble;
     // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
     for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; myColumnInt++)
@@ -538,7 +566,9 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
 
 void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
 {
+#ifdef DEBUG
     std::cout << "QgsRasterLayer::drawSingleBandPseudoColor called" << std::endl;
+#endif    
     GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( theBandNoInt );
     //create the outout image that the layer will be drawn on before placing it in the qcanvas
 
@@ -699,7 +729,9 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
         int theBandNoInt,
         QString theColorQString)
 {
+#ifdef DEBUG
     std::cout << "QgsRasterLayer::drawPalettedSingleBandGray called" << std::endl;
+#endif    
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
     // RasterIO() takes care of scaling down image
@@ -780,7 +812,9 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
         int theBandNoInt,
         QString theColorQString)
 {
+#ifdef DEBUG
     std::cout << "QgsRasterLayer::drawPalettedSingleBandPseudoColor called" << std::endl;
+#endif    
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
     // RasterIO() takes care of scaling down image
@@ -965,7 +999,9 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter,
                                                 RasterViewPort * theRasterViewPort,
                                                 int theBandNoInt)
 {
+#ifdef DEBUG
     std::cout << "QgsRasterLayer::drawPalettedMultiBandColor called" << std::endl;
+#endif    
 
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
@@ -1066,7 +1102,9 @@ void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter,
 void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter,
                                         RasterViewPort * theRasterViewPort)
 {
+#ifdef DEBUG
     std::cout << "QgsRasterLayer::drawMultiBandColor called" << std::endl;
+#endif    
     
     int myRedBandNoInt = getRasterBandNumber(redBandNameQString);
     int myGreenBandNoInt = getRasterBandNumber(greenBandNameQString);
@@ -1254,7 +1292,9 @@ const  bool QgsRasterLayer::hasStats(int theBandNoInt)
 const  RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
 
+#ifdef DEBUG
   std::cout << "QgsRasterLayer::calculate stats for band " << theBandNoInt << std::endl;
+#endif  
   //check if we have received a valid band number
   if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType!=PALETTE)
   {
