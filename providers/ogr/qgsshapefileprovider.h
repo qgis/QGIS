@@ -46,8 +46,9 @@ class QgsShapeFileProvider:public QgsVectorDataProvider
     QgsFeature *getNextFeature(bool fetchAttributes = false);
     /**Get the next feature resulting from a select operation.
     *@param attlist a list containing the indexes of the attribute fields to copy
+    *@param getnotcommited flag indicating if not commited features should be returned
     */
-    QgsFeature *getNextFeature(std::list<int>& attlist);
+    QgsFeature *getNextFeature(std::list<int>& attlist, bool getnotcommited=false);
     /** 
      * Get the next feature resutling from a select operation
      * @return True if the feature was read. This does not indicate

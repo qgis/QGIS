@@ -37,8 +37,9 @@ class QgsVectorDataProvider: public QgsDataProvider
 
     /**Get the next feature resulting from a select operation.
      *@param attlist a list containing the indexes of the attribute fields to copy
+     *@param getnotcommited flag indicating if not commited features should be returned
      */
-    virtual QgsFeature * getNextFeature(std::list<int>& attlist)=0;
+    virtual QgsFeature * getNextFeature(std::list<int>& attlist, bool getnotcommited=false)=0;
 
     /**
      * Get the next feature using new method
