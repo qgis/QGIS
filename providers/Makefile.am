@@ -1,1 +1,5 @@
-SUBDIRS = ogr postgres
+if HAVE_POSTGRESDB
+POSTGRES = postgres
+endif
+
+SUBDIRS = ogr $(POSTGRES)
