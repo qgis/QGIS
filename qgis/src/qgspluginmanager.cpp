@@ -98,15 +98,33 @@ sharedLibExtension = "*.so*";
 #endif //#ifdef TESTLIB
 
 
-          std::cout << "Examining " << txtPluginDir->text() << "/" << pluginDir[i] << std::endl;
+          std::cout << "Examining " << txtPluginDir->text().ascii() << "/" << pluginDir[i].ascii() << std::endl;
           QLibrary *myLib = new QLibrary(txtPluginDir->text() + "/" + pluginDir[i]);
           bool loaded = myLib->load();
           if (loaded)
             {
-              std::cout << "Loaded " << myLib->library() << std::endl;
+              std::cout << "Loaded " << myLib->library().ascii() << std::endl;
               name_t *pName = (name_t *) myLib->resolve("name");
               description_t *pDesc = (description_t *) myLib->resolve("description");
               version_t *pVersion = (version_t *) myLib->resolve("version");
+#ifdef QGISDEBUG
+              // show the values (or lack of) for each function
+              if(pName){
+                std::cout << "Plugin name: " << pName().ascii() << std::endl;
+              }else{
+                std::cout << "Plugin name not returned when queried\n";
+              }
+               if(pDesc){
+                std::cout << "Plugin description: " << pDesc().ascii() << std::endl;
+              }else{
+                std::cout << "Plugin description not returned when queried\n";
+              }
+             if(pVersion){
+                std::cout << "Plugin version: " << pVersion().ascii() << std::endl;
+              }else{
+                std::cout << "Plugin version not returned when queried\n";
+              }
+#endif
               if (pName && pDesc && pVersion)
                 {
                   QCheckListItem *pl = new QCheckListItem(lstPlugins, pName(), QCheckListItem::CheckBox); //, pDesc(), pluginDir[i])
@@ -137,11 +155,11 @@ sharedLibExtension = "*.so*";
                     }
               } else
                 {
-                  std::cout << "Failed to get name, description, or type for " << myLib->library() << std::endl;
+                  std::cout << "Failed to get name, description, or type for " << myLib->library().ascii() << std::endl;
                 }
           } else
             {
-              std::cout << "Failed to load " << myLib->library() << std::endl;
+              std::cout << "Failed to load " << myLib->library().ascii() << std::endl;
             }
         }
     }
