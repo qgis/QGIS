@@ -93,7 +93,8 @@ class QgisApp:public QgisAppBase
 	void about();
 	//! activates the selection tool
 	void select();
-
+  //! check to see if file is dirty and if so, prompt the user th save it
+  int saveDirty();
 	private slots:				
 		//! Slot to show the map coordinate position of the mouse cursor
 	void showMouseCoordinate(QgsPoint &);
@@ -167,6 +168,10 @@ class QgisApp:public QgisAppBase
 	QString versionMessage;
 	friend class QgisIface;
   QgsProviderRegistry *providerRegistry;
+  /** Flag to track whether the user should be prompted to save the project
+  * before opening/creating a new one or exiting the application
+  */
+  bool projectIsDirty;
 };
 
 #endif
