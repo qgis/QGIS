@@ -48,26 +48,39 @@ email                : tim@linfiniti.com
 // xpm for creating the toolbar icon
 #include "icon.xpm"
 // 
-static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "HttpServer";
-static const char * const description_ = "A simple http server plugin that allows remote control of qgis.";
-static const char * const version_ = "Version 0.1";
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
 
+static const char * const sIdent = "$Id$";
+static const char * const sName = "HttpServer";
+static const char * const sDescription = "A simple http server plugin that allows remote control of qgis.";
+static const char * const sVersion = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
+
+
+//////////////////////////////////////////////////////////////////////
+//
+// THE FOLLOWING METHODS ARE MANDATORY FOR ALL PLUGINS
+//
+//////////////////////////////////////////////////////////////////////
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param qgis Pointer to the QGIS main window
- * @param _qI Pointer to the QGIS interface object
+ * @param theQGisApp - Pointer to the QGIS main window
+ * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-          qgisMainWindowPointer(theQGisApp), 
-          qGisInterface(theQgisInterFace),
-          QgisPlugin(name_,description_,version_,type_)
+Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+                 mQGisApp(theQGisApp), 
+                 mQGisIface(theQgisInterface),
+                 QgisPlugin(sName,sDescription,sVersion,sType)
 {
 }
+
 
 Plugin::~Plugin()
 {
@@ -80,22 +93,22 @@ Plugin::~Plugin()
 void Plugin::initGui()
 {
   // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
 
   pluginMenu->insertItem(QIconSet(icon),"&HttpServer", this, SLOT(run()));
 
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
+  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
 
-  menuIdInt = qGisInterface->addMenu("&Tools", pluginMenu);
+  mMenuId = mQGisIface->addMenu("&Tools", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("QGis Http Server", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Tools");
-  toolBarPointer->setLabel("QGis Http Server");
+  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Tools");
+  mToolBarPointer->setLabel("QGis Http Server");
   // Add the zoom previous tool to the toolbar
-  myQActionPointer->addTo(toolBarPointer);
+  myQActionPointer->addTo(mToolBarPointer);
   QSettings myQSettings;  // where we keep last used filter in persistant state
   int myPortNoInt = myQSettings.readNumEntry("/qgis/http_server/port");
   if (myPortNoInt <1)
@@ -127,7 +140,7 @@ void Plugin::help()
 // Slot called when the menu item is activated
 void Plugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"QGis Http Server",true,0);
+  PluginGui *myPluginGui=new PluginGui(mQGisApp,"QGis Http Server",true,0);
   //listen for when the layer has been made so we can draw it
   Q_CHECK_PTR( mHttpDaemon );
   if (!mEnabled)
@@ -157,11 +170,17 @@ void Plugin::unload()
   stopServer();
   //delete mHttpDaemon;
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  mMenuBarPointer->removeItem(mMenuId);
+  delete mToolBarPointer;
   //kill any connections to this object
   disconnect( this, 0, 0, 0 );
 }
+
+//////////////////////////////////////////////////////////////////////
+//
+//                  END OF MANDATORY PLUGIN METHODS
+//           (your own implemented methods should follow now)
+//////////////////////////////////////////////////////////////////////
 
 void Plugin::setEnabled (bool theFlag)
 {
@@ -220,20 +239,20 @@ void Plugin::stopServer()
 //clear the current map
 void Plugin::clearMap()
 {
-  qGisInterface->newProject(false);
+  mQGisIface->newProject(false);
 }
 
 //get the map in the provided pixmap
 void Plugin::getMap(QPixmap *theQPixmap)
 {
-  qGisInterface->getMapCanvas()->render(theQPixmap);
+  mQGisIface->getMapCanvas()->render(theQPixmap);
 }
 //load the project in qgis and send image to browser
 void Plugin::showProject(QString theProjectFile)
 {
   std::cout << "Render called " << std::endl;
   //do all the stuff needed to open the project and take a snapshot of it
-  if (!qGisInterface->addProject(theProjectFile))
+  if (!mQGisIface->addProject(theProjectFile))
   {
     //let the httpdserver know we are finished and pass it back the output filename
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
@@ -241,7 +260,7 @@ void Plugin::showProject(QString theProjectFile)
   else
   {
     //let the httpdserver know we are finished and pass it back the canvas image
-    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+    mHttpDaemon->requestCompleted(mQGisIface->getMapCanvas()->canvasPixmap());
   }
 
 }
@@ -250,7 +269,7 @@ void Plugin::loadProject(QString theProjectFile)
 {
   std::cout << "Recevied loadProject request to open " << theProjectFile << std::endl;
   //do all the stuff needed to open the project and take a snapshot of it
-  if (!qGisInterface->addProject(theProjectFile))
+  if (!mQGisIface->addProject(theProjectFile))
   {
     //let the httpdserver know we are finished and pass it back the output filename
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
@@ -265,11 +284,11 @@ void Plugin::loadRasterFile(QString theRasterFile)
   QString myDirNameQString = myFileInfo.dirPath();
   QString myBaseNameQString = myFileInfo.baseName();
   QgsRasterLayer *layer = new QgsRasterLayer(theRasterFile, myBaseNameQString);
-  //if ( qGisInterface->addRasterLayer(theRasterFile))
-  if ( qGisInterface->addRasterLayer(layer))
+  //if ( mQGisIface->addRasterLayer(theRasterFile))
+  if ( mQGisIface->addRasterLayer(layer))
   {
     //let the httpdserver know we are finished and pass it back the canvas image
-    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+    mHttpDaemon->requestCompleted(mQGisIface->getMapCanvas()->canvasPixmap());
   }
 }
 
@@ -287,10 +306,10 @@ void Plugin::loadPseudoColorRasterFile(QString theRasterFile)
   QgsRasterLayer *layer = new QgsRasterLayer(theRasterFile, myBaseNameQString);
   layer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);
   layer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
-  if ( qGisInterface->addRasterLayer(layer))
+  if ( mQGisIface->addRasterLayer(layer))
   {
     //let the httpdserver know we are finished and pass it back the canvas image
-    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
+    mHttpDaemon->requestCompleted(mQGisIface->getMapCanvas()->canvasPixmap());
   }
 }
 
@@ -304,7 +323,7 @@ void Plugin::loadVectorFile(QString theVectorFile)
 {
 
   // Add a vector layer given vectorLayerPath, layer name, providerKey ("ogr" or "postgres");
-  if (!qGisInterface->addVectorLayer(theVectorFile, QString("MapLayer"),QString("ogr")))
+  if (!mQGisIface->addVectorLayer(theVectorFile, QString("MapLayer"),QString("ogr")))
   {
     //let the httpdserver know we are finished with and error and pass it back the error
     mHttpDaemon->closeStreamWithError(QString("Failed opening vector layer : ")+theVectorFile);
@@ -318,10 +337,15 @@ void Plugin::loadVectorFile(QString theVectorFile, QString theProjectFile)
 }
 
 
-///////////////////////////////////////////////////////////
-
-
-
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//  THE FOLLOWING CODE IS AUTOGENERATED BY THE PLUGIN BUILDER SCRIPT
+//    YOU WOULD NORMALLY NOT NEED TO MODIFY THIS, AND YOUR PLUGIN
+//      MAY NOT WORK PROPERLY IF YOU MODIFY THIS INCORRECTLY
+//
+//
+//////////////////////////////////////////////////////////////////////////
 
 
 /** 
@@ -330,38 +354,40 @@ void Plugin::loadVectorFile(QString theVectorFile, QString theProjectFile)
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
   return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
-
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-extern "C" QString name()
+QGISEXTERN QString name()
 {
-    return name_;
+  return sName;
 }
 
 // Return the description
-extern "C" QString description()
+QGISEXTERN QString description()
 {
-    return description_;
+  return sDescription;
 }
 
 // Return the type (either UI or MapLayer plugin)
-extern "C" int type()
+QGISEXTERN int type()
 {
-    return type_;
+  return sType;
 }
 
 // Return the version number for the plugin
-extern "C" QString version()
+QGISEXTERN QString version()
 {
-  return version_;
+  return sVersion;
 }
 
 // Delete ourself
-extern "C" void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
   delete thePluginPointer;
 }
+
+
+

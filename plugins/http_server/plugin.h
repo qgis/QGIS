@@ -96,22 +96,29 @@ private:
   //! whether the server is enabled or not
   bool mEnabled;
 
+  ////////////////////////////////////////////////////////////////////
   //
-  // Standard required members for plugins
+  // MANDATORY PLUGIN MEMBER DECLARATIONS  .....
   //
+  ////////////////////////////////////////////////////////////////////
   
-  //! Provider or gui plugin
-  int pluginType;
+  int mPluginType;
   //! Id of the plugin's menu. Used for unloading
-  int menuIdInt;
+  int mMenuId;
   //! Pointer to our toolbar
-  QToolBar *toolBarPointer;
+  QToolBar *mToolBarPointer;
   //! Pointer to our menu
-  QMenuBar *menuBarPointer;
+  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
+  QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisIface *mQGisIface;
+
+  ////////////////////////////////////////////////////////////////////
+  //
+  // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
+  //
+  ////////////////////////////////////////////////////////////////////
 };
 
 #endif
