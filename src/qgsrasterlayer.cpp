@@ -622,6 +622,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
             }
         }
     }
+  //render any inline filters
+  filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
 }
@@ -725,6 +727,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                   //check if we are in the first class break
                   if ((myInt >= myClassBreakMin1) && (myInt < myClassBreakMax1))
                     {
+                      std::cout << "Class break 1 value : " << myInt << endl;
                       myRedInt = 0;
                       myBlueInt = 255;
                       myGreenInt =
@@ -733,6 +736,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                   //check if we are in the second class break
                   else if ((myInt >= myClassBreakMin2) && (myInt < myClassBreakMax2))
                     {
+                      std::cout << "Class break 2 value : " << myInt << endl;
                       myRedInt =
                         static_cast < int >(((255 / myAdjustedRasterBandStats.rangeDouble) * ((myInt - myClassBreakMin2) / 1)) * 3);
                       myBlueInt =
@@ -743,6 +747,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
                   //otherwise we must be in the third classbreak
                   else
                     {
+                      std::cout << "Class break 3 value : " << myInt << endl;
                       myRedInt = 255;
                       myBlueInt = 0;
                       myGreenInt =
@@ -787,6 +792,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
             }
         }                       //end of columnwise loop
     }                           //end of towwise loop
+  //render any inline filters
+  filterLayer(&myQImage);
   //draw with the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
 }
@@ -867,6 +874,8 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
             }
         }
     }
+  //render any inline filters
+  filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
 }
@@ -1064,6 +1073,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
         }
     }
 
+  //render any inline filters
+  filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
 }
@@ -1157,6 +1168,8 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
             }
         }
     }
+  //render any inline filters
+  filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
 
@@ -1248,6 +1261,8 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
           myQImage.setPixel(myRowInt, myColumnInt, qRgba(myRedValueInt, myGreenValueInt, myBlueValueInt, transparencyLevelInt));
         }
     }
+  //render any inline filters
+  filterLayer(&myQImage);
   //part of the experimental transaparency support
   theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(), myQImage);
 
@@ -1255,6 +1270,15 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   CPLFree(myGdalRedData);
   CPLFree(myGdalGreenData);
   CPLFree(myGdalBlueData);
+}
+
+/**
+ * Call any inline filters
+ */
+void QgsRasterLayer::filterLayer(QImage * theQImage)
+{
+  //do stuff here....
+  return; 
 }
 
 /**
