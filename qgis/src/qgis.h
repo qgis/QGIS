@@ -11,6 +11,8 @@
 */
 /* $Id$ */
 
+#include <config.h>
+
 namespace QGis
 { 
   // Version constants

@@ -1,9 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.24 2004/02/29 00:52:20 gsherman Exp
+dnl configure.in,v 1.25 2004/03/05 23:30:29 jobi Exp
 
 AC_INIT
 
 #AC_CONFIG_SRCDIR([libtool])
+
+AC_CONFIG_HEADERS([config.h])
  
 dnl ---------------------------------------------------------------------------
 dnl version number
@@ -11,7 +13,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=5
+EXTRA_VERSION=6
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel
 else
@@ -106,6 +108,8 @@ if test x"$PG_CONFIG" != "xno" ; then
   PG_INC="`$PG_CONFIG --includedir`"
   AC_MSG_CHECKING([for postgreSQL libs])
   AC_MSG_RESULT([$PG_LIB])
+  AC_DEFINE([HAVE_POSTGRESQL],1,
+    [Define to 1 if PostgreSQL is available])
   ac_postgresql="yes"
 else
   ac_postgresql="no"
@@ -114,7 +118,7 @@ fi
 AC_SUBST(PG_INC)
 AC_SUBST(PG_LIB)
 
-AM_CONDITIONAL([HAVE_POSTGRESDB], [test "$ac_postgresql" = "yes"])
+AM_CONDITIONAL([HAVE_POSTGRESQL], [test "$ac_postgresql" = "yes"])
 
 
 dnl ---------------------------------------------------------------------------

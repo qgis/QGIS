@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.28 2004/03/04 05:23:43 timlinux Exp
+ChangeLog,v 1.29 2004/03/05 23:30:29 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-06 [didge] 0.1.0devel6
+** Changed configure stuff to write DEFINES in config.h.
+   Postgresql stuff needs testing as I commented the compileflags in src/Makefile.am
+** Infos will be posted on the devel mailinglist
+
 2004-03-04 [ts] 0.1.0devel5
 ** Added option to options dialog to disable splashscreen.
 
