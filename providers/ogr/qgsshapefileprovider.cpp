@@ -66,32 +66,22 @@ QgsShapeFileProvider::QgsShapeFileProvider(QString uri):mEditable(false), mModif
 #ifdef QGISDEBUG
     std::cerr << "checking validity\n";
 #endif
-    OGRFeature *feat = ogrLayer->GetNextFeature();
-    if (feat) {
-      OGRGeometry *geom = feat->GetGeometryRef();
-      if (geom) {
-        geomType = geom->getGeometryType();
+    
+    OGRFeatureDefn* fdef = ogrLayer->GetLayerDefn();
+    if(fdef)
+    {
+	geomType = fdef->GetGeomType();
+	for(int i=0;i<fdef->GetFieldCount();++i)
+	{
+	    OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
+	    attributeFields.push_back(QgsField(
+	    fldDef->GetNameRef(), 
+	    fldDef->GetFieldTypeName(fldDef->GetType()),
+	    fldDef->GetWidth(),
+	    fldDef->GetPrecision()));
+	}
+    }
 
-      } else {
-        valid = false;
-      }
-      // Populate the field vector for this layer. The field vector contains
-      // field name, type, length, and precision (if numeric)
-      for (int i = 0; i < feat->GetFieldCount(); i++) {
-        OGRFieldDefn *fldDef = feat->GetFieldDefnRef(i);
-        attributeFields.push_back(QgsField(
-              fldDef->GetNameRef(), 
-              fldDef->GetFieldTypeName(fldDef->GetType()),
-              fldDef->GetWidth(),
-              fldDef->GetPrecision()));
-      }
-
-      delete feat;
-    } else {
-      valid = false;
-      }
-
-    ogrLayer->ResetReading();
 #ifdef QGISDEBUG
     std::cerr << "Done checking validity\n";
 #endif

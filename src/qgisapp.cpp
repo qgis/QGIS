@@ -1286,9 +1286,6 @@ void QgisApp::newVectorLayer()
 	    return;
 	}
 	writer.createField("dummy", OFTReal, 1, 1);
-	//creation of a dummy feature
-	QgsPoint point(0,0);
-	writer.writePoint(&point);
     }
     else if(geometrytype == QGis::WKBLineString)
     {
@@ -1299,18 +1296,6 @@ void QgisApp::newVectorLayer()
 	    return;
 	}
 	writer.createField("dummy", OFTReal, 1, 1);
-	//creation of a dummy line with just one point (0,0)
-	int size=1+2*sizeof(int)+2*sizeof(double);
-	unsigned char* wkb=new unsigned char[size];
-	int wkbtype=QGis::WKBLineString;
-	memcpy(&wkb[1],&wkbtype, sizeof(int));
-	int length=1;
-	memcpy(&wkb[1+sizeof(int)],&length, sizeof(int));
-	double dummycoordinate=0;
-	memcpy(&wkb[1+2*sizeof(int)],&dummycoordinate,sizeof(double));
-	memcpy(&wkb[1+2*sizeof(int)+sizeof(double)],&dummycoordinate,sizeof(double));
-	writer.writeLine(wkb,size);
-	delete[] wkb;
     }
     else if(geometrytype == QGis::WKBPolygon)
     {
@@ -1321,20 +1306,6 @@ void QgisApp::newVectorLayer()
 	    return;
 	}
 	writer.createField("dummy", OFTReal, 1, 1);
-	//creation of a dummy polygon with just one point (0,0)
-	int size=1+3*sizeof(int)+2*sizeof(double);
-	unsigned char* wkb=new unsigned char[size];
-	int wkbtype=QGis::WKBPolygon;
-	memcpy(&wkb[1],&wkbtype, sizeof(int));
-	int numring=1;
-	memcpy(&wkb[1+sizeof(int)],&numring,sizeof(int));
-	int length=1;
-	memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
-	double dummycoordinate=0;
-	memcpy(&wkb[1+3*sizeof(int)],&dummycoordinate,sizeof(double));
-	memcpy(&wkb[1+3*sizeof(int)+sizeof(double)],&dummycoordinate,sizeof(double));
-	writer.writePolygon(wkb,size);
-	delete[] wkb;
     }
     else
     {
@@ -1343,7 +1314,6 @@ void QgisApp::newVectorLayer()
 #endif	
 	return;
     }
-
 
     //then add the layer to the view
     QFileInfo fileinfo(filename);

@@ -247,7 +247,7 @@ void QgisAppBase::captureLine()
 
 
 
-void QgisAppBase::about()
+void QgisAppBase::newVectorLayer()
 {
 
 }
