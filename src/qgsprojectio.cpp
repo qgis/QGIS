@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.9 2003/11/11 06:23:40 gsherman Exp */
+/* qgsprojectio.cpp,v 1.10 2003/11/11 06:34:27 gsherman Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -241,7 +241,7 @@ void QgsProjectIo::writeXML(){
 			}
 			xml << "\" visible=\"";
 			if(lyr->visible()){
-				xml << "1";d
+				xml << "1";
 			}else{
 				xml << "0";
 			}
