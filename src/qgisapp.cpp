@@ -436,13 +436,17 @@ void QgisApp::fileSaveAs(){
 }
 
 void QgisApp::exportMapServer(){
-	
-	QgsMapserverExport *mse = new QgsMapserverExport(mapCanvas, this);
-	if(mse->exec()){
-		mse->write();
+	// check to see if there are any layers to export
+	if(mapCanvas->layerCount() > 0){
+		QgsMapserverExport *mse = new QgsMapserverExport(mapCanvas, this);
+		if(mse->exec()){
+			mse->write();
+		}
+		delete mse;
+	}else{
+		QMessageBox::warning(this,"No Map Layers",
+		"No layers to export. You must add at least one layer to the map in order to export the view.");
 	}
-	delete mse;
-	
 }
 void QgisApp::zoomIn()
 {
@@ -483,8 +487,6 @@ void QgisApp::zoomOut()
 	   m.scale( 0.5, 0.5 );
 	   mapCanvas->setWorldMatrix( m );
 	 */
-
-
 }
 
 void QgisApp::zoomToSelected()
