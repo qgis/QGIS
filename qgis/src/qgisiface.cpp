@@ -44,3 +44,7 @@ int QgisIface::addMenu(QString menuText, QPopupMenu *menu){
   #endif
   return mainMenu->insertItem(menuText, menu,-1, mainMenu->count() -1);
 }
+
+void QgisIface::openURL(QString url, bool useQgisDocDirectory){
+  qgis->openURL(url,useQgisDocDirectory);  
+}
