@@ -37,6 +37,7 @@ class QgsLabel;
 #include "qgsmaplayer.h"
 #include "qvaluevector.h"
 #include "qgsattributetabledisplay.h"
+#include "qgsvectordataprovider.h"
 
 
 /*! \class QgsVectorLayer
@@ -70,7 +71,7 @@ class QgsVectorLayer:public QgsMapLayer
     Polygon
   };
   void setDataProvider(QgsDataProvider * dp);
-  QgsDataProvider *getDataProvider();
+  QgsVectorDataProvider *getDataProvider();
   QgsLabel *label();
   public slots:
    /**Sets the 'tabledisplay' to 0 again*/
@@ -176,6 +177,9 @@ protected:
   /**Widget to set the symbology properties*/
   QDialog *m_rendererDialog;
 
+  protected slots:
+  void startEditing();
+  void stopEditing();
 
 private:                       // Private attributes
   //! Draws the layer labels using coordinate transformation
@@ -183,7 +187,7 @@ private:                       // Private attributes
   //! Draws the layer using coordinate transformation
   void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf,  QPaintDevice * dst);
   //! Pointer to data provider derived from the abastract base class QgsDataProvider
-  QgsDataProvider *dataProvider;
+  QgsVectorDataProvider *dataProvider;
   //! index of the primary label field
   QString fieldIndex;
   //! Data provider key

@@ -1706,7 +1706,6 @@ void QgisApp::deleteSelected()
 
 void QgisApp::capturePoint()
 {
-    if(QMessageBox::warning(0,"Capture point tool selected","The captured points will be directly written to the file. Make sure you have a backup of the original data",QMessageBox::Ok,QMessageBox::Cancel)==QMessageBox::Ok)
     {
 	// set current map tool to select
 	mMapCanvas->setMapTool(QGis::CapturePoint);
@@ -1719,7 +1718,6 @@ void QgisApp::capturePoint()
 
 void QgisApp::captureLine()
 {
-    if(QMessageBox::warning(0,"Capture line tool selected","The captured lines will be directly written to the file. Make sure you have a backup of the original data",QMessageBox::Ok,QMessageBox::Cancel)==QMessageBox::Ok)
     {
 	mMapCanvas->setMapTool(QGis::CaptureLine); 
 
@@ -1732,7 +1730,6 @@ void QgisApp::captureLine()
 
 void QgisApp::capturePolygon()
 {
-    if(QMessageBox::warning(0,"Capture polygon tool selected","The captured polygons will be directly written to the file. Make sure you have a backup of the original data",QMessageBox::Ok,QMessageBox::Cancel)==QMessageBox::Ok)
     {
 	mMapCanvas->setMapTool(QGis::CapturePolygon); 
 

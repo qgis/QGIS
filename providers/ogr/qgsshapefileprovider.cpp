@@ -25,7 +25,7 @@
 #else
 #define QGISEXTERN extern "C"
 #endif
-QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minmaxcachedirty(true)
+QgsShapeFileProvider::QgsShapeFileProvider(QString uri):mEditable(false), mModified(false), dataSourceUri(uri), minmaxcachedirty(true)
 {
   OGRRegisterAll();
 
@@ -116,6 +116,14 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
     delete[] minmaxcache[i];
   }
   delete[] minmaxcache;
+
+  //delete not commited features
+  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  {
+      delete *it;
+  }
+  mAddedFeatures.clear();
+
 }
 
 /**
@@ -327,11 +335,26 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
        }
        else
        {
+	   if(mAddedFeatures.size()>0&&mAddedFeaturesIt!=mAddedFeatures.end())
+	   {
+#ifdef QGISDEBUG
+	       qWarning("accessing feature in the cache");
+#endif QGISDEBUG
+	       QgsFeature* addedfeature=*mAddedFeaturesIt;
+	       ++mAddedFeaturesIt;
+	       //copy the feature because it will be deleted in QgsVectorLayer::draw()
+	       QgsFeature* returnf=new QgsFeature(*addedfeature);
+	       return returnf;
+	   }
 #ifdef QGISDEBUG
 	   std::cerr << "Feature is null\n";
 #endif  
            // probably should reset reading here
 	   ogrLayer->ResetReading();
+	   if(!mAddedFeatures.empty())
+	   {
+	       mAddedFeaturesIt=mAddedFeatures.begin();
+	   }
        }
    }
    else
@@ -513,6 +536,10 @@ void QgsShapeFileProvider::reset()
 {
   ogrLayer->SetSpatialFilter(0);
   ogrLayer->ResetReading();
+  if(!mAddedFeatures.empty())
+  {
+      mAddedFeaturesIt=mAddedFeatures.begin();
+  }
 }
 
 QString QgsShapeFileProvider::minValue(int position)
@@ -582,126 +609,148 @@ bool QgsShapeFileProvider::isValid()
 
 bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 {
-  bool returnValue = true;
-  OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
-  OGRFeature* feature=new OGRFeature(fdef);
-  QGis::WKBTYPE ftype;
-  memcpy(&ftype, (f->getGeometry()+1), sizeof(int));
-  switch(ftype)
-  {
-      case QGis::WKBPoint:
-      {
-	  OGRPoint* p=new OGRPoint();
-	  p->importFromWkb(f->getGeometry(),1+sizeof(int)+2*sizeof(double));
-	  feature->SetGeometry(p);
-	  break;
-      }
-      case QGis::WKBLineString:
-      {
-	  OGRLineString* l=new OGRLineString();
-	  int length;
-	  memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
+    if(mEditable)
+    {
+	mAddedFeatures.push_back(f);
+	mAddedFeaturesIt=mAddedFeatures.begin();
+	mModified=true;
+	return true;
+    }
+    else
+    {
+	return false;
+    }
+}
+
+bool QgsShapeFileProvider::commitFeature(QgsFeature* f)
+{
+    qWarning("try to commit a feature");
+    if(mEditable)
+    {
+	bool returnValue = true;
+	OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
+	OGRFeature* feature=new OGRFeature(fdef);
+	QGis::WKBTYPE ftype;
+	memcpy(&ftype, (f->getGeometry()+1), sizeof(int));
+	switch(ftype)
+	{
+	    case QGis::WKBPoint:
+	    {
+		OGRPoint* p=new OGRPoint();
+		p->importFromWkb(f->getGeometry(),1+sizeof(int)+2*sizeof(double));
+		feature->SetGeometry(p);
+		break;
+	    }
+	    case QGis::WKBLineString:
+	    {
+		OGRLineString* l=new OGRLineString();
+		int length;
+		memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
 #ifdef QGISDEBUG
-	  qWarning("length: "+QString::number(length));
+		qWarning("length: "+QString::number(length));
 #endif
-	  l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
-	  feature->SetGeometry(l);
-	  break;
-      }
-      case QGis::WKBPolygon:
-      {
-	  OGRPolygon* pol=new OGRPolygon();
-	  int numrings;
-	  int totalnumpoints=0;
-	  int numpoints;//number of points in one ring
-	  unsigned char* ptr=f->getGeometry()+1+sizeof(int);
-	  memcpy(&numrings,ptr,sizeof(int));
-	  ptr+=sizeof(int);
-	  for(int i=0;i<numrings;++i)
-	  {
-	      memcpy(&numpoints,ptr,sizeof(int));
-	      ptr+=sizeof(int);
-	      totalnumpoints+=numpoints;
-	      ptr+=(2*sizeof(double));
-	  }
-	  pol->importFromWkb(f->getGeometry(),1+2*sizeof(int)+numrings*sizeof(int)+totalnumpoints*2*sizeof(double));
-	  feature->SetGeometry(pol);
-	  break;
-      }
-      case QGis::WKBMultiPoint:
-      {
-	  OGRMultiPoint* multip= new OGRMultiPoint();
-	  int count;
-	  //determine how many points
-	  memcpy(&count,f->getGeometry()+1+sizeof(int),sizeof(int));
-	  multip->importFromWkb(f->getGeometry(),1+2*sizeof(int)+count*2*sizeof(double));
-	  feature->SetGeometry(multip);
-	  break;
-      }
-      case QGis::WKBMultiLineString:
-      {
-	  OGRMultiLineString* multil=new OGRMultiLineString();
-	  int numlines;
-	  memcpy(&numlines,f->getGeometry()+1+sizeof(int),sizeof(int));
-	  int totalpoints=0;
-	  int numpoints;//number of point in one line
-	  unsigned char* ptr=f->getGeometry()+9;
-	  for(int i=0;i<numlines;++i)
-	  {
-	      memcpy(&numpoints,ptr,sizeof(int));
-	      ptr+=4;
-	      for(int j=0;j<numpoints;++j)
-	      {
-		  ptr+=16;
-		  totalpoints+=2;
-	      }
-	  }
-	  int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
-	  multil->importFromWkb(f->getGeometry(),size);
-	  feature->SetGeometry(multil);
-      }
-      case QGis::WKBMultiPolygon:
-      {
-	  OGRMultiPolygon* multipol=new OGRMultiPolygon();
-	  int numpolys;
-	  memcpy(&numpolys,f->getGeometry()+1+sizeof(int),sizeof(int));
-	  int numrings;//number of rings in one polygon
-	  int totalrings=0;
-	  int totalpoints=0;
-	  int numpoints;//number of points in one ring
-	  unsigned char* ptr=f->getGeometry()+9;
+		l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
+		feature->SetGeometry(l);
+		break;
+	    }
+	    case QGis::WKBPolygon:
+	    {
+		OGRPolygon* pol=new OGRPolygon();
+		int numrings;
+		int totalnumpoints=0;
+		int numpoints;//number of points in one ring
+		unsigned char* ptr=f->getGeometry()+1+sizeof(int);
+		memcpy(&numrings,ptr,sizeof(int));
+		ptr+=sizeof(int);
+		for(int i=0;i<numrings;++i)
+		{
+		    memcpy(&numpoints,ptr,sizeof(int));
+		    ptr+=sizeof(int);
+		    totalnumpoints+=numpoints;
+		    ptr+=(2*sizeof(double));
+		}
+		pol->importFromWkb(f->getGeometry(),1+2*sizeof(int)+numrings*sizeof(int)+totalnumpoints*2*sizeof(double));
+		feature->SetGeometry(pol);
+		break;
+	    }
+	    case QGis::WKBMultiPoint:
+	    {
+		OGRMultiPoint* multip= new OGRMultiPoint();
+		int count;
+		//determine how many points
+		memcpy(&count,f->getGeometry()+1+sizeof(int),sizeof(int));
+		multip->importFromWkb(f->getGeometry(),1+2*sizeof(int)+count*2*sizeof(double));
+		feature->SetGeometry(multip);
+		break;
+	    }
+	    case QGis::WKBMultiLineString:
+	    {
+		OGRMultiLineString* multil=new OGRMultiLineString();
+		int numlines;
+		memcpy(&numlines,f->getGeometry()+1+sizeof(int),sizeof(int));
+		int totalpoints=0;
+		int numpoints;//number of point in one line
+		unsigned char* ptr=f->getGeometry()+9;
+		for(int i=0;i<numlines;++i)
+		{
+		    memcpy(&numpoints,ptr,sizeof(int));
+		    ptr+=4;
+		    for(int j=0;j<numpoints;++j)
+		    {
+			ptr+=16;
+			totalpoints+=2;
+		    }
+		}
+		int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
+		multil->importFromWkb(f->getGeometry(),size);
+		feature->SetGeometry(multil);
+	    }
+	    case QGis::WKBMultiPolygon:
+	    {
+		OGRMultiPolygon* multipol=new OGRMultiPolygon();
+		int numpolys;
+		memcpy(&numpolys,f->getGeometry()+1+sizeof(int),sizeof(int));
+		int numrings;//number of rings in one polygon
+		int totalrings=0;
+		int totalpoints=0;
+		int numpoints;//number of points in one ring
+		unsigned char* ptr=f->getGeometry()+9;
+		
+		for(int i=0;i<numpolys;++i)
+		{
+		    memcpy(&numrings,ptr,sizeof(int));
+		    ptr+=4;
+		    for(int j=0;j<numrings;++j)
+		    {
+			totalrings++;
+			memcpy(&numpoints,ptr,sizeof(int));
+			for(int k=0;k<numpoints;++k)
+			{
+			    ptr+=16;
+			    totalpoints+=2;
+			}
+		    }
+		}
+		int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
+		multipol->importFromWkb(f->getGeometry(),size);
+		feature->SetGeometry(multipol);
+	    }
+	}
 
-	  for(int i=0;i<numpolys;++i)
-	  {
-	      memcpy(&numrings,ptr,sizeof(int));
-	      ptr+=4;
-	      for(int j=0;j<numrings;++j)
-	      {
-		  totalrings++;
-		  memcpy(&numpoints,ptr,sizeof(int));
-		  for(int k=0;k<numpoints;++k)
-		  {
-		      ptr+=16;
-		      totalpoints+=2;
-		  }
-	      }
-	  }
-	  int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
-	  multipol->importFromWkb(f->getGeometry(),size);
-	  feature->SetGeometry(multipol);
-      }
-  }
-
-  if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
-  {
-      //writing failed
-      QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
-      returnValue = false;
-  }
-  ogrLayer->SyncToDisk();
-  ++numberFeatures;
-  delete feature;
-  return returnValue;
+	if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
+	{
+	    //writing failed
+	    QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+	    returnValue = false;
+	}
+	++numberFeatures;
+	delete feature;
+	return returnValue;
+    }
+    else//layer not editable
+    {
+	return false;
+    }
 }
 
 bool QgsShapeFileProvider::deleteFeature(int id)
@@ -730,6 +779,62 @@ bool QgsShapeFileProvider::deleteFeature(int id)
     return true;*/
     return false;
 }
+
+
+bool QgsShapeFileProvider::startEditing()
+{
+    mEditable=true;
+    return true;
+}
+
+void QgsShapeFileProvider::stopEditing()
+{
+    mEditable=false;
+}
+
+bool QgsShapeFileProvider::commitChanges()
+{
+    if(mEditable)
+    {
+	bool returnvalue=true;
+	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+	{
+	    if(!commitFeature(*it))
+	    {
+		returnvalue=false;
+	    }
+	    delete *it;
+	}
+	ogrLayer->SyncToDisk();
+	mAddedFeatures.clear();
+	mModified=false;
+	return returnvalue;
+    }
+    else
+    {
+	return false;
+    }
+}
+
+bool QgsShapeFileProvider::rollBack()
+{
+    if(mEditable)
+    {
+	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+	{
+	    delete *it;
+	}
+	mAddedFeatures.clear();
+	mModified=false;
+	return true;
+    }
+    else
+    {
+	return false;
+    }
+}
+
+
 
 /**
  * Class factory to return a pointer to a newly created 

@@ -34,41 +34,7 @@ public:
   * We need this so the subclass destructors get called
   */
   virtual ~QgsDataProvider() {};
-  /** 
-  * Get the first feature resulting from a select operation
-  * @return QgsFeature
-  */
-  virtual QgsFeature * QgsDataProvider::getFirstFeature(bool fetchAttributes=false)=0;
-  /** 
-  * Get the next feature resutling from a select operation
-  * @return QgsFeature
-  */
-  virtual QgsFeature * QgsDataProvider::getNextFeature(bool fetchAttributes=false)=0;
-  /**Get the next feature resulting from a select operation.
-   *@param attlist a list containing the indexes of the attribute fields to copy
-   */
-  virtual QgsFeature * QgsDataProvider::getNextFeature(std::list<int>& attlist)=0;
-  /**
-   * Get the next feature using new method
-   * TODO - make this pure virtual once it works and change existing providers
-   *        to use this method of fetching features
-   */
 
-  virtual bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false)=0;
-  /** Get feature type.
-  * Gets the feature type as defined in WKBTYPE (qgis.h).
-  * @return int representing the feature type
-  */
-  virtual int geometryType()=0; 
-    /**
-    * Number of features in the layer
-    * @return long containing number of features
-    */
-    virtual long featureCount()=0;
-    /**
-    * Number of attribute fields for a feature in the layer
-    */
-  virtual int fieldCount()=0;
   /**
   * Select features based on a bounding rectangle. Features can be retrieved 
   * with calls to getFirstFeature and getNextFeature. Request for features 
@@ -105,7 +71,7 @@ public:
   * @param rect Bounding rectangle of search radius
   * @return std::vector containing QgsFeature objects that intersect rect
   */
-  virtual std::vector<QgsFeature>& QgsDataProvider::identify(QgsRect *rect)=0;
+  //virtual std::vector<QgsFeature>& QgsDataProvider::identify(QgsRect *rect)=0;
 
    /**
    * Return the endian of this layer.
@@ -114,42 +80,39 @@ public:
   virtual int QgsDataProvider::endian()=0;
 
   /**
-  * Return a list of field names for this layer
-  * @return vector of field names
-  */
-  virtual std::vector<QgsField>& fields()=0;
-  
-/** 
-* Reset the layer to clear any spatial filtering or other contstraints that
-* would prevent the entire record set from being traversed by call to 
-* getNextFeature(). Some data stores may not require any special action to
-* reset the layer. In this case, the provider should simply implement an empty
-* function body.
-*/
-  virtual void reset()=0;
-
-  /**Returns the minimum value of an attributs
-     @param position the number of the attribute*/
-  virtual QString minValue(int position)=0;
-
-  /**Returns the maximum value of an attributs
-     @param position the number of the attribute*/
-  virtual QString maxValue(int position)=0;
-
-/**
-* Returns true if this is a valid layer. It is up to individual providers
-* to determine what constitutes a valid layer
-*/
+   * Returns true if this is a valid layer. It is up to individual providers
+   * to determine what constitutes a valid layer
+   */
   virtual bool isValid()=0;
 
-/**Adds a feature
-@return true in case of success and false in case of failure*/
-  virtual bool addFeature(QgsFeature* f)=0;
+  /**
+     Enables editing capabilities of the provider (if supported)
+     @return false in case of error or if the provider does not support editing
+  */
+  virtual bool startEditing()=0;
 
-/**Deletes a feature
-@param id the number of the feature
-@return true in case of success and false in case of failure*/
-  virtual bool deleteFeature(int id)=0;
+  /**
+     Disables the editing capabilities of the provider
+  */
+  virtual void stopEditing()=0;
+
+  /**
+     Commits changes
+     @return false in case of problems
+  */
+  virtual bool commitChanges()=0;
+
+  /**
+     Discards changes
+     @return false in case of problems
+  */
+  virtual bool rollBack()=0;
+
+  /**Returns true if the provider is in editing mode*/
+  virtual bool isEditable() const=0;
+
+  /**Returns true if the provider has been modified since the last commit*/
+  virtual bool isModified() const=0;
 
 };
 
