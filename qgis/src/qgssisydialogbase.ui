@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>358</width>
-            <height>490</height>
+            <height>469</height>
         </rect>
     </property>
     <property name="caption">
@@ -27,135 +27,7 @@
                 <string>Label:</string>
             </property>
         </widget>
-        <spacer row="6" column="1">
-            <property name="name">
-                <cstring>spacer18</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>51</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="3" column="2">
-            <property name="name">
-                <cstring>spacer9_2_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>71</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="4" column="2">
-            <property name="name">
-                <cstring>spacer9_2_3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>71</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>outlinestylelabel</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>1</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Outline Style:</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="0">
-            <property name="name">
-                <cstring>outlinewidthlabel</cstring>
-            </property>
-            <property name="text">
-                <string>Outline Width:</string>
-            </property>
-        </widget>
-        <spacer row="2" column="2">
-            <property name="name">
-                <cstring>spacer9_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>71</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLabel" row="4" column="0">
-            <property name="name">
-                <cstring>fillcolorlabel</cstring>
-            </property>
-            <property name="text">
-                <string>Fill Color:</string>
-            </property>
-        </widget>
-        <widget class="QToolButton" row="4" column="4">
-            <property name="name">
-                <cstring>btnFillColor</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>4</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>22</width>
-                    <height>22</height>
-                </size>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>36</width>
-                    <height>22</height>
-                </size>
-            </property>
-            <property name="text">
-                <string>...</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="3">
+        <widget class="QLabel" row="1" column="2">
             <property name="name">
                 <cstring>lblOutlineColor</cstring>
             </property>
@@ -189,7 +61,7 @@
                 <string></string>
             </property>
         </widget>
-        <widget class="QToolButton" row="1" column="4">
+        <widget class="QToolButton" row="1" column="3">
             <property name="name">
                 <cstring>btnOutlineColor</cstring>
             </property>
@@ -217,7 +89,7 @@
                 <string>Outline color:</string>
             </property>
         </widget>
-        <spacer row="1" column="2">
+        <spacer row="1" column="1">
             <property name="name">
                 <cstring>spacer9</cstring>
             </property>
@@ -234,90 +106,12 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QLabel" row="4" column="3">
-            <property name="name">
-                <cstring>lblFillColor</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>4</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>64</width>
-                    <height>22</height>
-                </size>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>64</width>
-                    <height>22</height>
-                </size>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="text">
-                <string></string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="3" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>stylebutton</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>4</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>100</width>
-                    <height>20</height>
-                </size>
-            </property>
-            <property name="text">
-                <string></string>
-            </property>
-        </widget>
-        <widget class="QSpinBox" row="3" column="3" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>outlinewidthspinbox</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>4</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>100</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="2" rowspan="1" colspan="3">
+        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>mLabelEdit</cstring>
             </property>
         </widget>
-        <widget class="QButtonGroup" row="5" column="0" rowspan="1" colspan="5">
+        <widget class="QButtonGroup" row="5" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>grpPattern</cstring>
             </property>
@@ -599,6 +393,222 @@
                             <green>255</green>
                             <blue>255</blue>
                         </color>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer row="4" column="1">
+            <property name="name">
+                <cstring>spacer9_2_3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>71</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="3" column="1">
+            <property name="name">
+                <cstring>spacer9_2_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>71</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="3" column="0">
+            <property name="name">
+                <cstring>outlinewidthlabel</cstring>
+            </property>
+            <property name="text">
+                <string>Outline Width:</string>
+            </property>
+        </widget>
+        <widget class="QToolButton" row="4" column="3">
+            <property name="name">
+                <cstring>btnFillColor</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>4</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>22</width>
+                    <height>22</height>
+                </size>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>36</width>
+                    <height>22</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>...</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox" row="3" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>outlinewidthspinbox</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>4</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>100</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="minValue">
+                <number>1</number>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="2">
+            <property name="name">
+                <cstring>lblFillColor</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>4</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>64</width>
+                    <height>22</height>
+                </size>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>64</width>
+                    <height>22</height>
+                </size>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="0">
+            <property name="name">
+                <cstring>fillcolorlabel</cstring>
+            </property>
+            <property name="text">
+                <string>Fill Color:</string>
+            </property>
+        </widget>
+        <widget class="QButtonGroup" row="2" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>grpOutlineStyle</cstring>
+            </property>
+            <property name="title">
+                <string>Outline Style:</string>
+            </property>
+            <property name="exclusive">
+                <bool>true</bool>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>pbnLineSolid</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>pbnLineDashDot</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>pbnLineDash</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>pbnLineNoPen</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>pbnLineDot</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>pbnLineDashDotDot</cstring>
                     </property>
                     <property name="text">
                         <string></string>

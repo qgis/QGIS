@@ -17,7 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgssymbol.h"
-
+#include <qpainter.h>
 QgsSymbol::QgsSymbol()
 {
 
@@ -60,4 +60,17 @@ int QgsSymbol::lineWidth() const
 void QgsSymbol::setLineWidth(int w)
 {
   mPen.setWidth(w);
+}
+
+QPixmap  QgsSymbol::getSymbolAsPixmap(int xDim, int yDim)
+{
+        QPixmap myQPixmap(xDim,yDim);
+        QPainter myQPainter;
+        myQPainter.begin(&myQPixmap);
+        myQPainter.setBrush(mBrush);
+        myQPainter.setPen(mPen);
+        myQPainter.drawRect(0, 0, xDim, yDim);
+        myQPainter.end();
+        return myQPixmap;
+
 }

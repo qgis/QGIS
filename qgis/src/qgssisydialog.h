@@ -56,7 +56,6 @@ class QgsSiSyDialog: public QgsSiSyDialogBase
     void resendSettingsChanged();
  protected slots:
     void selectOutlineColor();
-    void selectOutlineStyle();
     void selectFillColor();
  private:
     /**Default constructor is privat to not use is*/

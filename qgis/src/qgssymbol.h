@@ -21,6 +21,7 @@
 
 #include <qbrush.h>
 #include <qpen.h>
+#include <qpixmap.h>
 
 class QString;
 
@@ -54,6 +55,8 @@ class QgsSymbol{
     virtual QPen& pen();
     //! Destructor
     virtual ~QgsSymbol();
+    //! Get a little icon / image representation of this symbol
+    virtual QPixmap getSymbolAsPixmap(int xDim, int yDim);
 
  protected:
     QPen mPen;
@@ -82,4 +85,4 @@ inline QPen& QgsSymbol::pen()
 
 #endif // QGSSYMBOL_H
 
-       
+
