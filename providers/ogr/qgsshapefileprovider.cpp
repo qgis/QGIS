@@ -1,15 +1,22 @@
 /* QGIS data provider for ESRI Shapefile format */
 /* $Id$ */
+
+#include "qgsshapefileprovider.h"
+
 #include <iostream>
+#include <cfloat>
+
+#include <ogrsf_frmts.h>
+#include <ogr_geometry.h>
+#include <cpl_error.h>
+
+#include <qguardedptr.h>
+
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
-#include <ogrsf_frmts.h>
-#include <ogr_geometry.h>
-#include <cpl_error.h>
-#include "qgsshapefileprovider.h"
-#include <cfloat>
+
 
 QgsShapeFileProvider::QgsShapeFileProvider(QString uri):dataSourceUri(uri), minmaxcachedirty(true)
 {
@@ -100,32 +107,61 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
  * Get the first feature resutling from a select operation
  * @return QgsFeature
  */
-QgsFeature *QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
+QgsFeature * QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
 {
   QgsFeature *f = 0;
-  if(valid){
+
+  if(valid)
+  {
 #ifdef QGISDEBUG
     std::cerr << "getting first feature\n";
 #endif
     ogrLayer->ResetReading();
-    OGRFeature *feat = ogrLayer->GetNextFeature();
-    if(feat){
+
+    // use QGuardedPtr to insure feat is destroyed no matter how we exit this function
+    QGuardedPtr<OGRFeature> feat = ogrLayer->GetNextFeature();
+
+    Q_ASSERT( ! feat.isNull() );
+
+    if(feat)
+    {
 #ifdef QGISDEBUG
       std::cerr << "First feature is not null\n";
 #endif
-    }else{
+    }
+    else
+    {
 #ifdef QGISDEBUG
       std::cerr << "First feature is null\n";
+
 #endif
+      return 0x0;               // so return a null feature indicating that we got a null feature
     }
+
     f = new QgsFeature(feat->GetFID());
+
+    Q_CHECK_PTR( f );
+
+    if ( ! f )                  // return null if we can't get a new QgsFeature
+    {
+        return 0x0;
+    }
+
     f->setGeometry(getGeometryPointer(feat));
-    if(fetchAttributes){
+
+    if(fetchAttributes)
+    {
       getFeatureAttributes(feat, f);
     }
   }
+
   return f;
-}
+
+} // QgsShapeFileProvider::getFirstFeature()
+
+
+
+
 bool QgsShapeFileProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
 {
   bool returnValue;
