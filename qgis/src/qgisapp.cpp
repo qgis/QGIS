@@ -81,8 +81,8 @@ typedef QString name_t();
 typedef QString description_t();
 
 // version
-static const char *qgisVersion = "0.0.12 pre 3 - August 31, 2003";
-static const int qgisVersionInt = 11;
+static const char *qgisVersion = "0.0.12 - September 5, 2003";
+static const int qgisVersionInt = 12;
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -227,17 +227,20 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n**Multiple features displayed with the Identify tool\n" 
-	"**Preliminary Plugin Manager implementation\n"
-	 "**Version check under tools menu\n"
-	 "**Version checking uses port 80 to prevent problems with firewalls\n"
-	 "**Fix for PostGIS bug when srid != -1\n"
-	 "**Fix for PostGIS LINESTRING rendering\n"
-	 "**Database Connections can now be deleted\n"
-	 "**Fixes to Database Connection dialog\n"
-	 "**Fix for crash when opening a shapefile attribute table twice in succession\n"
-	 "**Fix for crash when opening invalid shapefiles\n"
-	 
+	watsNew += "\n"
+	"**Multiple features displayed with the Identify tool\n" 
+	"**Identify function returns and displays attributes for multiple\n"
+	"   features found within the search radius\n"
+	"**Fixes to endian handling on big endian machines\n"
+	"**Support for PostgreSQL 7.3 schemas for database layers\n"
+	"**Features in shapefiles can be selected by dragging a selection\n"
+	"  box or selecting the records in the attribute table\n"
+	"**Zoom to extent of selected features (Shapefiles only)\n"
+	"**Bug fix: Bug that prevented reopening of the attribute table once\n"
+	"  it was initally displayed and close\n"
+	"**Bug fix: Bug that prevented lines from being drawn with widths\n"
+	"  other than 1 pixel\n"
+	"**Build system has changed for building with PostgreSQL support.\n"
 		;
 
 
