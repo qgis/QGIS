@@ -141,7 +141,7 @@ QString QgsGPXProvider::getProjectionWKT() {
  * @return QgsFeature
  */
 QgsFeature *QgsGPXProvider::getFirstFeature(bool fetchAttributes) {
-  mFid = 0;
+  reset();
   return getNextFeature(fetchAttributes);
 }
 
@@ -196,13 +196,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
   if (mFeatureType == WaypointType) {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
-    int maxFid = data->getNumberOfWaypoints();
-    
-    for (; mFid < maxFid; ++mFid) {
+    for (; mWptIter != data->waypointsEnd(); ++mWptIter) {
       const Waypoint* wpt;
-      wpt = &(data->getWaypoint(mFid));
+      wpt = &(*mWptIter);
       if (boundsCheck(wpt->lon, wpt->lat)) {
-	feature->setFeatureId(mFid);
+	feature->setFeatureId(wpt->id);
 	result = true;
 	
 	// some wkb voodoo
@@ -248,7 +246,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  }
 	}
 	
-	++mFid;
+	++mWptIter;
 	break;
       }
     }
@@ -257,10 +255,9 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
   else if (mFeatureType == RouteType) {
     // go through the routes and return the first one that is in the bounds
     // rectangle
-    int maxFid = data->getNumberOfRoutes();
-    for (; mFid < maxFid; ++mFid) {
+    for (; mRteIter != data->routesEnd(); ++mRteIter) {
       const Route* rte;
-      rte = &(data->getRoute(mFid));
+      rte = &(*mRteIter);
       
       if (rte->points.size() == 0)
 	continue;
@@ -268,7 +265,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
       const QgsRect& b(*mSelectionRectangle);
       if ((rte->xMax >= b.xMin()) && (rte->xMin <= b.xMax()) &&
 	  (rte->yMax >= b.yMin()) && (rte->yMin <= b.yMax())) {
-	feature->setFeatureId(mFid);
+	feature->setFeatureId(rte->id);
 	result = true;
 	
 	// some wkb voodoo
@@ -307,7 +304,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	    feature->addAttribute(attr[URLNameAttr], rte->urlname);
 	}
 	
-	++mFid;
+	++mRteIter;
 	break;
       }
     }
@@ -316,10 +313,9 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
   else if (mFeatureType == TrackType) {
     // go through the tracks and return the first one that is in the bounds
     // rectangle
-    int maxFid = data->getNumberOfTracks();
-    for (; mFid < maxFid; ++mFid) {
+    for (; mTrkIter != data->tracksEnd(); ++mTrkIter) {
       const Track* trk;
-      trk = &(data->getTrack(mFid));
+      trk = &(*mTrkIter);
       
       if (trk->segments.size() == 0)
 	continue;
@@ -329,7 +325,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
       const QgsRect& b(*mSelectionRectangle);
       if ((trk->xMax >= b.xMin()) && (trk->xMin <= b.xMax()) &&
 	  (trk->yMax >= b.yMin()) && (trk->yMin <= b.yMax())) {
-	feature->setFeatureId(mFid);
+	feature->setFeatureId(trk->id);
 	result = true;
 	
 	// some wkb voodoo
@@ -368,7 +364,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	    feature->addAttribute(attr[URLNameAttr], trk->urlname);
 	}
 	
-	++mFid;
+	++mTrkIter;
 	break;
       }
     }
@@ -391,8 +387,6 @@ void QgsGPXProvider::select(QgsRect *rect, bool useIntersect) {
   mSelectionRectangle = new QgsRect(*rect);
   // Select implies an upcoming feature read so we reset the data source
   reset();
-  // Reset the feature id to 0
-  mFid = 0;
 }
 
 
@@ -475,8 +469,12 @@ std::vector<QgsField> const & QgsGPXProvider::fields() const
 
 
 void QgsGPXProvider::reset() {
-  // Reset feature id to 0
-  mFid = 0;
+  if (mFeatureType == WaypointType)
+    mWptIter = data->waypointsBegin();
+  else if (mFeatureType == RouteType)
+    mRteIter = data->routesBegin();
+  else if (mFeatureType == TrackType)
+    mTrkIter = data->tracksBegin();
 }
 
 
@@ -568,7 +566,6 @@ bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
 
 bool QgsGPXProvider::addFeature(QgsFeature* f) {
   unsigned char* geo = f->getGeometry();
-  int featureId;
   bool success = false;
   GPSObject* obj = NULL;
   const std::vector<QgsFeatureAttribute>& attrs(f->attributeMap());
@@ -594,9 +591,9 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
       }
     }
     
-    featureId = data->addWaypoint(wpt);
+    GPSData::WaypointIterator iter = data->addWaypoint(wpt);
     success = true;
-    obj = &(data->getWaypoint(featureId));
+    obj = &(*iter);
   }
   
   // is it a route?
@@ -637,9 +634,9 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
       }
     }
     
-    featureId = data->addRoute(rte);
+    GPSData::RouteIterator iter = data->addRoute(rte);
     success = true;
-    obj = &(data->getRoute(featureId));
+    obj = &(*iter);
   }
   
   // is it a track?
@@ -682,9 +679,9 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     }
     
     trk.segments.push_back(trkseg);
-    featureId = data->addTrack(trk);
+    GPSData::TrackIterator iter = data->addTrack(trk);
     success = true;
-    obj = &(data->getTrack(featureId));
+    obj = &(*iter);
   }
   
   
@@ -716,20 +713,22 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 }
 
 
-bool QgsGPXProvider::deleteFeatures(std::list<int> id) {
-  id.sort();
-  for (std::list<int>::reverse_iterator iter = id.rbegin(); 
-       iter != id.rend(); ++iter) {
-    if (*iter < featureCount()) {
-      std::cerr<<"REMOVING FEATURE "<<(*iter)<<std::endl;
-      if (mFeatureType == WaypointType)
-	data->removeWaypoint(*iter);
-      else if (mFeatureType == RouteType)
-	data->removeRoute(*iter);
-      else if (mFeatureType == TrackType)
-	data->removeTrack(*iter);
-    }
-  }
+bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
+  if (mFeatureType == WaypointType)
+    data->removeWaypoints(id);
+  else if (mFeatureType == RouteType)
+    data->removeRoutes(id);
+  else if (mFeatureType == TrackType)
+    data->removeTracks(id);
+
+  // write back to file
+  QDomDocument qdd;
+  data->fillDom(qdd);
+  QFile file(mFileName);
+  if (!file.open(IO_WriteOnly))
+    return false;
+  QTextStream ostr(&file);
+  ostr<<qdd.toString();
   return true;
 }
 

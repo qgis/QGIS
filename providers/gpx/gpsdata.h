@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <limits>
+#include <list>
 #include <string>
 #include <map>
 #include <vector>
@@ -66,10 +67,16 @@ class GPSExtended : public GPSObject {
 };
 
 
-// they all have the same data members in GPX, so...
-typedef GPSPoint Waypoint;
+// they both have the same data members in GPX, so...
 typedef GPSPoint Routepoint;
 typedef GPSPoint Trackpoint;
+
+
+/** This is the waypoint class. It is a GPSPoint with an ID. */
+class Waypoint : public GPSPoint {
+ public:
+  int id;
+};
 
 
 /** This class represents a GPS route.
@@ -79,6 +86,7 @@ class Route : public GPSExtended {
   bool parseNode(const QDomNode& node);
   void fillElement(QDomElement& elt);
   std::vector<Routepoint> points;
+  int id;
 };
 
 
@@ -99,6 +107,7 @@ class Track : public GPSExtended {
   bool parseNode(const QDomNode& node);
   void fillElement(QDomElement& elt);
   std::vector<TrackSegment> segments;
+  int id;
 };
 
 
@@ -106,6 +115,14 @@ class Track : public GPSExtended {
  */
 class GPSData {
  public:
+  
+  /** This iterator type is used to iterate over waypoints. */
+  typedef std::list<Waypoint>::iterator WaypointIterator;
+  /** This iterator type is used to iterate over routes. */
+  typedef std::list<Route>::iterator RouteIterator;
+  /** This iterator type is used to iterate over tracks. */
+  typedef std::list<Track>::iterator TrackIterator;
+  
   
   /** This constructor initializes the extent to a nonsense value. Don't try
       to use a GPSData object in QGIS without parsing a datafile into it. */
@@ -126,68 +143,57 @@ class GPSData {
   /** Returns the number of waypoints in this dataset. */
   int getNumberOfTracks() const;
   
-  /** This function returns the waypoint with index @c index. If there is no
-      waypoint with that index an exception will be thrown.
+  WaypointIterator waypointsBegin();
+  RouteIterator routesBegin();
+  TrackIterator tracksBegin();
+  WaypointIterator waypointsEnd();
+  RouteIterator routesEnd();
+  TrackIterator tracksEnd();
+  
+  /** This function returns the waypoint with ID @c id. If there is no
+      waypoint with that ID an exception will be thrown.
   */
-  Waypoint& getWaypoint(int index);
+  //Waypoint& getWaypoint(int id);
 
   /** This function returns the route with index @c index. If there is no
       route with that index an exception will be thrown.
   */
-  Route& getRoute(int index);
+  //Route& getRoute(int index);
 
   /** This function returns the track with index @c index. If there is no
       track with that index an exception will be thrown.
   */
-  Track& getTrack(int index);
+  //Track& getTrack(int index);
 
   
-  /** This function tries to add a new waypoint. If the waypoint was added
-      successfully its index will be returned, otherwise a negative number
-      will be returned. */
-  int addWaypoint(double lat, double lon, QString name = "", 
-		  double ele = -std::numeric_limits<double>::max());
+  /** This function tries to add a new waypoint. An iterator to the new
+      waypoint will be returned (it will be waypointsEnd() if the waypoint
+      couldn't be added. */
+  WaypointIterator addWaypoint(double lat, double lon, QString name = "", 
+			       double ele = -std::numeric_limits<double>::max());
 
-  /** This function tries to add a new waypoint. If the waypoint was added
-      successfully its index will be returned, otherwise a negative number
-      will be returned. */
-  int addWaypoint(const Waypoint& wpt);
+  WaypointIterator addWaypoint(const Waypoint& wpt);
 
-  /** This function tries to add a new route. If the route was added
-      successfully its index will be returned, otherwise a negative number
-      will be returned. */
-  int addRoute(QString name = "");
+  /** This function tries to add a new route. It returns an iterator to the
+      new route. */
+  RouteIterator addRoute(QString name = "");
 
-  /** This function tries to add a new route. If the route was added
-      successfully its index will be returned, otherwise a negative number
-      will be returned. */
-  int addRoute(const Route& rte);
+  RouteIterator addRoute(const Route& rte);
 
-  /** This function tries to add a new track. If the track was added
-      successfully its index will be returned, otherwise a negative number
+  /** This function tries to add a new track. An iterator to the new track
       will be returned. */
-  int addTrack(QString name = "");
+  TrackIterator addTrack(QString name = "");
   
-  /** This function tries to add a new track. If the track was added
-      successfully its index will be returned, otherwise a negative number
-      will be returned. */
-  int addTrack(const Track& trk);
+  TrackIterator addTrack(const Track& trk);
   
+  /** This function removes the waypoints whose IDs are in the list. */
+  void removeWaypoints(std::list<int> const & ids);
   
-  /** This function removes the waypoint with index @c index. If 
-      @c checkRoutes is @c true the waypoint will only be removed
-      if it is not used in a route, otherwise the function will return false.
-  */
-  bool removeWaypoint(int index, bool checkRoutes = false);
+  /** This function removes the routes whose IDs are in the list. */
+  void removeRoutes(std::list<int> const & ids);
   
-  /** This function removes the route with index @c index. 
-   */
-  void removeRoute(int index);
-  
-  /** This function removes the track with index @c index. 
-   */
-  void removeTrack(int index);
-  
+  /** This function removes the tracks whose IDs are in the list. */
+  void removeTracks(std::list<int> const & ids);
   
   /** This function tries to parse a QDomDocument as a GPX tree. If it
       succeeds it will fill this GPSData object with the data from the
@@ -217,7 +223,7 @@ class GPSData {
   
   
   /** operator<< is our friend. For debugging, not for file I/O. */
-  friend std::ostream& operator<<(std::ostream& os, const GPSData& d);
+  //friend std::ostream& operator<<(std::ostream& os, const GPSData& d);
   
  protected:
   
@@ -229,9 +235,11 @@ class GPSData {
   */
   bool parseGPX(QDomNode& node);
   
-  std::vector<Waypoint> waypoints;
-  std::vector<Route> routes;
-  std::vector<Track> tracks;
+  std::list<Waypoint> waypoints;
+  std::list<Route> routes;
+  std::list<Track> tracks;
+  int nextWaypoint, nextRoute, nextTrack;
+
   double xMin, xMax, yMin, yMax;
   
   /** This is used internally to store GPS data objects (one per file). */
@@ -241,7 +249,7 @@ class GPSData {
       does reference counting, so several providers can use the same GPSData 
       object. */
   static DataMap dataObjects;
-
+  
 };
 
 #endif

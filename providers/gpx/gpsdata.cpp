@@ -283,6 +283,9 @@ GPSData::GPSData() {
   xMax = -std::numeric_limits<double>::max();
   yMin = std::numeric_limits<double>::max();
   yMax = -std::numeric_limits<double>::max();
+  nextWaypoint = 0;
+  nextRoute = 0;
+  nextTrack = 0;
 }
 
 
@@ -306,7 +309,37 @@ int GPSData::getNumberOfTracks() const {
 }
 
 
-Waypoint& GPSData::getWaypoint(int index) {
+GPSData::WaypointIterator GPSData::waypointsBegin() {
+  return waypoints.begin();
+}
+
+
+GPSData::RouteIterator GPSData::routesBegin() {
+  return routes.begin();
+}
+
+
+GPSData::TrackIterator GPSData::tracksBegin() {
+  return tracks.begin();
+}
+
+
+GPSData::WaypointIterator GPSData::waypointsEnd() {
+  return waypoints.end();
+}
+
+
+GPSData::RouteIterator GPSData::routesEnd() {
+  return routes.end();
+}
+
+
+GPSData::TrackIterator GPSData::tracksEnd() {
+  return tracks.end();
+}
+
+
+/*Waypoint& GPSData::getWaypoint(int ID) {
   if (index < 0 || index >= waypoints.size())
     throw std::out_of_range("Waypoint index is out of range");
   return waypoints[index];
@@ -324,11 +357,11 @@ Track& GPSData::getTrack(int index) {
   if (index < 0 || index >= tracks.size())
     throw std::out_of_range("Track index is out of range");
   return tracks[index];
-}
+  }*/
 
 
-int GPSData::addWaypoint(double lat, double lon, QString name, 
-			 double ele) {
+GPSData::WaypointIterator GPSData::addWaypoint(double lat, double lon, 
+					       QString name, double ele) {
   Waypoint wpt;
   wpt.lat = lat;
   wpt.lon = lon;
@@ -338,90 +371,125 @@ int GPSData::addWaypoint(double lat, double lon, QString name,
 }
 
 
-int GPSData::addWaypoint(const Waypoint& wpt) {
+GPSData::WaypointIterator GPSData::addWaypoint(const Waypoint& wpt) {
   xMax = xMax > wpt.lon ? xMax : wpt.lon;
   xMin = xMin < wpt.lon ? xMin : wpt.lon;
   yMax = yMax > wpt.lat ? yMax : wpt.lat;
   yMin = yMin < wpt.lat ? yMin : wpt.lat;
-  waypoints.push_back(wpt);
-  return waypoints.size() - 1;
+  WaypointIterator iter = waypoints.insert(waypoints.end(), wpt);
+  iter->id = nextWaypoint++;
+  return iter;
 }
 
 
-int GPSData::addRoute(QString name) {
+GPSData::RouteIterator GPSData::addRoute(QString name) {
   Route rte;
   rte.name = name;
   return addRoute(rte);
 }
 
 
-int GPSData::addRoute(const Route& rte) {
+GPSData::RouteIterator GPSData::addRoute(const Route& rte) {
   xMax = xMax > rte.xMax ? xMax : rte.xMax;
   xMin = xMin < rte.xMin ? xMin : rte.xMin;
   yMax = yMax > rte.yMax ? yMax : rte.yMax;
   yMin = yMin < rte.yMin ? yMin : rte.yMin;
-  routes.push_back(rte);
-  return routes.size() - 1;
+  RouteIterator iter = routes.insert(routes.end(), rte);
+  iter->id = nextRoute++;
+  return iter;
 }
 
 
-int GPSData::addTrack(QString name) {
+GPSData::TrackIterator GPSData::addTrack(QString name) {
   Track trk;
   trk.name = name;
   return addTrack(trk);
 }
   
 
-int GPSData::addTrack(const Track& trk) {
+GPSData::TrackIterator GPSData::addTrack(const Track& trk) {
   xMax = xMax > trk.xMax ? xMax : trk.xMax;
   xMin = xMin < trk.xMin ? xMin : trk.xMin;
   yMax = yMax > trk.yMax ? yMax : trk.yMax;
   yMin = yMin < trk.yMin ? yMin : trk.yMin;
-  tracks.push_back(trk);
-  return tracks.size() - 1;
+  TrackIterator iter = tracks.insert(tracks.end(), trk);
+  iter->id = nextTrack++;
+  return iter;
 }
 
 
-bool GPSData::removeWaypoint(int index, bool checkRoutes) {
-  if (checkRoutes)
-    throw std::logic_error("Not implemented");
-  if (index < 0 || index >= waypoints.size())
-    throw std::out_of_range("Waypoint index is out of range");
-  waypoints.erase(waypoints.begin() + index);
-  return true;
-}
-
-
-void GPSData::removeRoute(int index) {
-  if (index < 0 || index >= routes.size())
-    throw std::out_of_range("Route index is out of range");
-  routes.erase(routes.begin() + index);
-}
-
-
-void GPSData::removeTrack(int index) {
-  if (index < 0 || index >= tracks.size())
-    throw std::out_of_range("Track index is out of range");
-  tracks.erase(tracks.begin() + index);
+void GPSData::removeWaypoints(std::list<int> const & ids) {
+  std::list<int> ids2 = ids;
+  ids2.sort();
+  std::list<int>::const_iterator iter = ids2.begin();
+  WaypointIterator wIter;
+  for (wIter = waypoints.begin(); 
+       wIter != waypoints.end() && iter != ids2.end(); ) {
+    WaypointIterator tmpIter = wIter;
+    ++tmpIter;
+    if (wIter->id == *iter) {
+      waypoints.erase(wIter);
+      ++iter;
+    }
+    wIter = tmpIter;
+  }
 }
   
 
+void GPSData::removeRoutes(std::list<int> const & ids) {
+  std::list<int> ids2 = ids;
+  ids2.sort();
+  std::list<int>::const_iterator iter = ids2.begin();
+  RouteIterator rIter;
+  for (rIter = routes.begin(); rIter != routes.end() && iter != ids2.end(); ) {
+    RouteIterator tmpIter = rIter;
+    ++tmpIter;
+    if (rIter->id == *iter) {
+      routes.erase(rIter);
+      ++iter;
+    }
+    rIter = tmpIter;
+  }  
+}
+  
+
+void GPSData::removeTracks(std::list<int> const & ids) {
+  std::list<int> ids2 = ids;
+  ids2.sort();
+  std::list<int>::const_iterator iter = ids2.begin();
+  TrackIterator tIter;
+  for (tIter = tracks.begin(); tIter != tracks.end() && iter != ids2.end(); ) {
+    TrackIterator tmpIter = tIter;
+    ++tmpIter;
+    if (tIter->id == *iter) {
+      tracks.erase(tIter);
+      ++iter;
+    }
+    tIter = tmpIter;
+  }  
+}
+
+
+/*
 std::ostream& operator<<(std::ostream& os, const GPSData& d) {
   os<<"  Waypoints:"<<std::endl;
-  for (int i = 0; i < d.waypoints.size(); ++i)
-    os<<"    "<<d.waypoints[i].name<<": "
-      <<d.waypoints[i].lat<<", "<<d.waypoints[i].lon<<std::endl;
+  GPSData::WaypointIterator wIter;
+  for (wIter = d.waypointsBegin(); wIter != d.waypointsEnd(); ++wIter)
+    os<<"    "<<wIter->name<<": "<<wIter->lat<<", "<<wIter->lon<<std::endl;
 
   os<<"  Routes:"<<std::endl;
-  for (int i = 0; i < d.routes.size(); ++i)
-    os<<"    "<<d.routes[i].name<<std::endl;
+  GPSData::RouteIterator rIter;
+  for (rIter = d.routesBegin(); rIter != d.routesEnd(); ++rIter)
+    os<<"    "<<iter->name<<std::endl;
 
   os<<"  Tracks:"<<std::endl;
-  for (int i = 0; i < d.tracks.size(); ++i)
-    os<<"    "<<d.tracks[i].name<<std::endl;
+  GPSData::TrackIterator tIter;
+  for (tIter = d.tracksBegin(); tIter != d.tracksEnd(); ++tIter)
+    os<<"    "<<iter->name<<std::endl;
 
   return os;
 }
+*/
 
 
 bool GPSData::parseDom(QDomDocument& qdd) {
@@ -457,23 +525,26 @@ void GPSData::fillDom(QDomDocument& qdd) {
   gpxElt.setAttribute("version", "1.0");
   
   // add waypoints
-  for (int i = 0; i < waypoints.size(); ++i) {
+  WaypointIterator wIter;
+  for (wIter = waypoints.begin(); wIter != waypoints.end(); ++wIter) {
     QDomElement wptElt = qdd.createElement("wpt");
-    waypoints[i].fillElement(wptElt);
+    wIter->fillElement(wptElt);
     gpxElt.appendChild(wptElt);
   }
 
   // add routes
-  for (int i = 0; i < routes.size(); ++i) {
+  RouteIterator rIter;
+  for (rIter = routes.begin(); rIter != routes.end(); ++rIter) {
     QDomElement rteElt = qdd.createElement("rte");
-    routes[i].fillElement(rteElt);
+    rIter->fillElement(rteElt);
     gpxElt.appendChild(rteElt);
   }
 
   // add tracks
-  for (int i = 0; i < tracks.size(); ++i) {
+  TrackIterator tIter;
+  for (tIter = tracks.begin(); tIter != tracks.end(); ++tIter) {
     QDomElement trkElt = qdd.createElement("trk");
-    tracks[i].fillElement(trkElt);
+    tIter->fillElement(trkElt);
     gpxElt.appendChild(trkElt);
   }
 }
@@ -490,13 +561,7 @@ bool GPSData::parseGPX(QDomNode& node) {
       Waypoint wpt;
       if (!wpt.parseNode(node))
 	return false;
-      waypoints.push_back(wpt);
-      
-      // update the extent
-      xMin = xMin < wpt.lon ? xMin : wpt.lon;
-      xMax = xMax > wpt.lon ? xMax : wpt.lon;
-      yMin = yMin < wpt.lat ? yMin : wpt.lat;
-      yMax = yMax > wpt.lat ? yMax : wpt.lat;
+      addWaypoint(wpt);
     }
     
     // route
@@ -504,13 +569,7 @@ bool GPSData::parseGPX(QDomNode& node) {
       Route rte;
       if (!rte.parseNode(node))
 	return false;
-      routes.push_back(rte);
-
-      // update the extent
-      xMin = xMin < rte.xMin ? xMin : rte.xMin;
-      xMax = xMax > rte.xMax ? xMax : rte.xMax;
-      yMin = yMin < rte.yMin ? yMin : rte.yMin;
-      yMax = yMax > rte.yMax ? yMax : rte.yMax;
+      addRoute(rte);
     }
     
     // track
@@ -518,13 +577,7 @@ bool GPSData::parseGPX(QDomNode& node) {
       Track trk;
       if (!trk.parseNode(node))
 	return false;
-      tracks.push_back(trk);
-      
-      // update the extent
-      xMin = xMin < trk.xMin ? xMin : trk.xMin;
-      xMax = xMax > trk.xMax ? xMax : trk.xMax;
-      yMin = yMin < trk.yMin ? yMin : trk.yMin;
-      yMax = yMax > trk.yMax ? yMax : trk.yMax;
+      addTrack(trk);
     }
       
     node = node.nextSibling();
