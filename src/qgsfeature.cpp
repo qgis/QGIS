@@ -242,7 +242,7 @@ void QgsFeature::setValid(bool validity)
   mValid = validity;
 }
 
-void QgsFeature::attributeDialog()
+bool QgsFeature::attributeDialog()
 {
     QgsAttributeDialog attdialog(&attributes);
     if(attdialog.exec()==QDialog::Accepted)
@@ -251,6 +251,11 @@ void QgsFeature::attributeDialog()
 	{
 	    attributes[i].setFieldValue(attdialog.value(i));
 	}
+	return true;
+    }
+    else
+    {
+	return false;
     }
 }
 

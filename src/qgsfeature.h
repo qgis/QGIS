@@ -119,8 +119,9 @@ class QgsFeature {
     /** Set WKB geometry*/
     void setGeometry(unsigned char * geometry, size_t length);
 
-    /**Shows a popup dialog to change attribute values*/
-    void attributeDialog();
+    /**Shows a popup dialog to change attribute values
+     @return true if dialog is accepted, false if rejected*/
+    bool attributeDialog();
 
     /**Test for intersection with a rectangle (uses GEOS)*/
     bool intersects(QgsRect* r) const;
