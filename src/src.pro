@@ -5,20 +5,31 @@
 
 TARGET = qgis
 TEMPLATE = app
-LIBS += -L$(PGSQL)/lib -L$/usr/local/lib -lpq++ -lgdal
-INCLUDEPATH += $(PGSQL)/include
+exists ( $(PGSQL) ) {
+	message ( "Configuring to build with PostgreSQL support" )
+	LIBS += -L$(PGSQL)/lib  -lpq++
+	INCLUDEPATH += $(PGSQL)/include
+	DEFINES += PGDB HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
+	SOURCES += qgsdatabaselayer.cpp \
+		qgsdbsourceselect.cpp \
+		qgsnewconnection.cpp 
+	HEADERS += qgsdbsourceselectbase.ui.h \
+	 	qgsdatabaselayer.h \
+		qgsdbsourceselect.h \
+		qgsnewconnection.h 
+	FORMS += qgsdbsourceselectbase.ui \
+		qgsnewconnectionbase.ui 
+}
 CONFIG += qt thread debug
-DEFINES += PGDB HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
+
+LIBS += -L$/usr/local/lib -lgdal
 SOURCES += main.cpp \
            qgisapp.cpp \
-           qgsdatabaselayer.cpp \
            qgsdatasource.cpp \
            qgsmapcanvas.cpp \
            qgsmaplayer.cpp \
            qgsrasterlayer.cpp \
            qgsshapefilelayer.cpp \
-           qgsdbsourceselect.cpp \
-           qgsnewconnection.cpp \
            qgsrect.cpp \
            qgspoint.cpp \
            qgscoordinatetransform.cpp \
@@ -35,18 +46,14 @@ SOURCES += main.cpp \
            qgsrenderer.cpp \
            qgsrenderitem.cpp \
            qgsprojectio.cpp 
-HEADERS += qgsdbsourceselectbase.ui.h \
-           qgisapp.h \
+HEADERS += qgisapp.h \
            qgisappbase.ui.h \
-           qgsdatabaselayer.h \
            qgsdatasource.h \
            qgsmapcanvas.h \
            qgsmaplayer.h \
            qgsrasterlayer.h \
            qgsshapefilelayer.h \
            qgstable.h \
-           qgsdbsourceselect.h \
-           qgsnewconnection.h \
            qgsrect.h \
            qgspoint.h \
            qgscoordinatetransform.h \
@@ -63,9 +70,7 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgsrenderer.h \
            qgsrenderitem.h \
            qgsprojectio.h 
-FORMS += qgsdbsourceselectbase.ui \
-         qgisappbase.ui \
-         qgsnewconnectionbase.ui \
+FORMS += qgisappbase.ui \
          qgslegenditembase.ui \
          qgsabout.ui \
          qgslayerpropertiesbase.ui \
