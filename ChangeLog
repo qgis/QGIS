@@ -1,7 +1,20 @@
 QGIS Change Log
-ChangeLog,v 1.24 2004/02/27 08:46:51 timlinux Exp
+ChangeLog,v 1.25 2004/02/29 00:54:08 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-02-28 [gs] 0.1.0devel5
+** Updated doxygen mainpage section in qgis.h
+** Added Whats this? help to main application window
+** Added providers/delimitedtext and associated source files to CVS
+
+2004-02-27 [gs] 0.1.0devel4
+** Corrected debug statements in main.cpp and added a bit of verbiage to the
+   help text.
+** Removed hard coding of provider types in the QgisApp::addVectorLayer method.
+  Caller must now provide compatible arguments that the designated provider can
+  use to open the data store and fetch data. Changed QgsPgGeoprocessing class
+  to properly call addVectorLayer.
 
 2004-02-27 [ts]
 ** Changed cl parser to getopt
@@ -17,7 +30,7 @@ Version 0.2 'Pumpkin' .... development version
 ** Added a tab to raster layer properties dialog to show metadata about the
    raster layer (using gdal metadata)
 
-2004-02-26 [gs]
+2004-02-26 [gs] 0.1.0devel3
 ** Added Version to configure.in. QGIS now displays its version number based on
    the settings in configure.in
 
