@@ -1,0 +1,124 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>PluginGuiBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>PluginGuiBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>593</width>
+            <height>432</height>
+        </rect>
+    </property>
+    <property name="paletteBackgroundColor">
+        <color>
+            <red>255</red>
+            <green>255</green>
+            <blue>255</blue>
+        </color>
+    </property>
+    <property name="caption">
+        <string>QGIS Plugin Template</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pbnCancel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>398</y>
+                <width>70</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Cancel</string>
+        </property>
+    </widget>
+    <spacer>
+        <property name="name">
+            <cstring>spacer2</cstring>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+        <property name="sizeType">
+            <enum>Expanding</enum>
+        </property>
+        <property name="sizeHint">
+            <size>
+                <width>441</width>
+                <height>21</height>
+            </size>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>87</x>
+                <y>399</y>
+                <width>441</width>
+                <height>21</height>
+            </rect>
+        </property>
+    </spacer>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pbnOK</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>534</x>
+                <y>398</y>
+                <width>48</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>OK</string>
+        </property>
+    </widget>
+    <widget class="QTextEdit">
+        <property name="name">
+            <cstring>teInstructions</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>70</y>
+                <width>541</width>
+                <height>171</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>This is a template for your plugin gui. Please modify this as needed.</string>
+        </property>
+    </widget>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="2398">789c7594c76e23471086ef7a0a4275138cda8e1360f8a09c03a5cd860f1d669433150dbfbb877fb516b04493047a3e564d75e54f0ba3ef07bba3854f73f79330394da37412ee460bf9e1f2f2e5cfbffef87b6e5e57a3e94feb9199ff6d6e7e3c19a5d1def5553705de1e8094f24629f063e150f858b852c254e4952df2a3c2beb0061b1795065f81ad0b0a97d39ab0b745be22fcebfdcbc2756105f6555b780bdc546fef27705b35459ec16930578357c1d915fbb453b8510ef25e7888d743fe00ee7ed93f2c9c95055f837b678bfd93c259b5e06561df177bb85f2be75482fc33d8d8a07ac8915fed6dab1ac823380efec03f5a07774e6bc809fe1863b5cad07f2a1c35ea49c8a7f1de6ab97f17dcb8a4711f1b70673b037f09ef0fca7dd1473d6d657b837a318153a5b4e4eb79ca4e392fef7307aebc17ff18f973a169c51ebf80934b36826fc0d96b27f540bdbdf1c68a3f90fb5c2523f105705f192ff7ef17b656f2773be56ae85723f24de1e11fb17701d695f6626f47b876255fa85f35f49b457d68f2c65ee2ff0e7655eda47fc7e06a904bfca21fabde0937c27567c59f76cab50a5ea39f08fd5adbba2af6970ad70efe91b06fac95feba070f1f27fe5d09b7a6f403faad6e1beb2ae8ef8173a34bbe3cb86fdef2857a36aa71c27c0a36756f657ebe817d93c41ea17e4ddb642bfbe20b38b646f2c117857b23fa2c1cea925fec9726b5da0530faa7c96debc43f0bee5a6fc57fec87a66fb341bf10e2694ddb39e9af5770dd0687fcd00138062dcc3f0b3b8b7925f44f9b83977ea6457037f4a7c47306ee8335f08fc78593917c9d4f39a8d0598957d84665243eec8fe0a32bfd57839b688df88bf90d717050ea87fd14523456e66d63ca51c52cf113e28b2638d1e73be1184b3ef6dfb8cc0ff661745117f9bd70f265de2b7095bc91fe137b75cc5afa55ee8fa92e72f4434c2919c9df59e1aed417f39e4cca5aea85f91bc6bb71922fecc75465a3655fa23e29774a4b7e7f4c39ab1c4aff62df659b73d92fd857d9e5beec13d42bc7ce957c61be73372c44b1e70ab75aeaf315dc7749ee1f4f667f99384ccfffd3e1c889b33ccfd6e18e7b3ee693d93a7cca677cce177cc9577ccd371f75f896eff89e27fcc08ffcc4cffcf25e875f799197867399577895d7defeff8fce3a6ff0e6706ef136eff02eefbdd7e17d3ee0f1701ef2117fe62ffc95bf7dd0f9ce3ff8e7702ad66cd8b2633fe3ae8a6b6eb82526a24091d2471dcad4514fc77442a77446e7743143e792aee89a6ee896eee89e26b3e2a2077aa4277aa6177aa5455aa2e5f73ab442abb446eb78dea04ddaa2ed59b5a01ddac5b947fb7440e3993a8774f4b1c2f3fffc3ef72f81bc28dd</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>pbnOK</sender>
+        <signal>clicked()</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>pbnOK_clicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">pluginguibase.ui.h</include>
+</includes>
+<slots>
+    <slot>pbnInputFile_clicked()</slot>
+    <slot>pbnOutputFile_clicked()</slot>
+    <slot>pbnOK_clicked()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
