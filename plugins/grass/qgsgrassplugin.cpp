@@ -210,16 +210,20 @@ void QgsGrassPlugin::initGui()
                           "Edit Grass Vector layer",0, this, "edit");
     editAction->setWhatsThis("Edit the currently selected GRASS vector layer.");
     if ( !QgsGrass::activeMode() )  {
-  mRegionAction->setEnabled(false);
-  editRegionAction->setEnabled(false);
+        mRegionAction->setEnabled(false);
+        editRegionAction->setEnabled(false);
     } else {
-  mRegionAction->setOn(true);
+        mRegionAction->setEnabled(true);
+	editRegionAction->setEnabled(true);
+	bool on = settings.readBoolEntry ("/qgis/grass/region/on", true );
+        mRegionAction->setOn(on);
     }
 
     // Connect the action 
     connect(addVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
     connect(addRasterAction, SIGNAL(activated()), this, SLOT(addRaster()));
     connect(editAction, SIGNAL(activated()), this, SLOT(edit()));
+    connect(mRegionAction, SIGNAL(toggled(bool)), this, SLOT(switchRegion(bool)));
     connect(editRegionAction, SIGNAL(activated()), this, SLOT(changeRegion()));
 
     // Add the toolbar
@@ -234,7 +238,7 @@ void QgsGrassPlugin::initGui()
     editAction->addTo(toolBarPointer);
   
     // Connect display region
-    connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(displayRegion(QPainter *)));
+    connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
     // Init Region symbology
     mRegionPen.setColor( QColor ( settings.readEntry ("/qgis/grass/region/color", "#ff0000" ) ) );
@@ -344,13 +348,23 @@ void QgsGrassPlugin::edit()
     }
 }
 
+void QgsGrassPlugin::postRender(QPainter *painter)
+{
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::postRender()" << std::endl;
+    #endif
+    
+    if ( QgsGrass::activeMode() && mRegionAction->isEnabled() && mRegionAction->isOn() ) {
+	displayRegion(painter);
+    }
+}
+
 void QgsGrassPlugin::displayRegion(QPainter *painter)
 {
     #ifdef QGISDEBUG
     std::cout << "QgsGrassPlugin::displayRegion()" << std::endl;
     #endif
     
-    if ( !mRegionAction->isEnabled() || !mRegionAction->isOn() ) return;
 
     // Display region of current mapset if in active mode
     if ( !QgsGrass::activeMode() ) return;
@@ -396,6 +410,33 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
 
     painter->setPen ( mRegionPen );
     painter->drawPolyline ( pointArray );
+}
+
+void QgsGrassPlugin::switchRegion(bool on)
+{
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::switchRegion()" << std::endl;
+    #endif
+
+    QSettings settings;
+    settings.writeEntry ("/qgis/grass/region/on", on );
+
+    QPixmap *pixmap = mCanvas->canvasPixmap();
+    QPainter p;
+    p.begin(pixmap);
+    
+    if ( on ) {
+	displayRegion(&p);
+    } else {
+	// This is not perfect, but user can see reaction and it is fast
+	QPen pen = mRegionPen;
+	mRegionPen.setColor( QColor(255,255,255) ); // TODO: background color
+	displayRegion(&p);
+	mRegionPen = pen;
+    }
+    
+    p.end();
+    mCanvas->repaint(false);
 }
 
 void QgsGrassPlugin::changeRegion(void)

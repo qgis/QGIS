@@ -140,7 +140,7 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     connect( mRows, SIGNAL(textChanged(const QString &)), this, SLOT(rowsChanged(const QString &)));
     connect( mCols, SIGNAL(textChanged(const QString &)), this, SLOT(colsChanged(const QString &)));
 
-    mCanvas->setMapTool ( QGis::CapturePoint );
+    mCanvas->setMapTool ( QGis::EmitPoint );
     mCanvas->setCursor (  Qt::CrossCursor );
 
     // Symbology
