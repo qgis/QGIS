@@ -43,8 +43,9 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
     edit->insertItem(tr("&Add Attribute..."), this, SLOT(addAttribute()), CTRL+Key_A,0);
     edit->insertItem(tr("&Delete Attributes..."), this, SLOT(deleteAttributes()), CTRL+Key_D,1);
     selection->insertItem(tr("&Bring selected to top"), this, SLOT(selectedToTop()), CTRL+Key_T);
+    selection->insertItem(tr("&Invert selection"), this, SLOT(invertSelection()), CTRL+Key_I);
     mMenuBar->insertItem(tr("&Edit"), edit);
-    mMenuBar->insertItem(tr("&Selected"),selection);
+    mMenuBar->insertItem(tr("&Selection"),selection);
     edit->setItemEnabled(0,false);
     edit->setItemEnabled(1,false);
 
@@ -164,4 +165,12 @@ void QgsAttributeTableDisplay::stopEditing()
 void QgsAttributeTableDisplay::selectedToTop()
 {
     table()->bringSelectedToTop();
+}
+
+void QgsAttributeTableDisplay::invertSelection()
+{
+    if(mLayer)
+    {
+	mLayer->invertSelection();
+    }
 }
