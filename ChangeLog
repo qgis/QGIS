@@ -1,9 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.25 2004/02/29 00:54:08 gsherman Exp
+ChangeLog,v 1.26 2004/02/29 01:58:32 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
 
 2004-02-28 [gs] 0.1.0devel5
+** Refactored QgsField to use new coding conventions
+** Documented QgsField (added docs to qgsfield.h)
 ** Updated doxygen mainpage section in qgis.h
 ** Added Whats this? help to main application window
 ** Added providers/delimitedtext and associated source files to CVS
