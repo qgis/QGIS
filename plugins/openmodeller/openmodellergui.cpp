@@ -411,7 +411,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
         }
         myLastFileNameQString=*myIterator;
         ++myIterator;
-      }     
+      } 
+      lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
       //enable the user to carry on to the next page...
       setNextEnabled(currentPage(),true);
     }
@@ -450,16 +451,17 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
         myProjLastFileNameQString=*myProjIterator;
         ++myProjIterator;
       }     
+      lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
       //enable the user to carry on to the next page...
       setNextEnabled(currentPage(),true);
     }
-    if ( lstProjLayers->count()==0)
-    {
-      setNextEnabled(currentPage(),false);
-    }  
-    else
+    if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
     {
       setNextEnabled(currentPage(),true);
+    }  
+    else 
+    {
+      setNextEnabled(currentPage(),false);
     }
   
   
@@ -792,6 +794,7 @@ void OpenModellerGui::pbnRemoveLayerFile_clicked()
     setNextEnabled(currentPage(),false);
   }
 
+lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");  
 }
 
 
@@ -842,6 +845,7 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
     QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));       
   } 
 
+  lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
 }
 
 
@@ -1322,7 +1326,15 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
   {
     QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("This file is not a valid GDAL file.  Please check and try again."));
   } 
-  
+  lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
+  if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
+  {
+      setNextEnabled(currentPage(),true);
+  }  
+  else 
+  {
+      setNextEnabled(currentPage(),false);
+  }
 }
 
 void OpenModellerGui::pbnSelectLayerFolderProj_clicked()
@@ -1373,6 +1385,16 @@ void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
   {
     setNextEnabled(currentPage(),false);
   }
+lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
+
+  if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
+  {
+      setNextEnabled(currentPage(),true);
+  }  
+  else 
+  {
+      setNextEnabled(currentPage(),false);
+  }
 
 }
 
@@ -1385,9 +1407,19 @@ void OpenModellerGui::createModelImage(QString theBaseName)
   myImageWriter.writeImage(theBaseName+".tif",myImageFileNameString);
   std::cout << "Model image written to : " << myImageFileNameString << std::endl;
   
-  
-
-
 }
 
+bool OpenModellerGui::checkLayersMatch()
+{
+  // Checks to see if the input and output layers match
+  // NB MORE SOPHISTICATED CHECKING SHOULD BE ADDED LATER!!!!
+  if (lstProjLayers->count()==lstLayers->count())
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 

@@ -75,7 +75,7 @@ public:
   void pbnRemoveLayerFileProj_clicked();
   void pbnSelectLayerFileProj_clicked();
   static bool isValidGdalFile(const QString theFilename);
-  static bool isValidGdalProj(const QString theFilename);
+  static bool isValidGdalProj(const QString theFilename); 
   
 private:
     OpenModeller * mOpenModeller;
@@ -112,6 +112,7 @@ private:
     QWidget *mLayoutWidget;
     void getProjList();
     void createModelImage(QString theBaseName);
+    bool checkLayersMatch();
     
 signals:
    void drawModelImage(QString);
