@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.187 2004/09/20 17:20:03 larsl Exp
+ChangeLog,v 1.188 2004/09/20 17:55:20 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-20 [larsl] 0.4.0devel35
+** Re-fixed bug 987874, the provider will now skip geometry-less features
+   but keep reading other features
 
 2004-09-20 [larsl] 0.4.0devel34
 ** Fixed bug 987874 which caused QGIS to crash when showing the attribute
