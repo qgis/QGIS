@@ -62,8 +62,11 @@ struct QgsProject::Imp
     /// true if project has been modified since it has been read or saved
     bool dirty;
 
+    /// map units for current project
+    QgsScaleCalculator::units mapUnits;
+
     Imp()
-        : title(""), dirty(false)
+        : title(""), dirty(false), mapUnits(QgsScaleCalculator::METERS)
     {}
 
 }; // struct QgsProject::Imp
@@ -111,6 +114,20 @@ QString const & QgsProject::title() const
 {
     return imp_->title;
 } // QgsProject::title() const
+
+
+
+QgsScaleCalculator::units QgsProject::mapUnits() const
+{
+    return imp_->mapUnits;
+} // QgsScaleCalculator::units QgsProject::mapUnits() const
+
+
+
+void QgsProject::mapUnits(QgsScaleCalculator::units u)
+{
+    imp_->mapUnits = u;
+} // void QgsProject::mapUnits(QgsScaleCalculator::units u)
 
 
 
@@ -206,13 +223,61 @@ _getExtents( QDomDocument const & doc, QgsRect & aoi )
    Get the project title
 
    XML in file has this form:
+     <units>feet</units>
+ */
+static
+bool
+_getMapUnits( QDomDocument const & doc )
+{
+    QDomNodeList nl = doc.elementsByTagName("units");
+
+    // since "units" is a new project file type, legacy project files will not
+    // have this element.  If we do have such a legacy project file missing
+    // "units", then just return;
+    if ( ! nl.count() )
+    {
+        return false;
+    }
+
+    QDomNode    node    = nl.item(0); // there should only be one, so zeroth element ok
+    QDomElement element = node.toElement();
+
+    if ( "meters" == element.text() )
+    {
+        QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
+    }
+    else if ( "feet" == element.text() )
+    {
+        QgsProject::instance()->mapUnits( QgsScaleCalculator::FEET );
+    }
+    else if ( "degrees" == element.text() )
+    {
+        QgsProject::instance()->mapUnits( QgsScaleCalculator::DEGREES );
+    }
+    else
+    {
+        std::cerr << __FILE__ << ":" << __LINE__
+                  << " unknown map unit type " << element.text() << "\n";
+        false;
+    }
+
+    return true;
+
+} // _getMapUnits
+
+
+
+/**
+   Get the project title
+
+   XML in file has this form:
      <qgis projectname="default project">
  */
 static
 void
 _getTitle( QDomDocument const & doc, QString & title )
 {
-    QDomNodeList nl = doc.elementsByTagName("qgis");
+    QDomNodeList nl = doc.elementsByTagName("title");
 
     QDomNode    node    = nl.item(0); // there should only be one, so zeroth element ok
     QDomElement element = node.toElement();
@@ -268,6 +333,8 @@ _findQgisApp()
 
         return 0x0;             // XXX some sort of error value?  Exception?
     }
+
+    return qgisApp;
 } // _findQgisApp
 
 
@@ -325,7 +392,7 @@ _getMapLayers( QDomDocument const & doc )
     
     // process the map layer nodes
 
-    for (int i = 0; i < nl.count(); i++)
+    for (size_t i = 0; i < nl.count(); i++)
     {
 	QDomNode    node    = nl.item(i);
         QDomElement element = node.toElement();
@@ -646,8 +713,12 @@ QgsProject::read( )
     // now get project title
     _getTitle( *doc, imp_->title );
 #ifdef QGISDEBUG
-        qDebug( "Project title: " + imp_->title );
+    qDebug( "Project title: " + imp_->title );
 #endif
+
+    // now set the map units; note, alters QgsProject::instance().
+    _getMapUnits( *doc );
+
 
     // XXX insert code for setting the properties
 
@@ -692,7 +763,6 @@ QgsProject::write( )
     std::auto_ptr<QDomDocument> doc = 
 	std::auto_ptr<QDomDocument>( new QDomDocument( documentType ) );
 
-    // XXX add guts from QgsProjectIO write
 
     QDomElement qgis = doc->createElement( "qgis" );
     qgis.setAttribute( "projectname", title() );
@@ -705,6 +775,32 @@ QgsProject::write( )
 
     QDomText titleText = doc->createTextNode( title() ); // XXX why have title TWICE?
     titleNode.appendChild( titleText );
+
+    // units
+
+    QDomElement unitsNode = doc->createElement( "units" );
+    qgis.appendChild( unitsNode );
+
+    QString unitsString;
+
+    switch (instance()->imp_->mapUnits)
+    {
+        case QgsScaleCalculator::METERS :
+            unitsString = "meters";
+            break;
+        case QgsScaleCalculator::FEET :
+            unitsString = "feet";
+            break;
+        case QgsScaleCalculator::DEGREES :
+            unitsString = "degrees";
+            break;
+        default :
+            unitsString = "unknown";
+            break;
+    }
+
+    QDomText unitsText = doc->createTextNode( unitsString );
+    unitsNode.appendChild( unitsText );
 
     // extent
 
@@ -755,7 +851,8 @@ QgsProject::write( )
 
     doc->normalize();           // XXX I'm not entirely sure what this does
 
-    QString xml = doc->toString( 8 ); // write to string with indentation of eight characters
+    QString xml = doc->toString( 4 ); // write to string with indentation of four characters
+                                      // (yes, four is arbitrary)
 
     // const char * xmlString = xml.ascii(); // debugger probe point
     // qDebug( "project file output:\n\n" + xml );

@@ -32,7 +32,7 @@ class QgsSingleSymRenderer: public QgsRenderer
 {
  public:
     QgsSingleSymRenderer();
-    ~QgsSingleSymRenderer();
+    virtual ~QgsSingleSymRenderer();
     /**Replaces the current mItem by ri*/
     void addItem(QgsRenderItem* ri);
     /**Returns a pointer to mItem*/

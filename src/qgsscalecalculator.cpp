@@ -23,21 +23,23 @@
 #include "qgsrect.h"
 #include "qgsscalecalculator.h"
 
-  QgsScaleCalculator::QgsScaleCalculator(int dpi, int mapUnits) 
+QgsScaleCalculator::QgsScaleCalculator(int dpi, QgsScaleCalculator::units mapUnits) 
 : mDpi(dpi), mMapUnits(mapUnits)
-{
-}
+{}
+
 QgsScaleCalculator::~QgsScaleCalculator()
-{
-}
+{}
+
 void QgsScaleCalculator::setDpi(int dpi)
 {
   mDpi = dpi;
 }
-void QgsScaleCalculator::setMapUnits(int mapUnits)
+
+void QgsScaleCalculator::setMapUnits(units mapUnits)
 {
   mMapUnits = mapUnits;
 }
+
 double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
 {
   double conversionFactor; 
@@ -70,7 +72,9 @@ double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
   double scale = (delta * conversionFactor)/(canvasWidth/mDpi);
   return scale;
 }
-double QgsScaleCalculator::calculateGeographicDistance(QgsRect &mapExtent)
+
+
+double  QgsScaleCalculator::calculateGeographicDistance(QgsRect &mapExtent)
 {
   // need to calculate the x distance in meters 
   // We'll use the middle latitude for the calculation

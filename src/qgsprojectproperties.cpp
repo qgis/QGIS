@@ -19,38 +19,41 @@
 
 #include "qgsprojectproperties.h"
 
-#include "qgsscalecalculator.h"
 
 #include <qbuttongroup.h>
 #include <qlineedit.h>
 
+#include "qgsproject.h"
 
 
 QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
-    : QgsProjectPropertiesBase(parent, name), 
-      mMapUnits(QgsScaleCalculator::METERS)
-{}
+    : QgsProjectPropertiesBase(parent, name)
+{
+    QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
+}
 
 QgsProjectProperties::~QgsProjectProperties()
 {}
 
 
-int QgsProjectProperties::mapUnits()
+QgsScaleCalculator::units QgsProjectProperties::mapUnits() const
 {
-  return mMapUnits;
+  return QgsProject::instance()->mapUnits();
 }
 
 
 void QgsProjectProperties::mapUnitChange(int unit)
 {
-  mMapUnits = unit;
+   QgsProject::instance()->mapUnits(
+       static_cast<QgsScaleCalculator::units>(unit));
 }
 
 
-void QgsProjectProperties::setMapUnits(int unit)
+void QgsProjectProperties::setMapUnits(QgsScaleCalculator::units unit)
 {
   // select the button
-  btnGrpMapUnits->setButton(unit);
+  btnGrpMapUnits->setButton(static_cast<int>(unit));
+  QgsProject::instance()->mapUnits(unit);
 }
 
 
@@ -63,4 +66,5 @@ QString QgsProjectProperties::title() const
 void QgsProjectProperties::title( QString const & title )
 {
     titleEdit->setText( title );
+    QgsProject::instance()->title( title );
 } // QgsProjectProperties::title( QString const & title )

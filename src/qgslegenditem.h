@@ -46,7 +46,9 @@ public:
      * @param parent The parent listview
      * @param actionInOverview QgisApp's actionInOverview
      */
-    QgsLegendItem(QgsMapLayer * lyr = 0, QListView * parent = 0, QAction * actionInOverview = 0);
+    QgsLegendItem(QgsMapLayer * lyr = 0, 
+                  QListView * parent = 0, 
+                  QAction * actionInOverview = 0);
 
     //! Destructor
     virtual ~QgsLegendItem();
@@ -75,6 +77,12 @@ public:
     void setOn( bool );
 
 private:                       // Private attributes
+
+    /// QgsLegendItem aren't copied
+    QgsLegendItem( QgsLegendItem const & );
+
+    /// QgsLegendItem aren't copied
+    QgsLegendItem & operator=( QgsLegendItem const & );
 
     /**  */
     QgsMapLayer * m_layer;

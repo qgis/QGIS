@@ -253,7 +253,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     //
     if (mLabelAttributes->bufferSizeIsSet())
     {
-      int myBufferSize = mLabelAttributes->bufferSize() ;
+      int myBufferSize = static_cast<int>(mLabelAttributes->bufferSize());
       if (mLabelAttributes->bufferColorIsSet())
       {
         painter->setPen( mLabelAttributes->bufferColor());

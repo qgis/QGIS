@@ -28,7 +28,7 @@ class QgsUniqueValRenderer: public QgsRenderer
 {
  public:
     QgsUniqueValRenderer();
-    ~QgsUniqueValRenderer();
+    virtual ~QgsUniqueValRenderer();
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected);
     /**Reads the renderer configuration from an XML file

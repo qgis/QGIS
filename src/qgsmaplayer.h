@@ -373,6 +373,12 @@ protected:
 
 private:                       // Private attributes
 
+  /// QgsMapLayer not copyable
+  QgsMapLayer( QgsMapLayer const & );
+
+  /// QgsMapLayer not copyable
+  QgsMapLayer & operator=( QgsMapLayer const & );
+
   /** Unique ID of this layer - used to refer to this layer  in QGIS code */
   QString ID;
 

@@ -152,7 +152,7 @@ void QgsLabelDialog::init ( void )
   mFont.setFamily(myLabelAttributes->family());
   if (myLabelAttributes->sizeIsSet())
   {
-    mFont.setPointSize(myLabelAttributes->size());
+    mFont.setPointSize(static_cast<int>(myLabelAttributes->size()));
 
     int myTypeInt = myLabelAttributes->sizeType();
     if (myTypeInt == QgsLabelAttributes::PointUnits)
@@ -166,7 +166,7 @@ void QgsLabelDialog::init ( void )
   }
   else //defaults for when no size has been set
   {
-    mFont.setPointSize(myLabelAttributes->size());
+    mFont.setPointSize(static_cast<int>(myLabelAttributes->size()));
     radioFontSizeUnitsPoints->setChecked(true);
   }
 
@@ -200,15 +200,15 @@ void QgsLabelDialog::init ( void )
     { 
       radioOffsetUnitsMap->setChecked(true);
     }
-    spinXOffset->setValue(myLabelAttributes->xOffset());
-    spinYOffset->setValue(myLabelAttributes->yOffset());
+    spinXOffset->setValue(static_cast<int>(myLabelAttributes->xOffset()));
+    spinYOffset->setValue(static_cast<int>(myLabelAttributes->yOffset()));
   }
   else //defaults for when no offset is defined
   {
     spinXOffset->setValue(0);
     spinYOffset->setValue(0);
   }
-  spinAngle->setValue(myLabelAttributes->angle()); 
+  spinAngle->setValue(static_cast<int>(myLabelAttributes->angle())); 
 
   //the values here may seem a bit counterintuitive - basically everything 
   //is the reverse of the way you think it should be...
@@ -237,14 +237,14 @@ void QgsLabelDialog::init ( void )
     { 
       radioBufferUnitsMap->setChecked(true);
     }
-    spinBufferSize->setValue(myLabelAttributes->bufferSize());
+    spinBufferSize->setValue(static_cast<int>(myLabelAttributes->bufferSize()));
   }
   else //defaults for when no offset is defined
   {
     spinBufferSize->setValue(0);
   }
   
-  spinBufferSize->setValue(myLabelAttributes->bufferSize());
+  spinBufferSize->setValue(static_cast<int>(myLabelAttributes->bufferSize()));
   //TODO - transparency attributes for buffers
 
 }

@@ -159,6 +159,10 @@ void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
   repaintContents();
 }
 
+
+/**
+  XXX Doesn't QString have something ilke this already?
+*/
 int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool alphanumeric)
 {
   if (alphanumeric)
@@ -212,6 +216,9 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
           return 0;
         }
     }
+
+  return 0;                     // XXX has to return something; is this reasonable?
+
 }
 
 void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, bool alphanumeric)

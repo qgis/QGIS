@@ -92,8 +92,15 @@ class QgsCoordinateTransform{
 
 };
 
-inline QgsCoordinateTransform::QgsCoordinateTransform(double mupp, double ymax,
-	   double ymin, double xmin):mapUnitsPerPixel(mupp), yMax(ymax), yMin(ymin), xMin(xmin)
+inline QgsCoordinateTransform::QgsCoordinateTransform(double mupp, 
+                                                      double ymax,
+                                                      double ymin, 
+                                                      double xmin)
+    : mapUnitsPerPixel(mupp), 
+      yMax(ymax), 
+      yMin(ymin), 
+      xMin(xmin),
+      xMax(0)                   // XXX wasn't originally specified?  Why?
 {
 }
 

@@ -16,6 +16,8 @@
 #ifndef QGSGRASSEDIT_H
 #define QGSGRASSEDIT_H
 
+#include <vector>
+
 #include <qpointarray.h>
 #include <qcursor.h>
 #include <qpen.h>

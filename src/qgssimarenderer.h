@@ -28,7 +28,7 @@ class QgsSiMaRenderer: public QgsRenderer
 {
  public:
     QgsSiMaRenderer();
-    ~QgsSiMaRenderer();
+    virtual ~QgsSiMaRenderer();
     /**Replaces the current mItem by ri*/
     void addItem(QgsRenderItem* ri);
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);

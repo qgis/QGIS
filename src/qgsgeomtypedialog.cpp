@@ -44,4 +44,6 @@ QGis::WKBTYPE QgsGeomTypeDialog::selectedType()
     {
 	return QGis::WKBPolygon;
     }
+
+    return QGis::WKBUnknown;
 }

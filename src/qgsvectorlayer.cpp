@@ -668,19 +668,20 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
     }
 
   }
-  void QgsVectorLayer::table()
-  {
+
+void QgsVectorLayer::table()
+{
     if (tabledisplay)
     {
-      tabledisplay->raise();
+        tabledisplay->raise();
     } else
     {
-      // display the attribute table
-      QApplication::setOverrideCursor(Qt::waitCursor);
-      dataProvider->reset();
-      int numFields = dataProvider->fieldCount();
-      tabledisplay = new QgsAttributeTableDisplay();
-QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
+        // display the attribute table
+        QApplication::setOverrideCursor(Qt::waitCursor);
+        dataProvider->reset();
+        int numFields = dataProvider->fieldCount();
+        tabledisplay = new QgsAttributeTableDisplay();
+        connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
         tabledisplay->table()->setNumRows(dataProvider->featureCount());
         tabledisplay->table()->setNumCols(numFields + 1); //+1 for the id-column
 
@@ -692,23 +693,23 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
         //for (int h = 0; h < numFields; h++) {
         for (int h = 1; h <= numFields; h++)
         {
-          colHeader->setLabel(h, fields[h - 1].name());
+            colHeader->setLabel(h, fields[h - 1].name());
         }
         QgsFeature *fet;
         while ((fet = dataProvider->getNextFeature(true)))
         {
 
-          //id-field
-          tabledisplay->table()->setText(row, 0, QString::number(fet->featureId()));
-          tabledisplay->table()->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
-          std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-          for (int i = 0; i < attr.size(); i++)
-          {
-            // get the field values
-            tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
-          }
-          row++;
-          delete fet;
+            //id-field
+            tabledisplay->table()->setText(row, 0, QString::number(fet->featureId()));
+            tabledisplay->table()->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
+            std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+            for (int i = 0; i < attr.size(); i++)
+            {
+                // get the field values
+                tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
+            }
+            row++;
+            delete fet;
         }
 
         // reset the pointer to start of fetabledisplayures so
@@ -726,9 +727,9 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
 
         for (std::map < int, bool >::iterator it = selected.begin(); it != selected.end(); ++it)
         {
-          tabledisplay->table()->selectRowWithId(it->first);
+            tabledisplay->table()->selectRowWithId(it->first);
 #ifdef QGISDEBUG
-          qWarning("selecting row with id " + QString::number(it->first));
+            qWarning("selecting row with id " + QString::number(it->first));
 #endif
         }
 
@@ -741,9 +742,11 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
         QApplication::restoreOverrideCursor();
     }
 
-    }
+} // QgsVectorLayer::table
 
-    void QgsVectorLayer::select(int number)
+
+
+void QgsVectorLayer::select(int number)
     {
       selected[number] = true;
     }

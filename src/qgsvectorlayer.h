@@ -18,6 +18,7 @@
 
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
+
 class QPainter;
 class QgsRect;
 class QLibrary;
@@ -33,6 +34,7 @@ class QgsIdentifyResults;
 class QgsLabel;
 
 #include <map>
+#include <vector>
 
 #include "qgsmaplayer.h"
 #include "qvaluevector.h"
@@ -44,7 +46,7 @@ class QgsLabel;
  * \brief Vector layer backed by a data source provider
  */
 
-class QgsVectorLayer:public QgsMapLayer
+class QgsVectorLayer : public QgsMapLayer
 {
     Q_OBJECT;
 
@@ -292,6 +294,11 @@ private:                       // Private methods
   //! Flag to indicate if scale dependent rendering is in effect
   bool mScaleDependentRender;
   
+  /// vector layers are not copyable
+  QgsVectorLayer( QgsVectorLayer const & rhs );
+
+  /// vector layers are not copyable
+  QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
 
 };
 
