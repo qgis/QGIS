@@ -13,3 +13,9 @@ void PluginGuiBase::pbnOK_clicked()
 {
 
 }
+
+
+void PluginGuiBase::pbnCancel_clicked()
+{
+
+}
