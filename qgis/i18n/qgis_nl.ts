@@ -61,26 +61,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>GPS Download File Importer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input File:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output (Shape) File:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum time gap (s):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum distance gap (dd):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -146,40 +126,6 @@
     </message>
     <message>
         <source>Enable Copyright Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GPS Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature types:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waypoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Routes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tracks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
-&lt;p&gt;Use the minumum time gap to let the importer know what time interval should be used before starting a new feature. &lt;/p&gt;
-&lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -254,84 +200,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Import other file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File to import:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GPX output file:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download from GPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
-protocol, the device your GPS is connected to, the feature type you want 
-to download, a name for your new layer, and the GPX file where 
-you want to store the data.&lt;/p&gt;
-&lt;p&gt;This tool uses the program GPSBabel 
-(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
-don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Protocol:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Device file:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output file:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Garmin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Magellan</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Upload to GPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
-Choose the layer you want to upload, your protocol, and the device your 
-GPS is connected to.&lt;/p&gt;
-&lt;p&gt;This tool uses the program &lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;GPSBabel&lt;/a&gt; to transfer the data. If you don&apos;t 
-have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data layer:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Scale Bar Plugin</source>
         <translation type="unfinished"></translation>
     </message>
@@ -392,31 +260,27 @@ have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&g
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Load GPX file</source>
+        <source>Origin (Lower Left)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
-&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
+        <source>Latitude:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
-can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
-http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
-QGIS can find it.&lt;/p&gt;
-&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
-that you want to use, a GPX filename that you want to save the converted file as, 
-and a name for the new layer. All file formats can not store waypoints, routes, and 
-tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
+        <source>Longitude:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>End point (Upper Right)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output (Shape) File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graticule Size (units in degrees)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -455,22 +319,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Overwrite File?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 exists.%2Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>QGis files (*.qgs)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -479,7 +327,7 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Choose a filename to save</source>
+        <source>Choose a QGIS project file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -535,14 +383,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quantum GIS -- Untitled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quantum GIS --</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -722,10 +562,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGIS ready</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
         <translation type="unfinished"></translation>
     </message>
@@ -733,15 +569,155 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <source>http://www.gnu.org/licenses</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the current map scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting theme...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS editing support in provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector dialog redesign to improve usability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvement in project handling (loading and saving)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale dependent rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new vector layer (shapefile) for editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Windows installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mac OSX binary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New options in the graticule builder plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enhancements to the GPS plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Man page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save delimited text as shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved Delimited Text plugin, including preview of text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display SQL query used to create a PostGIS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGis files (*.qgs)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
     <message>
         <source>Quantum GIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1165,19 +1141,11 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>E&amp;xport As Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Whats this?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shift+F1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Project &amp;Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1288,6 +1256,30 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <source>Plugins Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export As Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P&amp;roject Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle In Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Vectorlayer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAbout</name>
@@ -1320,54 +1312,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Gary E. Sherman</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Steve Halasz</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tim Sutton</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Marco Hugentobler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Denis Antipov</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mark Coletti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Jens Oberender</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radim Blazek</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Carl Anderson</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Masaru Hoshi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lars Luthman</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Peter Brewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1386,6 +1330,131 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Providers</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeActionDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move the selected action up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move the selected action down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the action name here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the action command here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse for action commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inserts the action into the list above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update the selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inserts the selected field into the action, prepended with a %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The valid attribute names for this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeDialogBase</name>
+    <message>
+        <source>Enter Attribute Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTable</name>
+    <message>
+        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1537,7 +1606,7 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.</source>
+        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1601,6 +1670,29 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
 </context>
 <context>
+    <name>QgsDelimitedTextPluginGui</name>
+    <message>
+        <source>No layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a layer name before adding the layer to the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify a delimiter prior to parsing the file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a delimited text file to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
         <source>Create a Layer from a Delimited Text File</source>
@@ -1660,16 +1752,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select the file containing delimited text with lat/lon coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
-&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimeter box to specify what the delimeter is for your file (e.g. space, commar or tab). Note this box accepts regex entries so use \t for tab and so on. After choosing a delimeter, press the parse button to see what field names have been detected in your file.&lt;/p&gt;
-&lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1758,6 +1840,19 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sample text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1858,6 +1953,50 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <source>Unique Value Marker</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The source of the data (path name or database connection information)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The number of features in this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> using the commercial version of Qt. As this project is developed by volunteers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> home page to make a donation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No SVG Support</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerPropertiesBase</name>
@@ -1867,10 +2006,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1946,10 +2081,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Legend</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Legend type:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1959,6 +2090,358 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Display labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display field for the Identify Results dialog box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This sets the display field for the Identify Results dialog box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subset:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query Builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEditReservedWordsBase</name>
+    <message>
+        <source>Edit Reserved Words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reserved Words</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSDeviceDialogBase</name>
+    <message>
+        <source>GPS Device Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download command:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the name of the device as it will appear in the lists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload command:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
+&lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSPluginGuiBase</name>
+    <message>
+        <source>GPS Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load GPX file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
+&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature types:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waypoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tracks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import other file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File to import:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPX output file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download from GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
+GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, 
+and the GPX file where you want to store the data. If your device isn&apos;t listed, or if 
+you want to change some settings, you can also edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
+don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS device:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload to GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
+Choose the layer you want to upload, the device you want to upload it to, and the port 
+your device is connected to. 
+If your device isn&apos;t listed, or if you want to change some settings, you can also 
+edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
+to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeomTypeDialogBase</name>
+    <message>
+        <source>Select Geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2023,9 +2506,6 @@ Factor</source>
         <source>Mode:</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsGraSyExtensionWidget</name>
 </context>
 <context>
     <name>QgsGrassAttributesBase</name>
@@ -2355,6 +2835,13 @@ Factor</source>
     </message>
 </context>
 <context>
+    <name>QgsIdentifyResults</name>
+    <message>
+        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsIdentifyResultsBase</name>
     <message>
         <source>Identify Results</source>
@@ -2432,10 +2919,6 @@ Factor</source>
     </message>
     <message>
         <source>QGIS Rocks!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2602,6 +3085,18 @@ Factor</source>
         <source>&amp;Colour:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Font and Alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer and Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced Data Defined Style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendItemBase</name>
@@ -2649,6 +3144,21 @@ Factor</source>
     </message>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapLayer</name>
+    <message>
+        <source>&amp;Zoom to extent of selected layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2851,7 +3361,10 @@ Factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection failed - Check settings and try again </source>
+        <source>Connection failed - Check settings and try again.
+
+Extended error information:
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3062,6 +3575,24 @@ identifying features without zooming in very close.
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Initial Visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New layers added to the map are not displayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;<byte value="xd"/>
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;<byte value="xd"/>
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;<byte value="xd"/>
+&lt;br&gt;<byte value="xd"/>
+By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/>
+identifying features without zooming in very close.<byte value="xd"/>
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPatternDialogBase</name>
@@ -3086,6 +3617,164 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Error connecting to the database</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgQueryBuilder</name>
+    <message>
+        <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to the database failed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to get sample of field values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query Result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The where clause returned </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> rows.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occurred when executing the query:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Records</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgQueryBuilderBase</name>
+    <message>
+        <source>PostgreSQL Query Builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Datasource:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NOT IN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&gt;=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LIKE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ILIKE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NOT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQL where clause</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3123,14 +3812,6 @@ identifying features without zooming in very close.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3144,6 +3825,38 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C&amp;lear All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3185,23 +3898,19 @@ identifying features without zooming in very close.
         <source>&amp;Cancel</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default project title</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayer</name>
     <message>
         <source>Not Set</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to extent of selected layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3384,10 +4093,6 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show In &amp;Overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3672,6 +4377,41 @@ identifying features without zooming in very close.
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsScanGeometries</name>
+    <message>
+        <source>Scanning Geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>textLabel1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSiMaDialogBase</name>
@@ -3707,39 +4447,35 @@ identifying features without zooming in very close.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fill</source>
+        <source>Label:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Label</source>
+        <source>Outline Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill Patterns:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3919,19 +4655,7 @@ identifying features without zooming in very close.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Zoom to extent of selected layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3939,12 +4663,33 @@ identifying features without zooming in very close.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show In &amp;Overview</source>
+        <source>Start editing</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsVectorLayerProperties</name>
+    <message>
+        <source>Stop editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as shapefile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
