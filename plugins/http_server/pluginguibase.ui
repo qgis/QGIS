@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>PluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>533</width>
-            <height>399</height>
+            <height>491</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -66,49 +66,6 @@
                 <enum>Vertical</enum>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnCancel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>441</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnOK</cstring>
-                    </property>
-                    <property name="text">
-                        <string>OK</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QTextEdit" row="0" column="2">
             <property name="name">
                 <cstring>teInstructions_2</cstring>
@@ -116,7 +73,10 @@
             <property name="text">
                 <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin runs a simple web server on port 8081 that listens for requests for maps. &lt;/p&gt;
+&lt;p&gt;This plugin runs a simple web server (by default listening on port 8081) that listens for requests for maps. &lt;/p&gt;
+
+&lt;div style="color: red"&gt;NOTE: This plugin is pre-alpha code. It does work in its basic form but its still buggy, feature incomplete and my crash QGIS.&lt;/div&gt;
+
 &lt;p&gt;Tim Sutton&lt;/p&gt;
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -160,7 +120,7 @@
                                     <string>Port:</string>
                                 </property>
                             </widget>
-                            <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
+                            <widget class="QCheckBox" row="1" column="0">
                                 <property name="name">
                                     <cstring>cboxEnableServer</cstring>
                                 </property>
@@ -170,10 +130,7 @@
                             </widget>
                             <widget class="QSpinBox" row="0" column="1">
                                 <property name="name">
-                                    <cstring>spinBox1</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>65535</number>
+                                    <cstring>spinPort</cstring>
                                 </property>
                             </widget>
                         </grid>
@@ -225,6 +182,57 @@
                 </grid>
             </widget>
         </widget>
+        <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>290</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnApply</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Apply</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnOK</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
     </grid>
 </widget>
 <images>
@@ -248,6 +256,18 @@
         <receiver>PluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
+    <connection>
+        <sender>cboxEnableServer</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>cboxEnableServer_toggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>pbnApply</sender>
+        <signal>clicked()</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>pbnApply_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">pluginguibase.ui.h</include>
@@ -255,6 +275,8 @@
 <slots>
     <slot>pbnOK_clicked()</slot>
     <slot>pbnCancel_clicked()</slot>
+    <slot>cboxEnableServer_toggled( bool )</slot>
+    <slot>pbnApply_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

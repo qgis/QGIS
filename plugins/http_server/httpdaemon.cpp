@@ -10,17 +10,23 @@
  * *****************************************************************************/
 
 #include "httpdaemon.h"
+
+
+//qt includes
 #include <qdatetime.h>
 #include <qregexp.h>
 #include <qbuffer.h>
 #include <qdatastream.h>
 #include <qcstring.h> 
+
+//other includes
+#include <iostream>
 // HttpDaemon is the the class that implements the simple HTTP server.
-HttpDaemon::HttpDaemon( QObject* parent ) : QServerSocket(8081,1,parent)
+HttpDaemon::HttpDaemon( int thePortInt , QObject* parent ) : QServerSocket(thePortInt,1,parent)
 {
   if ( !ok() )
   {
-    qWarning("Failed to bind to port 8081");
+    qWarning("Failed to bind to port " + thePortInt );
     exit( 1 );
   }
 }
@@ -77,6 +83,7 @@ void HttpDaemon::readClient()
   // server looks if it was a get request and sends a very simple HTML
   // document back.
   QSocket*myQSocket = (QSocket*)sender();
+  bool mapNeedsDrawingFlag=false;
   if (myQSocket->canReadLine() )
   {
     QString myLineString = myQSocket->readLine();
@@ -115,9 +122,9 @@ void HttpDaemon::readClient()
             return;
           }
           mProject=myTokenString;
-          emit clearMap();
+          emit clearMap(); //removes all layers from the map
           requestCompleted(QString("Project now set to ") + myTokenString);
-          return;
+          mapNeedsDrawingFlag=false;
         }
 
         // Command : showProject
@@ -128,7 +135,7 @@ void HttpDaemon::readClient()
         {
           emit clearMap();
           emit showProject(mProject);
-          return;
+          mapNeedsDrawingFlag=true;
         }
 
 
@@ -150,12 +157,14 @@ void HttpDaemon::readClient()
             //load the raster on its own
             emit clearMap();
             emit loadRasterFile(myTokenString);
+            mapNeedsDrawingFlag=true;
           }
           else
           {
             //load it over the project
             emit loadProject(mProject);
             emit loadRasterFile(myTokenString,mProject);
+            mapNeedsDrawingFlag=true;
           }
         }
         //
@@ -177,12 +186,14 @@ void HttpDaemon::readClient()
             //load the vector on its own
             emit clearMap();
             emit loadVectorFile(myTokenString);
+            mapNeedsDrawingFlag=true;
           }
           else
           {
             //load it over the project
             emit loadProject(mProject);
             emit loadVectorFile(myTokenString,mProject);
+            mapNeedsDrawingFlag=true;
           }
         }
         else //something was wrong!
@@ -207,6 +218,13 @@ void HttpDaemon::readClient()
   {
     closeStreamWithError(QString("Cant read line from socket!"));
     return;
+  }
+  //if we made it this far there were no errors - we can test if the map needs to be drawn
+  if (mapNeedsDrawingFlag==true)
+  {
+    std::cout << "Drawing map" << std::endl;
+    QPixmap *myQPixmap = new QPixmap(400,400);
+    emit getMap(myQPixmap);
   }
 }
 void HttpDaemon::discardClient()

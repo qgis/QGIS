@@ -14,6 +14,8 @@
 //qt includes
 #include <qtextedit.h>
 #include <qcheckbox.h>
+#include <qspinbox.h> 
+
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
@@ -32,14 +34,23 @@ PluginGui::~PluginGui()
 
 void PluginGui::pbnOK_clicked()
 {
-  //bool myFlag = cboxEnableServer->isChecked();
-  bool myFlag=true;
-  emit setServerEnabled(myFlag);
+  bool myFlag = cboEnableServer->isChecked();
+  int myPortInt = spinPort->value();
+  emit enabledChanged(myFlag);
+  emit portChanged(myPortInt);
+  
   //disconnect any connections to this dialog
   disconnect( this, 0, 0, 0 );
   //close the dialog
   done(1);
 } 
+void PluginGui::pbnApply_clicked()
+{
+  bool myFlag = cboEnableServer->isChecked();
+  int myPortInt = spinPort->value();
+  emit enabledChanged(myFlag);
+  emit portChanged(myPortInt);
+}
 void PluginGui::pbnCancel_clicked()
 {
   close(1);
@@ -60,4 +71,15 @@ void PluginGui::wroteToClient(QString theMessage)
 void PluginGui::requestReceived(QString theString)
 {
   teDebug->append(theString);
+}
+
+void PluginGui::cboxEnableServer_toggled( bool )
+{
+
+}
+
+
+void PluginGui::spinPort_valueChanged( int )
+{
+
 }

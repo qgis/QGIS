@@ -46,6 +46,8 @@ class Plugin:public QObject, public QgisPlugin
 public slots:
   //! Show the dialog box
   void run();
+  //! Used to get an image of the map and pass it back to the browser (use after all layer ops)
+  void getMap(QPixmap *);
   //! Load and show a project file
   void showProject(QString theProjectFile);
   //! Load a project file but dont return it to browser yet
@@ -54,16 +56,24 @@ public slots:
   void loadRasterFile(QString theRasterFile);
   //! Load a raster file over a project
   void loadRasterFile(QString theRasterFile, QString theProjectFile);
+  //! Load a raster file over a project and display using pseudocolor renderer
+  void loadPseudoColorRasterFile(QString theRasterFile);
+  //! Load a raster file over a project and display using pseudocolor renderer over a project file
+  void loadPseudoColorRasterFile(QString theRasterFile, QString theProjectFile);
   //! Load a vector file on its own
   void loadVectorFile(QString theVectorFile);
   //! Load a vector file over a project
   void loadVectorFile(QString theVectorFile, QString theProjectFile);
+  //! Zoom to full extents of all layers
+  void zoomToFullExtents();
   //! Change the enabled status of the http server
   void setEnabled (bool);
   //! Return the status of the http server
   bool enabled () {return mEnabled; } ;
-
-
+  //!Accessor for port property
+  int port() {return mPortInt;} ;
+  //!mutator for port property
+  void setPort(int thePortInt) {mPortInt=thePortInt;};
   //! unload the plugin
   void unload();
   //! show the help document
@@ -75,14 +85,22 @@ public slots:
   //! Passed by the http daemon when it receives a new request
   void requestReceived(QString);
 
-    private:
-
+private:
+  //! The instance of the http server used by this plugin
   HttpDaemon * mHttpDaemon;
+  //! Port number that server will listen on (defaults to 8081)
+  int mPortInt;
+  //! whether the server is enabled or not
+  bool mEnabled;
+
+  //
+  // Standard required members for plugins
+  //
+  
+  //! Provider or gui plugin
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
-  //! whether the server is enabled or not
-  bool mEnabled;
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
   //! Pointer to our menu

@@ -25,16 +25,22 @@ public:
     PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~PluginGui();
     void pbnOK_clicked();
+    void pbnApply_clicked();
     void pbnCancel_clicked();
+    void cboxEnableServer_toggled(bool);
+    void spinPort_valueChanged(int);
 private:
 
 signals:
-   void setServerEnabled(bool);
+   void enabledChanged(bool);
+   void portChanged(int);
 public slots:
     void newConnect(QString);
     void endConnect(QString);
     void wroteToClient(QString);
     void requestReceived(QString);    
+    void setPort(int thePortInt);
+    void setEnabled(int theEnabledFlag);
 };
 
 #endif

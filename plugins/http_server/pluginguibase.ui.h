@@ -21,3 +21,16 @@ void PluginGuiBase::pbnCancel_clicked()
 
 }
 
+
+
+void PluginGuiBase::cboxEnableServer_toggled( bool )
+{
+
+}
+
+
+
+void PluginGuiBase::pbnApply_clicked()
+{
+
+}

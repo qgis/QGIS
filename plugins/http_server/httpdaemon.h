@@ -30,7 +30,7 @@ class HttpDaemon : public QServerSocket
 {
   Q_OBJECT;
 public:
-  HttpDaemon( QObject* parent=0 );
+  HttpDaemon( int thePortInt=8081, QObject* parent=0 );
   ~HttpDaemon();
   void newConnection( int socket );
   //accessor and mutator for current project
@@ -41,7 +41,8 @@ public:
   QString basePath();
 signals:
   void requestReceived(QString); //used to notify listeners when a web client connects
-  void showProject(QString); //loads the project file and sends result to browser
+  void getMap(QPixmap *); //renders map and sends result to browser
+  void showProject(QString); //loads the project file
   void loadProject(QString); //loads the project file but doesnt close connection so other stuff can be loaded
   void loadRasterFile(QString);//loads a rasterfile on its own using defaults 
   void loadRasterFile(QString,QString);//loads a rasterfile (arg1) over the current project (arg2)

@@ -65,6 +65,7 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
+  mPortInt=8081;
   startServer();  
 }
 
@@ -109,11 +110,17 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"QGis Http Server",true,0);
   //listen for when the layer has been made so we can draw it
-  connect(mHttpDaemon, SIGNAL(newConnect(QString)), myPluginGui, SLOT(newConnect(QString)));
-  connect(mHttpDaemon, SIGNAL(endConnect(QString)), myPluginGui, SLOT(endConnect(QString)));
-  connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToClient(QString)));
-  connect(mHttpDaemon, SIGNAL(requestReceived(QString)), myPluginGui, SLOT(requestReceived(QString)));
-  connect(myPluginGui, SIGNAL(setServerEnabled(bool)),this, SLOT(setEnabled(bool)));
+  if (mHttpDaemon)
+  {
+    connect(mHttpDaemon, SIGNAL(newConnect(QString)), myPluginGui, SLOT(newConnect(QString)));
+    connect(mHttpDaemon, SIGNAL(endConnect(QString)), myPluginGui, SLOT(endConnect(QString)));
+    connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToClient(QString)));
+    connect(mHttpDaemon, SIGNAL(requestReceived(QString)), myPluginGui, SLOT(requestReceived(QString)));
+    connect(myPluginGui, SIGNAL(enabledChanged(bool)),this, SLOT(setEnabled(bool)));
+    connect(myPluginGui, SIGNAL(portChanged(int)),this, SLOT(setPort(int)));
+  }
+  myPluginGui->setPort(mPortInt);
+  myPluginGui->setEnabled(mEnabled);
   myPluginGui->show();
 }
 
@@ -144,10 +151,13 @@ void Plugin::setEnabled (bool theFlag)
 
 void Plugin::startServer()
 { 
-  mHttpDaemon = new HttpDaemon( this );
+  mHttpDaemon = new HttpDaemon(mPortInt, this );
+  connect(mHttpDaemon, SIGNAL(getMap(QPixmap *)), this, SLOT(loadVectorFile(QPixmap *)));
   connect(mHttpDaemon, SIGNAL(showProject(QString)), this, SLOT(showProject(QString)));
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString)), this, SLOT(loadRasterFile(QString)));
   connect(mHttpDaemon, SIGNAL(loadRasterFile(QString,QString)), this, SLOT(loadRasterFile(QString,QString)));
+  connect(mHttpDaemon, SIGNAL(loadPseudoColorRasterFile(QString)), this, SLOT(loadPseudoColorRasterFile(QString)));
+  connect(mHttpDaemon, SIGNAL(loadPseudoColorRasterFile(QString,QString)), this, SLOT(loadPseudoColorRasterFile(QString,QString)));
   connect(mHttpDaemon, SIGNAL(loadVectorFile(QString)),this, SLOT(loadVectorFile(QString))) ;
   connect(mHttpDaemon, SIGNAL(loadVectorFile(QString,QString)), this, SLOT(loadVectorFile(QString,QString)));
   mEnabled=true;
@@ -160,7 +170,12 @@ void Plugin::stopServer()
   disconnect( mHttpDaemon, 0, 0, 0 );
   delete mHttpDaemon;
   mEnabled=false;
-  
+}
+
+//get the map in the provided pixmap
+void Plugin::getMap(QPixmap *theQPixmap)
+{
+  qGisInterface->getMapCanvas()->render(theQPixmap);
 }
 //load the project in qgis and send image to browser
 void Plugin::showProject(QString theProjectFile)
@@ -171,11 +186,6 @@ void Plugin::showProject(QString theProjectFile)
   {
     //let the httpdserver know we are finished and pass it back the output filename
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
-  }
-  else
-  {
-    //let the httpdserver know we are finished and pass it back the canvas image
-    mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
   }
 }
 //load project in qgis but dont send image back yet
@@ -189,7 +199,6 @@ void Plugin::loadProject(QString theProjectFile)
     mHttpDaemon->requestCompleted(QString("Failed opening project!"));
   }
 }
-
 void Plugin::loadRasterFile(QString theRasterFile)
 {
 
@@ -197,11 +206,6 @@ void Plugin::loadRasterFile(QString theRasterFile)
   {
     //let the httpdserver know we are finished and pass it back the canvas image
     mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
-  }
-  else
-  {
-    //let the httpdserver know we are finished and pass it back the error
-    mHttpDaemon->closeStreamWithError(QString("Failed opening raster layer : ")+theRasterFile);
   }
 }
 
@@ -211,18 +215,29 @@ void Plugin::loadRasterFile(QString theRasterFile, QString theProjectFile)
   loadRasterFile(theRasterFile);
 }
 
-void Plugin::loadVectorFile(QString theVectorFile)
+void Plugin::loadPseudoColorRasterFile(QString theRasterFile)
 {
 
-  // Add a vector layer given vectorLayerPath, layer name, providerKey ("ogr" or "postgres");
-  if ( qGisInterface->addVectorLayer(theVectorFile, QString("MapLayer"),QString("ogr")))
+  if ( qGisInterface->addRasterLayer(theRasterFile))
   {
     //let the httpdserver know we are finished and pass it back the canvas image
     mHttpDaemon->requestCompleted(qGisInterface->getMapCanvas()->canvasPixmap());
   }
-  else
+}
+
+void Plugin::loadPseudoColorRasterFile(QString theRasterFile, QString theProjectFile)
+{
+  loadProject(theProjectFile);
+  loadRasterFile(theRasterFile);
+}
+
+void Plugin::loadVectorFile(QString theVectorFile)
+{
+
+  // Add a vector layer given vectorLayerPath, layer name, providerKey ("ogr" or "postgres");
+  if (!qGisInterface->addVectorLayer(theVectorFile, QString("MapLayer"),QString("ogr")))
   {
-    //let the httpdserver know we are finished and pass it back the error
+    //let the httpdserver know we are finished with and error and pass it back the error
     mHttpDaemon->closeStreamWithError(QString("Failed opening vector layer : ")+theVectorFile);
   }
 }
