@@ -37,8 +37,7 @@ class QgsMeasure:public QgsMeasureBase
   public:
 
   //! Constructor
-  QgsMeasure(QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, 
-	     WFlags f = Qt::WStyle_Customize | Qt::WStyle_Dialog );
+  QgsMeasure(QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_Dialog | Qt::WStyle_Tool );
 
   ~QgsMeasure();
 
