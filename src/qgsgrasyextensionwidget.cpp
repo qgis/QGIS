@@ -259,3 +259,9 @@ void QgsGraSyExtensionWidget::selectOutlineStyle()
   m_vectorlayer->rendererDialog()->raise();
   raise();
 }
+
+void QgsGraSyExtensionWidget::resizeEvent(QResizeEvent* e)
+{
+    setContentsPos (0,0);
+    QScrollView::resizeEvent(e);
+}
