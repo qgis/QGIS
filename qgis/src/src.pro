@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefile for building
 # QGIS on Windows
 #
-# src.pro,v 1.40 2004/07/15 00:40:25 gsherman Exp 
+# src.pro,v 1.41 2004/08/14 01:07:15 timlinux Exp 
 ######################################################################
 
 TEMPLATE = app
@@ -95,9 +95,13 @@ HEADERS += qgis.h \
            qgssymbologyutils.h \
            qgstable.h \
            qgsvectorlayer.h \
+           qgssvgcache.h \
            qgsvectorlayerproperties.h \
            splashscreen.h \
 	   qgsacetateobject.h \
+           qgslabel.h \
+           qgslabelattributes.h \
+           qgslabeldialog.h \
 	   qgsacetaterectangle.h
 INTERFACES += qgisappbase.ui \
               qgsabout.ui \
@@ -183,7 +187,11 @@ SOURCES += main.cpp \
            qgssymbol.cpp \
            qgssymbologyutils.cpp \
            qgsvectorlayer.cpp \
+           qgssvgcache.cpp \
            qgsvectorlayerproperties.cpp \
            splashscreen.cpp \
 	   qgsacetateobject.cpp \
+           qgslabeldialog.cpp \
+           qgslabel.cpp \
+           qgslabelattributes.cpp \
 	   qgsacetaterectangle.cpp
