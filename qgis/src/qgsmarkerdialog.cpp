@@ -31,7 +31,6 @@ QgsMarkerDialog::QgsMarkerDialog(QString startdir): QgsMarkerDialogBase(), mCurr
     QObject::connect(mCancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     QObject::connect(mBrowseDirectoriesButton,SIGNAL(clicked()),this,SLOT(changeDirectory()));
     QObject::connect(mIconView,SIGNAL(currentChanged(QIconViewItem*)),this,SLOT(updateSelectedMarker()));
-    QObject::connect(mDirectoryEdit,SIGNAL(returnPressed()),this,SLOT(setCurrentDirFromText()));
     mDirectoryEdit->setText(startdir);
     visualizeMarkers(startdir);
 }
@@ -66,23 +65,6 @@ void QgsMarkerDialog::changeDirectory()
     {
 	mCurrentDir=newdir;
 	visualizeMarkers(mCurrentDir);
-	mDirectoryEdit->setText(mCurrentDir);
-    }
-}
-
-void QgsMarkerDialog::setCurrentDirFromText()
-{   
-    QString newdir=mDirectoryEdit->text();
-    qWarning("newdir: "+newdir);
-    QDir dir(newdir);
-    if(dir.exists())
-    {
-	mCurrentDir=newdir;
-	
-	visualizeMarkers(mCurrentDir);	
-    }
-    else
-    {
 	mDirectoryEdit->setText(mCurrentDir);
     }
 }
