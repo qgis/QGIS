@@ -1205,11 +1205,16 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
                        mapCanvas, 
                        SLOT(refresh()));
 
-      // connect up any request the raster may make to update the app statusbar
+      // connect up any request the raster may make to update the app progress
       QObject::connect(layer, 
                        SIGNAL(setProgress(int,int)), 
                        this, 
-                       SLOT(showProgress(int,int)));      
+                       SLOT(showProgress(int,int)));  
+      // connect up any request the raster may make to update the statusbar message
+      QObject::connect(layer, 
+                       SIGNAL(setStatus(QString)), 
+                       this, 
+                       SLOT(showStatusMessage(QString))); 		       		           
       // add it to the mapcanvas collection
       mapCanvas->addLayer(layer);
       projectIsDirty = true;
@@ -1309,7 +1314,12 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
                        SIGNAL(setProgress(int,int)), 
                        this, 
                        SLOT(showProgress(int,int))); 
-               // add it to the mapcanvas collection
+            // connect up any request the raster may make to update the statusbar message
+            QObject::connect(layer, 
+                       SIGNAL(setStatus(QString)), 
+                       this, 
+                       SLOT(showStatusMessage(QString)));                
+	       // add it to the mapcanvas collection
               mapCanvas->addLayer(layer);
               
              //get the thumbnail for the layer
@@ -2677,4 +2687,9 @@ void QgisApp::showExtents(QString theExtents)
 {
   statusBar()->message(theExtents);
 
+}
+
+void QgisApp::showStatusMessage(QString theMessage)
+{
+  statusBar()->message(theMessage);
 }

@@ -252,6 +252,7 @@ private:
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
   void showExtents(QString theExtents);
+  void showStatusMessage(QString theMessage);
   private:
   //! Widget that will live on the statusbar to display scale
   QLabel * mScaleLabel;
