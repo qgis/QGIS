@@ -7,7 +7,7 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-lib_LTLIBRARIES = libmaplayerplugin.la
+lib_LTLIBRARIES = maplayerplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -17,7 +17,7 @@ lib_LTLIBRARIES = libmaplayerplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 	
-libmaplayerplugin_la_SOURCES =  maplayertest.cpp \
+maplayerplugin_la_SOURCES =  maplayertest.cpp \
 				../../src/qgsmaplayerinterface.h \
 				$(maplayer_UI)\
 				$(maplayer_MOC)
@@ -31,4 +31,5 @@ maplayer_UI =
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) 
 
-libmaplayerplugin_la_LIBADD = $(QT_LDADD) 
+maplayerplugin_la_LIBADD = $(QT_LDADD)
+maplayerplugin_la_LDFLAGS = -avoid-version -module

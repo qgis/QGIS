@@ -10,7 +10,7 @@
 #
 # $Id$
 if POSTGRESDB
-lib_LTLIBRARIES = libpggeoprocessingplugin.la
+lib_LTLIBRARIES = pggeoprocessingplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -20,7 +20,7 @@ lib_LTLIBRARIES = libpggeoprocessingplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 	
-libpggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
+pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
         qgsdlgpgbuffer.cpp \
         ../../src/qgsmaplayer.cpp\
         ../../src/qgsvectorlayer.cpp\
@@ -47,5 +47,6 @@ BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 
-libpggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) 
+pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB)
+pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
 endif
