@@ -42,20 +42,27 @@ email                : sherman at mrcc.com
 
 // xpm for creating the toolbar icon
 #include "icon_buffer.xpm"
+
 static const char *pluginVersion = "0.1";
+
+static const char * const ident_ = "$Id$";
+
+static const char * const name_ = "PostgresSQL Geoprocessing";
+static const char * const description_ = "Geoprocessing functions for working with PostgreSQL/PostGIS layers";
+static const char * const version_ = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+
+
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
  * @param qgis Pointer to the QGIS main window
  * @parma _qI Pointer to the QGIS interface object
  */
-QgsPgGeoprocessing::QgsPgGeoprocessing(QgisApp * qgis, QgisIface * _qI):qgisMainWindow(qgis), qI(_qI)
+QgsPgGeoprocessing::QgsPgGeoprocessing(QgisApp * qgis, QgisIface * _qI)
+    : qgisMainWindow(qgis), qI(_qI), 
+      QgisPlugin( name_, description_, version_, type_ )
 {
-  /** Initialize the plugin and set the required attributes */
-  pName = "PostgreSQL Geoprocessing";
-  pVersion = "Version 0.1";
-  pDescription = "Geoprocessing functions for working with PostgreSQL/PostGIS layers";
-
 }
 
 QgsPgGeoprocessing::~QgsPgGeoprocessing()
@@ -63,28 +70,6 @@ QgsPgGeoprocessing::~QgsPgGeoprocessing()
 
 }
 
-/* Following functions return name, description, version, and type for the plugin */
-QString QgsPgGeoprocessing::name()
-{
-  return pName;
-}
-
-QString QgsPgGeoprocessing::version()
-{
-  return pVersion;
-
-}
-
-QString QgsPgGeoprocessing::description()
-{
-  return pDescription;
-
-}
-
-int QgsPgGeoprocessing::type()
-{
-  return QgisPlugin::UI;
-}
 
 /*
  * Initialize the GUI interface for the plugin 
@@ -437,25 +422,25 @@ extern "C" QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
 // Return the name of the plugin
 extern "C" QString name()
 {
-  return QString("PostgreSQL Geoprocessing");
+    return name_;
 }
 
 // Return the description
 extern "C" QString description()
 {
-  return QString("Geoprocessing functions for working with PostgreSQL/PostGIS layers");
+    return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 extern "C" int type()
 {
-  return QgisPlugin::UI;
+    return type_;
 }
 
 // Return the version number for the plugin
 extern "C" QString version()
 {
-  return pluginVersion;
+  return version_;
 }
 
 // Delete ourself

@@ -18,19 +18,19 @@ plugin_LTLIBRARIES = exampleplugin.la
 
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
-	
+
 exampleplugin_la_SOURCES =  exampleplugin.cpp \
 				$(example_UI)
-				
+
 nodist_exampleplugin_la_SOURCES = $(example_MOC)
-        
+
 example_MOC = 	exampleplugin.moc.cpp
 
 example_UI = 
 
 # UI dependencies			
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I../../src
 
 exampleplugin_la_LIBADD = $(QT_LDADD) 
 exampleplugin_la_LDFLAGS = -avoid-version -module
