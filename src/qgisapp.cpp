@@ -375,31 +375,39 @@ void QgisApp::addLayer()
 
 }
 
-void QgisApp::addRasterLayer()
+
+void
+QgisApp::addRasterLayer()
 {
+   // insure that the map canvas temporarily suspends event processing
+   // until we've loaded the raster
+
   mapCanvas->freeze();
+
   QString myFileTypeQString;
+
   QString myArcInfoBinaryGridFilterString="Arc Info Binary Grid (*.adf)";
   QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
-  QString myErdasFilterString="Erdas Imagine (*.img)";
+  QString myERDASFilterString="ERDAS Imagine (*.img)";
   QString myGeoTiffFilterString="Geo tiff (*.tif)";
-  QString myUsgsAsciiDemFilterString="Usgs Ascii DEM (*.dem)";
+  QString myUSGSAsciiDemFilterString="USGS Ascii DEM (*.dem)";
   QString myGrassFilterString="Grass raster (*.*)";
-  QString mySdtsFilterString="Sdts (*CATD*.DDF)";
+  QString mySDTSFilterString="SDTS (*CATD*.DDF)";
   QString myAllRasterFormats = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DDF)";
   //QString myBilFilterString="Band Interleaved by Line (*.bil)";
   //QString myJpgFilterString="Geo jpg (*.jpg)";
+
   QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
           myAllRasterFormats + ";;" +
           myArcInfoBinaryGridFilterString + ";;" +
           myArcInfoAsciiGridFilterString + ";;" +
-          myErdasFilterString + ";;" +
+          myERDASFilterString + ";;" +
           //myBilFilterString + ";;" +
           //myJpgFilterString + ";;" +  
           myGeoTiffFilterString + ";;" +
           myGrassFilterString + ";;" +
-          myUsgsAsciiDemFilterString + ";;" + 
-	  mySdtsFilterString, //filters to select
+          myUSGSAsciiDemFilterString + ";;" + 
+	  mySDTSFilterString, //filters to select
           "" , //initial dir
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
@@ -407,65 +415,89 @@ void QgisApp::addRasterLayer()
           &myFileTypeQString //the pointer to store selected filter
           );  
   //cout << "Selected filetype filter is : " << myFileTypeQString << endl;
-  if (myFileNameQStringList.size()==0) return; //no files selected so bail out
+
+  if ( myFileNameQStringList.empty() ) 
+  {                             // no files selected so bail out, but
+                                // allow mapCanvas to handle events
+                                // first
+     mapCanvas->freeze( false );
+     return; 
+  }
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  if (myFileTypeQString==myArcInfoBinaryGridFilterString)
+  // handle ArcInfo rasters
+  if ( myArcInfoBinaryGridFilterString == myFileTypeQString )
   {
     //if multiple file were selected ignore the others because currently we 
     //can only select one AI Binary Grid dir at a time
+
     QStringList::Iterator it = myFileNameQStringList.begin();
     QFileInfo fi(*it);
     QString base = fi.dirPath(); //get the directory the .adf file was in
 
     // create the layer
-    QgsRasterLayer *lyr = new QgsRasterLayer(*it, base);
-    QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
+    QgsRasterLayer *layer = new QgsRasterLayer(*it, base);
+    QObject::connect(layer,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
 
-    if (lyr->isValid()) {
+    if ( layer->isValid() )
+    {
       // add it to the mapcanvas collection
-      mapCanvas->addLayer(lyr);
-    } else {
-      QString msg = *it;
-      msg += " is not a valid or recognized raster data source";
-      QMessageBox::critical(this, "Invalid Data Source", msg);
+      mapCanvas->addLayer( layer );
+    } else 
+    {
+      QString msg( *it + " is not a valid or recognized raster data source" );
+      QMessageBox::critical( this, "Invalid Data Source", msg );
     }
       // init the context menu so it can connect to slots in main app
-      lyr->initContextMenu(this);
+      layer->initContextMenu( this );
   }
-  else // Any other gdal type
+  else // Any other GDAL type
   {
-    QStringList::Iterator it = myFileNameQStringList.begin();
-    while (it != myFileNameQStringList.end()) {
+    for ( QStringList::Iterator it = myFileNameQStringList.begin();
+          it != myFileNameQStringList.end();
+          ++it )
+    {
       QFileInfo fi(*it);
-      QString base = fi.baseName();
+      QString baseName = fi.baseName();
 
       // create the layer
-      QgsRasterLayer *lyr = new QgsRasterLayer(*it, base);
-      QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
+      QgsRasterLayer *layer = new QgsRasterLayer(*it, baseName);
+      QObject::connect( layer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
 
-      if (lyr->isValid()) {
-        // add it to the mapcanvas collection
-        mapCanvas->addLayer(lyr);
-      } else {
-        QString msg = *it;
-        msg += " is not a valid or recognized raster data source";
-        QMessageBox::critical(this, "Invalid Data Source", msg);
+      if ( layer->isValid() )
+      {// add it to the mapcanvas collection
+        mapCanvas->addLayer( layer );
+      } else 
+      {
+        QString msg( *it + " is not a valid or recognized raster data source" );
+        QMessageBox::critical( this, "Invalid Data Source", msg );
       }
+
       // init the context menu so it can connect to slots in main app
-      lyr->initContextMenu(this);
-      ++it;
+      // XXX Yes, but what if the layer is invalid?  Should we still be doing this?
+      layer->initContextMenu( this );
     }
+
   }
 
   mapLegend->update();
+
   qApp->processEvents();
+
   mapCanvas->freeze(false);
+
   mapCanvas->render2();
+
   QApplication::restoreOverrideCursor();
-  statusBar()->message(mapCanvas->extent().stringRep());
-}
+
+  statusBar()->message( mapCanvas->extent().stringRep() );
+
+} // QgisApp::addRasterLayer()
+
+
+
+
 
 #ifdef POSTGRESQL
 void QgisApp::addDatabaseLayer()
