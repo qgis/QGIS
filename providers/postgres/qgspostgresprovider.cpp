@@ -243,6 +243,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       
       // Kick off the long running threads
 
+#ifdef POSTGRESQL_THREADS
       std::cout << "QgsPostgresProvider: About to touch mExtentThread" << std::endl;
       mExtentThread.setConnInfo( connInfo );
       mExtentThread.setTableName( tableName );
@@ -262,7 +263,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       std::cout << "QgsPostgresProvider: About to start mCountThread" << std::endl;
       mCountThread.start();
       std::cout << "QgsPostgresProvider: Main thread just dispatched mCountThread" << std::endl;
-      
+#endif
     } else {
       // the table is not a geometry table
       numberFeatures = 0;
@@ -302,7 +303,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
-
+#ifdef POSTGRESQL_THREADS
   std::cout << "QgsPostgresProvider: About to wait for mExtentThread" << std::endl;
 
   mExtentThread.wait();
@@ -319,7 +320,7 @@ QgsPostgresProvider::~QgsPostgresProvider()
   // (otherwise they will get destroyed prematurely)
   QApplication::sendPostedEvents(this, QGis::ProviderExtentCalcEvent);
   QApplication::sendPostedEvents(this, QGis::ProviderCountCalcEvent);
-
+#endif
   PQfinish(connection);
   
   std::cout << "QgsPostgresProvider: deconstructing." << std::endl;
@@ -1638,20 +1639,22 @@ long QgsPostgresProvider::getFeatureCount()
   
   // First get an approximate count; then delegate to
   // a thread the task of getting the full count.
-  
+
+#ifdef POSTGRESQL_THREADS
   QString sql = "select reltuples from pg_catalog.pg_class where relname = '" + 
                  tableName + "'";
   
   std::cerr << "QgsPostgresProvider: Running SQL: " << 
         sql << std::endl;        
-                 
-  //QString sql = "select count(*) from " + tableName;
+#else                 
+  QString sql = "select count(*) from " + tableName;
   
-  //if(sqlWhereClause.length() > 0)
-  //{
-  //  sql += " where " + sqlWhereClause;
-  //}
-  
+  if(sqlWhereClause.length() > 0)
+  {
+    sql += " where " + sqlWhereClause;
+  }
+#endif
+
   PGresult *result = PQexec(connection, (const char *) sql);
   
 #ifdef QGISDEBUG
@@ -1674,11 +1677,12 @@ long QgsPostgresProvider::getFeatureCount()
 // This tip thanks to #qgis irc nick "creeping"
 void QgsPostgresProvider::calculateExtents()
 {
+#ifdef POSTGRESQL_THREADS
   // get the approximate extent by retreiving the bounding box
   // of the first few items with a geometry
 
-  QString sql = "select box3d(" + geometryColumn + ") from " + tableName + 
-                " where ";
+  QString sql = "select box3d(" + geometryColumn + ") from " + tableName +
+    " where ";
                 
   if(sqlWhereClause.length() > 0)
   {
@@ -1686,6 +1690,7 @@ void QgsPostgresProvider::calculateExtents()
   }
 
   sql += "not IsEmpty(" + geometryColumn + ") limit 5";
+
 
 #if WASTE_TIME
   sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
@@ -1738,6 +1743,69 @@ void QgsPostgresProvider::calculateExtents()
 
   // clear query result
   PQclear(result);
+
+#else // non-postgresql threads version
+
+  // get the extents
+
+  QString sql = "select extent(" + geometryColumn + ") from " + tableName;
+  if(sqlWhereClause.length() > 0)
+  {
+    sql += " where " + sqlWhereClause;
+  }
+
+#if WASTE_TIME
+  sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
+    "xmin(extent(" + geometryColumn + ")) as xmin,"
+    "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
+#endif
+
+#ifdef QGISDEBUG 
+  qDebug("+++++++++QgsPostgresProvider::calculateExtents -  Getting extents using schema.table: " + sql);
+#endif
+  PGresult *result = PQexec(connection, (const char *) sql);
+  std::string box3d = PQgetvalue(result, 0, 0);
+
+  if (box3d != "")
+  {
+    std::string s;
+
+    box3d = box3d.substr(box3d.find_first_of("(")+1);
+    box3d = box3d.substr(box3d.find_first_not_of(" "));
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double minx = strtod(s.c_str(), NULL);
+
+    box3d = box3d.substr(box3d.find_first_of(" ")+1);
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double miny = strtod(s.c_str(), NULL);
+
+    box3d = box3d.substr(box3d.find_first_of(",")+1);
+    box3d = box3d.substr(box3d.find_first_not_of(" "));
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double maxx = strtod(s.c_str(), NULL);
+
+    box3d = box3d.substr(box3d.find_first_of(" ")+1);
+    s = box3d.substr(0, box3d.find_first_of(" "));
+    double maxy = strtod(s.c_str(), NULL);
+
+    layerExtent.setXmax(maxx);
+    layerExtent.setXmin(minx);
+    layerExtent.setYmax(maxy);
+    layerExtent.setYmin(miny);
+#ifdef QGISDEBUG
+    QString xMsg;
+    QTextOStream(&xMsg).precision(18);
+    QTextOStream(&xMsg).width(18);
+    QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
+      xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
+    std::cerr << xMsg << std::endl;
+#endif
+    // clear query result
+    PQclear(result);
+  }
+
+
+#endif
 
 }
 
