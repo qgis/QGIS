@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsDbSourceSelectBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>347</height>
+            <height>350</height>
         </rect>
     </property>
     <property name="font">
@@ -80,7 +80,7 @@
                         </font>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>Close</string>
                     </property>
                     <property name="accel">
                         <string></string>
