@@ -66,10 +66,13 @@ wish to see edbug messages printed to stdout.
 #include <qpainter.h>
 #include <qimage.h>
 #include <qfont.h>
+#include <qfile.h>
 #include <qfontmetrics.h>
 #include <qwmatrix.h>
 #include <qpopupmenu.h>
 #include <stdio.h>
+#include <qmessagebox.h>
+
 #include "qgsrasterlayer.h"
 #include "qgsrect.h"
 #include "qgisapp.h"
@@ -2124,6 +2127,26 @@ QString QgsRasterLayer::getMetadata()
 
 void QgsRasterLayer::buildOverviews()
 {
+    //first test if the file is writeable
+    QFile myQFile(dataSource);
+    if (!myQFile.open(IO_WriteOnly| IO_Append))
+    {
+
+        QMessageBox myMessageBox( tr("Write access denied"),
+                                  tr("Write access denied. Adjust the file permissions and try again.\n\n"),
+                                  QMessageBox::Warning,
+				  QMessageBox::Ok,
+				  QMessageBox::NoButton,
+				  QMessageBox::NoButton );
+        myMessageBox.exec();
+
+        return;
+    }
+    myQFile.close();
+
+
+
+
     GDALAllRegister();
     //close the gdal dataset and reopen it in read / write mode
     delete gdalDataset;
@@ -2132,7 +2155,7 @@ void QgsRasterLayer::buildOverviews()
     gdalDataset->BuildOverviews( "NEAREST", 3, myOverviewLevelsIntArray, 0, NULL,
                                  GDALTermProgress, NULL );
     std::cout << "Pyramid overviews built" << std::endl;
-    
+
     //close the gdal dataset and reopen it in read only mode
     delete gdalDataset;
     gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
