@@ -318,7 +318,8 @@ _getScopeProperties( QDomNode const & scopeNode,
             restoredValue.clear();
         }
 
-        project_properties[ scopeName ].append( QgsProject::PropertyValue( "layer", restoredValue ) );
+        project_properties[ scopeName ].append( QgsProject::PropertyValue( currentProperty.nodeName(), 
+                                                                           restoredValue ) );
 
         ++i;
     }
