@@ -166,6 +166,25 @@ void QgsUValMaRenderer::writeXML(std::ostream& xml)
     xml << "\t\t</uniquevaluemarker>\n";
 }
 
+bool QgsUValMaRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnvalue=true;
+    QDomNode uniquevaluemarker=document.createElement("uniquevaluemarker");
+    layer_node.appendChild(uniquevaluemarker);
+    QDomNode classificationfield=document.createElement("classificationfield");
+    QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
+    classificationfield.appendChild(classificationfieldtxt);
+    uniquevaluemarker.appendChild(classificationfield);
+    for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    {
+	if(!(it->second)->writeXML(uniquevaluemarker,document))
+	{
+	    returnvalue=false;
+	}
+    }
+    return returnvalue;
+}
+
 void QgsUValMaRenderer::clearValues()
 {
     for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)

@@ -220,3 +220,15 @@ QString QgsSiMaRenderer::name()
 {
     return "Single Marker";
 }
+
+bool QgsSiMaRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnvalue=false;
+    QDomNode singlemarker=document.createElement("singlemarker");
+    layer_node.appendChild(singlemarker);
+    if(mItem)
+    {
+	returnvalue=mItem->writeXML(singlemarker,document);
+    }
+    return returnvalue;
+}

@@ -39,6 +39,9 @@ class QgsMarkerSymbol : public QgsSymbol
     const QString& picture() const;
     /**Returns the scale factor*/
     double scaleFactor();
+    /**Writes the contents of the symbol to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & item, QDomDocument & document );
  protected:
     /**Path to the SVG image*/
     QString mSvgPath;

@@ -37,3 +37,27 @@ const QString & QgsRangeRenderItem::upper_value() const
 {
   return m_upper_value;
 }
+
+bool QgsRangeRenderItem::writeXML( QDomNode & parent, QDomDocument & document )
+{
+    bool returnval=false;
+    QDomElement rangerenderitem=document.createElement("rangerenderitem");
+    parent.appendChild(rangerenderitem);
+    QDomElement lowervalue=document.createElement("lowervalue");
+    QDomText lowervaluetxt=document.createTextNode(mValue);
+    lowervalue.appendChild(lowervaluetxt);
+    rangerenderitem.appendChild(lowervalue);
+    QDomElement uppervalue=document.createElement("uppervalue");
+    QDomText uppervaluetxt=document.createTextNode(m_upper_value);
+    uppervalue.appendChild(uppervaluetxt);
+    rangerenderitem.appendChild(uppervalue);
+    if(mSymbol)
+    {
+	returnval=mSymbol->writeXML(rangerenderitem,document);
+    }
+    QDomElement label=document.createElement("label");
+    QDomText labeltxt=document.createTextNode(mLabel);
+    label.appendChild(labeltxt);
+    rangerenderitem.appendChild(label);
+    return returnval;
+}

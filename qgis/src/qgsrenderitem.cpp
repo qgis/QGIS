@@ -58,9 +58,29 @@ void QgsRenderItem::setValue(QString value)
 {
     mValue=value;
 }
+
 QgsSymbol* QgsRenderItem::getSymbol()
 {
   assert(this != 0);
     return mSymbol;
 }
 
+bool QgsRenderItem::writeXML( QDomNode & parent, QDomDocument & document )
+{
+    bool returnval=false;
+    QDomElement renderitem=document.createElement("renderitem");
+    parent.appendChild(renderitem);
+    QDomElement value=document.createElement("value");
+    QDomText valuetxt=document.createTextNode(mValue);
+    value.appendChild(valuetxt);
+    renderitem.appendChild(value);
+    if(mSymbol)
+    {
+	returnval=mSymbol->writeXML(renderitem,document);
+    }
+    QDomElement label=document.createElement("label");
+    QDomText labeltxt=document.createTextNode(mLabel);
+    label.appendChild(labeltxt);
+    renderitem.appendChild(label);
+    return returnval;
+}

@@ -49,6 +49,9 @@ class QgsSingleSymRenderer: public QgsRenderer
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ostream& xml);
+    /**Writes the contents of the renderer to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes();
     /**Returns an empty list, since no classification attributes are used*/

@@ -239,6 +239,19 @@ void QgsSingleSymRenderer::writeXML(std::ostream& xml)
     xml << "\t\t</singlesymbol>\n";
 }
 
+bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnval=false;
+    QDomElement singlesymbol=document.createElement("singlesymbol");
+    layer_node.appendChild(singlesymbol);
+    if(mItem)
+    {
+	returnval=mItem->writeXML(singlesymbol,document);
+    }
+    return returnval;
+}
+
+
 std::list<int> QgsSingleSymRenderer::classificationAttributes()
 {
     std::list<int> list;

@@ -392,3 +392,27 @@ QString QgsContinuousColRenderer::name()
 {
     return "Continuous Color";
 }
+
+bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    bool returnval=true;
+    QDomElement continuoussymbol=document.createElement("continuoussymbol");
+    layer_node.appendChild(continuoussymbol);
+    QDomElement classificationfield=document.createElement("classificationfield");
+    QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
+    classificationfield.appendChild(classificationfieldtxt);
+    continuoussymbol.appendChild(classificationfield);
+    QDomElement lowestitem=document.createElement("lowestitem");
+    continuoussymbol.appendChild(lowestitem);
+    if(mMinimumItem)
+    {
+	mMinimumItem->writeXML(lowestitem,document);
+    }
+    QDomElement highestitem=document.createElement("highestitem");
+    continuoussymbol.appendChild(highestitem);
+    if(mMaximumItem)
+    {
+	mMaximumItem->writeXML(highestitem,document);
+    }
+    
+}

@@ -30,6 +30,7 @@ class QColor;
 #include <fstream>
 #include <list>
 #include <qstring.h>
+#include <qdom.h>
 
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
 class QgsRenderer
@@ -51,6 +52,9 @@ class QgsRenderer
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl)=0;
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ostream& xml)=0;
+    /**Writes the contents of the renderer to a configuration file
+     @ return true in case of success*/
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document )=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     virtual bool needsAttributes()=0;
     /**Returns a list with indexes of classification attributes*/
