@@ -37,7 +37,10 @@ class PluginGui : public PluginGuiBase
       void pbnSelectOutputFile_clicked();
 
       void pbnGPXSelectFile_clicked();
-
+      
+      void pbnIMPInput_clicked();
+      void pbnIMPOutput_clicked();
+      
       void pbnDLOutput_clicked();
       
       void enableRelevantControls();
