@@ -1734,6 +1734,8 @@ void QgisApp::fileSave()
             return;
         }
         
+        delete saveFileDialog;
+        
         // make sure we have the .qgs extension in the file name
         if(fullPath.find(QRegExp("\\.qgs$")) == -1)
         {
