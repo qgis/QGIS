@@ -41,7 +41,7 @@ protected:
   void mousePressEvent( QMouseEvent * );
 
 private:
-  QPixmap image0;
+  QPixmap splashImage;
 };
 
 #endif
