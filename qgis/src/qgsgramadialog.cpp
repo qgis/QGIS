@@ -24,6 +24,7 @@
 #include "qgsgraduatedmarenderer.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgslegenditem.h"
+#include "qgssvgcache.h"
 #include <qcombobox.h>
 #include <qlayout.h>
 #include <qpainter.h>
@@ -186,18 +187,18 @@ void QgsGraMaDialog::apply()
 	classesheight=rowspace*(mNumberOfClassesSpinbox->value()-1);
 	for (int i = 0; i < mNumberOfClassesSpinbox->value(); i++)
         {
-	    QPicture p;
-	    p.load(((QPushButton*)(ext->getWidget(3,i)))->name(),"svg");
-	    int width=(int)(p.boundingRect().width()*((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
-	    if(width>markerwidth)
-	    {
-		markerwidth=width;
-		qWarning("markerwidth: "+QString::number(markerwidth));
-	    }
-	    int height= (int)(p.boundingRect().height()*((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
-	    height = (height>rowheight) ? height : rowheight;
-	    qWarning("height: " + QString::number(height));
-	    classesheight+=height;
+	  QPixmap p = QgsSVGCache::instance().
+	    getPixmap(((QPushButton*)(ext->getWidget(3,i)))->name(), 
+		      ((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
+	  int width = p.width();
+	  if(width>markerwidth) {
+	    markerwidth=width;
+	    qWarning("markerwidth: "+QString::number(markerwidth));
+	  }
+	  int height = p.height();
+	  height = (height>rowheight) ? height : rowheight;
+	  qWarning("height: " + QString::number(height));
+	  classesheight+=height;
 	}
 
 	//create the pixmap for the render item
@@ -279,14 +280,15 @@ void QgsGraMaDialog::apply()
                 //add the symbol to the picture
 		QString legendstring = lower_bound + " - " + upper_bound;
 		//todo: paint the picture
-		QPicture pic;
-		pic.load(((QPushButton*)(ext->getWidget(3,i)))->name(),"svg");
-		double scalefactor=((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble();
-		int actrowheight=(int)(pic.boundingRect().height()*scalefactor);
-		actrowheight= (actrowheight > rowheight) ? actrowheight : rowheight;
-		p.scale(scalefactor,scalefactor);
-		p.drawPicture((int)(leftspace/scalefactor),(int)(offset/scalefactor),pic);
-		p.resetXForm();
+		double scalefactor=((QLineEdit*)(ext->getWidget(4,i)))->text().
+		  toDouble();
+		QPixmap pix = QgsSVGCache::instance().
+		  getPixmap(((QPushButton*)(ext->getWidget(3,i)))->name(),
+			    scalefactor);
+		int actrowheight=(int)(pix.height() * scalefactor);
+		actrowheight = (actrowheight > rowheight ? 
+				actrowheight : rowheight);
+		p.drawPixmap(leftspace, offset, pix);
 		p.setPen(Qt::black);
 		p.drawText(leftspace+markerwidth + wordspace, offset + actrowheight, legendstring);
 		p.drawText(leftspace+markerwidth+2*wordspace+lowerupperwidth, offset + actrowheight, label);
