@@ -14,11 +14,10 @@ CONFIG += qt dll thread rtti
 
 # Input
 
-HEADERS +=    qgsgpsplugin.cpp \
+HEADERS +=    qgsgpsplugin.h \
               qgsbabelformat.h \
-              qgsbabelformat.cpp \
-              qgsgpsplugingui.cpp \
-              qgsgpsdevicedialog.cpp 
+              qgsgpsplugingui.h \
+              qgsgpsdevicedialog.h
 INTERFACES += qgsgpspluginguibase.ui \
               qgsgpsdevicedialogbase.ui
 SOURCES +=    qgsgpsplugin.cpp \

@@ -827,6 +827,9 @@ void QgsVectorLayer::select(int number)
 
     void QgsVectorLayer::showLayerProperties()
     {
+      // Set wait cursor while the property dialog is created
+      // and initialized
+      qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
       if (! m_propertiesDialog)
       {
 #ifdef QGISDEBUG
@@ -852,6 +855,8 @@ void QgsVectorLayer::select(int number)
       std::cerr << "Showing prop dialog\n";
 #endif
       m_propertiesDialog->show();
+      // restore normal cursor
+      qApp->restoreOverrideCursor();
     } // QgsVectorLayer::showLayerProperties()
 
 
