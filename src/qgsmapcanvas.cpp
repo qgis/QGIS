@@ -257,7 +257,8 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 		  // create a pixmap to use in panning the map canvas
 		  tempPanImage = new QPixmap();
 		  
-		  *tempPanImage = QPixmap::grabWidget(this);
+		  //*tempPanImage = QPixmap::grabWidget(this);
+		  	*tempPanImage = QPixmap::grabWindow(winId());
 		  
 		  
 		  backgroundFill = new QPixmap(tempPanImage->width(), tempPanImage->height());
