@@ -31,6 +31,7 @@ author=Gary E.Sherman
 configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --with-qt-dir=/opt/qt3.0.5\s
 email=sherman at mrcc dot com
 kdevprj_version=1.3
+lfv_open_groups=
 make_options=\s-j1
 makefiles=Makefile.am,qgis/Makefile.am,qgis/docs/Makefile.am,qgis/docs/en/Makefile.am
 modifyMakefiles=true
