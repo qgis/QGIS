@@ -21,7 +21,10 @@ void QgisAppBase::fileOpen()
 
 void QgisAppBase::addDatabaseLayer()
 {
-
+#ifdef QGISDEBUG
+    std::cerr << __FILE__ << ":" << __LINE__ 
+	    << " QgisAppBase::addDatabaseLayer() invoked instead of QgisApp::addDatabaseLayer().\n\tIs HAVE_POSTGRESQL defined?\n";
+#endif
 }
 
 
