@@ -1245,3 +1245,26 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
     }
     return false;
 }
+
+bool QgsVectorLayer::deleteSelectedFeatures()
+{
+#ifdef QGISDEBUG
+    qWarning("entering QgsVectorLayer::deleteSelectedFeatures");
+#endif 
+    bool resvalue=true;
+    for(std::map<int,bool>::iterator it=selected.begin();it!=selected.end();++it)
+    {
+	if(it->second==true)
+	{
+#ifdef QGISDEBUG
+    qWarning("selected feature detected");
+#endif	    
+	    if(!dataProvider->deleteFeature(it->first))
+	    {
+		resvalue=false;
+	    }
+	}
+    }
+    triggerRepaint();
+    return resvalue;
+}

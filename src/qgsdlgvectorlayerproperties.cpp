@@ -192,6 +192,7 @@ void QgsDlgVectorLayerProperties::close()
       widgetStackRenderers->addWidget(bufferDialog);
       widgetStackRenderers->raiseWidget(bufferDialog);
       rendererDirty = false;
+      //todo:restore the right name in the combo box
     }
   reject();
 }

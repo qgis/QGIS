@@ -608,7 +608,28 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 
 bool QgsShapeFileProvider::deleteFeature(int id)
 {
-    return false;
+#ifdef QGISDEBUG
+    int test=ogrLayer->TestCapability("OLCDeleteFeature");
+    if(!test)
+    {
+	    qWarning("no support for deletion of features");	
+    }
+#endif
+    OGRErr message=ogrLayer->DeleteFeature(id);
+    switch(message)
+    {
+	case OGRERR_UNSUPPORTED_OPERATION:
+#ifdef QGISDEBUG
+	    qWarning("driver does not support deletion");
+#endif
+	    return false;
+	case OGRERR_NONE:
+#ifdef QGISDEBUG
+	    qWarning("deletion successfull");
+#endif
+	    break;
+    }
+   return true;
 }
 
 /**
