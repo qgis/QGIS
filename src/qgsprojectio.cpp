@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.19 2004/01/27 03:01:11 gsherman Exp */
+/* qgsprojectio.cpp,v 1.20 2004/01/27 07:56:13 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -34,6 +34,7 @@
 #include "qgssisydialog.h"
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
+#include "qgsvectorlayerproperties.h"
 #include "qgisapp.h"
 
 QgsProjectIo::QgsProjectIo(QgsMapCanvas *_map, int _action, QgisApp *qgis) 
@@ -309,6 +310,9 @@ bool QgsProjectIo::read(){
 				QgsGraSyDialog* gdialog=new QgsGraSyDialog(dbl);
 				dbl->setRendererDialog(gdialog);
 				gdialog->apply();
+				QgsVectorLayerProperties* properties = new QgsVectorLayerProperties(dbl);
+				dbl->setLayerProperties(properties);
+				properties->setLegendType("graduated symbol");
 			    }
 
 			    else if(!continuousnode.isNull())//read configuration for continuous symbol
@@ -403,6 +407,10 @@ bool QgsProjectIo::read(){
 				QgsContColDialog* cdialog=new QgsContColDialog(dbl);
 				dbl->setRendererDialog(cdialog);
 				cdialog->apply();
+
+				QgsVectorLayerProperties* properties = new QgsVectorLayerProperties(dbl);
+				dbl->setLayerProperties(properties);
+				properties->setLegendType("continuous color");
 			    }
 			    
 			    
