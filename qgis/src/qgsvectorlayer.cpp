@@ -2213,7 +2213,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   if ( widthScale != 1. ) {
       pen = p->pen(); 
       pen.setWidth ( (int) (widthScale * pen.width() ) ) ;
-      std::cout << "width = " << pen.width() << std::endl;
+      //std::cout << "width = " << pen.width() << std::endl;
       p->setPen ( pen );
   }
 
