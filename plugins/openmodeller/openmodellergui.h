@@ -14,10 +14,18 @@
 #ifndef OPENMODELLERGUI_H
 #define OPENMODELLERGUI_H
 
-#include <openmodellerguibase.uic.h>
+#ifdef WIN32
+  #include <openmodellerguibase.h>
+#else
+  #include <openmodellerguibase.uic.h>
+#endif
 #include <qstringlist.h>
 #include <qstring.h>
-#include <openmodeller/om.hh>
+#ifdef WIN32
+  #include "om.hh"
+#else
+  #include <openmodeller/om.hh>
+#endif
 #include <qmap.h> 
 
 

@@ -38,10 +38,17 @@
 
 //
 //openmodeller includes
-#include <openmodeller/om_control.hh>
-#include <openmodeller/om.hh>
-#include <om_alg_parameter.hh>
-#include <request_file.hh>
+#ifdef WIN32
+  #include <om_control.hh>
+  #include <om.hh>
+  #include <om_alg_parameter.hh>
+  #include <request_file.hh>
+#else
+  #include <openmodeller/om_control.hh>
+  #include <openmodeller/om.hh>
+#endif
+  #include <om_alg_parameter.hh>
+  #include <request_file.hh>
 
 //gdal includes
 #include "gdal_priv.h"
@@ -1040,15 +1047,15 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
 
 bool OpenModellerGui::checkLocalitiesFileFormat(const QString)
 {
-
-
+ //@todo DO ME!!
+ return false;
 }
 
 void OpenModellerGui::mapCallback( float progress, void *extra_param )
 {
   QProgressBar *myProgressBar = (QProgressBar *) extra_param;
   //std::cout << "OMGUI : Map creation progress : " << ( 100 * progress ) << std::endl;
-  myProgressBar->setProgress(100 * progress);
+  //myProgressBar->setProgress(100 * progress);
 }
 
 
