@@ -2200,9 +2200,7 @@ void QgsRasterLayer::initContextMenu(QgisApp * theApp)
   popMenu->insertItem(tr("&Zoom to extent of selected layer"), theApp, SLOT(zoomToLayerExtent()));
   popMenu->insertItem(tr("&Properties"), theApp, SLOT(layerProperties()));
   //show in overview slot is implemented in maplayer superclass!
-  int myShowInOverviewItemId = popMenu->insertItem(tr("Show In &Overview"), this, SLOT(showInOverview(bool)));
-  //set the checkbox using the property in the maplayer superclass
-  popMenu->setItemChecked(myShowInOverviewItemId,mShowInOverview);
+  mShowInOverviewItemId = popMenu->insertItem(tr("Show In &Overview"), this, SLOT(toggleShowInOverview()));
   popMenu->insertItem(tr("&Remove"), theApp, SLOT(removeLayer()));
   popMenu->insertSeparator();
   QLabel * myTransparencyLabel = new QLabel( popMenu );

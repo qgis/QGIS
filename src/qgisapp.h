@@ -261,6 +261,7 @@ public slots:
     void showProgress(int theProgress, int theTotalSteps);
     void showExtents(QString theExtents);
     void showStatusMessage(QString theMessage);
+    void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
 private:
     //! A central registry that keeps track of all loaded layers.
     QgsMapLayerRegistry * mMapLayerRegistry;

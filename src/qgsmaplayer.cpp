@@ -31,6 +31,7 @@ m_legendItem(0)
   valid = true;
   m_visible = true;
   mShowInOverview = false;
+  mShowInOverviewItemId =0;
   // Set the display name = internal name
   layerName = internalName;
 
@@ -124,9 +125,9 @@ void QgsMapLayer::setVisible(bool vis)
   emit visibilityChanged();
 }  /** Read property of int featureType. */
 
-void QgsMapLayer::showInOverview(bool theFlag)
+void QgsMapLayer::toggleShowInOverview()
 {
-  if (theFlag)
+  if (mShowInOverview==false)
   {
 #ifdef QGISDEBUG
     std::cout << "Map layer " << ID << " requested to be added to the overview " << std::endl;
@@ -139,6 +140,12 @@ void QgsMapLayer::showInOverview(bool theFlag)
     std::cout << "Map layer " << ID << " requested to be removed from the overview " << std::endl;
 #endif
     mShowInOverview=false;
+  }
+  //update the show in overview popup menu item
+  if (mShowInOverviewItemId != 0)
+  {
+    //set the checkbox using the property in the maplayer superclass
+    popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
   }
   emit showInOverview(ID,mShowInOverview);
 }
