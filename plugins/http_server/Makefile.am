@@ -46,7 +46,7 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp plugingui.moc.cpp
+plugin_MOC = plugin.moc.cpp plugingui.moc.cpp httpdaemon.moc.cpp
 
 
 libHttpServer_la_SOURCES = plugin.cpp \
