@@ -507,7 +507,7 @@ void QgsDatabaseLayer::identify(QgsRect * r)
 		// determine the field to use for the feature node label
 		for (int fi = 0; fi < pgs.Fields(); fi++) {
 				QString fldName = pgs.FieldName(fi);
-		if(fldName.contains("name", false)){
+		if(fldName.contains("name", false) || fldName.contains("descript",false)){
 					idxName = fi;
 				}
 				if(fldName.contains("id", false )){
