@@ -60,8 +60,11 @@ Q_OBJECT
 	NDR=1,
 	XDR=0
     };
-    // Returns the endian type for the client
-    int endian();	
+    //! Returns the endian type for the client
+    int endian();
+    /*! Endian type as string
+    * @return XDR or NDR
+    */
     QString endianString();
 };
 

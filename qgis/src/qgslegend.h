@@ -24,13 +24,23 @@ class QListView;
 
 class QPainter;
 /**
+* \class QgsLegend
+* \brief Map legend
+*
+* The map legend is a worker class that controls the display of legend items.
   *@author Gary E.Sherman
   */
 
 class QgsLegend : public QWidget{
 	Q_OBJECT
-public: 
+public:
+/*! Constructor.
+* @param lv ListView control containing legend items
+* @param parent Parent widget
+* @param name Name of the widget
+*/
 	QgsLegend(QListView *lv, QWidget *parent=0, const char *name=0);
+	//! Destructor
 	~QgsLegend();
 	//! Set the pointer to the map canvas
 	void setMapCanvas(QgsMapCanvas *canvas);

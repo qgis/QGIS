@@ -28,10 +28,15 @@ class QgsSymbol;
   */
 
 class QgsLayerProperties : public QgsLayerPropertiesBase  {
-public: 
+public:
+/*! Constructor
+* @param ml Map layer for which properties will be displayed
+*/
 	QgsLayerProperties(QgsMapLayer *ml);
 	~QgsLayerProperties();
+	//! Function to display the color selector and choose the fill color
 	void selectFillColor();
+	//! Function to display the color selector and choose the outline color
 	void selectOutlineColor();
 private:
 	QgsMapLayer *layer;

@@ -25,8 +25,15 @@ class QPoint;
 */
 class QgsCoordinateTransform{
  public:
+ /* Constructor
+ * @param mupp Map units per pixel
+ * @param ymax Maximum y value of the map canvas
+ * @param ymin Minimum y value of the map canvas
+ * @param xmin Minimum x value of the map canvas
+ */
     QgsCoordinateTransform(double mupp=0, double ymax = 0, double ymin=0,
 			   double xmin = 0);
+		 //! destructor
     ~QgsCoordinateTransform();
     /*! Transform the point from map (world) coordinates to device coordinates
     * @param p Point to transform
@@ -50,6 +57,7 @@ class QgsCoordinateTransform{
     * @return QgsPoint in map coorndiates
     */
     QgsPoint toMapCoordinates(QPoint p);
+    
     QgsPoint toMapPoint(int x, int y);
     /*! Set map units per pixel
     * @param mupp Map units per pixel
