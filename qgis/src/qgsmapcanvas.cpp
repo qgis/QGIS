@@ -15,19 +15,61 @@
  *                                                                         *
  ***************************************************************************/
 #include <qstring.h>
+#include <qpainter.h>
+#include <qrect.h>
+#include "qgsrect.h"
 #include "qgsmaplayer.h"
+#include "qgsdatabaselayer.h"
 #include "qgsmapcanvas.h"
 
 QgsMapCanvas::QgsMapCanvas(QWidget *parent, const char *name ) : QWidget(parent,name) {
+  mapWindow = new QRect();
 }
 QgsMapCanvas::~QgsMapCanvas(){
+  delete mapWindow;
 }
 void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
-  layers[lyr->name()] = *lyr;
+  layers[lyr->name()] = lyr;
+  // update extent if warranted
+  if(layers.size() == 1){
+    fullExtent = lyr->extent();
+  }
   // set zpos to something...
   //lyr->zpos = 0;
 }
 void QgsMapCanvas::render(){
+  QPainter *paint = new QPainter();
+  paint->begin(this);
+  currentExtent = fullExtent;
+  mapWindow->setLeft(currentExtent.xMin());
+  mapWindow->setBottom(currentExtent.yMin());
+    // determine the dominate direction for the mapcanvas
+      if (width () > height ())
+	{
+	  mapWindow->setWidth(currentExtent.width());
+	  mapWindow->setHeight(currentExtent.width());
+	}
+      else
+	{
+	  mapWindow->setWidth(currentExtent.height());
+	  mapWindow->setHeight(currentExtent.height());
+	}
+      paint->setWindow(*mapWindow);
+ QRect v = paint->viewport ();
+      int d = QMIN (v.width (), v.height ());
+      int dm = QMAX(v.width(), v.height());
+          paint->setViewport (v.left () + (v.width () - d) / 2,
+      		 v.top () + (v.height () - d) / 2, d, d);
+      
   // render all layers in the stack, starting at the base
-
+  map<QString,QgsMapLayer *>::iterator mi = layers.begin();
+  int yTransform = mapWindow->bottom() - abs(mapWindow->height() - currentExtent.height())/2;
+  while(mi != layers.end()){
+    QgsMapLayer *ml = (*mi).second;
+    //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
+    ml->draw(paint, &currentExtent, yTransform);
+    mi++;
+    //  mi.draw(p, &fullExtent);
+  }
+  paint->end();
 }

@@ -1,3 +1,4 @@
+#include <qstring.h>
 #include "qgsrect.h"
 QgsRect::QgsRect(double minX, double minY, double maxX, double maxY) :
   xmin(minX), ymin(minY), xmax(maxX), ymax(maxY){
@@ -28,6 +29,12 @@ double QgsRect::yMax() const {
 double QgsRect::yMin() const {
   return ymin;
 }
+double QgsRect::width() const{
+  return xmax - xmin;
+}
+double QgsRect::height() const {
+  return ymax - ymin;
+}
 void QgsRect::normalize(){
   double temp;
   if( xmin > xmax){
@@ -41,7 +48,17 @@ void QgsRect::normalize(){
     ymax = temp;
   }
 }
-
+QString QgsRect::stringRep() const{
+  QString tmp;
+  QString rep = tmp.setNum(xmin);;
+  rep += " ";
+  rep += tmp.setNum(ymin);
+  rep += ",";
+  rep += tmp.setNum(xmax);
+  rep += " ";
+  rep += tmp.setNum(ymax);
+  return rep;
+}
 bool QgsRect::operator==(const QgsRect &r1){
   return (r1.xMax() == this->xMax() && r1.xMin() == this->xMin() &&
 	  r1.yMax() == this->yMax() && r1.yMin() == this->yMin());

@@ -55,7 +55,7 @@ class QgsMapLayer : public QgsDataSource  {
      * based on the layer type
      */
     virtual QgsRect calculateExtent();
-    virtual void draw(QPainter *, QgsRect * = 0);
+    virtual void draw(QPainter *, QgsRect *, int);
     /*! Return the extent of the layer as a QRect
      */
     const QgsRect extent();

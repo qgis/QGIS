@@ -31,9 +31,11 @@
 #include <libpq++.h>
 #include <iostream>
 #include <iomanip>
+#include "qgsrect.h"
 #include "qgsmapcanvas.h"
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
+
 #include "qgisapp.h"
 #include "xpm/qgis.xpm"
 
@@ -95,6 +97,7 @@ QgisApp::addLayer ()
 	  mapCanvas->addLayer (lyr);
 	  // no drawing done -- need to pass the layer collection
 	  // to the rendering engine (yet to be written)
+	 
 	  ++it;
 	}
 
@@ -246,4 +249,9 @@ QgisApp::drawPoint (double x, double y)
   paint.setPen (Qt::blue);
   paint.drawPoint (x, y);
   paint.end ();
+}
+
+void QgisApp::drawLayers(){
+  cout << "In  QgisApp::drawLayers()" << endl;
+  mapCanvas->render();
 }
