@@ -86,6 +86,7 @@ void QgsComposerMap::init ()
 
     // Cache
     mCachePixmap = new QPixmap();
+    mCacheUpdated = false;
 
     // Potemkin
     mCalculateComboBox->insertItem( "Scale" );
@@ -195,6 +196,7 @@ void QgsComposerMap::cache ( void )
     p.end();
 
     mNumCachedLayers = mMapCanvas->layerCount();
+    mCacheUpdated = true;
 }
 
 void QgsComposerMap::draw ( QPainter & painter )
@@ -205,7 +207,7 @@ void QgsComposerMap::draw ( QPainter & painter )
     if ( plotStyle() == QgsComposition::Preview &&  mPreviewMode == Cache ) { // Draw from cache
         std::cout << "use cache" << std::endl;
 
-	if ( mMapCanvas->layerCount() != mNumCachedLayers ) {
+	if ( !mCacheUpdated || mMapCanvas->layerCount() != mNumCachedLayers ) {
 	    cache();
 	}
 	
@@ -294,7 +296,7 @@ void QgsComposerMap::scaleChanged ( void )
     mSymbolScale = mSymbolScaleLineEdit->text().toDouble();
     mFontScale = mFontScaleLineEdit->text().toDouble();
 
-    cache();
+    mCacheUpdated = false;
     QCanvasRectangle::update();
     QCanvasRectangle::canvas()->update();
     
@@ -337,7 +339,7 @@ void QgsComposerMap::recalculate ( void )
     std::cout << "mExtent = " << mExtent.stringRep() << std::endl;
 
     setOptions();
-    cache();
+    mCacheUpdated = false;
 }
 
 void QgsComposerMap::frameChanged ( )
