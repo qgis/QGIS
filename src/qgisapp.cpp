@@ -147,6 +147,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
 	// create the layer popup menu
 	popMenu = new QPopupMenu();
+  popMenu->insertItem("&Zoom to extent of selected layer", this, SLOT(zoomToLayerExtent()));
 	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
 	popMenu->insertItem("&Properties", this, SLOT(layerProperties()));
 	mapCursor = 0;
@@ -542,6 +543,18 @@ void QgisApp::removeLayer()
 
 
 }
+
+void QgisApp::zoomToLayerExtent(){
+  
+	// get the selected item
+	QListViewItem *li = legendView->currentItem();
+	QgsMapLayer *lyr = ((QgsLegendItem *) li)->layer();
+    mapCanvas->setExtent(lyr->extent());
+    mapCanvas->clear();
+    mapCanvas->render2();
+  
+}
+
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 {
 	if (lvi)

@@ -80,6 +80,8 @@ public slots:
 	void rightClickLegendMenu(QListViewItem *, const QPoint &, int );
 	//! Remove a layer from the map and legend
 	void removeLayer();
+  //! zoom to extent of layer
+  void zoomToLayerExtent();
   //! test plugin functionality
   void testPluginFunctions();
   //! Save window state
