@@ -359,8 +359,8 @@ void QgsGraSyDialog::apply()
         {
 	    mVectorLayer->legendItem()->setPixmap(0, (*pix));
         }
-	mVectorLayer->setRenderer(renderer);
-	mVectorLayer->setRendererDialog(this);
+	
+
 	if (mVectorLayer->propertiesDialog())
         {
 	    mVectorLayer->propertiesDialog()->setRendererDirty(false);
