@@ -528,7 +528,7 @@ void QgsVectorLayer::identify(QgsRect * r)
       {
 	QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
       }
-  } else { // Edit attributes
+  } else { // Edit attributes 
       // TODO: what to do if more features were selected? - nearest?
       if ( (fet = dataProvider->getNextFeature(true)) ) {
 	  // Was already changed?
