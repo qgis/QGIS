@@ -47,56 +47,67 @@ Start QGIS, then Open the Plugin Manager by choosing the {\em Tools\mbox{$|$}Plu
    \caption{Plugin Manager Dialog}
    \label{fig:plugin_manager}
    \smallskip
-   \includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/plugin_manager}
+   \includegraphics[scale=0.6]{qgis_user_guide_images/plugins_delimited_text/plugin_manager}
    \end{center}  
 \end{figure}
 
 
 A new toolbar icon is now present:
-\includegraphics{qgis_user_guide_images/plugins_delimited_text/toolbar_icon}
+\includegraphics[scale=0.8]{qgis_user_guide_images/plugins_delimited_text/toolbar_icon}
 Click on the icon to open the Delimited Text dialog as shown in Figure \ref{fig:delim_text_plugin_dialog}.
 
 \begin{figure}[h]
    \begin{center}
-   \caption{Plugin Manager Dialog}\label{fig:delim_text_plugin_dialog}\smallskip
-   \includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/dialog}            
+   \caption{Delimited Text Dialog}\label{fig:delim_text_plugin_dialog}\smallskip
+   \includegraphics[scale=0.6]{qgis_user_guide_images/plugins_delimited_text/dialog}            
    \end{center}  
 \end{figure}
 
   
 First select the file to import by clicking on the ellipsis button: 
-\includegraphics{qgis_user_guide_images/plugins_delimited_text/ellipsis}
+\includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/ellipsis}
 Select the desired text file from the file dialog
-Once the file is selected, the plugin attempts to parse the file using the last used delimiter, in this case \mbox{$|$}
+Once the file is selected, the plugin attempts to parse the file using the last
+used delimiter, in this case \mbox{$|$} (Figure
+\ref{fig:delim_text_file_selected}).
 \begin{figure}[h]
    \begin{center}
-   \caption{Plugin Manager Dialog}\label{fig:delim_text_file_selected}\smallskip
-   \includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/file_selected}   
+   \caption{File Selected}\label{fig:delim_text_file_selected}\smallskip
+   \includegraphics[scale=0.6]{qgis_user_guide_images/plugins_delimited_text/file_selected}   
    \end{center}  
 \end{figure}
-
-  
 
 In this case the delimiter \mbox{$|$} is not correct for the file. The file is actually tab delimited. Note that the X and Y field drop down boxes do not contain valid field names.
-To properly parse the file, change the delimiter to tab using \mbox{$\backslash$}t (this is a regular expression for the tab character). After changing the delimiter, click {\em Parse}
-The drop down boxes now contain the fields properly parsed:
+To properly parse the file, change the delimiter to tab using
+\mbox{$\backslash$}t (this is a regular expression for the tab character). After
+changing the delimiter, click {\em Parse}.
+The drop down boxes now contain the fields properly parsed as shown in Figure
+\ref{fig:delim_text_file_selected2}.
+
+Choose the X and Y fields from the drop down boxes and enter a Layer name as
+shown in Figure \ref{fig:delim_text_file_selected3}. To add the layer to the
+map, click {\em Add Layer}. The delimited text file now behaves as any other map
+layer in QGIS (Figure \ref{fig:layer_added}).
 \begin{figure}[h]
    \begin{center}
-   \caption{Plugin Manager Dialog}\label{fig:delim_text_file_selected2}\smallskip
-   \includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/file_selected2}
+   \caption{Fields Parsed from Text File}\label{fig:delim_text_file_selected2}\smallskip
+   \includegraphics[scale=0.6]{qgis_user_guide_images/plugins_delimited_text/file_selected2}
    \end{center}  
 \end{figure}
 
-Choose the X and Y fields from the drop down boxes and enter a Layer name
 \begin{figure}[h]
    \begin{center}
-   \caption{Plugin Manager Dialog}\label{fig:delim_text_file_selected3}\smallskip
-   \includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/file_se
+   \caption{Selecting the X and Y Fields}\label{fig:delim_text_file_selected3}\smallskip
+   \includegraphics[scale=0.6]{qgis_user_guide_images/plugins_delimited_text/file_selected3}
    \end{center}  
-\end{figure}lected3}
-\item Click {\em Add Layer}
-The layer is added to the map: 
-\includegraphics[scale=0.5]{qgis_user_guide_images/plugins_delimited_text/layer_added}
+\end{figure}
+\begin{figure}[h]
+   \begin{center}
+   \caption{Delimited Text Layer Added to QGIS}\label{fig:layer_added}\smallskip
+\includegraphics[scale=0.6]{qgis_user_guide_images/plugins_delimited_text/layer_added}
+   \end{center}  
+\end{figure}
+
 
 
 % html: End of file: `index.html'
