@@ -99,3 +99,14 @@ void QgisAppBase::testPluginFunctions()
 {
 
 }
+
+void QgisAppBase::actionOptions_activated()
+{
+
+}
+
+
+void QgisAppBase::options()
+{
+
+}

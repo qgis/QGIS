@@ -20,6 +20,7 @@
 #include <qmenubar.h>
 #include <qcanvas.h>
 #include <qcolor.h>
+#include <qdir.h>
 #include <qscrollview.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
@@ -121,6 +122,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	QPixmap icon;
 	icon = QPixmap(qgis_xpm);
 	setIcon(icon);
+	// store startup location
+	QDir *d = new QDir();
+	startupPath = d->absPath();
+	delete d;
 	QBitmap zoomincur;
 //  zoomincur = QBitmap(cursorzoomin);
 	QBitmap zoomincurmask;
@@ -606,39 +611,49 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 
 void QgisApp::testPluginFunctions()
 {
-// try to load the class factory function
+// try to load plugins from the plugin directory and test each one
 
-
-	QLibrary myLib("../plugins/libqgisplugin.so.1.0.0");
-	bool loaded = myLib.load();
-	if (loaded) {
-		std::cout << "Loaded test plugin library" << std::endl;
-		std::cout << "Attempting to resolve the classFactory function" << std::endl;
-		create_t *cf = (create_t *) myLib.resolve("classFactory");
-
-		if (cf) {
-			std::cout << "Getting pointer to a QgisPlugin object from the library\n";
-			QgisPlugin *pl = cf();
-			std::cout << "Displaying name, version, and description\n";
-			std::cout << "Plugin name: " << pl->name() << std::endl;
-			std::cout << "Plugin version: " << pl->version() << std::endl;
-			std::cout << "Plugin description: " << pl->description() << std::endl;
-			QMessageBox::information(this, "Plugin Information", "QGis loaded the following plugin:\nName: "
-									 + pl->name() + "\nVersion: " + pl->version() + "\nDescription: " + pl->description());
-			// unload the plugin (delete it)
-			std::cout << "Attempting to resolve the unload function" << std::endl;
-			unload_t *ul = (unload_t *) myLib.resolve("unload");
-			if (ul) {
-				ul(pl);
-				std::cout << "Unloaded the plugin\n";
-			} else {
-				std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
+	QDir pluginDir("../plugins", "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+	//pluginDir.setFilter(QDir::Files || QDir::NoSymLinks);
+	//pluginDir.setNameFilter("*.so*");
+	if(pluginDir.count() == 0){
+		QMessageBox::information(this, "No Plugins", "No plugins found in ../plugins. To test plugins, start qgis from the src directory");
+	}else{
+		
+		for(unsigned i = 0; i < pluginDir.count(); i++){
+		std::cout << "Getting information for plugin: " << pluginDir[i] << std::endl;
+		QLibrary myLib("../plugins/" + pluginDir[i]);
+		bool loaded = myLib.load();
+		if (loaded) {
+			std::cout << "Loaded test plugin library" << std::endl;
+			std::cout << "Attempting to resolve the classFactory function" << std::endl;
+			create_t *cf = (create_t *) myLib.resolve("classFactory");
+	
+			if (cf) {
+				std::cout << "Getting pointer to a QgisPlugin object from the library\n";
+				QgisPlugin *pl = cf();
+				std::cout << "Displaying name, version, and description\n";
+				std::cout << "Plugin name: " << pl->name() << std::endl;
+				std::cout << "Plugin version: " << pl->version() << std::endl;
+				std::cout << "Plugin description: " << pl->description() << std::endl;
+				QMessageBox::information(this, "Plugin Information", "QGis loaded the following plugin:\nName: "
+										 + pl->name() + "\nVersion: " + pl->version() + "\nDescription: " + pl->description());
+				// unload the plugin (delete it)
+				std::cout << "Attempting to resolve the unload function" << std::endl;
+				unload_t *ul = (unload_t *) myLib.resolve("unload");
+				if (ul) {
+					ul(pl);
+					std::cout << "Unloaded the plugin\n";
+				} else {
+					std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
+				}
 			}
+		} else {
+			QMessageBox::warning(this, "Unable to Load Plugin",
+								 "QGis was unable to load the plugin from: ../plugins/libqgisplugin.so.1.0.0");
+			std::cout << "Unable to load library" << std::endl;
 		}
-	} else {
-		QMessageBox::warning(this, "Unable to Load Plugin",
-							 "QGis was unable to load the plugin from: ../plugins/libqgisplugin.so.1.0.0");
-		std::cout << "Unable to load library" << std::endl;
+		}
 	}
 }
 
