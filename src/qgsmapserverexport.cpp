@@ -195,6 +195,7 @@ void QgsMapserverExport::writeMapFile(){
 				case QgsMapLayer::VECTOR:
 					mapFile << "  DATA " << lyr->source() << std::endl;
 					break;
+#ifdef POSTGRESQL
 				case QgsMapLayer::DATABASE:
 					QgsDatabaseLayer *dblyr = (QgsDatabaseLayer *)lyr;
 					mapFile << "  CONNECTION \"" << lyr->source() << "\"" 
@@ -204,6 +205,7 @@ void QgsMapserverExport::writeMapFile(){
 						" from " << dblyr->geometryTableName() << "\"" 
 						<< std::endl;
 					break;
+#endif
 			}
 			// create a simple class entry based on layer color
 			QgsSymbol *sym = lyr->symbol();
