@@ -1,5 +1,12 @@
 #ifndef QGIS_H
 #define QGIS_H	
+/*!  \mainpage Quantum GIS
+*
+*  \section about  About QGis
+* blah blah blah
+*
+*/
+
 namespace QGis  {
 enum MapTools {
 	ZoomIn,
