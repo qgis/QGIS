@@ -23,7 +23,10 @@ email                : sbr00pwb@users.sourceforge.net
 // includes
 #ifdef WIN32
 #include <cmath>
+#else
+#include <math.h>
 #endif
+
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
@@ -213,7 +216,7 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
 
     // snap to integer < 10 times power of 10
     if (mSnapping) {
-      int myPowerOf10 = pow(10, int(log(myActualSize) / log(10)));
+      int myPowerOf10 = int(pow(10, int(log(myActualSize) / log(10))));
 #ifdef WIN32
       // I know this is tacky -- but I'm trying to get this ready
       // for release
@@ -398,8 +401,8 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     {
       for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
       {
-        theQPainter->drawText( i +(myOriginX-(myFontWidth/2)), 
-                              j + (myOriginY-(myFontHeight/4)), 
+        theQPainter->drawText( int(i +(myOriginX-(myFontWidth/2))), 
+                              int(j + (myOriginY-(myFontHeight/4))), 
                               "0");
       }
     }
@@ -408,7 +411,8 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     theQPainter->setPen( myForeColor );
 
     theQPainter->drawText(
-            (myOriginX-(myFontWidth/2)),(myOriginY-(myFontHeight/4)),
+            int(myOriginX-(myFontWidth/2)),
+            int(myOriginY-(myFontHeight/4)),
             "0"
             );    
     
@@ -423,15 +427,16 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     {
       for (int j = 0-myBufferSize; j <= myBufferSize; j++) 
       {
-        theQPainter->drawText( i + (myOriginX+myScaleBarWidthInt-(myFontWidth/2)), 
-                              j + (myOriginY-(myFontHeight/4)), 
+        theQPainter->drawText( int(i + (myOriginX+myScaleBarWidthInt-(myFontWidth/2))),
+                              int(j + (myOriginY-(myFontHeight/4))), 
                               myScaleBarMaxLabel);
       }
     }
     //then the text itself
     theQPainter->setPen( myForeColor );
     theQPainter->drawText(
-            (myOriginX+myScaleBarWidthInt-(myFontWidth/2)),(myOriginY-(myFontHeight/4)),
+            int(myOriginX+myScaleBarWidthInt-(myFontWidth/2)),
+	    int(myOriginY-(myFontHeight/4)),
             myScaleBarMaxLabel
             );
     

@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.152 2004/06/27 23:09:04 timlinux Exp
+ChangeLog,v 1.153 2004/06/28 11:08:17 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-28 [jobi] 0.3.0devel56
+** fix bug #981159
+** cleaned warnings
 
 2004-06-28 [ts] 0.3.0devel55
 ** Added show/hide all layers buttons and menu items
