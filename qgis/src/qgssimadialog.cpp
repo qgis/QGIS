@@ -111,10 +111,14 @@ QgsSiMaDialog::~QgsSiMaDialog()
 
 void QgsSiMaDialog::apply()
 {   
+#ifdef QGISDEBUG
     qWarning("in QgsSiMaDialog::apply()");
+#endif
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
     QString string(mImageButton->name());
+#ifdef QGISDEBUG
     qWarning(string);
+#endif
     ms->setPicture(string);
     ms->setScaleFactor(mScaleEdit->text().toDouble());
 
