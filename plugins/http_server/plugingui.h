@@ -29,6 +29,19 @@ public:
     void pbnCancel_clicked();
     void cboxEnableServer_toggled(bool);
     void spinPort_valueChanged(int);
+
+
+
+    void pbnProjectsDir_clicked();
+    void pbnDefaultProject_clicked();
+    void pbnLayersDir_clicked();
+    void pbnCssFile_clicked();
+    void pbnLogFile_clicked();
+
+    
+    void saveDefaults();
+    void loadDefaults();
+    
 private:
 
 signals:

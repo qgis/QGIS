@@ -37,6 +37,7 @@ email                : tim@linfiniti.com
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qfileinfo.h>
+#include <qsettings.h>
 
 //non qt includes
 #include <iostream>
@@ -66,8 +67,6 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
-  mPortInt=8081;
-  startServer();  
 }
 
 Plugin::~Plugin()
@@ -97,8 +96,27 @@ void Plugin::initGui()
   toolBarPointer->setLabel("QGis Http Server");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
+  QSettings myQSettings;  // where we keep last used filter in persistant state
+  int myPortNoInt = myQSettings.readNumEntry("/qgis/http_server/port");
+  if (myPortNoInt <1)
+  {
+    mPortInt=8081; //sensible default
+  }
+  else
+  {
+    mPortInt = myPortNoInt;
+  }
 
-
+  QString myAlwaysStartFlag = myQSettings.readEntry("/qgis/http_server/alwaysStartFlag");
+  if (myAlwaysStartFlag=="true")
+  {
+    startServer();
+    mEnabled=true;
+  }
+  else
+  {
+    mEnabled=false;
+  }
 }
 //method defined in interface
 void Plugin::help()
@@ -111,15 +129,22 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"QGis Http Server",true,0);
   //listen for when the layer has been made so we can draw it
-  if (mHttpDaemon)
+  Q_CHECK_PTR( mHttpDaemon );
+  if (!mEnabled)
   {
+    std::cout << "NOT connecting to httpd because there is NO instance " << std::endl;
+  }
+  else
+  {
+    std::cout << "connecting to httpd because there is an instance " << std::endl;
     connect(mHttpDaemon, SIGNAL(newConnect(QString)), myPluginGui, SLOT(newConnect(QString)));
     connect(mHttpDaemon, SIGNAL(endConnect(QString)), myPluginGui, SLOT(endConnect(QString)));
     connect(mHttpDaemon, SIGNAL(wroteToClient(QString)), myPluginGui, SLOT(wroteToClient(QString)));
     connect(mHttpDaemon, SIGNAL(requestReceived(QString)), myPluginGui, SLOT(requestReceived(QString)));
-    connect(myPluginGui, SIGNAL(enabledChanged(bool)),this, SLOT(setEnabled(bool)));
-    connect(myPluginGui, SIGNAL(portChanged(int)),this, SLOT(setPort(int)));
   }
+  connect(myPluginGui, SIGNAL(enabledChanged(bool)),this, SLOT(setEnabled(bool)));
+  connect(myPluginGui, SIGNAL(portChanged(int)),this, SLOT(setPort(int)));
+
   myPluginGui->setPort(mPortInt);
   myPluginGui->setEnabled(mEnabled);
   myPluginGui->show();
@@ -140,16 +165,34 @@ void Plugin::unload()
 
 void Plugin::setEnabled (bool theFlag)
 {
- if (theFlag)
- {
-   stopServer();
- }
- else
- {
-   startServer();
- }
+  //stop the server first if it is running.
+  if (mEnabled)
+  {
+    Q_CHECK_PTR( mHttpDaemon );
+    if (mHttpDaemon)
+    {
+      stopServer();
+    }
+    mEnabled=false;
+  }
+  //restart it if enabled is true
+  if (theFlag)
+  {
+    startServer();
+    mEnabled=true;
+  }
 }
-
+void Plugin::setPort(int thePortInt)
+{
+ mPortInt=thePortInt;
+ //this will have the effect of restarting the server if its already running
+ if (mEnabled)
+ {
+  setEnabled(true);
+ }
+ QSettings myQSettings;  // where we keep last used filter in persistant state
+ myQSettings.writeEntry("/qgis/http_server/port",mPortInt);
+}
 void Plugin::startServer()
 { 
   mHttpDaemon = new HttpDaemon(mPortInt, this );
@@ -177,7 +220,7 @@ void Plugin::stopServer()
 //clear the current map
 void Plugin::clearMap()
 {
-
+  qGisInterface->newProject(false);
 }
 
 //get the map in the provided pixmap
@@ -248,7 +291,7 @@ void Plugin::loadPseudoColorRasterFile(QString theRasterFile)
 void Plugin::loadPseudoColorRasterFile(QString theRasterFile, QString theProjectFile)
 {
   loadProject(theProjectFile);
-  loadRasterFile(theRasterFile);
+  loadPseudoColorRasterFile(theRasterFile);
 }
 
 void Plugin::loadVectorFile(QString theVectorFile)

@@ -12,7 +12,6 @@
 void PluginGuiBase::pbnOK_clicked()
 {
 
-
 }
 
 
@@ -22,15 +21,37 @@ void PluginGuiBase::pbnCancel_clicked()
 }
 
 
-
-void PluginGuiBase::cboxEnableServer_toggled( bool )
+void PluginGuiBase::pbnProjectsDir_clicked()
 {
 
 }
 
 
+void PluginGuiBase::pbnLayersDir_clicked()
+{
+
+}
+
+
+void PluginGuiBase::pbnCssFile_clicked()
+{
+
+}
+
+
+void PluginGuiBase::pbnLogFile_clicked()
+{
+
+}
+
 
 void PluginGuiBase::pbnApply_clicked()
+{
+
+}
+
+
+void PluginGuiBase::pbnDefaultProject_clicked()
 {
 
 }

@@ -19,10 +19,12 @@ email                : tim@linfiniti.com
 /*  $Id$ */
 #ifndef PLUGIN
 #define PLUGIN
+#include "../qgisplugin.h"
+#include "../../src/qgisapp.h"
 #include <qwidget.h>
 #include <qgisapp.h>
+#include <qobject.h>
 // non qt includes
-#include <qgisplugin.h>
 #include "httpdaemon.h"
 /**
  * \class Plugin
@@ -75,7 +77,7 @@ public slots:
   //!Accessor for port property
   int port() {return mPortInt;} ;
   //!mutator for port property
-  void setPort(int thePortInt) {mPortInt=thePortInt;};
+  void setPort(int thePortInt);
   //! unload the plugin
   void unload();
   //! show the help document

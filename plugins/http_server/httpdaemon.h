@@ -66,8 +66,17 @@ private slots:
   void readClient();
   void discardClient();
 private:
-  void showHelp();
+  void showHeader(); //print http headers out on socket
+  void showFooter(); //print closing stuff for page
+  void showHelp();   //show some useage help
+  void getCss();
+  void getCssInline();
+  void getProjectsList();
+  void getFileList();
+  void showSettings();
+  
   QString mBasePath;
   QString mProject;
+  QString mHostName;
 };
 #endif
