@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include <qlistview.h>
 #include "qgsidentifyresults.h"
 
@@ -27,9 +28,14 @@ QgsIdentifyResults::~QgsIdentifyResults()
 }
 
 /** add an attribute and its value to the list */
-void QgsIdentifyResults::addAttribute(QString field, QString value)
+void QgsIdentifyResults::addAttribute(QListViewItem *fnode, QString field, QString value)
 {
-	QListViewItem *lvi = new QListViewItem(lstResults, field, value);
+	 new QListViewItem(fnode, field, value);
+}
+
+/** Add a feature node to the list */
+QListViewItem * QgsIdentifyResults::addNode(QString label){
+	return (new QListViewItem(lstResults,label));
 }
 
 void QgsIdentifyResults::setTitle(QString title)

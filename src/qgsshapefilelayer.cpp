@@ -31,6 +31,7 @@
 #include "qgsshapefilelayer.h"
 #include "qgsidentifyresults.h"
 #include "qgsattributetable.h"
+#include <qlistview.h>
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
@@ -353,32 +354,80 @@ void QgsShapeFileLayer::identify(QgsRect * r)
 
 		ogrLayer->SetSpatialFilter(filter);
 		int featureCount = 0;
-		// just id the first feature for now
-		//while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
+		// display features falling within the search radius 
+		QgsIdentifyResults *ir = 0;
+		while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
 		//}
 
-		OGRFeature *fet = ogrLayer->GetNextFeature();
 		if (fet) {
-			// found feature - show it in the identify box
-			QgsIdentifyResults *ir = new QgsIdentifyResults();
-			// just show one result - modify this later
+			featureCount++;
+			// found at least one feature - show it in the identify box
+			if(ir == 0){
+				// create the identify results dialog if it doesn't already
+				// exist
+				ir = new QgsIdentifyResults();
+			}
+			
 			int numFields = fet->GetFieldCount();
+			// Determine the field index for the feature column of the identify
+			// dialog. We look for fields containing "name" first and second for
+			// fields containing "id". If neither are found, the first field
+			// is used as the node.
+			int idxName = -1;
+			int idxId = -1;
+			for(int j = 0; j < numFields; j++){
+				OGRFieldDefn *def = fet->GetFieldDefnRef(j);
+				QString fldName = def->GetNameRef();
+				std::cout << "Checking field " << fldName << std::endl;
+				if(fldName.contains("name", false)){
+					idxName = j;
+					break;
+				}
+				if(fldName.contains("id", false )){
+					idxId = j;
+					break;
+				}
+			}
+			int fieldIndex = 0;
+			if(idxName > -1){
+				fieldIndex = idxName;
+			}else{
+				if(idxId > -1){
+					fieldIndex = idxId;
+				}
+			}
+			std::cout << "Field index for feature label is " << fieldIndex << std::endl;
+			QListViewItem *featureNode = ir->addNode("foo");
 			for (int i = 0; i < numFields; i++) {
-				// get the field definition
+				
+				// add the feature attributes to the tree
 				OGRFieldDefn *fldDef = fet->GetFieldDefnRef(i);
 				QString fld = fldDef->GetNameRef();
 				OGRFieldType fldType = fldDef->GetType();
 				QString val;
+				
 				//if(fldType ==  16604 )    // geometry
 				val = "(geometry column)";
 				// else
 				val = fet->GetFieldAsString(i);
-				ir->addAttribute(fld, val);
+				// Create a node for this feature
+				std::cout << "i / fieldIndex " << i << " / " << fieldIndex << std::endl;
+				if(i == fieldIndex){
+					featureNode->setText(0,val);
+					std::cout << "Adding feature node: " << val << std::endl;
+				}
+				std::cout << "Adding attribute " << fld << " = " << val << std::endl;
+				ir->addAttribute(featureNode, fld, val);
 			}
+		}
+		
+		}
+		std::cout << "Feature count on identify: " << featureCount << std::endl;
+		if(ir){
 			ir->setTitle(name());
 			ir->show();
-
-		} else {
+		}
+		if(featureCount == 0){
 			QMessageBox::information(0, "No features found", "No features were found in the active layer at the point you clicked");
 		}
 		ogrLayer->ResetReading();	

@@ -81,7 +81,7 @@ typedef QString name_t();
 typedef QString description_t();
 
 // version
-static const char *qgisVersion = "0.0.12 pre 2 - August 15, 2003";
+static const char *qgisVersion = "0.0.12 pre 3 - August 31, 2003";
 static const int qgisVersionInt = 11;
 // cursors
 static unsigned char zoom_in_bits[] = {
@@ -227,7 +227,8 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n**Preliminary Plugin Manager implementation\n"
+	watsNew += "\n**Multiple features displayed with the Identify tool\n" 
+	"**Preliminary Plugin Manager implementation\n"
 	 "**Version check under tools menu\n"
 	 "**Version checking uses port 80 to prevent problems with firewalls\n"
 	 "**Fix for PostGIS bug when srid != -1\n"

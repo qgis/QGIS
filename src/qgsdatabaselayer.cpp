@@ -23,6 +23,7 @@
 #include <qpen.h>
 #include <qpointarray.h>
 #include <qbrush.h>
+#include <qlistview.h>
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -478,6 +479,7 @@ void QgsDatabaseLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTra
 
 }
 
+//{{{ QgsDatabaseLayer::identify(QgsRect * r)
 void QgsDatabaseLayer::identify(QgsRect * r)
 {
 // create a search filter  for identifying records
@@ -500,18 +502,46 @@ void QgsDatabaseLayer::identify(QgsRect * r)
 //  std::cout << "Using following transform parameters:\n" << cXf->showParameters() << std::endl;
 	// create the results window
 	if (pgs.Tuples() > 0) {
+		int idxName = -1;
+		int idxId = -1;
+		// determine the field to use for the feature node label
+		for (int fi = 0; fi < pgs.Fields(); fi++) {
+				QString fldName = pgs.FieldName(fi);
+		if(fldName.contains("name", false)){
+					idxName = fi;
+				}
+				if(fldName.contains("id", false )){
+					idxId = fi;
+				}
+			}
+			int fieldIndex = 0;
+			if(idxName > -1){
+				fieldIndex = idxName;
+			}else{
+				if(idxId > -1){
+					fieldIndex = idxId;
+				}
+			}
 		QgsIdentifyResults *ir = new QgsIdentifyResults();
-		// just show one result - modify this later
-		int numFields = pgs.Fields();
-		for (int i = 0; i < numFields; i++) {
-			QString fld = pgs.FieldName(i);
-			int fldType = pgs.FieldType(i);
-			QString val;
-			if (fldType == 16604)	// geometry
-				val = "(geometry column)";
-			else
-				val = pgs.GetValue(0, i);
-			ir->addAttribute(fld, val);
+		for(int j = 0; j < pgs.Tuples(); j++){
+			// display all features in the search area
+			int numFields = pgs.Fields();
+			QListViewItem *featureNode = ir->addNode("foo");
+			for (int i = 0; i < numFields; i++) {
+				QString fld = pgs.FieldName(i);
+				int fldType = pgs.FieldType(i);
+				QString val;
+				if (fldType == 16604)	// geometry
+					val = "(geometry column)";
+				else
+					val = pgs.GetValue(j, i);
+				
+				if(i == fieldIndex){
+					featureNode->setText(0,val);
+					std::cout << "Adding feature node: " << val << std::endl;
+				}
+				ir->addAttribute(featureNode, fld, val);
+			}
 		}
 		ir->setTitle(name());
 		ir->show();
@@ -520,7 +550,7 @@ void QgsDatabaseLayer::identify(QgsRect * r)
 		QMessageBox::information(0, "No features found", "No features were found in the active layer at the point you clicked");
 	}
 
-}
+} //}}}
 void QgsDatabaseLayer::table()
 {
 	// display the attribute table
