@@ -101,6 +101,9 @@ class QgsVectorDataProvider: public QgsDataProvider
        @return true in case of success and false in case of failure*/
     virtual bool deleteFeature(int id);
 
+    /**Returns the default value for attribute @c attr for feature @c f. */
+    virtual QString getDefaultValue(const QString& attr, QgsFeature* f);
+    
     /**
      * Identify features within the search radius specified by rect
      * @param rect Bounding rectangle of search radius

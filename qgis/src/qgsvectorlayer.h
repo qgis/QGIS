@@ -195,6 +195,10 @@ class QgsVectorLayer : public QgsMapLayer
      @return true in case of success and false otherwise*/
   bool deleteSelectedFeatures();
   
+  /**Returns the default value for the attribute @c attr for the feature
+     @c f. */
+  QString getDefaultValue(const QString& attr, QgsFeature* f);
+  
   /**Set labels on */
   void setLabelOn( bool on );
 
