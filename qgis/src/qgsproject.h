@@ -160,8 +160,8 @@ public:
 
 
     /// syntactic sugar for property lists
-    typedef QPair< QString, QVariant >  PropertyValue;
-    typedef QValueList< PropertyValue > Properties;
+    // DEPRECATED typedef QPair< QString, QVariant >  PropertyValue;
+    // DEPRECATED typedef QValueList< PropertyValue > Properties;
 
     /** extra properties, typically added by plug-ins
 
@@ -186,12 +186,43 @@ public:
 
        
      */
-    Properties & properties( QString const & scope );
+    // DEPRECATED Properties & properties( QString const & scope );
 
     /**
        removes all project properties
     */
     void clearProperties();
+
+
+    /* key value mutators 
+
+      keys would be the familiar QSettings-like '/' delimited entries, implying
+      a hierarchy of keys and corresponding values
+
+    */
+    //@{
+    bool writeEntry ( QString const & scope, const QString & key, bool value );
+    bool writeEntry ( QString const & scope, const QString & key, double value );
+    bool writeEntry ( QString const & scope, const QString & key, int value );
+    bool writeEntry ( QString const & scope, const QString & key, const QString & value );
+    bool writeEntry ( QString const & scope, const QString & key, const QStringList & value );
+    //@}
+
+    /** key value accessors
+
+        keys would be the familiar QSettings-like '/' delimited entries,
+        implying a hierarchy of keys and corresponding values
+
+    */
+    //@{
+    QStringList readListEntry ( QString const & scope, const QString & key, bool * ok = 0 ) const;
+
+    QString readEntry ( QString const & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
+    int readNumEntry ( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
+    double readDoubleEntry ( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
+    bool readBoolEntry ( QString const & scope, const QString & key, bool def = FALSE, bool * ok = 0 ) const;
+    bool removeEntry ( QString const & scope, const QString & key );
+    //@}
 
 private:
 
