@@ -1,3 +1,26 @@
+Version 0.1 February 14, 2003
+**Symbol renderers for simple, graduated, and continous symbols
+**Raster support for most GDAL formats
+**Change to a data provider architecture for vector layers. Addtional data
+  types can be supported by writing a provider plugin
+**Buffer plugin for PostGIS layers
+**Shapefile to PostGIS Import Tool (SPIT) plugin for importing shapefiles into
+  PostgreSQL/PostGIS
+**User guide (HTML and PDF)
+**Install guide (HTML and PDF)
+**Plugin manager to manage loading/unloading of plugins
+**Bug fixes and user interface improvements
+**Removed dependency on libpq++ when compiling with PostgreSQL/PostGIS support
+**PostgreSQL/PostGIS layers now rely on GEOS for selecting features
+
+Version 0.0.13 December 8, 2003
+**New build system (uses GNU Autoconf)
+**Improvement to sorting in attribute table
+**Persistent selections (shapefiles only)
+**Display order can be changed by dragging a layer to a new position in the legend
+**Export QGIS view as a Mapserver map file
+**Fix for crash on SuSE 9.0 when moving mouse in legend area
+
 Version 0.0.12-alpha June 10, 2003
 **Multiple features displayed with the Identify tool
 **Identify function returns and displays attributes for multiple
