@@ -350,6 +350,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mPluginMenu = new QPopupMenu(this);  
   menuBar()->insertItem("&Plugins", mPluginMenu, -1, menuBar()->count() - 1);
 
+  //add the empty plugin toolbar
+  mPluginToolBar = new QToolBar(this, "Plugins");
+  
   // create the layer popup menu
   mMapCursor = 0;
 
@@ -2755,6 +2758,11 @@ int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
   return 0;
 }
 
+int QgisApp::addPluginToolBarIcon (QAction * qAction)
+{
+ qAction->addTo(mPluginToolBar);
+ return 0;
+}
 // slot to update the progress bar in the status bar
 void QgisApp::showProgress(int theProgress, int theTotalSteps)
 {
