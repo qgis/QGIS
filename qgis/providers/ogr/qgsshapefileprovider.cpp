@@ -419,6 +419,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
            getFeatureAttribute(fet,f,*it);
          }
          delete fet;
+         //delete [] feature;
        }
        else
        {
@@ -583,6 +584,14 @@ int QgsShapeFileProvider::fieldCount(){
 void QgsShapeFileProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, int attindex)
 {
     OGRFieldDefn *fldDef = ogrFet->GetFieldDefnRef(attindex);
+
+    if ( ! fldDef )
+    {
+        qDebug( "%s:%d ogrFet->GetFieldDefnRef(attindex) returns NULL", 
+                __FILE__, __LINE__ );
+        return;
+    }
+
     QString fld = fldDef->GetNameRef();
     QString val;
     val = ogrFet->GetFieldAsString(attindex);
