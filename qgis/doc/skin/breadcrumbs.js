@@ -4,7 +4,7 @@
                    The Apache Software License, Version 1.1
  ============================================================================
 
- Copyright (C) 2003 The Apache Software Foundation. All rights reserved.
+ Copyright (C) 2002-2003 The Apache Software Foundation. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modifica-
  tion, are permitted provided that the following conditions are met:
@@ -61,6 +61,16 @@
  *@created    July 12, 2002
  *@version    1.0
  */
+
+/**
+ * IE 5 on Mac doesn't know Array.push.
+ *
+ * Implement it - courtesy to fritz.
+ */
+var abc	= new Array();
+if (!abc.push) {
+  Array.prototype.push	= function(what){this[this.length]=what}
+}
 
 /* ========================================================================
 	CONSTANTS
@@ -203,7 +213,7 @@ function getCrumbTrail( crumbs )
 
 	for( var i = 0; i < crumbs.length; i++ )
 	{
-		xhtml += '<a class="toplink" href="' + crumbs[i][1] + '" >';
+		xhtml += '<a href="' + crumbs[i][1] + '" >';
 		xhtml += unescape( crumbs[i][0] ) + '</a>';
 		if( i != (crumbs.length-1) )
 		{

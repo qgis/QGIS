@@ -4,110 +4,202 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>QGIS User Guide</title>
 <link type="text/css" href="skin/page.css" rel="stylesheet">
-<link type="text/css" href="skin/krysalis.css" title="Krysalis" rel="alternate stylesheet">
-<link href="favicon.ico" rel="shortcut icon">
+<script src="skin/fontsize.js" language="javascript" type="text/javascript"></script><script src="skin/menu.js" language="javascript" type="text/javascript"></script>
 </head>
-<body>
-<div id="toplinks">
-<script src="skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+<body onload="init()" text="#000000" bgcolor="#FFFFFF">
+<script type="text/javascript">ndeSetTextSize();</script>
+<!--================= start Banner ==================-->
+<table summary="header with logos" width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<!--================= start Group Logo ==================-->
+<td bgcolor="#FFFFFF"></td>
+<!--================= end Group Logo ==================-->
+<!--================= start Project Logo ==================--><td align="center" bgcolor="#FFFFFF">
+<div class="headerlogo">
+<a href="http://qgis.org/"><img border="0" class="logoImage" alt="QGIS" src="images/project.png"></a>
 </div>
-<form action="http://www.google.com/search" method="get">
-<div id="mainheader">
-<span class="textonly"> - </span><span class="textonly"> - </span><a href="http://qgis.org/" id="projectlogolink"><img alt="QGIS" src="images/project.png" id="projectlogo"></a>
+</td>
+<!--================= end Project Logo ==================-->
+<!--================= start Search ==================--><td valign="top" rowspan="2" bgcolor="#FFFFFF" align="right" class="search"></td>
+<!--================= end Search ==================--><td bgcolor="#FFFFFF" align="right"><img height="10" width="10" alt="" src="skin/images/spacer.gif" class="spacer"><span class="textheader">QGIS</span></td>
+</tr>
+<tr>
+<td valign="bottom" bgcolor="#FFFFFF" colspan="2">
+<!--================= start Tabs ==================-->
+<div class="tab">
+<table summary="tab bar" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td width="8"><img alt="" height="8" width="8" src="skin/images/spacer.gif"></td><td valign="bottom">
+<table summary="selected tab" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td height="22" class="top-left"></td><td height="22" valign="middle" bgcolor="#a5b6c6"><span class="tab"><b><a class="base-selected" href="index.html">Documentation</a></b></span></td><td height="22" class="top-right"></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
 </div>
-</form>
-<hr class="textonly">
-<div class="content">
-<a id="printable" href="userguide.pdf"><img alt="PDF" src="skin/images/pdfdoc.gif">PDF version</a>
-<h1>QGIS User Guide</h1>
-<h3>Version 0.1pre1 (Moroz)</h3>
-<ul>
-<li>
+<!--================= end Tabs ==================-->
+</td><td bgcolor="#FFFFFF"><img alt="" width="1" height="1" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<tr>
+<td align="right" bgcolor="#a5b6c6" colspan="4"><img width="1" height="10" alt="" src="skin/images/spacer.gif"><span class="datenote"><script type="text/javascript" language="JavaScript"><!--
+                  //document.write("Published: " + document.lastModified);
+		  document.write("-- QGIS Version 0.1 Moroz  --");
+                  //  --></script></span></td>
+</tr>
+</table>
+<!--================= end Banner ==================-->
+<!--================= start Menu, NavBar, Content ==================-->
+<table summary="page content" bgcolor="#ffffff" width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td valign="top">
+<table summary="menu" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<!--================= start left top NavBar ==================-->
+<td rowspan="3" valign="top">
+<table summary="blue line" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<tr>
+<td bgcolor="#CFDCED"><font color="#F7F7F7" size="4" face="Arial, Helvetica, Sans-serif">&nbsp;</font></td>
+</tr>
+<tr>
+<td bgcolor="#FFFFFF"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+</table>
+</td>
+<!--================= end left top NavBar ==================--><td bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td valign="bottom" bgcolor="#F7F7F7"><img width="10" height="10" alt="" src="skin/images/spacer.gif" class="spacer"></td><td nowrap="nowrap" valign="top" bgcolor="#F7F7F7">
+<!--================= start Menu items ==================-->
+<div class="menu">
+<div onclick="SwitchMenu('_selected_1B')" id="_selected_1BTitle" class="menutitle">Documentation</div>
+<div id="_selected_1B" class="selectedmenuitemgroup">
+<div class="menuitem">
+<a href="install.html">Installation</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">User Guide</div>
+<div class="menupageitemgroup">
+<div class="menupageitem">
 <a href="#Introduction">Introduction</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Current+Features">Current Features</a>
-</li>
-<ul></ul>
-<li>
+</div>
+<div class="menupageitem">
+<a title="Current Features" href="#Current+Features">Current Features...</a>
+</div>
+<div class="menupageitem">
 <a href="#Getting+Started">Getting Started</a>
-</li>
-<ul>
-<li>
-<a href="#Installation">Installation</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Starting+QGIS">Starting QGIS</a>
-</li>
-<ul></ul>
-</ul>
-<li>
-<a href="#Working+with+vector+data">Working with vector data</a>
-</li>
-<ul>
-<li>
-<a href="#Loading+vector+data">Loading vector data</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Changing+Symbology">Changing Symbology</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Identifying+a+Feature">Identifying a Feature</a>
-</li>
-<ul></ul>
-</ul>
-<li>
-<a href="#Working+with+raster+data">Working with raster data</a>
-</li>
-<ul>
-<li>
-<a href="#What+is+raster+data%3F">What is raster data?</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Raster+formats+supported+in+QGIS.">Raster formats supported in QGIS.</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Loading+raster+data+in+QGIS">Loading raster data in QGIS</a>
-</li>
-<ul></ul>
-<li>
-<a href="#Symbolisation+and+properties+for+raster+layers">Symbolisation and properties for raster layers</a>
-</li>
-<ul>
-<li>
-<a href="#The+general+properties+tab">The general properties tab</a>
-</li>
-<li>
-<a href="#The+symbology+properties+tab">The symbology properties tab</a>
-</li>
-<li>
-<a href="#The+raster+statistics+properties+tab">The raster statistics properties tab</a>
-</li>
-</ul>
-</ul>
-<li>
-<a href="#Identifying+a+Feature-N101BA">Identifying a Feature</a>
-</li>
-<ul></ul>
-</ul>
+</div>
+<div class="menupageitem">
+<a title="Working with vector data" href="#Working+with+vector+data">Working with vector...</a>
+</div>
+<div class="menupageitem">
+<a title="Working with raster data" href="#Working+with+raster+data">Working with raster...</a>
+</div>
+<div class="menupageitem">
+<a title="Creating a QGIS mime type" href="#Creating+a+QGIS+mime+type">Creating a QGIS mim...</a>
+</div>
+<div class="menupageitem">
+<a href="#Acknowledgments">Acknowledgments</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!--================= end Menu items ==================-->
+</td><td valign="bottom" bgcolor="#F7F7F7"><img width="10" height="10" alt="" src="skin/images/spacer.gif" class="spacer"></td><td bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<tr>
+<td colspan="2" rowspan="2" class="bottom-left-thick"></td><td bgcolor="#a5b6c6"><img height="10" width="10" border="0" alt="" src="skin/images/spacer.gif" class="spacer"></td><td colspan="2" rowspan="2" class="bottom-right-thick"></td>
+</tr>
+<tr>
+<td height="1" bgcolor="#a5b6c6"><img width="1" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<tr>
+<td height="5"><img width="1" height="5" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+</table>
+</td><td valign="top" width="100%">
+<table summary="content" width="100%" border="0" cellpadding="0" cellspacing="0">
+<!--================= start middle NavBar ==================-->
+<tr>
+<td colspan="3" bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<tr>
+<td align="left" width="10" bgcolor="#CFDCED"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td bgcolor="#CFDCED" width="100%">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" width="50%" bgcolor="#CFDCED"><span class="trail">
+                      &nbsp;
+                      <script src="skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script></span><img width="10" height="8" alt="" src="skin/images/spacer.gif" class="spacer"></td><td align="right" width="50%" bgcolor="#CFDCED"><span class="trail">Font size: 
+                        &nbsp;<input value="-a" class="smallerfont" title="Shrink text" onclick="ndeSetTextSize('decr'); return false;" type="button">
+                        &nbsp;<input value="+a" class="biggerfont" title="Enlarge text" onclick="ndeSetTextSize('incr'); return false;" type="button">
+                        &nbsp;<input value="Reset" class="resetfont" title="Reset text" onclick="ndeSetTextSize('reset'); return false;" type="button"></span><img width="10" height="8" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+</table>
+</td><td width="10" bgcolor="#CFDCED"><font color="#F7F7F7" size="4" face="Arial, Helvetica, Sans-serif">&nbsp;</font><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#a5b6c6"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<!--================= end middle NavBar ==================-->
+<!--================= start Content==================-->
+<tr>
+<td align="left" width="10"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td><td align="left" width="100%">
+<div class="content">
+<table class="title">
+<tr>
+<td valign="middle">
+<h1>QGIS User Guide</h1>
+</td><td nowrap="nowrap" width="40" align="center"><a class="dida" href="userguide.pdf"><img alt="PDF" src="skin/images/pdfdoc.gif" class="skin"><br>
+          PDF</a></td>
+</tr>
+</table>
+<h3>Version 0.1 (Moroz)</h3>
 		
-<a name="Introduction"></a>
-<h2>Introduction</h2>
+<a name="N1001E"></a><a name="Introduction"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Introduction</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
+<div class="section">
 			
 		
 			
 <p>Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
 built for Linux/Unix. QGIS currently offers basic support for vector, raster, and database formats.</p>
+
+<div class="frame note">
+<div class="label">Note</div>
+<div class="content">The latest version of this document can always be found at <a href="http://qgis.sourceforge.net/docs/userguide.html">http://qgis.sourceforge.net/docs/userguide.html
+</a>
+</div>
+</div>
 		
+</div>
 		
-<a name="Current+Features"></a>
-<h2>Current Features</h2>
+<a name="N1002E"></a><a name="Current+Features"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Current Features</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
+<div class="section">
 			
 			
 <ul>
@@ -139,37 +231,78 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 			
 </ul>
 		
+</div>
 		
-<a name="Getting+Started"></a>
-<h2>Getting Started</h2>
+<a name="N1005C"></a><a name="Getting+Started"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Getting Started</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
+<div class="section">
 			
 			
-<p>This section gives you a quick overview of running QGIS and examining data in
+<p>This section gives you a quick overview of running QGIS and examining data 
 			available on the QGIS web page.
 			</p>
 			
-<a name="Installation"></a>
-<h3>Installation</h3>
-<div class="section">
+<a name="N10065"></a><a name="Installation"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Installation</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>Installation of QGIS is documented in the <a href="install.html">Installation Guide</a>.
 				</p>
-</div>
 			
-<a name="Starting+QGIS"></a>
-<h3>Starting QGIS</h3>
-<div class="section">
+<a name="N10073"></a><a name="Sample+Data"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Sample Data</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
+<p>If you do not have any GIS data, you can obtain a dataset for Alaska (which will be used as the
+				basis for the examples and screenshots provided in this document) from the 
+				<a href="http://qgis.sourceforge.net/qgis_sample_data.tar.gz">the QGIS web site</a>
+</p>
+			
+<a name="N10080"></a><a name="Starting+QGIS"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Starting QGIS</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>
 				Assuming the QGIS is installed in the PATH, you can start QGIS by typing:
 				<span class="codefrag">qgis</span>.</p>
-<p>
-				When QGIS starts, an empty window is displayed as shown below.
-				<img alt="QGIS Main Window" src="images/qgis_mainwindow01.png">
-				</p>
-<div class="frame note">
-<div class="label">Note</div>
-<div class="framecontent">Your window decorations (title bar, etc.) may appear different depending on your operating system
-				and window manager</div>
-</div>
 <p>
 				In addition, you can start QGIS by specifying one or more datafiles on the commandline. For example, 
 				assuming you are in your data directory, you could start QGIS with two shapefiles and a raster file set to 
@@ -180,76 +313,346 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 </p>
 <p>
 <img alt="QGIS Load Data On Start" src="images/qgis_load_data_on_startup.png"></p>
+<div class="frame note">
+<div class="label">Note</div>
+<div class="content">Your window decorations (title bar, etc.) may appear different depending on your operating system
+				and window manager</div>
+</div>
+			
+<a name="N1009C"></a><a name="The+QGIS+main+window"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>The QGIS main window</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
+<p>
+				When QGIS starts, an empty window is displayed as shown below.
+				<img alt="QGIS Main Window" src="images/qgis_mainwindow01.png">
+				</p>
+<p>The QGIS main window is divided into five areas:</p>
+<ol>
+					
+<li>The menu bar</li>
+					
+<li>The tool bar</li>
+					
+<li>The map legend</li>
+					
+<li>The map view</li>
+					
+<li>The status bar</li>
+				
+</ol>
+<p>These five parts of the main QGIS are described in more detail in the following sections</p>
+<a name="N100C1"></a><a name="The+QGIS+menu+bar"></a>
+<h4>The QGIS menu bar</h4>
+<p>The menu bar provides access to various QGIS features using a standard windows 
+					heirachical menu.</p>
+<p>The File Menu:</p>
+<ul>
+						
+<li>
+<img alt="Open Project" src="images/open.png"> - Open a previously saved project.</li>
+						
+<li>
+<img alt="Save Project" src="images/filesave.png"> - Save the current project.</li>
+						
+<li>
+<img alt="Save Project As" src="images/filesaveas.png"> - Save project under a new file name.</li>
+						
+<li>
+<img alt="Export to mapserver" src="images/mapserver.png"> - Export your current project as a mapserver
+						map file. Note that not all mapserver features are available in the exported mapfile.</li>	
+						
+<li>
+<img alt="Exit" src="images/exit.png"> - Exit the QGIS application.</li>					
+					
+</ul>
+<p>The View Menu:</p>
+<ul>
+						
+<li>
+<img alt="Add Postgis Layer(s)" src="images/gis_add_pg_layer.png"> - Add one or more layers 
+						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
+						
+<li>
+<img alt="Add Vector Layer(s)" src="images/gis_add_vector_layer.png"> - Add one or more layers 
+						stored on disk as shapefiles to the map view.</li>
+						
+<li>
+<img alt="Add Raster Layers" src="images/gis_add_raster_layer.png"> - Add one or more raster layers
+						to the map view. </li>
+					
+</ul>
+<p>The Tools Menu:</p>
+<ul>	
+						
+<li>
+<img alt="Plugin Manager" src="images/connect_no.png"> - This opens a dialog 
+						that allows you to manage (load and unload) which plugins are used in QGIS.</li>
+						
+<li>
+<img alt="Check Version" src="images/checkversion.png"> - This option connects
+						over the internet to the QGIS server to find out what the latest available version is. No 
+						personal data is sent to the QGIS server.</li>
+						
+<li>
+<img alt="Preferences" src="images/configure.png"> - Global configuration options
+						 for the QGIS application.</li>
+					
+</ul>
+<p>The Help Menu:</p>
+<ul>	
+						
+<li>
+<img alt="Contents" src="images/contents.png"> - This opens the help documentation
+						you are reading right now!.</li>
+						
+<li>
+<img alt="QGIS Home" src="images/package_network.png"> - Clicking this menu option will 
+						take you to the QGIS internet home page using your preferred browser.</li>
+						
+<li>
+<img alt="SourceForge Home" src="images/sf.png"> - This will take you to the Sourceforge.net 
+						project page for QGIS. </li>
+						
+<li>
+<img alt="About" src="images/icon_small.png"> - Click here to find out some useful information 
+						about the current version of QGIS you are using. If you want to frighten yourself silly, take a 
+						look at the Contributors tab to see all the hardworking elves behind the QGIS effort. </li>
+					
+</ul>
+<a name="N1013D"></a><a name="The+QGIS+toolbars"></a>
+<h4>The QGIS toolbars</h4>
+<p>QGIS has toolbars that provide quick access to commonly used functions. These are:</p>
+<ul>
+						
+<li>
+<img alt="New Project" src="images/filenew.png"> - Start a new QGIS project. If you 
+						already have a project ope, you will be asked if you would like to save the existing one first.</li>
+						
+<li>
+<img alt="Open Project" src="images/open.png"> - Open a previously saved project.</li>
+						
+<li>
+<img alt="Save Project" src="images/filesave.png"> - Save the current project.</li>
+						
+<li>
+<img alt="Save Project As" src="images/filesaveas.png"> - Save project under a new file name.</li>
+						
+<li>
+<img alt="Add Postgis Layer(s)" src="images/gis_add_pg_layer.png"> - Add one or more layers 
+						stored in a PostgreSQL/Postgis geodatabase to the map view.</li>
+						
+<li>
+<img alt="Add Vector Layer(s)" src="images/gis_add_vector_layer.png"> - Add one or more layers 
+						stored on disk as shapefiles to the map view.</li>
+						
+<li>
+<img alt="Add Raster Layers" src="images/gis_add_raster_layer.png"> - Add one or more raster layers
+						to the map view. </li>
+						
+<li>
+<img alt="Reload" src="images/reload20x20.png"> - Reload the current map view (refreshes display)</li>
+						
+<li>
+<img alt="Zoom In" src="images/zoomin.png"> - Zoom in the map display by dragging a rectangle</li>
+						
+<li>
+<img alt="Zoom Out" src="images/viewmag-.png"> - Zoom out of the map display by dragging a rectangle.
+						Dragging a small rectangle will zoom out a long way, dragging a large rectangle will zoom out a little way.</li>
+						
+<li>
+<img alt="Zoom Full Extent" src="images/gis_view_all.png"> - Zoom out until all features in all map layers
+						are visible.</li>
+						
+<li>
+<img alt="Zoom to Selected" src="images/gis_zoom_to_selected.png"> - Zoom to fit all selected features in the 
+						map view.</li>
+						
+<li>
+<img alt="Pan" src="images/gis_pan.png"> - Pan in the map display area.</li>
+						
+<li>
+<img alt="Zoom to Previous" src="images/back20x20.png"> - Zoom to last extents.</li>
+						
+<li>
+<img alt="Identify" src="images/gis_identify.png"> - Show information about a feature (applies only to vector data).</li>
+						
+<li>
+<img alt="Select Features" src="images/select_features.png"> - Select features in the map display (applies only to vector data).</li>
+						
+<li>
+<img alt="Show Attributes" src="images/table.png"> - Show the attribute table for the selected layer (applies only to vector data).</li>										
+					
+</ul>
+<a name="N101B0"></a><a name="The+QGIS+map+legend"></a>
+<h4>The QGIS map legend</h4>
+<p>The map legend area is used to set the visibility and z-ordering of layers.
+					Z-ordering means that layers listed nearer the top of the legend are drawn over
+					layers listed lower down in the legend. The checkbox in each legend entry can be useed 
+					to show/hire that layer.</p>
+<a name="N101BA"></a><a name="The+QGIS+map+view"></a>
+<h4>The QGIS map view</h4>
+<p>This is the 'business end' of QGIS - maps are displayed in this area! The map 
+					displayed in this window will depend on the vector and raster layers you have chosen 
+					to load (see sections that follow for more info on this). The map view can be panned (shifting
+					to focus of the map display to another region), zoomed in and out, and supports various other 
+					actions as described in the toolbar description above.</p>
+<p>The map view and the legend  are tightly bound to each other - the maps in view 
+					reflect changes you make in the legend area.</p>
+<a name="N101C7"></a><a name="The+QGIS+map+status+bar"></a>
+<h4>The QGIS map status bar</h4>
+<p>The status bar shows you your current position in map coordinate (e.g. meters or decimal 
+					degress) as the mouse pointer is moved accross the map view. </p>
+		
 </div>
 		
-		
-<a name="Working+with+vector+data"></a>
-<h2>Working with vector data</h2>
-			
-			
-<a name="Loading+vector+data"></a>
-<h3>Loading vector data</h3>
+<a name="N101D3"></a><a name="Working+with+vector+data"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Working with vector data</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
 <div class="section">
+			
+			
+<a name="N101D9"></a><a name="Loading+vector+data"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Loading vector data</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>To load one or more shapefiles, click on the Add Layer button 
-				<img alt="Add Layer" src="images/btn_add_layer.gif">. </p>
+				<img alt="Add Layer" src="images/gis_add_vector_layer.png">. </p>
 <p>The <em>Select one or more layers to add</em> dialog box will be displayed.
-				<img alt="Select layers" src="images/add_layer_dialog.gif"></p>
+				<img alt="Select layers" src="images/add_layer_dialog.png"></p>
 <p>Navigate to the directory where the shapefiles reside. Select one or
 				more files and click ok to load them.</p>
 <p>When QGIS loads a layer, it assigns a random color to it as shown 
 				below.</p>
 <p>
-<img alt="Shapefiles loaded into QGIS" src="images/loaded_shapefiles.gif">
+<img alt="Shapefiles loaded into QGIS" src="images/loaded_shapefiles.png">
 				</p>
 <p>
 				Obviously QGIS's choice of colors is not very pleasing in this case.
 				</p>
-</div>
 			
-<a name="Changing+Symbology"></a>
-<h3>Changing Symbology</h3>
-<div class="section">
+<a name="N101FF"></a><a name="Changing+Symbology"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Changing Symbology</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>
 				To make the layer more appealing, open the Layer Properties 
 				dialog by right-clicking on a layer name
 				in the table of contents (left side of the QGIS window) and
-				selecting <em>Properties</em>.
+				selecting <em>Properties</em>. 
 				</p>
+<p>If you like, change the display name of the layer by editing
+				the <em>Display name</em> field.</p>
 <p>
 				
-<img alt="Layer Properties" src="images/layer_properties.gif">
+<img alt="Layer Properties" src="images/qgis_vector_layer_properties.png">
 				</p>
+<p>Click on the <em>Legend</em>
+				tab to display the current symbols used for the layer</p>
 <p>
-				If you like, change the display name of the layer by editing
-				the <em>Display name</em> field. Click on the <em>Symbology</em>
-				tab and click on the <em>Outline color</em> and <em>Fill color</em>
+        
+<img alt="Display name" src="images/qgis_vector_layer_properties1.png"></p>
+<p>Click on the <em>Outline color</em> and <em>Fill color</em>
 				and select a new color from the color chooser. You can also change the
 				line width if desired.</p>
 <p>
 				
-<img alt="Changing colors" src="images/change_symbology.gif">
+<img alt="Changing colors" src="images/qgis_vector_layer_properties2.png">
 				</p>
 <p>After making the changes, click Ok to apply the changes to
 				the layer. Note that the alaska layer has been renamed to Alaska and the
 				color has been changed to a light green:</p>
 <p>
 				
-<img alt="Changing colors" src="images/changed_symbology.gif">
+<img alt="Changing colors" src="images/qgis_vector_layer_properties3.png">
 				</p>
-</div>
 			
-<a name="Identifying+a+Feature"></a>
-<h3>Identifying a Feature</h3>
-<div class="section"></div>
+<a name="N1023F"></a><a name="Identifying+a+Feature"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Identifying a Feature</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
+<p>QGIS provides a useful tool (<img alt="Identify" src="images/gis_identify.png"> - the 'identify' tool) that allows you to click on a vector feature (
+				point, line or polygon) and view information about that feautre. The information displayed is 
+				retrieved from the Postgres database (in the case of Postgis layers) or from the .dbf file
+				associated with the shapefile you are insecting.</p>
 		
+</div>
 		
-<a name="Working+with+raster+data"></a>
-<h2>Working with raster data</h2>
-		  	
-		  	
-<a name="What+is+raster+data%3F"></a>
-<h3>What is raster data?</h3>
+<a name="N1024E"></a><a name="Working+with+raster+data"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Working with raster data</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
 <div class="section">
+		  	
+		  	
+<a name="N10254"></a><a name="What+is+raster+data%3F"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>What is raster data?</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>Raster data in GIS are matrices of discrete cells that represent features on, above or below the earth's surface. Each 
 		  		cell in the raster grid is the same size, and cells are usually rectangular (in QGIS they will always be rectangular. 
 		  		Typical raster datasets include 'remote sensing' data (such as aerial photography and satellite imagery) and modelled data
@@ -259,11 +662,20 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 <p>In GIS, a raster layer would have geopositioning data associated with it which will allow it to be positioned
 				correctly in the map display to allow other vector and raster data to be overlayed with it. QGIS, can read this 
 				geopositioning data to facilitate properly displaying map overlays.</p>
-</div>
 		  	
-<a name="Raster+formats+supported+in+QGIS."></a>
-<h3>Raster formats supported in QGIS.</h3>
-<div class="section">
+<a name="N10264"></a><a name="Raster+formats+supported+in+QGIS."></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Raster formats supported in QGIS.</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>QGIS supports a number of different raster formats. Currently tested formats include:</p>
 <ul>
 		  		
@@ -285,19 +697,37 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 <p>Because the raster implmentation in QGIS is based on the GDAL abstraction library, orther raster formats implemented
 		  		in GDAL are also likely to work, but have not yet been tested. See 
 		  		<a href="http://remotesensing.org/gdal/formats_list.html">the GDAL Raster Formats page</a> for more details.</p>
-</div>
 		  	
-<a name="Loading+raster+data+in+QGIS"></a>
-<h3>Loading raster data in QGIS</h3>
-<div class="section">
+<a name="N1028D"></a><a name="Loading+raster+data+in+QGIS"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Loading raster data in QGIS</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>Raster layers are loaded either by clicking on the <img alt="Load Raster" src="images/gis_add_raster_layer.png"> icon
 				or by selecting the View-&gt;Add Raster Layer menu option. More than one layer can be loaded at the same time
 				by holding down the Control key and clicking on multiple items in the file dialog.</p>
-</div>
 			
-<a name="Symbolisation+and+properties+for+raster+layers"></a>
-<h3>Symbolisation and properties for raster layers</h3>
-<div class="section">
+<a name="N1029B"></a><a name="Symbolisation+and+properties+for+raster+layers"></a>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h4>Symbolisation and properties for raster layers</h4>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right"></td>
+</tr>
+</tbody>
+</table>
 <p>Symbolisation of raster layers is achieved by right clicking on a raster layer legend entry and choosing 'properties':
 				on the popup menu that appears:</p>
 <p>
@@ -305,13 +735,15 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 <img alt="Raster Properties Popup" src="images/qgis_raster_popup_properties_selected.png">
 				</p>
 <p>On the properties dialog for rasters you will see there are three tabs:</p>
-<a name="The+general+properties+tab"></a>
+<a name="N102AE"></a><a name="The+general+properties+tab"></a>
 <h4>The general properties tab</h4>
 <p>
 					
 <img alt="Raster Properties Popup" src="images/qgis_raster_properties_general_tab.png">
 					</p>
-<a name="The+symbology+properties+tab"></a>
+<p>The legend tab displays basic information aboug the selected raster - including its
+					dimensions (in pixels) and its display name in the legend.</p>
+<a name="N102BF"></a><a name="The+symbology+properties+tab"></a>
 <h4>The symbology properties tab</h4>
 <p>
 					
@@ -348,63 +780,126 @@ built for Linux/Unix. QGIS currently offers basic support for vector, raster, an
 					
 </ol>
 <p>QGIS has the capability to invert the colours in a given layer so that light 
-					colors become dark (and dark colors become light).</p>
-<p>QGIS has the capability to invert the colours in a given layer so that light 
-					colors become dark (and dark colors become light).</p>
-<p>QGIS has the capability to invert the colours in a given layer so that light 
-					colors become dark (and dark colors become light).</p>
-<a name="The+raster+statistics+properties+tab"></a>
+					colors become dark (and dark colors become light). Use the 'Invert Color Map' checkbox 
+					to enable / disable this behaviour.</p>
+<p>QGIS has the capability to display each raster layer at varying transparency levels. Use
+					the transparency slider to indicate to what extent the underlying layers (if any) should
+					be visible though the current raster layer.</p>
+<p>QGIS has the capability to restrict the data displayed to show only cells whose values are
+					within a given number of standard diviations of the mean for the layer. This is useful
+					when you have one or two cells with abnormally high values in a raster grid that are having a
+					negative impact on the rendering of the raster. This option is only available for pseudocolor
+					images.</p>
+<a name="N10303"></a><a name="The+raster+statistics+properties+tab"></a>
 <h4>The raster statistics properties tab</h4>
 <p>
 					
 <img alt="Raster Properties Popup" src="images/qgis_raster_properties_statistics_tab.png">
 					</p>
+<p>This tab displays statistics about each band in the current raster layer. Statistics are
+					gathered on a 'need to know' basis, so it may well be that a given layer's statistics have 
+					not yet been collected.</p>
+<p>Statistics for a layer are gathered when pseudocolor rendering is selected and the 'apply'
+					button is pressed.</p>
+<div class="frame note">
+<div class="label">Note</div>
+<div class="content">Gathering statistics for a layer can be time consuming. Please be patient while 
+					QGIS examines your data!</div>
 </div>
 				
 		
+</div>
 		
-<a name="Identifying+a+Feature-N101BA"></a>
-<h2>Identifying a Feature</h2>
+<a name="N1031C"></a><a name="Creating+a+QGIS+mime+type"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Creating a QGIS mime type</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
+<div class="section">
 			
+			
+<p>If you are a KDE user, you can create a mime type that associates GIS files with QGIS. This is useful
+			because it allows you to click on a shapefile (for example) in konqueror and the file will be loaded in a 
+			new instance of QGIS.
+			</p>
+      
 			
 <p>
 			
+			
 </p>
+		
+</div>		
+		
+<a name="N10329"></a><a name="Acknowledgments"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td height="10" width="9"></td><td>
+<h3>Acknowledgments</h3>
+</td><td></td>
+</tr>
+<tr>
+<td class="bottom-left-thick"></td><td bgcolor="#a5b6c6"></td><td class="bottom-right-thick"></td>
+</tr>
+</tbody>
+</table>
+<div class="section">
+			
+			
+<p>Hosting for the QGIS project is generously provided by Sourceforge.
+			</p>
 			
 <p>
 			
 <a href="http://sourceforge.net/"><img alt="SourceForge.net Logo" height="31" src="http://sourceforge.net/sflogo.php?group_id=55820&type=1" width="88"></a>
 			
 </p>
-				
+			
+<p>Please see the Help-&gt;About-&gt;Contributors for a list of people who have donated their time to the QGIS project.</p>
+		
+</div>		
 	
-<div class="author">by Gary Sherman, Tim Sutton</div>
+<p align="right">
+<font size="-2">by&nbsp;Gary Sherman,&nbsp;Tim Sutton</font>
+</p>
 </div>
-<hr class="textonly">
-<div id="nav">
-<div id="tabs">
-<h2 id="categories">
-<span class="category">Documentation</span>
-</h2>
-</div>
-<div class="navsection">
-<h3 class="navsectionheader">Documentation<span class="textonly">:</span>
-</h3>
-<a class="navitem" href="install.html">Installation</a><span class="textonly">-</span><span class="navitem">User Guide</span><span class="textonly">-</span>
-</div>
-</div>
-<p class="textonly"></p>
-<hr class="textonly">
-<div id="footer">
-<a href="skin/images/label.gif"></a><a href="skin/images/page.gif"></a><a href="skin/images/chapter.gif"></a><a href="skin/images/chapter_open.gif"></a><a href="skin/images/current.gif"></a><a href="/favicon.ico"></a><span id="copyright">Copyright &copy;
-				2003&nbsp;Micro Resources. All rights reserved.
-			</span>
-<br class="textonly">
-<span id="revision"><script type="text/javascript" language="JavaScript"><!--
-			  document.write(" - "+"Last Published: " + document.lastModified);
-			  //  --></script></span>
-<br class="textonly">
-<span id="validation"></span>
-</div>
+</td><td width="10"><img width="10" height="1" alt="" src="skin/images/spacer.gif" class="spacer"></td>
+</tr>
+<!--================= end Content==================-->
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<br>
+<br>
+</td>
+</tr>
+</table>
+<!--================= end Menu, NavBar, Content ==================-->
+<!--================= start Footer ==================-->
+<table summary="footer" cellspacing="0" cellpadding="0" width="100%" border="0">
+<tr>
+<td colspan="2" height="1" bgcolor="#F7F7F7"><img height="1" width="1" alt="" src="skin/images/spacer.gif" class="spacer"><a href="skin/images/label.gif"></a><a href="skin/images/page.gif"></a><a href="skin/images/chapter.gif"></a><a href="skin/images/chapter_open.gif"></a><a href="skin/images/current.gif"></a><a href="/favicon.ico"></a></td>
+</tr>
+<tr>
+<td colspan="2" bgcolor="#a5b6c6" class="copyright" align="center" width="90%"><span class="footnote">Copyright &copy;
+                2004&nbsp;Micro Resources. All rights reserved.
+                <br>
+<script type="text/javascript" language="JavaScript"><!--
+                // document.write(" - "+"Last Published: " + document.lastModified);
+                  //  --></script></span></td><td nowrap="nowrap" align="right" bgcolor="#a5b6c6" class="logos"></td>
+</tr>
+</table>
+<!--================= end Footer ==================-->
 </body>
 </html>
