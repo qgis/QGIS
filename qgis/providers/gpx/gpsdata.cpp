@@ -23,19 +23,30 @@
 #include "gpsdata.h"
 
 
+QString GPSObject::xmlify(const QString& str) {
+  QString tmp = str;
+  tmp.replace("&", "&amp;");
+  tmp.replace("<", "&lt;");
+  tmp.replace(">", "&gt;");
+  tmp.replace("\"", "&quot;");
+  tmp.replace("\'", "&apos;");
+  return tmp;
+}
+
+
 void GPSObject::writeXML(QTextStream& stream) {
   if (!name.isEmpty())
-    stream<<"<name>"<<name<<"</name>\n";
+    stream<<"<name>"<<xmlify(name)<<"</name>\n";
   if (!cmt.isEmpty())
-    stream<<"<cmt>"<<cmt<<"</cmt>\n";
+    stream<<"<cmt>"<<xmlify(cmt)<<"</cmt>\n";
   if (!desc.isEmpty())
-    stream<<"<desc>"<<desc<<"</desc>\n";
+    stream<<"<desc>"<<xmlify(desc)<<"</desc>\n";
   if (!src.isEmpty())
-    stream<<"<src>"<<src<<"</src>\n";
+    stream<<"<src>"<<xmlify(src)<<"</src>\n";
   if (!url.isEmpty())
-    stream<<"<url>"<<url<<"</url>\n";
+    stream<<"<url>"<<xmlify(url)<<"</url>\n";
   if (!urlname.isEmpty())
-    stream<<"<urlname>"<<urlname<<"</urlname>\n";
+    stream<<"<urlname>"<<xmlify(urlname)<<"</urlname>\n";
 }
 
 
@@ -50,7 +61,7 @@ void GPSPoint::writeXML(QTextStream& stream) {
   if (ele != -std::numeric_limits<double>::max())
     stream<<"<ele>"<<ele<<"</ele>\n";
   if (!sym.isEmpty())
-    stream<<"<sym>"<<sym<<"</sym>\n";
+    stream<<"<sym>"<<xmlify(sym)<<"</sym>\n";
   stream<<"</wpt>\n";
 }
 
