@@ -14,10 +14,10 @@
 #include "openmodellergui.h"
 
 //qt includes
-#include "qlineedit.h"
-#include "qstring.h"
-#include "qfiledialog.h"
-#include "qmessagebox.h"
+#include <qlineedit.h>
+#include <qstring.h>
+#include <qfiledialog.h>
+#include <qmessagebox.h>
 #include <qtextstream.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
@@ -31,8 +31,8 @@
 //openmodeller includes
 #include <openmodeller/om_control.hh>
 #include <openmodeller/om.hh>
+//local in this plugin dir
 #include "file_parser.hh"
-#include <openmodeller/om.hh>
 
 //standard includes
 #include <stdlib.h>
@@ -80,6 +80,60 @@ void OpenModellerGui::getAlgorithmList()
   }     
   return ;
 
+}
+
+void OpenModellerGui::getParameterList( Algorithm * theAlgorithm )
+{
+  AlgorithmMetadata * myAlgorithmMetadata = theAlgorithm->getMetadata();
+
+  int myParameterCountInt = myAlgorithmMetadata->nparam;
+  AlgorithmParameter * myParameter = myAlgorithmMetadata->param;
+  //detailed list of parameters and their useage
+  //to be placed in a textbox control on the algorithm selection page
+  
+  //txtAlgorithmParameters->setText("<h1>Algorithm Parameters</h1><p>Use the descriptions below set parameters for this algorithm</p>");
+  for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
+  {
+    //
+    //first we add a new combo item to the parameter picklist
+    //
+    QString myQString = myParameter->name ;
+    //
+    // Now we build up a detailed description of the parameters
+    //
+
+    //check if the parameter has min and max constraints
+    QString myDescriptionQString=""; 
+    QString myHeadingQString=""; 
+
+    myQString="";
+    if ( myParameter->has_min && myParameter->has_max )
+    {
+      myQString.sprintf( "<p><b>%s (>= %f and <= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
+    }
+    //or just min constraint
+    else if ( myParameter->has_min )
+    {
+      myQString.sprintf( "%s (>= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->typical );
+    }
+    //or just max contraint
+    if ( myParameter->has_max )
+    {
+      myQString.sprintf( "%s (<= %f) default is %f</b></p>", myParameter->name, myParameter->max, myParameter->typical );
+    }
+    //or neither
+    else
+    {
+      myQString.sprintf( "%s default is %f</b></p>", myParameter->name, myParameter->typical);
+    }
+
+    myHeadingQString.sprintf( "<p>%s</p>", myParameter->description );
+    //txtAlgorithmParameters->setText(txtAlgorithmParameters->text()+myQString+myDescriptionQString);
+    //std::cerr << txtAlgorithmParameters->text() << std::endl;
+  }
+  delete myAlgorithmMetadata;
+  delete myParameter;
+  return ;
 }
 
 /** This is the page selected event which I am reimplementing to do some housekeeping
@@ -330,7 +384,8 @@ void OpenModellerGui::makeConfigFile()
         if (modelNameQString=="")
         {
           // Default to bioclim if modelname has not been set
-          modelNameQString="Bioclim";
+          QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The model algorithm name is not specified!"));
+          return;
         }
         myQTextStream << modelNameQString << "\n";
         // Iterate through the items in the extra parameters list
@@ -358,22 +413,7 @@ void OpenModellerGui::accept()
 {
   QSettings myQSettings;
   std::cout << "cboModelAlgorithm .. current text : " << cboModelAlgorithm->currentText() << std::endl;
-  if (cboModelAlgorithm->currentText()==tr("Bioclimatic Envelope Model"))
-  {
-    modelNameQString="Bioclim";
-  }
-  else if (cboModelAlgorithm->currentText()==tr("Climate Space Model"))
-  {
-    modelNameQString="Csm";
-  }
-  else if (cboModelAlgorithm->currentText()==tr("Euclidian Distance"))
-  {
-    modelNameQString="Distance";
-  }
-  else if (cboModelAlgorithm->currentText()==tr("Min Distance"))
-  {
-    modelNameQString="MinDistance";
-  }
+  modelNameQString=cboModelAlgorithm->currentText();
 
   //
   // set the well known text coordinate string for the coordinate system that the point data are stored in
@@ -430,14 +470,6 @@ void OpenModellerGui::accept()
 
 void OpenModellerGui::cboModelAlgorithm_activated(  const QString &theAlgorithmQString)
 {
-  if (theAlgorithmQString==tr("Bioclimatic Envelope Model"))
-  {
-    modelNameQString=="Bioclim";
-  }
-  else if (theAlgorithmQString==tr("Cartesian Distance"))
-  {
-    modelNameQString=="MinDistance";
-  }
 }
 
 

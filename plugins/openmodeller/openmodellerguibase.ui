@@ -42,26 +42,6 @@
                 </property>
             </widget>
             <widget class="QComboBox" row="4" column="0">
-                <item>
-                    <property name="text">
-                        <string>Bioclimatic Envelope Model</string>
-                    </property>
-                </item>
-                <item>
-                    <property name="text">
-                        <string>Climate Space Model</string>
-                    </property>
-                </item>
-                <item>
-                    <property name="text">
-                        <string>Euclidean Distance</string>
-                    </property>
-                </item>
-                <item>
-                    <property name="text">
-                        <string>Min Distance</string>
-                    </property>
-                </item>
                 <property name="name">
                     <cstring>cboModelAlgorithm</cstring>
                 </property>
@@ -439,7 +419,7 @@ Select a file that will be used to mask areas from the model.</string>
             </widget>
             <widget class="QTextBrowser" row="1" column="0" rowspan="1" colspan="5">
                 <property name="name">
-                    <cstring>tbrParameterFileDescription_4</cstring>
+                    <cstring>txtAlgorithmParameters</cstring>
                 </property>
                 <property name="text">
                     <string>&lt;h1&gt;Algorithm Specific Parameters&lt;/h1&gt;
