@@ -161,7 +161,7 @@ void QgsSpit::removeFile()
   for(int n=0; n<tblShapefiles->numRows(); n++)
     if (tblShapefiles->isRowSelected(n)){
       for(std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit!=fileList.end(); vit++){
-        if((*vit)->getName()==(const char *)tblShapefiles->text(n,0)){
+        if((*vit)->getName()==tblShapefiles->text(n,0)){
           total_features -= (*vit)->getFeatureCount();
           fileList.erase(vit);
           break;
@@ -251,23 +251,23 @@ void QgsSpit::import(){
       
       for(int i=0; i<fileList.size() ; i++){
         pro->show();
-        pro->setLabelText("Importing files\n"+QString(fileList[i]->getName()));
+        pro->setLabelText("Importing files\n"+fileList[i]->getName());
         int rel_exists1 = 0;
         int rel_exists2 = 0;
         QMessageBox *del_confirm;
-        QString query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+QString(fileList[i]->getTable())+"\'";
+        QString query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+fileList[i]->getTable()+"\'";
         pd->ExecTuplesOk(query);
         rel_exists1 = pd->Tuples();
-        query = "SELECT relname FROM pg_stat_all_tables WHERE relname=\'"+QString(fileList[i]->getTable())+"\'";
+        query = "SELECT relname FROM pg_stat_all_tables WHERE relname=\'"+fileList[i]->getTable()+"\'";
         pd->ExecTuplesOk(query);
         rel_exists2 = pd->Tuples();
         
         if(rel_exists1 || rel_exists2){
           del_confirm = new QMessageBox("Import Shapefiles - Relation Exists",
-            "The Shapefile:\n"+QString(fileList[i]->getName())+"\nwill use ["+
+            "The Shapefile:\n"+fileList[i]->getName()+"\nwill use ["+
             QString(fileList[i]->getTable())+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
             "To avoid data loss change the \"DB Relation Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
-            "Do you want to overwrite the ["+QString(fileList[i]->getTable())+"] relation?",
+            "Do you want to overwrite the ["+fileList[i]->getTable()+"] relation?",
           QMessageBox::Warning,
           QMessageBox::Yes | QMessageBox::Default,
           QMessageBox::No  | QMessageBox::Escape,
@@ -276,11 +276,11 @@ void QgsSpit::import(){
         if ((!rel_exists1 && !rel_exists2) || del_confirm->exec() == QMessageBox::Yes){
           if(rel_exists1){
             query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
-              QString(fileList[i]->getTable())+"\', \'"+txtGeomName->text()+"')";
+              fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";
             pd->ExecTuplesOk(query);
           }
           if(rel_exists2){
-            query = "DROP TABLE " + QString(fileList[i]->getTable());
+            query = "DROP TABLE " + fileList[i]->getTable();
             pd->ExecTuplesOk(query);            
           }
           

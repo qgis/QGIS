@@ -37,11 +37,11 @@ class QgsShapeFile : public QObject
   QgsShapeFile(QString filename);
   ~QgsShapeFile();
   int getFeatureCount();
-  const char * getFeatureClass();
+  QString getFeatureClass();
   bool insertLayer(QString dbname, QString geom_col, QString srid, PgDatabase * conn, QProgressDialog * pro, bool &fin);
     
   bool is_valid();
-  const char * getName();
+  QString getName();
   QString getTable();
   void setTable(QString new_table);
   void setDefaultTable();
@@ -56,8 +56,8 @@ class QgsShapeFile : public QObject
   bool import_cancelled;
   bool valid;
   int features;
-  const char * filename;
-  const char * geom_type;
+  QString filename;
+  QString geom_type;
 
   public slots:
   void cancelImport();

@@ -29,7 +29,7 @@
 #include "qgsshapefile.h"
 
 QgsShapeFile::QgsShapeFile(QString name){
-  filename = (const char*)name;
+  filename = name;
   features = 0;
   OGRRegisterAll();
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) filename);
@@ -54,12 +54,12 @@ int QgsShapeFile::getFeatureCount(){
   return features;
 }
 
-const char * QgsShapeFile::getFeatureClass(){
+QString QgsShapeFile::getFeatureClass(){
   OGRFeature *feat = ogrLayer->GetNextFeature();
   if(feat){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){
-      geom_type = geom->getGeometryName();
+      geom_type = QString(geom->getGeometryName());
 
       QString file(filename);
       file.replace(file.length()-3, 3, "dbf");
@@ -111,7 +111,7 @@ bool QgsShapeFile::is_valid(){
   return valid;
 }
 
-const char * QgsShapeFile::getName(){
+QString QgsShapeFile::getName(){
   return filename;
 }
 
@@ -182,7 +182,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
           query += QString(quotes + ", ");
 
         }
-        query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
+        query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
         if(result) conn->ExecTuplesOk((const char *)query);
         message = conn->ErrorMessage();
         if(message != "") result = false;
