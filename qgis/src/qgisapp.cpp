@@ -1163,7 +1163,7 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
     }                           // each loaded GDAL driver
 
   // can't forget the default case
-  fileFilters += catchallFilter + "All other files (*.*)";
+  fileFilters += catchallFilter + "All other files (*)";
 
 }                               // buildSupportedRasterFileFilter_()
 
