@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Mon Apr 5 16:14:45 2004
+** Created: Tue Apr 6 10:12:02 2004
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!

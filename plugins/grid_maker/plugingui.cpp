@@ -39,7 +39,7 @@ void PluginGui::pbnOK_clicked()
 {
   //check input file exists
   //
-  GraticuleCreator *  myGraticuleCreator = new GraticuleCreator(leOutputShapeFile->text(),1,1);
+  GraticuleCreator *  myGraticuleCreator = new GraticuleCreator(leOutputShapeFile->text(),spinLongInterval->value(),spinLatInterval->value());
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
   // add it to the view using:
@@ -49,7 +49,7 @@ void PluginGui::pbnOK_clicked()
   //
 
   delete myGraticuleCreator;
-  emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
+  emit drawVectorLayer(leOutputShapeFile->text(),QString("Graticule"),QString("ogr"));
   //close the dialog
   done(1);
 } 
