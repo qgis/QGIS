@@ -97,6 +97,11 @@ void QgsLauncherPlugin::initGui()
 
 
 }
+//method defined in interface
+void Plugin::help()
+{
+  //implement me!
+}
 
 // Slot called when the buffer menu item is activated
 void QgsLauncherPlugin::run()

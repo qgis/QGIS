@@ -45,21 +45,25 @@
 // xpm for creating the toolbar icon
  #include "icon_wmi.xpm"
 // 
-static const char *pluginVersion = "0.1";
-/**
-* Constructor for the plugin. The plugin is passed a pointer to the main app
-* and an interface object that provides access to exposed functions in QGIS.
-* @param qgis Pointer to the QGIS main window
-* @param _qI Pointer to the QGIS interface object
-*/
-QgsWorldMapImporter::QgsWorldMapImporter(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-                                qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
-{
-  /** Initialize the plugin and set the required attributes */
-    pluginNameQString = "WorldMap Import";
-    pluginVersionQString = "Version 0.1";
-    pluginDescriptionQString = "Importer for WorldMap model output files.";
+static const char * const ident_ = "$Id$";
 
+static const char * const name_ = "WorldMap Import";
+static const char * const description_ = "Importer for WorldMap model output files.";
+static const char * const version_ = "Version 0.1";
+static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+
+
+/**
+ * Constructor for the plugin. The plugin is passed a pointer to the main app
+ * and an interface object that provides access to exposed functions in QGIS.
+ * @param qgis Pointer to the QGIS main window
+ * @param _qI Pointer to the QGIS interface object
+ */
+Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+          qgisMainWindowPointer(theQGisApp), 
+          qGisInterface(theQgisInterFace),
+          QgisPlugin(name_,description_,version_,type_)
+{
 }
 
 QgsWorldMapImporter::~QgsWorldMapImporter()
@@ -115,6 +119,11 @@ void QgsWorldMapImporter::initGui()
     
 
 }
+//method defined in interface
+void Plugin::help()
+{
+  //implement me!
+}
 
 // Slot called when the buffer menu item is activated
 void QgsWorldMapImporter::run()
@@ -139,43 +148,43 @@ void QgsWorldMapImporter::unload()
     delete toolBarPointer;
 }
 /** 
-* Required extern functions needed  for every plugin 
-* These functions can be called prior to creating an instance
-* of the plugin class
-*/
+ * Required extern functions needed  for every plugin 
+ * These functions can be called prior to creating an instance
+ * of the plugin class
+ */
 // Class factory to return a new instance of the plugin class
 extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-    return new QgsWorldMapImporter(theQGisAppPointer, theQgisInterfacePointer);
+  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 extern "C" QString name()
 {
-    return QString("WorldMap Importer");
+    return name_;
 }
 
 // Return the description
 extern "C" QString description()
 {
-    return QString("This is a plugin to convert WorldMap model outputs to Arc/Info ASCII grid files and display them in QGIS");
+    return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 extern "C" int type()
 {
-    return QgisPlugin::UI;
+    return type_;
 }
 
 // Return the version number for the plugin
 extern "C" QString version()
 {
-  return pluginVersion;
+  return version_;
 }
 
 // Delete ourself
 extern "C" void unload(QgisPlugin * thePluginPointer)
 {
-    delete thePluginPointer;
+  delete thePluginPointer;
 }
