@@ -32,10 +32,52 @@
 
 QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer), mMarkerSizeDirty(false)
 {
-    QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));  
-    QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
-    QObject::connect(mScaleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setMarkerSizeDirty()));
-    mScaleEdit->setText("1.0");
+    if(mVectorLayer)
+    {
+	QgsSiMaRenderer *renderer;
+	
+	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
+	if (mVectorLayer->propertiesDialog())
+        {
+	    renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+	} 
+	else
+        {
+	    renderer = dynamic_cast < QgsSiMaRenderer * >(mVectorLayer->renderer());
+        }
+
+	if(renderer)
+	{
+	    QgsMarkerSymbol* sy=dynamic_cast < QgsMarkerSymbol* >(renderer->item()->getSymbol());
+	    if(sy)
+	    {
+		QPicture pic;
+		double scalefactor=sy->scaleFactor();
+		mScaleEdit->setText(QString::number(scalefactor,'f',2));
+		QString svgfile=sy->picture();
+		mImageButton->setName(svgfile);
+		pic.load(svgfile,"svg");
+		QPixmap pixmap(pic.boundingRect().width()*scalefactor,pic.boundingRect().height()*scalefactor);
+		pixmap.fill();
+		QPainter p(&pixmap);
+		p.scale(scalefactor,scalefactor);
+		p.drawPicture(0,0,pic);
+		mImageButton->setPixmap(pixmap);
+		
+	    }else
+	    {
+		qWarning("Warning, typecast failed in qgssimadialog.cpp on line 51");
+	    }
+	}else
+	{
+	    qWarning("Warning, typecast failed in qgssimadialog.cpp on line 42 or 46");
+	}
+	
+
+	QObject::connect(mImageButton,SIGNAL(clicked()),this,SLOT(selectMarker()));  
+	QObject::connect(mScaleEdit,SIGNAL(returnPressed()),this,SLOT(updateMarkerSize()));
+	QObject::connect(mScaleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setMarkerSizeDirty()));
+    }
 }
 
 QgsSiMaDialog::QgsSiMaDialog(): QgsSiMaDialogBase(), mVectorLayer(0), mMarkerSizeDirty(false)
@@ -52,9 +94,7 @@ QgsSiMaDialog::~QgsSiMaDialog()
 }
 
 void QgsSiMaDialog::apply()
-{
-    updateMarkerSize();
-    
+{   
     qWarning("in QgsSiMaDialog::apply()");
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
     QString string(mImageButton->name());
@@ -115,6 +155,7 @@ void QgsSiMaDialog::apply()
     if (mVectorLayer->legendItem())
     {
 	mVectorLayer->legendItem()->setPixmap(0, (*pix));
+	updateMarkerSize();
     }
     
     

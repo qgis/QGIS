@@ -50,18 +50,24 @@
 	blue CDATA #REQUIRED
 	>
 
-<!ATTLIST outlinecolor 
+<!ATTLIST fillcolor 
 	red CDATA #REQUIRED
 	green CDATA #REQUIRED
 	blue CDATA #REQUIRED
 	>
+
+<!ELEMENT
+markersymbol(svgpath,scalefactor,outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern)
+>
+<!ELEMENT svgpath (#PCDATA) >
+<!ELEMENT scalefactor (#PCDATA) >
 
 <!--
   --  renderitem and rangerenderitem
   --
   -->
 
-<!ELEMENT renderitem (value,symbol,label) >
+<!ELEMENT renderitem (value,(symbol | markersymbol),label) >
 <!ELEMENT value (#PCDATA) >
 <!ELEMENT label (#PCDATA) >
 
@@ -75,6 +81,7 @@
   -->
 
 <!ELEMENT singlesymbol (renderitem) >
+<!ELEMENT singlemarker (renderitem) >
 <!ELEMENT graduatedsymbol (classificationfield,rangerenderitem+) >
 <!ELEMENT classificationfield (#PCDATA) >
 <!ELEMENT continuoussymbol (classificationfield,lowestitem,highestitem) >

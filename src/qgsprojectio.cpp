@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.31 2004/03/18 14:06:00 mhugent Exp */
+/* qgsprojectio.cpp,v 1.32 2004/03/21 15:35:37 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -28,14 +28,17 @@
 #include "qgsrect.h"
 #include "qgsprojectio.h"
 #include "qgssinglesymrenderer.h"
+#include "qgssimarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgssymbologyutils.h"
 #include "qgssisydialog.h"
+#include "qgssimadialog.h"
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgisapp.h"
+#include "qgsmarkersymbol.h"
 
 QgsProjectIo::QgsProjectIo(QgsMapCanvas * _map, int _action, QgisApp * qgis):map(_map), action(_action), qgisApp(qgis)
 {
@@ -206,6 +209,7 @@ bool QgsProjectIo::read(QString path)
               QDomNode singlenode = node.namedItem("singlesymbol");
               QDomNode graduatednode = node.namedItem("graduatedsymbol");
               QDomNode continuousnode = node.namedItem("continuoussymbol");
+	      QDomNode singlemarkernode = node.namedItem("singlemarker");
 
               if (!singlenode.isNull()) //read configuration for single symbol
                 {
@@ -434,7 +438,85 @@ bool QgsProjectIo::read(QString path)
 
                   cdialog->apply();
 
-                }
+                }else if(!singlemarkernode.isNull())
+		{
+		    QgsMarkerSymbol* msy = new QgsMarkerSymbol();
+		    QPen pen;
+		    QBrush brush;
+		    QString svgpath;
+		    double scalefactor;
+		    QString value, label;
+
+		    QDomNode rinode = singlemarkernode.namedItem("renderitem");
+
+		    QDomNode vnode = rinode.namedItem("value");
+		    QDomElement velement = vnode.toElement();
+		    value = velement.text();
+
+		    QDomNode synode = rinode.namedItem("markersymbol");
+		    
+
+		    QDomNode svgnode = synode.namedItem("svgpath");
+		    svgpath = svgnode.toElement().text();
+
+		    QDomNode scalenode = synode.namedItem("scalefactor");
+		    scalefactor = scalenode.toElement().text().toDouble();
+
+		    QDomNode outlcnode = synode.namedItem("outlinecolor");
+		    QDomElement oulcelement = outlcnode.toElement();
+		    int red = oulcelement.attribute("red").toInt();
+		    int green = oulcelement.attribute("green").toInt();
+		    int blue = oulcelement.attribute("blue").toInt();
+		    pen.setColor(QColor(red, green, blue));
+
+		    QDomNode outlstnode = synode.namedItem("outlinestyle");
+		    QDomElement outlstelement = outlstnode.toElement();
+		    pen.setStyle(QgsSymbologyUtils::qString2PenStyle(outlstelement.text()));
+
+		    QDomNode outlwnode = synode.namedItem("outlinewidth");
+		    QDomElement outlwelement = outlwnode.toElement();
+		    pen.setWidth(outlwelement.text().toInt());
+
+		    QDomNode fillcnode = synode.namedItem("fillcolor");
+		    QDomElement fillcelement = fillcnode.toElement();
+		    red = fillcelement.attribute("red").toInt();
+		    green = fillcelement.attribute("green").toInt();
+		    blue = fillcelement.attribute("blue").toInt();
+		    brush.setColor(QColor(red, green, blue));
+
+		    QDomNode fillpnode = synode.namedItem("fillpattern");
+		    QDomElement fillpelement = fillpnode.toElement();
+		    brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
+
+		    QDomNode lnode = rinode.namedItem("label");
+		    QDomElement lnodee = lnode.toElement();
+		    label = lnodee.text();
+
+		    //create a renderer and add it to the vector layer
+		    msy->setBrush(brush);
+		    msy->setPen(pen);
+		    msy->setPicture(svgpath);
+		    qWarning("the svgpath: "+svgpath);
+		    msy->setScaleFactor(scalefactor);
+		    qWarning("the scalefactor: "+QString::number(scalefactor,'f',2));
+
+		    QgsRenderItem* ri = new QgsRenderItem();
+		    ri->setSymbol(msy);
+		    ri->setLabel(label);
+		    ri->setValue(value);
+
+		    QgsSiMaRenderer *smrenderer = new QgsSiMaRenderer();
+		    smrenderer->addItem(ri);
+		    dbl->setRenderer(smrenderer);
+		    QgsSiMaDialog *smdialog = new QgsSiMaDialog(dbl);
+		    dbl->setRendererDialog(smdialog);
+
+		    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(dbl);
+		    dbl->setLayerProperties(properties);
+		    properties->setLegendType("Single Marker");
+
+		    smdialog->apply();
+		}
 
               dbl->setVisible(visible == "1");
               qWarning("adde den Layer");
@@ -597,9 +679,12 @@ void QgsProjectIo::writeXML()
                 {
                   qWarning("Warning, cast failed in QgsProjectIo, line 309");
                 }
+
               QgsSingleSymRenderer *srenderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
               QgsGraduatedSymRenderer *grenderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
               QgsContinuousColRenderer *crenderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());
+	      QgsSiMaRenderer *smrenderer = dynamic_cast < QgsSiMaRenderer * >(layer->renderer());
+
               if (srenderer)
                 {
                   xml << "\t\t<singlesymbol>\n";
@@ -701,19 +786,39 @@ void QgsProjectIo::writeXML()
                   xml << "\t\t\t\t</renderitem>\n";
                   xml << "\t\t\t</highestitem>\n";
                   xml << "\t\t</continuoussymbol>\n";
-                }
+                }else if(smrenderer)
+		{
+		    xml << "\t\t<singlemarker>\n";
+		    xml << "\t\t\t<renderitem>\n";
+		    xml << "\t\t\t\t<value>" + smrenderer->item()->value() + "</value>\n";
 
-              /*xml << "\t\t<symbol>\n";
-                 QgsSymbol *sym = lyr->symbol();
-                 xml << "\t\t\t<linewidth>" << sym->lineWidth() << "</linewidth>\n";
-                 QColor outlineColor = sym->color();
-                 xml << "\t\t\t<outlinecolor red=\"" << outlineColor.red() << "\" green=\"" 
-                 << outlineColor.green() << "\" blue=\"" << outlineColor.blue() << "\" />\n";
-                 QColor fillColor = sym->fillColor();
-                 xml << "\t\t\t<fillcolor red=\"" << fillColor.red() << "\" green=\"" 
-                 << fillColor.green() << "\" blue=\"" << fillColor.blue() << "\" />\n";
+		    QgsMarkerSymbol *markersymbol = dynamic_cast<QgsMarkerSymbol*>(smrenderer->item()->getSymbol());
+		    if(markersymbol)
+		    {
+			xml << "\t\t\t\t<markersymbol>\n";
+			xml << "\t\t\t\t\t<svgpath>" + markersymbol->picture() + "</svgpath>\n";
+			xml << "\t\t\t\t\t<scalefactor>" + QString::number(markersymbol->scaleFactor()) + "</scalefactor>\n";
+			xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(markersymbol->pen().color().red()) + "\" green=\"" +
+			    QString::number(markersymbol->pen().color().green()) + "\" blue=\"" + QString::number(markersymbol->pen().color().blue()) +
+			    "\" />\n";
+			xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) + "</outlinestyle>\n";
+			xml << "\t\t\t\t\t<outlinewidth>" + QString::number(markersymbol->pen().width()) + "</outlinewidth>\n";
+			xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(markersymbol->brush().color().red()) + "\" green=\"" +
+			    QString::number(markersymbol->brush().color().green()) + "\" blue=\"" + QString::number(markersymbol->brush().color().blue()) +
+			    "\" />\n";
+			xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style()) +
+			    "</fillpattern>\n";
+			xml << "\t\t\t\t</markersymbol>\n";
+			xml << "\t\t\t\t<label>" + smrenderer->item()->label() + "</label>\n";
+			xml << "\t\t\t</renderitem>\n";
+			xml << "\t\t</singlemarker>\n";
+		    }else
+		    {
+			qWarning("warning, type cast failed in qgsprojectio.cpp line 715"); 
+		    }
+		}
 
-                 xml << "\t\t</symbol>\n"; */
+            
           } else                //raster layer properties
             {
               //cast the maplayer to rasterlayer
