@@ -121,8 +121,48 @@ const char * const ident =
       //find out the name of this band
       QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt) ;
 
+      //
       //add the band to the histogram tab
-      lstHistogramLabels->insertItem(myRasterBandNameQString);
+      //
+      QPixmap myPixmap(10,10);
+          
+      if (myBandCountInt==1) //draw single band images with black
+      {
+      myPixmap.fill( Qt::black );
+      }
+      else if (myIteratorInt==1)
+      {
+      myPixmap.fill( Qt::red );
+      }
+      else if (myIteratorInt==2)
+      {
+      myPixmap.fill( Qt::green );
+      }
+      else if (myIteratorInt==3)
+      {
+      myPixmap.fill( Qt::blue );
+      }
+      else if (myIteratorInt==4)
+      {
+      myPixmap.fill( Qt::magenta );
+      }
+      else if (myIteratorInt==5)
+      {
+      myPixmap.fill( Qt::darkRed );
+      }
+      else if (myIteratorInt==6)
+      {
+      myPixmap.fill( Qt::darkGreen );
+      }
+      else if (myIteratorInt==7)
+      {
+      myPixmap.fill( Qt::darkBlue );
+      }
+      else
+      {
+      myPixmap.fill( Qt::gray );
+      }
+      lstHistogramLabels->insertItem(myPixmap,myRasterBandNameQString);
       //keep a list of band names for later use
       myBandNameQStringList.append(myRasterBandNameQString);
     }
@@ -868,6 +908,9 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   int myHistogramWidth =256; // pixHistogram->width();
   int myHistogramHeight = 256; // pixHistogram->height();
   int myBandCountInt = rasterLayer->getBandCount();
+ 
+
+  long myCellCount = rasterLayer->getRasterXDim() * rasterLayer->getRasterYDim();
   
   QPixmap myPixmap(myHistogramWidth,myHistogramHeight);
   myPixmap.fill(Qt::white);
@@ -921,10 +964,16 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
       {
         int myBinValue = myRasterBandStats.histogram[myBin];
         int myX = (myHistogramWidth/256)*myBin;
-        //height varies according to freq. and scaled to greated value in all layers
-        int myY = (myHistogramHeight/myMaxVal)*myBinValue;
+        //height varies according to freq. and scaled to greatet value in all layers
+        //NOTE: Int division is 0 if the numerator is smaller than the denominator.
+        //hence the casts
+        int myY = (((double)myBinValue)/((double)myCellCount))*myHistogramHeight;
+        //adjust for image origin being top left
+        myY = myHistogramHeight - myY;
 #ifdef QGISDEBUG
-        std::cout << "Band " << myIteratorInt << ", bin " << myBin << ", Value : " << myY << std::endl;
+        std::cout << "int myY = (myBinValue/myCellCount)*myHistogramHeight" << std::endl;
+        std::cout << "int myY = (" << myBinValue << "/" << myCellCount << ")*" << myHistogramHeight << std::endl;
+        std::cout << "Band " << myIteratorInt << ", bin " << myBin << ", Hist Value : " << myBinValue << ", Scaled Value : " << myY << std::endl;
 #endif
         myPointArray.setPoint(myBin, myX, myY);
       }
