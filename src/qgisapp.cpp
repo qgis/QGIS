@@ -74,8 +74,8 @@
 #include <ogrsf_frmts.h>
 
 // version
-static const char *qgisVersion = "0.0.11pre2 June 4, 2003";
-static const int qgisVersionInt = 10;
+static const char *qgisVersion = "0.0.11 - June 10, 2003";
+static const int qgisVersionInt = 11;
 // cursors
 static unsigned char zoom_in_bits[] = {
 	0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
@@ -206,12 +206,16 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*Preliminary Plugin Manager implementation\n"
-		"*Version check under tools menu\n"
-		"*Fix for PostGIS bug when srid != -1\n"
-		"*Database Connections can now be deleted\n"
-		"*Fixes to Database Connection dialog\n"
-		"*Improved detection of invalid layers when loading\n"
+	watsNew += "\n**Preliminary Plugin Manager implementation\n"
+	 "**Version check under tools menu\n"
+	 "**Version checking uses port 80 to prevent problems with firewalls\n"
+	 "**Fix for PostGIS bug when srid != -1\n"
+	 "**Fix for PostGIS LINESTRING rendering\n"
+	 "**Database Connections can now be deleted\n"
+	 "**Fixes to Database Connection dialog\n"
+	 "**Fix for crash when opening a shapefile attribute table twice in succession\n"
+	 "**Fix for crash when opening invalid shapefiles\n"
+	 
 		;
 
 
