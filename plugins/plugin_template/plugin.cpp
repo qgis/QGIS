@@ -80,7 +80,7 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-  pluginMenu->insertItem(QIconSet(icon),"&[pluginname]", this, SLOT(run()));
+  pluginMenu->insertItem(QIconSet(icon),"&[menuitemname]", this, SLOT(run()));
 
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
