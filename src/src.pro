@@ -28,13 +28,15 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgslinesymbol.h \
            qgspolygonsymbol.h \
            qgslegend.h  \
-           qgslegenditem.h
+           qgslegenditem.h \
+           qgslayerproperties.h
            
 INTERFACES += qgsdbsourceselectbase.ui \
 					 qgisappbase.ui \
 					 qgsnewconnectionbase.ui \
 					 qgslegenditembase.ui \
-					 qgsabout.ui
+					 qgsabout.ui \
+					 qgslayerpropertiesbase.ui
 SOURCES += main.cpp \
            qgisapp.cpp \
            qgsdatabaselayer.cpp \
@@ -53,4 +55,5 @@ SOURCES += main.cpp \
            qgssymbol.cpp \
            qgsmarkersymbol.cpp \
            qgslinesymbol.cpp \
-           qgspolygonsymbol.cpp
+           qgspolygonsymbol.cpp \
+           qgslayerproperties.cpp
