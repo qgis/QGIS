@@ -45,4 +45,4 @@ libgrassprovider_la_SOURCES = provider.cpp \
 
 libgrassprovider_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)  $(GDAL_LDADD)
 libgrassprovider_la_LDFLAGS = -avoid-version -module
-libgrassprovider_la_CXXFLAGS = -I$(GRASS_INC) $(GDAL_CFLAGS) -I$(PG_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
+libgrassprovider_la_CXXFLAGS = -I$(GRASS_INC) $(GDAL_CFLAGS) -I$(PG_INC) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
