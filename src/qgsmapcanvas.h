@@ -186,7 +186,8 @@ public slots:
     void setZOrderFromLegend(QgsLegend *lv);
 
 signals:
-
+    /** Let the owner know how far we are with render operations */
+    void setProgress(int,int);
     /** emits current mouse position */
     void xyCoordinates(QgsPoint & p);
     /** emits mouse position when the canvas is clicked */

@@ -323,6 +323,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
   //signal when mouse in capturePoint mode and mouse clicked on canvas
   connect(mMapCanvas, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(showCapturePointCoordinate(QgsPoint &)));
+  connect(mMapCanvas, SIGNAL(setProgress(int,int)), this, SLOT(showProgress(int,int)));  
   connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mMapLegend, SLOT(addLayer(QgsMapLayer *)));
@@ -1163,10 +1164,10 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
   else
   {
       mMapCanvas->removeAll();
+      mMapCanvas->clear();
       mOverviewCanvas->removeAll();
       mOverviewCanvas->clear();
       setCaption(tr("Quantum GIS -- Untitled"));
-      mMapCanvas->clear();
       // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
       mFullPathName = "";
       mProjectIsDirtyFlag = false;
@@ -1178,21 +1179,20 @@ void QgisApp::fileOpen()
   int answer = saveDirty();
 
   if (answer != QMessageBox::Cancel)
+  {
+    QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, this);
+    mOverviewCanvas->freeze(true);
+    mMapCanvas->freeze(true);
+    if (pio->read())
     {
-      mMapCanvas->freeze(true);
-      QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, this);
-
-      if (pio->read())
-        {
-          setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-          mFullPathName = pio->fullPathName();
-        }
-      delete pio;
-
-      // mMapLegend->update(); UPDATED VIA SIGNAL/SLOTS
-      mMapCanvas->freeze(false);
-      mProjectIsDirtyFlag = false;
+      setCaption(tr("Quantum GIS --") + " " + pio->baseName());
+      mFullPathName = pio->fullPathName();
     }
+    delete pio;
+    mOverviewCanvas->freeze(false);
+    mMapCanvas->freeze(false);
+    mProjectIsDirtyFlag = false;
+  }
 }
 
 
@@ -1348,6 +1348,7 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
 
 void QgisApp::addAllToOverview()
 {
+  mOverviewCanvas->freeze(true);
   std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
@@ -1360,6 +1361,7 @@ void QgisApp::addAllToOverview()
   }
   // draw the map
   mOverviewCanvas->clear();
+  mOverviewCanvas->freeze(false);
   mOverviewCanvas->render();
 }
 
@@ -2735,6 +2737,14 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
   mOverviewCanvas->refresh();
 
 }
+
+//set the zorder of both overview and mapcanvas
+void QgisApp::setZOrder (std::list<QString>)
+{
+  //do me!
+
+}
+
 //copy the click coord to clipboard and let the user know its there
 void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 {
@@ -2885,6 +2895,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   mMapCanvas->freeze(true);
+  mOverviewCanvas->freeze(true);
 
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
   // XXX why do we have to pass it in for it?
@@ -2903,6 +2914,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
   {
     statusBar()->message(mMapCanvas->extent().stringRep(2));
     mMapCanvas->freeze(false);
+    mOverviewCanvas->freeze(false);
     QApplication::restoreOverrideCursor();
     return true;
   }
@@ -2919,9 +2931,11 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
     // allow mMapCanvas to handle events
     // first
     mMapCanvas->freeze(false);
+    mMapCanvas->freeze(false);
     return false;
   } 
 
+  mMapCanvas->freeze(true);
   mMapCanvas->freeze(true);
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -2967,6 +2981,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
   statusBar()->message(mMapCanvas->extent().stringRep(2));
   mMapCanvas->freeze(false);
+  mOverviewCanvas->freeze(false);
   QApplication::restoreOverrideCursor();
 
   return returnValue;
