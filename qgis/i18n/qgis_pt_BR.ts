@@ -17,6 +17,42 @@
         <source>Top Right</source>
         <translation>Superior Direito</translation>
     </message>
+    <message>
+        <source> metres/km</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> feet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> metres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> km</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PluginGuiBase</name>
@@ -164,7 +200,7 @@
     </message>
     <message>
         <source>GPX and LOC loader</source>
-        <translation>Carregador GPX e LOC</translation>
+        <translation type="obsolete">Carregador GPX e LOC</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -325,6 +361,239 @@
     </message>
     <message>
         <source>Enable North Arrow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load GPX or LOC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import other file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX and LOC files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File to import:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPX output file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download from GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
+protocol, the device your GPS is connected to, the feature type you want 
+to download, a name for your new layer, and the GPX file where 
+you want to store the data.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
+don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Garmin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Magellan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload to GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
+Choose the layer you want to upload, your protocol, and the device your 
+GPS is connected to.&lt;/p&gt;
+&lt;p&gt;This tool uses the program &lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;GPSBabel&lt;/a&gt; to transfer the data. If you don&apos;t 
+have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Http Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished">Aplicar</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">Geral</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:WP MathExtendedB&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:14pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin runs a simple web server (by default listening on port 8081) that listens for requests for maps. &lt;/p&gt;
+&lt;p&gt;Specify your server name using e.g. http://mydomain.com&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;NOTE: This plugin is pre-alpha code. It does work in its basic form but its still buggy, feature incomplete and my crash QGIS.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always start plugin with server enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projects Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default Project:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layers Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSS File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale Bar Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size of bar:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Colour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Placement:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the style of the scale bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colour of bar:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale bar style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable scale bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically snap to round number on resize</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -627,22 +896,6 @@
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add to overview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Would you like to add this layer to the overview map?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1148,6 +1401,54 @@
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capture Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add All To Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove All From Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAbout</name>
@@ -1352,6 +1653,10 @@
         <source>Outline Width:</source>
         <translation>Espessura da borda:</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>QgsDbSourceSelect</name>
@@ -1424,11 +1729,11 @@
     </message>
     <message>
         <source>Tables</source>
-        <translation>Tabelas</translation>
+        <translation type="obsolete">Tabelas</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation>Informação da Conexão</translation>
+        <translation type="obsolete">Informação da Conexão</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -1445,6 +1750,18 @@
     <message>
         <source>Delete</source>
         <translation>Deletar</translation>
+    </message>
+    <message>
+        <source>PostgreSQL Connections</source>
+        <translation type="unfinished">Conexões PostgreSQL </translation>
+    </message>
+    <message>
+        <source>Where Clause:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tables:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2533,22 +2850,6 @@ identificando feições sem executar um zoom muito perto.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;
-&lt;b&gt;Note:&lt;/b&gt; 
-Specify the value in thousandths.  
-The search radius is calculated as:
-&lt;ul&gt; &lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
-&lt;/ul&gt;
-By default QGIS uses a value of 5. Increase the value if you have trouble
-identifying features without zooming in very close.
-&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Help &amp;Browser</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2558,6 +2859,48 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Update During Drawing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update display after reading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Set to 0 to not update the display until all features have been read)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search Radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&lt;br&gt;
+By default QGIS uses a value of 5. Increase the value if you have trouble
+identifying features without zooming in very close.
+&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2882,6 +3225,26 @@ identifying features without zooming in very close.
         <source>Could not determine raster data type.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show In &amp;Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Average Magphase</source>
+        <translation type="unfinished">Magphase Média</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation type="unfinished">Média</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
@@ -3126,7 +3489,7 @@ identifying features without zooming in very close.
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt,font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt,font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notas&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
@@ -3162,7 +3525,7 @@ identifying features without zooming in very close.
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;(new line)
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;(new line)
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:24pt;font-weight:600&quot;&gt;Descrição&lt;/span&gt;&lt;/p&gt;(new line)
 &lt;p&gt;Camadas raster de grande resolução podem tornar a navegação no QGIS mais lenta. Ao criar cópias de camadas em resoluções mais baixas (pirâmides) a performance pode ser melhorada consideravelmente uma vez o QGIS escolhe qual a melhor resolução a ser utilizada dependendo no nível de zoom. Você precisa ter acesso a escrita no diretório onde encontram-se os dados originais para criar pirâmides de dados. &lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Note que, construir pirâmides pode alterar o arquivo de dados original e, uma vez criadas, não há como removê-las.&lt;/span&gt;&lt;/p&gt;
@@ -3187,6 +3550,22 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Palette:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3247,6 +3626,18 @@ identifying features without zooming in very close.
         <source>Pattern</source>
         <translation>Selecione um padrão de preenchimento</translation>
     </message>
+    <message>
+        <source>Outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSpitBase</name>
@@ -3264,15 +3655,15 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Edit ...</source>
-        <translation>Editar ...</translation>
+        <translation type="obsolete">Editar ...</translation>
     </message>
     <message>
         <source>New ...</source>
-        <translation>Novo ...</translation>
+        <translation type="obsolete">Novo ...</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Conexão</translation>
+        <translation type="obsolete">Conexão</translation>
     </message>
     <message>
         <source>Import</source>
@@ -3280,7 +3671,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Quit</source>
-        <translation>Sair</translation>
+        <translation type="obsolete">Sair</translation>
     </message>
     <message>
         <source>Help</source>
@@ -3312,7 +3703,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Use Default</source>
-        <translation>Usar Padrão</translation>
+        <translation type="obsolete">Usar Padrão</translation>
     </message>
     <message>
         <source>Geometry Column Name</source>
@@ -3324,7 +3715,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Add ...</source>
-        <translation>Adicionar ...</translation>
+        <translation type="obsolete">Adicionar ...</translation>
     </message>
     <message>
         <source>Remove All</source>
@@ -3333,6 +3724,74 @@ identifying features without zooming in very close.
     <message>
         <source>Global Schema</source>
         <translation>Esquema global</translation>
+    </message>
+    <message>
+        <source>Shapefile to PostGIS Import Tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import the defined shapefiles to PostGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Fechar</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">Adicionar</translation>
+    </message>
+    <message>
+        <source>Add a shapefile to the list of files to be imported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove the selected shapefile from the import list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove all the shapefiles from the import list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Default SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the SRID to the default value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Default Geometry Column Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the geometry column name to the default value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished">Novo</translation>
+    </message>
+    <message>
+        <source>Create a new PostGIS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove the current PostGIS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">Conectar</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Editar</translation>
+    </message>
+    <message>
+        <source>Edit the current PostGIS connection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3364,6 +3823,14 @@ identifying features without zooming in very close.
     <message>
         <source>&amp;Remove</source>
         <translation>&amp;Remover</translation>
+    </message>
+    <message>
+        <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show In &amp;Overview</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3418,6 +3885,13 @@ identifying features without zooming in very close.
     <message>
         <source>TextLabel2</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>SplashScreen</name>
+    <message>
+        <source>Quantum GIS - </source>
+        <translation type="unfinished">Quantum GIS -</translation>
     </message>
 </context>
 </TS>
