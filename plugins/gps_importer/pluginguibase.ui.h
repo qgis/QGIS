@@ -57,3 +57,33 @@ void PluginGuiBase::leOutputShapeFile_textChanged( const QString & theQString )
    pbnOK->setEnabled(false);   
   }
 }
+
+
+void PluginGuiBase::leGPXFile_textChanged( const QString & theQString )
+{
+
+}
+
+
+void PluginGuiBase::pbnGPXSelectFile_clicked()
+{
+
+}
+
+
+void PluginGuiBase::cbGPXWaypoints_toggled( bool )
+{
+
+}
+
+
+void PluginGuiBase::cbGPXRoutes_toggled( bool )
+{
+
+}
+
+
+void PluginGuiBase::cbGPXTracks_toggled( bool )
+{
+
+}

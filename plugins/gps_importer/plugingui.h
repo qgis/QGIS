@@ -29,6 +29,9 @@ class PluginGui : public PluginGuiBase
 
       void pbnSelectInputFile_clicked();
       void pbnSelectOutputFile_clicked();
+
+      void pbnGPXSelectFile_clicked();
+
       void pbnCancel_clicked();
       void pbnOK_clicked();
 

@@ -12,7 +12,9 @@
 #include "plugingui.h"
 
 //qt includes
+#include <qcheckbox.h>
 #include <qpushbutton.h>
+#include <qtabwidget.h>
 #include <qlineedit.h>
 #include <qspinbox.h>
 #include <qfiledialog.h>
@@ -37,25 +39,53 @@ PluginGui::~PluginGui()
 
 void PluginGui::pbnOK_clicked()
 {
-  //check input file exists
-  //
-  if (!QFile::exists ( leInputFile->text() ))
-  {
-   QMessageBox::warning( this, "GPS Importer",
-               "Unable to find the input file.\n"
-                   "Please reselect a valid file." );
-   return;
+  
+  // what should we do?
+  // add a GPX/LOC layer?
+  if (tabWidget->currentPageIndex() == 0) {
+
+    //check input file exists
+    if (!QFile::exists ( leGPXFile->text() ))
+      {
+	QMessageBox::warning( this, "GPX/LOC Loader",
+			      "Unable to find the selected file.\n"
+			      "Please reselect a valid file." );
+	return;
+      }
+    
+    if (cbGPXWaypoints->isChecked())
+      emit drawVectorLayer(leGPXFile->text() + "?type=waypoint", 
+			   "Waypoints", "gpx");
+    if (cbGPXRoutes->isChecked())
+      emit drawVectorLayer(leGPXFile->text() + "?type=route", "Routes", "gpx");
+    if (cbGPXTracks->isChecked())
+      emit drawVectorLayer(leGPXFile->text() + "?type=track", "Tracks", "gpx");
   }
-  WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
-  //
-  // If you have a produced a raster layer using your plugin, you can ask qgis to 
-  // add it to the view using:
-  // emit drawRasterLayer(QString("layername"));
-  // or for a vector layer
-  // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
-  //
-  delete myWayPointToShape;
-  emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
+  
+  // or import a download file?
+  else {
+    
+    //check input file exists
+    //
+    if (!QFile::exists ( leInputFile->text() ))
+      {
+	QMessageBox::warning( this, "GPS Importer",
+			      "Unable to find the input file.\n"
+			      "Please reselect a valid file." );
+	return;
+      }
+    WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
+    //
+    // If you have a produced a raster layer using your plugin, you can ask qgis to 
+    // add it to the view using:
+    // emit drawRasterLayer(QString("layername"));
+    // or for a vector layer
+    // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
+    //
+    delete myWayPointToShape;
+    emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
+  }
+  
   //close the dialog
   done(1);
 } 
@@ -112,4 +142,52 @@ void PluginGui::pbnCancel_clicked()
 {
  close(1);
 }
+
+
+void PluginGui::pbnGPXSelectFile_clicked()
+{
+  std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
+  QString myFileTypeQString;
+  QString myFilterString="GPS eXchange format (*.gpx);;"
+    "Geocaching waypoints (*.loc)";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          "." , //initial dir
+          myFilterString,  //filters to select
+          this , //parent dialog
+          "OpenFileDialog" , //QFileDialog qt object name
+          "Select GPX or LOC file" , //caption
+          &myFileTypeQString //the pointer to store selected filter
+          );
+  std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
+  leGPXFile->setText(myFileNameQString);
+  if ((leGPXFile->text()==""))
+  {
+    pbnOK->setEnabled(false);
+    cbGPXWaypoints->setEnabled(false);
+    cbGPXRoutes->setEnabled(false);
+    cbGPXTracks->setEnabled(false);
+    cbGPXWaypoints->setChecked(false);
+    cbGPXRoutes->setChecked(false);
+    cbGPXTracks->setChecked(false);
+  }
+  else
+  {
+    pbnOK->setEnabled(true);
+    cbGPXWaypoints->setEnabled(true);
+    cbGPXWaypoints->setChecked(true);
+    if (myFileNameQString.right(4) == ".gpx") {
+      cbGPXRoutes->setEnabled(true);
+      cbGPXTracks->setEnabled(true);
+      cbGPXRoutes->setChecked(true);
+      cbGPXTracks->setChecked(true);
+    }
+    else {
+      cbGPXRoutes->setEnabled(false);
+      cbGPXTracks->setEnabled(false);
+      cbGPXRoutes->setChecked(false);
+      cbGPXTracks->setChecked(false);
+    }
+  }
+}
+
 
