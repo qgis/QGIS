@@ -2010,7 +2010,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       if (projectionsEnabledFlag)
       {
         //reproject the point to the map coordinate system
+        try {
         myProjectedPoint=mCoordinateTransform->transform(pt);
+      }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }        
         //transform from projected coordinate system to pixel position on map canvas
         theMapToPixelTransform->transform(&myProjectedPoint);
       }
@@ -2050,7 +2056,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         if (projectionsEnabledFlag)
         {
           //reproject the point to the map coordinate system
+          try {
           myProjectedPoint=mCoordinateTransform->transform(pt);
+                }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }
           //transform from projected coordinate system to pixel position on map canvas
           theMapToPixelTransform->transform(&myProjectedPoint);
         }
@@ -2093,7 +2105,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           if (projectionsEnabledFlag)
           {
             //reproject the point to the map coordinate system
-            myProjectedPoint=mCoordinateTransform->transform(pt);
+                      try {
+          myProjectedPoint=mCoordinateTransform->transform(pt);
+                }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }
             //transform from projected coordinate system to pixel position on map canvas
             theMapToPixelTransform->transform(&myProjectedPoint);
           }
@@ -2163,7 +2181,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           if (projectionsEnabledFlag)
           {
             //reproject the point to the map coordinate system
-            myProjectedPoint=mCoordinateTransform->transform(pt);
+                      try {
+          myProjectedPoint=mCoordinateTransform->transform(pt);
+                }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }
             //transform from projected coordinate system to pixel position on map canvas
             theMapToPixelTransform->transform(&myProjectedPoint);
           }
@@ -2242,7 +2266,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
             if (projectionsEnabledFlag)
             {
               //reproject the point to the map coordinate system
-              myProjectedPoint=mCoordinateTransform->transform(pt);
+          try {
+          myProjectedPoint=mCoordinateTransform->transform(pt);
+                }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }
               //transform from projected coordinate system to pixel position on map canvas
               theMapToPixelTransform->transform(&myProjectedPoint);
             }

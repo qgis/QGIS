@@ -750,7 +750,14 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             std::cout << "Rendering " << ml->name() << std::endl;
             std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() << std::endl;
             std::cout << "Input extent: " << ml->extent().stringRep() << std::endl;
-            std::cout << "Transformed extent" << ml->coordinateTransform()->transform(ml->extent()).stringRep() << std::endl;
+            try
+            {
+              std::cout << "Transformed extent" << ml->coordinateTransform()->transform(ml->extent()).stringRep() << std::endl;
+            }
+            catch (QgsCsException &e)
+            {
+              qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+            }
 #endif
 
             if (ml->visible())
@@ -761,9 +768,18 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 //we need to find out the extent of the canvas in the layer's
                 //native coordinate system :. inverseProjection of the extent
                 //must be done....
-                QgsRect myProjectedRect =
-                  ml->coordinateTransform()->inverseTransform(
-                    mCanvasProperties->currentExtent);
+                QgsRect myProjectedRect;
+                try
+                {
+                  myProjectedRect =
+                    ml->coordinateTransform()->inverseTransform(
+                      mCanvasProperties->currentExtent);
+
+                }
+                catch (QgsCsException &e)
+                {
+                  qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+                }
                 ml->draw(paint,
                          &myProjectedRect,
                          mCanvasProperties->coordXForm,
@@ -1016,15 +1032,15 @@ void QgsMapCanvas::zoomPreviousExtent()
 
 bool QgsMapCanvas::projectionsEnabled()
 {
-    if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-}    
+  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
 void QgsMapCanvas::zoomToSelected()
 {
@@ -1038,11 +1054,18 @@ void QgsMapCanvas::zoomToSelected()
     QgsRect rect ;
     if (projectionsEnabled())
     {
-      rect = lyr->coordinateTransform()->transform(lyr->bBoxOfSelected());
+      try
+      {      
+        rect = lyr->coordinateTransform()->transform(lyr->bBoxOfSelected());
+      }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }
     }
     else
     {
-     rect = lyr->bBoxOfSelected();
+      rect = lyr->bBoxOfSelected();
     }
 
     // no selected features
@@ -1404,13 +1427,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       if(mCaptureList.size()>1)
       {
         QPainter paint(this);
-	QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
-			  QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
-			  QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+        QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
+                          QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
+                          QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
         paint.setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
         std::list<QgsPoint>::iterator it=mCaptureList.end();
         --it;
         --it;
+
         QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
         QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
         paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
@@ -2003,14 +2027,28 @@ void QgsMapCanvas::recalculateExtents()
 #ifdef QGISDEBUG
     std::cout << "Updating extent using " << lyr->name() << std::endl;
     std::cout << "Input extent: " << lyr->extent().stringRep() << std::endl;
-    std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent()) << std::endl;
+    try
+    {
+      std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent()) << std::endl;
+    }
+    catch (QgsCsException &e)
+    {
+      qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+    }
 #endif
     // Layer extents are stored in the coordinate system (CS) of the
     // layer. The extent must be projected to the canvas CS prior to passing
     // on to the updateFullExtent function
     if (projectionsEnabled())
     {
-      updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+      try
+      {
+        updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+      }
+      catch (QgsCsException &e)
+      {
+        qDebug( "%s:%d Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      }
     }
     else
     {
