@@ -133,6 +133,8 @@ public:
      @return true in case of success and false in case of failure*/
   bool addFeatures(std::list<QgsFeature*> flist);
   
+  bool deleteFeatures(std::list<int> id);
+  
   /** Adds one feature (used by addFeatures()) */
   bool QgsGPXProvider::addFeature(QgsFeature* f);
   
@@ -148,7 +150,8 @@ public:
    */
   bool boundsCheck(double x, double y);
 
-  bool supportsFeatureAddition(){return true;}
+  bool supportsFeatureAddition() { return true; }
+  bool supportsFeatureDeletion() { return true; }
   
  private:
   
