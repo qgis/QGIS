@@ -51,11 +51,6 @@ class QgisApp : public QgisAppBase
 public:
 	 QgisIface *getInterface();
 
-      /**
-         @todo XXX what the heck is this?
-       */
-	 int getInt();
-
          void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
          /** \brief overloaded vesion of the privat addLayer method that takes a list of
          * filenames instead of prompting user with a dialog. 
