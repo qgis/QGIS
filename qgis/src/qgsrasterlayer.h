@@ -174,7 +174,7 @@ The [type] part of the variable should be the type class of the variable written
 #include "qgscolortable.h"
 #include "qgsrasterlayer.h"
 
-#include "gdal_priv.h"
+#include <gdal_priv.h>
 
 //
 // Forward declarations

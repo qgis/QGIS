@@ -84,7 +84,7 @@ email                : tim at linfiniti.com
 #include "qgsrect.h"
 #include "qgisapp.h"
 #include "qgsrasterlayerproperties.h"
-#include "gdal_priv.h"
+#include <gdal_priv.h>
 
 //////////////////////////////////////////////////////////
 //
