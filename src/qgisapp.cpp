@@ -84,7 +84,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayer.h"
-#include "qgslayerproperties.h"
 #include "qgsabout.h"
 #include "qgspluginmanager.h"
 #include "qgsmaplayerinterface.h"
