@@ -61,8 +61,6 @@ class QgsUniqueValRenderer: public QgsRenderer
     int mClassificationField;
     /**Entries for the unique values*/
     std::map<QString,QgsRenderItem*> mEntries;
-    /**Colour used to render selected features*/
-    QColor mSelectionColor;
 };
 
 inline bool QgsUniqueValRenderer::needsAttributes()

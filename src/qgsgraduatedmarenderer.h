@@ -65,6 +65,8 @@ class QgsGraduatedMaRenderer: public QgsRenderer
 
 inline QgsGraduatedMaRenderer::QgsGraduatedMaRenderer()
 {
+  //call superclass method to set up selection colour
+  initialiseSelectionColor();
 
 }
 

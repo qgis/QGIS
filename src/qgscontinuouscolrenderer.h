@@ -74,12 +74,12 @@ class QgsContinuousColRenderer: public QgsRenderer
     QgsRenderItem* mMinimumItem;
     /**Item for the maximum value*/
     QgsRenderItem* mMaximumItem;
-    /**Color to draw selected features*/
-    QColor mSelectionColor;
 };
 
 inline QgsContinuousColRenderer::QgsContinuousColRenderer(): mMinimumItem(0), mMaximumItem(0)
 {
+  //call superclass method to set up selection colour
+  initialiseSelectionColor();
 
 }
 
