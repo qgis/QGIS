@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>460</width>
-            <height>541</height>
+            <height>543</height>
         </rect>
     </property>
     <property name="caption">
@@ -59,14 +59,6 @@
                             <string>Layer Source:</string>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>lblDisplayName</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Display Name:</string>
-                        </property>
-                    </widget>
                     <widget class="QLineEdit" row="3" column="0" rowspan="1" colspan="2">
                         <property name="name">
                             <cstring>leDisplayName</cstring>
@@ -80,7 +72,23 @@
                             <bool>false</bool>
                         </property>
                     </widget>
-                    <spacer row="4" column="1">
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>lblDisplayName</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Display Name:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="4" column="0">
+                        <property name="name">
+                            <cstring>lblDisplayName_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Legend:</string>
+                        </property>
+                    </widget>
+                    <spacer row="6" column="1">
                         <property name="name">
                             <cstring>spacer2</cstring>
                         </property>
@@ -93,10 +101,24 @@
                         <property name="sizeHint">
                             <size>
                                 <width>21</width>
-                                <height>91</height>
+                                <height>270</height>
                             </size>
                         </property>
                     </spacer>
+                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>pixmapLegend</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>0</width>
+                                <height>10</height>
+                            </size>
+                        </property>
+                        <property name="scaledContents">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
                 </grid>
             </widget>
             <widget class="QWidget">
@@ -322,8 +344,8 @@
                                     <bool>true</bool>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Arial"&gt;
-&lt;p style="margin-top:14px"&gt;&lt;span style="font-size:13pt;font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:14px"&gt;&lt;span style="font-size:14pt;font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
                                 </property>

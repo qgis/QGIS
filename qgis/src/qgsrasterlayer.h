@@ -94,7 +94,8 @@ class QgsRasterLayer : public QgsMapLayer  {
       // Accessor and mutator for gray band name 
       QString getGrayBandName() {return grayBandNameQString;};
       void setGrayBandName(QString theBandNameQString);
-      
+      //get a legend image for this layer
+      QPixmap getLegendQPixmap();
       public slots:
           //mutator for transparency
           void slot_setTransparency(unsigned int); //should be between 0 and 255
