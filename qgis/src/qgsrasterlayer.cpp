@@ -58,15 +58,18 @@ The [type] part of the variable should be the type class of the variable written
 #include <qfont.h>
 #include <qfontmetrics.h>
 #include <qwmatrix.h>
+#include <qpopupmenu.h>
 #include <stdio.h>
 #include "qgsrasterlayer.h"
 #include "qgsrect.h"
+#include "qgisapp.h"
 #include "qgsrasterlayerproperties.h"
 #include "gdal_priv.h"
 
 QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
         :QgsMapLayer(RASTER, baseName, path)
 {
+    popMenu=0;
     //std::cout << "QgsRasterLayer::QgsRasterLayer()" << std::endl;
 
     GDALAllRegister();
@@ -319,7 +322,6 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
     QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
 
 
-
     //
     //
     // The goal here is to make as many decisions as possible early on (outside of the rendering loop)
@@ -350,9 +352,11 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
         break;
         // a layer containing 2 or more bands, but using only one band to produce a grayscale image
     case MULTI_BAND_SINGLE_BAND_GRAY:
+       drawMultiBandSingleBandGray(theQPainter, myRasterViewPort, myGdalBand);
         break;
         //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
     case MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
+        drawMultiBandSingleBandPseudoColor(theQPainter, myRasterViewPort, myGdalBand);
         break;
         //a layer containing 2 or more bands, mapped to the three RGBcolors.
         //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
@@ -382,12 +386,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter,
     std::cout << "QgsRasterLayer::drawSingleBandGray called" << std::endl;
     //create the outout image that the layer will be drawn on before placing it in the qcanvas
 
-    QPixmap * myQPixmap=new QPixmap(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt);
-    //myQPixmap.setAlphaBuffer(true); //only supported for qimage
-    //create a temporary qpainter that can be used for xoring red, green and blue data onto
-    //the image.
-    QPainter myQPainter;
-    myQPainter.begin(myQPixmap);
+   // QPixmap * myQPixmap=new QPixmap(theRasterViewPort->drawableAreaXDimInt,theRasterViewPort->drawableAreaYDimInt);
+
     // read entire clipped area of raster band
     // treat myGdalScanData as a pseudo-multidimensional array
     // RasterIO() takes care of scaling down image
@@ -956,14 +956,16 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter,
     theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(),myQImage);
 
 }
-void drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort)
+void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand )
 {
-
+  //delegate to drawSingleBandGray!
+  drawSingleBandGray(theQPainter, theRasterViewPort, theGdalBand);
 }
 
-void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort)
+void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand)
 {
-
+  //delegate to drawSinglePseudocolor!
+  drawSingleBandPseudoColor(theQPainter, theRasterViewPort, theGdalBand);
 }
 void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter,
         RasterViewPort * theRasterViewPort)
@@ -1597,4 +1599,17 @@ QPixmap * QgsRasterLayer::legendPixmap()
 
 
     return new QPixmap(myQPixmap);
+}
+
+/** Accessor for the superclass popmenu var*/
+QPopupMenu *QgsRasterLayer::contextMenu(){
+  return popMenu;
+}
+
+void QgsRasterLayer::initContextMenu(QgisApp *theApp){
+  popMenu = new QPopupMenu();
+  popMenu->insertItem(tr("&Zoom to extent of selected layer"), theApp, SLOT(zoomToLayerExtent()));
+  popMenu->insertItem(tr("&Properties"), theApp, SLOT(layerProperties()));
+  popMenu->insertSeparator();
+  popMenu->insertItem(tr("&Remove"), theApp, SLOT(removeLayer()));
 }
