@@ -1172,6 +1172,7 @@ bool QgsPostgresProvider::addAttributes(std::map<QString,QString> const & name)
 bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
 {
     bool returnvalue=true;
+    PQexec(connection,"BEGIN");
     for(std::set<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
 	QString sql="ALTER TABLE "+tableName+" DROP COLUMN "+(*iter);
@@ -1202,12 +1203,15 @@ bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
 	    }
 	}
     }
+    PQexec(connection,"COMMIT");
+    reset();
     return returnvalue;
 }
 
 bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
 {
     bool returnvalue=true;
+    PQexec(connection,"BEGIN");
     for(std::map<int,std::map<QString,QString> >::const_iterator iter=attr_map.begin();iter!=attr_map.end();++iter)
     {
 	for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
@@ -1234,6 +1238,8 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
 	    }
 	}
     }
+    PQexec(connection,"COMMIT");
+    reset();
     return returnvalue;
 }
 
