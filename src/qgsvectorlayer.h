@@ -95,8 +95,6 @@ class QgsVectorLayer:public QgsMapLayer
   QString providerType();
   //! Return the validity of the layer
   inline bool isValid(){ return valid;}
-  //! new layer properties dialog
-  void showNewLayerProperties();
   protected:
 	/**Pointer to the table display object if there is one, else a pointer to 0*/
 	QgsAttributeTableDisplay* tabledisplay;
