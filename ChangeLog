@@ -1,9 +1,8 @@
 QGIS Change Log
-ChangeLog,v 1.138 2004/06/19 12:41:28 timlinux Exp
+ChangeLog,v 1.139 2004/06/20 12:53:52 mhugent Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
-
-
+	
 2004-06-16 [ts] 0.3.0devel42
 
 ** Add white buffer around scalebar text...buffer around lines to come...
