@@ -13,7 +13,8 @@
 
 //qt includes
 #include <qtimer.h>
-
+#include <qregexp.h>
+#include <qlineedit.h>
 //standard includes
 #include <iostream>
 #include <assert.h>
@@ -176,19 +177,41 @@ void PluginGui::requestHeadFinished(int id)
     }
 }
 
+//
+// This is run once the web page has been retrieved.
+//
+
 void PluginGui::requestGetFinished(int id)
 {
   std::cerr << "requestGetFinished: " << id << std::endl;
-  
+
   assert(id == mGetIdInt);
-  
-  QString doc_html(mQhttp.readAll());
-  std::cerr << "Dumping document contents : " << std::endl;
-  std::cerr << doc_html << std::endl;
-  assert(!doc_html.isEmpty());
 
-  //std::cerr << doc_html << std::endl;
+  QString myPageQString(mQhttp.readAll());
+  std::cerr << "Getting document contents : " << std::endl;
+  //std::cerr << myPageQString << std::endl;
+  assert(!myPageQString.isEmpty());
 
+  //now we parse the file looking for lat long occurrences
+  QRegExp myQRegExp( leRecordRegex->text() ); // match using regex in our dialog
+  int myPosInt = 0;    // where we are in the string
+  int myCountInt = 0;  // how many matches we find
+  while ( myPosInt >= 0 ) 
+  {
+    myPosInt = myQRegExp.search( myPageQString, myPosInt );
+    if ( myPosInt >= 0 ) 
+    {
+      std::cerr << "************************************* " << std::endl;
+      myPosInt += myQRegExp.matchedLength(); //skip the length of the matched string
+      myCountInt++;    // count the number of matches
+      std::cerr << myPageQString.mid(myPosInt,myQRegExp.matchedLength()) << std::endl;
+    }
+  }
+  std::cerr << "************************************* " << std::endl;
+  //std::cerr << myPageQString << std::endl;
+  std::cout << myCountInt << " records found" << std::endl;
+  //std::cerr << myPageQString << std::endl;
+  std::cerr << "************************************* " << std::endl;
   finish();
 }
 
