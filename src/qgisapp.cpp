@@ -340,17 +340,186 @@ void QgisApp::about()
 
 }
 
-/** \brief This method prompts the user for a list of vector filenames with a dialog. */
-void QgisApp::addLayer()
+
+
+
+/**
+
+  Convenience function for readily creating file filters.
+
+  Given a long name for a file filter and a regular expression, return
+  a file filter string suitable for use in a QFileDialog::OpenFiles()
+  call.  The regular express, glob, will have both all lower and upper
+  case versions added.
+
+*/
+static
+QString
+createFileFilter_( QString const & longName, QString const & glob )
 {
-    QString pOgr = providerRegistry->library("ogr");
-    if (pOgr.length() > 0) {
-        mapCanvas->freeze();
-        QStringList files = QFileDialog::getOpenFileNames(tr("Shapefiles (*.shp);;All files (*.*)"), 0, this, "open files dialog",
-                                                          tr("Select one or more layers to add"));
-        addLayer(files);
-    }
-}
+   return longName + " (" + glob.lower() + " " + glob.upper() + ");;";
+} // createFileFilter_
+
+
+
+/**
+   Builds the list of file filter strings to later be used by
+   QgisApp::addLayer()
+
+   We query OGR for a list of supported raster formats; we then build
+   a list of file filter strings from that list.  We return a string
+   that contains this list that is suitable for use in a a
+   QFileDialog::getOpenFileNames() call.
+
+   XXX Most of the file name filters need to be filled in; however we
+   XXX may want to wait until we've tested each format before committing
+   XXX them permanently instead of blindly relying on OGR to properly 
+   XXX supply all needed spatial data.
+
+ */
+static
+void
+buildSupportedVectorFileFilter_( QString & fileFilters )
+{
+   // first get the GDAL driver manager
+
+   OGRSFDriverRegistrar * driverRegistrar =  OGRSFDriverRegistrar::GetRegistrar( );
+
+   if ( ! driverRegistrar )
+   {
+      qWarning( "unable to get OGRDriverManager" );
+      return;                   // XXX good place to throw exception if we 
+   }                            // XXX decide to do exceptions
+
+   // then iterate through all of the supported drivers, adding the
+   // corresponding file filter
+
+   OGRSFDriver * driver;        // current driver
+
+   QString       driverName;    // current driver name
+
+   // Grind through all the drivers and their respective metadata.
+   // We'll add a file filter for those drivers that have a file
+   // extension defined for them; the others, welll, even though
+   // theoreticaly we can open those files because there exists a
+   // driver for them, the user will have to use the "All Files" to
+   // open datasets with no explicitly defined file name extension.
+
+   for ( int i = 0; i < driverRegistrar->GetDriverCount(); ++i )
+   {
+      driver = driverRegistrar->GetDriver( i );
+
+      if ( ! driver )
+      {
+         qWarning( "unable to get driver %d", i );
+         continue;
+      }
+
+      driverName = driver->GetName();
+
+#ifdef QT_DEBUG
+      qDebug( "got driver string %s", driver->GetName() );
+#endif
+
+      if ( driverName.startsWith( "ESRI" ) )
+      {
+         fileFilters += createFileFilter_( "ESRI Shapefiles", 
+                                           "*.shp" );
+      }
+      else if ( driverName.startsWith( "UK" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "SDTS" ) )
+      {
+         fileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
+                                           "*catd.ddf" );
+      }
+      else if ( driverName.startsWith( "TIGER" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "S57" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "MapInfo" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "DGN" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "VRT" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "AVCBin" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "REC" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "Memory" ) )
+      {
+         // XXX needs file filter extension
+      }
+      else if ( driverName.startsWith( "GML" ) )
+      {
+         fileFilters += createFileFilter_( "Geography Markup Language", 
+                                           "*.gml" );
+      }
+      else
+      {
+         // NOP, we don't know anything about the current driver
+         // with regards to a proper file filter string
+      }
+
+   } // each loaded GDAL driver
+
+   // can't forget the default case
+   fileFilters += "All files (*.*)";
+
+} // buildSupportedVectorFileFilter_()
+
+
+
+
+
+
+/**
+   This method prompts the user for a list of vector filenames with a dialog. 
+*/
+void
+QgisApp::addLayer()
+{
+   QString fileFilters;
+
+   buildSupportedVectorFileFilter_( fileFilters );
+
+   //qDebug( "vector file filters: " + fileFilters );
+   
+   QString pOgr = providerRegistry->library( "ogr" );
+
+   if ( ! pOgr.isEmpty() )
+   {
+      mapCanvas->freeze();
+
+      QStringList files = 
+         QFileDialog::getOpenFileNames( fileFilters, 0, this, 
+                                        tr("open files dialog"),
+                                        tr("Select one or more layers to add") );
+      addLayer(files);
+   }
+
+} // QgisApp::addLayer()
+
+
+
+
 
 /** \brief overloaded vesion of the above method that takes a list of
  * filenames instead of prompting user with a dialog. */
@@ -465,7 +634,8 @@ buildSupportedRasterFileFilter_( QString & fileFilters )
 
       if ( ! driver )
       {
-         std::cerr << "unable to get driver " << i << "\n";
+         qWarning( "unable to get driver %d", i );
+         continue;
       }
 
       // std::cerr << "got driver string " << driver->GetDescription() << "\n";
@@ -481,7 +651,7 @@ buildSupportedRasterFileFilter_( QString & fileFilters )
 
          // XXX add check for malformed metadataTokens
 
-         // Note that it's oddly possible for their to be a
+         // Note that it's oddly possible for there to be a
          // DMD_EXTENSION with no corresponding defined extension
          // string; so we check that there're more than two tokens.
 
@@ -510,9 +680,8 @@ buildSupportedRasterFileFilter_( QString & fileFilters )
          if ( ! (driverExtension.isEmpty() || driverLongName.isEmpty()) )
          {
             // XXX add check for SDTS; in that case we want (*CATD.DDF)
-            fileFilters += 
-               driverLongName + "(*." + driverExtension.lower() 
-                              + " *." + driverExtension.upper() + ");;";
+            fileFilters += createFileFilter_( driverLongName,
+                                              "*." + driverExtension );
 
             driverExtension = driverLongName = ""; // reset for next driver
 
@@ -539,38 +708,20 @@ buildSupportedRasterFileFilter_( QString & fileFilters )
 
 
 
-void QgisApp::addRasterLayer()
+void
+QgisApp::addRasterLayer()
 {
     QString fileFilters;
 
+    // build the file filters based on the loaded GDAL drivers
     buildSupportedRasterFileFilter_( fileFilters );
-
-    // std::cerr << fileFilters << "\n";
-
-    QString selectedFilter;
-
-//     QString myArcInfoBinaryGridFilterString = "Arc Info Binary Grid (*.adf)";
-//     QString myArcInfoAsciiGridFilterString = "Arc Info Ascii Grid (*.asc;*.grd)";
-//     QString myERDASFilterString = "ERDAS Imagine (*.img)";
-//     QString myGeoTiffFilterString = "Geo tiff (*.tif)";
-//     QString myUSGSAsciiDemFilterString = "USGS Ascii DEM (*.dem;*.DEM)";
-//     QString myGrassFilterString = "Grass raster (*.*)";
-//     QString mySDTSFilterString = "SDTS (*CATD*.DDF)";
-//     QString myAllRasterFormatsFilterString = "All Rasters (*.asc;*.grd;*.img;*.tif;*.png;*.jpg;*.dem;*.DEM;*.DDF)";
-//     QString myOtherFormatsFilterString = "Other (*.*)";
-//     //QString myBilFilterString="Band Interleaved by Line (*.bil)";
-//     //QString myJpgFilterString="Geo jpg (*.jpg)";
 
     QStringList selectedFilenames = 
        QFileDialog::getOpenFileNames( fileFilters,
                                       "",   // initial dir
                                       this, // parent dialog
                                       "OpenFileDialog", // QFileDialog qt object name
-                                      "Select file name and type",  // caption
-                                      &selectedFilter    // the pointer to store selected filter
-          );
-
-    // cout << "Selected filetype filter is : " << myFileTypeQString << endl;
+                                      "Select file name and type" );
 
     addRasterLayer( selectedFilenames );
 
