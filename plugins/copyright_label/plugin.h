@@ -45,7 +45,9 @@ class Plugin:public QObject, public QgisPlugin
   virtual ~ Plugin();
   public slots:
   //! init the gui
-  virtual void initGui();
+  void initGui();
+  //!set values on the gui when a project is read or the gui first loaded
+  void projectRead();
   //! Show the dialog box
   void run();
   void renderLabel(QPainter *);
