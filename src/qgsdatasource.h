@@ -24,6 +24,7 @@
   */
 
 class QgsDataSource {
+
 public: 
 	QgsDataSource();
 	~QgsDataSource();

@@ -27,10 +27,10 @@
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
-QgsShapeFileLayer::QgsShapeFileLayer (QString vectorLayerPath, QString baseName):QgsMapLayer (VECTOR,
-	     baseName)
+QgsShapeFileLayer::QgsShapeFileLayer (QString vectorLayerPath, QString baseName)
+	:QgsMapLayer (VECTOR, baseName, vectorLayerPath)
 {
-  dataSource = vectorLayerPath;
+
 // test ogr access to a shapefile
 
   ogrDataSource = OGRSFDriverRegistrar::Open ((const char *) dataSource);

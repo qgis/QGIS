@@ -26,11 +26,11 @@
 #include "qgsdatabaselayer.h"
 
 QgsDatabaseLayer::QgsDatabaseLayer (const char *conninfo, QString table):
-QgsMapLayer (QgsMapLayer::DATABASE, table), tableName (table)
+QgsMapLayer (QgsMapLayer::DATABASE, table, conninfo), tableName (table)
 {
   // create the database layer and get the needed information
   // about it from the database
-  dataSource = conninfo;
+ 
   PgDatabase *pd = new PgDatabase (conninfo);
   if (pd->Status () == CONNECTION_OK)
     {

@@ -22,11 +22,12 @@
 #include "qgslegenditem.h"
 
 
-QgsLegendItem::QgsLegendItem (QgsMapLayer *lyr, QWidget * parent, const char *name)
-	: QgsLegendItemBase(parent, name), layer(lyr)
+QgsLegendItem::QgsLegendItem (QgsMapLayer *lyr, QListView * parent)
+	: QCheckListItem(parent, lyr->name(), QCheckListItem::CheckBox), layer(lyr)
 {
-  chkVisible->setChecked(lyr->visible());
-  lblLayerName->setText(lyr->name());
+  setOn(lyr->visible());
+ 
+  
 }
 
 QgsLegendItem::~QgsLegendItem ()
@@ -43,4 +44,7 @@ void QgsLegendItem::setLayerName (const QString & _newVal)
 void QgsLegendItem::setDisplayName (const QString & _newVal)
 {
   displayName = _newVal;
+}
+void QgsLegendItem::stateChange(bool vis){
+	layer->setVisible(vis);
 }
