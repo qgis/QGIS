@@ -1624,13 +1624,22 @@ void QgisApp::fileOpen()
 
         QgsProject::instance()->filename( fullPath );
 
-        if ( QgsProject::instance()->read() )
+        try 
         {
-            setTitleBarText_( *this );
-            mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
-            emit projectRead();     // let plug-ins know that we've read in a new
-            // project so that they can check any project
-            // specific plug-in state
+            if ( QgsProject::instance()->read() )
+            {
+                setTitleBarText_( *this );
+                mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
+                emit projectRead();     // let plug-ins know that we've read in a new
+                // project so that they can check any project
+                // specific plug-in state
+            }
+        }
+        catch ( std::exception & e )
+        {
+            QMessageBox::critical(this, 
+                                  tr("QGIS Project Read Error"), 
+                                  tr("") + "\n" + e.what() );
         }
     }
 
@@ -3083,7 +3092,7 @@ void QgisApp::socketConnectionClosed()
 void QgisApp::socketError(int e)
 {
     QApplication::restoreOverrideCursor();
-    // get errror type
+    // get error type
     QString detail;
     switch (e)
     {
