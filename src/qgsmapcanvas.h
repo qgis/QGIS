@@ -246,6 +246,7 @@ public slots:
      */
     void showInOverview( QgsMapLayer * maplayer, bool visible );
 
+
 signals:
     /** Let the owner know how far we are with render operations */
     void setProgress(int,int);
@@ -352,7 +353,6 @@ private:
       invoked when a connect() is made to this object 
   */
   void connectNotify( const char * signal );
-
 
 }; // class QgsMapCanvas
 

@@ -286,6 +286,17 @@ public  slots:
   */
   virtual void inOverview( bool );
 
+    /** Accessor and mutator for the minimum scale member */
+    void setMinScale(float theMinScale) {mMinScale=theMinScale;};
+    float minScale() {return mMinScale;};
+    
+    /** Accessor and mutator for the maximum scale member */
+    void setMaxScale(float theMaxScale) {mMaxScale=theMaxScale;};
+    float maxScale() {return mMaxScale;};
+    
+    /** Accessor and mutator for the scale based visilibility flag */
+    void setScaleBasedVisibility( bool theVisibilityFlag) {mScaleBasedVisibility=theVisibilityFlag; };
+    bool scaleBasedVisibility() { return mScaleBasedVisibility; };
 
 signals:
 
@@ -397,6 +408,12 @@ private:                       // Private attributes
   void connectNotify( const char * signal );
 
 
+  /** Minimum scale at which this layer should be displayed */
+  float mMinScale;
+  /** Maximum scale at which this layer should be displayed */
+  float mMaxScale;
+  /** A flag that tells us whether to use the above vars to restrict layer visibility */
+  bool mScaleBasedVisibility;
 public:                        // Public attributes
 
   /** map label ? */
