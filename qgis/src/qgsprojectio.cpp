@@ -19,6 +19,7 @@
  #include <qcolor.h>
  #include "qgsmaplayer.h"
  #include "qgsdatabaselayer.h"
+ #include "qgsshapefilelayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectio.h"
  
@@ -121,7 +122,7 @@ void QgsProjectIo::read(){
 		
 		// add the layer to the maplayer
 		
-		if(type = "database"){
+		if(type == "database"){
 			
 				QgsDatabaseLayer *dbl = new QgsDatabaseLayer(dataSource, layerName);
 				
@@ -130,6 +131,11 @@ void QgsProjectIo::read(){
 				dbl->setVisible(visible == "1");
 		}else{
 			if(type == "vector"){
+				QgsShapeFileLayer *shpl = new QgsShapeFileLayer(dataSource, layerName);
+				
+				map->addLayer(shpl);
+				shpl->setSymbol(sym);
+				shpl->setVisible(visible == "1");
 			}else{
 				if(type == "raster"){
 				}
