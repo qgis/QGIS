@@ -1,0 +1,98 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsLocationCaptureWidgetBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QgsLocationCaptureWidgetBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>451</width>
+            <height>370</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QgsMapCanvas" row="0" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>qgsMapCanvas</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="0">
+            <property name="name">
+                <cstring>pbnZoomIn</cstring>
+            </property>
+            <property name="text">
+                <string>ZoomIn</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>pbnPan</cstring>
+            </property>
+            <property name="text">
+                <string>Pan</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>pbnZoomOut</cstring>
+            </property>
+            <property name="text">
+                <string>Zoom Out</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="3">
+            <property name="name">
+                <cstring>pbnCapturePos</cstring>
+            </property>
+            <property name="text">
+                <string>Capture Pos</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>pushButton5</cstring>
+            </property>
+            <property name="text">
+                <string>OK</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>lblCapturePos</cstring>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>32767</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Captured Pos:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>lblCurrentPos</cstring>
+            </property>
+            <property name="text">
+                <string>Current Pos:</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<includes>
+    <include location="local" impldecl="in implementation">qgslocationcapturewidgetbase.ui.h</include>
+</includes>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>qgsmapcanvas.h</includehint>
+</includehints>
+</UI>
