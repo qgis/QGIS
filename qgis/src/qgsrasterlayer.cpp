@@ -1348,6 +1348,9 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
     {
       //find out the name of this band
       RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+#ifdef QGISDEBUG
+			std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName << "  :: theBandNameQString: " << theBandNameQString << std::endl;
+#endif
       if (myRasterBandStats.bandName == theBandNameQString)
         {
 	std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString << std::endl;
@@ -1446,7 +1449,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
         }
   } else
     {
-      myRasterBandStats.bandName = myColorInterpretation;
+      //myRasterBandStats.bandName = myColorInterpretation;
     }
 
   myRasterBandStats.elementCountInt = rasterXDimInt * rasterYDimInt;
@@ -1584,6 +1587,9 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 //mutator for red band name (allows alternate mappings e.g. map blue as red colour)
 void QgsRasterLayer::setRedBandName(QString theBandNameQString)
 {
+#ifdef QGISDEBUG
+  std::cout << "setRedBandName :  " << theBandNameQString << std::endl;
+#endif
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
     {
