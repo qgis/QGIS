@@ -2,6 +2,8 @@
 # ------------------------------------------- 
 # Subdir relative project main directory: ./src
 # Target is an application:  qgis
+system ( echo "Creating Makefile...")
+include(platform.pro) 
 
 SOURCES += main.cpp \
            qgisapp.cpp \
@@ -75,50 +77,52 @@ CONFIG += debug \
           thread 
 TARGET = qgis 
 
-#.............................
-# GDAL/OGR configuration
-#.............................
-message(Configuring GDAL)
-GDALCONFIG = $$system(which gdal-config)
-isEmpty(GDALCONFIG) {
-	error("gdal-config not found in PATH. Check GDAL installation.")
-}
-# check to see if ogr enabled
-OGR = $$system(gdal-config --ogr-enabled)
-message("OGR enabled - $$OGR")
-LIBS+= $$system(gdal-config --libs)
-GDALINC = $$system(gdal-config --cflags)
-INCLUDEPATH += $$GDALINC
-# conditional tests for optional modules
+# GDAL/OGR
+system ( echo "   Adding GDAL support" )
+QMAKE_CFLAGS += $$GDAL_CFLAGS
+#message("Adding $$GDAL_CFLAGS to includes")
+INCLUDEPATH += $$GDAL_CFLAGS
+LIBS += $$GDAL_LIB
 
-#.............................
-#PostgreSQL support
-#.............................
-contains (DEFINES, POSTGRESQL){
- message ("Checking PostgreSQL environment")
+# Postgres
+isEmpty( HAVE_PG ) {
+    system ( echo "   Skipping PostgreSQL support" )
+} else {
+    system( echo "   Adding PostgreSQL support" )
+    LIBS += $$PG_LIB
+    INCLUDEPATH += $$PG_INC
+    DEFINES += POSTGRESQL HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
+    SOURCES += qgsdatabaselayer.cpp \
+		qgsdbsourceselect.cpp \
+ 		qgsnewconnection.cpp 
+    HEADERS += qgsdbsourceselectbase.ui.h \
+	 	qgsdatabaselayer.h \
+		qgsdbsourceselect.h \
+		qgsnewconnection.h 
+    FORMS += qgsdbsourceselectbase.ui \
+		qgsnewconnectionbase.ui 
 }
-contains ( DEFINES, POSTGRESQL ){
-MYPGSQL=$$(PGSQL)
-count(MYPGSQL, 1){
-message ("PGSQL environment variable is defined")
+
+# GRASS
+isEmpty( HAVE_GRASS ) {
+    system ( echo "   Skipping GRASS support" )
+} else {
+    system ( echo "   Adding GRASS support" )
+    LIBS += $$GRASS_LIB
+    INCLUDEPATH += $$GRASS_INC
+    DEFINES += HAVE_GRASS
+    SOURCES += qgsgrassvectorlayer.cpp \
+		qgsgrassselect.cpp \
+		qgsgrassrasterlayer.cpp \
+		qgsgrassrastermultilayer.cpp
+    HEADERS += qgsgrassvectorlayer.h \
+		qgsgrassselect.h \
+		qgsgrassrasterlayer.h \
+		qgsgrassrastermultilayer.h
+    FORMS += qgsgrassselectbase.ui
+}
 
 
-  message ( "Configuring to build with PostgreSQL support" )
-  LIBS += -L$(PGSQL)/lib -lpq++
-  INCLUDEPATH += $(PGSQL)/include
-  DEFINES += HAVE_NAMESPACE_STD HAVE_CXX_STRING_HEADER DLLIMPORT=""
-  SOURCES += qgsdatabaselayer.cpp \
-             qgsdbsourceselect.cpp \
-             qgsnewconnection.cpp 
-  HEADERS += qgsdbsourceselectbase.ui.h \
-             qgsdatabaselayer.h \
-             qgsdbsourceselect.h \
-             qgsnewconnection.h 
-  FORMS += qgsdbsourceselectbase.ui \
-           qgsnewconnectionbase.ui 
-}
-count(MYPGSQL, 0){
-message ("PGSQL environment variable is not defined. PostgreSQL excluded from build")
-message ("To build with PostgreSQL support set PGSQL to point to your Postgres installation")
-}
-}
+LANGUAGE	= C++
+
+system ( echo "Configuration complete - run make to build QGIS")
