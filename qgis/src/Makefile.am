@@ -41,6 +41,7 @@ headers =		\
 		qgisinterface.h \
 		qgsacetateobject.h \
 		qgsacetaterectangle.h \
+		qgsattributedialog.h \
 		qgsattributetabledisplay.h \
 		qgsattributetable.h \
 		qgscolortable.h \
@@ -117,6 +118,7 @@ headers =		\
 qgis_UIC =	\
 		qgisappbase.ui \
 		qgsabout.ui \
+		qgsattributedialogbase.ui \
 		qgsattributetablebase.ui \
 		qgscontcoldialogbase.ui \
 		qgsdlgvectorlayerpropertiesbase.ui \
@@ -170,6 +172,7 @@ qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
 qgis_MOC =  \
 		qgisapp.moc.cpp \
 		qgisinterface.moc.cpp \
+		qgsattributedialog.moc.cpp \
 		qgsattributetable.moc.cpp \
 		qgscontcoldialog.moc.cpp \
 		qgsdlgvectorlayerproperties.moc.cpp \
@@ -211,6 +214,7 @@ qgis_SOURCES =  \
 		qgisinterface.cpp \
 		qgsacetateobject.cpp \
 		qgsacetaterectangle.cpp \
+		qgsattributedialog.cpp \
 		qgsattributetable.cpp \
 		qgsattributetabledisplay.cpp \
 		qgscolortable.cpp \
