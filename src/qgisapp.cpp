@@ -1416,6 +1416,20 @@ void QgisApp::saveMapAsImage()
   }
 
 }
+//overloaded version of the above function
+void QgisApp::saveMapAsImage(QString theImageFileNameQString)
+{
+  if ( theImageFileNameQString=="")
+  {
+    //no filename chosen
+    return;
+  }
+  else
+  {
+    //save the mapview to the selected file
+    mapCanvas->saveAsImage(theImageFileNameQString);
+  }
+}
 bool QgisApp::addProject(QString projectFile)
 {
   // adds a saved project to qgis, usually called on startup by
