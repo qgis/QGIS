@@ -60,6 +60,8 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QString connInfo();
     //! Add the layer selected when user double-clicks the mouse
     void addLayer(QListBoxItem *item);
+    public slots:
+      void setSql(QListViewItem *);
  private:
     QString m_connInfo;
     QStringList m_selectedTables;

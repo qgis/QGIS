@@ -4,8 +4,8 @@
 # 2. run lupdate using the .pro file from step 1
 # 3. remove the .pro
 echo Creating qmake project file
-qmake -project
+$QTDIR/bin/qmake -project
 echo Updating translation files
-lupdate -verbose qgis.pro
+$QTDIR/bin/lupdate -verbose qgis.pro
 echo Removing qmake project file
 rm qgis.pro

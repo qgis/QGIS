@@ -185,6 +185,10 @@ private:
     */
     QString schemaTableName;
     /**
+    * SQL statement used to limit the features retreived
+    */
+    QString sqlWhereClause;
+    /**
     * Primary key column for fetching features. If there is no primary key
     * the oid is used to fetch features. 
     */
