@@ -55,6 +55,7 @@
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
 #include "qgslabeldialog.h"
+#include "qgsattributeactiondialog.h"
 
 
 QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name, bool modal):QgsDlgVectorLayerPropertiesBase(parent, name, modal), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
@@ -103,6 +104,10 @@ bufferRenderer(layer->
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
   labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
   layout->addWidget( labelDialog );
+
+  QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
+  actionDialog = new QgsAttributeActionDialog ( layer->actions(), actionOptionsFrame );
+  actionLayout->addWidget( actionDialog );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
   QObject::connect(btnApply, SIGNAL(clicked()), this, SLOT(apply()));
@@ -203,9 +208,12 @@ void QgsDlgVectorLayerProperties::apply()
       layer->setRendererDialog(bufferDialog);
     }
   
+  actionDialog->apply();
+
   labelDialog->apply();
   layer->setLabelOn(labelCheckBox->isChecked());
   layer->setLayerName(displayName());
+
 
   QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(layer->rendererDialog());
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(layer->rendererDialog());
@@ -288,6 +296,7 @@ void QgsDlgVectorLayerProperties::setLegendType(QString type)
 
 void QgsDlgVectorLayerProperties::reset( void )
 {
+    actionDialog->init();
     labelDialog->init();
     labelCheckBox->setChecked(layer->labelOn());
 }
