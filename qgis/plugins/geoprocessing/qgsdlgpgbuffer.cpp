@@ -23,6 +23,7 @@
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include "qgsdlgpgbuffer.h"
+#include <qspinbox.h>
 
 QgsDlgPgBuffer::QgsDlgPgBuffer(QWidget * parent, const char *name)
 :QgsDlgPgBufferBase(parent, name)
@@ -34,12 +35,12 @@ QgsDlgPgBuffer::~QgsDlgPgBuffer()
 }
 void QgsDlgPgBuffer::setBufferLabel(QString & lbl)
 {
-    lblBufferInfo->setText(lbl);
+    lblBufferInfo->setText("<h2>"+lbl+"</h2>");
 }
 
 QString QgsDlgPgBuffer::bufferDistance()
 {
-    return txtBufferDistance->text();
+    return QString::number(spinBufferDistance->value());
 }
 
 QString QgsDlgPgBuffer::bufferLayerName()
