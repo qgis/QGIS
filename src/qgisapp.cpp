@@ -20,6 +20,7 @@
 #include <qscrollview.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
+#include <qpixmap.h>
 #include <qsplitter.h>
 #include <qlayout.h>
 #include <qwmatrix.h>
@@ -27,8 +28,13 @@
 #include "qgsmapcanvas.h"
 #include "qgsdbsourceselect.h"
 #include "qgisapp.h"
+#include "qgisicons.h"
 
 QgisApp::QgisApp(QWidget *parent, const char * name, WFlags fl ) : QgisAppBase(parent, name, fl ){
+  QPixmap icon;
+  icon = QPixmap(appicon_xpm);
+  setIcon(icon);
+
   //add a canvas
   canvas = new QCanvas(1024,768);
   // resize it to fit in the frame
