@@ -69,6 +69,7 @@ const char * QgsShapeFile::getFeatureClass(){
 
       Fda fda;
       std::stringstream num;
+      QString str_type = "varchar(";
       for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read += sizeof(fda)){
       	dbf.read((char *)&fda, sizeof(fda));
         switch(fda.field_type){
@@ -82,18 +83,18 @@ const char * QgsShapeFile::getFeatureClass(){
           case 'D': column_types.push_back("date");
                     break;
           case 'C': num << (int)fda.field_length << std::ends;
-                    column_types.push_back((const char *)QString("varchar(" + num.str() + ")"));
-                    std::cout << column_types[field_count] << std::endl;
+                    str_type += QString(num.str());
+                    str_type += ")";
+                    column_types.push_back((const char *)str_type);
                     break;
           case 'L': column_types.push_back("boolean");
                     break;
           default:
                     column_types.push_back("varchar(256)");
                     break;
-        }       
+        }
       }
       dbf.close();
-      
       int numFields = feat->GetFieldCount();
       for(int n=0; n<numFields; n++)
         column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
@@ -120,20 +121,25 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
   
   table = table.section('/', -1);
   table = table.section('.', 0, 0);
-  QString query = "CREATE TABLE "+table+"(gid int4, ";
+  QString query = "CREATE TABLE "+table+"(gid int4, "; 
   for(int n=0; n<column_names.size(); n++){
-    query += QString(column_names[n]).lower() + " " + QString(column_types[n]);
+    query += QString(column_names[n]).lower();
+    query += " ";
+    query += QString(column_types[n]);
     if(n < column_names.size() -1)
       query += ", ";
   }
   query += ")";  
   conn->ExecTuplesOk((const char *)query);
+  qWarning(conn->ErrorMessage());
+  qWarning(query);   
 
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table + "\', \'the_geom\', " + srid +
     ", \'" + QString(geom_type) + "\', 2)";
   conn->ExecTuplesOk((const char *)query);
+  qWarning(conn->ErrorMessage());
+  qWarning(query);
 
-  std::cout << "before :" << pro->progress() << std::endl;
   //adding the data into the table
   for(int m=0;m<features; m++){
     OGRFeature *feat = ogrLayer->GetNextFeature();
@@ -143,7 +149,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
         std::stringstream out;
         out << m;
         query = "INSERT INTO "+table+"values( "+out.str()+", ";
-           
+        
         int num = geom->WkbSize();
         char * geo_temp = new char[num*3];
         geom->exportToWkt(&geo_temp);
@@ -156,9 +162,11 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
           else
             quotes = '\'';
           query += quotes+QString(feat->GetFieldAsString(n))+QString(quotes + ", ");
+          //qWarning(query);
         }
         query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
         conn->ExecTuplesOk((const char *)query);
+        //qWarning(conn->ErrorMessage());
 
         pro->setProgress(pro->progress()+1);
         delete[] geo_temp;
@@ -167,6 +175,5 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
     }
   }
 
-  std::cout << "after :" << pro->progress() << std::endl;
   return result;
 }
