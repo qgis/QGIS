@@ -316,4 +316,4 @@ qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LIB) $(PG_LIB)
 AM_CXXFLAGS = $(PREFIX) $(PGDB) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(postgresUIC) $(qgis_UIC) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm images/splash.xpm
+EXTRA_DIST = $(postgresUIC) $(qgis_UIC) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png
