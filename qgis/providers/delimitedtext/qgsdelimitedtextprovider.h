@@ -47,6 +47,7 @@ public:
   * @return QgsFeature
   */
   QgsFeature * getNextFeature(bool fetchAttributes=false);
+  bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
   
   /** Get the feature type. This corresponds to 
       WKBPoint,
@@ -155,6 +156,8 @@ private:
   bool mValid;
   int mGeomType;
   long mNumberFeatures;
+  //! Feature id
+  long mFid;
   enum ENDIAN
   {
     NDR = 1,

@@ -27,7 +27,8 @@ email                : sherman at mrcc.com
 #include "qgsdelimitedtextprovider.h"
 #include <cfloat>
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(uri), mMinMaxCacheDirty(true)
+  QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
+:mDataSourceUri(uri), mMinMaxCacheDirty(true)
 {
   // Get the file name and mDelimiter out of the uri
   mFileName = uri.left(uri.find("?"));
@@ -66,9 +67,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
         QString line;
         mNumberFeatures = 0;
         int xyCount = 0;
+        int lineNumber = 0;
         // set the initial extent
         mExtent = new QgsRect(9999999999999.0,9999999999999.0,-9999999999999.0,-9999999999999.0);
         while ( !stream.atEnd() ) {
+          lineNumber++;
           line = stream.readLine(); // line of text excluding '\n'
           if(mNumberFeatures++ == 0){
             // Get the fields from the header row and store them in the 
@@ -88,18 +91,18 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
               attributeFields.push_back(QgsField(*it, "Text"));
               fieldPositions[*it] = fieldPos++;
               // check to see if this field matches either the x or y field
-#ifdef QGISDEBUG
-              std::cerr << "Comparing " << mXField << " to " << *it << std::endl; 
-#endif
               if(mXField == *it)
               {
+#ifdef QGISDEBUG
+                std::cerr << "Found x field " <<  *it << std::endl; 
+#endif
                 xyCount++;
               }
-#ifdef QGISDEBUG
-              std::cerr << "Comparing " << mYField << " to " << *it << std::endl; 
-#endif
               if(mYField == *it)
               {
+#ifdef QGISDEBUG
+                std::cerr << "Found y field " <<  *it << std::endl; 
+#endif
                 xyCount++;
               }
 #ifdef QGISDEBUG
@@ -110,16 +113,33 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
           }else
           {
             // examine the x,y and update extents
-            std::cout << line << std::endl; 
+            //  std::cout << line << std::endl; 
             // split the line on the delimiter
             QStringList parts = QStringList::split(mDelimiter, line);
-            if(parts.size() == attributeFields.size())
+            //if(parts.size() == attributeFields.size())
+            //{
+            //  // we can populate attributes if required
+            //  fieldsMatch = true;
+            //}else
+            //{
+            //  fieldsMatch = false;
+            //}
+            /*
+            std::cout << "Record hit line " << lineNumber << ": " <<
+              parts[fieldPositions[mXField]] << ", " <<
+              parts[fieldPositions[mYField]] << std::endl;
+              */
+            // Get the x and y values, first checking to make sure they
+            // aren't null.
+            QString sX = parts[fieldPositions[mXField]];
+            QString sY = parts[fieldPositions[mYField]];
+            //std::cout << "x ,y " << sX << ", " << sY << std::endl; 
+            bool xOk = true;
+            bool yOk = true;
+            double x = sX.toDouble(&xOk);
+            double y = sY.toDouble(&yOk);
+            if(xOk && yOk)
             {
-              std::cout << parts[fieldPositions[mXField]] << std::endl;
-              std::cout << parts[fieldPositions[mYField]] << std::endl;
-              // get the x value
-              double x = parts[fieldPositions[mXField]].toDouble();
-              double y = parts[fieldPositions[mYField]].toDouble();
               if(x > mExtent->xMax())
               { 
                 mExtent->setXmax(x);
@@ -139,6 +159,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri):mDataSourceUri(u
             }
           }
         }
+        reset();
         mNumberFeatures--;
 
         if(xyCount == 2)
@@ -193,7 +214,7 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
  * Get the first feature resutling from a select operation
  * @return QgsFeature
  */
-QgsFeature *QgsDelimitedTextProvider::getFirstFeature(bool fetchAttributes)
+QgsFeature *QgsDelimitedTextProvider::getFirstFeature( bool fetchAttributes)
 {
   QgsFeature *f = 0;
   if(mValid){
@@ -224,7 +245,99 @@ return f;
 }
 
 /**
- * Get the next feature resutling from a select operation
+ * Get the next feature resulting from a select operation
+ * Return 0 if there are no features in the selection set
+ * @return QgsFeature
+ */
+bool QgsDelimitedTextProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
+{
+  // We must manually check each point to see if it is within the
+  // selection rectangle
+  bool returnValue;
+
+  bool processPoint;
+  if(mValid){
+    // read the line
+    QTextStream stream( mFile );
+    QString line;
+    if ( !stream.atEnd() ) {
+#ifdef QGISDEBUG
+      std::cerr << "Stream read" << std::endl; 
+#endif
+      line = stream.readLine(); // line of text excluding '\n'
+      // create the geometry from the x, y fields
+      QStringList parts = QStringList::split(mDelimiter, line);
+      // Get the x and y values, first checking to make sure they
+      // aren't null.
+      QString sX = parts[fieldPositions[mXField]];
+      QString sY = parts[fieldPositions[mYField]];
+      std::cerr << "x ,y " << sX << ", " << sY << std::endl; 
+      bool xOk = true;
+      bool yOk = true;
+      double x = sX.toDouble(&xOk);
+      double y = sY.toDouble(&yOk);
+      if(xOk && yOk)
+      {
+        if(mSelectionRectangle == 0)
+        {
+          // no selection in place
+          processPoint = true;
+        }else
+        {
+          // check to see if point is in bounds
+          processPoint = boundsCheck(x, y);
+        }
+        if(processPoint)
+        {
+          std::cerr << "Processing " << x << ", " << y << std::endl; 
+          // create WKBPoint
+          wkbPoint *geometry = new wkbPoint;
+          geometry->byteOrder = endian();
+          geometry->wkbType = 1;
+          geometry->x = x;
+          geometry->y = y;
+          feature.setGeometry((unsigned char *)geometry);
+          feature.setValid(true);
+          // get the attributes if requested
+          if(fetchAttributes){
+            for(int fi =0; fi < attributeFields.size(); fi++)
+            {
+              feature.addAttribute(attributeFields.at(fi).name(), parts[fi]);
+
+            }
+
+            QString sX = parts[fieldPositions[mXField]];
+          }
+        }else
+        {
+          feature.setValid(false);
+        }
+
+      }
+      // Return true since the read was successful. The feature itself
+      // may be invalid for various reasons
+      returnValue = true;
+    }else
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Stream is at end" << std::endl; 
+#endif
+      // Return false since read of next feature failed
+      returnValue = false;
+      // Set the feature to invalid
+      feature.setValid(false);
+    }
+
+  }
+#ifdef QGISDEBUG
+  QString sReturn = returnValue?"true":"false" ;
+  std::cerr << "Returning " << sReturn << " from getNextFeature" << std::endl;
+#endif
+  return returnValue;
+}
+
+/**
+ * Get the next feature resulting from a select operation
  * Return 0 if there are no features in the selection set
  * @return QgsFeature
  */
@@ -242,9 +355,17 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
       line = stream.readLine(); // line of text excluding '\n'
       // create the geometry from the x, y fields
       QStringList parts = QStringList::split(mDelimiter, line);
-      if(parts.size() == attributeFields.size()){
-        double x = parts[fieldPositions[mXField]].toDouble();
-        double y = parts[fieldPositions[mYField]].toDouble();
+      // Get the x and y values, first checking to make sure they
+      // aren't null.
+      QString sX = parts[fieldPositions[mXField]];
+      QString sY = parts[fieldPositions[mYField]];
+      //std::cout << "x ,y " << sX << ", " << sY << std::endl; 
+      bool xOk = true;
+      bool yOk = true;
+      double x = sX.toDouble(&xOk);
+      double y = sY.toDouble(&yOk);
+      if(xOk && yOk)
+      {
         if(mSelectionRectangle == 0)
         {
           // no selection in place
@@ -253,52 +374,71 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
         {
           // check to see if point is in bounds
           processPoint = boundsCheck(x, y);
+          if(!processPoint)
+          {
+            // we need to continue to read until we get a hit in the
+            // selection rectangle or the EOF is reached
+            while(!stream.atEnd() && !processPoint)
+            {
+              line = stream.readLine();
+
+              // create the geometry from the x, y fields
+              parts = QStringList::split(mDelimiter, line);
+              // Get the x and y values, first checking to make sure they
+              // aren't null.
+              sX = parts[fieldPositions[mXField]];
+              sY = parts[fieldPositions[mYField]];
+              //std::cout << "x ,y " << sX << ", " << sY << std::endl; 
+              xOk = true;
+              yOk = true;
+              x = sX.toDouble(&xOk);
+              y = sY.toDouble(&yOk);
+              if(xOk && yOk)
+              {
+                processPoint = boundsCheck(x, y);
+              }
+
+            }
+          }
         }
         if(processPoint)
         {
-
+          //std::cout << "Processing " << x << ", " << y << std::endl; 
           // create WKBPoint
-          wkbPoint *geometry = new wkbPoint;
-          geometry->byteOrder = endian();
-          geometry->wkbType = 1;
-          geometry->x = x;
-          geometry->y = y;
-          f->setGeometry((unsigned char *)geometry);
+          wkbPoint wkbPt;
+          unsigned char * geometry = new unsigned char[sizeof(wkbPt)];
+          geometry[0] = endian();
+          int type = 1;
+          void *ptr = geometry+1;
+          memcpy((void*)(geometry +1), &type, 4);
+          memcpy((void*)(geometry +5), &x, sizeof(x));
+          memcpy((void*)(geometry +13), &y, sizeof(y));
+          /*
+             geometry->byteOrder = endian();
+             geometry->wkbType = 1;
+             geometry->x = x;
+             geometry->y = y;
+             */
+          f = new QgsFeature();
+          f->setGeometry(geometry);
+          //std::cerr << "Setting feature id to " << mFid << std::endl; 
+          f->setFeatureId(mFid++);
           // get the attributes if requested
           if(fetchAttributes){
+            // add the attributes to the attribute map
+            for(int fi =0; fi < attributeFields.size(); fi++)
+            {
+              f->addAttribute(attributeFields.at(fi).name(), parts[fi]);
+
+            }
+
           }
         }
       }
     }
 
-    /*
-
-    // get the wkb representation
-    unsigned char *feature = new unsigned char[geom->WkbSize()];
-    geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
-    f = new QgsFeature(fet->GetFID());
-    f->setGeometry(feature);
-    if(fetchAttributes){
-    getFeatureAttributes(fet, f);
-    }
-    delete fet;
-    }else{
-#ifdef QGISDEBUG
-std::cerr << "Feature is null\n";
-#endif
-    // probably should reset reading here
-    ogrLayer->ResetReading();
-    }
-
-
-    }else{
-#ifdef QGISDEBUG    
-std::cerr << "Read attempt on an invalid shapefile data source\n";
-#endif
-}
-*/
-}
-return f;
+  }
+  return f;
 }
 
 /**
@@ -314,6 +454,11 @@ void QgsDelimitedTextProvider::select(QgsRect *rect, bool useIntersect)
   // We store the rect and use it in getNextFeature to determine if the
   // feature falls in the selection area
   mSelectionRectangle = new QgsRect((*rect));
+  // Select implies an upcoming feature read so we reset the data source
+  reset();
+  // Reset the feature id to 0
+  mFid = 0;
+  
 }
 
 /**
@@ -343,6 +488,11 @@ QString QgsDelimitedTextProvider::getDataSourceUri()
  */
 std::vector<QgsFeature>& QgsDelimitedTextProvider::identify(QgsRect * rect)
 {
+  // reset the data source since we need to be able to read through
+  // all features
+  reset();
+  std::cerr << "Attempting to identify features falling within "
+    << rect->stringRep() << std::endl; 
   // select the features
   select(rect);
 }
@@ -383,7 +533,7 @@ QgsRect *QgsDelimitedTextProvider::extent()
  * Return the feature type
  */
 int QgsDelimitedTextProvider::geometryType(){
-  return mGeomType;
+  return 1; // WKBPoint
 }
 /** 
  * Return the feature type
@@ -421,6 +571,10 @@ std::vector<QgsField>& QgsDelimitedTextProvider::fields(){
 
 void QgsDelimitedTextProvider::reset(){
   mFile->reset();
+  // Skip ahead one line since first record is always assumed to be
+  // the header record
+  QTextStream stream( mFile );
+  stream.readLine();
 }
 
 QString QgsDelimitedTextProvider::minValue(int position)
@@ -458,12 +612,15 @@ void QgsDelimitedTextProvider::fillMinMaxCash()
     mMinMaxCache[i][1]=-DBL_MAX;
   }
 
-  QgsFeature* f=getFirstFeature(true);
+  QgsFeature f;
+  reset();
+
+  getNextFeature(f, true);
   do
   {
     for(int i=0;i<fieldCount();i++)
     {
-      double value=(f->attributeMap())[i].fieldValue().toDouble();
+      double value=(f.attributeMap())[i].fieldValue().toDouble();
       if(value<mMinMaxCache[i][0])
       {
         mMinMaxCache[i][0]=value;  
@@ -473,7 +630,7 @@ void QgsDelimitedTextProvider::fillMinMaxCash()
         mMinMaxCache[i][1]=value;  
       }
     }
-  }while(f=getNextFeature(true));
+  }while(getNextFeature(f, true));
 
   mMinMaxCacheDirty=false;
 }
@@ -488,11 +645,14 @@ bool QgsDelimitedTextProvider::isValid(){
  */
 bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
 {
-  return ((x < mSelectionRectangle->xMax()) &&
-      (x > mSelectionRectangle->xMin()) &&
-      (y < mSelectionRectangle->yMax()) &&
-      (y > mSelectionRectangle->yMin()));
-
+  bool inBounds = (((x < mSelectionRectangle->xMax()) &&
+        (x > mSelectionRectangle->xMin())) &&
+      ((y < mSelectionRectangle->yMax()) &&
+       (y > mSelectionRectangle->yMin())));
+  QString hit = inBounds?"true":"false";
+//  std::cerr << "Checking if " << x << ", " << y << " is in " << 
+    //mSelectionRectangle->stringRep() << ": " << hit << std::endl; 
+  return inBounds;
 }
 /**
  * Class factory to return a pointer to a newly created 
