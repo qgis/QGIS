@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>608</width>
-            <height>428</height>
+            <width>637</width>
+            <height>432</height>
         </rect>
     </property>
     <property name="caption">
@@ -391,23 +391,6 @@
                             </attribute>
                         </widget>
                     </widget>
-                    <spacer row="2" column="0">
-                        <property name="name">
-                            <cstring>spacer13</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
                 </grid>
             </widget>
         </widget>
