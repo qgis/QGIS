@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsDbSourceSelectBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,14 +8,13 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>390</width>
-            <height>350</height>
+            <width>404</width>
+            <height>352</height>
         </rect>
     </property>
     <property name="font">
         <font>
             <family>Helvetica [Urw]</family>
-            <pointsize>10</pointsize>
         </font>
     </property>
     <property name="caption">
@@ -245,42 +244,6 @@
         <receiver>QgsDbSourceSelectBase</receiver>
         <slot>reject()</slot>
     </connection>
-    <connection>
-        <sender>btnConnect</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDbSourceSelectBase</receiver>
-        <slot>dbConnect()</slot>
-    </connection>
-    <connection>
-        <sender>btnAdd</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDbSourceSelectBase</receiver>
-        <slot>addTables()</slot>
-    </connection>
-    <connection>
-        <sender>btnNew</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDbSourceSelectBase</receiver>
-        <slot>addNewConnection()</slot>
-    </connection>
-    <connection>
-        <sender>btnEdit</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDbSourceSelectBase</receiver>
-        <slot>editConnection()</slot>
-    </connection>
-    <connection>
-        <sender>btnDelete</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsDbSourceSelectBase</receiver>
-        <slot>deleteConnection()</slot>
-    </connection>
-    <connection>
-        <sender>lstTables</sender>
-        <signal>doubleClicked(QListBoxItem*)</signal>
-        <receiver>QgsDbSourceSelectBase</receiver>
-        <slot>addLayer(QListBoxItem*)</slot>
-    </connection>
 </connections>
 <tabstops>
     <tabstop>cmbConnections</tabstop>
@@ -295,14 +258,5 @@
 <includes>
     <include location="local" impldecl="in implementation">qgsdbsourceselectbase.ui.h</include>
 </includes>
-<slots>
-    <slot>init()</slot>
-    <slot>dbConnect()</slot>
-    <slot>addTables()</slot>
-    <slot>addNewConnection()</slot>
-    <slot>editConnection()</slot>
-    <slot>deleteConnection()</slot>
-    <slot>addLayer(QListBoxItem*)</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -19,7 +19,7 @@
 #ifndef QGSDLGVECTORLAYERPROPERTIES
 #define QGSDLGVECTORLAYERPROPERTIES
 
-#include "qgsdlgvectorlayerpropertiesbase.h"
+#include "qgsdlgvectorlayerpropertiesbase.uic.h"
 #include "qgsrenderer.h"
 #include "qpixmap.h"
 #include "qlineedit.h"

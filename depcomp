@@ -206,6 +206,44 @@ aix)
   rm -f "$tmpdepfile"
   ;;
 
+icc)
+  # Intel's C compiler understands `-MD -MF file'.  However on
+  #    icc -MD -MF foo.d -c -o sub/foo.o sub/foo.c
+  # ICC 7.0 will fill foo.d with something like
+  #    foo.o: sub/foo.c
+  #    foo.o: sub/foo.h
+  # which is wrong.  We want:
+  #    sub/foo.o: sub/foo.c
+  #    sub/foo.o: sub/foo.h
+  #    sub/foo.c:
+  #    sub/foo.h:
+  # ICC 7.1 will output
+  #    foo.o: sub/foo.c sub/foo.h
+  # and will wrap long lines using \ :
+  #    foo.o: sub/foo.c ... \
+  #     sub/foo.h ... \
+  #     ...
+
+  "$@" -MD -MF "$tmpdepfile"
+  stat=$?
+  if test $stat -eq 0; then :
+  else
+    rm -f "$tmpdepfile"
+    exit $stat
+  fi
+  rm -f "$depfile"
+  # Each line is of the form `foo.o: dependent.h',
+  # or `foo.o: dep1.h dep2.h \', or ` dep3.h dep4.h \'.
+  # Do two passes, one to just change these to
+  # `$object: dependent.h' and one to simply `dependent.h:'.
+  sed "s,^[^:]*:,$object :," < "$tmpdepfile" > "$depfile"
+  # Some versions of the HPUX 10.20 sed can't process this invocation
+  # correctly.  Breaking it into two sed invocations is a workaround.
+  sed 's,^[^:]*: \(.*\)$,\1,;s/^\\$//;/^$/d;/:$/d' < "$tmpdepfile" |
+    sed -e 's/$/ :/' >> "$depfile"
+  rm -f "$tmpdepfile"
+  ;;
+
 tru64)
    # The Tru64 compiler uses -MD to generate dependencies as a side
    # effect.  `cc -MD -o foo.o ...' puts the dependencies into `foo.o.d'.
@@ -265,9 +303,7 @@ dashmstdout)
     shift
   fi
 
-  # Remove `-o $object'.  We will use -o /dev/null later,
-  # however we can't do the remplacement now because
-  # `-o $object' might simply not be used
+  # Remove `-o $object'.
   IFS=" "
   for arg
   do
@@ -287,7 +323,11 @@ dashmstdout)
   done
 
   test -z "$dashmflag" && dashmflag=-M
-  "$@" -o /dev/null $dashmflag | sed 's:^[^:]*\:[ 	]*:'"$object"'\: :' > "$tmpdepfile"
+  # Require at least two characters before searching for `:'
+  # in the target name.  This is to cope with DOS-style filenames:
+  # a dependency such as `c:/foo/bar' could be seen as target `c' otherwise.
+  "$@" $dashmflag |
+    sed 's:^[  ]*[^: ][^:][^:]*\:[    ]*:'"$object"'\: :' > "$tmpdepfile"
   rm -f "$depfile"
   cat < "$tmpdepfile" > "$depfile"
   tr ' ' '
@@ -306,6 +346,13 @@ dashXmstdout)
 
 makedepend)
   "$@" || exit $?
+  # Remove any Libtool call
+  if test "$libtool" = yes; then
+    while test $1 != '--mode=compile'; do
+      shift
+    done
+    shift
+  fi
   # X makedepend
   shift
   cleared=no
@@ -318,7 +365,9 @@ makedepend)
     case "$arg" in
     -D*|-I*)
       set fnord "$@" "$arg"; shift ;;
-    -*)
+    # Strip any option that makedepend may not understand.  Remove
+    # the object too, otherwise makedepend will parse it as a source file.
+    -*|$object)
       ;;
     *)
       set fnord "$@" "$arg"; shift ;;

@@ -19,7 +19,7 @@
 #ifndef QGSGRASYDIALOG_H
 #define QGSGRASYDIALOG_H
 
-#include "qgsgrasydialogbase.h"
+#include "qgsgrasydialogbase.uic.h"
 #include <map>
 
 class QgsGraSyExtensionWidget;

@@ -16,7 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
-#include <config.h>
+#include <qgsconfig.h>
 
 #include <iostream>
 #include <cstdio>

@@ -10,8 +10,14 @@
 #
 # $Id$
 
+
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC)  -I../../src
+
+
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = spitplugin.la
+
+
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -20,21 +26,6 @@ plugin_LTLIBRARIES = spitplugin.la
 
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
-
-spitplugin_la_SOURCES =  qgsspit.cpp \
-	qgsspit.h \
-	qgsspitplugin.cpp \
-	qgsspitplugin.h \
-	qgsdbfbase.h \
-	qgsconnectiondialog.cpp \
-	qgsconnectiondialog.h \
-	qgsshapefile.cpp \
-	qgsshapefile.h \
-	qgsmessageviewer.cpp \
-	qgsmessageviewer.h \
-	$(spit_UI)
-  
-nodist_spitplugin_la_SOURCES = $(spit_MOC)
 
 spit_MOC = qgsspit.moc.cpp \
 	qgsspitplugin.moc.cpp \
@@ -56,6 +47,22 @@ spit_UIC = qgsconnectiondialogbase.ui \
 	qgsmessageviewerbase.ui \
 	qgsspitbase.ui
 
+
+spitplugin_la_SOURCES =  qgsspit.cpp \
+	qgsspit.h \
+	qgsspitplugin.cpp \
+	qgsspitplugin.h \
+	qgsdbfbase.h \
+	qgsconnectiondialog.cpp \
+	qgsconnectiondialog.h \
+	qgsshapefile.cpp \
+	qgsshapefile.h \
+	qgsmessageviewer.cpp \
+	qgsmessageviewer.h \
+	$(spit_UI)
+
+nodist_spitplugin_la_SOURCES = $(spit_MOC)
+
 # UI dependencies			
 qgsconnectiondialogbase.cpp: qgsconnectiondialogbase.ui qgsconnectiondialogbase.h
 qgsconnectiondialogbase.h: qgsconnectiondialogbase.ui
@@ -66,9 +73,8 @@ qgsmessageviewerbase.h: qgsmessageviewerbase.ui
 
 BUILT_SOURCES = $(spit_MOC) $(spit_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC)  -I../../src
 
-spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB)
+spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB) ../../src/libqgis.la
 spitplugin_la_LDFLAGS = -avoid-version -module
 
 EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm

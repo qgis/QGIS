@@ -19,8 +19,6 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
-#include <config.h>
-
 class QCanvas;
 class QRect;
 class QCanvasView;
@@ -38,7 +36,7 @@ class QgsMapLayer;
 class QSocket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
-#include "qgisappbase.h"
+#include "qgisappbase.uic.h"
 #include "qgisiface.h"
 class QgsMapCanvas;
 #include "splashscreen.h"

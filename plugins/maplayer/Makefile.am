@@ -8,8 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I../../src
+
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = maplayerplugin.la
+
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -18,20 +21,17 @@ plugin_LTLIBRARIES = maplayerplugin.la
 
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
-	
-maplayerplugin_la_SOURCES =  maplayertest.cpp \
-				../../src/qgsmaplayerinterface.h \
-				$(maplayer_UI)\
-				$(maplayer_MOC)
-        
-maplayer_MOC = 	maplayertest.moc.cpp \
-	../../src/qgsmaplayerinterface.moc.cpp
+
+maplayer_MOC = 	maplayertest.moc.cpp
 
 maplayer_UI = 
 
+maplayerplugin_la_SOURCES =  maplayertest.cpp \
+				$(maplayer_UI)\
+				$(maplayer_MOC)
+
 # UI dependencies			
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) 
 
-maplayerplugin_la_LIBADD = $(QT_LDADD)
+maplayerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
 maplayerplugin_la_LDFLAGS = -avoid-version -module

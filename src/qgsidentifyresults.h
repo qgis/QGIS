@@ -19,7 +19,7 @@
 #ifndef QGSIDENTIFYRESULTS_H
 #define QGSIDENTIFYRESULTS_H
 
-#include "qgsidentifyresultsbase.h"
+#include "qgsidentifyresultsbase.uic.h"
 
 /**
   *@author Gary E.Sherman
