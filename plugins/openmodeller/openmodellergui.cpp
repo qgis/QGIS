@@ -25,6 +25,8 @@
 #include <qtextedit.h>
 #include <qregexp.h>
 #include <qlabel.h>
+#include <qsettings.h>
+
 //
 //openmodeller includes
 #include <om_control.hh>
@@ -58,6 +60,24 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 {
   std::cout << thePageNameQString << " has focus " << std::endl;
   QString myQString;
+  QSettings settings;
+  if (thePageNameQString==tr("Step 1 of 8")) //we do this when arriving at the mode selection page
+  {
+    //select the last model used by getting the name from qsettings
+    QString myModelName = settings.readEntry("/openmodeller/modelName");
+    if (myModelName=="")
+    {
+      //do nothing
+    }
+    else
+    {
+      cboModelAlgorithm->setCurrentText(tr(myModelName));
+    }
+
+  }
+  if (thePageNameQString==tr("Step 2 of 8")) //we do this after leaving the file selection page
+  {
+  }
   if (thePageNameQString==tr("Step 3 of 8")) //we do this after leaving the file selection page
   {
     setNextEnabled(currentPage(),false);
@@ -276,6 +296,7 @@ void OpenModellerGui::makeConfigFile()
 /** The accept method overrides the qtwizard method of the same name and is run when the finish button is pressed */
 void OpenModellerGui::accept()
 {
+  QSettings myQSettings;
   std::cout << "cboModelAlgorithm .. current text : " << cboModelAlgorithm->currentText() << std::endl;
   if (cboModelAlgorithm->currentText()==tr("Bioclimatic Envelope Model"))
   {
@@ -293,9 +314,36 @@ void OpenModellerGui::accept()
   {
     modelNameQString="MinDistance";
   }
+
+  //
+  // set the well known text coordinate string for the coordinate system that the point data are stored in
+  //
+  
+  //make sure that you have no linefeeds and escape carriage returns in WKT string!
+  if (cboCoordinateSystem->currentText()==tr("Lat/Long WGS84"))
+  {
+    coordinateSystemQString =  "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
+  }
+  else if (cboCoordinateSystem->currentText()==tr("Lat/Long 1924 Brazil"))
+  {
+    coordinateSystemQString =  "GEOGCS[\"1924 ellipsoid\", DATUM[\"Not_specified\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG","6022\"]], PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG","9108\"]], AUTHORITY[\"EPSG","4022\"]]";
+  }
+  else if (cboCoordinateSystem->currentText()==tr("UTM Zone 22 - Datum: Corrego Alegre"))
+  {
+    coordinateSystemQString = "UTM Zone 22 - Datum: Corrego Alegre: PROJCS[\"UTM Zone 22, Southern Hemisphere\", GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG","7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]], PROJECTION[\"Transverse_Mercator\"], PARAMETER[\"latitude_of_origin\",0], PARAMETER[\"central_meridian\",-51], PARAMETER[\"scale_factor\",0.9996], PARAMETER[\"false_easting\",500000], PARAMETER[\"false_northing\",10000000], UNIT[\"METERS\",1]]";
+  }
+  else if (cboCoordinateSystem->currentText()==tr("Long/Lat - Datum: Corrego Alegre"))
+  {
+    coordinateSystemQString = "GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]]";
+  }
+   
+  
+  myQSettings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
   //pull all the form data into local class vars.
   outputFileNameQString=leOutputFileName->text();
+  myQSettings.writeEntry("/openmodeller/outputFileName",outputFileNameQString);
   localitiesFileNameQString=leLocalitiesFileName->text();
+  myQSettings.writeEntry("/openmodeller/localitiesFileName",localitiesFileNameQString);
   //build up the map layers qstringlist
   layerNamesQStringList.clear();
   for ( unsigned int myInt = 0; myInt < lstLayers->count(); myInt++ )
@@ -303,6 +351,7 @@ void OpenModellerGui::accept()
       QListBoxItem *myItem = lstLayers->item( myInt );
       layerNamesQStringList.append(myItem->text());      
     }
+  myQSettings.writeEntry("/openmodeller/layerNames",layerNamesQStringList);
   // build up the model parameters qstringlist
   extraParametersQStringList.clear();
   for ( unsigned int myInt = 0; myInt < lstParameters->count(); myInt++ )
@@ -313,10 +362,6 @@ void OpenModellerGui::accept()
   
   maskNameQString=cboMaskLayer->currentText();
   taxonNameQString=cboTaxon->currentText();
-  coordinateSystemQString=txtWKT->text();
-  //strip linefeeds and escape carriage returns in WKT string
-  coordinateSystemQString=coordinateSystemQString.replace( QRegExp("\""), "\\\"" );
-  coordinateSystemQString=coordinateSystemQString.replace( QRegExp("\n"), "" );
   makeConfigFile();
   parseAndRun(outputFileNameQString+".cfg");
   //close the dialog
