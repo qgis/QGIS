@@ -30,6 +30,7 @@
 #include <qmemarray.h>
 #include <qapplication.h>
 #include <qfile.h>
+#include <qsettings.h>
 #include <qpixmap.h>
 #include <iostream>
 #include "../../src/qgspgutil.h"
@@ -139,10 +140,16 @@ void QgsSpit::addFile()
   QString error2 = "";
   bool exist;
   bool is_error = false;
+  QSettings settings;
 
   QStringList files = QFileDialog::getOpenFileNames(
-    "Shapefiles (*.shp)", "", this, "add file dialog", "Add Shapefiles" );
-  
+    "Shapefiles (*.shp)", settings.readEntry("/Qgis/spit/last_directory"), this, "add file dialog", "Add Shapefiles" );
+  if(files.size() > 0){
+    // Save the directory for future use
+    QFileInfo fi(files[0]);
+    settings.writeEntry("/Qgis/spit/last_directory", fi.dirPath(true));
+  }
+  // Process the files
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it){
     exist = false;
     is_error = false;
@@ -152,7 +159,7 @@ void QgsSpit::addFile()
         break;
       }
     }
-    
+
     if(!exist){
       // check other files: file.dbf and file.shx
       QString name = *it;
@@ -160,7 +167,7 @@ void QgsSpit::addFile()
         is_error = true;
       else if(!QFile::exists(name.left(name.length()-3)+"shx"))
         is_error = true;
-    
+
       if(!is_error){
         QgsShapeFile * file = new QgsShapeFile(name);
         if(file->is_valid()){
@@ -176,7 +183,7 @@ void QgsSpit::addFile()
           schema->setCurrentItem(cmbSchema->currentText());
           tblShapefiles->setItem(row, 4, schema);
           total_features += file->getFeatureCount();
-          
+
           // check for postgresql reserved words
           // First get an instance of the PG utility class
           QgsPgUtil *pgu = QgsPgUtil::instance();
@@ -185,10 +192,10 @@ void QgsSpit::addFile()
           // dialog can be presented to the user
           for(int i = 0; i < file->column_names.size(); i++)
           {
-           if(pgu->isReserved(file->column_names[i]))
-           {
-             hasReservedWords = true;
-           }
+            if(pgu->isReserved(file->column_names[i]))
+            {
+              hasReservedWords = true;
+            }
           }
           // Why loop through all of them and then turn around and test
           // the flag? Because if there are reserved words, we want to 
@@ -212,7 +219,7 @@ void QgsSpit::addFile()
             {
               // get the new column specs from the listview control
               // and replace the existing column spec for the shapefile
-             file->setColumnNames(srw->columnNames());
+              file->setColumnNames(srw->columnNames());
             }
           }
 
@@ -229,7 +236,7 @@ void QgsSpit::addFile()
       }
     }
   }
-  
+
   if(error1!="" || error2!=""){
     QString message = "The following Shapefile(s) could not be loaded:\n\n";
     if(error1!=""){
@@ -244,7 +251,7 @@ void QgsSpit::addFile()
     e->setMessage(message+error1+error2);
     e->exec();
   }
-  
+
   tblShapefiles->adjustColumn(0);
   tblShapefiles->adjustColumn(1);
   tblShapefiles->adjustColumn(2);
@@ -311,27 +318,27 @@ void QgsSpit::useDefaultGeom(){
 void QgsSpit::helpInfo(){
   QString message = "General Interface Help:\n\n";
   message += QString(
-    "PostgreSQL Connections:\n")+QString(
-    "----------------------------------------------------------------------------------------\n")+QString(
-    "[New ...] - create a new connection\n")+QString(
-    "[Edit ...] - edit the currently selected connection\n")+QString(
-    "[Remove] - remove the currently selected connection\n")+QString(
-    "-you need to select a connection that works (connects properly) in order to import files\n")+QString(
-    "-when changing connections Global Schema also changes accordingly\n\n")+QString(
-    "Shapefile List:\n")+QString(
-    "----------------------------------------------------------------------------------------\n")+QString(
-    "[Add ...] - open a File dialog and browse to the desired file(s) to import\n")+QString(
-    "[Remove] - remove the currently selected file(s) from the list\n")+QString(
-    "[Remove All] - remove all the files in the list\n")+QString(
-    "[SRID] - Reference ID for the shapefiles to be imported\n")+QString(
-    "[Use Default (SRID)] - set SRID to -1\n")+QString(
-    "[Geometry Column Name] - name of the geometry column in the database\n")+QString(
-    "[Use Default (Geometry Column Name)] - set column name to \'the_geom\'\n")+QString(
-    "[Glogal Schema] - set the schema for all files to be imported into\n\n")+QString(
-    "----------------------------------------------------------------------------------------\n")+QString(
-    "[Import] - import the current shapefiles in the list\n")+QString(
-    "[Quit] - quit the program\n")+QString(
-    "[Help] - display this help dialog\n\n");
+      "PostgreSQL Connections:\n")+QString(
+        "----------------------------------------------------------------------------------------\n")+QString(
+          "[New ...] - create a new connection\n")+QString(
+            "[Edit ...] - edit the currently selected connection\n")+QString(
+              "[Remove] - remove the currently selected connection\n")+QString(
+                "-you need to select a connection that works (connects properly) in order to import files\n")+QString(
+                "-when changing connections Global Schema also changes accordingly\n\n")+QString(
+                  "Shapefile List:\n")+QString(
+                    "----------------------------------------------------------------------------------------\n")+QString(
+                      "[Add ...] - open a File dialog and browse to the desired file(s) to import\n")+QString(
+                      "[Remove] - remove the currently selected file(s) from the list\n")+QString(
+                      "[Remove All] - remove all the files in the list\n")+QString(
+                        "[SRID] - Reference ID for the shapefiles to be imported\n")+QString(
+                          "[Use Default (SRID)] - set SRID to -1\n")+QString(
+                          "[Geometry Column Name] - name of the geometry column in the database\n")+QString(
+                            "[Use Default (Geometry Column Name)] - set column name to \'the_geom\'\n")+QString(
+                            "[Glogal Schema] - set the schema for all files to be imported into\n\n")+QString(
+                              "----------------------------------------------------------------------------------------\n")+QString(
+                                "[Import] - import the current shapefiles in the list\n")+QString(
+                                  "[Quit] - quit the program\n")+QString(
+                                    "[Help] - display this help dialog\n\n");
   QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
   e->setMessage(message);
   e->exec();
@@ -384,16 +391,16 @@ void QgsSpit::getSchema(){
     }
     PQclear(schemas);
   }
-    
+
   // update the schemas in the combo of all the shapefiles
   for(int i=0; i<tblShapefiles->numRows(); i++){
     tblShapefiles->clearCell(i,4);
     QComboTableItem* temp_schemas = new QComboTableItem(tblShapefiles, schema_list);
     temp_schemas->setCurrentItem("public");
     tblShapefiles->setItem(i,4, temp_schemas);
-    
+
   }
-  
+
   cmbSchema->clear();
   cmbSchema->insertStringList(schema_list);
   cmbSchema->setCurrentText("public");
@@ -405,13 +412,13 @@ void QgsSpit::updateSchema(){
     QComboTableItem* temp_schemas = new QComboTableItem(tblShapefiles, schema_list);
     temp_schemas->setCurrentItem(cmbSchema->currentText());
     tblShapefiles->setItem(i,4, temp_schemas);
-    
+
   }
 }
 
 void QgsSpit::import(){
   tblShapefiles->setCurrentCell(-1, 0);
-    
+
   QString connName = cmbConnections->currentText();
   QSettings settings;
   bool cancelled = false;  
@@ -428,7 +435,7 @@ void QgsSpit::import(){
     pro->setAutoClose(true);
     pro->show();
     qApp->processEvents();
-      
+
     for(int i=0; i<fileList.size() ; i++){
       QString error = "Problem inserting features from file:\n"+tblShapefiles->text(i,0);
       // if a name starts with invalid character
@@ -437,21 +444,21 @@ void QgsSpit::import(){
         pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
         continue;
       }
-      
+
       // if no fields detected
       if((fileList[i]->column_names).size()==0){
         QMessageBox::warning(pro, "Import Shapefiles", error+"\nNo fields detected.");
         pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
         continue;
       }
-      
+
       // duplicate field check
       std::vector<QString> names_copy = fileList[i]->column_names;
       std::cerr << "Size of names_copy before sort: " << names_copy.size() << std::endl; 
       QString dupl = "";
       std::sort(names_copy.begin(), names_copy.end());
       std::cerr << "Size of names_copy after sort: " << names_copy.size() << std::endl; 
-      
+
       for(int k=1; k<names_copy.size(); k++){
         std::cerr << "USING :" << names_copy[k] << " index " << k << std::endl; 
         qWarning("Checking to see if " + names_copy[k] + " == " + names_copy[k-1]);
@@ -465,7 +472,7 @@ void QgsSpit::import(){
         pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
         continue;
       }
-        
+
       fileList[i]->setTable(tblShapefiles->text(i, 3));
       pro->setLabelText("Importing files\n"+tblShapefiles->text(i,0));
       bool rel_exists1 = false;
@@ -483,7 +490,7 @@ void QgsSpit::import(){
       else {
         PQclear(res);
       }
-        
+
       query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+tblShapefiles->text(i,3)+"\' AND schemaname=\'"+
         tblShapefiles->text(i,4)+"\'";
       res = PQexec(pd, (const char *)query);
@@ -498,7 +505,7 @@ void QgsSpit::import(){
       else {
         PQclear(res);
       }
-        
+
       // begin session
       query = "BEGIN";
       res = PQexec(pd, query);
@@ -511,7 +518,7 @@ void QgsSpit::import(){
       else {
         PQclear(res);
       }
-                
+
       query = "SET SEARCH_PATH TO \'";
       if(tblShapefiles->text(i,4)=="public")
         query+="public\'";
@@ -529,18 +536,18 @@ void QgsSpit::import(){
       else {
         PQclear(res);
       }
-        
+
       QMessageBox *del_confirm;
       if(rel_exists1 || rel_exists2){
         del_confirm = new QMessageBox("Import Shapefiles - Relation Exists",
-          "The Shapefile:\n"+tblShapefiles->text(i,0)+"\nwill use ["+
-          tblShapefiles->text(i,3)+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
-          "To avoid data loss change the \"DB Relation Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
-          "Do you want to overwrite the ["+tblShapefiles->text(i,3)+"] relation?",
-        QMessageBox::Warning,
-        QMessageBox::Yes | QMessageBox::Default,
-        QMessageBox::No  | QMessageBox::Escape,
-        QMessageBox::NoButton, this, "Relation Exists");
+            "The Shapefile:\n"+tblShapefiles->text(i,0)+"\nwill use ["+
+            tblShapefiles->text(i,3)+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
+            "To avoid data loss change the \"DB Relation Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
+            "Do you want to overwrite the ["+tblShapefiles->text(i,3)+"] relation?",
+            QMessageBox::Warning,
+            QMessageBox::Yes | QMessageBox::Default,
+            QMessageBox::No  | QMessageBox::Escape,
+            QMessageBox::NoButton, this, "Relation Exists");
 
         if(del_confirm->exec() == QMessageBox::Yes){
           if (rel_exists2){
@@ -590,12 +597,12 @@ void QgsSpit::import(){
           continue;
         }
       }
-  
+
       // importing file here
       int temp_progress = pro->progress();
       cancelled = false;
       if(fileList[i]->insertLayer(settings.readEntry(gl_key+connName+"/database"), tblShapefiles->text(i,4),
-        txtGeomName->text(), QString("%1").arg(spinSrid->value()), pd, pro, cancelled) && !cancelled)
+            txtGeomName->text(), QString("%1").arg(spinSrid->value()), pd, pro, cancelled) && !cancelled)
       { // if file has been imported successfully
         query = "COMMIT";
         res = PQexec(pd, query);
@@ -607,7 +614,7 @@ void QgsSpit::import(){
         else {
           PQclear(res);
         }
-          
+
         // remove file
         for(int j=0; j<tblShapefiles->numRows(); j++){
           if(tblShapefiles->text(j,0)==QString(fileList[i]->getName())){
@@ -617,7 +624,7 @@ void QgsSpit::import(){
             break;
           }
         }
-          
+
       }
       else if(!cancelled){ // if problem importing file occured
         pro->setProgress(temp_progress+(tblShapefiles->text(i,2)).toInt());
