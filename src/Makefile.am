@@ -16,39 +16,68 @@ bin_PROGRAMS = qgis
 
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
-	
 qgis_SOURCES =  qgisapp.cpp \
+		qgisapp.h \
 				main.cpp \
 				qgisiface.cpp \
+				qgisiface.h \
 				qgisinterface.cpp \
+				qgisinterface.h \
 				qgsattributetable.cpp \
+				qgsattributetable.h \
 				qgsattributetabledisplay.cpp \
+				qgsattributetabledisplay.h \
 				qgscoordinatetransform.cpp \
+				qgscoordinatetransform.h \
 				qgscustomsymbol.cpp \
+				qgscustomsymbol.h \
 				qgsdatasource.cpp \
+				qgsdatasource.h \
 				qgsidentifyresults.cpp \
+				qgsidentifyresults.h \
 				qgslayerproperties.cpp \
+				qgslayerproperties.h \
 				qgslegend.cpp \
+				qgslegend.h \
 				qgslegenditem.cpp \
 				qgslegendview.cpp \
+				qgslegendview.h \
 				qgslinesymbol.cpp \
+				qgslinesymbol.h \
 				qgsmapcanvas.cpp \
+				qgsmapcanvas.h \
 				qgsmaplayer.cpp \
+				qgsmaplayer.h \
 				qgsmarkersymbol.cpp \
+				qgsmarkersymbol.h \
 				qgspluginitem.cpp \
+				qgspluginitem.h \
 				qgspluginmanager.cpp \
+				qgspluginmanager.h \
 				qgspoint.cpp \
+				qgspoint.h \
 				qgspolygonsymbol.cpp \
+				qgspolygonsymbol.h \
 				qgsprojectio.cpp \
+				qgsprojectio.h \
 				qgsrasterlayer.cpp \
+				qgsrasterlayer.h \
 				qgsrect.cpp \
+				qgsrect.h \
 				qgsrenderer.cpp \
+				qgsrenderer.h \
 				qgsrenderitem.cpp \
+				qgsrenderitem.h \
 				qgsshapefilelayer.cpp \
+				qgsshapefilelayer.h \
 				qgssymbol.cpp\
+				qgssymbol.h\
 				qgsmapserverexport.cpp \
+				qgsmapserverexport.h \
 				qtiffio.cpp \
+				qtiffio.h \
 				$(qgis_UI)\
+				$(qgis_UIC)\
 				$(qgis_MOC)
 qgis_MOC = 	qgisappbase.moc.cpp \
 			qgisapp.moc.cpp\
@@ -88,9 +117,21 @@ qgis_UI = qgisappbase.h\
 			qgspluginmanagerbase.cpp\
 			qgsmessageviewer.h\
 			qgsmessageviewer.cpp \
+ 			qgsmapserverexportbase.h \
  			qgsmapserverexportbase.cpp \
 			qgshelpviewer.h \
 			qgshelpviewer.cpp
+
+qgis_UIC = qgisappbase.ui \
+	qgslegenditembase.ui \
+	qgslayerpropertiesbase.ui \
+	qgsabout.ui \
+	qgsidentifyresultsbase.ui \
+	qgsattributetablebase.ui \
+	qgspluginmanagerbase.ui \
+	qgsmessageviewer.ui \
+	qgshelpviewer.ui \
+	qgsmapserverexportbase.ui
 
 # UI dependencies			
 qgisappbase.h: qgisappbase.ui
@@ -111,6 +152,8 @@ qgsmessageviewer.h: qgsmessageviewer.ui
 qgsmessageviewer.cpp: qgsmessageviewer.h qgsmessageviewer.ui
 qgshelpviewer.h: qgshelpviewer.ui
 qgshelpviewer.cpp: qgshelpviewer.h qgshelpviewer.ui 
+qgsmapserverexportbase.h: qgsmapserverexportbase.ui
+qgsmapserverexportbase.cpp: qgsmapserverexportbase.h qgsmapserverexportbase.ui
 
 #PostgreSQL UI dependencies
 qgsdbsourceselectbase.h: qgsdbsourceselectbase.ui
@@ -126,6 +169,8 @@ postgres_UI = 	qgsdbsourceselectbase.h \
 				qgsdbsourceselectbase.cpp\
 				qgsnewconnectionbase.h\
 				qgsnewconnectionbase.cpp
+postgres_UIC = qgsdbsourceselectbase.ui \
+		qgsnewconnectionbase.ui	
 postgres_MOC = 	qgsdbsourceselectbase.moc.cpp \
 	 			qgsdatabaselayer.moc.cpp \
 				qgsdbsourceselect.moc.cpp \
@@ -135,6 +180,7 @@ postgres_MOC = 	qgsdbsourceselectbase.moc.cpp \
 # if PostgreSQL support requested, add PostgreSQL files				
 if POSTGRESDB
 qgis_SOURCES += $(postgres_SOURCES)
+qgis_SOURCES += $(postgres_UIC)
 					
 qgis_UI += $(postgres_UI) 
 qgis_MOC += $(postgres_MOC)
