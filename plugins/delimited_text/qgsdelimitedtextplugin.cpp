@@ -1,5 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
+  qgsdelimitedtextplugin.cpp 
   Import tool for various worldmap analysis output files
 Functions:
 
@@ -24,8 +24,7 @@ email                : tim@linfiniti.com
 
 #include "../../src/qgisapp.h"
 #include "../../src/qgsmaplayer.h"
-#include "../../src/qgsrasterlayer.h"
-#include "plugin.h"
+#include "qgsdelimitedtextplugin.h"
 
 
 #include <qtoolbar.h>
@@ -42,7 +41,7 @@ email                : tim@linfiniti.com
 #include <iostream>
 
 //the gui subclass
-#include "plugingui.h"
+#include "qgsdelimitedtextplugingui.h"
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
@@ -54,7 +53,7 @@ static const char *pluginVersion = "0.1";
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsDelimitedTextPlugin::QgsDelimitedTextPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
 {
   /** Initialize the plugin and set the required attributes */
@@ -64,30 +63,30 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
 
 }
 
-Plugin::~Plugin()
+QgsDelimitedTextPlugin::~QgsDelimitedTextPlugin()
 {
 
 }
 
 /* Following functions return name, description, version, and type for the plugin */
-QString Plugin::name()
+QString QgsDelimitedTextPlugin::name()
 {
   return pluginNameQString;
 }
 
-QString Plugin::version()
+QString QgsDelimitedTextPlugin::version()
 {
   return pluginVersionQString;
 
 }
 
-QString Plugin::description()
+QString QgsDelimitedTextPlugin::description()
 {
   return pluginDescriptionQString;
 
 }
 
-int Plugin::type()
+int QgsDelimitedTextPlugin::type()
 {
   return QgisPlugin::UI;
 }
@@ -95,20 +94,24 @@ int Plugin::type()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsDelimitedTextPlugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
   int menuId = pluginMenu->insertItem(QIconSet(icon),"&Add Delimited Text Layer", this, SLOT(run()));
-  pluginMenu->setWhatsThis(menuId, "Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.");
+  pluginMenu->setWhatsThis(menuId, "Add a delimited text file as a map layer. "
+      "The file must have a header row containing the field names. "
+      "X and Y fields are required and must contain coordinates in decimal units.");
 
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Delimited Text", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("Add Delimited Text Layer", QIconSet(icon), "&Wmi",0, this, "run");
-  myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.");
+  myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. "
+      "The file must have a header row containing the field names. "
+      "X and Y fields are required and must contain coordinates in decimal units.");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
@@ -121,23 +124,23 @@ void Plugin::initGui()
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsDelimitedTextPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Add Delimited Text Layer",true,0);
+  QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui=new QgsDelimitedTextPluginGui(qGisInterface, qgisMainWindowPointer,"Add Delimited Text Layer",true,0);
   //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
-  myPluginGui->show();
+  connect(myQgsDelimitedTextPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
+  connect(myQgsDelimitedTextPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  myQgsDelimitedTextPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void QgsDelimitedTextPlugin::drawRasterLayer(QString theQString)
 {
   qGisInterface->addRasterLayer(theQString);
 }
 //!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
   std::cerr << "Calling addVectorLayer with:" 
     << thePathNameQString << ", " << theBaseNameQString << ", " << theProviderQString << std::endl; 
@@ -145,7 +148,7 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
@@ -159,7 +162,7 @@ void Plugin::unload()
 // Class factory to return a new instance of the plugin class
 extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsDelimitedTextPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -188,7 +191,7 @@ extern "C" QString version()
 }
 
 // Delete ourself
-extern "C" void unload(QgisPlugin * thePluginPointer)
+extern "C" void unload(QgisPlugin * theQgsDelimitedTextPluginPointer)
 {
-  delete thePluginPointer;
+  delete theQgsDelimitedTextPluginPointer;
 }

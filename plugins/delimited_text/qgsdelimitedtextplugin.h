@@ -1,5 +1,5 @@
 /***************************************************************************
-                          plugin.h 
+                          qgsdelimitedtextplugin.h 
  Functions:
                              -------------------
     begin                : Jan 21, 2004
@@ -25,11 +25,11 @@
 #include "../../src/qgisapp.h"
 
 /**
-* \class Plugin
+* \class QgsDelimitedTextPlugin
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsDelimitedTextPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
@@ -38,7 +38,7 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+      QgsDelimitedTextPlugin(QgisApp * , QgisIface * );
   /**
    * Virtual function to return the name of the plugin. The name will be used when presenting a list 
    * of installable plugins to the user
@@ -59,7 +59,7 @@ class Plugin:public QObject, public QgisPlugin
   //! init the gui
   virtual void initGui();
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsDelimitedTextPlugin();
   public slots:
   //! Show the dialog box
   void run();
@@ -80,7 +80,7 @@ class Plugin:public QObject, public QgisPlugin
   QString pluginVersionQString;
   //! Descrption of the plugin
   QString pluginDescriptionQString;
-  //! Plugin type as defined in QgisPlugin::PLUGINTYPE
+  //! Plugin type as defined in Plugin::PLUGINTYPE
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuIdInt;
