@@ -14,12 +14,14 @@
 #include <iostream>
 #include <qfiledialog.h>
 #include <qlineedit.h>
+#include <qtextedit.h>
 #include <qfile.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qsettings.h>
 #include <qfileinfo.h>
 #include <qregexp.h>
+#include <qmessagebox.h>
 #include "qgsdelimitedtextplugingui.h"
 #include "../../src/qgisiface.h"
 
@@ -43,22 +45,29 @@ QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 
 void QgsDelimitedTextPluginGui::pbnOK_clicked()
 {
-  //Build the delimited text URI from the user provided information
-  QString uri = QString("%1?delimiter=%2&xField=%3&yField=%4")
-    .arg(txtFilePath->text())
-    .arg(txtDelimiter->text())
-    .arg(cmbXField->currentText())
-    .arg(cmbYField->currentText());
-  std::cerr << "Adding layer using " << uri << std::endl; 
-  // add the layer to the map
-  emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
-  // store the settings
+  if(txtLayerName->text().length() > 0)
+  {
+    //Build the delimited text URI from the user provided information
+    QString uri = QString("%1?delimiter=%2&xField=%3&yField=%4")
+      .arg(txtFilePath->text())
+      .arg(txtDelimiter->text())
+      .arg(cmbXField->currentText())
+      .arg(cmbYField->currentText());
+    std::cerr << "Adding layer using " << uri << std::endl; 
+    // add the layer to the map
+    emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
+    // store the settings
 
-  QSettings settings;
-  QString key = "/Qgis/delimited_text_plugin";
-  settings.writeEntry(key + "/delimiter", txtDelimiter->text());
-  QFileInfo fi(txtFilePath->text());
-  settings.writeEntry(key + "/text_path", fi.dirPath());
+    QSettings settings;
+    QString key = "/Qgis/delimited_text_plugin";
+    settings.writeEntry(key + "/delimiter", txtDelimiter->text());
+    QFileInfo fi(txtFilePath->text());
+    settings.writeEntry(key + "/text_path", fi.dirPath());
+  }
+  else
+  {
+    QMessageBox::warning(this, tr("No layer name"), tr("Please enter a layer name before adding the layer to the map"));
+  }
 } 
 
 void QgsDelimitedTextPluginGui::updateFieldLists()
@@ -78,28 +87,48 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       QTextStream stream( file );
       QString line;
       line = stream.readLine(); // line of text excluding '\n'
+      if(txtDelimiter->text().length() > 0)
+      {
 #ifdef QGISDEBUG
-      std::cerr << "Attempting to split the input line: " << line <<
-        " using delimiter " << txtDelimiter->text() << std::endl;
+        std::cerr << "Attempting to split the input line: " << line <<
+          " using delimiter " << txtDelimiter->text() << std::endl;
 #endif
 
-      QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line);
+        QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line);
 
 #ifdef QGISDEBUG
-      std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 
+        std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 
 #endif
-      //
-      // We don't know anything about a text based field other
-      // than its name. All fields are assumed to be text
-      int fieldPos = 0;
-      for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it ) {
-        // add item to both drop-downs (X field and Y field)
-        if((*it).length() > 0)
-        {
-        cmbXField->insertItem(*it);
-        cmbYField->insertItem(*it);
-        }
-      }           
+        //
+        // We don't know anything about a text based field other
+        // than its name. All fields are assumed to be text
+        int fieldPos = 0;
+        for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it ) {
+          // add item to both drop-downs (X field and Y field)
+          if((*it).length() > 0)
+          {
+            cmbXField->insertItem(*it);
+            cmbYField->insertItem(*it);
+          }
+        }           
+        // enable the buttons
+        enableButtons();
+      }
+      else
+      {
+        QMessageBox::warning(this, tr("No delimiter"),tr("Please specify a delimiter prior to parsing the file"));
+      }
+      // clear the sample text box
+      txtSample->clear();
+      // put the header row in the sample box
+      txtSample->insert(line + "\n");
+      // put a few more lines into the sample box
+      int counter = 0;
+      while((line=stream.readLine()) && (counter < 20))
+      {
+        txtSample->insert(line + "\n");
+        counter++;
+      }
       // close the file
       file->close();
     }
@@ -112,13 +141,13 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   // Get a file to process, starting at the current directory
   // Set inital dir to last used
   QSettings settings;
-  
+
   QString s = QFileDialog::getOpenFileName(
-    settings.readEntry("/Qgis/delimited_text_plugin/text_path","./"),
+      settings.readEntry("/Qgis/delimited_text_plugin/text_path","./"),
       "Text files (*.txt)",
       0,
       "open file dialog",
-      "Choose a delimited text file to open" );
+      tr("Choose a delimited text file to open") );
 
   // set path
   txtFilePath->setText(s);
@@ -126,13 +155,12 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   // the header row
   updateFieldLists();
 }
-void QgsDelimitedTextPluginGui::enableBrowseButton(const QString &delimiter)
+void QgsDelimitedTextPluginGui::enableButtons()
 {
-  // If a delimiter has entered, enable the browse button,
-  // otherwise disable it.
-  btnBrowseForFile->setEnabled(delimiter.length() > 0);
+  pbnParse->setEnabled(txtDelimiter->text().length() > 0 && txtFilePath->text().length() > 0);
+  pbnOK->setEnabled(txtDelimiter->text().length() > 0 && txtFilePath->text().length() > 0);
 }
 void QgsDelimitedTextPluginGui::help()
 {
-   qI->openURL("plugins/delimited_text/index.html",true);
+  qI->openURL("plugins/delimited_text/index.html",true);
 }
