@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.153 2004/06/28 11:08:17 jobi Exp
+ChangeLog,v 1.154 2004/06/29 04:47:37 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-28 [gsherman] 0.3.0devel57
+** Overview extent rectangle bug fix
+** Patch (from strk) for PG layer extent calculation
+** QgsActetate* documentation updates
 
 2004-06-28 [jobi] 0.3.0devel56
 ** fix bug #981159
