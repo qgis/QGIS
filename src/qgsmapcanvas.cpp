@@ -20,12 +20,15 @@
 #include "qgsrect.h"
 #include "qgsmaplayer.h"
 #include "qgsdatabaselayer.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 
 QgsMapCanvas::QgsMapCanvas(QWidget *parent, const char *name ) : QWidget(parent,name) {
   mapWindow = new QRect();
+  coordXForm = new QgsCoordinateTransform();
 }
 QgsMapCanvas::~QgsMapCanvas(){
+  delete coordXForm;
   delete mapWindow;
 }
 void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
@@ -34,9 +37,22 @@ void QgsMapCanvas::addLayer(QgsMapLayer *lyr){
   if(layers.size() == 1){
     fullExtent = lyr->extent();
   }
-  render();
+
   // set zpos to something...
   //lyr->zpos = 0;
+}
+void QgsMapCanvas::render2(){
+ QPainter *paint = new QPainter();
+  paint->begin(this);
+  currentExtent = fullExtent;
+  QRect v = paint->viewport();
+  // calculate the translation and scaling parameters
+  if(currentExtent.height() > currentExtent.width())
+    m_mupp = currentExtent.height()/v.height();
+  else
+    m_mupp = currentExtent.width()/v.width();
+  coordXForm->
+
 }
 void QgsMapCanvas::render(){
   QPainter *paint = new QPainter();
