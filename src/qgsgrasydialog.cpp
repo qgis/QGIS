@@ -123,6 +123,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer* layer): QgsGraSyDialogBase(), ext
 	}
 	
 	scv=new QScrollView(this);
+	scv->setResizePolicy(QScrollView::AutoOneFit);
 	scv->addChild(ext);
 	QgsGraSyDialogBaseLayout->addMultiCellWidget(scv,5,5,0,3);
 	scv->show();
@@ -186,7 +187,8 @@ void QgsGraSyDialog::adjustNumberOfClasses()
 	return;
     }
 
-    scv=new QScrollView(this);
+    scv=new QScrollView(this);	
+    scv->setResizePolicy(QScrollView::AutoOneFit);
     scv->addChild(ext);
 
     QgsGraSyDialogBaseLayout->addMultiCellWidget(scv,5,5,0,3);
