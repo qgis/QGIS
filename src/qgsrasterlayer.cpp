@@ -2377,13 +2377,13 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
       //make sure the raster knows it has pyramids
       hasPyramidsFlag=true;
     }
-    std::cout << "Pyramid overviews built" << std::endl;
 
-    //close the gdal dataset and reopen it in read only mode
-    delete gdalDataset;
-    gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
-    emit setProgress(0,0);
   }
+  std::cout << "Pyramid overviews built" << std::endl;
+  //close the gdal dataset and reopen it in read only mode
+  delete gdalDataset;
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+  emit setProgress(0,0);
 }
 RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
 {

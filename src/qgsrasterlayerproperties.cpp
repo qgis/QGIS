@@ -754,7 +754,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
       if ( myItem->isSelected() )
       {
         //mark to be pyramided
-        myPyramidList[myCounterInt].existsFlag=true;
+        myPyramidList[myCounterInt+1].existsFlag=true;
       }
   }
   //
@@ -791,5 +791,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   pixmapLegend->repaint(false);
   QgsLegendItem *myLegendItem = rasterLayer->legendItem();
   ((QCheckListItem *) myLegendItem)->setPixmap(0, *rasterLayer->legendPixmap());
+  //populate the metadata tab's text browser widget with gdal metadata info
+  txtbMetadata->setText(rasterLayer->getMetadata());
 }
 
