@@ -16,17 +16,19 @@
 
 #ifndef QGSMAPSERVEREXPORT_H
 #define QGSMAPSERVEREXPORT_H
-
+#include "qgsmapserverexportbase.h"
 class QgsMapCanvas;
+
 /*! \class QgsMapServerExport
 * \brief Class to handle reading and writing a Qgis project file
 */
-class QgsMapServerExport
+class QgsMapserverExport:public QgsMapserverExportBase
 {
-
+Q_OBJECT
 public:
-  QgsMapServerExport(QgsMapCanvas *map=0, int action=SAVE);
-  ~QgsMapServerExport();
+  QgsMapserverExport(QgsMapCanvas *map=0, QWidget* parent = 0, 
+	const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~QgsMapserverExport();
   //! Read the file and create the map
   bool read();
   //! Write the contents of the map to a file
