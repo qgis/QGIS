@@ -79,7 +79,8 @@ public:
 	Select = 0,      // Select/Move item
 	AddMap,          // add new map 
 	AddVectorLegend, // add vector legend
-	AddLabel         // add label
+	AddLabel,        // add label
+	AddScalebar      // add scalebar
     };
 
     /** \brief Scaling mode, defines which parameters are fixed and which are changing  */

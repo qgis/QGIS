@@ -37,6 +37,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposervectorlegend.h"
 #include "qgscomposerlabel.h"
+#include "qgscomposerscalebar.h"
 
 QgsCompositionPaper::QgsCompositionPaper ( QString name, int w, int h, bool c)
 {
@@ -305,6 +306,24 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
 	    mCanvas->update();
 	    }
 	    break;
+
+	case AddScalebar:
+	    {
+	    mNewCanvasItem->setX( p.x() );
+	    mNewCanvasItem->setY( p.y() );
+	    QgsComposerScalebar *sb = dynamic_cast <QgsComposerScalebar*> (mNewCanvasItem);
+            mItems.push_back(sb);
+	    mNewCanvasItem = 0;
+	    mComposer->selectItem(); // usually just one ???
+	    
+	    // Select and show options
+	    sb->setSelected ( true );
+	    mComposer->showItemOptions ( sb->options() );
+	    mSelectedItem = dynamic_cast <QCanvasItem*> (sb);
+
+	    mCanvas->update();
+	    }
+	    break;
     }
 }
 
@@ -321,8 +340,14 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 		double x,y;
 		mView->inverseWorldMatrix().map( e->pos().x(), e->pos().y(), &x, &y );
 		
-		mSelectedItem->setX( mSelectedItem->x() + x - mLastX );
-		mSelectedItem->setY( mSelectedItem->y() + y - mLastY );
+		// TODO better move
+	        if (  typeid (*mSelectedItem) == typeid(QgsComposerScalebar) ) {
+	            QgsComposerScalebar *sb = dynamic_cast<QgsComposerScalebar *> (mSelectedItem);
+	            sb->move ( (int)(mSelectedItem->x() + x - mLastX), (int)(mSelectedItem->y() + y - mLastY) );
+	        } else {
+		    mSelectedItem->setX( mSelectedItem->x() + x - mLastX );
+		    mSelectedItem->setY( mSelectedItem->y() + y - mLastY );
+		}
 
 		QgsComposerItem *ci = dynamic_cast <QgsComposerItem *> (mSelectedItem);
 		ci->writeSettings();
@@ -359,6 +384,12 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 	case AddLabel:
 	    mNewCanvasItem->setX( p.x() );
 	    mNewCanvasItem->setY( p.y() );
+	    mCanvas->update();
+	    break;
+
+	case AddScalebar:
+	    QgsComposerScalebar *sb = dynamic_cast<QgsComposerScalebar *> (mNewCanvasItem);
+	    sb->move ( p.x(), p.y() );
 	    mCanvas->update();
 	    break;
     }
@@ -584,6 +615,16 @@ void QgsComposition::setTool ( Tool tool )
 	mComposer->showItemOptions ( lab->options() );
 
 	mView->viewport()->setMouseTracking ( true ); // to recieve mouse move
+    } else if ( tool == AddScalebar ) {
+	if ( mNewCanvasItem ) delete mNewCanvasItem;
+	
+	// Create new object outside the visible area
+	QgsComposerScalebar *sb = new QgsComposerScalebar ( this, mNextItemId++, 
+	                                (-1000)*mScale, (-1000)*mScale );
+        mNewCanvasItem = dynamic_cast <QCanvasItem *> (sb);
+	mComposer->showItemOptions ( sb->options() );
+
+	mView->viewport()->setMouseTracking ( true ); // to recieve mouse move
     }
     
     mTool = tool;
@@ -682,6 +723,7 @@ bool QgsComposition::readSettings ( void )
     path.sprintf("/composition_%d", mId );
     QStringList el = QgsProject::instance()->subkeyList ( "Compositions", path );
 
+    // First maps because they can be used by other objects
     for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
 	std::cout << "key: " << (*it).ascii() << std::endl;
 	
@@ -694,12 +736,30 @@ bool QgsComposition::readSettings ( void )
 	    if ( name.compare("map") == 0 ) {
 	        QgsComposerMap *map = new QgsComposerMap ( this, id );
                 mItems.push_back(map);
-	    } else if ( name.compare("vectorlegend") == 0 ) {
+	    }
+
+	    if ( id >= mNextItemId ) mNextItemId = id + 1;
+	}
+    }
+
+    for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
+	std::cout << "key: " << (*it).ascii() << std::endl;
+	
+	QStringList l = QStringList::split( '_', (*it) );
+	if ( l.size() == 2 ) {
+	    QString name = l.first();
+	    QString ids = l.last();
+	    int id = ids.toInt();
+	    
+	    if ( name.compare("vectorlegend") == 0 ) {
 	        QgsComposerVectorLegend *vl = new QgsComposerVectorLegend ( this, id );
                 mItems.push_back(vl);
 	    } else if ( name.compare("label") == 0 ) {
 	        QgsComposerLabel *lab = new QgsComposerLabel ( this, id );
                 mItems.push_back(lab);
+	    } else if ( name.compare("scalebar") == 0 ) {
+	        QgsComposerScalebar *sb = new QgsComposerScalebar ( this, id );
+                mItems.push_back(sb);
 	    }
 
 	    if ( id >= mNextItemId ) mNextItemId = id + 1;

@@ -402,6 +402,8 @@ bool QgsComposerMap::selected( void )
     return mSelected;
 }
 
+double QgsComposerMap::scale ( void ) { return mScale; }
+
 QWidget *QgsComposerMap::options ( void )
 {
     setOptions ();

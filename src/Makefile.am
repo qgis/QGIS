@@ -54,6 +54,7 @@ headers =	qgisapp.h					\
 		qgscomposermap.h				\
 		qgscomposervectorlegend.h			\
 		qgscomposerlabel.h				\
+		qgscomposerscalebar.h				\
 		qgscomposerview.h				\
 		qgscomposition.h				\
 		qgscontcoldialog.h				\
@@ -154,6 +155,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgscomposermapbase.ui			\
 		qgscomposervectorlegendbase.ui		\
 		qgscomposerlabelbase.ui		     	\
+		qgscomposerscalebarbase.ui		\
 		qgscontcoldialogbase.ui			\
 		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
@@ -170,7 +172,6 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsmarkerdialogbase.ui			\
 		qgsmessageviewer.ui			\
 		qgsmeasurebase.ui			\
-		qgsvectorsymbologywidgetbase.ui		\
 		qgsoptionsbase.ui			\
 		qgspatterndialogbase.ui			\
 		qgspluginmanagerbase.ui			\
@@ -183,6 +184,8 @@ qgis_UIC =	qgisappbase.ui				\
 		qgspointstylewidgetbase.ui		\
 		qgsfillstylewidgetbase.ui		\
 		qgslinestylewidgetbase.ui
+
+#		qgsvectorsymbologywidgetbase.ui		\
 
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
@@ -219,6 +222,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgscomposermap.moc.cpp			\
 		qgscomposervectorlegend.moc.cpp		\
 		qgscomposerlabel.moc.cpp		\
+		qgscomposerscalebar.moc.cpp		\
 		qgscomposerview.moc.cpp			\
 		qgsattributetabledisplay.moc.cpp		\
 		qgscoordinatetransform.moc.cpp		\
@@ -243,7 +247,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsmapserverexport.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
 		qgsmeasure.moc.cpp			\
-		qgsvectorsymbologywidget.moc.cpp	\
 		qgsoptions.moc.cpp			\
 		qgspatterndialog.moc.cpp		\
 		qgspluginmanager.moc.cpp		\
@@ -262,6 +265,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgslinestylewidget.moc.cpp		\
 		splashscreen.moc.cpp 
 
+#		qgsvectorsymbologywidget.moc.cpp	\
 
 qgis_SOURCES =	main.cpp			\
 		qgisapp.cpp			\
@@ -284,6 +288,7 @@ qgis_SOURCES =	main.cpp			\
 		qgscomposermap.cpp		\
 		qgscomposervectorlegend.cpp	\
 		qgscomposerlabel.cpp		\
+		qgscomposerscalebar.cpp		\
 		qgscomposerview.cpp		\
 		qgscontcoldialog.cpp		\
 		qgscontinuouscolrenderer.cpp	\
@@ -320,7 +325,6 @@ qgis_SOURCES =	main.cpp			\
 		qgsmarkerdialog.cpp		\
 		qgsmarkersymbol.cpp		\
 		qgsmeasure.cpp			\
-		qgsvectorsymbologywidget.cpp	\
 		qgsoptions.cpp			\
 		qgspatterndialog.cpp		\
 		qgspluginitem.cpp		\
@@ -362,6 +366,8 @@ qgis_SOURCES =	main.cpp			\
 		qgslinestylewidget.cpp		\
 		qgsfillstylewidget.cpp		\
 		splashscreen.cpp 
+
+#		qgsvectorsymbologywidget.cpp	\
 
 postgresHEADERS = qgsdbsourceselect.h		\
 		  qgsnewconnection.h		\
@@ -422,6 +428,10 @@ libqgis_la_SOURCES =				\
 		qgscomposerlabel.moc.cpp	\
 		qgscomposerlabelbase.uic.cpp	\
 		qgscomposerlabelbase.moc.uic.cpp	\
+		qgscomposerscalebar.cpp		\
+		qgscomposerscalebar.moc.cpp	\
+		qgscomposerscalebarbase.uic.cpp	\
+		qgscomposerscalebarbase.moc.uic.cpp	\
 		qgscomposermap.cpp		\
 		qgscomposermap.moc.cpp		\
 		qgscomposermapbase.uic.cpp	\
@@ -495,11 +505,12 @@ libqgis_la_SOURCES =				\
 		qgslinestylewidget.cpp		\
 		qgslinestylewidget.moc.cpp	\
 		qgsfillstylewidget.cpp		\
-		qgsfillstylewidget.moc.cpp	\
-		qgsvectorsymbologywidgetbase.uic.cpp	\
-		qgsvectorsymbologywidgetbase.moc.uic.cpp \
-		qgsvectorsymbologywidget.cpp	\
-		qgsvectorsymbologywidget.moc.cpp	
+		qgsfillstylewidget.moc.cpp
+
+#		qgsvectorsymbologywidgetbase.uic.cpp	\
+#		qgsvectorsymbologywidgetbase.moc.uic.cpp \
+#		qgsvectorsymbologywidget.cpp	\
+#		qgsvectorsymbologywidget.moc.cpp	
 
 
 if HAVE_POSTGRESQL
