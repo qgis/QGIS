@@ -1,0 +1,444 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>QGIS Installation Guide</title>
+<link type="text/css" href="skin/page.css" rel="stylesheet">
+<link type="text/css" href="skin/krysalis.css" title="Krysalis" rel="alternate stylesheet">
+<link href="favicon.ico" rel="shortcut icon">
+</head>
+<body>
+<div id="toplinks">
+<script src="skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+</div>
+<form action="http://www.google.com/search" method="get">
+<div id="mainheader">
+<span class="textonly"> - </span><span class="textonly"> - </span><a href="http://qgis.org/" id="projectlogolink"><img alt="QGIS" src="images/project.png" id="projectlogo"></a>
+</div>
+</form>
+<hr class="textonly">
+<div class="content">
+<a id="printable" href="install.pdf"><img alt="PDF" src="skin/images/pdfdoc.gif">PDF version</a>
+<h1>QGIS Installation Guide</h1>
+<h3>For Versions 0.0.13 and Higher</h3>
+<ul>
+<li>
+<a href="#Introduction">Introduction</a>
+</li>
+<ul></ul>
+<li>
+<a href="#PostgreSQL">PostgreSQL</a>
+</li>
+<ul></ul>
+<li>
+<a href="#PostGIS">PostGIS</a>
+</li>
+<ul></ul>
+<li>
+<a href="#gdal">GDAL/OGR</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Qt">Qt</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Building+QGIS">Building QGIS</a>
+</li>
+<ul>
+<li>
+<a href="#Quick+and+Dirty">Quick and Dirty</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Configuring+QGIS">Configuring QGIS</a>
+</li>
+<ul>
+<li>
+<a href="#Qt-N10152">Qt</a>
+</li>
+<li>
+<a href="#GDAL">GDAL</a>
+</li>
+<li>
+<a href="#PostgreSQL-N1016C">PostgreSQL</a>
+</li>
+<li>
+<a href="#Example+Use+of+Configure">Example Use of Configure</a>
+</li>
+</ul>
+<li>
+<a href="#Compiling+and+Installing+QGIS">Compiling and Installing QGIS</a>
+</li>
+<ul></ul>
+</ul>
+</ul>
+		
+<a name="Introduction"></a>
+<h2>Introduction</h2>
+			
+			
+<p>
+    
+   This document briefly describes how to build QGIS from the source distribution. 
+   The information below is for <strong>version 0.0.13</strong> of QGIS.
+   </p>
+			
+<p>
+QGIS requires that a number of libraries be installed on your system:
+</p>
+			
+<ul>
+				
+<li>Qt</li>
+				
+<li>GDAL</li>
+				
+<li>PostgreSQL (Optional)</li>
+				
+<li>libpq++ (C++ API for PostgreSQL - Optional)</li>
+				
+<li>PostGIS (Optional)</li>
+			
+</ul>
+			
+<p>
+Each of these requirements are discussed below. Note that the information given 
+below is abstracted from the installation documentation for each of the 
+libraries. See the install information for each library to get detailed 
+instructions.</p>
+			
+<p>
+If you are building QGIS <strong>without PostgreSQL</strong>, skip to the section on
+
+<a href="#gdal">Installing GDAL/OGR</a>.
+</p>
+		
+		
+		
+<a name="PostgreSQL"></a>
+<h2>PostgreSQL</h2>
+			
+			
+<p>
+				
+<strong>PostgreSQL Versions 7.3 and higher:</strong>
+				
+</p>
+				
+<ol>
+					
+<li>Download PostgreSQL source from <a href="http://www.postgresql.org">www.postgresql.org</a>
+					
+</li>
+					
+<li>Configure PostgreSQL:
+
+					<pre class="code">	./configure --prefix=/usr/local/pgsql </pre>
+					
+</li>
+					
+<li>Build and install PostgreSQL using the information provided in the INSTALL file of the PostgreSQL distribution.</li>
+					
+<li>Download the C++ wrapper libpq++ from <a href="http://gborg.postgresql.org/project/libpqpp/projdisplay.php">http://gborg.postgresql.org/project/libpqpp/projdisplay.php</a>
+					
+</li>
+					
+<li>Follow the instructions in the libpq++ README to make and install the library</li>
+				
+</ol>
+				
+<p>
+					
+<strong>PostgreSQL Versions prior to 7.3:</strong>
+				
+</p>
+				
+<ol>
+					
+<li>Download PostgreSQL source from <a href="http://www.postgresql.org">www.postgresql.org</a>
+					
+</li>
+					
+<li>The C++ wrapper libpq++ is bundled with versions prior to 7.3. Use the --with-CXX option to configure PostgreSQL to use the C++ wrapper 
+<pre class="code">	./configure --prefix=/usr/local/pgsql --with-CXX</pre>
+					
+</li>
+					
+<li>Build and install PostgreSQL using the information provided in the INSTALL file of the PostgreSQL distribution.</li>
+				
+</ol>
+				
+<p>
+				
+<strong>All Versions:</strong>
+				
+</p>
+				
+<ol>
+					
+<li>Create the postgres user and setup the database (following taken from PostgreSQL INSTALL file with modification):
+	<pre class="code">
+As root:
+ adduser postgres
+ mkdir /usr/local/pgsql/data
+ chown postgres /usr/local/pgsql/data
+ su - postgres
+ cd /usr/local/pgsql
+ ./bin/initdb -D /usr/local/pgsql/data
+ ./bin/pg_ctl start  -o "-i" -D /usr/local/pgsql/data -l serverlog
+ ./bin/createdb test
+</pre>
+					
+</li>
+					
+<li>PostgreSQL should now be running. Logon as the postgres user (or use su - postgres). You should be able to connect to the test database with the command:
+<pre class="code">
+	psql test
+</pre>
+					
+</li>
+					
+<li>PostgreSQL install is done.</li>
+				
+</ol>
+			
+		
+		
+<a name="PostGIS"></a>
+<h2>PostGIS</h2>
+			
+			
+<ol>
+				
+<li>Download PostGIS source from <a href="http://postgis.refractions.net">postgis.refractions.net</a>
+				
+</li>
+				
+<li>Untar PostGIS into the contrib subdirectory of the postgresql build directory</li>
+				
+<li>PostGIS provides a manual in the doc/html subdirectory that explains the build process (see the Installation section)</li>
+				
+<li>Follow instructions in the PostGIS manual</li>
+				
+<li>If you will not be using PostgreSQL/PostGIS, you do not need to follow the steps regarding the procedural language extension</li>
+				
+<li>PostGIS library is now installed</li>
+			
+</ol>
+		
+		
+		
+<a name="gdal"></a>
+<h2>GDAL/OGR</h2>
+			
+			
+			
+<p>The GDAL and OGR libraries provide support for raster and vector data formats. QGIS makes use of both of these libraries (which come bundled in one distribution).
+<strong>Note:</strong> A Linux binary of GDAL is available at <a href="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</a>. If you choose to install the binary you will also need to download and unpack the source tree since QGIS needs the header files in order to compile.
+</p>
+			
+<p>
+To install GDAL/OGR from source:
+</p>
+
+<ol>
+
+<li>Download the GDAL distribution from <a href="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</a>
+					
+</li>
+					
+<li>Untar the distribution</li>
+					
+<li>Change to the gdal-x.x.x subdirectory that was created by step 2</li>
+					
+<li>See the documentation in the ./html subdirectory for information on building GDAL.</li>
+					
+<li>Follow the instructions in the <em>Building GDAL From Source</em> section</li>
+					
+<li>Make sure that gdal-config (found in the bin subdirectory where GDAL was installed)
+is included in the PATH. If necessary, add the path to gdal-config to the PATH
+environment variable. </li>
+
+<ul>
+
+<li>Check the install by running: gdal-config --prefix
+</li>
+					
+</ul>
+				
+</ol>
+		
+		
+<a name="Qt"></a>
+<h2>Qt</h2>
+			
+			
+<p>You must download and install Qt in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version Qt 3.1 or later.
+To install Qt:
+</p>
+
+<ol>
+
+<li>Download Qt from <a href="http://www.trolltech.com/developer">http://www.trolltech.com/developer</a> (choose the Qt/X11 Free Edition)</li>
+					
+<li>Unpack the distribution</li>
+					
+<li>Follow directions provided in the distribution directory
+doc/html/install-x11.html</li>
+					
+<li>Use whatever configure options you like but make sure you include -thread for use with QGIS. You can configure Qt with minimal options:
+<pre class="code">./configure -thread</pre>
+					
+</li>
+					
+<li>Complete the installation per the instructions provided in the Qt
+documentation (see step 3)</li>
+				
+</ol>
+		
+		
+<a name="Building+QGIS"></a>
+<h2>Building QGIS</h2>
+		
+		
+<p>
+		After you have installed the required libraries, you are ready to build QGIS. 
+		</p>
+		
+<p>
+		As of version 0.0.13, QGIS uses GNU Autoconf to configure the software prior
+		to building. 
+		</p>
+		
+		
+<a name="Quick+and+Dirty"></a>
+<h3>Quick and Dirty</h3>
+<div class="section">
+<p>If you don't need PostgreSQL support and have installed GDAL ,
+		you can configure and build QGIS by changing to the distribution directory
+		and typing:
+		</p>
+<pre class="code">./configure
+make
+make install</pre>
+<div class="frame note">
+<div class="label">Note</div>
+<div class="framecontent">This assumes that the gdal-config program is in
+		your PATH</div>
+</div>
+<p>See the next section for the full configuration instructions.</p>
+</div>
+		
+<a name="Configuring+QGIS"></a>
+<h3>Configuring QGIS</h3>
+<div class="section">
+<p>
+		To see the configure options available, change the the QGIS 
+		directory and enter:
+		</p>
+<pre class="code">./configure --help</pre>
+<p>Among other options, there are three that are important to
+		the success of the build:</p>
+<pre class="code">
+--with-qtdir=DIR              Qt installation directory default=$QTDIR
+--with-gdal=path/gdal-config  Full path to 'gdal-config' script,
+                              e.g. '--with-gdal=/usr/local/bin/gdal-config'
+--with-pg=path/pg_config      PostgreSQL (PostGIS) Support
+                              (full path to pg_config)
+		</pre>
+<a name="Qt-N10152"></a>
+<h4>Qt</h4>
+<p>The configure script will detect Qt, unless it is installed in a
+		non-standard location. Setting the QTDIR environment variable will 
+		make ensure that the detection succeeds. You can also specify the
+		path using the --with-qtdir option. 
+		</p>
+<a name="GDAL"></a>
+<h4>GDAL</h4>
+<p>
+		If the gdal-config script is in the PATH, configure will automatically
+		detect and configure GDAL support. If not in the path, you can specify
+		the full path to gdal-config using the --with-gdal option. For example:</p>
+<p>
+		
+<span class="codefrag">./configure --with-gdal=/usr/mystuff/bin/gdal-config</span>
+		
+</p>
+<a name="PostgreSQL-N1016C"></a>
+<h4>PostgreSQL</h4>
+<p>
+		If the pg_config script is in the PATH, configure will automatically
+		detect and configure PostgreSQL support. If not, you can use the
+		--with-pg option to specify the full path to pg_config. For example:</p>
+<p>
+		
+<span class="codefrag">./configure --with-pg=/usr/local/psql/bin/pg_config</span>
+		
+</p>
+<a name="Example+Use+of+Configure"></a>
+<h4>Example Use of Configure</h4>
+<pre class="code">
+./configure --prefix=/usr/local/qgis 
+	--with-gdal=/usr/local/gdal/bin/gdal-config
+	--with-pg=/usr/local/psql/bin/pg_config
+</pre>
+<p>This will configure QGIS to use both GDAL and PostgreSQL. QGIS will be
+installed in /usr/local/qgis.</p>
+<div class="frame note">
+<div class="label">Note</div>
+<div class="framecontent">If QTDIR is set and gdal-config and pg_config are both
+		in the PATH, there is no need to use the --with-gdal and --with-pg
+		options. The configure script will properly detect and configure
+		GDAL and PostgreSQL</div>
+</div>
+</div>
+		
+<a name="Compiling+and+Installing+QGIS"></a>
+<h3>Compiling and Installing QGIS</h3>
+<div class="section">
+<p>Once properly configured simply issue the following commands:
+		</p>
+<pre class="code">make
+make install
+</pre>
+</div>
+		
+<p>
+		
+<a href="http://sourceforge.net/"><img alt="SourceForge.net Logo" height="31" src="http://sourceforge.net/sflogo.php?group_id=55820&type=1" width="88"></a>
+	
+		
+</p>
+		
+	
+<div class="author">by Gary E. Sherman</div>
+</div>
+<hr class="textonly">
+<div id="nav">
+<div id="tabs">
+<h2 id="categories">
+<span class="category">Documentation</span>
+</h2>
+</div>
+<div class="navsection">
+<h3 class="navsectionheader">Documentation<span class="textonly">:</span>
+</h3>
+<span class="navitem">Installation</span><span class="textonly">-</span><a class="navitem" href="userguide.html">User Guide</a><span class="textonly">-</span>
+</div>
+</div>
+<p class="textonly"></p>
+<hr class="textonly">
+<div id="footer">
+<a href="skin/images/label.gif"></a><a href="skin/images/page.gif"></a><a href="skin/images/chapter.gif"></a><a href="skin/images/chapter_open.gif"></a><a href="skin/images/current.gif"></a><a href="/favicon.ico"></a><span id="copyright">Copyright &copy;
+				2003&nbsp;Micro Resources. All rights reserved.
+			</span>
+<br class="textonly">
+<span id="revision"><script type="text/javascript" language="JavaScript"><!--
+			  document.write(" - "+"Last Published: " + document.lastModified);
+			  //  --></script></span>
+<br class="textonly">
+<span id="validation"></span>
+</div>
+</body>
+</html>
