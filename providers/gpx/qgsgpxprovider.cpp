@@ -242,10 +242,146 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   return result;
 }
 
-QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist)
-{
-    return 0;//soon
+
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
+  QgsFeature* result = 0;
+  std::list<int>::const_iterator iter;
+  
+  if (mFeatureType == "waypoint") {
+    // go through the list of waypoints and return the first one that is in
+    // the bounds rectangle
+    for (; mFid < data->getNumberOfWaypoints(); ++mFid) {
+      const Waypoint& wpt(data->getWaypoint(mFid));
+      if (boundsCheck(wpt.lon, wpt.lat)) {
+	result = new QgsFeature(mFid);
+	
+	// some wkb voodoo
+	char* geo = new char[21];
+	std::memset(geo, 0, 21);
+	geo[0] = endian();
+	geo[1] = 1;
+	std::memcpy(geo+5, &wpt.lon, sizeof(double));
+	std::memcpy(geo+13, &wpt.lat, sizeof(double));
+	result->setGeometry((unsigned char *)geo, sizeof(wkbPoint));
+	result->setValid(true);
+	
+	// add attributes if they are wanted
+	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
+	  switch (*iter) {
+	  case 0:
+	    result->addAttribute("name", wpt.name);
+	    break;
+	  case 1:
+	    result->addAttribute("lat", QString("%1").arg(wpt.lat));
+	    break;
+	  case 2:
+	    result->addAttribute("lon", QString("%1").arg(wpt.lon));
+	    break;
+	  case 3:
+	    if (isnan(wpt.ele))
+	      result->addAttribute("ele", "");
+	    else
+	      result->addAttribute("ele", QString("%1").arg(wpt.ele));
+	    break;
+	  case 4:
+	    result->addAttribute("url", wpt.url);
+	    break;
+	  }
+	}
+	
+	++mFid;
+	break;
+      }
+    }
+  }
+  
+  else if (mFeatureType == "route") {
+    // go through the routes and return the first one that is in the bounds
+    // rectangle
+    for (; mFid < data->getNumberOfRoutes(); ++mFid) {
+      const Route& rte(data->getRoute(mFid));
+      if (rte.points.size() == 0)
+	continue;
+      const Routepoint& rtept(rte.points[0]);
+      const QgsRect& b(*mSelectionRectangle);
+      if ((rte.xMax >= b.xMin()) && (rte.xMin <= b.xMax()) &&
+	  (rte.yMax >= b.yMin()) && (rte.yMin <= b.yMax())) {
+	result = new QgsFeature(mFid);
+	
+	// some wkb voodoo
+	int nPoints = rte.points.size();
+	char* geo = new char[9 + 16 * nPoints];
+	std::memset(geo, 0, 9 + 16 * nPoints);
+	geo[0] = endian();
+	geo[1] = 2;
+	std::memcpy(geo + 5, &nPoints, 4);
+	for (int i = 0; i < rte.points.size(); ++i) {
+	  std::memcpy(geo + 9 + 16 * i, &rte.points[i].lon, sizeof(double));
+	  std::memcpy(geo + 9 + 16 * i + 8, &rte.points[i].lat, sizeof(double));
+	}
+	result->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
+	result->setValid(true);
+	
+	// add attributes if they are wanted
+	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
+	  if (*iter == 0)
+	    result->addAttribute("name", rte.name);
+	  else if (*iter == 1)
+	    result->addAttribute("url", rte.url);
+	}
+	
+	++mFid;
+	break;
+      }
+    }
+  }
+  
+  else if (mFeatureType == "track") {
+    // go through the tracks and return the first one that is in the bounds
+    // rectangle
+    for (; mFid < data->getNumberOfTracks(); ++mFid) {
+      const Track& trk(data->getTrack(mFid));
+      if (trk.segments.size() == 0)
+	continue;
+      if (trk.segments[0].points.size() == 0)
+	continue;
+      const Trackpoint& trkpt(trk.segments[0].points[0]);
+      const QgsRect& b(*mSelectionRectangle);
+      if ((trk.xMax >= b.xMin()) && (trk.xMin <= b.xMax()) &&
+	  (trk.yMax >= b.yMin()) && (trk.yMin <= b.yMax())) {
+	result = new QgsFeature(mFid);
+	
+	// some wkb voodoo
+	int nPoints = trk.segments[0].points.size();
+	char* geo = new char[9 + 16 * nPoints];
+	std::memset(geo, 0, 9 + 16 * nPoints);
+	geo[0] = endian();
+	geo[1] = 2;
+	std::memcpy(geo + 5, &nPoints, 4);
+	for (int i = 0; i < nPoints; ++i) {
+	  std::memcpy(geo + 9 + 16 * i, &trk.segments[0].points[i].lon, sizeof(double));
+	  std::memcpy(geo + 9 + 16 * i + 8, &trk.segments[0].points[i].lat, sizeof(double));
+	}
+	result->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
+	result->setValid(true);
+	
+	// add attributes if they are wanted
+	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
+	  if (*iter == 0)
+	    result->addAttribute("name", trk.name);
+	  else if (*iter == 1)
+	    result->addAttribute("url", trk.url);
+	}
+	
+	++mFid;
+	break;
+      }
+    }
+  }
+  
+  return result;
 }
+
 
 /**
  * Select features based on a bounding rectangle. Features can be retrieved
