@@ -34,12 +34,12 @@ bool QgsVectorDataProvider::deleteFeatures(std::list<int> const & id)
     return false;
 }
 
-bool QgsVectorDataProvider::addAttributes(std::list<QString> const & name, std::list<QString> const & type)
+bool QgsVectorDataProvider::addAttributes(std::map<QString,QString> const & name)
 {
     return false;
 }
 
-bool QgsVectorDataProvider::deleteAttributes(std::list<QString> const & name)
+bool QgsVectorDataProvider::deleteAttributes(std::set<QString> const & name)
 {
     return false;
 }

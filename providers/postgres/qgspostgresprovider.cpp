@@ -1147,13 +1147,12 @@ bool QgsPostgresProvider::deleteFeatures(std::list<int> const & id)
     return returnvalue;
 }
 
-bool QgsPostgresProvider::addAttributes(std::list<QString> const & name, std::list<QString> const & type)
+bool QgsPostgresProvider::addAttributes(std::map<QString,QString> const & name)
 {
     bool returnvalue=true;
-    std::list<QString>::const_iterator itert=type.begin();
-    for(std::list<QString>::const_iterator itern=name.begin();itern!=name.end();++itern)
+    for(std::map<QString,QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
-	QString sql="ALTER TABLE "+tableName+" ADD COLUMN "+(*itern)+" "+(*itert);
+	QString sql="ALTER TABLE "+tableName+" ADD COLUMN "+(*iter).first+" "+(*iter).second;
 	//send sql statement and do error handling
 	PGresult* result=PQexec(connection, (const char *)sql);
 	if(result==0)
@@ -1165,15 +1164,14 @@ bool QgsPostgresProvider::addAttributes(std::list<QString> const & name, std::li
 		QMessageBox::information(0,"ALTER TABLE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
 	    } 
 	}
-	++itert;
     }
     return returnvalue;
 }
 
-bool QgsPostgresProvider::deleteAttributes(std::list<QString> const & name)
+bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
 {
     bool returnvalue=true;
-    for(std::list<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
+    for(std::set<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
 	QString sql="ALTER TABLE "+tableName+" DROP COLUMN "+(*iter);
 	//send sql statement and do error handling

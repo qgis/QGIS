@@ -1978,6 +1978,18 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
       mindist=minvertexdist;
     }
   }
+  //also go through the not commited features
+  for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+  {
+      vertexFeature=(*iter)->closestVertex(point);
+      minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
+      if(minvertexdist<mindist)
+      {
+	  mindistx=vertexFeature.x();
+	  mindisty=vertexFeature.y();
+	  mindist=minvertexdist;
+      }
+  }
   point.setX(mindistx);
   point.setY(mindisty);
 }
