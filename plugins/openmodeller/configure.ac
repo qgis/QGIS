@@ -16,6 +16,9 @@ AC_PROG_LIBTOOL
 
 AC_LANG([C++])
 
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+AC_C_CONST
 
 # Checks for libraries.
 
@@ -33,20 +36,33 @@ dnl ---------------------------------------------------------------------------
 dnl QGIS check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QGIS
+QGISDATAPATH=`$QGIS_CONFIG --prefix`/share/qgis
+AC_SUBST(QGISDATAPATH)
 
-# Checks for header files.
+dnl ---------------------------------------------------------------------------
+dnl Checking for openmodeller
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH([om],
+  AC_HELP_STRING([--with-om=path],
+    [Path to openmodeller includes and libraries, e.g. '--with-om=/usr/local']),
+  [ac_om_config_path=$withval])
+AC_MSG_CHECKING([for openmodeller])
+for I in /usr /usr/local $ac_om_config_path; do
+  if test -f ${I}/include/openmodeller/om.hh; then
+    om_path=$I
+  fi
+done
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
-AC_C_CONST
+if test "a$om_path" != a; then
+  AC_MSG_RESULT([yes])
+  OM_CXXFLAGS="-I$om_path/include -I$om_path/include/openmodeller"
+  OM_LDADD="-lopenmodeller -L$om_path/lib"
+  AC_SUBST(OM_CXXFLAGS)
+  AC_SUBST(OM_LDADD)
+else
+  AC_MSG_ERROR([openmodeller includes not found, provide the path with --with-om])
+fi
 
-# Checks for library functions.
-
-AC_SUBST(QGIS_CFLAGS)
-AC_SUBST(QGIS_LDFLAGS)
-AC_SUBST(BOOST_PATH)
-AC_SUBST(GDAL_CFLAGS)
-AC_SUBST(GDAL_LIBS)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

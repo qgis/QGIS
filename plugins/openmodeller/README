@@ -60,6 +60,6 @@ Installation: * Extract the archive
 Post installation: Start qgis and use the plugin manager to enable the openModeller plugin.
              A new icon will be added to your toolbar, which will launch the oM gui.
 
-Contact and support: Please email me at tim@linfiniti.com or look for me on #qgis chanel on 
-             freenode irc. My irc nick is timlinux. Have fun!
+Contact and support: Please email me at tim@linfiniti.com or look for me on #qgis channel
+             on freenode irc. My irc nick is timlinux. Have fun!
 
