@@ -11,6 +11,7 @@ SUBDIRS =  delimited_text \
            grid_maker \
            copyright_label \
            north_arrow \
+           gps_importer \
            scale_bar \
            spit
 #SUBDIRS =  copyright_label \
