@@ -62,7 +62,7 @@ public:
   void pbnSelectLayerFolder_clicked();
   void traverseDirectories(const QString& dirname);
   bool checkLocalitiesFileFormat(const QString);
-  void pbnDefaultParameters_clicked(){};//implement me!
+  void pbnDefaultParameters_clicked();
   
 private:
     QString modelNameQString;

@@ -149,7 +149,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
   {
     //Set fonts for parameter labels
     QString myFontName = "Arial [Monotype]";
-    QFont myLabelFont(myFontName, 12, 75);
+    QFont myLabelFont(myFontName, 11, 75);
     
     // Scan openModeller algorithm list for the selected algorithm
     QString myAlgorithmNameQString=myAlgorithmMetadata->id;
@@ -161,14 +161,16 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 
       if (myParameterCountInt==0)
       {
-	//Set a label for algorithms with no parameters
-	QLabel * myLabel = new QLabel (frameParameters, ("lblNoParameters"));
-	myLabel->setText("No user definable parameters available");	   
-	myLabel->setFont(myLabelFont);
-	mLayout->addWidget(myLabel, 0,0);
+	//Set label and button for algorithms with no parameters
+	lblParameters->setText("No user definable parameters available");
+	//pbnDefaultParameters->setEnabled(false);
       }
       else
       {
+        //Set label and button for algorithms with parameters
+        lblParameters->setText("Algorithm specific parameters");
+	//pbnDefaultParameters->setEnabled(true);
+	
         QSettings settings;
 	
 	//interate through parameters adding the correct control type
@@ -210,7 +212,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		//add label and control to form
 		mLayout->addWidget(myLabel, i, 0);
 		mLayout->addWidget(mySpinBox, i, 2);
-		mLayout->setRowSpacing(i,35);
+		mLayout->setRowSpacing(i,30);
 		
 		//
 		// Add the widget to the map
@@ -248,7 +250,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 		//add label and control to form
 		mLayout->addWidget(myLabel, i,0);
 		mLayout->addWidget(myLineEdit,i,2);
-		mLayout->setRowSpacing(i,35);
+		mLayout->setRowSpacing(i,30);
 		myLineEdit->show();
 		
 		//
@@ -426,8 +428,35 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
    
   else if (thePageNameQString==tr("Step 8 of 8"))
   {
+  
+  QSettings myQSettings;
+   
+  //pull all the form data into local class vars.
+  outputFileNameQString=leOutputDirectory->text()+leOutputFileName->text();
+  myQSettings.writeEntry("/openmodeller/fullOutputFileName",outputFileNameQString);
+  localitiesFileNameQString=leLocalitiesFileName->text();
+  myQSettings.writeEntry("/openmodeller/localitiesFileName",localitiesFileNameQString);
+  
+  //
+  // Check the specified output filename and directory are valid before proceeding
+  //
+  QFile myQFile( outputFileNameQString+".cfg");
+  if ( myQFile.open( IO_WriteOnly ) ) 
+  {
+    //Filename is valid
+    std::cout << "Filename '" << outputFileNameQString << "' is valid" << std::endl;
     settings.writeEntry("/openmodeller/outputDirectory",leOutputDirectory->text());
     setFinishEnabled(currentPage(),true);
+  }
+  else
+  {
+    //Filename is invalid so switch back to previous page and warn user
+    showPage(QWizard::page(6));
+    std::cout << "Filename '" << outputFileNameQString << "' is invalid" << std::endl;
+    QMessageBox::warning(this,"Error opening output file!","The output filename and/or directory you specified is invalid.\n Please check and try again.");
+    
+  }
+
   }
 }
 
@@ -562,14 +591,7 @@ void OpenModellerGui::accept()
   //
   
   coordinateSystemQString = mProjectionsMap[cboCoordinateSystem->currentText()];
-   
   
-  
-  //pull all the form data into local class vars.
-  outputFileNameQString=leOutputDirectory->text()+leOutputFileName->text();
-  myQSettings.writeEntry("/openmodeller/fullOutputFileName",outputFileNameQString);
-  localitiesFileNameQString=leLocalitiesFileName->text();
-  myQSettings.writeEntry("/openmodeller/localitiesFileName",localitiesFileNameQString);
   //build up the map layers qstringlist
   layerNamesQStringList.clear();
   for ( unsigned int myInt = 0; myInt < lstLayers->count(); myInt++ )
@@ -1024,6 +1046,33 @@ void OpenModellerGui::mapCallback( float progress, void *extra_param )
   //progressBar1->setProgress(100 * progress, 100);
 }
 
+void OpenModellerGui::pbnDefaultParameters_clicked()
+{
 
+std::cout << "Setting defaults" << std::endl;
+         
+    ParametersMap::Iterator myIterator;
+    for ( myIterator = mMap.begin(); myIterator != mMap.end(); ++myIterator ) 
+    {
+      QString myWidgetName = myIterator.data()->name();
+      std::cout << myWidgetName << std::endl;
+      if (myWidgetName.left(2)=="le")
+      {
+        //QLineEdit * myLineEdit = (QLineEdit*) myIterator.data();
+        //myLineEdit->setText(myParameter->typical());
+	  
+      }
+	
+      
+      else if (myWidgetName.left(4)=="spin")
+      {
+        //QSpinBox * mySpinBox = (QSpinBox*) myIterator.data();
+	//mySpinBox->setValue(atoi(myIterator.data()->typical()));
+	//mySpinBox->setValue(5);
+      }
+      
+    }
+       
+}
 
 

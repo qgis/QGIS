@@ -101,3 +101,10 @@ void OpenModellerGuiBase::pbnSelectLayerFolder_clicked()
 {
 
 }
+
+
+
+void OpenModellerGuiBase::pbnDefaultParameters_clicked()
+{
+
+}

@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>716</width>
-            <height>561</height>
+            <width>600</width>
+            <height>497</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -18,6 +18,12 @@
             <width>600</width>
             <height>400</height>
         </size>
+    </property>
+    <property name="font">
+        <font>
+            <family>Arial [Monotype]</family>
+            <pointsize>11</pointsize>
+        </font>
     </property>
     <property name="caption">
         <string>openModeller Wizard</string>
@@ -85,6 +91,10 @@
                         <height>175</height>
                     </size>
                 </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
                 <property name="frameShape">
                     <enum>Box</enum>
                 </property>
@@ -100,6 +110,10 @@ The openModeller wizard will assist you in carrying out a species distribution m
             <widget class="QComboBox" row="2" column="1">
                 <property name="name">
                     <cstring>cboModelAlgorithm</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
                 </property>
             </widget>
             <widget class="QLabel" row="1" column="1">
@@ -136,8 +150,6 @@ The openModeller wizard will assist you in carrying out a species distribution m
                 </property>
                 <property name="font">
                     <font>
-                        <family>Arial [Monotype]</family>
-                        <pointsize>12</pointsize>
                     </font>
                 </property>
                 <property name="tabPosition">
@@ -174,7 +186,7 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                         </font>
                                     </property>
                                     <property name="text">
-                                        <string>Version number</string>
+                                        <string></string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="0" column="0">
@@ -238,7 +250,7 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                         </font>
                                     </property>
                                     <property name="text">
-                                        <string>Algorithm name</string>
+                                        <string></string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="2" column="0">
@@ -276,7 +288,7 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                         </font>
                                     </property>
                                     <property name="text">
-                                        <string>Joe Bloggs</string>
+                                        <string></string>
                                     </property>
                                 </widget>
                             </grid>
@@ -424,6 +436,10 @@ The openModeller wizard will assist you in carrying out a species distribution m
                 <property name="name">
                     <cstring>lblSelectLocalitiesFile_4</cstring>
                 </property>
+                <property name="font">
+                    <font>
+                    </font>
+                </property>
                 <property name="text">
                     <string>&lt;b&gt;Select the WKT coordinate system definition:&lt;/b&gt;</string>
                 </property>
@@ -431,6 +447,10 @@ The openModeller wizard will assist you in carrying out a species distribution m
             <widget class="QComboBox" row="2" column="1">
                 <property name="name">
                     <cstring>cboCoordinateSystem</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                    </font>
                 </property>
             </widget>
             <spacer row="3" column="1" rowspan="2" colspan="1">
@@ -990,7 +1010,7 @@ Select a file that will be used to mask areas from the model.</string>
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="2">
+            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="5">
                 <property name="name">
                     <cstring>txtAlgorithmParameters</cstring>
                 </property>
@@ -1023,7 +1043,7 @@ Select a file that will be used to mask areas from the model.</string>
 If you would like to specify any special parameters for the algorithm you have selected, use the form below. You will need to consult the algorithm documentation to find out what additional parameters can be specified.</string>
                 </property>
             </widget>
-            <widget class="QLayoutWidget" row="0" column="0" rowspan="2" colspan="1">
+            <widget class="QLayoutWidget" row="0" column="0" rowspan="4" colspan="1">
                 <property name="name">
                     <cstring>layout9</cstring>
                 </property>
@@ -1072,9 +1092,9 @@ If you would like to specify any special parameters for the algorithm you have s
                     </spacer>
                 </vbox>
             </widget>
-            <spacer row="1" column="2">
+            <spacer row="2" column="1">
                 <property name="name">
-                    <cstring>spacer16_2</cstring>
+                    <cstring>spacer18</cstring>
                 </property>
                 <property name="orientation">
                     <enum>Horizontal</enum>
@@ -1084,32 +1104,66 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>190</width>
-                        <height>31</height>
+                        <width>171</width>
+                        <height>21</height>
                     </size>
                 </property>
             </spacer>
-            <widget class="QFrame" row="1" column="1">
+            <spacer row="2" column="3" rowspan="1" colspan="3">
+                <property name="name">
+                    <cstring>spacer19</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>201</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="3" column="2">
+                <property name="name">
+                    <cstring>spacer17_3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>41</width>
+                        <height>40</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QFrame" row="2" column="2">
                 <property name="name">
                     <cstring>frameParameters</cstring>
                 </property>
                 <property name="sizePolicy">
                     <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>5</vsizetype>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>7</vsizetype>
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                     </sizepolicy>
                 </property>
                 <property name="minimumSize">
                     <size>
-                        <width>300</width>
+                        <width>0</width>
                         <height>0</height>
                     </size>
                 </property>
                 <property name="maximumSize">
                     <size>
-                        <width>300</width>
+                        <width>9999</width>
                         <height>32767</height>
                     </size>
                 </property>
@@ -1127,6 +1181,44 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="midLineWidth">
                     <number>0</number>
+                </property>
+            </widget>
+            <widget class="QPushButton" row="1" column="5">
+                <property name="name">
+                    <cstring>pbnDefaultParameters</cstring>
+                </property>
+                <property name="text">
+                    <string>Set to defaults</string>
+                </property>
+            </widget>
+            <spacer row="1" column="4">
+                <property name="name">
+                    <cstring>spacer20_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>30</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel" row="1" column="1" rowspan="1" colspan="3">
+                <property name="name">
+                    <cstring>lblParameters</cstring>
+                </property>
+                <property name="font">
+                    <font>
+                        <bold>1</bold>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>Algorithm specific parameters:</string>
                 </property>
             </widget>
         </grid>
@@ -1494,6 +1586,12 @@ If you would like to specify any special parameters for the algorithm you have s
         <receiver>OpenModellerGuiBase</receiver>
         <slot>pbnSelectLayerFolder_clicked()</slot>
     </connection>
+    <connection>
+        <sender>pbnDefaultParameters</sender>
+        <signal>clicked()</signal>
+        <receiver>OpenModellerGuiBase</receiver>
+        <slot>pbnDefaultParameters_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">openmodellerguibase.ui.h</include>
@@ -1512,6 +1610,7 @@ If you would like to specify any special parameters for the algorithm you have s
     <slot>cboModelAlgorithm_highlighted( const QString &amp; )</slot>
     <slot>leOutputDirectory_textChanged( const QString &amp; )</slot>
     <slot>pbnSelectLayerFolder_clicked()</slot>
+    <slot>pbnDefaultParameters_clicked()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
