@@ -1,3 +1,120 @@
+TEMPLATE	= app
+LANGUAGE	= C++
+
+CONFIG	+= qt thread rtti debug console
+
+LIBS	+= $(GDAL)\lib\gdal_i.lib $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib $(GEOS)\lib\geos.lib
+
+DEFINES	+= QGISDEBUG
+
+INCLUDEPATH	+= . $(GDAL)\include $(POSTGRESQL)\src\interfaces\libpq $(POSTGRESQL)\src\include $(GEOS)\include
+
+HEADERS	+= qgscolortable.h
+
+SOURCES	+= main.cpp \
+	qgisapp.cpp \
+	qgisiface.cpp \
+	qgisinterface.cpp \
+	qgsattributeaction.cpp \
+	qgsattributeactiondialog.cpp \
+	qgsattributedialog.cpp \
+	qgsattributetable.cpp \
+	qgsattributetabledisplay.cpp \
+	qgscontcoldialog.cpp \
+	qgscontinuouscolrenderer.cpp \
+	qgscoordinatetransform.cpp \
+	qgscustomsymbol.cpp \
+	qgsdatasource.cpp \
+	qgsdbsourceselect.cpp \
+	qgsdlgvectorlayerproperties.cpp \
+	qgsfeature.cpp \
+	qgsfeatureattribute.cpp \
+	qgsfield.cpp \
+	qgsgraduatedmarenderer.cpp \
+	qgsgraduatedsymrenderer.cpp \
+	qgsgramadialog.cpp \
+	qgsgramaextensionwidget.cpp \
+	qgsgrasydialog.cpp \
+	qgshelpviewer.cpp \
+	qgsidentifyresults.cpp \
+	qgslegend.cpp \
+	qgslegenditem.cpp \
+	qgslinestyledialog.cpp \
+	qgslinesymbol.cpp \
+	qgsmapcanvas.cpp \
+	qgsmaplayer.cpp \
+	qgsmaplayerregistry.cpp \
+	qgsmapserverexport.cpp \
+	qgsmarkerdialog.cpp \
+	qgsmarkersymbol.cpp \
+	qgsnewconnection.cpp \
+	qgsoptions.cpp \
+	qgspatterndialog.cpp \
+	qgspgquerybuilder.cpp \
+	qgspluginitem.cpp \
+	qgspluginmanager.cpp \
+	qgspluginmetadata.cpp \
+	qgspluginregistry.cpp \
+	qgspoint.cpp \
+	qgspolygonsymbol.cpp \
+	qgsproject.cpp \
+	qgsprojectproperties.cpp \
+	qgsprovidermetadata.cpp \
+	qgsproviderregistry.cpp \
+	qgsrangerenderitem.cpp \
+	qgsrasterlayer.cpp \
+	qgsrasterlayerproperties.cpp \
+	qgsrect.cpp \
+	qgsrenderitem.cpp \
+	qgsscalecalculator.cpp \
+	qgssimadialog.cpp \
+	qgssimarenderer.cpp \
+	qgssinglesymrenderer.cpp \
+	qgssisydialog.cpp \
+	qgssymbol.cpp \
+	qgssymbologyutils.cpp \
+	qgsvectorlayer.cpp \
+	qgssvgcache.cpp \
+	splashscreen.cpp \
+	qgsacetateobject.cpp \
+	qgslabeldialog.cpp \
+	qgslabel.cpp \
+	qgslabelattributes.cpp \
+	qgsacetaterectangle.cpp \
+	qgsuvaldialog.cpp \
+	qgsludialog.cpp \
+	qgsuniquevalrenderer.cpp \
+	qgsuvalmadialog.cpp \
+	qgsuvalmarenderer.cpp \
+	qgsvectorfilewriter.cpp \
+	qgsgeomtypedialog.cpp
+
+FORMS	= qgisappbase.ui \
+	qgsabout.ui \
+	qgsattributetablebase.ui \
+	qgsattributeactiondialogbase.ui \
+	qgsattributedialogbase.ui \
+	qgscontcoldialogbase.ui \
+	qgsdbsourceselectbase.ui \
+	qgsdlgvectorlayerpropertiesbase.ui \
+	qgsgramadialogbase.ui \
+	qgsgrasydialogbase.ui \
+	qgshelpviewerbase.ui \
+	qgsidentifyresultsbase.ui \
+	qgslegenditembase.ui \
+	qgslinestyledialogbase.ui \
+	qgsmapserverexportbase.ui \
+	qgsmarkerdialogbase.ui \
+	qgsmessageviewer.ui \
+	qgsnewconnectionbase.ui \
+	qgsoptionsbase.ui \
+	qgspatterndialogbase.ui \
+	qgspgquerybuilderbase.ui \
+	qgspluginmanagerbase.ui \
+	qgsprojectpropertiesbase.ui \
+	qgsrasterlayerpropertiesbase.ui \
+	qgslabeldialogbase.ui
+
 ######################################################################
 # Qmake project file for QGIS src directory
 # This file is used by qmake to generate the Makefile for building
@@ -27,19 +144,9 @@
 # The headers/lib can be downloaded from http://qgis.org/win32_geos.zip   #
 ###########################################################################
 
-TEMPLATE = app
 TARGET = qgis
-INCLUDEPATH += . $(GDAL)\include \
-                $(POSTGRESQL)\src\interfaces\libpq \
-                $(POSTGRESQL)\src\include \
-                $(GEOS)\include
-LIBS += $(GDAL)\lib\gdal_i.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
-        $(GEOS)\lib\geos.lib
-
 DEFINES+= QGISDEBUG
 DESTDIR = ../win_build
-CONFIG += qt thread rtti debug console
 #CONFIG += qt thread rtti console
 RC_FILE = qgis_win32.rc
 # Input
@@ -136,8 +243,7 @@ HEADERS += qgis.h \
             qgsuvalmarenderer.h \
             qgscolortable.h \
             qgsvectorfilewriter.h \
-            qgsgeomtypedialog.h
-INTERFACES += qgisappbase.ui \
+            qgsgeomtINTERFACES += qgisappbase.ui \
             qgsabout.ui \
             qgsattributetablebase.ui \
             qgsattributeactiondialogbase.ui \
@@ -167,8 +273,7 @@ INTERFACES += qgisappbase.ui \
             qgsludialogbase.ui \
             qgsuvaldialogbase.ui \
             qgsuvalmadialogbase.ui \
-            qgsgeomtypedialogbase.ui
-SOURCES += main.cpp \
+            qgsgeomtypediSOURCES += main.cpp \
             qgisapp.cpp \
             qgisiface.cpp \
             qgisinterface.cpp \
