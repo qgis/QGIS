@@ -169,15 +169,9 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*Removing a layer from the map no longer crashes the application\n"
-	  "* Fixed multiple render bug when adding a layer\n"
-	  "* Data source is shown in Layer Properties dialog\n"
-	  "* Display name of a layer can be changed using the Layer Properties dialog\n"
-	  "* Line widths can be set for a layer using the Layer Properties dialog\n"
-	  "* Zoom out now works\n"
-	  "* Zoom Previous added to toolbar\n"
-	  "* Toolbar has been rearranged and new icons added\n"
-	  "* Help|About QGis now contains Version, Whats New, and License information\n";
+	watsNew += "\n*Improved handling/management of PostGIS connections\n"
+	  "*Password prompt if the password is not stored with a connection\n"
+	  "*Windows size and postion and toolbar docking state is saved/restored\n";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();

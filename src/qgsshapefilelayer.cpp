@@ -76,15 +76,15 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 	   4. draw
 	 */
 	// set pen and fill
-    QgsSymbol *sym = symbol();
+	QgsSymbol *sym = symbol();
 	QPen pen;
 	pen.setColor(sym->color());
 	pen.setWidth(sym->lineWidth());
 	p->setPen(pen);
-  
-	
+
+
 	QBrush *brush = new QBrush(sym->fillColor());
-	
+
 	// reset the pointer to read from start of features
 
 	// set the spatial filter
@@ -246,7 +246,7 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 		}
 //      std::cout << featureCount << " features in ogr layer within the extent" << std::endl;
 		OGRGeometry *filt = ogrLayer->GetSpatialFilter();
-		filt->dumpReadable(stdout);
+		//filt->dumpReadable(stdout);
 		ogrLayer->ResetReading();
 	}
 

@@ -100,7 +100,7 @@ void QgsDbSourceSelect::dbConnect()
 		connString += " password=" + password;
 	  if(makeConnection){
 	m_connInfo = connString;	//host + " " + database + " " + username + " " + password;
-	qDebug(m_connInfo);
+	//qDebug(m_connInfo);
 	PgDatabase *pd = new PgDatabase((const char *) m_connInfo);
 //  std::cout << pd->ErrorMessage();
 	if (pd->Status() == CONNECTION_OK) {
@@ -113,16 +113,16 @@ void QgsDbSourceSelect::dbConnect()
 		pxLine = QPixmap(line_layer_xpm);
 		QPixmap pxPoly;
 		pxPoly = QPixmap(polygon_layer_xpm);
-		qDebug("Connection succeeded");
+		//qDebug("Connection succeeded");
 		// get the list of tables
 		QString sql = "select * from geometry_columns where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
 		sql += " order by f_table_name";
-		qDebug("Fetching tables using: " + sql);
+		//qDebug("Fetching tables using: " + sql);
 		int result = pd->ExecTuplesOk((const char *) sql);
 		if (result) {
 			QString msg;
 			QTextOStream(&msg) << "Fetched " << pd->Tuples() << " tables from database";
-			qDebug(msg);
+			//qDebug(msg);
 			for (int idx = 0; idx < pd->Tuples(); idx++) {
 				QString v = pd->GetValue(idx, "f_table_name");
 				QString type = pd->GetValue(idx, "type");
@@ -138,8 +138,8 @@ void QgsDbSourceSelect::dbConnect()
 				lstTables->insertItem(*p, v);
 			}
 		} else {
-			qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
-			qDebug(pd->ErrorMessage());
+			//qDebug("Unable to get list of spatially enabled tables from geometry_columns table");
+			//qDebug(pd->ErrorMessage());
 		}
 	} else {
 		QMessageBox::warning(this, "Connection failed",
