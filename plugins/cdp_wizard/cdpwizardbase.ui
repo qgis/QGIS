@@ -1551,7 +1551,7 @@ Please wait while the climate variables are calculated. The top progress bar sho
                             </spacer>
                             <widget class="QProgressBar">
                                 <property name="name">
-                                    <cstring>progressCurrentJob</cstring>
+                                    <cstring>progressTotalJob</cstring>
                                 </property>
                                 <property name="minimumSize">
                                     <size>

@@ -388,7 +388,7 @@ void CDPWizard::run()
     // get the ouput file type
     climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
 
-    
+
 
     //
     // find out if datafiles are in series (discrete files for each month)
@@ -437,8 +437,8 @@ void CDPWizard::run()
         {
             climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
         }
-    }   
-    
+    }
+
     //get a summary of the climate dataprocessor class now
 #ifdef QGISDEBUG
     std::cout << climateDataProcessor->getDescription() << endl;
@@ -457,7 +457,7 @@ void CDPWizard::run()
 
 void CDPWizard::numberOfYearsToCalc(int theNumberInt)
 {
-  progressCurrentJob->setTotalSteps(theNumberInt);
+  progressTotalJob->setTotalSteps(progressCurrentYear->totalSteps()* theNumberInt);
 }
 void CDPWizard::numberOfVariablesToCalc(int theNumberInt)
 {
@@ -477,7 +477,7 @@ void CDPWizard::yearDone()
    //dont set progress to 0 - 0 has a special qt meaning of 'busy'
   progressCurrentTask->setProgress(1);
   progressCurrentYear->setProgress(0);
-  progressCurrentJob->setProgress(progressCurrentJob->progress()+1);
+  progressTotalJob->setProgress(progressTotalJob->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::variableStart(QString theNameQString)
@@ -490,6 +490,7 @@ void CDPWizard::variableDone()
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
   progressCurrentTask->setProgress(1);
   progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
+  progressTotalJob->setProgress(progressTotalJob->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::cellDone(float theResultFloat)
