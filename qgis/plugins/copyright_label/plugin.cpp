@@ -174,6 +174,7 @@ if (mEnable)
   QColorGroup myQColorGroup = myQButton->colorGroup();  
        
   QSimpleRichText myQSimpleText(mLabelQString, mQFont);
+  myQSimpleText.setWidth( &myQPainter, (qGisInterface->getMapCanvas()->width()-10) );
   
   //Get canvas dimensions
   int myYOffset = qGisInterface->getMapCanvas()->height();
