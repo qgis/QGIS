@@ -903,20 +903,7 @@ void QgisApp::testButton()
 //      delete sfl;
 
 }
-void QgisApp::newLayerProperties()
-{
-	newLayerProperties(legendView->currentItem());
-}
-void QgisApp::newLayerProperties(QListViewItem *lvi)
-{
-  #ifdef DEBUG
-  std::cout << "Showing new layer properties dialog" << std::endl;
-  #endif
-  QgsMapLayer *lyr;
-   lyr = ((QgsLegendItem *)lvi)->layer();
-   QgsVectorLayer *vectorLayer = (QgsVectorLayer*)lyr;
-   vectorLayer->showNewLayerProperties();
-}
+
 void QgisApp::layerProperties()
 {
 	layerProperties(legendView->currentItem());

@@ -674,16 +674,7 @@ QgsDataProvider* QgsVectorLayer::getDataProvider()
 {
     return dataProvider;
 }
-//TODO FIX THIS NEW PROPERTIES DIALOG WHICH REPLACES ALL EXISTING PROPERTY
-    //TODO AND SYMBOLOGY DIALOGS 
-    // Currently this just opens the dialog and populates some general
-    // layer properties. When fully functional, this function should replace 
-    // showLayerProperties().
-void QgsVectorLayer::showNewLayerProperties()
-{
-  QgsDlgVectorLayerProperties *vlp = new QgsDlgVectorLayerProperties(this);
-  vlp->show();
-}
+
 void QgsVectorLayer::showLayerProperties()
 {
     if(m_propertiesDialog)
@@ -770,7 +761,6 @@ void QgsVectorLayer::initContextMenu(QgisApp *app){
   popMenu->insertItem(tr("&Open attribute table"), app, SLOT(attributeTable()));
   popMenu->insertSeparator();
   popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
-  popMenu->insertItem("New Properties dialog", this, SLOT(showNewLayerProperties()));
   popMenu->insertSeparator();
   popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
 }
