@@ -18,7 +18,7 @@
 #ifndef QGSTABLE_H
 #define QGSTABLE_H
 
-#include <qgsdatasource.h>
+#include "qgsdatasource.h"
 
 /*! \class QgsTable
  * \brief Class to represent an attribute table related
