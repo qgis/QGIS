@@ -10,6 +10,8 @@ public:
     void addColumn(QString column, bool isReserved, int index);
     void setReservedWords(const QStringList &);
     QStringList columnNames();
+    //! Set the description displayed in the dialog
+    void setDescription(const QString &description);
 public slots:
     void checkWord(QListViewItem *, int , const QString&);
     void editWord(QListViewItem *);

@@ -1,6 +1,7 @@
 #include <qlistbox.h>
 #include <qpixmap.h>
 #include <qlistview.h>
+#include <qtextedit.h>
 #include "../../src/qgspgutil.h"
 #include "spit_icons.h"
 
@@ -69,3 +70,8 @@ QStringList QgsEditReservedWordsDialog::columnNames()
   }
   return QStringList(cols);
 }
+void QgsEditReservedWordsDialog::setDescription(const QString &description)
+{
+  txtExplanation->setText(description);
+}
+
