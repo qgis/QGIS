@@ -150,3 +150,9 @@ void QgisAppBase::select()
 {
 
 }
+
+
+void QgisAppBase::exportMapServer()
+{
+
+}
