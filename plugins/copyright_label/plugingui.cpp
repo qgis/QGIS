@@ -67,3 +67,7 @@ void PluginGui::setEnabled(bool theBool)
   cboxEnabled->setChecked(theBool);
 }
 
+void PluginGui::setText(QString theTextQString)
+{
+  txtCopyrightText->setText(theTextQString);
+}

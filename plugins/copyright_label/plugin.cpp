@@ -133,6 +133,7 @@ void Plugin::run()
   connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
   connect(myPluginGui, SIGNAL(enableCopyrightLabel(bool)), this, SLOT(setEnable(bool)));
+  myPluginGui->setText(mLabelQString);
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
