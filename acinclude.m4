@@ -1,16 +1,20 @@
 # Check for Qt compiler flags, linker flags, and binary packages
-AC_DEFUN([gw_CHECK_QT],
+AC_DEFUN([AQ_CHECK_QT],
 [
 AC_REQUIRE([AC_PROG_CXX])
 AC_REQUIRE([AC_PATH_X])
 
 AC_MSG_CHECKING([QTDIR])
-AC_ARG_WITH([qtdir], [  --with-qtdir=DIR        Qt installation directory [default=$QTDIR]], QTDIR=$withval)
+AC_ARG_WITH([qtdir], [  --with-qtdir=DIR        Qt installation directory [default=/usr/local]], QTDIR=$withval)
 # Check that QTDIR is defined or that --with-qtdir given
 if test x"$QTDIR" = x ; then
     QT_SEARCH="/usr/lib/qt31 /usr/local/qt31 /usr/lib/qt3 /usr/local/qt3 /usr/lib/qt2 /usr/local/qt2 /usr/lib/qt /usr/local/qt"
     for i in $QT_SEARCH; do
-        if test -f $i/include/qglobal.h -a x$QTDIR = x; then QTDIR=$i; fi
+        if test -a x$QTDIR = x; then
+		if test -f $i/include/qt/qglobal.h -o -f $i/include/qglobal.h; then
+			QTDIR=$i
+		fi
+	fi
     done
 fi
 if test x"$QTDIR" = x ; then
@@ -24,9 +28,16 @@ AC_MSG_RESULT([$QTDIR])
 # TODO: Use sed instead of perl
 QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 
+# Check for QT includedir on Mac OSX
+if test -f $QTDIR/include/qt/qglobal.h; then
+	QTINC=$QTDIR/include/qt
+else
+	QTINC=$QTDIR/include
+fi
+
 # Figure out which version of Qt we are using
 AC_MSG_CHECKING([Qt version])
-QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTDIR/include/qglobal.h | perl -p -e 's/\D//g'`
+QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTINC/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
     33*)
         QT_MAJOR="3"
@@ -62,7 +73,7 @@ AC_CHECK_PROG(QEMBED, qembed, qembed)
 
 
 # Calculate Qt include path
-QT_CXXFLAGS="-I$QTDIR/include"
+QT_CXXFLAGS="-I$QTINC"
 
 QT_IS_EMBEDDED="no"
 # On unix, figure out if we're doing a static or dynamic link
@@ -91,6 +102,41 @@ case "${host}" in
         fi
         ;;
 
+    *-darwin*)
+    # determin static or dynamic -- prefer dynamic
+      QT_IS_DYNAMIC=`ls $QTDIR/lib/libqt*.dylib 2> /dev/null`
+
+      if test "x$QT_IS_DYNAMIC" = x;  then
+        QT_IS_STATIC=`ls $QTDIR/lib/libqt*.a 2> /dev/null`
+        if test "x$QT_IS_STATIC" = x; then
+            QT_IS_STATIC="no"
+            AC_MSG_ERROR([*** Couldn't find any Qt libraries])
+        else
+            QT_IS_STATIC="yes"
+        fi
+      else
+	    QT_IS_STATIC="no"
+      fi
+    # set link parameters based on shared/mt libs or static lib
+      if test "x`ls $QTDIR/lib/libqt.a* 2> /dev/null`" != x ; then
+            QT_LIB="-lqt"
+            QT_IS_MT="no"
+      elif test "x`ls $QTDIR/lib/libqt-mt.*.dylib 2> /dev/null`" != x ; then
+            QT_LIB="-lqt-mt"
+            QT_IS_MT="yes"
+      elif test "x`ls $QTDIR/lib/libqt.*.dylib 2> /dev/null`" != x ; then
+            QT_LIB="-lqt"
+            QT_IS_MT="no"
+      elif test "x`ls $QTDIR/lib/libqte.* 2> /dev/null`" != x ; then
+            QT_LIB="-lqte"
+            QT_IS_MT="no"
+            QT_IS_EMBEDDED="yes"
+      elif test "x`ls $QTDIR/lib/libqte-mt.* 2> /dev/null`" != x ; then
+            QT_LIB="-lqte-mt"
+            QT_IS_MT="yes"
+            QT_IS_EMBEDDED="yes"
+        fi
+        ;;
     *)
     # determin static or dynamic -- prefer dynamic
       QT_IS_DYNAMIC=`ls $QTDIR/lib/libqt*.so 2> /dev/null`
@@ -147,6 +193,13 @@ case "${host}" in
         ;;
 
     *linux*)
+        QT_LIBS="$QT_LIB"
+        if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
+            QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg"
+        fi
+        ;;
+
+    *darwin*)
         QT_LIBS="$QT_LIB"
         if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
             QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg"
