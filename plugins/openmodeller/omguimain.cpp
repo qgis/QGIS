@@ -51,7 +51,8 @@ void OmGuiMain::runWizard()
   OpenModellerGui * myOpenModellerGui = new OpenModellerGui(this,"openModeller Wizard",true,0);
   connect(myOpenModellerGui, SIGNAL(drawModelImage(QString)), this, SLOT(drawModelImage(QString)));
 
-  myOpenModellerGui->show();
+  myOpenModellerGui->exec();
+  show();
 }
 
 /**

@@ -43,6 +43,7 @@ LayerSelector::LayerSelector( QWidget* parent , const char* name , bool modal , 
   listFileTree->setColumnWidth(1,10);
   listFileTree->setColumnWidthMode(2,QListView::Maximum);
   listFileTree->setColumnWidth(2,10);
+  listFileTree->setResizeMode(QListView::AllColumns);
   listParent = new QListViewItem(listFileTree,baseDirString);
   traverseDirectories(baseDirString,listParent);
   listParent->setOpen(true);
@@ -66,6 +67,7 @@ void LayerSelector::pbnDirectorySelector_clicked()
   listParent = new QListViewItem(listFileTree,baseDirString);
   traverseDirectories(baseDirString,listParent);
   listParent->setOpen(true);
+  listFileTree->setResizeMode(QListView::AllColumns);
   listFileTree->triggerUpdate();
   
 }

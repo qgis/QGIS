@@ -618,7 +618,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   //if all went ok, send notification to the parent app that we are finished (qgis plugin mode)
   std::cout << "emittin drawRasterLayer" << std::endl;
   emit drawRasterLayer(outputFileNameQString+QString(".tif"));
-  close();
+  accept();
 }
 void OpenModellerGui::makeConfigFile()
 {
