@@ -73,6 +73,8 @@ class QgsRect{
     bool isEmpty();
     //! returns string representation of form xmin,ymin xmax,ymax
     QString stringRep() const;
+    //! overloaded stringRep that allows precision of numbers to be set
+    QString stringRep(int thePrecision) const;
     //! returns rectangle s a polygon 
     QString asPolygon() const;
     /*! Comparison operator

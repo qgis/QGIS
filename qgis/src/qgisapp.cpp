@@ -38,6 +38,7 @@
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <qpainter.h>
+#include <qprogressbar.h>
 #include <qpixmap.h>
 #include <qpoint.h>
 #include <qpopupmenu.h>
@@ -73,6 +74,7 @@
 #include "qgslegend.h"
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
+
 
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
@@ -276,6 +278,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   setCaption(caption);
   connect(mapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
+  connect(mapCanvas,SIGNAL(extentsChanged(QString )),this,SLOT(showExtents(QString )));
+  connect(mapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
   connect(mapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
           this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
@@ -338,6 +342,17 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 #endif
   // set the dirty flag to false -- no changes yet
   projectIsDirty = false;
+
+  //
+  // Add a panel to the status bar for the scale, coords and progress
+  //
+  mProgressBar=new QProgressBar(100,NULL);
+  statusBar()->addWidget(mProgressBar,0.5,true);   
+  mScaleLabel=new QLabel(QString("Scale"),NULL);
+  statusBar()->addWidget(mScaleLabel, 0,true);
+  mCoordsLabel=new QLabel(QString("Coordinates:"), NULL);
+  statusBar()->addWidget(mCoordsLabel, 0, true);
+ 
 }
 
 
@@ -790,7 +805,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
 
    QApplication::restoreOverrideCursor();
 
-   statusBar()->message(mapCanvas->extent().stringRep());
+   statusBar()->message(mapCanvas->extent().stringRep(2));
 
    return true;
 
@@ -898,7 +913,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
       mapCanvas->freeze(false);
       mapCanvas->render2();
       QApplication::restoreOverrideCursor();
-      statusBar()->message(mapCanvas->extent().stringRep());
+      statusBar()->message(mapCanvas->extent().stringRep(2));
 
   }
 
@@ -1190,6 +1205,11 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
                        mapCanvas, 
                        SLOT(refresh()));
 
+      // connect up any request the raster may make to update the app statusbar
+      QObject::connect(layer, 
+                       SIGNAL(setProgress(int,int)), 
+                       this, 
+                       SLOT(showProgress(int,int)));      
       // add it to the mapcanvas collection
       mapCanvas->addLayer(layer);
       projectIsDirty = true;
@@ -1222,7 +1242,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
   mapCanvas->freeze(false);
   mapCanvas->render2();
   QApplication::restoreOverrideCursor();
-  statusBar()->message(mapCanvas->extent().stringRep());
+  statusBar()->message(mapCanvas->extent().stringRep(2));
 
    return true;
    
@@ -1284,7 +1304,11 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
                                 SIGNAL(repaintRequested()), 
                                 mapCanvas, 
                                 SLOT(refresh()));
-
+             // connect up any request the raster may make to update the app statusbar
+             QObject::connect(layer, 
+                       SIGNAL(setProgress(int,int)), 
+                       this, 
+                       SLOT(showProgress(int,int))); 
                // add it to the mapcanvas collection
               mapCanvas->addLayer(layer);
               
@@ -1338,7 +1362,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
   QApplication::restoreOverrideCursor();
 
-  statusBar()->message(mapCanvas->extent().stringRep());
+  statusBar()->message(mapCanvas->extent().stringRep(2));
 
   return returnValue;
 
@@ -1445,7 +1469,7 @@ void QgisApp::addDatabaseLayer()
 
           // draw the map
           //mapCanvas->render2();
-          statusBar()->message(mapCanvas->extent().stringRep());
+          statusBar()->message(mapCanvas->extent().stringRep(2));
 
         }
       qApp->processEvents();
@@ -1532,7 +1556,7 @@ void QgisApp::saveMapAsImage()
   //prompt the user for a filename
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
           ".",
-          "PNG Files (*.png)",
+          "PNG Files (*.pn223g)",
           this,
           "save file dialog"
           "Choose a filename to save the map image as" );
@@ -1618,9 +1642,11 @@ void QgisApp::zoomIn()
   /* QgsRect ext = mapCanvas->extent();
      ext.scale(0.5);
      mapCanvas->setExtent(ext);
-     statusBar()->message(ext.stringRep());
+     statusBar()->message(ext.stringRep(2));
      mapCanvas->clear();
      mapCanvas->render2(); */
+  
+  
 
 }
 
@@ -1638,11 +1664,13 @@ void QgisApp::zoomOut()
      m.scale( 0.5, 0.5 );
      mapCanvas->setWorldMatrix( m );
    */
+     
 }
 
 void QgisApp::zoomToSelected()
 {
   mapCanvas->zoomToSelected();
+    
 }
 
 void QgisApp::pan()
@@ -1654,16 +1682,19 @@ void QgisApp::pan()
   delete mapCursor;
   mapCursor = new QCursor(panBmp, panBmpMask, 5, 5);
   mapCanvas->setCursor(*mapCursor);
+    
 }
 
 void QgisApp::zoomFull()
 {
   mapCanvas->zoomFullExtent();
+    
 }
 
 void QgisApp::zoomPrevious()
 {
   mapCanvas->zoomPreviousExtent();
+    
 }
 
 void QgisApp::identify()
@@ -1726,13 +1757,20 @@ void QgisApp::drawLayers()
   std::cout << "In  QgisApp::drawLayers()" << std::endl;
   mapCanvas->setDirty(true);
   mapCanvas->render2();
+  
 }
 
 void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
-  statusBar()->message(p.stringRep());
-  //qWarning("X,Y is: " + p.stringRep());
+  //@todo Softcode precsion later
+  mCoordsLabel->setText(p.stringRep(2));
+  //qWarning("X,Y is: " + p.stringRep(2));
 
+}
+
+void QgisApp::showScale(QString theScale)
+{
+  mScaleLabel->setText(theScale);
 }
 
 void QgisApp::testButton()
@@ -1843,7 +1881,7 @@ void QgisApp::removeLayer()
   // draw the map
   mapCanvas->clear();
   mapCanvas->render2();
-
+  
 
 }
 
@@ -1856,6 +1894,7 @@ void QgisApp::zoomToLayerExtent()
   mapCanvas->setExtent(lyr->extent());
   mapCanvas->clear();
   mapCanvas->render2();
+  
 
 }
 
@@ -2514,7 +2553,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 
       // draw the map
       //mapCanvas->render2();
-      statusBar()->message(mapCanvas->extent().stringRep());
+      statusBar()->message(mapCanvas->extent().stringRep(2));
 
     }else
     {
@@ -2526,6 +2565,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     mapCanvas->render2();
     QApplication::restoreOverrideCursor();
   }
+    
 }
 
 int QgisApp::saveDirty()
@@ -2610,3 +2650,31 @@ int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
   pluginMenu->insertItem(menuText, menu);
 }
 
+// slot to update the progress bar in the status bar
+void QgisApp::showProgress(int theProgress, int theTotalSteps)
+{
+#ifdef QGISDEBUG
+  std::cout << "setProgress called with " << theProgress << "/" << theTotalSteps << endl;
+#endif
+/* @todo fix this!
+  if (theProgress==0 && theTotalSteps==0)
+  {
+    mProgressBar->hide();
+  }
+  else
+  {
+    //only call show if not already hidden to reduce flicker
+    if (!mProgressBar->isVisible())
+    {
+      mProgressBar->show();
+    }
+  }
+  */
+  mProgressBar->setProgress(theProgress,theTotalSteps);
+}
+
+void QgisApp::showExtents(QString theExtents)
+{
+  statusBar()->message(theExtents);
+
+}

@@ -28,7 +28,6 @@ class QgsPoint {
     //! y coordinate 
     double m_y;
   
-  
  public:
     /// Default constructor
 	QgsPoint();
@@ -60,8 +59,12 @@ class QgsPoint {
 	 */
 	double y(void) const;
 	int yToInt();
+
 	//! String representation of the point (x,y)
 	QString stringRep() const;
+	//! As above but with precision for string representaiton of a point
+	QString stringRep(int thePrecision) const;
+	
 	//! equality operator
 	bool operator==(const QgsPoint &other);
     
@@ -70,6 +73,8 @@ class QgsPoint {
     
 	/// Assignment
 	QgsPoint & operator=(const QgsPoint &other);
+	
+	
 };
 
 inline QgsPoint::QgsPoint()

@@ -29,6 +29,12 @@ QString QgsPoint::stringRep() const
   return rep;
 }
 
+QString QgsPoint::stringRep(int thePrecision) const
+{
+  QString rep = QString::number(m_x,'f',thePrecision) + QString(",") + 
+  QString::number( m_y,'f',thePrecision);
+  return rep;
+}
 // operators
 bool QgsPoint::operator==(const QgsPoint & other)
 {

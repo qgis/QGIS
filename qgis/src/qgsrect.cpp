@@ -122,6 +122,23 @@ QString QgsRect::stringRep() const
   return rep;
 }
 
+// overloaded version of above fn to allow precision to be set
+// Return a string representation of the rectangle with high precision
+QString QgsRect::stringRep(int thePrecision) const
+{
+  QString spacer = " ";
+  QString rep = QString::number(xmin,'f',thePrecision) + 
+                spacer +
+                QString::number(ymin,'f',thePrecision) +
+                spacer +
+                QString::number(xmax,'f',thePrecision) +
+                spacer +
+                QString::number(ymax,'f',thePrecision) ;
+#ifdef QGISDEBUG
+  std::cout << "Extents : " << rep << std::endl;
+#endif		
+  return rep;
+}
 // Return the rectangle as a set of polygon coordinates
 QString QgsRect::asPolygon() const
 {
