@@ -295,34 +295,54 @@ If you are invoking an action that uses the \%\% notation, right-click on the
 field value in the \textit{Identify Results} dialog or the
 \textit{Attribute table} that you wish to pass to the application or script.
 
-Here is another example that pulls data out of a vector layer and inserts it into a file using bash and the `echo' command (so it will only work on Gnu/Linux and perhaps Mac OSX). The layer in question has fields for a species name (taxon\_name), latitude (lat) and longitude (long). I would like to be able to make a spatial selection of a localites and export these field values to a text file for the selected record (shown in yellow in the QGIS map area). Here is the action to achieve this:
+Here is another example that pulls data out of a vector layer and inserts it
+into a file using bash and the `echo' command (so it will only work on Gnu/Linux
+and perhaps Mac OSX). The layer in question has fields for a species name
+(taxon\_name), latitude (lat) and longitude (long). I would like to be able to
+make a spatial selection of a localites and export these field values to a text
+file for the selected record (shown in yellow in the QGIS map area). Here is the
+action to achieve this:
 
 \begin{verbatim}
-bash -c "echo \"%taxon_name %lat %long\" >> /tmp/species_localities.txt"
+	bash -c "echo \"%taxon_name %lat %long\" >> /tmp/species_localities.txt"
 \end{verbatim} 
 
 After selecting a few localties and running the action on each one, opening the output file will show something like this:
 
 \begin{verbatim}
-Acacia mearnsii -34.0800000000 150.0800000000
-Acacia mearnsii -34.9000000000 150.1200000000
-Acacia mearnsii -35.2200000000 149.9300000000
-Acacia mearnsii -32.2700000000 150.4100000000
+	Acacia mearnsii -34.0800000000 150.0800000000
+	Acacia mearnsii -34.9000000000 150.1200000000
+	Acacia mearnsii -35.2200000000 149.9300000000
+	Acacia mearnsii -32.2700000000 150.4100000000
 \end{verbatim} 
 
 
-\section{Editing}
+\section{Editing}\index{editing}
 
+As of version 0.6 QGIS supports basic capabilities for editing spatial data.
+Before reading any further you should note that at this stage editing is still
+experimental. Before performing any edits, always make a backup of the dataset
+you are about to edit. 
 
-As of version 0.6 QGIS supports basic capabilities for editing spatial data. Before reading any further you should note that at this stage editing is still experimental.Before performing any edits, always make a backup of the dataset you are about to edit. 
+\textbf{Note} - the procedure for editing GRASS layers is different - see
+Section \ref{grass_digitising} for details.
 
-\textbf{Note} - the procedure for editing GRASS layers is different - see Section \ref{grass_digitising} for details.
-
-\subsection{Editing an Existing Layer}
+\subsection{Editing an Existing Layer}\index{editing!an existing layer}
 \label{sec:edit_existing_layer}
-if you wish to edit an existing layer,  choose `Start Editing' from the context menu after right clicking on the legend entry for that layer. Remember to back up your data before starting! Once the layer is in edit mode you will see a small \includegraphics[scale=1]{qgis_user_guide_images/editable} icon to remind you.
+If you wish to edit an existing layer, choose \textit{Start Editing} from the
+context menu after right clicking on the legend entry for that layer. Remember
+to backup your data before starting! Once the layer is in edit mode you will
+see a small \includegraphics[scale=1]{qgis_user_guide_images/editable} icon to
+remind you.\index{editing!icon}
 
-Now that the layer is editable, you can use the `Capture Points' icon (or similiar icon for line and polygon layers) to put the qgis cursor into digitising mode. If you are capturing a point feature simple use the pan and zoom tools to arrive at an appropriate place in your layer, then click the `Capture Points' tool and click on the map area were you woul like your new point feature. A window will appear where you can set the attributes. Figure \ref{fig:vector_digitising} shows setting attributes of for a fictitious new city in the Antartic.
+Now that the layer is editable, you can use the \textit{Capture Points} icon (or
+similiar icon for line and polygon layers) on the toolbar to put the qgis cursor
+into digitising mode. If you are capturing a point feature simply use the pan
+and zoom tools to navigate to the area of interest, then click the
+\textit{Capture Points} tool and click on the map area to create the  
+new point feature. A window will appear allowing you to set the attributes.
+Figure \ref{fig:vector_digitising} shows setting attributes for a fictitious
+new city in the Antarctic.
 
 \begin{figure}[h]
    \begin{center}
@@ -331,25 +351,55 @@ Now that the layer is editable, you can use the `Capture Points' icon (or simili
 \end{center}  
 \end{figure}
 
-In its current implementation the attributes dialog box does not check that type you have entered are correct, so you need to make sure of this yourself before pressing ok. Once you have finished adding your features, you can choose `Stop Editing' from the layer's context menu. Choosig `yes' at the dialog that pops up will save your changes to disk, and choosing `No' at this point will cause them to be discard. You should also note that QGIS does not (yet!) provide any way to delete an individual feature.
+In its current implementation the attributes dialog box does not check that the
+data matches the type expected, so make sure of this before
+pressing \textit{Ok}. 
 
-\subsection{Creating new layers from scratch}
+To delete a feature, select it using the selection tool and choose
+\textit{Delete selection} from the editing tools.
 
-In its current incarnation, the editing of attributes associated with spatial features is extremely basic and subsequently some of the procedures explained below involve some `hoop jumping' which will later no longer be necessary as QGIS's editing tools mature.
+Once you have finished adding features, choose \textit{Stop Editing} from the
+layer's context menu. Choosing \textit{Yes} will save the changes to disk, while
+choosing \textit{No} at this point will cause them to be discarded.
+\index{editing!saving changes}
+%Note that QGIS does not yet provide any way to delete an individual feature.
 
-To create a new layer, choose `New Vector Layer' from the `Layer' menu. You will be prompted for the layer type - either point, line or polygon. Note QGIS that does not yet support creation of 2.5D features (i.e. features with X,Y,Z coordinates) or measure features. Also in version 0.6 only shapefiles can be created - in future versions any OGR creatable layer type will be supported. Having selected the layer type, you will be prompted for the filename for your new layer. QGIS will automatically add a .shp extension to the name you specify. Once the layer has been created, you edit it in the same way as described in Section \ref{sec:edit_existing_layer} above. However when you add your first feature you will notice that only one attribute field is specified for the layer called 'dummy' (this is not an oblique reference to the collective intelligence of the QGIS development team!). In order to add additional fields you need to embark on the `hoop jumping' exercise referred to earlier \footnote{These limitations will be removed in the next version of QGIS.}. 
+\subsection{Creating a New Layer}\index{editing!creating a new layer}
 
-So on with the hoop jumping.... Immediately after creating your new shape file, remove it from the legend. Then in a bash or msdos shell use the shapelib\footnote{shapelib is available from \url{http://shapelib.maptools.org/}} `dbfcreate' tool to create a new copy of the associated .dbf file. Heres an example:
+In its current incarnation, the editing of attributes associated with spatial
+features is extremely basic and subsequently some of the procedures explained
+below involve some extra steps which will later no longer be necessary as
+the editing tools mature.
 
+To create a new layer, choose \textit{New Vector Layer} from the \textit{Layer}
+menu. You will be prompted for the layer type - either point, line or polygon.
+Note QGIS that
+does not yet support creation of 2.5D features (i.e. features with X,Y,Z
+coordinates) or measure features. At this time, only shapefiles can be
+created. In a future version of QGIS, creation of any OGR or PostgreSQL layer type will be supported.
+
+Having selected the layer type, you will be prompted for the filename for your
+new layer. QGIS will automatically add a .shp extension to the name you specify.
+Once the layer has been created, you edit it in the same way as described in
+Section \ref{sec:edit_existing_layer} above. When the shapefile is created,
+only one attribute field called "dummy" is added.
+In order to add additional fields you need to
+take a few extra steps as referred to earlier \footnote{These
+limitations will be removed in the next version of QGIS.}. 
+
+Immediately after creating the new shape file,\index{editing!adding attribute
+fields} remove it from the legend. Then in a bash or MSDOS shell, use the
+shapelib\footnote{shapelib is available from
+\url{http://shapelib.maptools.org/}} `dbfcreate' tool to create a new copy of
+the associated .dbf file. Here is an example:
 
 \begin{verbatim}
-# dbfcreate timtest.dbf -s taxon_name 255, -n lat 3 5, -n long 3 5, -s notes 255
-# dbfdump -h timtest.dbf
-Field 0: Type=String, Title=`taxon_name', Width=255, Decimals=0
-Field 1: Type=Double, Title=`lat', Width=3, Decimals=5
-Field 2: Type=Double, Title=`long', Width=3, Decimals=5
-Field 3: Type=String, Title=`notes', Width=255, Decimals=0
-
+  # dbfcreate timtest.dbf -s taxon_name 255, -n lat 3 5, -n long 3 5, -s notes 255
+  # dbfdump -h timtest.dbf
+  Field 0: Type=String, Title=`taxon_name', Width=255, Decimals=0
+  Field 1: Type=Double, Title=`lat', Width=3, Decimals=5
+  Field 2: Type=Double, Title=`long', Width=3, Decimals=5
+  Field 3: Type=String, Title=`notes', Width=255, Decimals=0
 \end{verbatim} 
 
 Having modified the .dbf file to your needs you can now go ahead and digitise features using the same procedure as described in Section \ref{sec:edit_existing_layer}.
