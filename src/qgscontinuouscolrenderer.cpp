@@ -193,9 +193,7 @@ void QgsContinuousColRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoor
     char lsb;
     QgsPoint pt;
     QPointArray *pa;
-    //OGRFieldDefn *fldDef;
-    QString fld;
-    QString val;
+ 
     switch (wkbType) {
 
 	case QGis::WKBPoint:

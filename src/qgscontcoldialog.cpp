@@ -48,6 +48,24 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer* layer): QgsContColDialogBase(
 	qWarning("Warning, data provider is null in QgsContColDialog::QgsContColDialog(...)");
 	return;
     }
+
+    //restore the correct colors for minimum and maximum values
+    QgsContinuousColRenderer* renderer=dynamic_cast<QgsContinuousColRenderer*>(m_vectorlayer->renderer());
+    if(renderer)
+    {
+	QgsRenderItem* minitem=renderer->minimumItem();
+	QgsRenderItem* maxitem=renderer->maximumItem();
+	if(m_vectorlayer->vectorType()==QGis::Line)
+	{
+	    mincolorbutton->setPaletteBackgroundColor(minitem->getSymbol()->pen().color());
+	    maxcolorbutton->setPaletteBackgroundColor(maxitem->getSymbol()->pen().color());
+	}
+	else
+	{
+	    mincolorbutton->setPaletteBackgroundColor(minitem->getSymbol()->brush().color());
+	    maxcolorbutton->setPaletteBackgroundColor(maxitem->getSymbol()->brush().color());	
+	}
+    }
 }
 
 QgsContColDialog::QgsContColDialog()

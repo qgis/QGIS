@@ -92,9 +92,7 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoord
     char lsb;
     QgsPoint pt;
     QPointArray *pa;
-    //OGRFieldDefn *fldDef;
-    QString fld;
-    QString val;
+ 
     switch (wkbType) {
 
 	case QGis::WKBPoint:
@@ -287,7 +285,7 @@ void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer* layer)
 	p.setFont( f );
 	p.drawText(35,pixmap->height()-10,name);
 
-	QgsRangeRenderItem* ri = new QgsRangeRenderItem(sy,QString::number(DBL_MIN,'f',6),QString::number(DBL_MAX,'f',6),"");
+	QgsRangeRenderItem* ri = new QgsRangeRenderItem(sy,QString::number(-DBL_MAX,'f',6),QString::number(DBL_MAX,'f',6),"");
 	addItem(ri);
 
 	QgsGraSyDialog* dialog=new QgsGraSyDialog(layer);
