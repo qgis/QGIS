@@ -48,8 +48,7 @@ plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrasseditbase.ui.h \
 	     qgsgrassattributesbase.ui \
 	     qgsgrassattributesbase.ui.h \
-	     qgsgrassaregionbase.ui \
-	     qgsgrassaregionbase.ui.h 
+	     qgsgrassregionbase.ui 
 
 grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassplugin.h \
