@@ -55,23 +55,18 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   system("cp -r plugin_template $pluginDir");
   # remove the CVS directory 
   system("rm -rf $pluginDir/CVS");
-  # substitute the plugin specific vars in the various files
-  # this is a brute force approach but its quick and dirty :)
-  system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.cpp");
-  system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.h");
-  system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.am");
- 
-  system("perl -pi -e 's/\\\[plugindescription\\\]/$pluginDescription/g' $pluginDir/*.cpp");
-  system("perl -pi -e 's/\\\[plugindescription\\\]/$pluginDescription/g' $pluginDir/*.h");
-  system("perl -pi -e 's/\\\[plugindescription\\\]/$pluginDescription/g' $pluginDir/*.am");
   
-  system("perl -pi -e 's/\\\[menuname\\\]/$menuName/g' $pluginDir/*.cpp");
-  system("perl -pi -e 's/\\\[menuname\\\]/$menuName/g' $pluginDir/*.h");
-  system("perl -pi -e 's/\\\[menuname\\\]/$menuName/g' $pluginDir/*.am");
-  
-  system("perl -pi -e 's/\\\[menuitemname\\\]/$menuItemName/g' $pluginDir/*.cpp");
-  system("perl -pi -e 's/\\\[menuitemname\\\]/$menuItemName/g' $pluginDir/*.h");
-  system("perl -pi -e 's/\\\[menuitemname\\\]/$menuItemName/g' $pluginDir/*.am");
+  # Substitute the plugin specific vars in the various files
+  # This is a brute force approach but its quick and dirty :)
+  #
+  # replace [pluginname] in template with the new plugin name
+  system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am");
+  # replace [plugindescription] in template with the description
+  system("perl -pi -e 's/\\\[plugindescription\\\]/$pluginDescription/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am");
+  # replace [menuname] in the template with the menu name
+  system("perl -pi -e 's/\\\[menuname\\\]/$menuName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am");
+  # replace [menuitemname] in the template with the menu item name
+  system("perl -pi -e 's/\\\[menuitemname\\\]/$menuItemName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am");
   
   # Add an entry to qgis/plugins/Makefile.am
   # We won't add it the EXTRA_DIST since we don't want to necesarily distribute
