@@ -479,7 +479,7 @@ libqgis_la_SOURCES =				\
 		qgslinestylewidgetbase.uic.cpp		\
 		qgslinestylewidgetbase.moc.uic.cpp	\
 		qgsfillstylewidgetbase.uic.cpp		\
-		qgsfillstylewidgetbase.moc.uic.cpp		
+		qgsfillstylewidgetbase.moc.uic.cpp	\
 		qgspointstylewidget.cpp		\
 		qgspointstylewidget.moc.cpp	\
 		qgslinestylewidget.cpp		\
