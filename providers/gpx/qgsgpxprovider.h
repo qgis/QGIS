@@ -55,7 +55,7 @@ public:
   */
   QgsFeature * getNextFeature(bool fetchAttributes=false);
   bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
-  QgsFeature * getNextFeature(std::list<int>& attlist);
+  QgsFeature * getNextFeature(std::list<int> const & attlist);
   
   /** Get the feature type. This corresponds to 
       WKBPoint,
@@ -67,15 +67,15 @@ public:
   * as defined in qgis.h
   * This provider will always return WKBPoint
   */
-  int geometryType();
+  int geometryType() const;
   /** 
    * Get the number of features in the layer
    */
-  long featureCount();
+  long featureCount() const;
   /** 
    * Get the number of fields in the layer
    */
-  int fieldCount();
+  int fieldCount() const;
   /**
    * Select features based on a bounding rectangle. Features can be retrieved 
    * with calls to getFirstFeature and getNextFeature.
@@ -103,10 +103,6 @@ public:
    */
   virtual std::vector<QgsFeature>& identify(QgsRect *rect);
   
-  /** Return endian-ness for this layer
-   */  
-  int endian();
-  
   /** Return the extent for this data layer
    */
   virtual QgsRect * extent();
@@ -114,7 +110,7 @@ public:
   /**
    * Get the field information for the layer
    */
-  std::vector<QgsField>& fields();
+  std::vector<QgsField> const & fields() const;
   
   /* Reset the layer (ie move the file pointer to the head
      of the file.
@@ -161,7 +157,7 @@ public:
  private:
   
   /** Internal function used by the other getNextFeature() functions. */
-  bool getNextFeature(QgsFeature* feature, std::list<int>& attlist);
+  bool getNextFeature(QgsFeature* feature, std::list<int> const & attlist);
 
   bool mEditable;
   GPSData* data;
@@ -184,11 +180,6 @@ public:
   long mNumberFeatures;
   //! Feature id
   long mFid;
-  enum ENDIAN
-  {
-    NDR = 1,
-    XDR = 0
-  };
   /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
   bool mMinMaxCacheDirty;
   /**Matrix storing the minimum and maximum values*/

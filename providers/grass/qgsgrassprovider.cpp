@@ -54,7 +54,6 @@ QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
     time.start();
 
     mValid = false;
-    checkEndian();
     
     // Parse URI 
     QDir dir ( uri );  // it is not a directory in fact
@@ -326,7 +325,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     return ( getNextFeature(attlist) );
 }
 
-QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
+QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist)
 {
     int cat, type, id, idx;
     unsigned char *wkb;
@@ -369,7 +368,7 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
 	}	    
 	wkb = new unsigned char[wkbsize];
 	unsigned char *wkbp = wkb;
-	wkbp[0] = (unsigned char) mEndian;
+	wkbp[0] = (unsigned char) endian();
 	wkbp += 1;
 
 	/* WKB type */
@@ -393,7 +392,7 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
 
 	wkbsize = 1+4+4+4+npoints*2*8; // size without islands
 	wkb = new unsigned char[wkbsize];
-	wkb[0] = (unsigned char) mEndian;
+	wkb[0] = (unsigned char) endian();
 	int offset = 1;
 
 	/* WKB type */
@@ -436,7 +435,7 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
 
     f->setGeometry(wkb, wkbsize);
 
-    QgsGrassProvider::setFeatureAttributes( mLayerId, cat, f, attlist );  
+    setFeatureAttributes( mLayerId, cat, f, attlist );  
     
     return f;
 
@@ -558,26 +557,6 @@ std::vector<QgsFeature>& QgsGrassProvider::identify(QgsRect * rect)
     }
 }
 
-/* set endian */
-void QgsGrassProvider::checkEndian()
-{
-	char *chkEndian = new char[4];
-	memset(chkEndian, '\0', 4);
-	chkEndian[0] = 0xE8;
-
-	int *ce = (int *) chkEndian;
-	if (232 == *ce)
-	    mEndian = NDR;
-	else
-	    mEndian = XDR;
-	delete[]chkEndian;
-}
-
-int QgsGrassProvider::endian()
-{
-	return mEndian;
-}
-
 QgsRect *QgsGrassProvider::extent()
 {
     BOUND_BOX box;
@@ -589,20 +568,23 @@ QgsRect *QgsGrassProvider::extent()
 /** 
 * Return the feature type
 */
-int QgsGrassProvider::geometryType(){
+int QgsGrassProvider::geometryType() const
+{
     return mQgisType;
 }
 /** 
 * Return the feature type
 */
-long QgsGrassProvider::featureCount(){
+long QgsGrassProvider::featureCount() const 
+{
     return mNumberFeatures;
 }
 
 /**
 * Return the number of fields
 */
-int QgsGrassProvider::fieldCount(){
+int QgsGrassProvider::fieldCount() const
+{
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::fieldCount() return:" << mLayers[mLayerId].fields.size() << std::endl;
     #endif
@@ -612,9 +594,9 @@ int QgsGrassProvider::fieldCount(){
 /**
 * Return fields
 */
-std::vector<QgsField>& QgsGrassProvider::fields(){
+std::vector<QgsField> const & QgsGrassProvider::fields() const
+{
       return mLayers[mLayerId].fields;
-
 }
 
 void QgsGrassProvider::reset(){
@@ -1152,7 +1134,7 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
     }
 }
 
-void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int>& attlist)
+void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int> const& attlist)
 {
 #ifdef QGISDEBUG
     std::cerr << "setFeatureAttributes cat = " << cat << std::endl;
@@ -1164,7 +1146,7 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 	GATT *att = (GATT *) bsearch ( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
 		                       sizeof(GATT), cmpAtt);
 
-	for (std::list<int>::iterator iter=attlist.begin(); iter!=attlist.end();++iter) {
+	for (std::list<int>::const_iterator iter=attlist.begin(); iter!=attlist.end();++iter) {
 	    if ( att != NULL ) {
 		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), att->values[*iter]);	
 	    } else { /* it may happen that attributes are missing -> set to empty string */
@@ -2009,7 +1991,7 @@ QString *QgsGrassProvider::insertAttributes ( int field, int cat )
 
 // -------------------------------------------------------------------------------
 
-int QgsGrassProvider::cidxGetNumFields( void ) 
+int QgsGrassProvider::cidxGetNumFields( ) 
 {
     return ( Vect_cidx_get_num_fields(mMap) );
 }

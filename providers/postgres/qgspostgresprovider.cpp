@@ -15,13 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
+
 #include <fstream>
 #include <iostream>
+
 #include <qtextstream.h>
 #include <qstringlist.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qcursor.h>
+
+// for ntohl
+#ifdef WIN32
+#include <winsock.h>
+#else
+#include <netinet/in.h>
+#endif
+
 #include "../../src/qgis.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -184,7 +195,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       PQexec(pd, (const char *)oidDeclare);
       QString fetch = "fetch forward 1 from oidcursor";
 #ifdef QGISDEBUG
-      std::cerr << "Fecthing a record and attempting to get check endian-ness" << std::endl;
+      std::cerr << "Fetching a record and attempting to get check endian-ness" << std::endl;
 #endif
       PGresult *fResult = PQexec(pd, (const char *)fetch);
       if(PQntuples(fResult) > 0){
@@ -445,33 +456,35 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
    // std::cerr << "OID from database: " << oid << std::endl; 
 #endif
     // oid is in big endian
+    // XXX If you're so sure about that, then why do you have to check to swap?
     int *noid;
 
     // We don't support primary keys that are not int4 so if
     // the key is int8 we use the oid as the id instead.
     // TODO Throw a warning to let the user know that the layer
     // is not using a primary key and that performance will suffer
+
+    // XXX noid = &oid could probably be moved out of if statements since all
+    // XXX valid execution paths do that
     if(primaryKeyType == "int8")
     {
       noid = &oid;
     }
     else
     {
-      if(swapEndian){
+      if(swapEndian)
+      {
+        // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
 #ifdef QGISDEBUG
 //        std::cerr << "swapping endian for oid" << std::endl;
 #endif 
         // convert oid to opposite endian
-        char *temp  = new char[sizeof(oid)];
-        char *ptr = (char *)&oid + sizeof(oid) -1;
-        int cnt = 0;
-        while(cnt < sizeof(oid)){
-          temp[cnt] = *ptr--;
-          cnt++;
-        }
-        noid = (int *)temp;
-
-      }else{
+        // XXX "Opposite?"  Umm, that's not enough information.
+        oid = ntohl(oid);
+        noid = &oid;
+      }
+      else
+      {
         noid = &oid;
       }
     }
@@ -503,7 +516,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist)
+QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
 {
   QgsFeature *f = 0;
   if (valid)
@@ -679,21 +692,6 @@ return gPtr;
 
 } */
 
-int QgsPostgresProvider::endian()
-{
-  char *chkEndian = new char[4];
-  memset(chkEndian, '\0', 4);
-  chkEndian[0] = 0xE8;
-
-  int *ce = (int *) chkEndian;
-  int retVal;
-  if (232 == *ce)
-    retVal = NDR;
-  else
-    retVal = XDR;
-  delete[]chkEndian;
-  return retVal;
-}
 
 // TODO - make this function return the real extent_
 QgsRect *QgsPostgresProvider::extent()
@@ -704,7 +702,7 @@ QgsRect *QgsPostgresProvider::extent()
 /** 
  * Return the feature type
  */
-int QgsPostgresProvider::geometryType()
+int QgsPostgresProvider::geometryType() const
 {
   return geomType;
 }
@@ -712,7 +710,7 @@ int QgsPostgresProvider::geometryType()
 /** 
  * Return the feature type
  */
-long QgsPostgresProvider::featureCount()
+long QgsPostgresProvider::featureCount() const
 {
   return numberFeatures;
 }
@@ -720,7 +718,7 @@ long QgsPostgresProvider::featureCount()
 /**
  * Return the number of fields
  */
-int QgsPostgresProvider::fieldCount()
+int QgsPostgresProvider::fieldCount() const
 {
   return attributeFields.size();
 }
@@ -748,9 +746,11 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
 } 
 
 /**Fetch attributes with indices contained in attlist*/
-void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f, std::list<int>& attlist)
+void QgsPostgresProvider::getFeatureAttributes(int key, 
+                                               QgsFeature *f, 
+                                               std::list<int> const & attlist)
 {
-  std::list<int>::iterator iter;
+  std::list<int>::const_iterator iter;
   int i=-1;
   for(iter=attlist.begin();iter!=attlist.end();++iter)
   {
@@ -774,7 +774,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f, std::list
   }
 }
 
-std::vector<QgsField>& QgsPostgresProvider::fields()
+std::vector<QgsField> const & QgsPostgresProvider::fields() const
 {
   return attributeFields;
 }
@@ -821,17 +821,23 @@ PQclear(result);
 typeName += "(" + typeLen + ")";
 return typeName;
 } */
+
+/** @todo XXX Perhaps this should be promoted to QgsDataProvider? */
 QString QgsPostgresProvider::endianString()
 {
-  char *chkEndian = new char[4];
-  memset(chkEndian, '\0', 4);
-  chkEndian[0] = 0xE8;
-  int *ce = (int *) chkEndian;
-  if (232 == *ce)
-    return QString("NDR");
-  else
-    return QString("XDR");
+  switch ( endian() )
+  {
+    case QgsDataProvider::NDR : 
+      return QString("NDR");
+      break;
+    case QgsDataProvider::XDR : 
+      return QString("XDR");
+      break;
+    default :
+      return QString("UNKNOWN");
+  }
 }
+
 QString QgsPostgresProvider::getPrimaryKey(){
   QString sql = "select oid from pg_class where relname = '" + tableName + "'";
 #ifdef QGISDEBUG
