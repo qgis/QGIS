@@ -81,10 +81,29 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
 	int classattr=*iter;
 	mClassificationComboBox->setCurrentItem(classattr);
-	mClassBreakBox->setCurrentItem(0);
-	changeClassificationAttribute(classattr);
+	
+	if(renderer->items().size()==0)
+	{
+#ifdef QGISDEBUG
+	    qWarning("Number of items in the renderer is "+QString::number(renderer->items().size()));
+#endif
+	    changeClassificationAttribute(classattr);
+	}
+	
+	//fill the items of the renderer into mValues
+	for(std::map<QString,QgsRenderItem*>::iterator iter=renderer->items().begin();iter!=renderer->items().end();++iter)
+	{
+	    QgsRenderItem* item=(*iter).second;
+	    QString itemvalue=item->value();
+	    QgsSymbol* sym=new QgsSymbol();
+	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
+	    sym->setPen(item->getSymbol()->pen());
+	    sym->setBrush(item->getSymbol()->brush());
+	    mValues.insert(std::make_pair(itemvalue,ritem));
+	    mClassBreakBox->insertItem(itemvalue);
+	}
     }
-    
+    mClassBreakBox->setCurrentItem(0);
 }
 
 QgsUValDialog::~QgsUValDialog()
