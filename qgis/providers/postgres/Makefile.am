@@ -1,6 +1,5 @@
-# if PostgreSQL support requested, add PostgreSQL files
-if POSTGRESDB
-lib_LTLIBRARIES     = postgresprovider.la
+plugindir = ${pkglibdir}
+plugin_LTLIBRARIES     = postgresprovider.la
                       
 postgresprovider_la_SOURCES = qgspostgresprovider.cpp \
                       ../../src/qgsfeature.cpp \
@@ -13,5 +12,3 @@ AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 
 postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB)
 postgresprovider_la_LDFLAGS = -avoid-version -module
-
-endif
