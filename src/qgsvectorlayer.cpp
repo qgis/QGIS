@@ -618,44 +618,10 @@ void QgsVectorLayer::table()
     connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
     tabledisplay->table()->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
     tabledisplay->table()->setNumCols(numFields + 1); //+1 for the id-column
-
-    int row = 0;
-    // set up the column headers
-    QHeader *colHeader = tabledisplay->table()->horizontalHeader();
-    colHeader->setLabel(0, "id"); //label for the id-column
-
-    for (int h = 1; h <= numFields; h++)
-    {
-	    colHeader->setLabel(h, attributes[h - 1].fieldName());
-    }
-
-    dataProvider->reset();
-    while ((fet = dataProvider->getNextFeature(true)))
-    {
-      if(mDeleted.find(fet->featureId())!=mDeleted.end())
-      {
-        //feature has been deleted
-        continue;
-      }
-      //id-field
-      tabledisplay->table()->setText(row, 0, QString::number(fet->featureId()));
-      tabledisplay->table()->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
-      std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-
-#ifdef QGISDEBUG
-      
-#endif
-
-      for (int i = 0; i < attr.size(); i++)
-      {
-        // get the field values
-        tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
-      }
-      row++;
-      delete fet;
-    }
-
+    tabledisplay->table()->fillTable(this);//QgsAttributeTable fills itself now
+    
     //also consider the not commited features
+    int row = 0;
     for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       //id-field
