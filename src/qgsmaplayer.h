@@ -21,6 +21,7 @@
 #include <qwidget.h>
 #include "qgsdatasource.h"
 #include "qgsrect.h"
+#include "qgscoordinatetransform.h"
 
 
 /** \class QgsMapLayer
@@ -56,6 +57,7 @@ class QgsMapLayer : public QgsDataSource  {
      */
     virtual QgsRect calculateExtent();
     virtual void draw(QPainter *, QgsRect *, int);
+    virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform *cXf);
     /*! Return the extent of the layer as a QRect
      */
     const QgsRect extent();

@@ -16,7 +16,12 @@ double QgsPoint::x() const {
 double QgsPoint::y() const {
   return m_y;
 }
-
+int QgsPoint::xToInt() {
+  return (int)m_x;
+}
+int QgsPoint::yToInt() {
+  return (int)m_y;
+}
 bool QgsPoint::operator==(const QgsPoint &other){
   if((m_x == other.x()) && (m_y == other.y()))
     return true;

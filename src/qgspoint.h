@@ -35,10 +35,12 @@ class QgsPoint {
 	 * @return x coordinate
 	 */
 	double x() const;
+	int xToInt();
 	/*! Get the y value of the point
 	 * @return y coordinate 
 	 */
 	double y(void) const;
+	int yToInt();
 	//! equality operator
 	bool operator==(const QgsPoint &other);
     
