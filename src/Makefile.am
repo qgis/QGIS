@@ -25,7 +25,6 @@ qgis_SOURCES =  qgisapp.cpp \
 		main.cpp \
 		qgisiface.cpp \
 		qgisiface.h \
-		qgisinterface.cpp \
 		qgisinterface.h \
 		qgsattributetable.cpp \
 		qgsattributetable.h \
@@ -131,7 +130,6 @@ qgis_SOURCES =  qgisapp.cpp \
 qgis_MOC = 	splashscreen.moc.cpp \
 						qgisappbase.moc.cpp \
           	qgisapp.moc.cpp \
-						qgisinterface.moc.cpp \
 						qgsabout.moc.cpp \
           	qgsattributetable.moc.cpp \
 						qgsattributetablebase.moc.cpp \
