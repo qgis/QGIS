@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.29 2004/03/05 23:30:29 jobi Exp
+ChangeLog,v 1.30 2004/03/06 03:37:11 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-06 [ts] 0.1.0devel6
+** Added QgsRasterLayer::filterLayer which gets called near the end of each of
+   the 8 renderers. This is the place to inline filters. Note that eventually filters 
+   will be hived out to a filter plugin mechanism.
 
 2004-03-06 [didge] 0.1.0devel6
 ** Changed configure stuff to write DEFINES in config.h.
