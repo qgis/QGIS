@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsOptionsBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -323,6 +323,27 @@
                             </widget>
                         </grid>
                     </widget>
+                    <widget class="QGroupBox" row="1" column="0">
+                        <property name="name">
+                            <cstring>groupBox6</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Initial Visibility</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QCheckBox" row="0" column="0">
+                                <property name="name">
+                                    <cstring>chkAddedVisibility</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>New layers added to the map are not displayed</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
                 </grid>
             </widget>
             <widget class="QWidget">
@@ -372,11 +393,17 @@
                                 </property>
                                 <property name="text">
                                     <string>&lt;html&gt;
+
 &lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
+
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+
 &lt;br&gt;
+
 By default QGIS uses a value of 5. Increase the value if you have trouble
+
 identifying features without zooming in very close.
+
 &lt;/html&gt;</string>
                                 </property>
                             </widget>
@@ -533,8 +560,8 @@ identifying features without zooming in very close.
     <slot>cbxHideSplash_toggled( bool )</slot>
     <slot>addTheme( QString item )</slot>
     <slot>themeChanged( const QString &amp; )</slot>
-    <slot>findBrowser()</slot>
     <slot>setCurrentTheme()</slot>
+    <slot>findBrowser()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
