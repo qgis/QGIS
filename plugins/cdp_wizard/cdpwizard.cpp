@@ -24,7 +24,7 @@ email                : t.sutton@reading.ac.uk
 #include <qlabel.h>
 #include <qlabel.h>
 #include <qsettings.h>
-
+#include <qapplication.h>
 
 //#define QGISDEBUG true
 
@@ -328,6 +328,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
     if (thePageNameQString==tr("Progress")) //we do this when we start the calculation
     {
+      qApp->processEvents();
       run();
     }
 } //end of formSelected
@@ -337,13 +338,6 @@ void CDPWizard::run()
         int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
         QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
         QString myQString;
-        /////////////////////////////////////////////////////////////
-        //                                                         //
-        // First we test the basic form of climate data processor  //
-        // where no parameters are passed with the constructor and //
-        // each property is set individually.                      //
-        //                                                         //
-        /////////////////////////////////////////////////////////////
 
         // get the first year in file value
         climateDataProcessor->setFileStartYearInt(spinFirstYearInFile->value());
@@ -394,6 +388,7 @@ void CDPWizard::run()
 
 
         //setup the climate data processor's filereaders
+        /** @todo see what this hardcoding means and remove if possible */
         if (!climateDataProcessor->makeFileGroups (1))    //hardcoding year 1 for now
         {
           std::cerr << "cdpwizards call to make file groups failed!" << std::endl;

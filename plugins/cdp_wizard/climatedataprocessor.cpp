@@ -526,7 +526,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
                                            "\n\n Halting climate data proceesing." ));
             return false;
         }
-        //when we open the first filereader in the, we find
+        //when we open the first filereader in the group, we find
         //the block markers which will then be  assicgned to all other
         //filereaders we open as the filereaders all use the same file
         QValueVector <QFile::Offset> myDataBlockMarkersVector = myFileReader->getBlockMarkers();
