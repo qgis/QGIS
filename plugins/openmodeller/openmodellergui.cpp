@@ -35,6 +35,7 @@
 #include <qlayout.h>
 #include <qspinbox.h>
 #include <qtooltip.h> 
+#include <qprogressbar.h>
 
 //
 //openmodeller includes
@@ -1055,7 +1056,7 @@ void OpenModellerGui::mapCallback( float progress, void *extra_param )
 {
   QProgressBar *myProgressBar = (QProgressBar *) extra_param;
   //std::cout << "OMGUI : Map creation progress : " << ( 100 * progress ) << std::endl;
-  //myProgressBar->setProgress(100 * progress);
+  myProgressBar->setProgress(100 * progress);
 }
 
 
