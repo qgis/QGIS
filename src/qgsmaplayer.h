@@ -215,6 +215,8 @@ public  slots:
   virtual void toggleShowInOverview();
   /**Copies the legend pixmap of this layer to the legenditem and adds an overview glasses if necessary*/
   void updateItemPixmap();
+  /**Ensures that the overview item in the popup menu is checked/ unchecked correctly*/
+  void updateOverviewPopupItem();
 
 signals:
 
