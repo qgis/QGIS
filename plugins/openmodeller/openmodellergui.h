@@ -81,7 +81,10 @@ private:
     ParametersMap mMap;
     typedef QMap<QString, QWidget *> ParameterLabels;
     ParameterLabels mLabelsMap;
+    typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
+    ProjectionWKTMap mProjectionsMap;
     QVBoxLayout* mLayout;
+    void getProjList();
     
 signals:
    void drawRasterLayer(QString);

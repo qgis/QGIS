@@ -274,7 +274,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     settings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
     getParameterList(cboModelAlgorithm->currentText());
     
-    
+    getProjList();
     //set the coordinate system to the same as the last time run
     QString myCoordSystem = settings.readEntry("/openModeller/coordSystem");
     if (myCoordSystem=="")
@@ -499,23 +499,7 @@ void OpenModellerGui::accept()
   // set the well known text coordinate string for the coordinate system that the point data are stored in
   //
   
-  //make sure that you have no linefeeds and escape carriage returns in WKT string!
-  if (cboCoordinateSystem->currentText()==tr("Lat/Long WGS84"))
-  {
-    coordinateSystemQString =  "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
-  }
-  else if (cboCoordinateSystem->currentText()==tr("Lat/Long 1924 Brazil"))
-  {
-    coordinateSystemQString =  "GEOGCS[\"1924 ellipsoid\", DATUM[\"Not_specified\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG","6022\"]], PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG","9108\"]], AUTHORITY[\"EPSG","4022\"]]";
-  }
-  else if (cboCoordinateSystem->currentText()==tr("UTM Zone 22 - Datum: Corrego Alegre"))
-  {
-    coordinateSystemQString = "UTM Zone 22 - Datum: Corrego Alegre: PROJCS[\"UTM Zone 22, Southern Hemisphere\", GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG","7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]], PROJECTION[\"Transverse_Mercator\"], PARAMETER[\"latitude_of_origin\",0], PARAMETER[\"central_meridian\",-51], PARAMETER[\"scale_factor\",0.9996], PARAMETER[\"false_easting\",500000], PARAMETER[\"false_northing\",10000000], UNIT[\"METERS\",1]]";
-  }
-  else if (cboCoordinateSystem->currentText()==tr("Long/Lat - Datum: Corrego Alegre"))
-  {
-    coordinateSystemQString = "GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]]";
-  }
+  coordinateSystemQString = mProjectionsMap[cboCoordinateSystem->currentText()];
    
   
   
@@ -697,6 +681,58 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
   settings.writeEntry("/openmodeller/localitiesFileDirectory", myFileNameQString );
   
 } //end of pbnSelectLocalitiesFile_clicked
+
+void OpenModellerGui::getProjList()
+{
+  //first some hard coded options 
+  mProjectionsMap["Lat/Long WGS84"] = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
+  mProjectionsMap["Lat/Long 1924 Brazil"] =  "GEOGCS[\"1924 ellipsoid\", DATUM[\"Not_specified\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG","6022\"]], PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG","9108\"]], AUTHORITY[\"EPSG","4022\"]]";
+  mProjectionsMap["UTM Zone 22 - Datum: Corrego Alegre"] = "UTM Zone 22 - Datum: Corrego Alegre: PROJCS[\"UTM Zone 22, Southern Hemisphere\", GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG","7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]], PROJECTION[\"Transverse_Mercator\"], PARAMETER[\"latitude_of_origin\",0], PARAMETER[\"central_meridian\",-51], PARAMETER[\"scale_factor\",0.9996], PARAMETER[\"false_easting\",500000], PARAMETER[\"false_northing\",10000000], UNIT[\"METERS\",1]]";
+  mProjectionsMap["Long/Lat - Datum: Corrego Alegre"] = "GEOGCS[\"Datum Corrego Alegre\", DATUM[\"Datum Corrego Alegre\", SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]], AUTHORITY[\"EPSG\",\"6022\"]], PRIMEM[\"Greenwich\",0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\",0.0174532925199433, AUTHORITY[\"EPSG\",\"9108\"]], AUTHORITY[\"EPSG\",\"4022\"]]";
+  
+  std::cout << "Getting proj list " << std::endl;
+  QString theFileNameQString="/home/aps02ts/dev/cpp/qgis_plugins/openmodeller/wkt_defs.txt";
+  QFile myQFile( theFileNameQString );
+  if ( myQFile.open( IO_ReadOnly ) ) 
+  {
+    //clear the existing entries in the taxon combo first
+    //cboCoordinateSystem->clear();     
+    //now we parse the loc file, checking each line for its taxon
+    QTextStream myQTextStream( &myQFile );
+    QString myCurrentLineQString;
+    QStringList myQStringList;
+    while ( !myQTextStream.atEnd() ) 
+    {
+      myCurrentLineQString = myQTextStream.readLine(); // line of text excluding '\n'
+      if (myCurrentLineQString.left(4)!="PROJ")
+      {
+       QString myNextLineQString = myQTextStream.readLine(); // lthis is the actual wkt string
+       if (myNextLineQString.left(4)!="PROJ") //the line shoue start with PROJ
+       {
+         continue;
+       }
+#ifdef QGISDEBUG
+        std::cout << " Match found:" << myCurrentLineQString << std::endl;
+#endif
+        mProjectionsMap[myCurrentLineQString]=myNextLineQString;
+      }
+    }
+    myQFile.close();
+    //no add each key to our combo
+    ProjectionWKTMap::Iterator myIterator;
+    for ( myIterator = mProjectionsMap.begin(); myIterator != mProjectionsMap.end(); ++myIterator ) 
+    {
+      std::cout << "Widget map has: " <<myIterator.key() << std::endl;
+      cboCoordinateSystem->insertItem(myIterator.key());
+    }
+  }
+  else
+  {
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The projections file is not readable. Check you have the neccessary file permissions and try again."));      
+    return; 
+  }   
+
+}
 
 void OpenModellerGui::setSpeciesList(QString theFileNameQString)
 {
