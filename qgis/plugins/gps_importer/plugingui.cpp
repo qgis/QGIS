@@ -10,6 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
+#include "../../src/qgsmaplayer.h"
 
 //qt includes
 #include <qapplication.h>
@@ -36,12 +37,16 @@
 PluginGui::PluginGui() : PluginGuiBase()
 {
   populateDeviceComboBox();
+  populateULLayerComboBox();
   tabWidget->removePage(tabWidget->page(1));
 }
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+PluginGui::PluginGui( std::vector<QgsMapLayer*> gpxMapLayers, 
+		      QWidget* parent , const char* name , bool modal , 
+		      WFlags fl  )
+  : PluginGuiBase( parent, name, modal, fl ), gpxLayers(gpxMapLayers)
 {
   populateDeviceComboBox();
+  populateULLayerComboBox();
   tabWidget->removePage(tabWidget->page(1));
 } 
 PluginGui::~PluginGui()
@@ -101,8 +106,8 @@ void PluginGui::pbnOK_clicked()
     emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
   }
   
-  // or start downloading GPS data from a device?
-  else {
+  // or download GPS data from a device?
+  else if (tabWidget->currentPageIndex() == 1) {
     
     // what does the user want to download?
     QString typeArg;
@@ -154,6 +159,11 @@ void PluginGui::pbnOK_clicked()
     else if (cmbDLFeatureType->currentItem() == 2)
       emit drawVectorLayer(leDLOutput->text() + "?type=track", 
 			   leDLBasename->text(), "gpx");
+  }
+  
+  // or upload GPS data to a device?
+  else {
+    return;
   }
   
   //close the dialog
@@ -251,9 +261,17 @@ void PluginGui::enableRelevantControls()
   }
   
   // download from device
-  else {
+  else if (tabWidget->currentPageIndex() == 1) {
     if (cmbDLDevice->currentText() == "" || leDLBasename->text() == "" ||
 	leDLOutput->text() == "")
+      pbnOK->setEnabled(false);
+    else
+      pbnOK->setEnabled(true);
+  }
+
+  // upload from device
+  else if (tabWidget->currentPageIndex() == 2) {
+    if (cmbULDevice->currentText() == "" || cmbULLayer->currentText() == "")
       pbnOK->setEnabled(false);
     else
       pbnOK->setEnabled(true);
@@ -291,8 +309,10 @@ void PluginGui::populateDeviceComboBox() {
 #ifdef linux
   QString linuxDev("/dev/ttyS%1");
   for (int i = 0; i < 10; ++i) {
-    if (QFileInfo(linuxDev.arg(i)).exists())
+    if (QFileInfo(linuxDev.arg(i)).exists()) {
       cmbDLDevice->insertItem(linuxDev.arg(i));
+      cmbULDevice->insertItem(linuxDev.arg(i));
+    }
     else
       break;
   }
@@ -302,8 +322,10 @@ void PluginGui::populateDeviceComboBox() {
 #ifdef freebsd
   QString freebsdDev("/dev/cuaa%1");
   for (int i = 0; i < 10; ++i) {
-    if (QFileInfo(freebsdDev.arg(i)).exists())
+    if (QFileInfo(freebsdDev.arg(i)).exists()) {
       cmbDLDevice->insertItem(freebsdDev.arg(i));
+      cmbULDevice->insertItem(freebsdDev.arg(i));
+    }
     else
       break;
   }
@@ -313,8 +335,10 @@ void PluginGui::populateDeviceComboBox() {
 #ifdef sparc
   QString solarisDev("/dev/cua/%1");
   for (int i = 'a'; i < 'k'; ++i) {
-    if (QFileInfo(solarisDev.arg(char(i))).exists())
+    if (QFileInfo(solarisDev.arg(char(i))).exists()) {
       cmbDLDevice->insertItem(solarisDev.arg(char(i)));
+      cmbULDevice->insertItem(solarisDev.arg(char(i)));
+    }
     else
       break;
   }
@@ -322,4 +346,12 @@ void PluginGui::populateDeviceComboBox() {
 
   // OSX, OpenBSD, NetBSD etc? Anyone?
 
+}
+
+
+void PluginGui::populateULLayerComboBox() {
+  for (int i = 0; i < gpxLayers.size(); ++i) {
+    cmbULLayer->insertItem(gpxLayers[i]->name());
+    std::cerr<<gpxLayers[i]->name()<<std::endl;
+  }
 }

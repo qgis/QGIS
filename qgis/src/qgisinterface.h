@@ -26,6 +26,8 @@ class QgsMapLayer;
 class QPopupMenu;
 class QgsMapCanvas;
 class QgsRasterLayer;
+class QgsMapLayerRegistry;
+
 /** 
  * \class QgisInterface
  * \brief Abstract base class defining interfaces exposed by QgisApp and
@@ -86,6 +88,8 @@ class QgisInterface : public QWidget{
     virtual std::map<int,QString> menuMapById()=0;
     /** Return a pointer to the map canvas used by qgisapp */
     virtual QgsMapCanvas * getMapCanvas()=0;
+    /** Return a pointer to the map layer registry */
+    virtual QgsMapLayerRegistry * getLayerRegistry()=0;	
 
   private:
     //QgisApp *qgis;

@@ -283,6 +283,7 @@ libqgis_la_SOURCES = qgsmapcanvas.cpp \
 										 qgsrasterlayer.cpp \
 										 qgsvectorlayer.cpp \
 										 qgsmaplayer.moc.cpp \
+  qgsproviderregistry.cpp			\
 										 qgsrasterlayer.moc.cpp \
 										 qgsvectorlayer.moc.cpp \
 										 qgsfield.cpp \
