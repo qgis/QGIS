@@ -142,27 +142,28 @@ void QgsSpit::addFile()
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it){
     exist = false;
 		is_error = false;
-    for(int n=0; n<tblShapefiles->numRows(); n++)
+    for(int n=0; n<tblShapefiles->numRows(); n++){
       if(tblShapefiles->text(n,0)==*it){
         exist = true;
         break;
       }
+		}
+		
     if(!exist){
 			// check other files: file.dbf and file.shx
 			QString name = *it;
-			name = name.left(name.length()-3);
-			if(!QFile::exists(name+"dbf"))
+			if(!QFile::exists(name.left(name.length()-3)+"dbf"))
 				is_error = true;
-			else if(!QFile::exists(name+"shx"))
+			else if(!QFile::exists(name.left(name.length()-3)+"shx"))
 				is_error = true;
 		
 			if(!is_error){
-     		QgsShapeFile * file = new QgsShapeFile(*it);
+     		QgsShapeFile * file = new QgsShapeFile(name);
       	if(file->is_valid()){
         	int row = tblShapefiles->numRows();
         	fileList.push_back(file);
 	        tblShapefiles->insertRows(row);
-  	      tblShapefiles->setText(row, 0, *it);
+  	      tblShapefiles->setText(row, 0, name);
     	    tblShapefiles->setText(row, 1, file->getFeatureClass());
       	  tblShapefiles->setText(row, 2, QString("%1").arg(file->getFeatureCount()));        
 	        tblShapefiles->setText(row, 3, file->getTable());
@@ -172,13 +173,13 @@ void QgsSpit::addFile()
     	    total_features += file->getFeatureCount();
       	}
       	else{
-        	error1 += *it + "\n";
+        	error1 += name + "\n";
         	is_error = true;
 					delete file;
       	}
 			}
 			else{
-				error2 += *it + "\n";
+				error2 += name + "\n";
 			}
     }
   }
@@ -263,6 +264,17 @@ void QgsSpit::useDefaultGeom(){
 
 void QgsSpit::helpInfo(){
   QString message = "General Interface Help:\n\n";
+	message += QString(
+		"Connection:\n")+QString(
+		"-you need to select a connection that works (connects properly) in oder to import files\n")+QString(
+		"-when changing connections Global Schema also changes accordingly\n\n")+QString(
+		"Shapefile List:\n")+QString(
+		"[Add] - open a File dialog and browse to the desired file(s) to import\n")+QString(
+		"[Remove] - remove the currently selected file(s) from the list\n")+QString(
+		"[Remove All] - remove all the files in the list\n")+QString(
+		"SRID - Reference ID for the shapefiles to be imported; Use Default - set SRID to -1\n")+QString(
+		"Geometry Column Name - name of the geometry column in the database; Use Default - set column name to \'the_geom\'\n")+QString(
+		"Glogal Schema - set the schema to import into in the connected database\n");
   QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
   e->setMessage(message);
   e->exec();
