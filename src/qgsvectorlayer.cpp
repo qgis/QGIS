@@ -679,6 +679,9 @@ void QgsVectorLayer::table()
     if (tabledisplay)
     {
         tabledisplay->raise();
+	// Give the table the most recent copy of the actions for this
+	// layer. 
+	tabledisplay->table()->setAttributeActions(mActions);
     } else
     {
         // display the attribute table
@@ -727,6 +730,9 @@ void QgsVectorLayer::table()
         tabledisplay->show();
         tabledisplay->table()->clearSelection();  //deselect the first row
 
+	// Give the table the most recent copy of the actions for this
+	// layer. 
+	tabledisplay->table()->setAttributeActions(mActions);
 
         QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
 

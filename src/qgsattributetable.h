@@ -22,6 +22,11 @@
 #include <qtable.h>
 #include <qmap.h>
 
+class QPopupMenu;
+#include "qgsattributeaction.h"
+
+#include <vector>
+#include <utility>
 /**
   *@author Gary E.Sherman
   */
@@ -40,8 +45,17 @@ class QgsAttributeTable:public QTable
       void selectRowWithId(int id);
       /**Sorts a column. This method replaces the one from QTable to allow numeric sorting*/
       virtual void sortColumn(int col, bool ascending=true, bool wholeRows=false);
+      /* Use this to give this class the current attribute actions,
+	 which are used when the user requests a popup menu */
+      void setAttributeActions(const QgsAttributeAction& actions)
+	{ mActions = actions; }
+      
       public slots:
       void columnClicked(int col);
+      // Called when the user requests a popup menu
+      void popupMenu(int row, int col, const QPoint& pos);
+      // Called when the user chooses an item on the popup menu
+      void popupItemSelected(int id);
       protected slots:
 	  void handleChangedSelections();
       protected:
@@ -58,6 +72,7 @@ class QgsAttributeTable:public QTable
       /**Method used by sortColumn (implementation of a quicksort)*/
       void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
       void contentsMouseReleaseEvent(QMouseEvent* e);
+
         signals:
 
       /**Is emitted when a row was selected*/
@@ -66,6 +81,14 @@ class QgsAttributeTable:public QTable
       void selectionRemoved();
       /**Is emmited when a set of related selection and deselection signals have been emitted*/
       void repaintRequested();
+
+ private:
+
+      // Data to do with providing a popup menu of actions that
+      std::vector<std::pair<QString, QString> > mActionValues;
+      int mClickedOnValue;
+      QPopupMenu* mActionPopup;
+      QgsAttributeAction mActions;
 };
 
 #endif
