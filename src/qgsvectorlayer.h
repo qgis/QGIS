@@ -67,6 +67,9 @@ public:
   //! Display the attribute table
   void table();
 
+  //! Resize and fill the attribute table
+  void fillTable(QgsAttributeTable* t);
+
   //! Set the primary display field to be used in the identify results dialog
   void setDisplayField(QString fldName=0);
 
