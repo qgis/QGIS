@@ -159,6 +159,8 @@ public slots:
     //! Close editing
     void closeEdit (void); 
 
+    void changeSymbology( QListViewItem * item, const QPoint & pnt, int col );
+
 private:
     //! Editing is already running
     static bool mRunning;
@@ -291,6 +293,12 @@ private:
 
     //! Vector of pens for symbology codes
     std::vector<QPen> mSymb;
+
+    //! Display this type
+    std::vector<bool> mSymbDisplay;
+
+    //! Symbology name
+    std::vector<QString> mSymbName;
 
     /** 
      *  Read line symbology from map

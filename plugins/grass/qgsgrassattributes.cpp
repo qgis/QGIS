@@ -118,7 +118,7 @@ int QgsGrassAttributes::addTab ( const QString & label )
 
     QTable *tb = new QTable ( 2, 3 );
     tb->setColumnReadOnly ( 0, TRUE );
-    tb->setColumnReadOnly ( 3, TRUE );
+    tb->setColumnReadOnly ( 2, TRUE );
     tb->setRowReadOnly ( 0, TRUE );
     tb->setRowReadOnly ( 1, TRUE );
     
