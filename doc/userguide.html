@@ -1,0 +1,410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>QGIS User Guide</title>
+<link type="text/css" href="skin/page.css" rel="stylesheet">
+<link type="text/css" href="skin/krysalis.css" title="Krysalis" rel="alternate stylesheet">
+<link href="favicon.ico" rel="shortcut icon">
+</head>
+<body>
+<div id="toplinks">
+<script src="skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+</div>
+<form action="http://www.google.com/search" method="get">
+<div id="mainheader">
+<span class="textonly"> - </span><span class="textonly"> - </span><a href="http://qgis.org/" id="projectlogolink"><img alt="QGIS" src="images/project.png" id="projectlogo"></a>
+</div>
+</form>
+<hr class="textonly">
+<div class="content">
+<a id="printable" href="userguide.pdf"><img alt="PDF" src="skin/images/pdfdoc.gif">PDF version</a>
+<h1>QGIS User Guide</h1>
+<h3>Version 0.1pre1 (Moroz)</h3>
+<ul>
+<li>
+<a href="#Introduction">Introduction</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Current+Features">Current Features</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Getting+Started">Getting Started</a>
+</li>
+<ul>
+<li>
+<a href="#Installation">Installation</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Starting+QGIS">Starting QGIS</a>
+</li>
+<ul></ul>
+</ul>
+<li>
+<a href="#Working+with+vector+data">Working with vector data</a>
+</li>
+<ul>
+<li>
+<a href="#Loading+vector+data">Loading vector data</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Changing+Symbology">Changing Symbology</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Identifying+a+Feature">Identifying a Feature</a>
+</li>
+<ul></ul>
+</ul>
+<li>
+<a href="#Working+with+raster+data">Working with raster data</a>
+</li>
+<ul>
+<li>
+<a href="#What+is+raster+data%3F">What is raster data?</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Raster+formats+supported+in+QGIS.">Raster formats supported in QGIS.</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Loading+raster+data+in+QGIS">Loading raster data in QGIS</a>
+</li>
+<ul></ul>
+<li>
+<a href="#Symbolisation+and+properties+for+raster+layers">Symbolisation and properties for raster layers</a>
+</li>
+<ul>
+<li>
+<a href="#The+general+properties+tab">The general properties tab</a>
+</li>
+<li>
+<a href="#The+symbology+properties+tab">The symbology properties tab</a>
+</li>
+<li>
+<a href="#The+raster+statistics+properties+tab">The raster statistics properties tab</a>
+</li>
+</ul>
+</ul>
+<li>
+<a href="#Identifying+a+Feature-N101BA">Identifying a Feature</a>
+</li>
+<ul></ul>
+</ul>
+		
+<a name="Introduction"></a>
+<h2>Introduction</h2>
+			
+		
+			
+<p>Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
+built for Linux/Unix. QGIS currently offers basic support for vector, raster, and database formats.</p>
+		
+		
+<a name="Current+Features"></a>
+<h2>Current Features</h2>
+			
+			
+<ul>
+				
+<li>Support for spatially enabled PostgreSQL tables using PostGIS</li>
+				
+<li>Support for ESRI shapefiles and other vector formats support by the OGR library</li>
+				
+<li>Identify features</li>
+				
+<li>Display attribute table</li>
+				
+<li>Select features</li>
+				
+<li>Persistent selections</li>
+				
+<li>Save projects</li>
+				
+<li>Support for raster formats supported by the GDAL library</li>
+				
+<li>Change vector symbology (single, graduated, and continuous)</li>
+				
+<li>Display raster data such as digital elevation models, aerial photography or
+				landsat imagery</li>
+				
+<li>Change raster symbology (grayscale, pseudocolor and multiband RGB)</li>
+				
+<li>Export to Mapserver map file</li>
+			
+</ul>
+		
+		
+<a name="Getting+Started"></a>
+<h2>Getting Started</h2>
+			
+			
+<p>This section gives you a quick overview of running QGIS and examining data in
+			available on the QGIS web page.
+			</p>
+			
+<a name="Installation"></a>
+<h3>Installation</h3>
+<div class="section">
+<p>Installation of QGIS is documented in the <a href="install.html">Installation Guide</a>.
+				</p>
+</div>
+			
+<a name="Starting+QGIS"></a>
+<h3>Starting QGIS</h3>
+<div class="section">
+<p>
+				Assuming the QGIS is installed in the PATH, you can start QGIS by typing:
+				<span class="codefrag">qgis</span>.</p>
+<p>
+				When QGIS starts, an empty window is displayed as shown below.
+				<img alt="QGIS Main Window" src="images/qgis_mainwindow01.png">
+				</p>
+<div class="frame note">
+<div class="label">Note</div>
+<div class="framecontent">Your window decorations (title bar, etc.) may appear different depending on your operating system
+				and window manager</div>
+</div>
+<p>
+				In addition, you can start QGIS by specifying one or more datafiles on the commandline. For example, 
+				assuming you are in your data directory, you could start QGIS with two shapefiles and a raster file set to 
+				load on startup:
+				</p>
+<p>
+<span class="codefrag">qgis ak_shade.tif alaska.shp majrivers.shp </span>
+</p>
+<p>
+<img alt="QGIS Load Data On Start" src="images/qgis_load_data_on_startup.png"></p>
+</div>
+		
+		
+<a name="Working+with+vector+data"></a>
+<h2>Working with vector data</h2>
+			
+			
+<a name="Loading+vector+data"></a>
+<h3>Loading vector data</h3>
+<div class="section">
+<p>To load one or more shapefiles, click on the Add Layer button 
+				<img alt="Add Layer" src="images/btn_add_layer.gif">. </p>
+<p>The <em>Select one or more layers to add</em> dialog box will be displayed.
+				<img alt="Select layers" src="images/add_layer_dialog.gif"></p>
+<p>Navigate to the directory where the shapefiles reside. Select one or
+				more files and click ok to load them.</p>
+<p>When QGIS loads a layer, it assigns a random color to it as shown 
+				below.</p>
+<p>
+<img alt="Shapefiles loaded into QGIS" src="images/loaded_shapefiles.gif">
+				</p>
+<p>
+				Obviously QGIS's choice of colors is not very pleasing in this case.
+				</p>
+</div>
+			
+<a name="Changing+Symbology"></a>
+<h3>Changing Symbology</h3>
+<div class="section">
+<p>
+				To make the layer more appealing, open the Layer Properties 
+				dialog by right-clicking on a layer name
+				in the table of contents (left side of the QGIS window) and
+				selecting <em>Properties</em>.
+				</p>
+<p>
+				
+<img alt="Layer Properties" src="images/layer_properties.gif">
+				</p>
+<p>
+				If you like, change the display name of the layer by editing
+				the <em>Display name</em> field. Click on the <em>Symbology</em>
+				tab and click on the <em>Outline color</em> and <em>Fill color</em>
+				and select a new color from the color chooser. You can also change the
+				line width if desired.</p>
+<p>
+				
+<img alt="Changing colors" src="images/change_symbology.gif">
+				</p>
+<p>After making the changes, click Ok to apply the changes to
+				the layer. Note that the alaska layer has been renamed to Alaska and the
+				color has been changed to a light green:</p>
+<p>
+				
+<img alt="Changing colors" src="images/changed_symbology.gif">
+				</p>
+</div>
+			
+<a name="Identifying+a+Feature"></a>
+<h3>Identifying a Feature</h3>
+<div class="section"></div>
+		
+		
+<a name="Working+with+raster+data"></a>
+<h2>Working with raster data</h2>
+		  	
+		  	
+<a name="What+is+raster+data%3F"></a>
+<h3>What is raster data?</h3>
+<div class="section">
+<p>Raster data in GIS are matrices of discrete cells that represent features on, above or below the earth's surface. Each 
+		  		cell in the raster grid is the same size, and cells are usually rectangular (in QGIS they will always be rectangular. 
+		  		Typical raster datasets include 'remote sensing' data (such as aerial photography and satellite imagery) and modelled data
+		  		(such as an elevation matrix).</p>
+<p>Raster data typically do not have an associated database record for each cell (unlike in vector data where it is normal
+		   		for each feature to have an associated database record).</p>
+<p>In GIS, a raster layer would have geopositioning data associated with it which will allow it to be positioned
+				correctly in the map display to allow other vector and raster data to be overlayed with it. QGIS, can read this 
+				geopositioning data to facilitate properly displaying map overlays.</p>
+</div>
+		  	
+<a name="Raster+formats+supported+in+QGIS."></a>
+<h3>Raster formats supported in QGIS.</h3>
+<div class="section">
+<p>QGIS supports a number of different raster formats. Currently tested formats include:</p>
+<ul>
+		  		
+<li>Arc/Info Binary Grid</li>
+		  		
+<li>Arc/Info ASCII Grid</li>
+		  		
+<li>Grass Raster</li>
+		  		
+<li>GeoTIFF</li>
+		  		
+<li>Spatial Data Transfer Standard Grids (with some limitations)</li>
+		  		
+<li>USGS ASCII DEM</li>
+		  		
+<li>Erdas Imagine</li>
+		  		
+</ul>
+<p>Because the raster implmentation in QGIS is based on the GDAL abstraction library, orther raster formats implemented
+		  		in GDAL are also likely to work, but have not yet been tested. See 
+		  		<a href="http://remotesensing.org/gdal/formats_list.html">the GDAL Raster Formats page</a> for more details.</p>
+</div>
+		  	
+<a name="Loading+raster+data+in+QGIS"></a>
+<h3>Loading raster data in QGIS</h3>
+<div class="section">
+<p>Raster layers are loaded either by clicking on the <img alt="Load Raster" src="images/gis_add_raster_layer.png"> icon
+				or by selecting the View-&gt;Add Raster Layer menu option. More than one layer can be loaded at the same time
+				by holding down the Control key and clicking on multiple items in the file dialog.</p>
+</div>
+			
+<a name="Symbolisation+and+properties+for+raster+layers"></a>
+<h3>Symbolisation and properties for raster layers</h3>
+<div class="section">
+<p>Symbolisation of raster layers is achieved by right clicking on a raster layer legend entry and choosing 'properties':
+				on the popup menu that appears:</p>
+<p>
+				
+<img alt="Raster Properties Popup" src="images/qgis_raster_popup_properties_selected.png">
+				</p>
+<p>On the properties dialog for rasters you will see there are three tabs:</p>
+<a name="The+general+properties+tab"></a>
+<h4>The general properties tab</h4>
+<p>
+					
+<img alt="Raster Properties Popup" src="images/qgis_raster_properties_general_tab.png">
+					</p>
+<a name="The+symbology+properties+tab"></a>
+<h4>The symbology properties tab</h4>
+<p>
+					
+<img alt="Raster Properties Popup" src="images/qgis_raster_properties_symbology_tab.png">
+					</p>
+<p>QGIS supports three forms of raster layer:</p>
+<ul>
+						
+<li>Single Band Grayscale Rasters</li>
+						
+<li>Palette Based RGB Rasters</li>
+						
+<li>Multiband RGB Rasters</li>
+					
+</ul>
+<p>From these three basic layer types, eight forms of symbolised raster display can be used:</p>
+<ol>
+						
+<li>Single Band Grayscale</li>
+						
+<li>Single Band Pseudocolor</li>
+						
+<li>Paletted Grayscale (where only the red, green or blue component of the image is displayed)</li>
+						
+<li>Paletted Pseudocolor (where only the red, green or blue component of the image is displayed, but using a pseudocolor algorithm)</li>
+						
+<li>Paletted RGB</li>
+						
+<li>Multiband Grayscale (using only one of the bands to display the image)</li>
+						
+<li>Mulitiband Pseudocolor (using only one of the bands shown in pseudocolor)</li>
+						
+<li>Multiband RGB (using any combination of three bands)</li>
+					
+</ol>
+<p>QGIS has the capability to invert the colours in a given layer so that light 
+					colors become dark (and dark colors become light).</p>
+<p>QGIS has the capability to invert the colours in a given layer so that light 
+					colors become dark (and dark colors become light).</p>
+<p>QGIS has the capability to invert the colours in a given layer so that light 
+					colors become dark (and dark colors become light).</p>
+<a name="The+raster+statistics+properties+tab"></a>
+<h4>The raster statistics properties tab</h4>
+<p>
+					
+<img alt="Raster Properties Popup" src="images/qgis_raster_properties_statistics_tab.png">
+					</p>
+</div>
+				
+		
+		
+<a name="Identifying+a+Feature-N101BA"></a>
+<h2>Identifying a Feature</h2>
+			
+			
+<p>
+			
+</p>
+			
+<p>
+			
+<a href="http://sourceforge.net/"><img alt="SourceForge.net Logo" height="31" src="http://sourceforge.net/sflogo.php?group_id=55820&type=1" width="88"></a>
+			
+</p>
+				
+	
+<div class="author">by Gary Sherman, Tim Sutton</div>
+</div>
+<hr class="textonly">
+<div id="nav">
+<div id="tabs">
+<h2 id="categories">
+<span class="category">Documentation</span>
+</h2>
+</div>
+<div class="navsection">
+<h3 class="navsectionheader">Documentation<span class="textonly">:</span>
+</h3>
+<a class="navitem" href="install.html">Installation</a><span class="textonly">-</span><span class="navitem">User Guide</span><span class="textonly">-</span>
+</div>
+</div>
+<p class="textonly"></p>
+<hr class="textonly">
+<div id="footer">
+<a href="skin/images/label.gif"></a><a href="skin/images/page.gif"></a><a href="skin/images/chapter.gif"></a><a href="skin/images/chapter_open.gif"></a><a href="skin/images/current.gif"></a><a href="/favicon.ico"></a><span id="copyright">Copyright &copy;
+				2003&nbsp;Micro Resources. All rights reserved.
+			</span>
+<br class="textonly">
+<span id="revision"><script type="text/javascript" language="JavaScript"><!--
+			  document.write(" - "+"Last Published: " + document.lastModified);
+			  //  --></script></span>
+<br class="textonly">
+<span id="validation"></span>
+</div>
+</body>
+</html>
