@@ -80,6 +80,7 @@
 #include "qgisapp.h"
 #include "qgspluginitem.h"
 #include "qgsproviderregistry.h"
+#include "qgspluginregistry.h"
 #include "qgssinglesymrenderer.h"
 //#include "qgssisydialog.h"
 #include "../plugins/qgisplugin.h"
@@ -1118,6 +1119,13 @@ void QgisApp::actionPluginManager_activated(){
 
 }
 void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
+  // first check to see if its already loaded
+  QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+  QString lib = pRegistry->library(name);
+  if(lib.length() > 0){
+    // plugin is loaded
+   // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
+  }else{
 	QLibrary *myLib = new QLibrary(fullPath);
 	#ifdef DEBUG	
   std::cout << "Library name is " << myLib->library() << std::endl;
@@ -1141,6 +1149,8 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
               QgisPlugin *pl = cf(this, qgisInterface);
               if(pl){
                pl->initGui();
+                 // add it to the plugin registry
+                pRegistry->addPlugin(myLib->library(), name, pl);
               }else{
                  // something went wrong
                 QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
@@ -1162,6 +1172,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
                 // set the main window pointer for the plugin
                 pl->setQgisMainWindow(this);
                 pl->initGui();
+              
               }else{
                 // something went wrong
                 QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
@@ -1190,6 +1201,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString fullPath){
       std::cout << "Failed to load " << fullPath << "\n";
       #endif
 		}
+  }
 }
 void QgisApp::testMapLayerPlugins(){
 	// map layer plugins live in their own directory (somewhere to be determined)
