@@ -2446,38 +2446,43 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     /* Eliminate the need to instantiate the layer based on provider type.
        The caller is responsible for cobbling together the needed information to
        open the layer
-     */
+       */
 #ifdef QGISDEBUG
     std::cout << "Creating new vector layer using " <<
       vectorLayerPath << " with baseName of " << baseName <<
       " and providerKey of " << providerKey << std::endl;
 #endif
     lyr = new QgsVectorLayer(vectorLayerPath, baseName, providerKey);
+    if(lyr->isValid())
+    {
+      // init the context menu so it can connect to slots in main app
+      lyr->initContextMenu(this);
 
-    // init the context menu so it can connect to slots in main app
-    lyr->initContextMenu(this);
+      // give it a random color
+      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
+      lyr->setRenderer(renderer);
+      renderer->initializeSymbology(lyr);
+      // add it to the mapcanvas collection
+      mapCanvas->addLayer(lyr);
+      projectIsDirty = true;
+      //qWarning("incrementing iterator");
+      /*! \todo Need legend scrollview and legenditem classes */
+      mapLegend->update();
 
-    // give it a random color
-    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
-    lyr->setRenderer(renderer);
-    renderer->initializeSymbology(lyr);
-    // add it to the mapcanvas collection
-    mapCanvas->addLayer(lyr);
-    projectIsDirty = true;
-    //qWarning("incrementing iterator");
-    /*! \todo Need legend scrollview and legenditem classes */
-    mapLegend->update();
+      // draw the map
+      //mapCanvas->render2();
+      statusBar()->message(mapCanvas->extent().stringRep());
 
-    // draw the map
-    //mapCanvas->render2();
-    statusBar()->message(mapCanvas->extent().stringRep());
-
+    }else
+    {
+      QMessageBox::critical(this,"Layer is not valid",
+          "The layer is not a valid layer and can not be added to the map");
+    }
+    qApp->processEvents();
+    mapCanvas->freeze(false);
+    mapCanvas->render2();
+    QApplication::restoreOverrideCursor();
   }
-  qApp->processEvents();
-
-  mapCanvas->freeze(false);
-  mapCanvas->render2();
-  QApplication::restoreOverrideCursor();
 }
 
 int QgisApp::saveDirty()
