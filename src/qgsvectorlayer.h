@@ -25,7 +25,7 @@ class QLibrary;
 class QgsMapToPixel;
 class OGRLayer;
 class OGRDataSource;
-class QgsDataProvider;
+class QgsData;
 class QgsRenderer;
 class QgsLegendItem;
 class QgsDlgVectorLayerProperties;
@@ -93,7 +93,12 @@ class QgsVectorLayer : public QgsMapLayer
 
   QgsVectorDataProvider * getDataProvider();
 
-
+  /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
+  QString getProjectionWKT() 
+  { 
+  //delegate to data provider...
+  };
+    
   QgsLabel *label();
 
   QgsAttributeAction* actions() { return &mActions; }
