@@ -199,6 +199,7 @@ public:
       keys would be the familiar QSettings-like '/' delimited entries, implying
       a hierarchy of keys and corresponding values
 
+      @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
     bool writeEntry ( QString const & scope, const QString & key, bool value );
@@ -213,6 +214,8 @@ public:
         keys would be the familiar QSettings-like '/' delimited entries,
         implying a hierarchy of keys and corresponding values
 
+
+        @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
     QStringList readListEntry ( QString const & scope, const QString & key, bool * ok = 0 ) const;

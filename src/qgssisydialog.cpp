@@ -113,55 +113,86 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
             //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
 
             QPen myPen = renderer->item()->getSymbol()->pen();
-            if (myPen==Qt::NoPen)
-                (pbnLineNoPen->setOn(true));
-            else if (myPen==Qt::DashLine)
-                (pbnLineDash->setOn(true));
-            else if (myPen==Qt::DotLine)
-                (pbnLineDash->setOn(true));
-            else if (myPen==Qt::DashDotLine)
-                (pbnLineDash->setOn(true));
-            else if (myPen==Qt::DashDotDotLine)
-                (pbnLineDash->setOn(true));
-            else
-                (pbnLineSolid->setOn(true)); //default to solid
 
+            switch ( myPen.style() )
+            {
+                case Qt::NoPen :
+                    pbnLineNoPen->setOn(true);
+                    break;
+                case Qt::DashLine :
+                    pbnLineDash->setOn(true);
+                    break;
+                case Qt::DotLine :
+                    pbnLineDot->setOn(true);
+                    break;
+                case Qt::DashDotLine :
+                    pbnLineDashDot->setOn(true);
+                    break;
+                case Qt::DashDotDotLine :
+                    pbnLineDashDotDot->setOn(true);
+                    break;
+                default :
+                    pbnLineSolid->setOn(true); // default to solid
+                    break;
+            }
 
             QBrush myBrush = renderer->item()->getSymbol()->brush();
-            if (myBrush==Qt::SolidPattern)
-                (solid->setOn(true));
-            else if (myBrush==Qt::HorPattern)
-                (horizontal->setOn(true));
-            else if (myBrush==Qt::VerPattern)
-                (vertical->setOn(true));
-            else if (myBrush==Qt::CrossPattern)
-                (cross->setOn(true));
-            else if (myBrush==Qt::BDiagPattern)
-                (bdiag->setOn(true));
-            else if (myBrush==Qt::FDiagPattern)
-                (fdiag->setOn(true));
-            else if (myBrush==Qt::DiagCrossPattern)
-                (diagcross->setOn(true));
-            else if (myBrush==Qt::Dense1Pattern)
-                (dense1->setOn(true));
-            else if (myBrush==Qt::Dense2Pattern)
-                (dense2->setOn(true));
-            else if (myBrush==Qt::Dense3Pattern)
-                (dense3->setOn(true));
-            else if (myBrush==Qt::Dense4Pattern)
-                (dense4->setOn(true));
-            else if (myBrush==Qt::Dense5Pattern)
-                (dense5->setOn(true));
-            else if (myBrush==Qt::Dense6Pattern)
-                (dense6->setOn(true));
-            else if (myBrush==Qt::Dense7Pattern)
-                (dense7->setOn(true));
-            else if (myBrush==Qt::NoBrush)
-                (solid->setOn(true));
+
+            switch ( myBrush.style() )
+            {
+                case Qt::SolidPattern :
+                    solid->setOn(true);
+                    break;
+                case Qt::HorPattern :
+                    horizontal->setOn(true);
+                    break;
+                case Qt::VerPattern :
+                    vertical->setOn(true);
+                    break;
+                case  Qt::CrossPattern :
+                    cross->setOn(true);
+                    break;
+                case Qt::BDiagPattern :
+                    bdiag->setOn(true);
+                    break;
+                case Qt::FDiagPattern :
+                    fdiag->setOn(true);
+                    break;
+                case Qt::DiagCrossPattern :
+                    diagcross->setOn(true);
+                    break;
+                case Qt::Dense1Pattern :
+                    dense1->setOn(true);
+                    break;
+                case Qt::Dense2Pattern :
+                    dense2->setOn(true);
+                    break;
+                case Qt::Dense3Pattern :
+                    dense3->setOn(true);
+                    break;
+                case Qt::Dense4Pattern :
+                    dense4->setOn(true);
+                    break;
+                case Qt::Dense5Pattern :
+                    dense5->setOn(true);
+                    break;
+                case Qt::Dense6Pattern :
+                    dense6->setOn(true);
+                    break;
+                case Qt::Dense7Pattern :
+                    dense7->setOn(true);
+                    break;
+                case Qt::NoBrush :
+                    solid->setOn(true);
+                    break;
+                default :
+                    solid->setOn(true);
+                    break;
+            }
         }
         else
         {
-            qWarning("Warning, typecast failed in qgssisydialog.cpp, line 54 or 58");
+            qWarning("%s:%d Warning, typecast failed", __FILE__, __LINE__);
         }
 
         if (mVectorLayer && mVectorLayer->vectorType() == QGis::Line)
@@ -222,11 +253,11 @@ void QgsSiSyDialog::apply()
         (sy->pen().setStyle(Qt::NoPen));
     else if  (pbnLineDash->isOn())
         (sy->pen().setStyle(Qt::DashLine));
-    else if  (pbnLineDash->isOn())
+    else if  (pbnLineDot->isOn())
         (sy->pen().setStyle(Qt::DotLine)) ;
-    else if  (pbnLineDash->isOn())
+    else if  (pbnLineDashDot->isOn())
         (sy->pen().setStyle(Qt::DashDotLine));
-    else if  (pbnLineDash->isOn())
+    else if  (pbnLineDashDotDot->isOn())
         (sy->pen().setStyle(Qt::DashDotDotLine)) ;
     else
         (sy->pen().setStyle(Qt::SolidLine)); //default to solid
@@ -376,6 +407,7 @@ void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
     qWarning("Setting outline style: "+QgsSymbologyUtils::penStyle2QString(pstyle));
 #endif
 
+    // XXX use switch() instead
     if (pstyle==Qt::NoPen)
         (pbnLineNoPen->setOn(true));
     else if (pstyle==Qt::DashLine)
@@ -401,6 +433,7 @@ void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
     qWarning("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle));
 #endif
 
+    // XXX use switch instead
     if (fstyle==Qt::SolidPattern)
         (solid->setOn(true));
     else if (fstyle==Qt::HorPattern)
