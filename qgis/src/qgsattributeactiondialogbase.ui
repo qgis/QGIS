@@ -1,27 +1,27 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsAttributeActionDialogBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>QgsAttributeActionDialogBase</cstring>
+        <cstring>Form1</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>498</width>
-            <height>365</height>
+            <width>567</width>
+            <height>515</height>
         </rect>
     </property>
     <property name="sizePolicy">
         <sizepolicy>
-            <hsizetype>7</hsizetype>
-            <vsizetype>7</vsizetype>
+            <hsizetype>5</hsizetype>
+            <vsizetype>5</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
     <property name="caption">
-        <string>Form3</string>
+        <string>Form1</string>
     </property>
     <hbox>
         <property name="name">
@@ -29,30 +29,15 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout24</cstring>
             </property>
-            <hbox>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QTable">
-                    <column>
-                        <property name="text">
-                            <string>Name </string>
-                        </property>
-                    </column>
-                    <column>
-                        <property name="text">
-                            <string>Action</string>
-                        </property>
-                    </column>
-                    <row>
-                        <property name="text">
-                            <string>0</string>
-                        </property>
-                    </row>
+                <widget class="QFrame">
                     <property name="name">
-                        <cstring>attributeActionTable</cstring>
+                        <cstring>frame4</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -62,144 +47,372 @@
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
                     <property name="frameShape">
-                        <enum>Box</enum>
+                        <enum>StyledPanel</enum>
                     </property>
                     <property name="frameShadow">
-                        <enum>Plain</enum>
+                        <enum>Raised</enum>
                     </property>
-                    <property name="lineWidth">
-                        <number>0</number>
-                    </property>
-                    <property name="numRows">
-                        <number>1</number>
-                    </property>
-                    <property name="numCols">
-                        <number>2</number>
-                    </property>
-                    <property name="showGrid">
-                        <bool>false</bool>
-                    </property>
-                    <property name="rowMovingEnabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="focusStyle">
-                        <enum>FollowStyle</enum>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Enter actions here</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Use this table to create actions that can be selected from the Identify Results dialog box. Each action has a name, which appears in the Identify Results popup menu. The action is executed as a separate process. 
-
-Any %% symbol in the action is replaced by the value of the attribute that was right-clicked on in the Identify Results dialog box. 
-
-Any symbols that start with a % and are then followed by the name of an attribute are replaced by the value of that attribute. For example, if there is an attribute called 'filename' with a value of 'text.txt' and there is an action that includes the text '%filename' it will be replaced by text.txt when the action is run.</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout4</cstring>
-                    </property>
-                    <vbox>
+                    <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QPushButton">
+                        <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>addButton</cstring>
+                                <cstring>layout22</cstring>
                             </property>
-                            <property name="text">
-                                <string>Add a row</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Add a blank row to the table</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Use this button to add a new row to the table</string>
-                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QTable">
+                                    <column>
+                                        <property name="text">
+                                            <string>Name</string>
+                                        </property>
+                                    </column>
+                                    <column>
+                                        <property name="text">
+                                            <string>Action</string>
+                                        </property>
+                                    </column>
+                                    <property name="name">
+                                        <cstring>attributeActionTable</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>7</hsizetype>
+                                            <vsizetype>7</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="resizePolicy">
+                                        <enum>Default</enum>
+                                    </property>
+                                    <property name="numRows">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="numCols">
+                                        <number>2</number>
+                                    </property>
+                                    <property name="readOnly">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="selectionMode">
+                                        <enum>SingleRow</enum>
+                                    </property>
+                                    <property name="focusStyle">
+                                        <enum>FollowStyle</enum>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clikcing on the item.</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout21</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>moveUpButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Move up</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Move the selected action up</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>moveDownButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Move down</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Move the selected action down</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>removeButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Remove</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Remove the selected action</string>
+                                            </property>
+                                        </widget>
+                                        <spacer>
+                                            <property name="name">
+                                                <cstring>spacer4</cstring>
+                                            </property>
+                                            <property name="orientation">
+                                                <enum>Vertical</enum>
+                                            </property>
+                                            <property name="sizeType">
+                                                <enum>Expanding</enum>
+                                            </property>
+                                            <property name="sizeHint">
+                                                <size>
+                                                    <width>41</width>
+                                                    <height>121</height>
+                                                </size>
+                                            </property>
+                                        </spacer>
+                                    </vbox>
+                                </widget>
+                            </hbox>
                         </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>removeButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Clear</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Clears the selected rows</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Use this button to clear the selected rows in the table</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>clearAllButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Clear all</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Clears all rows</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Use this button to clear all of the rows in the table</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer27</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>31</width>
-                                    <height>230</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </vbox>
+                    </hbox>
                 </widget>
-            </hbox>
+                <widget class="QFrame">
+                    <property name="name">
+                        <cstring>frame3</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Raised</enum>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout11</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout28</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel1</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Name</string>
+                                            </property>
+                                            <property name="whatsThis" stdset="0">
+                                                <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>actionName</cstring>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Enter the action name here</string>
+                                            </property>
+                                            <property name="whatsThis" stdset="0">
+                                                <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout7</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Action</string>
+                                            </property>
+                                            <property name="whatsThis" stdset="0">
+                                                <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>actionAction</cstring>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Enter the action command here</string>
+                                            </property>
+                                            <property name="whatsThis" stdset="0">
+                                                <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>browseButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Browse</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Browse for action commands</string>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout10</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>insertButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Insert action</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Inserts the action into the list above</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>updateButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Update action</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Update the selected action</string>
+                                            </property>
+                                        </widget>
+                                        <spacer>
+                                            <property name="name">
+                                                <cstring>spacer6</cstring>
+                                            </property>
+                                            <property name="orientation">
+                                                <enum>Horizontal</enum>
+                                            </property>
+                                            <property name="sizeType">
+                                                <enum>Expanding</enum>
+                                            </property>
+                                            <property name="sizeHint">
+                                                <size>
+                                                    <width>20</width>
+                                                    <height>31</height>
+                                                </size>
+                                            </property>
+                                        </spacer>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>insertFieldButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Insert field</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Inserts the selected field into the action, prepended with a %</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QComboBox">
+                                            <property name="name">
+                                                <cstring>fieldComboBox</cstring>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The valid attribute names for this layer</string>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
         </widget>
     </hbox>
 </widget>
 <connections>
     <connection>
-        <sender>addButton</sender>
+        <sender>insertButton</sender>
         <signal>clicked()</signal>
-        <receiver>QgsAttributeActionDialogBase</receiver>
-        <slot>add()</slot>
+        <receiver>Form1</receiver>
+        <slot>insert()</slot>
+    </connection>
+    <connection>
+        <sender>insertFieldButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>insertField()</slot>
+    </connection>
+    <connection>
+        <sender>browseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>browse()</slot>
+    </connection>
+    <connection>
+        <sender>moveUpButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>moveUp()</slot>
+    </connection>
+    <connection>
+        <sender>moveDownButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>moveDown()</slot>
     </connection>
     <connection>
         <sender>removeButton</sender>
         <signal>clicked()</signal>
-        <receiver>QgsAttributeActionDialogBase</receiver>
+        <receiver>Form1</receiver>
         <slot>remove()</slot>
     </connection>
     <connection>
-        <sender>clearAllButton</sender>
+        <sender>attributeActionTable</sender>
+        <signal>clicked(int,int,int,const QPoint&amp;)</signal>
+        <receiver>Form1</receiver>
+        <slot>rowSelected(int,int,int,const QPoint&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>updateButton</sender>
         <signal>clicked()</signal>
-        <receiver>QgsAttributeActionDialogBase</receiver>
-        <slot>clearAll()</slot>
+        <receiver>Form1</receiver>
+        <slot>update()</slot>
     </connection>
 </connections>
 <slots>
-    <slot>add()</slot>
+    <slot>insert()</slot>
+    <slot>moveUp()</slot>
     <slot>remove()</slot>
-    <slot>clearAll()</slot>
+    <slot>browse()</slot>
+    <slot>insertField()</slot>
+    <slot>moveDown()</slot>
+    <slot>rowSelected(int,int,int,const QPoint&amp;)</slot>
+    <slot>update()</slot>
 </slots>
-<functions>
-    <function access="private">init()</function>
-</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
