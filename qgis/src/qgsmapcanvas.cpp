@@ -90,7 +90,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
-
+#include "qgsmeasure.h"
 
 
 /**
@@ -334,6 +334,8 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
   QPaintDeviceMetrics *pdm = new QPaintDeviceMetrics(this);
   mCanvasProperties->initMetrics(pdm);
   delete pdm;
+    
+  mMeasure = 0;
 
 } // QgsMapCanvas ctor
 
@@ -1263,8 +1265,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         emit extentsChanged(mCanvasProperties->currentExtent);
       }
       break;
-
+      
     case QGis::Select:
+      {
       // erase the rubber band box
       paint.begin(this);
       paint.setPen(pen);
@@ -1302,6 +1305,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                              tr("No active layer"),
                              tr("To select features, you must choose an layer active by clicking on its name in the legend"));
       }
+      }
+      break;
     }
   }
   else
@@ -1533,7 +1538,18 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	emit xyClickCoordinates(idPoint);
 	break;
       }
-      
+
+    case QGis::Measure:
+      {
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+	if ( !mMeasure ) {
+	    mMeasure = new QgsMeasure(this, topLevelWidget() );
+	}
+	mMeasure->addPoint(point);
+	mMeasure->show();
+      	break;
+      }
     }
   }
 } // mouseReleaseEvent
@@ -1638,8 +1654,15 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
       bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
       break;
-    }
 
+    }
+  } 
+  else if ( mCanvasProperties->mapTool == QGis::Measure ) 
+  {
+      if ( mMeasure ) {
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
+	mMeasure->mouseMove(point);
+      }
   }
 
   // show x y on status bar

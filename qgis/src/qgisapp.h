@@ -208,6 +208,8 @@ private:
     void pan();
     //! Identify feature(s) on the currently selected layer
     void identify();
+    //! Measure distance
+    void measure();
     //! show the attribute table for the currently selected layer
     void attributeTable();
     /**Deletes the selected attributes for the currently selected vector layer*/
