@@ -39,7 +39,7 @@ class QgsContinuousColRenderer: public QgsRenderer
        @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Renders the feature using the minimum and maximum value of the classification field*/
-    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
+    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected);
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Sets the id of the classification field*/
@@ -61,7 +61,7 @@ class QgsContinuousColRenderer: public QgsRenderer
     /** Returns true*/
     bool needsAttributes();
     /**Returns a list with the index of the classification attribute*/
-    virtual std::list<int> classificationAttributes();
+    virtual std::list<int> classificationAttributes(); 
  protected:
     /**Number of the classification field (it must be a numerical field)*/
     int mClassificationField;
@@ -69,9 +69,11 @@ class QgsContinuousColRenderer: public QgsRenderer
     QgsRenderItem* mMinimumItem;
     /**Item for the maximum value*/
     QgsRenderItem* mMaximumItem;
+    /**Color to draw selected features*/
+    QColor mSelectionColor;
 };
 
-inline QgsContinuousColRenderer::QgsContinuousColRenderer(): mMinimumItem(0), mMaximumItem(0)
+inline QgsContinuousColRenderer::QgsContinuousColRenderer(): mMinimumItem(0), mMaximumItem(0), mSelectionColor(QColor(255,255,0))
 {
 
 }

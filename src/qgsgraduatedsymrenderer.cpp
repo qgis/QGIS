@@ -47,7 +47,7 @@ void QgsGraduatedSymRenderer::removeItems()
     mItems.clear();
 }
 
-void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor)
+void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor, bool selected)
 {
     //first find out the value for the classification attribute
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
@@ -74,6 +74,16 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 	//set the qpen and qpainter to the right values
 	p->setPen((*it)->getSymbol()->pen());
 	p->setBrush((*it)->getSymbol()->brush());
+    }
+    
+    if(selected)
+    {
+	 QPen pen=(*it)->getSymbol()->pen();
+	 pen.setColor(mSelectionColor);
+	 QBrush brush=(*it)->getSymbol()->brush();
+	 brush.setColor(mSelectionColor);
+	 p->setPen(pen);
+	 p->setBrush(brush);
     }
 }
 

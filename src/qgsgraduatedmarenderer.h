@@ -36,7 +36,7 @@ class QgsGraduatedMaRenderer: public QgsRenderer
     /**Removes all items*/
     void removeItems();
     virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
-    virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor);
+    virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected);
     /**Sets the number of the classicifation field
     \param field the number of the field to classify*/
     void setClassificationField(int field);

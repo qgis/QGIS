@@ -25,6 +25,7 @@ class QPainter;
 class QgsDlgVectorLayerProperties;
 class QPicture;
 class QDomNode;
+class QColor;
 
 #include <fstream>
 #include <list>
@@ -43,7 +44,7 @@ class QgsRenderer
      @param f a pointer to the feature to be rendered
      @param pic pointer to a marker from SVG (is only used by marker renderers)
      @param scalefactor pointer to the scale factor for the marker image*/
-    virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor)=0;
+    virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected)=0;
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
