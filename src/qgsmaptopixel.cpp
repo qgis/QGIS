@@ -268,7 +268,8 @@ bool QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
     }
     // If the line hasn't been trimmed yet, it is entirely outside the
     // boundary, so tell the calling code.
-    return false;
+    if (!toDone && !fromDone)
+      return false;
   }
   else
   {
@@ -278,7 +279,7 @@ bool QgsMapToPixel::trimLine(const QgsPoint& from, const QgsPoint& to,
   }
 
   // Too verbose for QGISDEBUG, but handy sometimes.
-  /*
+  /*  
   std::cerr << "Point 1 trimmed from " << from.x() << ", " << from.y() 
 	    << " to " << tFrom.x() << ", " << tFrom.y() << '\n'
 	    << "Point 2 trimmed from " << to.x() << ", " << to.y() 
