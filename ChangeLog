@@ -1,12 +1,12 @@
-QGIS ChangeLog
-ChangeLog,v 1.15 2004/02/24 07:34:39 gsherman Exp
----------------------------------------------------------
-Version 0.1 final February 25, 2004
-
-
-Version 0.1pre1 February 14, 2004
+**User interface improvements - menu and dialog cleanups and a new icon theme
+  based on Everaldo's Crystal icon set.
+**QGIS can load layers and / or a project on start up by specifying these
+  on the command line.
 **Symbol renderers for simple, graduated, and continous symbols
 **Raster support for most GDAL formats
+**Raster implementation supports a variety of rendering settings including
+  semi transparent overlays, pallette inversion, flexible band to colour mapping
+  in multiband images and creation of pseudocolor.
 **Change to a data provider architecture for vector layers. Addtional data
   types can be supported by writing a provider plugin
 **Buffer plugin for PostGIS layers
@@ -15,7 +15,8 @@ Version 0.1pre1 February 14, 2004
 **User guide (HTML and PDF)
 **Install guide (HTML and PDF)
 **Plugin manager to manage loading/unloading of plugins
-**Bug fixes and user interface improvements
+**Plugin template to automate the more mundane parts of creating a new plugin.
+**Numerous bug fixes
 **Removed dependency on libpq++ when compiling with PostgreSQL/PostGIS support
 **PostgreSQL/PostGIS layers now rely on GEOS for selecting features
 
