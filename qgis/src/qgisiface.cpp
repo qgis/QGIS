@@ -81,3 +81,13 @@ void QgisIface::openURL(QString url, bool useQgisDocDirectory)
 {
   qgis->openURL(url, useQgisDocDirectory);
 }
+
+std::map<QString, int> QgisIface::menuMapByName()
+{
+  return qgis->menuMapByName();
+}
+
+std::map<int, QString> QgisIface::menuMapById()
+{
+  return qgis->menuMapById();
+}

@@ -229,6 +229,12 @@ private:
   void options();
   //! Whats-this help slot
   void whatsThis();
+  //! Get the Menu map (key is name, value is menu id)
+  std::map<QString, int> menuMapByName();
+  //! Get the Menu map (key is menu id, value is name)
+  std::map<int, QString> menuMapById();
+  //! Populate the menu maps
+  void populateMenuMaps();
   void socketConnected();
   void socketConnectionClosed();
   void socketReadyRead();
@@ -267,6 +273,10 @@ private:
   * before opening/creating a new one or exiting the application
   */
   bool projectIsDirty;
+  //! menu map (key is name, value is menu id)
+  std::map<QString, int>mMenuMapByName;
+  //! menu map (key is menu id, value is name)
+  std::map<int, QString>mMenuMapById;
 };
 
 #endif

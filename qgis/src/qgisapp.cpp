@@ -317,6 +317,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // connect the "cleanup" slot
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
+
+  
   // set the focus to the map canvase
   mapCanvas->setFocus();
   if (!myHideSplashFlag)
@@ -2517,4 +2519,36 @@ int QgisApp::saveDirty()
 void QgisApp::whatsThis()
 {
   QWhatsThis::enterWhatsThisMode();
+}
+std::map<QString, int> QgisApp::menuMapByName()
+{
+  // Must populate the maps with each call since menus might have been
+  // added or deleted
+  populateMenuMaps();
+  // Return the menu items mapped by name (key is name, value is menu id)
+  return mMenuMapByName;
+}
+std::map<int, QString> QgisApp::menuMapById()
+{
+  // Must populate the maps with each call since menus might have been
+  // added or deleted
+  populateMenuMaps();
+  // Return the menu items mapped by menu id (key is menu id, value is name)
+  return mMenuMapById;
+}
+void QgisApp::populateMenuMaps()
+{
+  // Populate the two menu maps by iterating through the menu bar
+  mMenuMapByName.clear();
+  mMenuMapById.clear();
+  int idx = 0;
+  int menuId;
+  // Loop until we get an id of -1, which indicates there are no more
+  // items.
+  do{
+    menuId = menubar->idAt(idx++);
+    std::cout << "Menu id " << menuId << " is " << menubar->text(menuId) << std::endl; 
+    mMenuMapByName[menubar->text(menuId)] = menuId;
+    mMenuMapById[menuId] = menubar->text(menuId);
+  }while(menuId != -1);
 }
