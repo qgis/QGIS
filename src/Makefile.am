@@ -54,6 +54,7 @@ headers =	qgisapp.h					\
 		qgsdataprovider.h				\
 		qgsdatasource.h					\
 		qgsdatasourceuri.h				\
+		qgsdelattrdialog.h				\
 		qgsdlgvectorlayerproperties.h			\
 	  	qgsexception.h					\
 	  	qgscsexception.h				\
@@ -128,6 +129,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
 		qgscontcoldialogbase.ui			\
+		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
 		qgsgramadialogbase.ui			\
@@ -182,6 +184,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributetable.moc.cpp		\
 		qgscoordinatetransform.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
+		qgsdelattrdialog.moc.cpp			\
 		qgsdlgvectorlayerproperties.moc.cpp	\
 		qgsgeomtypedialog.moc.cpp		\
 		qgsgramadialog.moc.cpp			\
@@ -234,6 +237,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsmaptopixel.cpp		\
 		qgscustomsymbol.cpp		\
 		qgsdatasource.cpp		\
+		qgsdelattrdialog.cpp		\
 		qgsdlgvectorlayerproperties.cpp	\
 		qgsfeatureattribute.cpp		\
 		qgsfeature.cpp			\

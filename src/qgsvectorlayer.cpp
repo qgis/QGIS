@@ -549,7 +549,7 @@ void QgsVectorLayer::table()
     QApplication::setOverrideCursor(Qt::waitCursor);
     dataProvider->reset();
     int numFields = dataProvider->fieldCount();
-    tabledisplay = new QgsAttributeTableDisplay();
+    tabledisplay = new QgsAttributeTableDisplay(this);
     connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
     tabledisplay->table()->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
     tabledisplay->table()->setNumCols(numFields + 1); //+1 for the id-column

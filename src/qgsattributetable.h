@@ -24,6 +24,7 @@
 #include <set>
 
 class QPopupMenu;
+class QgsVectorDataProvider;
 #include "qgsattributeaction.h"
 
 #include <vector>
@@ -50,10 +51,24 @@ class QgsAttributeTable:public QTable
 	 which are used when the user requests a popup menu */
       void setAttributeActions(const QgsAttributeAction& actions)
 	{ mActions = actions; }
+      /**Returns if the table contains uncommited changes*/
+      bool edited() const {return mEdited;}
       /**Switches editing mode on and off*/
       void setEditable(bool enabled){mEditable=enabled;}
+      /**Adds an attribute to the table (but does not commit it yet)
+       @param name attribute name
+       @param type attribute type*/
       void addAttribute(const QString& name, const QString& type);
+      /**Deletes an attribute (but does not commit it)
+       @param name attribute name*/
       void deleteAttribute(const QString& name);
+      /**Commit Changes to the provider*/
+      bool commitChanges(QgsVectorDataProvider* provider);
+      /**Discard all changes and restore
+       the state before editing was started*/
+      bool rollBack(QgsVectorDataProvider* provider);
+      /**Fills the contents of a provider into this table*/
+      void fillTable(QgsVectorDataProvider* provider);
       
       public slots:
       void columnClicked(int col);
@@ -63,6 +78,7 @@ class QgsAttributeTable:public QTable
       void popupItemSelected(int id);
       protected slots:
 	  void handleChangedSelections();
+
       protected:
       /**Flag telling if the ctrl-button or the shift-button is pressed*/
       bool lockKeyPressed;
@@ -70,13 +86,14 @@ class QgsAttributeTable:public QTable
       QMap<int,int> rowIdMap;
       /**Flag indicating, which sorting order should be used*/
       bool sort_ascending;
-      /**True if table is in editing mode*/
       bool mEditable;
+      /**True if table has been edited and contains uncommited changes*/
+      bool mEdited;
       /**Map containing the added attributes. The key is the attribute name
        and the value the attribute type*/
       std::map<QString,QString> mAddedAttributes;
       /**Set containing the attribute names of deleted attributes*/
-      std::set<QString> mDeletedFeatures;
+      std::set<QString> mDeletedAttributes;
       /**Nested map containing the changed attribute values. The int is the feature id, 
 	 the first QString the attribute name and the second QString the new value*/
       std::map<int,std::map<QString,QString> > mChangedValues;

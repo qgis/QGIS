@@ -1174,6 +1174,9 @@ bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
     for(std::set<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
 	QString sql="ALTER TABLE "+tableName+" DROP COLUMN "+(*iter);
+#ifdef QGISDEBUG
+	qWarning(sql);
+#endif
 	//send sql statement and do error handling
 	PGresult* result=PQexec(connection, (const char *)sql);
 	if(result==0)
@@ -1183,6 +1186,18 @@ bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
 	    if(message==PGRES_FATAL_ERROR)
 	    {
 		QMessageBox::information(0,"ALTER TABLE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+	    }
+	}
+	else
+	{
+	    //delete the attribute from attributeFields
+	    for(std::vector<QgsField>::iterator it=attributeFields.begin();it!=attributeFields.end();++it)
+	    {
+		if((*it).name()==(*iter))
+		{
+		    attributeFields.erase(it);
+		    break;
+		}
 	    }
 	}
     }
