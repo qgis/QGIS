@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>302</width>
-            <height>499</height>
+            <height>405</height>
         </rect>
     </property>
     <property name="caption">
@@ -41,121 +41,6 @@
                     </property>
                 </widget>
             </hbox>
-        </widget>
-        <widget class="QButtonGroup" row="1" column="0">
-            <property name="name">
-                <cstring>grpOutlineStyle</cstring>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>350</width>
-                    <height>200</height>
-                </size>
-            </property>
-            <property name="title">
-                <string>Outline Style:</string>
-            </property>
-            <property name="exclusive">
-                <bool>true</bool>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>pbnLineSolid</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>false</bool>
-                    </property>
-                    <property name="default">
-                        <bool>false</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="0" column="1">
-                    <property name="name">
-                        <cstring>pbnLineDashDot</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>false</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="0" column="2">
-                    <property name="name">
-                        <cstring>pbnLineDash</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="2">
-                    <property name="name">
-                        <cstring>pbnLineNoPen</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>pbnLineDot</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>pbnLineDashDotDot</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </grid>
         </widget>
         <widget class="QGroupBox" row="2" column="0">
             <property name="name">
@@ -439,60 +324,386 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton" row="2" column="1">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
-                        <cstring>dense1</cstring>
+                        <cstring>layout8</cstring>
                     </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>solid</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="backgroundOrigin">
+                                <enum>WindowOrigin</enum>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="default">
+                                <bool>false</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>fdiag</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense4</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>horizontal</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QPushButton" row="2" column="2">
+                <widget class="QLayoutWidget" row="1" column="0">
                     <property name="name">
-                        <cstring>dense6</cstring>
+                        <cstring>layout9</cstring>
                     </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>diagcross</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense5</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>vertical</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense1</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QPushButton" row="0" column="1">
+                <widget class="QLayoutWidget" row="2" column="0">
                     <property name="name">
-                        <cstring>fdiag</cstring>
+                        <cstring>layout10</cstring>
                     </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense6</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>cross</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense2</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense7</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
+                <widget class="QLayoutWidget" row="3" column="0">
+                    <property name="name">
+                        <cstring>layout11</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>bdiag</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>dense3</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>nopen</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Clear</string>
+                            </property>
+                            <property name="toggleButton">
+                                <bool>true</bool>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QButtonGroup" row="1" column="0">
+            <property name="name">
+                <cstring>grpOutlineStyle</cstring>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>350</width>
+                    <height>200</height>
+                </size>
+            </property>
+            <property name="title">
+                <string>Outline Style:</string>
+            </property>
+            <property name="exclusive">
+                <bool>true</bool>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
                 <widget class="QPushButton" row="0" column="0">
                     <property name="name">
-                        <cstring>solid</cstring>
+                        <cstring>pbnLineSolid</cstring>
                     </property>
-                    <property name="backgroundOrigin">
-                        <enum>WindowOrigin</enum>
+                    <property name="maximumSize">
+                        <size>
+                            <width>60</width>
+                            <height>30</height>
+                        </size>
                     </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
                     </property>
                     <property name="default">
                         <bool>false</bool>
@@ -501,15 +712,24 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="1">
+                <widget class="QPushButton" row="0" column="1">
                     <property name="name">
-                        <cstring>diagcross</cstring>
+                        <cstring>pbnLineDashDot</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>60</width>
+                            <height>30</height>
+                        </size>
                     </property>
                     <property name="text">
                         <string></string>
                     </property>
                     <property name="toggleButton">
                         <bool>true</bool>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
                     </property>
                     <property name="flat">
                         <bool>true</bool>
@@ -517,21 +737,13 @@
                 </widget>
                 <widget class="QPushButton" row="0" column="2">
                     <property name="name">
-                        <cstring>dense4</cstring>
+                        <cstring>pbnLineDash</cstring>
                     </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>horizontal</cstring>
+                    <property name="maximumSize">
+                        <size>
+                            <width>60</width>
+                            <height>30</height>
+                        </size>
                     </property>
                     <property name="text">
                         <string></string>
@@ -545,7 +757,13 @@
                 </widget>
                 <widget class="QPushButton" row="1" column="2">
                     <property name="name">
-                        <cstring>dense5</cstring>
+                        <cstring>pbnLineNoPen</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>60</width>
+                            <height>30</height>
+                        </size>
                     </property>
                     <property name="text">
                         <string></string>
@@ -557,9 +775,15 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="4" column="1">
+                <widget class="QPushButton" row="1" column="1">
                     <property name="name">
-                        <cstring>dense3</cstring>
+                        <cstring>pbnLineDot</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>60</width>
+                            <height>30</height>
+                        </size>
                     </property>
                     <property name="text">
                         <string></string>
@@ -571,79 +795,15 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="3" column="2">
+                <widget class="QPushButton" row="1" column="0">
                     <property name="name">
-                        <cstring>dense7</cstring>
+                        <cstring>pbnLineDashDotDot</cstring>
                     </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="4" column="2">
-                    <property name="name">
-                        <cstring>nopen</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Clear</string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="2" column="0">
-                    <property name="name">
-                        <cstring>vertical</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="3" column="0">
-                    <property name="name">
-                        <cstring>cross</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="4" column="0">
-                    <property name="name">
-                        <cstring>bdiag</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="3" column="1">
-                    <property name="name">
-                        <cstring>dense2</cstring>
+                    <property name="maximumSize">
+                        <size>
+                            <width>60</width>
+                            <height>30</height>
+                        </size>
                     </property>
                     <property name="text">
                         <string></string>

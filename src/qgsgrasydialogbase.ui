@@ -9,13 +9,19 @@
             <x>0</x>
             <y>0</y>
             <width>490</width>
-            <height>402</height>
+            <height>380</height>
         </rect>
     </property>
     <property name="minimumSize">
         <size>
             <width>300</width>
             <height>100</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>32767</width>
+            <height>32767</height>
         </size>
     </property>
     <property name="caption">
@@ -138,6 +144,12 @@
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>500</height>
+                        </size>
+                    </property>
                     <widget class="QWidget">
                         <property name="name">
                             <cstring>WStackPage</cstring>
@@ -158,6 +170,12 @@
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>500</height>
+                        </size>
                     </property>
                 </widget>
             </grid>
