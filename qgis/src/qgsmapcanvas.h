@@ -129,6 +129,7 @@ class QgsMapCanvas : public QWidget
     //! Calculate the scale and return as a string
     void currentScale(int thePrecision);
 
+    void setZOrder( std::list<QString> );
     std::list < QString > const & zOrders() const;
     std::list < QString >       & zOrders();
     //! Set map units (needed by project properties dialog)
