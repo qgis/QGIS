@@ -506,12 +506,7 @@ libqgis_la_SOURCES =				\
 		qgslinestylewidget.cpp		\
 		qgslinestylewidget.moc.cpp	\
 		qgsfillstylewidget.cpp		\
-		qgsfillstylewidget.moc.cpp
-
-#		qgsvectorsymbologywidgetbase.uic.cpp	\
-#		qgsvectorsymbologywidgetbase.moc.uic.cpp \
-#		qgsvectorsymbologywidget.cpp	\
-#		qgsvectorsymbologywidget.moc.cpp	
+		qgsfillstylewidget.moc.cpp	
 
 
 if HAVE_POSTGRESQL
