@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.36 2004/03/26 12:24:40 jobi Exp
+ChangeLog,v 1.37 2004/03/26 13:23:55 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-26 [jobi] 0.1.0devel11
+
+Added qgiscommit tool
 
 2004-03-26 [didge] 0.1.0devel10
 
