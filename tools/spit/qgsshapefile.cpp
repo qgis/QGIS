@@ -92,14 +92,10 @@ const char * QgsShapeFile::getFeatureClass(){
       for(int n=0; n<numFields; n++)
         column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
       
-    }else{
-      valid = false;
-      delete geom;
-    }
-  }else{
-    valid = false;
+    }else valid = false;
     delete feat;
-  }
+  }else valid = false;
+  
   ogrLayer->ResetReading();    
   return valid?geom_type:NULL;
 }
@@ -114,8 +110,8 @@ const char * QgsShapeFile::getName(){
 
 bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, QProgressDialog * pro){
   bool result = true;
-  char * geo_temp;
   QString table(filename);
+  
   table = table.section('/', -1);
   table = table.section('.', 0, 0);
   QString query = "CREATE TABLE "+table+"(gid int4, ";
@@ -131,33 +127,34 @@ bool QgsShapeFile::insertLayer(QString dbname, QString srid, PgDatabase * conn, 
     ", \'" + QString(geom_type) + "\', 2)";
   conn->ExecTuplesOk((const char *)query);
 
+  std::cout << "before :" << pro->progress() << std::endl;
   //adding the data into the table
-  for(int m=0;OGRFeature *feat = ogrLayer->GetNextFeature(); m++){
-
-      std::stringstream out;
-      out << m;
-      query = "INSERT INTO "+table+"values( "+out.str()+", ";
+  for(int m=0;m<features; m++){
+    OGRFeature *feat = ogrLayer->GetNextFeature();
+    if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
-      
-      int num = geom->WkbSize();
-      char * geo_temp = new char[num*3];
-      geom->exportToWkt(&geo_temp);
-      QString geometry(geo_temp);
+      if(geom){
+        std::stringstream out;
+        out << m;
+        query = "INSERT INTO "+table+"values( "+out.str()+", ";
+           
+        int num = geom->WkbSize();
+        char * geo_temp = new char[num*3];
+        geom->exportToWkt(&geo_temp);
+        QString geometry(geo_temp);
     
-      int numFields = feat->GetFieldCount();
-      for(int n=0; n<numFields; n++)
-        query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
-      query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
+        for(int n=0; n<column_names.size(); n++)
+          query += QString("\'")+QString(feat->GetFieldAsString(n))+QString("\', ");
+        query += QString("GeometryFromText(\'")+QString(geometry)+QString("\', ")+srid+QString("))");
+        conn->ExecTuplesOk((const char *)query);
 
-      conn->ExecTuplesOk((const char *)query);
+        pro->setProgress(pro->progress()+1);
+        delete[] geo_temp;
+      }
+      delete feat;
+    }
+  }
 
-      pro->setProgress(pro->progress()+1);
-
-      delete geom;
-      delete feat; 
-      delete[] geo_temp;
-
-  }   
-
+  std::cout << "after :" << pro->progress() << std::endl;
   return result;
 }

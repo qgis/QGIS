@@ -151,7 +151,6 @@ void QgsSpit::removeFile()
       it = lstShapefiles->firstChild();
     }
     else ++it;
-  std::cout << fileList.size() << std::endl;
 }
 
 void QgsSpit::removeAllFiles(){
@@ -201,6 +200,7 @@ void QgsSpit::import(){
 
   	if (pd->Status() == CONNECTION_OK) {     
       QProgressDialog * pro = new QProgressDialog("Importing files", "Cancel", total_features, this, "Progress");
+      pro->setProgress(0);
       pro->setAutoClose(true);
       pro->setAutoReset(true);
       pro->show();
@@ -220,7 +220,7 @@ void QgsSpit::import(){
         pd->ExecCommandOk("ROLLBACK");
       else{
         int temp = pd->ExecCommandOk("COMMIT");
-        std::cout<<"commit " << temp << " " << pd->ErrorMessage() << total_features << " " << pro->progress() << std::endl;
+        //std::cout<<"commit " << temp << " " << pd->ErrorMessage() << total_features << " " << pro->progress() << std::endl;
       }
     }
     else 
