@@ -238,6 +238,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsfeature.cpp			\
 		qgsfield.cpp			\
 		qgsgeomtypedialog.cpp		\
+		qgsrenderer.cpp 		\
 		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
 		qgsgramadialog.cpp		\
@@ -367,6 +368,7 @@ libqgis_la_SOURCES =				\
 		qgsrect.cpp			\
 		qgsrenderitem.cpp		\
 		qgsscalecalculator.cpp		\
+		qgsrenderer.cpp 		\
 		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssymbol.cpp			\
