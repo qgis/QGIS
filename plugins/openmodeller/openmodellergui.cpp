@@ -37,6 +37,7 @@
 #include <qtooltip.h> 
 #include <qprogressbar.h>
 #include <qscrollview.h>
+#include <qpushbutton.h>
 
 //
 //openmodeller includes
@@ -151,7 +152,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
       //mMap.remove(myIterator);
     }
     mMap.clear();
-
+    mDefaultParametersMap.clear();
     ParameterLabels::Iterator myLabelIterator;
     for ( myLabelIterator = mLabelsMap.begin(); myLabelIterator != mLabelsMap.end(); ++myLabelIterator ) 
     {
@@ -202,7 +203,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 	
 	//Set label and button for algorithms with no parameters
         lblParameters->setText("No user definable parameters available");
-        //pbnDefaultParameters->setEnabled(false);
+        pbnDefaultParameters->setEnabled(false);
       }
       else
         //Algorithms WITH parameters
@@ -210,7 +211,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
       {
         //Set label and button for algorithms with parameters
         lblParameters->setText("Algorithm specific parameters");
-        //pbnDefaultParameters->setEnabled(true);
+        pbnDefaultParameters->setEnabled(true);
 
         QSettings settings;
 
@@ -224,9 +225,9 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
           {
             //Create a spinbox for integer values
             std::cout << QString(myParameter->id).ascii() << " parameter is integer type" << std::endl;
-
+            QString myControlName = QString("spin"+QString(myParameter->id));
             //Create components
-            QSpinBox * mySpinBox = new QSpinBox (mLayoutWidget, ("spin"+QString(myParameter->id)));
+            QSpinBox * mySpinBox = new QSpinBox (mLayoutWidget, myControlName);
             QLabel * myLabel = new QLabel (mLayoutWidget, ("lbl"+QString(myParameter->id)));
 
             //set spinbox details and write to map
@@ -263,6 +264,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             // Add the widget to the map
             //
             mMap[myParameter->id] = mySpinBox;
+            mDefaultParametersMap[myControlName]=QString(myParameter->typical);
             mLabelsMap[myParameter->name] = myLabel;
 
           }
@@ -272,7 +274,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
                       << " type" << std::endl;
 
             //Create components
-            QLineEdit * myLineEdit = new QLineEdit (mLayoutWidget, ("le"+QString(myParameter->id)));
+            QString myControlName = QString("le"+QString(myParameter->id));
+            QLineEdit * myLineEdit = new QLineEdit (mLayoutWidget, myControlName);
             QLabel * myLabel = new QLabel (mLayoutWidget, ("lbl"+QString(myParameter->id)));	
 
             //Set value to previous otherwise to default
@@ -303,6 +306,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             // Add the widget to the map
             //
             mMap[myParameter->id] = myLineEdit;
+            mDefaultParametersMap[myControlName]=QString(myParameter->typical);
             mLabelsMap[myParameter->name] = myLabel;
           }
         
@@ -1195,16 +1199,16 @@ void OpenModellerGui::pbnDefaultParameters_clicked()
     std::cout << myWidgetName.ascii() << std::endl;
     if (myWidgetName.left(2)=="le")
     {
-      //QLineEdit * myLineEdit = (QLineEdit*) myIterator.data();
-      //myLineEdit->setText(myParameter->typical());
+      QLineEdit * myLineEdit = (QLineEdit*) myIterator.data();
+      myLineEdit->setText(mDefaultParametersMap[myWidgetName]);
 
     }
 
 
     else if (myWidgetName.left(4)=="spin")
     {
-      //QSpinBox * mySpinBox = (QSpinBox*) myIterator.data();
-      //mySpinBox->setValue(atoi(myIterator.data()->typical()));
+      QSpinBox * mySpinBox = (QSpinBox*) myIterator.data();
+      mySpinBox->setValue(atoi(mDefaultParametersMap[myWidgetName]));
       //mySpinBox->setValue(5);
     }
 

@@ -92,6 +92,9 @@ private:
     typedef QMap<QString, QWidget *> ParametersMap;
     //setup QMap object and layout for the frame into which the controls will go
     ParametersMap mMap;
+    //for storing default settings for alg widgets - key is widget name, val is default
+    typedef QMap<QString, QString> DefaultParametersMap;
+    DefaultParametersMap mDefaultParametersMap;
     typedef QMap<QString, QWidget *> ParameterLabels;
     ParameterLabels mLabelsMap;
     typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
