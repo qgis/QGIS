@@ -841,8 +841,8 @@ bool QgsGPXProvider::boundsCheck(double x, double y)
  * Class factory to return a pointer to a newly created 
  * QgsGPXProvider object
  */
-QGISEXTERN QgsGPXProvider * classFactory(const char *uri) {
-  return new QgsGPXProvider(uri);
+QGISEXTERN QgsGPXProvider * classFactory(const QString *uri) {
+  return new QgsGPXProvider(*uri);
 }
 
 

@@ -997,9 +997,9 @@ int QgsOgrProvider::capabilities() const
  * Class factory to return a pointer to a newly created 
  * QgsOgrProvider object
  */
-QGISEXTERN QgsOgrProvider * classFactory(const char *uri)
+QGISEXTERN QgsOgrProvider * classFactory(const QString *uri)
 {
-  return new QgsOgrProvider(QString::fromUtf8(uri));
+  return new QgsOgrProvider(*uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */

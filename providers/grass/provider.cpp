@@ -44,9 +44,9 @@ extern "C" {
 * Class factory to return a pointer to a newly created 
 * QgsGrassProvider object
 */
-extern "C" QgsGrassProvider * classFactory(const char *uri)
+extern "C" QgsGrassProvider * classFactory(const QString *uri)
 {
-    return new QgsGrassProvider(uri);
+    return new QgsGrassProvider(*uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */
