@@ -366,7 +366,14 @@ void QgsSpit::import(){
         pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
         continue;
       }
-
+			
+			// if no fields detected
+			if((fileList[i]->column_names).size()==0){
+        QMessageBox::warning(pro, "Import Shapefiles", error+"\nNo fields detected.");
+        pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
+        continue;
+			}
+			
 			// duplicate field check
 			std::vector<QString> names_copy = fileList[i]->column_names;
 			QString dupl = "";
@@ -510,8 +517,8 @@ void QgsSpit::import(){
 			// importing file here
 			int temp_progress = pro->progress();
 			cancelled = false;
-      if(fileList[i]->insertLayer(settings.readEntry(gl_key+connName+"/database"), txtGeomName->text(),
-        QString("%1").arg(spinSrid->value()), pd, pro, cancelled) && !cancelled)
+      if(fileList[i]->insertLayer(settings.readEntry(gl_key+connName+"/database"), tblShapefiles->text(i,4),
+				txtGeomName->text(), QString("%1").arg(spinSrid->value()), pd, pro, cancelled) && !cancelled)
 			{ // if file has been imported successfully
         query = "COMMIT";
         res = PQexec(pd, query);

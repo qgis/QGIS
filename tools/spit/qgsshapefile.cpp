@@ -61,7 +61,12 @@ QString QgsShapeFile::getFeatureClass(){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){
       geom_type = QString(geom->getGeometryName());
-
+			char * esc_str = new char[geom_type.length()*2+1];
+			PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
+			geom_type = QString(esc_str);
+			
+			delete[] esc_str;
+			
       QString file(filename);
       file.replace(file.length()-3, 3, "dbf");
       // open the dbf file
@@ -132,20 +137,23 @@ void QgsShapeFile::setDefaultTable(){
   table_name = name.section('.', 0, 0);
 }
 
-bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, PGconn * conn, QProgressDialog * pro, bool &fin){
+bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, QProgressDialog * pro, bool &fin){
   connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
 
-  QString query = "CREATE TABLE "+table_name+"(gid int4 PRIMARY KEY, ";
+  QString query = "CREATE TABLE "+schema+"."+table_name+"(gid int4 PRIMARY KEY, ";
   for(int n=0; n<column_names.size() && result; n++){
     if(!column_names[n][0].isLetter())
       result = false;
-    query += column_names[n].lower();
+		char * esc_str = new char[column_names[n].length()*2+1];
+		PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
+    query += esc_str;
     query += " ";
     query += column_types[n];
     if(n<column_names.size()-1)
       query += ", ";
+		delete[] esc_str;
   }
   query += " )";
   
@@ -159,11 +167,10 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
   else {
     PQclear(res);
   }
-
+	
   query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
-    ", \'" + QString(geom_type) + "\', 2)";            
+    ", \'" + geom_type + "\', 2)";            
   if(result) res = PQexec(conn, (const char *)query);
-  std::cout << PQresStatus(PQresultStatus(res)) << std::endl;
   if(PQresultStatus(res)!=PGRES_TUPLES_OK){
     result = false;    
   }
@@ -184,7 +191,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
     if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
       if(geom){
-        query = "INSERT INTO "+table_name+QString(" VALUES( %1, ").arg(m);
+        query = "INSERT INTO "+schema+"."+table_name+QString(" VALUES( %1, ").arg(m);
         
         int num = geom->WkbSize();
         char * geo_temp = new char[num*3];
@@ -199,19 +206,20 @@ bool QgsShapeFile::insertLayer(QString dbname, QString geom_col, QString srid, P
             quotes = "\'";
           query += quotes;
           
-          // escape single quotes to prevent sql syntax error (no effect for numerics)
+          // escape the string value
           QString val = feat->GetFieldAsString(n);
-          val.replace("\'","\\'");
-          val.replace("\\","\\\\");
+					char * esc_str = new char[val.length()*2+1];
+					PQescapeString(esc_str, (const char *)val.lower(), val.length());
           
           // add escaped value to the query 
-          query += val;
+          query += esc_str;
           query += QString(quotes + ", ");
-
+					
+					delete[] esc_str;
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
         
-        if(result)                 
+        if(result)
           res = PQexec(conn, (const char *)query);
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           // flag error and send query and error message to stdout on debug
