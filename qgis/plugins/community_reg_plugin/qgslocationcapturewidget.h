@@ -17,9 +17,9 @@
 #define QGSLOCATIONCAPTUREWIDGET_H
 
 #ifdef WIN32
-#include "qgslocationcapturewidgetbase.h"
-#else
 #include "qgslocationcapturewidgetbase.uic.h"
+#else
+#include "qgslocationcapturewidgetbase.h"
 #endif
 
 class QgsLocationCaptureWidget:public QgsLocationCaptureWidgetBase
@@ -35,6 +35,8 @@ class QgsLocationCaptureWidget:public QgsLocationCaptureWidgetBase
 
 public slots:
 
+  void qgsMapCanvas_xyClickCoordinates( QgsPoint & theQgsPoint );
+  void qgsMapCanvas_xyCoordinates( QgsPoint & theQgsPoint);
 
 private:
     

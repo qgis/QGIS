@@ -17,6 +17,7 @@
 
 #include "qgslocationcapturewidget.h"
 #include <qgspoint.h>
+#include <qlabel.h>
 
 QgsLocationCaptureWidget::QgsLocationCaptureWidget( QWidget *parent, const char * name, WFlags f)
            :QgsLocationCaptureWidgetBase( parent, name, f)

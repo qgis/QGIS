@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'qgslocationcapturewidgetbase.ui'
 **
-** Created: Tue Mar 15 01:18:44 2005
+** Created: Wed Mar 16 23:03:37 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -64,6 +64,10 @@ QgsLocationCaptureWidgetBase::QgsLocationCaptureWidgetBase( QWidget* parent, con
     languageChange();
     resize( QSize(451, 370).expandedTo(minimumSizeHint()) );
     clearWState( WState_Polished );
+
+    // signals and slots connections
+    connect( qgsMapCanvas, SIGNAL( xyClickCoordinates(QgsPoint&) ), this, SLOT( qgsMapCanvas_xyClickCoordinates(QgsPoint&) ) );
+    connect( qgsMapCanvas, SIGNAL( xyCoordinates(QgsPoint&) ), this, SLOT( qgsMapCanvas_xyCoordinates(QgsPoint&) ) );
 }
 
 /*
