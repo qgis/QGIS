@@ -21,6 +21,7 @@
 #include <qlistbox.h>
 #include <qstringlist.h>
 #include <qcombobox.h>
+#include <qmessagebox.h>
 #include "xpm/point_layer.xpm"
 #include "xpm/line_layer.xpm"
 #include "xpm/polygon_layer.xpm"
@@ -123,7 +124,7 @@ void QgsDbSourceSelect::dbConnect()
 			qDebug(pd->ErrorMessage());
 		}
 	} else {
-		qDebug("Connection failed");
+		QMessageBox::warning(this,"Connection failed", "Connection to " + database + " on " + host);
 	}
 }
 
