@@ -35,7 +35,8 @@
 */
 class GPSObject {
  public:
-  virtual bool parseNode(const QDomNode& node) = 0;
+  virtual bool parseNode(const QDomNode& node);
+  virtual void fillElement(QDomDocument& qdd, QDomElement& elt);
   QString name, cmt, desc, src, url, urlname;
 };
 
@@ -47,7 +48,8 @@ class GPSPoint : public GPSObject {
  public:
   GPSPoint();
   bool parseNode(const QDomNode& node);
-  double lat, lon, ele, sym, type;
+  void fillElement(QDomDocument& qdd, QDomElement& elt);
+  double lat, lon, ele;
 };
 
 
@@ -57,6 +59,7 @@ class GPSPoint : public GPSObject {
 class GPSExtended : public GPSObject {
  public:
   int number;
+  virtual void fillElement(QDomDocument& qdd, QDomElement& elt);
   double xMin, xMax, yMin, yMax;
 };
 
@@ -72,6 +75,7 @@ typedef GPSPoint Trackpoint;
 class Route : public GPSExtended {
  public:
   bool parseNode(const QDomNode& node);
+  void fillElement(QDomDocument& qdd, QDomElement& elt);
   std::vector<Routepoint> points;
 };
 
@@ -91,6 +95,7 @@ class TrackSegment {
 class Track : public GPSExtended {
  public:
   bool parseNode(const QDomNode& node);
+  void fillElement(QDomDocument& qdd, QDomElement& elt);
   std::vector<TrackSegment> segments;
 };
 
