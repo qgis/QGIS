@@ -55,6 +55,15 @@ public:
   */
   QString title() const;
   void title( QString const & title );
+  
+  /** Accessor for projection */
+  QString projectionWKT();
+  /** Set the projection passing only its 'friendly name'. If it doesnt exist in the 
+   *  projections list ( as simple text file ) and error will occur */
+  bool setProjectionWKT(QString theName);
+  /** Set the projection passing only its 'friendly name'. If it doesnt exist in the 
+   *  projections list ( as simple text file ) it will be added to the list */
+  bool setProjectionWKT(QString theName, QString theWKT);
 
 public slots:
   /** 
@@ -63,5 +72,15 @@ public slots:
    * values in QgsScaleCalculator::units
    */
   void mapUnitChange(int);
-
+  /**
+   * Slot called when a projection is selected
+   * @param The Projection name (which will be used to retrieve its WKT
+   */
+  void projectionChange(QString);
+  //! Populate the wkts map with projection names...
+  void getProjList();
+private:
+  typedef QMap<QString,QString> ProjectionWKTMap; //wkt = well known text (see gdal/ogr)
+  //stores a list of available projection definitions 
+  ProjectionWKTMap mProjectionsMap;
 };

@@ -82,16 +82,20 @@ void QgsCoordinateTransform::initialise()
   OGRErr myInputResult = myInputSpatialRefSys.importFromWkt( & mySourceCharArrayPointer );
   if (myInputResult != OGRERR_NONE)
   {
-    std::cout << "The source projection for this layer could not be set " << std::endl;
-    std::cout << "INPUT: " << mSourceWKT << std::endl;
+    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
+    std::cout << "The source projection for this layer could *** NOT *** be set " << std::endl;
+    std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
+    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
     return;
   }
 
   OGRErr myOutputResult = myOutputSpatialRefSys.importFromWkt( & myDestCharArrayPointer );
   if (myOutputResult != OGRERR_NONE)
   {
-    std::cout << "The dest projection for this layer could not be set " << std::endl;
-    std::cout << "OUTPUT: " << mDestWKT << std::endl;
+    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
+    std::cout << "The dest projection for this layer could *** NOT *** be set " << std::endl;
+    std::cout << "OUTPUT: " << std::endl << mDestWKT << std::endl;
+    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
     return;
   }  
   
@@ -99,14 +103,21 @@ void QgsCoordinateTransform::initialise()
 
   if ( ! mSourceToDestXForm )
   {
-    std::cout << "The OGR Coordinate transformation for this layer could not be set " << std::endl;
-    std::cout << "INPUT: " << mSourceWKT << std::endl;
-    std::cout << "OUTPUT: " << mDestWKT  << std::endl;
+    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
+    std::cout << "The OGR Coordinate transformation for this layer could *** NOT *** be set " << std::endl;
+    std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
+    std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
+    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
     return;
   }
   else
   {
     mInitialisedFlag = true;
+    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
+    std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
+    std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
+    std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
+    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
   }
   // Deactivate GDAL error messages.
   //CPLSetErrorHandler( errorHandler );

@@ -11,3 +11,10 @@ void QgsProjectPropertiesBase::mapUnitChange( int )
 {
 
 }
+
+
+
+void QgsProjectPropertiesBase::projectionChanged( const QString & )
+{
+
+}
