@@ -19,7 +19,7 @@
 #ifndef QGSSISYDIALOG_H
 #define QGSSISYDIALOG_H
 
-#include "qgssisydialogbase.h"
+#include "qgssisydialogbase.uic.h"
 
 class QgsVectorLayer;
 

@@ -17,7 +17,7 @@
 /* $Id$ */
 #ifndef QGSDBSOURCESELECT_H
 #define QGSDBSOURCESELECT_H
-#include "qgsdbsourceselectbase.h"
+#include "qgsdbsourceselectbase.uic.h"
 
 class QListBoxItem;
 class QgisApp;

@@ -17,7 +17,7 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include "qgssimadialogbase.h"
+#include "qgssimadialogbase.uic.h"
 
 class QgsVectorLayer;
 

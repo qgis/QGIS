@@ -11,7 +11,7 @@
 */
 /* $Id$ */
 
-#include <config.h>
+#include <qgsconfig.h>
 
 namespace QGis
 { 

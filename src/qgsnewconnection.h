@@ -17,7 +17,7 @@
  /* $Id$ */
 #ifndef QGSNEWCONNECTION_H
 #define QGSNEWCONNECTION_H
-#include "qgsnewconnectionbase.h"
+#include "qgsnewconnectionbase.uic.h"
 /*! \class QgsNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgresQl database

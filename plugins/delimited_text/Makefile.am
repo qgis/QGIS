@@ -10,9 +10,10 @@
 #
 # $Id$
 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
+
 plugindir = ${pkglibdir}
-#DelimitedTextLayer below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = delimitedtextlayerplugin.la
+
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -23,33 +24,31 @@ plugin_LTLIBRARIES = delimitedtextlayerplugin.la
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 
-delimitedtextlayerplugin_la_SOURCES =  qgsdelimitedtextplugin.cpp \
-			      qgsdelimitedtextplugin.h \
-			      qgsdelimitedtextplugingui.cpp \
-			      qgsdelimitedtextplugingui.h \
-			      ../../src/qgsmaplayer.cpp\
-			      ../../src/qgsvectorlayer.cpp\
-						../../src/qgssymbol.cpp\
-			      $(plugin_UI)\
-			      $(plugin_MOC)
 
-plugin_MOC = qgsdelimitedtextplugin.moc.cpp \
-	     ../../src/qgsmaplayer.moc.cpp \
-	     ../../src/qgsvectorlayer.moc.cpp \
-	     qgsdelimitedtextplugingui.moc.cpp \
+# DelimitedTextLayer below to be replaced with the name of the plugin
+plugin_LTLIBRARIES = delimitedtextlayerplugin.la
+
+plugin_MOC = qgsdelimitedtextplugin.moc.cpp		\
+	     qgsdelimitedtextplugingui.moc.cpp		\
 	     qgsdelimitedtextpluginguibase.moc.cpp
 
-plugin_UI = qgsdelimitedtextpluginguibase.h			\
+plugin_UI = qgsdelimitedtextpluginguibase.h \
 	    qgsdelimitedtextpluginguibase.cpp 
 
 plugin_UIC = qgsdelimitedtextpluginguibase.ui
 
+delimitedtextlayerplugin_la_SOURCES =  qgsdelimitedtextplugin.cpp	\
+			      	       qgsdelimitedtextplugin.h		\
+				       qgsdelimitedtextplugingui.cpp	\
+				       qgsdelimitedtextplugingui.h	\
+				       $(plugin_UI)			\
+				       $(plugin_MOC)
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
 
-delimitedtextlayerplugin_la_LIBADD = $(QT_LDADD)
+
+delimitedtextlayerplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
 delimitedtextlayerplugin_la_LDFLAGS = -avoid-version -module
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm

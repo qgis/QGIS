@@ -19,7 +19,7 @@
 #ifndef QGSCONTCOLDIALOG_H
 #define QGSCONTCOLDIALOG_H
 
-#include "qgscontcoldialogbase.h"
+#include "qgscontcoldialogbase.uic.h"
 #include <map>
 
 class QgsVectorLayer;

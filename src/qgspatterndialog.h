@@ -20,7 +20,7 @@
 #define QGSPATTERNDIALOG_H
 
 class qnamespace;
-#include "qgspatterndialogbase.h"
+#include "qgspatterndialogbase.uic.h"
 
 /**A dialog class to query the fill pattern.*/
 class QgsPatternDialog: public QgsPatternDialogBase

@@ -18,7 +18,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <config.h>
+#include <qgsconfig.h>
 
 #include <dlfcn.h>
 
@@ -79,12 +79,12 @@
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
-#include "qgsmessageviewer.h"
+#include "qgsmessageviewer.uic.h"
 #include "qgshelpviewer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayer.h"
-#include "qgsabout.h"
+#include "qgsabout.uic.h"
 #include "qgspluginmanager.h"
 #include "qgsmaplayerinterface.h"
 #include "qgis.h"
@@ -95,7 +95,7 @@
 #include "qgssinglesymrenderer.h"
 //#include "qgssisydialog.h"
 #include "../plugins/qgisplugin.h"
-#include "qgsoptionsbase.h"
+#include "qgsoptionsbase.uic.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
 

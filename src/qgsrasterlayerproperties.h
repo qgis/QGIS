@@ -19,7 +19,7 @@
 /* $Id$ */
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
-#include "qgsrasterlayerpropertiesbase.h"
+#include "qgsrasterlayerpropertiesbase.uic.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 

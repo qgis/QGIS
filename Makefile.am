@@ -22,6 +22,8 @@ EXTRA_DIST = doc \
 
 SUBDIRS = src providers plugins doc
 
+pkginclude_HEADERS = qgsconfig.h
+
 release: distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(AMTAR)$(TAR) chozf $(distdir).tar.gz $(distdir)
