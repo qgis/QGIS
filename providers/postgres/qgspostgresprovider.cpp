@@ -925,7 +925,11 @@ bool QgsPostgresProvider::commitFeature(QgsFeature* f)
 	QString insert("INSERT INTO ");
 	insert+=tableName;
 	insert+="(";
+
+	//add the name of the geometry column to the insert statement
 	insert+=geometryColumn;//first the geometry
+
+	//add the names of the other fields to the insert
 	std::vector<QgsFeatureAttribute> attributevec=f->attributeMap();
 	for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
 	{
@@ -936,7 +940,10 @@ bool QgsPostgresProvider::commitFeature(QgsFeature* f)
 		insert+=fieldname;
 	    }
 	}
+
 	insert+=") VALUES (GeomFromWKB('";
+
+	//add the wkb geometry to the insert statement
 	unsigned char* geom=f->getGeometry();
 	for(int i=0;i<f->getGeometrySize();++i)
 	{
@@ -945,13 +952,11 @@ bool QgsPostgresProvider::commitFeature(QgsFeature* f)
 	    {
 		hex="0"+hex;
 	    }
-#ifdef QGISDEBUG
-	    qWarning("in geometry loop: "+QString::number((int)geom[i],16).upper());
-#endif   
 	    insert+=hex;
 	}
 	insert+="',-1)";
 
+	//add the field values to the insert statement
 	for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
 	{
 	    if(it->fieldName()!=geometryColumn)
@@ -959,6 +964,8 @@ bool QgsPostgresProvider::commitFeature(QgsFeature* f)
 		QString fieldvalue=it->fieldValue();
 		bool charactertype=false;
 		insert+=",";
+
+		//add quotes if the field is a characted type
 		if(fieldvalue!="NULL")
 		{
 		    for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
