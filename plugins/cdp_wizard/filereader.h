@@ -169,6 +169,8 @@ private:
   long currentElementLong;
   /**  The FILE handle containing our data matrix. */
   QFile *filePointer;
+  /** The text stream that will be used to pull data from the file */
+  QTextStream * textStream;
 
 
   /** Number of header lines per month data block (applicable to files containing multiple months in a single file only. */

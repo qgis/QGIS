@@ -5,7 +5,7 @@
 #include <qmap.h>
 #include <qtextstream.h>
 //move this somewhere else!
-#define QGISDEBUG true
+#define QGISDEBUG false
 
 FileReader::FileReader()
 
@@ -26,6 +26,8 @@ FileReader::FileReader(QString theFileNameString)
 
 FileReader::~FileReader()
 {
+  delete textStream;
+  delete filePointer;
 }
 
 /**
@@ -43,6 +45,8 @@ bool FileReader::openFile(const QString theFileNameQString)
 #ifdef QGISDEBUG
   std::cout << "Opened file : " << theFileNameQString << " successfully." << std::endl;
 #endif
+  // now open the text stream on the filereader
+  textStream = new QTextStream(filePointer);
   currentColLong=1;
   currentRowLong=1;
   currentElementLong=0;
@@ -74,9 +78,9 @@ float FileReader::getElement()
   //see if it is ok to get another element
   if (!endOfMatrixFlag)
   {
-    QTextStream myTextStream(filePointer);
+
     //read a float from the file - this will advance the file pointer
-    myTextStream >> myElementFloat;
+    *textStream >> myElementFloat;
     currentElementLong++;
 #ifdef QGISDEBUG
     //print out the last entries for debuggging
@@ -269,13 +273,13 @@ bool FileReader::setFileType( const FileTypeEnum theNewVal){
       QMap <QString, float > myHeaderMap;
       for (int i=0; i <6;i++)
       {
-          QTextStream myTextStream(filePointer);
+
           //read a float from the file - this will advance the file pointer
-         myTextStream >> myString;
+         *textStream >> myString;
 
         //fscanf (filePointer, "%s", myString);
         myString=myString.upper();   //make sure all keys are in upper case!
-        myTextStream >> myFloat;
+        *textStream >> myFloat;
         //fscanf (filePointer, "%f", &myFloat);
 
         myHeaderMap[myString]=myFloat;
@@ -608,16 +612,16 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
   myFileOffsetLong=0;
   //clear the vector
   dataBlockMarkersVector.clear();
-  QTextStream myTextStream(filePointer);
+
   //if the datafile is a an arc/info grid file, there is only one data block
   if (fileType==ARCINFO_GRID || fileType==CRES)
   {
-    QTextStream myTextStream(filePointer);
+
     for (int i=1; i <= headerLinesInt; i++)
     {
 
     //read a line from the file - this will advance the file pointer
-    myTextStream.readLine();
+    *textStream->readLine();
 
     }
     myFileOffset=filePointer->at();
@@ -652,7 +656,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
   for (int i=1; i <= headerLinesInt; i++)
   {
     //read an impossibly long line - fgets will stop if it hits a newline
-    myTextStream.readLine();
+    *textStream->readLine();
   }
 
   //Calculate number of rows in a month (depends on FileType)
@@ -672,7 +676,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
       for (int i=1; i <= monthHeaderLinesInt; i++)
       {
         //read an impossibly long line - fgets will stop if it hits a newline
-        myTextStream.readLine();
+        *textStream->readLine();
 #ifdef QGISDEBUG
         //std::cout << myLineQString;
 #endif
@@ -691,7 +695,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers()
     //now skip the data objects for this datablock
     for (int i=1; i <= myMatrixRowsLong; i++)
     {
-myTextStream.readLine();
+*textStream->readLine();
 #ifdef QGISDEBUG
       //std::cout << myLineQString; //print out the first line of each datablock
 #endif
