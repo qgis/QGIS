@@ -1,6 +1,8 @@
 TEMPLATE = lib
 TARGET=libqgis
-INCLUDEPATH += . $(GDAL)\include
+INCLUDEPATH += . $(GDAL)\include \
+                $(POSTGRESQL)\src\interfaces\libpq \
+                $(POSTGRESQL)\src\include
 LIBS += $(GDAL)\lib\gdal_i.lib
 CONFIG += qt thread
 DLLDESTDIR= ..\..\src\lib\qgis
@@ -13,7 +15,6 @@ moc_qgsattributetable.cpp \
 moc_qgsattributetablebase.cpp \
 moc_qgscontcoldialog.cpp \
 moc_qgscontcoldialogbase.cpp \
-moc_qgsdatabaselayer.cpp \
 moc_qgsdbsourceselect.cpp \
 moc_qgsdbsourceselectbase.cpp \
 moc_qgsdlgvectorlayerproperties.cpp \
@@ -61,9 +62,8 @@ moc_qgssisydialog.cpp \
 moc_qgssisydialogbase.cpp \
 moc_qgsuvaldialog.cpp \
 moc_qgsuvaldialogbase.cpp \
+moc_qgsludialogbase.cpp \
 moc_qgsvectorlayer.cpp \
-moc_qgsvectorlayerproperties.cpp \
-moc_qgsvectorlayerpropertiesbase.cpp \
 moc_splashscreen.cpp \
 qgisapp.cpp \
 qgisappbase.cpp \
@@ -156,6 +156,5 @@ qgsuniquevalrenderer.cpp \
 qgsuvaldialog.cpp \
 qgsuvaldialogbase.cpp \
 qgsvectorfilewriter.cpp \
-qgsvectorlayer.cpp \
-qgsvectorlayerproperties.cpp \
-qgsvectorlayerpropertiesbase.cpp 
+qgsludialogbase.cpp \
+qgsvectorlayer.cpp 
