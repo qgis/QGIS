@@ -148,15 +148,30 @@ class GPSData {
   int addWaypoint(double lat, double lon, QString name = "", 
 		  double ele = -std::numeric_limits<double>::max());
 
+  /** This function tries to add a new waypoint. If the waypoint was added
+      successfully its index will be returned, otherwise a negative number
+      will be returned. */
+  int addWaypoint(const Waypoint& wpt);
+
   /** This function tries to add a new route. If the route was added
       successfully its index will be returned, otherwise a negative number
       will be returned. */
   int addRoute(QString name = "");
 
+  /** This function tries to add a new route. If the route was added
+      successfully its index will be returned, otherwise a negative number
+      will be returned. */
+  int addRoute(const Route& rte);
+
   /** This function tries to add a new track. If the track was added
       successfully its index will be returned, otherwise a negative number
       will be returned. */
   int addTrack(QString name = "");
+  
+  /** This function tries to add a new track. If the track was added
+      successfully its index will be returned, otherwise a negative number
+      will be returned. */
+  int addTrack(const Track& trk);
   
   
   /** This function removes the waypoint with index @c index. If 
