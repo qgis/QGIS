@@ -352,6 +352,7 @@ public slots:
     void showStatusMessage(QString theMessage);
     void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
     void drawExtentRectangle(QPainter *);
+    void updateMouseCoordinatePrecision();
 
 signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -454,6 +455,12 @@ private:
     std::map<int, QString>mMenuMapById;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
+
+    //! How to determine the number of decimal places used to
+    //! display the mouse position
+    bool mMousePrecisionAutomatic;
+    //! The number of decimal places to use if not automatic
+    unsigned int mMousePrecisionDecimalPlaces;
 };
 
 #endif

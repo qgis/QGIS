@@ -37,6 +37,7 @@
 #include <qspinbox.h>
 #include <qcolor.h>
 #include <qpushbutton.h>
+#include <qradiobutton.h>
 #include <qcheckbox.h>
 #include <qregexp.h>
 #include <qlistview.h>
@@ -96,7 +97,18 @@ QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
                      myMapLayer->coordinateTransform(),
                      SLOT(setDestWKT(QString)));   
     }
-    
+
+    // get the manner in which the number of decimal places in the mouse
+    // position display is set (manual or automatic)
+    bool automaticPrecision = QgsProject::instance()->readBoolEntry("PositionPrecision","/Automatic");
+    if (automaticPrecision)
+      btnGrpPrecision->setButton(1);
+    else
+      btnGrpPrecision->setButton(0);
+
+    int dp = QgsProject::instance()->readNumEntry("PositionPrecision", "/DecimalPlaces");
+    spinBoxDP->setValue(dp);
+
     //get the snapping tolerance for digitising and set the control accordingly
     double mySnapTolerance = QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0);
     //leSnappingTolerance->setInputMask("000000.000000");
@@ -135,8 +147,10 @@ QgsScaleCalculator::units QgsProjectProperties::mapUnits() const
 
 void QgsProjectProperties::mapUnitChange(int unit)
 {
+  /*
    QgsProject::instance()->mapUnits(
        static_cast<QgsScaleCalculator::units>(unit));
+  */
 }
 
 
@@ -169,6 +183,13 @@ QString QgsProjectProperties::projectionWKT()
 //when user clicks apply button
 void QgsProjectProperties::apply()
 {
+    // Set the map units
+    QgsProject::instance()->mapUnits(
+       static_cast<QgsScaleCalculator::units>(btnGrpMapUnits->selectedId()));
+
+    // Set the project title
+    QgsProject::instance()->title( title() );
+
 #ifdef QGISDEBUG
   std::cout << "Projection changed, notifying all layers" << std::endl;
 #endif      
@@ -188,6 +209,16 @@ void QgsProjectProperties::apply()
     //QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[cboProjection->currentText()]);
     QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",mProjectionsMap[lstCoordinateSystems->currentItem()->text(0)]);
     
+    // set the mouse display precision method and the
+    // number of decimal places for the manual option
+    if (btnGrpPrecision->selectedId() == 1)
+      QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", true);
+    else
+      QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", false);
+    QgsProject::instance()->writeEntry("PositionPrecision","/DecimalPlaces", spinBoxDP->value());
+    // Announce that we may have a new display precision setting
+    emit displayPrecisionChanged();
+
     //set the snapping tolerance for digitising (we write as text but read will convert to a num
     QgsProject::instance()->writeEntry("Digitizing","/Tolerance",leSnappingTolerance->text());
 
