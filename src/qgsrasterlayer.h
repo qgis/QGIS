@@ -271,6 +271,14 @@ struct RasterViewPort
  * band populated, any additional stats are calculated on a need to know basis.*/
 typedef QValueVector<RasterBandStats> RasterStatsVector;
 
+
+/** \brief This typedef is used when the showProgress function is passed to gdal as a function
+pointer. */
+//  typedef  int (QgsRasterLayer::*showTextProgress)( double theProgressDouble,
+//                                      const char *theMessageCharArray,
+//                                      void *theData);
+  
+  
 /*! \class QgsRasterLayer
  *  \brief This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas..
@@ -681,8 +689,18 @@ public:
     /** \brief Emit a signal asking for a repaint.  */
     void triggerRepaint();
     /** \brief Obtain GDAL Metadata for this layer */
-    QString getMetadata();
+    QString getMetadata();    
     
+public slots:    
+    /** \brief Create 3 gdal pyramid overviews (2,4,8) for this layer.
+    * This will speed up performance at the expense of hard drive space.
+    * Also, write access to the file is required.*/
+    void buildOverviews();
+    /** \brief Used at the moment by the above function but hopefully will later
+    be useable by any operation that needs to notify the user of its progress. */
+    int showTextProgress( double theProgressDouble,
+                          const char *theMessageCharArray,
+                          void *theData);    
 
 private:
 
