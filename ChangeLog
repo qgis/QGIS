@@ -1,7 +1,17 @@
 QGIS Change Log
-ChangeLog,v 1.161 2004/07/18 10:48:46 larsl Exp
+ChangeLog,v 1.162 2004/07/20 06:33:13 gsherman Exp
 ------------------------------------------------------------------------------
-Version 0.3 'Madison' .... development version
+Version 0.4 'Baby' .... development version
+
+2004-07-19 [gsherman] 0.4.0devel7
+** Fixed broken setDisplayField function in qgsvectorlayer
+** Added display/label field handling. Field is now set when the layer is
+   added by examining the fields and attempting to make a "smart" choice. The
+   user can later change this field from the layer properties dialog. This field
+   is used as the item name in the identify box (top of the tree for each feature
+   and its attributes) and will eventually be used in labelling features.
+** Cleanup of postgres add layer dialog 
+** Removed excessive debug output from qgsfeature 
 
 2004-07-18 [larsl] 0.4.0devel6
 ** Changed Graduated Marker renderer to use the SVG cache
