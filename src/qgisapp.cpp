@@ -691,7 +691,13 @@ static bool isSupportedRasterDriver_(QString const &driverName)
 
   while (supportedRasterFormats_[i][0]) // while not end of string list
     {
-      if ( driverName.startsWith(supportedRasterFormats_[i]) )
+      // If we've got a case-insensitive match for a GDAL aware driver
+      // description, then we've got a match.  Why case-insensitive?
+      // I'm just being paranoid in that I can envision a situation
+      // whereby GDAL slightly changes driver description string case,
+      // in which case we'd catch it here.  Not that that would likely
+      // happen, but if it does, we'll already compensate.
+      if ( driverName.startsWith(supportedRasterFormats_[i], false) )
         {
           return true;
         }
@@ -736,8 +742,13 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
 
   QString driverLongName("");   // long name for the given driver
   QString driverExtension("");  // file name extension for given driver
+  QString driverDescription;    // QString wrapper of GDAL driver description
 
   QStringList metadataTokens;   // essentially the metadata string delimited by '='
+
+  QString     catchallFilter;   // for Any file(*.*), but also for those
+                                // drivers with no specific file
+                                // filter
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
@@ -764,7 +775,9 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
       // now we need to see if the driver is for something currently
       // supported; if not, we give it a miss for the next driver
 
-      if (!isSupportedRasterDriver_(driver->GetDescription()))
+      driverDescription = driver->GetDescription();
+
+      if (!isSupportedRasterDriver_(driverDescription))
         {
           // not supported, therefore skip
 #ifdef DEBUG
@@ -814,24 +827,43 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
               // XXX add check for SDTS; in that case we want (*CATD.DDF)
               fileFilters += createFileFilter_(driverLongName, "*." + driverExtension);
 
-              driverExtension = driverLongName = "";  // reset for next driver
-
-              continue;         // ... to next driver, if any.
+              break;         // ... to next driver, if any.
             }
 
           ++driverMetadata;
 
         }                       // each metadata item
 
-      // XXX if you want to insert whining about formats with no
-      // XXX extensions, this is where you'd check for it and complain
+      if ( driverExtension.isEmpty() && ! driverLongName.isEmpty() )
+      {
+         // Then what we have here is a driver with no corresponding
+         // file extension; e.g., GRASS.  In which case we append the
+         // string to the "catch-all" which will match all file types.
+         // (I.e., "*.*") We use the driver description intead of the
+         // long time to prevent the catch-all line from getting too
+         // large.
+
+         // ... OTOH, there are some drivers with missing
+         // DMD_EXTENSION; so let's check for them here and handle
+         // them appropriately
+
+         // USGS DEMs use "*.dem"
+         if ( driverDescription.startsWith("USGSDEM", false) )
+         {
+            fileFilters += createFileFilter_(driverLongName, "*.dem");
+         }
+         else
+         {
+            catchallFilter += QString(driver->GetDescription()) + " ";
+         }
+      }
 
       driverExtension = driverLongName = "";  // reset for next driver
 
     }                           // each loaded GDAL driver
 
   // can't forget the default case
-  fileFilters += "All files (*.*)";
+  fileFilters += catchallFilter + "All other files (*.*)";
 
 }                               // buildSupportedRasterFileFilter_()
 
