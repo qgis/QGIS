@@ -99,3 +99,15 @@ void PluginGuiBase::pbnDLOutput_clicked()
 {
 
 }
+
+
+void PluginGuiBase::pbnIMPInput_clicked()
+{
+
+}
+
+
+void PluginGuiBase::pbnIMPOutput_clicked()
+{
+
+}
