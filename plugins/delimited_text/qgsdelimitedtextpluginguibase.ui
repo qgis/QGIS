@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>563</width>
-            <height>363</height>
+            <height>365</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -61,7 +61,10 @@
                         <cstring>pbnHelp</cstring>
                     </property>
                     <property name="text">
-                        <string>Help</string>
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+H</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Help on using the plugin</string>
@@ -92,7 +95,10 @@
                         <cstring>pbnParse</cstring>
                     </property>
                     <property name="text">
-                        <string>Parse</string>
+                        <string>&amp;Parse</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+P</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Parse the header row and update the X and Y field lists</string>
@@ -106,7 +112,10 @@
                         <cstring>pbnOK</cstring>
                     </property>
                     <property name="text">
-                        <string>Add Layer</string>
+                        <string>&amp;Add Layer</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Add layer using the delimiter, file, and x/y fields specified</string>
@@ -120,7 +129,10 @@
                         <cstring>pbnCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>Close</string>
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Close the dialog</string>
@@ -228,6 +240,9 @@
             </property>
             <property name="wordWrap">
                 <enum>WidgetWidth</enum>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
             </property>
         </widget>
         <widget class="QLayoutWidget" row="3" column="2">
