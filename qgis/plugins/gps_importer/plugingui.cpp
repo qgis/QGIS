@@ -11,6 +11,7 @@
  ***************************************************************************/
 #include "plugingui.h"
 #include "../../src/qgsmaplayer.h"
+#include "../../src/qgsdataprovider.h"
 
 //qt includes
 #include <qapplication.h>
@@ -30,6 +31,7 @@
 #include "waypointtoshape.h"
 
 //standard includes
+#include <cassert>
 #include <cstdlib>
 #include <iostream>
 
@@ -40,7 +42,6 @@ PluginGui::PluginGui() : PluginGuiBase()
   populateULLayerComboBox();
   populateIMPBabelFormats();
   tabWidget->removePage(tabWidget->page(2));
-  tabWidget->removePage(tabWidget->page(3));
 }
 PluginGui::PluginGui( std::vector<QgsVectorLayer*> gpxMapLayers, 
 		      QWidget* parent , const char* name , bool modal , 
@@ -51,7 +52,6 @@ PluginGui::PluginGui( std::vector<QgsVectorLayer*> gpxMapLayers,
   populateULLayerComboBox();
   populateIMPBabelFormats();
   tabWidget->removePage(tabWidget->page(2));
-  tabWidget->removePage(tabWidget->page(3));
 } 
 PluginGui::~PluginGui()
 {
@@ -225,8 +225,55 @@ void PluginGui::pbnOK_clicked()
   }
   
   // or upload GPS data to a device?
-  else {
-    return;
+  else if (tabWidget->currentPageIndex() == 3) {
+    
+    QgsVectorLayer* gpxLayer = gpxLayers[cmbULLayer->currentItem()];
+    const QString& source(gpxLayer->getDataProvider()->getDataSourceUri());
+    
+    // what kind of data does the user want to upload?
+    QString typeArg;
+    if (source.right(8) == "waypoint")
+      typeArg = "-w";
+    else if (source.right(5) == "route")
+      typeArg = "-r";
+    else if (source.right(5) == "track")
+      typeArg = "-t";
+    else {
+      std::cerr<<source.right(8)<<std::endl;
+      assert(false);
+    }
+
+    // try to start the gpsbabel process
+    QStringList babelArgs;
+    babelArgs<<"gpsbabel"<<typeArg<<"-i"<<"gpx"
+	     <<"-o"<<cmbULProtocol->currentText().lower()
+	     <<source.left(source.findRev('?'))<<cmbULDevice->currentText();
+    QProcess babelProcess(babelArgs);
+    if (!babelProcess.start()) {
+      QMessageBox::warning(this, "Could not start process",
+			   "Could not start GPSBabel!");
+      return;
+    }
+    
+    // wait for gpsbabel to finish (or the user to cancel)
+    QProgressDialog progressDialog("Uploading data...", "Cancel", 0,
+				   this, 0, true);
+    progressDialog.show();
+    for (int i = 0; babelProcess.isRunning(); ++i) {
+      QApplication::eventLoop()->processEvents(0);
+      progressDialog.setProgress(i/64);
+      if (progressDialog.wasCancelled())
+	return;
+    }
+    
+    // did we get an error?
+    if (babelProcess.exitStatus() != 0) {
+      QString babelError(babelProcess.readStderr());
+      QString errorMsg("Error while uploading data to GPS!\n\n");
+      errorMsg += babelError;
+      QMessageBox::warning(this, "Error uploading data", errorMsg);
+      return;
+    }
   }
   
   //close the dialog
