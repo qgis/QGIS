@@ -1,28 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
-  <Doc0 NumberOfViews="1" URL="file:/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.h" >
-   <View0 line="53" Type="???" >
-    <AdditionalSettings Top="2" Width="1076" Attach="1" Height="383" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
-   <View0 line="287" Type="???" >
-    <AdditionalSettings Top="2" Width="1078" Attach="1" Height="361" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.h" >
-   <View0 line="73" Type="???" >
-    <AdditionalSettings Top="2" Width="1078" Attach="1" Height="361" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/plugin.h" >
-   <View0 line="70" Type="???" >
-    <AdditionalSettings Top="2" Width="1078" Attach="1" Height="361" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc3>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevbookmarks>
    <bookmarks/>
@@ -33,6 +12,8 @@
   <kdevvalgrind>
    <executable path="" params="" />
    <valgrind path="" params="" />
+   <calltree path="" params="" />
+   <kcachegrind path="" />
   </kdevvalgrind>
   <kdevdebugger>
    <breakpointList>

@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Tim Sutton</author>
-    <email>aps02ts@linux</email>
+    <email>t.sutton@reading.ac.uk</email>
     <version>$VERSION$</version>
     <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -14,14 +14,14 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>cdpwizard</activetarget>
+      <activetarget>src/cdp_wizard</activetarget>
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>cdpwizard</mainprogram>
-      <directoryradio>executable</directoryradio>
-      <customdirectory>/</customdirectory>
-      <programargs/>
+      <mainprogram>/home/aps02ts/bin/cdpwizard</mainprogram>
+      <directoryradio>custom</directoryradio>
+      <customdirectory>/home/aps02ts/bin/</customdirectory>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -35,36 +35,29 @@
         <cxxflags>-O2 -g0</cxxflags>
       </optimized>
       <debug>
-        <configargs>--enable-debug=full --prefix=$HOME</configargs>
+        <configargs>--enable-debug=full</configargs>
         <builddir>debug</builddir>
-        <ccompiler>kdevgccoptions</ccompiler>
-        <cxxcompiler>kdevgppoptions</cxxcompiler>
-        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompiler>GccOptions</ccompiler>
+        <cxxcompiler>GppOptions</cxxcompiler>
+        <f77compiler>G77Options</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
       </debug>
       <default>
-        <configargs>--enable-debug --prefix=$HOME</configargs>
-        <builddir/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
+        <envvars/>
+        <configargs>--prefix=$HOME --enable-debug</configargs>
+        <builddir></builddir>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <cxxflags>-O0 -g3</cxxflags>
-        <f77flags/>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags></cxxflags>
+        <f77flags></f77flags>
       </default>
     </configurations>
     <make>
@@ -89,6 +82,7 @@
     <display>
       <staticmembers>false</staticmembers>
       <demanglenames>true</demanglenames>
+      <outputradix>10</outputradix>
     </display>
   </kdevdebugger>
   <kdevdoctreeview>
@@ -124,24 +118,18 @@
       <toc>w3c-dom-level2-html</toc>
       <toc>w3c-svg</toc>
       <toc>w3c-uaag10</toc>
-      <toc>wxwindows_bugs</toc>
+      <toc>wxwidgets_bugs</toc>
     </ignoretocs>
-    <ignoreqt_xml/>
+    <ignoreqt_xml>
+      <toc>Guide to the Qt Translation Tools</toc>
+      <toc>Qt Assistant Manual</toc>
+      <toc>Qt Designer Manual</toc>
+      <toc>Qt Reference Documentation</toc>
+      <toc>qmake User Guide</toc>
+    </ignoreqt_xml>
     <ignoredoxygen>
       <toc>KDE Libraries (Doxygen)</toc>
     </ignoredoxygen>
-    <projectdoc>
-      <userdocDir>doc/html/</userdocDir>
-      <apidocDir>doc/html/</apidocDir>
-    </projectdoc>
-    <ignorekdocs/>
-    <ignoredevhelp>
-      <toc>libgimpbase</toc>
-      <toc>libgimpcolor</toc>
-      <toc>libgimpmath</toc>
-      <toc>glib</toc>
-      <toc>gobject</toc>
-    </ignoredevhelp>
   </kdevdoctreeview>
   <kdevfilecreate>
     <filetypes/>
@@ -162,7 +150,7 @@
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
       <includeEnums>true</includeEnums>
-      <includeTypedefs>false</includeTypedefs>
+      <includeTypedefs>true</includeTypedefs>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>
@@ -170,8 +158,17 @@
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
-    <references/>
+    <references>
+      <pcs>Qt</pcs>
+    </references>
   </kdevcppsupport>
+  <kdevdocumentation>
+    <projectdoc>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
+    </projectdoc>
+  </kdevdocumentation>
   <kdevcvsservice>
     <recursivewhenupdate>true</recursivewhenupdate>
     <prunedirswhenupdate>true</prunedirswhenupdate>
@@ -185,9 +182,9 @@
       <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
-      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <showvcsfields>false</showvcsfields>
       <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
     </tree>
   </kdevfileview>
 </kdevelop>
