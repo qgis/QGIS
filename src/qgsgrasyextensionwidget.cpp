@@ -43,15 +43,15 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
     m_gridlayout->addWidget(uvaluelabel,0,1);
     QLabel* labellabel=new QLabel(tr("label"),this);
     m_gridlayout->addWidget(labellabel,0,2);
-    QLabel* outlinecolorlabel=new QLabel(tr("outline color"),this);
+    QLabel* outlinecolorlabel=new QLabel(tr("outline\ncolor"),this);
     m_gridlayout->addWidget(outlinecolorlabel,0,3);
-    QLabel* outlinestylelabel=new QLabel(tr("outline style"),this);
+    QLabel* outlinestylelabel=new QLabel(tr("outline\nstyle"),this);
     m_gridlayout->addWidget(outlinestylelabel,0,4);
-    QLabel* outlinewidthlabel=new QLabel(tr("outline width"),this);
+    QLabel* outlinewidthlabel=new QLabel(tr("outline\nwidth"),this);
     m_gridlayout->addWidget(outlinewidthlabel,0,5);
-    QLabel* fillcolorlabel=new QLabel(tr("fill color"),this);
+    QLabel* fillcolorlabel=new QLabel(tr("fill\ncolor"),this);
     m_gridlayout->addWidget(fillcolorlabel,0,6);
-    QLabel* fillpatternlabel=new QLabel(tr("fill pattern"),this);
+    QLabel* fillpatternlabel=new QLabel(tr("fill\npattern"),this);
     m_gridlayout->addWidget(fillpatternlabel,0,7);
 
     //fint the minimum and maximum of the classification variable
@@ -174,8 +174,8 @@ QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget* parent, int classfield
 	/*Set the default values of the lower and upper bounds according to the chosen mode*/
 	if(m_mode==QgsGraSyDialog::EQUAL_INTERVAL)
 	{
-	    ltextfield->setText(QString::number(minimum+(maximum-minimum)/m_numberofclasses*(i-1),'f',3));
-	    utextfield->setText(QString::number(minimum+(maximum-minimum)/m_numberofclasses*i,'f',3));
+	    ltextfield->setText(QString::number(minimum+(maximum-minimum)/m_numberofclasses*(i-1),'f',2));
+	    utextfield->setText(QString::number(minimum+(maximum-minimum)/m_numberofclasses*i,'f',2));
 	}
     }
 }
