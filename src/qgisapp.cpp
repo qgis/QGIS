@@ -1735,12 +1735,6 @@ QgisIface *QgisApp::getInterface()
   return qgisInterface;
 }
 
-// This function here to annoy the purists :)
-int QgisApp::getInt()
-{
-  return 99;
-}
-
 void QgisApp::actionPluginManager_activated()
 {
   QgsPluginManager *pm = new QgsPluginManager(this);
