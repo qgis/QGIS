@@ -1,0 +1,436 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsSpitBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsSpitBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>579</width>
+            <height>504</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>SPIT - Shapefile to PostGIS Import Tool</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>false</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="6">
+            <property name="name">
+                <cstring>groupBox8</cstring>
+            </property>
+            <property name="title">
+                <string>PostgreSQL Connections</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox" row="0" column="2" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>cmbConnections</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>200</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <spacer row="0" column="1">
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>90</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton" row="1" column="4">
+                    <property name="name">
+                        <cstring>btnRemove</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="3">
+                    <property name="name">
+                        <cstring>btnEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Edit ...</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>btnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New ...</string>
+                    </property>
+                </widget>
+                <spacer row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>spacer5</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>231</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Connection</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>btnImport</cstring>
+            </property>
+            <property name="text">
+                <string>Import</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>btnQuit</cstring>
+            </property>
+            <property name="text">
+                <string>Quit</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="4">
+            <property name="name">
+                <cstring>btnHelp</cstring>
+            </property>
+            <property name="text">
+                <string>Help</string>
+            </property>
+        </widget>
+        <spacer row="2" column="5">
+            <property name="name">
+                <cstring>spacer1_2_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>110</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer1_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>110</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="2" column="3">
+            <property name="name">
+                <cstring>spacer11</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>41</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="6">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Shapefile List</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>btnAddFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add ...</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>btnRemoveFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="2" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>btnRemoveAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove All</string>
+                    </property>
+                </widget>
+                <widget class="QTable" row="4" column="0" rowspan="1" colspan="6">
+                    <column>
+                        <property name="text">
+                            <string>File Name</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Feature Class</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Features</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>DB Relation Name</string>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>tblShapefiles</cstring>
+                    </property>
+                    <property name="numRows">
+                        <number>0</number>
+                    </property>
+                    <property name="numCols">
+                        <number>4</number>
+                    </property>
+                    <property name="showGrid">
+                        <bool>false</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>false</bool>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>MultiRow</enum>
+                    </property>
+                    <property name="focusStyle">
+                        <enum>FollowStyle</enum>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>spinSrid</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>-1</number>
+                    </property>
+                    <property name="value">
+                        <number>-1</number>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>chkUseDefaultSrid</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Use Default</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="5">
+                    <property name="name">
+                        <cstring>chkUseDefaultGeom</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Use Default</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="3" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel1_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Geometry Column Name</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SRID</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="4" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>spacer8</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>241</width>
+                            <height>31</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLineEdit" row="2" column="5">
+                    <property name="name">
+                        <cstring>txtGeomName</cstring>
+                    </property>
+                </widget>
+                <widget class="Line" row="1" column="0" rowspan="1" colspan="6">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>chkUseDefaultSrid</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>useDefaultSrid()</slot>
+    </connection>
+    <connection>
+        <sender>btnRemoveAll</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>removeAllFiles()</slot>
+    </connection>
+    <connection>
+        <sender>btnRemove</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>removeConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnAddFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>addFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnRemoveFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>removeFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>editConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnQuit</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>btnImport</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>import()</slot>
+    </connection>
+    <connection>
+        <sender>btnNew</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>newConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>helpInfo()</slot>
+    </connection>
+    <connection>
+        <sender>chkUseDefaultGeom</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>useDefaultGeom()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>import()</slot>
+    <slot>newConnection()</slot>
+    <slot>editConnection()</slot>
+    <slot>removeConnection()</slot>
+    <slot>addFile()</slot>
+    <slot>removeFile()</slot>
+    <slot>removeAllFiles()</slot>
+    <slot>useDefaultSrid()</slot>
+    <slot>helpInfo()</slot>
+    <slot>aboutInfo()</slot>
+    <slot>useDefaultGeom()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
