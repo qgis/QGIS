@@ -1410,13 +1410,40 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 /** This helper checks to see whether the filename appears to be a valid raster file name */
 bool QgisApp::isValidRasterFileName(QString theFileNameQString)
 {
-  QString name = theFileNameQString.lower();
-  return (name.endsWith(".adf") ||
-          name.endsWith(".asc") ||
-          name.endsWith(".grd") ||
-          name.endsWith(".img") ||
-          name.endsWith(".tif") || name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".dem") || name.endsWith(".ddf")) ||
-          name.endsWith(".dt0");
+
+  GDALDatasetH myDataset;
+  GDALAllRegister();
+
+
+  myDataset = GDALOpen( theFileNameQString, GA_ReadOnly );
+
+  if( myDataset == NULL )
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+
+  /*
+   * This way is no longer a good idea because it does not
+   * cater for filetypes such as grass rasters that dont
+   * have a predictable file extension.
+   * 
+   QString name = theFileNameQString.lower();
+   return (name.endsWith(".adf") ||
+   name.endsWith(".asc") ||
+   name.endsWith(".grd") ||
+   name.endsWith(".img") ||
+   name.endsWith(".tif") || 
+   name.endsWith(".png") || 
+   name.endsWith(".jpg") || 
+   name.endsWith(".dem") || 
+   name.endsWith(".ddf")) ||
+   name.endsWith(".dt0");
+
+*/
 }
 
 /** Overloaded of the above function provided for convenience that takes a qstring pointer */
