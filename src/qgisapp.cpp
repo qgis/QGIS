@@ -32,6 +32,7 @@
 #include <qrect.h>
 #include <qpoint.h>
 #include <qpainter.h>
+#include <qcursor.h>
 #include <qlayout.h>
 #include <qwmatrix.h>
 #include <qfiledialog.h>
@@ -130,6 +131,7 @@ void QgisApp::addLayer()
 	mapCanvas->freeze();
 	QStringList files = QFileDialog::getOpenFileNames("Shapefiles (*.shp);;All files (*.*)", 0, this, "open files dialog",
 													  "Select one or more layers to add");
+	QApplication::setOverrideCursor( Qt::WaitCursor );
 	QStringList::Iterator it = files.begin();
 	while (it != files.end()) {
 
@@ -163,6 +165,7 @@ void QgisApp::addLayer()
 	qApp->processEvents();
 	mapCanvas->freeze(false);
 	mapCanvas->render2();
+  QApplication::restoreOverrideCursor();
 	statusBar()->message(mapCanvas->extent().stringRep());
 
 
@@ -178,6 +181,9 @@ void QgisApp::addDatabaseLayer()
 	QgsDbSourceSelect *dbs = new QgsDbSourceSelect();
 	mapCanvas->freeze();
 	if (dbs->exec()) {
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+    
+    
 	// repaint the canvas if it was covered by the dialog
 		
 		// add files to the map canvas
@@ -212,6 +218,7 @@ void QgisApp::addDatabaseLayer()
 		
   mapCanvas->freeze(false);
   mapCanvas->render2();
+ 	QApplication::restoreOverrideCursor();
 
 }
 
