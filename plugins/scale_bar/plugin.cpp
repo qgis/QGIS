@@ -113,7 +113,7 @@ void Plugin::initGui()
 
   menuIdInt = qGisInterface->addMenu("&Scale Bar", pluginMenu);
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("Scale Bar", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Scale Bar", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the scale bar each time the map is rendered
@@ -469,7 +469,8 @@ void Plugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
-  delete toolBarPointer;
+  qGisInterface->removeToolBarIcon(myQActionPointer);
+  delete myQActionPointer;
 }
 
 //! set placement of scale bar

@@ -248,6 +248,8 @@ private slots:
     int addPluginMenu(QString menuText, QPopupMenu *menu);
     //! Add an icon to the plugin toolbar
     int addPluginToolBarIcon (QAction * qAction);
+    //! Remove an icon from the plugin toolbar
+    void removePluginToolBarIcon(QAction *qAction);
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state
