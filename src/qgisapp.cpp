@@ -191,7 +191,9 @@ void QgisApp::about()
 	abt->setURLs(urls);
 	QString watsNew = "Version ";
 	watsNew += qgisVersion;
-	watsNew += "\n*During repaint, the data store is only accessed if map state or extent has changed";
+	watsNew += "\n*During repaint, the data store is only accessed if map state or extent has changed\n"
+		"*Changes to layer properites aren't effective until the Layer Properties dialog is closed\n"
+		"*Cancelling the Layer Propeties dialog cancels changes";
 
 	abt->setWhatsNew(watsNew);
 	abt->exec();
@@ -552,6 +554,8 @@ void QgisApp::layerProperties(QListViewItem * lvi)
 	QString currentName = lyr->name();
 	QgsLayerProperties *lp = new QgsLayerProperties(lyr);
 	if (lp->exec()) {
+		// update the symbol
+		lyr->setSymbol(lp->getSymbol());
 		mapCanvas->freeze();
 		lyr->setlayerName(lp->displayName());
 		if (currentName != lp->displayName())

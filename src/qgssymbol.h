@@ -28,14 +28,15 @@ class QgsSymbol{
  public:
     //! Constructor
     QgsSymbol(QColor c = QColor(0,0,0));
+    QgsSymbol(const QgsSymbol &sym);
     //! Set the color
     void setColor(QColor c);
     //! Get the current color
-    QColor color();
+    QColor color() const;
     //! Get the fill color
-    QColor fillColor();
+    QColor fillColor() const;
     void setFillColor(QColor c);
-    int lineWidth();
+    int lineWidth() const;
     void setLineWidth(int w);
     //! Destructor
     ~QgsSymbol();
