@@ -221,7 +221,7 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
   if (upper > lower)
     {
       //chose a random element (this avoids n^2 worst case)
-      int element = double (rand()) / RAND_MAX * (upper - lower) + lower;
+      int element = int (rand() / RAND_MAX * (upper - lower) + lower);
 
       swapRows(element, upper);
       v = text(upper, col);

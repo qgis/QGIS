@@ -400,7 +400,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
             //std::cout << "drawing marker for feature " << featureCount << "\n";
             p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
             p->scale(markerScaleFactor,markerScaleFactor);
-            p->drawPicture(pt.xToInt()/markerScaleFactor-marker.boundingRect().width()/2, pt.yToInt()/markerScaleFactor-marker.boundingRect().height()/2, marker);
+            p->drawPicture((int)(pt.xToInt()/markerScaleFactor-marker.boundingRect().width()/2), (int)(pt.yToInt()/markerScaleFactor-marker.boundingRect().height()/2), marker);
             p->resetXForm(); 
 
             break;

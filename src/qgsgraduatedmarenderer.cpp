@@ -25,7 +25,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectorlayer.h"
-#include <iostream.h>
+#include <iostream>
 #include <qdom.h>
 #include <qpainter.h>
 #include <vector>

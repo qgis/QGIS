@@ -334,7 +334,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   //
   mProgressBar = new QProgressBar(100,NULL);
   mProgressBar->setMaximumWidth(100);
-  statusBar()->addWidget(mProgressBar,0.5,true);   
+  statusBar()->addWidget(mProgressBar, 1,true);   
   mScaleLabel = new QLabel(QString("Scale"),NULL);
   mScaleLabel->setMinimumWidth(100);
   statusBar()->addWidget(mScaleLabel, 0,true);
