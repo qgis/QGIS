@@ -1142,11 +1142,10 @@ void QgisApp::fileNew()
 
   if (answer != QMessageBox::Cancel)
     {
-      mMapCanvas->removeAll();
-      mOverviewCanvas->removeAll();
+      mMapLayerRegistry->removeAllMapLayers();
+      mMapCanvas->clear();
       mOverviewCanvas->clear();
       setCaption(tr("Quantum GIS -- Untitled"));
-      mMapCanvas->clear();
       // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
       mFullPathName = "";
       mProjectIsDirtyFlag = false;
@@ -1690,12 +1689,7 @@ void QgisApp::removeLayer()
 }
 void QgisApp::removeAllLayers()
 {
-  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
-  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
-  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
-  {
-    mMapLayerRegistry->removeMapLayer( myMapIterator->first );
-  }
+  mMapLayerRegistry->removeAllMapLayers();
   mOverviewCanvas->clear();
   mMapCanvas->clear();
 } //remove all layers 
@@ -2686,20 +2680,16 @@ void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
 {
   if (theVisibilityFlag)
   {
-    mOverviewCanvas->freeze(false);
     mOverviewCanvas->addLayer(mMapLayerRegistry->mapLayer(theLayerId));
-    mOverviewCanvas->render();
-    mOverviewCanvas->zoomFullExtent();
     std::cout << " Added layer " << theLayerId << " to overview map" << std::endl;
   }
   else
   {
-    mOverviewCanvas->freeze(false);
     mOverviewCanvas->remove(theLayerId);
-    mOverviewCanvas->render();
-    mOverviewCanvas->zoomFullExtent();
     std::cout << " Removed layer " << theLayerId << " from overview map" << std::endl;
   }
+  //check zorder is in sync
+  setOverviewZOrder(mMapLegend);
 }
 
 void QgisApp::setOverviewZOrder(QgsLegend * lv)
