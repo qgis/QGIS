@@ -161,6 +161,9 @@
                     <property name="iconSet">
                         <iconset>image0</iconset>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Zoom in</string>
+                    </property>
                 </widget>
                 <widget class="QToolButton" row="0" column="1">
                     <property name="name">
@@ -174,6 +177,9 @@
                     </property>
                     <property name="iconSet">
                         <iconset>image1</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Zoom out</string>
                     </property>
                 </widget>
                 <widget class="QToolButton" row="0" column="2">
@@ -189,6 +195,9 @@
                     <property name="iconSet">
                         <iconset>image2</iconset>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Zoom to the raster extents</string>
+                    </property>
                 </widget>
                 <widget class="QToolButton" row="0" column="3">
                     <property name="name">
@@ -202,6 +211,9 @@
                     </property>
                     <property name="iconSet">
                         <iconset>image3</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Pan</string>
                     </property>
                 </widget>
             </grid>
@@ -247,6 +259,9 @@
                     <property name="iconSet">
                         <iconset>image4</iconset>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Add points</string>
+                    </property>
                 </widget>
                 <widget class="QToolButton" row="0" column="1">
                     <property name="name">
@@ -263,6 +278,9 @@
                     </property>
                     <property name="iconSet">
                         <iconset>image5</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Delete points</string>
                     </property>
                 </widget>
             </grid>
