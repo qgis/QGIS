@@ -64,6 +64,11 @@ void PluginGui::setRotation(int theInt)
   sliderRotation->setValue(theInt);
 }
 
+void PluginGui::setPlacement(QString thePlacementQString)
+{
+  cboPlacement->setCurrentText(tr(thePlacementQString));
+}
+
 
 //overides function byt the same name created in .ui
 void PluginGui::spinSize_valueChanged( int theInt)
@@ -138,7 +143,7 @@ void PluginGui::rotatePixmap(int theRotationInt)
     myQPainter.begin(&myPainterPixmap);	
     QFont myQFont("time", 18, QFont::Bold);
     myQPainter.setFont(myQFont);
-    myQPainter.setPen(Qt::black);
+    myQPainter.setPen(Qt::red);
     myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
     myQPainter.end();
     pixmapLabel->setPixmap(myPainterPixmap);    
