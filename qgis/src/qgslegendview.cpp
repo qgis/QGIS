@@ -9,7 +9,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 //
-//
+// $Id$
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qlistview.h>
@@ -20,6 +20,7 @@
 
 QgsLegendView::QgsLegendView( QWidget *parent, const char *name ):QListView( parent, name ), mousePressed( FALSE )
 {
+  // set movingItem pointer to 0 to prevent SuSE 9.0 crash
   movingItem = 0;
 }
 
