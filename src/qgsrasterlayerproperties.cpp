@@ -785,5 +785,11 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
               QString::number((*myRasterPyramidIterator).yDimInt)); 
     }
   }
+  //update the legend pixmap
+  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
+  pixmapLegend->setScaledContents(true);
+  pixmapLegend->repaint(false);
+  QgsLegendItem *myLegendItem = rasterLayer->legendItem();
+  ((QCheckListItem *) myLegendItem)->setPixmap(0, *rasterLayer->legendPixmap());
 }
 

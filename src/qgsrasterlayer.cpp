@@ -2319,6 +2319,7 @@ QString QgsRasterLayer::getMetadata()
 
 void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
 {
+  emit setProgress(0,0);
   //first test if the file is writeable
   QFile myQFile(dataSource);
   if (!myQFile.open(IO_WriteOnly| IO_Append))
@@ -2344,6 +2345,8 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid 
   // marked as exists in eaxh RasterPyramid struct.
   //
+  int myCountInt=1;
+  int myTotalInt=theRasterPyramidList.count();
   RasterPyramidList::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator=theRasterPyramidList.begin(); 
           myRasterPyramidIterator != theRasterPyramidList.end(); 
@@ -2357,6 +2360,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
     if ((*myRasterPyramidIterator).existsFlag)
     {
       std::cout << "Building....." << std::endl;
+      emit setProgress(myCountInt,myTotalInt);
       int myOverviewLevelsIntArray[1] = {(*myRasterPyramidIterator).levelInt };
       /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
        * pszResampling : one of "NEAREST", "AVERAGE" or "MODE" controlling the downsampling method applied.
@@ -2369,12 +2373,16 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
        */
       gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
               GDALTermProgress, NULL );
+      myCountInt++;
+      //make sure the raster knows it has pyramids
+      hasPyramidsFlag=true;
     }
     std::cout << "Pyramid overviews built" << std::endl;
 
     //close the gdal dataset and reopen it in read only mode
     delete gdalDataset;
     gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+    emit setProgress(0,0);
   }
 }
 RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
