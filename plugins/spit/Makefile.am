@@ -9,9 +9,9 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 # $Id$
-if HAVE_SPIT
-if POSTGRESDB
-lib_LTLIBRARIES = spitplugin.la
+
+plugindir = ${pkglibdir}
+plugin_LTLIBRARIES = spitplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -20,24 +20,24 @@ lib_LTLIBRARIES = spitplugin.la
 
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
-	
+
 spitplugin_la_SOURCES =  qgsspit.cpp \
-        qgsspitplugin.cpp \
-				qgsspitplugin.h \
-				qgsconnectiondialog.cpp \
-				qgsshapefile.cpp \
-				qgsmessageviewer.cpp \
-				$(spit_UI)\
-				$(spit_MOC)
-        
-spit_MOC = 	qgsspit.moc.cpp \
-        qgsspitplugin.moc.cpp \
-				qgsconnectiondialog.moc.cpp \
-				qgsshapefile.moc.cpp \
-				qgsmessageviewer.moc.cpp \
-				qgsconnectiondialogbase.moc.cpp \
-				qgsspitbase.moc.cpp \
-				qgsmessageviewerbase.moc.cpp
+	qgsspitplugin.cpp \
+	qgsspitplugin.h \
+	qgsconnectiondialog.cpp \
+	qgsshapefile.cpp \
+	qgsmessageviewer.cpp \
+	$(spit_UI)\
+	$(spit_MOC)
+
+spit_MOC = qgsspit.moc.cpp \
+	qgsspitplugin.moc.cpp \
+	qgsconnectiondialog.moc.cpp \
+	qgsshapefile.moc.cpp \
+	qgsmessageviewer.moc.cpp \
+	qgsconnectiondialogbase.moc.cpp \
+	qgsspitbase.moc.cpp \
+	qgsmessageviewerbase.moc.cpp
 
 spit_UI = qgsconnectiondialogbase.h \
 	qgsconnectiondialogbase.cpp \
@@ -45,7 +45,7 @@ spit_UI = qgsconnectiondialogbase.h \
 	qgsspitbase.cpp \
 	qgsmessageviewerbase.h \
 	qgsmessageviewerbase.cpp
-        
+
 spit_UIC = qgsconnectiondialogbase.ui \
 	qgsspitbase.ui \
 	qgsmessageviewerbase.ui
@@ -64,6 +64,3 @@ AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PGD
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LIB)
 spitplugin_la_LDFLAGS = -avoid-version -module
-
-endif
-endif

@@ -9,8 +9,9 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 # $Id$
-if POSTGRESDB
-lib_LTLIBRARIES = pggeoprocessingplugin.la
+
+plugindir = ${pkglibdir}
+plugin_LTLIBRARIES = pggeoprocessingplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -49,4 +50,3 @@ AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
 
 pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB)
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
-endif

@@ -7,7 +7,9 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-lib_LTLIBRARIES = exampleplugin.la
+
+plugindir = ${phglibdir}/qgis
+plugin_LTLIBRARIES = exampleplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
