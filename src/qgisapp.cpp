@@ -305,7 +305,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   QString plib = PLUGINPATH;
   providerRegistry = QgsProviderRegistry::instance(plib);
   // load any plugins that were running in the last session
+#ifdef QGISDEBUG
   std::cerr << "About to restore plugins session" << std::endl;
+#endif
   restoreSessionPlugins(plib);
   // set the provider plugin path 
 #ifdef QGISDEBUG
@@ -390,7 +392,9 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
 
   QSettings mySettings;
+#ifdef QGISDEBUG
   std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString << std::endl;
+#endif
   // check all libs in the current plugin directory and get name and descriptions
   QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
 
@@ -403,12 +407,15 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
     for (unsigned i = 0; i < myPluginDir.count(); i++)
     {
       QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
+#ifdef QGISDEBUG
       std::cerr << "Examining " << myFullPath << std::endl;
+#endif
       QLibrary *myLib = new QLibrary(myFullPath);
       bool loaded = myLib->load();
       if (loaded)
       {
-        std::cerr << "Loaded " << myLib->library() << std::endl;
+	//purposely leaving this one to stdout!      
+        std::cout << "Loaded " << myLib->library() << std::endl;
         name_t * myName =(name_t *) myLib->resolve("name");
         description_t *  myDescription = (description_t *)  myLib->resolve("description");
         version_t *  myVersion =  (version_t *) myLib->resolve("version");
@@ -418,7 +425,9 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
           QString myEntryName = myName();
           if (mySettings.readEntry("/qgis/Plugins/" + myEntryName)=="true")
           {
+#ifdef QGISDEBUG
             std::cerr << " -------------------- loading " << myEntryName << std::endl;
+#endif
             loadPlugin(myName(), myDescription(), myFullPath);
           }
         }
