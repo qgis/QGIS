@@ -14,12 +14,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include "qgsrect.h"
 #include "qgsmaplayer.h"
 
 QgsMapLayer::QgsMapLayer(int type, QString lyrname ) 
-  : QgsDataSource(), layerType(type), layerName(lyrname)
+  : QgsDataSource(), layerName(lyrname), layerType(type)
 {
+  // assume the layer is valid (data source exists and can be used)
+  // until we learn otherwise
+  valid = true;
 }
 QgsMapLayer::~QgsMapLayer(){
 } 
@@ -35,4 +38,6 @@ const QString QgsMapLayer::name(){
   return layerName;
 }
 void QgsMapLayer::calculateExtent(){
+}
+void QgsMapLayer::draw(QPainter *, QRect *){
 }
