@@ -24,7 +24,6 @@ email                : t.sutton@reading.ac.uk
 #include <qlabel.h>
 #include <qlabel.h>
 
-using namespace std;
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : CDPWizardBase( parent, name, modal, fl )
@@ -37,114 +36,108 @@ CDPWizard::CDPWizard()
   initialise();
 }
 
+CDPWizard::~CDPWizard()
+{
+
+}
+
 bool CDPWizard::initialise()
 {
-  int myPageCountInt = pageCount();
-  cout << "CDPWizard has " << myPageCountInt << " pages." << endl;
-  //set up the climate data processor object
+  //
+  // Populate the file types combo
+  //
+  cboFileType->insertItem(tr("CRES African climate data"));
+  cboFileType->insertItem(tr("ESRI & ASCII raster"));
+  cboFileType->insertItem(tr("Hadley Centre HadCM3 SRES Scenario"));
+  cboFileType->insertItem(tr("Hadley Centre HadCM3 IS92a Scenario"));
+  cboFileType->insertItem(tr("IPCC Observed Climatology"));
+  cboFileType->insertItem(tr("University of Reading Palaeoclimate data"));
+  cboFileType->insertItem(tr("Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data"));
+  cboFileType->insertItem(tr("CSIRO-Mk2 Model data"));
+  cboFileType->insertItem(tr("National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data"));
+  cboFileType->insertItem(tr("Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data"));
+  cboFileType->insertItem(tr("Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data"));
+  cboFileType->insertItem(tr("CCSR/NIES AGCM model data and CCSR OGCM model data"));
+
+  //
+  // set up the lstVariablesToCalc combo box
+  //
+  std::cout << "Adding items into the lstVariablesToCalc list box" << std::endl;
+  lstVariablesToCalc->insertItem(tr("Annual mean diurnal temperature range"));
+  lstVariablesToCalc->insertItem(tr("Annual mean number of frost days"));
+  lstVariablesToCalc->insertItem(tr("Annual mean total incident solar radiation"));
+  lstVariablesToCalc->insertItem(tr("Annual temperature range"));
+  lstVariablesToCalc->insertItem(tr("Highest temperature in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Lowest temperature in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in coolest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in driest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in driest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in warmest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in wettest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in wettest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean diurnal temperature range in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean diurnal temperature range in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Mean precipitation in frost free months"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in coolest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in frost free months"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in warmest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean wind speed"));
+  lstVariablesToCalc->insertItem(tr("Number of months with minimum temperature above freezing"));
+  lstVariablesToCalc->insertItem(tr("Radiation in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in coolest quarter"));
+  lstVariablesToCalc->insertItem(tr("Radiation in driest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in driest quarter"));
+  lstVariablesToCalc->insertItem(tr("Radiation in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in warmest quarter"));
+  lstVariablesToCalc->insertItem(tr("Radiation in wettest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in wettest quarter"));
+  lstVariablesToCalc->insertItem(tr("Standard deviation of mean precipitation"));
+  lstVariablesToCalc->insertItem(tr("Standard deviation of mean temperature"));
+
+  //
+  //set up the output formats combo 
+  //
+  cout << "Adding items into the output filetype combo box" << endl;
+  cboOutputFormat->insertItem(tr("CSM for Matlab"));
+  cboOutputFormat->insertItem(tr("CSM for Octave"));
+  cboOutputFormat->insertItem(tr("Desktop GARP"));
+  cboOutputFormat->insertItem(tr("ESRI ASCII Grid"));
+  cboOutputFormat->insertItem(tr("Plain matrix with no header"));
+
+  //
+  // Create a climate data processor instance - this is the thing that does all 
+  // the hard work!
+  //
   climateDataProcessor = new ClimateDataProcessor();
-  //set up widgets om input files page
-  QWidget *  myPageWidget = page(1);
-  //get the handle of the filetype combo box
-  QComboBox *myQComboBox = (QComboBox *)  myPageWidget->child("cboFileType");
-  if ( myQComboBox )
-  {
-    myQComboBox->insertItem("CRES African climate data");
-    myQComboBox->insertItem("ESRI & ASCII raster");
-    myQComboBox->insertItem("Hadley Centre HadCM3 SRES Scenario");
-    myQComboBox->insertItem("Hadley Centre HadCM3 IS92a Scenario");
-    myQComboBox->insertItem("IPCC Observed Climatology");
-    myQComboBox->insertItem("University of Reading Palaeoclimate data");
-    myQComboBox->insertItem("Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data");
-    myQComboBox->insertItem("CSIRO-Mk2 Model data");
-    myQComboBox->insertItem("National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data");
-    myQComboBox->insertItem("Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data");
-    myQComboBox->insertItem("Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data");
-    myQComboBox->insertItem("CCSR/NIES AGCM model data and CCSR OGCM model data");
-  }
-
-  //set up widgets on input parameters page
-  myPageWidget = page(2);
-
-  //get the handle of the lstVariablesToCalc combo box
-  QListBox *myQListBox = (QListBox *)  myPageWidget->child("lstVariablesToCalc");
-  if ( myQListBox )
-  {
-    cout << "Adding items into the lstVariablesToCalc list box" << endl;
-    myQListBox->insertItem("Annual mean diurnal temperature range");
-    myQListBox->insertItem("Annual mean number of frost days");
-    myQListBox->insertItem("Annual mean total incident solar radiation");
-    myQListBox->insertItem("Annual temperature range");
-    myQListBox->insertItem("Highest temperature in warmest month");
-    myQListBox->insertItem("Lowest temperature in coolest month");
-    myQListBox->insertItem("Mean daily precipitation");
-    myQListBox->insertItem("Mean daily precipitation in coolest month");
-    myQListBox->insertItem("Mean daily precipitation in coolest quarter");
-    myQListBox->insertItem("Mean daily precipitation in driest month");
-    myQListBox->insertItem("Mean daily precipitation in driest quarter");
-    myQListBox->insertItem("Mean daily precipitation in warmest month");
-    myQListBox->insertItem("Mean daily precipitation in warmest quarter");
-    myQListBox->insertItem("Mean daily precipitation in wettest month");
-    myQListBox->insertItem("Mean daily precipitation in wettest quarter");
-    myQListBox->insertItem("Mean diurnal temperature range in coolest month");
-    myQListBox->insertItem("Mean diurnal temperature range in warmest month");
-    myQListBox->insertItem("Mean precipitation in frost free months");
-    myQListBox->insertItem("Mean temperature");
-    myQListBox->insertItem("Mean temperature in coolest month");
-    myQListBox->insertItem("Mean temperature in coolest quarter");
-    myQListBox->insertItem("Mean temperature in frost free months");
-    myQListBox->insertItem("Mean temperature in warmest month");
-    myQListBox->insertItem("Mean temperature in warmest quarter");
-    myQListBox->insertItem("Mean wind speed");
-    myQListBox->insertItem("Number of months with minimum temperature above freezing");
-    myQListBox->insertItem("Radiation in coolest month");
-    myQListBox->insertItem("Radiation in coolest quarter");
-    myQListBox->insertItem("Radiation in driest month");
-    myQListBox->insertItem("Radiation in driest quarter");
-    myQListBox->insertItem("Radiation in warmest month");
-    myQListBox->insertItem("Radiation in warmest quarter");
-    myQListBox->insertItem("Radiation in wettest month");
-    myQListBox->insertItem("Radiation in wettest quarter");
-    myQListBox->insertItem("Standard deviation of mean precipitation");
-    myQListBox->insertItem("Standard deviation of mean temperature");
-
-  }
-
-  //set up the widgets on the file selection page
-  myPageWidget = page(3);
-  myQComboBox = (QComboBox *)  myPageWidget->child("cboOutputFormat");
-  if ( myQComboBox )
-  {
-    cout << "Adding items into the output filetype combo box" << endl;
-    myQComboBox->insertItem("CSM for Matlab");
-    myQComboBox->insertItem("CSM for Octave");
-    myQComboBox->insertItem("Desktop GARP");
-    myQComboBox->insertItem("ESRI ASCII Grid");
-    myQComboBox->insertItem("Plain matrix with no header");
-  }   
-
 
   //presume all went ok
   return true;
 }
-CDPWizard::~CDPWizard(){
-}
+
 
 /** This method overrides the virtual CDPWizardBase method of the same name. */
 void CDPWizard::cboFileType_activated( const QString &myQString )
 {
-  cout << "bcboFileType text changed" << endl;
-  if (myQString=="CRES African climate data" || myQString=="University of Reading Palaeoclimate data")
+  std::cout << "cboFileType text changed" << std::endl;
+  if (myQString==tr("CRES African climate data") || myQString==tr("University of Reading Palaeoclimate data"))
   {
-    lblFileSeriesNote->show( );
+    //show the user some instructions about how the files must be on disk
+    lblFileSeriesNote->show();
     //set the label on the summary form
-    lblFileSeriesSummary->setText("<p align=\"right\">And <font color=\"red\"><b>are</b></font> in a file series</p>");
+    lblFileSeriesSummary->setText(tr("<p align=\"right\">And <font color=\"red\"><b>are</b></font> in a file series</p>"));
   }
   else
   {
-    lblFileSeriesNote->hide( );
+    //show the user some instructions about how the files must be on disk
+    lblFileSeriesNote->hide();
     //set the label on the summary form
-    lblFileSeriesSummary->setText("<p align=\"right\">And <font color=\"red\"><b>are not</b></font> in a file series</p>");
+    lblFileSeriesSummary->setText(tr("<p align=\"right\">And <font color=\"red\"><b>are not</b></font> in a file series</p>"));
   }
 
 }
@@ -156,147 +149,55 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 {
   QString myQString;
   QLineEdit *myLineEdit;
-  if (thePageNameQString=="File type and variables") //we do this after leaving the file selection page
+  if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
   {
 
     //
     // get the mean temp file name
     //
-    myLineEdit = (QLineEdit *) this->child("leMeanTemp");
-    if (myLineEdit)
-    {
-      myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setMeanTempFileName(myFileNameString);
-    }
-    else
-    {
-      std::cout << "Could not locate leMeanTemp!" << std::endl;
-      climateDataProcessor->setMeanTempFileName("");
-    }
+    std::string myFileNameString = leMeanTemp->text().latin1();
+    climateDataProcessor->setMeanTempFileName(myFileNameString);
     //
     // get the min temp file name
     //
-    myLineEdit = (QLineEdit *) this->child("leMinTemp");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setMinTempFileName(myFileNameString);
-    }
-    else
-    {
-      std::cout << "Could not locate leMinTemp!" << std::endl;
-      climateDataProcessor->setMinTempFileName("");      
-    }
+    std::string myFileNameString = leMinTemp->text().latin1();
+    climateDataProcessor->setMinTempFileName(myFileNameString);
 
     //
     // get the max temp file name
     //
-    myLineEdit = (QLineEdit *) this->child("leMaxTemp");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setMaxTempFileName(myFileNameString);
-    }
-    else
-    {
-      std::cout << "Could not locate leMaxTemp!" << std::endl;
-      climateDataProcessor->setMaxTempFileName("");      
-    }
+    std::string myFileNameString = leMaxTemp->text().latin1();
+    climateDataProcessor->setMaxTempFileName(myFileNameString);
 
     //
     // get the diurnal temp file name
     //
-    myLineEdit = (QLineEdit *) this->child("leDiurnalTemp");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setDiurnalTempFileName(myFileNameString);
-
-    }
-    else
-    {
-      std::cout << "Could not locate leDiurnalTemp!" << std::endl;
-      climateDataProcessor->setDiurnalTempFileName("");      
-    }
+    std::string myFileNameString = leDiurnalTemp->text().latin1();
+    climateDataProcessor->setDiurnalTempFileName(myFileNameString);
     //
     // get the Mean Precipitation  file name
     //
-    myLineEdit = (QLineEdit *) this->child("leMeanPrecipitation");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setMeanPrecipFileName(myFileNameString);
-
-    }
-    else
-    {
-      std::cout << "Could not locate leMeanPrecipitation!" << std::endl;
-      climateDataProcessor->setMeanPrecipFileName("");      
-    }
+    std::string myFileNameString = leMeanPrecipitation->text().latin1();
+    climateDataProcessor->setMeanPrecipFileName(myFileNameString);
 
     //
     // get the Frost Days   file name
     //
-    myLineEdit = (QLineEdit *) this->child("leFrostDays");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setFrostDaysFileName(myFileNameString);
-
-    }
-    else
-    {
-      std::cout << "Could not locate leFrostDays!" << std::endl;
-      climateDataProcessor->setFrostDaysFileName("");      
-    }
+    std::string myFileNameString = leFrostDays->text().latin1();
+    climateDataProcessor->setFrostDaysFileName(myFileNameString);
 
     //
     // get the Total Solar Radiation   file name
     //
-    myLineEdit = (QLineEdit *) this->child("leTotalSolarRadiation");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setTotalSolarRadFileName(myFileNameString);
-
-    }
-    else
-    {
-      std::cout << "Could not locate leTotalSolarRadiation!" << std::endl;
-      climateDataProcessor->setTotalSolarRadFileName("");      
-    }
+    std::string myFileNameString = leTotalSolarRadiation->text().latin1();
+    climateDataProcessor->setTotalSolarRadFileName(myFileNameString);
 
     //
     // get the Wind Speed file name
     //
-    myLineEdit = (QLineEdit *) this->child("leWindSpeed");
-    if (myLineEdit)
-    {
-      QString myQString = myLineEdit->text();
-      std::cout << myQString << std::endl;
-      std::string myFileNameString = myQString.latin1();
-      climateDataProcessor->setWindSpeedFileName(myFileNameString);
+    std::string myFileNameString = leWindSpeed-text().latin1();
+    climateDataProcessor->setWindSpeedFileName(myFileNameString);
 
-    }
-    else
-    {
-      std::cout << "Could not locate leWindSpeed!" << std::endl;
-      climateDataProcessor->setWindSpeedFileName("");      
-    }
     /////////////////////////////////////////////////////////////////////
     //
     // OK now we need to update the list of available calculations that
@@ -306,17 +207,8 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     //
     // get the input file type
     //
-    QComboBox *myQComboBox = (QComboBox *) this->child("cboFileType");
-    if (myQComboBox)
-    {
-      QString myQString = myQComboBox->currentText();
-      std::string myInputFileTypeString =  myQString.latin1();
+      std::string myInputFileTypeString =  cboFileType->currentText().latin1();
       climateDataProcessor->setInputFileType(myInputFileTypeString);
-    }
-    else
-    {
-      std::cout << "Could not locate cboFileType!" << std::endl;
-    }
     //Should not need to have the next line here - it slows everythinf down!
     //climateDataProcessor->makeFileGroups(0);
     climateDataProcessor->makeAvailableCalculationsMap();
