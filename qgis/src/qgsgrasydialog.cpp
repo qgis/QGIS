@@ -92,47 +92,9 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     if (renderer)
     {
 	std::list < QgsRangeRenderItem * >list = renderer->items();
-	
-	//ext = new QgsGraSyExtensionWidget(this, renderer->classificationField(), QgsGraSyDialog::EMPTY, list.size(), mVectorLayer);
-	
 	classificationComboBox->setCurrentItem(renderer->classificationField());
-
 	QGis::VectorType m_type = mVectorLayer->vectorType();
-
-	//set the right colors and texts to the widgets
-	/*int number = 0;
-	for (std::list < QgsRangeRenderItem * >::iterator it = list.begin(); it != list.end(); ++it)
-        {
-	    ((QLineEdit *) (ext->getWidget(0, number)))->setText((*it)->value());
-	    ((QLineEdit *) ext->getWidget(1, number))->setText((*it)->upper_value());
-	    ((QLineEdit *) ext->getWidget(2, number))->setText((*it)->label());
-	    if(m_type != QGis::Polygon || number < 1)
-	    {
-		((QPushButton *) ext->getWidget(3, number))->setPaletteBackgroundColor((*it)->getSymbol()->pen().color());
-		((QPushButton *) ext->getWidget(4, number))->setPixmap(QgsSymbologyUtils::penStyle2Pixmap((*it)->getSymbol()->pen().style()));
-		((QPushButton *) ext->getWidget(4, number))->setName(QgsSymbologyUtils::penStyle2Char((*it)->getSymbol()->pen().style()));
-	    }
-	    
-	    ((QSpinBox *) ext->getWidget(5, number))->setValue((*it)->getSymbol()->pen().width());
-	    if(m_type!=QGis::Line)
-	    {
-		((QPushButton *) ext->getWidget(6, number))->setPaletteBackgroundColor((*it)->getSymbol()->brush().color());
-		((QPushButton *) ext->getWidget(7, number))->setName(QgsSymbologyUtils::brushStyle2Char((*it)->getSymbol()->brush().style()));
-		((QPushButton *) ext->getWidget(7, number))->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap((*it)->getSymbol()->brush().style()));
-	    }
-	    number++;
-	    }*/
-	
 	numberofclassesspinbox->setValue(list.size());
-	
-	/*if (numberofclassesspinbox->value() == 0)
-        {
-	    ext = 0;
-	    return;
-	    }*/
-	
-	numberofclassesspinbox->setValue(list.size());
-	
     }
     
     //do the necessary signal/slot connections
@@ -432,6 +394,7 @@ void QgsGraSyDialog::adjustClassification()
 	    rritem->setUpperValue(QString::number(upper,'f',3));
 	    listboxtext=QString::number(lower,'f',3)+" - " +QString::number(upper,'f',3);
 	    mClassBreakBox->insertItem(listboxtext);
+	}
 	    //set default symbology
 
 	    //apply a nice color range from blue to red as default
@@ -464,7 +427,7 @@ void QgsGraSyDialog::adjustClassification()
 	    symbol->setPen(pen);
 	    symbol->setBrush(brush);
 	    rritem->setSymbol(symbol);
-	}
+	    //}
 	mEntries.insert(std::make_pair(listboxtext,rritem));
     }
     mClassBreakBox->setCurrentItem(0);
@@ -525,15 +488,28 @@ void QgsGraSyDialog::changeClass(QListBoxItem* item)
 	rritem=iter->second;
     }
     QgsLUDialog dialog;
+    
+    if(rritem)
+    {
+	dialog.setLowerValue(rritem->value());
+	dialog.setUpperValue(rritem->upper_value());
+    }
+
     if(dialog.exec()==QDialog::Accepted)
     {
-	//todo: change values in mEntries
 	if(rritem)
 	{
+	    mEntries.erase(currenttext);
 	    rritem->setValue(dialog.lowerValue());
 	    rritem->setUpperValue(dialog.upperValue());
-	}
-	QString newclass=dialog.lowerValue()+"-"+dialog.upperValue();
-	//item->setText(newclass);//todo: find another way to change the text	
+	    QString newclass=dialog.lowerValue()+"-"+dialog.upperValue();
+	    mEntries.insert(std::make_pair(newclass,rritem));
+	    int index=mClassBreakBox->index(item);
+	    QObject::disconnect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+	    mClassBreakBox->removeItem(index);
+	    mClassBreakBox->insertItem(newclass,index);
+	    mClassBreakBox->setSelected(index,true);
+	    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+	}	
     }
 }
