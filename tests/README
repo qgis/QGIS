@@ -1,4 +1,5 @@
-This directory contains cppunit tests for various QGIS components.
+This directory contains cppunit tests for various QGIS components.  The cppunit
+library can be obtained from  http://cppunit.sourceforge.net/cgi-bin/moin.cgi.
 
 All of the tests use qmake to generate the Makefile.
 To run a test suite:
