@@ -91,7 +91,7 @@ class QgsVectorLayer : public QgsMapLayer
   */
   void setDataProvider( QString const & provider );
 
-  QgsDataProvider * getDataProvider();
+  QgsVectorDataProvider * getDataProvider();
 
 
   QgsLabel *label();

@@ -661,7 +661,7 @@ void QgsVectorLayer::select(int number)
       tabledisplay = 0;
     }
 
-    QgsDataProvider * QgsVectorLayer::getDataProvider()
+    QgsVectorDataProvider * QgsVectorLayer::getDataProvider()
     {
       return dataProvider;
     }
