@@ -44,6 +44,7 @@
 
 //non qt includes
 #include <cassert>
+#include <fstream>
 #include <iostream>
 
 //the gui subclass
@@ -101,6 +102,7 @@ void QgsGPSPlugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(mMainWindowPointer);
   pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
+  pluginMenu->insertItem("&Create new GPX layer", this, SLOT(createGPX()));
   mMenuBarPointer = ((QMainWindow *) mMainWindowPointer)->menuBar();
   mMenuId = mQGisInterface->addMenu("&Gps", pluginMenu);
 
@@ -159,6 +161,33 @@ void QgsGPSPlugin::run()
   connect(this, SIGNAL(closeGui()), myPluginGui, SLOT(close()));
 
   myPluginGui->show();
+}
+
+
+void QgsGPSPlugin::createGPX() {
+  QString fileName = 
+    QFileDialog::getSaveFileName("." , "GPS eXchange file (*.gpx)",
+				  mMainWindowPointer, "OpenFileDialog",
+				 "Save new GPX file as...");
+  if (!fileName.isEmpty()) {
+    QFileInfo fileInfo(fileName);
+    std::ofstream ofs((const char*)fileName);
+    if (!ofs) {
+      QMessageBox::warning(NULL, "Could not create file",
+			   "Unable to create a GPX file with the given name. "
+			   "Try again with another name or in another "
+			   "directory.");
+      return;
+    }
+    ofs<<"<gpx></gpx>"<<std::endl;
+    
+    emit drawVectorLayer(fileName + "?type=track", 
+			 fileInfo.baseName() + ", tracks", "gpx");
+    emit drawVectorLayer(fileName + "?type=route", 
+			 fileInfo.baseName() + ", routes", "gpx");
+    emit drawVectorLayer(fileName + "?type=waypoint", 
+			 fileInfo.baseName() + ", waypoints", "gpx");
+  }
 }
 
 

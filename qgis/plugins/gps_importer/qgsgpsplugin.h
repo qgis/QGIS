@@ -47,6 +47,8 @@ public:
 public slots:
   //! Show the dialog box
   void run();
+  //! Create a new GPX layer
+  void createGPX();
   //! Add a vector layer given vectorLayerPath, baseName, providerKey
   void drawVectorLayer(QString,QString,QString);
   //! unload the plugin
