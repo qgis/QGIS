@@ -141,7 +141,15 @@ public:
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage(QString, QPixmap *);
     QgsMapCanvas * getMapCanvas() { return mMapCanvas; };
-    QgsMapLayerRegistry * getLayerRegistry() { return mLayerRegistry; };
+
+    /** return the layer registry
+
+       @note
+
+       Returns QgsMapLayerRegistry::instance(); i.e., it's a Singleton
+    */
+    QgsMapLayerRegistry * getLayerRegistry();
+
     //! Set theme (icons)
     void setTheme(QString themeName="default");
     //! Setup the toolbar popup menus for a given theme
@@ -310,7 +318,8 @@ public slots:
     void drawExtentRectangle(QPainter *);
 private:
     //! A central registry that keeps track of all loaded layers.
-    QgsMapLayerRegistry * mMapLayerRegistry;
+    // prefer QgsMapLayerRegistry::instance() to emphasize Singleton
+    ///QgsMapLayerRegistry * mMapLayerRegistry;
     //! Widget that will live on the statusbar to display scale
     QLabel * mScaleLabel;
     //! Widget that will live in the statusbar to display coords
@@ -333,7 +342,7 @@ private:
     //! Map canvas
     QgsMapCanvas *mMapCanvas;
     //! Map layer registry
-    QgsMapLayerRegistry *mLayerRegistry;
+    // use instance() now QgsMapLayerRegistry *mLayerRegistry;
     //! Overview canvas where the map overview is shown
     QgsMapCanvas * mOverviewCanvas;
     //! Table of contents (legend) for the map

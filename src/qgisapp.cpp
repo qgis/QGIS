@@ -307,7 +307,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   //add a canvas
   mMapCanvas = new QgsMapCanvas(canvasLegendSplit);
   // we need to cache the layer registry instance so plugins can get to it
-  mLayerRegistry = QgsMapLayerRegistry::instance();
+  // now explicitly refer to Singleton -- mLayerRegistry = QgsMapLayerRegistry::instance();
   // resize it to fit in the frame
   //    QRect r = frmCanvas->rect();
   //    canvas->resize(r.width(), r.height());
@@ -441,14 +441,14 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   // This allows a single layer instance to be shared 
   // between more than one canvas. The registry is a singleton
   // and is constructed using the static instance call.
-  // 
-  mMapLayerRegistry = QgsMapLayerRegistry::instance();
+
+  // syntactic sugar shortcut for instance handle
+  QgsMapLayerRegistry * mapLayerRegistry = QgsMapLayerRegistry::instance();
+
   //connect the legend, mapcanvas and overview canvas to the registry
-
-  connect(mMapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapCanvas, SLOT(remove(QString)));
-  connect(mMapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapLegend, SLOT(removeLayer(QString)));
-  connect(mMapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mOverviewCanvas, SLOT(remove(QString)));
-
+  connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapCanvas, SLOT(remove(QString)));
+  connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapLegend, SLOT(removeLayer(QString)));
+  connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mOverviewCanvas, SLOT(remove(QString)));
 
   
   // get the users theme preference from the settings
@@ -871,7 +871,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
    if (layer->isValid())
    {
       // Register this layer with the layers registry
-      mMapLayerRegistry->addMapLayer(layer);
+      QgsMapLayerRegistry::instance()->addMapLayer(layer);
       // init the context menu so it can connect to slots
       // in main app
       layer->initContextMenu(this);
@@ -986,7 +986,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
            if (layer->isValid())
            {
              //Register the layer with the layer registry
-             mMapLayerRegistry->addMapLayer(layer);
+             QgsMapLayerRegistry::instance()->addMapLayer(layer);
              // init the context menu so it can connect to slots
              // in main app
 
@@ -1103,7 +1103,7 @@ void QgisApp::addDatabaseLayer()
         if (layer->isValid())
         {
           // register this layer with the central layers registry
-          mMapLayerRegistry->addMapLayer(layer);
+          QgsMapLayerRegistry::instance()->addMapLayer(layer);
           // init the context menu so it can connect to slots in main app
           layer->initContextMenu(this);
 
@@ -1157,7 +1157,7 @@ void QgisApp::fileNew()
     {
       mMapCanvas->freeze(true);
       mOverviewCanvas->freeze(true);
-      mMapLayerRegistry->removeAllMapLayers();
+      QgsMapLayerRegistry::instance()->removeAllMapLayers();
       mMapCanvas->clear();
       mOverviewCanvas->clear();
       setCaption(tr("Quantum GIS -- Untitled"));
@@ -1190,65 +1190,80 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
 
   }
 }
+
+
 void QgisApp::fileOpen()
 {
   int answer = saveDirty();
 
   if (answer != QMessageBox::Cancel)
   {
-    QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, mMapCanvas);
-    //loading a project will add all layers to the registry and
-    //return the zorder for those layers.
-    std::list<QString> myZOrder = pio->read();
-    if(myZOrder.size() > 0)
-    {
-    mOverviewCanvas->freeze(true);
-    mMapCanvas->freeze(true);
-    // clear the map canvas
-    removeAllLayers();
-    std::list < QString >::iterator li = myZOrder.begin();
-    QgsRect myExtent = mMapCanvas->extent();
-#ifdef QGISDEBUG
-    std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
-#endif
-    while (li != myZOrder.end())
-    {
-      QgsMapLayer * myMapLayer = mMapLayerRegistry->mapLayer(*li);
-#ifdef QGISDEBUG
-      QString lyr = *li;
-      std::cout << "Found  " << lyr.ascii() << " in zOrder" << std::endl;
-      std::cout << "MapLayer type is " << myMapLayer->type() << std::endl;
-#endif
-      //find out what type of file it is and add it to the project
-      if (myMapLayer->type() == QgsMapLayer::VECTOR)
-      {
-        addMapLayer(myMapLayer);
-      }
-      else
-      {
-        addRasterLayer((QgsRasterLayer*)myMapLayer);
-      }
-      li++;
-    }
+    std::auto_ptr<QgsProjectIo> pio( new QgsProjectIo( QgsProjectIo::OPEN, mMapCanvas) );
 
-    setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-    mFullPathName = pio->fullPathName();
-    setZOrder(myZOrder);
-    setOverviewZOrder(mMapLegend);
-    delete pio;
-    mMapCanvas->setExtent(myExtent);
-    mMapCanvas->refresh();
-    mOverviewCanvas->freeze(false);
-    mMapCanvas->freeze(false);
-    mProjectIsDirtyFlag = false;
+    // loading a project will add all layers to the registry and return the
+    // zorder for those layers.
+
+    std::list<QString> myZOrder = pio->read();
+
+    if( ! myZOrder.empty() )
+    {
+        mOverviewCanvas->freeze(true);
+        mMapCanvas->freeze(true);
+
+        // clear the map canvas
+        removeAllLayers();
+
+        
+        QgsRect myExtent = mMapCanvas->extent();
+
+#ifdef QGISDEBUG
+        std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
+#endif
+
+        for ( std::list < QString >::iterator li = myZOrder.begin(); 
+              li != myZOrder.end(); 
+              ++li )
+        {
+            QgsMapLayer * myMapLayer = QgsMapLayerRegistry::instance()->mapLayer(*li);
+      
+            Q_ASSERT( myMapLayer );
+      
+#ifdef QGISDEBUG
+            QString lyr = *li;
+            std::cout << "Found  " << lyr.ascii() << " in zOrder" << std::endl;
+            std::cout << "MapLayer type is " << myMapLayer->type() << std::endl;
+#endif
+            //find out what type of file it is and add it to the project
+            if (myMapLayer->type() == QgsMapLayer::VECTOR)
+            {
+                addMapLayer(myMapLayer);
+            }
+            else
+            {
+                addRasterLayer((QgsRasterLayer*)myMapLayer);
+            }
+        }
+
+        setCaption(tr("Quantum GIS --") + " " + pio->baseName());
+        mFullPathName = pio->fullPathName();
+        setZOrder(myZOrder);
+        setOverviewZOrder(mMapLegend);
+        // delete pio; auto_ptr automatically deletes
+        mMapCanvas->setExtent(myExtent);
+        mMapCanvas->refresh();
+        mOverviewCanvas->freeze(false);
+        mMapCanvas->freeze(false);
+        mProjectIsDirtyFlag = false;
+    }
+    else
+    {
+        // just delete the project io object since the user cancelled
+        // delete pio; auto_ptr automatically deletes
+    }
   }
-  else
-  {
-    // just delete the project io object since the user cancelled
-    delete pio;
-  }
-  }
-}
+} // QgisApp::fileOpen
+
+
 
 bool QgisApp::addProject(QString projectFile)
 {
@@ -1274,7 +1289,7 @@ bool QgisApp::addProject(QString projectFile)
 #ifdef QGISDEBUG
     std::cout << "Found  " << *li << " in zOrder" << std::endl;
 #endif
-    QgsMapLayer * myMapLayer = mMapLayerRegistry->mapLayer(*li);
+    QgsMapLayer * myMapLayer = QgsMapLayerRegistry::instance()->mapLayer(*li);
     //find out what type of file it is and add it to the project
     if (myMapLayer->type() == QgsMapLayer::VECTOR)
     {
@@ -1454,7 +1469,7 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
 void QgisApp::addAllToOverview()
 {
   mOverviewCanvas->freeze(true);
-  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
   {
@@ -1474,7 +1489,7 @@ void QgisApp::addAllToOverview()
 void QgisApp::removeAllFromOverview()
 {
   mOverviewCanvas->freeze(true);
-  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
   {
@@ -1498,7 +1513,7 @@ void QgisApp::hideAllLayers()
 #endif
   mMapCanvas->freeze(true);
   mOverviewCanvas->freeze(true);
-  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
   {
@@ -1520,7 +1535,7 @@ void QgisApp::showAllLayers()
 #endif
   mMapCanvas->freeze(true);
   mOverviewCanvas->freeze(true);
-  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
   {
@@ -1879,7 +1894,7 @@ void QgisApp::removeLayer()
   //call the registry to unregister the layer. It will in turn
   //fire a qt signal to notify any objects using that layer that they should
   //remove it immediately
-  mMapLayerRegistry->removeMapLayer(layer->getLayerID());
+  QgsMapLayerRegistry::instance()->removeMapLayer(layer->getLayerID());
   mOverviewCanvas->freeze(false);
   // draw the map
   mOverviewCanvas->zoomFullExtent();
@@ -1892,7 +1907,7 @@ void QgisApp::removeLayer()
 }
 void QgisApp::removeAllLayers()
 {
-  mMapLayerRegistry->removeAllMapLayers();
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
   mOverviewCanvas->clear();
   mMapCanvas->clear();
 } //remove all layers 
@@ -2579,7 +2594,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     if(layer->isValid())
     {
       // Register this layer with the layers registry
-      mMapLayerRegistry->addMapLayer(layer);
+      QgsMapLayerRegistry::instance()->addMapLayer(layer);
       // init the context menu so it can connect to slots in main app
       layer->initContextMenu(this);
 
@@ -2618,7 +2633,7 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
   if(theMapLayer->isValid())
   {
     // Register this layer with the layers registry
-    mMapLayerRegistry->addMapLayer(theMapLayer);
+    QgsMapLayerRegistry::instance()->addMapLayer(theMapLayer);
     // init the context menu so it can connect to slots in main app
     theMapLayer->initContextMenu(this);
     // add it to the mapcanvas collection
@@ -2828,6 +2843,13 @@ void QgisApp::projectProperties()
 
   }
 }
+
+QgsMapLayerRegistry * QgisApp::getLayerRegistry() 
+{ 
+    return QgsMapLayerRegistry::instance(); 
+}
+
+
 void QgisApp::setTheme(QString themeName)
 {
 /*****************************************************************
@@ -2952,7 +2974,7 @@ void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
 {
   if (theVisibilityFlag)
   {
-    mOverviewCanvas->addLayer(mMapLayerRegistry->mapLayer(theLayerId));
+    mOverviewCanvas->addLayer(QgsMapLayerRegistry::instance()->mapLayer(theLayerId));
     std::cout << " Added layer " << theLayerId << " to overview map" << std::endl;
   }
   else
@@ -2991,7 +3013,7 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
   std::vector<QString>::reverse_iterator myIterator=myOverviewLayerVector.rbegin();
   while (myIterator != myOverviewLayerVector.rend())
   {
-    QgsMapLayer *lyr = mMapLayerRegistry->mapLayer(*myIterator);
+    QgsMapLayer *lyr = QgsMapLayerRegistry::instance()->mapLayer(*myIterator);
     if (lyr->showInOverviewStatus())
     {
       mOverviewCanvas->addLayer(lyr);
@@ -3116,7 +3138,7 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
   if (theRasterLayer->isValid())
   {
     // register this layer with the central layers registry
-    mMapLayerRegistry->addMapLayer(theRasterLayer);
+    QgsMapLayerRegistry::instance()->addMapLayer(theRasterLayer);
     // XXX doesn't the mMapCanvas->addLayer() do this?
     QObject::connect(theRasterLayer, 
             SIGNAL(repaintRequested()), 
