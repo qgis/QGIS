@@ -20,7 +20,10 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <cstdio>
 
+#include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
 
@@ -61,15 +64,30 @@ const char * QgsShapeFile::getFeatureClass(){
       char * geo_temp = new char[num*3];
       geom->exportToWkt(&geo_temp);
 
+      QString file(filename);
+      file.replace(file.length()-3, 3, "dbf");
+      // open the dbf file
+      std::ifstream dbf((const char*)file, std::ios::in | std::ios::binary);
+      // read header
+      DbaseHeader dbh;
+      dbf.read((char *)&dbh, sizeof(dbh));
+
+      Fda fda;
+      for(int field_count = 0, bytes_read = sizeof(dbh); bytes_read < dbh.size_hdr-1; field_count++, bytes_read += sizeof(fda)){
+      	dbf.read((char *)&fda, sizeof(fda));
+        column_types.push_back(fda.field_type);
+      }
+      dbf.close();
+      
       int numFields = feat->GetFieldCount();
       for(int n=0; n<numFields; n++){
         column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
-        column_types.push_back(OGRFieldDefn::GetFieldTypeName(feat->GetFieldDefnRef(n)->GetType()));
+        std::cout << column_names[n] << "of type: " << column_types[n] << std::endl;
       }
 
       QString geometry(geo_temp);
-      
       delete[] geo_temp;
+      
     }else{
       valid = false;
       delete geom;

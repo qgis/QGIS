@@ -37,7 +37,7 @@ class QgsShapeFile
   bool is_valid();
   const char * getName();
   std::vector <const char *> column_names;
-  std::vector <const char *> column_types;
+  std::vector <char> column_types;
 
 
   private:

@@ -60,7 +60,7 @@ type=DATA
 
 [Makefile.am]
 dist=true
-files=spit.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,main.cpp,qgsconnectiondialogbase.cpp,qgsconnectiondialogbase.h,qgsspitbase.cpp,qgsspitbase.h,qgsspit.cpp,qgsspit.h,qgsconnectiondialog.h,qgsconnectiondialog.cpp,Makefile,Makefile.am,moc_qgsconnectiondialogbase.cpp,moc_qgsspitbase.cpp,qgsconnectiondialogbase.ui,qgsspitbase.ui,spit.kdevses,spit.pro,qgsshapefile.cpp,qgsshapefile.h,qgsmessageviewer.cpp,qgsmessageviewer.h
+files=spit.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,main.cpp,qgsconnectiondialogbase.cpp,qgsconnectiondialogbase.h,qgsspitbase.cpp,qgsspitbase.h,qgsspit.cpp,qgsspit.h,qgsconnectiondialog.h,qgsconnectiondialog.cpp,Makefile,Makefile.am,moc_qgsconnectiondialogbase.cpp,moc_qgsspitbase.cpp,qgsconnectiondialogbase.ui,qgsspitbase.ui,spit.kdevses,spit.pro,qgsshapefile.cpp,qgsshapefile.h,qgsmessageviewer.cpp,qgsmessageviewer.h,qgsdbfbase.h
 install=false
 install_location=
 sub_dirs=spit,src
@@ -125,6 +125,12 @@ dist=true
 install=false
 install_location=
 type=SOURCE
+
+[qgsdbfbase.h]
+dist=true
+install=false
+install_location=
+type=HEADER
 
 [qgsmessageviewer.cpp]
 dist=true
