@@ -49,8 +49,8 @@ email                : tim@linfiniti.com
 // 
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "GPS Dump Importer";
-static const char * const description_ = "An importer for GPS dump files.";
+static const char * const name_ = "GPS Tools";
+static const char * const description_ = "Tools for loading and importing GPS data.";
 static const char * const version_ = "Version 0.1";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 /**

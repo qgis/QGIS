@@ -387,6 +387,30 @@
         <receiver>PluginGuiBase</receiver>
         <slot>pbnGPXSelectFile_clicked()</slot>
     </connection>
+    <connection>
+        <sender>leGPXFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>leInputFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>leOutputShapeFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>tabWidget</sender>
+        <signal>currentChanged(QWidget*)</signal>
+        <receiver>PluginGuiBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>pbnOK_clicked()</slot>
@@ -400,6 +424,7 @@
     <slot>cbGPXWaypoints_toggled( bool )</slot>
     <slot>cbGPXRoutes_toggled( bool )</slot>
     <slot>cbGPXTracks_toggled( bool )</slot>
+    <slot>enableRelevantControls()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

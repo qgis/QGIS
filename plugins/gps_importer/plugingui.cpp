@@ -13,6 +13,7 @@
 
 //qt includes
 #include <qcheckbox.h>
+#include <qfileinfo.h>
 #include <qpushbutton.h>
 #include <qtabwidget.h>
 #include <qlineedit.h>
@@ -44,22 +45,26 @@ void PluginGui::pbnOK_clicked()
   // add a GPX/LOC layer?
   if (tabWidget->currentPageIndex() == 0) {
 
-    //check input file exists
-    if (!QFile::exists ( leGPXFile->text() ))
+    //check if input file is readable
+    QFileInfo fileInfo(leGPXFile->text());
+    if (!fileInfo.isReadable())
       {
 	QMessageBox::warning( this, "GPX/LOC Loader",
-			      "Unable to find the selected file.\n"
+			      "Unable to read the selected file.\n"
 			      "Please reselect a valid file." );
 	return;
       }
     
+    // add the requested layers
+    if (cbGPXTracks->isChecked())
+      emit drawVectorLayer(leGPXFile->text() + "?type=track", 
+			   fileInfo.baseName() + ", tracks", "gpx");
+    if (cbGPXRoutes->isChecked())
+      emit drawVectorLayer(leGPXFile->text() + "?type=route", 
+			   fileInfo.baseName() + ", routes", "gpx");
     if (cbGPXWaypoints->isChecked())
       emit drawVectorLayer(leGPXFile->text() + "?type=waypoint", 
-			   "Waypoints", "gpx");
-    if (cbGPXRoutes->isChecked())
-      emit drawVectorLayer(leGPXFile->text() + "?type=route", "Routes", "gpx");
-    if (cbGPXTracks->isChecked())
-      emit drawVectorLayer(leGPXFile->text() + "?type=track", "Tracks", "gpx");
+			   fileInfo.baseName() + ", waypoints", "gpx");
   }
   
   // or import a download file?
@@ -106,14 +111,6 @@ void PluginGui::pbnSelectInputFile_clicked()
           );
   std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
   leInputFile->setText(myFileNameQString);
-  if ( (leOutputShapeFile->text()=="") || (leInputFile->text()=="") )
-  {
-    pbnOK->setEnabled(false);
-  }
-  else
-  {
-    pbnOK->setEnabled(true);
-  }
 }
 
 
@@ -127,13 +124,52 @@ void PluginGui::pbnSelectOutputFile_clicked()
           "save file dialog"
           "Choose a filename to save under" );
   leOutputShapeFile->setText(myOutputFileNameQString);
-  if ( leOutputShapeFile->text()=="" || leInputFile->text()=="" )
-  {
-    pbnOK->setEnabled(false);
+}
+
+
+void PluginGui::enableRelevantControls() 
+{
+  if (tabWidget->currentPageIndex() == 0) {
+    if ((leGPXFile->text()==""))
+    {
+      pbnOK->setEnabled(false);
+      cbGPXWaypoints->setEnabled(false);
+      cbGPXRoutes->setEnabled(false);
+      cbGPXTracks->setEnabled(false);
+      cbGPXWaypoints->setChecked(false);
+      cbGPXRoutes->setChecked(false);
+      cbGPXTracks->setChecked(false);
+    }
+    else
+    {
+      pbnOK->setEnabled(true);
+      cbGPXWaypoints->setEnabled(true);
+      cbGPXWaypoints->setChecked(true);
+      if (leGPXFile->text().right(4).lower() != ".loc") {
+	cbGPXRoutes->setEnabled(true);
+	cbGPXTracks->setEnabled(true);
+	cbGPXRoutes->setChecked(true);
+	cbGPXTracks->setChecked(true);
+      }
+      else {
+	cbGPXRoutes->setEnabled(false);
+	cbGPXTracks->setEnabled(false);
+	cbGPXRoutes->setChecked(false);
+	cbGPXTracks->setChecked(false);
+      }
+    }
   }
+  
   else
   {
-    pbnOK->setEnabled(true);
+    if ( (leOutputShapeFile->text()=="") || (leInputFile->text()=="") )
+    {
+      pbnOK->setEnabled(false);
+    }
+    else
+    {
+      pbnOK->setEnabled(true);
+    }
   }
 }
 
@@ -160,34 +196,6 @@ void PluginGui::pbnGPXSelectFile_clicked()
           );
   std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
   leGPXFile->setText(myFileNameQString);
-  if ((leGPXFile->text()==""))
-  {
-    pbnOK->setEnabled(false);
-    cbGPXWaypoints->setEnabled(false);
-    cbGPXRoutes->setEnabled(false);
-    cbGPXTracks->setEnabled(false);
-    cbGPXWaypoints->setChecked(false);
-    cbGPXRoutes->setChecked(false);
-    cbGPXTracks->setChecked(false);
-  }
-  else
-  {
-    pbnOK->setEnabled(true);
-    cbGPXWaypoints->setEnabled(true);
-    cbGPXWaypoints->setChecked(true);
-    if (myFileNameQString.right(4) == ".gpx") {
-      cbGPXRoutes->setEnabled(true);
-      cbGPXTracks->setEnabled(true);
-      cbGPXRoutes->setChecked(true);
-      cbGPXTracks->setChecked(true);
-    }
-    else {
-      cbGPXRoutes->setEnabled(false);
-      cbGPXTracks->setEnabled(false);
-      cbGPXRoutes->setChecked(false);
-      cbGPXTracks->setChecked(false);
-    }
-  }
 }
 
 
