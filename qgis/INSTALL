@@ -4,7 +4,7 @@ Requirements:
 3. Qt 3.0.x built with thread support
 4. GDAL/OGR library compiled and installed (with headers). QGIS assumes
    that the headers and library will be in a standard (i.e. /usr/local)
-   location.
+   location. See http://www.remotesensing.org/gdal.
 5. Optional - Qt PostgreSQL driver (can be built with Qt or separately
 -- see Qt SQL docs)
 
