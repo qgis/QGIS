@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsLabelDialogBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>652</width>
-            <height>563</height>
+            <width>748</width>
+            <height>617</height>
         </rect>
     </property>
     <property name="caption">
