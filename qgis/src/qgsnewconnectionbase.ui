@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>394</width>
-            <height>253</height>
+            <height>282</height>
         </rect>
     </property>
     <property name="caption">
@@ -76,6 +76,9 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>btnHelp</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="text">
                         <string>Help</string>
@@ -145,7 +148,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <pointsize>11</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
@@ -158,7 +160,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <pointsize>11</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
@@ -171,7 +172,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <pointsize>11</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
@@ -184,7 +184,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <pointsize>11</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
@@ -197,7 +196,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <pointsize>11</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
@@ -210,7 +208,6 @@
                                     </property>
                                     <property name="font">
                                         <font>
-                                            <pointsize>11</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
