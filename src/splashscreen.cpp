@@ -20,7 +20,7 @@
 #include <qpixmap.h>
 #include "splashscreen.h"
 #include "qfont.h"
-
+#include "qgis.h"
 //splashscreen image
 #include "xpm/splash.xpm"
 
@@ -35,7 +35,7 @@ SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash), sp
   painter.setPen(Qt::red);
   QFont myQFont("arial", 36, QFont::Bold);
   painter.setFont(myQFont);
-  painter.drawText(20, 50, "Version 2 'Pumpkin'");
+  painter.drawText(20, 50, VERSION);
   repaint();
 
   show();
