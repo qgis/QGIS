@@ -51,8 +51,6 @@ public:
   void leLocalitiesFileName_textChanged( const QString &theFileNameQString );
   void setSpeciesList(QString theFileNameQSting);
   void pbnSelectOutputDirectory_clicked();
-  void pbnRemoveParameter_clicked();
-  void pbnAddParameter_clicked();
   void pbnRemoveLayerFile_clicked();
   void pbnSelectLayerFile_clicked();
   void pbnSelectLocalitiesFile_clicked();
@@ -75,7 +73,6 @@ private:
     QStringList extraParametersQStringList;
     QString outputFileNameQString;
     bool useTheseSettingsAgainFlag;
-    void makeParametersGui();
     typedef QMap<QString, QWidget *> ParametersMap;
     //setup QMap object and layout for the frame into which the controls will go
     ParametersMap mMap;
