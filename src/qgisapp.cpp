@@ -1479,6 +1479,7 @@ void QgisApp::fileSave()
       setCaption(tr("Quantum GIS --") + " " + pio->baseName());
       statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
     }
+  fullPath = pio->fullPathName();
   delete pio;
   projectIsDirty = false;
 }
