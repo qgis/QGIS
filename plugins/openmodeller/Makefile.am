@@ -33,7 +33,7 @@ lib_LTLIBRARIES = libopenmodellerplugin.la
 bin_PROGRAMS = omgui
 
 ## qt designer user-interface files
-plugin_UI = openmodellerguibase.ui
+plugin_UI = openmodellerguibase.ui omguimainbase.ui
 
 ## uic created headers
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
@@ -45,7 +45,7 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp openmodellergui.moc.cpp
+plugin_MOC = plugin.moc.cpp openmodellergui.moc.cpp 
 
 
 libopenmodellerplugin_la_SOURCES = plugin.cpp \
@@ -70,6 +70,7 @@ BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin
 ##
 
 omgui_SOURCES = 	main.cpp \
+			omguimain.cpp \
 			openmodellergui.cpp \
 			openmodellergui.h \
 			request_file.cpp \
@@ -79,7 +80,7 @@ omgui_SOURCES = 	main.cpp \
 			$(plugin_UIHEADERS) \
 			$(plugin_UIMOC)
 
-nodist_omgui_SOURCES = openmodellergui.moc.cpp	
+nodist_omgui_SOURCES = openmodellergui.moc.cpp omguimain.moc.cpp	
 
 omgui_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=\"$(QGISDATAPATH)\"
 omgui_LDADD = $(QT_LDADD) $(GDAL_LDADD) $(OM_LDADD)

@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "openmodellergui.h"
+
+#include "omguimain.h"
 #include <qapplication.h>
 
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
-
-  OpenModellerGui *myOpenModellerGui=new OpenModellerGui();
-  a.setMainWidget(myOpenModellerGui);
-  myOpenModellerGui->show();
+  OmGuiMain * myOmGui = new OmGuiMain();
+  a.setMainWidget(myOmGui);
+  myOmGui->show();
   
 
   return a.exec();

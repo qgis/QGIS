@@ -1,0 +1,99 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>OmGuiMainBase</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>OmGuiMainBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>openModeller GUI Version 1</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>pixModelOutputImage</cstring>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<menubar>
+    <property name="name">
+        <cstring>MenuBar</cstring>
+    </property>
+    <item text="&amp;File" name="fileMenu">
+        <separator/>
+        <separator/>
+        <action name="runWizardAction"/>
+        <action name="fileExitAction"/>
+    </item>
+</menubar>
+<toolbars>
+</toolbars>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>fileExitAction</cstring>
+        </property>
+        <property name="text">
+            <string>Exit</string>
+        </property>
+        <property name="menuText">
+            <string>E&amp;xit</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>runWizardAction</cstring>
+        </property>
+        <property name="text">
+            <string>Run Wizard</string>
+        </property>
+    </action>
+</actions>
+<images>
+    <image name="image0">
+        <data format="PNG" length="602">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000002214944415418958d94318a1b311486bf19f61036a44a35ee5d49558a1c2046046cf00196e0134cb1b89813b8c8010c5b04e11cc05d40aa7c80a9a60a780fb1a0141a8da499c9ee3e10689e46fffbdfffde5361ace12d93279c6e04aab69803c57d21dcf2c5166f5e02ca39e77d219c3ce1e4553873a048fdea0cf22adc7de1d787810323dd88ccaf1b813a83de03ad0540d5f6638ce50917c0a107e96d9cfef2c5165402796296f9007c5f081758a540e192bcc6cbbaf1807a1f3319830fc0eacc00aa6aebf5ac2daab6835fef93f42b11f7adff2f0d5e84ae9057e178ca8bad3b37808633ddb981c860c95994ece85c0fee66d7d139ddb9896fcebffbe57dc61a2f45285a1fc8afc07a3f62d733dcad407dce33dcacfbdabce24a5a0b95c880529b80f6419fbf17d937c0e5168b5c5209ccd7d84a6ff5e61038801df32edbac8958ba738eadf9afa6ba1b69b935d1d76b3d3e337f8c2b01d2b17d8f7598c83085a974bb6f710e1ed4196893e23d4ddf9771a0cb2d296a1bcf9e7ff7fb2f500e9a6ca7af5ce8d9f1bb31008c0bdf08cca3df97e945dd390fd6b75cc6746b329faa2dba115e8aadf1c314fe7fa028c1f75e787321d7ee728b6cd2b4a944f60c00035b48461a400ae942fac154edd39df477cf589d61b7821f8bc876020cc9145682ddcaeb996a1c80c0f72dc0f26f0eeab723338f70ff24325699b596cdde33ddace7416719f31a5b4ffeec831d28e409172451b5cdf41c83ce038fc0dfb51950807f9bc66dce4e6f49a70000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>fileExitAction</sender>
+        <signal>activated()</signal>
+        <receiver>OmGuiMainBase</receiver>
+        <slot>fileExit()</slot>
+    </connection>
+    <connection>
+        <sender>runWizardAction</sender>
+        <signal>activated()</signal>
+        <receiver>OmGuiMainBase</receiver>
+        <slot>runWizard()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">omguimainbase.ui.h</include>
+</includes>
+<slots>
+    <slot>fileExit()</slot>
+    <slot>runWizard()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

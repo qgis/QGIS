@@ -37,7 +37,6 @@ class OpenModellerGui : public OpenModellerGuiBase
 {
 Q_OBJECT
 public:
-    OpenModellerGui();
     OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  );
     ~OpenModellerGui();
     
@@ -110,9 +109,10 @@ private:
     QGridLayout *mScrollViewLayout;
     QWidget *mLayoutWidget;
     void getProjList();
-    void updateModelImage(QString theBaseName);
+    void createModelImage(QString theBaseName);
     
 signals:
+   void drawModelImage(QString);
    void drawRasterLayer(QString);
 };
 
