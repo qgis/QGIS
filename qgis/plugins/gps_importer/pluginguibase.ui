@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>666</width>
-            <height>399</height>
+            <width>754</width>
+            <height>401</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -29,7 +29,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="0" column="2">
+        <widget class="Line" row="0" column="1">
             <property name="name">
                 <cstring>line1</cstring>
             </property>
@@ -43,7 +43,7 @@
                 <enum>Vertical</enum>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+        <widget class="QLabel" row="0" column="0">
             <property name="name">
                 <cstring>pixmapLabel1</cstring>
             </property>
@@ -54,15 +54,7 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QPushButton" row="1" column="0">
-            <property name="name">
-                <cstring>pbnCancel</cstring>
-            </property>
-            <property name="text">
-                <string>Cancel</string>
-            </property>
-        </widget>
-        <widget class="QTabWidget" row="0" column="3" rowspan="1" colspan="3">
+        <widget class="QTabWidget" row="0" column="2">
             <property name="name">
                 <cstring>tabWidget</cstring>
             </property>
@@ -91,6 +83,9 @@
                         </property>
                         <property name="wordWrap">
                             <enum>WidgetWidth</enum>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
                         </property>
                     </widget>
                     <widget class="QLabel" row="1" column="0">
@@ -193,6 +188,9 @@
                         <property name="wordWrap">
                             <enum>WidgetWidth</enum>
                         </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                     <widget class="QLineEdit" row="2" column="0" rowspan="1" colspan="4">
                         <property name="name">
@@ -283,34 +281,58 @@
                 </grid>
             </widget>
         </widget>
-        <widget class="QPushButton" row="1" column="5">
+        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="3">
             <property name="name">
-                <cstring>pbnOK</cstring>
+                <cstring>layout107</cstring>
             </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="text">
-                <string>OK</string>
-            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer5</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>550</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnOK</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
-        <spacer row="1" column="4">
-            <property name="name">
-                <cstring>spacer5</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>160</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
     </grid>
 </widget>
 <images>
