@@ -241,19 +241,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     maplayer.appendChild( layerName );
 
     // zorder
-
-    // XXX Where do I get this information?  Since it's not map layer
-    // XXX specific, and specific to map canvas, shouldn't that be in
-    // XXX QgsMapCanvas::writeXML() instead?  For that matter, if we read and
-    // XXX write layers in a known order, then we don't need to store a z order,
-    // XXX right?
-
-    QDomElement zOrder = document.createElement( "zorder" );
-    QDomText zOrderText = document.createTextNode( "0" ); // XXX hard-coded to zero
-    zOrder.appendChild( zOrderText );
-
-    maplayer.appendChild( zOrder );
-
+    // This is no longer stored in the project file. It is superflous since the layers
+    // are written and read in the proper order.
 
     // now append layer node to map layer node
 

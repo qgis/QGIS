@@ -24,6 +24,10 @@
 
 // double sentinals to get round gcc 3.3.3 pre-processor bug
 
+#ifndef QDOM_H
+#include <qdom.h>
+#endif
+
 #ifndef QWIDGET_H
 #include <qwidget.h>
 #endif
@@ -157,6 +161,18 @@ class QgsMapCanvas : public QWidget
     QgsCoordinateTransform * getCoordinateTransform();
     //! Declare the legend class as a friend of the map canvas
     //friend class QgsLegend;
+
+    /** stores state in DOM node
+        layerNode is DOM node corresponding to ``qgis'' tag
+
+        The DOM node corresponds to a DOM document project file XML element to be
+        written by QgsProject.
+
+        Invoked by QgsProject::write().
+
+        returns true if successful
+    */
+    bool writeXML( QDomNode & layerNode, QDomDocument & doc );
 
 public slots:
 
