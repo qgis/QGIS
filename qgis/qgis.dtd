@@ -89,6 +89,8 @@
 <!ELEMENT rasterproperties (showDebugOverlayFlag, showGrayAsColorFlag, invertHistogramFlag, stdDevsToPlotDouble, transparencyLevelInt, redBandNameQString, greenBandNameQString, blueBandNameQString, grayBandNameQString) >
 <!--Raster flag to indicate whether debug infor overlay should be rendered onto the raster -->
 <!ELEMENT  showDebugOverlayFlag>
+<!--Raster : the rendering style to be used for this layer -->
+ <!ELEMENT drawingStyle (#CDATA)>
 <!--Raster : flag indicating whether the histogram should be inverted or not -->
 <!ELEMENT  invertHistogramFlag>
 <!--Raster : Number of stddev to plot (0) to ignore -->
