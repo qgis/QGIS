@@ -112,6 +112,9 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   //
   QString mySourceWKT = getProjectionWKT();
   //hard coding to geo/wgs84 for now
+  /*
+  QString myDestWKT =    "PROJCS[\"Alaska_Albers_Equal_Area_Conic\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"False_Easting\",0.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"longitude_of_center\",-154.0],PARAMETER[\"Standard_Parallel_1\",55.0],PARAMETER[\"Standard_Parallel_2\",65.0],PARAMETER[\"latitude_of_center\",50.0],UNIT[\"Meter\",1.0]]";
+  */
   QString myDestWKT =     "GEOGCS[\"WGS 84\", "
     "  DATUM[\"WGS_1984\", "
     "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
@@ -123,6 +126,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
     "  AXIS[\"Lat\",NORTH], "
     "  AXIS[\"Long\",EAST], "
     "  AUTHORITY[\"EPSG\",4326]]";
+  
   mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
   
   
