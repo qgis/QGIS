@@ -21,6 +21,7 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <map>
 #include <vector>
 
 #include <qdom.h>
@@ -28,7 +29,7 @@
 #include "../../src/qgsrect.h"
 
 
-#define DOUBLE_NA (-std::numeric_limits<double>::max())
+#define DOUBLE_NA (std::numeric_limits<double>::signaling_NaN())
 
 
 /** This is the parent class for all GPS data classes (except tracksegment).
@@ -168,7 +169,25 @@ class GPSData {
       succeeds it will fill this GPSData object with the data from the
       QDomDocument and return true, otherwise it will return false. */
   bool parseDom(QDomDocument& qdd);
-
+  
+  
+  /** This function returns a pointer to the GPSData object associated with
+      the file @c filename. If the file does not exist or can't be parsed,
+      NULL will be returned. If the file is already used by another layer,
+      a pointer to the same GPSData object will be returned. And if the file
+      is not used by any other layer, and can be parsed, a new GPSData object
+      will be created and a pointer to it will be returned. If you use this
+      function you should also call releaseData() with the same @c filename
+      when you're done with the GPSData pointer, otherwise the data will stay
+      in memory forever and you will get an ugly memory leak. */
+  static GPSData* getData(std::string filename);
+  
+  /** Call this function when you're done with a GPSData pointer that you
+      got earlier using getData(). Do NOT call this function if you haven't
+      called getData() earlier with the same @c filename, that can cause data
+      that is still in use to be deleted. */
+  static void releaseData(std::string filename);
+  
   
   /** operator<< is our friend. */
   friend std::ostream& operator<<(std::ostream& os, const GPSData& d);
@@ -199,7 +218,14 @@ class GPSData {
   std::vector<Track> tracks;
   double xMin, xMax, yMin, yMax;
   
-  //static GPSData* dataPtr;
+  /** This is used internally to store GPS data objects (one per file). */
+  typedef std::map<std::string, std::pair<GPSData, unsigned> > DataMap;
+  
+  /** This is the static container that maps filenames to GPSData objects and
+      does reference counting, so several providers can use the same GPSData 
+      object. */
+  static DataMap dataObjects;
+
 };
 
 #endif

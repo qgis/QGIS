@@ -72,13 +72,10 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
   mSelectionRectangle = 0;
   
   // parse the file
-  mFile = new QFile(mFileName);
-  QDomDocument qdd;
-  if (!(mValid = (qdd.setContent(mFile) && data.parseDom(qdd)))) {
-    std::cerr<<mFileName<<"is not valid GPX!"<<std::endl;
-  }
-  mFile->close();
-  delete mFile;
+  data = GPSData::getData(mFileName);
+  if (data == 0)
+    return;
+  mValid = true;
   
   // resize the cache matrix
   mMinMaxCache=new double*[attributeFields.size()];
@@ -93,6 +90,7 @@ QgsGPXProvider::~QgsGPXProvider() {
     delete mMinMaxCache[i];
   }
   delete[] mMinMaxCache;
+  GPSData::releaseData(mFileName);
 }
 
 
@@ -127,8 +125,8 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   if (mFeatureType == "waypoint") {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
-    for (; mFid < data.getNumberOfWaypoints(); ++mFid) {
-      const Waypoint& wpt(data.getWaypoint(mFid));
+    for (; mFid < data->getNumberOfWaypoints(); ++mFid) {
+      const Waypoint& wpt(data->getWaypoint(mFid));
       if (boundsCheck(wpt.lon, wpt.lat)) {
 	result = new QgsFeature(mFid);
 	
@@ -147,7 +145,8 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	  result->addAttribute("name", wpt.name);
 	  result->addAttribute("lat", QString("%1").arg(wpt.lat));
 	  result->addAttribute("lon", QString("%1").arg(wpt.lon));
-	  result->addAttribute("ele", QString("%1").arg(wpt.ele));
+	  if (!isnan(wpt.ele))
+	    result->addAttribute("ele", QString("%1").arg(wpt.ele));
 	}
 	
 	++mFid;
@@ -159,8 +158,8 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   else if (mFeatureType == "route") {
     // go through the routes and return the first one that is in the bounds
     // rectangle
-    for (; mFid < data.getNumberOfRoutes(); ++mFid) {
-      const Route& rte(data.getRoute(mFid));
+    for (; mFid < data->getNumberOfRoutes(); ++mFid) {
+      const Route& rte(data->getRoute(mFid));
       if (rte.points.size() == 0)
 	continue;
       const Routepoint& rtept(rte.points[0]);
@@ -197,8 +196,8 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   else if (mFeatureType == "track") {
     // go through the tracks and return the first one that is in the bounds
     // rectangle
-    for (; mFid < data.getNumberOfTracks(); ++mFid) {
-      const Track& trk(data.getTrack(mFid));
+    for (; mFid < data->getNumberOfTracks(); ++mFid) {
+      const Track& trk(data->getTrack(mFid));
       if (trk.segments.size() == 0)
 	continue;
       if (trk.segments[0].points.size() == 0)
@@ -301,7 +300,7 @@ int QgsGPXProvider::endian() {
 
 // Return the extent of the layer
 QgsRect *QgsGPXProvider::extent() {
-  return data.getExtent();
+  return data->getExtent();
 }
 
 
@@ -318,11 +317,11 @@ int QgsGPXProvider::geometryType() {
  */
 long QgsGPXProvider::featureCount() {
   if (mFeatureType == "waypoint")
-    return data.getNumberOfWaypoints();
+    return data->getNumberOfWaypoints();
   if (mFeatureType == "route")
-    return data.getNumberOfRoutes();
+    return data->getNumberOfRoutes();
   if (mFeatureType == "track")
-    return data.getNumberOfTracks();
+    return data->getNumberOfTracks();
   return 0;
 }
 
