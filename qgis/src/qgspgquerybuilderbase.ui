@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsPgQueryBuilderBase</class>
 <comment>Query builder for PostgreSQL layers (using PostGIS)	</comment>
 <author>Gary Sherman</author>
@@ -24,29 +24,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Fields</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QListBox" row="0" column="0">
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>lstFields</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
         <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>layout4</cstring>
@@ -133,45 +110,6 @@
                     </grid>
                 </widget>
             </hbox>
-        </widget>
-        <widget class="QGroupBox" row="0" column="1">
-            <property name="name">
-                <cstring>groupBox2</cstring>
-            </property>
-            <property name="title">
-                <string>Values</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QListBox" row="0" column="0" rowspan="1" colspan="2">
-                    <item>
-                        <property name="text">
-                            <string>New Item</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>lstValues</cstring>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>btnSampleValues</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Sample</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>btnGetAllValues</cstring>
-                    </property>
-                    <property name="text">
-                        <string>All</string>
-                    </property>
-                </widget>
-            </grid>
         </widget>
         <widget class="QGroupBox" row="2" column="0" rowspan="1" colspan="2">
             <property name="name">
@@ -265,6 +203,58 @@
                 </spacer>
             </hbox>
         </widget>
+        <widget class="QGroupBox" row="0" column="1">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Values</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QListBox" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>lstValues</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>btnSampleValues</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Sample</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>btnGetAllValues</cstring>
+                    </property>
+                    <property name="text">
+                        <string>All</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Fields</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QListBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>lstFields</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
     </grid>
 </widget>
 <images>
@@ -351,6 +341,18 @@
         <receiver>QgsPgQueryBuilderBase</receiver>
         <slot>getAllValues()</slot>
     </connection>
+    <connection>
+        <sender>lstFields</sender>
+        <signal>doubleClicked(QListBoxItem*)</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>fieldDoubleClick(QListBoxItem*)</slot>
+    </connection>
+    <connection>
+        <sender>lstValues</sender>
+        <signal>clicked(QListBoxItem*)</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>valueDoubleClick(QListBoxItem*)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgspgquerybuilderbase.ui.h</include>
@@ -367,8 +369,10 @@
     <slot returnType="QString">sql()</slot>
     <slot>setSql( QString sqlStatement )</slot>
     <slot>testSqll()</slot>
-    <slot>getSampleValues()</slot>
     <slot>getAllValues()</slot>
+    <slot>getSampleValues()</slot>
+    <slot>fieldDoubleClick( QListBoxItem * item )</slot>
+    <slot>valueDoubleClick( QListBoxItem * item )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
