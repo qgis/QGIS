@@ -13,7 +13,7 @@ INCLUDE_DIR=-DINCLUDE_DIR=\"${prefix}/include\"
 LIB_DIR=-DLIB_DIR=\"${exec_prefix}/lib\"
 BIN_DIR=-DBIN_DIR=\"${exec_prefix}/bin\"
 
-AM_CXXFLAGS = $(PREFIX) $(INCLUDE_DIR) $(LIB_DIR) $(BIN_DIR) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEBUG_QGIS) $(BINDIR)
+AM_CXXFLAGS = $(PREFIX) $(INCLUDE_DIR) $(LIB_DIR) $(BIN_DIR) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEBUG_QGIS)
 
 ## main app
 bin_PROGRAMS = qgis_config
