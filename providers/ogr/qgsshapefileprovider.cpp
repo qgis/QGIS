@@ -3,6 +3,7 @@
 
 #include "qgsshapefileprovider.h"
 
+#include <netinet/in.h>
 #include <iostream>
 #include <cfloat>
 
@@ -146,7 +147,8 @@ QgsFeature * QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
         return 0x0;
     }
 
-    f->setGeometry(getGeometryPointer(feat));
+    size_t geometry_size = feat->GetGeometryRef()->WkbSize();
+    f->setGeometry(getGeometryPointer(feat), geometry_size);
 
     if(fetchAttributes)
     {
@@ -177,7 +179,7 @@ bool QgsShapeFileProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
       unsigned char *feature = new unsigned char[geom->WkbSize()];
       geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
       f.setFeatureId(fet->GetFID());
-      f.setGeometry(feature);
+      f.setGeometry(feature, geom->WkbSize());
       if(fetchAttributes){
         getFeatureAttributes(fet, &f);
       }
@@ -225,7 +227,7 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
       unsigned char *feature = new unsigned char[geom->WkbSize()];
       geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
       f = new QgsFeature(fet->GetFID());
-      f->setGeometry(feature);
+      f->setGeometry(feature, geom->WkbSize());
       if(fetchAttributes){
         getFeatureAttributes(fet, f);
       }
@@ -331,21 +333,24 @@ unsigned char * QgsShapeFileProvider::getGeometryPointer(OGRFeature *fet){
 
 }
 
+
 int QgsShapeFileProvider::endian()
 {
-  char *chkEndian = new char[4];
-  memset(chkEndian, '\0', 4);
-  chkEndian[0] = 0xE8;
+    // XXX why re-calculate this all the time?  Why not just calculate this
+    // XXX once and return the value?  For that matter, some machines have
+    // XXX endian.h, which stores the constant variable for local endian-ness.
+    if ( 23 == htons( 23 ) )
+    {
+        // if host byte order is same as network (big-endian) byte order, then
+        // this is a big-endian environment
+        return XDR;
+    }
+    
+    // otherwise this must be little-endian
 
-  int *ce = (int *) chkEndian;
-  int retVal;
-  if (232 == *ce)
-    retVal = NDR;
-  else
-    retVal = XDR;
-  delete[]chkEndian;
-  return retVal;
+    return NDR;
 }
+
 
 // TODO - make this function return the real extent_
 QgsRect *QgsShapeFileProvider::extent()
