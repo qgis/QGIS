@@ -117,10 +117,10 @@ AC_MSG_CHECKING([QTDIR])
 AC_ARG_WITH([qtdir], [  --with-qtdir=DIR        Qt installation directory [default=/usr/local]], QTDIR=$withval)
 # Check that QTDIR is defined or that --with-qtdir given
 if test x$QTDIR = x ; then
-  QT_SEARCH="/usr/lib/qt31 /usr/local/qt31 /usr/lib/qt3 /usr/local/qt3 /usr/lib/qt2 /usr/local/qt2 /usr/lib/qt /usr/local/qt"
+  QT_SEARCH="/usr/lib/qt31 /usr/local/qt31 /usr/lib/qt3 /usr/local/qt3 /usr/lib/qt2 /usr/local/qt2 /usr/lib/qt /usr/local/qt /usr /usr/local"
   for i in $QT_SEARCH; do
     if test x$QTDIR = x; then
-      if test -f $i/include/qt/qglobal.h -o -f $i/include/qglobal.h; then
+      if test -f $i/include/qt/qglobal.h -o -f $i/include/qglobal.h -o -f $i/include/qt3/qglobal.h; then
         QTDIR=$i
       fi
     fi
@@ -137,9 +137,11 @@ AC_MSG_RESULT([$QTDIR])
 # TODO: Use sed instead of perl
 QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 
-# Check for QT includedir on Mac OSX
+# Check for QT includedir 
 if test -f $QTDIR/include/qt/qglobal.h; then
   QTINC=$QTDIR/include/qt
+elif test -f $QTDIR/include/qt3/qglobal.h; then
+  QTINC=$QTDIR/include/qt3
 else
   QTINC=$QTDIR/include
 fi
