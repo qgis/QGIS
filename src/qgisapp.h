@@ -41,6 +41,8 @@ public:
  	void zoomOut();
 	//! Zoom int
   	void zoomIn();
+	//! Zoom to full extent
+	void zoomFull();
 	//! Read Well Known Binary stream from PostGIS
 	void readWKB(const char *, QStringList tables);
 	//! Draw a point on the map canvas

@@ -37,6 +37,8 @@ class QgsRect{
     double width() const;
     //! Height of the rectangle
     double height() const;
+    //! Scale the rectangle around its center point
+    void scale(double);
     //! returns string representation of form xmin,ymin xmax,ymax
     QString stringRep() const;
     /*! Comparison operator

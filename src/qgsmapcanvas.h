@@ -44,7 +44,11 @@ public:
      */
     void render();
     void render2();
+    void clear();
     double mupp();
+    QgsRect extent();
+    void setExtent(QgsRect );
+    void zoomFullExtent();
  private:
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name

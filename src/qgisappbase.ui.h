@@ -53,3 +53,9 @@ void QgisAppBase::drawLayers()
 {
 
 }
+
+
+void QgisAppBase::zoomFull()
+{
+
+}
