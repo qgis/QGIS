@@ -521,6 +521,7 @@ void QgsComposer::image(void)
     mComposition->setPlotStyle ( QgsComposition::Print );
     
     QPixmap pixmap ( oversample * width, oversample * height );
+    pixmap.fill ( QColor(255,255,255) ) ;
     QPainter p(&pixmap);
     p.scale ( scale, scale); 
     mComposition->canvas()->drawArea ( QRect(0,0, 
