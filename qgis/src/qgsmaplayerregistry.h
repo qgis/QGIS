@@ -35,8 +35,6 @@ Q_OBJECT;
 public:
  //! Returns the instance pointer, creating the object on the first call
  static QgsMapLayerRegistry * instance();
- //! Retrieve a list of all the registered layer ids
- QStringList mapLayerList();
  //! Retrieve a pointer to a loaded plugin by id
  QgsMapLayer * mapLayer(QString theLayerId);
  //! Retrieve the mapLayers collection (mainly intended for use by projectio)
