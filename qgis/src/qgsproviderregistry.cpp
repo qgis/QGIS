@@ -54,7 +54,9 @@ QString baseDir = appDir.left(bin);
 QString libDir = baseDir + "/lib"; */
   libDir = pluginPath;
   QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+#ifdef QGISDEBUG
   std::cerr << "Checking " << libDir << " for provider plugins" << std::endl;
+#endif
   if (pluginDir.count() == 0)
     {
       QString msg = QObject::tr("No Data Provider Plugins", "No QGIS data provider plugins found in:");
@@ -70,7 +72,9 @@ QString libDir = baseDir + "/lib"; */
           bool loaded = myLib->load();
           if (loaded)
             {
+#ifdef QGISDEBUG		    
               std::cout << "Checking  " << myLib->library() << std::endl;
+#endif
               // get the description and the key for the provider plugin
 
               isprovider_t *isProvider = (isprovider_t *) myLib->resolve("isProvider");
@@ -87,7 +91,9 @@ QString libDir = baseDir + "/lib"; */
                         {
                           // add this provider to the provider map
                           provider[pKey()] = new QgsProviderMetadata(pKey(), pDesc(), myLib->library());
+#ifdef QGISDEBUG
                           std::cout << "Loaded " << pDesc() << std::endl;
+#endif
                       } else
                         {
                           std::cout << myLib->
