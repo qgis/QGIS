@@ -47,7 +47,7 @@ class QgsGraduatedMaRenderer: public QgsRenderer
      @param vl the vector layer which will be associated with the renderer*/
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
-    virtual void writeXML(std::ofstream& xml);
+    virtual void writeXML(std::ostream& xml);
     virtual bool needsAttributes();
     /**Returns a list with the index of the classification attribute*/
     virtual std::list<int> classificationAttributes();

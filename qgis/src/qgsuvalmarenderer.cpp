@@ -140,7 +140,7 @@ void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     uvalmadialog->apply();
 }
 
-void QgsUValMaRenderer::writeXML(std::ofstream& xml)
+void QgsUValMaRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<uniquevaluemarker>\n";
     xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) +

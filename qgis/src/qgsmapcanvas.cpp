@@ -267,20 +267,101 @@ bool QgsMapCanvas::isDrawing()
 void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr)
 {
   // add a maplayer interface to a layer type defined in a plugin
+
+#ifdef QGISDEBUG
+    std::cerr << __FILE__ << ":" << __LINE__
+              << "  QgsMapCanvas::addLayer() invoked\n";
+#endif
+
 } // addlayer
+
+
+
+void QgsMapCanvas::showInOverview( QgsMapLayer * maplayer, bool visible )
+{
+    // first, this is irrelevent if we're NOT the overview map canvas
+    if ( 0 != strcmp("theOverviewCanvas", name()) )
+    {
+        return;
+    }
+
+    std::map < QString, QgsMapLayer * >::iterator found = 
+	mCanvasProperties->layers.find(maplayer->getLayerID());
+
+    // if it's visible, and we already know about it, then do nothing;
+    // otherwise, we need to add it if "visible" says so
+    if ( found == mCanvasProperties->layers.end() && 
+         visible )
+    {
+        addLayer( maplayer );
+    } // if we have it and it's supposed to be removed, remove it
+    else if ( found != mCanvasProperties->layers.end() && 
+	      ! visible )
+    {
+        remove( maplayer->getLayerID() );
+    }
+
+} // QgsMapCanvas::showInOverview
+
 
 
 
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 #ifdef QGISDEBUG
-  std::cout << "Layer name is " << lyr->name() << std::endl;
+    std::cout << name() << " is adding " << lyr->name() << std::endl;
 #endif
 
   Q_CHECK_PTR( lyr );
 
   if ( ! lyr )
   { return; }
+
+  // CRUDE HACK.  If this map canvas is the overview canvas and the given
+  // layer doesn't want to be in the overview, then just skip adding it.
+
+  // XXX Tim and I (Mark) have discussed possibly making QgsMapCanvas sub-class
+  // XXX QgsMapOverviewCanvas (or just QgsMapOverview?) that behaves a bit
+  // XXX differently from parent in that it properly handles overview flags
+
+#ifdef QGISDEBUG
+  const char * n = name(); // debugger sensor
+#endif
+
+  bool isThisOverviewCanvas = false;
+
+  if ( 0 == strcmp(name(),"theOverviewCanvas") ) // canonical name set in qgisapp ctor
+  {
+      isThisOverviewCanvas = true;
+  }  
+
+  if ( isThisOverviewCanvas )
+  {
+      // regardless of what happens, we need to be in communication with this
+      // layer to possibly add it to overview canvas; however, we only want to
+      // make this connection once, so we first check to see if we already
+      // know about the layer
+      if ( mCanvasProperties->layers.end() == 
+	   mCanvasProperties->layers.find(lyr->getLayerID() )  )
+      {
+	  QObject::connect(lyr, SIGNAL(showInOverview(QgsMapLayer *, bool)), 
+			   this, SLOT(showInOverview( QgsMapLayer *, bool )));
+      }
+
+      if ( ! lyr->showInOverviewStatus() )
+      {
+#ifdef QGISDEBUG
+          qDebug( lyr->name() + " not in overview, so skipping in addLayer()" );
+#endif
+          return;               // doesn't want to be in overview, so don't add
+      }
+      else
+      {
+#ifdef QGISDEBUG
+          qDebug( lyr->name() + " in overview, invoking addLayer()" );
+#endif
+      }
+  }
 
   mCanvasProperties->layers[lyr->getLayerID()] = lyr;
 
@@ -307,6 +388,8 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   emit addedLayer( lyr );
 
 } // addLayer
+
+
 
 void QgsMapCanvas::addAcetateObject(QString key, QgsAcetateObject *obj)
 {
@@ -385,7 +468,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   std::cout << ".............................." << std::endl;
   std::cout << "...........Rendering.........." << std::endl;
   std::cout << ".............................." << std::endl;
-  std::cout << "Map canvas is " << msg << std::endl;
+  std::cout << name() << " canvas is " << msg << std::endl;
 #endif
   int myHeight=0;
   int myWidth=0;
@@ -1054,8 +1137,18 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     {
         if(!vlayer->getDataProvider()||!vlayer->getDataProvider()->isEditable())
         {
-      QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-      break;
+//       QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+//       break;
+          QPainter paint(this);
+          paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
+          std::list<QgsPoint>::iterator it=mCaptureList.end();
+          --it;
+          --it;
+          QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+          paint.drawLine(static_cast<int>(lastpoint.x()),
+                         static_cast<int>(lastpoint.y()),
+                         e->x(),
+                         e->y());
         }
     }
     else
@@ -1333,9 +1426,26 @@ void QgsMapCanvas::remove(QString key)
   // XXX in 'layers'?  Theoretically it should be ok to skip this check since
   // XXX this should always be called with correct keys.
 
-  //We no longer delete the layer her - deletiong of layers is now managed
-  //by the MapLayerRegistry. All we do now is remove any local reference to this layer.
-  //delete mCanvasProperties->layers[key];   // first delete the map layer itself
+  // We no longer delete the layer here - deleting of layers is now managed
+  // by the MapLayerRegistry. All we do now is remove any local reference to this layer.
+  // delete mCanvasProperties->layers[key];   
+
+  // first delete the map layer itself
+
+  // convenience variable
+  QgsMapLayer * layer = mCanvasProperties->layers[key];
+
+  Q_ASSERT( layer );
+
+  // disconnect layer signals
+  QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+  QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+
+// we DO NOT disconnect this as this is currently the only means for overview
+// canvases to add layers; natch this is irrelevent if this is NOT the overview canvas
+
+  // QObject::disconnect(lyr, SIGNAL(showInOverView(QgsMapLayer *, bool)), 
+  //                     this, SLOT(showInOverView(QgsMapLayer *, bool )));
 
   mCanvasProperties->layers[key] = 0;
   mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
@@ -1373,7 +1483,8 @@ void QgsMapCanvas::remove(QString key)
 
   // signal that we've erased this layer
   emit removedLayer( key );
-}
+
+} // QgsMapCanvas::remove()
 
 
 
@@ -1391,22 +1502,34 @@ void QgsMapCanvas::removeAll()
 
   QString current_key;
 
+  // first disconnnect all layer signals from this canvas
   while ( mi != mCanvasProperties->layers.end() )
   {
     // save the current key
     current_key = mi->first;
 
-    // delete it, ensuring removedLayer emitted and zOrder updated (not
-    // that the zOrder ultimately matters since they're all going to go,
-    // too)
-    remove( current_key );
+    QgsMapLayer * layer = mCanvasProperties->layers[current_key];
 
-    // since mi is now invalidated because the std::map was modified in
-    // remove(), reset it to the first element, if any
-    mi = mCanvasProperties->layers.begin();
+    // disconnect layer signals
+    QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+    QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+
+    ++mi;
   }
 
-} // removeAll
+  // then empty all the other state containers
+
+  mCanvasProperties->layers.clear();
+
+  mCanvasProperties->acetateObjects.clear(); // XXX are these managed elsewhere?
+
+  mCanvasProperties->zOrder.clear();
+
+  mCanvasProperties->dirty = true;
+
+  emit removedAll();              // let observers know we're now empty
+
+} // QgsMapCanvas::removeAll
 
 
 
@@ -1504,3 +1627,14 @@ int QgsMapCanvas::mapUnits()
 {
   return mCanvasProperties->mapUnits();
 }
+
+
+
+
+void QgsMapCanvas::connectNotify( const char * signal )
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsMapCanvas connected to " << signal << "\n";
+#endif
+} //  QgsMapCanvas::connectNotify( const char * signal )
+

@@ -23,8 +23,10 @@
 #include <qobject.h>
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+
 class QString;
 class QStringList;
+
 /**
 * \class QgsMapLayerRegistry
 * \brief This class tracks map layers that are currently loaded an provides
@@ -32,32 +34,94 @@ class QStringList;
 */
 class QgsMapLayerRegistry : public QObject
 {
-Q_OBJECT;
+   Q_OBJECT;
+
 public:
+
  //! Returns the instance pointer, creating the object on the first call
  static QgsMapLayerRegistry * instance();
+
  //! Retrieve a pointer to a loaded plugin by id
  QgsMapLayer * mapLayer(QString theLayerId);
+
  //! Retrieve the mapLayers collection (mainly intended for use by projectio)
- std::map<QString,QgsMapLayer*> mapLayers();
- //! Add a layer to the map of loaded layers
- bool addMapLayer(QgsMapLayer * theMapLayer);
- //! Remove a layer from qgis - any canvases using that layer will need to remove it
+ std::map<QString,QgsMapLayer*> & mapLayers();
+
+ /** Add a layer to the map of loaded layers 
+    @returns NULL if unable to add layer, otherwise pointer to newly added layer
+    @note
+
+    As a side-effect QgsProject is made dirty.
+ */
+ QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer);
+
+ /** Remove a layer from qgis
+
+    @note
+
+    As a side-effect QgsProject is made dirty.
+
+    Any canvases using that layer will need to remove it
+ */
  void removeMapLayer(QString theLayerId);
- //! Remove all registered layers 
+
+ /** Remove all registered layers 
+
+    @note raises removedAll()
+
+    As a side-effect QgsProject is made dirty.
+
+ */
  void removeAllMapLayers();
+
  //! Get a vector layer from the registry - the the requested key does not exist or
  //does not correspond to a vector layer, null returned!
  QgsVectorLayer * getVectorLayer(QString theLayerId);
+
 signals:
+
+    /** emitted when a layer is removed from the registry
+
+       connected to main map canvas and overview map canvas remove()
+    */
  void layerWillBeRemoved(QString theLayerId);
+
+    /** emitted when a layer is added to the registry
+
+       connected to main map canvas and overview map canvas addLayer()
+    */
  void layerWasAdded(QgsMapLayer * theMapLayer);
+
+ /** emitted when ALL layers are removed at once
+
+    This could have been implemented by iteratively signalling
+    layerWillBeRemoved() for each layer as it is removed.  However, this
+    generally causes a cascade of effects that are unnecessary if we're
+    ultimately removing all layers.  E.g., removing the legend item
+    corresponding to the layer.  Why bother doing that when you're just going
+    to clear everything anyway?
+
+  */
+ void removedAll();
+
 protected:
-//! protected constructor
+
+ //! protected constructor
  QgsMapLayerRegistry( QObject * parent = 0, const char * name = 0 );
+
 private:
+
  static QgsMapLayerRegistry* mInstance;
+
  std::map<QString,QgsMapLayer*> mMapLayers;
-};
+
+  /** debugging member
+      invoked when a connect() is made to this object 
+  */
+  void connectNotify( const char * signal );
+
+
+}; // class QgsMapLayerRegistry
+
 #endif //QgsMapLayerRegistry_H
 

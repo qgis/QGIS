@@ -388,7 +388,8 @@ void QgsGrassRegion::displayRegion()
 
     for ( int i = 0; i < 5; i++ ) {
         transform->transform( &(points[i]) );
-        mPointArray.setPoint( i, points[i].xToInt(), points[i].yToInt() );
+        mPointArray.setPoint( i, static_cast<int>(points[i].x()), 
+                                 static_cast<int>(points[i].y()) );
     }
     
     painter->drawPolyline ( mPointArray );

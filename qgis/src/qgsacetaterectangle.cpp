@@ -46,7 +46,8 @@ void QgsAcetateRectangle::draw(QPainter *painter, QgsCoordinateTransform *cXf)
     cXf->transform(&ll);
     cXf->transform(&ur);
   }
-  painter->drawRect(ll.xToInt(), ll.yToInt(), 
-      ur.xToInt() - ll.xToInt(), ur.yToInt() - ll.yToInt());
+  painter->drawRect(static_cast<int>(ll.x()), static_cast<int>(ll.y()), 
+                    static_cast<int>(ur.x()) - static_cast<int>(ll.x()), 
+                    static_cast<int>(ur.y()) - static_cast<int>(ll.y()));
 
 }

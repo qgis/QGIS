@@ -207,7 +207,7 @@ void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     sdialog->apply();
 }
 
-void QgsSingleSymRenderer::writeXML(std::ofstream& xml)
+void QgsSingleSymRenderer::writeXML(std::ostream& xml)
 {
     xml << "\t\t<singlesymbol>\n";
     xml << "\t\t\t<renderitem>\n";

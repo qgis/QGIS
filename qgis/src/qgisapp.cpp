@@ -83,7 +83,7 @@
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
-#include "qgsprojectio.h"
+#include "qgsproject.h"
 #include "qgsmapserverexport.h"
 #include "qgsgeomtypedialog.h"
 
@@ -261,13 +261,15 @@ static char *identify_cursor[] = {
 
 // constructor starts here   
 
-QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(parent, name, fl)
+QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
+    : QgisAppBase(parent, name, fl),
+      myHideSplashFlag(false)
 {
   //
   // Splash screen global is declared in qgisapp.h header
   //
   QSettings settings;
-  myHideSplashFlag = false;
+
   myHideSplashFlag = settings.readBoolEntry("/qgis/hideSplash");
 
   if (!myHideSplashFlag)
@@ -303,16 +305,22 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   QSplitter *canvasLegendSplit = new QSplitter(frameMain);
   QGridLayout *legendOverviewLayout = new QGridLayout(canvasLegendSplit, 1, 2, 4, 6, "canvasLegendLayout");
   QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
-  mMapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
+  mMapLegend = new QgsLegend(legendOverviewSplit, "theMapLegend", this);
   mMapLegend->addColumn(tr("Layers"));
   mMapLegend->setSorting(-1);
 
-  mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit);
+                                // "theOverviewCanvas" used to find canonical
+                                // instance later
+  mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit, "theOverviewCanvas"); 
   // lock the canvas to prevent user interaction
   mOverviewCanvas->userInteractionAllowed(false);
+
   // mL = new QScrollView(canvasLegendSplit);
-  //add a canvas
-  mMapCanvas = new QgsMapCanvas(canvasLegendSplit);
+
+  // add a canvas
+                                // "theMapCanvas" used to find this canonical
+                                // instance later
+  mMapCanvas = new QgsMapCanvas(canvasLegendSplit, "theMapCanvas" );
   // we need to cache the layer registry instance so plugins can get to it
   // now explicitly refer to Singleton -- mLayerRegistry = QgsMapLayerRegistry::instance();
   // resize it to fit in the frame
@@ -321,9 +329,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mMapCanvas->setBackgroundColor(Qt::white); //QColor (220, 235, 255));
   mMapCanvas->setMinimumWidth(400);
   canvasLegendLayout->addWidget(canvasLegendSplit, 0, 0);
+
   mMapLegend->setBackgroundColor(QColor(192, 192, 192));
   mMapLegend->setMapCanvas(mMapCanvas);
   mMapLegend->setResizeMode(QListView::AllColumns);
+
   QString caption = tr("Quantum GIS - ");
   caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
 
@@ -338,6 +348,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mMapLegend, SLOT(addLayer(QgsMapLayer *)));
   connect(mMapCanvas, SIGNAL(removedLayer(QString)), mMapLegend, SLOT(removeLayer(QString)));
+  connect(mMapCanvas, SIGNAL(removedAll()), mMapLegend, SLOT(removeAll()));
 
   connect(mMapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
   connect(mMapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
@@ -373,9 +384,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
 
-  // set the dirty flag to false -- no changes yet
-  mProjectIsDirtyFlag = false;
-
   //
   // Add a panel to the status bar for the scale, coords and progress
   //
@@ -396,6 +404,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   if (! myHideSplashFlag)
   {
     gSplashScreen->setStatus(tr("Loading plugins..."));
+    qApp->processEvents();
   }
 
   // store the application dir
@@ -453,8 +462,14 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   //connect the legend, mapcanvas and overview canvas to the registry
   connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapCanvas, SLOT(remove(QString)));
-  connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapLegend, SLOT(removeLayer(QString)));
+  // XXX following not necessary because canvas will notify its legend; I think
+  // connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mMapLegend, SLOT(removeLayer(QString)));
   connect(mapLayerRegistry, SIGNAL(layerWillBeRemoved(QString)), mOverviewCanvas, SLOT(remove(QString)));
+  connect(mapLayerRegistry, SIGNAL(removedAll()), mOverviewCanvas, SLOT(removeAll()));
+  connect(mapLayerRegistry, SIGNAL(removedAll()), mMapCanvas, SLOT(removeAll()));
+
+  connect(mapLayerRegistry, SIGNAL(layerWasAdded(QgsMapLayer*)), mMapCanvas, SLOT(addLayer(QgsMapLayer *)));
+  connect(mapLayerRegistry, SIGNAL(layerWasAdded(QgsMapLayer*)), mOverviewCanvas, SLOT(addLayer(QgsMapLayer *)));
 
   
   if (! myHideSplashFlag)
@@ -639,6 +654,7 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
  */
 static void buildSupportedVectorFileFilter_(QString & fileFilters)
 {
+
   static QString myFileFilters = "";
 
   // if we've already built the supported vector string, just return what
@@ -649,6 +665,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     return;
   }
+
   // first get the GDAL driver manager
 
   OGRSFDriverRegistrar *driverRegistrar = OGRSFDriverRegistrar::GetRegistrar();
@@ -688,6 +705,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
     }
 
     driverName = driver->GetName();
+
 
 
     if (driverName.startsWith("ESRI"))
@@ -743,6 +761,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
   }                           // each loaded GDAL driver
 
   // can't forget the default case
+
   myFileFilters += "All files (*.*)";
   fileFilters = myFileFilters;
 
@@ -886,8 +905,8 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
    // create the layer
 
    QgsVectorLayer *layer = new QgsVectorLayer(vectorFile.filePath(), 
-                                            vectorFile.baseName(), 
-                                            "ogr");
+					      vectorFile.baseName(), 
+					      "ogr");
    Q_CHECK_PTR( layer );
 
    if ( ! layer )
@@ -905,7 +924,11 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
       QgsMapLayerRegistry::instance()->addMapLayer(layer);
       // init the context menu so it can connect to slots
       // in main app
-      layer->initContextMenu(this);
+      // XXX move to legend::addLayer() layer->initContextMenu(this);
+
+      // XXX What about the rest of these?  Where should they be moved, if at
+      // XXX all?  Some of this functionality is taken care of in the
+      // XXX QgsProject::read() (If layers added via that.)
 
       //add single symbol renderer as default
       QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
@@ -925,15 +948,13 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
 
       layer->setRenderer(renderer);
       renderer->initializeSymbology(layer);
-      mMapCanvas->addLayer(layer);
-     //connect up a request from the raster layer to show in overview map
-     QObject::connect(layer, 
-             SIGNAL(showInOverview(QString,bool)), 
-             this, 
-             SLOT(setLayerOverviewStatus(QString,bool)));           
+      // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
+      // XXX some day will not necessary since connect up a request from the raster layer to show in overview map
+//      QObject::connect(layer, 
+//              SIGNAL(showInOverview(QString,bool)), 
+//              this, 
+//              SLOT(setLayerOverviewStatus(QString,bool)));           
          
-      mProjectIsDirtyFlag = true;
-
    } else
    {
       QString msg = vectorFile.baseName() + " ";
@@ -1021,7 +1042,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
              // init the context menu so it can connect to slots
              // in main app
 
-             layer->initContextMenu(this);
+             // XXX now taken care of in legend layer->initContextMenu(this);
 
              //add single symbol renderer as default
              QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
@@ -1039,14 +1060,15 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
 
              layer->setRenderer(renderer);
              renderer->initializeSymbology(layer);
-             mMapCanvas->addLayer(layer);
-             //connect up a request from the raster layer to show in overview map
-             QObject::connect(layer, 
-                     SIGNAL(showInOverview(QString,bool)), 
-                     this, 
-                     SLOT(setLayerOverviewStatus(QString,bool)));           
 
-             mProjectIsDirtyFlag = true;
+	     // map canvas and overview canvas already know about this layer
+	     // when it is added to map registry
+//              mMapCanvas->addLayer(layer);
+//              // XXX some day use other means to  connect up a request from the raster layer to show in overview map
+//              QObject::connect(layer, 
+//                      SIGNAL(showInOverview(QString,bool)), 
+//                      this, 
+//                      SLOT(setLayerOverviewStatus(QString,bool)));           
            } else
            {
               QString msg = *it + " ";
@@ -1102,14 +1124,17 @@ void QgisApp::addDatabaseLayer()
 {
   // check to see if we have a postgres provider available
   QString pOgr = mProviderRegistry->library("postgres");
-  if (pOgr.length() > 0)
-  {
-    // only supports postgis layers at present
-    // show the postgis dialog
 
+  if ( ! pOgr.isNull() )
+  {
+      // only supports postgis layers at present
+
+      // show the postgis dialog
 
     QgsDbSourceSelect *dbs = new QgsDbSourceSelect(this);
+
     mMapCanvas->freeze();
+
     if (dbs->exec())
     {
       QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -1135,21 +1160,23 @@ void QgisApp::addDatabaseLayer()
         {
           // register this layer with the central layers registry
           QgsMapLayerRegistry::instance()->addMapLayer(layer);
+
           // init the context menu so it can connect to slots in main app
-          layer->initContextMenu(this);
+          // XXX now taken care of in legend layer->initContextMenu(this);
 
           // give it a random color
-          QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
+          QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  // add single symbol renderer as default
           layer->setRenderer(renderer);
           renderer->initializeSymbology(layer);
           // add it to the mapcanvas collection
-          mMapCanvas->addLayer(layer);
+          // mMapCanvas->addLayer(layer);
      //connect up a request from the raster layer to show in overview map
-     QObject::connect(layer, 
-             SIGNAL(showInOverview(QString,bool)), 
-             this, 
-             SLOT(setLayerOverviewStatus(QString,bool)));           
-          mProjectIsDirtyFlag = true;
+//      QObject::connect(layer, 
+//              SIGNAL(showInOverview(QString,bool)), 
+//              this, 
+//              SLOT(setLayerOverviewStatus(QString,bool)));           
+     
+     
         } else
         {
           std::cerr << *it << " is an invalid layer - not loaded" << std::endl;
@@ -1193,12 +1220,15 @@ void QgisApp::fileNew()
       mOverviewCanvas->clear();
       setCaption(tr("Quantum GIS -- Untitled"));
       // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
-      mFullPathName = "";
-      mProjectIsDirtyFlag = false;
+      // mFullPathName = "";
+      QgsProject::instance()->filename("");
+      // mProjectIsDirtyFlag = false;
+      QgsProject::instance()->dirty(false);
       mMapCanvas->freeze(false);
       mOverviewCanvas->freeze(false);
     }
-} // fileNew
+} // fileNew()
+
 
 //as file new but accepts flags to indicate whether we should prompt to save
 void QgisApp::fileNew(bool thePromptToSaveFlag)
@@ -1216,11 +1246,12 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
       mOverviewCanvas->clear();
       setCaption(tr("Quantum GIS -- Untitled"));
       // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
-      mFullPathName = "";
-      mProjectIsDirtyFlag = false;
-
+      //mFullPathName = "";
+      QgsProject::instance()->filename("");
+      // mProjectIsDirtyFlag = false;
+      QgsProject::instance()->dirty(false);
   }
-}
+} // QgisApp::fileNew(bool thePromptToSaveFlag)
 
 void QgisApp::newVectorLayer()
 {
@@ -1322,155 +1353,131 @@ void QgisApp::newVectorLayer()
 
 void QgisApp::fileOpen()
 {
+  // possibly save any pending work before opening a new project
   int answer = saveDirty();
 
   if (answer != QMessageBox::Cancel)
   {
-    std::auto_ptr<QgsProjectIo> pio( new QgsProjectIo( QgsProjectIo::OPEN, mMapCanvas) );
+    QString fullPath =
+        QFileDialog::getOpenFileName("./", QObject::tr("QGis files (*.qgs)"), 0, 0,
+                                     QObject::tr("Choose a QGIS project file to open"));
 
-    // loading a project will add all layers to the registry and return the
-    // zorder for those layers.
-
-    // clear the map canvas
-    removeAllLayers(); // moved here from following if since this would stomp
-                       // on all layers read from pio
-
-    std::list<QString> myZOrder = pio->read();
-
-    if( ! myZOrder.empty() )
+    if ( fullPath.isEmpty() )   // if they didn't select anything, just return
     {
-        mOverviewCanvas->freeze(true);
-        mMapCanvas->freeze(true);
-
-        QgsRect myExtent = mMapCanvas->extent();
-
-#ifdef QGISDEBUG
-        std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
-#endif
-
-        for ( std::list < QString >::iterator li = myZOrder.begin(); 
-              li != myZOrder.end(); 
-              ++li )
-        {
-            QgsMapLayer * myMapLayer = QgsMapLayerRegistry::instance()->mapLayer(*li);
-      
-            Q_ASSERT( myMapLayer );
-      
-#ifdef QGISDEBUG
-            QString lyr = *li;
-            std::cout << "Found  " << lyr.ascii() << " in zOrder" << std::endl;
-            std::cout << "MapLayer type is " << myMapLayer->type() << std::endl;
-#endif
-            //find out what type of file it is and add it to the project
-            if (myMapLayer->type() == QgsMapLayer::VECTOR)
-            {
-                addMapLayer(myMapLayer);
-            }
-            else
-            {
-                addRasterLayer((QgsRasterLayer*)myMapLayer);
-            }
-        }
-
-        setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-        mFullPathName = pio->fullPathName();
-        setZOrder(myZOrder);
-        setOverviewZOrder(mMapLegend);
-        // delete pio; auto_ptr automatically deletes
-        mMapCanvas->setExtent(myExtent);
-
-        mMapCanvas->refresh();
-        mOverviewCanvas->freeze(false);
-        mMapCanvas->freeze(false);
-        mProjectIsDirtyFlag = false;
+        return;
     }
-    else
-    {
-        // just delete the project io object since the user cancelled
-        // delete pio; auto_ptr automatically deletes
-    }
+
+    // clear out any stuff from previous project
+    removeAllLayers();
+
+    QgsProject::instance()->filename( fullPath );
+
+    QgsProject::instance()->read(); // XXX filename set in saveDirty()?
+
+    setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title());
+    // mFullPathName = pio->fullPathName();
+
+    // not needed?  setZOrder(myZOrder);
+    // not needed?  setOverviewZOrder(mMapLegend);
+
+    // mMapCanvas->refresh();      // XXX refresh() necessary?
+    // mOverviewCanvas->refresh(); XXX I think QgsProject::read() generates appropriate refreshes
+
   }
+
 } // QgisApp::fileOpen
 
 
 
+/** 
+  adds a saved project to qgis, usually called on startup by specifying a
+  project file on the command line
+*/
 bool QgisApp::addProject(QString projectFile)
 {
-  // adds a saved project to qgis, usually called on startup by
-  // specifying a project file on the command line
-  bool returnValue = false;
   mOverviewCanvas->freeze(true);
   mMapCanvas->freeze(true);
+
   // clear the map canvas
   removeAllLayers();
-  QgsProjectIo *pio = new QgsProjectIo(QgsProjectIo::OPEN, mMapCanvas);
-#ifdef QGISDEBUG
-  std::cout << "Loading Project - about to call ProjectIO->read()" << std::endl;
-#endif
-  mMapCanvas->freeze(true);
-  std::list<QString> myZOrder = pio->read(projectFile);
-  std::list < QString >::iterator li = myZOrder.begin();
-#ifdef QGISDEBUG
-  std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
-#endif
-  while (li != myZOrder.end())
-  {
-#ifdef QGISDEBUG
-    std::cout << "Found  " << *li << " in zOrder" << std::endl;
-#endif
-    QgsMapLayer * myMapLayer = QgsMapLayerRegistry::instance()->mapLayer(*li);
-    //find out what type of file it is and add it to the project
-    if (myMapLayer->type() == QgsMapLayer::VECTOR)
-    {
-      addMapLayer(myMapLayer);
-    }
-    else
-    {
-      addRasterLayer((QgsRasterLayer*)myMapLayer);
-    }
-    li++;
-  }
-  setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-  mFullPathName = pio->fullPathName();
-  // mMapLegend->update(); UPDATED VIA SIGNAL/SLOTS
-  mMapCanvas->freeze(false);
-  mProjectIsDirtyFlag = false;
-  returnValue = true;
-  setZOrder(myZOrder);
-  setOverviewZOrder(mMapLegend);
-  delete pio;
-  mOverviewCanvas->freeze(false);
-  mMapCanvas->freeze(false);
 
-  return returnValue;
-}
+  if ( QgsProject::instance()->read( projectFile ) )
+  {
+      setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title() );
+  }
+  else
+  {
+      return false;
+  }
+
+  return true;
+} // QgisApp::addProject(QString projectFile)
+
+
 
 void QgisApp::fileSave()
 {
-  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVE,mMapCanvas);
-  pio->setFileName(mFullPathName);
-  if (pio->write(mMapCanvas->extent()))
+    // if we don't have a filename, then obviously we need to get one; note
+    // that the project file name is reset to null in fileNew()
+
+    if ( "" == QgsProject::instance()->filename() )
     {
-      setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-      statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
-      mFullPathName = pio->fullPathName();
+        // XXX maybe as a convenience have it remember the last directory we
+        // XXX saved project files to to use that instead of "./"
+        QString fullPath =
+            QFileDialog::getSaveFileName("./", tr("QGis files (*.qgs)"), 0, 0,
+                                         tr("Choose a QGIS project file"));
+
+        if ( fullPath.isNull() )
+        {
+            return;             // they didn't select anything, so just abort
+        }
+
+        QgsProject::instance()->filename( fullPath );
     }
-  delete pio;
-  mProjectIsDirtyFlag = false;
-}
+
+    if ( QgsProject::instance()->write() )
+    {
+        statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+    }
+    else
+    {
+        QMessageBox::critical(this, 
+                              tr("Unable to save project"), 
+                              tr("Unable to save project to ") + QgsProject::instance()->filename() );
+    }
+} // QgisApp::fileSave
+
+
 
 void QgisApp::fileSaveAs()
 {
-  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVEAS,mMapCanvas);
-  if (pio->write(mMapCanvas->extent()))
+    // XXX maybe as a convenience have it remember the last directory we
+    // XXX saved project files to to use that instead of "./"
+    QString fullPath =
+        QFileDialog::getSaveFileName("./", QObject::tr("QGis files (*.qgs)"), 0, 0,
+                                     QObject::tr("Choose a QGIS project file"));
+
+    if ( fullPath.isNull() )
     {
-      setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-      statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
-      mFullPathName = pio->fullPathName();
+        return;             // they didn't select anything, so just abort
     }
-  delete pio;
-  mProjectIsDirtyFlag = false;
-}
+
+    QgsProject::instance()->filename( fullPath );
+
+    if ( QgsProject::instance()->write() )
+    {
+        statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+    }
+    else
+    {
+        QMessageBox::critical(this, 
+                              tr("Unable to save project"), 
+                              tr("Unable to save project to ") + QgsProject::instance()->filename() );
+    }
+} // QgisApp::fileSaveAs
+
+
 
 void QgisApp::filePrint()
 {
@@ -1577,7 +1584,10 @@ void QgisApp::saveMapAsImage()
     statusBar()->message(tr("Saved map image to") + " " + myOutputFileNameQString);
   }
 
-}
+} // saveMapAsImage
+
+
+
 //overloaded version of the above function
 void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixmap)
 {
@@ -1593,7 +1603,9 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
     //save the mapview to the selected file
     mMapCanvas->saveAsImage(theImageFileNameQString,theQPixmap);
   }
-}
+} // saveMapAsImage
+
+
 //reimplements method from base (gui) class
 void QgisApp::addAllToOverview()
 {
@@ -1603,15 +1615,15 @@ void QgisApp::addAllToOverview()
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
   {
     QgsMapLayer * myMapLayer = myMapIterator->second;
-    if (!myMapLayer->showInOverviewStatus())
-    {
-      myMapLayer->toggleShowInOverview();
-    }
+    myMapLayer->inOverview(true); // won't do anything if already in overview
   }
   // draw the map
   mOverviewCanvas->clear();
   mOverviewCanvas->freeze(false);
   mOverviewCanvas->render();
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 //reimplements method from base (gui) class
@@ -1625,18 +1637,28 @@ void QgisApp::removeAllFromOverview()
     QgsMapLayer * myMapLayer = myMapIterator->second;
     if (myMapLayer->showInOverviewStatus())
     {
-      myMapLayer->toggleShowInOverview();
+        myMapLayer->inOverview(false); // should generate updates, unless already not in overview
     }
   }
   // draw the map
   mOverviewCanvas->clear();
   mOverviewCanvas->freeze(false);
   mOverviewCanvas->render();
-}
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
+} // QgisApp::removeAllFromOverview()
+
 
 //reimplements method from base (gui) class
 void QgisApp::hideAllLayers()
 {
+    // what's the point if we don't have any layers?
+    if ( QgsMapLayerRegistry::instance()->mapLayers().empty() )
+    {
+        return;
+    }
+
 #ifdef QGISDEBUG
   std::cout << "hiding all layers!" << std::endl;
 #endif
@@ -1655,10 +1677,21 @@ void QgisApp::hideAllLayers()
   mOverviewCanvas->freeze(false);
   mMapCanvas->render();
   mOverviewCanvas->render();
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
-//reimplements method from base (gui) class
+
+
+// reimplements method from base (gui) class
 void QgisApp::showAllLayers()
 {
+    // what's the point if we don't have any layers?
+    if ( QgsMapLayerRegistry::instance()->mapLayers().empty() )
+    {
+        return;
+    }
+
 #ifdef QGISDEBUG
   std::cout << "Showing all layers!" << std::endl;
 #endif
@@ -1678,6 +1711,8 @@ void QgisApp::showAllLayers()
   mMapCanvas->render();
   mOverviewCanvas->render();
 
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 void QgisApp::exportMapServer()
@@ -1721,9 +1756,10 @@ void QgisApp::zoomIn()
      mMapCanvas->clear();
      mMapCanvas->render(); */
   
-  
-
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
+
 
 void QgisApp::zoomOut()
 {
@@ -1739,13 +1775,16 @@ void QgisApp::zoomOut()
      m.scale( 0.5, 0.5 );
      mMapCanvas->setWorldMatrix( m );
    */
-     
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 void QgisApp::zoomToSelected()
 {
   mMapCanvas->zoomToSelected();
-    
+     
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);    
 }
 
 void QgisApp::pan()
@@ -1757,18 +1796,24 @@ void QgisApp::pan()
   delete mMapCursor;
   mMapCursor = new QCursor(panBmp, panBmpMask, 5, 5);
   mMapCanvas->setCursor(*mMapCursor);
-    
+   // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
+
 }
 
 void QgisApp::zoomFull()
 {
   mMapCanvas->zoomFullExtent();
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
     
 }
 
 void QgisApp::zoomPrevious()
 {
   mMapCanvas->zoomPreviousExtent();
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
     
 }
 
@@ -1826,6 +1871,8 @@ void QgisApp::deleteSelected()
       QMessageBox::information(this, tr("No Layer Selected"),
                                    tr("To delete features, you must select a vector layer in the legend")); 
    }
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 void QgisApp::capturePoint()
@@ -1891,6 +1938,12 @@ void QgisApp::drawPoint(double x, double y)
 
 void QgisApp::drawLayers()
 {
+    // what's the point if we don't have any layers?
+    if ( QgsMapLayerRegistry::instance()->mapLayers().empty() )
+    {
+        return;
+    }
+
   std::cout << "In  QgisApp::drawLayers()" << std::endl;
   mMapCanvas->setDirty(true);
   mMapCanvas->render();
@@ -2006,6 +2059,62 @@ void QgisApp::layerProperties(QListViewItem * lvi)
   //  layer->showLayerProperties();
 }
 
+void QgisApp::menubar_highlighted( int i )
+{
+    // used to save us from re-enabling layer menu items every single time the
+    // user tweaks the layers drop down menu
+    static bool enabled;
+
+    if ( 6 == i )               // XXX I hate magic numbers; where is '6' defined
+                                // XXX for Layers menu?
+    {
+        // first, if there are NO layers, disable everything that assumes we
+        // have at least one layer loaded
+        if ( QgsMapLayerRegistry::instance()->mapLayers().empty() )
+        {
+            actionRemoveLayer->setEnabled(false);
+            actionRemoveAllFromOverview->setEnabled(false);
+            actionInOverview->setEnabled(false);
+            actionShowAllLayers->setEnabled(false);
+            actionHideAllLayers->setEnabled(false);
+            actionOpenTable->setEnabled(false);
+            actionLayerProperties->setEnabled(false);
+
+            enabled = false;
+        }
+        else
+        {
+            if ( ! enabled )
+            {
+                actionRemoveLayer->setEnabled(true);
+                actionRemoveAllFromOverview->setEnabled(true);
+                actionInOverview->setEnabled(true);
+                actionShowAllLayers->setEnabled(true);
+                actionHideAllLayers->setEnabled(true);
+                actionOpenTable->setEnabled(true);
+                actionLayerProperties->setEnabled(true);
+            }
+        }
+    }
+} // QgisApp::menubar_highlighted( int i )
+
+
+
+
+
+void QgisApp::inOverview( bool in_overview )
+{
+#ifdef QGISDEBUG
+    std::cout << "QGisApp::inOverview(" << in_overview << ")" << std::endl;
+#endif
+  QListViewItem *lvi = mMapLegend->currentItem();
+  QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
+
+  layer->inOverview( in_overview );
+  mOverviewCanvas->render();
+} // QgisApp::inOverview(bool)
+
+
 
 void QgisApp::removeLayer()
 {
@@ -2029,12 +2138,15 @@ void QgisApp::removeLayer()
   mMapCanvas->clear();
   mMapCanvas->render();
 }
+
+
 void QgisApp::removeAllLayers()
 {
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   mOverviewCanvas->clear();
   mMapCanvas->clear();
 } //remove all layers 
+
 
 void QgisApp::zoomToLayerExtent()
 {
@@ -2046,7 +2158,8 @@ void QgisApp::zoomToLayerExtent()
   mMapCanvas->clear();
   mMapCanvas->render();
   
-
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
@@ -2101,8 +2214,11 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
                 break;
             }
         }
+      // notify the project we've made a change
+      QgsProject::instance()->dirty(true);
     }
-}
+} // QgisApp::currentLayerChanged
+
 
 QgisIface *QgisApp::getInterface()
 {
@@ -2699,7 +2815,8 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
   QString providerName;
 
   QString pProvider = mProviderRegistry->library(providerKey);
-  if (pProvider.length() > 0)
+
+  if ( ! pProvider.isNull() )
   {
     mMapCanvas->freeze();
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -2715,29 +2832,33 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
       " and providerKey of " << providerKey << std::endl;
 #endif
     layer = new QgsVectorLayer(vectorLayerPath, baseName, providerKey);
-    if(layer->isValid())
+
+    if( layer && layer->isValid() )
     {
       // Register this layer with the layers registry
       QgsMapLayerRegistry::instance()->addMapLayer(layer);
       // init the context menu so it can connect to slots in main app
-      layer->initContextMenu(this);
+      // now taken care of in legend layer->initContextMenu(this);
 
       // give it a random color
       QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
       layer->setRenderer(renderer);
       renderer->initializeSymbology(layer);
       // add it to the mapcanvas collection
-      mMapCanvas->addLayer(layer);
+      // mMapCanvas->addLayer(layer); No longer necessary since adding to registry will add to canvas
+
       //connect up a request from the raster layer to show in overview map
-      QObject::connect(layer, 
-              SIGNAL(showInOverview(QString,bool)), 
-              this, 
-              SLOT(setLayerOverviewStatus(QString,bool)));           
+      // XXX some day will no longer necessary since adding to registry will add to overview layer
+//       QObject::connect(layer, 
+//               SIGNAL(showInOverview(QString,bool)), 
+//               this, 
+//               SLOT(setLayerOverviewStatus(QString,bool)));           
 
-      mProjectIsDirtyFlag = true;
+      QgsProject::instance()->dirty(false); // XXX this might be redundant
+
       statusBar()->message(mMapCanvas->extent().stringRep(2));
-
-    }else
+    }
+    else
     {
       QMessageBox::critical(this,"Layer is not valid",
           "The layer is not a valid layer and can not be added to the map");
@@ -2748,7 +2869,9 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     QApplication::restoreOverrideCursor();
   }
     
-}
+} // QgisApp::addVectorLayer
+
+
 
 void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
 {
@@ -2759,16 +2882,17 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
     // Register this layer with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayer(theMapLayer);
     // init the context menu so it can connect to slots in main app
-    theMapLayer->initContextMenu(this);
+    // XXX now taken care of in legend theMapLayer->initContextMenu(this);
     // add it to the mapcanvas collection
-    mMapCanvas->addLayer(theMapLayer);
+    // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
     //connect up a request from the raster layer to show in overview map
-    QObject::connect(theMapLayer, 
-            SIGNAL(showInOverview(QString,bool)), 
-            this, 
-            SLOT(setLayerOverviewStatus(QString,bool)));           
 
-    mProjectIsDirtyFlag = true;
+    // XXX some day not necessary since adding to registry will add to overview
+//     QObject::connect(theMapLayer, 
+//                      SIGNAL(showInOverview(QString,bool)), 
+//                      this, 
+//                      SLOT(setLayerOverviewStatus(QString,bool)));           
+
     statusBar()->message(mMapCanvas->extent().stringRep(2));
 
   }else
@@ -2794,48 +2918,61 @@ void QgisApp::setExtent(QgsRect theRect)
 int QgisApp::saveDirty()
 {
   int answer = 0;
-  mMapCanvas->freeze(true);
+  mMapCanvas->freeze(true);     // XXX shouldn't we freeze overview canvas, too?
+
 #ifdef QGISDEBUG
   std::cout << "Layer count is " << mMapCanvas->layerCount() << std::endl;
   std::cout << "Project is ";
-  if (mProjectIsDirtyFlag)
-    {
+  if ( QgsProject::instance()->dirty() )
+  {
       std::cout << "dirty" << std::endl;
   } else
-    {
+  {
       std::cout << "not dirty" << std::endl;
-    }
+  }
+
   std::cout << "Map canvas is ";
   if (mMapCanvas->isDirty())
-    {
+  {
       std::cout << "dirty" << std::endl;
   } else
-    {
+  {
       std::cout << "not dirty" << std::endl;
-    }
+  }
 #endif
-  if ((mProjectIsDirtyFlag || (mMapCanvas->isDirty()) && mMapCanvas->layerCount() > 0))
-    {
-      // flag project is dirty since dirty state of canvas is reset if "dirty"
+
+  if ((QgsProject::instance()->dirty() || (mMapCanvas->isDirty()) && mMapCanvas->layerCount() > 0))
+  {
+      // flag project as dirty since dirty state of canvas is reset if "dirty"
       // is based on a zoom or pan
-      mProjectIsDirtyFlag = true;
+      QgsProject::instance()->dirty( true );
+      // old code: mProjectIsDirtyFlag = true;
+      
       // prompt user to save
       answer = QMessageBox::information(this, "Save?", 
-          "Do you want to save the current project?",
-          QMessageBox::Yes | QMessageBox::Default,
-          QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape);
-      if (answer == QMessageBox::Yes)
-        {
+                                        "Do you want to save the current project?",
+                                        QMessageBox::Yes | QMessageBox::Default,
+                                        QMessageBox::No, 
+                                        QMessageBox::Cancel | QMessageBox::Escape);
+      if (QMessageBox::Yes == answer )
+      {
           fileSave();
-        }
-    }
+      }
+  }
+
   mMapCanvas->freeze(false);
+
   return answer;
-}
+
+} // QgisApp::saveDirty()
+
+
 void QgisApp::whatsThis()
 {
   QWhatsThis::enterWhatsThisMode();
-}
+} // QgisApp::whatsThis()
+
+
 std::map<QString, int> QgisApp::menuMapByName()
 {
   // Must populate the maps with each call since menus might have been
@@ -2928,7 +3065,9 @@ void QgisApp::showExtents(QgsRect theExtents)
   std::cerr << "Adding extent to acetate layer" << std::endl; 
 #endif
   mOverviewCanvas->refresh();
-}
+
+} // QgisApp::showExtents
+
 
 void QgisApp::drawExtentRectangle(QPainter *painter)
 {
@@ -2968,12 +3107,15 @@ void QgisApp::showStatusMessage(QString theMessage)
 void QgisApp::projectProperties()
 {
   QgsProjectProperties *pp = new QgsProjectProperties(this);
+  
   pp->setMapUnits(mMapCanvas->mapUnits());
+  pp->title( QgsProject::instance()->title() );
+  
   if(pp->exec())
   {
     // set the map units for the project (ie the map canvas)
     mMapCanvas->setMapUnits(pp->mapUnits());
-
+    QgsProject::instance()->title( pp->title() );
   }
 }
 
@@ -3103,21 +3245,32 @@ void QgisApp::setupToolbarPopups(QString themeName)
 
  
 }
+
+
 void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
 {
   if (theVisibilityFlag)
   {
     mOverviewCanvas->addLayer(QgsMapLayerRegistry::instance()->mapLayer(theLayerId));
+#ifdef QGISDEBUG
     std::cout << " Added layer " << theLayerId << " to overview map" << std::endl;
+#endif
   }
   else
   {
     mOverviewCanvas->remove(theLayerId);
+#ifdef QGISDEBUG
     std::cout << " Removed layer " << theLayerId << " from overview map" << std::endl;
+#endif
   }
+
   //check zorder is in sync
   setOverviewZOrder(mMapLegend);
-}
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
+} // QgisApp::setLayerOverviewStatus
+
 
 void QgisApp::setOverviewZOrder(QgsLegend * lv)
 {
@@ -3163,6 +3316,8 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
   mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
   //mOverviewCanvas->refresh();
 
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 //set the zorder of both overview and mapcanvas
@@ -3170,6 +3325,9 @@ void QgisApp::setZOrder (std::list<QString> theZOrder)
 {
   mMapCanvas->setZOrder(theZOrder);
   //mOverviewCanvas->setZOrder(theZOrder);
+
+  // notify the project we've made a change
+  // QgsProject::instance()->dirty(true);
 }
 
 //copy the click coord to clipboard and let the user know its there
@@ -3274,10 +3432,11 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
     // register this layer with the central layers registry
     QgsMapLayerRegistry::instance()->addMapLayer(theRasterLayer);
     // XXX doesn't the mMapCanvas->addLayer() do this?
-    QObject::connect(theRasterLayer, 
-            SIGNAL(repaintRequested()), 
-            mMapCanvas, 
-            SLOT(refresh()));
+    // XXX now it does
+//     QObject::connect(theRasterLayer, 
+//             SIGNAL(repaintRequested()), 
+//             mMapCanvas, 
+//             SLOT(refresh()));
 
     // connect up any request the raster may make to update the app progress
     QObject::connect(theRasterLayer, 
@@ -3291,18 +3450,19 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
             SLOT(showStatusMessage(QString)));
      
     // init the context menu so it can connect to slots in main app
-    theRasterLayer->initContextMenu(this);
+    // XXX now taken care of in legend theRasterLayer->initContextMenu(this);
        
     // add it to the mapcanvas collection
-    mMapCanvas->addLayer(theRasterLayer);
+    // no longer necessary since adding to registry automatically adds to canvas
+    // mMapCanvas->addLayer(theRasterLayer);
 
-    //connect up a request from the raster layer to show in overview map
-    QObject::connect(theRasterLayer, 
-            SIGNAL(showInOverview(QString,bool)), 
-            this, 
-            SLOT(setLayerOverviewStatus(QString,bool)));           
+    // connect up a request from the raster layer to show in overview map
+    // XXX some day will be no longer necessary since adding to registry adds to overview, too
+//     QObject::connect(theRasterLayer, 
+//             SIGNAL(showInOverview(QString,bool)), 
+//             this, 
+//             SLOT(setLayerOverviewStatus(QString,bool)));           
 
-    mProjectIsDirtyFlag = true;
   } 
   else
   {
@@ -3365,12 +3525,12 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
     // allow mMapCanvas to handle events
     // first
     mMapCanvas->freeze(false);
-    mMapCanvas->freeze(false);
+    mOverviewCanvas->freeze(false);
     return false;
   } 
 
   mMapCanvas->freeze(true);
-  mMapCanvas->freeze(true);
+  mOverviewCanvas->freeze(true);
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
   // this is messy since some files in the list may be rasters and others may

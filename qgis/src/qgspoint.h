@@ -18,50 +18,65 @@
 
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
+
 #include <iostream>
+
 #include <qstring.h>
 
-class QgsPoint {
- private:
-    //! x coordinate
-    double m_x;
-    //! y coordinate 
-    double m_y;
-  
+class QgsPoint 
+{
  public:
     /// Default constructor
-  QgsPoint();
+  QgsPoint()
+  {}
     
   /*! Create a point from x,y coordinates
    * @param x x coordinate
    * @param y y coordinate
    */
-  QgsPoint(double x, double y);
-  ~QgsPoint();
+  QgsPoint(double x, double y)
+      : m_x(x), m_y(y)
+  {}
+
+  ~QgsPoint()
+  {}
+
   /*! Sets the x value of the point
    * @param x x coordinate
    */
-  void setX(double x);
+  void setX(double x)
+  {
+      m_x = x;
+  }
 
   /*! Sets the y value of the point
    * @param y y coordinate
    */
-  void setY(double y);
+  void setY(double y)
+  {
+      m_y = y;
+  }
     
     
   /*! Get the x value of the point
    * @return x coordinate
    */
-  double x() const;
-  int xToInt();
+  double x() const
+  { 
+      return m_x;
+  }
+
   /*! Get the y value of the point
    * @return y coordinate 
    */
-  double y(void) const;
-  int yToInt();
+  double y() const
+  {
+      return m_y;
+  }
 
   //! String representation of the point (x,y)
   QString stringRep() const;
+
   //! As above but with precision for string representaiton of a point
   QString stringRep(int thePrecision) const;
   
@@ -80,27 +95,23 @@ class QgsPoint {
   /// Assignment
   QgsPoint & operator=(const QgsPoint &other);
   
-  
-};
+ private:
 
-inline QgsPoint::QgsPoint()
+    //! x coordinate
+    double m_x;
+
+    //! y coordinate 
+    double m_y;
+    
+}; // class QgsPOint
+
+
+inline bool operator==(const QgsPoint &p1, const QgsPoint &p2)
 {
-}
-
-inline QgsPoint::QgsPoint(double x, double y):m_x(x), m_y(y)
-{
-
-}
-
-inline QgsPoint::~QgsPoint()
-{
-}
-
-inline bool operator==(const QgsPoint &p1, const QgsPoint &p2){
     if((p1.x() == p2.x()) && (p1.y() == p2.y()))
-  return true;
+    { return true; }
     else
-  return false;
+    { return false; }
 }
 
 inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
@@ -109,34 +120,6 @@ inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
    return os;
 }
 
-inline double QgsPoint::x() const
-{
-  return m_x;
-}
-
-inline double QgsPoint::y() const
-{
-  return m_y;
-}
-
-inline int QgsPoint::xToInt()
-{
-  return (int) m_x;
-}
-
-inline int QgsPoint::yToInt()
-{
-  return (int) m_y;
-}
-
-inline void QgsPoint::setX(double x)
-{
-    m_x=x;
-}
-
-inline void QgsPoint::setY(double y)
-{
-    m_y=y;
-}
   
 #endif //QGSPOINT_H
+

@@ -27,13 +27,18 @@ email                : sherman at mrcc.com
 #include <qapplication.h>
 #include <qfont.h>
 #include <qfile.h>
+#include <qfileinfo.h>
+#include <qmessagebox.h>
 #include <qstring.h>
 #include <qtextcodec.h>
 #include <qtranslator.h>
 #include <qstyle.h>
 #include <qpixmap.h>
-#include "qgisapp.h"
 #include <qstringlist.h> 
+
+#include "qgisapp.h"
+#include "qgsexception.h"
+#include "qgsproject.h"
 
 #include <splashscreen.h>
 #ifdef WIN32
@@ -221,20 +226,37 @@ int main(int argc, char *argv[])
   /* uncomment the following line, if you want a Windows 95 look */
   //a.setStyle("Windows");
 
-  QgisApp *qgis = new QgisApp();
+  QgisApp *qgis = new QgisApp; // "QgisApp" used to find canonical instance
+  qgis->setName( "QgisApp" );
+
   a.setMainWidget(qgis);
 
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
   /////////////////////////////////////////////////////////////////////
-  if(myProjectFileName!="")
+  if( ! myProjectFileName.isEmpty() )
   {
-      if ( ! qgis->addProject(myProjectFileName) )
+//       if ( ! qgis->addProject(myProjectFileName) )
+//       {
+// #ifdef QGISDEBUG
+//           std::cerr << "unable to load project " << myProjectFileName << "\n";
+// #endif
+//       }
+      try
       {
+          if ( ! qgis->addProject(myProjectFileName) )
+          {
 #ifdef QGISDEBUG
-          std::cerr << "unable to load project " << myProjectFileName << "\n";
+           std::cerr << "unable to load project " << myProjectFileName << "\n";
 #endif
+          }
+      }
+      catch ( QgsIOException & io_exception )
+      {
+          QMessageBox::critical( 0x0, 
+                                 "QGIS: Unable to load project", 
+                                 "Unable to load project " + myProjectFileName );
       }
   }
 
@@ -257,10 +279,10 @@ int main(int argc, char *argv[])
     // The funky bool ok is so this can be debugged a bit easier...
 
     //nope - try and load it as raster
-    bool ok = qgis->addRasterLayer(myLayerName, false);
+    bool ok = qgis->addRasterLayer(QFileInfo(myLayerName), false);
     if(!ok){
       //nope - try and load it as a shape/ogr
-      ok = qgis->addLayer(myLayerName);
+      ok = qgis->addLayer(QFileInfo(myLayerName));
       //we have no idea what this layer is...
       if(!ok){
         std::cout << "Unable to load " << myLayerName << std::endl;
