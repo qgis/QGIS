@@ -951,9 +951,9 @@ int *QgsDelimitedTextProvider::getFieldLengths()
  * Class factory to return a pointer to a newly created 
  * QgsDelimitedTextProvider object
  */
-QGISEXTERN QgsDelimitedTextProvider *classFactory(const char *uri)
+QGISEXTERN QgsDelimitedTextProvider *classFactory(const QString *uri)
 {
-  return new QgsDelimitedTextProvider(uri);
+  return new QgsDelimitedTextProvider(*uri);
 }
 
 /** Required key function (used to map the plugin to a data store type)

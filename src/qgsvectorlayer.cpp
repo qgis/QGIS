@@ -87,7 +87,7 @@
 static const char * const ident_ = "$Id$";
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider * create_it(const char * uri);
+typedef QgsDataProvider * create_it(const QString* uri);
 
 
 
@@ -1665,8 +1665,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #endif
       //XXX - This was a dynamic cast but that kills the Windows
       //      version big-time with an abnormal termination error
-      dataProvider = (QgsVectorDataProvider*)(classFactory((const
-                                              char*)(dataSource.utf8())));
+      dataProvider = (QgsVectorDataProvider*)(classFactory(&dataSource));
 
       if (dataProvider)
       {
