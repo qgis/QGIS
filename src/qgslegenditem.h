@@ -19,16 +19,17 @@
 #ifndef QGSLEGENDITEM_H
 #define QGSLEGENDITEM_H
 #include <qwidget.h>
-
+#include "qgslegenditembase.h"
+class QgsMapLayer;
 class QgsSymbol;
 /**
   *@author Gary E.Sherman
   */
 
-class QgsLegendItem : public QWidget{
+class QgsLegendItem : public QgsLegendItemBase{
 	Q_OBJECT
 public: 
-	QgsLegendItem();
+	QgsLegendItem(QgsMapLayer *lyr=0, QWidget * parent=0, const char *name=0);
 	~QgsLegendItem();
   /** Write property of QString layerName. */
   virtual void setLayerName( const QString& _newVal);
@@ -36,6 +37,8 @@ public:
   virtual void setDisplayName( const QString& _newVal);
 private: // Private attributes
   /**  */
+  /**  */
+  QgsMapLayer * layer;
   QgsSymbol * symbol;
 public: // Public attributes
   /**  */

@@ -86,7 +86,7 @@ void
   if (result == OGRERR_NONE)
     {
 
-      ogrLayer->SetSpatialFilter (filter);
+     ogrLayer->SetSpatialFilter (filter);
       int featureCount = 0;
       while (OGRFeature * fet = ogrLayer->GetNextFeature ())
 	{

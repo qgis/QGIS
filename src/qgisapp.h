@@ -23,6 +23,7 @@ class QCanvasView;
 class QStringList;
 class QgsPoint;
 class QgsLegend;
+class QVBox;
 #include "qgisappbase.h"
 
 class QgsMapCanvas;
@@ -71,7 +72,7 @@ QgsLegend *mapLegend;
  QRect *mapWindow;
  //! Current map tool
  int mapTool;
- 
+
 };
 
 #endif

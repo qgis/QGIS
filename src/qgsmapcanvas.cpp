@@ -55,10 +55,21 @@ void QgsMapCanvas::addLayer (QgsMapLayer * lyr)
 
     }
   updateFullExtent (lyr->extent ());
-  // set zpos to something...
+  // increment zpos for all layers in the map
+  incrementZpos();
+  lyr->setZ(layers.size()-1);
+	updateZpos();
+	zOrder.push_back(lyr->name());
   //lyr->zpos = 0;
 }
-
+void QgsMapCanvas::incrementZpos(){
+}
+void QgsMapCanvas::updateZpos(){
+}
+QgsMapLayer * QgsMapCanvas::getZpos(int index){
+	    QString name =   zOrder[index];
+	    return layers[name];
+}
 void QgsMapCanvas::render2 ()
 {
   QPainter *paint = new QPainter ();
@@ -352,4 +363,12 @@ void QgsMapCanvas::updateFullExtent (QgsRect r)
     fullExtent.setYmin (r.yMin ());
   if (r.yMax () > fullExtent.yMax ())
     fullExtent.setYmax (r.yMax ());
+}
+/*const std::map<QString,QgsMapLayer *> * QgsMapCanvas::mapLayers(){
+       return &layers;
+}
+*/
+int QgsMapCanvas::layerCount(){
+	int numLayers = layers.size();
+	return layers.size();
 }
