@@ -20,6 +20,7 @@ email                : sherman at mrcc.com
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstringlist.h>
+#include <qregexp.h>
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -80,7 +81,7 @@ email                : sherman at mrcc.com
             std::cerr << "Attempting to split the input line: " << line <<
               " using delimiter " << mDelimiter << std::endl;
 #endif
-            QStringList fieldList = QStringList::split(mDelimiter, line);
+            QStringList fieldList = QStringList::split(QRegExp(mDelimiter), line, true);
 #ifdef QGISDEBUG
             std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 
 #endif
@@ -115,7 +116,7 @@ email                : sherman at mrcc.com
             // examine the x,y and update extents
             //  std::cout << line << std::endl; 
             // split the line on the delimiter
-            QStringList parts = QStringList::split(mDelimiter, line);
+            QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
             //if(parts.size() == attributeFields.size())
             //{
             //  // we can populate attributes if required
@@ -266,7 +267,7 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature &feature, bool fetchAtt
 #endif
       line = stream.readLine(); // line of text excluding '\n'
       // create the geometry from the x, y fields
-      QStringList parts = QStringList::split(mDelimiter, line);
+      QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
       // Get the x and y values, first checking to make sure they
       // aren't null.
       QString sX = parts[fieldPositions[mXField]];
@@ -354,7 +355,7 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
     if ( !stream.atEnd() ) {
       line = stream.readLine(); // line of text excluding '\n'
       // create the geometry from the x, y fields
-      QStringList parts = QStringList::split(mDelimiter, line);
+      QStringList parts = QStringList::split(QRegExp(mDelimiter), line, true);
       // Get the x and y values, first checking to make sure they
       // aren't null.
       QString sX = parts[fieldPositions[mXField]];
@@ -383,7 +384,7 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
               line = stream.readLine();
 
               // create the geometry from the x, y fields
-              parts = QStringList::split(mDelimiter, line);
+              parts = QStringList::split(QRegExp(mDelimiter), line, true);
               // Get the x and y values, first checking to make sure they
               // aren't null.
               sX = parts[fieldPositions[mXField]];
