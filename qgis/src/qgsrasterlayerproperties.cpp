@@ -907,8 +907,32 @@ void QgsRasterLayerProperties::sync()
 void QgsRasterLayerProperties::pbnHistRefresh_clicked()
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsRasterLayerProperties::pbnHistRefresh_clicked" << std::endl;
+  std::cout << "QgsRasterLayerProperties::pbnHistRefresh_clicked" << std::endl;
 #endif
+  int myBandCountInt = rasterLayer->getBandCount();
+  //
+  // Find out how many bands are selected and short circuit out clearing the image
+  // if needed
+  int mySelectionCount=0;
+  for (int myIteratorInt = 1;
+          myIteratorInt <= myBandCountInt;
+          ++myIteratorInt)
+  {
+    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    if ( myItem->isSelected() )
+    {
+      mySelectionCount++;
+    }
+  }
+  if (mySelectionCount==0)
+  {
+    int myImageWidth = pixHistogram->width();
+    int myImageHeight =  pixHistogram->height();
+    QPixmap myPixmap(myImageWidth,myImageHeight);
+    myPixmap.fill(Qt::white);
+    pixHistogram->setPixmap(myPixmap);
+  }
 
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected  
@@ -925,13 +949,12 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   if (radHistTypeBar->isOn()) myGraphType=BAR_CHART; else myGraphType=LINE_CHART;
   bool myIgnoreOutOfRangeFlag = chkHistIgnoreOutOfRange->isChecked();
   bool myThoroughBandScanFlag = chkHistAllowApproximation->isChecked();
-  
-  int myBandCountInt = rasterLayer->getBandCount();
+
   long myCellCount = rasterLayer->getRasterXDim() * rasterLayer->getRasterYDim();
-  
+
 
 #ifdef QGISDEBUG
-    std::cout << "Computing histogram minima and maxima" << std::endl;
+  std::cout << "Computing histogram minima and maxima" << std::endl;
 #endif
   //somtimes there are more bins than needed
   //we find out the last on that actully has data in it
@@ -945,8 +968,8 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   int myXAxisMin=0;
   int myXAxisMax=0;
   for (int myIteratorInt = 1;
-            myIteratorInt <= myBandCountInt;
-            ++myIteratorInt)
+          myIteratorInt <= myBandCountInt;
+          ++myIteratorInt)
   {
     RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
     //calculate the x axis min max
@@ -962,12 +985,12 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     if ( myItem->isSelected() )
     {
 #ifdef QGISDEBUG
-        std::cout << "Ensuring hist is populated for this layer" << std::endl;
+      std::cout << "Ensuring hist is populated for this layer" << std::endl;
 #endif
       rasterLayer->populateHistogram(myIteratorInt,BINCOUNT,myIgnoreOutOfRangeFlag,myThoroughBandScanFlag); 
 
 #ifdef QGISDEBUG
-        std::cout << "...done..." << myRasterBandStats.histogramVector->size() << " bins filled" << std::endl;
+      std::cout << "...done..." << myRasterBandStats.histogramVector->size() << " bins filled" << std::endl;
 #endif
       for (int myBin = 0; myBin <BINCOUNT; myBin++)
       {
@@ -997,10 +1020,10 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     }
   }
 #ifdef QGISDEBUG
-          std::cout << "max " << myYAxisMax << std::endl;
-          std::cout << "min " << myYAxisMin << std::endl;
+  std::cout << "max " << myYAxisMax << std::endl;
+  std::cout << "min " << myYAxisMin << std::endl;
 #endif
-  
+
 
   //create the image onto which graph and axes will be drawn
   int myImageWidth = pixHistogram->width();
@@ -1028,18 +1051,18 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   }
   int myXGutterHeight = myFontMetrics.height()+2;
   int myXGutterWidth = myFontMetrics.width(myXMaxLabel)+1;//1 pix whtispace from right edge of image
-  
+
   //
   // Now calculate the graph drawable area after the axis labels have been taken
   // into account
   //
   int myGraphImageWidth =myImageWidth-myYGutterWidth; 
   int myGraphImageHeight = myImageHeight-myXGutterHeight; 
-  
+
   //find out how wide to draw bars when in bar chart mode
   int myBarWidth = static_cast<int>((((double)myGraphImageWidth)/((double)BINCOUNT)));
-  
-  
+
+
   //
   //now draw actual graphs
   //
