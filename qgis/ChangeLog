@@ -4,6 +4,9 @@ QGIS Change Log
 Version 0.6 'Simon' .... development version
 
 2004-12-03 [gsherman] 0.6.0rc1
+** Commented out excessive debug statements in the postgres provider
+
+2004-12-03 [gsherman] 0.6.0rc1
 ** Changing the SQL query for a PostgreSQL layer using the query builder 
    from the vector layer properties dialog now properly updates the mapcanvas
    extents and feature count.
