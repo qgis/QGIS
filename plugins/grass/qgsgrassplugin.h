@@ -18,6 +18,7 @@
 #define QGSGRASSPLUGIN_H
 #include "../qgisplugin.h"
 #include <qwidget.h>
+#include <qpen.h>
 
 #include "../../src/qgisapp.h"
 
@@ -58,6 +59,11 @@ Q_OBJECT public:
   //! Destructor
   virtual ~ QgsGrassPlugin();
 
+  //! Get Region Pen
+  QPen & regionPen(void);
+  //! Set Region Pen
+  void setRegionPen(QPen &);
+
 public slots:
   //! Show the dialog box for new vector
   void addVector();
@@ -69,6 +75,10 @@ public slots:
   void unload();
   //! show the help document
   void help();
+  //! Display current region
+  void displayRegion(QPainter *painter);
+  //! Change region
+  void changeRegion(void);
 
 private:
   //! Name of the plugin
@@ -89,6 +99,13 @@ private:
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
   QgisIface *qGisInterface;
+  //! Pointer to canvas
+  QgsMapCanvas *mCanvas;
+
+  //! Pointer to Display region acction
+  QAction *mRegionAction;
+  //! Region width
+  QPen mRegionPen;
 };
 
 #endif // QGSGRASSPLUGIN_H

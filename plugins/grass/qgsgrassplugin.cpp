@@ -35,6 +35,7 @@
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qfileinfo.h>
+#include <qsettings.h>
 
 //non qt includes
 #include <iostream>
@@ -52,11 +53,14 @@ extern "C" {
 #include "qgsgrassattributes.h"
 #include "qgsgrassselect.h"
 #include "qgsgrassedit.h"
+#include "qgsgrassregion.h"
 
 // xpm for creating the toolbar icon
 #include "add_vector.xpm"
 #include "add_raster.xpm"
 #include "grass_edit.xpm"
+#include "grass_region.xpm"
+#include "grass_region_edit.xpm"
 static const char *pluginVersion = "0.1";
 
 /**
@@ -130,6 +134,8 @@ void QgsGrassPlugin::initGui()
 		"GRASS data cannot be used." );
 	return;
     }
+
+    mCanvas = qGisInterface->getMapCanvas();
     
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
@@ -146,13 +152,27 @@ void QgsGrassPlugin::initGui()
 	                                   "Add GRASS vector layer",0, this, "addVector");
     QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
 	                                   "Add GRASS raster layer",0, this, "addRaster");
+
+    mRegionAction = new QAction("Display Current Grass Region", QIconSet(icon_grass_region), 
+	                        "Display Current Grass Region",0, this, "region", true);
+    QAction *editRegionAction = new QAction("Edit Current Grass Region", QIconSet(icon_grass_region_edit), 
+	                        "Edit Current Grass Region",0, this, "editRegion");
+
     QAction *editAction = new QAction("Edit Grass Vector layer", QIconSet(icon_grass_edit), 
 	                        "Edit Grass Vector layer",0, this, "edit");
+    
+    if ( !QgsGrass::activeMode() )  {
+	mRegionAction->setEnabled(false);
+	editRegionAction->setEnabled(false);
+    } else {
+	mRegionAction->setOn(true);
+    }
 
     // Connect the action 
     connect(addVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
     connect(addRasterAction, SIGNAL(activated()), this, SLOT(addRaster()));
     connect(editAction, SIGNAL(activated()), this, SLOT(edit()));
+    connect(editRegionAction, SIGNAL(activated()), this, SLOT(changeRegion()));
 
     // Add the toolbar
     toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "GRASS");
@@ -161,7 +181,17 @@ void QgsGrassPlugin::initGui()
     // Add to the toolbar
     addVectorAction->addTo(toolBarPointer);
     addRasterAction->addTo(toolBarPointer);
+    mRegionAction->addTo(toolBarPointer);
+    editRegionAction->addTo(toolBarPointer);
     editAction->addTo(toolBarPointer);
+  
+    // Connect display region
+    connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(displayRegion(QPainter *)));
+
+    // Init Region symbology
+    QSettings settings;
+    mRegionPen.setColor( QColor ( settings.readEntry ("/qgis/grass/region/color", "#ff0000" ) ) );
+    mRegionPen.setWidth( settings.readNumEntry ("/qgis/grass/region/width", 0 ) );
 }
 
 // Slot called when the "Add GRASS vector layer" menu item is activated
@@ -244,11 +274,94 @@ void QgsGrassPlugin::edit()
 
     if ( ed->isValid() ) {
         ed->show();
-	QgsMapCanvas *canvas = qGisInterface->getMapCanvas();
-	canvas->refresh();
+	mCanvas->refresh();
     } else {
 	delete ed;
     }
+}
+
+void QgsGrassPlugin::displayRegion(QPainter *painter)
+{
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::displayRegion()" << std::endl;
+    #endif
+    
+    if ( !mRegionAction->isEnabled() || !mRegionAction->isOn() ) return;
+
+    // Display region of current mapset if in active mode
+    if ( !QgsGrass::activeMode() ) return;
+
+    QString gisdbase = QgsGrass::getDefaultGisdbase();
+    QString location = QgsGrass::getDefaultLocation();
+    QString mapset   = QgsGrass::getDefaultMapset();
+
+    if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() ) {
+	QMessageBox::warning( 0, "Warning", "GISDBASE, LOCATION_NAME or MAPSET is not set, "
+		                 "cannot display current region." );
+	return;
+    }
+
+    QgsGrass::setLocation ( gisdbase, location );
+    
+    struct Cell_head window;
+    char *err = G__get_window ( &window, "", "WIND", (char *) mapset.latin1() );
+
+    if ( err ) {
+	QMessageBox::warning( 0, "Warning", "Cannot read current region: " + QString(err) );
+	return;
+    }
+
+    std::vector<QgsPoint> points;
+    points.resize(5);
+    
+    points[0].setX(window.west); points[0].setY(window.south);
+    points[1].setX(window.east); points[1].setY(window.south);
+    points[2].setX(window.east); points[2].setY(window.north);
+    points[3].setX(window.west); points[3].setY(window.north);
+    points[4].setX(window.west); points[4].setY(window.south);
+
+    QgsCoordinateTransform *transform = mCanvas->getCoordinateTransform();
+    QPointArray pointArray(5);
+
+    for ( int i = 0; i < 5; i++ ) {
+        transform->transform( &(points[i]) );
+        pointArray.setPoint( i, points[i].xToInt(), points[i].yToInt() );
+    }
+
+    painter->setPen ( mRegionPen );
+    painter->drawPolyline ( pointArray );
+}
+
+void QgsGrassPlugin::changeRegion(void)
+{
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::changeRegion()" << std::endl;
+    #endif
+
+    if ( QgsGrassRegion::isRunning() ) {
+	QMessageBox::warning( 0, "Warning", "The Region tool is already running." );
+	return;
+    }
+
+    QgsGrassRegion *reg = new QgsGrassRegion(this, qgisMainWindowPointer, qGisInterface, 
+	                         qgisMainWindowPointer, 0, 
+				 Qt::WType_Dialog | Qt::WStyle_Customize | Qt::WStyle_Tool  );
+
+    reg->show();
+}
+
+QPen & QgsGrassPlugin::regionPen()
+{
+    return mRegionPen;
+}
+
+void QgsGrassPlugin::setRegionPen(QPen & pen)
+{
+    mRegionPen = pen;
+    
+    QSettings settings;
+    settings.writeEntry ("/qgis/grass/region/color", mRegionPen.color().name() );
+    settings.writeEntry ("/qgis/grass/region/width", (int) mRegionPen.width() );
 }
 
 // Unload the plugin by cleaning up the GUI
