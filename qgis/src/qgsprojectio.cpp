@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.10 2003/11/11 06:34:27 gsherman Exp */
+/* qgsprojectio.cpp,v 1.11 2003/11/12 04:44:37 gsherman Exp */
  #include <iostream>
  #include <fstream>
  #include <qfiledialog.h>
@@ -50,7 +50,8 @@ bool QgsProjectIo::write(){
 	//QMessageBox::information(0,"Full Path",fullPath);
 	int okToSave = 0;
 	if(QFile::exists(fullPath) && (action == SAVEAS)){
-		okToSave = QMessageBox::warning(0,"Overwrite File?",fullPath + " exists. \nDo you want to overwrite it?", "Yes", "No");
+		okToSave = QMessageBox::warning(0,"Overwrite File?",fullPath + 
+			" exists. \nDo you want to overwrite it?", "Yes", "No");
 	}
 	if(okToSave == 0){
 	// write the project information to the selected file
@@ -189,11 +190,13 @@ if(action == SAVE && fullPath.isEmpty()){
 	}
 switch(action){
 	case OPEN:
-	fullPath = QFileDialog::getOpenFileName("./", "QGis files (*.qgs)", 0,  0, "Choose a file to open" );
+	fullPath = QFileDialog::getOpenFileName("./", "QGis files (*.qgs)", 0,  0, 
+		"Choose a file to open" );
   
 	break;
 	case SAVEAS:
-		fullPath = QFileDialog::getSaveFileName("./", "QGis files (*.qgs)", 0,  0, "Choose a filename  to save" );
+		fullPath = QFileDialog::getSaveFileName("./", "QGis files (*.qgs)", 0,
+			0, "Choose a filename  to save" );
 	break;
 	}
 	return fullPath;
@@ -248,7 +251,8 @@ void QgsProjectIo::writeXML(){
 			xml << "\">\n";
 			if(isDatabase){
 				// cast the layer to a qgsdatabaselayer
-				// TODO fix this so database layers are properly saved/restored when name is changed in legend
+				// TODO fix this so database layers are properly saved/restored 
+				// when name is changed in legend
 				/* QgsDatabaseLayer *dblyr = (QgsDatabaseLayer *)lyr;
 				xml << "\t\t<layername>" + dblyr->schemaName() << "." <<
 					dblyr->geometryTableName() << "</layername>\n"; */
