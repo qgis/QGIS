@@ -537,3 +537,7 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int )
 		popMenu->exec(pt);
 }
 
+
+void QgisApp::testPluginFunctions(){
+  
+  }
