@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
-
+#include <cmath>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qrect.h>
@@ -25,6 +25,7 @@
 #include "qgis.h"
 
 #include "qgsmaplayer.h"
+#include "qgslegend.h"
 #include "qgsdatabaselayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmarkersymbol.h"
@@ -94,7 +95,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	incrementZpos();
 	lyr->setZ(layers.size() - 1);
 	updateZpos();
-	zOrder.push_back(lyr->name());
+	zOrder.push_back(lyr->name());  
 	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
 	//lyr->zpos = 0;
 }
@@ -105,12 +106,17 @@ void QgsMapCanvas::incrementZpos()
 void QgsMapCanvas::updateZpos()
 {
 }
-QgsMapLayer *QgsMapCanvas::getZpos(int index)
+QgsMapLayer *QgsMapCanvas::getZpos(int )
 {
-	QString name = zOrder[index];
-	return layers[name];
+//	QString name = zOrder[index];
+//	return layers[name];
+	return 0;
 }
+QgsMapLayer *QgsMapCanvas::layerByName(QString name)
+{
+	return layers[name];
 
+}
 void QgsMapCanvas::render2()
 {
 QString msg = frozen?"frozen":"thawed";
@@ -214,7 +220,7 @@ void QgsMapCanvas::render()
   paint->end();
   */
 }
-void QgsMapCanvas::paintEvent(QPaintEvent * pe)
+void QgsMapCanvas::paintEvent(QPaintEvent * )
 {
   if (!drawing)
 		render2();
@@ -311,8 +317,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 			  // use start and end box points to calculate the extent
 			  QgsPoint start = coordXForm->toMapCoordinates(boxStartPoint);
 			  QgsPoint end = coordXForm->toMapCoordinates(e->pos());
-			  double dx = abs(end.x() - start.x());
-			  double dy = abs(end.y() - start.y());
+			  double dx = fabs(end.x() - start.x());
+			  double dy = fabs(end.y() - start.y());
 			  // modify the extent
 
 			  if (end.x() < start.x()) {
@@ -414,7 +420,6 @@ void QgsMapCanvas::updateFullExtent(QgsRect r)
 */
 int QgsMapCanvas::layerCount()
 {
-	int numLayers = layers.size();
 	return layers.size();
 }
 
@@ -431,8 +436,24 @@ void QgsMapCanvas::freeze(bool frz){
 }
 
 void QgsMapCanvas::remove(QString key){
+	std::map<QString,QgsMapLayer *>newLayers;
+
+  std::map < QString, QgsMapLayer * >::iterator mi = layers.begin();
+		while (mi != layers.end()) {
+			QgsMapLayer *ml = (*mi).second;
+			if(ml->name() != key)
+				newLayers[ml->name()] = ml;
+    	
+			mi++;
+
+			}
+
+
+	
 	QgsMapLayer *l = layers[key];
 	
-	layers.erase(key);
+	
+	layers = newLayers;
 	delete l;
+  zOrder.remove(key);
 }
