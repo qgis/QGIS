@@ -48,6 +48,10 @@ PGconn *QgsPgUtil::connection()
 {
   return mPgConnection;
 }
+const QStringList & QgsPgUtil::reservedWords()
+{
+  return mReservedWords;
+}
 void QgsPgUtil::initReservedWords()
 {
   // create the reserved word list by loading
@@ -111,6 +115,7 @@ void QgsPgUtil::initReservedWords()
     << "LIMIT"
     << "LOCALTIME"
     << "LOCALTIMESTAMP"
+    << "NAMES"
     << "NATURAL"
     << "NEW"
     << "NOT"
