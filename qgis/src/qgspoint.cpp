@@ -45,6 +45,10 @@ QString QgsPoint::wellKnownText()
   return QString("POINT(%1 %2)").arg(QString::number(m_x, 'f', 18)).arg(QString::number(m_y, 'f', 18));
 }
 
+double QgsPoint::sqrDist(double x, double y) const
+{
+    return (m_x-x)*(m_x-x)+(m_y-y)*(m_y-y);
+}
 
 // operators
 bool QgsPoint::operator==(const QgsPoint & other)

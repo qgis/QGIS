@@ -23,6 +23,8 @@ email                : sherman at mrcc.com
 
 #include "qgsfeatureattribute.h"
 #include "qgis.h"
+#include "qgspoint.h"
+
 class QgsRect;
 
 /** \class QgsFeature - Feature attribute class.
@@ -113,6 +115,9 @@ class QgsFeature {
 
     /**Test for intersection with a rectangle (uses GEOS)*/
     bool intersects(QgsRect* r);
+
+    /**Returns the Vertex closest to a given point*/
+    QgsPoint closestVertex(const QgsPoint& point);
 
   private:
 

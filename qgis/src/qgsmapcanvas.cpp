@@ -1305,6 +1305,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                   break;
                 }
 
+		//snap point to points within the vector layer snapping tolerance
+		vlayer->snapPoint(idPoint);
+
                 QgsFeature* f = new QgsFeature(0,"WKBPoint");
                 int size=5+2*sizeof(double);
                 unsigned char *wkb = new unsigned char[size];
@@ -1361,7 +1364,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
           }
 
-          mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
+	  QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+	  vlayer->snapPoint(digitisedpoint);
+          mCaptureList.push_back(digitisedpoint);
           if(mCaptureList.size()>1)
           {
             QPainter paint(this);
@@ -1370,14 +1375,13 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             --it;
             --it;
             QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+	    QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
             paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
-                e->x(),e->y());
+                endpoint.x(),endpoint.y());
 	    //draw it to an acetate layer
-	    QgsPoint p1=*it;
-	    QgsPoint p2=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-	    QgsLine line(p1,p2);
+	    QgsLine digitline(*it,digitisedpoint);
 	    QgsAcetateLines* acetate=new QgsAcetateLines();
-	    acetate->add(line);
+	    acetate->add(digitline);
 	    addAcetateObject(vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()),acetate);
 #ifdef QGISDEBUG
 	    qWarning("adding "+vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()));

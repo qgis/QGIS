@@ -97,6 +97,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       m_renderer(0),
       m_propertiesDialog(0),
       m_rendererDialog(0),
+      mSnappingTolerance(0),
       ir(0),                    // initialize the identify results pointer
       mEditable(false),
       mModified(false)
@@ -805,7 +806,7 @@ void QgsVectorLayer::select(int number)
       popMenu->insertSeparator(); // XXX should this move to QgsMapLayer::initContextMenu()?
 
       if(dataProvider->supportsFeatureAddition())
-      {
+      {  
 	  popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
 	  popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
       }
@@ -1917,6 +1918,37 @@ bool QgsVectorLayer::rollBack()
     }
     mDeleted.clear();
     return true;
+}
+
+bool QgsVectorLayer::snapPoint(QgsPoint& point)
+{
+    if(mSnappingTolerance<=0||!dataProvider)
+    {
+	return false;
+    }
+    double mindist=mSnappingTolerance*mSnappingTolerance;//current minimum distance
+    double mindistx=point.x();
+    double mindisty=point.y();
+    QgsFeature* fet;
+    QgsPoint vertexFeature;//the closest vertex of a feature
+    double minvertexdist;//the distance between 'point' and 'vertexFeature'
+
+    QgsRect selectrect(point.x()-mSnappingTolerance,point.y()-mSnappingTolerance,point.x()+mSnappingTolerance,point.y()+mSnappingTolerance);
+    dataProvider->reset();
+    dataProvider->select(&selectrect);
+    while ((fet = dataProvider->getNextFeature(false)))
+    {
+	vertexFeature=fet->closestVertex(point);
+	minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
+	if(minvertexdist<mindist)
+	{
+	    mindistx=vertexFeature.x();
+	    mindisty=vertexFeature.y();
+	    mindist=minvertexdist;
+	}
+    }
+    point.setX(mindistx);
+    point.setY(mindisty); 
 }
 
 void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor)
