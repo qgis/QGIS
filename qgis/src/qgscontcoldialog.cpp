@@ -173,7 +173,7 @@ void QgsContColDialog::apply()
     p.setFont(f);
     //draw the layer name and the name of the classification field into the pixmap
     p.drawText(leftspace,topspace+fm.height(),name);
-    m_vectorlayer->setlayerName(name);
+    m_vectorlayer->setLayerName(name);
     p.drawText(leftspace,topspace+fm.height()*2,classificationComboBox->currentText());
 
     int rangeoffset=topspace+fm.height()*2;
