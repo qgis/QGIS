@@ -413,11 +413,11 @@ Load Data
 
 
 \begin_inset  Tabular
-<lyxtabular version="3" rows="10" columns="2">
+<lyxtabular version="3" rows="9" columns="2">
 <features>
-<column alignment="block" valignment="top" leftline="true" width="1.5in">
-<column alignment="left" valignment="top" leftline="true" rightline="true" width="1.5in">
-<row topline="true" bottomline="true">
+<column alignment="block" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="2in">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -425,7 +425,9 @@ Load Data
 
 
 \series bold 
-Use Case
+Use Case:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -437,7 +439,7 @@ Load Data
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -445,7 +447,9 @@ Load Data
 
 
 \series bold 
-Goal in Context
+Goal in Context:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -457,7 +461,7 @@ Load a data set from a data store and display it
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -465,7 +469,9 @@ Load a data set from a data store and display it
 
 
 \series bold 
-Scope & Level
+Scope & Level:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -477,7 +483,7 @@ Primary task
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -485,7 +491,9 @@ Primary task
 
 
 \series bold 
-Preconditions
+Preconditions:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -497,7 +505,7 @@ Application is running
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -505,7 +513,9 @@ Application is running
 
 
 \series bold 
-Success End Condition
+Success End Condition:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -517,7 +527,7 @@ Data set is loaded and displayed
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -525,7 +535,9 @@ Data set is loaded and displayed
 
 
 \series bold 
-Failed End Condition
+Failed End Condition:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -537,7 +549,7 @@ Application is in pre-load state
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -545,7 +557,9 @@ Application is in pre-load state
 
 
 \series bold 
-Primary Actor(s)
+Primary Actor(s):
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -557,7 +571,7 @@ Casual, Professional user
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -565,7 +579,9 @@ Casual, Professional user
 
 
 \series bold 
-Trigger
+Trigger:
+\newline 
+
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -577,7 +593,7 @@ User wants to view data
 \end_inset 
 </cell>
 </row>
-<row topline="true">
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -585,7 +601,7 @@ User wants to view data
 
 
 \series bold 
-Description of Steps
+Description of Steps:
 \end_inset 
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -603,22 +619,6 @@ User selects dataset
 \layout Enumerate
 
 Dataset is displayed
-\end_inset 
-</cell>
-</row>
-<row topline="true" bottomline="true">
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\layout Standard
-
-\end_inset 
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\layout Standard
-
 \end_inset 
 </cell>
 </row>
