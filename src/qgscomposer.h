@@ -111,6 +111,12 @@ public slots:
     //! Print the composition
     void print(void);
     
+    //! Print as image
+    void image(void);
+    
+    //! Print as SVG
+    void svg(void);
+    
     //! Select item
     void selectItem(void);
     

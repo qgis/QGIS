@@ -35,6 +35,10 @@
 #include <qvaluelist.h>
 #include <qsplitter.h>
 #include <qregexp.h>
+#include <qpixmap.h>
+#include <qimage.h>
+#include <qpicture.h>
+#include <qfiledialog.h>
 
 #include "qgisapp.h"
 #include "qgsproject.h"
@@ -413,6 +417,170 @@ void QgsComposer::print(void)
     }
 
     // TODO: mPrinter->setup() moves the composer under Qgisapp, get it to foreground somehow
+}
+
+void QgsComposer::image(void)
+{
+    // Image size 
+    int oversample = 4;
+    int width = (int) (mComposition->resolution() * mComposition->paperWidth() / 25.4); 
+    int height = (int) (mComposition->resolution() * mComposition->paperHeight() / 25.4); 
+
+    int memuse = 2 * oversample * width * oversample * height * 3 / 1000000;  // pixmap + image
+#ifdef QGISDEBUG
+    std::cout << "Image " << width << " x " << height << std::endl;
+    std::cout << "memuse = " << memuse << std::endl;
+    
+#endif
+    
+    if ( memuse > 500 ) { // cca 4500 x 4500
+	int answer = QMessageBox::warning ( 0, "Big image", 
+		               "To create image " + QString::number(width) + " x " 
+			       + QString::number(height) 
+		               + " with oversampling " + QString::number(oversample)
+			       + " requires " 
+			       + QString::number(memuse) + " MB of memory", 
+			       QMessageBox::Ok,  QMessageBox::Abort );
+	if ( answer == QMessageBox::Abort ) return;
+    }
+
+    // Get file and format (stolen from qgisapp.cpp but modified significantely)
+    
+    //create a map to hold the QImageIO names and the filter names
+    //the QImageIO name must be passed to the mapcanvas saveas image function
+    typedef QMap<QString, QString> FilterMap;
+    FilterMap myFilterMap;
+
+    //find out the last used filter
+    QSettings myQSettings;  // where we keep last used filter in persistant state
+    QString myLastUsedFormat = myQSettings.readEntry("/qgis/UI/lastSaveAsImageFormat", "PNG" );
+    QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsImageFile","qgis.png");
+
+    // get a list of supported output image types
+    int myCounterInt=0;
+    QString myFilters;
+    QString myLastUsedFilter;
+    for ( ; myCounterInt < QImageIO::outputFormats().count(); myCounterInt++ )
+    {
+        QString myFormat=QString(QImageIO::outputFormats().at( myCounterInt ));
+        QString myFilter = myFormat + " format (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
+	if ( myCounterInt > 0 ) myFilters += ";;";
+        myFilters += myFilter;
+        myFilterMap[myFilter] = myFormat;
+	if ( myFormat == myLastUsedFormat ) 
+	{ 
+	    myLastUsedFilter = myFilter;
+	}
+    }
+#ifdef QGISDEBUG
+    std::cout << "Available Filters Map: " << std::endl;
+    FilterMap::Iterator myIterator;
+    for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
+    {
+        std::cout << myIterator.key() << "  :  " << myIterator.data() << std::endl;
+    }
+#endif
+
+    //create a file dialog using the the filter list generated above
+    std::auto_ptr < QFileDialog > myQFileDialog(
+        new QFileDialog(
+            "",
+            myFilters,
+            0,
+            QFileDialog::tr("Save file dialog"),
+            tr("Choose a filename to save the map image as")
+        )
+    );
+    myQFileDialog->setSelection ( myLastUsedFile );
+
+    // allow for selection of more than one file
+    myQFileDialog->setMode(QFileDialog::AnyFile);
+	
+    // set the filter to the last one used
+    myQFileDialog->setSelectedFilter(myLastUsedFilter);
+
+    //prompt the user for a filename
+    QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
+    if (myQFileDialog->exec() != QDialog::Accepted) return;
+
+    myOutputFileNameQString = myQFileDialog->selectedFile();
+    QString myFilterString = myQFileDialog->selectedFilter();
+#ifdef QGISDEBUG
+    std::cout << "Selected filter: " << myFilterString << std::endl;
+    std::cout << "Image type: " << myFilterMap[myFilterString] << std::endl;
+#endif
+
+    myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
+    myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFile", myOutputFileNameQString);
+
+    if ( myOutputFileNameQString == "" ) return;
+
+    double scale = (double) (oversample * mComposition->resolution() / 25.4 / mComposition->scale());
+
+    mView->setCanvas(0);
+    mComposition->setPlotStyle ( QgsComposition::Print );
+    
+    QPixmap pixmap ( oversample * width, oversample * height );
+    QPainter p(&pixmap);
+    p.scale ( scale, scale); 
+    mComposition->canvas()->drawArea ( QRect(0,0, 
+			               (int) (mComposition->paperWidth() * mComposition->scale()),
+			               (int) (mComposition->paperHeight() * mComposition->scale()) ), 
+				       &p, FALSE );
+    p.end();
+
+    mComposition->setPlotStyle ( QgsComposition::Preview );
+    mView->setCanvas(mComposition->canvas());
+
+    if ( oversample > 1 ) {
+	QImage img = pixmap.convertToImage();
+
+	img = img.smoothScale ( width, height );
+	pixmap.convertFromImage ( img );
+    }
+    
+    pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString] );
+}
+
+void QgsComposer::svg(void)
+{
+    QSettings myQSettings;
+    QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
+
+    QFileDialog *myQFileDialog = new QFileDialog( "", "SVG Format (*.svg *SVG)", 0,
+                                     QFileDialog::tr("Save file dialog"),
+                                     tr("Choose a filename to save the map as") );
+    
+    myQFileDialog->setSelection ( myLastUsedFile );
+    myQFileDialog->setMode(QFileDialog::AnyFile);
+
+    if (myQFileDialog->exec() != QDialog::Accepted) return;
+    QString myOutputFileNameQString = myQFileDialog->selectedFile();
+    
+    if ( myOutputFileNameQString == "" ) return;
+
+    myQSettings.writeEntry("/qgis/UI/lastSaveAsSvgFile", myOutputFileNameQString);
+    
+    mView->setCanvas(0);
+    mComposition->setPlotStyle ( QgsComposition::Print );
+    
+    QPicture pic;
+    QPainter p(&pic);
+    mComposition->canvas()->drawArea ( QRect(0,0, 
+			               (int) (mComposition->paperWidth() * mComposition->scale()),
+			               (int) (mComposition->paperHeight() * mComposition->scale()) ), 
+				       &p, FALSE );
+    p.end();
+
+    mComposition->setPlotStyle ( QgsComposition::Preview );
+    mView->setCanvas(mComposition->canvas());
+
+    QRect br = pic.boundingRect();
+
+    int width = (int) ( mComposition->paperWidth() * mComposition->scale() ); 
+    int height = (int) ( mComposition->paperHeight()  * mComposition->scale() ); 
+    
+    pic.save ( myOutputFileNameQString, "svg" );
 }
 
 void QgsComposer::setToolActionsOff(void)

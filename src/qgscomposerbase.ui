@@ -253,6 +253,8 @@
             <string>Tools</string>
         </property>
         <action name="actionPrint"/>
+        <action name="actionImage"/>
+        <action name="actionSvg"/>
     </toolbar>
 </toolbars>
 <actions>
@@ -402,6 +404,28 @@
             <string>Select/Move item</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionImage</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image10</iconset>
+        </property>
+        <property name="text">
+            <string>Export as image</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionSvg</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image11</iconset>
+        </property>
+        <property name="text">
+            <string>Export as SVG</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -433,6 +457,12 @@
     </image>
     <image name="image9">
         <data format="XPM.GZ" length="1547">789c6dd3d96e9b401805e07b3f05327751450cc62caa7a917d7742f6a4eac5cfcc6067b1931067adfaee9d73c0d84e3bc7b2f8741806067b79c9b93c3a7096965bcf1399dc28470da57496f4cb68f4f1f3d78fdfad761038f613058edffed66abb8e72fa0f6383e3cc1ebb1d0e302605014bb01b2160874c11b0471608e8836107012392033c236304ec9305027a60af8380011921a002638380395920e0219874e330e2c90760da4bc298dc05c54f8384b7b145c6699a68708d4c539d76c17732b7a727e013a9244c79f288d4120bb7f1aaa60d78411a49850bdd928588f0368a9a5a72f0baa60d780ee6be0d1fdf90010276c9100143b2878097648480fba45d28e55e6d83aa9727a2c0533241c075d2d89e27ef803a5571ce7683d4da577c6547a00910f093cc4da8397793543a57e407698c18cebd018b8ed1868fbf42fa26d2dc3a5d110187648080ab646862cdb9033242c0373236caf00dbe9289bd367fc08f643ae50b2945af5ae89ecca77ca81955eb9e90cafeca78e5494dbbb7e01da92df95f18d75455bb57d3063c260d7af0b9a60d282407ff0b9ee7722c1cd48d30dedc51ddc8d75137ae48be309416b76a3cc9cdfc28069edbcc31c3d9b8b995f939c3668dbbfb912ccc9916e387c7a7e91caf995396cf9397d7b77799ddf5b491f2e3736575ed7f8d94eb1b9b5bf3cfd334526eefeceefd736f25bff60f06fd2ff7366623e5e1d1205b98737c5235529e9e655933c798f3e2824d966597a75533db6bdb64f67375ddf1b3f9f7138857966cba7ed3f04ddad7d2b797b255d88baa75a643dcac6ae22c5b6cecc89af1b59955ed3fdf5b7f01ac568145</data>
+    </image>
+    <image name="image10">
+        <data format="XPM.GZ" length="3182">789cad96c96edc461040effa8a81eb6604e5e13e83200749b62559d6665bb2ec2087e6a67d9dd11ae4dfd3f58a19403a043984cf06fc5c4db2bbbaba38efde8e0e77b7466fdf2dcde6617ed28c9ae3703b7adbde5d5c3cfdfec76f7f2ebd49ca117fc6a3f4cd2f4b6ff6e6a366b47d75d999a84491840befcdd3dcc03bbc30f0f6951f996795611ede13af0ce257c44b030f786e309e78de19c41bbc30cce5cb2b5fc34b039f9917ad811f9b97a9c1f3f2c1e304781ff3cf2b83f82ef1b22c4a9fcf25cf0b06f155e25303af898f0dc67b9c09e12b7861e0cbc3f3e3853fe313037fc283813fe28d813f98576303bfc759007e8773e1737c6ae0e4a76a0cfc16ef0dfcc67c9218f8351e0cd68bb37cdf3ff21b3203275ff5387481e7cb57c66706be8e1706cefc989ee7bfc08381eff1fcda603cfb374d0de2e72fe37a8a37067e86b7067e31ccaf1ffc8438174ebdd65cac9f7a8fab891027df2d174ebebbc4c0594f5718cc977a4e9a6ca83fe1fd69926585afa719ce439df37ea17eb226ef4bde27cb5e9f4551b23f42bd16493c6e5eef5e5fe369d2923fb9f47a9b66bde79bfa8c8731af7cfcf5502f89d793a47867e07b2ff75f323c35f08f7861e0e42b166f3ef17a643d93cac079ff848bf153bc36f0ef786be013bc3770cee33431f0ada1fe2aaf3fa95ed68f1ce01303dfc4b9f0f2657d09e76b5a1becdfb67b5d0cf9dcc71b03a7bea69d817fc27b83fb595f181bc4795e48c2d8e3c2f90da9812b9e1bdccffa69379e5fafbf2ae2ebbd5fb89f971df7ba6dbdde7fe29318f7e7911f96ebeb4f5ed6bb14afced7b757f5beecde949d9f07fa753c3d11e22bee31eef979f2f365e01b786a307e8c67115fffcec2bd5e394f7561e09cdfba3470ce6b5d193c8ffda49cbc7ffaf9ee0ce2d443dd1bdccffb9bb18193af268d78bf3b5f38f30b7c0f9bcc60fc073c37f0cf7811dde337834778ff0f7c12f1f370ba70af4ffa2fe5e5df13ea8df6e5fd88fd6a6a83f17c8f1b2e9e473e9ad6c0a9a7a633b87feb1f6f7dbdbebe3e8ef7f99c0d1e613cfbdf8e0dc633ff36f9c7757df008f7d3fff9dcfa7ae9f76d69e0d47b5b198ce7f7413b3588d37f62732e5baf87e7c127ade7f7106fdabaf5f51f0dde78bd4b58f463cf47ffaa3fafbdeacfcf0bf7ef15fda74b0d9cfdecb2883bbf37f839e2e7897ed8955dd67abea877daa7af7773e15e9ff44bda85af97f3c0f1f2fde57bdc8f0d9c7ed227067eb8709f0ffdaacf0d9cfae90b837c50af7d6910a71e694ffe7eeab7e732df9bff3bff758c8a06adb5d1563bedf5488ff5444ff54ccff5422ff58a31d77aa3b73ad3b9dee9bd3ec47f3dc6bf4ffaaccbbaa2abfefdd50f71d44c3fea9aaeeb867e8affdad4cfbaa5dbbaa3bbfe9b40bfe857fda6fb7aa0dff5507fe84f1d6b12ff2fd54c3d2f85965ae944a7a22212a496465ae9745f7a3992631f23275ac5f8a99ce9a39ccb855cca955ccb4de45666e4732e77722f0ff2284f3a93675996155995f7f221def751d618b32e1b3a914fb2298f71669bf259b6645b76f44076654fbe30e6ab7c8b4fd99703f91edfba2687f2437eca581249251bc6e452c4f99652c944a67217546e83f5ea5af6623bf0f3dde946ecbd47e158d7c349380d67d2eb7e380f1770c998ab701d6ec26d988579b80bf7e1213c86a7f01c96c34a580defffb77dffebd7a5bf017df1e33a</data>
+    </image>
+    <image name="image11">
+        <data format="XPM.GZ" length="424">789c8590c10ac2300c40effd8ad0de8a741d8817f113148f827848aa450f5398f320e2bf9b743a4b15164ac97b3469d3cac266bd045ba96b87dd294038620b767f6b9afb76b778285dcf80d7146a3d51da4180d5e57c90dc706e3c478c82d8638cde0b92a0408fae885167383287a2643783232221cc6a89897e1ca379abd2a54b3efd86735f27d2a4d2cc3942f7d7156f4e1df3d928b9625e1963e45f9e73f50245ae549e</data>
     </image>
 </images>
 <connections>
@@ -496,6 +526,18 @@
         <receiver>QgsComposerBase</receiver>
         <slot>selectItem()</slot>
     </connection>
+    <connection>
+        <sender>actionSvg</sender>
+        <signal>activated()</signal>
+        <receiver>QgsComposerBase</receiver>
+        <slot>svg()</slot>
+    </connection>
+    <connection>
+        <sender>actionImage</sender>
+        <signal>activated()</signal>
+        <receiver>QgsComposerBase</receiver>
+        <slot>image()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>fileNew()</slot>
@@ -512,6 +554,8 @@
     <slot>addLabel()</slot>
     <slot>addVectorLegend()</slot>
     <slot>selectItem()</slot>
+    <slot>image()</slot>
+    <slot>svg()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
