@@ -1,15 +1,15 @@
-TODO,v 1.9 2004/01/26 08:42:38 timlinux Exp
+TODO,v 1.10 2004/01/27 07:10:15 gsherman Exp
 TODO List for getting to version 0.1 (in no order of importance)
  1. Fix QgsProjectIo so that qgis projects can be saved and loaded. Major areas
     needing attention are customized raster settings and symbology for vector
     layers.
  2. Plugin manager needs to track which plugins are already loaded and allow
     user to unload a plugin from the plugin manager dialog.
- 3. Raster legend items need to be fixed to properly display raster name and
-    a suitable pixmap. DONE (TS) Will improve later.
- 4. Implement context menus for raster and vector layers. This is partially
+ 3. DONE (TS): Raster legend items need to be fixed to properly display raster name and
+    a suitable pixmap.  Will improve later.
+ 4. DONE (TS/GS) Implement context menus for raster and vector layers. This is partially
     done for vector layers but needs more work to adjust the menu based on
-    the vector layer types. DONE for raster (TS)
+    the vector layer types. Will add advanced functions later.
  5. Toolbar buttons related to layer functions need to be disabled when not
     appropriate (eg. table and select buttons when a raster is selected in 
     the legend)
@@ -22,8 +22,8 @@ TODO List for getting to version 0.1 (in no order of importance)
  9. DONE (TS): Remove *.adf from all rasters filter 
 10. Add options dialog to store user preferences.
 11. Add Help (HTML opened in user specified browser)
-12. Modify cursors so the black cursor / transparency bounndaries are bordered with a 
-    1 pixel wide white border (to prevent losing the cursor over all black image regions. DONE (TS)
+12. DONE (TS): Modify cursors so the black cursor / transparency bounndaries are bordered with a 
+    1 pixel wide white border (to prevent losing the cursor over all black image regions. 
 13. Update file open boxes to remember the last filter used in that session.
 14. Add vector of view extents and replace the Previous Extent function with
     Forward and Back view buttons to allow user to move back and forth between
@@ -43,3 +43,6 @@ TODO List for getting to version 0.1 (in no order of importance)
 22. On the properrties dialog for pg layer, can you make an apply button or wait cursor or progress bar. 
     The gui is currently quite unresponsive when changing the layer type.
 23. Go through all dialogs and neaten up field labels to mixed case - e.g. on symbolisation dialog for vectors
+
+For version 0.2
+1. PostgreSQL/PostGIS layer management plugin (create/delete layers)
