@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.40 2004/03/27 13:50:24 jobi Exp
+ChangeLog,v 1.41 2004/03/28 00:05:12 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-27 [ts] 0.1.0devel18
+** Fix for cl parameter "snapshot" to ensure events are process (ie canvas is
+drawn!) before snapshot is taken.
 
 2004-03-27 [jobi] 0.1.0devel17
 ** autogen.sh now passes paramters to configure
