@@ -39,7 +39,7 @@ DATE=`date +%F`
 MSG=`sed -e '/\*\{20\}/,$d' ${TMPFILE}`
 
 head -n 5 ChangeLog > ChangeLog.tmp
-echo -e "${DATE} [${NAME}] ${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${NEXTRA_VERSION}\n" >> ChangeLog.tmp
+echo "${DATE} [${NAME}] ${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${NEXTRA_VERSION}" >> ChangeLog.tmp
 echo "${MSG}" >> ChangeLog.tmp
 tail -n $DIFFLINES ChangeLog >> ChangeLog.tmp
 mv ChangeLog.tmp ChangeLog
