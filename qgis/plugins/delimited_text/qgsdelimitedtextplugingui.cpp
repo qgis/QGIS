@@ -19,6 +19,7 @@
 #include <qpushbutton.h>
 #include <qsettings.h>
 #include <qfileinfo.h>
+#include <qregexp.h>
 #include "qgsdelimitedtextplugingui.h"
 #include "../../src/qgisiface.h"
 
@@ -82,7 +83,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
         " using delimiter " << txtDelimiter->text() << std::endl;
 #endif
 
-      QStringList fieldList = QStringList::split(txtDelimiter->text(), line);
+      QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line, true);
 
 #ifdef QGISDEBUG
       std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 
