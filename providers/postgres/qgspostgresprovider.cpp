@@ -26,6 +26,7 @@
 #include <qmessagebox.h>
 #include <qcursor.h>
 #include <qobject.h>
+#include <qregexp.h> 
 
 // for ntohl
 #ifdef WIN32
@@ -262,7 +263,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       mCountThread.start();
       std::cout << "QgsPostgresProvider: Main thread just dispatched mCountThread" << std::endl;
       
-
     } else {
       // the table is not a geometry table
       numberFeatures = 0;
@@ -302,6 +302,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
+
   std::cout << "QgsPostgresProvider: About to wait for mExtentThread" << std::endl;
 
   mExtentThread.wait();
@@ -318,7 +319,7 @@ QgsPostgresProvider::~QgsPostgresProvider()
   // (otherwise they will get destroyed prematurely)
   QApplication::sendPostedEvents(this, QGis::ProviderExtentCalcEvent);
   QApplication::sendPostedEvents(this, QGis::ProviderCountCalcEvent);
-  
+
   PQfinish(connection);
   
   std::cout << "QgsPostgresProvider: deconstructing." << std::endl;
@@ -432,9 +433,10 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       unsigned char *feature = new unsigned char[returnedLength + 1];
       memset(feature, '\0', returnedLength + 1);
       memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength);
-#ifdef QGSIDEBUG
-      int wkbType = *((int *) (feature + 1));
-      std::cout << "WKBtype is: " << wkbType << std::endl;
+#ifdef QGISDEBUG
+      // a bit verbose
+      //int wkbType = *((int *) (feature + 1));
+      //std::cout << "WKBtype is: " << wkbType << std::endl;
 #endif
 
       f->setGeometry(feature, returnedLength + 1);
@@ -511,9 +513,10 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
       unsigned char *feature = new unsigned char[returnedLength + 1];
       memset(feature, '\0', returnedLength + 1);
       memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
-#ifdef QGSIDEBUG
-      int wkbType = *((int *) (feature + 1));
-      std::cout << "WKBtype is: " << wkbType << std::endl;
+#ifdef QGISDEBUG
+      // Too verbose
+      //int wkbType = *((int *) (feature + 1));
+      //std::cout << "WKBtype is: " << wkbType << std::endl;
 #endif
 
       f->setGeometry(feature, returnedLength + 1);
@@ -544,6 +547,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   std::cerr << "Selection rectangle is " << *rect << std::endl;
   std::cerr << "Selection polygon is " << rect->asPolygon() << std::endl;
 #endif
+
   QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
       + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(tableName);
@@ -797,67 +801,148 @@ QString QgsPostgresProvider::endianString()
   }
 }
 
-QString QgsPostgresProvider::getPrimaryKey(){
-  QString sql = "select oid from pg_class where relname = '" + tableName + "'";
-#ifdef QGISDEBUG
-  std::cerr << "Getting primary key" << std::endl;
-  std::cerr << sql << std::endl;
-#endif
-  PGresult *pk = PQexec(connection,(const char *)sql);
-#ifdef QGISDEBUG
-  std::cerr << "Got " << PQntuples(pk) << " rows " << std::endl;
-#endif
-  // get the oid for the table
-  QString oid = PQgetvalue(pk,0,0);
-  // check to see if there is a primary key
-  sql = "select indkey from pg_index where indrelid = " +
-    oid + " and indisprimary = 't'";
-#ifdef QGISDEBUG
-  std::cerr << sql << std::endl;
-#endif
-  PQclear(pk);
-  pk = PQexec(connection,(const char *)sql);
-  // if we got no tuples we ain't go no pk :)
-  if(PQntuples(pk) == 0){
-    // no key - should we warn the user that performance will suffer
-#ifdef QGISDEBUG
-    std::cerr << "Table has no primary key -- using oid to fetch records" << std::endl;
-#endif
-    // Need to check that there is an oid column for the table.
-    sql = "select oid from " + tableName + " limit 1";
-    PGresult* oidPresent = PQexec(connection, (const char*)sql);
-    if (PQntuples(oidPresent) == 0)
-    {
-      valid = false;
-      QApplication::restoreOverrideCursor();
-      QMessageBox::warning(0, QObject::tr("No oid column"),
-	  QObject::tr("The table or view has no oid column. \n"
-	  "This is most likely because it is a view.\n"
-	  "For Qgis to work correctly the view must have a"
-	  " column called oid.\nThis column should have an integer"
-	  " type and be unique for each row in the view.\n"
-          " For better performance, the column should"
-          " also be indexed or be\n derived from an indexed"
-          " column."));
-      QApplication::setOverrideCursor(Qt::waitCursor);
-    }
-    PQclear(oidPresent);
+QString QgsPostgresProvider::getPrimaryKey()
+{
+  // check to see if there is a primary key on the relation
+  /*
+     Process to determine the fields used in a primary key for a table:
 
-    primaryKey = "oid";
-  }else{
+     test=# select indkey from pg_index where indisprimary = 't' 
+            and indrelid = 
+            (select oid from pg_class where relname = 'earthquakes';
+     indkey
+     --------
+     1 5
+     (1 row)
+
+     Primary key is composed of fields 1 and 5
+  */
+  QString sql = "select indkey from pg_index where indisprimary = 't' and "
+    "indrelid = (select oid from pg_class where relname = '"
+    + tableName + "')";
+
+#ifdef QGISDEBUG
+  std::cerr << "Getting primary key using '" << sql << "'" << std::endl;
+#endif
+
+  PGresult *pk = PQexec(connection,(const char *)sql);
+
+#ifdef QGISDEBUG
+  std::cout << "Got " << PQntuples(pk) << " rows." << std::endl;
+#endif
+
+  // if we got no tuples we ain't go no pk :)
+  if( PQntuples(pk) == 0 )
+  {
+#ifdef QGISDEBUG
+    std::cout << "Relation has no primary key -- "
+	      << "investigating alternatives" << std::endl;
+#endif
+
+    // Two options here. If the relation is a table, see if there is
+    // an oid column that can be used instead.
+    // If the relation is a view try to find a suitable column to use as
+    // the primary key.
+
+    primaryKey = "";
+
+    sql = "select relkind from pg_class where relname = '" 
+      + tableName + "'";
+    PGresult* tableType = PQexec(connection, (const char*) sql);
+    QString type = PQgetvalue(tableType, 0, 0);
+    PQclear(tableType);
+
+    if (type == "t") // the relation is a table
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Relation is a table. Checking to see if it has an "
+		<< "oid column.\n";
+#endif
+      sql = "select oid from " + tableName + " limit 1";
+      PGresult* oidPresent = PQexec(connection, (const char*)sql);
+
+      if (PQntuples(oidPresent) == 0)
+      {
+	valid = false;
+	QApplication::restoreOverrideCursor();
+	QMessageBox::warning(0, QObject::tr("No oid column in table"),
+	    QObject::tr("The table has no primary key nor oid column. \n"
+		  "Qgis requires that the table either has a primary key \n"
+		  "or has a column containing the PostgreSQL oid.\n"
+		  "For better performance the column should be indexed\n"));
+	QApplication::setOverrideCursor(Qt::waitCursor);
+      }
+      else
+      {
+	// Could warn the user here that performance will suffer if
+	// oid isn't indexed (and that they may want to add a
+	// primary key to the table)
+	primaryKey = "oid";
+      }
+      PQclear(oidPresent);
+    }
+    else if (type = "v") // the relation is a view
+    {
+      // Have a poke around the view to see if any of the columns
+      // could be used as the primary key.
+
+      // Get the select statement that defines the view
+      sql = "select definition from pg_views where viewname = '" 
+	+ tableName + "'";
+      PGresult* def = PQexec(connection, (const char*)sql);
+      if (PQntuples(def) == 0)
+	qDebug("View " + tableName + " is not a view!");
+      QString viewDef = PQgetvalue(def, 0, 0);
+      PQclear(def);
+
+      table_cols cols;
+      // Find columns in the view that have unique constraints on the
+      // underlying table columns 
+      findTableColumns(viewDef, cols);
+      // and choose one of them
+      primaryKey = chooseViewColumn(cols);
+
+      if (primaryKey.isEmpty())
+      {
+	valid = false;
+	QApplication::restoreOverrideCursor();
+	QMessageBox::warning(0, QObject::tr("No 'primary key' column in view"),
+	    QObject::tr("The view has no column suitable for use as a "
+	       "primary key.\n"
+	       "Qgis requires that the view have a column that can be\n"
+	       "used as a primary key. It should be of type int4 and contain\n"
+	       "a unique value for each row of the table.\n"
+               "For better performance the column should be derived\n"
+	       "from an indexed column"));
+	QApplication::setOverrideCursor(Qt::waitCursor);
+      }
+    }
+    else
+      qWarning("Unexpected relation type of '" + type + "'.");
+  }
+  else
+  {
     // store the key column
     QString keyString = PQgetvalue(pk,0,0);
     QStringList columns = QStringList::split(" ", keyString);
-    if(columns.count() > 1){
+    if (columns.count() > 1)
+    {
+      valid = false;
+      QApplication::restoreOverrideCursor();
+      QMessageBox::warning(0, QObject::tr("No primary key column in table"),
+	     QObject::tr("The table has a primary key that is composed of \n"
+			 "more than one column. Qgis does not currently \n"
+			 "support this."));
+	QApplication::setOverrideCursor(Qt::waitCursor);
       //TODO concatenated key -- can we use this?
 #ifdef QGISDEBUG
       std::cerr << "Table has a concatenated primary key" << std::endl;
 #endif
     }
-    primaryKeyIndex = attributeFieldsIdMap[columns[0].toInt()];
+    int primaryKeyIndex = attributeFieldsIdMap[columns[0].toInt()];
     QgsField fld = attributeFields[primaryKeyIndex];
     // if the primary key is 4-byte integer we use it
-    if(fld.type() == "int4")
+    if (fld.type() == "int4")
     {
       primaryKey = fld.name();
       primaryKeyType = fld.type();
@@ -867,29 +952,224 @@ QString QgsPostgresProvider::getPrimaryKey(){
       // key is not a 4-byte int -- use the oid instead
       primaryKey = "oid";
     }
-#ifdef QGISDEBUG
-    std::cerr << "Primary key is " << primaryKey << std::endl;//);// +<< " at column " << primaryKeyIndex << std::endl;
-#endif
-    //  pLog.flush();
   }
   PQclear(pk);
+
+#ifdef QGISDEBUG
+  std::cout << "Primary key is " << primaryKey << std::endl;
+#endif
+
   return primaryKey;
-  /*
-     Process to determine the fields used in a primary key:
-     test=# select oid from pg_class where relname = 'earthquakes';
-     oid
-     -------
-     24865
-     (1 row)
+}
 
-     test=# select indkey from pg_index where indrelid = 24865 and indisprimary = 't';
-     indkey
-     --------
-     1 5
-     (1 row)
+QString QgsPostgresProvider::chooseViewColumn(const table_cols& cols)
+{
+  // For each relation name and column name need to see if it
+  // has unique constraints on it, or is a primary key (if not,
+  // it shouldn't be used). Should then be left with one or more
+  // entries in the map which can be used as the key.
 
-     Primary key is composed of fields 1 and 5
-     */
+  QString sql, key;
+  table_cols suitable;
+
+  table_cols::const_iterator iter = cols.begin();
+  for (; iter != cols.end(); ++iter)
+  {
+    QString view_col   = iter->first;
+    QString table_name = iter->second.first;
+    QString table_col  = iter->second.second;
+    // This sql returns one or more rows if the column 'table_col' in 
+    // table 'table_name' has one or more columns that satisfy the
+    // following conditions:
+    // 1) the column has data type of int4.
+    // 2) the column has a unique constraint or primary key constraint
+               //    on it.
+    // 3) the constraint applies just to the column of interest (i.e.,
+    //    it isn't a constraint over multiple columns.
+    sql = "select * from pg_constraint where conkey[1] = "
+      "(select attnum from pg_attribute where attname = '"
+      + table_col + "' and attrelid = (select oid from "
+      "pg_class where relname = '" + table_name + "') and "
+      "atttypid = (select oid from pg_type where typname = 'int4')) and "
+      "conrelid = (select oid from pg_class where relname = '" +
+      table_name + "') and (contype = 'p' or contype = 'u') "
+      " and array_dims(conkey) = '[1:1]'";
+
+#ifdef QGISDEBUG
+    std::cout << "Column " << view_col << " from " 
+	      << table_name << "." << table_col;
+#endif
+    PGresult* result = PQexec(connection, (const char*)sql);
+    if (PQntuples(result) == 1)
+      suitable[view_col] = iter->second;
+
+#ifdef QGISDEBUG
+    if (PQntuples(result) == 1)
+      std::cout << " is suitable.\n";
+    else
+      std::cout << " is not suitable.\n";
+#endif
+    PQclear(result);
+  }
+
+  // If there is more than one suitable column pick one that is
+  // indexed, else pick the one called 'oid' if it exists, else
+  // pick the first one in suitable. 
+  if (suitable.size() == 1)
+  {
+    key = suitable.begin()->first;
+#ifdef QGISDEBUG
+    std::cout << "Picked column " << key
+	      << " as it is the only column with a unique"
+	      << " constraint.\n";
+#endif
+  }
+  else if (suitable.size() > 1)
+  {
+    // Search for one with an index
+    table_cols::const_iterator i = suitable.begin();
+    for (; i != suitable.end(); ++i)
+    {
+      sql = "select * from pg_index where indrelid = (select oid "
+	"from pg_class where relname = '" + i->second.first + 
+	"') and indkey[0] = "
+	"(select attnum from pg_attribute where attrelid = "
+	"(select oid from pg_class where relname = '" +
+	i->second.first + "') and attname = '" + 
+	i->second.second + "')";
+      PGresult* result = PQexec(connection, (const char*)sql);
+      if (PQntuples(result) > 0)
+      { // Got one. Use it.
+	key = i->first;
+#ifdef QGISDEBUG
+	std::cout << "Picked column '" << key
+		  << "' as the key because it has an index.\n";
+#endif
+	break;
+      }
+      PQclear(result);
+    }
+
+    if (key.isEmpty())
+    {
+      // If none have indices, search for one named 'oid'. This is
+      // legacy support. Could be removed in the future.
+      i = suitable.find("oid");
+      if (i != suitable.end())
+      {
+	key = i->first;
+#ifdef QGISDEBUG
+	std::cout << "Picked column " << key
+		  << " as it is probably the postgresql object id "
+		  << " column (which contains unique values) and there are no"
+		  << " columns with indices to choose from\n.";
+#endif
+      }
+      else // else choose the first one in the container
+      {
+	key = suitable.begin()->first;
+#ifdef QGISDEBUG
+	std::cout << "Picked column " << key
+		  << " as it was the first suitable column found"
+		  << " and there are no"
+		  << " columns with indices to choose from\n.";
+#endif
+      }
+      // XXX Remove when findTableColumns() is enhanced.
+      //
+      // Temporary hack to choose a column called 'oid' to
+      // allow for none of the above working due to the
+      // findTableColumns() function currently not detecting
+      // underlying tables if a view refers to a second view.
+      if (key == "" && cols.find("oid") != cols.end())
+	key = "oid";
+    }
+  }
+  return key;
+}
+
+// Finds out the underlying tables and columns for each column in the
+// view defined by the given select statement.
+
+// XXX need to make this recursive to deal with views that refer to
+// views, etc, to get the table at the bottom of each view column.
+
+void QgsPostgresProvider::findTableColumns(QString select_cmd, 
+			std::map<QString, std::pair<QString, QString> >& cols)
+{
+  QRegExp col_regexp("SELECT *(.+) *FROM");
+  col_regexp.setCaseSensitive(false);
+
+  if (col_regexp.search(select_cmd) > -1)
+  {
+#ifdef QGISDEBUG
+    std::cout << "Column definitions are: " << col_regexp.cap(1) << std::endl;
+#endif
+    // Now split the columns definitions on commas to get at actual
+    // column definitions
+    QStringList fields = QStringList::split(QRegExp(" *, *"),
+					    col_regexp.cap(1));
+
+    for (QStringList::iterator i = fields.begin(); i != fields.end(); ++i)
+    {
+      QString f = (*i).simplifyWhiteSpace();
+
+      QString view_col_name, table_col_name, table_name;
+      // if the view column name is renamed, there will be the
+      // 'AS' command, so split on that if present.
+      QRegExp rename_regexp("(.+) AS (.+)");
+      if (rename_regexp.search(f) > -1)
+      {
+	view_col_name = rename_regexp.cap(2);
+	table_col_name = rename_regexp.cap(1);
+      }
+      else
+	table_col_name = f;
+
+      // Now extract the table name from the column
+      // name. It appears that the sql that we get from
+      // postgresql always has the full form of 'relation.column'
+      if (table_col_name.contains('.'))
+      {
+	QStringList tt = QStringList::split('.', table_col_name);
+	table_name = tt[0];
+	table_col_name = tt[1];
+      }
+      else
+	std::cerr << "The view column definition is not in the full form."
+		  << std::endl;
+
+      // If there was no 'AS', the view column name is the same as
+      // the column name from the underlying table.
+      if (view_col_name == "")
+	view_col_name = table_col_name;
+
+#ifdef QGISDEBUG
+      std::cout << "View column '" << view_col_name << "' comes from " 
+		<< table_name << "." << table_col_name << std::endl;
+#endif
+      // If there are braces () in the view_col_name this probably
+      // indicates that the view column is using some sql function
+      // to transform the underlying column. This is probably not
+      // suitable so exclude such columns from the result.
+      if (!view_col_name.contains('('))
+	cols[view_col_name] = 
+	  std::make_pair<QString, QString>(table_name, table_col_name);
+      else
+      {
+#ifdef QGISDEBUG
+	std::cout << "View column '" << view_col_name << "' contains "
+	  "an open bracket in the definition which probably means that "
+	  "a postgreSQL function is being used to derive the column and "
+	  "hence that it is unsuitable for use as a key into the "
+	  "table." << std::endl;
+#endif
+      }
+    }
+  }
+  else
+    std::cerr << "Couldn't extract view column definitions from '"
+	      << select_cmd << "'." << std::endl;
 }
 
 // Returns the minimum value of an attribute
