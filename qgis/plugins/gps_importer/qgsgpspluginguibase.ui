@@ -715,6 +715,18 @@ to transfer the data. If you don't have GPSBabel installed where QGIS can find i
         <receiver>QgsGPSPluginGuiBase</receiver>
         <slot>enableRelevantControls()</slot>
     </connection>
+    <connection>
+        <sender>pbULEditDevices</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGPSPluginGuiBase</receiver>
+        <slot>slotOpenDeviceEditor()</slot>
+    </connection>
+    <connection>
+        <sender>pbDLEditDevices</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsGPSPluginGuiBase</receiver>
+        <slot>slotOpenDeviceEditor()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>pbnOK_clicked()</slot>
@@ -728,6 +740,7 @@ to transfer the data. If you don't have GPSBabel installed where QGIS can find i
     <slot>pbnDLOutput_clicked()</slot>
     <slot>pbnIMPInput_clicked()</slot>
     <slot>pbnIMPOutput_clicked()</slot>
+    <slot>slotOpenDeviceEditor()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
