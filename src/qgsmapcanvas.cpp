@@ -188,19 +188,7 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
           muppY = currentExtent.height() / height();
           muppX = currentExtent.width() / width();
           m_mupp = muppY > muppX ? muppY : muppX;
-#ifdef QGISDEBUG 
-          std::cout << "Current extent is " <<
-            currentExtent.stringRep() << std::endl; std::cout << "MuppX is: " <<
-            muppX << "\nMuppY is: " << muppY << std::endl; 
-          std::cout << "Canvas width: " << width() << ", height: " << height() << std::endl;
-          std::cout << "Extent width: " << currentExtent.width() << ", height: " 
-            << currentExtent.height() << std::endl; 
-            QPaintDeviceMetrics pdm(this); 
-          std::cout << "dpiX " << pdm.logicalDpiX() << ", dpiY " <<
-            pdm.logicalDpiY() << std::endl; 
-          std::cout << "widthMM " << pdm.widthMM() << ", heightMM " 
-            << pdm.heightMM() << std::endl; 
-#endif
+
           // calculate the actual extent of the mapCanvas
           double dxmin, dxmax, dymin, dymax, whitespace;
           if (muppY > muppX)
@@ -219,12 +207,12 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
               dymax = currentExtent.yMax() + whitespace;
 
             }
-#ifdef QGISDEBUG
-        std::cout << "Scale (assuming meters as map units) = 1:" 
-          << ((dxmax-dxmin) * 3.28 * 12)/(width()/pdm.logicalDpiX()) << std::endl; 
-#endif
-//      std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
-//        endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
+
+        //update the scale shown on the statusbar
+	currentScale(0);
+
+          //std::cout << "dxmin: " << dxmin << std::endl << "dymin: " << dymin << std::
+          // endl << "dymax: " << dymax << std::endl << "whitespace: " << whitespace << std::endl;
           coordXForm->setParameters(m_mupp, dxmin, dymin, height());  //currentExtent.xMin(),      currentExtent.yMin(), currentExtent.yMax());
           // update the currentExtent to match the device coordinates
           //GS - removed the current extent update to fix bug --
@@ -262,6 +250,54 @@ void QgsMapCanvas::render2(QPaintDevice * theQPaintDevice)
       dirty = false;
       repaint();
     }
+}
+
+void QgsMapCanvas::currentScale(int thePrecision)
+{
+          // calculate the translation and scaling parameters
+          double muppX, muppY;
+          muppY = currentExtent.height() / height();
+          muppX = currentExtent.width() / width();
+          m_mupp = muppY > muppX ? muppY : muppX;
+
+          std::cout << "Current extent is " <<
+            currentExtent.stringRep() << std::endl; std::cout << "MuppX is: " <<
+            muppX << "\nMuppY is: " << muppY << std::endl; 
+          std::cout << "Canvas width: " << width() << ", height: " << height() << std::endl;
+          std::cout << "Extent width: " << currentExtent.width() << ", height: " 
+            << currentExtent.height() << std::endl; 
+            QPaintDeviceMetrics pdm(this); 
+          std::cout << "dpiX " << pdm.logicalDpiX() << ", dpiY " <<
+            pdm.logicalDpiY() << std::endl; 
+          std::cout << "widthMM " << pdm.widthMM() << ", heightMM " 
+            << pdm.heightMM() << std::endl; 
+	    
+
+          // calculate the actual extent of the mapCanvas
+          double dxmin, dxmax, dymin, dymax, whitespace;
+          if (muppY > muppX)
+            {
+              dymin = currentExtent.yMin();
+              dymax = currentExtent.yMax();
+              whitespace = ((width() * m_mupp) - currentExtent.width()) / 2;
+              dxmin = currentExtent.xMin() - whitespace;
+              dxmax = currentExtent.xMax() + whitespace;
+          } else
+            {
+              dxmin = currentExtent.xMin();
+              dxmax = currentExtent.xMax();
+              whitespace = ((height() * m_mupp) - currentExtent.height()) / 2;
+              dymin = currentExtent.yMin() - whitespace;
+              dymax = currentExtent.yMax() + whitespace;
+
+            }	    
+	    
+          std::cout << "Scale (assuming meters as map units) = 1:" 
+          << ((dxmax-dxmin) * 3.28 * 12)/(width()/pdm.logicalDpiX()) << std::endl; 
+
+	    //@todo return a proper value
+	    QString myScaleString = QString("Scale 1: ")+QString::number(((dxmax-dxmin) * 3.28 * 12)/(width()/pdm.logicalDpiX()),'f',thePrecision);
+	    emit scaleChanged(myScaleString) ;
 }
 
 //Render is deprecated! Use Render2
@@ -343,6 +379,7 @@ QgsRect QgsMapCanvas::extent()
 void QgsMapCanvas::setExtent(QgsRect r)
 {
   currentExtent = r;
+  emit extentsChanged(currentExtent.stringRep(2));
 }
 
 void QgsMapCanvas::clear()
@@ -357,6 +394,7 @@ void QgsMapCanvas::zoomFullExtent()
   currentExtent = fullExtent;
   clear();
   render2();
+  emit extentsChanged(currentExtent.stringRep(2));
 }
 
 void QgsMapCanvas::zoomPreviousExtent()
@@ -368,6 +406,7 @@ void QgsMapCanvas::zoomPreviousExtent()
       previousExtent = tempRect;
       clear();
       render2();
+      emit extentsChanged(currentExtent.stringRep(2));
     }
 }
 
@@ -394,6 +433,7 @@ void QgsMapCanvas::zoomToSelected()
           currentExtent.setYmax(rect.yMax() + 25);
           clear();
           render2();
+	  emit extentsChanged(currentExtent.stringRep(2));
           return;
         }
       //zoom to an area
@@ -406,6 +446,7 @@ void QgsMapCanvas::zoomToSelected()
           currentExtent.setYmax(rect.yMax());
           clear();
           render2();
+	  emit extentsChanged(currentExtent.stringRep(2));
           return;
         }
     }
@@ -458,6 +499,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             currentExtent.setXmax(ur.x());
             currentExtent.setYmax(ur.y());
             currentExtent.normalize();
+	    emit extentsChanged(currentExtent.stringRep(2));
             clear();
             render2();
             
@@ -506,6 +548,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #endif
               clear();	
               render2();
+	      emit extentsChanged(currentExtent.stringRep(2));
             }
             break;
 
@@ -541,6 +584,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 }
               clear();	
               render2();
+	      emit extentsChanged(currentExtent.stringRep(2));
             }
             break;
 
@@ -617,6 +661,7 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 {
   dirty = true;
   pmCanvas->resize(e->size());
+  emit extentsChanged(currentExtent.stringRep(2));
 }
 
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
@@ -709,6 +754,7 @@ void QgsMapCanvas::updateFullExtent(QgsRect r)
     fullExtent.setYmin(r.yMin());
   if (r.yMax() > fullExtent.yMax())
     fullExtent.setYmax(r.yMax());
+  emit extentsChanged(currentExtent.stringRep(2));
 }
 
 /*const std::map<QString,QgsMapLayer *> * QgsMapCanvas::mapLayers(){
@@ -753,7 +799,7 @@ void QgsMapCanvas::remove(QString key)
               fullExtent.scale(1.1);
             }
           updateFullExtent(ml->extent());
-        }
+        	}
 
       mi++;
 

@@ -686,10 +686,14 @@ public:
     void initContextMenu(QgisApp *);
     /** \brief Accessor for the superclass's popmenu var - implements the pure virtual funtion. */
     QPopupMenu *contextMenu();
-    /** \brief Emit a signal asking for a repaint.  */
+    /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
     /** \brief Obtain GDAL Metadata for this layer */
-    QString getMetadata();    
+    QString getMetadata(); 
+signals:
+    
+    /** \brief emit a signal to notify of a progress event */
+    void setProgress(int theProgress, int theTotalSteps);   
     
 public slots:    
     /** \brief Create 3 gdal pyramid overviews (2,4,8) for this layer.
