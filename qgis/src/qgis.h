@@ -50,9 +50,15 @@ namespace QGis
 		Line,
 		Polygon
 	    };
-
+  static const char *qgisVectorGeometryType[] =
+  {
+    "Point",
+    "Line",
+    "Polygon"
+  };
   //! description strings for feature types
- static const char *qgisFeatureTypes[] = {
+ static const char *qgisFeatureTypes[] = 
+ {
     "Null",
     "WKBPoint",
 		"WKBLineString",
