@@ -417,7 +417,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
       driverName = driver->GetName();
 
-#ifdef QT_DEBUG
+#ifdef DEBUG
       qDebug("got driver string %s", driver->GetName());
 #endif
 
@@ -564,7 +564,7 @@ void QgisApp::addLayer()
 
   if (pOgr.isEmpty())
   {
-#ifdef QT_DEBUG
+#ifdef DEBUG
      qDebug( "unable to get OGR registry" );
 #endif
   }
@@ -767,7 +767,7 @@ static void buildSupportedRasterFileFilter_(QString & fileFilters)
       if (!isSupportedRasterDriver_(driver->GetDescription()))
         {
           // not supported, therefore skip
-#ifdef QT_DEBUG
+#ifdef DEBUG
           qWarning("skipping unsupported driver %s", driver->GetDescription());
 #endif
           continue;
