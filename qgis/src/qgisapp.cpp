@@ -3550,6 +3550,8 @@ void QgisApp::setTheme(QString themeName)
     actionAddNonDbLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_vector_layer.png")));
     actionAddRasterLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_raster_layer.png")));
     actionAddLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_pg_layer.png")));
+    actionRemoveLayer->setIconSet(QIconSet(QPixmap(iconPath + "/remove_layer.png")));
+    actionNewVectorLayer->setIconSet(QIconSet(QPixmap(iconPath + "/digitise_vector_layer.png")));
     actionAddAllToOverview->setIconSet(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")));
     actionHideAllLayers->setIconSet(QIconSet(QPixmap(iconPath + "/hide_all_layers.png")));
     actionShowAllLayers->setIconSet(QIconSet(QPixmap(iconPath + "/show_all_layers.png")));
