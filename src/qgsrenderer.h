@@ -30,10 +30,9 @@ class QgsDlgVectorLayerProperties;
 class QgsRenderer
 {
  public:
-    /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn. If pr is not 0, the renderer dialog is copied to the pointer in the layer properties instead of directly to the vector layer and no image is rendered 
+    /**Sets the initial symbology configuration for a layer. Besides of applying default symbology settings, an instance of the corresponding renderer dialog is created and associated with the layer (or with the property dialog, if pr is not 0). Finally, a pixmap for the legend is drawn (or, if pr is not 0, it is stored in the property dialog, until the settings are applied).
      @param layer the vector layer associated with the renderer
-     @param pr the layer properties class involved
-    */
+     @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
     virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0)=0;
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter*/
     virtual void renderFeature(QPainter* p, QgsFeature* f)=0;

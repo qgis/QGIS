@@ -33,24 +33,25 @@ class QgsSingleSymRenderer: public QgsRenderer
  public:
     QgsSingleSymRenderer();
     ~QgsSingleSymRenderer();
-    /**Replaces the current m_item by ri*/
+    /**Replaces the current mItem by ri*/
     void addItem(QgsRenderItem ri);
-    /**Returns a pointer to m_item*/
+    /**Returns a pointer to mItem*/
     QgsRenderItem* item();
     /**Renders an OGRFeature*/
     void renderFeature(QPainter* p, QgsFeature* f);
-    /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn
-     @param layer the vector layer associated with the renderer*/
+    /**Sets the initial symbology configuration for a layer. Besides of applying default symbology settings, an instance of the corresponding renderer dialog is created and associated with the layer (or with the property dialog, if pr is not 0). Finally, a pixmap for the legend is drawn (or, if pr is not 0, it is stored in the property dialog, until the settings are applied).
+       @param layer the vector layer associated with the renderer
+       @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
     virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes();
  protected:
-    QgsRenderItem m_item;
+    QgsRenderItem mItem;
 };
 
 inline QgsRenderItem* QgsSingleSymRenderer::item()
 {
-    return &m_item;
+    return &mItem;
 }
 inline bool QgsSingleSymRenderer::needsAttributes(){
   return false;
