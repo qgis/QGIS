@@ -68,7 +68,7 @@ public:
     QString layerID() const;
 
     /** sets check box state and consequently the visibility of corresponding map layer */
-    void setOn( bool );
+    //void setOn( bool );
 
 private:                       // Private attributes
 

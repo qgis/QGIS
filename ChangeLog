@@ -1,7 +1,12 @@
 QGIS Change Log
-ChangeLog,v 1.95 2004/05/25 18:21:54 larsl Exp
+ChangeLog,v 1.96 2004/05/26 11:30:43 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-26 [larsl] 0.3.0devel1
+** Fixed a bug that caused the legend checkboxes to always be unchecked when
+   using Qt 3.1.2 by removing QgsLegendItem::setOn(), don't know how this
+   affects newer Qt
 
 2004-05-25 [larsl] 0.2.0devel37
 ** Show the legend widgets in debug mode too
