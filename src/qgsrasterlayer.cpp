@@ -2079,58 +2079,77 @@ void QgsRasterLayer::initContextMenu(QgisApp * theApp)
 
 QString QgsRasterLayer::getMetadata()
 {
-    QString myMetadataQString = "<html><body>";
-    myMetadataQString += "<table>";
+  QString myMetadataQString = "<html><body>";
+  myMetadataQString += "<table>";
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Driver:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += QString(gdalDataset->GetDriver()->GetDescription());
+  myMetadataQString += "<br>";
+  myMetadataQString += QString(gdalDataset->GetDriver()->GetMetadataItem(GDAL_DMD_LONGNAME));
+  myMetadataQString += "</td></tr>";
+
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Dimensions:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("X: ") + QString::number(gdalDataset->GetRasterXSize()) +
+      tr(" Y: ") + QString::number(gdalDataset->GetRasterYSize()) + tr(" Bands: ") + QString::number(gdalDataset->GetRasterCount());
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Pyramid overviews:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  
+  GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
+  if( GDALGetOverviewCount(myGDALBand) > 0 )
+  {
+    int myOverviewInt;
+    for( myOverviewInt = 0;
+            myOverviewInt < GDALGetOverviewCount(myGDALBand);
+            myOverviewInt++ )
+    {
+      GDALRasterBandH myOverview;
+      myOverview = GDALGetOverview( myGDALBand, myOverviewInt );
+      myMetadataQString += "<p>X : " + QString::number(GDALGetRasterBandXSize( myOverview ));
+      myMetadataQString += ",Y " + QString::number(GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+    }
+  }
+  myMetadataQString += "</td></tr>";
+
+  if (gdalDataset->GetProjectionRef() != NULL)
+  {
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Driver:");
+    myMetadataQString += tr("Projection: ");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += QString(gdalDataset->GetDriver()->GetDescription());
-    myMetadataQString += "<br>";
-    myMetadataQString += QString(gdalDataset->GetDriver()->GetMetadataItem(GDAL_DMD_LONGNAME));
+    myMetadataQString += QString(gdalDataset->GetProjectionRef());
+    myMetadataQString += "</td></tr>";
+  }
+  if (gdalDataset->GetGeoTransform(adfGeoTransform) == CE_None)
+  {
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Origin:");
+    myMetadataQString += "</td></tr>";
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += QString::number(adfGeoTransform[0]);
+    myMetadataQString += ",";
+    myMetadataQString += QString::number(adfGeoTransform[3]);
     myMetadataQString += "</td></tr>";
 
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Dimensions:");
+    myMetadataQString += tr("Pixel Size:");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += tr("X: ") + QString::number(gdalDataset->GetRasterXSize()) +
-                         tr(" Y: ") + QString::number(gdalDataset->GetRasterYSize()) + tr(" Bands: ") + QString::number(gdalDataset->GetRasterCount());
+    myMetadataQString += QString::number(adfGeoTransform[1]);
+    myMetadataQString += ",";
+    myMetadataQString += QString::number(adfGeoTransform[5]);
     myMetadataQString += "</td></tr>";
-
-
-    if (gdalDataset->GetProjectionRef() != NULL)
-    {
-        myMetadataQString += "<tr><td bgcolor=\"gray\">";
-        myMetadataQString += tr("Projection: ");
-        myMetadataQString += "</td></tr>";
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
-        myMetadataQString += QString(gdalDataset->GetProjectionRef());
-        myMetadataQString += "</td></tr>";
-    }
-    if (gdalDataset->GetGeoTransform(adfGeoTransform) == CE_None)
-    {
-        myMetadataQString += "<tr><td bgcolor=\"gray\">";
-        myMetadataQString += tr("Origin:");
-        myMetadataQString += "</td></tr>";
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
-        myMetadataQString += QString::number(adfGeoTransform[0]);
-        myMetadataQString += ",";
-        myMetadataQString += QString::number(adfGeoTransform[3]);
-        myMetadataQString += "</td></tr>";
-
-        myMetadataQString += "<tr><td bgcolor=\"gray\">";
-        myMetadataQString += tr("Pixel Size:");
-        myMetadataQString += "</td></tr>";
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
-        myMetadataQString += QString::number(adfGeoTransform[1]);
-        myMetadataQString += ",";
-        myMetadataQString += QString::number(adfGeoTransform[5]);
-        myMetadataQString += "</td></tr>";
-    }
-    myMetadataQString += "</table>";
-    myMetadataQString += "</body></html>";
-    return myMetadataQString;
+  }
+  myMetadataQString += "</table>";
+  myMetadataQString += "</body></html>";
+  return myMetadataQString;
 }
 
 void QgsRasterLayer::buildOverviews()
