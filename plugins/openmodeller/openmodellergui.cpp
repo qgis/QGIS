@@ -36,6 +36,8 @@
 #include <qspinbox.h>
 #include <qtooltip.h> 
 #include <qprogressbar.h>
+#include <qscrollview.h>
+
 //
 //openmodeller includes
 #ifdef WIN32
@@ -72,6 +74,12 @@
   //temporarily make a layout
   //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
+  
+  
+  
+  
+  
+  
 }
 
     OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
@@ -150,12 +158,25 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
     std::cout << "mLayout exists so deleting" << std::endl;
     delete mLayout;
   }
-  //mLayout = new QGridLayout(mParametersFrame,myRowCountInt+1,3); 
-  mLayout = new QGridLayout(frameParameters,myRowCountInt+1,3); 
-  //mLayout->setColSpacing(0,200);
+  
+   
+  //Scroll view within the frame
+  QScrollView *myScrollView = new QScrollView(frameParameters);
+  //myScrollView->setGeometry();   
+  
+  QGridLayout *myScrollViewLayout = new QGridLayout(frameParameters, 0,0);
+  myScrollViewLayout->addWidget(myScrollView,0,0);
+  
+  //LayoutWidget within the scroll view
+  QWidget *myLayoutWidget=new QWidget();
+  //myLayoutWidget->setGeometry();
+  
+  //GridLayout within the LayoutWidget
+  mLayout = new QGridLayout(myLayoutWidget, myRowCountInt+1,3); 
   mLayout->setColSpacing(1,10);
-  //mLayout->setColSpacing(2,50);
-  //mLayout->setColSpacing(3,0);
+  
+
+  
 
   //reinitialise the metadataarray 
   myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
@@ -177,11 +198,15 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 
       if (myParameterCountInt==0)
       {
-        //Set label and button for algorithms with no parameters
+        //Algorithms with NO parameters
+	
+	//Set label and button for algorithms with no parameters
         lblParameters->setText("No user definable parameters available");
         //pbnDefaultParameters->setEnabled(false);
       }
       else
+        //Algorithms WITH parameters
+      
       {
         //Set label and button for algorithms with parameters
         lblParameters->setText("Algorithm specific parameters");
@@ -201,8 +226,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             std::cout << QString(myParameter->id).ascii() << " parameter is integer type" << std::endl;
 
             //Create components
-            QSpinBox * mySpinBox = new QSpinBox (frameParameters, ("spin"+QString(myParameter->id)));
-            QLabel * myLabel = new QLabel (frameParameters, ("lbl"+QString(myParameter->id)));
+            QSpinBox * mySpinBox = new QSpinBox (myLayoutWidget, ("spin"+QString(myParameter->id)));
+            QLabel * myLabel = new QLabel (myLayoutWidget, ("lbl"+QString(myParameter->id)));
 
             //set spinbox details and write to map
             if (!myParameter->has_min==0) mySpinBox->setMinValue(myParameter->min);
@@ -227,9 +252,13 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 
             //add label and control to form
             mLayout->addWidget(myLabel, i, 0);
-            mLayout->addWidget(mySpinBox, i, 2);
-            mLayout->setRowSpacing(i,30);
-
+            mLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Expanding),i,1);
+	    mLayout->addWidget(mySpinBox, i, 2);
+            //mLayout->setRowSpacing(i,30);
+	    
+	    
+	    
+	    
             //
             // Add the widget to the map
             //
@@ -243,8 +272,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
                       << " type" << std::endl;
 
             //Create components
-            QLineEdit * myLineEdit = new QLineEdit (frameParameters, ("le"+QString(myParameter->id)));
-            QLabel * myLabel = new QLabel (frameParameters, ("lbl"+QString(myParameter->id)));	
+            QLineEdit * myLineEdit = new QLineEdit (myLayoutWidget, ("le"+QString(myParameter->id)));
+            QLabel * myLabel = new QLabel (myLayoutWidget, ("lbl"+QString(myParameter->id)));	
 
             //Set value to previous otherwise to default
             QString myPreviousValue = settings.readEntry("/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myParameter->id);
@@ -265,8 +294,9 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 
             //add label and control to form
             mLayout->addWidget(myLabel, i,0);
-            mLayout->addWidget(myLineEdit,i,2);
-            mLayout->setRowSpacing(i,30);
+            mLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Expanding),i,1);
+	    mLayout->addWidget(myLineEdit,i,2);
+            //mLayout->setRowSpacing(i,30);
             myLineEdit->show();
 
             //
@@ -275,7 +305,9 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             mMap[myParameter->id] = myLineEdit;
             mLabelsMap[myParameter->name] = myLabel;
           }
-        }	
+        
+	}
+	myScrollView->addChild(myLayoutWidget,0,0);		
       }     
       //Exit loop because we have found the correct algorithm
       break;      

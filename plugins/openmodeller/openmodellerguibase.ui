@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>724</width>
-            <height>559</height>
+            <width>600</width>
+            <height>480</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -24,7 +24,7 @@
     <property name="minimumSize">
         <size>
             <width>600</width>
-            <height>400</height>
+            <height>480</height>
         </size>
     </property>
     <property name="maximumSize">
@@ -165,6 +165,23 @@ The openModeller wizard will assist you in carrying out a species distribution m
                     <string>&lt;b&gt;Select model algorithm:&lt;/b&gt;</string>
                 </property>
             </widget>
+            <spacer row="4" column="0">
+                <property name="name">
+                    <cstring>spacer13_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>31</width>
+                        <height>81</height>
+                    </size>
+                </property>
+            </spacer>
             <widget class="QTabWidget" row="3" column="1" rowspan="2" colspan="1">
                 <property name="name">
                     <cstring>tabWidget2</cstring>
@@ -192,22 +209,38 @@ The openModeller wizard will assist you in carrying out a species distribution m
                         </property>
                         <widget class="QLayoutWidget" row="0" column="0">
                             <property name="name">
-                                <cstring>layout7</cstring>
+                                <cstring>layout11</cstring>
                             </property>
                             <grid>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLabel" row="1" column="1">
+                                <widget class="QLabel" row="1" column="0">
                                     <property name="name">
-                                        <cstring>txtVersion</cstring>
+                                        <cstring>textLabel2_2_2</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>120</width>
+                                            <height>0</height>
+                                        </size>
                                     </property>
                                     <property name="font">
                                         <font>
+                                            <family>Arial</family>
+                                            <pointsize>10</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
-                                        <string></string>
+                                        <string>&lt;b&gt;Version:&lt;/b&gt;</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="0" column="0">
@@ -230,41 +263,17 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                     </property>
                                     <property name="font">
                                         <font>
+                                            <family>Arial</family>
+                                            <pointsize>10</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
                                         <string>&lt;b&gt;Algorithm:&lt;/b&gt;</string>
                                     </property>
                                 </widget>
-                                <widget class="QLabel" row="1" column="0">
+                                <widget class="QLabel" row="2" column="1">
                                     <property name="name">
-                                        <cstring>textLabel2_2_2</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>120</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
-                                    </property>
-                                    <property name="text">
-                                        <string>&lt;b&gt;Version:&lt;/b&gt;</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="0" column="1">
-                                    <property name="name">
-                                        <cstring>txtAlgorithm</cstring>
+                                        <cstring>txtAuthor</cstring>
                                     </property>
                                     <property name="font">
                                         <font>
@@ -294,15 +303,29 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                     </property>
                                     <property name="font">
                                         <font>
+                                            <family>Arial</family>
+                                            <pointsize>10</pointsize>
                                         </font>
                                     </property>
                                     <property name="text">
                                         <string>&lt;b&gt;Implemented by:&lt;/b&gt;</string>
                                     </property>
                                 </widget>
-                                <widget class="QLabel" row="2" column="1">
+                                <widget class="QLabel" row="0" column="1">
                                     <property name="name">
-                                        <cstring>txtAuthor</cstring>
+                                        <cstring>txtAlgorithm</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="1">
+                                    <property name="name">
+                                        <cstring>txtVersion</cstring>
                                     </property>
                                     <property name="font">
                                         <font>
@@ -316,7 +339,7 @@ The openModeller wizard will assist you in carrying out a species distribution m
                         </widget>
                         <spacer row="1" column="0">
                             <property name="name">
-                                <cstring>spacer12_2</cstring>
+                                <cstring>spacer25</cstring>
                             </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
@@ -326,8 +349,8 @@ The openModeller wizard will assist you in carrying out a species distribution m
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>21</width>
-                                    <height>31</height>
+                                    <width>20</width>
+                                    <height>21</height>
                                 </size>
                             </property>
                         </spacer>
@@ -388,23 +411,6 @@ The openModeller wizard will assist you in carrying out a species distribution m
                     </grid>
                 </widget>
             </widget>
-            <spacer row="4" column="0">
-                <property name="name">
-                    <cstring>spacer13_2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>31</width>
-                        <height>81</height>
-                    </size>
-                </property>
-            </spacer>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -1268,7 +1274,7 @@ Select the files that will be used to mask areas from the model.  The input mask
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="5">
+            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="3">
                 <property name="name">
                     <cstring>txtAlgorithmParameters</cstring>
                 </property>
@@ -1305,7 +1311,7 @@ Select the files that will be used to mask areas from the model.  The input mask
 If you would like to specify any special parameters for the algorithm you have selected, use the form below. You will need to consult the algorithm documentation to find out what additional parameters can be specified.</string>
                 </property>
             </widget>
-            <widget class="QLayoutWidget" row="0" column="0" rowspan="4" colspan="1">
+            <widget class="QLayoutWidget" row="0" column="0" rowspan="3" colspan="1">
                 <property name="name">
                     <cstring>layout9</cstring>
                 </property>
@@ -1354,9 +1360,17 @@ If you would like to specify any special parameters for the algorithm you have s
                     </spacer>
                 </vbox>
             </widget>
-            <spacer row="2" column="1">
+            <widget class="QPushButton" row="1" column="3">
                 <property name="name">
-                    <cstring>spacer18</cstring>
+                    <cstring>pbnDefaultParameters</cstring>
+                </property>
+                <property name="text">
+                    <string>Set to defaults</string>
+                </property>
+            </widget>
+            <spacer row="1" column="2">
+                <property name="name">
+                    <cstring>spacer20_2</cstring>
                 </property>
                 <property name="orientation">
                     <enum>Horizontal</enum>
@@ -1366,46 +1380,25 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>171</width>
+                        <width>30</width>
                         <height>21</height>
                     </size>
                 </property>
             </spacer>
-            <spacer row="2" column="3" rowspan="1" colspan="3">
+            <widget class="QLabel" row="1" column="1">
                 <property name="name">
-                    <cstring>spacer19</cstring>
+                    <cstring>lblParameters</cstring>
                 </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
+                <property name="font">
+                    <font>
+                        <bold>1</bold>
+                    </font>
                 </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
+                <property name="text">
+                    <string>Algorithm specific parameters:</string>
                 </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>201</width>
-                        <height>21</height>
-                    </size>
-                </property>
-            </spacer>
-            <spacer row="3" column="2">
-                <property name="name">
-                    <cstring>spacer17_3</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>41</width>
-                        <height>40</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QFrame" row="2" column="2">
+            </widget>
+            <widget class="QFrame" row="2" column="1" rowspan="1" colspan="3">
                 <property name="name">
                     <cstring>frameParameters</cstring>
                 </property>
@@ -1443,44 +1436,6 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="midLineWidth">
                     <number>0</number>
-                </property>
-            </widget>
-            <widget class="QPushButton" row="1" column="5">
-                <property name="name">
-                    <cstring>pbnDefaultParameters</cstring>
-                </property>
-                <property name="text">
-                    <string>Set to defaults</string>
-                </property>
-            </widget>
-            <spacer row="1" column="4">
-                <property name="name">
-                    <cstring>spacer20_2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>30</width>
-                        <height>21</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QLabel" row="1" column="1" rowspan="1" colspan="3">
-                <property name="name">
-                    <cstring>lblParameters</cstring>
-                </property>
-                <property name="font">
-                    <font>
-                        <bold>1</bold>
-                    </font>
-                </property>
-                <property name="text">
-                    <string>Algorithm specific parameters:</string>
                 </property>
             </widget>
         </grid>
