@@ -838,7 +838,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
         }
         else if (driverName.startsWith("MapInfo"))
         {
-            myFileFilters += createFileFilter_("MapInfo", "*.mif *.mid *.tab");
+            myFileFilters += createFileFilter_("MapInfo", "*.mif *.tab");
             // XXX needs file filter extension
         }
         else if (driverName.startsWith("DGN"))
