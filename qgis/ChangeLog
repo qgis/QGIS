@@ -1,7 +1,18 @@
 QGIS Change Log
-ChangeLog,v 1.118 2004/06/09 08:19:42 timlinux Exp
+ChangeLog,v 1.119 2004/06/09 12:48:21 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-09 [ts] 0.3.0devel23
+Added "Show in overview" option to vector popup menu. 
+
+Removed overview stuff from debug only version of qgisapp.
+
+Did plumbing for enableing disabling layers in overview from popup context menu.
+
+Whoopdeedooo. :-)
+
+All that remains to do now is sort out syncronisation of layer ordering between main map canvas and overview canvas.
 
 2004-06-09 [ts] 0.3.0devel22
 ** Fixed bug that causes qgis to crash when an empty .dbf is encountered.

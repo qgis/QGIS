@@ -260,18 +260,12 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
   QSplitter *canvasLegendSplit = new QSplitter(frameMain);
   QGridLayout *legendOverviewLayout = new QGridLayout(canvasLegendSplit, 1, 2, 4, 6, "canvasLegendLayout");
-#ifdef QGISDEBUG
   QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
   mMapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
-#else
-  mMapLegend = new QgsLegend(canvasLegendSplit); //frameMain);
-#endif
   mMapLegend->addColumn(tr("Layers"));
   mMapLegend->setSorting(-1);
 
-#ifdef QGISDEBUG
   mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit);
-#endif
   // mL = new QScrollView(canvasLegendSplit);
   //add a canvas
   mMapCanvas = new QgsMapCanvas(canvasLegendSplit);
@@ -827,19 +821,12 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
       layer->setRenderer(renderer);
       renderer->initializeSymbology(layer);
       mMapCanvas->addLayer(layer);
-#ifdef QGISDEBUG
-      if (QMessageBox::information( this, tr("Add to overview"),
-				     tr("Would you like to add this layer to "
-					"the overview map?"),
-				     QMessageBox::Yes, QMessageBox::No) == 
-	  QMessageBox::Yes )
-      {
-        mOverviewCanvas->freeze(false);
-        mOverviewCanvas->addLayer(layer);
-        mOverviewCanvas->render();
-        mOverviewCanvas->zoomFullExtent();
-      }
-#endif
+     //connect up a request from the raster layer to show in overview map
+     QObject::connect(layer, 
+             SIGNAL(showInOverview(QString,bool)), 
+             this, 
+             SLOT(setLayerOverviewStatus(QString,bool)));           
+         
       mProjectIsDirtyFlag = true;
 
    } else
@@ -924,44 +911,37 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
 
            if (layer->isValid())
            {
-              //Register the layer with the layer registry
-              mMapLayerRegistry->addMapLayer(layer);
-              // init the context menu so it can connect to slots
-              // in main app
+             //Register the layer with the layer registry
+             mMapLayerRegistry->addMapLayer(layer);
+             // init the context menu so it can connect to slots
+             // in main app
 
-              layer->initContextMenu(this);
+             layer->initContextMenu(this);
 
-              //add single symbol renderer as default
-              QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
+             //add single symbol renderer as default
+             QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
 
-              Q_CHECK_PTR( renderer );
+             Q_CHECK_PTR( renderer );
 
-              if ( ! renderer )
-              {
-                 mMapCanvas->freeze(false);
-                 QApplication::restoreOverrideCursor();
+             if ( ! renderer )
+             {
+               mMapCanvas->freeze(false);
+               QApplication::restoreOverrideCursor();
 
-                 // XXX insert meaningful whine to the user here
-                 return false; 
-              }
+               // XXX insert meaningful whine to the user here
+               return false; 
+             }
 
-              layer->setRenderer(renderer);
-              renderer->initializeSymbology(layer);
-              mMapCanvas->addLayer(layer);
-#ifdef QGISDEBUG
-      if (QMessageBox::information( this, tr("Add to overview"),
-				  tr("Would you like to add this layer to the "
-				     "overview map?"),
-				  QMessageBox::Yes, QMessageBox::No) ==
-	  QMessageBox::Yes)
-      {
-        mOverviewCanvas->freeze(false);
-        mOverviewCanvas->addLayer(layer);
-        mOverviewCanvas->render();
-        mOverviewCanvas->zoomFullExtent();
-      }
-#endif
-              mProjectIsDirtyFlag = true;
+             layer->setRenderer(renderer);
+             renderer->initializeSymbology(layer);
+             mMapCanvas->addLayer(layer);
+             //connect up a request from the raster layer to show in overview map
+             QObject::connect(layer, 
+                     SIGNAL(showInOverview(QString,bool)), 
+                     this, 
+                     SLOT(setLayerOverviewStatus(QString,bool)));           
+
+             mProjectIsDirtyFlag = true;
            } else
            {
               QString msg = *it + " ";
@@ -1240,8 +1220,7 @@ void QgisApp::addRasterLayer()
     }
  
    addRasterLayer(selectedFiles);
-
-}                               // QgisApp::addRasterLayer()
+}// QgisApp::addRasterLayer()
 
 
 
@@ -1290,27 +1269,16 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
      QObject::connect(layer, 
              SIGNAL(setStatus(QString)), 
              this, 
-             SLOT(showStatusMessage(QString))); 		       		           
+             SLOT(showStatusMessage(QString)));            
      // add it to the mapcanvas collection
      mMapCanvas->addLayer(layer);
-#ifdef QGISDEBUG
-     if (QMessageBox::information( this, tr("Add to overview"),
-				 tr("Would you like to add this layer to the "
-				    "overview map?"),
-				 QMessageBox::Yes, QMessageBox::No) ==
-	 QMessageBox::Yes)
-     {
-       mOverviewCanvas->freeze(false);
-       mOverviewCanvas->addLayer(layer);
-       mOverviewCanvas->render();
-       mOverviewCanvas->zoomFullExtent();
-       std::cout << " Added raster layer to overview map" << std::endl;
-     }
-     else
-     {
-       std::cout << "* NOT * Added raster layer to overview map" << std::endl;
-     }
-#endif
+     
+     //connect up a request from the raster layer to show in overview map
+     QObject::connect(layer, 
+             SIGNAL(showInOverview(QString,bool)), 
+             this, 
+             SLOT(setLayerOverviewStatus(QString,bool)));           
+         
      mProjectIsDirtyFlag = true;
 
      // init the context menu so it can connect to slots in main app
@@ -1411,20 +1379,12 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
                 SLOT(showStatusMessage(QString)));                
         // add it to the mapcanvas collection
         mMapCanvas->addLayer(layer);
+     //connect up a request from the raster layer to show in overview map
+     QObject::connect(layer, 
+             SIGNAL(showInOverview(QString,bool)), 
+             this, 
+             SLOT(setLayerOverviewStatus(QString,bool)));           
 
-#ifdef QGISDEBUG
-        if (QMessageBox::information( this, tr("Add to overview"),
-				    tr("Would you like to add this layer to "
-				       "the overview map?"),
-				    QMessageBox::Yes, QMessageBox::No ) ==
-	    QMessageBox::Yes)
-        {
-          mOverviewCanvas->freeze(false);
-          mOverviewCanvas->addLayer(layer);
-          mOverviewCanvas->render();
-          mOverviewCanvas->zoomFullExtent();
-        }
-#endif
 
         mProjectIsDirtyFlag = true;
         // init the context menu so it can connect to slots in main app
@@ -1591,17 +1551,11 @@ void QgisApp::addDatabaseLayer()
           renderer->initializeSymbology(layer);
           // add it to the mapcanvas collection
           mMapCanvas->addLayer(layer);
-#ifdef QGISDEBUG
-          if (QMessageBox::information( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-				      QMessageBox::Yes, QMessageBox::No ) == 
-	      QMessageBox::Yes)
-          {
-            mOverviewCanvas->freeze(false);
-            mOverviewCanvas->addLayer(layer);
-            mOverviewCanvas->render();
-            mOverviewCanvas->zoomFullExtent();
-          }
-#endif
+     //connect up a request from the raster layer to show in overview map
+     QObject::connect(layer, 
+             SIGNAL(showInOverview(QString,bool)), 
+             this, 
+             SLOT(setLayerOverviewStatus(QString,bool)));           
           mProjectIsDirtyFlag = true;
         } else
         {
@@ -1640,10 +1594,8 @@ void QgisApp::fileNew()
   if (answer != QMessageBox::Cancel)
     {
       mMapCanvas->removeAll();
-#ifdef QGISDEBUG
       mOverviewCanvas->removeAll();
       mOverviewCanvas->clear();
-#endif
       setCaption(tr("Quantum GIS -- Untitled"));
       mMapCanvas->clear();
       // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
@@ -2125,12 +2077,10 @@ void QgisApp::removeLayer()
   //fire a qt signal to notify any objects using that layer that they should
   //remove it immediately
   mMapLayerRegistry->removeMapLayer(layer->getLayerID());
-#ifdef QGISDEBUG
   mOverviewCanvas->freeze(false);
   // draw the map
   mOverviewCanvas->clear();
   mOverviewCanvas->render();
-#endif
   mMapCanvas->freeze(false);
   // draw the map
   mMapCanvas->clear();
@@ -2817,24 +2767,13 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
       renderer->initializeSymbology(layer);
       // add it to the mapcanvas collection
       mMapCanvas->addLayer(layer);
-#ifdef QGISDEBUG
-      if (QMessageBox::information( this, tr("Add to overview"),tr("Would you like to add this layer to the overview map?"),
-				  QMessageBox::Yes, QMessageBox::No ) ==
-	  QMessageBox::Yes)
-      {
-        mOverviewCanvas->freeze(false);
-        mOverviewCanvas->addLayer(layer);
-        mOverviewCanvas->render();
-        mOverviewCanvas->zoomFullExtent();
-      }
-#endif
-      mProjectIsDirtyFlag = true;
-      //qWarning("incrementing iterator");
-      /*! \todo Need legend scrollview and legenditem classes */
-      // mMapLegend->update(); NOW DONE VIA SIGNAL/SLOTS
+      //connect up a request from the raster layer to show in overview map
+      QObject::connect(layer, 
+              SIGNAL(showInOverview(QString,bool)), 
+              this, 
+              SLOT(setLayerOverviewStatus(QString,bool)));           
 
-      // draw the map
-      //mMapCanvas->render();
+      mProjectIsDirtyFlag = true;
       statusBar()->message(mMapCanvas->extent().stringRep(2));
 
     }else
@@ -3035,4 +2974,24 @@ void QgisApp::setTheme(QString themeName)
   actionIdentify->setIconSet(QIconSet(QPixmap(iconPath + "/identify.png")));
   actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
   actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
+}
+
+void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
+{
+  if (theVisibilityFlag)
+  {
+    mOverviewCanvas->freeze(false);
+    mOverviewCanvas->addLayer(mMapLayerRegistry->mapLayer(theLayerId));
+    mOverviewCanvas->render();
+    mOverviewCanvas->zoomFullExtent();
+    std::cout << " Added layer " << theLayerId << " to overview map" << std::endl;
+  }
+  else
+  {
+    mOverviewCanvas->freeze(false);
+    mOverviewCanvas->remove(theLayerId);
+    mOverviewCanvas->render();
+    mOverviewCanvas->zoomFullExtent();
+    std::cout << " Removed layer " << theLayerId << " from overview map" << std::endl;
+  }
 }

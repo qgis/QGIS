@@ -209,7 +209,7 @@ public  slots:
   void setVisible(bool vis);
   /*! Slot connected to popup menus of derived classes. Used to indicate whether this layer
    * should be shown or hidden in the map overview. */
-  void showInOverview(bool);
+  virtual void toggleShowInOverview();
 
 signals:
 
@@ -255,6 +255,8 @@ protected:
 
   //! context menu
   QPopupMenu *popMenu;
+  //! checkable item id in popmenu that sets overview status
+  int mShowInOverviewItemId;
 
   /** Whether this layer is to be shown in the overview map or not */
   bool mShowInOverview;
