@@ -153,27 +153,6 @@ static unsigned char pan_mask_bits[] = {
 };
 
 
-static char *identify_cursor[]={
-"16 16 3 1",
-"# c None",
-"a c #000000",
-". c #ffffff",
-".###############",
-"...##########.##",
-".aa..#######.a.#",
-"#.aaa..######.##",
-"#.aaaaa..#######",
-"##.aaaaaa..#...#",
-"##.aaaaaa....a.#",
-"##.aaaaa.###.a.#",
-"###.aaaaa.##.a.#",
-"###.aa.aaa.#.a.#",
-"####..#..aa..a.#",
-"####.####.aa.a.#",
-"##########.aa..#",
-"###########.aa..",
-"############.a.#",
-"#############.##"};
 
 static char *select_cursor[]={
 "16 16 3 1",
@@ -197,7 +176,27 @@ static char *select_cursor[]={
 "#.a.a.a.a.a..a.#",
 "#############.##"};
 
-
+static char *identify_cursor[]={
+"16 16 3 1",
+"# c None",
+"a c #000000",
+". c #ffffff",
+".###########..##",
+"...########.aa.#",
+".aa..######.aa.#",
+"#.aaa..#####..##",
+"#.aaaaa..##.aa.#",
+"##.aaaaaa...aa.#",
+"##.aaaaaa...aa.#",
+"##.aaaaa.##.aa.#",
+"###.aaaaa.#.aa.#",
+"###.aa.aaa..aa.#",
+"####..#..aa.aa.#",
+"####.####.aa.a.#",
+"##########.aa..#",
+"###########.aa..",
+"############.a.#",
+"#############.##"};
 
 // constructor starts here   
 
@@ -432,7 +431,8 @@ void QgisApp::addRasterLayer()
       msg += " is not a valid or recognized raster data source";
       QMessageBox::critical(this, "Invalid Data Source", msg);
     }
-
+      // init the context menu so it can connect to slots in main app
+      lyr->initContextMenu(this);
   }
   else // Any other gdal type
   {
@@ -453,15 +453,17 @@ void QgisApp::addRasterLayer()
         msg += " is not a valid or recognized raster data source";
         QMessageBox::critical(this, "Invalid Data Source", msg);
       }
-
+      // init the context menu so it can connect to slots in main app
+      lyr->initContextMenu(this);
       ++it;
     }
   }
 
-  mapLegend->update();
+  
   qApp->processEvents();
   mapCanvas->freeze(false);
   mapCanvas->render2();
+  mapLegend->update();
   QApplication::restoreOverrideCursor();
   statusBar()->message(mapCanvas->extent().stringRep());
 }
