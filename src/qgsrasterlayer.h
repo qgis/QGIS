@@ -38,6 +38,8 @@ public:
 	
 private:
 	GDALDataset  *gdalDataset;
+	// values for mapping pixel to world coordinates
+	double adfGeoTransform[6];
 	
 signals:
 	void repaintRequested();

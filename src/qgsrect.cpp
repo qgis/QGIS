@@ -136,6 +136,25 @@ void QgsRect::expand(double scaleFactor, QgsPoint *cp)
 	ymax = centerY +  newHeight;
 }
 
+QgsRect QgsRect::intersect(QgsRect *rect)
+{
+	QgsRect intersection = QgsRect();
+	intersection.setXmin( xmin >? rect->xMin() );
+	intersection.setYmin( ymin >? rect->yMin() );
+	intersection.setXmax( xmax <? rect->xMax() );
+	intersection.setYmax( ymax <? rect->yMax() );
+	return intersection;
+}
+
+bool QgsRect::isEmpty()
+{
+	if (xmax <= xmin || ymax <= ymin) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 QString QgsRect::stringRep() const
 {
 	QString tmp;
