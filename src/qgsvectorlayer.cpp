@@ -800,6 +800,67 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
   QApplication::restoreOverrideCursor();
 }
 
+void QgsVectorLayer::invertSelection()
+{
+    QApplication::setOverrideCursor(Qt::waitCursor);
+    if (tabledisplay)
+    {
+	QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
+	QObject::disconnect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int))); //disconnecting because of performance reason
+    }
+
+    //copy the ids of selected features to tmp
+    std::list<int> tmp;
+    for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+    {
+	tmp.push_back(*iter);
+    }
+
+    removeSelection();
+    if (tabledisplay)
+    {
+	tabledisplay->table()->clearSelection();
+    }
+
+    QgsFeature *fet;
+    dataProvider->reset();
+
+    while (fet = dataProvider->getNextFeature(true))
+    {
+	if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
+	{
+	    select(fet->featureId());
+	}
+    }
+    
+    for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+    {
+	select((*iter)->featureId());
+    }
+
+    for(std::list<int>::iterator iter=tmp.begin();iter!=tmp.end();++iter)
+    {
+	mSelected.erase(*iter);
+    }
+  
+    if(tabledisplay)
+    {
+	for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+	{
+	    tabledisplay->table()->selectRowWithId(*iter);
+	}
+    }
+
+    if (tabledisplay)
+    {
+	QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
+	QObject::connect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int)));  //disconnecting because of performance reason
+    }
+    
+    triggerRepaint();
+    QApplication::restoreOverrideCursor();
+}
+
 void QgsVectorLayer::removeSelection()
 {
   mSelected.clear();
