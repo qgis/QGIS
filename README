@@ -9,7 +9,7 @@ features include:
     * Display georeferenced rasters (tiff, png, geotiff)
     * Plugins to dynamically add new functionality to the application
     * Support for database tables
-    * Support for spatially enabled tables in PostgreSql using PostGIS
+    * Support for spatially enabled tables in PostgreSQL using PostGIS
     * Map output
     * Script engine
     * Metadata support
