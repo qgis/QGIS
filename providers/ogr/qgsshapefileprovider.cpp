@@ -10,8 +10,6 @@
 #include <ogr_geometry.h>
 #include <cpl_error.h>
 
-#include <qguardedptr.h>
-
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -118,10 +116,9 @@ QgsFeature * QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
 #endif
     ogrLayer->ResetReading();
 
-    // use QGuardedPtr to insure feat is destroyed no matter how we exit this function
-    QGuardedPtr<OGRFeature> feat = ogrLayer->GetNextFeature();
+    OGRFeature * feat = ogrLayer->GetNextFeature();
 
-    Q_ASSERT( ! feat.isNull() );
+    Q_CHECK_PTR( feat  );
 
     if(feat)
     {
@@ -144,6 +141,8 @@ QgsFeature * QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
 
     if ( ! f )                  // return null if we can't get a new QgsFeature
     {
+        delete feat;
+
         return 0x0;
     }
 
@@ -153,6 +152,9 @@ QgsFeature * QgsShapeFileProvider::getFirstFeature(bool fetchAttributes)
     {
       getFeatureAttributes(feat, f);
     }
+
+    delete feat;
+
   }
 
   return f;
