@@ -941,6 +941,8 @@ QgsScaleCalculator::units QgsProject::mapUnits() const
 void QgsProject::mapUnits(QgsScaleCalculator::units u)
 {
     imp_->mapUnits = u;
+
+    dirty(true);
 } // void QgsProject::mapUnits(QgsScaleCalculator::units u)
 
 
@@ -1415,7 +1417,7 @@ _getTitle( QDomDocument const & doc, QString & title )
         return;
     }
 
-    QDomNode titleTextNode = titleNode.firstChild(); // should only have on child
+    QDomNode titleTextNode = titleNode.firstChild(); // should only have one child
 
     if ( ! titleTextNode.isText() )
     {
