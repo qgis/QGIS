@@ -111,7 +111,7 @@ public:
        bool addProject(QString projectFile);
        
         //!Overloaded version of the private function with same name that takes the imagename as a parameter
-  void saveMapAsImage(QString);
+  void saveMapAsImage(QString, QPixmap *);
 private:
 
   //! Add a vector layer to the map
