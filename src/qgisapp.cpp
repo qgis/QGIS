@@ -289,7 +289,7 @@ void QgisApp::addDatabaseLayer()
 		QStringList tables = dbs->selectedTables();
 		
 		QString connInfo = dbs->connInfo();
-		// for each selected table, connect to the datbase, parse the WKT geometry,
+		// for each selected table, connect to the database, parse the WKT geometry,
 		// and build a cavnasitem for it
 		// readWKB(connInfo,tables);
 		QStringList::Iterator it = tables.begin();
