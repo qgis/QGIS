@@ -27,7 +27,7 @@
 #include "qgsdataprovider.h"
 #include "qgsvectorlayer.h"
 
-QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer* vlayer): QScrollView(parent), mClassField(classfield), mGridLayout(new QGridLayout(viewport(), 1, 5)), mMode(mode), mNumberOfClasses(nofclasses), mVectorLayer(vlayer)
+QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer* vlayer): QScrollView(parent), mClassField(classfield), mWidget(new QWidget(viewport())), mGridLayout(new QGridLayout(mWidget, 1, 5)), mMode(mode), mNumberOfClasses(nofclasses), mVectorLayer(vlayer)
 {
 #ifdef QGISDEBUG
     qWarning("constructor QgsGraSyExtensionWidget");
@@ -37,18 +37,18 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
     mGridLayout->setSpacing(5);
 
     //fill the title line into the grid layout
-    QLabel *lvaluelabel = new QLabel(tr("Lower"),viewport());
+    QLabel *lvaluelabel = new QLabel(tr("Lower"),mWidget);
     lvaluelabel->setMaximumHeight(50);
     mGridLayout->addWidget(lvaluelabel, 0, 0);
-    QLabel *uvaluelabel = new QLabel(tr("Upper"),viewport());
+    QLabel *uvaluelabel = new QLabel(tr("Upper"),mWidget);
     uvaluelabel->setMaximumHeight(50);
     mGridLayout->addWidget(uvaluelabel, 0, 1);
-    QLabel *labellabel = new QLabel(tr("Label"),viewport());
+    QLabel *labellabel = new QLabel(tr("Label"),mWidget);
     labellabel->setMaximumHeight(50);
     mGridLayout->addWidget(labellabel, 0, 2);
-    QLabel *imagelabel = new QLabel(tr("Image"),viewport());
+    QLabel *imagelabel = new QLabel(tr("Image"),mWidget);
     mGridLayout->addWidget(imagelabel,0,3);
-    QLabel *scalelabel = new QLabel(tr("Scale\nFactor"),viewport());
+    QLabel *scalelabel = new QLabel(tr("Scale\nFactor"),mWidget);
     mGridLayout->addWidget(scalelabel,0,4);
 
     //find the minimum and maximum of the classification variable
@@ -79,27 +79,27 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
     //create the required number of rows
     for (int i = 1; i <= mNumberOfClasses; i++)
     {
-	QLineEdit *ltextfield = new QLineEdit(viewport());
+	QLineEdit *ltextfield = new QLineEdit(mWidget);
 	mGridLayout->addWidget(ltextfield, i, 0);
 	mWidgetVector[5 * (i - 1)] = ltextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
-	QLineEdit *utextfield = new QLineEdit(viewport());
+	QLineEdit *utextfield = new QLineEdit(mWidget);
 	mGridLayout->addWidget(utextfield, i, 1);
 	mWidgetVector[5 * (i - 1) + 1] = utextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
-	QLineEdit *labeltextfield = new QLineEdit(viewport());
+	QLineEdit *labeltextfield = new QLineEdit(mWidget);
 	mGridLayout->addWidget(labeltextfield, i, 2);
 	mWidgetVector[5 * (i - 1) + 2] = labeltextfield;
 	ltextfield->setAlignment(Qt::AlignLeft);
 
-	QPushButton *imageButton = new QPushButton(viewport());
+	QPushButton *imageButton = new QPushButton(mWidget);
 	mGridLayout->addWidget(imageButton, i, 3);
 	mWidgetVector[ 5 * (i - 1) + 3] = imageButton;
 	QObject::connect(imageButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
 
-	QLineEdit *scaleedit = new QLineEdit(viewport());
+	QLineEdit *scaleedit = new QLineEdit(mWidget);
 	mGridLayout->addWidget(scaleedit,i,4);
 	mWidgetVector[ 5 * (i - 1) + 4] = scaleedit;
 	scaleedit->setText("1.0");
@@ -115,8 +115,9 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
 	
     }
 
-    resizeContents(200,50*(mNumberOfClasses+1));
-    updateContents();
+    addChild(mWidget);
+    //resizeContents(200,50*(mNumberOfClasses+1));
+    //updateContents();
     
 }
 
@@ -167,17 +168,6 @@ void QgsGraMaExtensionWidget::selectMarker()
 #endif
 	adjustMarker(indexnumber);
     }
-
-    qWarning("The size of the layout is: "+QString::number(mGridLayout->geometry().width())+"/"+QString::number(mGridLayout->geometry().height()));
-    resizeContents(mGridLayout->geometry().width(),mGridLayout->geometry().height());
-    updateContents();
-    setActiveWindow();
-}
-
-void QgsGraMaExtensionWidget::resizeEvent(QResizeEvent* e)
-{
-    setContentsPos (0,0);
-    QScrollView::resizeEvent(e);
 }
 
 void QgsGraMaExtensionWidget::adjustMarkers()
@@ -186,9 +176,6 @@ void QgsGraMaExtensionWidget::adjustMarkers()
     {
 	adjustMarker(i);
     }
-    qWarning("The size of the layout is: "+QString::number(mGridLayout->geometry().width())+"/"+QString::number(mGridLayout->geometry().height()));
-    resizeContents(mGridLayout->geometry().width(),mGridLayout->geometry().height());
-    updateContents();
 }
 
 void QgsGraMaExtensionWidget::adjustMarker(int row)
@@ -229,8 +216,5 @@ void QgsGraMaExtensionWidget::handleReturnPressed()
 	    break;
 	} 
     }
-    adjustMarker(indexnumber);
-    qWarning("The size of the layout is: "+QString::number(mGridLayout->geometry().width())+"/"+QString::number(mGridLayout->geometry().height()));
-    resizeContents(900,300);//mGridLayout->geometry().width(),mGridLayout->geometry().height());
-    updateContents(); 
+    adjustMarker(indexnumber); 
 }
