@@ -324,9 +324,27 @@ void QgisApp::about()
   QString urls = tr("Web Page: http://qgis.sourceforge.net") +
     "\n" + tr("Sourceforge Project Page: http://sourceforge.net/projects/qgis");
   abt->setURLs(urls);
-  QString watsNew = tr("Version") + " ";
+  QString watsNew = "<html><body>" + tr("Version") + " ";
   watsNew += QGis::qgisVersion;
-  watsNew += "\n" "** Raster support\n" "** Improved data source handling\n" "** Symbology\n" "\n";
+  watsNew += "<ul>"
+"<li>User interface improvements - menu and dialog cleanups and a new icon theme based on Everaldo's Crystal icon set."
+"<li>QGIS can load layers and / or a project on start up by specifying these on the command line."
+"<li>Symbol renderers for simple, graduated, and continous symbols"
+"<li>Raster support for most GDAL formats"
+"<li>Raster implementation supports a variety of rendering settings including semi transparent overlays, pallette inversion, flexible band to colour mapping in multiband images and creation of pseudocolor."
+"<li>Change to a data provider architecture for vector layers. Addtional data types can be supported by writing a provider plugin"
+"<li>Buffer plugin for PostGIS layers"
+"<li>PostgreSQL port number can be specified when making connections"
+"<li>Shapefile to PostGIS Import Tool (SPIT) plugin for importing shapefiles into PostgreSQL/PostGIS"
+"<li>User guide (HTML and PDF)"
+"<li>Install guide (HTML and PDF)"
+"<li>Plugin manager to manage loading/unloading of plugins"
+"<li>Plugin template to automate the more mundane parts of creating a new plugin."
+"<li>Numerous bug fixes"
+"<li>Removed dependency on libpq++ when compiling with PostgreSQL/PostGIS support"
+"<li>PostgreSQL/PostGIS layers now rely on GEOS for selecting features"
+"</ul>"
+"</body></html>";
 
 
   abt->setWhatsNew(watsNew);
