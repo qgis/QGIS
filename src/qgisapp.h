@@ -110,6 +110,8 @@ public:
        */
        bool addProject(QString projectFile);
        
+        //!Overloaded version of the private function with same name that takes the imagename as a parameter
+	void saveMapAsImage(QString);
 private:
 
 	//! Add a vector layer to the map
@@ -194,7 +196,7 @@ private:
 	void fileSave();
 	//! Save project as
 	void fileSaveAs();
-        //! Save the map view as an image
+        //! Save the map view as an image - user is prompted for image name using a dialog
 	void saveMapAsImage();
 	//! Open a project
 	void fileOpen();
