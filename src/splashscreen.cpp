@@ -34,9 +34,13 @@ SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 
   QPainter painter(&splashImage);
   painter.setPen(Qt::red);
-  QFont myQFont("arial", 36, QFont::Bold);
+  QFont myQFont("arial", 18, QFont::Bold);
   painter.setFont(myQFont);
-  painter.drawText(20, 50, VERSION);
+
+  QString myCaption = tr("Quantum GIS - ");
+  myCaption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+   
+  painter.drawText(5, 25, myCaption);
   repaint();
 
   show();
@@ -70,7 +74,7 @@ void SplashScreen::setStatus(const QString & message, int alignment, const QColo
   QPixmap textPix = splashImage;
   QPainter painter(&textPix, this);
   painter.setPen(color);
-  QFont myQFont("arial", 18, QFont::Bold);
+  QFont myQFont("arial", 12, QFont::Bold);
   painter.setFont(myQFont);
   painter.drawText(5,textPix.height()-5, message);
   setErasePixmap(textPix);
