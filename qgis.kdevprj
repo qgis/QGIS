@@ -5,7 +5,7 @@ cflags=
 cppflags=
 cxxflags=\s-O0 -g3 -Wall
 ldadd=
-ldflags=\s       \s
+ldflags=\s        \s
 libtool_dir=
 path_to_bin_program=src
 
@@ -25,7 +25,7 @@ project_type=normal_empty
 short_info=
 sub_dir=qgis/
 version=0.0.2
-version_control=None
+version_control=CVS
 workspace=1
 
 [LFV Groups]
@@ -72,7 +72,7 @@ install_location=
 type=HEADER
 
 [src/Makefile.am]
-files=src/main.cpp,src/qgisapp.cpp,src/qgscoordinatetransform.cpp,src/qgsdatabaselayer.cpp,src/qgsdatasource.cpp,src/qgsdbsourceselect.cpp,src/qgsmapcanvas.cpp,src/qgsmaplayer.cpp,src/qgsnewconnection.cpp,src/qgspoint.cpp,src/qgsrasterlayer.cpp,src/qgsrect.cpp,src/qgisapp.h,src/qgscoordinatetransform.h,src/qgsdatabaselayer.h,src/qgsdatasource.h,src/qgsdbsourceselect.h,src/qgslinesymbol.h,src/qgsmapcanvas.h,src/qgsmaplayer.h,src/qgsmarkersymbol.h,src/qgsnewconnection.h,src/qgspoint.h,src/qgspolygonsymbol.h,src/qgsrasterlayer.h,src/qgsrect.h,src/qgsshapefilelayer.h,src/qgisappbase.ui,src/qgsdbsourceselectbase.ui,src/qgsnewconnectionbase.ui
+files=src/main.cpp,src/qgisapp.cpp,src/qgscoordinatetransform.cpp,src/qgsdatabaselayer.cpp,src/qgsdatasource.cpp,src/qgsdbsourceselect.cpp,src/qgsmapcanvas.cpp,src/qgsmaplayer.cpp,src/qgsnewconnection.cpp,src/qgspoint.cpp,src/qgsrasterlayer.cpp,src/qgsrect.cpp,src/qgisapp.h,src/qgscoordinatetransform.h,src/qgsdatabaselayer.h,src/qgsdatasource.h,src/qgsdbsourceselect.h,src/qgslinesymbol.h,src/qgsmapcanvas.h,src/qgsmaplayer.h,src/qgsmarkersymbol.h,src/qgsnewconnection.h,src/qgspoint.h,src/qgspolygonsymbol.h,src/qgsrasterlayer.h,src/qgsrect.h,src/qgsshapefilelayer.h,src/qgisappbase.ui,src/qgsdbsourceselectbase.ui,src/qgsnewconnectionbase.ui,src/qgscustomsymbol.cpp,src/qgscustomsymbol.h
 sharedlib_LDFLAGS=-version-info 0:0:0
 sharedlib_rootname=src
 sub_dirs=
@@ -109,6 +109,18 @@ install_location=
 type=SOURCE
 
 [src/qgscoordinatetransform.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/qgscustomsymbol.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[src/qgscustomsymbol.h]
 dist=true
 install=false
 install_location=
