@@ -1450,6 +1450,24 @@ void QgisApp::addAllToOverview()
   mOverviewCanvas->render();
 }
 
+void QgisApp::removeAllFromOverview()
+{
+  mOverviewCanvas->freeze(true);
+  std::map<QString, QgsMapLayer *> myMapLayers = mMapLayerRegistry->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator ) 
+  {
+    QgsMapLayer * myMapLayer = myMapIterator->second;
+    if (myMapLayer->showInOverviewStatus())
+    {
+      myMapLayer->toggleShowInOverview();
+    }
+  }
+  // draw the map
+  mOverviewCanvas->clear();
+  mOverviewCanvas->freeze(false);
+  mOverviewCanvas->render();
+}
 
 
 void QgisApp::exportMapServer()
@@ -2721,6 +2739,7 @@ void QgisApp::setTheme(QString themeName)
   actionAddRasterLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_raster_layer.png")));
   actionAddLayer->setIconSet(QIconSet(QPixmap(iconPath + "/add_pg_layer.png")));
   actionAddAllToOverview->setIconSet(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")));
+  actionRemoveAllFromOverview->setIconSet(QIconSet(QPixmap(iconPath + "/remove_all_from_overview.png")));
   actionProjectProperties->setIconSet(QIconSet(QPixmap(iconPath + "/project_properties.png")));
   actionPluginManager->setIconSet(QIconSet(QPixmap(iconPath + "/plugin_manager.png")));
   actionCheckQgisVersion->setIconSet(QIconSet(QPixmap(iconPath + "/check_version.png")));

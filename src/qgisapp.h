@@ -246,8 +246,10 @@ private slots:
     void fileNew(bool thePromptToSaveFlag);
     //! Print the current map view frame
     void filePrint();
-    //! Add all loaded layers into the overview
+    //! Add all loaded layers into the overview - overides qgisappbase method
     void addAllToOverview();
+    //! Remove all loaded layers from the overview - overides qgisappbase method
+    void removeAllFromOverview();
     //! Export current view as a mapserver map file
     void exportMapServer();
     //! Return pointer to the active layer
