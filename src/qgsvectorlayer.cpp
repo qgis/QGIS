@@ -1072,3 +1072,87 @@ void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties
     }
   m_propertiesDialog = properties;
 }
+
+
+
+QgsFeature * QgsVectorLayer::getFirstFeature(bool fetchAttributes) const
+{
+    if ( ! dataProvider )
+    {
+        std::cerr << __FILE__ << ":" << __LINE__ 
+                  << " QgsVectorLayer::getFirstFeature() invoked with null dataProvider\n";
+        return 0x0;
+    }
+
+    return dataProvider->getFirstFeature( fetchAttributes );
+} // QgsVectorLayer::getFirstFeature
+
+
+QgsFeature * QgsVectorLayer::getNextFeature(bool fetchAttributes) const
+{
+    if ( ! dataProvider )
+    {
+        std::cerr << __FILE__ << ":" << __LINE__ 
+                  << " QgsVectorLayer::getNextFeature() invoked with null dataProvider\n";
+        return 0x0;
+    }
+
+    return dataProvider->getNextFeature( fetchAttributes );
+} // QgsVectorLayer::getNextFeature
+
+
+
+bool QgsVectorLayer::getNextFeature(QgsFeature &feature, bool fetchAttributes) const
+{
+    if ( ! dataProvider )
+    {
+        std::cerr << __FILE__ << ":" << __LINE__ 
+                  << " QgsVectorLayer::getNextFeature() invoked with null dataProvider\n";
+        return false;
+    }
+
+    return dataProvider->getNextFeature( feature, fetchAttributes );
+} // QgsVectorLayer::getNextFeature
+
+
+
+long QgsVectorLayer::featureCount() const
+{
+    if ( ! dataProvider )
+    {
+        std::cerr << __FILE__ << ":" << __LINE__ 
+                  << " QgsVectorLayer::featureCount() invoked with null dataProvider\n";
+        return 0;
+    }
+
+    return dataProvider->featureCount();
+} // QgsVectorLayer::featureCount
+
+
+int QgsVectorLayer::fieldCount() const
+{
+    if ( ! dataProvider )
+    {
+        std::cerr << __FILE__ << ":" << __LINE__ 
+                  << " QgsVectorLayer::fieldCount() invoked with null dataProvider\n";
+        return 0;
+    }
+
+    return dataProvider->fieldCount();
+} // QgsVectorLayer::fieldCount
+
+
+std::vector<QgsField> const& QgsVectorLayer::fields() const
+{
+    if ( ! dataProvider )
+    {
+        std::cerr << __FILE__ << ":" << __LINE__ 
+                  << " QgsVectorLayer::fields() invoked with null dataProvider\n";
+
+        static std::vector<QgsField> bogus; // empty, bogus container
+        return bogus;
+    }
+
+    return dataProvider->fields();
+} // QgsVectorLayer::fields()
+

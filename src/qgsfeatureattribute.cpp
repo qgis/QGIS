@@ -16,22 +16,25 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <qstring.h>
 #include "qgsfeatureattribute.h"
 
-QgsFeatureAttribute::QgsFeatureAttribute(QString fld, QString val):field(fld), value(val)
+QgsFeatureAttribute::QgsFeatureAttribute(QString const & fld, QString const & val)
+    : field(fld), value(val)
 {
 }
 
 QgsFeatureAttribute::~QgsFeatureAttribute()
 {
 }
-QString QgsFeatureAttribute::fieldName() const
+
+
+QString const & QgsFeatureAttribute::fieldName() const 
 {
   return field;
 }
 
-QString QgsFeatureAttribute::fieldValue() const
+
+QString const & QgsFeatureAttribute::fieldValue() const 
 {
   return value;
 }

@@ -121,6 +121,8 @@ void QgsMapLayer::setVisible(bool vis)
   m_visible = vis;
   emit visibilityChanged();
 }  /** Read property of int featureType. */
+
+
 const int &QgsMapLayer::featureType()
 {
   return geometryType;
@@ -151,3 +153,43 @@ QPopupMenu *QgsMapLayer::contextMenu()
 {
   return 0;
 }
+
+
+QgsFeature * QgsMapLayer::getFirstFeature(bool fetchAttributes) const
+{
+    return 0x0;                 // by default return NULL
+} // QgsMapLayer::getFirstFeature
+
+
+QgsFeature * QgsMapLayer::getNextFeature(bool fetchAttributes) const
+{
+    return 0x0;                 // by default return NULL
+} // QgsMapLayer::getNextFeature
+
+
+bool QgsMapLayer::getNextFeature(QgsFeature &feature, bool fetchAttributes) const
+{
+    return false;
+} // QgsMapLayer::getNextFeature
+
+
+long QgsMapLayer::featureCount() const
+{
+    return 0;
+} // QgsMapLayer::featureCount
+
+  
+
+int QgsMapLayer::fieldCount() const
+{
+    return 0;
+} // QgsMapLayer::fieldCount
+
+
+
+std::vector<QgsField> const & QgsMapLayer::fields() const
+{
+    static std::vector<QgsField> bogus; // bogus empty container
+
+    return bogus;
+} // QgsMapLayer::fields()
