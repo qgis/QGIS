@@ -72,7 +72,7 @@ class QgsMapLayer:public QObject
 	 */
 	virtual QgsRect calculateExtent();
 	virtual void draw(QPainter *, QgsRect *, int);
-	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf);
+	virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * cXf, QPaintDevice* src, QPaintDevice* dst);
 	/*! Identify the feature(s) in this layer that are contained in the search rectangle
 	 */
 	virtual void identify(QgsRect *){};
