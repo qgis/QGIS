@@ -11,6 +11,9 @@
 //#include "gdal_alg.h"
 //#include "cpl_conv.h"
 #include "ogr_srs_api.h"
+#ifndef WIN32
+#include <netinet/in.h>
+#endif
 
 QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QgsVectorLayer * theVectorLayer)
 {
@@ -103,11 +106,23 @@ bool QgsVectorFileWriter::initialise()
     mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT );
   }
   //change 'contour' to something more useful!
-  mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, 
-          "contour", 
-          mySpatialReferenceSystemHandle, 
-          mGeometryType,
-          NULL );
+#ifdef QGISDEBUG
+  qWarning("mOutputFileName: "+mOutputFileName);
+#endif //QGISDEBUG
+
+#ifdef WIN32 
+  QString outname=mOutputFileName.mid(mOutputFileName.findRev("\\")+1,mOutputFileName.length());
+#else
+  QString outname=mOutputFileName.mid(mOutputFileName.findRev("/")+1,mOutputFileName.length());
+#endif
+  
+
+#ifdef QGISDEBUG
+  qWarning("outname: "+outname);
+#endif //QGISDEBUG
+
+  mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, outname, 
+  mySpatialReferenceSystemHandle, mGeometryType, NULL );
   
   if( mLayerHandle == NULL )
   {
@@ -118,6 +133,7 @@ bool QgsVectorFileWriter::initialise()
   {
     std::cout << "File handle created!" << std::endl;
   }
+
   //let other methods know we have an initialised file
   mInitialisedFlag=true; 
   return true;
@@ -185,72 +201,186 @@ bool QgsVectorFileWriter::createField(QString theName, OGRFieldType theType, int
 
 bool QgsVectorFileWriter::writePoint(QgsPoint * thePoint)
 {
-  //check the output file has been initialised
-  if (!mInitialisedFlag)
-  {
-    std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
-    return false;
-  }
-  //check the geomtry of the output file is compatible
-  if (mGeometryType != wkbPoint)
-  {
-    std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
-    return false;
-  }
-
-  
-
-  //
-  //
-  // Do Stuff
-  //
-
-  return true;
+    bool returnvalue=true;
+    //check the output file has been initialised
+    if (!mInitialisedFlag)
+    {
+	std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
+	return false;
+    }
+    //check the geomtry of the output file is compatible
+    if (mGeometryType != wkbPoint)
+    {
+	std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
+	return false;
+    }
+    
+    OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(mLayerHandle);
+    OGRFeatureH fhand= OGR_F_Create( fdef );
+    OGRGeometryH geometryh=OGR_G_CreateGeometry(wkbPoint);
+    OGR_G_AddPoint( geometryh, thePoint->x(), thePoint->y(), 0 );
+    
+    if(OGR_F_SetGeometryDirectly(fhand, geometryh )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Set geometry failed");
+#endif
+	returnvalue=false;
+    }
+    
+    if(OGR_L_CreateFeature( mLayerHandle, fhand )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Creation of the point failed");
+#endif  
+	returnvalue=false;
+    }
+    
+    if(OGR_L_SyncToDisk( mLayerHandle )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Sync to disk failed");
+#endif 
+	returnvalue=false;
+    }
+    OGR_F_Destroy( fhand );  
+    return returnvalue;
 }
 
-//
-// I think this stuff illustrates how to write features to a vector file.
-//
+bool QgsVectorFileWriter::writeLine(unsigned char* wkb, int size)
+{
+    bool returnvalue=true;
+    //add endianness
+    int endianval = endian();
+    memcpy(&wkb[0],&endianval,1);
+    //check the output file has been initialised
+    if (!mInitialisedFlag)
+    {
+	std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
+	return false;
+    }
+    //check the geomtry of the output file is compatible
+    if (mGeometryType != wkbLineString)
+    {
+	std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
+	return false;
+    }
 
-/*
-  CPLErr eErr;
-   CPLErr OGRContourWriter( double dfLevel,
-   int nPoints, double *padfX, double *padfY,
-   void *pInfo )
+    OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(mLayerHandle);
+    OGRFeatureH fhand= OGR_F_Create( fdef );
+    OGRGeometryH geometryh=OGR_G_CreateGeometry(wkbLineString);
+    
+    if(OGR_G_ImportFromWkb(geometryh, wkb, size)!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("wkb import failed");
+#endif
+	returnvalue=false;
+    }
 
-   {
-   OGRContourWriterInfo *poInfo = (OGRContourWriterInfo *) pInfo;
-   OGRFeatureH hFeat;
-   OGRGeometryH hGeom;
-   int iPoint;
+    if(OGR_F_SetGeometryDirectly(fhand, geometryh )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Set geometry failed");
+#endif
+	returnvalue=false;
+    }
 
-   hFeat = OGR_F_Create( OGR_L_GetLayerDefn( poInfo->myLayerHandle ) );
+    if(OGR_L_CreateFeature( mLayerHandle, fhand )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Creation of the point failed");
+#endif    
+	returnvalue=false;
+    }
+    
+    if(OGR_L_SyncToDisk( mLayerHandle )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Sync to disk failed");
+#endif 
+	returnvalue=false;
+    }
+    OGR_F_Destroy( fhand );  
+    return returnvalue;
+}
 
-   if( poInfo->nIDField != -1 )
-   OGR_F_SetFieldInteger( hFeat, poInfo->nIDField, poInfo->nNextID++ );
+bool QgsVectorFileWriter::writePolygon(unsigned char* wkb, int size)
+{
+    bool returnvalue = true;
+    //add endianness
+    int endianval = endian();
+    memcpy(&wkb[0],&endianval,1);
+    //check the output file has been initialised
+    if (!mInitialisedFlag)
+    {
+	std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
+	return false;
+    }
+    //check the geomtry of the output file is compatible
+    if (mGeometryType != wkbPolygon)
+    {
+	std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
+	return false;
+    }
 
-   if( poInfo->nElevField != -1 )
-   OGR_F_SetFieldDouble( hFeat, poInfo->nElevField, dfLevel );
+    OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(mLayerHandle);
+    OGRFeatureH fhand= OGR_F_Create( fdef );
+    OGRGeometryH geometryh=OGR_G_CreateGeometry(wkbPolygon);
+    
+    if(OGR_G_ImportFromWkb(geometryh, wkb, size)!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("wkb import failed");
+#endif
+	returnvalue = false;
+    }
 
-   hGeom = OGR_G_CreateGeometry( wkbLineString );
+    if(OGR_F_SetGeometryDirectly(fhand, geometryh )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Set geometry failed");
+#endif
+	returnvalue = false;
+    }
 
-   for( iPoint = nPoints-1; iPoint >= 0; iPoint-- )
-   {
-   OGR_G_SetPoint( hGeom, iPoint,
-   poInfo->adfGeoTransform[0]
-   + poInfo->adfGeoTransform[1] * padfX[iPoint]
-   + poInfo->adfGeoTransform[2] * padfY[iPoint],
-   poInfo->adfGeoTransform[3]
-   + poInfo->adfGeoTransform[4] * padfX[iPoint]
-   + poInfo->adfGeoTransform[5] * padfY[iPoint],
-   dfLevel );
-   }
+    if(OGR_L_CreateFeature( mLayerHandle, fhand )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Creation of the point failed");
+#endif      
+	returnvalue = false;
+    }
+    
+    if(OGR_L_SyncToDisk( mLayerHandle )!=OGRERR_NONE)
+    {
+#ifdef QGISDEBUG
+	qWarning("Sync to disk failed");
+#endif 
+	returnvalue = false;
+    }
+    OGR_F_Destroy( fhand );  
+    return true;
+    
+}
 
-   OGR_F_SetGeometryDirectly( hFeat, hGeom );
+int QgsVectorFileWriter::endian()
+{
+#ifdef WIN32
+  return NDR;
+#else
+    // XXX why re-calculate this all the time?  Why not just calculate this
+    // XXX once and return the value?  For that matter, some machines have
+    // XXX endian.h, which stores the constant variable for local endian-ness.
+    if ( 23 == htons( 23 ) )
+    {
+        // if host byte order is same as network (big-endian) byte order, then
+        // this is a big-endian environment
+        return XDR;
+    }
+    
+    // otherwise this must be little-endian
 
-   OGR_L_CreateFeature( poInfo->myLayerHandle, hFeat );
-   OGR_F_Destroy( hFeat );
-
-   return CE_None;
-   }
-   */
+    return NDR;
+#endif
+}

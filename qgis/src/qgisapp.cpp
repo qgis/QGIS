@@ -85,6 +85,7 @@
 #include "qgslegend.h"
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
+#include "qgsgeomtypedialog.h"
 
 
 #ifdef HAVE_POSTGRESQL
@@ -1213,6 +1214,103 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
   }
 }
 
+void QgisApp::newVectorLayer()
+{
+
+    QGis::WKBTYPE geometrytype;
+
+    QgsGeomTypeDialog geomDialog;
+    if(geomDialog.exec()==QDialog::Rejected)
+    {
+#ifdef QGISDEBUG
+	qWarning("dialog rejected");
+#endif
+	return;
+    }
+    geometrytype = geomDialog.selectedType();
+
+#ifdef QGISDEBUG
+    qWarning("dialog accepted");
+#endif
+
+    QString filename=QFileDialog::getSaveFileName();
+#ifdef QGISDEBUG
+    qWarning("the filename is : "+filename);
+#endif
+    
+    if(geometrytype == QGis::WKBPoint)
+    {
+	QgsVectorFileWriter writer(filename,wkbPoint);
+	if(!writer.initialise())
+	{
+	    QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
+	    return;
+	}
+	writer.createField("dummy", OFTReal, 1, 1);
+	//creation of a dummy feature
+	QgsPoint point(0,0);
+	writer.writePoint(&point);
+    }
+    else if(geometrytype == QGis::WKBLineString)
+    {
+	QgsVectorFileWriter writer(filename,wkbLineString);
+	if(!writer.initialise())
+	{
+	    QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
+	    return;
+	}
+	writer.createField("dummy", OFTReal, 1, 1);
+	//creation of a dummy line with just one point (0,0)
+	int size=1+2*sizeof(int)+2*sizeof(double);
+	unsigned char* wkb=new unsigned char[size];
+	int wkbtype=QGis::WKBLineString;
+	memcpy(&wkb[1],&wkbtype, sizeof(int));
+	int length=1;
+	memcpy(&wkb[1+sizeof(int)],&length, sizeof(int));
+	double dummycoordinate=0;
+	memcpy(&wkb[1+2*sizeof(int)],&dummycoordinate,sizeof(double));
+	memcpy(&wkb[1+2*sizeof(int)+sizeof(double)],&dummycoordinate,sizeof(double));
+	writer.writeLine(wkb,size);
+	delete[] wkb;
+    }
+    else if(geometrytype == QGis::WKBPolygon)
+    {
+	QgsVectorFileWriter writer(filename,wkbPolygon);
+	if(!writer.initialise())
+	{
+	    QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
+	    return;
+	}
+	writer.createField("dummy", OFTReal, 1, 1);
+	//creation of a dummy polygon with just one point (0,0)
+	int size=1+3*sizeof(int)+2*sizeof(double);
+	unsigned char* wkb=new unsigned char[size];
+	int wkbtype=QGis::WKBPolygon;
+	memcpy(&wkb[1],&wkbtype, sizeof(int));
+	int numring=1;
+	memcpy(&wkb[1+sizeof(int)],&numring,sizeof(int));
+	int length=1;
+	memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
+	double dummycoordinate=0;
+	memcpy(&wkb[1+3*sizeof(int)],&dummycoordinate,sizeof(double));
+	memcpy(&wkb[1+3*sizeof(int)+sizeof(double)],&dummycoordinate,sizeof(double));
+	writer.writePolygon(wkb,size);
+	delete[] wkb;
+    }
+    else
+    {
+#ifdef QGISDEBUG
+	qWarning("QgisApp.cpp: geometry type not recognised");
+#endif	
+	return;
+    }
+
+
+    //then add the layer to the view
+    QFileInfo fileinfo(filename);
+    addLayer(fileinfo);
+    return;
+}
 
 void QgisApp::fileOpen()
 {
