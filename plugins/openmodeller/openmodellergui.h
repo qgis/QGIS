@@ -16,6 +16,7 @@
 
 #include <openmodellerguibase.h>
 #include <qstringlist.h>
+#include <openmodeller/om.hh>
 /**
 @author Tim Sutton
 */
@@ -28,7 +29,8 @@ public:
     ~OpenModellerGui();
     
   void getAlgorithmList();
-  void OpenModellerGui::parseAndRun(QString theParametersFileNameQString);
+  void getParameterList( Algorithm * theAlgorithm );
+  void parseAndRun(QString theParametersFileNameQString);
   void makeConfigFile();
   
   //
