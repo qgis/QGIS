@@ -588,9 +588,22 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
 
   QString fld = fldDef->GetNameRef();
   QString val;
-  //val = ogrFet->GetFieldAsString(attindex);
-  val = QString::fromUtf8(ogrFet->GetFieldAsString(attindex));
-  //val = QString::fromLatin1(ogrFet->GetFieldAsString(attindex));
+
+  switch(mEncoding)
+      {
+	  case QgsVectorDataProvider::Ascii:
+	      val=QString::fromAscii(ogrFet->GetFieldAsString(attindex));
+	      break;
+	  case QgsVectorDataProvider::Latin1:
+	      val = QString::fromLatin1(ogrFet->GetFieldAsString(attindex));
+	      break;
+	  case QgsVectorDataProvider::Local8Bit:
+	      val = QString::fromLocal8Bit(ogrFet->GetFieldAsString(attindex));
+	      break;
+	  case QgsVectorDataProvider::Utf8:
+	      val = QString::fromUtf8(ogrFet->GetFieldAsString(attindex));
+	      break;
+      }
   f->addAttribute(fld, val);
 }
 

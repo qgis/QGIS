@@ -31,7 +31,6 @@
 #include <qcursor.h>
 #include <qdir.h>
 #include <qerrormessage.h>
-#include <qfiledialog.h>
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qinputdialog.h>
@@ -75,7 +74,7 @@
 
 #include <cmath>
 
-
+#include "qgsencodingfiledialog.h"
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
 #include "qgsacetaterectangle.h"
@@ -946,7 +945,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
    with the current filter name.
 
 */
-static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles)
+static void openFilesRememberingFilter_(QString const &filterName, QString const &filters, QStringList & selectedFiles, QgsVectorDataProvider::Encoding& enc)
 {
 
     bool haveLastUsedFilter = false;  // by default, there is no last
@@ -966,7 +965,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
     std::cerr << "Opening vector file dialog with filters: " << filters << std::endl;
 #endif
 
-    QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"));
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"));
 
     // allow for selection of more than one file
     openFileDialog->setMode(QFileDialog::ExistingFiles);
@@ -980,6 +979,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
     if (openFileDialog->exec() == QDialog::Accepted)
     {
         selectedFiles = openFileDialog->selectedFiles();
+	enc = openFileDialog->encoding();
     }
 
     settings.writeEntry("/qgis/UI/" + filterName, openFileDialog->selectedFilter());
@@ -1028,7 +1028,8 @@ void QgisApp::addLayer()
         std::cerr << "Vector file filters: " << fileFilters << std::endl;
 #endif
 
-        openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles);
+	QgsVectorDataProvider::Encoding enc=QgsVectorDataProvider::Utf8;
+        openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc);
         if (selectedFiles.isEmpty())
         {
             // no files were selected, so just bail
@@ -1037,7 +1038,7 @@ void QgisApp::addLayer()
             return;
         }
 
-        addLayer(selectedFiles);
+        addLayer(selectedFiles, enc);
     }
 }                               // QgisApp::addLayer()
 
@@ -1173,7 +1174,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
   XXX yah know, this could be changed to just iteratively call the above
 
  */
-bool QgisApp::addLayer(QStringList const &theLayerQStringList)
+bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QgsVectorDataProvider::Encoding enc)
 {
     // check to see if we have an ogr provider available
     QString pOgr = mProviderRegistry->library("ogr");
@@ -1220,6 +1221,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList)
 
             if (layer->isValid())
             {
+		layer->getDataProvider()->setEncoding(enc);
                 //Register the layer with the layer registry
                 QgsMapLayerRegistry::instance()->addMapLayer(layer);
                 // init the context menu so it can connect to slots
@@ -4020,8 +4022,9 @@ void QgisApp::addRasterLayer()
     QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
 
     QStringList selectedFiles;
+    QgsVectorDataProvider::Encoding e;//only for parameter correctness
 
-    openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles);
+    openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles,e);
 
     if (selectedFiles.isEmpty())
     {

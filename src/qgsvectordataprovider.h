@@ -24,12 +24,6 @@
  */
 class QgsVectorDataProvider : public QgsDataProvider
 {
- protected:
-    /**List of type names for non-numerical types*/
-    std::list<QString> mNonNumericalTypes;
-    /**List of type names for numerical types*/
-    std::list<QString> mNumericalTypes;
-
  public:
 
     enum Capability
@@ -41,6 +35,14 @@ class QgsVectorDataProvider : public QgsDataProvider
 	    AddAttributes = 1 << 3,
 	    DeleteAttributes = 1 << 4,
 	    SaveAsShapefile = 1 << 5
+	};
+
+    enum Encoding
+	{
+	    Ascii,
+	    Latin1,
+	    Local8Bit,
+	    Utf8
 	};
 
     QgsVectorDataProvider();
@@ -178,7 +180,15 @@ class QgsVectorDataProvider : public QgsDataProvider
   const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
   const std::list<QString>& numericalTypes(){return mNumericalTypes;}
 
+  void setEncoding(QgsVectorDataProvider::Encoding e){mEncoding=e;}
 
+protected:
+    /**Encoding*/
+    QgsVectorDataProvider::Encoding mEncoding;
+    /**List of type names for non-numerical types*/
+    std::list<QString> mNonNumericalTypes;
+    /**List of type names for numerical types*/
+    std::list<QString> mNumericalTypes;
 };
 
 #endif
