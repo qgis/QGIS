@@ -216,6 +216,69 @@ void QgsRasterLayer::triggerRepaint()
 {
     emit repaintRequested();
 }
+
+
+QString QgsRasterLayer::getDrawingStyleAsQString()
+{
+    switch (drawingStyle)
+    {
+        case SINGLE_BAND_GRAY: return QString("SINGLE_BAND_GRAY"); break;
+        case SINGLE_BAND_PSEUDO_COLOR: return QString("SINGLE_BAND_PSEUDO_COLOR"); break;
+        case PALETTED_SINGLE_BAND_GRAY: return QString("PALETTED_SINGLE_BAND_GRAY"); break;
+        case PALETTED_SINGLE_BAND_PSEUDO_COLOR: return QString("PALETTED_SINGLE_BAND_PSEUDO_COLOR"); break;
+        case PALETTED_MULTI_BAND_COLOR: return QString("PALETTED_MULTI_BAND_COLOR"); break;
+        case MULTI_BAND_SINGLE_BAND_GRAY: return QString("MULTI_BAND_SINGLE_BAND_GRAY"); break;
+        case MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR: return QString("MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR"); break;
+        case MULTI_BAND_COLOR:  return QString("MULTI_BAND_COLOR"); break;
+        default:
+            break;
+    }
+}
+
+void QgsRasterLayer::setDrawingStyle(QString theDrawingStyleQString)
+{
+ if (theDrawingStyleQString=="SINGLE_BAND_GRAY") 
+ {
+   drawingStyle=SINGLE_BAND_GRAY;
+   return;
+ }
+ if (theDrawingStyleQString=="SINGLE_BAND_PSEUDO_COLOR") 
+ {
+   drawingStyle=SINGLE_BAND_PSEUDO_COLOR;
+   return;
+ }
+ if (theDrawingStyleQString=="PALETTED_SINGLE_BAND_GRAY") 
+ {
+   drawingStyle=PALETTED_SINGLE_BAND_GRAY;
+   return;
+ }
+ if (theDrawingStyleQString=="PALETTED_SINGLE_BAND_PSEUDO_COLOR") 
+ {
+   drawingStyle=PALETTED_SINGLE_BAND_PSEUDO_COLOR;
+   return;
+ }
+ if (theDrawingStyleQString=="PALETTED_MULTI_BAND_COLOR") 
+ {
+   drawingStyle=PALETTED_MULTI_BAND_COLOR;
+   return;
+ }
+ if (theDrawingStyleQString=="MULTI_BAND_SINGLE_BAND_GRAY") 
+ {
+   drawingStyle=MULTI_BAND_SINGLE_BAND_GRAY;
+   return;
+ }
+ if (theDrawingStyleQString=="MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR") 
+ {
+   drawingStyle=MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR;
+   return;
+ }
+ if (theDrawingStyleQString=="MULTI_BAND_COLOR") 
+ {
+   drawingStyle=MULTI_BAND_COLOR;
+   return;
+ }
+}
+
 //
 //should be between 0 and 255
 void QgsRasterLayer::setTransparency(unsigned int theInt)
