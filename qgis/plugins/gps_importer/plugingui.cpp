@@ -38,7 +38,7 @@ PluginGui::PluginGui() : PluginGuiBase()
 {
   populateDeviceComboBox();
   populateULLayerComboBox();
-  tabWidget->removePage(tabWidget->page(1));
+  tabWidget->removePage(tabWidget->page(2));
 }
 PluginGui::PluginGui( std::vector<QgsMapLayer*> gpxMapLayers, 
 		      QWidget* parent , const char* name , bool modal , 
@@ -47,7 +47,7 @@ PluginGui::PluginGui( std::vector<QgsMapLayer*> gpxMapLayers,
 {
   populateDeviceComboBox();
   populateULLayerComboBox();
-  tabWidget->removePage(tabWidget->page(1));
+  tabWidget->removePage(tabWidget->page(2));
 } 
 PluginGui::~PluginGui()
 {
@@ -106,8 +106,13 @@ void PluginGui::pbnOK_clicked()
     emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
   }
   
-  // or download GPS data from a device?
+  // or import other file?
   else if (tabWidget->currentPageIndex() == 1) {
+
+  }
+  
+  // or download GPS data from a device?
+  else if (tabWidget->currentPageIndex() == 2) {
     
     // what does the user want to download?
     QString typeArg;
@@ -260,8 +265,13 @@ void PluginGui::enableRelevantControls()
     }
   }
   
-  // download from device
+  // import other file
   else if (tabWidget->currentPageIndex() == 1) {
+
+  }
+  
+  // download from device
+  else if (tabWidget->currentPageIndex() == 2) {
     if (cmbDLDevice->currentText() == "" || leDLBasename->text() == "" ||
 	leDLOutput->text() == "")
       pbnOK->setEnabled(false);
@@ -270,7 +280,7 @@ void PluginGui::enableRelevantControls()
   }
 
   // upload from device
-  else if (tabWidget->currentPageIndex() == 2) {
+  else if (tabWidget->currentPageIndex() == 3) {
     if (cmbULDevice->currentText() == "" || cmbULLayer->currentText() == "")
       pbnOK->setEnabled(false);
     else

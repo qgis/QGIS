@@ -63,7 +63,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>GPX and LOC loader</string>
+                    <string>Load GPX or LOC</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -159,6 +159,130 @@
                             <string>...</string>
                         </property>
                     </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Import other file</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>teGPXInstructions_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:17pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX and LOC files by itself, but many other formats 
+can be converted to GPX using &lt;a href="http://gpsbabel.sf.net"&gt;
+GPSBabel&lt;/a&gt;. This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file that you want to import, the feature type that you 
+want to use, and a GPX filename that you want to save the converted 
+file as.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
+                        </property>
+                        <property name="wordWrap">
+                            <enum>WidgetWidth</enum>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>textLabel1_5</cstring>
+                        </property>
+                        <property name="text">
+                            <string>File to import:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>textLabel2_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Feature type:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="0">
+                        <property name="name">
+                            <cstring>textLabel3_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>GPX output file:</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="1" column="3">
+                        <property name="name">
+                            <cstring>pbIMPInput</cstring>
+                        </property>
+                        <property name="text">
+                            <string>...</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="3" column="3">
+                        <property name="name">
+                            <cstring>pbIMPOutput</cstring>
+                        </property>
+                        <property name="text">
+                            <string>...</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>leIMPOutput</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>leIMPInput</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="2" column="1">
+                        <item>
+                            <property name="text">
+                                <string>Waypoints</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Routes</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Tracks</string>
+                            </property>
+                        </item>
+                        <property name="name">
+                            <cstring>cmbIMPFeature</cstring>
+                        </property>
+                    </widget>
+                    <spacer row="2" column="2">
+                        <property name="name">
+                            <cstring>spacer3</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>40</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
                 </grid>
             </widget>
             <widget class="QWidget">
