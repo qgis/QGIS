@@ -47,6 +47,8 @@ class QgsMapLayer:public QObject
 	 * @return Integer matching a value in the LAYERS enum
 	 */
 	const int type();
+	/*! Get this layer's unique ID */
+	QString getLayerID();
 	/*! Set the name of the layer
 	   # @param name New name for the layer
 	 */
@@ -115,6 +117,9 @@ class QgsMapLayer:public QObject
 	QString dataSource;
 	int feature;
   private:						// Private attributes
+	/** Unique ID of this layer - used to refer to this layer  in QGIS code */
+	QString ID;
+	
 	/** Name of the layer - used for display  */
 	  QString layerName;
 	/** Type of the layer (eg. vector, raster, database  */

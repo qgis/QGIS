@@ -538,7 +538,7 @@ void QgisApp::removeLayer()
 	mapCanvas->freeze();
 	QListViewItem *lvi = legendView->currentItem();
 	QgsMapLayer *lyr = ((QgsLegendItem *) lvi)->layer();
-	mapCanvas->remove(lyr->name());
+	mapCanvas->remove(lyr->getLayerID());
 	mapLegend->update();
 	mapCanvas->freeze(false);
 	// draw the map
