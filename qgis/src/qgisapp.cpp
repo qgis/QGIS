@@ -237,7 +237,7 @@ void QgisApp::about()
 	"  box or selecting the records in the attribute table\n"
 	"**Zoom to extent of selected features (Shapefiles only)\n"
 	"**Bug fix: Bug that prevented reopening of the attribute table once\n"
-	"  it was initally displayed and close\n"
+	"  it was initally displayed and closed\n"
 	"**Bug fix: Bug that prevented lines from being drawn with widths\n"
 	"  other than 1 pixel\n"
 	"**Build system has changed for building with PostgreSQL support.\n"
