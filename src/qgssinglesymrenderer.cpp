@@ -25,7 +25,7 @@
 
 QgsSingleSymRenderer::QgsSingleSymRenderer()
 {
-
+    
 }
 
 QgsSingleSymRenderer::~QgsSingleSymRenderer()
@@ -222,6 +222,7 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
       QgsSymbol sy;
       sy.brush().setStyle(Qt::SolidPattern);
       sy.pen().setStyle(Qt::SolidLine);
+      sy.pen().setWidth(1);//set width 1 as default instead of width 0
 
       //random fill colors for points and polygons and pen colors for lines
       int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));

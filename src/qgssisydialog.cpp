@@ -61,6 +61,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), m_vect
       if (renderer)
         {
           outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());
+	  outlinewidthspinbox->setMinValue(1);//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
           fillcolorbutton->setPaletteBackgroundColor(renderer->item()->getSymbol()->brush().color());
           patternbutton->setName(QgsSymbologyUtils::brushStyle2Char(renderer->item()->getSymbol()->brush().style()));
           patternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap(patternbutton->name()));
