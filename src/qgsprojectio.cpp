@@ -12,7 +12,7 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.46 2004/07/14 21:36:04 gsherman Exp */
+/* qgsprojectio.cpp,v 1.47 2004/07/15 00:40:25 gsherman Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -466,7 +466,7 @@ void QgsProjectIo::writeXML(QgsRect theExtent)
           qWarning("Warning, cast failed in QgsProjectIo, line 451");
         }
 	
-	xml << "\t\t<provider>" << layer->providerType().ascii() << "</provider>\n";
+ 	xml << "\t\t<provider>" << layer->providerType().ascii() << "</provider>\n";
 	
         QgsRenderer* renderer;
         if(renderer=layer->renderer())
