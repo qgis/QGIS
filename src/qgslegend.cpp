@@ -221,6 +221,7 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
       setSelected(firstChild(), true);  // shouldn't have to do this,
       // but for some reason making it current
       // item doesn't select it
+      emit currentChanged(firstChild());
     }
 
 }                               // QgsLegend::addLayer
