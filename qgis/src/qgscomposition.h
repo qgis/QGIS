@@ -193,6 +193,13 @@ public slots:
     /**  \brief Called by GUI if resolution was changed */
     void resolutionChanged ( void );
 
+    /**  \brief Called map objects if changed, so that the composition can emit signal */
+    void emitMapChanged ( int id );
+
+signals:
+    /**  \brief Emitted when map was changed */    
+    void mapChanged ( int id );
+
 private:
     /** \brief composition id */
     int mId;

@@ -266,6 +266,7 @@ void QgsComposerMap::scaleChanged ( void )
     QCanvasRectangle::canvas()->update();
     
     writeSettings();
+    mComposition->emitMapChanged ( mId );
 }
 
 void QgsComposerMap::previewModeChanged ( int i )

@@ -143,12 +143,12 @@ void QgsComposition::createDefault(void)
 
     // Add vector legend
     QgsComposerVectorLegend *vl = new QgsComposerVectorLegend ( this, mNextItemId++, 
-	                       mScale*210, mScale*100, mScale*5 );
+	                       mScale*210, mScale*100, 10 );
     mItems.push_back(vl);
 
     // Title
     QgsComposerLabel *tit = new QgsComposerLabel ( this, mNextItemId++, 
-	                                           mScale*238, mScale*40, "Map", mScale*7 );
+	                                           mScale*238, mScale*40, "Map", 24 );
     mItems.push_back(tit);
 
     // Tool
@@ -615,6 +615,11 @@ QPen QgsComposition::selectionPen ( void )
 QBrush QgsComposition::selectionBrush ( void )
 {
     return QBrush ( QBrush(QColor(0,0,255), Qt::SolidPattern) );
+}
+
+void QgsComposition::emitMapChanged ( int id )
+{
+    emit mapChanged ( id );
 }
 
 bool QgsComposition::writeSettings ( void )
