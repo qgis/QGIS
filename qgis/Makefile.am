@@ -8,19 +8,20 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = doc \
+EXTRA_DIST = \
 	AUTHORS \
-	ChangeLog \
-	README \
 	BUGS \
-	INSTALL \
-	TODO \
+	ChangeLog \
 	COPYING \
+	create_qm_files.sh \
+	doc \
+	INSTALL \
+	$(man1_MANS) \
 	NEWS \
 	qgis.spec \
-	$(man1_MANS) \
 	qgsconfig.h.in \
-	create_qm_files.sh \
+	README \
+	TODO \
 	update_ts_files.sh
 
 man1_MANS = qgis.man
