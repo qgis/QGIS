@@ -404,31 +404,10 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
       setLayerName(layerTitle);
   }
   
-  // Set the layers destination CS
-  //hard coding to geo/wgs84 for now
-  QString myDestWKT =     "GEOGCS[\"WGS 84\", "
-    "  DATUM[\"WGS_1984\", "
-    "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-    "      AUTHORITY[\"EPSG\",7030]], "
-    "    TOWGS84[0,0,0,0,0,0,0], "
-    "    AUTHORITY[\"EPSG\",6326]], "
-    "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-    "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-    "  AXIS[\"Lat\",NORTH], "
-    "  AXIS[\"Long\",EAST], "
-    "  AUTHORITY[\"EPSG\",4326]]";
-
   // load the file if one specified
   if ( ! path.isEmpty() )
   {
-      if ( readFile( path ) ) 
-      {
-	  // Get the layer's projection info and set up the 
-	  // QgsCoordinateTransform for this layer
-          QString mySourceWKT = getProjectionWKT();
-	  mCoordinateTransform = 
-	    new QgsCoordinateTransform(mySourceWKT,myDestWKT);
-      }
+    readFile( path ); // XXX check for failure?
   }
 
   //  Transparency slider for popup meni
@@ -584,7 +563,24 @@ QgsRasterLayer::readFile( QString const & fileName )
             grayBandNameQString = "Undefined";  // sensible default
         }
     }
-
+    
+    // Get the layer's projection info and set up the 
+    // QgsCoordinateTransform for this layer
+    QString mySourceWKT = getProjectionWKT();
+    //hard coding to geo/wgs84 for now
+    QString myDestWKT =     "GEOGCS[\"WGS 84\", "
+      "  DATUM[\"WGS_1984\", "
+      "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+      "      AUTHORITY[\"EPSG\",7030]], "
+      "    TOWGS84[0,0,0,0,0,0,0], "
+      "    AUTHORITY[\"EPSG\",6326]], "
+      "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+      "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+      "  AXIS[\"Lat\",NORTH], "
+      "  AXIS[\"Long\",EAST], "
+      "  AUTHORITY[\"EPSG\",4326]]";
+    mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+    
     return true;
 
 } // QgsRasterLayer::readFile
