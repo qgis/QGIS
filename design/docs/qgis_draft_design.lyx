@@ -1,5 +1,5 @@
-#LyX 1.3 created this file. For more info see http://www.lyx.org/
-\lyxformat 221
+#LyX 1.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 220
 \textclass article
 \language english
 \inputencoding auto
@@ -544,6 +544,17 @@ Select by attribute
 \layout Itemize
 
 Select spatially
+\end_deeper 
+\layout Itemize
+
+Edit Layer Preferences
+\begin_deeper 
+\layout Itemize
+
+Edit Symbology
+\layout Itemize
+
+Edit Labels
 \end_inset 
 </cell>
 </row>
@@ -5939,6 +5950,614 @@ Execute the query to select features
 \end_inset 
 
 
+\layout Subsubsection
+
+Edit Layer Preferences
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Edit Layer Preferences
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Edit the name of the layer and other attributes that determine how it is
+ rendered.
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Primary Task
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Data layer user desires to edit preferences for is loaded and displayed
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Changes are reflected in the display of the layer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Layer properties remain unchaged or are not changed to the desired values
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Casual, Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wishes to give layer a name and styling to aid in better organizing
+ and viewing the project
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Select data layer
+\layout Enumerate
+
+Open the preferences dialog for that layer
+\layout Enumerate
+
+Edit settings as desired
+\layout Enumerate
+
+Apply changes and close dialog
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Edit Symbology
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Edit Symbology
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Choose what symbols will be used to render features in a layer for the layer
+ as a whole, or based on attributes of the features.
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Subfunction
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Layer Preferences dialog is open
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Changes are reflected in the display of the layer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Layer is not rendered using the chosen symbology
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wishes to use color, fill type, line styles and other symbology to
+ reveal more detailed information in a shapefile layer
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Edit settings as desired
+\layout Enumerate
+
+Apply changes and close dialog
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Subsubsection
+
+Edit Labels
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features>
+<column alignment="right" valignment="top" width="2in">
+<column alignment="block" valignment="top" width="3in">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Use Case:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Edit Labels
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Goal in Context:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Show feature labels based on attribute tables or choose alternate labels
+ to display
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Scope & Level:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Subfunction
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Preconditions:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Layer preferences dialog is open
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Success End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+The layer is rendered with the chosen labels
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Failed End Condition:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Layer is rendered with no labels or without using the specified labels
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Primary Actor(s):
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+Professional user
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Trigger:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+User wishes to control what labels appear for layer features
+\end_inset 
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+\added_space_top smallskip 
+
+\series bold 
+Description of Steps:
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Enumerate
+
+Edit settings as desired
+\layout Enumerate
+
+Apply changes and close dialog
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
 \layout Section
 
 Core Architecture
@@ -5993,8 +6612,12 @@ Sample QGIS Main Window Layout
 \layout Standard
 
 
-\begin_inset Graphics
+\begin_inset Graphics FormatVersion 1
 	filename ./qgismain.png
+	display default
+	size_type 0
+	rotateOrigin leftBaseline
+	lyxsize_type 0
 
 \end_inset 
 
@@ -6042,8 +6665,12 @@ Conceptual Diagram of Plugin Architecture
 \layout Standard
 
 
-\begin_inset Graphics
+\begin_inset Graphics FormatVersion 1
 	filename ./plugin.png
+	display default
+	size_type 0
+	rotateOrigin leftBaseline
+	lyxsize_type 0
 
 \end_inset 
 
