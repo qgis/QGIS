@@ -60,6 +60,7 @@ void QgsMapCanvas::addLayer (QgsMapLayer * lyr)
   lyr->setZ(layers.size()-1);
 	updateZpos();
 	zOrder.push_back(lyr->name());
+	connect(lyr, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));	
   //lyr->zpos = 0;
 }
 void QgsMapCanvas::incrementZpos(){
@@ -117,7 +118,8 @@ void QgsMapCanvas::render2 ()
       QgsMapLayer *ml = (*mi).second;
       //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
       std::cout << "Rendering " << ml->name() << std::endl;
-      ml->draw (paint, &currentExtent, coordXForm);
+      if(ml->visible())
+	      ml->draw (paint, &currentExtent, coordXForm);
       mi++;
       //  mi.draw(p, &fullExtent);
     }
@@ -372,4 +374,9 @@ void QgsMapCanvas::updateFullExtent (QgsRect r)
 int QgsMapCanvas::layerCount(){
 	int numLayers = layers.size();
 	return layers.size();
+}
+
+void QgsMapCanvas::layerStateChange(){
+	clear();
+	render2();
 }

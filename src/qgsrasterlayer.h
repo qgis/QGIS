@@ -24,6 +24,7 @@
  */
 
 class QgsRasterLayer : public QgsMapLayer  {
+Q_OBJECT
  public: 
     //! Constructor
     QgsRasterLayer();

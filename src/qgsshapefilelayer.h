@@ -30,9 +30,11 @@ class OGRDataSource;
  */
 
 class QgsShapeFileLayer : public QgsMapLayer  {
-public: 
+Q_OBJECT
+public:
+
     //! Constructor
-	QgsShapeFileLayer(QString path=0, QString baseName=0);
+	QgsShapeFileLayer( QString baseName=0, QString path=0);
 	//! Destructor
 	~QgsShapeFileLayer();
        
