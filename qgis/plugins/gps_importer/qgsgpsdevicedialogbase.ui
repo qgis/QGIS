@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>482</width>
-            <height>252</height>
+            <width>488</width>
+            <height>405</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,7 +23,7 @@
     <property name="caption">
         <string>GPS Device Editor</string>
     </property>
-    <property name="modal">
+    <property name="modal" stdset="0">
         <bool>true</bool>
     </property>
     <grid>

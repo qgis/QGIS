@@ -102,13 +102,15 @@ void QgsGPSPlugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(mMainWindowPointer);
   pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
-  pluginMenu->insertItem("&Create new GPX layer", this, SLOT(createGPX()));
+  int menuId = pluginMenu->insertItem("&Create new GPX layer", this, SLOT(createGPX()));
+  pluginMenu->setWhatsThis(menuId, "Creates a new GPX layer and displays it on the map canvas");
   mMenuBarPointer = ((QMainWindow *) mMainWindowPointer)->menuBar();
   mMenuId = mQGisInterface->addMenu("&Gps", pluginMenu);
 
   // add an action to the toolbar
   mQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
 				this, "run");
+  mQActionPointer->setWhatsThis( "Creates a new GPX layer and displays it on the map canvas");
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   mQGisInterface->addToolBarIcon(mQActionPointer);
 }

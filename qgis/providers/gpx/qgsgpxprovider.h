@@ -149,6 +149,8 @@ public:
   bool boundsCheck(double x, double y);
 
   bool supportsFeatureAddition(){return true;}
+
+  QgsDataSourceURI *getURI(){return 0;};
   
  private:
   

@@ -84,9 +84,6 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	
 	if(renderer->items().size()==0)
 	{
-#ifdef QGISDEBUG
-	    qWarning("Number of items in the renderer is "+QString::number(renderer->items().size()));
-#endif
 	    changeClassificationAttribute(classattr);
 	}
 	
@@ -96,9 +93,9 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	    QgsRenderItem* item=(*iter).second;
 	    QString itemvalue=item->value();
 	    QgsSymbol* sym=new QgsSymbol();
-	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
 	    sym->setPen(item->getSymbol()->pen());
 	    sym->setBrush(item->getSymbol()->brush());
+	    QgsRenderItem* ritem=new QgsRenderItem(sym,item->value(),item->label());
 	    mValues.insert(std::make_pair(itemvalue,ritem));
 	    mClassBreakBox->insertItem(itemvalue);
 	}
@@ -268,10 +265,6 @@ void QgsUValDialog::apply()
 
 void QgsUValDialog::changeClassificationAttribute(int nr)
 {
-#ifdef QGISDEBUG
-    qWarning("in changeClassificationAttribute, nr is: "+QString::number(nr));
-#endif
-
     //delete old entries
     for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
@@ -346,6 +339,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 
 void QgsUValDialog::changeCurrentValue()
 {
+    sydialog.blockSignals(true);//block signal to prevent sydialog from changing the current QgsRenderItem
     QListBoxItem* item=mClassBreakBox->selectedItem();
     QString value=item->text();
     std::map<QString,QgsRenderItem*>::iterator it=mValues.find(value);
@@ -366,6 +360,7 @@ void QgsUValDialog::changeCurrentValue()
     {
 	//no entry found
     }
+    sydialog.blockSignals(false);
 }
 
 void QgsUValDialog::applySymbologyChanges()

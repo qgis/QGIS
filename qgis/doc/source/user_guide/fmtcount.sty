@@ -1,0 +1,587 @@
+%%
+%% This is file `fmtcount.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% datetime.dtx  (with options: `fmtcount')
+%% Copyright (C) 2000 Nicola Talbot, all rights reserved.
+%% If you modify this file, you must change its name first.
+%% You are NOT ALLOWED to distribute this file alone. You are NOT
+%% ALLOWED to take money for the distribution or use of either this
+%% file or a changed version, except for a nominal charge for copying
+%% etc.
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fmtcount}[2004/10/22 v1.0]
+\RequirePackage{ifthen}
+\newcount\@DT@modctr
+\def\@modulo#1#2{%
+\@DT@modctr=#1\relax
+\divide \@DT@modctr by #2\relax
+\multiply \@DT@modctr by #2\relax
+\advance #1 by -\@DT@modctr}
+\providecommand{\fmtord}[1]{#1}
+\newcount\@ordinalctr
+\newcount\@orgargctr
+\def\@ordinal#1{%
+\@orgargctr=#1\relax
+\@ordinalctr=#1%
+\@modulo{\@ordinalctr}{100}%
+\ifnum\@ordinalctr=11
+\the\@orgargctr\fmtord{th}%
+\else
+\ifnum\@ordinalctr=12
+\the\@orgargctr\fmtord{th}%
+\else
+\ifnum\@ordinalctr=13
+\the\@orgargctr\fmtord{th}%
+\else
+\@modulo{\@ordinalctr}{10}%
+\ifcase\@ordinalctr
+\the\@orgargctr\fmtord{th}%      case 0
+\or \the\@orgargctr\fmtord{st}%  case 1
+\or \the\@orgargctr\fmtord{nd}%  case 2
+\or \the\@orgargctr\fmtord{rd}%  case 3
+\else
+\the\@orgargctr\fmtord{th}%      default case
+\fi
+\fi
+\fi
+\fi
+}
+\newcommand{\@@unitstring}[1]{%
+\ifcase#1\relax
+zero%
+\or one%
+\or two%
+\or three%
+\or four%
+\or five%
+\or six%
+\or seven%
+\or eight%
+\or nine%
+\fi
+}
+
+\newcommand{\@@tenstring}[1]{%
+\ifcase#1\relax
+\or ten%
+\or twenty%
+\or thirty%
+\or fourty%
+\or fifty%
+\or sixty%
+\or seventy%
+\or eighty%
+\or ninety%
+\fi
+}
+
+\newcommand{\@@teenstring}[1]{%
+\ifcase#1\relax
+ten%
+\or eleven%
+\or twelve%
+\or thirteen%
+\or fourteen%
+\or fifteen%
+\or sixteen%
+\or seventeen%
+\or eighteen%
+\or nineteen%
+\fi
+}
+
+\newcommand{\@@Unitstring}[1]{%
+\ifcase#1\relax
+Zero%
+\or One%
+\or Two%
+\or Three%
+\or Four%
+\or Five%
+\or Six%
+\or Seven%
+\or Eight%
+\or Nine%
+\fi
+}
+
+\newcommand{\@@Tenstring}[1]{%
+\ifcase#1\relax
+\or Ten%
+\or Twenty%
+\or Thirty%
+\or Fourty%
+\or Fifty%
+\or Sixty%
+\or Seventy%
+\or Eighty%
+\or Ninety%
+\fi
+}
+
+\newcommand{\@@Teenstring}[1]{%
+\ifcase#1\relax
+Ten%
+\or Eleven%
+\or Twelve%
+\or Thirteen%
+\or Fourteen%
+\or Fifteen%
+\or Sixteen%
+\or Seventeen%
+\or Eighteen%
+\or Nineteen%
+\fi
+}
+
+\newcount\strctr
+\newcommand{\@@numberstring}[1]{%
+\ifnum#1>99000
+\PackageError{fmtcount}{Out of range}%
+{This macro only works for values less than 100000}%
+\else
+\ifnum#1<0
+\PackageError{fmtcount}{Negative numbers not permitted}%
+{This macro does not work for negative numbers, however
+you can try typing "minus" first, and then pass the modulus of
+this number}%
+\fi
+\fi
+\strctr=#1\relax \divide\strctr by 1000\relax
+\ifnum\strctr>9
+\divide\strctr by 10
+\ifnum\strctr>1
+\@tenstring{\strctr}%
+\strctr=#1 \divide\strctr by 10000
+\ifnum\strctr>0 -\@unitstring{\strctr}\fi
+\else
+\strctr=#1 \divide\strctr by 1000
+\@teenstring{\strctr}%
+\fi
+\ \@thousand%
+\else
+\ifnum\strctr>0 \@unitstring{\strctr}\ \@thousand\fi
+\fi
+\strctr=#1\relax \@modulo{\strctr}{1000}%
+\divide\strctr by 100
+\ifnum\strctr>0
+\ifnum#1>1000 \ \fi\@unitstring{\strctr}\ \@hundred%
+\fi
+\strctr=#1\relax \@modulo{\strctr}{100}%
+\ifnum#1>100 \ifnum\strctr>0 \ and \fi\fi
+\ifnum\strctr>19
+\divide\strctr by 10
+\@tenstring{\strctr}%
+\strctr=#1\relax \@modulo{\strctr}{10}%
+\ifnum\strctr>0
+-\@unitstring{\strctr}%
+\fi
+\else
+\ifnum\strctr<10
+\ifnum\strctr=0
+\ifnum#1<100 \@unitstring{\strctr}\fi
+\else
+\@unitstring{\strctr}%
+\fi
+\else
+\@modulo{\strctr}{10}%
+\@teenstring{\strctr}%
+\fi
+\fi
+}
+
+\newcommand{\@numberstring}[1]{%
+\let\@unitstring=\@@unitstring \let\@teenstring=\@@teenstring \let\@tenstring=\@@tenstring
+\def\@hundred{hundred}\def\@thousand{thousand}%
+\@@numberstring{#1}}
+
+\newcommand{\@Numberstring}[1]{%
+\let\@unitstring=\@@Unitstring \let\@teenstring=\@@Teenstring \let\@tenstring=\@@Tenstring
+\def\@hundred{Hundred}\def\@thousand{Thousand}%
+\@@numberstring{#1}}
+\newcommand{\@@unitthstring}[1]{%
+\ifcase#1\relax
+zeroth%
+\or first%
+\or second%
+\or third%
+\or fourth%
+\or fifth%
+\or sixth%
+\or seventh%
+\or eighth%
+\or nineth%
+\fi
+}
+
+\newcommand{\@@tenthstring}[1]{%
+\ifcase#1\relax
+\or tenth%
+\or twentieth%
+\or thirtieth%
+\or fourtieth%
+\or fiftieth%
+\or sixtieth%
+\or seventieth%
+\or eightieth%
+\or ninetieth%
+\fi
+}
+
+\newcommand{\@@teenthstring}[1]{%
+\ifcase#1\relax
+tenth%
+\or eleventh%
+\or twelfth%
+\or thirteenth%
+\or fourteenth%
+\or fifteenth%
+\or sixteenth%
+\or seventeenth%
+\or eighteenth%
+\or nineteenth%
+\fi
+}
+
+\newcommand{\@@Unitthstring}[1]{%
+\ifcase#1\relax
+Zeroth%
+\or First%
+\or Second%
+\or Third%
+\or Fourth%
+\or Fifth%
+\or Sixth%
+\or Seventh%
+\or Eighth%
+\or Nineth%
+\fi
+}
+
+\newcommand{\@@Tenthstring}[1]{%
+\ifcase#1\relax
+\or Tenth%
+\or Twentieth%
+\or Thirtieth%
+\or Fourtieth%
+\or Fiftieth%
+\or Sixtieth%
+\or Seventieth%
+\or Eightieth%
+\or Ninetieth%
+\fi
+}
+
+\newcommand{\@@Teenthstring}[1]{%
+\ifcase#1\relax
+Tenth%
+\or Eleventh%
+\or Twelfth%
+\or Thirteenth%
+\or Fourteenth%
+\or Fifteenth%
+\or Sixteenth%
+\or Seventeenth%
+\or Eighteenth%
+\or Nineteenth%
+\fi
+}
+
+\newcommand{\@@ordinalstring}[1]{%
+\ifnum#1>99000
+\PackageError{fmtcount}{Out of range}%
+{This macro only works for values less than 100000}%
+\else
+\ifnum#1<0
+\PackageError{fmtcount}{Negative numbers not permitted}%
+{This macro does not work for negative numbers, however
+you can try typing "minus" first, and then pass the modulus of
+this number}%
+\fi
+\fi
+\strctr=#1\relax \divide\strctr by 1000\relax
+\ifnum\strctr>9
+\divide\strctr by 10
+\ifnum\strctr>1
+\@tenstring{\strctr}%
+\strctr=#1 \divide\strctr by 10000
+\ifnum\strctr>0 -\@unitstring{\strctr}\fi
+\else
+\strctr=#1 \divide\strctr by 1000
+\@teenstring{\strctr}%
+\fi
+\strctr=#1\relax \@modulo{\strctr}{1000}%
+\ifnum\strctr=0\ \@thousandth\else\ \@thousand \fi
+\else
+\ifnum\strctr>0\relax
+\@unitstring{\strctr}%
+\strctr=#1\relax \@modulo{\strctr}{1000}%
+\ifnum\strctr=0\ \@thousandth\else\ \@thousand\fi
+\fi
+\fi
+\strctr=#1\relax \@modulo{\strctr}{1000}%
+\divide\strctr by 100
+\ifnum\strctr>0
+\ifnum#1>1000 \ \fi\@unitstring{\strctr}%
+\strctr=#1\relax \@modulo{\strctr}{100}%
+\ifnum\strctr=0\ \@hundredth\else\ \@hundred\fi
+\fi
+\strctr=#1\relax \@modulo{\strctr}{100}%
+\ifnum#1>100 \ifnum\strctr>0\ and \fi\fi
+\ifnum\strctr>19
+\@dtctr=\strctr
+\divide\strctr by 10
+\@modulo{\@dtctr}{10}%
+\ifnum\@dtctr=0 \@tenthstring{\strctr}\else \@tenstring{\strctr}\fi
+\strctr=#1\relax \@modulo{\strctr}{10}%
+\ifnum\strctr>0
+-\@unitthstring{\strctr}%
+\fi
+\else
+\ifnum\strctr<10
+\ifnum\strctr=0
+\ifnum#1<100 \@unitthstring{\strctr}\fi
+\else
+\@unitthstring{\strctr}%
+\fi
+\else
+\@modulo{\strctr}{10}%
+\@teenthstring{\strctr}%
+\fi
+\fi
+}
+
+\newcommand{\@ordinalstring}[1]{%
+\let\@unitthstring=\@@unitthstring \let\@teenthstring=\@@teenthstring \let\@tenthstring=\@@tenthstring
+\let\@unitstring=\@@unitstring \let\@teenstring=\@@teenstring \let\@tenstring=\@@tenstring
+\def\@hundred{hundred}\def\@thousand{thousand}%
+\def\@hundredth{hundredth}\def\@thousandth{thousandth}%
+\@@ordinalstring{#1}}
+
+\newcommand{\@Ordinalstring}[1]{%
+\let\@unitthstring=\@@Unitthstring \let\@teenthstring=\@@Teenthstring \let\@tenthstring=\@@Tenthstring
+\let\@unitstring=\@@Unitstring \let\@teenstring=\@@Teenstring \let\@tenstring=\@@Tenstring
+\def\@hundred{Hundred}\def\@thousand{Thousand}%
+\def\@hundredth{Hundredth}\def\@thousandth{Thousandth}%
+\@@ordinalstring{#1}}
+\newcount\c@padzeroesN
+\c@padzeroesN=1\relax
+\providecommand{\padzeroes}[1][17]{\c@padzeroesN=#1}
+
+\newif\if@DT@padzeroes
+\newcount\@DT@loopN
+\newcount\@DT@X
+\newcommand{\@binary}[1]{%
+\@DT@padzeroestrue
+\@DT@loopN=17\relax
+\strctr=65536\relax
+\@DT@X=#1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=0\) \and \(\@DT@loopN>\c@padzeroesN\)}{}{\the\@DT@modctr}%
+\ifnum\@DT@modctr=0\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 2\relax
+\advance\@DT@loopN by -1\relax
+\ifnum\strctr>1
+\repeat
+\the\@DT@X}
+\newcommand{\@octal}[1]{%
+\ifnum#1>32768
+\PackageError{fmtcount}{Value of counter too large for \protect\@octal}{Maximum value 32768}
+\else
+\@DT@padzeroestrue
+\@DT@loopN=6\relax
+\strctr=32768\relax
+\@DT@X=#1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=0\) \and \(\@DT@loopN>\c@padzeroesN\)}{}{\the\@DT@modctr}%
+\ifnum\@DT@modctr=0\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 8\relax
+\advance\@DT@loopN by -1\relax
+\ifnum\strctr>1
+\repeat
+\the\@DT@X
+\fi}
+\newcommand{\@@hexadecimal}[1]{\ifcase#10\or1\or2\or3\or4\or5\or6\or7\or8\or9\or a\or b\or c\or d\or e\or f\fi}
+
+\newcommand{\@hexadecimal}[1]{%
+\@DT@padzeroestrue
+\@DT@loopN=5\relax
+\strctr=65536\relax
+\@DT@X=#1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=0\) \and \(\@DT@loopN>\c@padzeroesN\)}{}{\@@hexadecimal\@DT@modctr}%
+\ifnum\@DT@modctr=0\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 16\relax
+\advance\@DT@loopN by -1\relax
+\ifnum\strctr>1
+\repeat
+\@@hexadecimal\@DT@X}
+
+\newcommand{\@@Hexadecimal}[1]{\ifcase#10\or1\or2\or3\or4\or5\or6\or7\or8\or9\or A\or B\or C\or D\or E\or F\fi}
+
+\newcommand{\@Hexadecimal}[1]{%
+\@DT@padzeroestrue
+\@DT@loopN=5\relax
+\strctr=65536\relax
+\@DT@X=#1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=0\) \and \(\@DT@loopN>\c@padzeroesN\)}{}{\@@Hexadecimal\@DT@modctr}%
+\ifnum\@DT@modctr=0\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 16\relax
+\advance\@DT@loopN by -1\relax
+\ifnum\strctr>1
+\repeat
+\@@Hexadecimal\@DT@X}
+
+\newcommand{\@aaalph}[1]{%
+\@DT@loopN=#1\relax
+\advance\@DT@loopN by -1\relax
+\divide\@DT@loopN by 26\relax
+\@DT@modctr=\@DT@loopN
+\multiply\@DT@modctr by 26\relax
+\@DT@X=#1\relax
+\advance\@DT@X by -1\relax
+\advance\@DT@X by -\@DT@modctr
+\advance\@DT@loopN by 1\relax
+\advance\@DT@X by 1\relax
+\loop
+\@alph\@DT@X
+\advance\@DT@loopN by -1\relax
+\ifnum\@DT@loopN>0
+\repeat
+}
+
+\newcommand{\@AAAlph}[1]{%
+\@DT@loopN=#1\relax
+\advance\@DT@loopN by -1\relax
+\divide\@DT@loopN by 26\relax
+\@DT@modctr=\@DT@loopN
+\multiply\@DT@modctr by 26\relax
+\@DT@X=#1\relax
+\advance\@DT@X by -1\relax
+\advance\@DT@X by -\@DT@modctr
+\advance\@DT@loopN by 1\relax
+\advance\@DT@X by 1\relax
+\loop
+\@Alph\@DT@X
+\advance\@DT@loopN by -1\relax
+\ifnum\@DT@loopN>0
+\repeat
+}
+
+\newcommand{\@abalph}[1]{%
+\ifnum#1>17576
+\PackageError{fmtcount}{Value of counter too large for \protect\@abalph}{Maximum value 17576}
+\else
+\@DT@padzeroestrue
+\strctr=17576\relax
+\@DT@X=#1\relax
+\advance\@DT@X by -1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=1\)}{}{\@alph\@DT@modctr}%
+\ifnum\@DT@modctr=1\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 26\relax
+\ifnum\strctr>1
+\repeat
+\advance\@DT@X by 1\relax
+\@alph\@DT@X
+\fi}
+
+\newcommand{\@ABAlph}[1]{%
+\ifnum#1>17576
+\PackageError{fmtcount}{Value of counter too large for \protect\@ABAlph}{Maximum value 17576}
+\else
+\@DT@padzeroestrue
+\strctr=17576\relax
+\@DT@X=#1\relax
+\advance\@DT@X by -1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=1\)}{}{\@Alph\@DT@modctr}%
+\ifnum\@DT@modctr=1\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 26\relax
+\ifnum\strctr>1
+\repeat
+\advance\@DT@X by 1\relax
+\@Alph\@DT@X
+\fi}
+
+\newcommand{\@decimal}[1]{%
+\ifnum#1>10000
+\PackageError{fmtcount}{Value of counter too large for \protect\@decimal}{Maximum value 10000}
+\else
+\@DT@padzeroestrue
+\@DT@loopN=6\relax
+\strctr=10000\relax
+\@DT@X=#1\relax
+\loop
+\@DT@modctr=\@DT@X
+\divide\@DT@modctr by \strctr
+\ifthenelse{\boolean{@DT@padzeroes} \and \(\@DT@modctr=0\) \and \(\@DT@loopN>\c@padzeroesN\)}{}{\the\@DT@modctr}%
+\ifnum\@DT@modctr=0\else\@DT@padzeroesfalse\fi
+\multiply\@DT@modctr by \strctr
+\advance\@DT@X by -\@DT@modctr
+\divide\strctr by 10\relax
+\advance\@DT@loopN by -1\relax
+\ifnum\strctr>1
+\repeat
+\the\@DT@X
+\fi}
+\providecommand{\ordinal}[1]{\expandafter\protect\expandafter\@ordinal{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\ordinalstring}[1]{\expandafter\protect\expandafter\@ordinalstring{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\Ordinalstring}[1]{\expandafter\protect\expandafter\@Ordinalstring{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\numberstring}[1]{\expandafter\protect\expandafter\@numberstring{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\Numberstring}[1]{\expandafter\protect\expandafter\@Numberstring{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\binary}[1]{\expandafter\protect\expandafter\@binary{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\aaalph}[1]{\expandafter\protect\expandafter\@aaalph{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\AAAlph}[1]{\expandafter\protect\expandafter\@AAAlph{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\abalph}[1]{\expandafter\protect\expandafter\@abalph{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\ABAlph}[1]{\expandafter\protect\expandafter\@ABAlph{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\hexadecimal}[1]{\expandafter\protect\expandafter\@hexadecimal{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\Hexadecimal}[1]{\expandafter\protect\expandafter\@Hexadecimal{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\octal}[1]{\expandafter\protect\expandafter\@octal{\expandafter\the\csname c@#1\endcsname}}
+\providecommand{\decimal}[1]{\expandafter\protect\expandafter\@decimal{\expandafter\the\csname c@#1\endcsname}}
+\endinput
+%%
+%% End of file `fmtcount.sty'.

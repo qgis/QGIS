@@ -288,3 +288,16 @@ void QgisAppBase::deleteSelected()
 {
 
 }
+
+
+
+void QgisAppBase::zoomToLayer()
+{
+
+}
+
+
+void QgisAppBase::zoomToLayerExtent()
+{
+
+}

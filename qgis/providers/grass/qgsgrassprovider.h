@@ -407,7 +407,8 @@ public:
 
 	/** Get maximum category for field index */
 	int cidxGetMaxCat ( int idx );
-
+  /** get data source uri (not implemented) */
+  QgsDataSourceURI * getURI(){ return 0;};
 private:
 	enum ENDIAN {
 		NDR = 1,

@@ -95,13 +95,14 @@ void Plugin::initGui()
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
-  pluginMenu->insertItem(QIconSet(icon),"&NorthArrow", this, SLOT(run()));
-
+  int menuId = pluginMenu->insertItem(QIconSet(icon),"&NorthArrow", this, SLOT(run()));
+  pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");
   menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
   menuIdInt = qGisInterface->addMenu("&Decorations", pluginMenu);
   // Create the action for tool
   myQActionPointer = new QAction("North Arrow", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer->setWhatsThis("Creates a north arrow that is displayed on the map canvas");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the arrow each time the map is rendered

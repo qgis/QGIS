@@ -269,10 +269,6 @@
       <translation>Arrotonda automaticamente ridimensionando</translation>
     </message>
     <message>
-      <source>© QGIS 2004</source>
-      <translation>© QGIS 2004</translation>
-    </message>
-    <message>
       <source>Origin (Lower Left)</source>
       <translation>Origine (in basso a sinistra)</translation>
     </message>
@@ -295,6 +291,10 @@
     <message>
       <source>Graticule Size (units in degrees)</source>
       <translation>Dimensioni del reticolo (unità in gradi)</translation>
+    </message>
+    <message>
+      <source>© QGIS 2004</source>
+      <translation>© QGIS 2004</translation>
     </message>
   </context>
   <context>
@@ -397,14 +397,6 @@
     <message>
       <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
       <translation>Il supporto per PostgreSQL non è presente nelle librerie di QGIS</translation>
-    </message>
-    <message>
-      <source>Quantum GIS -- Untitled</source>
-      <translation>Quantum GIS -- Senza titolo</translation>
-    </message>
-    <message>
-      <source>Quantum GIS --</source>
-      <translation>Quantum GIS --</translation>
     </message>
     <message>
       <source>Saved map to:</source>
@@ -669,6 +661,66 @@
     <message>
       <source>Unable to save project to </source>
       <translation>Impossibile salvare il progetto come </translation>
+    </message>
+    <message>
+      <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
+      <translation>Legenda che mostra tutti i livelli attualmente presenti sulla mappa. Per abilitare/disabilitare la vista di un livello basta fare click sul relativo check box. Un doppio click su un livello nella legenda permette di personalizzarne il tipo di rappresentazione ed altre proprietà.</translation>
+    </message>
+    <message>
+      <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
+      <translation>Vista panoramica. Quest'area può essere utilizzata per visualizzare l'estensione attualmente in uso dalla mappa. L'estensione in uso è rappresentata da un rettangolo rosso. Qualsiasi livello può essere aggiunto come vista panoramica.</translation>
+    </message>
+    <message>
+      <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
+      <translation>Area mappa. Questa è la zona dove raster e vettoriali vengono visualizzati e aggiunti alla mappa</translation>
+    </message>
+    <message>
+      <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
+      <translation>Barra di progressione che mostra lo stato del ridisegnamento dei livelli e moltre altre operazioni che richiedono tempo</translation>
+    </message>
+    <message>
+      <source>Displays the current map scale</source>
+      <translation>Mostra la scala attualmente in uso sulla mappa</translation>
+    </message>
+    <message>
+      <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
+      <translation>Mostra le coordinate della mappa nella posizione del cursore. L'informazione viene aggiornata ad ogni spostamento del mouse.</translation>
+    </message>
+    <message>
+      <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
+      <translation>Se selezionato, l'area dedicata alla mappa ridisegna tutti i vettoriali con le relative proprietà. Se non selezionato, non avverà alcun ridisegnamento. Questo permette di aggiungere un gran numero di vettoriali e di cambiarne le proprietà prima che vengano disegnati.</translation>
+    </message>
+    <message>
+      <source>Save delimited text as shapefile</source>
+      <translation>Salva un testo delimitato come shapefile</translation>
+    </message>
+    <message>
+      <source>Improved Delimited Text plugin, including preview of text file</source>
+      <translation>Miglioramento del plugin per il testo delimitato compresa l'anteprima del contenuto del file</translation>
+    </message>
+    <message>
+      <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+      <translation>Miglioramento del plugin SPIT: gestione delle parole riservate e degli shapefile con geometrie di tipo diverso</translation>
+    </message>
+    <message>
+      <source>Display SQL query used to create a PostGIS layer</source>
+      <translation>Mostra la query SQL utilizzata per creare il vettoriale PostGIS</translation>
+    </message>
+    <message>
+      <source>PostgreSQL query builder</source>
+      <translation>Creatore di query PostgreSQL</translation>
+    </message>
+    <message>
+      <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+      <translation>Possibilità di redifinire una query utilizzata da un vettoriale PostgreSQL dalle proprietà del vettoriale</translation>
+    </message>
+    <message>
+      <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+      <translation>Nel file di progetto vengono salvati gli stati dei plugin: rosa dei venti, barra di scala e copyright</translation>
+    </message>
+    <message>
+      <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+      <translation>Caricamento dei dati con nomi dei file codificati in UTF8, Kanjii e CJK</translation>
     </message>
   </context>
   <context>
@@ -1327,12 +1379,6 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
       <translation>&lt;h2>Quantum GIS (qgis)&lt;/h2></translation>
     </message>
     <message>
-      <source>&lt;p align=&quot;center&quot;>Quantum GIS is licensed under the GNU General Public License&lt;p>
-&lt;p align=&quot;center&quot;>http://www.gnu.org/licenses&lt;/p></source>
-      <translation>&lt;p align=&quot;center&quot;>Quantum GIS è rilasciato sotto GNU General Public License&lt;p> 
-&lt;p align=&quot;center&quot;>http://www.gnu.org/licenses&lt;/p></translation>
-    </message>
-    <message>
       <source>QGIS Home Page</source>
       <translation>QGIS Home Page</translation>
     </message>
@@ -1343,6 +1389,24 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     <message>
       <source>Providers</source>
       <translation>Fornitori dati</translation>
+    </message>
+    <message>
+      <source>Christoph Spoerri</source>
+      <translation>Christoph Spoerri</translation>
+    </message>
+    <message>
+      <source>Tom Elwertowski</source>
+      <translation>Tom Elwertowski</translation>
+    </message>
+    <message>
+      <source>&lt;p align=&quot;center&quot;>Quantum GIS is licensed under the GNU General Public License&lt;p>
+&lt;p align=&quot;center&quot;>http://www.gnu.org/licenses&lt;/p></source>
+      <translation>&lt;p align=&quot;center&quot;>Quantum GIS è distribuito sotto licenza GNU General Public License&lt;p>
+&lt;p align=&quot;center&quot;>http://www.gnu.org/licenses&lt;/p></translation>
+    </message>
+    <message>
+      <source>Gavin Macaulay</source>
+      <translation>Gavin Macaulay</translation>
     </message>
   </context>
   <context>
@@ -1358,10 +1422,6 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     <message>
       <source>Action</source>
       <translation>Azione</translation>
-    </message>
-    <message>
-      <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clikcing on the item.</source>
-      <translation>Questa lista contiene tutte le azione che hai definito per il livello in uso. Le azioni si aggiungono inserendo i dettagli per ogni controllo and e premendo il bottone di inserte. Ogni azione può essere modificata con un doppio click sull'oggetto.</translation>
     </message>
     <message>
       <source>Move up</source>
@@ -1404,10 +1464,6 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
       <translation>Azione:</translation>
     </message>
     <message>
-      <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</source>
-      <translation>Inserire l'azione. L'azione può essere un qualsiasi programma, o script o comando presente sul tuo sistema. Quando una azione viene eseguita tutti i caratteri che iniziano con il simbolo % e che hanno il nome di un campo, verranno sostituiti con il valore presente nel campo selezionato. Il carattere speciale %% verrà sostituito con il valore del campo selezionato.</translation>
-    </message>
-    <message>
       <source>Enter the action command here</source>
       <translation>Inserire il comando dell'azione</translation>
     </message>
@@ -1446,6 +1502,14 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     <message>
       <source>The valid attribute names for this layer</source>
       <translation>Nomi degli attributi valiti per questo vettoriale</translation>
+    </message>
+    <message>
+      <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
+      <translation>Questa lista contiene tutte le azioni che sono stato definito per il vettoriale in uso. Per aggiungere un'azione è sufficente fare click sul bottone Aggiungi qui sotto. La azioni possono essere modificate facendo doppio click su di esse.</translation>
+    </message>
+    <message>
+      <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
+      <translation>Inserisci l'azione qui. Questo può essere un programma o uno script o un comando presenti sul tuo sistema. Quando l'azione viene invocata tutti i caratteri che cominciano con il simbolo % e che hanno nome uguale al campo vengono sostituiti con il valore contenuto nel relativo campo. Il carattere speciale %% sostituisce il valore del campo che è stato selezionato. Le doppie virgolette marcano una parte di testo come singolo argomento per il programma, script o comando. Le doppie virgolette vengono ignorate se precedute da un backslash.</translation>
     </message>
   </context>
   <context>
@@ -1682,6 +1746,29 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
   </context>
   <context>
+    <name>QgsDelimitedTextPluginGui</name>
+    <message>
+      <source>No layer name</source>
+      <translation>Nessun nome assegnato al vettoriale</translation>
+    </message>
+    <message>
+      <source>Please enter a layer name before adding the layer to the map</source>
+      <translation>Prima di inserire il vettoriale sulla mappa occorre assegnare un nome</translation>
+    </message>
+    <message>
+      <source>No delimiter</source>
+      <translation>Nessun delimitatore</translation>
+    </message>
+    <message>
+      <source>Please specify a delimiter prior to parsing the file</source>
+      <translation>Occorre definire un delimitatore per poter importare il file</translation>
+    </message>
+    <message>
+      <source>Choose a delimited text file to open</source>
+      <translation>Scegli un file con testo delimitato d'aprire</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
       <source>Create a Layer from a Delimited Text File</source>
@@ -1742,18 +1829,6 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     <message>
       <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
       <translation>Nome del campo che contiene il valore y. Seleziona un campo dalla lista. La lista è generata utilizzando la riga di intestazione del file di testo delimitato.</translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:18pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
-&lt;p>Select the file containing delimited text with lat/lon coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p>
-&lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimeter box to specify what the delimeter is for your file (e.g. space, commar or tab). Note this box accepts regex entries so use \t for tab and so on. After choosing a delimeter, press the parse button to see what field names have been detected in your file.&lt;/p>
-&lt;p>Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p>
-&lt;/body>&lt;/html>
-</source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;> 
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:18pt;font-weight:600&quot;>Descrizione&lt;/span>&lt;/p> 
-&lt;p>Questo plugin permette di visualizzare come vettoriale di punti un file che contiene del testo delimitato con coordinate latitudine/longitudine&lt;/p>&lt;p>L'etichetta 'nome del vettoriale' serve per definire il nome con cui deve apparire nella legenda, il campo 'delimitatore' specifica quale sia il delimitatore presente nel file (es. uno spazio, virgola o punto e virgola o una tabulazione). Nota: quest'ultimo input accetta espressioni regolari, quindi se la separazione è data da una tabulazione va utilizzato \t. Una volta selezionato il delimitato occorre premere sul bottone di analisi per individuare  i nomi dei capi presenti nel file&lt;/p>&lt;p>Utilizzare i campi X e Y per identificare le colonne che rappresentano la latitudine e la longitudine.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Layer name</source>
@@ -1843,6 +1918,24 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
     <message>
       <source>Alt+C</source>
       <translation>Alt+C</translation>
+    </message>
+    <message>
+      <source>Sample text</source>
+      <translation>Testo di esempio</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
+&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:16pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
+&lt;p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p>
+&lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p>
+&lt;/body>&lt;/html>
+</source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
+&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:16pt;font-weight:600&quot;>Descrizione&lt;/span>&lt;/p>
+&lt;p>Tramite questo plugin è possibile caricare un file di testo delimitato che contiene coordinate X e Y e visualizzarlo sulla mappa come se fosse un vettoriale di punti.&lt;/p>
+&lt;p>Utilizzare: la casella \&quot;nome vettoriale\&quot; per specificare con quale nome il nuovo vettoriale apparirà in legenda e quella \&quot;delimitatore\&quot; per scegliere il tipo di delimitatore usando nel file (es. spazio, virgola, o tabulatore). Nota: a casella \&quot;delimitatore\&quot; accetta anche espressioni regolari, pertanto utilizzare \t per il tabulatore e così via per altri. Dopo aver scelto il delimitatore, premere il bottone di caricamento del file e selezionare le colonne che contengono i valore x e y per il vettoriale&lt;/p>
+&lt;/body>&lt;/html>
+</translation>
     </message>
   </context>
   <context>
@@ -1941,6 +2034,50 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
     <message>
       <source>Unique Value Marker</source>
       <translation>Un simbolo per ogni valore</translation>
+    </message>
+    <message>
+      <source>The source of the data (path name or database connection information)</source>
+      <translation>Sorgente dei dati (nome del percorso o informazione della connessione del database)</translation>
+    </message>
+    <message>
+      <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+      <translation>Questo bottone esegue il costruttore di query PostgreSQL e permette di selezionare un sottoinsieme di geometrie, presenti nella tabella, da visualizzare nell'area dedicata alla mappa</translation>
+    </message>
+    <message>
+      <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+      <translation>La query utilizzata per individuare le geometrie del vettoriale è questa qui sotto. Attualmente il supporto è solo per i vettoriali PostgreSQL. Per cambiare la query, fa click sul bottone Costruttore di query</translation>
+    </message>
+    <message>
+      <source>Geometry type of the features in this layer</source>
+      <translation>Tipo di geometrie degli elementi nel vettoriale</translation>
+    </message>
+    <message>
+      <source>The number of features in this layer</source>
+      <translation>Numero di elementi del vettoriale</translation>
+    </message>
+    <message>
+      <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
+      <translation>Per poter utilizzare il supporto per i simboli SVG su Windows, dobbiamo compilare QGIS</translation>
+    </message>
+    <message>
+      <source> using the commercial version of Qt. As this project is developed by volunteers</source>
+      <translation> utilizzando la versione commerciale delle QT. Questo progetto è portato avanti da volontari</translation>
+    </message>
+    <message>
+      <source> donating their time, we don't have the financial resources to purchase Qt</source>
+      <translation> che offrono il loro tempo libero, noi non abbiamo abbastanza risorse finanaziare per acquistare il pacchetto</translation>
+    </message>
+    <message>
+      <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
+      <translation> commerciale. Se ci vuoi aiutare visita il sito QGIS su sourceforge</translation>
+    </message>
+    <message>
+      <source> home page to make a donation</source>
+      <translation> e fa una donazione</translation>
+    </message>
+    <message>
+      <source>No SVG Support</source>
+      <translation>Mancato supporto SVG</translation>
     </message>
   </context>
   <context>
@@ -2111,6 +2248,50 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
     </message>
   </context>
   <context>
+    <name>QgsEditReservedWordsBase</name>
+    <message>
+      <source>Edit Reserved Words</source>
+      <translation>Inserisci parole riservate</translation>
+    </message>
+    <message>
+      <source>Status</source>
+      <translation>Stato</translation>
+    </message>
+    <message>
+      <source>Column name</source>
+      <translation>Nome colonna</translation>
+    </message>
+    <message>
+      <source>Index</source>
+      <translation>Indice</translation>
+    </message>
+    <message>
+      <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
+      <translation>Questo shapefile contiene parole riservate, Questo può creare qualche problema nell'importarlo in PostgreSQL. 
+Modifica i nomi delle colonne in modo che nessuna delle parole nella lista sulla destra siano utilizzate. Se vuoi puoi anche cambiare il nome di una qualsiasi colonna.</translation>
+    </message>
+    <message>
+      <source>&amp;Help</source>
+      <translation>&amp;Aiuto</translation>
+    </message>
+    <message>
+      <source>F1</source>
+      <translation>F1</translation>
+    </message>
+    <message>
+      <source>&amp;OK</source>
+      <translation>&amp;OK</translation>
+    </message>
+    <message>
+      <source>&amp;Cancel</source>
+      <translation>&amp;Annulla</translation>
+    </message>
+    <message>
+      <source>Reserved Words</source>
+      <translation>Parole riservate</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsGPSDeviceDialogBase</name>
     <message>
       <source>GPS Device Editor</source>
@@ -2156,7 +2337,7 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
     </message>
     <message>
       <source>Update device</source>
-      <translation>Aggiora dispositivo</translation>
+      <translation>Aggiorna dispositivo</translation>
     </message>
     <message>
       <source>Delete device</source>
@@ -3014,16 +3195,16 @@ scala</translation>
       <translation>Carattere e allineamento</translation>
     </message>
     <message>
-      <source>°</source>
-      <translation>°</translation>
-    </message>
-    <message>
       <source>Buffer and Position</source>
       <translation>Buffer e Posizione</translation>
     </message>
     <message>
       <source>Advanced Data Defined Style</source>
       <translation>Definizioni avanzate</translation>
+    </message>
+    <message>
+      <source>°</source>
+      <translation>°</translation>
     </message>
   </context>
   <context>
@@ -3512,10 +3693,10 @@ By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html></source>
       <translation>&lt;html>
-&lt;b>Note:&lt;/b> Specifica il valore in millesimi  Il raggio di ricerca è calcolato nel seguente modo:&lt;br>
-&amp;nbsp;&amp;nbsp;&lt;i>(Larghezza della mappa) * ( Valore/1000.0)&lt;/i>
+&lt;b>Nota:&lt;/b> Specificare il valore in millesimi. Il valore di ricerca è calcolato come:&lt;br>
+&amp;nbsp;&amp;nbsp;&lt;i>(Larghezza mappa) * ( Valore/1000.0)&lt;/i>
 &lt;br>
-QGIS utilizza un valore predefinito di 5 unità. Aumenta il valore solo se hai necessità di identificare una geometria senza uno zoom molto vicino.
+Il valore predefinito di QGIS è 5. Aumenta il valore solo se hai problemi ad individuare una geometria senza un livello di zoom molto alto
 &lt;/html></translation>
     </message>
   </context>
@@ -3570,6 +3751,30 @@ QGIS utilizza un valore predefinito di 5 unità. Aumenta il valore solo se hai n
     <message>
       <source>An error occurred when executing the query:</source>
       <translation>Ho riscontrato un errore mentre eseguivo la query:</translation>
+    </message>
+    <message>
+      <source>Connection Failed</source>
+      <translation>Connessione fallita</translation>
+    </message>
+    <message>
+      <source>Connection to the database failed:</source>
+      <translation>Connessione al database fallita:</translation>
+    </message>
+    <message>
+      <source>Database error</source>
+      <translation>Errore database</translation>
+    </message>
+    <message>
+      <source>Failed to get sample of field values</source>
+      <translation>Impossibile recuperare dei valori di esempio dal campo</translation>
+    </message>
+    <message>
+      <source>No Records</source>
+      <translation>Nessun record presente</translation>
+    </message>
+    <message>
+      <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
+      <translation>La query utilizzata restituisce valori nulli. Un vettoriale PostgreSQL valido deve avere almeno una geometria.</translation>
     </message>
   </context>
   <context>
@@ -4310,6 +4515,17 @@ Per fare questo occorre avere i diritti di scrittura nella cartella dove sono ca
     </message>
   </context>
   <context>
+    <name>QgsScanGeometries</name>
+    <message>
+      <source>Scanning Geometries</source>
+      <translation>Rilevo geometrie</translation>
+    </message>
+    <message>
+      <source>textLabel1</source>
+      <translation>testoEtichetta1</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsSiMaDialogBase</name>
     <message>
       <source>QgsSiMaDialogBase</source>
@@ -4367,12 +4583,12 @@ Per fare questo occorre avere i diritti di scrittura nella cartella dove sono ca
       <translation>Larghezza del tratto del riquadro</translation>
     </message>
     <message>
-      <source>Fill Pattern:</source>
-      <translation>Modello di riempimento:</translation>
-    </message>
-    <message>
       <source>Clear</source>
       <translation>Pulisci</translation>
+    </message>
+    <message>
+      <source>Fill Patterns:</source>
+      <translation>Motivi di riempimento:</translation>
     </message>
   </context>
   <context>

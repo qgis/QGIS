@@ -24,7 +24,12 @@ EXTRA_DIST = \
 	TODO \
 	update_ts_files.sh
 
-man1_MANS = qgis.man
+man1_MANS = qgis.man 
+
+docdatadir = $(datadir)/$(PACKAGE)/doc
+
+docdata_DATA = AUTHORS
+
 
 SUBDIRS = src providers plugins doc tools i18n
 
