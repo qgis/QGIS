@@ -7,7 +7,7 @@
   --  Project Properties
   --
   -->
-<!ELEMENT qgis (title, extent, projectlayers) >
+<!ELEMENT qgis (title, extent, projectlayers, mapunits) >
 <!ELEMENT projectlayers (maplayer*) >
 <!ELEMENT extent (xmin, ymin, xmax, ymax) >
 <!ELEMENT xmin (#PCDATA) >
@@ -15,8 +15,12 @@
 <!ELEMENT xmax (#PCDATA) >
 <!ELEMENT ymax (#PCDATA) >
 <!ELEMENT title (#PCDATA) >
+<!ELEMENT mapunits (#PCDATA) >
 <!--  Attribute Lists -->
-<!ATTLIST qgis projectname CDATA #REQUIRED >
+<!ATTLIST qgis 
+	projectname CDATA #REQUIRED 
+	mapunits (meters|feet|degrees) "meters"
+  >
 <!ATTLIST projectlayers layercount CDATA #REQUIRED >
 <!--
   --  General Map Layer Properties
