@@ -1,5 +1,33 @@
 #!/bin/sh
 
+#
+# Get Root
+#
+
+if [ ! -f CVS/Repository ]; then
+        echo "You are not in the qgis repository!"
+        exit -1
+fi
+
+WAY2ROOT=`sed -e 's#qgis/##' -e 's#qgis##' -e 's#[^/]+#..#g' CVS/Repository`
+
+if [ "a${WAY2ROOT}" != "a" ]; then
+	pushd $WAY2ROOT > /dev/null
+fi
+
+if [ ! -f configure.in ]; then
+	popd
+	echo "You are not in the qgis repository!"
+	exit -1
+fi
+
+for I in $@; do
+	if [ ! -f $I ]; then
+		echo "File ${I} not relative to CVS Root (`pwd`)!"
+		exit -1
+	fi
+done
+
 NAME=`sed -e 's/.*:\([^:]*\)@.*/\1/' CVS/Root`
 
 TMPFILE=`mktemp /tmp/qgis-commit-tmp.XXXXXXXXXX`
@@ -55,3 +83,7 @@ mv ChangeLog.tmp ChangeLog
 cvs commit -m "${MSG}" $@ ${EXTRAS}
 
 rm ${TMPFILE}
+
+if [ "a${WAY2ROOT}" != "a" ]; then
+	popd
+fi
