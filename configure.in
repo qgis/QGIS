@@ -208,11 +208,19 @@ AC_CONFIG_FILES([
 	providers/Makefile 
 	providers/ogr/Makefile
 	providers/postgres/Makefile
-  plugins/Makefile
-  plugins/spit/Makefile
-  plugins/example/Makefile
-  plugins/maplayer/Makefile
-  plugins/geoprocessing/Makefile
+	plugins/Makefile
+	plugins/spit/Makefile
+	plugins/example/Makefile
+	plugins/maplayer/Makefile
+	plugins/geoprocessing/Makefile
+	doc/Makefile
+	doc/skin/Makefile
+	doc/skin/images/Makefile
+	doc/images/Makefile
+	doc/plugins/Makefile
+	doc/plugins/geoprocessing/Makefile
+	doc/plugins/geoprocessing/buffer/Makefile
+	qgis.spec
 ])
 
 AC_OUTPUT
