@@ -13,3 +13,5 @@
 svgdir = ${pkgdatadir}/svg/geometric
 
 svg_DATA = *.svg
+
+EXTRA_DIST = $(svg_DATA)

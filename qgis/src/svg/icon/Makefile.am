@@ -13,3 +13,5 @@
 svgdir = ${pkgdatadir}/svg/icon
 
 svg_DATA = *.svg
+
+EXTRA_DIST = $(svg_DATA)
