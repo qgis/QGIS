@@ -88,7 +88,8 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
 
     //first find out the value for the classification attribute
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-    double value = vec[0].fieldValue().toDouble();
+    //double value = vec[0].fieldValue().toDouble();
+    double value = vec[mClassificationField].fieldValue().toDouble();
 
     std::list < QgsRangeRenderItem * >::iterator it;
     //first find the first render item which contains the feature
@@ -102,7 +103,8 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
     
     if (it == mItems.end())      //value is contained in no item
     {
-	std::cout << "Warning, value is contained in no class" << std::endl << std::flush;
+	QPicture p;
+	*pic=p;
 	return;
     } 
     else
@@ -110,7 +112,16 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
 	QgsMarkerSymbol* ms=dynamic_cast<QgsMarkerSymbol*>((*it)->getSymbol());
 	if(ms&&pic)
 	{
-	    pic->load(ms->picture(),"svg");
+	    QString picture=ms->picture();
+	    if(picture=="unnamed")
+	    {
+		QPicture p;
+		*pic=p;
+	    }
+	    else
+	    {
+		pic->load(ms->picture(),"svg");
+	    }
 	    (*scalefactor)=ms->scaleFactor();
 	}
     }
