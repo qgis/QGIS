@@ -7,4 +7,38 @@
 *****************************************************************************/
 
 
+void QgsDbSourceSelectBase::init()
+{
 
+}
+
+void QgsDbSourceSelectBase::dbConnect()
+{
+
+}
+
+void QgsDbSourceSelectBase::addTables()
+{
+
+}
+
+void QgsDbSourceSelectBase::addNewConnection()
+{
+
+}
+
+
+void QgsDbSourceSelectBase::editConnection()
+{
+
+}
+
+void QgsDbSourceSelectBase::deleteConnection()
+{
+
+}
+
+void QgsDbSourceSelectBase::addLayer( QListBoxItem * )
+{
+
+}
