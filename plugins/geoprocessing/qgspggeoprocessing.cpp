@@ -42,7 +42,7 @@ extern "C"
 #include <libpq-fe.h>
 }
 // xpm for creating the toolbar icon
-#include "matrix1.xpm"
+//#include "matrix1.xpm"
 
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -261,7 +261,7 @@ void QgsPgGeoprocessing::buffer()
                         result = PQexec(conn, "commit;vacuum");
                         PQclear(result);
                         PQfinish(conn);
-                        QMessageBox::information(0, "Add to Map?", "Do you want to add the layer to the map?");
+                       // QMessageBox::information(0, "Add to Map?", "Do you want to add the layer to the map?");
                         // add new layer to the map
                         if (bb->addLayerToMap()) {
                             // create the connection string
@@ -339,6 +339,5 @@ extern "C" int type()
 // Delete ourself
 extern "C" void unload(QgisPlugin * p)
 {
-
     delete p;
 }
