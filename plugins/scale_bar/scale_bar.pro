@@ -3,8 +3,11 @@
 ######################################################################
 
 TEMPLATE = lib
-INCLUDEPATH += . ..\..\src
-LIBS += ..\..\src\libqgis.lib
+INCLUDEPATH += . ..\..\src \
+          $(GEOS)\include
+LIBS += ..\..\src\libqgis.lib \
+        $(GDAL)\lib\gdal_i.lib \
+        $(GEOS)\lib\geos.lib
 CONFIG += qt dll thread debug
 DLLDESTDIR= ..\..\win_build\lib\qgis
 

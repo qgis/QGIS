@@ -213,7 +213,7 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
 
     // snap to integer < 10 times power of 10
     if (mSnapping) {
-      int myPowerOf10 = int(pow(10, int(log(myActualSize) / log(10))));
+      int myPowerOf10 = int(pow(10.0, int(log(myActualSize) / log(10.0))));
 #ifdef WIN32
       // I know this is tacky -- but I'm trying to get this ready
       // for release

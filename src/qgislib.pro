@@ -2,8 +2,10 @@ TEMPLATE = lib
 TARGET=libqgis
 INCLUDEPATH += . $(GDAL)\include \
                 $(POSTGRESQL)\src\interfaces\libpq \
-                $(POSTGRESQL)\src\include
-LIBS += $(GDAL)\lib\gdal_i.lib
+                $(POSTGRESQL)\src\include \
+                $(GEOS)\include
+LIBS += $(GDAL)\lib\gdal_i.lib \
+        $(GEOS)\lib\geos.lib
 CONFIG += qt thread rtti
 DLLDESTDIR= ..\..\src\lib\qgis
 # Input
@@ -13,6 +15,8 @@ moc_qgisinterface.cpp \
 moc_qgsabout.cpp \
 moc_qgsattributedialog.cpp \
 moc_qgsattributedialogbase.cpp \
+moc_qgsattributeactiondialog.cpp \
+moc_qgsattributeactiondialogbase.cpp \
 moc_qgsattributetable.cpp \
 moc_qgsattributetablebase.cpp \
 moc_qgscontcoldialog.cpp \
@@ -77,11 +81,15 @@ qgisinterface.cpp \
 qgsabout.cpp \
 qgsacetateobject.cpp \
 qgsacetaterectangle.cpp \
+qgsattributeaction.cpp \
+qgsattributeactiondialog.cpp \
+qgsattributeactiondialogbase.cpp \
 qgsattributedialog.cpp \
 qgsattributedialogbase.cpp \
 qgsattributetable.cpp \
 qgsattributetablebase.cpp \
 qgsattributetabledisplay.cpp \
+qgscolortable.cpp \
 qgscontcoldialog.cpp \
 qgscontcoldialogbase.cpp \
 qgscontinuouscolrenderer.cpp \
