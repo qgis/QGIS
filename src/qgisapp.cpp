@@ -1913,7 +1913,8 @@ void QgisApp::testMapLayerPlugins()
           std::cout << "Getting information for plugin: " << mlpDir[i] << std::endl;
           std::cout << "Attempting to load the plugin using dlopen\n";
 #endif
-          void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
+//          void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
+          void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY | RTLD_GLOBAL );
           if (!handle)
             {
 #ifdef QGISDEBUG
