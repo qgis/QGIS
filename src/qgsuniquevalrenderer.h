@@ -49,6 +49,8 @@ class QgsUniqueValRenderer: public QgsRenderer
     void clearValues();
     /**Sets the Field index used for classification*/
     void setClassificationField(int field);
+    /**Returns the index of the classification field*/
+    int classificationField();
  protected:
     /**Field index used for classification*/
     int mClassificationField;
@@ -71,6 +73,11 @@ inline void QgsUniqueValRenderer::insertValue(QString name, QgsRenderItem* item)
 inline void QgsUniqueValRenderer::setClassificationField(int field)
 {
     mClassificationField=field;
+}
+
+inline int QgsUniqueValRenderer::classificationField()
+{
+    return mClassificationField;
 }
 
 #endif
