@@ -1,19 +1,28 @@
 [Config for BinMakefileAm]
+addcxxflags=
 bin_program=qgis
-cxxflags=-O0 -g3 -Wall
-ldflags=\s
+cflags=
+cppflags=
+cxxflags=\s-O0 -g3 -Wall
+ldadd=
+ldflags=\s\s
+libtool_dir=
+path_to_bin_program=src
 
 [General]
 AMChanged=false
 author=Gary E.Sherman
-configure_args=
+configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux\s
+dir_where_make_will_be_called=./
 email=sherman at mrcc dot com
 kdevprj_version=1.3
 lfv_open_groups=
-make_options=-j1
+make_options=\s-j1
 makefiles=Makefile.am,qgis/Makefile.am,qgis/docs/Makefile.am,qgis/docs/en/Makefile.am,src/Makefile.am
+modifyMakefiles=true
 project_name=Qgis
 project_type=normal_empty
+short_info=
 sub_dir=qgis/
 version=0.0.2
 version_control=None
