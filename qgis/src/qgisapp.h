@@ -82,6 +82,10 @@ public slots:
 	void removeLayer();
   //! test plugin functionality
   void testPluginFunctions();
+  //! Save window state
+  void saveWindowState();
+  //! Restore the window and toolbar state
+  void restoreWindowState();
 private:
 //! Popup menu
 QPopupMenu *popMenu;

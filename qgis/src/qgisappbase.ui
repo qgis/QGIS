@@ -79,19 +79,19 @@
 <toolbars>
     <toolbar dock="2">
         <property name="name">
-            <cstring>Toolbar</cstring>
+            <cstring>FileToolbar</cstring>
         </property>
         <property name="label">
-            <string>Toolbar</string>
+            <string>File Management Toolbar</string>
         </property>
         <action name="actionFileOpen"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
-            <cstring>Toolbar_2</cstring>
+            <cstring>DataToolbar</cstring>
         </property>
         <property name="label">
-            <string>Toolbar_2</string>
+            <string>Data Toolbar</string>
         </property>
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddLayer"/>
@@ -102,7 +102,7 @@
             <cstring>mapNavigationToolbar</cstring>
         </property>
         <property name="label">
-            <string>Toolbar_2</string>
+            <string>Map Navigation Toolbar</string>
         </property>
         <action name="actionZoomIn"/>
         <action name="actionZoomOut"/>
@@ -117,7 +117,7 @@
             <cstring>toolbarDataTools</cstring>
         </property>
         <property name="label">
-            <string>Toolbar_3</string>
+            <string>Attribute Data Toolbar</string>
         </property>
         <action name="actionOpenTable"/>
     </toolbar>
@@ -461,21 +461,21 @@
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
 </includes>
 <slots>
-    <slot>about()</slot>
-    <slot>addDatabaseLayer()</slot>
-    <slot>addLayer()</slot>
-    <slot>drawLayers()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
-    <slot>identify()</slot>
-    <slot>init()</slot>
-    <slot>testPluginFunctions()</slot>
-    <slot>pan()</slot>
-    <slot>testButton()</slot>
-    <slot>zoomFull()</slot>
+    <slot>addDatabaseLayer()</slot>
     <slot>zoomIn()</slot>
     <slot>zoomOut()</slot>
+    <slot>init()</slot>
+    <slot>drawLayers()</slot>
+    <slot>zoomFull()</slot>
+    <slot>pan()</slot>
+    <slot>about()</slot>
+    <slot>testButton()</slot>
+    <slot>addLayer()</slot>
+    <slot>identify()</slot>
     <slot>zoomPrevious()</slot>
+    <slot>testPluginFunctions()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
