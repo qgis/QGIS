@@ -19,6 +19,9 @@
 #include <iostream>
 #include <qtextstream.h>
 #include <qstringlist.h>
+#include <qapplication.h>
+#include <qmessagebox.h>
+#include <qcursor.h>
 #include "../../src/qgis.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -64,6 +67,19 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     PGconn *pd = PQconnectdb((const char *) connInfo);
     // check the connection status
     if (PQstatus(pd) == CONNECTION_OK) {
+      /* Check to see if we have GEOS support and if not, warn the user about
+      the problems they will see :) */
+      #ifdef DEBUG
+      std::cerr << "Checking for GEOS support" << std::endl;
+      #endif
+      if(!hasGEOS(pd)){
+        QApplication::restoreOverrideCursor();
+        QMessageBox::warning(0, "No GEOS Support!",
+          "Your PostGIS installation has no GEOS support.\nFeature selection and "
+          "identification will not work properly.\nPlease install PostGIS with " 
+          "GEOS support (http://geos.refractions.net)");
+          QApplication::setOverrideCursor(Qt::waitCursor);
+      }
         //--std::cout << "Connection to the database was successful\n";
         // set the schema
         
@@ -650,6 +666,43 @@ QString QgsPostgresProvider::maxValue(int position){
 bool QgsPostgresProvider::isValid(){
     return valid;
 }
+/**
+* Check to see if GEOS is available
+*/
+bool QgsPostgresProvider::hasGEOS(PGconn *connection){
+  // make sure info is up to date for the current connection
+  postgisVersion(connection);
+  // get geos capability
+  return geosAvailable;
+}
+/* Functions for determining available features in postGIS */
+QString QgsPostgresProvider::postgisVersion(PGconn *connection){
+  PGresult *result = PQexec(connection, "select postgis_version()");
+  postgisVersionInfo = PQgetvalue(result,0,0);
+  #ifdef DEBUG
+  std::cerr << "PostGIS version info: " << postgisVersionInfo << std::endl;
+  #endif
+  // assume no capabilities
+  geosAvailable = false;
+  gistAvailable = false;
+  projAvailable = false;
+  // parse out the capabilities and store them
+  QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
+  QStringList geos = postgisParts.grep("GEOS");
+  if(geos.size() == 1){
+    geosAvailable = (geos[0].find("=1") > -1);  
+  }
+  QStringList gist = postgisParts.grep("STATS");
+  if(gist.size() == 1){
+    gistAvailable = (geos[0].find("=1") > -1);
+  }
+  QStringList proj = postgisParts.grep("PROJ");
+  if(proj.size() == 1){
+    projAvailable = (proj[0].find("=1") > -1);
+  }
+  return postgisVersionInfo;
+}
+
 /**
 * Class factory to return a pointer to a newly created 
 * QgsPostgresProvider object

@@ -144,7 +144,16 @@ class QgsPostgresProvider:public QgsDataProvider
 /**Returns true if layer is valid
 */
   bool isValid();
-  private:
+  //! get postgis version string
+  QString postgisVersion(PGconn *);
+  //! get status of GEOS capability
+  bool hasGEOS(PGconn *);
+  //! get status of GIST capability
+  bool hasGIST(PGconn *);
+  //! get status of PROJ4 capability
+  bool hasPROJ(PGconn *);
+  
+private:
       std::vector < QgsFeature > features;
       std::vector < bool > *selected;
       std::vector < QgsField > attributeFields;
@@ -224,4 +233,13 @@ class QgsPostgresProvider:public QgsDataProvider
     bool swapEndian;
     bool ready;
     std::ofstream pLog;
+ 
+  //! PostGIS version string
+  QString postgisVersionInfo;
+  //! GEOS capability
+  bool geosAvailable;
+  //! GIST capability
+  bool gistAvailable;
+  //! PROJ4 capability
+  bool projAvailable;
 };
