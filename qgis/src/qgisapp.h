@@ -66,6 +66,11 @@ Q_OBJECT public:
 public:
     QgisIface *getInterface();
 
+    /** \brief Set the Z order of both mapcanvas and overview canvas. Typically this will
+     * be called by projectio when loading a stored project.
+     */
+    void setZOrder (std::list<QString>);
+    
     void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
     /** \brief overloaded vesion of the privat addLayer method that takes a list of
     * filenames instead of prompting user with a dialog. 
