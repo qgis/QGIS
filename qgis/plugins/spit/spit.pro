@@ -25,7 +25,7 @@ HEADERS += qgsconnectiondialog.h \
            qgsspitplugin.h \
            qgseditreservedwordsdialog.h \
            ..\..\src\qgspgutil.h
-INTERFACES += qgsconnectiondialogbase.ui qgsmessageviewerbase.ui qgsspitbase.ui qgseditreservedwordsbase.ui
+INTERFACES += qgsconnectiondialogbase.ui qgsmessageviewerbase.ui qgsspitbase.ui qgseditreservedwordsbase.ui qgsscangeometries.ui
 SOURCES += qgsconnectiondialog.cpp \
            qgsmessageviewer.cpp \
            qgsshapefile.cpp \
