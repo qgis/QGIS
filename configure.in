@@ -118,6 +118,7 @@ if test x"$PG_CONFIG" != "xno" ; then
   AC_DEFINE([HAVE_POSTGRESQL],1,
     [Define to 1 if PostgreSQL is available])
   ac_postgresql="yes"
+  ac_postgresql_version=`$PG_CONFIG --version | sed -e 's#PostgreSQL ##'`
 else
   ac_postgresql="no"
 fi
@@ -279,9 +280,9 @@ echo ""
 echo "=========================================="
 echo "$PACKAGE $VERSION"
 echo "------------------------------------------"
-echo "GDAL/OGR      : $ac_gdalogr"
-echo "GEOS          : $ac_geos"
-echo "PostgreSQL    : $ac_postgresql"
+echo "GDAL/OGR      : $ac_gdalogr (Version $ac_gdalogr_version)"
+echo "GEOS          : $ac_geos (Version $ac_geos_version)"
+echo "PostgreSQL    : $ac_postgresql (Version $ac_postgresql_version)"
 echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
 echo ""
