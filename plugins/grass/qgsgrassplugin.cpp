@@ -34,6 +34,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qfileinfo.h>
 
 //non qt includes
 #include <iostream>
@@ -110,6 +111,25 @@ int QgsGrassPlugin::type()
  */
 void QgsGrassPlugin::initGui()
 {
+    menuBarPointer = 0;
+    toolBarPointer = 0;
+    // Check GISBASE
+    char *gb = getenv("GISBASE");
+    if ( !gb ) {
+	QMessageBox::warning( 0, "Warning", "Enviroment variable 'GISBASE' is not set,\nGRASS data "
+		"cannot be used.\nSet 'GISBASE' and restart QGIS.\nGISBASE is full path to the\n"
+	        "directory where GRASS is installed." );
+	return;
+    }
+
+    QString gbs ( gb );
+    QFileInfo gbi ( gbs );
+    if ( !gbi.exists() ) {
+	QMessageBox::warning( 0, "Warning", "GISBASE:\n'" + gbs + "'\ndoes not exist,\n"
+		"GRASS data cannot be used." );
+	return;
+    }
+    
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
 
     pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this, SLOT(addVector()));
@@ -234,8 +254,11 @@ void QgsGrassPlugin::edit()
 void QgsGrassPlugin::unload()
 {
     // remove the GUI
-    menuBarPointer->removeItem(menuIdInt);
-    delete toolBarPointer;
+    if ( menuBarPointer )
+        menuBarPointer->removeItem(menuIdInt);
+
+    if ( toolBarPointer )
+        delete toolBarPointer;
 }
 /** 
  * Required extern functions needed  for every plugin 
