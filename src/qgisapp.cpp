@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 #include <qapplication.h>
+#include <qaction.h>
+#include <qmenubar.h>
 #include <qcanvas.h>
 #include <qcolor.h>
 #include <qscrollview.h>
@@ -41,7 +43,8 @@
 #include <qlistview.h>
 #include <qsettings.h>
 #include <qtextstream.h>
-#include <libpq++.h>
+
+
 #include <iostream>
 #include <iomanip>
 #include "qgsrect.h"
@@ -49,8 +52,13 @@
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
+
+#ifdef PGDB
+#include <libpq++.h>
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
+#endif
+
 #include "qgsshapefilelayer.h"
 #include "qgslayerproperties.h"
 #include "qgsabout.h"
@@ -155,7 +163,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
 	// set the legend control for the map canvas
 	mapCanvas->setLegend(mapLegend);
-
+	// disable functions based on build type
+	#ifndef PGDB
+		actionAddLayer->removeFrom(PopupMenu_2);
+		actionAddLayer->removeFrom(DataToolbar);
+	#endif
 	// connect the "cleanup" slot
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
 	restoreWindowState();
@@ -169,6 +181,11 @@ void QgisApp::about()
 	QgsAbout *abt = new QgsAbout();
 	QString versionString = "Version ";
 	versionString += qgisVersion;
+	#ifdef PGDB
+		versionString += " with PostgreSQL support";
+	#else
+		versionString +=  " (no PostgreSQL support)";
+	#endif
 	abt->setVersion(versionString);
 	QString urls = "Web Page: http://qgis.sourceforge.net\nSourceforge Project Page: http://sourceforge.net/projects/qgis";
 	abt->setURLs(urls);
@@ -232,7 +249,7 @@ void QgisApp::addLayer()
 
 
 }
-
+#ifdef PGDB
 void QgisApp::addDatabaseLayer()
 {
 	// only supports postgis layers at present
@@ -284,7 +301,7 @@ void QgisApp::addDatabaseLayer()
 	QApplication::restoreOverrideCursor();
 
 }
-
+#endif
 void QgisApp::fileExit()
 {
 	QApplication::exit();
