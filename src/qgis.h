@@ -17,6 +17,6 @@ enum WKBTYPE{
 	WKBMultiLineString,
 	WKBMultiPolygon
     };	
-static const char *qgisVersion = "0.0.3-alpha";
+static const char *qgisVersion = "0.0.4-alpha";
 }
 #endif

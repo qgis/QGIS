@@ -107,11 +107,12 @@ void QgisApp::about(){
   abt->setURLs(urls);
   QString watsNew =  "Version ";
   watsNew += QGis::qgisVersion;
-  watsNew += "\n* Support for shapefiles and other vector formats\n"
-					  "* Improved handling of extents when adding layers\n"
-						"* Primitive legend that allows control of layer visibility\n"
-						"* About Quantum GIS implemented\n"
-					  "* Other internal changes";
+  watsNew += "\n* Random color now assigned to a layer when added\n"
+  					"  instead of all layers being the same color by type\n"
+					  "* Right-click menu to remove a layer or edit properties\n"
+						"* Properties page for layer. Allows setting of color and\n"
+						"  other options.";
+
 	 abt->setWhatsNew(watsNew);
 	 abt->exec();
   
@@ -401,4 +402,5 @@ void QgisApp::removeLayer(){
 }
 void QgisApp::rightClickLegendMenu(QListViewItem *lvi, const QPoint &pt, int i){
 	popMenu->exec(pt);
-} 
+}
+
