@@ -136,8 +136,6 @@ public slots:
   /** Flag to indicate a map canvas drag operation is taking place */
   bool dragging;
   std::vector<QColor> initialColor;
-  void incrementZpos();
-  void updateZpos();
   //! Flag indicating a map refresh is in progress
   bool drawing;
   bool frozen;
