@@ -19,7 +19,11 @@
 #include "../../src/qgisapp.h"
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsrasterlayer.h"
-#include "qgsgrassplugin.h"
+#include "../../src/qgisiface.h"
+#include "../../src/qgsmapcanvas.h"
+#include "../../src/qgsmaplayer.h"
+#include "../../src/qgsvectorlayer.h"
+#include "../../src/qgsdataprovider.h"
 
 
 #include <qtoolbar.h>
@@ -34,12 +38,23 @@
 //non qt includes
 #include <iostream>
 
+extern "C" {
+#include <gis.h>
+#include <Vect.h>
+}
+
+#include "qgsgrassplugin.h"
+#include "../../providers/grass/qgsgrass.h"
+#include "../../providers/grass/qgsgrassprovider.h"
+
 //the gui subclass
 #include "qgsgrassselect.h"
+#include "qgsgrassedit.h"
 
 // xpm for creating the toolbar icon
 #include "add_vector.xpm"
 #include "add_raster.xpm"
+#include "grass_edit.xpm"
 static const char *pluginVersion = "0.1";
 
 /**
@@ -80,6 +95,11 @@ QString QgsGrassPlugin::description()
 
 }
 
+void QgsGrassPlugin::help()
+{
+    //TODO
+}
+
 int QgsGrassPlugin::type()
 {
   return QgisPlugin::UI;
@@ -94,6 +114,7 @@ void QgsGrassPlugin::initGui()
 
     pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this, SLOT(addVector()));
     pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
+    pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
 
     menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
@@ -104,10 +125,13 @@ void QgsGrassPlugin::initGui()
 	                                   "Add GRASS vector layer",0, this, "addVector");
     QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
 	                                   "Add GRASS raster layer",0, this, "addRaster");
+    QAction *editAction = new QAction("Edit Grass Vector layer", QIconSet(icon_grass_edit), 
+	                        "Edit Grass Vector layer",0, this, "edit");
 
     // Connect the action 
     connect(addVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
     connect(addRasterAction, SIGNAL(activated()), this, SLOT(addRaster()));
+    connect(editAction, SIGNAL(activated()), this, SLOT(edit()));
 
     // Add the toolbar
     toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "GRASS");
@@ -116,6 +140,7 @@ void QgsGrassPlugin::initGui()
     // Add to the toolbar
     addVectorAction->addTo(toolBarPointer);
     addRasterAction->addTo(toolBarPointer);
+    editAction->addTo(toolBarPointer);
 }
 
 // Slot called when the "Add GRASS vector layer" menu item is activated
@@ -185,6 +210,25 @@ void QgsGrassPlugin::addRaster()
     }
 }
 
+// Start vector editing
+void QgsGrassPlugin::edit()
+{
+    if ( QgsGrassEdit::isRunning() ) {
+	QMessageBox::warning( 0, "Warning", "GRASS Edit is already running." );
+	return;
+    }
+
+    QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qgisMainWindowPointer, 0, 
+	                                 Qt::WType_Dialog | Qt::WStyle_Customize | Qt::WStyle_Tool  );
+
+    if ( ed->isValid() ) {
+        ed->show();
+	QgsMapCanvas *canvas = qGisInterface->getMapCanvas();
+	canvas->refresh();
+    } else {
+	delete ed;
+    }
+}
 
 // Unload the plugin by cleaning up the GUI
 void QgsGrassPlugin::unload()
