@@ -1483,6 +1483,7 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
     Note that this is a cpu intensive /slow task!*/
 const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
+emit setStatus(QString("Calculating stats for ")+layerName);
 //reset the main app progress bar
 emit setProgress(0,0);
 #ifdef QGISDEBUG
@@ -1681,7 +1682,7 @@ emit setProgress(0,0);
     myRasterBandStats.statsGatheredFlag = true;
     //add this band to the class stats map
     rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
-    emit setProgress(0,0); //reset progress
+    emit setProgress(rasterYDimInt, rasterYDimInt); //reset progress
     return myRasterBandStats;
 }                               //end of getRasterBandStats
 
