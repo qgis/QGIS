@@ -44,9 +44,9 @@
 #endif
 
 
-const char* QgsGPXProvider::attr[] = { "Name", "Elevation", "Symbol", "Number",
-				       "Comment", "Description", "Source", 
-				       "URL", "URL name" };
+const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
+				       "comment", "description", "source", 
+				       "url", "url name" };
 
 
 QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
@@ -78,7 +78,7 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
   else if (mFeatureType == RouteType || mFeatureType == TrackType) {
     mGeomType = 2;
     for (int i = 0; i < 8; ++i)
-      mAllAttributes.push_back(7);
+      mAllAttributes.push_back(i);
     attributeFields.push_back(QgsField(attr[NumAttr], "text"));
   }
   attributeFields.push_back(QgsField(attr[CmtAttr], "text"));
@@ -532,17 +532,173 @@ bool QgsGPXProvider::isValid(){
 
 
 bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
+  
+  // add all the features
   for (std::list<QgsFeature*>::const_iterator iter = flist.begin(); 
        iter != flist.end(); ++iter) {
     if (!addFeature(*iter))
       return false;
   }
+  
+  // write back to file
+  QDomDocument qdd;
+  data->fillDom(qdd);
+  QFile file(mFileName);
+  if (!file.open(IO_WriteOnly))
+    return false;
+  QTextStream ostr(&file);
+  ostr<<qdd.toString();
   return true;
 }
 
 
 bool QgsGPXProvider::addFeature(QgsFeature* f) {
-  return false;
+  unsigned char* geo = f->getGeometry();
+  int featureId;
+  bool success = false;
+  GPSObject* obj = NULL;
+  const std::vector<QgsFeatureAttribute>& attrs(f->attributeMap());
+  
+  // is it a waypoint?
+  if (mFeatureType == WaypointType && geo != NULL && geo[1] == 1) {
+    
+    // add geometry
+    Waypoint wpt;
+    std::memcpy(&wpt.lon, geo+5, sizeof(double));
+    std::memcpy(&wpt.lat, geo+13, sizeof(double));
+    
+    // add waypoint-specific attributes
+    for (int i = 0; i < attrs.size(); ++i) {
+      if (attrs[i].fieldName() == attr[EleAttr]) {
+	bool eleIsOK;
+	double ele = attrs[i].fieldValue().toDouble(&eleIsOK);
+	if (eleIsOK)
+	  wpt.ele = ele;
+      }
+      else if (attrs[i].fieldName() == attr[SymAttr]) {
+	wpt.sym = attrs[i].fieldValue();
+      }
+    }
+    
+    featureId = data->addWaypoint(wpt);
+    success = true;
+    obj = &(data->getWaypoint(featureId));
+  }
+  
+  // is it a route?
+  if (mFeatureType == RouteType && geo != NULL && geo[1] == 2) {
+
+    Route rte;
+    
+    // reset bounds
+    rte.xMin = std::numeric_limits<double>::max();
+    rte.xMax = -std::numeric_limits<double>::max();
+    rte.yMin = std::numeric_limits<double>::max();
+    rte.yMax = -std::numeric_limits<double>::max();
+
+    // add geometry
+    int nPoints;
+    std::memcpy(&nPoints, geo + 5, 4);
+    for (int i = 0; i < nPoints; ++i) {
+      double lat, lon;
+      std::memcpy(&lon, geo + 9 + 16 * i, sizeof(double));
+      std::memcpy(&lat, geo + 9 + 16 * i + 8, sizeof(double));
+      Routepoint rtept;
+      rtept.lat = lat;
+      rtept.lon = lon;
+      rte.points.push_back(rtept);
+      rte.xMin = rte.xMin < lon ? rte.xMin : lon;
+      rte.xMax = rte.xMax > lon ? rte.xMax : lon;
+      rte.yMin = rte.yMin < lat ? rte.yMin : lat;
+      rte.yMax = rte.yMax > lat ? rte.yMax : lat;
+    }
+    
+    // add route-specific attributes
+    for (int i = 0; i < attrs.size(); ++i) {
+      if (attrs[i].fieldName() == attr[NumAttr]) {
+	bool numIsOK;
+	long num = attrs[i].fieldValue().toLong(&numIsOK);
+	if (numIsOK)
+	  rte.number = num;
+      }
+    }
+    
+    featureId = data->addRoute(rte);
+    success = true;
+    obj = &(data->getRoute(featureId));
+  }
+  
+  // is it a track?
+  if (mFeatureType == TrackType && geo != NULL && geo[1] == 2) {
+
+    Track trk;
+    TrackSegment trkseg;
+    
+    // reset bounds
+    trk.xMin = std::numeric_limits<double>::max();
+    trk.xMax = -std::numeric_limits<double>::max();
+    trk.yMin = std::numeric_limits<double>::max();
+    trk.yMax = -std::numeric_limits<double>::max();
+
+    // add geometry
+    int nPoints;
+    std::memcpy(&nPoints, geo + 5, 4);
+    for (int i = 0; i < nPoints; ++i) {
+      double lat, lon;
+      std::memcpy(&lon, geo + 9 + 16 * i, sizeof(double));
+      std::memcpy(&lat, geo + 9 + 16 * i + 8, sizeof(double));
+      Trackpoint trkpt;
+      trkpt.lat = lat;
+      trkpt.lon = lon;
+      trkseg.points.push_back(trkpt);
+      trk.xMin = trk.xMin < lon ? trk.xMin : lon;
+      trk.xMax = trk.xMax > lon ? trk.xMax : lon;
+      trk.yMin = trk.yMin < lat ? trk.yMin : lat;
+      trk.yMax = trk.yMax > lat ? trk.yMax : lat;
+    }
+    
+    // add track-specific attributes
+    for (int i = 0; i < attrs.size(); ++i) {
+      if (attrs[i].fieldName() == attr[NumAttr]) {
+	bool numIsOK;
+	long num = attrs[i].fieldValue().toLong(&numIsOK);
+	if (numIsOK)
+	  trk.number = num;
+      }
+    }
+    
+    trk.segments.push_back(trkseg);
+    featureId = data->addTrack(trk);
+    success = true;
+    obj = &(data->getTrack(featureId));
+  }
+  
+  
+  // add common attributes
+  if (obj) {
+    for (int i = 0; i < attrs.size(); ++i) {
+      if (attrs[i].fieldName() == attr[NameAttr]) {
+	obj->name = attrs[i].fieldValue();
+      }
+      else if (attrs[i].fieldName() == attr[CmtAttr]) {
+	obj->cmt = attrs[i].fieldValue();
+      }
+      else if (attrs[i].fieldName() == attr[DscAttr]) {
+	obj->desc = attrs[i].fieldValue();
+      }
+      else if (attrs[i].fieldName() == attr[SrcAttr]) {
+	obj->src = attrs[i].fieldValue();
+      }
+      else if (attrs[i].fieldName() == attr[URLAttr]) {
+	obj->url = attrs[i].fieldValue();
+      }
+      else if (attrs[i].fieldName() == attr[URLNameAttr]) {
+	obj->urlname = attrs[i].fieldValue();
+      }
+    }
+  }
+    
+  return success;
 }
 
 

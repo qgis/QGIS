@@ -148,7 +148,7 @@ public:
    */
   bool boundsCheck(double x, double y);
 
-  bool supportsFeatureAddition(){return false;}
+  bool supportsFeatureAddition(){return true;}
   
  private:
   
