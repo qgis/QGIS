@@ -62,3 +62,19 @@ const QgsSymbol * QgsMapLayer::symbol(){
 void QgsMapLayer::setSymbol( QgsSymbol * _newVal){
 	m_symbol = _newVal;
 }
+/** Read property of QString labelField. */
+const QString& QgsMapLayer::labelField(){
+	return m_labelField;
+}
+/** Write property of QString labelField. */
+void QgsMapLayer::setlabelField( const QString& _newVal){
+	m_labelField = _newVal;
+}
+/** No descriptions */
+int QgsMapLayer::z(){
+	return zpos;
+}
+/** No descriptions */
+void QgsMapLayer::setZ(int zorder){
+	zpos = zorder;
+}
