@@ -3,6 +3,13 @@ QGIS Change Log
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 
+2004-11-17 [timlinux] 0.5.0devel25
+**Added a little checkbox to the bottom right of status bar that 
+when checked will suppress rendering of layers in main canvas 
+and overview canvas, This is useful if you want to load a bunch 
+of layers and tweak their symbology etc without having delays 
+caused by rerendering everything after each change you make.
+
 2004-11-16 [larsl] 0.5.0devel24
 ** Reimplemented getNextFeature() so features are visible again
 
