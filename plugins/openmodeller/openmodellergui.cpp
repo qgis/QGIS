@@ -23,6 +23,7 @@
 #include <qcombobox.h>
 #include <qfile.h>
 #include <qtextedit.h>
+#include <qtextbrowser.h>
 #include <qregexp.h>
 #include <qlabel.h>
 #include <qsettings.h>
@@ -78,62 +79,85 @@ void OpenModellerGui::getAlgorithmList()
     cboModelAlgorithm->insertItem(myAlgorithmQString);
     ++myIterator;
   }     
+  delete myAlgorithmsPointerArray;
+  delete myAlgorithm;
   return ;
 
 }
 
-void OpenModellerGui::getParameterList( Algorithm * theAlgorithm )
+void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 {
-  AlgorithmMetadata * myAlgorithmMetadata = theAlgorithm->getMetadata();
-
-  int myParameterCountInt = myAlgorithmMetadata->nparam;
-  AlgorithmParameter * myParameter = myAlgorithmMetadata->param;
-  //detailed list of parameters and their useage
-  //to be placed in a textbox control on the algorithm selection page
-  
-  //txtAlgorithmParameters->setText("<h1>Algorithm Parameters</h1><p>Use the descriptions below set parameters for this algorithm</p>");
-  for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
+  ControlInterface  myController;
+  // Find out which model algorithm is to be used.
+  Algorithm **myAlgorithmsPointerArray = myController.availableAlgorithms();
+  Algorithm *myAlgorithm;
+  std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
+  while ( myAlgorithm = *myAlgorithmsPointerArray++ )
   {
-    //
-    //first we add a new combo item to the parameter picklist
-    //
-    QString myQString = myParameter->name ;
-    //
-    // Now we build up a detailed description of the parameters
-    //
+    std::cerr << "Found Algorithm: " << myAlgorithm->getID() << std::endl;
+    QString myAlgorithmNameQString=myAlgorithm->getID();
+    if (myAlgorithmNameQString==theAlgorithmNameQString)
+    {
+      AlgorithmMetadata * myAlgorithmMetadata = myAlgorithm->getMetadata();
 
-    //check if the parameter has min and max constraints
-    QString myDescriptionQString=""; 
-    QString myHeadingQString=""; 
+      int myParameterCountInt = myAlgorithmMetadata->nparam;
+      AlgorithmParameter * myParameter = myAlgorithmMetadata->param;
+      //detailed list of parameters and their useage
+      //to be placed in a textbox control on the algorithm selection page
 
-    myQString="";
-    if ( myParameter->has_min && myParameter->has_max )
-    {
-      myQString.sprintf( "<p><b>%s (>= %f and <= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
-    }
-    //or just min constraint
-    else if ( myParameter->has_min )
-    {
-      myQString.sprintf( "%s (>= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->typical );
-    }
-    //or just max contraint
-    if ( myParameter->has_max )
-    {
-      myQString.sprintf( "%s (<= %f) default is %f</b></p>", myParameter->name, myParameter->max, myParameter->typical );
-    }
-    //or neither
-    else
-    {
-      myQString.sprintf( "%s default is %f</b></p>", myParameter->name, myParameter->typical);
-    }
+      txtAlgorithmParameters->setText("<h1>Algorithm Parameters</h1><p>Use the descriptions below set parameters for this algorithm</p>");
+      for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
+      {
+        //
+        //first we add a new combo item to the parameter picklist
+        //
+        QString myQString = myParameter->name ;
+        //
+        // Now we build up a detailed description of the parameters
+        //
 
-    myHeadingQString.sprintf( "<p>%s</p>", myParameter->description );
-    //txtAlgorithmParameters->setText(txtAlgorithmParameters->text()+myQString+myDescriptionQString);
-    //std::cerr << txtAlgorithmParameters->text() << std::endl;
+        //check if the parameter has min and max constraints
+        QString myDescriptionQString=""; 
+        QString myHeadingQString=""; 
+
+        myQString="";
+        if ( myParameter->has_min && myParameter->has_max )
+        {
+          myQString.sprintf( "<p><b>%s (>= %f and <= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
+        }
+        //or just min constraint
+        else if ( myParameter->has_min )
+        {
+          myQString.sprintf( "%s (>= %f) default is %f</b></p>", myParameter->name, myParameter->min, myParameter->typical );
+        }
+        //or just max contraint
+        if ( myParameter->has_max )
+        {
+          myQString.sprintf( "%s (<= %f) default is %f</b></p>", myParameter->name, myParameter->max, myParameter->typical );
+        }
+        //or neither
+        else
+        {
+          myQString.sprintf( "%s default is %f</b></p>", myParameter->name, myParameter->typical);
+        }
+
+        myHeadingQString.sprintf( "<p>%s</p>", myParameter->description );
+        txtAlgorithmParameters->setText(txtAlgorithmParameters->text()+myQString+myDescriptionQString);
+        std::cerr << txtAlgorithmParameters->text() << std::endl;
+      }
+      delete myAlgorithmMetadata;
+      delete myParameter;
+      delete myAlgorithmsPointerArray;
+      delete myAlgorithm;
+      return ;
+
+    }
   }
-  delete myAlgorithmMetadata;
-  delete myParameter;
-  return ;
+  // no matching algorthm was found :-(
+  delete myAlgorithmsPointerArray;
+  delete myAlgorithm;
+  return;
+  
 }
 
 /** This is the page selected event which I am reimplementing to do some housekeeping
@@ -160,6 +184,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }
   if (thePageNameQString==tr("Step 2 of 8")) //we do this after leaving the file selection page
   {
+    getParameterList(cboModelAlgorithm->currentText());
   }
   if (thePageNameQString==tr("Step 3 of 8")) //we do this after leaving the file selection page
   {
@@ -308,7 +333,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   // Set the model algorithm to be used by the controller
   myController.setAlgorithm( myAlgorithmNameCharArray, myAlgorithmParametersCharArray );
   // Populate the occurences list from the localities file
-  myController.setOccurrences( myLocalitiesFileCharArray, myLocalitiesCoordinateSystem, myTaxonNameCharArray );
+  //myController.setOccurrences( myLocalitiesFileCharArray, myLocalitiesCoordinateSystem, myTaxonNameCharArray );
 
   //
   // Run the model
