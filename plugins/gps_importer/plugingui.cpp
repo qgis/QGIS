@@ -61,223 +61,66 @@ void PluginGui::pbnOK_clicked()
 {
   
   // what should we do?
+  switch (tabWidget->currentPageIndex()) {
   // add a GPX/LOC layer?
-  if (tabWidget->currentPageIndex() == 0) {
-
-    //check if input file is readable
-    QFileInfo fileInfo(leGPXFile->text());
-    if (!fileInfo.isReadable())
-      {
-	QMessageBox::warning( this, "GPX/LOC Loader",
-			      "Unable to read the selected file.\n"
-			      "Please reselect a valid file." );
-	return;
-      }
-    
-    // add the requested layers
-    if (cbGPXTracks->isChecked())
-      emit drawVectorLayer(leGPXFile->text() + "?type=track", 
-			   fileInfo.baseName() + ", tracks", "gpx");
-    if (cbGPXRoutes->isChecked())
-      emit drawVectorLayer(leGPXFile->text() + "?type=route", 
-			   fileInfo.baseName() + ", routes", "gpx");
-    if (cbGPXWaypoints->isChecked())
-      emit drawVectorLayer(leGPXFile->text() + "?type=waypoint", 
-			   fileInfo.baseName() + ", waypoints", "gpx");
-  }
+  case 0:
+    emit loadGPXFile(leGPXFile->text(), cbGPXWaypoints->isChecked(), 
+		     cbGPXRoutes->isChecked(), cbGPXTracks->isChecked());
+    break;
   
-  // or import a download file?
-  else if (tabWidget->currentPageIndex() == 666) {
-    
-    //check input file exists
-    //
-    if (!QFile::exists ( leInputFile->text() ))
+    // or import a download file?
+    /*
+      case 666:
+      //check input file exists
+      //
+      if (!QFile::exists ( leInputFile->text() ))
       {
-	QMessageBox::warning( this, "GPS Importer",
-			      "Unable to find the input file.\n"
-			      "Please reselect a valid file." );
-	return;
+      QMessageBox::warning( this, "GPS Importer",
+      "Unable to find the input file.\n"
+      "Please reselect a valid file." );
+      return;
       }
-    WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
-    //
-    // If you have a produced a raster layer using your plugin, you can ask qgis to 
-    // add it to the view using:
-    // emit drawRasterLayer(QString("layername"));
-    // or for a vector layer
-    // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
-    //
-    delete myWayPointToShape;
-    emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
-  }
-  
-  // or import other file?
-  else if (tabWidget->currentPageIndex() == 1) {
+      WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
+      //
+      // If you have a produced a raster layer using your plugin, you can ask qgis to 
+      // add it to the view using:
+      // emit drawRasterLayer(QString("layername"));
+      // or for a vector layer
+      // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
+      //
+      delete myWayPointToShape;
+      emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
+      break;
+    */
     
-    // what format does the user want to import?
-    const QString& formatArg(babelFormats.find(impFormat)->second.formatName);
-    
-    // what features does the user want to import?
-    QString typeArg;
-    if (cmbDLFeatureType->currentText() == "Waypoints")
-      typeArg = "-w";
-    else if (cmbDLFeatureType->currentText() == "Routes")
-      typeArg = "-r";
-    else if (cmbDLFeatureType->currentText() == "Tracks")
-      typeArg = "-t";
-
-    // try to start the gpsbabel process
-    QStringList babelArgs;
-    babelArgs<<"gpsbabel"<<typeArg<<"-i"<<formatArg<<"-o"<<"gpx"
-	     <<leIMPInput->text()<<leIMPOutput->text();
-    QProcess babelProcess(babelArgs);
-    if (!babelProcess.start()) {
-      QMessageBox::warning(this, "Could not start process",
-			   "Could not start GPSBabel!");
-      return;
-    }
-    
-    // wait for gpsbabel to finish (or the user to cancel)
-    QProgressDialog progressDialog("Importing data...", "Cancel", 0,
-				   this, 0, true);
-    progressDialog.show();
-    for (int i = 0; babelProcess.isRunning(); ++i) {
-      QApplication::eventLoop()->processEvents(0);
-      progressDialog.setProgress(i/64);
-      if (progressDialog.wasCancelled())
-	return;
-    }
-    
-    // did we get any data?
-    if (babelProcess.exitStatus() != 0) {
-      QString babelError(babelProcess.readStderr());
-      QString errorMsg(QString("Could not import data from %1!\n\n")
-		       .arg(leIMPInput->text()));
-      errorMsg += babelError;
-      QMessageBox::warning(this, "Error importing data", errorMsg);
-      return;
-    }
-    
-    // add the layer
-    if (cmbIMPFeature->currentItem() == 0)
-      emit drawVectorLayer(leIMPOutput->text() + "?type=waypoint", 
-			   leIMPLayer->text(), "gpx");
-    else if (cmbIMPFeature->currentItem() == 1)
-      emit drawVectorLayer(leIMPOutput->text() + "?type=route", 
-			   leIMPLayer->text(), "gpx");
-    else if (cmbIMPFeature->currentItem() == 2)
-      emit drawVectorLayer(leIMPOutput->text() + "?type=track", 
-			   leIMPLayer->text(), "gpx");
+    // or import other file?
+  case 1: {
+    const QString& typeString(cmbDLFeatureType->currentText());
+    emit importGPSFile(leIMPInput->text(), 
+		       babelFormats.find(impFormat)->second.formatName,
+		       typeString == "Waypoints", typeString == "Routes",
+		       typeString == "Tracks", leIMPOutput->text(),
+		       leIMPLayer->text());
+    break;
   }
   
   // or download GPS data from a device?
-  else if (tabWidget->currentPageIndex() == 2) {
-    
-    // what does the user want to download?
-    QString typeArg;
-    if (cmbDLFeatureType->currentItem() == 0)
-      typeArg = "-w";
-    else if (cmbDLFeatureType->currentItem() == 1)
-      typeArg = "-r";
-    else if (cmbDLFeatureType->currentItem() == 2)
-      typeArg = "-t";
-
-    // try to start the gpsbabel process
-    QStringList babelArgs;
-    babelArgs<<"gpsbabel"<<typeArg<<"-i"<<cmbDLProtocol->currentText().lower()
-	     <<"-o"<<"gpx"<<cmbDLDevice->currentText()<<leDLOutput->text();
-    QProcess babelProcess(babelArgs);
-    if (!babelProcess.start()) {
-      QMessageBox::warning(this, "Could not start process",
-			   "Could not start GPSBabel!");
-      return;
-    }
-    
-    // wait for gpsbabel to finish (or the user to cancel)
-    QProgressDialog progressDialog("Downloading data...", "Cancel", 0,
-				   this, 0, true);
-    progressDialog.show();
-    for (int i = 0; babelProcess.isRunning(); ++i) {
-      QApplication::eventLoop()->processEvents(0);
-      progressDialog.setProgress(i/64);
-      if (progressDialog.wasCancelled())
-	return;
-    }
-    
-    // did we get any data?
-    if (babelProcess.exitStatus() != 0) {
-      QString babelError(babelProcess.readStderr());
-      QString errorMsg("Could not download data from GPS!\n\n");
-      errorMsg += babelError;
-      QMessageBox::warning(this, "Error downloading data", errorMsg);
-      return;
-    }
-    
-    // add the layer
-    if (cmbDLFeatureType->currentItem() == 0)
-      emit drawVectorLayer(leDLOutput->text() + "?type=waypoint", 
-			   leDLBasename->text(), "gpx");
-    else if (cmbDLFeatureType->currentItem() == 1)
-      emit drawVectorLayer(leDLOutput->text() + "?type=route", 
-			   leDLBasename->text(), "gpx");
-    else if (cmbDLFeatureType->currentItem() == 2)
-      emit drawVectorLayer(leDLOutput->text() + "?type=track", 
-			   leDLBasename->text(), "gpx");
+  case 2: {
+    int featureType = cmbDLFeatureType->currentItem();
+    emit downloadFromGPS(cmbDLProtocol->currentText().lower(),
+			 cmbDLDevice->currentText(), featureType == 0,
+			 featureType == 1, featureType == 2, 
+			 leDLOutput->text(), leDLBasename->text());
+    break;
   }
   
   // or upload GPS data to a device?
-  else if (tabWidget->currentPageIndex() == 3) {
-    
-    QgsVectorLayer* gpxLayer = gpxLayers[cmbULLayer->currentItem()];
-    const QString& source(gpxLayer->getDataProvider()->getDataSourceUri());
-    
-    // what kind of data does the user want to upload?
-    QString typeArg;
-    if (source.right(8) == "waypoint")
-      typeArg = "-w";
-    else if (source.right(5) == "route")
-      typeArg = "-r";
-    else if (source.right(5) == "track")
-      typeArg = "-t";
-    else {
-      std::cerr<<source.right(8)<<std::endl;
-      assert(false);
-    }
-
-    // try to start the gpsbabel process
-    QStringList babelArgs;
-    babelArgs<<"gpsbabel"<<typeArg<<"-i"<<"gpx"
-	     <<"-o"<<cmbULProtocol->currentText().lower()
-	     <<source.left(source.findRev('?'))<<cmbULDevice->currentText();
-    QProcess babelProcess(babelArgs);
-    if (!babelProcess.start()) {
-      QMessageBox::warning(this, "Could not start process",
-			   "Could not start GPSBabel!");
-      return;
-    }
-    
-    // wait for gpsbabel to finish (or the user to cancel)
-    QProgressDialog progressDialog("Uploading data...", "Cancel", 0,
-				   this, 0, true);
-    progressDialog.show();
-    for (int i = 0; babelProcess.isRunning(); ++i) {
-      QApplication::eventLoop()->processEvents(0);
-      progressDialog.setProgress(i/64);
-      if (progressDialog.wasCancelled())
-	return;
-    }
-    
-    // did we get an error?
-    if (babelProcess.exitStatus() != 0) {
-      QString babelError(babelProcess.readStderr());
-      QString errorMsg("Error while uploading data to GPS!\n\n");
-      errorMsg += babelError;
-      QMessageBox::warning(this, "Error uploading data", errorMsg);
-      return;
-    }
+  case 3:
+    emit uploadToGPS(gpxLayers[cmbULLayer->currentItem()], 
+		     cmbULProtocol->currentText().lower(),
+		     cmbULDevice->currentText());
+    break;
   }
-  
-  //close the dialog
-  done(1);
 } 
 
 

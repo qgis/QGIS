@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.155 2004/06/30 11:30:39 jobi Exp
+ChangeLog,v 1.156 2004/07/05 09:43:45 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-07-05 [larsl] 0.4.0devel1
+** Moved lots of code from PluginGui to Plugin in the GPS plugin, use signals
+   and slots for communication
 
 2004-06-30 [jobi] 0.3.0devel58
 ** made ready for release
