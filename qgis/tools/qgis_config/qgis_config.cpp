@@ -33,9 +33,12 @@ void usage()
     "Usage:\n " <<
     "  qgis_config OPTION...\n\n" <<
     "Options:\n" <<
-    "   --bindir              show location of executable(s)\n" <<
-    "   --includedir          show location of C++ header files\n" << 
-    "   --libdir              show location of installed libraries\n" <<
+    "   --bindir              print destination of executable(s)\n" <<
+    "   --cflags              print the compiler flags that are necessary to\n" <<
+    "                         compile a plug-inshow location of C++ header files\n" << 
+    "   --libs                print the linker flags that are necessary to link a\n" <<
+    "                         plug-in\n" <<
+    "   --plugindir           print the path where the plugins are installed\n" <<
     "   --help                show this help, then exit\n"
     << std::endl; 
 }
@@ -57,8 +60,9 @@ int main(int argc, char **argv)
      *  We distinguish them by their indices. */
     {"prefix", no_argument, 0, 'p'},
     {"bindir",     no_argument, 0, 'b'},
-    {"includedir",  no_argument, 0, 'i'},
-    {"libdir",  no_argument, 0, 'l'},
+    {"cflags",  no_argument, 0, 'c'},
+    {"libs",  no_argument, 0, 'l'},
+    {"plugindir",  no_argument, 0, 'w'},
     {0, 0, 0, 0}
   };
   // If no argument is given, show hint
@@ -74,7 +78,7 @@ int main(int argc, char **argv)
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      optionChar = getopt_long (argc, argv, "pbil",
+      optionChar = getopt_long (argc, argv, "pbclw",
           long_options, &option_index);
 
       /* Detect the end of the options. */
@@ -91,11 +95,18 @@ int main(int argc, char **argv)
           std::cout << BIN_DIR << std::endl; 
           break;
 
-        case 'i':
-          std::cout << INCLUDE_DIR << std::endl; 
+        case 'c':
+          std::cout << "-I" << INCLUDE_DIR << " ";
+					std::cout << "-I" << INCLUDE_DIR << "/qgis" << std::endl; 
           break;
+
         case 'l':
-          std::cout << LIB_DIR << std::endl; 
+          std::cout << "-L" << LIB_DIR << " ";
+					std::cout << " -lqgis" << std::endl; 
+          break;
+
+        case 'w':
+          std::cout << PLUGIN_DIR << std::endl; 
           break;
 
         case 'h':
