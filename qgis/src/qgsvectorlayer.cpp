@@ -44,7 +44,7 @@
 #include "qgisapp.h"
 #include "qgsrect.h"
 #include "qgspoint.h"
-#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
 #include "qgsidentifyresults.h"
 #include "qgsattributetable.h"
@@ -252,7 +252,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
 // NOTE this is a temporary method added by Tim to prevent label clipping
 // which was occurring when labeller was called in the main draw loop
 // This method will probably be removed again in the near future!
-void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf, QPaintDevice* dst)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -309,7 +309,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsCoordinat
   }
 }
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf, QPaintDevice* dst)
+void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf, QPaintDevice* dst)
 {
     if ( /*1 == 1 */ m_renderer)
     {
@@ -1877,7 +1877,7 @@ bool QgsVectorLayer::rollBack()
     return true;
 }
 
-void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTransform * cXf, QPicture* marker, double markerScaleFactor)
+void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor)
 {
   unsigned char *feature;
   bool attributesneeded = m_renderer->needsAttributes();

@@ -22,7 +22,7 @@
 
 class QgsPoint;
 class QPainter;
-class QgsCoordinateTransform;
+class QgsMapToPixel;
 #include <qgsrect.h>
 #include "qgsacetateobject.h"
 
@@ -32,7 +32,7 @@ class QgsCoordinateTransform;
  * An acetate object is a graphic or text object that is drawn on top of the map canvas 
  * after rendering of all map elements is completed. Acetate objects can be drawn in
  * device coordinates or map coordinates. Drawing in map coordinates requires passing
- * a QgsCoordinateTransform object to the draw function.
+ * a QgsMapToPixel object to the draw function.
  *
  */ 
 class QgsAcetateRectangle : public QgsAcetateObject {
@@ -54,7 +54,7 @@ class QgsAcetateRectangle : public QgsAcetateObject {
      * this parameter is not specified, coordinates are assumed to be device coordinates
      * rather than map coordinates.
      */
-    void  draw (QPainter * painter, QgsCoordinateTransform * cXf=0);
+    void  draw (QPainter * painter, QgsMapToPixel * cXf=0);
     /** 
      * Set the origin point
      * @param value Point of origin

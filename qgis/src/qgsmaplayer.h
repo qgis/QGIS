@@ -27,7 +27,7 @@
 
 #include <qgsrect.h>
 #include <qgis.h>
-#include <qgscoordinatetransform.h>
+#include <qgsmaptopixel.h>
 #include <qgisapp.h>
 #include <qgssymbol.h>
 #include <qgsfield.h>
@@ -97,8 +97,8 @@ public:
 
 
     virtual void draw(QPainter *, QgsRect *, int);
-    virtual void draw(QPainter *, QgsRect *, QgsCoordinateTransform * ,QPaintDevice *);
-    virtual void drawLabels(QPainter *, QgsRect *, QgsCoordinateTransform * ,QPaintDevice *);
+    virtual void draw(QPainter *, QgsRect *, QgsMapToPixel * ,QPaintDevice *);
+    virtual void drawLabels(QPainter *, QgsRect *, QgsMapToPixel * ,QPaintDevice *);
     /*! Identify the feature(s) in this layer that are contained in the search rectangle
      */
     virtual void identify(QgsRect *)

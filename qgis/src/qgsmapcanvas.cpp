@@ -76,7 +76,7 @@
 #include "qgsrect.h"
 #include "qgsacetaterectangle.h"
 #include "qgsattributedialog.h"
-#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 #include "qgsfeature.h"
 #include "qgslegend.h"
 #include "qgslegenditem.h"
@@ -116,7 +116,7 @@ public:
             scaleCalculator( 0x0 )
     {
         mapWindow = new QRect;
-        coordXForm = new QgsCoordinateTransform;
+        coordXForm = new QgsMapToPixel;
         pmCanvas = new QPixmap(width, height);
         scaleCalculator = new QgsScaleCalculator;
         // set the initial extent - can't use a constructor since QgsRect
@@ -140,7 +140,7 @@ public:
             scaleCalculator( 0x0 )
     {
         mapWindow = new QRect;
-        coordXForm = new QgsCoordinateTransform;
+        coordXForm = new QgsMapToPixel;
         pmCanvas = new QPixmap;
         scaleCalculator = new QgsScaleCalculator;
     }
@@ -206,8 +206,8 @@ public:
     /** Pointer to the coordinate transform object used to transform
       coordinates from real world to device coordinates
       */
-    //std::auto_ptr<QgsCoordinateTransform> coordXForm;
-    QgsCoordinateTransform * coordXForm;
+    //std::auto_ptr<QgsMapToPixel> coordXForm;
+    QgsMapToPixel * coordXForm;
 
     /**
      * \brief Currently selected map tool.
@@ -812,7 +812,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
 // return the current coordinate transform based on the extents and
 // device size
-QgsCoordinateTransform * QgsMapCanvas::getCoordinateTransform()
+QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 {
     return mCanvasProperties->coordXForm;
 }

@@ -30,7 +30,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsrect.h"
-#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 
 #include "qgslabelattributes.h"
 #include "qgslabeldialog.h"
@@ -83,7 +83,7 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
 }
 
 void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
-                            QgsCoordinateTransform *transform, QPaintDevice* device,
+                            QgsMapToPixel *transform, QPaintDevice* device,
                             QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes )
 {
 #if QGISDEBUG > 3

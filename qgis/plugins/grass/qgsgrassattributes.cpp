@@ -42,7 +42,7 @@
 #include "../../src/qgsmaplayer.h"
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsdataprovider.h"
-#include "../../src/qgscoordinatetransform.h"
+#include "../../src/qgsmaptopixel.h"
 #include "../../src/qgsfeatureattribute.h"
 
 extern "C" {

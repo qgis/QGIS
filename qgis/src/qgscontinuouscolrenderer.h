@@ -21,7 +21,7 @@
 #include "qgsrenderer.h"
 #include "qgsrenderitem.h"
 #include <qpainter.h>
-#include "qgscoordinatetransform.h"
+#include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
 #include <iostream>
