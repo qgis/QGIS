@@ -54,7 +54,7 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
   return "";
 }
 
-void QgsVectorDataProvider::setEncoding(QString e)
+void QgsVectorDataProvider::setEncoding(const QString& e)
 {
     QTextCodec* ncodec=QTextCodec::codecForName(e);
     if(ncodec)
@@ -66,5 +66,17 @@ void QgsVectorDataProvider::setEncoding(QString e)
 #ifdef QGISDEBUG
 	qWarning("error finding QTextCodec in QgsVectorDataProvider::setEncoding");
 #endif
+    }
+}
+
+QString QgsVectorDataProvider::encoding() const
+{
+    if(mEncoding)
+    {
+	return mEncoding->name();
+    }
+    else
+    {
+	return "";
     }
 }
