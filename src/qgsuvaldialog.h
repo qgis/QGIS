@@ -19,13 +19,14 @@
 #define QGSUVALDIALOG_H
 
 #include "qgsuvaldialogbase.uic.h"
-#include <set.h>
+#include "qgssisydialog.h"
+#include <map.h>
 
 class QgsVectorLayer;
-class QgsGraMaExtensionWidget;
 
 class QgsUValDialog: public QgsUValDialogBase
 {
+    Q_OBJECT
  public:
     QgsUValDialog(QgsVectorLayer* vl);
     ~QgsUValDialog();
@@ -34,15 +35,14 @@ class QgsUValDialog: public QgsUValDialogBase
      void apply();
 
  protected:
-    /**Pointer to the curret extension widget*/
-    QgsGraMaExtensionWidget* ext;
     /**Pointer to the associated vector layer*/
     QgsVectorLayer* mVectorLayer;
     /**Set to store the already entered values*/
-    std::set<QString> mValues;
+    std::map<QString,QgsSiSyDialog*> mValues;
 
  protected slots:
     void changeClassificationAttribute(int nr);
+    void changeSymbologyDialog();
 };
 
 #endif

@@ -180,6 +180,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgssimadialog.moc.cpp			\
 		qgssisydialog.moc.cpp			\
+		qgsuvaldialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp			\
 		qgsvectorlayerproperties.moc.cpp	\
 		splashscreen.moc.cpp \
