@@ -108,6 +108,8 @@ class QgsShapeFileProvider:public QgsDataProvider
     /** Return the extent for this data layer
     */
     virtual QgsRect *extent();
+    /**Get an attribute associated with a feature*/
+    void getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, int attindex);
     /**
      * Get the attributes associated with a feature
      */
