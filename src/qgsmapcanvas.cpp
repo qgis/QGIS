@@ -1225,6 +1225,34 @@ void QgsMapCanvas::setCanvasPixmap(QPixmap * theQPixmap)
 } // setCanvasPixmap
 
 
+void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
+{
+      //
+      // We need to evaluate each layer in the zOrder and see
+      // if it is actually a member of this mapCanvas
+      // 
+      std::list < QString >::iterator li = theZOrder.begin();
+      mCanvasProperties->zOrder.clear(); 
+      while (li != theZOrder.end())
+      {
+        QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+        if (ml)
+        {
+#ifdef QGISDEBUG
+          std::cout << "Adding  " << ml->name() << " to zOrder" << std::endl;
+#endif
+          mCanvasProperties->zOrder.push_back(ml->getLayerID());
+        }
+        else
+        {
+#ifdef QGISDEBUG
+          std::cout << "Cant add  " << ml->name() << " to zOrder (it isnt in layers array)" << std::endl;
+#endif
+        }
+        li++;
+      }
+}
 
 std::list < QString > const & QgsMapCanvas::zOrders() const
 {

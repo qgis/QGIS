@@ -1,8 +1,16 @@
 QGIS Change Log
-ChangeLog,v 1.140 2004/06/20 20:30:28 timlinux Exp
+ChangeLog,v 1.141 2004/06/20 23:05:28 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
 	
+2004-06-21 [ts] 0.3.0devel44
+
+** Fix for bug [ 973922 ] Overview shows layers in wrong order
+
+** Fixed show stopper bug where maplayerregistry wasnt being cleared properly on file new
+
+** Added setZOrder which will be used in next commit to fix projectio zorder problem
+
 2004-06-20 [ts] 0.3.0devel43
 
 ** Fix anoying 'mapcanvas isnt freezing while loading rasters' bug
