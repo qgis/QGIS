@@ -646,7 +646,7 @@ int QgsVectorLayer::endian()
       for (int i = 0; i < attr.size(); i++)
       {
 #ifdef QGISDEBUG
-        std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+        std::cout << attr[i].fieldName().ascii() << " == " << fieldIndex.ascii() << std::endl;
 #endif
         if (attr[i].fieldName().lower() == fieldIndex)
         {
@@ -1559,7 +1559,9 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #ifdef QGISDEBUG
             std::cout << "Getting pointer to a dataProvider object from the library\n";
 #endif
-            dataProvider = dynamic_cast<QgsVectorDataProvider*>(classFactory(dataSource));
+            //XXX - This was a dynamic cast but that kills the Windows
+            //      version big-time with an abnormal termination error
+            dataProvider = (QgsVectorDataProvider*)(classFactory(dataSource));
 
             if (dataProvider)
             {
@@ -1724,7 +1726,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                   "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">\n";
 
-        while ( getline( rendererXML, temp_str ) )
+        while ( std::getline( rendererXML, temp_str ) )
         {
             rawXML += temp_str + '\n';
         }
@@ -1789,7 +1791,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<!DOCTYPE qgis SYSTEM \"http://mrcc.com/qgis.dtd\">\n";
 
-        while ( getline( rendererXML, temp_str ) )
+        while ( std::getline( rendererXML, temp_str ) )
         {
             rawXML += temp_str + '\n';
         }

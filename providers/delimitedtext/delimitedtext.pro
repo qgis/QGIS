@@ -7,8 +7,9 @@
 ####################################################################
 
 TEMPLATE = lib
-INCLUDEPATH += .
-LIBS += ..\..\src\libqgis.lib
+INCLUDEPATH += . $(GEOS)\include
+LIBS += ..\..\src\libqgis.lib \
+        $(GEOS)\lib\geos.lib
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis
 

@@ -15,13 +15,27 @@
 #
 ######################################################################
 
+################# 
+# GEOS Notes    #
+###########################################################################
+# Geos support is currenlty provided by a custom compiled library.        #
+# The library is compiled with vc++ and statically linked with the        #
+# ogr provider. A dll may be supplied at a later date. GEOS source        #
+# used in creating the library is available at geos.refractions.net.      #
+# To compile the windows version, set the GEOS environment variable       #
+# to point to the directory containing the include and lib subdirectories.#
+# The headers/lib can be downloaded from http://qgis.org/win32_geos.zip   #
+###########################################################################
+
 TEMPLATE = app
 TARGET = qgis
 INCLUDEPATH += . $(GDAL)\include \
                 $(POSTGRESQL)\src\interfaces\libpq \
-                $(POSTGRESQL)\src\include
+                $(POSTGRESQL)\src\include \
+                $(GEOS)\include
 LIBS += $(GDAL)\lib\gdal_i.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
+        $(GEOS)\lib\geos.lib
 
 DEFINES+= QGISDEBUG
 DESTDIR = ../win_build
@@ -35,9 +49,12 @@ HEADERS += qgis.h \
             qgisiface.h \
             qgisinterface.h \
             qgsabout.ui.h \
+            qgsattributeaction.h \
+            qgsattributeactiondialog.h \
             qgsattributetable.h \
             qgsattributetablebase.ui.h \
             qgsattributetabledisplay.h \
+            qgsattributedialog.h \
             qgsconfig.h \
             qgscontcoldialog.h \
             qgscontinuouscolrenderer.h \
@@ -82,7 +99,7 @@ HEADERS += qgis.h \
             qgspluginregistry.h \
             qgspoint.h \
             qgspolygonsymbol.h \
-            qgsprojectio.h \
+            qgsproject.h \
             qgsprojectproperties.h \
             qgsprojectpropertiesbase.ui.h \
             qgsprovidermetadata.h \
@@ -122,6 +139,8 @@ HEADERS += qgis.h \
 INTERFACES += qgisappbase.ui \
             qgsabout.ui \
             qgsattributetablebase.ui \
+            qgsattributeactiondialogbase.ui \
+            qgsattributedialogbase.ui \
             qgscontcoldialogbase.ui \
             qgsdbsourceselectbase.ui \
             qgsdlgvectorlayerpropertiesbase.ui \
@@ -151,6 +170,9 @@ SOURCES += main.cpp \
             qgisapp.cpp \
             qgisiface.cpp \
             qgisinterface.cpp \
+            qgsattributeaction.cpp \
+            qgsattributeactiondialog.cpp \
+            qgsattributedialog.cpp \
             qgsattributetable.cpp \
             qgsattributetabledisplay.cpp \
             qgscontcoldialog.cpp \
@@ -189,7 +211,7 @@ SOURCES += main.cpp \
             qgspluginregistry.cpp \
             qgspoint.cpp \
             qgspolygonsymbol.cpp \
-            qgsprojectio.cpp \
+            qgsproject.cpp \
             qgsprojectproperties.cpp \
             qgsprovidermetadata.cpp \
             qgsproviderregistry.cpp \
