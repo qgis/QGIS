@@ -3574,6 +3574,7 @@ void QgisApp::setTheme(QString themeName)
     actionZoomToSelected->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_selected.png")));
     actionPan->setIconSet(QIconSet(QPixmap(iconPath + "/pan.png")));
     actionZoomLast->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_last.png")));
+    actionZoomToLayer->setIconSet(QIconSet(QPixmap(iconPath + "/zoom_layer.png")));
     actionIdentify->setIconSet(QIconSet(QPixmap(iconPath + "/identify.png")));
     actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
     actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
