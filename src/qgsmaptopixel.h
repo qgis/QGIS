@@ -45,10 +45,11 @@ class QgsMapToPixel{
     */
     QgsPoint transform(QgsPoint p);
     void transform(QgsPoint* p);
-    /*! Transform the point specified by x,y from map (world) coordinates to device coordinates
-    * @param x x cordinate o point to transform
-	* @param y y coordinate of point to transform
-    * @return QgsPoint in device coordinates
+    /*! Transform the point specified by x,y from map (world) 
+     * coordinates to device coordinates
+     * @param x x cordinate o point to transform
+     * @param y y coordinate of point to transform
+     * @return QgsPoint in device coordinates
     */
     QgsPoint transform(double x, double y);
        /*! Tranform device coordinates to map (world)  coordinates
