@@ -60,7 +60,7 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	
 nodist_libopenmodellerplugin_la_SOURCES =	$(plugin_MOC)
 
-libopenmodellerplugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=$(QGISDATAPATH)
+libopenmodellerplugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=\"$(QGISDATAPATH)\"
 libopenmodellerplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) $(OM_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
@@ -79,7 +79,7 @@ omgui_SOURCES = 	main.cpp \
 
 nodist_omgui_SOURCES = openmodellergui.moc.cpp	
 
-omgui_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=$(QGISDATAPATH)
+omgui_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=\"$(QGISDATAPATH)\"
 omgui_LDADD = $(QT_LDADD) $(GDAL_LDADD) $(OM_LDADD)
 
 CLEANFILES = $(BUILT_SOURCES)
