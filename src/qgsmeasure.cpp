@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <cmath>
+
 #include <qtable.h>
 #include <qsettings.h>
 #include <qevent.h>
@@ -89,7 +91,7 @@ void QgsMeasure::addPoint(QgsPoint &point)
         int last = mPoints.size()-2;
 	double dx = point.x() - mPoints[last].x();
 	double dy = point.y() - mPoints[last].y();
-	double d = sqrt( dx*dx + dy*dy );
+	double d = std::sqrt( dx*dx + dy*dy );
         mTotal += d;
 	
 	mTable->setNumRows ( mPoints.size()-1 );
