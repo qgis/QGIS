@@ -1518,16 +1518,25 @@ bool QgisApp::addProject(QString projectFile)
     // clear the map canvas
     removeAllLayers();
 
-    if ( QgsProject::instance()->read( projectFile ) )
+    try
     {
-        setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title() );
+        if ( QgsProject::instance()->read( projectFile ) )
+        {
+            setCaption(tr("Quantum GIS --") + " " + QgsProject::instance()->title() );
 
-        emit projectRead();       // let plug-ins know that we've read in a new
-        // project so that they can check any project
-        // specific plug-in state
+            emit projectRead();       // let plug-ins know that we've read in a new
+            // project so that they can check any project
+            // specific plug-in state
+        }
+        else
+        {
+            return false;
+        }
     }
-    else
+    catch ( std::exception & e )
     {
+        QMessageBox::critical( 0x0, "Unable to open project", e.what(), QMessageBox::Ok, QMessageBox::NoButton );
+
         return false;
     }
 
