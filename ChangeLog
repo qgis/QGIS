@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.125 2004/06/11 13:30:26 larsl Exp
+ChangeLog,v 1.126 2004/06/12 19:24:28 gsherman Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-12 [gsherman] 0.3.0devel30
+** Windows support -- lots of changes
 
 2004-06-11 [larsl] 0.3.0devel29
 ** Let the user choose GPS protocol and feature type to download
