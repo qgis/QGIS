@@ -38,6 +38,7 @@
 */
 class GPSObject {
  public:
+  QString xmlify(const QString& str);
   virtual void writeXML(QTextStream& stream);
   QString name, cmt, desc, src, url, urlname;
 };
