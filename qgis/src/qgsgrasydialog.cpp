@@ -445,6 +445,7 @@ void QgsGraSyDialog::adjustClassification()
 
 void QgsGraSyDialog::changeCurrentValue()
 {
+    sydialog.blockSignals(true);//block signals to prevent sydialog from changing the current QgsRenderItem
     QListBoxItem* item=mClassBreakBox->selectedItem();
     if(item)
     {
@@ -467,6 +468,7 @@ void QgsGraSyDialog::changeCurrentValue()
 	    sydialog.setLabel(it->second->label());
 	}
     }
+    sydialog.blockSignals(false);
 }
 
 void QgsGraSyDialog::applySymbologyChanges()

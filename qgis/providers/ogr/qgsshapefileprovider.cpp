@@ -699,10 +699,7 @@ bool QgsShapeFileProvider::isValid()
 }
 
 bool QgsShapeFileProvider::addFeature(QgsFeature* f)
-{
-  qWarning("try to commit a feature");
-  
-  
+{ 
     bool returnValue = true;
     OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
     OGRFeature* feature=new OGRFeature(fdef);
@@ -722,9 +719,6 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
           OGRLineString* l=new OGRLineString();
           int length;
           memcpy(&length,f->getGeometry()+1+sizeof(int),sizeof(int));
-#ifdef QGISDEBUG
-          qWarning("length: "+QString::number(length));
-#endif
           l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
           feature->SetGeometry(l);
           break;
@@ -849,20 +843,11 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 
 bool QgsShapeFileProvider::addFeatures(std::list<QgsFeature*> flist)
 {
-#ifdef QGISDEBUG
-    qWarning("in QgsShapeFileProvider::addFeatures");
-#endif
     bool returnvalue=true;
     for(std::list<QgsFeature*>::iterator it=flist.begin();it!=flist.end();++it)
     {
-#ifdef QGISDEBUG
-	qWarning("shapefileprovider: add a feature");
-#endif
 	if(!addFeature(*it))
 	{
-#ifdef QGISDEBUG
-	    qWarning("feature addition failed");
-#endif
 	    returnvalue=false;
 	}
     }

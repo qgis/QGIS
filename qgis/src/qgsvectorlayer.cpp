@@ -1321,9 +1321,6 @@ void QgsVectorLayer::select(int number)
           int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
           if(commit==QMessageBox::Yes)
           {
-#ifdef QGISDEBUG
-	      qWarning("commit yes");
-#endif QGISDEBUG
             if(!commitChanges())
             {
               QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok);
