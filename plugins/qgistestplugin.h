@@ -10,11 +10,13 @@
 #include "qgisplugin.h"
 #include "qgistestplugin.h"
 #include "qgsworkerclass.h"
+#include "../src/qgisapp.h"
+
 
 class QgisTestPlugin : public QObject, public QgisPlugin{
 Q_OBJECT
 public:
-	QgisTestPlugin(QWidget *qgis);
+	QgisTestPlugin(QgisApp *qgis, QgisIface *qI);
 	virtual QString name();
 	virtual QString version();
 	virtual QString description();
@@ -29,7 +31,8 @@ private:
 	QString pVersion;
 	QString pDescription;
 	
-	QWidget *qgisMainWindow;
+	QgisApp *qgisMainWindow;
+	QgisIface *qI;
 };
 
 #endif

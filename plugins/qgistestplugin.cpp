@@ -11,9 +11,12 @@
 * In addition, a plugin must implement a the classFactory and unload
 * functions. Note that these functions must be declared as extern "C"
 */
+#include <iostream>
+#include "../src/qgisapp.h"
 #include "qgistestplugin.h" 
 #include <qaction.h>
-QgisTestPlugin::QgisTestPlugin(QWidget *qgis) : qgisMainWindow(qgis){
+QgisTestPlugin::QgisTestPlugin(QgisApp *qgis, QgisIface *_qI) 
+: qgisMainWindow(qgis), qI(_qI){
 	pName = "Test Plugin";
 	pVersion = "Version 0.0";
 	pDescription = "This test plugin does nothing but tell you its name, version, and description";
@@ -29,13 +32,29 @@ QgisTestPlugin::QgisTestPlugin(QWidget *qgis) : qgisMainWindow(qgis){
         QMenuBar *menu = ((QMainWindow *)qgisMainWindow)->menuBar();
 
         menu->insertItem( "&PluginMenu", pluginMenu );
-		 QAction *fileSaveAction = new QAction( "Save File","&Save", CTRL+Key_S, this, "save" );
+		QAction *fileSaveAction = new QAction( "Save File","&Save", CTRL+Key_S, qgisMainWindow, "save" );
         connect( fileSaveAction, SIGNAL( activated() ) , this, SLOT( save() ) );
 		
 		QToolBar * fileTools = new QToolBar( (QMainWindow *)qgisMainWindow, "file operations" );
         fileTools->setLabel( "File Operations" );
 		fileSaveAction->addTo(fileTools);
-       
+		
+		//int foo = qgisMainWindow->getInt();
+		/*
+		QgisInterface *qI = qgisMainWindow->getInterface();
+		if(qI)
+			std::cout << "qI pointer is good" << std::endl;
+		else
+			std::cout << "qI pointer is bad" << std::endl;
+		*/
+		//zoomFullX();
+       qI->zoomFull2();
+	  // qgisMainWindow->zoomFull();
+	  	QMessageBox::information(qgisMainWindow,"Message From Plugin", "Click Ok to zoom previous");
+	
+	   qI->zoomPrevious();
+	   
+	//   std::cout << "Result of getInt is: " << foo << std::endl;
 
 }
 QgisTestPlugin::~QgisTestPlugin(){
@@ -62,10 +81,11 @@ void QgisTestPlugin::newThing(){
 
 void QgisTestPlugin::save(){
 	QMessageBox::information(qgisMainWindow, "Message from plugin", "You chose the save toolbar function");
+	qI->zoomPrevious();
 }
 
-extern "C" QgisPlugin * classFactory(QWidget *qgis){
-	return new QgisTestPlugin(qgis);
+extern "C" QgisPlugin * classFactory(QgisApp *qgis, QgisIface *qI){
+	return new QgisTestPlugin(qgis, qI);
 }
 
 extern "C" void unload(QgisPlugin *p){

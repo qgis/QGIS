@@ -170,7 +170,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 	popMenu->insertSeparator();
 	popMenu->insertItem("&Remove", this, SLOT(removeLayer()));
 	mapCursor = 0;
-
+	// create the interfce
+	qgisInterface = new QgisIface(this);
+	///qgisInterface->setParent(this);
 	// set the legend control for the map canvas
 	mapCanvas->setLegend(mapLegend);
 	// disable functions based on build type
@@ -651,7 +653,12 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
 		popMenu->exec(pt);
 }
 
-
+QgisInterface * QgisApp::getInterface(){
+	return qgisInterface;
+}
+int QgisApp::getInt(){
+	return 99;
+}
 void QgisApp::testPluginFunctions()
 {
 // try to load plugins from the plugin directory and test each one
@@ -687,7 +694,7 @@ void QgisApp::testPluginFunctions()
 	
 			if (cf) {
 				std::cout << "Getting pointer to a QgisPlugin object from the library\n";
-				QgisPlugin *pl = cf(this);
+				QgisPlugin *pl = cf(this, qgisInterface);
 				std::cout << "Displaying name, version, and description\n";
 				std::cout << "Plugin name: " << pl->name() << std::endl;
 				std::cout << "Plugin version: " << pl->version() << std::endl;
