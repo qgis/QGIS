@@ -81,6 +81,9 @@ public slots:
   void changeRegion(void);
 
 private:
+  //! Check if given directory contains a GRASS installation
+  static bool isValidGrassBaseDir(QString const gisBase);
+  
   //! Name of the plugin
   QString pluginNameQString;
   //! Version
