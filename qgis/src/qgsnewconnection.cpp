@@ -21,7 +21,7 @@ void QgsNewConnection::testConnection(){
 			       txtDatabase->text() +  " was successfull");
     }else{
       QMessageBox::information(this,"Test connection",
-			       "Connection failed - Check settings and try againto ");
+			       "Connection failed - Check settings and try again ");
     }
 
 
