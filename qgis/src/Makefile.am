@@ -367,10 +367,10 @@ libqgis_la_SOURCES =				\
 		qgsvectordataprovider.cpp \
 		qgsvectorlayer.cpp \
 		qgsvectorlayer.moc.cpp 
-
-if HAVE_POSTGRESQL
-	libqgis_la_SOURCES += qgspgutil.cpp
-endif
+#ifdef HAVE_POSTGRESQL
+postgresLIBSOURCES = qgspgutil.cpp
+libqgis_la_SOURCES += $(postgresLIBSOURCES)
+#endif
 
 libqgis_la_LIBFLAGS = $(QT_LDADD) $(GEOS_LDADD)
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
