@@ -123,6 +123,8 @@ public:
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage(QString, QPixmap *);
     QgsMapCanvas * getMapCanvas() { return mapCanvas; };
+    //! Set theme (icons)
+    void setTheme(QString themeName="default");
 private:
 
     //! Add a vector layer to the map
