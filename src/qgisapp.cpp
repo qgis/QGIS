@@ -35,11 +35,11 @@
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
 #include "qgisapp.h"
-#include "qgisicons.h"
+#include "xpm/qgis.xpm"
 
 QgisApp::QgisApp(QWidget *parent, const char * name, WFlags fl ) : QgisAppBase(parent, name, fl ){
   QPixmap icon;
-  icon = QPixmap(appicon_xpm);
+  icon = QPixmap(qgis_xpm);
   setIcon(icon);
   QGridLayout *FrameLayout = new QGridLayout( frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter(frameMain);

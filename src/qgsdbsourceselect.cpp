@@ -5,7 +5,9 @@
 #include <qlistbox.h>
 #include <qstringlist.h>
 #include <qcombobox.h>
-#include "qgisicons.h"
+#include "xpm/point_layer.xpm"
+#include "xpm/line_layer.xpm"
+#include "xpm/polygon_layer.xpm"
 #include "qgsdbsourceselect.h"
 #include "qgsnewconnection.h"
 
@@ -67,11 +69,11 @@ void QgsDbSourceSelect::dbConnect(){
   if(pd->Status()==CONNECTION_OK){
     // create the pixmaps for the layer types
     QPixmap pxPoint;
-    pxPoint = QPixmap(layer_points);
+    pxPoint = QPixmap(point_layer_xpm);
     QPixmap pxLine;
-    pxLine = QPixmap(layer_lines);
+    pxLine = QPixmap(line_layer_xpm);
     QPixmap pxPoly;
-    pxPoly = QPixmap(layer_polygon);
+    pxPoly = QPixmap(polygon_layer_xpm);
     qDebug("Connection succeeded");
     // get the list of tables
     QString sql =  "select * from geometry_columns where f_table_schema ='"
