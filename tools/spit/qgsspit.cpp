@@ -150,10 +150,10 @@ void QgsSpit::addFile()
     if(!exist){
 			// check other files: file.dbf and file.shx
 			QString name = *it;
-			name = name.section('.', 0, 0);
-			if(!QFile::exists(name+".dbf"))
+			name = name.left(name.length()-3);
+			if(!QFile::exists(name+"dbf"))
 				is_error = true;
-			else if(!QFile::exists(name+".shx"))
+			else if(!QFile::exists(name+"shx"))
 				is_error = true;
 		
 			if(!is_error){
@@ -186,11 +186,11 @@ void QgsSpit::addFile()
   if(error1!="" || error2!=""){
 		QString message = "The following Shapefile(s) could not be loaded:\n\n";
     if(error1!=""){
-			error1 += "--------------------------------------------";
+			error1 += "----------------------------------------------------------------------------------------";
 			error1 += "\nREASON: File cannot be opened\n\n";
 		}
     if(error2!=""){
-			error2 += "--------------------------------------------";
+			error2 += "----------------------------------------------------------------------------------------";
 			error2 += "\nREASON: One or both of the Shapefile files (*.dbf, *.shx) missing\n\n";
 		}
     QgsMessageViewer * e = new QgsMessageViewer(this, "error");
