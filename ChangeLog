@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.167 2004/08/17 18:13:05 larsl Exp
+ChangeLog,v 1.168 2004/08/18 07:51:29 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-18 [jobi] 0.4.0devel12
+** added Italian translation thanx to Maurizio Napolitano
+** updated all translations
 
 2004-08-17 [larsl] 0.4.0devel11
 ** Implemented GPX file writing - GPX layers are now written back to file
