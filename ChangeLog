@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.73 2004/05/14 11:08:21 larsl Exp
+ChangeLog,v 1.74 2004/05/14 11:47:12 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-14 [larsl] 0.2.0devel16
+** Cleaned up the enabling/disabling of controls in the GPS dialog
+** Changed the order in which different layers are loaded from a GPX file
+** Added the basename of the GPX or LOC file in the layer name
+** Changed the plugin name to the more general "GPS Tools"
 
 2004-05-14 [larsl] 0.2.0devel15
 ** Fixed a bug that caused the canvas to have a fixed width of 400 with my
